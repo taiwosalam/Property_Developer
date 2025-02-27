@@ -1,4 +1,10 @@
 import type { Field } from "@/components/Table/types";
+import { RentListResponse, RentReportData } from "./types";
+import dayjs from "dayjs";
+
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export const reportsRentFilterOptionsWithDropdown = [
   {
@@ -38,9 +44,30 @@ export const rentReportTableFields: Field[] = [
   {
     id: "5",
     label: "Start Date",
-    accessor: "start_date",
+    accessor: "rent_start_date",
   },
-  { id: "6", label: "End Date", accessor: "end_date" },
+  { id: "6", label: "End Date", accessor: "rent_end_date" },
   { id: "7", label: "Status", accessor: "status" },
   { id: "8", label: "Caution Deposit", accessor: "caution_deposit" },
 ];
+
+const formatDate = (timeStamp: string): string => {
+  if (!timeStamp) return "__ __";
+  return dayjs.utc(timeStamp.split(".")[0]).format("DD/MM/YYYY");
+};
+
+export const transformRentData = (data: RentListResponse): RentReportData => {
+  return {
+    total_rents: data.data.total_rents,
+    current_month_rents: data.data.current_month_rents,
+    rents: data.data.rents.map((rent) => ({
+      unit_id: rent.unit_id || 0,
+      property_name: rent.property_name === "N/A" ? "__ __" : rent.property_name,
+      tenant_name: rent.tenant_name || "__ __",
+      rent_start_date: formatDate(rent.rent_start_date),
+      rent_end_date: formatDate(rent.rent_start_date),
+      status: rent.status || "__ __",
+      caution_deposit: rent.caution_deposit || 0,
+    })),
+  };
+};

@@ -84,7 +84,10 @@ export interface TransformedPropertyData {
   properties: TransformedProperty[];
 }
 
-// Function to transform API data to the required format
+const formatPropertyName = (propertyName?: string | null): string => {
+  return !propertyName || propertyName === "N/A" ? "__ __" : propertyName;
+};
+
 export const transformPropertyData = (apiData: PropertyApiResponse): TransformedPropertyData => {
   const { total_properties, monthly_properties, properties } = apiData.data;
 
@@ -92,7 +95,7 @@ export const transformPropertyData = (apiData: PropertyApiResponse): Transformed
     id: property.property_id,
     property: property.property_name,
     branch: property.branch_name,
-    account_officer: property.account_officer,
+    account_officer: formatPropertyName(property.account_officer),
     landlord: property.landlord_name,
     date_created: property.created_at,
   }));

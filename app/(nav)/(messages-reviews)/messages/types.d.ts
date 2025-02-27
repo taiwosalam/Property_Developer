@@ -74,3 +74,10 @@ export interface CompanyUsersAPIResponse {
       filters: Filters;
   }
 }
+
+export type BranchStaff = {
+  user: {
+    id: number;
+    name: string
+  }
+}

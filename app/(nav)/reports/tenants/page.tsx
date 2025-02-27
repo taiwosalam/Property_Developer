@@ -3,6 +3,7 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import CustomTable from "@/components/Table/table";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import {
+  ReportsRequestParams,
   reportsTenantsFilterOptionsWithDropdown,
   TenantListResponse,
   TenantReport,
@@ -13,20 +14,127 @@ import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import { AxiosRequestConfig } from "axios";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import { BranchFilter, FilterResult, PropertyFilter } from "./types";
+import dayjs from "dayjs";
+import { Branch, BranchStaff } from "../../(messages-reviews)/messages/types";
+
 
 const TenantsReport = () => {
   const [tenant_reports, setTenant_reports] = useState<TenantReport>({
     total_tenants: 0,
     monthly_tenants: 0,
     tenants: [],
-  })
+  });
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+  const [branches, setBranches] = useState<BranchFilter[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
+  const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
+  const { data: apiData } = useFetch<any>("branches");
+  const { data: staff } = useFetch<any>(`report/staffs`);
+  const {data: property } = useFetch<any>(`property/all`);
 
-  const {
-    data,
-    loading,
-    error,
-    isNetworkError
-  } = useFetch<TenantListResponse>("/report/tenants");
+  useEffect(() => {
+    if (apiData) {
+      setBranches(apiData.data);
+    }
+    if(staff){
+      const filterStaff = staff.data.filter((staff: any) => staff.staff_role === "account officer")
+      setBranchAccountOfficers(filterStaff)
+    }
+    if(property){
+      setPropertyList(property.data)
+    }
+  }, [apiData, staff, property]);
+
+  
+
+  const reportTenantFilterOption = [
+    {
+      label: "Account Officer",
+      value: branchAccountOfficers.map((staff: any) => ({
+        label: staff.user.name,
+        value: staff.user.id.toString(),
+      })),  
+    },
+    {
+      label: "Branch",
+      value: branches.map((branch) => ({
+        label: branch.branch_name,
+        value: branch?.id.toString(),
+      })),
+    },
+
+    {
+      label: "Property",
+      value: propertyList.map((property: any) => ({
+        label: property.title,
+        value: property.id.toString(),
+      })),  
+    },
+  ];
+
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as ReportsRequestParams,
+  });
+
+  const handleSearch = async (query: string) => {
+    setConfig({
+      params: { ...config.params, search: query },
+    });
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+  };
+
+  const handleAppliedFilter = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const accountOfficer = menuOptions["Account Officer"] || [];
+    const branch = menuOptions["Branch"] || [];
+    const property = menuOptions["Property"] || [];
+
+    const queryParams: ReportsRequestParams = {
+      page: 1,
+      search: "",
+    };
+
+    if (accountOfficer.length > 0) {
+      queryParams.account_officer_id = accountOfficer.join(",");
+    }
+    if (branch.length > 0) {
+      queryParams.branch_id = branch.join(",");
+    }
+    if (property.length > 0) {
+      queryParams.property_id = property.join(",");
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+  };
+
+  const { data, loading, error, isNetworkError } = useFetch<TenantListResponse>(
+    "/report/tenants",
+    config
+  );
 
   useEffect(() => {
     if (data) {
@@ -34,13 +142,12 @@ const TenantsReport = () => {
     }
   }, [data]);
 
-  const {
-    total_tenants,
-    monthly_tenants,
-    tenants
-  } = tenant_reports
+  const { total_tenants, monthly_tenants, tenants } = tenant_reports;
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
@@ -71,18 +178,35 @@ const TenantsReport = () => {
           description:
             "This page contains a list of Tenants/Occupants on the platform.",
         }}
+        handleSearch={handleSearch}
+        onSort={handleSort}
         searchInputPlaceholder="Search for Tenants/Occupants"
-        handleFilterApply={() => { }}
-        filterOptionsMenu={reportsTenantsFilterOptionsWithDropdown}
+        handleFilterApply={handleAppliedFilter}
+        appliedFilters={appliedFilters}
+        filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/tenants/export"
       />
-      <CustomTable
-        fields={tenantsReportTableFields}
-        data={tenants}
-        tableHeadClassName="h-[45px]"
-        tableBodyCellSx={{ color: "#3F4247" }}
-      />
+      <section>
+        {tenants.length === 0 && !loading ? (
+          config.params.search || appliedFilters ? (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Search/Filter Found
+            </div>
+          ) : (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              Reports are empty
+            </div>
+          )
+        ) : (
+          <CustomTable
+            fields={tenantsReportTableFields}
+            data={tenants}
+            tableHeadClassName="h-[45px]"
+            tableBodyCellSx={{ color: "#3F4247" }}
+          />
+        )}
+      </section>
     </div>
   );
 };

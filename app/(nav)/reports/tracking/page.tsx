@@ -7,27 +7,153 @@ import {
   trackingTableFields,
 } from "./data";
 import { useRouter } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import {
+  ActivityApiResponse,
+  ActivityTable,
+  transformActivityAData,
+} from "./[userId]/types";
+import { useEffect, useState } from "react";
+import { AxiosRequestConfig } from "axios";
+import { ReportsRequestParams } from "../tenants/data";
+import { BranchFilter, FilterResult, PropertyFilter } from "../tenants/types";
+import { BranchStaff } from "../../(messages-reviews)/messages/types";
+import dayjs from "dayjs";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
 
 const TrackingReport = () => {
-  const router = useRouter();
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: index + 1,
-      username: `User ${index + 1}`,
-      page_visited: `Landlord Page ${index + 1}`,
-      action_taken: `Login successful ${index + 1}`,
-      ip_address: `IP ${index + 1}`,
-      location: `Location ${index + 1}`,
-      date: "12/12/12",
-      time: "3:20pm",
-    }));
+  const [branches, setBranches] = useState<BranchFilter[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+  const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
+  const { data: apiData } = useFetch<any>("branches");
+  const { data: staff } = useFetch<any>(`report/staffs`);
+  const { data: property } = useFetch<any>(`property/all`);
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as ReportsRequestParams,
+  });
+  const [activity, setActivity] = useState<ActivityTable[]>([]);
+  const {
+    data: activityData,
+    loading,
+    isNetworkError,
+    error,
+  } = useFetch<ActivityApiResponse>("report/activities", config);
+
+  useEffect(() => {
+    if (apiData) {
+      setBranches(apiData.data);
+    }
+    if (staff) {
+      const filterStaff = staff.data.filter(
+        (staff: any) => staff.staff_role === "account officer"
+      );
+      setBranchAccountOfficers(filterStaff);
+    }
+    if (property) {
+      setPropertyList(property.data);
+    }
+  }, [apiData, staff, property]);
+
+  useEffect(() => {
+    if (activityData) {
+      setActivity(transformActivityAData(activityData));
+    }
+  }, [activityData]);
+
+  const reportTenantFilterOption = [
+    {
+      label: "Account Officer",
+      value: branchAccountOfficers.map((staff: any) => ({
+        label: staff.user.name,
+        value: staff.user.id.toString(),
+      })),
+    },
+    {
+      label: "Branch",
+      value: branches.map((branch) => ({
+        label: branch.branch_name,
+        value: branch?.id.toString(),
+      })),
+    },
+
+    {
+      label: "Property",
+      value: propertyList.map((property: any) => ({
+        label: property.title,
+        value: property.id.toString(),
+      })),
+    },
+  ];
+
+  const handleSearch = async (query: string) => {
+    setConfig({
+      params: { ...config.params, search: query },
+    });
   };
 
-  const tableData = generateTableData(10);
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+  };
+
+  const handleAppliedFilter = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const accountOfficer = menuOptions["Account Officer"] || [];
+    const branch = menuOptions["Branch"] || [];
+    const property = menuOptions["Property"] || [];
+
+    const queryParams: ReportsRequestParams = {
+      page: 1,
+      search: "",
+    };
+
+    if (accountOfficer.length > 0) {
+      queryParams.account_officer_id = accountOfficer.join(",");
+    }
+    if (branch.length > 0) {
+      queryParams.branch_id = branch.join(",");
+    }
+    if (property.length > 0) {
+      queryParams.property_id = property.join(",");
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    setConfig({
+      params: queryParams,
+    });
+  };
+
+  const router = useRouter();
+  
 
   const handleSelectTableItem = (item: DataItem) => {
     router.push(`/reports/tracking/${item.id}`);
+    console.log(item)
   };
+
+  if (loading)
+    return <CustomLoader layout="page" pageTitle="Units Report" view="table" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">
@@ -41,17 +167,35 @@ const TrackingReport = () => {
           description: "This page contains a list of Tracking on the platform.",
         }}
         searchInputPlaceholder="Search for audit trail"
-        handleFilterApply={() => {}}
-        filterOptionsMenu={reportsListingsFilterOptionsWithDropdown}
+        handleSearch={handleSearch}
+        onSort={handleSort}
+        handleFilterApply={handleAppliedFilter}
+        appliedFilters={appliedFilters}
+        filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/tracking/export"
       />
-      <CustomTable
-        fields={trackingTableFields}
-        data={tableData}
-        tableHeadClassName="h-[45px]"
-        handleSelect={handleSelectTableItem}
-      />
+
+      <section>
+        {activity.length === 0 && !loading ? (
+          config.params.search || appliedFilters ? (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Search/Filter Found
+            </div>
+          ) : (
+            <div className="col-span-full text-center py-8 text-gray-500">
+              Reports are empty
+            </div>
+          )
+        ) : (
+          <CustomTable
+            fields={trackingTableFields}
+            data={activity}
+            tableHeadClassName="h-[45px]"
+            handleSelect={handleSelectTableItem}
+          />
+        )}
+      </section>
     </div>
   );
 };

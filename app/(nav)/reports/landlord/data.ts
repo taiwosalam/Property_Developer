@@ -101,6 +101,10 @@ export interface LandlordsReport {
   landlords: LandlordReportEntry[];
 }
 
+const formatPropertyName = (propertyName?: string | null): string => {
+  return !propertyName || propertyName === "N/A" ? "__ __" : propertyName;
+};
+
 // Transformation function
 export const transformLandlordsData = (apiResponse: LandlordsApiResponse): LandlordsReport => {
   const { total_landlords, monthly_landlords, landlords } = apiResponse.data.original.data;
@@ -109,9 +113,9 @@ export const transformLandlordsData = (apiResponse: LandlordsApiResponse): Landl
     monthly_landlords,
     landlords: landlords.map((item) => ({
       id: item.landlord_id,
-      property: item.property_name,
+      property: formatPropertyName(item.property_name),
       branch: item.branch_name,
-      account_officer: item.account_officer,
+      account_officer: formatPropertyName(item.account_officer),
       date_created: item.created_at,
       landlord: item.landlord_name,
     })),
