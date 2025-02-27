@@ -1,15 +1,46 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { SettingsSectionTitle } from "../Settings/settings-components";
 import Input from "../Form/Input/input";
 import CopyText from "../CopyText/copy-text";
+import { checkDomainAvailability } from "@/app/(onboarding)/setup/data";
 
-const CompanyDomain = () => {
+const CompanyDomain = ({ companyName }: { companyName: string }) => {
   const [customDomain, setCustomDomain] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+  const [searching, setSearching] = useState(false);
+
+  // When companyName prop changes, compute and set the default domain.
+  useEffect(() => {
+    if (companyName) {
+      const defaultDomain = companyName.trim().toLowerCase().replace(/\s+/g, "");
+      setCustomDomain(defaultDomain);
+    }
+  }, [companyName]);
 
   const handleCustomDomainChange = (value: string) => {
+    console.log("User changed domain to:", value);
     setCustomDomain(value);
   };
+
+  // Debounce API call for domain availability
+  useEffect(() => {
+    if (customDomain.trim() !== "") {
+      const timer = setTimeout(async () => {
+        setSearching(true);
+        const available = await checkDomainAvailability(customDomain);
+        setIsAvailable(available);
+        setSearching(false);
+      }, 500);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    } else {
+      setIsAvailable(null);
+    }
+  }, [customDomain]);
 
   return (
     <div>
@@ -22,26 +53,39 @@ const CompanyDomain = () => {
         <Input
           id="custom_domain"
           label=""
-          placeholder=""
+          placeholder="Enter your custom domain"
           value={customDomain}
-          onChange={(value) => handleCustomDomainChange(value)}
+          onChange={handleCustomDomainChange}
           className="w-full sm:w-auto min-w-[200px] sm:min-w-[300px]"
         />
-        {customDomain && (
+        {customDomain ? (
           <CopyText
             text={`https://www.${customDomain}.ourlisting.ng`}
             className="text-brand-9 text-xs sm:text-sm text-center break-all"
           />
-        )}
-        {!customDomain && (
+        ) : (
           <p className="text-brand-9 text-xs sm:text-sm text-center break-all">
             {`https://www.${customDomain}.ourlisting.ng`}
           </p>
         )}
         {customDomain && (
-          <div className="status bg-green-500 text-white px-2 py-1 rounded-md text-xs">
-            Available
-          </div>
+          <>
+            {searching ? (
+              <div className="status bg-gray-500 text-white px-2 py-1 rounded-md text-xs">
+                Searching...
+              </div>
+            ) : (
+              isAvailable !== null && (
+                <div
+                  className={`status ${
+                    isAvailable ? "bg-green-500" : "bg-red-500"
+                  } text-white px-2 py-1 rounded-md text-xs`}
+                >
+                  {isAvailable ? "Available" : "Not Available"}
+                </div>
+              )
+            )}
+          </>
         )}
       </div>
     </div>

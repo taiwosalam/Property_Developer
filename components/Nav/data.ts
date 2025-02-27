@@ -486,6 +486,7 @@ export interface ProfileResponse {
       company_id: string;
       company_name: string;
       company_logo: string;
+      company_status: string;
       state: string;
       local_government: string;
       head_office_address: string;

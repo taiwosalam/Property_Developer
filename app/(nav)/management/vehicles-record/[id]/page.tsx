@@ -110,7 +110,7 @@ const VehiclesRecordPage = () => {
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
-    console.log("api data", apiData)
+    // console.log("api data", apiData)
     if (apiData) {
       setState((x) => ({
         ...x,

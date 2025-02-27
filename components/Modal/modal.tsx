@@ -83,13 +83,15 @@ const ModalContent: React.FC<ModalContentProps> = ({
   style,
   children,
   className,
+  disableOutsideClick = false,
   ...props
 }) => {
   const { isOpen, setIsOpen } = useModal();
   const isDarkMode = useDarkMode();
+
   // Handle clicks outside the modal to close it
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
+    if (!disableOutsideClick && e.target === e.currentTarget) {
       setIsOpen(false);
     }
   };

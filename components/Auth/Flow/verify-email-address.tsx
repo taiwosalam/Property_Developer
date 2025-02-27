@@ -50,6 +50,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
       if (status) {
         if (type === "sign up") {
+          console.log("role here for redirect", role)
           if (role !== "director") {
             const dashboardPage = getDashboardPage(role)
             router.push(dashboardPage)
