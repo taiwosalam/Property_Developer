@@ -136,7 +136,7 @@ const VehilceRecords = () => {
     }
   }, [apiData]);
 
-  console.log("Page data", pageData)
+  // console.log("Page data", pageData)
 
 
   if (loading)
