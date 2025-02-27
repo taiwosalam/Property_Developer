@@ -150,7 +150,6 @@ const Header = () => {
     }
   );
 
-
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture
   );
@@ -171,6 +170,7 @@ const Header = () => {
         setPersonalInfo("company_logo", company.company_logo);
         setPersonalInfo("company_name", company.company_name);
         setPersonalInfo("company_state", company.state);
+        setPersonalInfo("company_status", company.company_status);
         setPersonalInfo("company_local_government", company.local_government);
         setPersonalInfo(
           "company_head_office_address",

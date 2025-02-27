@@ -36,7 +36,7 @@ import {
   staff_profile_actions,
   user_profile_actions,
 } from '@/components/Nav/options';
-import { saveRoleToCookie } from '@/utils/saveRole';
+import { saveCompanyStatusToCookie, saveRoleToCookie } from '@/utils/saveRole';
 import { saveMiddlewareRoleToCookie } from '@/utils/setMiddlewareRole';
 import { saveClientRoleToCookie } from '@/utils/saveClientRole';
 import { saveLocalStorage } from '@/utils/local-storage';
@@ -212,6 +212,7 @@ interface LoginResponse {
   wallet_pin_status: boolean;
   wallet_id: string | null;
   additional_details: {
+    status: "approved" | "pending" | "rejected"
     user_id: string;
     branch: {
       id: string | null;
@@ -275,6 +276,7 @@ export const login = async (formData: Record<string, any>) => {
       },
       appearance: appearance,
     };
+    const company_status = additional_details.status;
 
     // SAVE TO ZUSTAND
     useAuthStore.getState().setAuthState('token', token);
@@ -283,13 +285,17 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().setAuthState('user_id', details?.user_id);
     useAuthStore.getState().setAuthState('additional_details', details);
 
+    // setPersonalInfo("company_status", company.company_status);
+
     // save user id to localstorage for msg
     saveLocalStorage("user_id", details?.user_id || managerId)
 
 
-    // SECURE ROLE
-    await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION
-    await saveClientRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION
+    //💀⚡ SECURE USER - DO NOT TOUCH 💀⚡
+    await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
+    await saveClientRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (BROWSER COOKIE)
+    await saveCompanyStatusToCookie(company_status); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
+    
     if (emailVerified) {
       toast.success(data?.message || 'Login successful!');
       if (role === 'user') {
