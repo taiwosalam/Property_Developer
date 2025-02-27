@@ -23,13 +23,11 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useRole } from "@/hooks/roleContext";
-import { getDashboardPage } from "../auth/data";
-import { SettingsSectionTitle } from "@/components/Settings/settings-components";
-import CopyText from "@/components/CopyText/copy-text";
 import CompanyDomain from "@/components/Setup/company-domain";
 
 const Setup = () => {
   const router = useRouter();
+  const [companyName, setCompanyName] = useState("")
 
   const { role, setRole } = useRole();
   // const setRole = useAuthStore((state) => state.setRole);
@@ -42,10 +40,11 @@ const Setup = () => {
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);
     const data = transformFormData(formData);
+    console.log("payload", data)
     const status = await createCompany(data);
     if (status) {
-      setRole("director");
-      setAuthState("role", "director");
+      await setRole("director");
+      await setAuthState("role", "director");
       router.replace("/auth/sign-in");
     }
     setRequestLoading(false);
@@ -92,6 +91,7 @@ const Setup = () => {
                   placeholder="Write here"
                   inputClassName="setup-f bg-white"
                   className="lg:col-span-2"
+                  onChange={setCompanyName}
                 />
                 <Input
                   id="referral_id"
@@ -108,7 +108,7 @@ const Setup = () => {
 
           <Section separatorStyles="max-w-[1200px]">
           <CompanyLogo />
-          <CompanyDomain />
+          <CompanyDomain companyName={companyName} />
           </Section>
           <SectionHeading title="directors details">
             Fill the details below to add a director to your company

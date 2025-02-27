@@ -36,7 +36,7 @@ const companyTypes: CompanyTypeItem[] = [
 ];
 
 const CompanyType = () => {
-  const [selectedTypeId, setSelectedTypeId] = useState<number | null>(null);
+  const [selectedTypeId, setSelectedTypeId] = useState<number | null>(1);
   const { handleInputChange } = useContext(FlowProgressContext);
   const handleSelect = (id: number) => {
     setSelectedTypeId(id);

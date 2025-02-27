@@ -28,7 +28,7 @@ const ProfileInformation = () => {
           id="director_experience"
           label="years in business"
           placeholder="Write here"
-          options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
+          options={["1+", "2+", "3+", "4+", "5+", "6+", "7+", "8+", "9+", "10+"]}
           hiddenInputClassName="setup-f"
         />
         <Input

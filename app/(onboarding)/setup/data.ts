@@ -15,6 +15,7 @@ interface Director {
 
 interface CompanyPayload {
   company_name: string;
+  domain: string;
   company_logo: string | File;
   date_of_registration: string; // Format: YYYY-MM-DD
   cac_registration_number: string;
@@ -44,6 +45,7 @@ export const transformFormData = (formData: FormData): CompanyPayload => {
   ]);
 
   // Extract and organize data into the required structure
+  data.domain = formData.get("custom_domain") as string;
   data.company_name = formData.get("company_name") as string;
   data.company_logo = formData.get("company_logo") as string | File;
   data.date_of_registration = dayjs(
@@ -105,6 +107,18 @@ export const createCompany = async (
     return true;
   } catch (error) {
     handleAxiosError(error, "Failed to create company");
+    return false;
+  }
+};
+
+export const checkDomainAvailability = async (
+  domain: string
+): Promise<boolean> => {
+  try {
+    const response = await api.post("/check-domain", { domain });
+    return response.status === 200;
+  } catch (error) {
+    handleAxiosError(error, "Failed to check domain availability");
     return false;
   }
 };

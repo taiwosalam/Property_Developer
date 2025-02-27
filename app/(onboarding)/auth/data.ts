@@ -56,7 +56,7 @@ export const getDashboardPage = (role: string | null) => {
     case 'staff':
       return '/staff/dashboard';
     default:
-      return '/aunthorized';
+      return '/unauthorized';
   }
 };
 
