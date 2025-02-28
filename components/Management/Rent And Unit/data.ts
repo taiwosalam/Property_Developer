@@ -26,19 +26,22 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
     id: data.id.toString(),
     name: data.name || "___",
     email: data.email,
-    userTag: data.agent as "mobile" | "web" || "___",
+    userTag: (data.agent as "mobile" | "web") || "___",
     avatar: data.picture || empty,
     gender: data.gender,
     birthday: "___", //TODO - Add birthday
     phone: data.phone || "___",
     maritalStatus: data.tenant_type || "___",
-    address: `${data.city || "___"}, ${data.local_government || "___"}, ${data.state || "_____"}` || "___",
+    address:
+      `${data.city || "___"}, ${data.local_government || "___"}, ${
+        data.state || "_____"
+      }` || "___",
     city: data.city || "___",
     state: data.state || "____",
     lg: data.local_government || "___",
     religion: "___", //TODO - Add religion
   };
-}
+};
 
 export const activeStatuses = [
   "vacant",
@@ -52,8 +55,8 @@ type Action = {
   color: string;
   label: string | ((propertyType: "rental" | "facility") => string);
   route?:
-  | string
-  | ((id: string, propertyType: "rental" | "facility") => string);
+    | string
+    | ((id: string, propertyType: "rental" | "facility") => string);
   modal?: string;
 };
 
@@ -117,7 +120,6 @@ export const actions: Action[] = [
 //   ],
 // };
 
-
 export interface CheckBoxOptions {
   mobile_notification: boolean;
   email_alert: boolean;
@@ -125,13 +127,29 @@ export interface CheckBoxOptions {
   sms_alert: boolean;
 }
 
-
 export const defaultChecks: CheckBoxOptions = {
   mobile_notification: true,
   email_alert: true,
   create_invoice: true,
   sms_alert: true,
-}
+};
+
+export const getEstateData = (estate_data: any) => {
+  return [
+    { label: "Property Title", value: estate_data.property_title ?? "-- --" },
+    { label: "State", value: estate_data.property_state ?? "-- -- " },
+    {
+      label: "Local Government",
+      value: estate_data.localGovernment ?? "-- -- ",
+    },
+    { label: "Full Address", value: estate_data.property_address ?? "-- --" },
+    { label: "Branch", value: estate_data.branchName ?? "-- --" },
+    { label: "Account Officer", value: estate_data.accountOfficer ?? "-- --" },
+    { label: "Description", value: estate_data.description ?? "-- -- " },
+    { label: "Categories", value: estate_data.categories ?? "-- --" },
+    { label: "Unit ID", value: estate_data.unit_id ?? "-- --" },
+  ];
+};
 
 export const estateData = [
   { label: "Property Title", value: "Golden Estate" },
@@ -200,14 +218,18 @@ export interface RentPreviousRecords {
   start_date: string;
   other_fees: string;
 }
-export const initialPreviousRecords = [{
-  amount_paid: "",
-  due_date: "",
-  start_date: "",
-  other_fees: "",
-}]
+export const initialPreviousRecords = [
+  {
+    amount_paid: "",
+    due_date: "",
+    start_date: "",
+    other_fees: "",
+  },
+];
 
-export function getRenewalRentDetailItems(records: Array<RentPreviousRecords>): Array<{ label: string; value: string | null }> {
+export function getRenewalRentDetailItems(
+  records: Array<RentPreviousRecords>
+): Array<{ label: string; value: string | null }> {
   if (!records || records.length === 0) return [];
 
   // Using the first record from the passed data
@@ -218,25 +240,24 @@ export function getRenewalRentDetailItems(records: Array<RentPreviousRecords>): 
       label: "Start Date",
       value: record.start_date
         ? dayjs(record.start_date).format("MMM D, YYYY")
-        : null
+        : null,
     },
     {
       label: "Due Date",
       value: record.due_date
         ? dayjs(record.due_date).format("MMM D, YYYY")
-        : null
+        : null,
     },
     {
       label: "Annual Rent",
-      value: record.amount_paid || null
+      value: record.amount_paid || null,
     },
     {
       label: "Other Fees",
-      value: record.other_fees || "___"
+      value: record.other_fees || "___",
     },
   ];
 }
-
 
 // Helper: Capitalize the first letter (to ensure proper parsing)
 function capitalizeDateString(dateStr: string): string {
@@ -247,9 +268,8 @@ function capitalizeDateString(dateStr: string): string {
 // Helper: Convert a currency string like "₦30,000" into a number (30000)
 function parseCurrency(amountStr: string): number {
   if (!amountStr) return 0;
-  return Number(amountStr.replace(/[₦,]/g, ''));
+  return Number(amountStr.replace(/[₦,]/g, ""));
 }
-
 
 export function calculateBalance(
   amount_paid: string,
@@ -261,8 +281,8 @@ export function calculateBalance(
   const start = dayjs(capitalizeDateString(start_date));
   const due = dayjs(capitalizeDateString(due_date));
 
-  const totalDays = due.diff(start, 'day');
-  const remainingDays = due.diff(dayjs(), 'day');
+  const totalDays = due.diff(start, "day");
+  const remainingDays = due.diff(dayjs(), "day");
 
   if (totalDays <= 0) return 0;
 
@@ -364,8 +384,6 @@ export const calculateDueDate = (
   }
 };
 
-
-
 // export const sampleDocuments = [
 //   {
 //     id: "1",
@@ -415,7 +433,6 @@ export const calculateDueDate = (
 //     document_type: "other document",
 //   },
 // ];
-
 
 export const transformDocuments = (docs: any) => {
   return docs.flatMap((doc: any) => {

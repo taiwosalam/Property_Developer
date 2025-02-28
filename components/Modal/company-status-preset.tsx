@@ -47,13 +47,14 @@ const CommpanyStatusPreset: React.FC<ModalPresetProps> = ({
               className="w-28 h-28 flex items-center justify-center rounded-full"
             >
               <Image
-                src={type === "warning" ? Warning : ShieldTick}
+                // src={type === "warning" ? Warning : ShieldTick}
+                src={ShieldTick}
                 alt="icon"
               />
             </div>
           </div>
           <p className="text-text-primary dark:text-white text-xl font-bold capitalize">
-            {type}
+            {type  === "warning" ? "Account Verification Unsuccessful" : "Your account verification is currently pending"}
           </p>
         </>
       )}
