@@ -12,6 +12,7 @@ interface PersonalInfoStoreState {
   company_name: string | null;
   company_state: string | null;
   company_status: string | null;
+  reject_reason: string | null;
   company_local_government: string | null;
   company_head_office_address: string | null;
   company_phone_number: string[] | null;
@@ -41,6 +42,7 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   profile_picture: null,
 
   // Company Info
+  reject_reason: null,
   company_id: null,
   company_name: null,
   company_state: null,

@@ -70,7 +70,7 @@ const Setup = () => {
     }
   }, [apiData]);
 
-  console.log("here", companyData, directorsData);
+  // console.log("here", companyData, directorsData);
 
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);

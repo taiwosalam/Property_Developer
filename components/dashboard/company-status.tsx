@@ -14,9 +14,24 @@ interface CompanyStatusModalProps {
   id?: number;
 }
 
+// Helper function to format reject_reason as HTML
+const formatRejectReason = (reason: string): string => {
+  // Split the string on a hyphen with optional surrounding whitespace.
+  // const regex = /(.+?)\s*-\s*(.+)/;
+  // const match = reason.match(regex);
+  // if (match) {
+  //   const message = match[1];
+  //   const signature = match[2];
+  //   // Create HTML with separate paragraphs and additional styling for signature.
+  //   return `<p>${message}</p><p class="mt-2 text-sm font-semibold">- ${signature}</p>`;
+  // }
+  return `<p>${reason}</p>`;
+};
+
 const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
   const router = useRouter();
   const company_id = usePersonalInfoStore((state) => state.company_id);
+  const reject_reason = usePersonalInfoStore((state) => state.reject_reason);
   const [activeStep, setActiveStep] = useState(1);
 
   const useId = company_id ?? id;
@@ -24,10 +39,11 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
   const handleClick = () => {
     if (status === "pending") {
       setActiveStep(2);
-    }else{
-      router.push(`/setup?edit&id=${useId}`)
+    } else {
+      router.push(`/setup?edit&id=${useId}`);
     }
   };
+
   return (
     <CommpanyStatusPreset
       back={activeStep !== 1 ? () => setActiveStep(1) : undefined}
@@ -47,22 +63,14 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
               ? "Your verification submission has been successful. Please await an email notification regarding the approval of your account."
               : "We regret to inform you that your account verification submission did not meet the requirements."}
           </p>
-          {status === "rejected" && (
-            <>
-              <p>
-                Please carefully review all the necessary criteria and ensure
-                that you provide accurate information to authenticate your
-                company profile.
-              </p>
-              <p>Please resubmit the verification with the correct details.</p>
-            </>
+          {status === "rejected" && reject_reason && (
+            <div
+              className="mt-2"
+              dangerouslySetInnerHTML={{ __html: formatRejectReason(reject_reason) }}
+            />
           )}
           <div className="mt-4">
-            <Button
-              onClick={handleClick}
-              size="base_medium"
-              className="px-8 py-2"
-            >
+            <Button onClick={handleClick} size="base_medium" className="px-8 py-2">
               {status === "pending" ? "Request Demo" : "Edit Account Setup"}
             </Button>
           </div>
