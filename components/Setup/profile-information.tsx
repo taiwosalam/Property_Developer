@@ -14,7 +14,6 @@ const ProfileInformation = ({
   year?: string;
   bio?: string;
 }) => {
-  console.log("wow", data);
   return (
     <div className="custom-flex-col gap-6 max-w-[940px]">
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">

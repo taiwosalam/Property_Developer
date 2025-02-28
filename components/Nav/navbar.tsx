@@ -46,8 +46,15 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { applyFont } from "@/app/(onboarding)/auth/data";
 import useSettingsStore from "@/store/settings";
-import { roundUptoNine, sumUnreadCount, transformUsersMessages } from "@/app/(nav)/(messages-reviews)/messages/data";
-import { ConversationsAPIResponse, PageMessages } from "@/app/(nav)/(messages-reviews)/messages/types";
+import {
+  roundUptoNine,
+  sumUnreadCount,
+  transformUsersMessages,
+} from "@/app/(nav)/(messages-reviews)/messages/data";
+import {
+  ConversationsAPIResponse,
+  PageMessages,
+} from "@/app/(nav)/(messages-reviews)/messages/types";
 import { useChatStore } from "@/store/message";
 import { message_card_data } from "../Message/data";
 
@@ -73,23 +80,44 @@ const Header = () => {
   const hasMounted = useRef(false);
   const setColor = useThemeStoreSelectors.getState().setColor;
   const { theme, setTheme } = useTheme();
-  const { role } = useRole()
-  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>(message_card_data);
+  const { role } = useRole();
+  const [pageUsersMsg, setPageUsersMsg] =
+    useState<PageMessages[]>(message_card_data);
   const { setChatData } = useChatStore();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
-  const loggedInUserDetails = getLocalStorage('additional_details');
-  let loggedUserCompany: { company_id: string | null; company_logo: string | null; dark_logo: string | null } | undefined;
-  let loggedUserBranch: { branch_id: string | null; picture: string | null } | undefined;
-  let appearance: { colorMode: string; view: string; navbar: string; fonts: string; dashboardColor: string; } | undefined;
+  const loggedInUserDetails = getLocalStorage("additional_details");
+  let loggedUserCompany:
+    | {
+        company_id: string | null;
+        company_logo: string | null;
+        dark_logo: string | null;
+      }
+    | undefined;
+  let loggedUserBranch:
+    | { branch_id: string | null; picture: string | null }
+    | undefined;
+  let appearance:
+    | {
+        colorMode: string;
+        view: string;
+        navbar: string;
+        fonts: string;
+        dashboardColor: string;
+      }
+    | undefined;
   if (loggedInUserDetails) {
-    ({ company: loggedUserCompany, branch: loggedUserBranch, appearance } = loggedInUserDetails);
+    ({
+      company: loggedUserCompany,
+      branch: loggedUserBranch,
+      appearance,
+    } = loggedInUserDetails);
   }
 
   useEffect(() => {
     if (appearance && !hasMounted.current) {
       // Run this only once during initialization
       const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
-      saveLocalStorage("navbar", navbar);  // Save navbar to local storage for fixed footer, change later
+      saveLocalStorage("navbar", navbar); // Save navbar to local storage for fixed footer, change later
       setColor(dashboardColor);
       applyFont(fonts);
       setTheme(colorMode);
@@ -129,7 +157,7 @@ const Header = () => {
     data: usersMessages,
     loading: usersMsgLoading,
     error: usersMsgError,
-    refetch:refetchMsg,
+    refetch: refetchMsg,
   } = useFetch<ConversationsAPIResponse>("/messages");
   useRefetchOnEvent("refetch-users-msg", () => {
     refetchMsg({ silent: true });
@@ -154,6 +182,7 @@ const Header = () => {
     (state) => state.profile_picture
   );
 
+  console.log("data", data)
   useEffect(() => {
     if (data?.data) {
       const { user, company, profile, director } = data.data;
@@ -171,6 +200,7 @@ const Header = () => {
         setPersonalInfo("company_name", company.company_name);
         setPersonalInfo("company_state", company.state);
         setPersonalInfo("company_status", company.company_status);
+        setPersonalInfo("reject_reason", company.reject_reason);
         setPersonalInfo("company_local_government", company.local_government);
         setPersonalInfo(
           "company_head_office_address",
@@ -198,9 +228,9 @@ const Header = () => {
       setChatData("users_messages", transformed);
     }
   }, [usersMessages]);
-  
+
   const unreadMsg = sumUnreadCount(pageUsersMsg);
-  
+
   return (
     <header
       className={clsx(
@@ -375,7 +405,10 @@ const Header = () => {
                 className={lgIconsInteractionClasses}
               >
                 <MailIcon />
-                <NotificationBadge count={roundUptoNine(unreadMsg)} color="red" />
+                <NotificationBadge
+                  count={roundUptoNine(unreadMsg)}
+                  color="red"
+                />
               </Link>
             </div>
             <div className="relative">

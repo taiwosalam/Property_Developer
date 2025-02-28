@@ -31,6 +31,7 @@ interface CompanyPayload {
   directors: Director[];
   cac_certificate: string | File;
   membership_certificate: string | File;
+  status: string;
 }
 
 export const transformFormData = (formData: FormData): CompanyPayload => {
@@ -94,6 +95,7 @@ export const transformFormData = (formData: FormData): CompanyPayload => {
   data.membership_certificate = formData.get("membership_certificate") as
     | string
     | File;
+  data.status = 'pending'
 
   return data;
 };
