@@ -60,6 +60,19 @@ export const getPropertySettingsData = (unit_data: any): PropertySetting[] => {
 };
 
 
+export interface EstateSetting {
+  label: string;
+  value: string;
+}
+export const getEstateSettingsData = (estate_data: any): EstateSetting[] => {
+  return [
+    { label: "Management Fee", value: estate_data.unitAgentFee },
+    { label: "Period", value: estate_data.renew_fee_period },
+    { label: "Fee Penalty", value: estate_data.rent_penalty },
+    { label: "Group Chat", value: estate_data.group_chat },
+  ];
+};
+
 ///tenant-rent/4/switch
 export const switchUnit = async (id: String, data: any) => {
   try{

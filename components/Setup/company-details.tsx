@@ -7,9 +7,11 @@ import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import { industryOptions } from "@/data";
+import dayjs from "dayjs";
 
-const CompanyDetails = () => {
+const CompanyDetails = ({data}: {data: any}) => {
   const { handleInputChange } = useContext(FlowProgressContext);
+  const date = dayjs(data.date_of_registration);
 
   return (
     <div className="custom-flex-col gap-5">
@@ -25,6 +27,7 @@ const CompanyDetails = () => {
           onChange={handleInputChange}
           inputClassName="setup-f required"
           disableFuture
+          value={date}
         />
         <Input
           required
@@ -32,6 +35,7 @@ const CompanyDetails = () => {
           id="cac_registration_number"
           placeholder="Write here"
           inputClassName="rounded-[8px] setup-f bg-white"
+          defaultValue={data.cac_registration_number}
         />
 
         <FileInput
@@ -44,6 +48,7 @@ const CompanyDetails = () => {
           size={2}
           sizeUnit="MB"
           hiddenInputClassName="setup-f required"
+          // defaultValue={data.cac_certificate}
         />
 
         <Select
@@ -51,6 +56,7 @@ const CompanyDetails = () => {
           label="industry"
           options={industryOptions}
           hiddenInputClassName="setup-f"
+          defaultValue={data.industry}
         />
 
         <Input
@@ -58,6 +64,7 @@ const CompanyDetails = () => {
           id="membership_number"
           placeholder="Write here"
           inputClassName="rounded-[8px] setup-f bg-white"
+          defaultValue={data.membership_number}
         />
 
         <FileInput
@@ -69,6 +76,7 @@ const CompanyDetails = () => {
           placeholder="certificate"
           buttonName="Document"
           hiddenInputClassName="setup-f"
+          // defaultValue={data.membership_certificate}
         />
       </div>
     </div>

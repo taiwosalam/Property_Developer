@@ -6,16 +6,26 @@ import Button from "../Form/Button/button";
 import Input from "../Form/Input/input";
 import DateInput from "../Form/DateInput/date-input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
+import { useRouter } from "next/navigation";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 interface CompanyStatusModalProps {
   status: "approved" | "pending" | "rejected";
+  id?: number;
 }
 
-const CompanyStatusModal = ({ status }: CompanyStatusModalProps) => {
+const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
+  const router = useRouter();
+  const company_id = usePersonalInfoStore((state) => state.company_id);
   const [activeStep, setActiveStep] = useState(1);
+
+  const useId = company_id ?? id;
+
   const handleClick = () => {
     if (status === "pending") {
       setActiveStep(2);
+    }else{
+      router.push(`/setup?edit&id=${useId}`)
     }
   };
   return (
@@ -53,7 +63,7 @@ const CompanyStatusModal = ({ status }: CompanyStatusModalProps) => {
               size="base_medium"
               className="px-8 py-2"
             >
-              {status === "pending" ? "Request Demo" : "Edit Profile"}
+              {status === "pending" ? "Request Demo" : "Edit Account Setup"}
             </Button>
           </div>
         </>

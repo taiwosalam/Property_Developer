@@ -45,6 +45,7 @@ const Dashboard = () => {
   const { setChatData } = useChatStore();
 
   const company_status = usePersonalInfoStore((state) => state.company_status);
+  const company_id = usePersonalInfoStore((state) => state.company_id);
 
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
@@ -104,6 +105,7 @@ const Dashboard = () => {
           <ModalContent disableOutsideClick>
             <CompanyStatusModal
               status={company_status as "approved" | "pending" | "rejected"}
+              id={Number(company_id)}
             />
           </ModalContent>
         </Modal>
