@@ -12,6 +12,7 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
 import type { Field } from "@/components/Table/types";
+import api, { handleAxiosError } from "@/services/api";
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -498,3 +499,17 @@ export const dashboardInvoiceTableData = Array.from(
     };
   }
 );
+
+
+export const sendDemoRequest = async(data: FormData) => {
+  try {
+    const res = await api.post("/request-demos", data)
+    console.log("res", res)
+    if (res.status === 201) {
+      return true
+    }
+  } catch (error) {
+    handleAxiosError(error)
+    return false
+  } 
+}

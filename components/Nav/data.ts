@@ -481,6 +481,7 @@ export interface ProfileResponse {
     user: {
       userid: string;
       name: string | null;
+      email: string | null;
     };
     company?: {
       company_id: string;
@@ -506,5 +507,6 @@ export interface ProfileResponse {
       picture: string | null;
       title: string;
     };
+    requestDemos: any[];
   };
 }

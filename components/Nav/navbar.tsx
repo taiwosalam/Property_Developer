@@ -167,6 +167,7 @@ const Header = () => {
     (state) => state.setPersonalInfo
   );
   const name = usePersonalInfoStore((state) => state.name);
+  const title = usePersonalInfoStore((state) => state.title);
   const company_logo = usePersonalInfoStore(
     // (state) => state.company_logo || loggedUserCompany?.company_logo
     (state) => {
@@ -182,16 +183,20 @@ const Header = () => {
     (state) => state.profile_picture
   );
 
-  console.log("data", data)
+  // console.log("data", data)
   useEffect(() => {
     if (data?.data) {
-      const { user, company, profile, director } = data.data;
+      const { user, company, profile, director, requestDemos } = data.data;
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo(
         "name",
-        `${profile?.title ? profile.title + " " : ""}${user.name}`
+        // `${profile?.title ? profile.title + " " : ""}${user.name}`
+        `${director?.personal_title ? director.personal_title + " " : ""}${
+          user.name
+        }`
       );
       setPersonalInfo("full_name", user.name);
+      setPersonalInfo("user_email", user.email);
       setPersonalInfo("title", profile?.title as string);
       setPersonalInfo("profile_picture", profile.picture);
       if (company) {
@@ -216,6 +221,12 @@ const Header = () => {
           "cac_registration_number",
           company.cac_registration_number
         );
+      }
+      // Check if requestDemos array is not empty and update the store accordingly
+      if (Array.isArray(requestDemos)) {
+        setPersonalInfo("requestDemo", requestDemos.length > 0);
+      } else {
+        setPersonalInfo("requestDemo", false);
       }
     }
   }, [data, setPersonalInfo]);

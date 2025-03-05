@@ -23,10 +23,16 @@ import {
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { createSignatureProfiles, FormState } from "@/app/(nav)/settings/security/data";
+import {
+  createSignatureProfiles,
+  FormState,
+} from "@/app/(nav)/settings/security/data";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { SignaturePageData, transformSignature } from "@/app/(nav)/settings/data";
+import {
+  SignaturePageData,
+  transformSignature,
+} from "@/app/(nav)/settings/data";
 import { empty } from "@/app/config";
 import SignaturePad from "signature_pad";
 import { useRef } from "react";
@@ -36,7 +42,7 @@ import Button from "../Form/Button/button";
 import SignatureModal from "../Management/Properties/signature";
 
 const SettingsSignature = () => {
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
   const [state, setState] = useState<SignaturePageData[]>([]);
   const [signaturePad, setSignaturePad] = useState<SignaturePad | null>(null); // SignaturePad state
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -58,33 +64,38 @@ const SettingsSignature = () => {
       setState(transformedData);
 
       // Update inputFields based on new state
-      setInputFields(transformedData?.length > 0 ? transformedData?.map(signature => ({
-        id: signature.id,
-        signature: signature.signature_image || empty,
-        signatureFile: new File([], ""), // Create File only on the client
-        name: signature.name,
-        title: signature.title,
-        professional_title: signature.professional_title
-      })) : [{
-        id: Date.now(),
-        signature: empty,
-        signatureFile: new File([], ""),
-      }]);
+      setInputFields(
+        transformedData?.length > 0
+          ? transformedData?.map((signature) => ({
+              id: signature.id,
+              signature: signature.signature_image || empty,
+              signatureFile: new File([], ""), // Create File only on the client
+              name: signature.name,
+              title: signature.title,
+              professional_title: signature.professional_title,
+            }))
+          : [
+              {
+                id: Date.now(),
+                signature: empty,
+                signatureFile: new File([], ""),
+              },
+            ]
+      );
     }
   }, [apiData]);
-
 
   const [inputFields, setInputFields] = useState(() => {
     if (typeof window !== "undefined") {
       // Check if state is empty and use default values if so
       if (state.length > 0) {
-        return state.map(signature => ({
+        return state.map((signature) => ({
           id: Date.now(),
           signature: signature.signature_image,
           signatureFile: new File([], ""), // Create File only on the client
           name: signature.name,
           title: signature.title,
-          professional_title: signature.professional_title
+          professional_title: signature.professional_title,
         }));
       } else {
         return [
@@ -108,7 +119,6 @@ const SettingsSignature = () => {
     }
   }, []);
 
-
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
 
@@ -125,18 +135,26 @@ const SettingsSignature = () => {
     // console.log("Input Fields after removing:", updatedFields);
   };
 
-  const handleCreateSignature = (imageBase64: string, index: number, imageFile?: File) => {
-    setInputFields(prevState =>
+  const handleCreateSignature = (
+    imageBase64: string,
+    index: number,
+    imageFile?: File
+  ) => {
+    setInputFields((prevState) =>
       prevState.map((field, idx) =>
         idx === index
-          ? { ...field, signature: imageBase64, signatureFile: imageFile || field.signatureFile }
+          ? {
+              ...field,
+              signature: imageBase64,
+              signatureFile: imageFile || field.signatureFile,
+            }
           : field
       )
     );
   };
 
   const handleSignatureChange = (index: number) => (dataURL: string) => {
-    setInputFields(prevState =>
+    setInputFields((prevState) =>
       prevState.map((field) =>
         field.id === inputFields[index].id
           ? { ...field, signature: dataURL }
@@ -145,14 +163,22 @@ const SettingsSignature = () => {
     );
   };
 
-
   const hanleCreateSignature = async (data: FormData) => {
     const formData = new FormData();
 
     inputFields.forEach((field, index) => {
-      formData.append(`signatures[${index}][name]`, data.get(`fullname_${index}`) as string || "");
-      formData.append(`signatures[${index}][title]`, data.get(`personal_title_qualification_${index}`) as string || "");
-      formData.append(`signatures[${index}][professional_title]`, data.get(`real_estate_title_${index}`) as string || "");
+      formData.append(
+        `signatures[${index}][name]`,
+        (data.get(`fullname_${index}`) as string) || ""
+      );
+      formData.append(
+        `signatures[${index}][title]`,
+        (data.get(`personal_title_qualification_${index}`) as string) || ""
+      );
+      formData.append(
+        `signatures[${index}][professional_title]`,
+        (data.get(`real_estate_title_${index}`) as string) || ""
+      );
       // formData.append(`signatures[${index}][signature]`, field.signatureFile || ""); // Binary file
       // Check if the file size is greater than 0
       if (field.signatureFile && field.signatureFile.size > 0) {
@@ -164,7 +190,7 @@ const SettingsSignature = () => {
       }
     });
 
-    console.log("Payload:", Object.fromEntries(formData));
+    // console.log("Payload:", Object.fromEntries(formData));
 
     try {
       setReqLoading(true);
@@ -208,8 +234,17 @@ const SettingsSignature = () => {
                             style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
                             className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
                           >
-                            <Picture src={ImageBlue} alt="image icon" size={20} />
-                            <p className="text-brand-9 text-xs font-normal" onClick={() => { setOpenModal(true) }}>
+                            <Picture
+                              src={ImageBlue}
+                              alt="image icon"
+                              size={20}
+                            />
+                            <p
+                              className="text-brand-9 text-xs font-normal"
+                              onClick={() => {
+                                setOpenModal(true);
+                              }}
+                            >
                               Add Signature
                             </p>
                           </div>
@@ -221,13 +256,16 @@ const SettingsSignature = () => {
                           fit="contain"
                           src={field.signature}
                           alt="official signature"
-                        />)}
+                        />
+                      )}
                       <Modal
                         state={{ isOpen: openModal, setIsOpen: setOpenModal }}
                       >
                         <ModalTrigger asChild>
                           <button className="self-end bg-brand-9 text-white text-xs font-normal py-2 px-3 rounded-md">
-                            {typeof field.signature === "string" ? "Change signature" : "Add signature"}
+                            {typeof field.signature === "string"
+                              ? "Change signature"
+                              : "Add signature"}
                           </button>
                         </ModalTrigger>
                         <ModalContent>
@@ -298,7 +336,7 @@ const SettingsSignature = () => {
         </div>
       </AuthForm>
     </SettingsSection>
-  )
-}
+  );
+};
 
-export default SettingsSignature
+export default SettingsSignature;

@@ -42,7 +42,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   const walletPinStatus = useWalletStore((s) => s.walletPinStatus);
   const balance = useWalletStore((s) => s.balance);
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
-  const [hideBalance, setHideBalance] = useState(false);
+  const [hideBalance, setHideBalance] = useState(true);
 
   const hideWalletBalance = () => {
     setHideBalance((prevHideBalance) => {
