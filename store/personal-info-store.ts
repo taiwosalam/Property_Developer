@@ -4,8 +4,10 @@ interface PersonalInfoStoreState {
   user_id: string | null;
   name: string | null;
   full_name: string | null;
+  user_email: string | null;
   profile_picture: string | null;
   title: string | null;
+  requestDemo: boolean;
 
   // Company Info
   company_id: string | null;
@@ -37,7 +39,9 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   user_id: null,
   name: null,
   full_name: null,
+  user_email: null,
   title: null,
+  requestDemo: false,
   
   profile_picture: null,
 

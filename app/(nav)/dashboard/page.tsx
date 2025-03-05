@@ -131,7 +131,7 @@ const Dashboard = () => {
             <div className="hidden md:block space-y-10">
               <div className="w-full h-fit">
                 <DashboardChart
-                  chartTitle="Analysis"
+                  chartTitle="Wallet Analysis"
                   visibleRange
                   chartConfig={dashboardPerformanceChartConfig}
                   chartData={dashboardPerformanceChartData}

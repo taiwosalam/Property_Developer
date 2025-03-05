@@ -7,8 +7,8 @@ export async function middleware(req: NextRequest) {
   const role = req.cookies.get("role")?.value;
   const company_status = req.cookies.get("company_status")?.value;
 
-  // console.log("server role", role);
-  // console.log("server company_status", company_status);
+  console.log("server role", role);
+  console.log("server company_status", company_status);
 
   // Public routes accessible without authentication
   const publicRoutes = [

@@ -33,7 +33,7 @@ const ProfilePicture = () => {
 
   return (
     <div className="custom-flex-col gap-5">
-      <SectionHeading title="profile picture">
+      <SectionHeading required title="profile picture">
         The profile photo size should be 100 x 100 pixels with a maximum file
         size of 2MB.
       </SectionHeading>
