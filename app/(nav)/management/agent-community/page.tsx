@@ -7,7 +7,6 @@ import { useEffect, useMemo, useState } from "react";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import Button from "@/components/Form/Button/button";
-import ThreadCard, { ThreadSkeleton } from "@/components/Community/ThreadCard";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
@@ -23,6 +22,8 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import ThreadSkeleton from "@/components/Community/threadskeleton";
+import ThreadCard from "@/components/Community/ThreadCard";
 
 const lists = [
   {

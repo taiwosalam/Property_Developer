@@ -16,7 +16,7 @@ import { useWalletStore } from "@/store/wallet-store";
 import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 import useFetch from "@/hooks/useFetch";
 import { toast } from "sonner";
-import { ForgetWalletPinPassword } from "@/app/(nav)/settings/profile/data";
+import { ForgetWalletPinPassword } from "@/app/(nav)/settings/company/data";
 
 const ForgetWalletModal: React.FC<DefaultSettingsModalProps> = ({
   changeStep,

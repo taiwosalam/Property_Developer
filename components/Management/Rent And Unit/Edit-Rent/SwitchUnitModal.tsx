@@ -1,3 +1,5 @@
+"use client"
+
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import Switch from "@/components/Form/Switch/switch";

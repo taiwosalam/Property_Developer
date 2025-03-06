@@ -10,7 +10,7 @@ import TextArea from "../Form/TextArea/textarea";
 import Input from "../Form/Input/input";
 import { AuthForm } from "../Auth/auth-components";
 import { toast } from "sonner";
-import { updateCompanyDetails } from "@/app/(nav)/settings/profile/data";
+import { updateCompanyDetails } from "@/app/(nav)/settings/company/data";
 
 const CompanySocials = ({ companyData }: { companyData: any }) => {
   const { instagram, facebook, x, linkedin, tiktok, youtube } = companyData;
