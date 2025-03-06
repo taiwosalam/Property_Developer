@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { Suspense } from 'react';
 
 // Imports
 import { Toaster } from "sonner";
@@ -32,7 +33,9 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <ThemeProvider />
-            <div className='w-full relative z-[1]'>{children}</div>
+            <Suspense fallback={<div>Loading...</div>}>
+              <div className='w-full relative z-[1]'>{children}</div>
+            </Suspense>
             <div
               id='portal'
               className='z-[2]'
