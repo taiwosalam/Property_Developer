@@ -17,7 +17,7 @@ import useBankLogo from "@/app/(nav)/bank";
 import { AuthForm } from "../Auth/auth-components";
 import { toast } from "sonner";
 import { useWalletStore } from "@/store/wallet-store";
-import { sendWalletSecurityOTp } from "@/app/(nav)/settings/profile/data";
+import { sendWalletSecurityOTp } from "@/app/(nav)/settings/company/data";
 import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 import { BankAPIResponse, BankPageData, transformBank } from "@/app/(nav)/settings/data";
 import Button from "../Form/Button/button";

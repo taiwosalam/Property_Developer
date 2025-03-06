@@ -30,7 +30,7 @@ import {
   initialPageData,
   ProfileSettingsPageState,
   transformProfileApiResponse,
-} from "@/app/(nav)/settings/profile/data";
+} from "@/app/(nav)/settings/company/data";
 import useFetch from "@/hooks/useFetch";
 
 const Setup = () => {

@@ -10,7 +10,7 @@ import type { ValidationErrors } from "@/utils/types";
 import { Modal, ModalContent } from "../Modal/modal";
 import SettingsOTPFlow from "./Modals/settings-otp-flow";
 import { useWalletStore } from "@/store/wallet-store";
-import { sendWalletSecurityOTp } from "@/app/(nav)/settings/profile/data";
+import { sendWalletSecurityOTp } from "@/app/(nav)/settings/company/data";
 import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
 import { WalletDataResponse } from "@/app/(nav)/wallet/data";

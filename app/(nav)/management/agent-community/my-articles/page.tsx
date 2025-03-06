@@ -4,7 +4,6 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { useEffect, useMemo, useState } from "react";
 import Button from "@/components/Form/Button/button";
-import ThreadCard, { ThreadSkeleton } from "@/components/Community/ThreadCard";
 import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
@@ -22,6 +21,8 @@ import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import ThreadSkeleton from "@/components/Community/threadskeleton";
+import ThreadCard from "@/components/Community/ThreadCard";
 
 const lists = [
   {
