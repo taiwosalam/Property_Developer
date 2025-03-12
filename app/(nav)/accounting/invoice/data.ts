@@ -1,4 +1,7 @@
 import type { Field } from "@/components/Table/types";
+import { Invoice, InvoiceListResponse, InvoiceStatistics, TransformedInvoiceData } from "./types";
+import dayjs from "dayjs";
+
 
 export const accountingInvoiceOptionsWithDropdown = [
   {
@@ -80,3 +83,22 @@ const generateTableData = (numItems: number) => {
 };
 
 export const invoiceTableData = generateTableData(10);
+
+
+
+export const transformInvoiceData = (
+  response: InvoiceListResponse
+): TransformedInvoiceData => {
+  const { statistics, invoices } = response.data;
+  console.log("rece inveoice", invoices)
+  const transformedInvoices = invoices.map((invoice) => ({
+    ...invoice,
+    name: invoice.client_name,
+    payment_reason: invoice.reason,
+    picture: invoice.client_picture,
+    total_amount: `₦${invoice.total_amount}`,
+    // total_amount: parseFloat(invoice.total_amount).toFixed(2),
+    date: dayjs(invoice.invoice_date).format("MMM DD YYYY"),
+  }));
+  return { statistics, invoices: transformedInvoices };
+};

@@ -145,14 +145,13 @@ const Others = () => {
   }>({});
 
   type DirectorsFormOptions = "options" | "choose-avatar";
-  
-    const handleSubmit = async (data: FormData) => {
-      console.log(data);
-      // if (res) {
-      //   setIsOpen(false);
-      // }
-  };
 
+  const handleSubmit = async (data: FormData) => {
+    console.log(data);
+    // if (res) {
+    //   setIsOpen(false);
+    // }
+  };
 
   const modal_states: Record<
     DirectorsFormOptions,
@@ -163,12 +162,14 @@ const Others = () => {
   > = {
     options: {
       heading: "Create New Director",
-      content: <DirectorsForm 
-      submitAction={handleSubmit}
-      chooseAvatar={() => setActiveStep("choose-avatar")}
-      avatar={selectedAvatar}
-      setAvatar={setSelectedAvatar}
-        />,
+      content: (
+        <DirectorsForm
+          submitAction={handleSubmit}
+          chooseAvatar={() => setActiveStep("choose-avatar")}
+          avatar={selectedAvatar}
+          setAvatar={setSelectedAvatar}
+        />
+      ),
     },
     "choose-avatar": {
       heading: "Choose Avatar",
@@ -182,8 +183,6 @@ const Others = () => {
       ),
     },
   };
-
-  
 
   return (
     <>
@@ -240,7 +239,8 @@ const Others = () => {
                 </ModalTrigger>
               </div>
               <ModalContent>
-                <LandlordTenantModalPreset heading={modal_states[activeStep].heading}
+                <LandlordTenantModalPreset
+                  heading={modal_states[activeStep].heading}
                   back={activeStep !== "options" ? { handleBack } : undefined}
                 >
                   {modal_states[activeStep].content}
@@ -306,7 +306,7 @@ const Others = () => {
               <div className="w-[00px]">
                 <ModalContent>
                   <LandlordTenantModalPreset heading="Restrict User">
-                    <RestrictUserForm submitAction={() => { }} />
+                    <RestrictUserForm submitAction={() => {}} />
                   </LandlordTenantModalPreset>
                 </ModalContent>
               </div>

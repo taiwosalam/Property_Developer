@@ -29,7 +29,7 @@ interface AccountStatsCardProps {
   trendDirection: TrendDirection;
   trendColor: TrendColor;
   title: string;
-  balance: number;
+  balance: number | string;
   className?: string;
   forBranch?: boolean;
 }
@@ -95,8 +95,13 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
           <p className="font-medium text-[16px] text-text-tertiary dark:text-darkText-1 whitespace-nowrap">
             {title}
           </p>
-          <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
+          {/* <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
             {`${currencySymbols.naira}${formatNumber(balance)}`}
+          </p> */}
+          <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
+            {typeof balance === "string"
+              ? `${currencySymbols.naira}${balance}`
+              : `${currencySymbols.naira}${formatNumber(balance)}`}
           </p>
         </div>
         <div

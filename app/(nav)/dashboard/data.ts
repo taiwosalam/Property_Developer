@@ -333,7 +333,6 @@ export const recentMessagesData = [
 // };
 
 export const getRecentMessages = (data: any) => {
-  // console.log("data", data);
   return (
     data
       ?.slice(0, 7) // Limit to the first 7 messages
@@ -455,11 +454,11 @@ export const dashboardListingsChartData = Array.from({ length: 90 }, (_, i) => {
 }).reverse();
 
 export const invoiceTableFields: Field[] = [
-  { id: "1", accessor: "picture", isImage: true, picSize: 40 },
+  { id: "1", accessor: "client_picture", isImage: true, picSize: 40 },
   {
     id: "2",
     label: "Name",
-    accessor: "name",
+    accessor: "client_name",
   },
   { id: "3", label: "Invoice ID", accessor: "invoice_id" },
   {
@@ -474,7 +473,7 @@ export const invoiceTableFields: Field[] = [
     },
   },
   { id: "5", label: "Total Amount", accessor: "total_amount" },
-  { id: "6", label: "Date", accessor: "date" },
+  { id: "6", label: "Date", accessor: "invoice_date" },
 ];
 
 export const dashboardInvoiceTableData = Array.from(
