@@ -162,7 +162,7 @@ const Dashboard = () => {
               </div>
               <div className="w-full h-fit">
                 <DashboardChart
-                  chartTitle="listings"
+                  chartTitle="listing Performance"
                   visibleRange
                   chartConfig={dashboardListingsChartConfig}
                   chartData={dashboardListingsChartData}
@@ -191,7 +191,6 @@ const Dashboard = () => {
 
         <SectionContainer heading="Recent invoice" href="/accounting/invoice">
           <CustomTable
-            // data={dashboardInvoiceTableData}
             data={invoiceList}
             fields={invoiceTableFields}
             tableHeadClassName="h-[76px]"

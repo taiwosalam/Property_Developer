@@ -1,0 +1,44 @@
+export interface InvoiceData {
+  id: number;
+  invoice_id: string;
+  property_id: number;
+  property_name: string;
+  client_name: string;
+  account_officer: string | null;
+  unit_id: number;
+  unit_name: string;
+  annual_fee: string;
+  service_charge: string;
+  caution_fee: string;
+  agency_fee: string;
+  inspection_fee: string;
+  total_package: string;
+  details: string | null;
+  total_amount: string;
+  invoice_date: string;
+}
+
+export interface InvoiceResponse {
+  status: string;
+  message: string;
+  data: InvoiceData;
+}
+
+// This is the shape our page expects
+export interface InvoicePageData {
+  invoice_id: string;
+  property_name: string;
+  client_name: string;
+  account_officer: string;
+  unit_id: string;
+  unit_name: string;
+  annual_fee: string | number;
+  service_charge: string | number;
+  caution_fee: string | number;
+  agency_fee: string | number;
+  inspection_fee: string | number;
+  total_package: string | number;  
+  details: string;
+  total_amount: string | number;
+  invoice_date: string;
+}
