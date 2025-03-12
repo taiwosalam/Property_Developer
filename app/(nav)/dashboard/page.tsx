@@ -36,6 +36,11 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import CompanyStatusModal from "@/components/dashboard/company-status";
 import DashboardLoading from "@/components/Loader/DashboardLoading";
+import {
+  InvoiceListResponse,
+  TransformedInvoiceData,
+} from "../accounting/invoice/types";
+import { transformInvoiceData } from "../accounting/invoice/data";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -43,17 +48,17 @@ const Dashboard = () => {
     useState<PageMessages[]>(message_card_data);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setChatData } = useChatStore();
-
   const company_status = usePersonalInfoStore((state) => state.company_status);
   const company_id = usePersonalInfoStore((state) => state.company_id);
-
+  const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
+    null
+  );
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
-  );  
-
-  // console.log("company_status", company_status)
+  );
   const transactions = useWalletStore((state) => state.transactions);
 
+  // Compute performance chart data from transactions
   const dashboardPerformanceChartData = transactions.map((t) => ({
     date: t.date,
     totalfunds: t.amount,
@@ -61,8 +66,16 @@ const Dashboard = () => {
     debit: t.type === "debit" ? t.amount : 0,
   }));
 
+  // Dashboard Stats
   const { data, loading, error, refetch } = useFetch("/dashboard/data");
+  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
+  useEffect(() => {
+    if (data) {
+      setDashboardStats(getDashboardCardData(data));
+    }
+  }, [data]);
 
+  // Recent messages
   const {
     data: usersMessages,
     loading: usersMsgLoading,
@@ -72,14 +85,6 @@ const Dashboard = () => {
   useRefetchOnEvent("refetch-users-msg", () => {
     refetchMsg({ silent: true });
   });
-
-  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
-  useEffect(() => {
-    if (data) {
-      setDashboardStats(getDashboardCardData(data));
-    }
-  }, [data]);
-
   useEffect(() => {
     if (usersMessages) {
       const transformed = transformUsersMessages(usersMessages);
@@ -88,15 +93,33 @@ const Dashboard = () => {
     }
   }, [usersMessages]);
 
+  // Open modal if company status is "pending" or "rejected"
   useEffect(() => {
     if (company_status === "pending" || company_status === "rejected") {
       setIsModalOpen(true);
     }
   }, [company_status]);
 
-  if (!company_status) {
+  // Fetch and transform invoice data
+  const {
+    data: Apiinvoices,
+    loading: invoicesLoading,
+    error: invoicesError,
+  } = useFetch<InvoiceListResponse>("/invoice/list");
+  useEffect(() => {
+    if (Apiinvoices) {
+      const transformed = transformInvoiceData(Apiinvoices);
+      setInvoiceData(transformed);
+      console.log("Transformed", transformed);
+    }
+  }, [Apiinvoices]);
+
+  // ================== CONDITIONAL RENDERING ================== //
+  if (!company_status || !invoiceData) {
     return <DashboardLoading />;
   }
+  const { statistics, invoices } = invoiceData;
+  const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
 
   return (
     <>
@@ -127,7 +150,7 @@ const Dashboard = () => {
               ))}
             </div>
 
-            {/* Chart */}
+            {/* Charts */}
             <div className="hidden md:block space-y-10">
               <div className="w-full h-fit">
                 <DashboardChart
@@ -168,7 +191,8 @@ const Dashboard = () => {
 
         <SectionContainer heading="Recent invoice" href="/accounting/invoice">
           <CustomTable
-            data={dashboardInvoiceTableData}
+            // data={dashboardInvoiceTableData}
+            data={invoiceList}
             fields={invoiceTableFields}
             tableHeadClassName="h-[76px]"
             tableBodyCellSx={{
@@ -179,6 +203,7 @@ const Dashboard = () => {
             tableHeadCellSx={{ fontSize: "1rem" }}
           />
         </SectionContainer>
+
         <SectionContainer heading="Recent Complains" href="/tasks/complaints">
           <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array(6)
