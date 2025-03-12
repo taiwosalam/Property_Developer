@@ -27,13 +27,13 @@ export const profile_actions: (
   {
     label: "Terms & Conditions",
     link: {
-      href: "",
+      href: "https://ourproperty.com.ng/resources/privacy-policy",
     },
   },
   {
     label: "Frequently Asked Questions",
     link: {
-      href: "",
+      href: "https://ourproperty.com.ng/resources/faq",
     },
   },
   {

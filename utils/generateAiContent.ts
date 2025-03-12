@@ -12,7 +12,8 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY as s
 export async function generateTextContent(aiFeature: string, userInput: string): Promise<string> {
   try {
     // Initialize the generative model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
     let prompt = "";
 
