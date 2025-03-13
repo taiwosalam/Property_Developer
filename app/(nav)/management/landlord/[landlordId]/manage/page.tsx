@@ -45,6 +45,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     ? transformIndividualLandlordAPIResponse(data)
     : null;
 
+
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -219,7 +220,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 }),
               family_type: landlordData.others.family_type,
               landlord_type: landlordData.owner_type,
-              xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
+              // xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
             }}
           />
         )}

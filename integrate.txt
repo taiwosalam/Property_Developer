@@ -41,7 +41,37 @@
 
 
 
-
+  // const transformedLandlords = landlords.map((l) => ({
+  //   ...l,
+  //   full_name: (
+  //     <p className="flex items-center whitespace-nowrap">
+  //       <span>{l.name}</span>
+  //       {l.badge_color && <BadgeIcon color={l.badge_color} />}
+  //     </p>
+  //   ),
+  //   user_tag: <UserTag type={l.user_tag} />,
+  //   "manage/chat": (
+  //     <div className="flex gap-x-[4%] items-center w-full">
+  //       <Button
+  //         href={`/management/landlord/${l.id}/manage`}
+  //         size="sm_medium"
+  //         className="px-8 py-2 mx-auto"
+  //       >
+  //         Manage
+  //       </Button>
+  //       {l.user_tag === "mobile" && (
+  //         <Button
+  //           variant="sky_blue"
+  //           size="sm_medium"
+  //           className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
+  //         // onClick={() => onClickChat(l)}
+  //         >
+  //           Chat
+  //         </Button>
+  //       )}
+  //     </div>
+  //   ),
+  // }));
 
 
 

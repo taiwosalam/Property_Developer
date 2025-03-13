@@ -226,14 +226,14 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   />
                 </div>
               </div>
-              <Button
+              {/* <Button
                 href="/reviews"
                 variant="sky_blue"
                 size="xs_medium"
                 className="py-2 px-7 dark:bg-darkBrand-primary"
               >
                 see reviews
-              </Button>
+              </Button> */}
             </div>
             {pageUsersMsg.length === 0 ? (
               <NoMessage loading={loadingUsers} />

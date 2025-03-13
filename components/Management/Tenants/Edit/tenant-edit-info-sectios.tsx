@@ -894,7 +894,7 @@ export const TenantEditAvatarInfoSection = () => {
           type="submit"
           disabled={reqLoading}
         >
-          {reqLoading ? "updating..." : "save"}
+          {reqLoading ? "updating..." : "update"}
         </Button>
       </LandlordTenantInfoEditSection>
     </AuthForm>
