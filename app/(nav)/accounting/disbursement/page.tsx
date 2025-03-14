@@ -84,7 +84,7 @@ const Disbursement = () => {
       ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
       : undefined;
 
-    const toDate = appliedFilters.endDate
+    const toDate = appliedFilters.endDate 
       ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
       : undefined;
 

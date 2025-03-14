@@ -21,6 +21,7 @@ interface PropertyDetails {
   local_govt: string;
   city: string;
   full_address: string;
+  inventory?: any;
   branch_name?: string;
   branch_id?: string;
   account_officer?: string;

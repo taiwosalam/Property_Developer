@@ -24,6 +24,7 @@ export const transformPropertyData = (
       property_title: data.title,
       video_link: data.video_link,
       state: data.state,
+      inventory: "--- ---",
       city: data.city_area,
       local_govt: data.local_government,
       full_address: data.full_address,
