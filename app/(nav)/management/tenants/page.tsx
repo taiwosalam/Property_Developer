@@ -1,7 +1,7 @@
 "use client";
 
 // Imports
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "@/components/Form/Button/button";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -129,6 +129,13 @@ const Tenants = () => {
     setConfig({
       params: { ...config.params, page },
     });
+    // Clear tenants in grid view to ensure fresh data on pagination
+    if (view === "grid") {
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+      }));
+    }
   };
 
   const handleSearch = async (query: string) =>
@@ -151,19 +158,67 @@ const Tenants = () => {
     refetch,
   } = useFetch<TenantApiResponse>("tenants", config);
 
+  // useEffect(() => {
+  //   if (apiData) {
+  //     setPageData((x) => ({
+  //       ...x,
+  //       ...transformTenantApiResponse(apiData),
+  //     }));
+  //   }
+  // }, [apiData]);
+
+  // Handle view change with reset and silent refetch
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    refetch({ silent: true });
+  }, [view]);
+
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
-        ...x,
-        ...transformTenantApiResponse(apiData),
-      }));
+      const transformedData = transformTenantApiResponse(apiData);
+      setPageData((prevData) => {
+        const updatedTenants =
+          view === "grid" || transformedData.current_page === 1
+            ? transformedData.tenants
+            : [...prevData.tenants, ...transformedData.tenants];
+        return { ...transformedData, tenants: updatedTenants };
+      });
     }
-  }, [apiData]);
+  }, [apiData, view]);
 
   // Listen for the refetch event
   useRefetchOnEvent("refetchTenants", () => refetch({ silent: true }));
 
-  const transformedTenants = tenants.map((t) => ({
+  // --- Infinite Scroll Logic ---
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < total_pages &&
+          !silentLoading &&
+          view !== "grid" // Only trigger in list view
+        ) {
+          handlePageChange(current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, total_pages, silentLoading, view]
+  );
+
+  const transformedTenants = tenants.map((t, index) => ({
     ...t,
     full_name: (
       <p className="flex items-center whitespace-nowrap">
@@ -186,13 +241,19 @@ const Tenants = () => {
             variant="sky_blue"
             size="sm_medium"
             className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-          // onClick={() => onClickChat(t)}
+            // onClick={() => onClickChat(t)}
           >
             Chat
           </Button>
         )}
       </div>
     ),
+    ref:
+      index === tenants.length - 1 &&
+      current_page < total_pages &&
+      view !== "grid"
+        ? lastRowRef
+        : undefined,
   }));
 
   if (loading)
@@ -270,7 +331,7 @@ const Tenants = () => {
           },
           {
             radio: true,
-            label: "Tenant Type",
+            label: "Tenant/Occupants Type",
             value: [
               { label: "Mobile Tenant", value: "mobile" },
               { label: "Web Tenant", value: "web" },
@@ -279,11 +340,11 @@ const Tenants = () => {
           },
           ...(branchOptions.length > 0
             ? [
-              {
-                label: "Branch",
-                value: branchOptions,
-              },
-            ]
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
             : []),
         ]}
       />
@@ -350,17 +411,24 @@ const Tenants = () => {
               </AutoResizingGrid>
             ) : (
               <>
-                {silentLoading ? (
+                {/* {silentLoading ? (
                   <TableLoading />
                 ) : (
-                  <CustomTable
-                    displayTableHead={false}
-                    fields={tenantTableFields}
-                    data={transformedTenants}
-                    tableBodyCellSx={{ color: "#3F4247" }}
-                  />
+                  <> */}
+                <CustomTable
+                  displayTableHead={false}
+                  fields={tenantTableFields}
+                  data={transformedTenants}
+                  tableBodyCellSx={{ color: "#3F4247" }}
+                />
+                {silentLoading && current_page > 1 && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="loader" />
+                  </div>
                 )}
               </>
+              //   )}
+              // </>
             )}
 
             <Pagination

@@ -64,14 +64,14 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                   />
                 </div>
               </div>
-              <Button
+              {/* <Button
                 href="/messages"
                 variant="sky_blue"
                 size="xs_medium"
                 className="py-2 px-7"
               >
                 see messages
-              </Button>
+              </Button> */}
             </div>
             <div className="custom-flex-col relative z-[1] pb-4">
               {message_card_data.map((message, idx) => (

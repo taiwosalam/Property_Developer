@@ -70,6 +70,7 @@ export interface IndividualLandlordAPIResponse {
     owner_type: string;
     state: string;
     local_government: string;
+    city: string;
     address: string;
     note: {
       last_updated_at: Date | null;
@@ -134,7 +135,7 @@ export const transformIndividualLandlordAPIResponse = ({
     user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
     contact_address: {
       address: data.address,
-      city: "",
+      city: data.city,
       state: data.state,
       local_govt: data.local_government,
     },

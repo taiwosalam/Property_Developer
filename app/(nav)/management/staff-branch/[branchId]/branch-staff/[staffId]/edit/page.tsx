@@ -19,7 +19,11 @@ import useBranchStore from "@/store/branch-store";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { StaffAPIResponse } from "../type";
-import { staffData, transformStaffAPIResponse, yesNoToActiveInactive } from "../data";
+import {
+  staffData,
+  transformStaffAPIResponse,
+  yesNoToActiveInactive,
+} from "../data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -29,7 +33,7 @@ import { useRouter } from "next/navigation";
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
   const { branch } = useBranchStore();
-  const router = useRouter()
+  const router = useRouter();
 
   const [pageData, setPageData] = useState<StaffProfileProps>(staffData);
   const {
@@ -44,31 +48,29 @@ const EditStaffProfile = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData(
-        {
-          id: apiData.data.id,
-          branch_id: branchId as string,
-          personal_title: apiData.data.title,
-          real_estate_title: apiData.data.real_estate_title,
-          full_name: apiData.data.name,
-          email: apiData.data.email,
-          phone_number: apiData.data.phone,
-          gender: apiData.data.gender,
-          position: apiData.data.position,
-          picture: apiData.data.picture,
-          about: apiData.data.about_staff,
-          status: yesNoToActiveInactive(apiData.data.status),
-        }
-      )
+      setPageData({
+        id: apiData.data.id,
+        branch_id: branchId as string,
+        personal_title: apiData.data.title,
+        real_estate_title: apiData.data.real_estate_title,
+        full_name: apiData.data.name,
+        email: apiData.data.email,
+        phone_number: apiData.data.phone,
+        gender: apiData.data.gender,
+        position: apiData.data.position,
+        picture: apiData.data.picture,
+        about: apiData.data.about_staff,
+        status: yesNoToActiveInactive(apiData.data.status),
+      });
     }
   }, [apiData, branchId]);
 
   const handleDeleteStaffAccount = () => {
-    try{
-    }catch(error){
+    try {
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   // console.log("data -", apiData);
   // console.log("page -", pageData);
@@ -108,15 +110,15 @@ const EditStaffProfile = () => {
             </ModalTrigger>
             <ModalContent>
               <DeleteAccountModal
-               action={async () => await deleteStaff(pageData.id)}
-               afterAction={() => router.push("/management/staff-branch")}
-               />
+                action={async () => await deleteStaff(pageData.id)}
+                afterAction={() => router.push("/management/staff-branch")}
+              />
             </ModalContent>
           </Modal>
 
-          <Button 
-            size="base_medium" 
-            className="py-2 px-6" 
+          <Button
+            size="base_medium"
+            className="py-2 px-6"
             onClick={() => router.back()}
           >
             save

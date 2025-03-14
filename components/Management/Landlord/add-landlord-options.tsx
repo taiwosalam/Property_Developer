@@ -9,7 +9,7 @@ type AddLandlordModalOptions =
   | 'add-multiple-owners'
   | 'invite-owner'
   | 'invite-multiple-owners'
-  | 'add-landlord-with-id';
+  | 'add-landlord-with-email';
 
 interface AddLandlordOptionsProps {
   showForm: React.Dispatch<React.SetStateAction<AddLandlordModalOptions>>;
@@ -51,9 +51,9 @@ const AddLandlordOptions: React.FC<AddLandlordOptionsProps> = ({
         <Button
           size='base_medium'
           className='py-2 px-8'
-          onClick={() => showForm('add-landlord-with-id')}
+          onClick={() => showForm('add-landlord-with-email')}
         >
-          Add with ID
+          Add with Email
         </Button>
       </div>
     </>

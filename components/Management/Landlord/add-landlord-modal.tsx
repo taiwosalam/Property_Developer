@@ -26,7 +26,7 @@ type AddLandlordModalOptions =
   | 'add-multiple-owners'
   | 'invite-owner'
   | 'invite-multiple-owners'
-  | 'add-landlord-with-id';
+  | 'add-landlord-with-email';
 
 
 const AddLandlordModal = () => {
@@ -143,8 +143,8 @@ const AddLandlordModal = () => {
         />
       ),
     },
-    "add-landlord-with-id": {
-      heading: "Add Landlord/Landlady with ID",
+    "add-landlord-with-email": {
+      heading: "Add Landlord/Landlady with Email",
       content: <InvitationForm method="id" submitAction={async () => {}} />,
     },
   };

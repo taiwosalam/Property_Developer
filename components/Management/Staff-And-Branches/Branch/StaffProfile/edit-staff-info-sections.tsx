@@ -128,16 +128,11 @@ export const StaffEditProfileInfoSection = () => {
 
 export const StaffEditMoveToAnotherBranchSection = () => {
   const { data: staff } = useStaffEditContext();
-  const [branchId, setBranchId] = useState("");
+  // const [branchId, setBranchId] = useState("");
   const [moving, setMoving] = useState(false);
   const name = staff?.full_name;
   const position = staff?.position;
-
-  useEffect(() => {
-    if (staff) {
-      setBranchId(staff.branch_id)
-    }
-  }, [staff, branchId])
+  const branchId = Number(staff?.branch_id)
 
   const {
     data: branchesData,
@@ -152,12 +147,10 @@ export const StaffEditMoveToAnotherBranchSection = () => {
   } = useFetch<any>(`/staffs/${branchId}`);
   const staffs = staffsData?.data.staff;
 
-  // console.log("id", staff?.branch_id);
-  // console.log("staff data", staffsData);
 
   const branchOptions =
     branchesData?.data
-      .filter((branch) => branch.id !== branchId)
+      .filter((branch) => Number(branch.id) !== branchId)
       .map((branch) => ({
         value: branch.id,
         label: branch.branch_name,

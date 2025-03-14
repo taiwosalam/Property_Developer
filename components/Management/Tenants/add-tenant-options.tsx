@@ -40,9 +40,9 @@ const AddTenantOptions: React.FC<AddTenantOptionsProps> = ({ showForm }) => {
         <Button
           size="base_medium"
           className="py-2 px-8"
-          onClick={() => showForm("add-user-with-id")}
+          onClick={() => showForm("add-user-with-email")}
         >
-          Add User with ID
+          Add User with Email
         </Button>
       </div>
     </>

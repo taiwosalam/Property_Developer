@@ -76,7 +76,7 @@ const Landlord = () => {
       const data = await getLandlordsHelpInfo();
       //
       setFetchedLandlordHelpInfo(data.res[0]);
-    } catch (error) { }
+    } catch (error) {}
   }, []);
 
   const { data: branchesData } =
@@ -89,6 +89,17 @@ const Landlord = () => {
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
+
+  // useEffect(() => {
+  //   setConfig((prevConfig) => ({
+  //     ...prevConfig,
+  //     params: { ...prevConfig.params, page: 1 },
+  //   }));
+  //   setPageData((prevData) => {
+  //     // clear previous data
+  //     return { ...prevData, landlords: [], current_page: 1 };
+  //   });
+  // }, [view]);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -170,18 +181,34 @@ const Landlord = () => {
     error,
     refetch,
   } = useFetch<LandlordApiResponse>("landlords", config);
+  useRefetchOnEvent("refetchLandlords", () => refetch({ silent: true }));
+
+  // IF VIEW CHANGE., REFETCH DATA FROM PAGE 1
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
+    window.dispatchEvent(new Event("refetchLandlords"));
+  }, [view]);
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
-        ...x,
-        ...transformLandlordApiResponse(apiData),
-      }));
+      const transformedData = transformLandlordApiResponse(apiData);
+      setPageData((prevData) => {
+        const updatedLandlords =
+          view === "grid" || transformedData.current_page === 1
+            ? transformedData.landlords
+            : [...prevData.landlords, ...transformedData.landlords];
+        return { ...transformedData, landlords: updatedLandlords };
+      });
     }
-  }, [apiData]);
-
-  // Listen for the refetch event
-  useRefetchOnEvent("refetchLandlords", () => refetch({ silent: true }));
+  }, [apiData, view]);
 
   // --- Infinite Scroll Logic ---
   // Create an observer to detect when the last row is visible
@@ -204,39 +231,6 @@ const Landlord = () => {
     },
     [current_page, total_pages, silentLoading]
   );
-
-  // const transformedLandlords = landlords.map((l) => ({
-  //   ...l,
-  //   full_name: (
-  //     <p className="flex items-center whitespace-nowrap">
-  //       <span>{l.name}</span>
-  //       {l.badge_color && <BadgeIcon color={l.badge_color} />}
-  //     </p>
-  //   ),
-  //   user_tag: <UserTag type={l.user_tag} />,
-  //   "manage/chat": (
-  //     <div className="flex gap-x-[4%] items-center w-full">
-  //       <Button
-  //         href={`/management/landlord/${l.id}/manage`}
-  //         size="sm_medium"
-  //         className="px-8 py-2 mx-auto"
-  //       >
-  //         Manage
-  //       </Button>
-  //       {l.user_tag === "mobile" && (
-  //         <Button
-  //           variant="sky_blue"
-  //           size="sm_medium"
-  //           className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-  //         // onClick={() => onClickChat(l)}
-  //         >
-  //           Chat
-  //         </Button>
-  //       )}
-  //     </div>
-  //   ),
-  // }));
-
 
   // Transform landlord data to table rows.
   // Attach the lastRowRef to the last row if there are more pages.
@@ -358,7 +352,7 @@ const Landlord = () => {
           },
           {
             radio: true,
-            label: "Landlord Type",
+            label: "Landlord/Landlady Type",
             value: [
               { label: "Mobile Landlord", value: "mobile" },
               { label: "Web Landlord", value: "web" },
@@ -367,11 +361,11 @@ const Landlord = () => {
           },
           ...(branchOptions.length > 0
             ? [
-              {
-                label: "Branch",
-                value: branchOptions,
-              },
-            ]
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
             : []),
         ]}
       />
@@ -447,7 +441,6 @@ const Landlord = () => {
                 {/* )} */}
                 {silentLoading && current_page > 1 && (
                   <div className="flex items-center justify-center py-4">
-                    {/* Replace this div with your spinner component if available */}
                     <div className="loader" />
                   </div>
                 )}
