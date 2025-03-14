@@ -108,6 +108,7 @@ export interface PropertyDataObject {
   full_address: string;
   category: string;
   description: string;
+  inventory: any;
   property_type: string;
   fee_period: string;
   updated_at: Date;
@@ -123,12 +124,15 @@ export interface PropertyDataObject {
     id: string;
     branch_name: string;
   } | null;
-  staff: {
-    id: string;
-    staff_role: string;
-    user: any;
-    estate_title: string; 
-  }[] | null;
+  staff:
+    | {
+        id: string;
+        staff_role: string;
+        user: any;
+        estate_title: string;
+        title: string;
+      }[]
+    | null;
   // staff: string[]; //check after adding staff
   agency_fee: number;
   management_fee: number;
@@ -202,9 +206,17 @@ export const transformPropertiesApiResponse = (
 
       const defaultImage =
         p.images && p.images.length > 0
-          ? p.images.find((image) => image.is_default === 1)?.path || p.images[0].path
+          ? p.images.find((image) => image.is_default === 1)?.path ||
+            p.images[0].path
           : undefined;
 
+      // Extract the first account officer from the staff array
+      const accountOfficerStaff = p?.staff?.find(
+        (staffMember) => staffMember.staff_role === "account officer"
+      );
+      const accountOfficer = accountOfficerStaff
+        ? `${accountOfficerStaff.title} ${accountOfficerStaff.user.name}`
+        : "";
       return {
         id: p.id,
         images: p.images.map((image) => image.path) || [],
@@ -222,7 +234,7 @@ export const transformPropertiesApiResponse = (
         total_income: (totalReturns * feePercentage) / 100,
         mobile_tenants: 0,
         web_tenants: 0,
-        accountOfficer: "",
+        accountOfficer: accountOfficer,
         owing_units: 0,
         available_units: 0,
         isClickable: true,

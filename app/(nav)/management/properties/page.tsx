@@ -55,6 +55,8 @@ const Properties = () => {
     properties,
   } = pageData;
 
+  // console.log("properties", properties)
+
   const isFilterApplied = useCallback(() => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
     return (

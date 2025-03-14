@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 export interface PropertyDetailsSettingsOthersCardProps {

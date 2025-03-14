@@ -17,7 +17,7 @@ export const transformPropertyData = (
   const { data } = response;
   if (!data) return null;
 
-  console.log("res", response)
+  // console.log("res", response)
 
   return {
     property_id: data.id,
@@ -31,6 +31,7 @@ export const transformPropertyData = (
       full_address: data.full_address,
       category: data.category as Categories,
       description: data.description,
+      inventory: data.inventory,
       // images: data.images.map((img) => ({ path: img.path, id: img.id })),
       images: data.images
         .sort((a, b) => (a.is_default === 1 ? -1 : b.is_default === 1 ? 1 : 0))
