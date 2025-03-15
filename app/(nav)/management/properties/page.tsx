@@ -245,12 +245,9 @@ const Properties = () => {
                   <br />
                   <br />
                   Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  disappear. 
+                  <br />
+                  To Learn more about this page later, click your profile picture at the top right of the dashboard and select Assistance & Support. 
                   <br />
                   <br />
                   Property creation involves several segments: property
