@@ -26,6 +26,7 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import useStaffRoles from "@/hooks/getStaffs";
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -44,10 +45,19 @@ interface InventoryApiData {
 const Inventory = () => {
   const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const {
+    getManagers,
+    getStaffs,
+    getAccountOfficers,
+    loading: loadingStaffs,
+    error: staffsError,
+  } = useStaffRoles();
   const [selectedView, setSelectedView] = useState<string>(
     selectedOptions.view || "grid"
   );
-  // const { branches } = getBranches();
+
+  const accountOfficers = getAccountOfficers();
+  // console.log("officers", accountOfficers);
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
 
@@ -67,6 +77,12 @@ const Inventory = () => {
     branchesData?.data.map((branch) => ({
       label: branch.branch_name,
       value: branch.id,
+    })) || [];
+
+  const accountOfficersOptions =
+    accountOfficers?.map((o) => ({
+      label: o.name,
+      value: `${o.id}`,
     })) || [];
 
   const [state, setState] = useState(initialState);
@@ -172,7 +188,6 @@ const Inventory = () => {
     }
   }, [apiData, error]);
 
-
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
@@ -187,6 +202,9 @@ const Inventory = () => {
     };
     if (branchIdsArray.length > 0) {
       queryParams.branch_id = branchIdsArray.join(",");
+    }
+    if (accountOfficerArray.length > 0) {
+      queryParams.accountOfficer_id = accountOfficerArray.join(",");
     }
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
@@ -207,22 +225,6 @@ const Inventory = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  const inventoryFiltersWithDropdown = [
-    {
-      label: "Account Officer",
-      value: [
-        { label: "Account Officer 1", value: "account_officer1" },
-        { label: "Account Officer 2", value: "account_officer2" },
-        { label: "Account Officer 3", value: "account_officer3" },
-      ],
-    },
-    {
-      label: "Branch",
-      value: branchOptions,
-    },
-  ];
-
 
   return (
     <div className="custom-flex-col gap-9">
@@ -257,7 +259,24 @@ const Inventory = () => {
         searchInputPlaceholder="Search inventory"
         handleFilterApply={handleFilterApply}
         isDateTrue
-        filterOptionsMenu={inventoryFiltersWithDropdown}
+        filterOptionsMenu={[
+          ...(accountOfficersOptions.length > 0
+            ? [
+                {
+                  label: "Account Officer",
+                  value: accountOfficersOptions,
+                },
+              ]
+            : []),
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
+        ]}
         appliedFilters={appliedFilters}
         handleSearch={handleSearch}
         onSort={handleSort}
@@ -277,12 +296,12 @@ const Inventory = () => {
                   This section consists of records of all items in the property
                   before renting it out to tenants. These records should be
                   created before creating the property itself. You can create
-                  records by clicking on the &quot;Create New&quot; button. To
-                  learn more about this page later, you can click on this icon.{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  records by clicking on the &quot;Create New&quot; button.
+                  <br />
+                  <br />
+                  To Learn more about this page later, click your profile
+                  picture at the top right of the dashboard and select
+                  Assistance & Support.
                 </p>
               }
             />

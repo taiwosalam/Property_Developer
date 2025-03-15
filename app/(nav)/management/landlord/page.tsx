@@ -90,17 +90,6 @@ const Landlord = () => {
     setView(storedView);
   }, [storedView]);
 
-  // useEffect(() => {
-  //   setConfig((prevConfig) => ({
-  //     ...prevConfig,
-  //     params: { ...prevConfig.params, page: 1 },
-  //   }));
-  //   setPageData((prevData) => {
-  //     // clear previous data
-  //     return { ...prevData, landlords: [], current_page: 1 };
-  //   });
-  // }, [view]);
-
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -383,15 +372,12 @@ const Landlord = () => {
                   You don&apos;t have any landlord or landlady profiles yet. You
                   can easily create one by clicking on the &quot;Create New
                   Landlord&quot; button and add them using their profile ID.
-                  After adding profiles to this page, this guide will disappear.{" "}
+                  After adding profiles to this page, this guide will disappear.
                   <br />
                   <br />
-                  To learn more about this page in the future,you can click on
-                  this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  To learn more about this page later, click your profile
+                  picture at the top right of the dashboard and select
+                  Assistance & Support.
                   <br />
                   <br />
                   Before creating or managing a rental property, you need to

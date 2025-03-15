@@ -86,7 +86,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     resetKey,
   } = state;
 
+  // console.log("details", propertyDetails)
+
+  // const selectedBranchId = selectedBranch.value || propertyDetails?.branch_id;
   const selectedBranchId = selectedBranch.value;
+
 
   const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
@@ -211,7 +215,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       icon: landlord.picture,
     })) || [];
 
-  console.log("l options", propertyDetails)
+  // console.log("l options", propertyDetails)
 
   const officerOptions =
     accountOfficerData?.data.map((officer: any) => ({
@@ -518,7 +522,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     editMode
                       ? inventoryOptions.find(
                           (option) =>
-                            option.value === propertyDetails?.inventory.id
+                            option.value === propertyDetails?.inventory?.id
                         )
                       : undefined
                   }
@@ -642,7 +646,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 <Select
                   id="who_to_charge_new_tenant"
                   options={["landlord", "tenants", "both", "none"]}
-                  label="Who to Charge (New Tenant)"
+                  label="Who to Charge (New Rent)"
                   isSearchable={false}
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
@@ -657,7 +661,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 <Select
                   id="who_to_charge_renew_tenant"
                   options={["landlord", "tenants", "both", "none"]}
-                  label="Who to Charge (Renewal Tenant)"
+                  label="Who to Charge (Renewal Rent)"
                   isSearchable={false}
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
