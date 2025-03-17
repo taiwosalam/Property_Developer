@@ -36,6 +36,8 @@ export interface ModalContentProps
   extends React.HTMLAttributes<HTMLDivElement> {
   // React nodes to be rendered inside the ModalContent
   children: React.ReactNode;
+  // Optional boolean to disable clicks outside the modal
+  disableOutsideClick?: boolean;
 }
 
 export type ModalPresetType = keyof typeof modal_presets;
@@ -45,4 +47,5 @@ export interface ModalPresetProps {
   type: ModalPresetType;
   children: React.ReactNode;
   style?: React.CSSProperties;
+  back?: () => void;
 }

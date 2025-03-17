@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 const Settings = () => {
-  redirect(`/settings/profile`);
+  redirect(`/settings/company`);
 };
 
 export default Settings;

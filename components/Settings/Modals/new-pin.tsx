@@ -14,7 +14,7 @@ import { AuthForm, AuthNewPassword } from "@/components/Auth/auth-components";
 import useFetch from "@/hooks/useFetch";
 import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 import { useWalletStore } from "@/store/wallet-store";
-import { createNewWalletPin } from "@/app/(nav)/settings/profile/data";
+import { createNewWalletPin } from "@/app/(nav)/settings/company/data";
 import { toast } from "sonner";
 import { ValidationErrors } from "@/utils/types";
 const NewPinModal: React.FC<DefaultSettingsModalProps> = ({

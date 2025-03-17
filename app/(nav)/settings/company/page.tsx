@@ -34,7 +34,7 @@ import {
   transformFormCompanyData,
   transformProfileApiResponse,
   updateCompanyDetails,
-  userData
+  userData,
 } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
@@ -45,10 +45,10 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { toast } from "sonner";
 import WebsitePages from "@/components/Settings/website-pages";
 import WebsiteTypography from "@/components/Settings/website-custom-typography";
-
+import Button from "@/components/Form/Button/button";
 
 const Profile = () => {
-  const company_id = usePersonalInfoStore((state) => state.company_id)
+  const company_id = usePersonalInfoStore((state) => state.company_id);
   const [requestLoading, setRequestLoading] = useState(false);
 
   const [checkedStates, setCheckedStates] = useState<{
@@ -87,7 +87,8 @@ const Profile = () => {
 
   useEffect(() => {
     if (apiData) {
-      const transformedData: ProfileSettingsPageState = transformProfileApiResponse(apiData as CompanyDataApiResponse);
+      const transformedData: ProfileSettingsPageState =
+        transformProfileApiResponse(apiData as CompanyDataApiResponse);
       setState(transformedData);
     }
   }, [apiData]);
@@ -125,7 +126,7 @@ const Profile = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full animate-spin"></div>
       </div>
-    )
+    );
   }
 
   if (isNetworkError) return <NetworkError />;
@@ -138,13 +139,13 @@ const Profile = () => {
     console.log(data);
     try {
       const status = await updateCompanyDetails(data, company_id as string);
-      console.log(status)
+      console.log(status);
       if (status) {
-        toast.success("Company Details Updated Successfully")
+        toast.success("Company Details Updated Successfully");
         window.dispatchEvent(new Event("refetchProfile"));
       }
     } catch (err) {
-      toast.error("Failed to Update Company Details")
+      toast.error("Failed to Update Company Details");
     } finally {
       setRequestLoading(false);
     }
@@ -175,12 +176,23 @@ const Profile = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                <Select
+                  <Select
                     id="director_experience"
                     label="years in business"
                     // defaultValue={pageData?.director_experience}
                     placeholder="Select Option"
-                    options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
+                    options={[
+                      "1+",
+                      "2+",
+                      "3+",
+                      "4+",
+                      "5+",
+                      "6+",
+                      "7+",
+                      "8+",
+                      "9+",
+                      "10+",
+                    ]}
                     hiddenInputClassName="setup-f"
                   />
                 </div>
@@ -206,7 +218,7 @@ const Profile = () => {
                   id="cac_date"
                   label="date of registration"
                   value={dayjs(companyData.date_of_registration)}
-                  onChange={() => { }}
+                  onChange={() => {}}
                   disabled
                 />
                 <Input
@@ -265,10 +277,13 @@ const Profile = () => {
                     settingsPage={true}
                     defaultValue={companyData.membership_certificate}
                   />
-                  {companyData.membership_certificate &&
+                  {companyData.membership_certificate && (
                     <div className="flex pt-2 sm:pt-7">
-                      <SettingsVerifiedBadge status={verifications.membership_status} />
-                    </div>}
+                      <SettingsVerifiedBadge
+                        status={verifications.membership_status}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -334,33 +349,39 @@ const Profile = () => {
                   hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                   settingsPage={true}
                   defaultValue={companyData.utility_document}
-                // onChange={handleUploadUtility}
+                  // onChange={handleUploadUtility}
                 />
-                {companyData.utility_document &&
+                {companyData.utility_document && (
                   <div className="flex pt-2 sm:pt-7">
-                    <SettingsVerifiedBadge status={verifications.utility_status} />
-                  </div>}
+                    <SettingsVerifiedBadge
+                      status={verifications.utility_status}
+                    />
+                  </div>
+                )}
                 {uploadingUtility && (
                   <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
                     Verify Document
                   </button>
                 )}
+          
               </div>
             </div>
             <CompanyMobileNumber
-              // phoneNumbers={JSON.parse(state.companyData.phone_number)}
-              phoneNumbers={safeParse<string[]>(state.companyData.phone_number, [])}
+              phoneNumbers={safeParse<string[]>(
+                state.companyData.phone_number as string,
+                []
+              )}
             />
             <CompanyLogo
               lightLogo={state.companyData.company_logo}
               darkLogo={state.companyData.dark_logo}
             />
           </div>
-          <SettingsUpdateButton
-            submit
-            action={handleSubmit as any}
-            loading={requestLoading}
-          />
+          <div className="flex self-end mt-4 justify-end w-full">
+            <Button disabled={requestLoading} type="submit" className="px-8 py-2" size="base_medium">
+              {requestLoading ? "Please wait" : "Update"}
+            </Button>
+          </div>
         </AuthForm>
       </SettingsSection>
       <CompanySocials companyData={companyData} />

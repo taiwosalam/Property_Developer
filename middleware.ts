@@ -1,70 +1,85 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { roleBasedRoutes } from './data';
-
+import { NextRequest, NextResponse } from "next/server";
+import { roleBasedRoutes } from "./data";
 
 export async function middleware(req: NextRequest) {
-  const emailVerified = req.cookies.get('emailVerified')?.value;
+  const emailVerified = req.cookies.get("emailVerified")?.value;
   const currentPath = req.nextUrl.pathname;
-  const role = req.cookies.get('role')?.value;
+  const role = req.cookies.get("role")?.value;
+  const company_status = req.cookies.get("company_status")?.value;
 
-  console.log('server role', role);
-
-   // Redirect to sign-in if role is undefined
-  //  if (!role) {
-  //   return NextResponse.redirect(new URL('/auth/sign-in', req.url));
-  // }
+  console.log("server role", role);
+  console.log("server company_status", company_status);
 
   // Public routes accessible without authentication
   const publicRoutes = [
-    '/auth/user/sign-in',
-    '/auth/sign-in',
-    '/auth/sign-up',
-    '/auth/setup',
-    '/auth/forgot-password',
-    '/management/agent-community'
+    "/auth/user/sign-in",
+    "/auth/sign-in",
+    "/auth/sign-up",
+    "/auth/setup",
+    "/auth/forgot-password",
+    "/management/agent-community",
   ];
-  
+
   if (publicRoutes.includes(currentPath)) {
     return NextResponse.next();
   }
-  
-  // Allow access to `/auth/user/sign-in` 
-  if (currentPath === '/auth/user/sign-in') {
+
+  // Allow access to `/auth/user/sign-in`
+  if (currentPath === "/auth/user/sign-in") {
     return NextResponse.next();
   }
 
   // Allow `/auth/sign-in` for directors; redirect others to `/auth/user/sign-in`
-  if (currentPath === '/auth/sign-in') {
-    if (role === 'director') return NextResponse.next();
-    return NextResponse.redirect(new URL('/auth/user/sign-in', req.url));
+  if (currentPath === "/auth/sign-in") {
+    if (role === "director") return NextResponse.next();
+    return NextResponse.redirect(new URL("/auth/user/sign-in", req.url));
+  }
+
+
+  // Define dashboard paths that should bypass the company_status check
+  const dashboardPaths = [
+    '/dashboard',
+    '/accountant/dashboard',
+    '/manager/dashboard',
+    '/staff/dashboard',
+    '/user/dashboard',
+  ];
+
+  // Company status check: if currentPath does NOT start with one of the dashboard paths,
+  // then if company_status is "pending" or "rejected", redirect to unauthorized.
+  if (
+    !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
+    (company_status === 'pending' || company_status === 'rejected')
+  ) {
+    return NextResponse.redirect(new URL('/unauthorized', req.url));
   }
 
   // Role-based route restrictions
   const allowedRoutes =
     roleBasedRoutes[role as keyof typeof roleBasedRoutes] || [];
   if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {
-    return NextResponse.redirect(new URL('/unauthorized', req.url)); 
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
   // Allow access and set headers for debugging or downstream use
   const response = NextResponse.next();
-  response.headers.set('x-authorization-status', 'authorized');
+  response.headers.set("x-authorization-status", "authorized");
   return response;
 }
 
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/wallet/:path*',
-    '/auth/:path*',
-    '/manager/:path*',
-    '/management/:path*',
-    '/tasks/:path*',
-    '/reports/:path*',
-    '/listing/:path*',
-    '/accounting/:path*',
-    '/applications/:path*',
-    '/documents/:path*',
-    '/settings/:path*',
+    "/dashboard/:path*",
+    "/wallet/:path*",
+    "/auth/:path*",
+    "/manager/:path*",
+    "/management/:path*",
+    "/tasks/:path*",
+    "/reports/:path*",
+    "/listing/:path*",
+    "/accounting/:path*",
+    "/applications/:path*",
+    "/documents/:path*",
+    "/settings/:path*",
   ],
 };

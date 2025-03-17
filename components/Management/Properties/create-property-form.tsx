@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 // Types
 import type {
@@ -7,39 +7,39 @@ import type {
   AllBranchesResponse,
   AllLandlordsResponse,
   AllInventoryResponse,
-} from './types';
-import { convertYesNoToBoolean } from '@/utils/checkFormDataForImageOrAvatar';
-import { useState, useEffect } from 'react';
-import { PlusIcon, DeleteIconX } from '@/public/icons/icons';
-import Input from '@/components/Form/Input/input';
-import Select from '@/components/Form/Select/select';
-import TextArea from '@/components/Form/TextArea/textarea';
-import { getAllStates, getCities, getLocalGovernments } from '@/utils/states';
-import { v4 as uuidv4 } from 'uuid';
-import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
-import DraggableImage from './draggable-image';
-import { propertyCategories } from '@/data';
-import { AuthForm } from '@/components/Auth/auth-components';
+} from "./types";
+import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
+import { useState, useEffect } from "react";
+import { PlusIcon, DeleteIconX } from "@/public/icons/icons";
+import Input from "@/components/Form/Input/input";
+import Select from "@/components/Form/Select/select";
+import TextArea from "@/components/Form/TextArea/textarea";
+import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
+import { v4 as uuidv4 } from "uuid";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
+import DraggableImage from "./draggable-image";
+import { propertyCategories } from "@/data";
+import { AuthForm } from "@/components/Auth/auth-components";
 import {
   getAllStaffByBranch,
   property_form_state_data,
   transformPropertyFormData,
-} from './data';
-import { currencySymbols } from '@/utils/number-formatter';
-import FlowProgress from '@/components/FlowProgress/flow-progress';
-import PropertyFormFooter from './property-form-footer.tsx';
-import { useMultipleImageUpload } from '@/hooks/useMultipleImageUpload';
-import { usePersonalInfoStore } from '@/store/personal-info-store';
-import useFetch from '@/hooks/useFetch';
-import clsx from 'clsx';
-import { useAddUnitStore } from '@/store/add-unit-store';
-import Cookies from 'js-cookie';
-import { useRole } from '@/hooks/roleContext';
-import { Modal, ModalContent, ModalTrigger } from '@/components/Modal/modal';
-import GoogleMapsModal from './google-maps';
-import { MultiSelect } from '@/components/multiselect/multi-select';
-import { Cat } from 'lucide-react';
-import SelectWithImage from '@/components/Form/Select/select-with-image';
+} from "./data";
+import { currencySymbols } from "@/utils/number-formatter";
+import FlowProgress from "@/components/FlowProgress/flow-progress";
+import PropertyFormFooter from "./property-form-footer.tsx";
+import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useFetch from "@/hooks/useFetch";
+import clsx from "clsx";
+import { useAddUnitStore } from "@/store/add-unit-store";
+import Cookies from "js-cookie";
+import { useRole } from "@/hooks/roleContext";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import GoogleMapsModal from "./google-maps";
+import { MultiSelect } from "@/components/multiselect/multi-select";
+import { Cat } from "lucide-react";
+import SelectWithImage from "@/components/Form/Select/select-with-image";
 
 const maxNumberOfImages = 6;
 
@@ -55,25 +55,25 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   onAddUnit,
 }) => {
   const [requestLoading, setRequestLoading] = useState(false);
-  const companyId = usePersonalInfoStore((state) => state.company_id) || '';
+  const companyId = usePersonalInfoStore((state) => state.company_id) || "";
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
   const { role, setRole } = useRole();
-  const isDirector = role === 'director';
-  const isAccountOfficer = role === 'account';
+  const isDirector = role === "director";
+  const isAccountOfficer = role === "account";
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
   const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
   const [selectedOfficer, setSelectedOfficer] = useState<string[]>([]);
 
-  const [lat, setLat] = useState(0)
-  const [lng, setLng] = useState(0)
-  const [coordinate, setCoordinate] = useState(propertySettings?.coordinate || '')
-
-  // console.log("coordinate ", coordinate)
+  const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
+  const [coordinate, setCoordinate] = useState(
+    propertySettings?.coordinate || ""
+  );
 
   const {
     state: selectedState,
@@ -86,17 +86,20 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     resetKey,
   } = state;
 
+  // console.log("details", propertyDetails)
+
+  // const selectedBranchId = selectedBranch.value || propertyDetails?.branch_id;
   const selectedBranchId = selectedBranch.value;
-  // console.log("staff", staffOptions)
+
 
   const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
       const newState = { ...x, ...changes };
-      if ('state' in changes) {
-        newState.lga = '';
-        newState.city = '';
-      } else if ('lga' in changes) {
-        newState.city = '';
+      if ("state" in changes) {
+        newState.lga = "";
+        newState.city = "";
+      } else if ("lga" in changes) {
+        newState.city = "";
       }
       return newState;
     });
@@ -158,9 +161,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     setState((x) => ({
       ...x,
       resetKey: x.resetKey + 1,
-      state: editMode ? propertyDetails?.state || '' : '',
-      lga: editMode ? propertyDetails?.local_govt || '' : '',
-      city: editMode ? propertyDetails?.city || '' : '',
+      state: editMode ? propertyDetails?.state || "" : "",
+      lga: editMode ? propertyDetails?.local_govt || "" : "",
+      city: editMode ? propertyDetails?.city || "" : "",
       staff: [],
     }));
     resetImages();
@@ -171,13 +174,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     data: branchesData,
     loading: branchesLoading,
     error: branchesError,
-  } = useFetch<AllBranchesResponse>('/branches/select');
+  } = useFetch<AllBranchesResponse>("/branches/select");
 
   const {
     data: landlordsData,
     loading: landlordsLoading,
     error: landlordsError,
-  } = useFetch<AllLandlordsResponse>('/landlord/select');
+  } = useFetch<AllLandlordsResponse>("/landlord/select");
 
   const {
     data: accountOfficerData,
@@ -212,6 +215,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       icon: landlord.picture,
     })) || [];
 
+  // console.log("l options", propertyDetails)
 
   const officerOptions =
     accountOfficerData?.data.map((officer: any) => ({
@@ -219,7 +223,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       label: officer.user.name,
       icon: officer.user.profile.picture,
     })) || [];
-
 
   const inventoryOptions =
     inventoryData?.data.map((inventory) => ({
@@ -250,45 +253,50 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     if (editMode && propertyDetails) {
       setState((x) => ({
         ...x,
-        state: propertyDetails.state || '',
-        lga: propertyDetails.local_govt || '',
-        city: propertyDetails.city || '',
+        state: propertyDetails.state || "",
+        lga: propertyDetails.local_govt || "",
+        city: propertyDetails.city || "",
         selectedBranch: {
-          value: propertyDetails.branch_id || '',
-          label: propertyDetails.branch_name || '',
+          value: propertyDetails.branch_id || "",
+          label: propertyDetails.branch_name || "",
         },
       }));
     }
   }, [propertyDetails, editMode]);
 
   const yesNoFields = [
-    'group_chat',
-    'rent_penalty',
-    'fee_penalty',
-    'request_call_back',
-    'book_visitors',
-    'vehicle_record',
-    'active_vat',
+    "group_chat",
+    "rent_penalty",
+    "fee_penalty",
+    "request_call_back",
+    "book_visitors",
+    "vehicle_record",
+    "active_vat",
   ];
 
   // console.log("selected", selectedStaffs)
   const handleFormSubmit = async (data: Record<string, any>) => {
     setRequestLoading(true);
     convertYesNoToBoolean(data, yesNoFields);
-    const payload = transformPropertyFormData(data, imageFiles, companyId, selectedStaffs);
+    const payload = transformPropertyFormData(
+      data,
+      imageFiles,
+      companyId,
+      selectedStaffs
+    );
     await handleSubmit(payload);
     setRequestLoading(false);
   };
 
   return (
     <FlowProgress
-      key='property-form-progress'
+      key="property-form-progress"
       steps={1}
       activeStep={0}
-      inputClassName='property-form-input'
+      inputClassName="property-form-input"
       showProgressBar={false}
       className={clsx({
-        'p-6 bg-white dark:bg-darkText-primary rounded-2xl': editMode,
+        "p-6 bg-white dark:bg-darkText-primary rounded-2xl": editMode,
       })}
     >
       <AuthForm
@@ -296,29 +304,22 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         // id={editMode ? "edit-property-form" : "create-property-form"}
         skipValidation
       >
-        <div className='max-w-[970px]'>
-          <input
-            name='property_type'
-            type='hidden'
-            value={formType}
-          />
-          <div className='mb-5 lg:mb-8'>
-            <p className='mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal'>
-              Set {formType === 'rental' ? 'property' : 'Estate/Facility'}{' '}
-              pictures for easy recognition (maximum of {maxNumberOfImages}{' '}
+        <div className="max-w-[970px]">
+          <input name="property_type" type="hidden" value={formType} />
+          <div className="mb-5 lg:mb-8">
+            <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
+              Set {formType === "rental" ? "property" : "Estate/Facility"}{" "}
+              pictures for easy recognition (maximum of {maxNumberOfImages}{" "}
               images). Please drag your preferred image and place it in the
               first position to make it the primary display.
             </p>
             <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable
-                droppableId='property-images'
-                direction='horizontal'
-              >
+              <Droppable droppableId="property-images" direction="horizontal">
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className='flex gap-4 overflow-x-auto custom-round-scrollbar overflow-y-hidden pb-2'
+                    className="flex gap-4 overflow-x-auto custom-round-scrollbar overflow-y-hidden pb-2"
                   >
                     {sortableImages.map((s) => (
                       <DraggableImage
@@ -332,20 +333,20 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     {provided.placeholder}
                     {images.length < 6 && (
                       <label
-                        htmlFor='property_pictures'
-                        className='flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-2'
+                        htmlFor="property_pictures"
+                        className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-2"
                       >
                         <PlusIcon />
-                        <span className='text-black dark:text-white text-base font-normal mt-2'>
+                        <span className="text-black dark:text-white text-base font-normal mt-2">
                           Add Pictures
                         </span>
                         <input
-                          id='property_pictures'
-                          type='file'
-                          accept='image/*'
+                          id="property_pictures"
+                          type="file"
+                          accept="image/*"
                           multiple
                           onChange={handleFileChange}
-                          className='hidden'
+                          className="hidden"
                           ref={fileInputRef}
                         />
                       </label>
@@ -355,15 +356,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               </Droppable>
             </DragDropContext>
           </div>
-          {formType === 'rental' && (
-            <div className='md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3'>
+          {formType === "rental" && (
+            <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
               <Input
-                id='video_link'
-                label='Video Link'
-                type='url'
-                className='mb-5'
-                placeholder='https://www.youtube.com/video '
-                inputClassName='bg-white rounded-[8px] md:col-span-1'
+                id="video_link"
+                label="Video Link"
+                type="url"
+                className="mb-5"
+                placeholder="https://www.youtube.com/video "
+                inputClassName="bg-white rounded-[8px] md:col-span-1"
                 defaultValue={
                   editMode ? propertyDetails?.video_link : undefined
                 }
@@ -371,83 +372,83 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </div>
           )}
           {/* Property Details */}
-          <p className='text-primary-navy dark:text-white font-bold text-lg lg:text-xl'>
-            {formType === 'rental'
-              ? 'Property Details'
-              : selectedCategory?.toLocaleLowerCase() === 'estate'
-                ? 'Estate Details'
-                : selectedCategory?.toLocaleLowerCase() === 'facility'
-                  ? 'Facility Details'
-                  : 'Estate/Facility Details'}
+          <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
+            {formType === "rental"
+              ? "Property Details"
+              : selectedCategory?.toLocaleLowerCase() === "estate"
+              ? "Estate Details"
+              : selectedCategory?.toLocaleLowerCase() === "facility"
+              ? "Facility Details"
+              : "Estate/Facility Details"}
           </p>
-          <hr className='my-4' />
-          <div className='mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg'>
+          <hr className="my-4" />
+          <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
             <Select
               options={
-                formType === 'rental'
-                  ? propertyCategories['rental property']
-                  : propertyCategories['gated estate/facility']
+                formType === "rental"
+                  ? propertyCategories["rental property"]
+                  : propertyCategories["gated estate/facility"]
               }
-              id='category'
-              label='Category'
+              id="category"
+              label="Category"
               isSearchable={false}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               required
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
               onChange={(category) => setSelectedCategory(category)}
               defaultValue={editMode ? propertyDetails?.category : undefined}
             />
             <Input
-              id='title'
+              id="title"
               label={
-                formType === 'rental'
-                  ? 'Property Title'
-                  : selectedCategory?.toLocaleLowerCase() === 'estate'
-                    ? 'Estate Name'
-                    : 'Facility Name'
+                formType === "rental"
+                  ? "Property Title"
+                  : selectedCategory?.toLocaleLowerCase() === "estate"
+                  ? "Estate Name"
+                  : "Facility Name"
               }
-              inputClassName='bg-white dark:bg-darkText-primary rounded-[8px] property-form-input'
+              inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
               required
               defaultValue={
                 editMode ? propertyDetails?.property_title : undefined
               }
             />
             <Select
-              id='state'
+              id="state"
               options={getAllStates()}
-              label='State'
+              label="State"
               value={selectedState}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               onChange={(state) => setPropertyState({ state })}
               required
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
             />
             <Select
               options={getLocalGovernments(selectedState)}
-              id='local_government'
-              label='local government'
+              id="local_government"
+              label="local government"
               value={lga}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               onChange={(lga) => setPropertyState({ lga })}
               required
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
             />
             <Select
               options={getCities(selectedState, lga)}
-              id='city_area'
-              label='City / Area'
+              id="city_area"
+              label="City / Area"
               allowCustom={true}
               value={city}
               onChange={(city) => setPropertyState({ city })}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               required
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
             />
             <Input
-              id='full_address'
-              label='Full Address'
-              inputClassName='bg-white rounded-[8px] property-form-input'
+              id="full_address"
+              label="Full Address"
+              inputClassName="bg-white rounded-[8px] property-form-input"
               required
               defaultValue={
                 editMode ? propertyDetails?.full_address : undefined
@@ -456,37 +457,37 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 
             <SelectWithImage
               options={landlordOptions}
-              id='land_lord_id'
-              label='Landlord'
-              inputContainerClassName='bg-white'
+              id="land_lord_id"
+              label="Landlord"
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               defaultValue={
                 editMode && propertyDetails?.land_lord_id
                   ? landlordOptions.find(
-                    (landlord) =>
-                      landlord.value === propertyDetails.land_lord_id
-                  )
+                      (landlord) =>
+                        landlord.value === propertyDetails.land_lord_id
+                    )
                   : undefined
               }
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
               placeholder={
                 landlordsLoading
-                  ? 'Loading landlords...'
+                  ? "Loading landlords..."
                   : landlordsError
-                    ? 'Error loading landlords'
-                    : 'Select landlord'
+                  ? "Error loading landlords"
+                  : "Select landlord"
               }
               error={landlordsError}
             />
 
             {isDirector && (
               <Select
-                id='branch_id'
+                id="branch_id"
                 required
-                label='Branch'
+                label="Branch"
                 resetKey={resetKey}
                 options={branchOptions}
-                inputContainerClassName='bg-white'
+                inputContainerClassName="bg-white"
                 onChange={(selectedBranchId) =>
                   setPropertyState({
                     selectedBranch: {
@@ -495,88 +496,82 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                         branchOptions.find(
                           (branch) =>
                             String(branch.value) === String(selectedBranchId)
-                        )?.label || '',
+                        )?.label || "",
                     },
                   })
                 }
                 value={selectedBranch}
-                hiddenInputClassName='property-form-input'
+                hiddenInputClassName="property-form-input"
                 placeholder={
                   branchesLoading
-                    ? 'Loading branches...'
+                    ? "Loading branches..."
                     : branchesError
-                      ? 'Error loading branches'
-                      : 'Select branch'
+                    ? "Error loading branches"
+                    : "Select branch"
                 }
                 error={branchesError}
               />
             )}
 
-            {formType === 'rental' && (
+            {formType === "rental" && (
               <>
                 <Select
                   options={inventoryOptions}
-                  id='inventory_id'
-                  label='Inventory'
-                  inputContainerClassName='bg-white'
+                  id="inventory_id"
+                  defaultValue={
+                    editMode
+                      ? inventoryOptions.find(
+                          (option) =>
+                            option.value === propertyDetails?.inventory?.id
+                        )
+                      : undefined
+                  }
+                  label="Inventory"
+                  inputContainerClassName="bg-white"
                   resetKey={resetKey}
-                  hiddenInputClassName='property-form-input'
+                  hiddenInputClassName="property-form-input"
                   placeholder={
                     inventoryLoading
-                      ? 'Loading inventories...'
+                      ? "Loading inventories..."
                       : inventoryError
-                        ? 'Error loading inventories'
-                        : 'Select inventory'
+                      ? "Error loading inventories"
+                      : "Select inventory"
                   }
                   error={inventoryError}
                 />
               </>
             )}
 
-            {!isAccountOfficer &&
+            {!isAccountOfficer && (
               <SelectWithImage
                 options={officerOptions}
                 // defaultValue={selectedOfficer}
                 defaultValue={
                   editMode && (propertyDetails?.officer_id ?? [])[0]
                     ? officerOptions.find(
-                      (staff) => String(staff.value) === String((propertyDetails?.officer_id ?? [])[0])
-                    ) || { value: '', label: '', icon: '' }
+                        (staff) =>
+                          String(staff.value) ===
+                          String((propertyDetails?.officer_id ?? [])[0])
+                      ) || { value: "", label: "", icon: "" }
                     : undefined
                 }
-                id='account_officer_id'
-                label='Account Officer'
-                inputContainerClassName='bg-white'
+                id="account_officer_id"
+                label="Account Officer"
+                inputContainerClassName="bg-white"
                 resetKey={resetKey}
-                hiddenInputClassName='property-form-input'
+                hiddenInputClassName="property-form-input"
               />
-            }
-            <div className='bg-transparent flex flex-col gap-2 self-end'>
-              <label className='text-text-label dark:text-darkText-2'>Staff</label>
-              {/* <MultiSelect
-                options={staffOption}
-                onValueChange={setSelectedStaffs}
-                defaultValue={
-                  editMode && propertyDetails?.staff_id
-                    ? staffOption.find(
-                      (staff) =>
-                        String(staff.value) === String(propertyDetails.staff_id)
-                    )?.label || ''
-                    : undefined
-                }
-                // defaultValue={selectedFrameworks}
-                placeholder="Select staffs"
-                variant="default"
-                // animation={2}
-                maxCount={1}
-                className="bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
-              /> */}
+            )}
+            <div className="bg-transparent flex flex-col gap-2 self-end">
+              <label className="text-text-label dark:text-darkText-2">
+                Staff
+              </label>
               <MultiSelect
                 options={staffOption}
                 onValueChange={setSelectedStaffs}
                 defaultValue={
                   editMode && propertyDetails?.staff_id
-                    ? [String(propertyDetails.staff_id)]
+                    ? propertyDetails.staff_id
                     : []
                 }
                 placeholder="Select staffs"
@@ -584,238 +579,240 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 maxCount={1}
                 className="bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
               />
-
             </div>
             <TextArea
-              id='description'
+              id="description"
               label={
-                formType === 'rental'
-                  ? 'Property Description'
-                  : 'Estate/Facility Description'
+                formType === "rental"
+                  ? "Property Description"
+                  : "Estate/Facility Description"
               }
-              className='md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent'
-              placeholder='Write here'
+              className="md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent"
+              placeholder="Write here"
               resetKey={resetKey}
               required
-              hiddenInputClassName='property-form-input'
-              inputSpaceClassName='bg-white dark:bg-transparent'
+              hiddenInputClassName="property-form-input"
+              inputSpaceClassName="bg-white dark:bg-transparent"
               defaultValue={editMode ? propertyDetails?.description : undefined}
             />
           </div>
           {/* Property Settings */}
 
-          <p className='text-primary-navy dark:text-white font-bold text-lg lg:text-xl'>
-            <span className='text-status-error-primary'>*</span>
-            {formType === 'rental'
-              ? 'Property Settings'
-              : selectedCategory?.toLocaleLowerCase() === 'estate'
-                ? 'Estate Settings'
-                : selectedCategory?.toLocaleLowerCase() === 'facility'
-                  ? 'Facility Settings'
-                  : 'Estate/Facility Settings'}
+          <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
+            <span className="text-status-error-primary">*</span>
+            {formType === "rental"
+              ? "Property Settings"
+              : selectedCategory?.toLocaleLowerCase() === "estate"
+              ? "Estate Settings"
+              : selectedCategory?.toLocaleLowerCase() === "facility"
+              ? "Facility Settings"
+              : "Estate/Facility Settings"}
           </p>
 
-          <hr className='my-4' />
-          <div className='grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg'>
+          <hr className="my-4" />
+          <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
             <Select
-              id={formType === 'rental' ? 'agency_fee' : 'management_fee'}
-              label={formType === 'rental' ? 'Agency Fee' : 'Management Fee'}
+              id={formType === "rental" ? "agency_fee" : "management_fee"}
+              label={formType === "rental" ? "Agency Fee" : "Management Fee"}
               options={[
-                '1%',
-                '2%',
-                '2.5%',
-                '3%',
-                '3.5%',
-                '5%',
-                '6%',
-                '7%',
-                '7.5%',
-                '8%',
-                '9%',
-                '10%',
+                "1%",
+                "2%",
+                "2.5%",
+                "3%",
+                "3.5%",
+                "5%",
+                "6%",
+                "7%",
+                "7.5%",
+                "8%",
+                "9%",
+                "10%",
               ]}
               isSearchable={false}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
               defaultValue={
-                editMode && formType === 'rental'
+                editMode && formType === "rental"
                   ? `${propertySettings?.agency_fee}%`
-                  : editMode && formType === 'facility'
-                    ? `${propertySettings?.management_fee}%`
-                    : '5%'
+                  : editMode && formType === "facility"
+                  ? `${propertySettings?.management_fee}%`
+                  : "5%"
               }
             />
-            {formType === 'rental' && (
+            {formType === "rental" && (
               <>
                 <Select
-                  id='who_to_charge_new_tenant'
-                  options={['landlord', 'tenants', 'both', 'none']}
-                  label='Who to Charge (New Tenant)'
+                  id="who_to_charge_new_tenant"
+                  options={["landlord", "tenants", "both", "none"]}
+                  label="Who to Charge (New Rent)"
                   isSearchable={false}
-                  inputContainerClassName='bg-white'
+                  inputContainerClassName="bg-white"
                   resetKey={resetKey}
                   requiredNoStar
-                  hiddenInputClassName='property-form-input'
+                  hiddenInputClassName="property-form-input"
                   defaultValue={
                     editMode
                       ? propertySettings?.who_to_charge_new_tenant
-                      : 'tenants'
+                      : "tenants"
                   }
                 />
                 <Select
-                  id='who_to_charge_renew_tenant'
-                  options={['landlord', 'tenants', 'both', 'none']}
-                  label='Who to Charge (Renewal Tenant)'
+                  id="who_to_charge_renew_tenant"
+                  options={["landlord", "tenants", "both", "none"]}
+                  label="Who to Charge (Renewal Rent)"
                   isSearchable={false}
-                  inputContainerClassName='bg-white'
+                  inputContainerClassName="bg-white"
                   resetKey={resetKey}
                   requiredNoStar
-                  hiddenInputClassName='property-form-input'
+                  hiddenInputClassName="property-form-input"
                   defaultValue={
                     editMode
                       ? propertySettings?.who_to_charge_renew_tenant
-                      : 'landlord'
+                      : "landlord"
                   }
                 />
                 <Select
                   options={[
-                    'Keep with Landlord',
-                    'Keep with Manager',
-                    'Escrow it',
-                    'None',
+                    "Keep with Landlord",
+                    "Keep with Manager",
+                    "Escrow it",
+                    "None",
                   ]}
                   isSearchable={false}
-                  id='caution_deposit'
-                  label='Caution Deposit'
-                  inputContainerClassName='bg-white'
+                  id="caution_deposit"
+                  label="Caution Deposit"
+                  inputContainerClassName="bg-white"
                   resetKey={resetKey}
                   requiredNoStar
-                  hiddenInputClassName='property-form-input'
+                  hiddenInputClassName="property-form-input"
                   defaultValue={
-                    editMode ? propertySettings?.caution_deposit : 'Escrow it'
+                    editMode ? propertySettings?.caution_deposit : "Escrow it"
                   }
                 />
               </>
             )}
 
             <Select
-              id='group_chat'
-              label='Group Chat'
-              options={['yes', 'no']}
+              id="group_chat"
+              label="Group Chat"
+              options={["yes", "no"]}
               isSearchable={false}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
               defaultValue={
                 editMode
                   ? propertySettings?.group_chat
-                  : formType === 'rental'
-                    ? 'no'
-                    : 'yes'
+                  : formType === "rental"
+                  ? "no"
+                  : "yes"
               }
             />
             <Select
-              options={['yes', 'no']}
-              id={formType === 'rental' ? 'rent_penalty' : 'fee_penalty'}
-              label={formType === 'rental' ? 'Rent Penalty' : 'Fee Penalty'}
+              options={["yes", "no"]}
+              id={formType === "rental" ? "rent_penalty" : "fee_penalty"}
+              label={formType === "rental" ? "Rent Penalty" : "Fee Penalty"}
               isSearchable={false}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
               defaultValue={
-                editMode && formType === 'rental'
+                editMode && formType === "rental"
                   ? propertySettings?.rent_penalty
-                  : editMode && formType === 'facility'
-                    ? propertySettings?.fee_penalty
-                    : 'no'
+                  : editMode && formType === "facility"
+                  ? propertySettings?.fee_penalty
+                  : "no"
               }
             />
             <Select
-              options={['yes', 'no']}
-              id='request_call_back'
-              label='Request Call Back'
+              options={["yes", "no"]}
+              id="request_call_back"
+              label="Request Call Back"
               isSearchable={false}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
               defaultValue={
-                editMode ? propertySettings?.request_callback : 'no'
+                editMode ? propertySettings?.request_callback : "no"
               }
             />
             <Select
-              options={['yes', 'no']}
-              id='book_visitors'
-              label='Book Visitors'
+              options={["yes", "no"]}
+              id="book_visitors"
+              label="Book Visitors"
               isSearchable={false}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
-              hiddenInputClassName='property-form-input'
+              hiddenInputClassName="property-form-input"
               defaultValue={
                 editMode
                   ? propertySettings?.book_visitors
-                  : formType === 'rental'
-                    ? 'no'
-                    : 'yes'
+                  : formType === "rental"
+                  ? "no"
+                  : "yes"
               }
             />
             <Select
-              options={['yes', 'no']}
-              id='vehicle_record'
-              label='Vehicle Records'
+              options={["yes", "no"]}
+              id="vehicle_record"
+              label="Vehicle Records"
               isSearchable={false}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
-              hiddenInputClassName='property-form-input'
-              defaultValue={editMode ? propertySettings?.vehicle_record : 'no'}
+              hiddenInputClassName="property-form-input"
+              defaultValue={editMode ? propertySettings?.vehicle_record : "no"}
             />
             <Select
-              options={['yes', 'no']}
-              id='active_vat'
-              label='Activate 7.5% VAT'
+              options={["yes", "no"]}
+              id="active_vat"
+              label="Activate 7.5% VAT"
               isSearchable={false}
-              inputContainerClassName='bg-white'
+              inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
-              hiddenInputClassName='property-form-input'
-              defaultValue={editMode ? propertySettings?.VAT : 'no'}
+              hiddenInputClassName="property-form-input"
+              defaultValue={editMode ? propertySettings?.VAT : "no"}
             />
-            {formType === 'rental' && (
+            {formType === "rental" && (
               <>
                 <Select
                   options={Object.entries(currencySymbols).map(
                     ([key, symbol]) => ({
                       value: key.toLowerCase(),
-                      label: `${symbol} ${key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
-                        }`,
+                      label: `${symbol} ${
+                        key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
+                      }`,
                     })
                   )}
-                  id='currency'
-                  label='Currency'
+                  id="currency"
+                  label="Currency"
                   isSearchable={false}
-                  inputContainerClassName='bg-white'
+                  inputContainerClassName="bg-white"
                   resetKey={resetKey}
                   requiredNoStar
-                  hiddenInputClassName='property-form-input'
+                  hiddenInputClassName="property-form-input"
                   defaultValue={
                     editMode && propertySettings?.currency
                       ? {
-                        value: propertySettings.currency,
-                        label: `${currencySymbols[propertySettings.currency]
-                          } ${propertySettings.currency.charAt(0).toUpperCase() +
-                          propertySettings.currency.slice(1).toLowerCase()
+                          value: propertySettings.currency,
+                          label: `${
+                            currencySymbols[propertySettings.currency]
+                          } ${
+                            propertySettings.currency.charAt(0).toUpperCase() +
+                            propertySettings.currency.slice(1).toLowerCase()
                           }`,
-                      }
+                        }
                       : {
-                        value: 'naira',
-                        label: `${currencySymbols.naira} Naira`,
-                      }
+                          value: "naira",
+                          label: `${currencySymbols.naira} Naira`,
+                        }
                   }
                 />
                 <div className="flex flex-col gap-2">
@@ -823,7 +820,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
                     <Modal>
                       <ModalTrigger asChild>
-                        <button className='bg-brand-9 text-xs rounded-md px-2 text-white h-3/4'> Pick location </button>
+                        <button className="bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
+                          {" "}
+                          Pick location{" "}
+                        </button>
                       </ModalTrigger>
                       <ModalContent>
                         <GoogleMapsModal
@@ -842,22 +842,25 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       type="text"
                       className="w-full h-full rounded-[4px] outline-none px-2"
                     />
-                    {coordinate && <button
-                      type="button"
-                      className="bg-transparent outline-none"
-                      onClick={(e) => {
-                        const previousSibling = e.currentTarget.previousElementSibling as HTMLInputElement;
-                        if (previousSibling) {
-                          setCoordinate('');
-                          previousSibling.value = '';
-                          e.stopPropagation();
-                        } else {
-                          console.warn('Previous sibling does not exist.');
-                        }
-                      }}
-                    >
-                      <DeleteIconX />
-                    </button>}
+                    {coordinate && (
+                      <button
+                        type="button"
+                        className="bg-transparent outline-none"
+                        onClick={(e) => {
+                          const previousSibling = e.currentTarget
+                            .previousElementSibling as HTMLInputElement;
+                          if (previousSibling) {
+                            setCoordinate("");
+                            previousSibling.value = "";
+                            e.stopPropagation();
+                          } else {
+                            console.warn("Previous sibling does not exist.");
+                          }
+                        }}
+                      >
+                        <DeleteIconX />
+                      </button>
+                    )}
                   </div>
                 </div>
               </>

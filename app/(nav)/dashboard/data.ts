@@ -12,6 +12,7 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
 import type { Field } from "@/components/Table/types";
+import api, { handleAxiosError } from "@/services/api";
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -332,7 +333,6 @@ export const recentMessagesData = [
 // };
 
 export const getRecentMessages = (data: any) => {
-  // console.log("data", data);
   return (
     data
       ?.slice(0, 7) // Limit to the first 7 messages
@@ -454,11 +454,11 @@ export const dashboardListingsChartData = Array.from({ length: 90 }, (_, i) => {
 }).reverse();
 
 export const invoiceTableFields: Field[] = [
-  { id: "1", accessor: "picture", isImage: true, picSize: 40 },
+  { id: "1", accessor: "client_picture", isImage: true, picSize: 40 },
   {
     id: "2",
     label: "Name",
-    accessor: "name",
+    accessor: "client_name",
   },
   { id: "3", label: "Invoice ID", accessor: "invoice_id" },
   {
@@ -473,7 +473,7 @@ export const invoiceTableFields: Field[] = [
     },
   },
   { id: "5", label: "Total Amount", accessor: "total_amount" },
-  { id: "6", label: "Date", accessor: "date" },
+  { id: "6", label: "Date", accessor: "invoice_date" },
 ];
 
 export const dashboardInvoiceTableData = Array.from(
@@ -498,3 +498,17 @@ export const dashboardInvoiceTableData = Array.from(
     };
   }
 );
+
+
+export const sendDemoRequest = async(data: FormData) => {
+  try {
+    const res = await api.post("/request-demos", data)
+    console.log("res", res)
+    if (res.status === 201) {
+      return true
+    }
+  } catch (error) {
+    handleAxiosError(error)
+    return false
+  } 
+}

@@ -11,7 +11,7 @@ import Button from "@/components/Form/Button/button";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { useWalletStore } from "@/store/wallet-store";
 import { toast } from "sonner";
-import { changeWalletPin, createNewWalletPin } from "@/app/(nav)/settings/profile/data";
+import { changeWalletPin, createNewWalletPin } from "@/app/(nav)/settings/company/data";
 import { addBankInfo, changePassword, getPasswordResetOTP, verifyPasswordOTP } from "@/app/(nav)/settings/security/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useAuthStore } from "@/store/authStore";

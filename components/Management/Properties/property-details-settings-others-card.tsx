@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 export interface PropertyDetailsSettingsOthersCardProps {
@@ -29,6 +36,8 @@ export interface PropertyDetailsSettingsOthersCardProps {
   owing_units?: number;
   total_returns: number;
   total_income: number;
+  landlord_info?: any;
+  landlord_id?: any;
 }
 
 const DetailItem: React.FC<{ label: string; value?: string | number }> = ({

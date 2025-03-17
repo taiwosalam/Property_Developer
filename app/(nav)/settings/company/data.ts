@@ -3,8 +3,6 @@ import {
   cleanPhoneNumber,
   objectToFormData,
 } from "@/utils/checkFormDataForImageOrAvatar";
-import { toast } from "sonner";
-import { CompanySettingsResponse } from "../others/types";
 
 interface SocialLinks {
   facebook: string;
@@ -32,6 +30,7 @@ interface Directors {
   phone_number: string;
   profile_picture: string;
   designation: string;
+  years_in_business: string | number;
 }
 
 export interface CompanyDataApiResponse {
@@ -59,7 +58,11 @@ export interface CompanyDataApiResponse {
     verification: Verification;
     created_at: string;
     updated_at: string;
+    domain: string;
+    director_year_in_business: string | number;
+    referrer: string;
     directors: Directors[];
+    director_bio: string;
   };
 }
 
@@ -96,7 +99,7 @@ export interface companyData {
   state: string;
   local_government: string;
   city: string;
-  phone_number: string;
+  phone_number: string | string[];
   utility_document: string;
   cac_certificate: string;
   membership_certificate: string;
@@ -107,6 +110,10 @@ export interface companyData {
   youtube: string;
   tiktok: string;
   website: string;
+  domain: string;
+  referrer: string;
+  years_in_business: string | number;
+  director_bio: string;
 }
 
 // export interface directorData {
@@ -143,6 +150,7 @@ export const initialPageData: ProfileSettingsPageState = {
       phone_number: "",
       profile_picture: "",
       designation: "",
+      years_in_business: 1,
     },
   ],
   companyData: {
@@ -172,6 +180,10 @@ export const initialPageData: ProfileSettingsPageState = {
     tiktok: "",
     youtube: "",
     website: "",
+    domain: "",
+    referrer: "",
+    years_in_business: "",
+    director_bio: "",
   },
   verifications: {
     cac_reason: "",
@@ -221,6 +233,10 @@ export const transformProfileApiResponse = (
       tiktok: res.social_links.tiktok,
       youtube: res.social_links.youtube,
       website: res.social_links.website,
+      domain: res.domain,
+      referrer: res.referrer,
+      years_in_business: res.director_year_in_business,
+      director_bio: res.director_bio,
     },
     directorsData: res.directors,
     verifications: {
@@ -240,14 +256,16 @@ export const transformProfileApiResponse = (
   };
 };
 
-export function safeParse<T>(
-  jsonString: string | null | undefined,
-  defaultValue: T
-): T {
+export function safeParse<T>(input: unknown, defaultValue: T): T {
+  if (input == null) return defaultValue;
+  if (typeof input !== "string") {
+    // Assume input is already parsed and return it as T
+    return input as T;
+  }
   try {
-    return jsonString ? JSON.parse(jsonString) : defaultValue;
+    return JSON.parse(input) as T;
   } catch (error) {
-    console.error("Failed to parse JSON:", error, "Input:", jsonString);
+    console.error("Failed to parse JSON:", error, "Input:", input);
     return defaultValue;
   }
 }
@@ -388,149 +406,6 @@ export const updateCompanyDetails = async (
     return false;
   }
 };
-
-export const updateCompanyWebsiteTemplate = async (
-  formData: Record<string, any>
-) => {
-  try {
-    const data = objectToFormData(formData);
-    //data.append("_method", "PATCH");
-    const response = await api.patch(
-      `company/settings/website_settings`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.status === 200 || response.status === 201) {
-      toast.success("Update successful");
-      return true;
-    }
-    console.log("res", response);
-  } catch (error) {
-    //handleAxiosError(error);
-    return false;
-  }
-};
-
-export const updateCompanyDomain = async (
-  companyId: string,
-  domainName: string
-) => {
-  try {
-    const payload = {
-      domain: domainName,
-    };
-    const response = await api.post(
-      `company/update-domain/${companyId}`,
-      payload
-    );
-    if (response.status === 200 || response.status === 201) {
-      return true;
-    }
-    console.log("res", response);
-  } catch (error) {
-    handleAxiosError(error);
-    return false;
-  }
-};
-
-export const updateCompanyWebsiteTypography = async (data: any) => {
-  try {
-    const response = await api.patch(
-      `company/settings/website_settings`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.status === 200 || response.status === 201) {
-      toast.success("Update successful");
-      return response;
-    }
-    // console.log('res', response)
-  } catch (error) {
-    handleAxiosError(error);
-    return false;
-  }
-};
-
-export const updateWebsitePageAndColorScheme = async (data: any) => {
-  try {
-    const response = await api.patch(
-      `company/settings/website_settings`,
-      data,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    if (response.status === 200 || response.status === 201) {
-      toast.success("Update successful");
-      return response;
-    }
-    // console.log('res', response)
-  } catch (error) {
-    handleAxiosError(error);
-    return false;
-  }
-};
-
-export interface IWebsiteSettings {
-  about_us_display: boolean;
-  color_scheme: string;
-  modules_listing: boolean;
-  rent_properties: boolean;
-  services_contact_page: boolean;
-  sale_properties: boolean;
-  shortlet_properties: boolean;
-  social_link_visibility: boolean;
-  sponsored_logo: boolean;
-  staff_branch_options: boolean;
-}
-export const transformWebsiteSettings = (
-  data: CompanySettingsResponse
-): IWebsiteSettings => {
-  return {
-    about_us_display: data?.data?.website_settings?.about_us_display,
-    color_scheme: data?.data?.website_settings?.color_scheme,
-    rent_properties: true,
-    services_contact_page: data?.data?.website_settings?.services_contact_page,
-    sale_properties: true,
-    shortlet_properties: true,
-    social_link_visibility:
-      data?.data?.website_settings?.social_link_visibility,
-    sponsored_logo: data?.data?.website_settings?.sponsored_logo,
-    staff_branch_options: data?.data?.website_settings?.staffs_branch_options,
-    modules_listing: data?.data?.website_settings?.modules_listing,
-  };
-};
-
-export const transformWebsiteTypography = (
-  companySettings: CompanySettingsResponse
-) => {
-  const websiteSettings = companySettings?.data?.website_settings || {};
-
-  return {
-    website_font: websiteSettings.website_font || "",
-    typography: Object.entries(websiteSettings.typography || {}).reduce(
-      (acc, [key, value]: [string, any]) => {
-        acc[key] = {
-          fontSize: value.fontSize || undefined,
-          fontWeight: value.fontWeight || undefined,
-        };
-        return acc;
-      },
-      {} as { [key: string]: { fontWeight?: string; fontSize?: string } }
-    ),
-  };
-};
-
 export const cleanStringtoArray = (phone_number: any) => {
   // Check if the string is empty or not
   if (phone_number && phone_number.trim()) {

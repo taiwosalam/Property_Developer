@@ -88,7 +88,7 @@ const StaffAndBranches = () => {
     endDate: null,
   });
   const handleSelectTableItem = (item: DataItem) => {
-    if (item.is_active !== 1){
+    if (item.is_active !== 1) {
       toast.error("Branch is not active");
       return;
     }
@@ -158,7 +158,7 @@ const StaffAndBranches = () => {
       />
     );
 
-    console.log("Branches", branches);
+  console.log("Branches", branches);
 
   if (isNetworkError) return <NetworkError />;
 
@@ -228,7 +228,7 @@ const StaffAndBranches = () => {
         onSort={handleSort}
       />
 
-      <section>
+      <section className="findthezero">
         {loading || silentLoading ? (
           view === "grid" ? (
             <AutoResizingGrid minWidth={284} gap={16} key="loading">
@@ -246,26 +246,26 @@ const StaffAndBranches = () => {
             <EmptyList
               buttonText="+ create branch"
               modalContent={<CreateBranchModal branches={branches} />}
-              title="You have not created any branches or added any staff yet"
+              title="No branches or staff have been added yet."
               body={
                 <p>
                   You can create profiles for all your branches and assign staff
                   and properties to them by clicking on the &quot;Create
                   Branch&quot; button. Branch managers will have the same access
                   to their branch as you do, while you will have access to all
-                  staff accounts and branches created. To learn more about this
-                  page later, you can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  staff accounts and branches created.
+                  <br />
+                  <br />
+                  To learn more about this page later, click your profile
+                  picture at the top right of the dashboard and select
+                  Assistance & Support.
                 </p>
               }
             />
           )
         ) : view === "grid" ? (
           <AutoResizingGrid minWidth={284} key="card">
-            {branches.map((b) => (
+            {branches.map((b) =>
               b.is_active === 1 ? (
                 <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
                   <BranchCard {...b} />
@@ -273,7 +273,7 @@ const StaffAndBranches = () => {
               ) : (
                 <BranchCard {...b} key={b.id} />
               )
-            ))}
+            )}
           </AutoResizingGrid>
         ) : (
           <CustomTable
@@ -286,13 +286,11 @@ const StaffAndBranches = () => {
             handleSelect={handleSelectTableItem}
           />
         )}
-        {branches.length && (
-          <Pagination
-            totalPages={total_pages}
-            currentPage={current_page}
-            onPageChange={handlePageChange}
-          />
-        )}
+        <Pagination
+          totalPages={total_pages}
+          currentPage={current_page}
+          onPageChange={handlePageChange}
+        />
       </section>
     </div>
   );

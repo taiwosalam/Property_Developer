@@ -5,6 +5,7 @@ export interface DateInputProps {
   required?: boolean;
   className?: string;
   inputClassName?: string;
+  defaultValue?: Dayjs | null;
   value?: Dayjs | null;
   onChange?: (date: Dayjs | null) => void;
   minDate?: Dayjs;

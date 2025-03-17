@@ -224,7 +224,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[280px] w-full -ml-6"
+          className="aspect-auto h-[280px] w-full -ml-6 pt-4"
         >
           <AreaChart
             accessibilityLayer

@@ -133,8 +133,8 @@ const AddTenantModal = () => {
         <InvitationForm method="email" submitAction={handleInviteTenantEmail} />
       ),
     },
-    "add-user-with-id": {
-      heading: "Add Landlord/Landlady with ID",
+    "add-user-with-email": {
+      heading: "Add Landlord/Landlady with Email",
       content: (
         <InvitationForm method="id" submitAction={handleInviteTenantId} />
       ),

@@ -38,9 +38,9 @@ const NavProfileDropdown = () => {
     setRequestLoading(true);
     const status = await logout();
     if (status) {
-      if(role === "director"){
+      if (role === "director") {
         router.push("/auth/sign-in");
-      }else{
+      } else {
         router.push("/auth/user/sign-in");
       }
     }
@@ -68,23 +68,24 @@ const NavProfileDropdown = () => {
         </div>
         <SectionSeparator />
       </div>
-      {actions && actions?.map(({ label, link, modal }, index) =>
-        link ? (
-          <Link
-            key={index}
-            href={link.href}
-            className={class_styles}
-            target={link.target || "_self"}
-          >
-            {label}
-          </Link>
-        ) : modal ? (
-          <Modal key={index}>
-            <ModalTrigger className={class_styles}>{label}</ModalTrigger>
-            <ModalContent>{modal}</ModalContent>
-          </Modal>
-        ) : null
-      )}
+      {actions &&
+        actions?.map(({ label, link, modal }, index) =>
+          link ? (
+            <Link
+              key={index}
+              href={link.href}
+              className={class_styles}
+              target={link.target || "_self"}
+            >
+              {label}
+            </Link>
+          ) : modal ? (
+            <Modal key={index}>
+              <ModalTrigger className={class_styles}>{label}</ModalTrigger>
+              <ModalContent>{modal}</ModalContent>
+            </Modal>
+          ) : null
+        )}
       <button
         type="button"
         className="flex gap-2 py-2 px-5 sm:py-3 sm:px-[30px] text-status-error-primary hover:bg-neutral-2"

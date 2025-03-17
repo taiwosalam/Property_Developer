@@ -14,6 +14,12 @@ export const profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "See Reviews",
+    link: {
+      href: "/reviews",
+    },
+  },
+  {
     label: "Assistance & Support",
     link: {
       href: "https://kb.ourproperty.ng/",
@@ -27,13 +33,15 @@ export const profile_actions: (
   {
     label: "Terms & Conditions",
     link: {
-      href: "",
+      href: "https://ourproperty.com.ng/resources/privacy-policy",
+      target: "_blank",
     },
   },
   {
     label: "Frequently Asked Questions",
     link: {
-      href: "",
+      href: "https://ourproperty.com.ng/resources/faq",
+      target: "_blank",
     },
   },
   {

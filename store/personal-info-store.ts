@@ -4,13 +4,17 @@ interface PersonalInfoStoreState {
   user_id: string | null;
   name: string | null;
   full_name: string | null;
+  user_email: string | null;
   profile_picture: string | null;
   title: string | null;
+  requestDemo: boolean;
 
   // Company Info
   company_id: string | null;
   company_name: string | null;
   company_state: string | null;
+  company_status: string | null;
+  reject_reason: string | null;
   company_local_government: string | null;
   company_head_office_address: string | null;
   company_phone_number: string[] | null;
@@ -35,14 +39,18 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   user_id: null,
   name: null,
   full_name: null,
+  user_email: null,
   title: null,
+  requestDemo: false,
   
   profile_picture: null,
 
   // Company Info
+  reject_reason: null,
   company_id: null,
   company_name: null,
   company_state: null,
+  company_status: null,
   company_local_government: null,
   company_head_office_address: null,
   company_phone_number: [],

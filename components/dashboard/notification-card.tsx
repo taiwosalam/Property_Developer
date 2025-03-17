@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import clsx from "clsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
@@ -11,7 +11,10 @@ import BadgeIcon from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 import Link from "next/link";
 import Picture from "../Picture/picture";
-import { getIconByContentType, roundUptoNine } from "@/app/(nav)/(messages-reviews)/messages/data";
+import {
+  getIconByContentType,
+  roundUptoNine,
+} from "@/app/(nav)/(messages-reviews)/messages/data";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -83,7 +86,9 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         )}
       >
         {notifications.map((notification, index) => {
-          const IconComponent = getIconByContentType(notification.content_type as string);
+          const IconComponent = getIconByContentType(
+            notification.content_type as string
+          );
 
           return (
             <div key={index} className="flex items-center justify-between">
@@ -92,8 +97,8 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   sectionHeader === "Staffs"
                     ? `/management/staff-branch/${branchId}/branch-staff/${notification.staff_ID}`
                     : sectionHeader === "Recent Messages"
-                      ? `/messages/${notification.id}`
-                      : "#"
+                    ? `/messages/${notification.id}`
+                    : "#"
                 }
                 className="flex items-center gap-3 w-[70%]"
               >
@@ -121,11 +126,13 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   )}
                   <p className="text-xs text-text-tertiary font-normal capitalize">
                     {notification.content_type === "text" ? (
-                      sectionHeader !== "Staffs"
-                        ? notification.message
-                        : notification.position === "manager"
-                          ? "Branch Manager"
-                          : notification.position
+                      sectionHeader !== "Staffs" ? (
+                        notification.message
+                      ) : notification.position === "manager" ? (
+                        "Branch Manager"
+                      ) : (
+                        notification.position
+                      )
                     ) : (
                       <div className="flex gap-1 items-center">
                         {IconComponent && <IconComponent />}
@@ -144,8 +151,8 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   <p className="text-[10px] text-text-disabled">
                     {notification.time}
                   </p>
-                  {notification.count && (
-                    <div className="bg-rbrand-9 px-2 py-1 rounded-full flex items-center justify-center">
+                  {notification.count !== undefined && (
+                    <div className="bg-brand-9 inline-flex items-center justify-center py-1 rounded-full whitespace-nowrap">
                       <p className="text-white text-[10px] font-medium">
                         {roundUptoNine(notification.count)}
                       </p>

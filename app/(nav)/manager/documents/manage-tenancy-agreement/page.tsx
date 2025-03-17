@@ -66,7 +66,7 @@ const ManageTenancyAgreement = () => {
           </div>
           <SectionSeparator />
         </div>
-        <DocumentTenancyAgreements />
+        {/* <DocumentTenancyAgreements /> */}
       </div>
       <FixedFooter className="flex sm:flex-wrap gap-2 items-center justify-between ">
         <Modal>

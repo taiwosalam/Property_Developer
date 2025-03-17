@@ -39,7 +39,7 @@ const InvitationForm: React.FC<InvitationFormProps> = ({
         ) : (
           <Input
             id="profile_id"
-            label="Input Profile ID"
+            label="Input Profile Email"
             inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
           />
         )}

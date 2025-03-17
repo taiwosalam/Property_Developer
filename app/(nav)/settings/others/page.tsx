@@ -548,7 +548,15 @@ const Others = () => {
     } finally {
       setProcessing(false);
     }
-  };
+  }
+  //type DirectorsFormOptions = "options" | "choose-avatar";
+
+  // const handleSubmit = async (data: FormData) => {
+  //   console.log(data);
+  //   // if (res) {
+  //   //   setIsOpen(false);
+  //   // }
+  // };
 
   const modal_states: Record<
     DirectorsFormOptions,
@@ -817,7 +825,7 @@ const Others = () => {
               <div className="w-[00px]">
                 <ModalContent>
                   <LandlordTenantModalPreset heading="Restrict User">
-                    <RestrictUserForm setRestrictedTenantId={setPropertyId} />
+                    <RestrictUserForm submitAction={() => {}} />
                   </LandlordTenantModalPreset>
                 </ModalContent>
               </div>
@@ -914,5 +922,6 @@ const Others = () => {
     </>
   );
 };
+
 
 export default Others;

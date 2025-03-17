@@ -13,9 +13,7 @@ import { message_card_data } from "@/components/Message/data";
 
 const ReviewChat = () => {
   const router = useRouter();
-
   const { id } = useParams();
-
   const data = message_card_data.find((item) => item.id === id);
 
   if (!data) return router.replace("/reviews");

@@ -9,7 +9,7 @@ import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 
-const CompanyAddress = () => {
+const CompanyAddress = ({data}: {data:any}) => {
   // State to hold selected values
   const [address, setAddress] = useState({
     state: "",
@@ -40,6 +40,7 @@ const CompanyAddress = () => {
           label="state"
           value={address.state}
           hiddenInputClassName="setup-f"
+          defaultValue={data.state}
           onChange={(value) => handleAddressChange("state", value)} // Update handler
           required
         />
@@ -50,6 +51,7 @@ const CompanyAddress = () => {
           id="local_government"
           label="local government"
           hiddenInputClassName="setup-f"
+          defaultValue={data.local_government}
           onChange={(value) => handleAddressChange("lga", value)} // Update handler
           value={address.lga} // Controlled value
           required
@@ -62,6 +64,7 @@ const CompanyAddress = () => {
           label="City / Area"
           allowCustom={true}
           hiddenInputClassName="setup-f"
+          defaultValue={data.city}
           onChange={(value) => handleAddressChange("city", value)} // Update handler
           value={address.city} // Controlled value
           required
@@ -74,6 +77,7 @@ const CompanyAddress = () => {
           className="lg:col-span-2"
           inputClassName="rounded-[8px] setup-f bg-white"
           required
+          defaultValue={data.head_office_address}
         />
 
         <FileInput
@@ -86,6 +90,7 @@ const CompanyAddress = () => {
           buttonName="Document"
           hiddenInputClassName="setup-f"
           className="md:col-span-2 lg:col-span-1"
+          // defaultValue={data.utility_document}
         />
       </div>
     </div>

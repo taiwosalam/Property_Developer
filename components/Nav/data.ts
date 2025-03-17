@@ -481,11 +481,14 @@ export interface ProfileResponse {
     user: {
       userid: string;
       name: string | null;
+      email: string | null;
     };
     company?: {
       company_id: string;
       company_name: string;
       company_logo: string;
+      company_status: string;
+      reject_reason: string;
       state: string;
       local_government: string;
       head_office_address: string;
@@ -504,5 +507,6 @@ export interface ProfileResponse {
       picture: string | null;
       title: string;
     };
+    requestDemos: any[];
   };
 }

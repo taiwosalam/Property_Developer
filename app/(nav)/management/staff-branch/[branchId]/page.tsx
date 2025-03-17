@@ -264,7 +264,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         <div className="md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
           <AutoResizingGrid gap={12} minWidth={230}>
             <AccountStatsCard
-              title="Total Receipts"
+              title="Total Invoices"
               balance={1234535}
               percentage={54}
               trendDirection="up"

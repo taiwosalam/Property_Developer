@@ -209,22 +209,45 @@ const SelectWithImage: React.FC<SelectProps> = ({
           )}
           {/* Conditionally render input or selected value based on `isSearchable` */}
           {selectedValue && !isOpen ? (
-            <div className="flex items-center gap-1">
+            // <div className="flex items-center gap-1 bg-red-500">
+            //   {selectedIcon && selectedIcon !== "null" && (
+            //     <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
+            //       <Image
+            //         src={selectedIcon}
+            //         alt={`${selectedLabel} icon`}
+            //         width={20}
+            //         height={20}
+            //         className="w-full h-full object-contain"
+            //       />
+            //     </div>
+            //   )}
+
+            //   <span
+            //     className={clsx(
+            //       "flex-1 capitalize text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
+            //       inputTextClassName
+            //     )}
+            //   >
+            //     {/* {selectedLabel} */}
+            //     <span className="truncate">{selectedLabel}</span>
+            //   </span>
+            // </div>
+
+            <div className="flex items-center gap-1 w-full overflow-hidden">
               {selectedIcon && selectedIcon !== "null" && (
-                <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
+                <div className="custom-secondary-bg p-[2px] h-6 w-6 mr-[1px] rounded-full items-center">
                   <Image
                     src={selectedIcon}
                     alt={`${selectedLabel} icon`}
-                    width={20}
-                    height={20}
+                    width={25}
+                    height={25}
                     className="w-full h-full object-contain"
                   />
                 </div>
               )}
-
               <span
                 className={clsx(
-                  "flex-1 capitalize text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
+                  "truncate text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
                   inputTextClassName
                 )}
               >
@@ -315,23 +338,23 @@ const SelectWithImage: React.FC<SelectProps> = ({
                     <div
                       role="button"
                       key={uuidv4()}
-                      className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
+                      className="flex items-center gap-1 p-2 hover:bg-gray-100 dark:hover:bg-darkText-2 capitalize"
                       onClick={() => handleSelection(option)}
                     >
                       {icon && (
                         // <IconComponent className="h-4 w-4 mr-2" />
-                        <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
+                        <div className="custom-secondary-bg p-[2px] h-6 min-w-6 mr-[1px] rounded-full items-center">
                           <Image
                             // src={icon as string || empty}
                             src={icon as string}
                             alt={`${value}`}
-                            width={20}
-                            height={20}
+                            width={25}
+                            height={25}
                             className="w-full h-full object-contain"
                           />
                         </div>
                       )}
-                      {label}
+                      <span className="truncate">{label}</span>
                     </div>
                   );
                 })

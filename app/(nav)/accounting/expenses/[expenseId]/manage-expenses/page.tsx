@@ -26,6 +26,7 @@ import { addPayment, deductPayment, ManageExpenseApiResponse, ManageExpensePageD
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 const ManageExpenses = () => {
   const router = useRouter();
@@ -154,7 +155,7 @@ const ManageExpenses = () => {
 
   const totalBalance = totalExpenses - totalDeductions;
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PageCircleLoader />;
   if (error) return <div>Error loading expense data.</div>;
   if (!pageData) return <div>No data available.</div>;
 

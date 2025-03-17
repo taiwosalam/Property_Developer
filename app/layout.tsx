@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import { Suspense } from "react";
 
 // Imports
 import { Toaster } from "sonner";
@@ -6,6 +7,7 @@ import { primaryFont } from "@/utils/fonts";
 import ThemeProvider from "./theme-provider";
 import { Theme } from "@/components/theme";
 import { RoleProvider } from "@/hooks/roleContext";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 export const metadata = {
   title: "Our Property",
@@ -19,28 +21,33 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <body
         className={`${primaryFont.className} antialiased`}
         suppressHydrationWarning
       >
         <RoleProvider>
           <Theme
-            attribute='class'
-            defaultTheme='light'
+            attribute="class"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
             <ThemeProvider />
-            <div className='w-full relative z-[1]'>{children}</div>
-            <div
-              id='portal'
-              className='z-[2]'
+            <Suspense
+              fallback={
+                <div>
+                  <PageCircleLoader />
+                </div>
+              }
             >
+              <div className="w-full relative z-[1]">{children}</div>
+            </Suspense>
+            <div id="portal" className="z-[2]">
               <Toaster
                 richColors
                 className={`${primaryFont.className} antialiased z-[1000]`}
-                position='top-right'
+                position="top-right"
                 duration={5000}
               />
             </div>

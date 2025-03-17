@@ -19,17 +19,26 @@ import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { transformFormData, createCompany } from "./data";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useRole } from "@/hooks/roleContext";
-import { getDashboardPage } from "../auth/data";
-import { SettingsSectionTitle } from "@/components/Settings/settings-components";
-import CopyText from "@/components/CopyText/copy-text";
 import CompanyDomain from "@/components/Setup/company-domain";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import {
+  CompanyDataApiResponse,
+  initialPageData,
+  ProfileSettingsPageState,
+  transformProfileApiResponse,
+} from "@/app/(nav)/settings/company/data";
+import useFetch from "@/hooks/useFetch";
 
 const Setup = () => {
   const router = useRouter();
+  const [companyName, setCompanyName] = useState("");
+  const searchParams = useSearchParams();
+  const idParam = searchParams.get("id");
+  const company_id = idParam ? Number(idParam) : null;
 
   const { role, setRole } = useRole();
   // const setRole = useAuthStore((state) => state.setRole);
@@ -39,25 +48,42 @@ const Setup = () => {
   // Define the index of the last step in the flow
   const last_step = 0;
 
+  const [state, setState] = useState<ProfileSettingsPageState>(initialPageData);
+
+  const { verifications, companyData, directorsData } = state;
+
+  // FETCH API DATA
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch(`/companies/${company_id}`);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformedData: ProfileSettingsPageState =
+        transformProfileApiResponse(apiData as CompanyDataApiResponse);
+      setState(transformedData);
+    }
+  }, [apiData]);
+
+  // console.log("here", companyData, directorsData);
+
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);
     const data = transformFormData(formData);
+    // console.log("payload", data)
     const status = await createCompany(data);
     if (status) {
-      setRole("director");
-      setAuthState("role", "director");
+      await setRole("director");
+      await setAuthState("role", "director");
       router.replace("/auth/sign-in");
     }
     setRequestLoading(false);
   };
-
-  // useEffect(() => {
-  //   if (role && role !== "user") {
-  //   //  const dashboardPage = getDashboardPage(role)
-  //   //   router.replace(dashboardPage);
-  //     router.replace("/auth/sign-in");
-  //   }
-  // }, [role, router]);
 
   useAuthRedirect({ skipSetupRedirect: true });
 
@@ -92,29 +118,40 @@ const Setup = () => {
                   placeholder="Write here"
                   inputClassName="setup-f bg-white"
                   className="lg:col-span-2"
+                  onChange={setCompanyName}
+                  defaultValue={companyData?.company_name ?? ""}
                 />
                 <Input
                   id="referral_id"
                   label="Referral ID (Optional)"
                   placeholder="Enter your Referral ID"
                   inputClassName="setup-f bg-white"
+                  defaultValue={companyData?.referrer}
                 />
               </div>
-              <CompanyDetails />
-              <CompanyAddress />
-              <CompanyMobileNumber />
+              <CompanyDetails data={companyData ?? {}} />
+              <CompanyAddress data={companyData ?? {}} />
+              <CompanyMobileNumber
+                phoneNumbers={companyData?.phone_number as string[]}
+              />
             </div>
           </Section>
 
           <Section separatorStyles="max-w-[1200px]">
-          <CompanyLogo />
-          <CompanyDomain />
+            <CompanyLogo />
+            <CompanyDomain
+              companyName={companyData?.company_name ?? companyName}
+            />
           </Section>
           <SectionHeading title="directors details">
             Fill the details below to add a director to your company
           </SectionHeading>
           <ProfilePicture />
-          <ProfileInformation />
+          <ProfileInformation
+            data={directorsData[0]}
+            year={companyData?.years_in_business as string}
+            bio={companyData?.director_bio}
+          />
         </div>
       </AuthForm>
     </FlowProgress>
