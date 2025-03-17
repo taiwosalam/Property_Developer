@@ -1,3 +1,18 @@
+import api, { handleAxiosError } from "@/services/api";
+
+// /property-document
+export const createPropertyDocument = async (data: FormData) => {
+  try {
+    const res = await api.post("/property-document", data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const DocumentssFilterOptionsWithDropdown = [
   {
     label: "Property",

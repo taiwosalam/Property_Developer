@@ -56,6 +56,9 @@ export const transformSinglePropertyData = (
     available_units: 0, // backend shit
     total_returns: totalReturns,
     total_income: (totalReturns * feePercentage) / 100,
+    landlord_info: data.landlord_info,
+    landlord_id: data.landlord_id ?? 0,
+    landlordData: data.landlord,
     units: data.units.map((unit) => ({
       unitId: unit.id,
       propertyType: data.property_type as "rental" | "facility",
