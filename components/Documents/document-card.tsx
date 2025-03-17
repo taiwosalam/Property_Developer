@@ -1,13 +1,23 @@
+"use client";
+
 import Button from "../Form/Button/button";
 import KeyValueList from "../KeyValueList/key-value-list";
+import { Document } from "./types";
 
-const DocumentCard = () => {
+const DocumentCard = ({
+  document_id,
+  property_name,
+  document_type,
+  property_id,
+  total_unit,
+  created_date,
+}: Document) => {
   return (
     <div
       className="pt-6 px-[18px] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-6"
       style={{
         boxShadow:
-          " 0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+          "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
       <div className="custom-flex-col gap-4">
@@ -16,17 +26,22 @@ const DocumentCard = () => {
             Document ID:
           </p>
           <p className="text-text-secondary dark:text-darkText-2 text-sm">
-            134678765
+            {document_id}
           </p>
         </div>
         <div className="h-[1px] border border-dashed border-brand-7 opacity-50"></div>
       </div>
       <div className="pb-6 overflow-x-auto custom-round-scrollbar">
         <div className="custom-flex-col gap-4">
-          {/* I removed min width from here */}
           <div className="flex">
             <KeyValueList
-              data={{}}
+              data={{
+                "property name": property_name,
+                "property ID": `${property_id}`,
+                "date created": created_date,
+                "No of units": `${total_unit}`,
+                "document type": document_type,
+              }}
               chunkSize={2}
               direction="column"
               referenceObject={{
@@ -40,7 +55,7 @@ const DocumentCard = () => {
           </div>
           <div className="flex justify-end">
             <Button
-              href="/documents/manage-tenancy-agreement"
+              href={`/documents/manage-tenancy-agreement/?d=${document_id}`}
               size="xs_normal"
               className="py-2 px-7"
             >

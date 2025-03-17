@@ -278,7 +278,6 @@ const AccountingInvoicePage = () => {
                           ]
                         : []),
                     ]}
-                    // filterOptionsMenu={accountingInvoiceOptionsWithDropdown}
                     handleFilterApply={handleFilterApply}
                     isDateTrue
                     appliedFilters={appliedFilters}

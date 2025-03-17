@@ -2,7 +2,9 @@ import { create } from 'zustand';
 
 interface LegalOption {
   title: string;
+  amount: number;
   description: string;
+  id: number;
 }
 
 interface DrawerStore {

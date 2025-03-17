@@ -46,7 +46,7 @@ const DetailItem: React.FC<{ label: string; value: string | number }> = ({
     <p className="w-[140px] font-normal text-[#747474] dark:text-white">
       {label}
     </p>
-    <p className="text-black dark:text-darkText-1">{value}</p>
+    <p className="text-black dark:text-darkText-1 capitalize">{value}</p>
   </div>
 );
 
@@ -96,10 +96,10 @@ const UnitPreviewPage = () => {
         <p className="text-base font-medium dark:text-darkText-1">
           ID: {unit_data.unit_id}
         </p>
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
+        <h1 className="text-lg md:text-xl lg:text-2xl font-bold capitalize">
           {unit_data.unit_name}
         </h1>
-        <p className="text-sm text-text-label font-normal flex items-center gap-1">
+        <p className="text-sm text-text-label font-normal flex items-center gap-1 capitalize">
           <LocationIcon />
           {unit_data.address}
         </p>

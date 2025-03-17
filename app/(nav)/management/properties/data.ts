@@ -149,6 +149,16 @@ export interface PropertyDataObject {
   coordinate: string;
   units: UnitDataObject[];
   landlord_id: string;
+  landlord?: any;
+  landlord_info?: {
+    name: string;
+    email: string | null;
+    phone: string | null;
+    address: string;
+    state: string;
+    lga: string;
+    city: string | null;
+  };
 }
 
 export interface PropertiesApiResponse {

@@ -11,13 +11,22 @@ import { useWalletStore } from "@/store/wallet-store";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { WalletSendFundsOptions } from "../types";
 import { useModal } from "@/components/Modal/modal";
+import PaymentMethod from "./payment-method";
+import { useDrawerStore } from "@/store/drawerStore";
 
-const AddFundsModal = ({ branch }: { branch?: boolean }) => {
+const AddFundsModal = ({
+  branch,
+  doc,
+}: {
+  branch?: boolean;
+  doc?: boolean;
+}) => {
   const { branch: branch_details } = useBranchStore();
   const { sub_wallet } = useWalletStore();
-  const {setIsOpen} = useModal()
+  const { setIsOpen } = useModal();
+  const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
   const company_name = usePersonalInfoStore((state) => state.company_name);
-  
+
   const [activeStep, setActiveStep] =
     useState<WalletSendFundsOptions>("send funds menu");
   // State to hold payment details
@@ -33,7 +42,7 @@ const AddFundsModal = ({ branch }: { branch?: boolean }) => {
   const handlePaymentConfirmed = () => {
     // Once payment is confirmed, you may reset to the menu or show a success message.
     // setActiveStep("send funds menu");
-    setIsOpen(false)
+    setIsOpen(false);
   };
 
   // If the active step is "payment", render PaymentIframe only.
@@ -68,10 +77,18 @@ const AddFundsModal = ({ branch }: { branch?: boolean }) => {
             branch
           />
         ) : (
-          <>
+          <div>
+            {doc && (
+              <PaymentMethod
+                title={selectedLegalOption?.title ?? ""}
+                price={selectedLegalOption?.amount ?? 0}
+              />
+            )}
             <WalletBankTransferCard />
-            <WalletOnlineFundingCard onPaymentInitiated={handlePaymentInitiated} />
-          </>
+            <WalletOnlineFundingCard
+              onPaymentInitiated={handlePaymentInitiated}
+            />
+          </div>
         )}
       </div>
     </WalletModalPreset>

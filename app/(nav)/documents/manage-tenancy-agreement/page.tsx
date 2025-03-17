@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // Imports
@@ -10,8 +12,42 @@ import DeleteDocumentModal from "@/components/Documents/delete-document-modal";
 import DocumentTenancyAgreements from "@/components/Documents/document-tenancy-agreements";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useSearchParams } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import {
+  ManageDocumentsAPIResponse,
+  transformDocumentArticleResponse,
+} from "./data";
+import NetworkError from "@/components/Error/NetworkError";
+import {
+  SinglePropertyResponse,
+  transformSinglePropertyData,
+} from "../../management/properties/[id]/data";
+import DOMPurify from "dompurify";
 
 const ManageTenancyAgreement = () => {
+  const documentId = useSearchParams().get("d") ?? "";
+
+  const { data, loading, error, isNetworkError } =
+    useFetch<ManageDocumentsAPIResponse>(`/property-document/${documentId}`);
+
+  const {
+    data: propData,
+    loading: propertyLoading,
+    error: propertyError,
+    isNetworkError: propertyNetworkError,
+  } = useFetch<SinglePropertyResponse>(
+    `property/${data?.document?.property_id}/view`
+  );
+  const propertyData = propData ? transformSinglePropertyData(propData) : null;
+
+  const defaultOptions = data ? transformDocumentArticleResponse(data) : [];
+  // console.log("data", data);
+
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <div> {error} </div>;
+
+  const desc = DOMPurify.sanitize(data?.document?.property_description ?? "");
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-6">
@@ -23,7 +59,12 @@ const ManageTenancyAgreement = () => {
           <SectionSeparator />
           <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
-              data={{}}
+              data={{
+                // "property description": desc ?? "",
+                "property address": data?.document.property_address ?? "",
+                "annual rent": "",
+                "caution deposit": "",
+              }}
               chunkSize={2}
               referenceObject={{
                 "property description": "",
@@ -41,7 +82,17 @@ const ManageTenancyAgreement = () => {
           <SectionSeparator />
           <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
-              data={{}}
+              data={{
+                "Landlord/Landlady Name":
+                  propertyData?.landlord_info?.name ?? "",
+                "Landlord/Landlady ID": propertyData?.landlord_id ?? "",
+                "Landlord/Landlady Address": `${
+                  propertyData?.landlord_info?.address ?? ""
+                } ${propertyData?.landlord_info?.city ?? ""} ${
+                  propertyData?.landlord_info?.state ?? ""
+                }`,
+                "account type": propertyData?.landlordData?.agent ?? "",
+              }}
               chunkSize={2}
               referenceObject={{
                 "Landlord/Landlady Name": "",
@@ -66,7 +117,10 @@ const ManageTenancyAgreement = () => {
           </div>
           <SectionSeparator />
         </div>
-        <DocumentTenancyAgreements />
+        <DocumentTenancyAgreements
+          id={Number(documentId)}
+          defaultOptions={defaultOptions}
+        />
       </div>
       <FixedFooter className="flex sm:flex-wrap gap-2 items-center justify-between ">
         <Modal>

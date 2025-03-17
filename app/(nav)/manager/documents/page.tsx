@@ -45,13 +45,13 @@ const Documents = () => {
           azFilter
           isDateTrue
         />
-        <AutoResizingGrid minWidth={500}>
+        {/* <AutoResizingGrid minWidth={500}>
           {Array(6)
             .fill(null)
             .map((_, index) => (
               <DocumentCard key={index} />
             ))}
-        </AutoResizingGrid>
+        </AutoResizingGrid> */} 
       </div>
     </div>
   );

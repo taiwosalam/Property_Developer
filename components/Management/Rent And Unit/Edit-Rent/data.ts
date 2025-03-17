@@ -1,67 +1,66 @@
 import api, { handleAxiosError } from "@/services/api";
 
 export interface Unit {
-    id: number;
-    user_id: number;
-    property_id: number;
-    tenant_id: number | null;
-    unit_name: string;
-    unit_type: string;
-    unit_sub_type: string;
-    unit_preference: string;
-    measurement: string;
-    bedroom: string;
-    bathroom: string;
-    toilet: number;
-    facilities: string[];
-    en_suit: number;
-    prepaid: number;
-    wardrobe: number;
-    pet_allowed: number;
-    total_area_sqm: string;
-    number_of: string;
-    fee_period: string;
-    fee_amount: string;
-    security_fee: string;
-    service_charge: string;
-    agency_fee: string;
-    legal_fee: string;
-    caution_fee: string;
-    inspection_fee: string;
-    management_fee: string | null;
-    other_charge: string;
-    negotiation: number;
-    total_package: string;
-    renew_fee_period: string;
-    renew_fee_amount: string;
-    renew_service_charge: string;
-    renew_other_charge: string;
-    renew_total_package: string;
-    is_active: string;
-    published: number;
-    status: string;
-    reject_reason: string | null;
-    created_at: string;
-    updated_at: string;
+  id: number;
+  user_id: number;
+  property_id: number;
+  tenant_id: number | null;
+  unit_name: string;
+  unit_type: string;
+  unit_sub_type: string;
+  unit_preference: string;
+  measurement: string;
+  bedroom: string;
+  bathroom: string;
+  toilet: number;
+  facilities: string[];
+  en_suit: number;
+  prepaid: number;
+  wardrobe: number;
+  pet_allowed: number;
+  total_area_sqm: string;
+  number_of: string;
+  fee_period: string;
+  fee_amount: string;
+  security_fee: string;
+  service_charge: string;
+  agency_fee: string;
+  legal_fee: string;
+  caution_fee: string;
+  inspection_fee: string;
+  management_fee: string | null;
+  other_charge: string;
+  negotiation: number;
+  total_package: string;
+  renew_fee_period: string;
+  renew_fee_amount: string;
+  renew_service_charge: string;
+  renew_other_charge: string;
+  renew_total_package: string;
+  is_active: string;
+  published: number;
+  status: string;
+  reject_reason: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface UnitOptionTypes {
-    value: string;
-    label: string;
+  value: string;
+  label: string;
 }
 
-export const unitInitialOptions: UnitOptionTypes[] = [
-    { value: "", label: "" },
-];
+export const unitInitialOptions: UnitOptionTypes[] = [{ value: "", label: "" }];
 
-export const transformUnitOptions = (data: UnitsApiResponse): UnitOptionTypes[] => {
-    return data.data
-        .filter(unit => unit.is_active === 'vacant')
-        .map(unit => ({
-            // value: unit.id.toString(),
-            value: unit.unit_name,
-            label: unit.unit_name,
-        }));
+export const transformUnitOptions = (
+  data: UnitsApiResponse
+): UnitOptionTypes[] => {
+  return data.data
+    .filter((unit) => unit.is_active === "vacant")
+    .map((unit) => ({
+      value: unit.unit_name,
+      label: unit.unit_name,
+    }));
 };
 
 // export const initialData: Unit = {
@@ -110,46 +109,62 @@ export const transformUnitOptions = (data: UnitsApiResponse): UnitOptionTypes[] 
 // };
 
 export interface UnitsApiResponse {
-    status: string;
-    message: string;
-    data: Unit[];
+  status: string;
+  message: string;
+  data: Unit[];
 }
 
-
 export const getRentalData = (propertyData: any): any[] => {
-    return [
-        { label: "Property Title", value: propertyData?.property_name },
-        { label: "State", value: propertyData?.state },
-        { label: "Local Government", value: propertyData?.local_government },
-        { label: "Full Address", value: propertyData?.address },
-        { label: "Branch", value: propertyData?.branch },
-        { label: "Account Officer", value: propertyData?.account_officer || "" },
-        { label: "Landlord", value: propertyData?.landlord_name },
-        { label: "Categories", value: propertyData?.category },
-    ];
+  return [
+    { label: "Property Title", value: propertyData?.property_name },
+    { label: "State", value: propertyData?.state },
+    { label: "Local Government", value: propertyData?.local_government },
+    { label: "Full Address", value: propertyData?.address },
+    { label: "Branch", value: propertyData?.branch },
+    { label: "Account Officer", value: propertyData?.account_officer || "" },
+    { label: "Landlord", value: propertyData?.landlord_name },
+    { label: "Categories", value: propertyData?.category },
+  ];
 };
 
 export const getPropertySettingsData = (propertyData: any): any[] => {
-    return [
-        { label: "Agency Fee", value: propertyData?.agency_fee !== undefined ? `${propertyData.agency_fee}%` : undefined },
-        { label: "Period", value: propertyData?.fee_period },
-        { label: "Charge", value: propertyData?.rent_penalty },
-        { label: "Caution Deposit", value: propertyData?.caution_deposit },
-        { label: "Group Chat", value: propertyData?.group_chat !== undefined ? `${propertyData.group_chat}` : undefined },
-        { label: "Rent Penalty", value: propertyData?.who_to_charge_new_tenant !== undefined ? `${propertyData.who_to_charge_new_tenant}` : undefined },
-    ];
+  return [
+    {
+      label: "Agency Fee",
+      value:
+        propertyData?.agency_fee !== undefined
+          ? `${propertyData.agency_fee}%`
+          : undefined,
+    },
+    { label: "Period", value: propertyData?.fee_period },
+    { label: "Charge", value: propertyData?.rent_penalty },
+    { label: "Caution Deposit", value: propertyData?.caution_deposit },
+    {
+      label: "Group Chat",
+      value:
+        propertyData?.group_chat !== undefined
+          ? `${propertyData.group_chat}`
+          : undefined,
+    },
+    {
+      label: "Rent Penalty",
+      value:
+        propertyData?.who_to_charge_new_tenant !== undefined
+          ? `${propertyData.who_to_charge_new_tenant}`
+          : undefined,
+    },
+  ];
 };
-
 
 // /tenant-rent/move_out
 export const moveOut = async (data: any) => {
-    try {
-        const res = await api.post("/tenant-rent/move_out", data);
-        if (res.status === 201) {
-            return true
-        }
-    } catch (error) {
-        handleAxiosError(error);
-        return false
+  try {
+    const res = await api.post("/tenant-rent/move_out", data);
+    if (res.status === 201) {
+      return true;
     }
-}
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
