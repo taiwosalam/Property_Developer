@@ -5,7 +5,16 @@ import SettingsSection from "./settings-section";
 import Select from "../Form/Select/select";
 import Button from "@/components/Form/Button/button";
 import useGoogleFonts from "@/hooks/useFonts";
-import { SettingsSectionTitle } from "./settings-components";
+import {
+  SettingsSectionTitle,
+  SettingsUpdateButton,
+} from "./settings-components";
+import {
+  transformWebsiteTypography,
+  updateCompanyWebsiteTypography,
+} from "@/app/(nav)/settings/profile/data";
+import useFetch from "@/hooks/useFetch";
+import { CompanySettingsResponse } from "@/app/(nav)/settings/others/types";
 
 const settings = [
   {
@@ -68,9 +77,13 @@ const WebsiteTypography = () => {
   const googleFonts = useGoogleFonts();
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
   const [hasChanged, setHasChanged] = useState(false);
+ 
   const [typographySettings, setTypographySettings] = useState<{
     [key: string]: { fontWeight?: string; fontSize?: string };
   }>({});
+  const [loading, setLoading] = useState<boolean>(false);
+
+    
 
   const handleFontSelect = (fontName: string) => {
     setSelectedFont(fontName);
@@ -114,6 +127,37 @@ const WebsiteTypography = () => {
     setHasChanged(changesExist);
   }, [typographySettings]);
 
+  const { data: companySettings } =
+    useFetch<CompanySettingsResponse>("/company/settings");
+
+  useEffect(() => {
+    if (companySettings?.data?.website_settings) {
+      const updatedSettings = transformWebsiteTypography(companySettings);
+      setSelectedFont(updatedSettings.website_font);
+      setTypographySettings(updatedSettings.typography);
+    }
+  }, [companySettings]);
+
+  const handleUpdateWebsiteSettings = async () => {
+    const payload = {
+      website_font: selectedFont,
+      typography: typographySettings,
+    };
+    setLoading(true);
+    try {
+      await updateCompanyWebsiteTypography(payload);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetTypographySection = () => {
+    setSelectedFont("");
+    setTypographySettings({});
+  };
+
   return (
     <div>
       <SettingsSection title="Website Typography & Font Template">
@@ -128,6 +172,7 @@ const WebsiteTypography = () => {
             placeholder="Select a font"
             onChange={(value) => handleFontSelect(value)}
             options={googleFonts}
+            value={selectedFont || ""}
             inputContainerClassName="bg-neutral-2 w-full mt-2 lg:min-w-[300px]"
           />
           <p
@@ -157,6 +202,8 @@ const WebsiteTypography = () => {
           const hasChanged =
             typographySettings[setting.title]?.fontWeight ||
             typographySettings[setting.title]?.fontSize;
+
+           
           return (
             <div
               key={setting.title}
@@ -178,6 +225,9 @@ const WebsiteTypography = () => {
                     inputContainerClassName="max-w-[250px]"
                     onChange={(value) =>
                       handleFontWeightSelect(setting.title, value)
+                    }
+                    value={
+                      typographySettings[setting.title]?.fontWeight || "400"
                     }
                   />
 
@@ -229,13 +279,20 @@ const WebsiteTypography = () => {
         })}
         <div className="flex justify-end gap-4">
           {hasChanged && (
-            <Button variant="light_red" size="base_bold" className="py-2 px-8">
+            <Button
+              variant="light_red"
+              size="base_bold"
+              className="py-2 px-8"
+              onClick={resetTypographySection}
+            >
               Reset section
             </Button>
           )}
-          <Button size="base_bold" className="py-2 px-8">
-            Update
-          </Button>
+
+          <SettingsUpdateButton
+            action={handleUpdateWebsiteSettings}
+            loading={loading}
+          />
         </div>
       </SettingsSection>
     </div>

@@ -45,10 +45,13 @@ import {
 } from "@/public/icons/icons";
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Switch from "../Form/Switch/switch";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { selectCompanyModule } from "@/app/(nav)/settings/others/data";
+import { debounce } from "lodash";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 export const SettingsVerifiedBadge = ({
   status,
@@ -56,14 +59,16 @@ export const SettingsVerifiedBadge = ({
   status: "verified" | "unverified";
 }) => (
   <div
-    className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${status === "verified"
+    className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${
+      status === "verified"
         ? "bg-status-success-1"
         : "bg-[#FF8EE] border-[#FFBB53]"
-      }`}
+    }`}
   >
     <p
-      className={`text-[10px] ${status === "verified" ? "text-status-success-primary" : "text-[#FFBB53]"
-        } font-normal ${secondaryFont.className}`}
+      className={`text-[10px] ${
+        status === "verified" ? "text-status-success-primary" : "text-[#FFBB53]"
+      } font-normal ${secondaryFont.className}`}
     >
       {status}
     </p>
@@ -74,13 +79,11 @@ export const SettingsVerifiedBadge = ({
 export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
   title,
   desc,
-  required
+  required,
 }) => (
   <div className="custom-flex-col gap-[2px]">
     <div className="flex">
-      {required &&
-        <p className="text-red-500">*</p>
-      }
+      {required && <p className="text-red-500">*</p>}
       {title && (
         <p className="text-text-quaternary dark:text-white text-base font-medium capitalize">
           {title}
@@ -143,8 +146,8 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
               {...(remove
                 ? { ...remove_props }
                 : addMore
-                  ? { ...add_more_props }
-                  : null)}
+                ? { ...add_more_props }
+                : null)}
             >
               {remove ? "remove" : addMore ? "add more" : ""}
             </Button>
@@ -192,6 +195,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
 };
 
 export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
+  id,
   title,
   desc,
   icon,
@@ -199,8 +203,27 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   groupName,
   selectedGroup,
   setSelectedGroup,
+  name,
+  onChange,
+  state,
+  onClick,
 }) => {
   const isChecked = selectedGroup === groupName;
+  const { company_id } = usePersonalInfoStore();
+
+  const handleSelectedGroup = useCallback(
+    debounce(async () => {
+      if (setSelectedGroup && groupName && company_id) {
+        setSelectedGroup(groupName);
+
+        const payload = {
+          company_type_id: id,
+        };
+        await selectCompanyModule(company_id?.toString(), payload);
+      }
+    }, 500),
+    []
+  );
 
   return (
     <div className="flex justify-between">
@@ -222,11 +245,16 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
             <GroupRadio
               checked={isChecked}
               groupName={groupName}
-              onClick={() => setSelectedGroup && setSelectedGroup(groupName)}
+              onClick={onClick ? onClick : () => {}}
             />
           )}
           {!groupName && (
-            <DocumentCheckbox darkText checked={isChecked}>
+            <DocumentCheckbox
+              darkText
+              name={name}
+              onChange={onChange}
+              state={state}
+            >
               {" "}
             </DocumentCheckbox>
           )}
@@ -240,12 +268,14 @@ export const GroupRadio: React.FC<GroupRadioProps> = ({ checked, onClick }) => {
   return (
     <button className="flex gap-3 text-start rounded-full" onClick={onClick}>
       <div
-        className={`rounded-full p-[2px] flex items-center justify-center ${checked ? "border border-blue-600" : ""
-          }`}
+        className={`rounded-full p-[2px] flex items-center justify-center ${
+          checked ? "border border-blue-600" : ""
+        }`}
       >
         <div
-          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${checked ? "bg-blue-600" : ""
-            }`}
+          className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${
+            checked ? "bg-blue-600" : ""
+          }`}
         ></div>
       </div>
     </button>
@@ -405,8 +435,9 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
             alt="Theme"
             width={1000}
             height={1000}
-            className={`w-full h-full object-contain ${isSelected ? "border-4 border-brand-9 rounded-lg" : ""
-              }`}
+            className={`w-full h-full object-contain ${
+              isSelected ? "border-4 border-brand-9 rounded-lg" : ""
+            }`}
           />
 
           <AnimatePresence>
@@ -500,10 +531,11 @@ export const WebsiteColorSchemes: React.FC<{
         <div
           key={index}
           role="button"
-          className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${selectedColor?.toLowerCase() === color.toLowerCase()
+          className={`h-[40px] w-[40px] my-2 rounded-md relative cursor-pointer ${
+            selectedColor?.toLowerCase() === color.toLowerCase()
               ? "border-2 border-blue-500 rounded-md h-[40px] w-[40px]"
               : ""
-            }`}
+          }`}
           style={{ backgroundColor: color }}
           onClick={() => onColorSelect(color)}
         >

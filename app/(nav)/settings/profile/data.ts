@@ -1,5 +1,10 @@
 import api, { handleAxiosError } from "@/services/api";
-import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import {
+  cleanPhoneNumber,
+  objectToFormData,
+} from "@/utils/checkFormDataForImageOrAvatar";
+import { toast } from "sonner";
+import { CompanySettingsResponse } from "../others/types";
 
 interface SocialLinks {
   facebook: string;
@@ -31,38 +36,37 @@ interface Directors {
 
 export interface CompanyDataApiResponse {
   data: {
-  id: number;
-  company_name: string;
-  email: string;
-  company_logo: string;
-  dark_logo: string;
-  is_verified: boolean;
-  phone_number: string;
-  head_office_address: string;
-  state: string;
-  local_government: string;
-  city: string;
-  utility_document: string;
-  date_of_registration: string;
-  cac_registration_number: string;
-  cac_certificate: string;
-  industry: string;
-  membership_number: string;
-  membership_certificate: string;
-  bio: string;
-  social_links: SocialLinks;
-  verification: Verification;
-  created_at: string;
-  updated_at: string;
-  directors: Directors[];
-  }
+    id: number;
+    company_name: string;
+    email: string;
+    company_logo: string;
+    dark_logo: string;
+    is_verified: boolean;
+    phone_number: string;
+    head_office_address: string;
+    state: string;
+    local_government: string;
+    city: string;
+    utility_document: string;
+    date_of_registration: string;
+    cac_registration_number: string;
+    cac_certificate: string;
+    industry: string;
+    membership_number: string;
+    membership_certificate: string;
+    bio: string;
+    social_links: SocialLinks;
+    verification: Verification;
+    created_at: string;
+    updated_at: string;
+    directors: Directors[];
+  };
 }
 
-
 export interface ProfileSettingsApiResponse {
-    user: userData;
-    company: companyData;
-    directors: Directors[];
+  user: userData;
+  company: companyData;
+  directors: Directors[];
 }
 
 export interface userData {
@@ -75,7 +79,6 @@ export interface userData {
   tier: number;
   account_level: string;
 }
-
 
 export interface companyData {
   company_id: number;
@@ -96,7 +99,7 @@ export interface companyData {
   phone_number: string;
   utility_document: string;
   cac_certificate: string;
-  membership_certificate: string
+  membership_certificate: string;
   x: string;
   facebook: string;
   instagram: string;
@@ -105,7 +108,6 @@ export interface companyData {
   tiktok: string;
   website: string;
 }
-
 
 // export interface directorData {
 //   phone: string;
@@ -132,15 +134,17 @@ export interface ProfileSettingsPageState {
   verifications: Verification;
 }
 
-export const initialPageData:ProfileSettingsPageState = {
-  directorsData: [{
-    id: 0,
-    full_name: "",
-    email: "",
-    phone_number: "",
-    profile_picture: "",
-    designation: "",
-  }],
+export const initialPageData: ProfileSettingsPageState = {
+  directorsData: [
+    {
+      id: 0,
+      full_name: "",
+      email: "",
+      phone_number: "",
+      profile_picture: "",
+      designation: "",
+    },
+  ],
   companyData: {
     company_name: "",
     email: "",
@@ -176,22 +180,21 @@ export const initialPageData:ProfileSettingsPageState = {
     membership_status: "" as "verified" | "unverified",
     utility_reason: "",
     utility_status: "" as "verified" | "unverified",
-  }
-
-}
+  },
+};
 
 // function to convert yes or no to verified or unverified
 const convertYesNoToVerify = (yesNo: string): string => {
   return yesNo === "Yes" ? "verified" : "unverified";
-}
+};
 
 export const transformProfileApiResponse = (
   response: CompanyDataApiResponse
 ): ProfileSettingsPageState => {
-  const res = response.data
+  const res = response.data;
   // console.log("profile settings response ", res);
   return {
-    companyData: { 
+    companyData: {
       company_name: res.company_name,
       email: res.email,
       bio: res.bio,
@@ -218,20 +221,29 @@ export const transformProfileApiResponse = (
       tiktok: res.social_links.tiktok,
       youtube: res.social_links.youtube,
       website: res.social_links.website,
-     },
+    },
     directorsData: res.directors,
     verifications: {
-      cac_status: convertYesNoToVerify(res.verification.cac_status) as "verified" | "unverified",
+      cac_status: convertYesNoToVerify(res.verification.cac_status) as
+        | "verified"
+        | "unverified",
       cac_reason: res.verification.cac_reason,
-      membership_status: convertYesNoToVerify(res.verification.membership_status) as "verified" | "unverified",
+      membership_status: convertYesNoToVerify(
+        res.verification.membership_status
+      ) as "verified" | "unverified",
       membership_reason: res.verification.membership_reason,
-      utility_status: convertYesNoToVerify(res.verification.utility_status) as "verified" | "unverified",
-      utility_reason: res.verification.utility_reason
-    }
+      utility_status: convertYesNoToVerify(res.verification.utility_status) as
+        | "verified"
+        | "unverified",
+      utility_reason: res.verification.utility_reason,
+    },
   };
 };
 
-export function safeParse<T>(jsonString: string | null | undefined, defaultValue: T): T {
+export function safeParse<T>(
+  jsonString: string | null | undefined,
+  defaultValue: T
+): T {
   try {
     return jsonString ? JSON.parse(jsonString) : defaultValue;
   } catch (error) {
@@ -240,10 +252,9 @@ export function safeParse<T>(jsonString: string | null | undefined, defaultValue
   }
 }
 
-
 // Send OTP to verify wallet PIN
 // /security/wallet-otp
-export const sendWalletSecurityOTp = async (data:any) => {
+export const sendWalletSecurityOTp = async (data: any) => {
   // console.log("data", data)
   try {
     const response = await api.post("/security/wallet-otp", data);
@@ -258,7 +269,7 @@ export const sendWalletSecurityOTp = async (data:any) => {
 
 // change wallet pin - /security/change_pin
 
-export const changeWalletPin = async(data: any) => {
+export const changeWalletPin = async (data: any) => {
   try {
     const response = await api.post("/security/change_pin", data);
     if (response.status === 200) {
@@ -268,36 +279,36 @@ export const changeWalletPin = async(data: any) => {
     handleAxiosError(error);
     return false;
   }
-}
+};
 
 // Forget wallet Pin,
 // /security/forget_pin/password
 
-export const ForgetWalletPinPassword = async(data: any)=>{
-  try{
+export const ForgetWalletPinPassword = async (data: any) => {
+  try {
     const res = await api.post("/security/forget_pin/password", data);
-    if(res.status === 200){
+    if (res.status === 200) {
       return res;
     }
-  } catch(err){
+  } catch (err) {
     handleAxiosError(err);
     return false;
   }
-}
+};
 
 // New wallet Pin
 // /security/forget_pin
-export const createNewWalletPin = async(data:any)=>{
- try{
-  const res = await api.post("/security/forget_pin", data);
-  if(res.status === 200){
-    return res;
-  }
- } catch(err){
-  handleAxiosError(err);
+export const createNewWalletPin = async (data: any) => {
+  try {
+    const res = await api.post("/security/forget_pin", data);
+    if (res.status === 200) {
+      return res;
+    }
+  } catch (err) {
+    handleAxiosError(err);
     return false;
- }
-}
+  }
+};
 
 interface CompanyPayload {
   company_name: string;
@@ -325,11 +336,12 @@ interface CompanyPayload {
   // directors: Director[];
 }
 
-
-export const transformFormCompanyData = (formData: FormData): CompanyPayload => {
+export const transformFormCompanyData = (
+  formData: FormData
+): CompanyPayload => {
   const data = {} as CompanyPayload;
 
-  console.log(formData)
+  console.log(formData);
 
   data.company_logo = formData.get("light_company_logo") as string | File;
   data.dark_logo = formData.get("dark_company_logo") as string | File;
@@ -359,10 +371,12 @@ export const transformFormCompanyData = (formData: FormData): CompanyPayload => 
   return data;
 };
 
-
-export const updateCompanyDetails = async(formData: Record<string, any>, id: string ) => {
+export const updateCompanyDetails = async (
+  formData: Record<string, any>,
+  id: string
+) => {
   try {
-    const data = objectToFormData(formData)
+    const data = objectToFormData(formData);
     data.append("_method", "PATCH");
     const response = await api.post(`/company/${id}/update`, data);
     if (response.status === 200) {
@@ -373,22 +387,162 @@ export const updateCompanyDetails = async(formData: Record<string, any>, id: str
     handleAxiosError(error);
     return false;
   }
+};
+
+export const updateCompanyWebsiteTemplate = async (
+  formData: Record<string, any>
+) => {
+  try {
+    const data = objectToFormData(formData);
+    //data.append("_method", "PATCH");
+    const response = await api.patch(
+      `company/settings/website_settings`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Update successful");
+      return true;
+    }
+    console.log("res", response);
+  } catch (error) {
+    //handleAxiosError(error);
+    return false;
+  }
+};
+
+export const updateCompanyDomain = async (
+  companyId: string,
+  domainName: string
+) => {
+  try {
+    const payload = {
+      domain: domainName,
+    };
+    const response = await api.post(
+      `company/update-domain/${companyId}`,
+      payload
+    );
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
+    console.log("res", response);
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const updateCompanyWebsiteTypography = async (data: any) => {
+  try {
+    const response = await api.patch(
+      `company/settings/website_settings`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Update successful");
+      return response;
+    }
+    // console.log('res', response)
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const updateWebsitePageAndColorScheme = async (data: any) => {
+  try {
+    const response = await api.patch(
+      `company/settings/website_settings`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Update successful");
+      return response;
+    }
+    // console.log('res', response)
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export interface IWebsiteSettings {
+  about_us_display: boolean;
+  color_scheme: string;
+  modules_listing: boolean;
+  rent_properties: boolean;
+  services_contact_page: boolean;
+  sale_properties: boolean;
+  shortlet_properties: boolean;
+  social_link_visibility: boolean;
+  sponsored_logo: boolean;
+  staff_branch_options: boolean;
 }
+export const transformWebsiteSettings = (
+  data: CompanySettingsResponse
+): IWebsiteSettings => {
+  return {
+    about_us_display: data?.data?.website_settings?.about_us_display,
+    color_scheme: data?.data?.website_settings?.color_scheme,
+    rent_properties: true,
+    services_contact_page: data?.data?.website_settings?.services_contact_page,
+    sale_properties: true,
+    shortlet_properties: true,
+    social_link_visibility:
+      data?.data?.website_settings?.social_link_visibility,
+    sponsored_logo: data?.data?.website_settings?.sponsored_logo,
+    staff_branch_options: data?.data?.website_settings?.staffs_branch_options,
+    modules_listing: data?.data?.website_settings?.modules_listing,
+  };
+};
 
+export const transformWebsiteTypography = (
+  companySettings: CompanySettingsResponse
+) => {
+  const websiteSettings = companySettings?.data?.website_settings || {};
 
+  return {
+    website_font: websiteSettings.website_font || "",
+    typography: Object.entries(websiteSettings.typography || {}).reduce(
+      (acc, [key, value]: [string, any]) => {
+        acc[key] = {
+          fontSize: value.fontSize || undefined,
+          fontWeight: value.fontWeight || undefined,
+        };
+        return acc;
+      },
+      {} as { [key: string]: { fontWeight?: string; fontSize?: string } }
+    ),
+  };
+};
 
-export const cleanStringtoArray = (phone_number:any)=> {
+export const cleanStringtoArray = (phone_number: any) => {
   // Check if the string is empty or not
   if (phone_number && phone_number.trim()) {
     try {
-        // Parse the string to an array
-        const phoneNumbersArray = JSON.parse(phone_number);
-        console.log("Parsed phone numbers array:", phoneNumbersArray);
-        console.log("Type of phoneNumbersArray:", typeof phoneNumbersArray); // Should log "object"
+      // Parse the string to an array
+      const phoneNumbersArray = JSON.parse(phone_number);
+      console.log("Parsed phone numbers array:", phoneNumbersArray);
+      console.log("Type of phoneNumbersArray:", typeof phoneNumbersArray); // Should log "object"
     } catch (error) {
-        console.error("Failed to parse phone_number:", error);
+      console.error("Failed to parse phone_number:", error);
     }
   } else {
     console.error("The phone_number string is empty or invalid.");
   }
-}
+};

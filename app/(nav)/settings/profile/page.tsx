@@ -150,7 +150,6 @@ const Profile = () => {
     }
   };
 
-
   return (
     <>
       <SettingsSection title="profile & details">

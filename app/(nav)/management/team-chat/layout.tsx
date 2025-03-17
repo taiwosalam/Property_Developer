@@ -22,7 +22,11 @@ import {
 } from "./data";
 import TeamChartCard from "./TeamChartCard";
 import SendIcon from "@/public/icons/send-msg.svg";
-import { SearchIcon, SendMessageIcon } from "@/public/icons/icons";
+import {
+  EmptyListIcon,
+  SearchIcon,
+  SendMessageIcon,
+} from "@/public/icons/icons";
 import { TeamChatHeader } from "./team-chat-components";
 import DeleteModal from "./DeleteModal";
 import { Box } from "@mui/material";
@@ -50,6 +54,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import TeamMessageAttachment from "@/components/Message/Team/TeamMessageAttachment";
 
 import dayjs from "dayjs";
+import Button from "@/components/Form/Button/button";
 
 const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { id } = useParams();
@@ -222,16 +227,52 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   return (
     <>
       <TeamChatHeader />
-      <div className="flex bg-white dark:bg-darkText-primary h-[70vh]">
-        {isCustom && id ? null : (
-          <div className="flex flex-1 p-4 pr-0">
+      <div className="flex bg-white dark:bg-darkText-primary h-[70vh] relative">
+       {groupList?.length === 0 && ( <div className="flex gap-2 m-4">
+        <div>
+          <h2 className="text-lg mb-2 font-semibold">Groups</h2>
+          <div className="flex items-center justify-center text-sm rounded-full w-6 h-6 text-white bg-brand-9 mt-[2px]">
+            {groupCount ? groupCount : 0}
+          </div>
+        </div>
+        
+          <div className="flex justify-center flex-col items-center my-auto w-screen">
+            <div className="w-full text-brand-9 h-full flex justify-center items-center mb-4">
+              <EmptyListIcon />
+            </div>
+            <Button size="sm_medium" className="py-2 px-7 ">
+              Create Team Chat
+            </Button>
+            <div className="max-w-3xl mt-6 text-slate-600 space-y-4 w-[85%] mx-auto">
+              <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
+                You haven&apos;t created a team chat yet
+              </p>
+              <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20 w-full" />
+              <p className="text-text-secondary dark:text-darkText-2 font-normal text-sm">
+                It looks like you haven&apos;t created a team chat yet. Click
+                Create Team Chat to set one up. Team chat allows you to create a
+                group chat for a specific department in your organization.
+                <br />
+                <br />
+                You can select users to add, assign a name and description.
+                All added members will see the group in their profiles.
+                To learn more about this page later, click your profile picture at the
+                top right of the dashboard and select Assistance & Support.
+                <br />
+              </p>
+            </div>
+          </div>
+          </div>
+        )}
+        {isCustom && groupList && groupList.length && id ? null : (
+          <div className="flex flex-1 p-4 pr-0 w-full">
             <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
-              <div className="flex gap-4 items-center justify-between sticky top-0 z-[2] bg-white dark:bg-darkText-primary pb-2">
-                {!isSearch && groupCount && (
-                  <div className="flex gap-2 items-center">
+              <div className="flex gap-4 items-center w-full justify-between sticky top-0 z-[2] bg-white dark:bg-darkText-primary pb-2">
+                {!isSearch && (
+                  <div className="flex items-center gap-2 w-full">
                     <h2 className="text-lg font-semibold">Groups</h2>
                     <div className="flex items-center justify-center text-sm rounded-full w-6 h-6 text-white bg-brand-9">
-                      {groupCount ?? groupCount}
+                      {groupCount ? groupCount : 0}
                     </div>
                   </div>
                 )}
@@ -250,10 +291,16 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   className="flex"
                   onClick={() => setIsSearch((prev) => !prev)}
                 >
-                  <SearchIcon size={35} />
+                  {groupList && groupList.length ? (
+                    <SearchIcon size={35} />
+                  ) : (
+                    ""
+                  )}
                 </button>
               </div>
-              <div className="custom-flex-col relative z-[1] pb-4">
+              <div className="custom-flex-col relative z-[9999] pb-4">
+                {/* {groupList && groupList.length ? <SearchIcon size={35} /> : ""} */}
+
                 {loading ? (
                   <TeamMessageCardSkeleton count={5} />
                 ) : (
@@ -276,7 +323,7 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
         {(!isCustom || id) && (
           <div className="flex-1">
             <div className="custom-flex-col h-full">
-              {children}
+              {groupList && groupList?.length ? children : ""}
               {id && (
                 <div className="py-4 px-6 flex items-center gap-4">
                   <Modal>
