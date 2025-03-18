@@ -81,5 +81,7 @@ export const config = {
     "/applications/:path*",
     "/documents/:path*",
     "/settings/:path*",
+    "/messages/:path*", 
+    "/notifications/:path*", 
   ],
 };
