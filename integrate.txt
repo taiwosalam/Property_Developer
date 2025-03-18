@@ -1,3 +1,542 @@
+// import { empty } from "@/app/config";
+// import Image from "next/image";
+// import React from "react";
+
+// const DocumentPreview = () => {
+//   return (
+//     <div className="w-full">
+//       <div className="flex flex-col items-center justify-center">
+//         <h2 className="text-[64px] font-semibold"> TENANCY AGREEMENT </h2>
+//         <h2 className="text-[28px] font-normal uppercase"> between </h2>
+//         <p className="text-[40px] uppercase font-semibold">
+//           Mr agunbiade david
+//         </p>
+//         <span className="text-sm capitalize">(landlord/landlady)</span>
+//         <p className="text-[20px] text-base uppercase mt-6 mb-8"> and </p>
+//         <p className="text-[40px] uppercase font-semibold">
+//           Mr agunbiade david
+//         </p>
+//         <span className="text-sm capitalize">(Tenant)</span>
+//       </div>
+//       <div className="flex items-start justify-center mt-8">
+//         <p className="uppercase text-center tracking-wide font-normal text-[20px]">
+//           in respect of a two (2) bedroom bungalow in a compound with a 4 flats
+//           of 3 bedroom situate at major salawu area, bodija ibadan
+//         </p>
+//       </div>
+
+//       <div className="attorney flex justify-between mt-4">
+//         <p className="text-[20px] uppercase font-normal">
+//           Through his lawful Attorney
+//         </p>
+//         <p className="text-[20px] font-normal uppercase">
+//           Mr. Agunbiade David of No 4, Salawu Area, Bodija, Ibadan
+//         </p>
+//       </div>
+
+//       {/* ATTORNEY LOGO */}
+//       <div className="flex items-start justify-between mt-10">
+//         <i>Prepared by:</i>
+//         <div className="wrapper">
+//           <div className="logo w-[430px] h-[105px] bg-white shadow-md rounded-md">
+//             <Image
+//               alt="lawyer-logo"
+//               src={`/empty/logo-placeholder.svg`}
+//               width={100}
+//               height={100}
+//               className="w-full h-full object-contain"
+//             />
+//           </div>
+//           <div className="flex flex-col items-center mt-4 gap-1">
+//             <p className="uppercase font-normal text-[20px]">
+//               {" "}
+//               T. dayo oyewumi esd,{" "}
+//             </p>
+//             <p className="uppercase font-normal text-[20px]">
+//               {" "}
+//               wellspring law firm,{" "}
+//             </p>
+//             <p className="uppercase font-normal text-[20px]">
+//               {" "}
+//               a30/31, mokola estate,{" "}
+//             </p>
+//             <p className="uppercase font-normal text-[20px]">
+//               {" "}
+//               behind veterinary hospital,{" "}
+//             </p>
+//             <p className="uppercase font-normal text-[20px]">
+//               {" "}
+//               mokola, ibadan, oyo state,{" "}
+//             </p>
+//             <p className="lowercase font-normal text-[20px] underline">
+//               {" "}
+//               wellspringlawfirm@gmail.com{" "}
+//             </p>
+//             <p className="uppercase font-normal text-[20px]">
+//               {" "}
+//               081028347346/09024316261{" "}
+//             </p>
+//           </div>
+//         </div>
+//         <div className="seal custom-secondary-bg w-[100px] h-[100px] rounded-full">
+//           <Image
+//             alt="seal"
+//             src={empty}
+//             width={100}
+//             height={100}
+//             className="w-full h-full object-contain rounded-full"
+//           />
+//         </div>
+//       </div>
+
+//       {/* ATTEIST */}
+//       <div className="flex flex-col items-start my-6">
+//         <p>
+//           <strong>THIS TENANCY AGREEMENT</strong> made this 24th day of
+//           November, 2025
+//         </p>
+//         <p className="mt-4">
+//           <span className="uppercase">BETWEEN ADEBAYO OLUSOJI OKELARIN </span>
+//           <span>
+//             of No.12, Kudeti Street, Off Adeniyi Jones Avenue, Ikeja Lagos
+//             State. (hereinafter referred to as the “LANDLORD” which expression
+//             shall where the context so admits includes his heirs
+//             successors-in-title, representatives and assigns) of the one part.
+//           </span>
+//         </p>
+//         <p className="uppercase my-4">AND</p>
+//         <p className="">
+//           <span>
+//             ADEGBOYEGA IBUKUN
+//             <span>
+//               of No 4, Salawu Area, Bodija, Ibadan (hereinafter referred to as
+//               the “TENANT” which expression shall where the context so admits
+//               includes his heirs successors-in-title, representatives and
+//               assigns) of the other part.
+//             </span>
+//           </span>
+//         </p>
+//       </div>
+
+//       {/* <div className="counts">
+//         <ol className="list-decimal">
+//           <li>
+//             <p className="uppercase font-bold">whereas</p>
+//             <p>
+//               The legal title to the Five (5) Bedroom Duplex Apartment and its
+//               appurtenances being at Bodija Estate, New Bodija, Ibadan, Oyo
+//               State inures in favor of and belongs to the Landlord.
+//             </p>
+//             <ol>
+//               <li>
+//                 The Tenant is desirous of renting the said premises for
+//                 Short-let Services, Hospitality and Residential Purposes.
+//               </li>
+//               <li>
+//                 At the request of tenant, the Landlord has agreed to let the
+//                 Premises for the above Purposes on the terms herein set-out.
+//               </li>
+//               <li>
+//                 The Premises which is the subject matter of this Agreement is
+//                 free from all encumbrances.
+//               </li>
+//             </ol>
+//           </li>
+//         </ol>
+//       </div> */}
+
+//       <div className="counts">
+//         {/* <!-- Main list with counter reset --> */}
+//         <ol className="list-none pl-0" style={{ counterReset: "item" }}>
+//           {/* <!-- First main item --> */}
+//           <li
+//             className="relative pl-8 mb-4"
+//             style={{ counterIncrement: "item" }}
+//           >
+//             {/* <!-- First number display using ::before pseudo-element --> */}
+//             <div className="absolute left-0 font-bold before:content-[counter(item)'.']"></div>
+//             <p className="uppercase font-bold">whereas</p>
+//             <p>
+//               The legal title to the Five (5) Bedroom Duplex Apartment and its
+//               appurtenances being at Bodija Estate, New Bodija, Ibadan, Oyo
+//               State inures in favor of and belongs to the Landlord.
+//             </p>
+
+//             {/* <!-- Sublist with its own counter --> */}
+//             <ol
+//               className="list-none pl-4 mt-2"
+//               style={{ counterReset: "subitem" }}
+//             >
+//               {/* <!-- First subitem --> */}
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 The Tenant is desirous of renting the said premises for
+//                 Short-let Services, Hospitality and Residential Purposes.
+//               </li>
+//               {/* <!-- Second subitem --> */}
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 At the request of tenant, the Landlord has agreed to let the
+//                 Premises for the above Purposes on the terms herein set-out.
+//               </li>
+//               {/* <!-- Third subitem --> */}
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 The Premises which is the subject matter of this Agreement is
+//                 free from all encumbrances.
+//               </li>
+//             </ol>
+//           </li>
+
+//           {/* <!-- Second main item --> */}
+//           <li
+//             className="relative pl-8 mb-4"
+//             style={{ counterIncrement: "item" }}
+//           >
+//             <div className="absolute left-0 font-bold before:content-[counter(item)'.']"></div>
+//             <p className="uppercase font-bold">
+//               NOW THIS AGREEMENT WITNESSES AS FOLLOWS
+//             </p>
+
+//             {/* <!-- Sublist for second item --> */}
+//             <ol
+//               className="list-none pl-4 mt-2"
+//               style={{ counterReset: "subitem" }}
+//             >
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 The Landlord hereby lets to the Tenant and the Tenant hereby
+//                 accepts to let the <b>Five (5) Bedroom Duplex Apartment</b> and
+//                 its appurtenances being
+//                 <b>at Bodija Estate, New Bodija, Ibadan, Oyo State</b> paying
+//                 the sum of <b>N10,000, 000.00 (Ten Million Naira)</b> only as
+//                 Rent, the receipt of which the Landlord hereby acknowledges.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 The tenancy hereby created is for a term of 2 (Two) years
+//                 certain and definite, commencing from the
+//                 <b>
+//                   27th day of February, 2025 and shall terminate on the 26th day
+//                   of February 2027
+//                 </b>
+//               </li>
+//             </ol>
+//           </li>
+
+//           {/* <!-- third main item --> */}
+//           <li
+//             className="relative pl-8 mb-4"
+//             style={{ counterIncrement: "item" }}
+//           >
+//             <div className="absolute left-0 font-bold before:content-[counter(item)'.']"></div>
+//             <p className="uppercase font-bold">
+//               THE LANDLORD HEREBY CONVENANTS:
+//             </p>
+
+//             {/* <!-- Sublist for second item --> */}
+//             <ol
+//               className="list-none pl-4 mt-2"
+//               style={{ counterReset: "subitem" }}
+//             >
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To keep the Premises structurally sound and suitable for
+//                 <b> residential </b> purposes with the exteriors of the Premises
+//                 and all fixtures thereto in good and tenantable condition.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To provide Solar Energy for the tenant if she desires to consume
+//                 same at her own expense.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 In the event of the Premises or any part thereof being damaged
+//                 or destroyed not by the doing of the tenant but by fire,
+//                 tornado, earthquake or act of god, the landlord shall reinstate
+//                 same at his expense.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 That the Tenant having paid the rent, the Landlord hereby
+//                 covenants to keep observing and performing the several covenants
+//                 and stipulations herein on his part, and to grant the Tenant
+//                 quiet enjoyment without any interruption by herself, her agents
+//                 or persons lawfully claiming through or under her.
+//               </li>
+//             </ol>
+//           </li>
+
+//           {/* <!-- fourth main item --> */}
+//           <li
+//             className="relative pl-8 mb-4"
+//             style={{ counterIncrement: "item" }}
+//           >
+//             <div className="absolute left-0 font-bold before:content-[counter(item)'.']"></div>
+//             <p className="uppercase font-bold">THE TENANT HEREBY COVENANTS:</p>
+
+//             {/* <!-- Sublist for second item --> */}
+//             <ol
+//               className="list-none pl-4 mt-2"
+//               style={{ counterReset: "subitem" }}
+//             >
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To use the Premises for residential purposes only.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To pay for water, waste, electricity and other bills in the
+//                 Premises.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To bear, pay and discharge all local administration rates
+//                 imposed or charged upon the owner of the Premises as may be
+//                 applicable to it.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To neither Change nor alter the existing paintings on the walls
+//                 of the entire property by either changing the colours or
+//                 fixating wallpapers or any other permanent alterations of the
+//                 aesthetics, he may however improve on same while maintaining the
+//                 existing colours.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To neither liter the compound with luggage, spare parts, shaven
+//                 or any debris, whatsoever; to not dry clothes on the walls or
+//                 rails; and to not tamper or cause any person to tamper with the
+//                 wiring system, solar cables or plumbing system.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To not attach any nails on the walls, pound on any floor other
+//                 than the ground floor, smoke or burn any form of materials or
+//                 even make fire within the premises.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To pay a of{" "}
+//                 <b>N500,000.00 (Five Hundred Thousand Naira) only </b> Caution
+//                 fee, Refundable on the termination of tenancy, subject to the
+//                 absence of any damage within the apartment.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To not accommodate or harbor any visitor with patent Criminal
+//                 Records or tendency and all reasonable suspicion must be
+//                 promptly reported to the appropriate law enforcement agency.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 To keep the interior of the Premises and fixtures and fittings
+//                 therein in good and tenantable condition, reasonable wear and
+//                 tear or damage by fire (not willfully or negligently caused or
+//                 act of God generally exempted).
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 Not to make or permit to be made any structural alterations or
+//                 construction work within the Premises without the written
+//                 consent of the Landlord sought for and obtained.
+//               </li>
+//               <li
+//                 className="relative pl-8 mb-2"
+//                 style={{ counterIncrement: "subitem" }}
+//               >
+//                 <div className="absolute left-0 before:content-[counter(item)'.'counter(subitem)]"></div>
+//                 Not to use part or the entire Premises for any illegal purposes
+//                 or illegal businesses whatsoever; to forbid any loud music,
+//                 partying or any form of Nuisance whatsoever within the premises
+//               </li>
+//             </ol>
+//           </li>
+//         </ol>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default DocumentPreview;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+// import React, { useEffect, useState } from "react";
+
+// // Imports
+// import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+// import useFetch from "@/hooks/useFetch";
+// import { transformDocumenArticleResponse } from "./data";
+// import { CheckboxOption, DocumentsAPIResponse } from "./types";
+// import DOMPurify from "dompurify";
+// import NetworkError from "../Error/NetworkError";
+// import CheckBoxLoader from "../Loader/CheckBoxLoader";
+
+// interface DocumentTenancyAgreementsProps {
+//   id: number;
+//   defaultOptions?: CheckboxOption[];
+//   onOptionsChange?: (options: CheckboxOption[]) => void;
+// }
+
+// const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
+//   id,
+//   onOptionsChange,
+//   defaultOptions,
+// }) => {
+//   const { data, loading, error, isNetworkError } =
+//     useFetch<DocumentsAPIResponse>(`/property-document/documents/${id}`);
+//   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>(defaultOptions);
+//   const [selectedOptions, setSelectedOptions] = useState<CheckboxOption[]>([]);
+
+//   console.log("def", id)
+//   useEffect(() => {
+//     if (data) {
+//       const options = transformDocumenArticleResponse(data);
+//       setCheckboxOptions(options);
+
+//       if (onOptionsChange) {
+//         onOptionsChange(options);
+//       }
+//     }
+//   }, [data]);
+
+//   // Whenever the selected options change, call onOptionsChange callback if provided.
+//   useEffect(() => {
+//     if (onOptionsChange) {
+//       onOptionsChange(selectedOptions);
+//     }
+//   }, [selectedOptions, onOptionsChange]);
+
+//   // Toggle the selected option when a DocumentCheckbox is clicked.
+//   const handleOptionToggle = (option: CheckboxOption) => {
+//     setSelectedOptions((prev) => {
+//       const exists = prev.find((item) => item.value === option.value);
+//       if (exists) {
+//         return prev.filter((item) => item.value !== option.value);
+//       } else {
+//         return [...prev, option];
+//       }
+//     });
+//   };
+
+//   // console.log("checkboxOptions", checkboxOptions);
+
+//   if (isNetworkError) return <NetworkError />;
+//   if (error) return <div>{error}</div>;
+
+//   return (
+//     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+//       {loading ? (
+//         <CheckBoxLoader />
+//       ) : (
+//         checkboxOptions.map((option) => (
+//           <DocumentCheckbox
+//             onClick={() => handleOptionToggle(option)}
+//             key={option.value}
+//             title={option.title}
+//           >
+//             <div
+//               dangerouslySetInnerHTML={{
+//                 __html: DOMPurify.sanitize(option.description),
+//               }}
+//             />
+//           </DocumentCheckbox>
+//         ))
+//       )}
+//     </div>
+//   );
+// };
+
+// export default DocumentTenancyAgreements;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  const handleClickSend = async () => {
     if (activeStep === "send funds") {
       if (!description) {

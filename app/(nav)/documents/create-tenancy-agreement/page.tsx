@@ -54,6 +54,7 @@ const CreateTenancyAggrement = () => {
     if (!payload.articles.length)
       return toast.warning("Please select at least one option to save draft");
     try {
+      setReqLoading(true)
       const res = await createPropertyDocument(objectToFormData(payload));
       if (res) {
         toast.success("Draft saved successfully");
@@ -175,7 +176,7 @@ const CreateTenancyAggrement = () => {
             size="base_bold"
             className="py-2 px-6"
           >
-            save as draft
+            { reqLoading ? "Please wait..." : "Save as draft" }
           </Button>
         </div>
       </FixedFooter>
