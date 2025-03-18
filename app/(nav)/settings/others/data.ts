@@ -16,7 +16,6 @@ export const addNewDirector = async (formData: FormData): Promise<boolean> => {
 
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("addNewDirector"));
-      toast.success("New director added");
 
       return true;
     }
@@ -72,7 +71,7 @@ export const otherNotificationSettings = async (
       },
     });
     if (response.status === 200 || response.status === 201) {
-      toast.success("Notification updated");
+      //toast.success("Notification updated");
       window.dispatchEvent(new Event("otherSettings"));
     }
   } catch (error) {

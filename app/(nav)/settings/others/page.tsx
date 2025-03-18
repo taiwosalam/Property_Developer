@@ -331,7 +331,12 @@ const Others = () => {
   };
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
-    if (userPlan !== "professional") return;
+    if (userPlan !== "professional") {
+      // toast.error(
+      //   "You cannot toggle the switch until you upgrade to a professional plan."
+      // );
+      return;
+    }
     setNotificationSettings((prev) => ({
       ...prev,
       [name]: checked,
@@ -343,6 +348,8 @@ const Others = () => {
       [name]: checked,
     }));
   };
+
+  // handle company module change
   const handleCompanyModuleSettings = (name: string, checked: boolean) => {
     const modules = { company_type_id: checked };
     setSelectedModule(modules);
@@ -352,9 +359,7 @@ const Others = () => {
     const newValue =
       typeof value === "function" ? value(notificationSettings[name]) : value;
     if (userPlan !== "professional") {
-      toast.error(
-        "You cannot toggle the switch until you upgrade to a professional plan."
-      );
+      return;
     } else {
       setNotificationSettings((prev) => ({
         ...prev,
@@ -548,7 +553,7 @@ const Others = () => {
     } finally {
       setProcessing(false);
     }
-  }
+  };
   //type DirectorsFormOptions = "options" | "choose-avatar";
 
   // const handleSubmit = async (data: FormData) => {
@@ -591,6 +596,7 @@ const Others = () => {
   };
 
   // this function updates company module
+  // use this when other module is available
   const handleCompanyModuleUpdate = async () => {
     if (!selectedGroup) {
       return;
@@ -882,9 +888,6 @@ const Others = () => {
           </div>
         </div>
         <div className="flex justify-end mt-2">
-          {/* <Button onClick={saveSettings} disabled={loadingNotification || userPlan !== "professional"} className="text-sm py-2 px-2">
-            {loadingNotification ? "Updating..." : "Update"}
-          </Button> */}
           <SettingsUpdateButton
             loading={loadingNotification}
             action={userPlan === "professional" ? saveSettings : undefined}
@@ -922,6 +925,5 @@ const Others = () => {
     </>
   );
 };
-
 
 export default Others;

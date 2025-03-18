@@ -307,6 +307,7 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
       toast.error(
         "You cannot toggle the switch until you upgrade to a professional plan."
       );
+      return;
     } else {
       onChange(value, !checked);
     }
