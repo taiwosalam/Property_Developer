@@ -134,11 +134,20 @@ const ManageTenancyAgreement = () => {
           </ModalContent>
         </Modal>
         <div className="flex gap-4">
-          <Button variant="sky_blue" size="base_bold" className="py-2 px-6">
+          <Button
+            href={`/documents/preview/?d=${documentId}`}
+            variant="sky_blue"
+            size="base_bold"
+            className="py-2 px-6"
+          >
             Preview
           </Button>
-          <Button size="base_bold" className="py-2 px-6">
-            save
+          <Button
+            // onClick={handleSaveDraft}
+            size="base_bold"
+            className="py-2 px-6"
+          >
+            Save
           </Button>
         </div>
       </FixedFooter>
