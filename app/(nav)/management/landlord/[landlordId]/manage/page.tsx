@@ -156,7 +156,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                   edit
                 </Button>
                 <Button size="base_medium" className="py-2 px-8">
-                  update with ID
+                  update with email
                 </Button>
               </>
             )}
