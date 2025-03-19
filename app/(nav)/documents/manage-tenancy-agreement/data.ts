@@ -7,6 +7,7 @@ export interface DocumentArticle {
 
 export interface LawyerDetails {
   type: string;
+  id: number;
   category: string;
   property_type: string;
   property_sub_type: string;

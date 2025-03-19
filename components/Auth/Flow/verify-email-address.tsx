@@ -50,15 +50,12 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
       if (status) {
         if (type === "sign up") {
-          console.log("role here for redirect", role)
+          // console.log("role here for redirect", role)
           if (role !== "director") {
             const dashboardPage = getDashboardPage(role)
-            router.push(dashboardPage)
-            // router.push("/setup"); //NOT
-            // router.push("/dashboard"); //FIX ROUTE TO DASHBOARD ACCORDING TO ROLE LATER
+            // router.push(dashboardPage); // debugging
+            router.push("/setup"); // Ensure redirection to setup
           } else {
-            // const dashboardPage = getDashboardPage(role)
-            // router.push(dashboardPage)
             router.push("/setup");
           }
         } else if (type === "forgot password") {

@@ -13,8 +13,7 @@ const SetupHeader: React.FC<{ requestLoading: boolean }> = ({
           Finish Setting Up Your Account!
         </h1>
         <p className="text-text-tertiary hidden md:block">
-          Please furnish the following details to finalize the setup of your
-          account and company profile.
+          Complete pending and approval including its relation in administrator
         </p>
       </div>
       <Button type="submit" disabled={!canSubmit || requestLoading}>

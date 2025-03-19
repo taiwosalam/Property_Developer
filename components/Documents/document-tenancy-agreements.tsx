@@ -30,13 +30,7 @@ const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<CheckboxOption[]>([]);
 
-  // Handle missing ID case
-  useEffect(() => {
-    if (!id) {
-      toast.warning("Document ID is missing");
-      router.back();
-    }
-  }, [id, router]);
+  console.log("id", id)
 
   // Set up options from API data
   useEffect(() => {
@@ -80,10 +74,7 @@ const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
     return selectedOptions.some((item) => item.value === option.value);
   };
 
-  // console.log("checkboxOptions", checkboxOptions)
-  // console.log("data", data)
-  // If no ID, return null to prevent further rendering
-  if (!id) return <div>Document ID is missing</div>;
+  
   if (isNetworkError) return <NetworkError />;
   if (error) return <div>{error}</div>;
   if (loading) return <CheckBoxLoader />;

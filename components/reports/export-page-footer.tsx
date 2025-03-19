@@ -5,10 +5,13 @@ import { useRouter } from "next/navigation";
 
 interface ExportPageFooterProps {
   printRef?: React.RefObject<HTMLDivElement>;
+  firstPageRef?: React.RefObject<HTMLDivElement>;
+  restOfContentRef?: React.RefObject<HTMLDivElement>;
 }
 
-const ExportPageFooter: React.FC<ExportPageFooterProps> = ({ printRef }) => {
-  const { handlePrint, handleDownload } = useExport(printRef);
+const ExportPageFooter: React.FC<ExportPageFooterProps> = ({ printRef, firstPageRef, restOfContentRef  }) => {
+  // const { handlePrint, handleDownload } = useExport(printRef);
+  const { handlePrint, handleDownload } = useExport(firstPageRef, restOfContentRef);
   const router = useRouter();
   return (
     <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
