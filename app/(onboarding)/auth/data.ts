@@ -351,6 +351,9 @@ export const verifyEmail = async (otp: string): Promise<boolean> => {
     );
     const message = data?.message || 'Email verified successfully!';
     toast.success(message);
+
+    // Ensure the user is redirected to setup after email verification (from gpt)
+    // useAuthStore.getState().setAuthState('status', 'redirect to setup');
     return true;
   } catch (error) {
     handleAxiosError(error, 'Verification failed. Please try again.');

@@ -22,31 +22,31 @@ export const lawFirm: LawFirm = {
   contactDetails: [
     {
       text: "T. dayo oyewumi esd,",
-      className: "uppercase font-normal text-[20px]",
+      className: "uppercase font-normal text-[30px]",
     },
     {
       text: "wellspring law firm,",
-      className: "uppercase font-normal text-[20px]",
+      className: "uppercase font-normal text-[30px]",
     },
     {
       text: "a30/31, mokola estate,",
-      className: "uppercase font-normal text-[20px]",
+      className: "uppercase font-normal text-[30px]",
     },
     {
       text: "behind veterinary hospital,",
-      className: "uppercase font-normal text-[20px]",
+      className: "uppercase font-normal text-[30px]",
     },
     {
       text: "mokola, ibadan, oyo state,",
-      className: "uppercase font-normal text-[20px]",
+      className: "uppercase font-normal text-[30px]",
     },
     {
       text: "wellspringlawfirm@gmail.com",
-      className: "lowercase font-normal text-[20px] underline",
+      className: "lowercase font-normal text-[30px] underline",
     },
     {
-      text: "081028347346/09024316261",
-      className: "uppercase font-normal text-[20px]",
+      text: "081038347346/09034316361",
+      className: "uppercase font-normal text-[30px]",
     },
   ],
   sealSrc: empty,
@@ -169,8 +169,8 @@ export const witness: Witness = {
 
 export const witnessLawFirm: WitnessLawFirm = {
   contactDetails: [
-    { text: "T. ‘DAYO OYEWUMI ESQ.", className: "uppercase text-[20px] font-bold" },
-    { text: "WELLSPRING LAW FIRM", className: "uppercase text-[20px] font-bold" },
+    { text: "T. ‘DAYO OYEWUMI ESQ.", className: "uppercase text-[30px] font-bold" },
+    { text: "WELLSPRING LAW FIRM", className: "uppercase text-[30px] font-bold" },
     { text: "SUITE 2A, TINU OKETAYO PLAZA", className: "text-[16px] font-bold" },
     { text: "MOLETE-OKE ADO ROAD,", className: "text-[16px] uppercase font-bold" },
     { text: "IBADAN, OYO STATE", className: "text-[16px] font-bold" },

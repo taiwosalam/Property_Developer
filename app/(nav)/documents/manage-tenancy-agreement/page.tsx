@@ -24,6 +24,9 @@ import {
   transformSinglePropertyData,
 } from "../../management/properties/[id]/data";
 import DOMPurify from "dompurify";
+import CheckBoxLoader from "@/components/Loader/CheckBoxLoader";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import CardsLoading from "@/components/Loader/CardsLoading";
 
 const ManageTenancyAgreement = () => {
   const documentId = useSearchParams().get("d") ?? "";
@@ -39,11 +42,21 @@ const ManageTenancyAgreement = () => {
   } = useFetch<SinglePropertyResponse>(
     `property/${data?.document?.property_id}/view`
   );
+
   const propertyData = propData ? transformSinglePropertyData(propData) : null;
-
   const defaultOptions = data ? transformDocumentArticleResponse(data) : [];
-  // console.log("data", data);
+  const documentIdValue = data?.document?.document?.id;
 
+  // if (!documentIdValue || Number.isNaN(Number(documentIdValue))) {
+  if(propertyLoading){
+    return (
+      <div className="flex flex-col gap-4">
+        <BackButton>Manage Tenancy Agreement</BackButton>
+        <CardsLoading length={2} />
+      </div>
+    )
+    // return <PageCircleLoader />;
+  }
   if (isNetworkError) return <NetworkError />;
   if (error) return <div> {error} </div>;
 
@@ -117,16 +130,20 @@ const ManageTenancyAgreement = () => {
           </div>
           <SectionSeparator />
         </div>
-        <DocumentTenancyAgreements
-          id={Number(documentId)}
-          defaultOptions={defaultOptions}
-        />
+        {data && data.document && data.document.document.id ? (
+          <DocumentTenancyAgreements
+            id={Number(data.document.document.id)}
+            defaultOptions={defaultOptions}
+          />
+        ) : (
+          <CheckBoxLoader />
+        )}
       </div>
       <FixedFooter className="flex sm:flex-wrap gap-2 items-center justify-between ">
         <Modal>
           <ModalTrigger asChild>
             <Button variant="light_red" size="base_bold" className="py-2 px-4">
-              delete
+              delete agreement
             </Button>
           </ModalTrigger>
           <ModalContent>

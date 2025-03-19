@@ -53,7 +53,7 @@ const CompanyDetails = ({data}: {data: any}) => {
 
         <Select
           id="industry"
-          label="industry"
+          label="Select Your Industry"
           options={industryOptions}
           hiddenInputClassName="setup-f"
           defaultValue={data.industry}
