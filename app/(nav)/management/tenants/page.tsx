@@ -411,10 +411,6 @@ const Tenants = () => {
               </AutoResizingGrid>
             ) : (
               <>
-                {/* {silentLoading ? (
-                  <TableLoading />
-                ) : (
-                  <> */}
                 <CustomTable
                   displayTableHead={false}
                   fields={tenantTableFields}
@@ -427,15 +423,14 @@ const Tenants = () => {
                   </div>
                 )}
               </>
-              //   )}
-              // </>
             )}
-
-            <Pagination
-              totalPages={total_pages}
-              currentPage={current_page}
-              onPageChange={handlePageChange}
-            />
+            {view === "grid" && (
+              <Pagination
+                totalPages={total_pages}
+                currentPage={current_page}
+                onPageChange={handlePageChange}
+              />
+            )}
           </>
         )}
       </section>

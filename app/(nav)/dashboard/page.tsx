@@ -201,6 +201,13 @@ const Dashboard = () => {
             }}
             tableHeadCellSx={{ fontSize: "1rem" }}
           />
+          {invoiceList.length === 0 && (
+            <div className="flex justify-center items-center h-full">
+              <p className="text-gray-500 dark:text-gray-400">
+                No Recent Invoice Yet.
+              </p>
+            </div>
+          )}
         </SectionContainer>
 
         <SectionContainer heading="Recent Complains" href="/tasks/complaints">

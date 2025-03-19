@@ -14,7 +14,7 @@ interface Director {
 }
 
 interface CompanyPayload {
-  referral: string;
+  referrer: string;
   company_name: string;
   domain: string;
   company_logo: string | File;
@@ -49,7 +49,7 @@ export const transformFormData = (formData: FormData): CompanyPayload => {
   // Extract and organize data into the required structure
   data.domain = formData.get("custom_domain") as string;
   data.company_name = formData.get("company_name") as string;
-  data.referral = formData.get("referral_id") as string;
+  data.referrer = formData.get("referral_id") as string;
   data.company_logo = formData.get("company_logo") as string | File;
   data.date_of_registration = dayjs(
     formData.get("date_of_registration") as string
