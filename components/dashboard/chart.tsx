@@ -51,7 +51,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     return initialState;
   });
 
-  const [timeRange, setTimeRange] = React.useState("30d");
+  const [timeRange, setTimeRange] = React.useState("90d");
   const [highestMetric, setHighestMetric] = React.useState<string | null>(null);
   const [primaryColor, setPrimaryColor] = React.useState<string | null>(null);
 

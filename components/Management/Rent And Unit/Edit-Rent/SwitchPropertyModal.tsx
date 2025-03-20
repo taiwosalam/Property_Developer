@@ -18,12 +18,12 @@ const SwitchPropertyModal: React.FC<{
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const router = useRouter();
   const [modalView, setModalView] = useState<"warning" | "form">("warning");
-  const [selectedProperty, setPropertySelected] = useState('')
+  const [selectedProperty, setPropertySelected] = useState("");
 
   const {
     data: propertyData,
-    error,
-    loading,
+    error: propertyError,
+    loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
   const propertyOptions =
@@ -32,13 +32,12 @@ const SwitchPropertyModal: React.FC<{
       label: p.title,
     })) || [];
 
-    const handleContinue = () => {
-      if (!selectedProperty) 
-        return toast.warning("Please select a property")
-      router.push(
-        `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${selectedProperty}`
-      );
-    }
+  const handleContinue = () => {
+    if (!selectedProperty) return toast.warning("Please select a property");
+    router.push(
+      `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${selectedProperty}`
+    );
+  };
 
   if (modalView === "warning") {
     return (
@@ -75,6 +74,14 @@ const SwitchPropertyModal: React.FC<{
             label={`Choose ${isRental ? "Property" : "Facility"}`}
             options={propertyOptions}
             onChange={setPropertySelected}
+            placeholder={
+              propertyLoading
+                ? "Loading properties..."
+                : propertyError
+                ? "Error loading properties"
+                : "Select property"
+            }
+            error={propertyError}
           />
           <div className="w-full flex items-center justify-center">
             <Button

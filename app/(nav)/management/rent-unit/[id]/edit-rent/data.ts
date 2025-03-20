@@ -36,12 +36,27 @@ export const getRentalData = (unit_data: any): RentalField[] => {
     { label: "Full Address", value: unit_data.property_address },
     { label: "Branch", value: unit_data.branchName },
     { label: "Account Officer", value: unit_data.accountOfficer },
-    { label: "Landlord", value: unit_data.landlord || "____" },
+    { label: "Landlord", value: unit_data.landlord || "--- ---" },
     { label: "Categories", value: unit_data.categories },
     { label: "Unit ID", value: unit_data.unit_id },
   ];
 };
 
+export const getEstateData = (unit_data: any): RentalField[] => {
+  console.log("unit_data", unit_data);
+  return [
+    { label: "Property Title", value: unit_data.property_title },
+    { label: "State", value: unit_data.property_state },
+    { label: "Local Government", value: unit_data.localGovernment },
+    { label: "Full Address", value: unit_data.property_address },
+    { label: "Branch", value: unit_data.branchName },
+    { label: "Account Officer", value: unit_data.accountOfficer },
+    { label: "Description", value: unit_data.description || "--- ---" },
+    // { label: "Landlord", value: unit_data.landlord || "--- ---" },
+    { label: "Categories", value: unit_data.categories },
+    { label: "Unit ID", value: unit_data.unit_id },
+  ];
+};
 
 type PropertySetting = {
   label: string;
@@ -59,7 +74,6 @@ export const getPropertySettingsData = (unit_data: any): PropertySetting[] => {
   ];
 };
 
-
 export interface EstateSetting {
   label: string;
   value: string;
@@ -75,7 +89,7 @@ export const getEstateSettingsData = (estate_data: any): EstateSetting[] => {
 
 ///tenant-rent/4/switch
 export const switchUnit = async (id: String, data: any) => {
-  try{
+  try {
     const res = await api.post(`/tenant-rent/${id}/switch`, data);
     if (res.status === 200) {
       return true;
@@ -84,12 +98,11 @@ export const switchUnit = async (id: String, data: any) => {
     handleAxiosError(error);
     return false;
   }
-}
-
+};
 
 // /tenant-rent/edit
 export const editRent = async (data: any) => {
-  try{
+  try {
     const res = await api.post(`/tenant-rent/edit`, data);
     if (res.status === 201) {
       return true;
@@ -98,4 +111,4 @@ export const editRent = async (data: any) => {
     handleAxiosError(error);
     return false;
   }
-}
+};

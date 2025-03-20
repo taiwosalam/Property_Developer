@@ -14,6 +14,7 @@ import { useModal } from "../Modal/modal";
 import { positionMap } from "@/app/(nav)/(messages-reviews)/messages/data";
 import MessageUserCardSkeleton from "../Skeleton/message-user-card-skeleton";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { getLocalStorage } from "@/utils/local-storage";
 
 const SelectChatUsersModal = ({
   usersData,
@@ -29,6 +30,7 @@ const SelectChatUsersModal = ({
 }) => {
   const router = useRouter();
   const { setIsOpen } = useModal();
+  const loggedInUserId = getLocalStorage("user_id");
   const { isMobile } = useWindowWidth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -51,14 +53,16 @@ const SelectChatUsersModal = ({
 
   const handleFilterApply = (selectedFilters: string[]) => {
     if (selectedFilters.length === 0) {
-      setFilteredUsers(usersData); // Reset to all users if no filter is selected
+      setFilteredUsers(usersData.filter((user) => user.id !== loggedInUserId)); // Reset to all users except the logged-in user if no filter is selected
     } else {
       const normalizedFilters = selectedFilters
         .map((filter) => positionMap[filter]) // Convert filters to match user.position
         .filter(Boolean); // Remove undefined values
 
-      const filtered = usersData.filter((user) =>
-        normalizedFilters.includes(user.position)
+      const filtered = usersData.filter(
+        (user) =>
+          normalizedFilters.includes(user.position) &&
+          user.id !== loggedInUserId
       );
 
       setFilteredUsers(filtered);
@@ -67,17 +71,18 @@ const SelectChatUsersModal = ({
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
-      setFilteredUsers(usersData); // Show all users when search is empty
+      setFilteredUsers(usersData.filter((user) => user.id !== loggedInUserId)); // Show all users except the logged-in user when search is empty
     } else {
       const lowercasedTerm = searchTerm.toLowerCase();
       const filtered = usersData.filter(
         (user) =>
-          user.name.toLowerCase().includes(lowercasedTerm) ||
-          user.position?.toLowerCase().includes(lowercasedTerm)
+          (user.name.toLowerCase().includes(lowercasedTerm) ||
+            user.position?.toLowerCase().includes(lowercasedTerm)) &&
+          user.id !== loggedInUserId
       );
       setFilteredUsers(filtered);
     }
-  }, [searchTerm, usersData]);
+  }, [searchTerm, usersData, loggedInUserId]);
 
   const handleUserClicked = (id: string) => {
     router.push("/messages/" + id);
@@ -92,6 +97,7 @@ const SelectChatUsersModal = ({
         width: isMobile ? "80%" : "40%",
         maxWidth: "80%",
         maxHeight: "70%",
+        minHeight: "60%",
       }}
     >
       <div className="flex-1 flex sticky z-[3] top-0 pt-[12px] md:pt-[20px] items-center">

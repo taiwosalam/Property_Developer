@@ -646,7 +646,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 <Select
                   id="who_to_charge_new_tenant"
                   options={["landlord", "tenants", "both", "none"]}
-                  label="Who to Charge (New Rent)"
+                  label="Who to pay Agency Fee (New Rent)"
                   isSearchable={false}
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
@@ -661,7 +661,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 <Select
                   id="who_to_charge_renew_tenant"
                   options={["landlord", "tenants", "both", "none"]}
-                  label="Who to Charge (Renewal Rent)"
+                  label="Who to pay Agency Fee (Renewal Rent)"
                   isSearchable={false}
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}

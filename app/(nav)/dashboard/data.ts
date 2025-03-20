@@ -350,41 +350,41 @@ export const getRecentMessages = (data: any) => {
 
 
 export const complaintsData = [
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Door complain",
-  },
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Visitor door and water",
-  },
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Water complain",
-  },
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Door complain",
-  },
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Door complain",
-  },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Door complain",
+  // },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Visitor door and water",
+  // },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Water complain",
+  // },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Door complain",
+  // },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Door complain",
+  // },
 ];
 
 export const getDashboardData = async (access_token: string | null) => {

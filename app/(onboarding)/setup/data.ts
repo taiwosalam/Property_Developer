@@ -120,7 +120,8 @@ export const checkDomainAvailability = async (
 ): Promise<boolean> => {
   try {
     const response = await api.post("/check-domain", { domain });
-    return response.status === 200;
+    const availability = response.data.message;
+    return availability === "available";
   } catch (error) {
     handleAxiosError(error, "Failed to check domain availability");
     return false;
