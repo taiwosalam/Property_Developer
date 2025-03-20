@@ -23,6 +23,8 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   className,
   seeAllLink,
 }) => {
+
+  console.log("Notifications: ", notifications);
   const getEmptyState = () => {
     if (sectionHeader === "Recent Messages") {
       return {
@@ -37,6 +39,12 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         altText: "Complaints Icon",
         message:
           "You do not have any complaints from tenants or occupants. They can create complaints using the mobile app, and recent complaints will be listed here.",
+      };
+    } else if (sectionHeader === "Staffs") {
+      return {
+        icon: complaintsIcon, // Add appropriate icon if available
+        altText: "Staff Icon",
+        message: "You haven't created any staff accounts yet. To add a staff member, click the \"Create New Staff\" button. Once created, their login details will be sent to them, allowing them to access their company dashboard using the credentials assigned. \nThey will only have access to the permissions you grant them. Once you add staff profiles, this guide will no longer be visible. To revisit this guide later, click your profile picture at the top right of the dashboard and select Assistance & Support.",
       };
     } else {
       return { icon: "", altText: "", message: "" };
@@ -117,11 +125,11 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                       <BadgeIcon color={notification.badgeColor || "red"} />
                     )} */}
                   </p>
-                  {notification.title && (
+                  {notification.position && (
                     <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
-                      {notification.title === "manager"
+                      {notification.position === "manager"
                         ? "Branch Manager"
-                        : notification.title}
+                        : notification.position}
                     </p>
                   )}
                   <p className="text-xs text-text-tertiary font-normal capitalize">

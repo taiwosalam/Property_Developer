@@ -11,6 +11,8 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   heading,
   children,
   lightSeparator,
+  bodyStyle,
+  noPaddingTop = false,
 }) => {
   return (
     <div
@@ -39,7 +41,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
       </div>
 
       {/* body */}
-      <div className="px-[30px] pt-10 pb-[24px] md:pb-[32px]">{children}</div>
+      <div className={`px-[30px] ${noPaddingTop ? 'pt-0' : 'pt-10'} pb-[24px] md:pb-[32px]`} style={bodyStyle}>{children}</div>
     </div>
   );
 };

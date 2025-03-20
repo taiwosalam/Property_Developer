@@ -22,6 +22,17 @@ export interface SingleBranchPageData {
   picture: string | null;
   recent_transactions: Transactions[];
   transactions: Transactions[];
+  receipt_statistics: receipt_statistics | null;
+}
+
+
+interface receipt_statistics {
+  total_receipt: string;
+  total_expense: string;
+  total_invoice: string;
+  percentage_change_invoice: number;
+  percentage_change_expenses: number;
+  percentage_change_pending: number;
 }
 
 interface SubWallet {
@@ -91,6 +102,7 @@ export type SingleBranchResponseType = {
       current_month_complaints_count: number;
       staffs_count: number; // do d monthly/this month stuff
       properties_count: number; // do d monthly/this month stuff
+      receipt_statistic: receipt_statistics | null;
       staffs: {
         id: string;
         picture: string;

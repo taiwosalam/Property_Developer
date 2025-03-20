@@ -292,7 +292,7 @@ const AccountingInvoicePage = () => {
           </div>
           <AutoResizingGrid gap={24} minWidth={300}>
             <AccountStatsCard
-              title="Total Receipts Created"
+              title="Total Invoice Created"
               balance={statistics.total_receipt}
               trendDirection="up"
               trendColor="green"
@@ -300,7 +300,7 @@ const AccountingInvoicePage = () => {
               percentage={53}
             />
             <AccountStatsCard
-              title="Total Paid Receipts"
+              title="Total Paid Invoice"
               balance={statistics.total_receipt}
               trendDirection="down"
               trendColor="red"
@@ -308,7 +308,7 @@ const AccountingInvoicePage = () => {
               percentage={4.3}
             />
             <AccountStatsCard
-              title="Total Pending Receipts"
+              title="Total Pending Invoice"
               balance={statistics.total_pending_receipt}
               trendDirection="down"
               trendColor="red"
