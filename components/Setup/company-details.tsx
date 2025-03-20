@@ -17,7 +17,7 @@ const CompanyDetails = ({data}: {data: any}) => {
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
         Kindly provide the following details below. Note your documents should
-        be in PDF format and should not exceed 2mb.
+        be in PDF or JPG format and should not exceed 2mb.
       </SectionHeading>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-[950px] specific-grid">
         <Input
