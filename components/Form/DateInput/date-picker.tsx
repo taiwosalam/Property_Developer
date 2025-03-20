@@ -25,6 +25,9 @@ const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
     borderColor: "#0033C4",
     borderWidth: "2px",
   },
+  "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid #C1C2C366",
+  },
 }));
 
 interface CustomDatePickerProps {

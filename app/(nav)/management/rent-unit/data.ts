@@ -920,7 +920,7 @@ export const transformUnitData = (response: any) => {
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   // const previous_tenants = response.data.previous_tenants;
-  console.log("data to trans", response)
+  // console.log("data to trans", response)
   return {
     title: data.property.title,
     unit_id: data.id,
