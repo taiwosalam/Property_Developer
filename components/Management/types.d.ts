@@ -6,6 +6,8 @@ export interface LandlordTenantModalPresetProps {
   };
   star?: boolean;
   heading: string;
+  bodyStyle?: CSSProperties;
+  noPaddingTop?: boolean;
   style?: CSSProperties;
   children: React.ReactNode;
   lightSeparator?: boolean;

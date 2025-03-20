@@ -4,10 +4,14 @@ import ChatList from "./chat-list";
 import IndividualChat from "./individual-chat";
 import LogoPlaceholder from "@/public/empty/logo-placeholder.svg";
 import Image from "next/image";
+import { empty } from "@/app/config";
+import { getLocalStorage } from "@/utils/local-storage";
 
 const StaffChat = () => {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const closeChat = () => setActiveChatId(null);
+  const loggedInUserDetails = getLocalStorage("additional_details");
+  const logo = loggedInUserDetails?.company?.company_logo || empty;
   return (
     <div
       className="rounded-lg lg:flex items-stretch"
@@ -37,7 +41,7 @@ const StaffChat = () => {
         ) : (
           <div className="h-full custom-flex-col gap-4 items-center justify-center">
             <div className="flex justify-center">
-              <Image src={LogoPlaceholder} alt="logo" width={200} />
+              <Image src={logo} alt="logo" width={200} height={200} />
             </div>
             <p className="text-center text-text-quaternary dark:text-darkText-1 text-sm font-normal">
               Select a chat to view conversation

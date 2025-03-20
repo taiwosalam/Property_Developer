@@ -43,21 +43,19 @@ import useAddressFromCoords from "@/hooks/useGeoCoding";
 import DOMPurify from "dompurify";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 
-
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
   const { branch, setBranch } = useBranchStore();
   const [lat, setLat] = useState<number>(0);
   const [lng, setLng] = useState<number>(0);
   const [pageData, setPageData] = useState<StaffPageTypes>(initialPageData);
-  const { address, loading: addressLoading, error: addressError } = useAddressFromCoords(lat, lng);
-
   const {
-    staff,
-    activities,
-    chats,
-    portfolio,
-  } = pageData;
+    address,
+    loading: addressLoading,
+    error: addressError,
+  } = useAddressFromCoords(lat, lng);
+
+  const { staff, activities, chats, portfolio } = pageData;
 
   const {
     data: apiData,
@@ -76,9 +74,9 @@ const StaffProfile = () => {
     }
   }, [apiData]);
 
-  const portfolioData = getPortfolioData(portfolio)
+  const portfolioData = getPortfolioData(portfolio);
 
-  // console.log("Data for staff page", staff);
+  // console.log("portfolioData", portfolio);
 
   useEffect(() => {
     if (activities) {
@@ -93,14 +91,15 @@ const StaffProfile = () => {
     }
   }, [activities]);
 
-  const sanitizedHTML = DOMPurify.sanitize(staff?.about_staff?.note || "")
+  const sanitizedHTML = DOMPurify.sanitize(staff?.about_staff?.note || "");
 
   // console.log("data -", apiData);
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="custom-flex-col gap-10">
@@ -132,7 +131,7 @@ const StaffProfile = () => {
                     <div className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-center">
                       {staff?.name}
                       {/* BADGE TO BE ADDED USING COMPANY VERIFICATION */}
-                      {/* <BadgeIcon color="blue" />  */} 
+                      {/* <BadgeIcon color="blue" />  */}
                     </div>
                     <p
                       className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-darkText-2`}
@@ -220,15 +219,17 @@ const StaffProfile = () => {
           <p className="text-base text-text-disabled font-medium flex w-full items-center justify-center">
             No activities yet
           </p>
-        ) :
+        ) : (
           <CustomTable
-            data={activities.map(activity => ({
+            data={activities.map((activity) => ({
               ...activity,
-              location: address?.formattedAddress ? address?.formattedAddress : 'Location not available', // Safely handle location
+              location: address?.formattedAddress
+                ? address?.formattedAddress
+                : "Location not available", // Safely handle location
             }))}
             fields={staffActivitiesTableFields}
           />
-        }
+        )}
       </div>
       <div className="custom-flex-col gap-[18px]">
         <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">

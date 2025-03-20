@@ -27,7 +27,7 @@ interface AccountStatsCardProps {
   variant: StatCardVariant;
   percentage: number;
   trendDirection: TrendDirection;
-  trendColor: TrendColor;
+  trendColor?: TrendColor;
   title: string;
   balance: number | string;
   className?: string;
@@ -120,7 +120,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
       <div className="flex items-center gap-2">
         <span
           className={
-            trendColor === "green"
+            trendDirection === "up"
               ? "text-status-success-2"
               : "text-status-error-2"
           }
@@ -130,7 +130,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
         <p className="text-text-label font-normal text-[16px]">
           <span
             className={
-              trendColor === "green"
+              trendDirection === "up"
                 ? "text-status-success-2"
                 : "text-status-error-2"
             }
