@@ -79,7 +79,6 @@ export interface UnitApiResponse {
   };
 }
 
-
 export interface UnitFilterResponse {
   data: {
     unit: UnitDataObject[];
@@ -89,12 +88,10 @@ export interface UnitFilterResponse {
 }
 
 export const transformRentUnitApiResponse = (
-  // response: UnitApiResponse 
+  // response: UnitApiResponse
   response: UnitApiResponse | UnitFilterResponse
 ): Partial<UnitPageState> => {
-  const isUnitApiResponse = (
-    response: any
-  ): response is UnitApiResponse => {
+  const isUnitApiResponse = (response: any): response is UnitApiResponse => {
     return "total_unit" in response.data;
   };
 
@@ -102,26 +99,24 @@ export const transformRentUnitApiResponse = (
     ? (response.data.unit as any)
     : (response.data.unit as any);
 
-  const transformedUnits: RentalPropertyCardProps[] = unitData.map(
-    (u: any) => {
-      return {
-        unitId: u.id.toString(),
-        unit_title: u.property.title,
-        unit_type: u.unit_type,
-        tenant_name: u.occupant.name !== null ? u.occupant.name : "____", //TODO
-        expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "____", //TODO 
-        rent: u.fee_amount,
-        caution_deposit: u.caution_fee,
-        service_charge: u.service_charge,
-        images: u.images.map((image: any) => image.path),
-        unit_name: u.unit_name,
-        caution_fee: u.caution_fee,
-        status: u.is_active,
-        propertyType: u.property.property_type as "rental" | "facility",
-        address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
-      };
-    }
-  );
+  const transformedUnits: RentalPropertyCardProps[] = unitData.map((u: any) => {
+    return {
+      unitId: u.id.toString(),
+      unit_title: u.property.title,
+      unit_type: u.unit_type,
+      tenant_name: u.occupant.name !== null ? u.occupant.name : "____", //TODO
+      expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "____", //TODO
+      rent: u.fee_amount,
+      caution_deposit: u.caution_fee,
+      service_charge: u.service_charge,
+      images: u.images.map((image: any) => image.path),
+      unit_name: u.unit_name,
+      caution_fee: u.caution_fee,
+      status: u.is_active,
+      propertyType: u.property.property_type as "rental" | "facility",
+      address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
+    };
+  });
 
   // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {
@@ -150,7 +145,6 @@ export const transformRentUnitApiResponse = (
     };
   }
 };
-
 
 export interface UnitDataObject {
   id: number;
@@ -202,7 +196,6 @@ export interface UnitDataObject {
   property: Property;
   user: User;
 }
-
 
 export interface Property {
   id: number;
@@ -259,7 +252,6 @@ export interface User {
   provider_id: string | null;
   provider_name: string | null;
 }
-
 
 export interface RentUnitFilterParams {
   date_from?: string;
@@ -331,8 +323,8 @@ interface UnitData {
   property: {
     property_type: string;
     title: string;
-  }
-};
+  };
+}
 
 export const initialRentUnitPageData: RentUnitPageData = {
   stats: {
@@ -354,8 +346,7 @@ export const initialRentUnitPageData: RentUnitPageData = {
     last_page: 1,
   },
   unit_data: [],
-
-}
+};
 
 export interface RentUnitPageData {
   stats: StatsData;
@@ -403,7 +394,6 @@ export interface RentUnitApiResponse {
   };
 }
 
-
 export interface RentUnitRequestParams {
   page?: number;
   search?: string;
@@ -420,11 +410,10 @@ export interface RentUnitFilterResponse {
     current_page: number;
     last_page: number;
     unit: UnitData;
-  }
+  };
 }
 
-
-// SINGLE UNIT 
+// SINGLE UNIT
 
 export const initialSingleData: InitialSingleUnitProps = {
   data: [
@@ -459,10 +448,9 @@ export const initialSingleData: InitialSingleUnitProps = {
       group_chat: "",
       rent_penalty: "",
       caution_deposit: "",
-    }
-  ]
-}
-
+    },
+  ],
+};
 
 export interface pageInitialObject {
   title: string;
@@ -532,7 +520,7 @@ export const InitialSingleUnit = {
   group_chat: "",
   rent_penalty: "",
   caution_deposit: "",
-}
+};
 
 export interface singleDataObject {
   unit_id: string;
@@ -566,7 +554,6 @@ export interface singleDataObject {
   group_chat?: string;
   rent_penalty?: string;
 }
-
 
 export interface singleUnitApiResponse {
   data: {
@@ -651,7 +638,7 @@ export interface singleUnitApiResponse {
         updated_at: string;
         branch: {
           branch_name: string;
-        }
+        };
       };
       occupant: Occupant;
       user: {
@@ -690,9 +677,8 @@ export interface singleUnitApiResponse {
     prev_page_url: string | null;
     to: number;
     total: number;
-  }
+  };
 }
-
 
 export interface Occupant {
   id: string;
@@ -733,7 +719,6 @@ export interface PreviousRecords {
   pagination: Pagination;
 }
 
-
 export interface UnitDetails {
   unit_id: string;
   title: string;
@@ -763,8 +748,8 @@ export interface UnitDetails {
   property?: {
     branch?: {
       branch_name?: string;
-    }
-  }
+    };
+  };
 }
 
 export const transformSingleUnitData = (
@@ -772,9 +757,9 @@ export const transformSingleUnitData = (
 ): InitialSingleUnitProps => {
   const data = response.data;
   // console.log("res", response)
-  // console.log("single response", data)
+  console.log("single response", data)
   return {
-    data: data.data.map(unit => ({
+    data: data.data.map((unit) => ({
       title: unit.property.title,
       unit_id: unit.id,
       unit_name: `${unit.unit_name} ${unit.unit_type}`,
@@ -812,7 +797,7 @@ export const transformSingleUnitData = (
       caution_deposit: unit.property.caution_deposit,
       location: "",
       fee_amount: "",
-    }))
+    })),
   };
 };
 
@@ -875,9 +860,8 @@ export const initData = {
     city: "",
     state: "",
     lg: "",
-  }
-}
-
+  },
+};
 
 export interface initDataProps {
   id?: string;
@@ -891,7 +875,7 @@ export interface initDataProps {
   categories: string;
   unitNumber: string;
   unitPreference: string;
-  unitType: string,
+  unitType: string;
   unitSubType: string;
   state: string;
   localGovernment: string;
@@ -907,7 +891,7 @@ export interface initDataProps {
   renewalTenantPrice: string;
   renewalTenantTotalPrice: string;
   renew_service_charge?: string;
-  branchName?: string,
+  branchName?: string;
   agency_fee?: string;
   whoToCharge?: string;
   caution_deposit?: string;
@@ -936,7 +920,7 @@ export const transformUnitData = (response: any) => {
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   // const previous_tenants = response.data.previous_tenants;
-  // console.log("data to trans", response)
+  console.log("data to trans", response)
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -951,30 +935,40 @@ export const transformUnitData = (response: any) => {
     unitSubType: data.unit_sub_type,
     state: data.property.state,
     localGovernment: data.property.local_government,
-    accountOfficer: data.account_officer || "___",
+    accountOfficer: data.account_officer || "--- ---",
     bedrooms: data.bedroom,
     bathrooms: data.bathroom,
     toilets: data.toilet,
     tenant_name: data.user.name,
     unit_features: data.facilities,
     newTenantTotalPrice: data.total_package,
-    newTenantPrice: data.fee_amount ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-      parseFloat(data.fee_amount)
-    )}` : undefined,
+    newTenantPrice: data.fee_amount
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.fee_amount))}`
+      : undefined,
     renewalTenantTotalPrice: data.renew_total_package,
     renew_fee_period: data.renew_fee_period,
-    renewalTenantPrice: data.renew_fee_amount ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-      parseFloat(data.renew_fee_amount)
-    )}` : undefined,
-    renew_service_charge: data.renew_service_charge ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-      parseFloat(data.renew_service_charge)
-    )}` : undefined,
-    renew_other_charge: data.renew_other_charge ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-      parseFloat(data.renew_other_charge)
-    )}` : undefined,
-    management_fee: data.management_fee ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-      parseFloat(data.management_fee)
-    )}` : undefined,
+    renewalTenantPrice: data.renew_fee_amount
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.renew_fee_amount))}`
+      : undefined,
+    renew_service_charge: data.renew_service_charge
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.renew_service_charge))}`
+      : undefined,
+    renew_other_charge: data.renew_other_charge
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.renew_other_charge))}`
+      : undefined,
+    management_fee: data.management_fee
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.management_fee))}`
+      : undefined,
     en_suit: data.en_suit,
     prepaid: data.prepaid,
     wardrobe: data.wardrobe,
@@ -991,50 +985,54 @@ export const transformUnitData = (response: any) => {
     property_state: data.property.state,
     property_address: `${data.property.full_address}, ${data.property.city_area} ${data.property.local_government}, ${data.property.state}`,
     caution_fee: data.caution_fee
-      ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-        parseFloat(data.caution_fee)
-      )}`
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.caution_fee))}`
       : undefined,
     location: "",
     fee_amount: data.fee_amount,
     propertyId: data.property.id,
     total_package: data.total_package,
     // caution_fee: data.caution_fee,
-    security_fee: data.security_fee ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-      parseFloat(data.security_fee)
-    )}` : undefined,
-    other_charge: data.other_charge ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-      parseFloat(data.other_charge)
-    )}` : undefined,
+    security_fee: data.security_fee
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.security_fee))}`
+      : undefined,
+    other_charge: data.other_charge
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.other_charge))}`
+      : undefined,
     unitAgentFee: data.agency_fee
-      ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-        parseFloat(data.agency_fee)
-      )}`
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.agency_fee))}`
       : undefined,
     service_charge: data.service_charge
-      ? `${currencySymbols[data?.currency as keyof typeof currencySymbols] || '₦'}${formatNumber(
-        parseFloat(data.service_charge)
-      )}`
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.service_charge))}`
       : undefined,
     occupant: occupant
       ? {
-        id: occupant.id,
-        name: occupant.name || "___",
-        email: occupant.email || "___",
-        userTag: occupant.userTag || "___",
-        avatar: occupant.avatar || empty,
-        gender: occupant.gender || "___",
-        birthday: occupant.birthday || "___",
-        religion: occupant.religion || "___",
-        phone: occupant.phone || "___",
-        maritalStatus: occupant.maritalStatus || "____",
-        address: occupant.address || "____",
-        city: occupant.city || "____",
-        state: occupant.state || "____",
-        lg: occupant.lg || "___"
-      }
+          id: occupant.id,
+          name: occupant.name || "--- ---",
+          email: occupant.email || "--- ---",
+          userTag: occupant.userTag || "--- ---",
+          avatar: occupant.avatar || empty,
+          gender: occupant.gender || "--- ---",
+          birthday: occupant.birthday || "--- ---",
+          religion: occupant.religion || "--- ---",
+          phone: occupant.phone || "--- ---",
+          maritalStatus: occupant.maritalStatus || "--- ---",
+          address: occupant.address || "--- ---",
+          city: occupant.city || "--- ---",
+          state: occupant.state || "--- ---",
+          lg: occupant.lg || "--- ---",
+        }
       : undefined,
     previous_records: previous_records ? previous_records : undefined,
     previous_tenants: data.previous_tenants ? data.previous_tenants : undefined,
-  }
-}
+  };
+};

@@ -191,7 +191,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
             <div>
               <p className="text-label font-normal">Account Officer</p>
-              <p className="text-brand-9 font-bold">{accountOfficer}</p>
+              <p className="text-brand-9 font-bold truncate line-clamp-1">{accountOfficer}</p>
             </div>
             <div>
               <p className="text-label font-normal">Mobile Tenants</p>

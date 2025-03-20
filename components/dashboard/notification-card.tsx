@@ -6,7 +6,7 @@ import React from "react";
 import Image from "next/image";
 import { notificationCardProps } from "./types";
 import messagesIcon from "@/public/icons/message.svg";
-import complaintsIcon from "@/public/icons/complaints.svg";
+import complaintsIcon from "@/public/icons/complains.svg";
 import BadgeIcon from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 import Link from "next/link";
@@ -15,6 +15,7 @@ import {
   getIconByContentType,
   roundUptoNine,
 } from "@/app/(nav)/(messages-reviews)/messages/data";
+import { ComplainsEmptyIcon, EmptyMessageIcon } from "@/public/icons/icons";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -23,28 +24,28 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   className,
   seeAllLink,
 }) => {
-
   console.log("Notifications: ", notifications);
   const getEmptyState = () => {
     if (sectionHeader === "Recent Messages") {
       return {
-        icon: messagesIcon,
+        icon: <EmptyMessageIcon size={60} />,
         altText: "Messages Icon",
         message:
           "You do not have any recent messages. You can chat with staff, landlord/landlady, tenants, and occupants.",
       };
     } else if (sectionHeader === "Complaints") {
       return {
-        icon: complaintsIcon,
+        icon: <ComplainsEmptyIcon />,
         altText: "Complaints Icon",
         message:
-          "You do not have any complaints from tenants or occupants. They can create complaints using the mobile app, and recent complaints will be listed here.",
+          "You currently have no complaints from your tenants or occupants. Any submitted complaints will be displayed here.",
       };
     } else if (sectionHeader === "Staffs") {
       return {
-        icon: complaintsIcon, // Add appropriate icon if available
+        icon: <ComplainsEmptyIcon size={60} />, // Add appropriate icon if available
         altText: "Staff Icon",
-        message: "You haven't created any staff accounts yet. To add a staff member, click the \"Create New Staff\" button. Once created, their login details will be sent to them, allowing them to access their company dashboard using the credentials assigned. \nThey will only have access to the permissions you grant them. Once you add staff profiles, this guide will no longer be visible. To revisit this guide later, click your profile picture at the top right of the dashboard and select Assistance & Support.",
+        message:
+          'You haven\'t created any staff accounts yet. To add a staff member, click the "Create New Staff" button. Once created, their login details will be sent to them, allowing them to access their company dashboard using the credentials assigned. \nThey will only have access to the permissions you grant them. Once you add staff profiles, this guide will no longer be visible. To revisit this guide later, click your profile picture at the top right of the dashboard and select Assistance & Support.',
       };
     } else {
       return { icon: "", altText: "", message: "" };
@@ -125,13 +126,19 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                       <BadgeIcon color={notification.badgeColor || "red"} />
                     )} */}
                   </p>
-                  {notification.position && (
-                    <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
-                      {notification.position === "manager"
-                        ? "Branch Manager"
-                        : notification.position}
-                    </p>
-                  )}
+                  {sectionHeader === "Staffs"
+                    ? notification.position && (
+                        <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                          {notification.position === "manager"
+                            ? "Branch Manager"
+                            : notification.position}
+                        </p>
+                      )
+                    : notification.title && (
+                        <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                          {notification.title}
+                        </p>
+                      )}
                   <p className="text-xs text-text-tertiary font-normal capitalize">
                     {notification.content_type === "text" ? (
                       sectionHeader !== "Staffs" ? (
@@ -173,14 +180,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         })}
         {notifications.length === 0 && (
           <div className="flex flex-col items-center text-center gap-6">
-            {emptyState.icon && (
-              <Image
-                alt={emptyState.altText}
-                src={emptyState.icon}
-                width={60}
-                height={60}
-              />
-            )}
+            {emptyState.icon && <div className="text-brand-9">{emptyState.icon}</div>}
             <p className="font-normal text-xs text-brand-9">
               {emptyState.message}
             </p>
