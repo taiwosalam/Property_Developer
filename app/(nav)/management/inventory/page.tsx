@@ -52,11 +52,12 @@ const Inventory = () => {
     loading: loadingStaffs,
     error: staffsError,
   } = useStaffRoles();
+  const accountOfficers = getAccountOfficers();
+
   const [selectedView, setSelectedView] = useState<string>(
     selectedOptions.view || "grid"
   );
 
-  const accountOfficers = getAccountOfficers();
   // console.log("officers", accountOfficers);
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");

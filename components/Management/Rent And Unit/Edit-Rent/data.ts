@@ -46,7 +46,7 @@ export interface Unit {
 }
 
 export interface UnitOptionTypes {
-  value: string;
+  value: number | string;
   label: string;
 }
 
@@ -56,9 +56,11 @@ export const transformUnitOptions = (
   data: UnitsApiResponse
 ): UnitOptionTypes[] => {
   return data.data
-    .filter((unit) => unit.is_active === "vacant")
+    .filter(
+      (unit) => unit.is_active === "vacant" || unit.is_active === "relocate"
+    )
     .map((unit) => ({
-      value: unit.unit_name,
+      value: unit.id,
       label: unit.unit_name,
     }));
 };

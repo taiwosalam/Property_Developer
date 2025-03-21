@@ -36,20 +36,21 @@ export interface PropertyCardProps {
 
 const VehicleCard: React.FC<any> = ({ data }) => {
   const {
-    id = 12133,
+    id,
     images,
-    property_name = 'Property Name',
+    property_name = "Property Name",
     units_count,
     vehicle_records_count,
     address,
     total_unit_pictures,
     hasVideo = true,
-    property_type = 'rental',
+    property_type = "rental",
     isClickable = 0,
-    viewOnly = 0, } = data
+    viewOnly = 0,
+  } = data;
 
   const isRental = property_type === "rental";
-  // const symbol =
+  
   // isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -110,8 +111,12 @@ const VehicleCard: React.FC<any> = ({ data }) => {
             </span>
           </p>
           <div className="flex flex-wrap justify-between items-center mt-1">
-            <p className="text-black text-xs lg:text-sm font-normal"> Total Vehicles Record </p>
-            <h3 className="text-brand-9 text-xl lg:text-2xl font-bold"> {vehicle_records_count} </h3>
+            <p className="text-black text-xs lg:text-sm font-normal">
+              Total Vehicles Record
+            </p>
+            <h3 className="text-brand-9 text-xl lg:text-2xl font-bold">
+              {vehicle_records_count}
+            </h3>
           </div>
         </div>
       </Link>

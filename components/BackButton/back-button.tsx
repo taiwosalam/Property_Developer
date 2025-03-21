@@ -44,7 +44,7 @@ const BackButton: React.FC<BackButtonProps> = ({
       </button>
       <Component
         className={cn(
-          "text-lg lg:text-xl",
+          "text-lg lg:text-xl capitalize",
           {
             "font-bold": bold,
             "font-medium": !bold,

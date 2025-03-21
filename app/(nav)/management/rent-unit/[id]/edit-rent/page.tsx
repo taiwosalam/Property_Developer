@@ -127,8 +127,6 @@ const EditRent = () => {
       tenant_id: unit_data.occupant.id,
       type: "upfront_payment",
     };
-
-    // console.log("Payload", payload);
     try {
       setReqLoading(true);
       const success = await editRent(payload);
@@ -157,8 +155,6 @@ const EditRent = () => {
       tenant_id: unit_data.occupant.id,
       type: "part_payment",
     };
-
-    // console.log("Payload", payload);
     try {
       setReqLoading(true);
       const success = await editRent(payload);
@@ -242,6 +238,7 @@ const EditRent = () => {
             <TransferTenants
               isRental={isRental}
               propertyId={Number(unit_data.propertyId)}
+              unitId={Number(unit_data.id)}
             />
           </div>
         </div>

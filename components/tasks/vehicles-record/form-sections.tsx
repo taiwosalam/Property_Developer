@@ -45,35 +45,37 @@ type BaseFieldProps = {
 type VehicleFieldProps = BaseFieldProps &
   (
     | {
-      editMode: true;
-      data: VehicleDataProps;
-      loading?: boolean;
-    }
+        editMode: true;
+        data: VehicleDataProps;
+        loading?: boolean;
+      }
     | {
-      editMode?: false;
-      loading?: boolean;
-    }
+        editMode?: false;
+        loading?: boolean;
+      }
   );
 
 type PersonalFieldProps = BaseFieldProps & {
   formstep: number;
+  
   setFormstep: (step: number) => void;
-} &
-  (
+  changeTenant?: () => void;
+} & (
     | {
-      editMode: true;
-      data: PersonalDataProps;
-      loading?: boolean;
-    }
+        editMode: true;
+        data: PersonalDataProps;
+        loading?: boolean;
+      }
     | {
-      editMode?: false;
-      loading?: boolean;
-    }
+        editMode?: false;
+        loading?: boolean;
+      }
   );
 
 export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   props
 ) => {
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const { editMode, showSubmitButton, loading, formstep, setFormstep } = props;
   const [activeAvatar, setActiveAvatar] = useState(
     editMode ? props.data.avatar : ""
@@ -91,13 +93,17 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     handleImageChange: originalHandleImageChange,
     clearSelection: clearImageSelection,
   } = useImageUploader({
-    placeholder: editMode ? props.data.avatar || CameraCircle : CameraCircle,
+    placeholder: CameraCircle,
+    maxSize: {
+      unit: "MB",
+      value: 2,
+    },
   });
 
   const handleAvatarSelection = (avatarUrl: string) => {
     clearImageSelection();
     setActiveAvatar(avatarUrl);
-    setFormstep(1);
+    setAvatarModalOpen(false);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +113,11 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
 
   return (
     <div className="relative">
-      <div className={formstep === 2 ? "pointer-events-none opacity-0" : "space-y-5"}>
+      <div
+        className={
+          formstep === 2 ? "pointer-events-none opacity-0" : "space-y-5"
+        }
+      >
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Input
             required
@@ -119,6 +129,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
           <Select
             label="State"
             id="state"
+            required
             options={getAllStates()}
             inputContainerClassName="bg-neutral-2"
             value={address.state}
@@ -134,6 +145,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
           <Select
             label="Local Government"
             id="lga"
+            required
             options={getLocalGovernments(address.state)}
             inputContainerClassName="bg-neutral-2"
             value={address.local_government}
@@ -148,6 +160,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
           <Select
             label="City"
             id="city"
+            required
             options={getCities(address.state, address.local_government)}
             inputContainerClassName="bg-neutral-2"
             value={address.city}
@@ -159,6 +172,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
           <Input
             label="Address"
             id="address"
+            required
             inputClassName="rounded-lg"
             defaultValue={editMode ? props.data.address : undefined}
           />
@@ -176,7 +190,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
               htmlFor="picture"
               className="relative cursor-pointer flex-shrink-0"
             >
-              <Picture src={preview} alt="camera" size={40} rounded />
+              <Picture src={preview} alt="camera" size={60} rounded />
               {preview && preview !== CameraCircle && (
                 <div
                   role="button"
@@ -202,36 +216,56 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
               />
               <input type="hidden" name="avatar" value={activeAvatar} />
             </label>
-            <button
-              type="button"
-              onClick={() => setFormstep(2)}
-              className="w-[40px] h-[40px] rounded-full flex items-center justify-center text-white relative bg-red-500"
+            <Modal
+              state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
             >
-              {activeAvatar ? (
-                <>
-                  <Image
-                    src={activeAvatar}
-                    alt="selected avatar"
-                    width={40}
-                    height={40}
-                    className="object-cover object-center w-[40px] h-[40px] rounded-full bg-brand-9"
-                  />
-                  <div
-                    role="button"
-                    aria-label="remove avatar"
-                    className="absolute top-0 right-0"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveAvatar("");
-                    }}
-                  >
-                    <DeleteIconOrange size={20} />
-                  </div>
-                </>
-              ) : (
-                <PersonIcon size={18} />
-              )}
-            </button>
+              <ModalTrigger
+                className="bg-[rgba(42,42,42,0.63)] !w-[60px] h-[60px] rounded-full flex items-center justify-center text-white relative"
+                aria-label="choose avatar"
+              >
+                {activeAvatar ? (
+                  <>
+                    <Image
+                      src={activeAvatar}
+                      alt="selected avatar"
+                      width={60}
+                      height={60}
+                      className="object-cover object-center w-[60px] h-[60px] rounded-full bg-brand-9"
+                    />
+                    <div
+                      role="button"
+                      aria-label="remove avatar"
+                      className="absolute top-0 right-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveAvatar("");
+                      }}
+                    >
+                      <DeleteIconOrange size={20} />
+                    </div>
+                  </>
+                ) : (
+                  <PersonIcon size={18} />
+                )}
+              </ModalTrigger>
+              <ModalContent>
+                <LandlordTenantModalPreset
+                  heading="Choose Avatar"
+                  style={{ maxWidth: "700px" }}
+                >
+                  <Avatars onClick={handleAvatarSelection} />
+                </LandlordTenantModalPreset>
+              </ModalContent>
+            </Modal>
+            {props.changeTenant && (
+              <Button
+                onClick={props.changeTenant}
+                className="px-4 py-2"
+                size="sm_normal"
+              >
+                Change Tenant/Guest
+              </Button>
+            )}
           </div>
           {showSubmitButton && (
             <Button
@@ -244,11 +278,6 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
           )}
         </div>
       </div>
-      {formstep === 2 && (
-        <div className="absolute top-0 left-0 right-0 pb-5">
-          <Avatars onClick={handleAvatarSelection} />
-        </div>
-      )}
     </div>
   );
 };
@@ -332,8 +361,8 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
         label="Color"
         id="color"
         options={
-          vehicleData[vehicleRecord.type as keyof typeof vehicleData]
-            ?.colors || []
+          vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.colors ||
+          []
         }
         value={vehicleRecord.color}
         onChange={(option) =>

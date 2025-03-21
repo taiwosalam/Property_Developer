@@ -39,3 +39,29 @@ interface CompletedVehicleRecord extends BaseVehicleRecord {
 }
 
 export type VehicleRecord = PendingVehicleRecord | CompletedVehicleRecord;
+
+
+interface Tenant {
+  tenant_id: number;
+  name: string;
+  gender: string;
+  address: string;
+  lga: string;
+  city: string;
+  state: string;
+  telephone: string;
+  picture: string;
+  status: string;
+}
+
+interface TenantData {
+  total_tenants: number;
+  monthly_tenants: number;
+  tenants: Tenant[];
+}
+
+export interface TenantApiResponse {
+  status: string;
+  message: string;
+  data: TenantData;
+}

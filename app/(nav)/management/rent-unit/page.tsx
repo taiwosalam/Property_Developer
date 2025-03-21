@@ -1,5 +1,3 @@
-
-
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
@@ -36,10 +34,20 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
+import useStaffRoles from "@/hooks/getStaffs";
 
 const RentAndUnit = () => {
   const view = useView();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const {
+    getManagers,
+    getStaffs,
+    getAccountOfficers,
+    loading: loadingStaffs,
+    error: staffsError,
+  } = useStaffRoles();
+  const accountOfficers = getAccountOfficers();
+
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
 
   const {
@@ -67,7 +75,6 @@ const RentAndUnit = () => {
     current_page: 1,
     last_page: 1,
   });
-
 
   const { gridView, total_pages, current_page, last_page } = state;
 
@@ -146,7 +153,6 @@ const RentAndUnit = () => {
       value: branch.id,
     })) || [];
 
-
   const {
     data: apiData,
     loading,
@@ -187,13 +193,15 @@ const RentAndUnit = () => {
     setSelectedView("list");
   };
 
+  const accountOfficersOptions =
+    accountOfficers?.map((o) => ({
+      label: o.name,
+      value: `${o.id}`,
+    })) || [];
+
   if (loading)
     return (
-      <CustomLoader
-        layout="page"
-        statsCardCount={3}
-        pageTitle="Rent & Units"
-      />
+      <CustomLoader layout="page" statsCardCount={3} pageTitle="Rent & Units" />
     );
 
   if (isNetworkError) return <NetworkError />;
@@ -255,11 +263,19 @@ const RentAndUnit = () => {
           ...RentAndUnitFiltersWithDropdown,
           ...(branchOptions.length > 0
             ? [
-              {
-                label: "Branch",
-                value: branchOptions,
-              },
-            ]
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
+          ...(accountOfficersOptions.length > 0
+            ? [
+                {
+                  label: "Account Officer",
+                  value: accountOfficersOptions,
+                },
+              ]
             : []),
         ]}
       />
@@ -269,33 +285,25 @@ const RentAndUnit = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="Add Property"
-              buttonLink="/management/rent-unit/create"
+              noButton
               title="No Unit Found"
-              modalContent={<AddPropertyModal />}
               body={
                 <p>
-                  You can create a Unit by clicking on the &quot;Add
-                  Property&quot; button. You can create two types of properties:
-                  rental and facility properties. Rental properties are mainly
-                  tailored for managing properties for rent, including landlord
-                  and tenant management processes. Facility properties are
-                  designed for managing occupants in gated estates, overseeing
-                  their due payments, visitor access, and vehicle records.{" "}
+                  You can create a unit when adding a property. Whether creating
+                  or editing a rental or facility property, units can be added
+                  during the process. Each property is registered as a whole,
+                  while individual flats or sections within it are considered
+                  units.
                   <br />
                   <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  To manage occupants and tenants, they are assigned to specific
+                  units within the property. Each unit is created separately
+                  under the main property.
                   <br />
                   <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
+                  To learn more about this page later, click your profile
+                  picture at the top right of the dashboard and select
+                  Assistance & Support
                 </p>
               }
             />
@@ -320,7 +328,9 @@ const RentAndUnit = () => {
                     pageData?.unit.map((unit, index) => (
                       <RentalPropertyCard
                         key={index}
-                        propertyType={unit.propertyType as 'rental' | 'facility'}
+                        propertyType={
+                          unit.propertyType as "rental" | "facility"
+                        }
                         unitId={unit.unitId || ""}
                         images={unit.images}
                         unit_title={unit.unit_title}
@@ -345,7 +355,9 @@ const RentAndUnit = () => {
                     pageData?.unit.map((unit, index) => (
                       <RentalPropertyListCard
                         key={index}
-                        propertyType={unit.propertyType as 'rental' | 'facility'}
+                        propertyType={
+                          unit.propertyType as "rental" | "facility"
+                        }
                         unitId={unit.unitId || ""}
                         images={unit.images}
                         unit_title={unit.unit_title}
@@ -359,8 +371,8 @@ const RentAndUnit = () => {
                         status={unit.status || ""}
                         property_type={unit.propertyType || ""}
                       />
-                    )
-                    ))}
+                    ))
+                  )}
                 </div>
               )}
             </section>
