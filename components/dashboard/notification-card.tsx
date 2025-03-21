@@ -15,7 +15,11 @@ import {
   getIconByContentType,
   roundUptoNine,
 } from "@/app/(nav)/(messages-reviews)/messages/data";
-import { ComplainsEmptyIcon, EmptyMessageIcon } from "@/public/icons/icons";
+import {
+  ComplainsEmptyIcon,
+  EmptyMessageIcon,
+  EmptyStaffIcon,
+} from "@/public/icons/icons";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -42,10 +46,10 @@ const NotificationCard: React.FC<notificationCardProps> = ({
       };
     } else if (sectionHeader === "Staffs") {
       return {
-        icon: <ComplainsEmptyIcon size={60} />, // Add appropriate icon if available
+        icon: <EmptyStaffIcon size={60} />, // Add appropriate icon if available
         altText: "Staff Icon",
         message:
-          'You haven\'t created any staff accounts yet. To add a staff member, click the "Create New Staff" button. Once created, their login details will be sent to them, allowing them to access their company dashboard using the credentials assigned. \nThey will only have access to the permissions you grant them. Once you add staff profiles, this guide will no longer be visible. To revisit this guide later, click your profile picture at the top right of the dashboard and select Assistance & Support.',
+          "No Staff has been created for this branch yet. Once added, they will appear here.",
       };
     } else {
       return { icon: "", altText: "", message: "" };
@@ -72,13 +76,18 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           </p>
           {seeAllLink && (
             <Link
-              href={seeAllLink}
+              href={notifications.length === 0 ? "#" : seeAllLink}
               className={clsx(
                 "flex items-center font-medium",
                 notifications.length === 0
-                  ? "text-[#C1C2C3]"
+                  ? "text-[#C1C2C3] cursor-not-allowed"
                   : "text-[#4F5E71] dark:text-[#f1f1fd]"
               )}
+              onClick={(e) => {
+                if (notifications.length === 0) {
+                  e.preventDefault();
+                }
+              }}
             >
               See all
               <ChevronRight className="w-5 h-5" />
@@ -180,7 +189,9 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         })}
         {notifications.length === 0 && (
           <div className="flex flex-col items-center text-center gap-6">
-            {emptyState.icon && <div className="text-brand-9">{emptyState.icon}</div>}
+            {emptyState.icon && (
+              <div className="text-brand-9">{emptyState.icon}</div>
+            )}
             <p className="font-normal text-xs text-brand-9">
               {emptyState.message}
             </p>

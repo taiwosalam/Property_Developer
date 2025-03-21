@@ -49,6 +49,7 @@ import CustomTable from "@/components/Table/table";
 import { walletTableFields } from "@/app/(nav)/wallet/data";
 import clsx from "clsx";
 import { getTransactionIcon } from "@/components/Wallet/icons";
+import useStaffRoles from "@/hooks/getStaffs";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -72,7 +73,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   // console.log("rec t")
 
-  console.log("receipt_statistics", branch_wallet);
+  console.log("receipt_statistics", receipt_statistics);
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
     wallet_id:
@@ -84,7 +85,6 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
   });
 
-  
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
     let link = "";
@@ -306,12 +306,12 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           <AutoResizingGrid gap={12} minWidth={230}>
             <AccountStatsCard
               title="Total Invoice Created"
-              balance={Number(receipt_statistics?.total_invoice || 0)}
+              balance={Number(receipt_statistics?.total_receipt || 0)}
               percentage={
-                Number(receipt_statistics?.percentage_change_invoice) || 0
+                Number(receipt_statistics?.percentage_change_total) || 0
               }
               trendDirection={
-                Number(receipt_statistics?.percentage_change_invoice) >= 0
+                Number(receipt_statistics?.percentage_change_total) >= 0
                   ? "up"
                   : "down"
               }
@@ -320,12 +320,10 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             />
             <AccountStatsCard
               title="Total Paid Invoice"
-              balance={Number(receipt_statistics?.total_expense || 0)}
-              percentage={
-                Number(receipt_statistics?.percentage_change_expenses) || 0
-              }
+              balance={Number(receipt_statistics?.total_paid_receipt || 0)}
+              percentage={receipt_statistics?.percentage_change_paid || 0}
               trendDirection={
-                Number(receipt_statistics?.percentage_change_expenses) >= 0
+                Number(receipt_statistics?.percentage_change_paid) >= 0
                   ? "up"
                   : "down"
               }
@@ -334,15 +332,15 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             />
             <AccountStatsCard
               title="Total Pending Invoice"
-              balance={branch_wallet?.balance_total || 0}
-              percentage={getPercentage(
-                Number(branch_wallet?.last_week_balance),
-                Number(branch_wallet?.balance_total)
-              )}
-              trendDirection={determineUpOrDown(
-                Number(branch_wallet?.balance_total),
-                Number(branch_wallet?.last_week_balance)
-              )}
+              balance={receipt_statistics?.total_pending_receipt || 0}
+              percentage={
+                Number(receipt_statistics?.percentage_change_pending) || 0
+              }
+              trendDirection={
+                Number(receipt_statistics?.percentage_change_pending) >= 0
+                  ? "up"
+                  : "down"
+              }
               variant="blueIncoming"
               forBranch
             />

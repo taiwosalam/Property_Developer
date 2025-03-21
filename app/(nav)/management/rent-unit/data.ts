@@ -292,11 +292,12 @@ export const RentAndUnitFiltersWithDropdown = [
     })),
   },
   {
-    label: "Account Officer",
+    label: "Status",
     value: [
-      { label: "Account Officer 1", value: "account_officer1" },
-      { label: "Account Officer 2", value: "account_officer2" },
-      { label: "Account Officer 3", value: "account_officer3" },
+      { label: "All", value: "all" },
+      { label: "Vacant", value: "vacant" },
+      { label: "Occupied", value: "occupied" },
+      { label: "Expired", value: "expired" },
     ],
   },
 ];
@@ -757,7 +758,7 @@ export const transformSingleUnitData = (
 ): InitialSingleUnitProps => {
   const data = response.data;
   // console.log("res", response)
-  console.log("single response", data)
+  console.log("single response", data);
   return {
     data: data.data.map((unit) => ({
       title: unit.property.title,
@@ -920,7 +921,7 @@ export const transformUnitData = (response: any) => {
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   // const previous_tenants = response.data.previous_tenants;
-  // console.log("data to trans", response)
+  console.log("data to trans", data)
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -935,7 +936,7 @@ export const transformUnitData = (response: any) => {
     unitSubType: data.unit_sub_type,
     state: data.property.state,
     localGovernment: data.property.local_government,
-    accountOfficer: data.account_officer || "--- ---",
+    accountOfficer: data.property.account_officer.name || "--- ---",
     bedrooms: data.bedroom,
     bathrooms: data.bathroom,
     toilets: data.toilet,

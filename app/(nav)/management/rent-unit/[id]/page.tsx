@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import BackButton from "@/components/BackButton/back-button";
@@ -9,22 +9,26 @@ import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-sec
 import { useParams, useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
-import { initData, initDataProps, singleUnitApiResponse, transformSingleUnitData, transformUnitData } from "../data";
+import {
+  initData,
+  initDataProps,
+  singleUnitApiResponse,
+  transformSingleUnitData,
+  transformUnitData,
+} from "../data";
 import NetworkError from "@/components/Error/NetworkError";
 import { formatNumber } from "@/utils/number-formatter";
 
-const PriceSection: React.FC<{ period: string; title: string; total_package: number; price: number }> = ({
-  title,
-  price,
-  total_package,
-  period
-}) => (
+const PriceSection: React.FC<{
+  period: string;
+  title: string;
+  total_package: number;
+  price: number;
+}> = ({ title, price, total_package, period }) => (
   <div className="space-y-4">
     <h3 className="font-medium text-base text-brand-10">{title}</h3>
     <div>
-      <p className="text-lg lg:text-xl font-bold text-brand-9">
-        {price}
-      </p>
+      <p className="text-lg lg:text-xl font-bold text-brand-9">{price}</p>
       <p className="text-xs font-normal text-text-label dark:text-darkText-1">
         Total Package
       </p>
@@ -50,12 +54,11 @@ const DetailItem: React.FC<{ label: string; value: string | number }> = ({
   </div>
 );
 
-
 const UnitPreviewPage = () => {
-  const router = useRouter()
+  const router = useRouter();
   const { id } = useParams();
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-  const endpoint = `/unit/${id}/view`
+  const endpoint = `/unit/${id}/view`;
   const {
     data: apiData,
     loading,
@@ -67,14 +70,13 @@ const UnitPreviewPage = () => {
 
   useEffect(() => {
     if (apiData) {
-      setUnit_data((x:any) => ({
+      setUnit_data((x: any) => ({
         ...x,
-        ...transformUnitData(apiData)
-      }))
+        ...transformUnitData(apiData),
+      }));
       // console.log("Data", unit_data.previous_tenants)
     }
-  }, [apiData])
-
+  }, [apiData]);
 
   if (loading)
     return (
@@ -128,10 +130,7 @@ const UnitPreviewPage = () => {
                 value={unit_data.unitPreference}
               />
               <DetailItem label="Unit Type" value={unit_data.unitType} />
-              <DetailItem
-                label="Unit Sub Type"
-                value={unit_data.unitSubType}
-              />
+              <DetailItem label="Unit Sub Type" value={unit_data.unitSubType} />
               <DetailItem label="State" value={unit_data.state} />
               <DetailItem
                 label="Local Government"
@@ -174,13 +173,13 @@ const UnitPreviewPage = () => {
       <div className="space-y-6">
         <RentSectionTitle>Previously Assigned Tenants Records</RentSectionTitle>
         <div className="space-y-4">
-          {unit_data?.previous_tenants?.map((t: any, index: number) => (
-              <TenancyRecord
-                key={index}
-                unit_id={id}
-                {...t}
-              />
-          ))}
+          {unit_data?.previous_tenants?.length === 0 ? (
+            <p className="text-center">No Previous Tenant Record</p>
+          ) : (
+            unit_data.previous_tenants.map((t: any, index: number) => (
+              <TenancyRecord key={index} unit_id={id} {...t} />
+            ))
+          )}
         </div>
       </div>
     </section>

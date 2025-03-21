@@ -12,7 +12,8 @@ import { toast } from "sonner";
 
 const SwitchPropertyModal: React.FC<{
   isRental: boolean;
-}> = ({ isRental }) => {
+  propertyId: number;
+}> = ({ isRental, propertyId }) => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
@@ -26,11 +27,14 @@ const SwitchPropertyModal: React.FC<{
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
+  // Property options without current tenant property for the select input
   const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: p.id,
-      label: p.title,
-    })) || [];
+    propertyData?.data
+      .filter((p) => p.id !== propertyId)
+      .map((p) => ({
+        value: p.id,
+        label: p.title,
+      })) || [];
 
   const handleContinue = () => {
     if (!selectedProperty) return toast.warning("Please select a property");
@@ -82,6 +86,7 @@ const SwitchPropertyModal: React.FC<{
                 : "Select property"
             }
             error={propertyError}
+            disabled={propertyLoading}
           />
           <div className="w-full flex items-center justify-center">
             <Button

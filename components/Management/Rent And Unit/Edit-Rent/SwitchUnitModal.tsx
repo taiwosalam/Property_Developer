@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
@@ -13,19 +13,16 @@ import { transformUnitOptions, UnitsApiResponse } from "./data";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import { toast } from "sonner";
 
-const SwitchUnitModal: React.FC<{ 
-  isRental: boolean,
-  propertyId: number 
-}> = ({ isRental, propertyId }) => {
+const SwitchUnitModal: React.FC<{
+  isRental: boolean;
+  propertyId: number;
+  unitId: number;
+}> = ({ isRental, propertyId, unitId }) => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
-  const {
-    calculation,
-    deduction,
-    setCalculation,
-    setDeduction,
-  } = useOccupantStore();
+  const { calculation, deduction, setCalculation, setDeduction } =
+    useOccupantStore();
   const [checked1, setChecked1] = useState(calculation);
   const [checked2, setChecked2] = useState(deduction);
   const router = useRouter();
@@ -33,20 +30,22 @@ const SwitchUnitModal: React.FC<{
   const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
 
-
-
   const {
     data: unitsData,
-    error,
-    loading,
+    error: unitsError,
+    loading: UnitsLoading,
   } = useFetch<UnitsApiResponse>(`/unit/${propertyId}/all`);
 
-  useEffect(()=> {
+  useEffect(() => {
     if (unitsData) {
-      const unitsTransformOptions = transformUnitOptions(unitsData);
+      const unitsTransformOptions = transformUnitOptions(unitsData).filter(
+        (unit) => unit.value !== unitId
+      );
       setUnitsOptions(unitsTransformOptions);
     }
-  }, [unitsData]);
+  }, [unitsData, unitId]);
+
+  // console.log("unitsOptions", unitsData);
 
   useEffect(() => {
     setChecked1(calculation);
@@ -68,15 +67,15 @@ const SwitchUnitModal: React.FC<{
     setDeduction(newChecked2);
   };
 
-
-
   const handleContinue = () => {
     if (!selectedUnitId) {
       toast.warning("Please select a unit");
       return;
     }
-    router.push(`/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${propertyId}&u=${selectedUnitId}`);
-  }
+    router.push(
+      `/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${propertyId}&u=${selectedUnitId}`
+    );
+  };
 
   if (modalView === "warning") {
     return (
@@ -154,6 +153,15 @@ const SwitchUnitModal: React.FC<{
                 className="min-w-[300px]"
                 options={unitsOptions}
                 onChange={setSelectedUnitId}
+                placeholder={
+                  UnitsLoading
+                    ? "Loading Units..."
+                    : unitsError
+                    ? "Error loading Units"
+                    : "Select Unit"
+                }
+                error={unitsError}
+                disabled={UnitsLoading}
               />
               <div className="w-full flex items-center justify-center">
                 <Button

@@ -28,10 +28,10 @@ export interface SingleBranchPageData {
 
 interface receipt_statistics {
   total_receipt: string;
-  total_expense: string;
-  total_invoice: string;
-  percentage_change_invoice: number;
-  percentage_change_expenses: number;
+  total_paid_receipt: string;
+  total_pending_receipt: string;
+  percentage_change_paid: number;
+  percentage_change_total: number;
   percentage_change_pending: number;
 }
 

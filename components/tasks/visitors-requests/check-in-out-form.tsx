@@ -28,7 +28,16 @@ interface VehicleFormProps extends BaseProps {
 const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
   props
 ) => {
-  const { type, handleBack, pictureSrc, userName, id, useCase, onSubmit, loading } = props;
+  const {
+    type,
+    handleBack,
+    pictureSrc,
+    userName,
+    id,
+    useCase,
+    onSubmit,
+    loading,
+  } = props;
   return (
     <ModalPreset
       heading={
@@ -40,8 +49,8 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
       }
       back={handleBack ? { handleBack } : undefined}
     >
-        <div className="flex md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
-          <form onSubmit={onSubmit} className="flex w-full gap-10 items-start">
+      <div className="flex md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
+        <form onSubmit={onSubmit} className="flex w-full gap-10 items-start">
           <div className="md:min-w-fit custom-flex-col gap-6">
             <div className="flex-1 flex-col items-center gap-2">
               <div className="mb-[10px] flex items-center gap-4">
@@ -95,6 +104,7 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               <Input
                 type="number"
                 min={0}
+                // max={3}
                 inputClassName="keep-spinner"
                 label={
                   useCase === "visitor" ? "Companions" : "Select Passengers"
@@ -120,15 +130,19 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               id={type === "decline" ? "reason" : "inventory"}
               inputSpaceClassName="md:!h-[100px]"
             />
-          <Button
-            type="submit"
-            aria-label="submit"
-            size="16_bold"
-            className="py-[10px] px-8 rounded-lg block ml-auto mt-5"
-            disabled={loading}
-          >
-            {loading ? "Loading..." : type === "check-in" ? "Create" : "Submit"}
-          </Button>
+            <Button
+              type="submit"
+              aria-label="submit"
+              size="16_bold"
+              className="py-[10px] px-8 rounded-lg block ml-auto mt-5"
+              disabled={loading}
+            >
+              {loading
+                ? "Loading..."
+                : type === "check-in"
+                ? "Create"
+                : "Submit"}
+            </Button>
           </div>
         </form>
       </div>

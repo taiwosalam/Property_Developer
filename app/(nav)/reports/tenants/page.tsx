@@ -20,7 +20,6 @@ import { BranchFilter, FilterResult, PropertyFilter } from "./types";
 import dayjs from "dayjs";
 import { Branch, BranchStaff } from "../../(messages-reviews)/messages/types";
 
-
 const TenantsReport = () => {
   const [tenant_reports, setTenant_reports] = useState<TenantReport>({
     total_tenants: 0,
@@ -34,26 +33,28 @@ const TenantsReport = () => {
     endDate: null,
   });
   const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
-  const {data: property } = useFetch<any>(`property/all`);
+  const { data: property } = useFetch<any>(`property/all`);
 
   useEffect(() => {
     if (apiData) {
       setBranches(apiData.data);
     }
-    if(staff){
-      const filterStaff = staff.data.filter((staff: any) => staff.staff_role === "account officer")
-      setBranchAccountOfficers(filterStaff)
+    if (staff) {
+      const filterStaff = staff.data.filter(
+        (staff: any) => staff.staff_role === "account officer"
+      );
+      setBranchAccountOfficers(filterStaff);
     }
-    if(property){
-      setPropertyList(property.data)
+    if (property) {
+      setPropertyList(property.data);
     }
   }, [apiData, staff, property]);
-
-  
 
   const reportTenantFilterOption = [
     {
@@ -61,7 +62,7 @@ const TenantsReport = () => {
       value: branchAccountOfficers.map((staff: any) => ({
         label: staff.user.name,
         value: staff.user.id.toString(),
-      })),  
+      })),
     },
     {
       label: "Branch",
@@ -76,7 +77,7 @@ const TenantsReport = () => {
       value: propertyList.map((property: any) => ({
         label: property.title,
         value: property.id.toString(),
-      })),  
+      })),
     },
   ];
 
