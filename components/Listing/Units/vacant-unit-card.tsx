@@ -29,10 +29,16 @@ import { useAddUnitStore } from "@/store/add-unit-store";
 
 const VacantUnitCard = ({
   status,
-  unit_data
+  unit_data,
 }: {
-  unit_data: any
-  status: "published" | "unpublished" | "under moderation" | "rejected" | "approved" | "pending"
+  unit_data: any;
+  status:
+    | "published"
+    | "unpublished"
+    | "under moderation"
+    | "rejected"
+    | "approved"
+    | "pending";
 }) => {
   const propertySettings = useAddUnitStore((state) => state.propertySettings);
   const currency = propertySettings?.currency;
@@ -47,48 +53,46 @@ const VacantUnitCard = ({
     service_charge: "",
   };
 
-  const unit_status = status === "pending"
-    ? "under moderation"
-    : status
+  const unit_status = status === "pending" ? "under moderation" : status;
 
   const togglePublish = () => {
-    if (status === 'approved') {
+    if (status === "approved") {
       setIsOpen(false);
       setChecked(!checked);
     }
   };
 
-  useEffect(() => {
-    console.log('user status ch', checked)
-    console.log('unit data', unit_data)
-  }, [checked, unit_data])
-
   const keyValueData = {
     unit_details:
       unit_data.unit_type.toLowerCase() === "land"
-        ? `${unit_data.unit_preference} - ${unit_data.unit_type} - ${unit_data.total_area_sqm
-        }${unit_data.number_of && unit_data.number_of !== "0"
-          ? ` - ${unit_data.number_of}`
-          : ""
-        }`
-        : `${unit_data.unit_preference} - ${unit_data.bedroom || 0} bedroom${parseInt(unit_data.bedroom || "0") > 1 ? "s" : ""
-        } - ${unit_data.unit_sub_type} - ${unit_data.unit_type}`,
+        ? `${unit_data.unit_preference} - ${unit_data.unit_type} - ${
+            unit_data.total_area_sqm
+          }${
+            unit_data.number_of && unit_data.number_of !== "0"
+              ? ` - ${unit_data.number_of}`
+              : ""
+          }`
+        : `${unit_data.unit_preference} - ${unit_data.bedroom || 0} bedroom${
+            parseInt(unit_data.bedroom || "0") > 1 ? "s" : ""
+          } - ${unit_data.unit_sub_type} - ${unit_data.unit_type}`,
     "unit no/name": unit_data.unit_name,
     rent: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(unit_data.rent)
     )}`,
     ...(unit_data.caution_fee
       ? {
-        caution_deposit: `${currencySymbols[currency || "naira"]
+          caution_deposit: `${
+            currencySymbols[currency || "naira"]
           }${formatNumber(parseFloat(unit_data.caution_fee))}`,
-      }
+        }
       : {}),
     service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(unit_data.service_charge || "0")
     )}`,
   };
 
-  const color = unit_listing_status[unit_status as keyof typeof unit_listing_status];
+  const color =
+    unit_listing_status[unit_status as keyof typeof unit_listing_status];
   const sanitizedHTML = DOMPurify.sanitize(unit_data?.description || "");
 
   return (
@@ -97,7 +101,9 @@ const VacantUnitCard = ({
       style={{ boxShadow: " 2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="flex items-center gap-6 justify-between">
-        <p className="text-brand-10 text-base font-bold">Unit ID: {unit_data.unitId}</p>
+        <p className="text-brand-10 text-base font-bold">
+          Unit ID: {unit_data.unitId}
+        </p>
         <div
           className="w-5 h-5 rounded-full"
           style={{ backgroundColor: color || "#ebeef0" }}
@@ -125,7 +131,7 @@ const VacantUnitCard = ({
                 >
                   <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
                 </TruncatedText> */}
-                <span> { unit_data.property_title } </span>
+                <span> {unit_data.property_title} </span>
               </div>
             </div>
             <div
@@ -164,11 +170,11 @@ const VacantUnitCard = ({
           "flex flex-wrap gap-4 lg:gap-12 justify-between lg:justify-end text-brand-9 text-base font-medium lato"
         }
       >
-        { status === "approved" && (
-        <div className="flex  gap-2 capitalize">
-          <Switch checked={checked} onClick={() => setIsOpen(true)} />
-          <p>Under Moderation</p>
-        </div>
+        {status === "approved" && (
+          <div className="flex  gap-2 capitalize">
+            <Switch checked={checked} onClick={() => setIsOpen(true)} />
+            <p>Under Moderation</p>
+          </div>
         )}
         <UnitSponsorPopover />
         <Modal

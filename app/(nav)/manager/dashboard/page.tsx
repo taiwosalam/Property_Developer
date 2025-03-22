@@ -13,6 +13,8 @@ import {
   invoiceTableFields,
   dashboardInvoiceTableData,
   complaintsData,
+  transformDashboardData,
+  BranchDashboardResponse,
 } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -28,16 +30,49 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import { useAuthStore } from "@/store/authStore";
 import { getLocalStorage } from "@/utils/local-storage";
+import useFetch from "@/hooks/useFetch";
+import { useEffect, useState } from "react";
+import { initialDashboardStats } from "../../dashboard/data";
+import BranchDashboard from "../management/staff-branch/[branchId]/page";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
+  const [branchId, setBranchId] = useState("");
   const walletId = useWalletStore((state) => state.walletId);
   // const additional_details = useAuthStore((state) => state.additional_details);
-  const loggedInUserDetails = getLocalStorage('additional_details');
+  const loggedInUserDetails = getLocalStorage("additional_details");
+  const [branchResponse, setBranchResponse] = useState<any | null>(null);
+
+  const { data: userProfile } = useFetch<{
+    data: { branch: { branch_id: number } };
+  }>(`/user/profile`);
+
+  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
+
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
   );
+
   const transactions = useWalletStore((state) => state.transactions);
+
+  useEffect(() => {
+    if (userProfile) {
+      setBranchId(userProfile.data.branch.branch_id.toString());
+    }
+  }, [userProfile]);
+
+  const { data: apiData } = useFetch<BranchDashboardResponse>(
+    `branch-data/dashboard/${branchId}`
+  );
+
+  useEffect(() => {
+    if (apiData) {
+      setDashboardStats(dashboardCardData(apiData?.data));
+      const transformData = transformDashboardData(apiData);
+      setBranchResponse(transformData);
+    }
+  }, [apiData]);
 
   const dashboardPerformanceChartData = transactions.map((t) => ({
     date: t.date,
@@ -46,24 +81,23 @@ const Dashboard = () => {
     debit: t.type === "debit" ? t.amount : 0,
   }));
 
-  console.log("transactions", transactions)
-
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
         <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
           <div className="w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
-            {dashboardCardData.map((card:any, index:number) => (
-              <Link href={card.link} key={index} prefetch={false}>
-                <Card
-                  title={card.title}
-                  icon={<card.icon />}
-                  value={card.value}
-                  subvalue={card.subValue}
-                  bg={card.bg}
-                />
-              </Link>
-            ))}
+            {dashboardStats &&
+              dashboardStats.map((card: any, index: number) => (
+                <Link href={card.link} key={index} prefetch={false}>
+                  <Card
+                    title={card.title}
+                    icon={<card.icon />}
+                    value={card.value}
+                    subvalue={card.subValue}
+                    bg={card.bg}
+                  />
+                </Link>
+              ))}
           </div>
 
           {/* Chart */}
@@ -106,17 +140,21 @@ const Dashboard = () => {
       </div>
 
       <SectionContainer heading="Recent invoice" href="/accounting/invoice">
-        <CustomTable
-          data={dashboardInvoiceTableData}
-          fields={invoiceTableFields}
-          tableHeadClassName="h-[76px]"
-          tableBodyCellSx={{
-            fontSize: "1rem",
-            paddingTop: "18px",
-            paddingBottom: "18px",
-          }}
-          tableHeadCellSx={{ fontSize: "1rem" }}
-        />
+        {branchResponse && branchResponse?.data?.invoices.length > 0 ? (
+          <CustomTable
+            data={branchResponse?.data.invoices}
+            fields={invoiceTableFields}
+            tableHeadClassName="h-[76px]"
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "18px",
+              paddingBottom: "18px",
+            }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+          />
+        ) : (
+          <p className="text-center py-20 text-slate-400">No recent invoices</p>
+        )}
       </SectionContainer>
       <SectionContainer heading="Recent Complains" href="/tasks/complaints">
         <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -145,8 +183,7 @@ const Dashboard = () => {
                   },
                   name: "John Doe",
                   title: "Window dilapidated and entrance not working",
-                  message:
-                    "Hello, this is Makinwa, and i want to ask you how",
+                  message: "Hello, this is Makinwa, and i want to ask you how",
                   avatarSrc: "/empty/avatar.png",
                 }}
               />

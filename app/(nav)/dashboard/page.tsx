@@ -110,7 +110,7 @@ const Dashboard = () => {
     if (Apiinvoices) {
       const transformed = transformInvoiceData(Apiinvoices);
       setInvoiceData(transformed);
-      console.log("Transformed", transformed);
+      
     }
   }, [Apiinvoices]);
 

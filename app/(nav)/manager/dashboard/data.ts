@@ -1,4 +1,3 @@
-
 import { type ChartConfig } from "@/components/ui/chart";
 import {
   BuildingIcon,
@@ -53,61 +52,156 @@ function getBackgroundColor(title: string): string {
   return backgroundColor;
 }
 
-export const dashboardCardData = [
+// "property_count": 1,
+// "month_count": 1,
+// "vacant_unit": 1,
+// "month_vacant_unit": 1,
+// "expired_unit": 0,
+// "month_expired_unit": 0,
+// "landlord_count": 0,
+// "month_landlord_count": 0,
+// "tenant_count": 0,
+// "month_tenant_count": 0,
+// "listing_count": 1,
+// "month_listing_count": 1,
+// "complaint_count": 0,
+// "month_complaint_count": 0,
+// "invoice_count": 0,
+// "month_invoice_count": 0,
+// "inquiry_count": 0,
+// "month_inquiry_count": 0,
+//  "invoices": [
+//   {
+//     "id": 22,
+//     "invoice_id": "cShTBR",
+//     "client_name": "Mubarak Abdulrafiu",
+//     "client_picture": null,
+//     "reason": null,
+//     "total_amount": "1014100.00",
+//     "invoice_date": "2025-02-19"
+// },
+// {
+//     "id": 13,
+//     "invoice_id": "ATW18t",
+//     "client_name": "Mubarak Abdulrafiu",
+//     "client_picture": null,
+//     "reason": null,
+//     "total_amount": "1014100.00",
+//     "invoice_date": "2025-02-12"
+// }
+// ]
+
+export type BranchDashboardResponse = {
+  status: "success";
+  data: DashboardData;
+};
+
+type DashboardData = {
+  property_count: number;
+  month_count: number;
+  vacant_unit: number;
+  month_vacant_unit: number;
+  expired_unit: number;
+  month_expired_unit: number;
+  landlord_count: number;
+  month_landlord_count: number;
+  tenant_count: number;
+  month_tenant_count: number;
+  listing_count: number;
+  month_listing_count: number;
+  complaint_count: number;
+  month_complaint_count: number;
+  invoice_count: number;
+  month_invoice_count: number;
+  inquiry_count: number;
+  month_inquiry_count: number;
+  invoices: Invoice[];
+};
+
+type Invoice = {
+  id: number;
+  invoice_id: string;
+  client_name: string;
+  client_picture: string | null;
+  reason: string | null;
+  total_amount: string;
+  invoice_date: string; // ISO date string
+};
+
+export const transformDashboardData = (data: BranchDashboardResponse) => {
+  return {
+    data: {
+      ...data?.data,
+      invoices: data?.data?.invoices.map((invoice) => {
+        return {
+          id: invoice?.id,
+          picture: invoice.client_picture ?? "/empty/avatar.png",
+          name: invoice.client_name || "___ ___",
+          invoice_id: invoice.invoice_id || "___ ___",
+          details: invoice.reason ?? "___ ___",
+          total_amount: `₦${parseFloat(invoice.total_amount).toLocaleString()}` || "___ ___",
+          date: format(new Date(invoice.invoice_date), "dd/MM/yyyy") || "___ ___",
+        };
+      }),
+    },
+  };
+};
+
+export const dashboardCardData = (data: Record<string, any>) => [
   {
     title: "Properties",
     bg: getBackgroundColor("properties"),
     icon: BuildingIcon,
-    value: 10,
-    subValue: 20,
+    value: data?.property_count ?? 0,
+    subValue: data?.month_count ?? 0,
     link: "/management/staff-branch/",
   },
   {
     title: "Landlords",
     bg: getBackgroundColor("landlords"),
     icon: LandlordIcon,
-    value: 15,
-    subValue: 20,
+    value: data?.landlord_count ?? 0,
+    subValue: data?.month_landlord_count ?? 0,
     link: "/management/landlord",
   },
   {
     title: "Tenants & Occupants",
     bg: getBackgroundColor("tenants & occupants"),
     icon: TenantIcon,
-    value: 25,
-    subValue: 20,
+    value: data?.tenant_count ?? 0,
+    subValue: data?.month_tenant_count ?? 0,
     link: "/management/tenants",
   },
   {
     title: "Vacant Unit",
     bg: getBackgroundColor("vacant unit"),
     icon: BedIcon,
-    value: 5,
-    subValue: 20,
+    value: data?.vacant_unit ?? 0,
+    subValue: data?.month_vacant_unit ?? 0,
     link: "/management/rent-unit",
   },
   {
     title: "Expired",
     bg: getBackgroundColor("expired"),
     icon: ExpiredIcon,
-    value: 3,
-    subValue: 20,
+    value: data?.expired_unit ?? 0,
+    subValue: data?.month_expired_unit ?? 0,
     link: "/management/rent-unit",
   },
   {
     title: "Invoices",
     bg: getBackgroundColor("invoices"),
     icon: InvoiceIcon,
-    value: 12,
-    subValue: 20,
+    value: data?.invoice_count ?? 0,
+    subValue: data?.month_invoice_count ?? 0,
     link: "/accounting/invoice",
   },
   {
     title: "Inquiries",
     bg: getBackgroundColor("inquiries"),
     icon: InquiriesIcon,
-    value: 20,
-    subValue: 20,
+    value: data?.inquiry_count ?? 0,
+    subValue: data?.month_inquiry_count ?? 0,
     link: "/tasks/inquires",
   },
 
@@ -115,16 +209,16 @@ export const dashboardCardData = [
     title: "Complaints",
     bg: getBackgroundColor("complaints"),
     icon: ComplaintsIcon,
-    value: 8,
-    subValue: 20,
+    value: data?.complaint_count ?? 0,
+    subValue: data?.month_complaint_count ?? 0,
     link: "/tasks/complaints",
   },
   {
     title: "Listings",
     bg: getBackgroundColor("listings"),
     icon: ListingsIcon,
-    value: 7,
-    subValue: 20,
+    value: data?.listing_count ?? 0,
+    subValue: data?.month_listing_count ?? 0,
     link: "/listing/units",
   },
 ];
