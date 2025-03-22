@@ -211,19 +211,19 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   const isChecked = selectedGroup === groupName;
   const { company_id } = usePersonalInfoStore();
 
-  const handleSelectedGroup = useCallback(
-    debounce(async () => {
-      if (setSelectedGroup && groupName && company_id) {
-        setSelectedGroup(groupName);
+  // const handleSelectedGroup = useCallback(
+  //   debounce(async () => {
+  //     if (setSelectedGroup && groupName && company_id) {
+  //       setSelectedGroup(groupName);
 
-        const payload = {
-          company_type_id: id,
-        };
-        await selectCompanyModule(company_id?.toString(), payload);
-      }
-    }, 500),
-    []
-  );
+  //       const payload = {
+  //         company_type_id: id,
+  //       };
+  //       await selectCompanyModule(company_id?.toString(), payload);
+  //     }
+  //   }, 500),
+  //   []
+  // );
 
   return (
     <div className="flex justify-between">

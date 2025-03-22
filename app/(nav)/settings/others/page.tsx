@@ -464,11 +464,11 @@ const Others = () => {
       assign_staff: notification.assign_staff ?? true,
     });
 
-    setSelectedGroup(
-      notification.company_default_module != null
-        ? String(notification.company_default_module)
-        : "1"
-    );
+    const groupStatus =
+      notification?.company_default_module != null
+        ? String(notification?.company_default_module)
+        : "1";
+    setSelectedGroup(groupStatus);
   }, [otherSettingResponse]);
 
   useEffect(() => {
