@@ -262,14 +262,9 @@ const VehilceRecords = () => {
                     Once a vehicle record is added to this page, the
                     introductory guide will automatically disappear, as the page
                     transitions into active management mode. However, if you
-                    ever need assistance or wish to revisit this guide, you can
-                    easily do so. Simply click on the help icon{" "}
-                    <span className="inline-block text-brand-10 align-text-top">
-                      <ExclamationMark />
-                    </span>{" "}
-                    located at the top-left corner of the dashboard. This icon
-                    provides quick access to detailed instructions and support
-                    whenever needed.
+                    ever need assistance or wish to revisit this guide, Simply
+                    click your profile picture at the top right of the dashboard
+                    and select Assistance & Support.
                   </span>
                   <br />
                   <span>

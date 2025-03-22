@@ -49711,6 +49711,8 @@ export const adminRoutes = [
   "/notifications",
   "/dashboard/reports",
   "/auth/forgot-password",
+  "/management/agent-request",
+  "/management/agent-request/m",
   "/management/landlord",
   "/management/tenants",
   "/management/occupants",

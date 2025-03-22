@@ -2,11 +2,6 @@
 
 import Image from "next/image";
 import "keen-slider/keen-slider.min.css";
-import {
-  propertyMoreDetails,
-  propertySummaryData,
-  threadArticle,
-} from "../../../data";
 import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
@@ -17,15 +12,15 @@ import ThreadComments from "@/components/Community/ThreadComments";
 import ReadyByCard from "@/components/Community/ReadByCard";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
-import { formatDate, formatDateRange } from "../../../property-request/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
+import { formatDateRange } from "../../../data";
 
 interface PropertyRequestResponse {
   data: {
-    PropertyRequest: any; 
+    PropertyRequest: any;
     readByData: any;
-    comments: any;  
+    comments: any;
   };
 }
 
@@ -35,8 +30,10 @@ const PreviewPage = () => {
   const [propertyRequest, setPropertyRequest] = useState<any>(null);
   const [readBy, setReadBy] = useState<any>(null);
   const [comments, setComments] = useState<any>([]);
-  const [slug, setSlug] = useState("") 
-  const { data, loading, error, refetch } = useFetch<PropertyRequestResponse>(`/agent-community/property-requests/${id}`);
+  const [slug, setSlug] = useState("");
+  const { data, loading, error, refetch } = useFetch<PropertyRequestResponse>(
+    `/agent-community/property-requests/${id}`
+  );
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -49,9 +46,12 @@ const PreviewPage = () => {
   }, [data]);
 
   // console.log(propertyRequest);
-  if (loading) return <div className="min-h-[80vh] flex justify-center items-center">
-  <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-  </div>;
+  if (loading)
+    return (
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
+    );
 
   return (
     <div>
@@ -79,27 +79,19 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ThreadArticle 
-            propertyRequest={propertyRequest} 
-          />
+          <ThreadArticle propertyRequest={propertyRequest} />
           {/* <ThreadComments /> */}
-          <PropertyRequestComments 
-            id={id as string} 
+          <PropertyRequestComments
+            id={id as string}
             slug={slug}
-            comments={comments} 
-            setComments={setComments} 
+            comments={comments}
+            setComments={setComments}
           />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SummaryCard 
-            propertyRequest={propertyRequest} 
-          />
-          <MoreDetailsCard 
-            propertyRequest={propertyRequest} 
-          />
-          <ReadyByCard 
-            data={readBy} 
-          />
+          <SummaryCard propertyRequest={propertyRequest} />
+          <MoreDetailsCard propertyRequest={propertyRequest} />
+          <ReadyByCard data={readBy} />
         </div>
       </div>
     </div>
@@ -111,11 +103,17 @@ export default PreviewPage;
 const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
   return (
     <div className="">
-      <div dangerouslySetInnerHTML={{ __html: propertyRequest?.description || "___" }} />
+      <div
+        dangerouslySetInnerHTML={{
+          __html: propertyRequest?.description || "___",
+        }}
+      />
       <div className="flex justify-between mt-6">
-      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <span className="text-text-secondary">Comments</span>
-          <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{propertyRequest?.comments_count}</p>
+          <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">
+            {propertyRequest?.comments_count}
+          </p>
         </div>
 
         <div className="flex gap-2">
@@ -153,7 +151,7 @@ const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
               />
             </div>
             <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-             {propertyRequest?.likes_up}
+              {propertyRequest?.likes_up}
             </div>
           </div>
         </div>
@@ -165,10 +163,10 @@ const ThreadArticle = ({ propertyRequest }: { propertyRequest: any }) => {
 // SECOND SIDE
 const SummaryCard = ({ propertyRequest }: { propertyRequest: any }) => {
   const propertySummaryData = [
-    { label: "Posted Date", value: propertyRequest?.created_at},
-    { label: "Last Updated", value: propertyRequest?.updated_at},
-    { label: "Total Seen", value: propertyRequest?.views_count},
-    { label: "Total Comment", value: propertyRequest?.comments_count},
+    { label: "Posted Date", value: propertyRequest?.created_at },
+    { label: "Last Updated", value: propertyRequest?.updated_at },
+    { label: "Total Seen", value: propertyRequest?.views_count },
+    { label: "Total Comment", value: propertyRequest?.comments_count },
   ];
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">
@@ -190,13 +188,23 @@ const SummaryCard = ({ propertyRequest }: { propertyRequest: any }) => {
 
 const MoreDetailsCard = ({ propertyRequest }: { propertyRequest: any }) => {
   const propertyMoreDetails = [
-    { label: "Target Audience:", value: propertyRequest?.target_audience?.join(', ') || "___" },
-    { label: "Category:", value: propertyRequest?.property_category || "___"},
-    { label: "Property Type:", value: propertyRequest?.property_type || "___" },
-    { label: "Sub Type:", value: propertyRequest?.property_sub_type || "___"},
-    { label: "Min Budget:", value: `₦${propertyRequest?.min_budget}` || "___" },
-    { label: "Max Budget:", value: `₦${propertyRequest?.max_budget}` || "___" },
-    { label: "Date Range:", value: formatDateRange(propertyRequest?.start_date, propertyRequest?.end_date) || "___" },
+    {
+      label: "Target Audience:",
+      value: propertyRequest?.target_audience?.join(", ") || "--- ---",
+    },
+    { label: "Category:", value: propertyRequest?.property_category || "--- ---" },
+    { label: "Property Type:", value: propertyRequest?.property_type || "--- ---" },
+    { label: "Sub Type:", value: propertyRequest?.property_sub_type || "--- ---" },
+    { label: "Min Budget:", value: `₦${propertyRequest?.min_budget}` || "--- ---" },
+    { label: "Max Budget:", value: `₦${propertyRequest?.max_budget}` || "--- ---" },
+    {
+      label: "Date Range:",
+      value:
+        formatDateRange(
+          propertyRequest?.start_date,
+          propertyRequest?.end_date
+        ) || "__,__,__",
+    },
   ];
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-lg p-4">

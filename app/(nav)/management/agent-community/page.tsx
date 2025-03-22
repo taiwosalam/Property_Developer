@@ -24,24 +24,8 @@ import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ThreadSkeleton from "@/components/Community/threadskeleton";
 import ThreadCard from "@/components/Community/ThreadCard";
+import { transformToThreadCardProps } from "./data";
 
-const lists = [
-  {
-    title: "All Property Request",
-    desc: "Review and respond to property needs and requests from other real estate agents within your network. Strengthen business connections and explore profit-sharing opportunities by fulfilling portfolio demands together for mutual success.",
-    link: "/management/agent-community/property-request",
-  },
-  {
-    title: "My Articles",
-    desc: "Assess the Articles youve initiated, any modifications made to it, and its overall performance.",
-    link: "/management/agent-community/my-articles",
-  },
-  {
-    title: "My Properties Request",
-    desc: "Evaluate the property request you've generated, comments received, and how you've managed them.",
-    link: "/management/agent-community/my-properties-request",
-  },
-];
 
 interface ThreadApiResponse {
   data: any[];
@@ -70,8 +54,8 @@ const AgentCommunityPage = () => {
       total: 0,
     },
     isLoading: false,
-    searchQuery: '',
-  }
+    searchQuery: "",
+  };
   const [state, setState] = useState(initialState);
   const { data, isLoading, searchQuery, meta } = state;
 
@@ -106,7 +90,6 @@ const AgentCommunityPage = () => {
     });
   };
 
-  
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
@@ -124,26 +107,26 @@ const AgentCommunityPage = () => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate, options } = filters;
     const statesArray = menuOptions["State"] || [];
-    
+
     const queryParams: ArticlesRequestParams = {
       page: 1,
       sort: "asc",
       search: "",
     };
-    
-    options.forEach(option => {
-      if (option === 'all') {
-          queryParams.all = true; 
-      } else if (option === 'trending') {
-          queryParams.trending = true; 
-      } else if (option === 'new') {
-          queryParams.recent = true; 
-      }
-  });
 
-  if (statesArray.length > 0) {
-    queryParams.state = statesArray.join(",");
-  }
+    options.forEach((option) => {
+      if (option === "all") {
+        queryParams.all = true;
+      } else if (option === "trending") {
+        queryParams.trending = true;
+      } else if (option === "new") {
+        queryParams.recent = true;
+      }
+    });
+
+    if (statesArray.length > 0) {
+      queryParams.state = statesArray.join(",");
+    }
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
     }
@@ -153,11 +136,9 @@ const AgentCommunityPage = () => {
     setConfig({
       params: queryParams,
     });
-    
+
     // console.log({ menuOptions, startDate, endDate, options })
   };
-
-
 
   const {
     data: apiData,
@@ -187,6 +168,9 @@ const AgentCommunityPage = () => {
     router.push("/management/agent-community/my-articles/create");
   };
 
+  // THREADS DATA FORMATTED FOR THREADCARD
+  const threads = transformToThreadCardProps(data);
+
   if (loading)
     return (
       <div className="min-h-[80vh] flex justify-center items-center">
@@ -210,16 +194,12 @@ const AgentCommunityPage = () => {
           className="hidden md:block"
         />
         <div className="w-full flex justify-center items-center md:justify-end md:w-auto md:items-center">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + Community Board
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <CommunityBoardModal lists={lists} />
-            </ModalContent>
-          </Modal>
+          <Button
+            href="/management/agent-community/my-articles"
+            className="page-header-button"
+          >
+            My Articles
+          </Button>
         </div>
       </div>
       <FilterBar
@@ -246,7 +226,7 @@ const AgentCommunityPage = () => {
           },
           {
             label: "New Articles",
-              value: "new",
+            value: "new",
           },
         ]}
         handleSearch={handleSearch}
@@ -279,7 +259,7 @@ const AgentCommunityPage = () => {
               <ThreadSkeleton />
               <ThreadSkeleton />
             </>
-          ) : data.length === 0 ? (
+          ) : threads.length === 0 ? (
             <section>
               <EmptyList
                 buttonText="+ Create New Article"
@@ -294,28 +274,8 @@ const AgentCommunityPage = () => {
               />
             </section>
           ) : (
-            data.map((thread, index) => (
-              <ThreadCard
-                key={index}
-                id={index}
-                name={thread.user.name}
-                picture_url={
-                  thread.post.media && thread.post.media.length > 0
-                    ? thread.post.media[0].path
-                    : undefined
-                }
-                role={thread.user.role}
-                time={thread.post.created_at}
-                title={thread.post.title}
-                desc={thread.post.content}
-                comments={thread.post.comments_count}
-                user_pics={thread.user.picture}
-                likes={thread.post.likes_up}
-                dislikes={thread.post.likes_down}
-                slug={thread.post.slug}
-                shareLink={thread.post.share_link}
-                video={thread.post.video_link}
-              />
+            threads.map((thread, index) => (
+              <ThreadCard key={index} {...thread} />
             ))
           )}
         </AutoResizingGrid>

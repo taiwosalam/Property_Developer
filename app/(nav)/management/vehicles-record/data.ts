@@ -1,45 +1,60 @@
 import type { Field } from "@/components/Table/types";
-import { formatDate } from "../../management/agent-community/property-request/data";
-import { initialPageState, VehicleRecordAPIRes, VehicleRecordData } from "./type";
+// import { formatDate } from "../../management/agent-community/property-request/data";
+import {
+  initialPageState,
+  VehicleRecordAPIRes,
+  VehicleRecordData,
+} from "./type";
+import dayjs from "dayjs";
 
 export const vehicleRecordFIltersOptionsWithDropdown = [
   {
-    label: "Property",
+    radio: true,
+    label: "Status",
     value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
+      { label: "No Record", value: "no_record" },
+      { label: "Pending", value: "pending" },
+      { label: "Completed", value: "completed" },
+    ],
+  },
+  {
+    radio: true,
+    label: "User Type",
+    value: [
+      { label: "Web", value: "web" },
+      { label: "Mobile", value: "mobile" },
+      { label: "All", value: "all" },
     ],
   },
 ];
 
 export interface VehicleData {
-    id: number;
-    user_id: string;
-    property_id: number;
-    plate_number: string;
-    created_at: string;
-    updated_at: string;
-    brand?: string;
-    city: string; 
-    address: string;
-    phone: string;
-    lga: string;
-    state: string;
-    model: string;
-    visitor_category: string;
-    vehicle_state: string;
-    vehicle_type: string;
-    vehicle_brand: string;
-    manufacture_year: string;
-    name: string;
-    pictureSrc: string;
-    status: string;
-    avatar?: string;
-    category: string;
-    registrationDate: string;
-    last_update: string;
-    latest_check_in: LatestCheckInData;
+  id: number;
+  user_id: string;
+  property_id: number;
+  plate_number: string;
+  created_at: string;
+  updated_at: string;
+  brand?: string;
+  city: string;
+  address: string;
+  phone: string;
+  lga: string;
+  state: string;
+  model: string;
+  visitor_category: string;
+  vehicle_state: string;
+  vehicle_type: string;
+  vehicle_brand: string;
+  manufacture_year: string;
+  name: string;
+  pictureSrc: string;
+  status: string;
+  avatar?: string;
+  category: string;
+  registrationDate: string;
+  last_update: string;
+  latest_check_in: LatestCheckInData;
 }
 
 export interface LatestCheckInData {
@@ -58,7 +73,6 @@ export interface LatestCheckInData {
   updated_at: string;
   deleted_at: string;
 }
-
 
 export interface VehicleRecordPageData {
   check_ins: number;
@@ -162,38 +176,41 @@ export const transformVehicleRecordApiResponse = (
     check_outs_this_month: response.data.stats.check_outs.this_month,
     vehicle_records: {
       last_page: 0,
-      data: vehicle_records.map((record) => ({ 
-          id: record.vehicle_record.id,
-          vehicle_brand: record.vehicle_record.vehicle_brand,
-          user_id: record.vehicle_record.user_id,
-          property_id: record.vehicle_record.property_id,
-          plate_number: record.vehicle_record.plate_number,
-          created_at: record.vehicle_record.created_at,
-          updated_at: record.vehicle_record.updated_at,
-          pictureSrc: record.vehicle_record.avatar || "",
-          city: record.vehicle_record.city,
-          address: record.vehicle_record.address,
-          phone: record.vehicle_record.phone,
-          lga: record.vehicle_record.lga,
-          state: record.vehicle_record.state,
-          name: record.vehicle_record.name,
-          model: record.vehicle_record.model,
-          // status: !record.vehicle_record.latest_check_in
-          //   ? "no_record"
-          //   : Object.keys(record.vehicle_record.latest_check_in).length === 0
-          //     ? "completed"
-          //     : "pending",
-          status: record.vehicle_record?.check_ins[0]?.status === undefined ? "no_record" : record.vehicle_record?.check_ins[0]?.status,
-          category: record.vehicle_record.visitor_category,
-          registrationDate: formatDate(record.vehicle_record.created_at),
-          visitor_category: record.vehicle_record.visitor_category,
-          vehicle_state: record.vehicle_record.vehicle_state,
-          vehicle_type: record.vehicle_record.vehicle_type,
-          manufacture_year: record.vehicle_record.manufacture_year,
-          last_update: formatDate(record.vehicle_record.updated_at),
-          latest_check_in: {
-            ...record.vehicle_record.check_ins[0],
-          },
+      data: vehicle_records.map((record) => ({
+        id: record.vehicle_record.id,
+        vehicle_brand: record.vehicle_record.vehicle_brand,
+        user_id: record.vehicle_record.user_id,
+        property_id: record.vehicle_record.property_id,
+        plate_number: record.vehicle_record.plate_number,
+        created_at: record.vehicle_record.created_at,
+        updated_at: record.vehicle_record.updated_at,
+        pictureSrc: record.vehicle_record.avatar || "",
+        city: record.vehicle_record.city,
+        address: record.vehicle_record.address,
+        phone: record.vehicle_record.phone,
+        lga: record.vehicle_record.lga,
+        state: record.vehicle_record.state,
+        name: record.vehicle_record.name,
+        model: record.vehicle_record.model,
+        // status: !record.vehicle_record.latest_check_in
+        //   ? "no_record"
+        //   : Object.keys(record.vehicle_record.latest_check_in).length === 0
+        //     ? "completed"
+        //     : "pending",
+        status:
+          record.vehicle_record?.check_ins[0]?.status === undefined
+            ? "no_record"
+            : record.vehicle_record?.check_ins[0]?.status,
+        category: record.vehicle_record.visitor_category,
+        registrationDate: dayjs(record.vehicle_record.created_at).format("MMM DD YYYY"),
+        visitor_category: record.vehicle_record.visitor_category,
+        vehicle_state: record.vehicle_record.vehicle_state,
+        vehicle_type: record.vehicle_record.vehicle_type,
+        manufacture_year: record.vehicle_record.manufacture_year,
+        last_update: dayjs(record.vehicle_record.updated_at).format("MMM DD YYYY"),
+        latest_check_in: {
+          ...record.vehicle_record.check_ins[0],
+        },
       })),
       current_page: 0,
       total: 0,
@@ -214,14 +231,14 @@ export const veicleRecordTablefields: Field[] = [
 export const format_date_time = (dateString: string) => {
   const date = new Date(dateString);
 
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are zero-based
   const year = date.getUTCFullYear();
   const hours = date.getUTCHours();
   const minutes = date.getUTCMinutes();
 
   return `${day}-${month}-${year} ${hours}:${minutes}`;
-}
+};
 
 export const initialData: initialPageState = {
   data: [],
@@ -231,37 +248,37 @@ export const initialData: initialPageState = {
     total_vehicle_records: 0,
     vehicle_records_this_month: 0,
     current_page: 0,
-    last_page: 0
-  }
-}
+    last_page: 0,
+  },
+};
 
 export const initialRecord: VehicleRecordData = {
   data: {
     id: "12133",
     images: [""],
-    property_name: 'Property Names',
+    property_name: "Property Names",
     units_count: 20,
-    address: '12, kola sanusi street, mabolaje oyo',
+    address: "12, kola sanusi street, mabolaje oyo",
     total_unit_pictures: 10,
     hasVideo: true,
-    property_type: 'rental',
+    property_type: "rental",
     total_returns: 20000,
     total_income: 40000,
-    branch: 'Branch Name',
+    branch: "Branch Name",
     accountOfficer: "Officer muba",
-    last_updated: '27/11/2023',
+    last_updated: "27/11/2023",
     mobile_tenants: 2,
     web_tenants: 2,
     owing_units: 3,
     available_units: 34,
-    currency: 'naira',
+    currency: "naira",
     isClickable: 0,
     viewOnly: 0,
-  }
-}
- 
+  },
+};
+
 export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
-  console.log("res", res)
+  console.log("res", res);
   return {
     stats: {
       total_properties: res.stats.total_properties,
@@ -273,7 +290,7 @@ export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
     },
     data: res.properties.data.map((item: any) => ({
       id: item.id,
-      images: item.images, 
+      images: item.images,
       property_name: item.title,
       units_count: item.units_count,
       vehicle_records_count: item.vehicle_records_count,
@@ -294,5 +311,5 @@ export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
       isClickable: item.isClickable,
       viewOnly: item.viewOnly,
     })),
-  }
-}
+  };
+};

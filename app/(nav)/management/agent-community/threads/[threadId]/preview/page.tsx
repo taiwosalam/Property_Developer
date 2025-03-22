@@ -5,31 +5,18 @@ import { useEffect, useState } from "react";
 import Image, { StaticImageData } from "next/image";
 // import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
-import { PropertyImageSlider } from "@/components/Management/Rent And Unit/rental-property-card";
-import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
-import user1 from "@/public/empty/user1.svg";
-import user2 from "@/public/empty/user2.svg";
-import user3 from "@/public/empty/user3.svg";
+import { ChevronLeft } from "@/public/icons/icons";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
-import Comment, { CommentData } from "@/components/tasks/announcements/comment";
+import { CommentData } from "@/components/tasks/announcements/comment";
 import { ContributorDetails } from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
 import useFetch from "@/hooks/useFetch";
-import { ThreadArticleSkeleton } from "../../../components";
-import { sendMyArticleComment, sendMyArticleReply, toggleLike } from "../../../my-articles/data";
-import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import DOMPurify from "dompurify";
 import CommunityComments from "@/components/Community/CommunityComments";
 import { CommunitySlider } from "@/components/Community/CommunitySlider";
-
-interface ThreadResponse {
-  post: any;
-  company_summary: any;
-  contributor: any;
-  comments: CommentData[];
-}
+import PreviewThreadArticle from "@/components/Community/PreviewArticle";
+import { ThreadResponse, transformApiData } from "./data";
 
 const ThreadPreview = () => {
   const router = useRouter();
@@ -40,34 +27,27 @@ const ThreadPreview = () => {
   const [contributors, setContributors] = useState<any>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
   const [targetAudience, setTargetAudience] = useState<string[]>([]);
-  const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
-  useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
-    
+  const {
+    data,
+    error,
+    loading,
+    refetch: refetchComments,
+  } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
+  useRefetchOnEvent("refetchComments", () => refetchComments({ silent: true }));
+
+  // Process API data and set state
   useEffect(() => {
     if (data) {
-      console.log("Fetched data:", data);
-  
-      // Set post data safely
-      setPost(data.post?.post ?? null);
-      setCompanySummary(data.post?.company_summary ?? null);
-      setContributors(data.post?.contributor ?? null);
-      setComments(data.post?.comments ?? []);
-  
-      // Parse target_audience safely
-      try {
-        const audience = typeof data.post?.post?.target_audience === 'string'
-          ? JSON.parse(data.post.post.target_audience)
-          : data.post?.post?.target_audience;
-  
-        setTargetAudience(Array.isArray(audience) ? audience : []);
-      } catch (error) {
-        console.error("Error parsing target_audience:", error);
-        setTargetAudience([]); // Fallback to empty array
-      }
+      const transformedData = transformApiData(data);
+      setPost(transformedData.post);
+      setCompanySummary(transformedData.companySummary);
+      setContributors(transformedData.contributors);
+      setComments(transformedData.comments);
+      setTargetAudience(transformedData.targetAudience);
     }
-  }, [data]); // Minimal dependencies
-  
-    console.log("summary", companySummary)
+  }, [data]);
+
+  console.log("summary", companySummary);
 
   return (
     <div className="mb-16">
@@ -114,11 +94,7 @@ const ThreadPreview = () => {
               </div>
             )}
           </div>
-          <ThreadArticle 
-            post={post} 
-            slug={slug} 
-            comments={comments}
-          />
+          <PreviewThreadArticle post={post} slug={slug} comments={comments} />
           <CommunityComments
             slug={slug}
             comments={comments}
@@ -141,112 +117,3 @@ const ThreadPreview = () => {
 };
 
 export default ThreadPreview;
-
-const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comments: CommentData[] }): JSX.Element => {
-  const [likeCount, setLikeCount] = useState(post?.likes_up ? parseInt(post?.likes_up) : 0);
-  const [dislikeCount, setDislikeCount] = useState(post?.likes_down ? parseInt(post?.likes_down) : 0);
-  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // console.log("comments", comments);
-
-  const handleLike = async () => {
-    // console.log('like clicked');
-    if (isLoading || userAction === 'like') return;
-    setIsLoading(true);
-    
-    try {
-      await toggleLike(slug, 1);
-      if (userAction === 'dislike') {
-        setDislikeCount(prev => prev - 1);
-      }
-      setLikeCount(prev => prev + 1);
-      setUserAction('like');
-    } catch (error) {
-      console.error('Error toggling like:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDislike = async () => {
-    console.log('dislike clicked');
-    if (isLoading || userAction === 'dislike') return;
-    setIsLoading(true);
-
-    try { 
-      await toggleLike(slug, -1);
-      if (userAction === 'like') {
-        setLikeCount(prev => prev - 1);
-      }
-      setDislikeCount(prev => prev + 1);
-      setUserAction('dislike');
-    } catch (error) {
-      console.error('Error toggling dislike:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (!post) {
-    return <ThreadArticleSkeleton />;
-  }
-
-  const sanitizedHTML = DOMPurify.sanitize(post?.content || "")
-  
-  return (
-    <div className="mt-4">
-      <div
-        className="text-sm text-darkText-secondary mt-2"
-        dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
-      />
-      <div className="flex justify-between mt-6">
-        <div className="flex items-center gap-2">
-          <span className="text-text-secondary">Comments</span>
-          {/* <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{post?.comments_count}</p> */}
-        </div>
-
-        <div className="flex gap-2">
-          <button
-            className={`flex items-center gap-1 ${
-              userAction === "like" ? "text-blue-500" : ""
-            }`}
-            disabled={isLoading}
-            onClick={handleLike}
-          >
-            <ThumbsUp />
-            <p>{likeCount}</p>
-          </button>
-          <button
-            className={`flex items-center gap-1 ${
-              userAction === "dislike" ? "text-red-500" : ""
-            }`}
-            onClick={handleDislike}
-            disabled={isLoading}
-          >
-            <ThumbsDown />
-            <p>{dislikeCount}</p>
-          </button>
-
-          <div className="flex items-center">
-            <div className="images flex z-30">
-              {comments.slice(0, 3).map((comment, index) => (
-                <Image
-                  key={index}
-                  src={comment.profile_picture}
-                  alt={`commenter ${index + 1}`}
-                  width={300}
-                  height={300}
-                  className="-mr-2 h-[30px] w-[30px] object-cover rounded-full"
-                />
-              ))}
-            </div>
-            <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              +{post?.comments_count}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};

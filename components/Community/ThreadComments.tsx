@@ -1,4 +1,5 @@
-import { comments } from "@/app/(nav)/management/agent-community/data";
+// import { comments } from "@/app/(nav)/management/agent-community/data";
+import { comments } from "@/app/(nav)/accountant/management/agent-community/data";
 import Comment from "@/app/(nav)/management/agent-community/threads/[threadId]/preview/comment";
 
 const ThreadComments = () => {

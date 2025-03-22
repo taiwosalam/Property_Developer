@@ -5,9 +5,10 @@ import Button from "@/components/Form/Button/button";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import VehicleRecordModal from "./vehicle-record-modal";
 import { useEffect, useState } from "react";
-import { formatDate } from "@/app/(nav)/management/agent-community/property-request/data";
+// import { formatDate } from "@/app/(nav)/management/agent-community/property-request/data";
 import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import { CheckInOut } from "./types";
+import dayjs from "dayjs";
 
 interface checkInOutData {
   id: number;
@@ -54,14 +55,14 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?:
 
 
   const checkIn = {
-    date: formatDate(recordData.check_in_time),
+    date: dayjs(recordData.check_in_time).format("MMM DD YYYY"),
     name: recordData.in_by,
     passenger: recordData.passengers_in,
     inventory: recordData.inventory_in,
   }
 
   const checkOut = {
-    date: formatDate(recordData.check_out_time),
+    date: dayjs(recordData.check_out_time).format("MMM DD YYYY"),
     name: recordData.out_by,
     passenger: recordData.passengers_out,
     inventory: recordData.inventory_out,
