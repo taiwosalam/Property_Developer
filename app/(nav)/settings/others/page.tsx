@@ -332,10 +332,10 @@ const Others = () => {
   };
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
-    console.log("handleCheckboxChange called:", { name, checked });
+   
 
     if (userPlan !== "professional") {
-      console.log("Triggers toast events...");
+      
       toast.error(
         "You cannot toggle the switch until you upgrade to a professional plan."
       );
@@ -465,9 +465,10 @@ const Others = () => {
     });
 
     const groupStatus =
-      notification?.company_default_module != null
-        ? String(notification?.company_default_module)
-        : "1";
+    notification?.company_default_module != null &&
+    typeof notification?.company_default_module !== "undefined"
+      ? String(notification?.company_default_module)
+      : "1";
     setSelectedGroup(groupStatus);
   }, [otherSettingResponse]);
 
@@ -502,7 +503,7 @@ const Others = () => {
 
   useEffect(() => {
     if (planData) {
-      const premiumPlan = planData?.data?.plan?.plan_name.toLowerCase();
+      const premiumPlan = planData?.data?.plan?.plan_name.toLowerCase() ?? "free";
       setUserPlan(premiumPlan);
     }
   }, [planData]);
@@ -616,8 +617,8 @@ const Others = () => {
 
     try {
       setUpdatingModule(true);
-      if (company_id && selectedGroup) {
-        const stringCompanyId = company_id?.toString();
+      if (company_id != null) {
+        const stringCompanyId = String(company_id);
         await selectCompanyModule(stringCompanyId, payload);
       }
     } catch (error) {
