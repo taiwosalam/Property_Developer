@@ -33,7 +33,6 @@ export interface UnitFormState {
 
 interface emptyUnitFormProps {
   empty: true;
-  showAddMoreUnit?: boolean;
   hideEmptyForm: () => void;
 }
 
@@ -43,7 +42,6 @@ interface editUnitFormProps {
   data: UnitDataObject & { notYetUploaded?: boolean };
   isEditing: boolean;
   setIsEditing: (a: boolean) => void;
-  showAddMoreUnit?: boolean;
 }
 
 type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
@@ -244,7 +242,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           ) : (
             <UnitBreakdownFacility />
           )}
-
           {!props.empty ? <EditUnitActions /> : <AddUntFooter />}
         </AuthForm>
       </UnitFormContext.Provider>

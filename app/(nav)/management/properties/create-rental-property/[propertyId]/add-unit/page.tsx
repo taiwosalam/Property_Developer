@@ -94,14 +94,10 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           </>
         )}
         {!hideEmptyForm && (
-          <UnitForm
-            showAddMoreUnit
-            empty
-            hideEmptyForm={() => setHideEmptyForm(true)}
-          />
+          <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
         )}
 
-        {addedUnits.length > 0 && (
+        {/* {addedUnits.length > 0 && (
           <FixedFooter>
             <div className="flex justify-end w-full">
               <Modal>
@@ -122,7 +118,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
               </Modal>
             </div>
           </FixedFooter>
-        )}
+        )} */}
       </div>
     </div>
   );

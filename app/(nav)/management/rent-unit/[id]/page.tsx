@@ -176,7 +176,7 @@ const UnitPreviewPage = () => {
           {unit_data?.previous_tenants?.length === 0 ? (
             <p className="text-center">No Previous Tenant Record</p>
           ) : (
-            unit_data.previous_tenants.map((t: any, index: number) => (
+            unit_data?.previous_tenants?.map((t: any, index: number) => (
               <TenancyRecord key={index} unit_id={id} {...t} />
             ))
           )}
