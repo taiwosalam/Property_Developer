@@ -12,6 +12,7 @@ const AddUnitFormCard = ({
   index: number;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  console.log("data", data)
   return (
     <div
       className="w-full p-6 rounded-2xl bg-white dark:bg-darkText-primary custom-flex-col gap-4"
