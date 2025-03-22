@@ -258,7 +258,6 @@ const ServiceProviders = () => {
         inputOff={false}
       />
       <section>
-       
         {serviceProviders.length === 0 && !silentLoading ? (
           isFilterApplied() || config.params.search ? (
             <SearchError />

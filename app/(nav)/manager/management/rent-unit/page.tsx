@@ -137,6 +137,8 @@ const RentAndUnit = () => {
   const { data: branchesData } =
   useFetch<AllBranchesResponse>("/branches/select");
 
+  console.log(branchesData);
+
 const branchOptions =
   branchesData?.data.map((branch) => ({
     label: branch.branch_name,

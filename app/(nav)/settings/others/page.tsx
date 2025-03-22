@@ -325,16 +325,20 @@ const Others = () => {
       setResetOptions([]);
       console.log(response);
     } catch (error) {
+      console.error(error);
     } finally {
       setLoadingReset(false);
     }
   };
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
+    console.log("handleCheckboxChange called:", { name, checked });
+
     if (userPlan !== "professional") {
-      // toast.error(
-      //   "You cannot toggle the switch until you upgrade to a professional plan."
-      // );
+      console.log("Triggers toast events...");
+      toast.error(
+        "You cannot toggle the switch until you upgrade to a professional plan."
+      );
       return;
     }
     setNotificationSettings((prev) => ({
@@ -423,6 +427,7 @@ const Others = () => {
 
       await updateMessageAndReviewSettings(messageReviewSettingsState);
     } catch (error) {
+      console.error(error);
     } finally {
       setProcessingMessageReview(false);
     }
@@ -444,59 +449,56 @@ const Others = () => {
     useFetch<CompanySettingsResponse>("/company/settings");
 
   useEffect(() => {
-    if (otherSettingResponse) {
-      setDefaultOtherSettings(transformOtherSetting(otherSettingResponse));
-      const messageReviewSettings = {
-        reviews: defaultOtherSettings?.notification?.reviews ?? true,
-        messages: defaultOtherSettings?.notification?.messages ?? true,
-        account_officer:
-          defaultOtherSettings?.notification?.account_officer ?? true,
-        landlord_landlady:
-          defaultOtherSettings?.notification?.landlord_landlady ?? true,
-        assign_staff: defaultOtherSettings?.notification?.assign_staff ?? true,
-      };
-      setSelectedGroup(
-        defaultOtherSettings?.notification?.company_default_module?.toString() ??
-          "1"
-      );
+    if (!otherSettingResponse) return;
 
-      setMessageReviewSettingsState(messageReviewSettings);
-    }
+    const transformedSettings = transformOtherSetting(otherSettingResponse);
+    setDefaultOtherSettings(transformedSettings);
+
+    const notification = transformedSettings?.notification ?? {};
+
+    setMessageReviewSettingsState({
+      reviews: notification.reviews ?? true,
+      messages: notification.messages ?? true,
+      account_officer: notification.account_officer ?? true,
+      landlord_landlady: notification.landlord_landlady ?? true,
+      assign_staff: notification.assign_staff ?? true,
+    });
+
+    setSelectedGroup(
+      notification.company_default_module != null
+        ? String(notification.company_default_module)
+        : "1"
+    );
   }, [otherSettingResponse]);
 
   useEffect(() => {
-    if (otherSettingResponse && userPlan === "professional") {
-      setDefaultOtherSettings(transformOtherSetting(otherSettingResponse));
-      const userSettings: NotificationSettings = {
-        profile_changes:
-          defaultOtherSettings?.notification.profile_changes ?? true,
-        new_messages: defaultOtherSettings?.notification.new_messages ?? true,
-        task_updates: defaultOtherSettings?.notification.task_updates ?? true,
-        profile_approval:
-          defaultOtherSettings?.notification.profile_approval ?? true,
-        property_approval:
-          defaultOtherSettings?.notification.property_approval ?? true,
-        property_vacant:
-          defaultOtherSettings?.notification.property_vacant ?? true,
-        document_creation:
-          defaultOtherSettings?.notification.document_creation ?? true,
-      };
-      setNotificationSettings(userSettings);
+    if (!otherSettingResponse || userPlan !== "professional") return;
 
-      const otherNotificationSettings = {
-        sms_notification:
-          defaultOtherSettings?.notification?.sms_notification ?? true,
-        email_notification:
-          defaultOtherSettings?.notification?.email_notification ?? true,
-        subscription_due_rent_notification:
-          defaultOtherSettings?.notification
-            ?.subscription_due_rent_notification ?? true,
-        general_notification:
-          defaultOtherSettings?.notification?.general_notification ?? true,
-      };
-      setCheckedStates(otherNotificationSettings);
-    }
-  }, [otherSettingResponse]);
+    // Transform response before setting state
+    const transformedSettings = transformOtherSetting(otherSettingResponse);
+    setDefaultOtherSettings(transformedSettings);
+
+    // Extract notification settings safely
+    const notification = transformedSettings?.notification ?? {};
+
+    setNotificationSettings({
+      profile_changes: notification.profile_changes ?? true,
+      new_messages: notification.new_messages ?? true,
+      task_updates: notification.task_updates ?? true,
+      profile_approval: notification.profile_approval ?? true,
+      property_approval: notification.property_approval ?? true,
+      property_vacant: notification.property_vacant ?? true,
+      document_creation: notification.document_creation ?? true,
+    });
+
+    setCheckedStates({
+      sms_notification: notification.sms_notification ?? true,
+      email_notification: notification.email_notification ?? true,
+      subscription_due_rent_notification:
+        notification.subscription_due_rent_notification ?? true,
+      general_notification: notification.general_notification ?? true,
+    });
+  }, [otherSettingResponse, userPlan]);
 
   useEffect(() => {
     if (planData) {
