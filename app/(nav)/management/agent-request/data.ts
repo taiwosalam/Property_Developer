@@ -1,29 +1,59 @@
+import { empty } from "@/app/config";
 import api from "@/services/api";
-
+import { formatNumber } from "@/utils/number-formatter";
 
 export const formatDateRange = (startDate: string, endDate: string) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   };
 
-  if (!startDate || !endDate) return '';
+  if (!startDate || !endDate) return "";
   return `${formatDate(startDate)} - ${formatDate(endDate)}`;
 };
 
 export const formatDate = (dateString: string) => {
-  if (!dateString) return "___";
+  if (!dateString) return "__,__,__";
   try {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
   } catch {
-    return "___";
+    return "__,__,__";
   }
 };
+
+export const getPropertyRequests = (
+  data: PropertyRequestDataType[]
+): PropertyRequestDataType[] => {
+  return (
+    data.map((request: any) => ({
+      requestId: request.propertyRequest.id,
+      userName: request.user?.name || "--- ---",
+      requestDate: formatDate(request.propertyRequest.created_at) || "--- ---",
+      pictureSrc: request.user?.picture || empty,
+      state: request.propertyRequest.state || "--- ---",
+      lga: request.propertyRequest.lga || "--- ---",
+      propertyType: request.propertyRequest.property_type || "--- ---",
+      category: request.propertyRequest.property_category || "--- ---",
+      subType: request.propertyRequest.sub_type || "--- ---",
+      minBudget:
+        `₦${formatNumber(request.propertyRequest.min_budget)}` || "--- ---",
+      maxBudget:
+        `₦${formatNumber(request.propertyRequest.max_budget)}` || "--- ---",
+      requestType: "Web",
+      description: request.propertyRequest.description || "--- ---",
+      phoneNumber: request.user?.phone || "--- ---",
+      propertyTitle: request.propertyRequest.title || "--- ---",
+      userTitle: request.user?.title || "--- ---",
+      targetAudience: request.propertyRequest.target_audience,
+    })) || []
+  );
+};
+
 export interface PropertyRequestDataType {
   userName: string;
   requestDate: string;

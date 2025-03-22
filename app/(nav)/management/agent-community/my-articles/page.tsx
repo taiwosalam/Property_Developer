@@ -5,9 +5,7 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import { useEffect, useMemo, useState } from "react";
 import Button from "@/components/Form/Button/button";
 import Pagination from "@/components/Pagination/pagination";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
-import { getLoggedInUserThreads, threadData } from "../data";
+import { transformToThreadCardProps } from "../data";
 import { useRouter } from "next/navigation";
 import { PlusIcon } from "@/public/icons/icons";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -24,23 +22,6 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ThreadSkeleton from "@/components/Community/threadskeleton";
 import ThreadCard from "@/components/Community/ThreadCard";
 
-const lists = [
-  {
-    title: "All Property Request",
-    desc: "Review and respond to property needs and requests from other real estate agents within your network. Strengthen business connections and explore profit-sharing opportunities by fulfilling portfolio demands together for mutual success.",
-    link: "/management/agent-community/property-request",
-  },
-  {
-    title: "My Articles",
-    desc: "Assess the Articles youve initiated, any modifications made to it, and its overall performance.",
-    link: "/management/agent-community/my-articles",
-  },
-  {
-    title: "My Properties Request",
-    desc: "Evaluate the property request you've generated, comments received, and how you've managed them.",
-    link: "/management/agent-community/my-properties-request",
-  },
-];
 interface ThreadApiResponse {
   data: any[];
   meta: {
@@ -52,8 +33,6 @@ interface ThreadApiResponse {
     total_posts: number;
     recent_posts: number;
   };
-  isLoading: boolean;
-  searchQuery: string;
 }
 const MyArticlePage = () => {
   const router = useRouter();
@@ -68,13 +47,9 @@ const MyArticlePage = () => {
       total_posts: 0,
       recent_posts: 0,
     },
-    isLoading: false,
-    searchQuery: "",
   };
   const [state, setState] = useState(initialState);
-  const { data, isLoading, searchQuery, meta } = state;
-  const [isFetching, setIsFetching] = useState(false);
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const { data, meta } = state;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -107,12 +82,12 @@ const MyArticlePage = () => {
       sort: "asc",
       search: "",
     };
-    options.forEach(option => {
-      if (option === 'all') {
+    options.forEach((option) => {
+      if (option === "all") {
         queryParams.all = true;
-      } else if (option === 'trending') {
+      } else if (option === "trending") {
         queryParams.trending = true;
-      } else if (option === 'new') {
+      } else if (option === "new") {
         queryParams.recent = true;
       }
     });
@@ -129,7 +104,7 @@ const MyArticlePage = () => {
       params: queryParams,
     });
 
-    console.log({ menuOptions, startDate, endDate, options })
+    console.log({ menuOptions, startDate, endDate, options });
   };
 
   const isFilterApplied = () => {
@@ -141,7 +116,7 @@ const MyArticlePage = () => {
       endDate !== null
     );
   };
-  
+
   const handlePageChange = (page: number) => {
     setState((prevState) => ({
       ...prevState,
@@ -153,11 +128,10 @@ const MyArticlePage = () => {
     }));
   };
 
-  const handleSearch = async (query: string): Promise<void> => {
-    if (!query && !searchQuery) return;
-    setState((prevState) => ({
-      ...prevState,
-      searchQuery: query,
+  const handleSearch = (query: string) => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, search: query, page: 1 },
     }));
   };
 
@@ -184,6 +158,8 @@ const MyArticlePage = () => {
     }
   }, [apiData]);
 
+  const threads = transformToThreadCardProps(data);
+
   if (loading)
     return (
       <div className="min-h-[80vh] flex justify-center items-center">
@@ -208,16 +184,13 @@ const MyArticlePage = () => {
           total={meta.total_posts}
           colorScheme={1}
         />
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + Community Board
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <CommunityBoardModal lists={lists} />
-          </ModalContent>
-        </Modal>
+        <Button
+          href="/management/agent-community"
+          type="button"
+          className="page-header-button"
+        >
+          All Community Threads
+        </Button>
       </div>
       <FilterBar
         hasGridListToggle={false}
@@ -252,7 +225,7 @@ const MyArticlePage = () => {
       />
 
       <section className="capitalize">
-        {data.length === 0 && !silentLoading ? (
+        {threads.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
             <SearchError />
           ) : (
@@ -275,30 +248,9 @@ const MyArticlePage = () => {
                 <ThreadSkeleton />
                 <ThreadSkeleton />
               </>
-            ) : data && data.length > 0 ? (
-              data.map((thread, index) => (
-                <ThreadCard
-                  key={index}
-                  slug={thread.post.slug}
-                  id={thread.post.id}
-                  name={thread.user.name}
-                  picture_url={
-                    thread.post.media && thread.post.media.length > 0
-                      ? thread.post.media[0].path
-                      : undefined
-                  }
-                  role={thread.user.role}
-                  time={thread.post.created_at}
-                  title={thread.post.title}
-                  desc={thread.post.content}
-                  comments={thread.post.comments_count}
-                  user_pics={thread.user.picture}
-                  likes={thread.post.likes_up}
-                  dislikes={thread.post.likes_down}
-                  shareLink={thread.post.share_link}
-                  myArticle={true}
-                  video={thread.post.video_link}
-                />
+            ) : threads && threads.length > 0 ? (
+              threads.map((thread, index) => (
+                <ThreadCard key={index} {...thread} />
               ))
             ) : null}
           </AutoResizingGrid>

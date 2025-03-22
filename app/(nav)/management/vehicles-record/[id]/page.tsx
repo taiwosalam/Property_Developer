@@ -305,11 +305,8 @@ const VehiclesRecordPage = () => {
 
                   <p>
                     If you require assistance or want to revisit this guide
-                    later, simply click on the help icon{" "}
-                    <span className="inline-block text-brand-10 align-text-top">
-                      <ExclamationMark />
-                    </span>{" "}
-                    located at the top-left corner of the dashboard.{" "}
+                    later, Simply click your profile picture at the top right of
+                    the dashboard and select Assistance & Support.
                   </p>
                 </div>
               }

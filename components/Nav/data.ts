@@ -27,6 +27,7 @@ export const nav_items: NavItemsProps = [
       { label: "vehicles record", href: "/vehicles-record" },
       { label: "team chat", href: "/team-chat" },
       { label: "agent community", href: "/agent-community" },
+      { label: "agent request", href: "/agent-request" },
     ],
   },
   {
