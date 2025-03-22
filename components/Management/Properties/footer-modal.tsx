@@ -108,12 +108,8 @@
 
 
 
-
-
-// components/Management/Properties/footer-modal.tsx
 "use client";
-
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import Button from "@/components/Form/Button/button";
 import Input from "@/components/Form/Input/input";
 import { useModal } from "@/components/Modal/modal";
@@ -128,11 +124,8 @@ interface FooterModalProps {
 }
 
 const FooterModal: React.FC<FooterModalProps> = (props) => {
-  // Try to get context first
+  // If props are provided, use them; otherwise, fallback to context (or defaults)
   const context = useContext(UnitFormContext);
-
-  // If props are provided, use them; otherwise, use context if available;
-  // if no context exists, fallback to default values.
   const duplicate =
     props.duplicate !== undefined
       ? props.duplicate
@@ -150,6 +143,11 @@ const FooterModal: React.FC<FooterModalProps> = (props) => {
   const [countPopup, setCountPopup] = useState(false);
   const [count, setCount] = useState(duplicate.count || 1);
   const popupRef = useRef<HTMLDivElement>(null);
+
+  // Debug: log duplicate value when it changes
+  useEffect(() => {
+    console.log("FooterModal duplicate state:", duplicate);
+  }, [duplicate]);
 
   useOutsideClick(popupRef, () => setCountPopup(false));
 
@@ -184,9 +182,12 @@ const FooterModal: React.FC<FooterModalProps> = (props) => {
               disabled={submitLoading}
               onClick={(e) => {
                 e.preventDefault();
+                console.log("Add button clicked with count:", count);
                 const form = e.currentTarget.form;
+                // Update duplicate flag using the provided setter (or context)
                 setDuplicate({ val: true, count });
-                // Timeout to ensure state is updated before submission
+                console.log("Updated duplicate to:", { val: true, count });
+                // Timeout to ensure state is updated before form submission
                 setTimeout(() => {
                   setIsOpen(false); // Close the modal
                   form?.requestSubmit();

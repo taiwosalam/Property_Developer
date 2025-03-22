@@ -20,6 +20,7 @@ import {
   IndividualTenantAPIResponse,
   transformIndividualTenantAPIResponse,
 } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
+import SelectWithImage from "@/components/Form/Select/select-with-image";
 
 const CreateRecordForm = () => {
   const router = useRouter();
@@ -44,7 +45,10 @@ const CreateRecordForm = () => {
     tenantsData?.data.tenants.map((tenant) => ({
       value: tenant.tenant_id,
       label: tenant.name,
+      icon: tenant.picture,
     })) || [];
+
+    console.log("tenantsData", tenantsData)
 
   const {
     data: apiData,
@@ -135,7 +139,7 @@ const CreateRecordForm = () => {
               btn_text="submit"
               onSubmit={setSelectedTenantId}
             />
-            <Select
+            <SelectWithImage
               label="Select From Record"
               id="guest_id"
               options={tenantOptions}
