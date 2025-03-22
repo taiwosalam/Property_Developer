@@ -6,7 +6,7 @@ import React from "react";
 import Image from "next/image";
 import { notificationCardProps } from "./types";
 import messagesIcon from "@/public/icons/message.svg";
-import complaintsIcon from "@/public/icons/complaints.svg";
+import complaintsIcon from "@/public/icons/complains.svg";
 import BadgeIcon from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 import Link from "next/link";
@@ -15,6 +15,11 @@ import {
   getIconByContentType,
   roundUptoNine,
 } from "@/app/(nav)/(messages-reviews)/messages/data";
+import {
+  ComplainsEmptyIcon,
+  EmptyMessageIcon,
+  EmptyStaffIcon,
+} from "@/public/icons/icons";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -23,20 +28,28 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   className,
   seeAllLink,
 }) => {
+  console.log("Notifications: ", notifications);
   const getEmptyState = () => {
     if (sectionHeader === "Recent Messages") {
       return {
-        icon: messagesIcon,
+        icon: <EmptyMessageIcon size={60} />,
         altText: "Messages Icon",
         message:
           "You do not have any recent messages. You can chat with staff, landlord/landlady, tenants, and occupants.",
       };
     } else if (sectionHeader === "Complaints") {
       return {
-        icon: complaintsIcon,
+        icon: <ComplainsEmptyIcon />,
         altText: "Complaints Icon",
         message:
-          "You do not have any complaints from tenants or occupants. They can create complaints using the mobile app, and recent complaints will be listed here.",
+          "You currently have no complaints from your tenants or occupants. Any submitted complaints will be displayed here.",
+      };
+    } else if (sectionHeader === "Staffs") {
+      return {
+        icon: <EmptyStaffIcon size={60} />, // Add appropriate icon if available
+        altText: "Staff Icon",
+        message:
+          "No Staff has been created for this branch yet. Once added, they will appear here.",
       };
     } else {
       return { icon: "", altText: "", message: "" };
@@ -63,13 +76,18 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           </p>
           {seeAllLink && (
             <Link
-              href={seeAllLink}
+              href={notifications.length === 0 ? "#" : seeAllLink}
               className={clsx(
                 "flex items-center font-medium",
                 notifications.length === 0
-                  ? "text-[#C1C2C3]"
+                  ? "text-[#C1C2C3] cursor-not-allowed"
                   : "text-[#4F5E71] dark:text-[#f1f1fd]"
               )}
+              onClick={(e) => {
+                if (notifications.length === 0) {
+                  e.preventDefault();
+                }
+              }}
             >
               See all
               <ChevronRight className="w-5 h-5" />
@@ -117,13 +135,19 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                       <BadgeIcon color={notification.badgeColor || "red"} />
                     )} */}
                   </p>
-                  {notification.title && (
-                    <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
-                      {notification.title === "manager"
-                        ? "Branch Manager"
-                        : notification.title}
-                    </p>
-                  )}
+                  {sectionHeader === "Staffs"
+                    ? notification.position && (
+                        <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                          {notification.position === "manager"
+                            ? "Branch Manager"
+                            : notification.position}
+                        </p>
+                      )
+                    : notification.title && (
+                        <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                          {notification.title}
+                        </p>
+                      )}
                   <p className="text-xs text-text-tertiary font-normal capitalize">
                     {notification.content_type === "text" ? (
                       sectionHeader !== "Staffs" ? (
@@ -166,12 +190,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         {notifications.length === 0 && (
           <div className="flex flex-col items-center text-center gap-6">
             {emptyState.icon && (
-              <Image
-                alt={emptyState.altText}
-                src={emptyState.icon}
-                width={60}
-                height={60}
-              />
+              <div className="text-brand-9">{emptyState.icon}</div>
             )}
             <p className="font-normal text-xs text-brand-9">
               {emptyState.message}

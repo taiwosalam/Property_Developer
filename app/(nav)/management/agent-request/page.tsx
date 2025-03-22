@@ -4,7 +4,7 @@ import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import PropertyRequestCard from "@/components/tasks/CallBack/RequestCard";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { PropertyRequestDataType } from "./data";
+import { getPropertyRequests, PropertyRequestDataType } from "./data";
 import { AgentCommunityRequestCardProps } from "@/components/tasks/CallBack/types";
 import Button from "@/components/Form/Button/button";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
@@ -12,9 +12,7 @@ import Pagination from "@/components/Pagination/pagination";
 import { PlusIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { getAllPropertyRequests, getThreads } from "../data";
 import { empty } from "@/app/config";
-import { RequestCardSkeleton } from "../components";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import EmptyList from "@/components/EmptyList/Empty-List";
@@ -23,27 +21,10 @@ import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";
-import { PropertyRequestParams } from "../type";
 import { formatNumber } from "@/utils/number-formatter";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
-
-const lists = [
-  {
-    title: "All Community Articles",
-    desc: "Explore announcements and updates from your area or nationwide, shared by leading real estate professionals. Stay informed on the latest market insights, property matters, and real estate events to stay updated.",
-    link: "/management/agent-community",
-  },
-  {
-    title: "My Articles",
-    desc: "Assess the Articles youve initiated, any modifications made to it, and its overall performance.",
-    link: "/management/agent-community/my-articles",
-  },
-  {
-    title: "My Properties Request",
-    desc: "Evaluate the property request you've generated, comments received, and how you've managed them.",
-    link: "/management/agent-community/my-properties-request",
-  },
-];
+import { PropertyRequestParams } from "../agent-community/type";
+import { RequestCardSkeleton } from "../agent-community/components";
 
 interface PropertyRequestApiData {
   data: PropertyRequestDataType[];
@@ -54,8 +35,8 @@ interface PropertyRequestApiData {
       current_page: number;
       total: number;
       last_page: number;
-    }
-  }
+    };
+  };
 }
 
 const transformToPropertyRequestCardProps = (
@@ -64,12 +45,12 @@ const transformToPropertyRequestCardProps = (
   return {
     cardType: "agent-community",
     cardViewDetails: [
-      { label: "Target Audience", accessor: "targetAudience" },
       { label: "Local Government", accessor: "lga" },
       { label: "Property Type", accessor: "propertyType" },
       { label: "Category", accessor: "category" },
       { label: "Min Budget", accessor: "minBudget" },
       { label: "Max Budget", accessor: "maxBudget" },
+      { label: "Target Audience", accessor: "targetAudience" },
     ],
     ...data,
   };
@@ -86,9 +67,9 @@ const PropertyRequest = () => {
         current_page: 1,
         total: 0,
         last_page: 1,
-      }
-    }
-  }
+      },
+    },
+  };
 
   const [state, setState] = useState<PropertyRequestApiData>(initialState);
 
@@ -97,17 +78,12 @@ const PropertyRequest = () => {
     meta: {
       current_month_requests,
       total_requests,
-      pagination: {
-        current_page,
-        total,
-        last_page,
-      }
-    }
-  } = state
-
+      pagination: { current_page, total, last_page },
+    },
+  } = state;
 
   const handleCreatePropertyRequestClick = () => {
-    router.push("/management/agent-community/my-properties-request/create");
+    router.push("/management/agent-request/my-properties-request/create");
   };
 
   // const [searchQuery, setSearchQuery] = useState("");
@@ -132,7 +108,6 @@ const PropertyRequest = () => {
     });
   };
 
-
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -150,7 +125,6 @@ const PropertyRequest = () => {
     );
   };
 
-
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
       params: { ...config.params, sort: order },
@@ -161,21 +135,21 @@ const PropertyRequest = () => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate, options } = filters;
     const statesArray = menuOptions["State"] || [];
-    
+
     const queryParams: PropertyRequestParams = {
       page: 1,
       sort: "desc",
       search: "",
     };
 
-    options.forEach(option => {
-      if (option === 'new') {
-          queryParams.current_month = true; 
-      } 
-  });
-  if (statesArray.length > 0) {
-    queryParams.state = statesArray.join(",");
-  }
+    options.forEach((option) => {
+      if (option === "new") {
+        queryParams.current_month = true;
+      }
+    });
+    if (statesArray.length > 0) {
+      queryParams.state = statesArray.join(",");
+    }
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
     }
@@ -185,10 +159,9 @@ const PropertyRequest = () => {
     setConfig({
       params: queryParams,
     });
-    
-    console.log({ menuOptions, startDate, endDate, options })
-  };
 
+    console.log({ menuOptions, startDate, endDate, options });
+  };
 
   const {
     data: apiData,
@@ -198,13 +171,15 @@ const PropertyRequest = () => {
     silentLoading,
     isNetworkError,
   } = useFetch<PropertyRequestApiData>(
-    `/agent-community/property-requests/all`, config);
+    `/agent-community/property-requests/all`,
+    config
+  );
 
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
-      console.log("api data", apiData)
+      console.log("api data", apiData);
       setState((prevState) => ({
         ...prevState,
         data: apiData.data,
@@ -213,37 +188,9 @@ const PropertyRequest = () => {
     }
   }, [apiData]);
 
+  const propertyRequestData = getPropertyRequests(data);
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "___";
-    try {
-      const date = new Date(dateString);
-      return date.toISOString().split("T")[0];
-    } catch {
-      return "___";
-    }
-  };
-
-  const propertyRequestData: PropertyRequestDataType[] =
-    data.map((request: any) => ({
-      requestId: request.propertyRequest.id,
-      userName: request.user?.name || "__",
-      requestDate: formatDate(request.propertyRequest.created_at) || "__",
-      pictureSrc: request.user?.picture || empty,
-      state: request.propertyRequest.state || "__",
-      lga: request.propertyRequest.lga || "__",
-      propertyType: request.propertyRequest.property_type || "__",
-      category: request.propertyRequest.property_category || "__",
-      subType: request.propertyRequest.sub_type || "__",
-      minBudget: `₦${formatNumber(request.propertyRequest.min_budget)}` || "__",
-      maxBudget: `₦${formatNumber(request.propertyRequest.max_budget)}` || "__",
-      requestType: "Web",
-      description: request.propertyRequest.description || "__",
-      phoneNumber: request.user?.phone || "__",
-      propertyTitle: request.propertyRequest.title || "__",
-      userTitle: request.user?.title || "__",
-      targetAudience: request.propertyRequest.target_audience,
-    })) || [];
+  console.log("propertyRequestData", data)
 
   if (loading)
     return (
@@ -268,16 +215,13 @@ const PropertyRequest = () => {
           className="hidden md:block"
         />
         <div className="w-full flex justify-center items-center md:justify-end md:w-auto md:items-center">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + Community Board
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <CommunityBoardModal lists={lists} />
-            </ModalContent>
-          </Modal>
+          <Button
+            href="/management/agent-request/my-properties-request"
+            type="button"
+            className="page-header-button"
+          >
+            My Property Requests
+          </Button>
         </div>
       </div>
       <FilterBar
@@ -332,11 +276,11 @@ const PropertyRequest = () => {
       ) : (
         <AutoResizingGrid gap={28} minWidth={400}>
           {silentLoading ? (
-              <>
+            <>
               <RequestCardSkeleton />
               <RequestCardSkeleton />
               <RequestCardSkeleton />
-              </>
+            </>
           ) : (
             propertyRequestData.map((details, index) => (
               <PropertyRequestCard

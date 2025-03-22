@@ -1,5 +1,10 @@
 import { ModalTrigger } from "@/components/Modal/modal";
-import { XIcon, DownArrow, ChevronLeft, SearchIcon } from "@/public/icons/icons";
+import {
+  XIcon,
+  DownArrow,
+  ChevronLeft,
+  SearchIcon,
+} from "@/public/icons/icons";
 import Select from "@/components/Form/Select/select";
 import Button from "@/components/Form/Button/button";
 import { useEffect, useState } from "react";
@@ -10,7 +15,6 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Image from "next/image";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
-
 
 const PlateNumber: React.FC<{
   id: string;
@@ -23,11 +27,23 @@ const PlateNumber: React.FC<{
   pictureSrc: string;
   onClick: () => void;
   isSelected: boolean;
-}> = ({ id, number, state, name, model, brand, user_id, pictureSrc, onClick, isSelected }) => {
+}> = ({
+  id,
+  number,
+  state,
+  name,
+  model,
+  brand,
+  user_id,
+  pictureSrc,
+  onClick,
+  isSelected,
+}) => {
   return (
     <div
-      className={`rounded-lg p-2 cursor-pointer ${isSelected ? "bg-brand-9" : "custom-secondary-bg"
-        }`}
+      className={`rounded-lg p-2 cursor-pointer ${
+        isSelected ? "bg-brand-9" : "custom-secondary-bg"
+      }`}
       onClick={onClick}
     >
       <p className="text-base text-white font-bold">{number}</p>
@@ -38,32 +54,30 @@ const PlateNumber: React.FC<{
   );
 };
 
-const CreateRecordModal = ({ data }: { data: any }) => {
+const CreateRecordModal = ({ data, propertyId }: { data: any; propertyId?: number }) => {
   const [properties, setProperties] = useState([]);
 
   const transformData = (res: any) => {
-    const data = res.data
+    const data = res.data;
     const transformedData = data.map((item: any) => ({
       id: item.id,
-      title: item.title
+      title: item.title,
     }));
-    return transformedData
-  }
+    return transformedData;
+  };
 
   const {
     data: apiData,
     loading,
     error,
     isNetworkError,
-  } = useFetch('/properties/vehicle-record')
+  } = useFetch("/properties/vehicle-record");
 
   useEffect(() => {
     if (apiData) {
-      setProperties(transformData(apiData))
+      setProperties(transformData(apiData));
     }
-  }, [apiData])
-
-
+  }, [apiData]);
 
   const [step, setStep] = useState(1);
   const { selectedProperty, setSelectedProperty } = useVehicleRecordStore();
@@ -85,7 +99,7 @@ const CreateRecordModal = ({ data }: { data: any }) => {
   }));
   const handleSelectProperty = (option: any) => {
     setSelectedProperty(option);
-    console.log("selected property", option);
+    // console.log("selected property", option);
   };
 
   const handleNext = () => {
@@ -98,7 +112,6 @@ const CreateRecordModal = ({ data }: { data: any }) => {
       setSelectedPlate(null);
     }
   };
-
 
   const handleCreateManually = () => {
     if (!selectedProperty) {
@@ -114,29 +127,37 @@ const CreateRecordModal = ({ data }: { data: any }) => {
       toast.error("Please select a property before proceeding.");
       setStep(1);
     } else {
-      window.location.href = "/management/vehicles-record/create?type=id";
+      window.location.href = `/management/vehicles-record/create?type=id&p=${propertyId}`;
     }
   };
 
-  const handlePlateClick = (plate: { id: string; number: string; state: string; name: string; model: string; brand: string; user_id: string; pictureSrc: string }) => {
+  const handlePlateClick = (plate: {
+    id: string;
+    number: string;
+    state: string;
+    name: string;
+    model: string;
+    brand: string;
+    user_id: string;
+    pictureSrc: string;
+  }) => {
     setSelectedPlate(plate);
   };
 
-
   const vehicleDetails = selectedPlate
     ? [
-      { label: "Brand Name", value: selectedPlate.brand },
-      { label: "Model", value: selectedPlate.model },
-      { label: "Plate Number", value: selectedPlate.number },
-      { label: "State", value: selectedPlate.state },
-    ]
+        { label: "Brand Name", value: selectedPlate.brand },
+        { label: "Model", value: selectedPlate.model },
+        { label: "Plate Number", value: selectedPlate.number },
+        { label: "State", value: selectedPlate.state },
+      ]
     : [];
 
-  const filteredData = data.filter((plate: any) =>
-    plate.plate_number.toUpperCase().includes(searchTerm.toUpperCase()) ||
-    plate.name.toUpperCase().includes(searchTerm.toUpperCase())
+  const filteredData = data.filter(
+    (plate: any) =>
+      plate.plate_number.toUpperCase().includes(searchTerm.toUpperCase()) ||
+      plate.name.toUpperCase().includes(searchTerm.toUpperCase())
   );
-
 
   if (isNetworkError) return <NetworkError />;
 
@@ -150,7 +171,9 @@ const CreateRecordModal = ({ data }: { data: any }) => {
       {step === 1 && (
         <div className="w-[600px] max-w-[80%] max-h-[90%] h-[90%] md:h-[450px] px-2 py-3 rounded-2xl overflow-x-auto custom-round-scrollbar font-medium dark:bg-darkText-primary bg-white custom-flex-col relative">
           <div className="flex gap-4 justify-between items-center sticky top-0 z-[2] bg-white dark:bg-darkText-primary p-2">
-            <p className="text-base text-text-tertiary dark:text-white">Create / Search</p>
+            <p className="text-base text-text-tertiary dark:text-white">
+              Create / Search
+            </p>
             <ModalTrigger close aria-label="Close">
               <XIcon size="30" />
             </ModalTrigger>
@@ -188,7 +211,10 @@ const CreateRecordModal = ({ data }: { data: any }) => {
                   </div>
                   <div className="custom-flex-col gap-4 w-1/2">
                     {vehicleDetails.map((detail, index) => (
-                      <div className="flex items-center justify-between" key={index}>
+                      <div
+                        className="flex items-center justify-between"
+                        key={index}
+                      >
                         <h4 className="text-text-label dark:text-darkText-2 font-normal min-w-[90px] md:min-w-[unset]">
                           {detail.label}
                         </h4>

@@ -19,7 +19,7 @@ interface ThreadResponse {
 interface Props {
   likeCount: number;
   dislikeCount: number;
-  userAction?: 'like' | 'dislike' | null;
+  userAction?: "like" | "dislike" | null;
   commentCount: number;
   id: string;
   slug: string;
@@ -27,16 +27,20 @@ interface Props {
 
 const NewComment = ({ commentCount, id, slug }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${id}`);
+  const {
+    data,
+    error,
+    loading,
+    refetch: refetchComments,
+  } = useFetch<ThreadResponse>(`/agent_community/${id}`);
 
-
-    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("id -", id)
-    
+    console.log("id -", id);
+
     const formData = new FormData(e.target as HTMLFormElement);
     const message = formData.get("message") as string;
-    
+
     if (!message) return;
     try {
       setIsSubmitting(true);
@@ -47,41 +51,43 @@ const NewComment = ({ commentCount, id, slug }: Props) => {
       }
       (e.target as HTMLFormElement).reset();
     } catch (error) {
-      console.error('Failed to submit:', error);
+      console.error("Failed to submit:", error);
       toast.error("Failed to add comment");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  
   return (
     <div className="mt-6">
-    <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">
-      {commentCount === 0 ? "Be the first to comment" : "Add a comment"}
-    </p>
-    <form onSubmit={handleFormSubmit} className="flex items-center justify-between gap-3">
-       <CommentTextArea 
+      <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">
+        {commentCount === 0 ? "Be the first to comment" : "Add a comment"}
+      </p>
+      <form
+        onSubmit={handleFormSubmit}
+        className="flex items-center justify-between gap-3"
+      >
+        <CommentTextArea
           placeholder="Type your message here"
           id="message"
           name="message"
           disabled={isSubmitting}
-        />  
-      <button
-        type="submit"
-        className="bg-brand-9 p-2 rounded grid place-items-center text-white"
-        aria-label="send message"
-        disabled={isSubmitting}
-      >
-         {isSubmitting ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-          <SendMessageIcon />
-        )}
-      </button>
-    </form>
-  </div>
-);
-}
+        />
+        <button
+          type="submit"
+          className="bg-brand-9 p-2 rounded grid place-items-center text-white"
+          aria-label="send message"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <SendMessageIcon />
+          )}
+        </button>
+      </form>
+    </div>
+  );
+};
 
 export default NewComment;

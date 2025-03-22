@@ -20,7 +20,13 @@ import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
 import { LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { branchIdChartConfig, branchIdChartData } from "./data";
+import {
+  branchIdChartConfig,
+  branchIdChartData,
+  determineRedOrGreen,
+  determineUpOrDown,
+  getPercentage,
+} from "./data";
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
@@ -43,6 +49,7 @@ import CustomTable from "@/components/Table/table";
 import { walletTableFields } from "@/app/(nav)/wallet/data";
 import clsx from "clsx";
 import { getTransactionIcon } from "@/components/Wallet/icons";
+import useStaffRoles from "@/hooks/getStaffs";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -54,19 +61,30 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
-  const { branch_wallet, transactions, recent_transactions } = branchData || {};
+  const {
+    branch_wallet,
+    transactions,
+    recent_transactions,
+    receipt_statistics,
+  } = branchData || {};
   const yesNoToActiveInactive = (yesNo: string): boolean => {
     return yesNo === "Yes" ? true : false;
   };
 
-  // console.log("transactions", recent_transactions);
+  // console.log("rec t")
+
+  console.log("receipt_statistics", receipt_statistics);
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
-    wallet_id: branch_wallet !== null ? Number(branchData?.branch_wallet?.wallet_id) : undefined,
-    is_active: branch_wallet !== null && yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
+    wallet_id:
+      branch_wallet !== null
+        ? Number(branchData?.branch_wallet?.wallet_id)
+        : undefined,
+    is_active:
+      branch_wallet !== null &&
+      yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
   });
 
-  // console.log("branch wallet", branchData)
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
     let link = "";
@@ -119,43 +137,66 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     };
   });
 
+  const transformedWalletTableData =
+    transactions &&
+    transactions.map((t) => ({
+      ...t,
+      amount: (
+        <span
+          className={clsx({
+            "text-status-success-3":
+              t.transaction_type === "credit" ||
+              t.transaction_type === "transfer_in",
+            "text-status-error-primary":
+              t.transaction_type === "debit" ||
+              t.transaction_type === "transfer_out",
+          })}
+        >
+          {`${
+            t.transaction_type === "credit" ||
+            t.transaction_type === "transfer_in"
+              ? "+"
+              : t.transaction_type === "debit" ||
+                t.transaction_type === "transfer_out"
+              ? "-"
+              : ""
+          }${t.amount}`}
+        </span>
+      ),
+      icon: (
+        <div
+          className={clsx(
+            "flex items-center justify-center w-9 h-9 rounded-full",
+            {
+              "bg-status-error-1 text-status-error-primary":
+                t.transaction_type === "debit" ||
+                t.transaction_type === "transfer_out",
+              "bg-status-success-1 text-status-success-primary":
+                t.transaction_type === "credit" ||
+                t.transaction_type === "transfer_in" ||
+                t.transaction_type === "DVA",
+            }
+          )}
+        >
+          {getTransactionIcon(t.source as string, t.transaction_type)}
+        </div>
+      ),
+    }));
 
-  const transformedWalletTableData = transactions && transactions.map((t) => ({
-    ...t,
-    amount: (
-      <span
-        className={clsx({
-          "text-status-success-3": t.transaction_type === "credit" || t.transaction_type === "transfer_in",
-          "text-status-error-primary": t.transaction_type === "debit" || t.transaction_type === "transfer_out",
-        })}
-      >
-        {`${t.transaction_type === "credit" || t.transaction_type === "transfer_in" ? "+" : t.transaction_type === "debit" || t.transaction_type === "transfer_out" ? "-" : ""}${
-          t.amount
-        }`}
-      </span>
-    ),
-    icon: (
-      <div
-        className={clsx(
-          "flex items-center justify-center w-9 h-9 rounded-full",
-          {
-            "bg-status-error-1 text-status-error-primary": t.transaction_type === "debit" || t.transaction_type === "transfer_out",
-            "bg-status-success-1 text-status-success-primary":
-              t.transaction_type === "credit" || t.transaction_type === "transfer_in" || t.transaction_type === "DVA",
-          }
-        )}
-      >
-        {getTransactionIcon(t.source as string, t.transaction_type)}
-      </div>
-    ),
-  }));
-
-  const walletChartData = recent_transactions && recent_transactions.map((t) => ({
-    date: t.date,
-    totalfunds: t.amount,
-    credit: t.transaction_type === "credit" || t.transaction_type === "transfer_in" ? t.amount : 0,
-    debit: t.transaction_type === "debit" || t.transaction_type === "transfer_out" ? t.amount : 0,
-  }));
+  const walletChartData =
+    recent_transactions &&
+    recent_transactions.map((t) => ({
+      date: t.date,
+      totalfunds: t.amount,
+      credit:
+        t.transaction_type === "credit" || t.transaction_type === "transfer_in"
+          ? t.amount
+          : 0,
+      debit:
+        t.transaction_type === "debit" || t.transaction_type === "transfer_out"
+          ? t.amount
+          : 0,
+    }));
 
   // set branch data to store
   useEffect(() => {
@@ -264,29 +305,42 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         <div className="md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
           <AutoResizingGrid gap={12} minWidth={230}>
             <AccountStatsCard
-              title="Total Invoices"
-              balance={1234535}
-              percentage={54}
-              trendDirection="up"
-              trendColor="green"
+              title="Total Invoice Created"
+              balance={Number(receipt_statistics?.total_receipt || 0)}
+              percentage={
+                Number(receipt_statistics?.percentage_change_total) || 0
+              }
+              trendDirection={
+                Number(receipt_statistics?.percentage_change_total) >= 0
+                  ? "up"
+                  : "down"
+              }
               variant="greenIncoming"
               forBranch
             />
             <AccountStatsCard
-              title="Total Expenses"
-              balance={1234535}
-              percentage={54}
-              trendDirection="up"
-              trendColor="green"
+              title="Total Paid Invoice"
+              balance={Number(receipt_statistics?.total_paid_receipt || 0)}
+              percentage={receipt_statistics?.percentage_change_paid || 0}
+              trendDirection={
+                Number(receipt_statistics?.percentage_change_paid) >= 0
+                  ? "up"
+                  : "down"
+              }
               variant="redOutgoing"
               forBranch
             />
             <AccountStatsCard
-              title="Total Balance"
-              balance={1234535}
-              percentage={54}
-              trendDirection="up"
-              trendColor="red"
+              title="Total Pending Invoice"
+              balance={receipt_statistics?.total_pending_receipt || 0}
+              percentage={
+                Number(receipt_statistics?.percentage_change_pending) || 0
+              }
+              trendDirection={
+                Number(receipt_statistics?.percentage_change_pending) >= 0
+                  ? "up"
+                  : "down"
+              }
               variant="blueIncoming"
               forBranch
             />
@@ -298,7 +352,9 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             className="max-w-full flex items-center justify-between flex-wrap gap-2"
           >
             <h1 className="text-[14px] font-medium">Branch Wallet</h1>
-            <p className="text-xs text-text-label">ID: {branch_wallet?.wallet_id}</p>
+            <p className="text-xs text-text-label">
+              ID: {branch_wallet?.wallet_id}
+            </p>
           </Link>
           <BranchBalanceCard
             mainBalance={Number(branch_wallet?.balance_total)}
@@ -310,11 +366,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:items-start">
         <div className="overflow-x-auto flex lg:w-[68%] md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
           {updatedDashboardCardData.map((card, index) => (
-            <Link
-              href={card.link}
-              key={index}
-              prefetch={false}
-            >
+            <Link href={card.link} key={index} prefetch={false}>
               <Card
                 title={card.title}
                 icon={<card.icon />}
@@ -329,7 +381,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       </div>
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 items-start">
         <DashboardChart
-          chartTitle="Analysis"
+          chartTitle="Wallet Analysis"
           visibleRange
           className="hidden md:block md:w-full lg:w-[68%]"
           chartConfig={branchIdChartConfig}
@@ -374,6 +426,13 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             fontSize: "16px",
           }}
         />
+        {transformedWalletTableData?.length === 0 && (
+          <div className="flex items-center justify-center w-full h-20">
+            <p className="text-text-label dark:text-darkText-1 text-base font-medium">
+              No Recent Transaction
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

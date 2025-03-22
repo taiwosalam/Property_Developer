@@ -148,7 +148,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 <Modal>
                   <ModalTrigger>
                     <Button size="base_medium" className="py-2 px-8">
-                      update with ID
+                      update with Email
                     </Button>
                   </ModalTrigger>
                   <ModalContent>

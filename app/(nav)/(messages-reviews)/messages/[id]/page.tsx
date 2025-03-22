@@ -33,7 +33,7 @@ const Chat = () => {
     setChatData("conversations", []);
   }, [id, setChatData]);
 
-  // Initiate fetching messages (this hook handles SSE, etc.)
+  // Initiate fetching messages (this hook handles SSE.)
   useGetConversation(`${id}`);
 
   // When store_messages updates, group messages by day and update local state.

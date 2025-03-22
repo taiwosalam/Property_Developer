@@ -162,7 +162,8 @@ export const ProfileForm: React.FC<{
           <div className="block lg:hidden">
             <MatchedProfile
               occupant={selectedOccupant}
-              isLoading={occupantLoading}
+              // isLoading={occupantLoading}
+              isLoading={loading}
               error={occupantError}
               title="Matched Profile"
             />

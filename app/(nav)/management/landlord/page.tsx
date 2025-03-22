@@ -415,16 +415,12 @@ const Landlord = () => {
               </AutoResizingGrid>
             ) : (
               <>
-                {/* {silentLoading ? (
-                  <TableLoading />
-                ) : ( */}
                 <CustomTable
                   displayTableHead={false}
                   fields={landlordTableFields}
                   data={transformedLandlords}
                   tableBodyCellSx={{ color: "#3F4247" }}
                 />
-                {/* )} */}
                 {silentLoading && current_page > 1 && (
                   <div className="flex items-center justify-center py-4">
                     <div className="loader" />
@@ -432,12 +428,13 @@ const Landlord = () => {
                 )}
               </>
             )}
-
-            <Pagination
-              totalPages={total_pages}
-              currentPage={current_page}
-              onPageChange={handlePageChange}
-            />
+            {view === "grid" && (
+              <Pagination
+                totalPages={total_pages}
+                currentPage={current_page}
+                onPageChange={handlePageChange}
+              />
+            )}
           </>
         )}
       </section>

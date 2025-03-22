@@ -65,7 +65,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     if (isClickable && !viewOnly) {
       setIsModalActive(false);
     }
-  })
+  });
   return (
     <div
       className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
@@ -190,10 +190,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </p>
             </div>
             <div>
-              <p className="text-label font-normal">Account Officer</p>
-              <p className="text-brand-9 font-bold">{accountOfficer}</p>
-            </div>
-            <div>
               <p className="text-label font-normal">Mobile Tenants</p>
               <p className="text-brand-9 font-bold">{mobile_tenants}</p>
             </div>
@@ -204,6 +200,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <div>
               <p className="text-label font-normal">Last Updated</p>
               <p className="text-brand-9 font-bold">{last_updated}</p>
+            </div>
+            <div className="col-span-3">
+              <p className="text-label font-normal">Account Officer</p>
+              <p className="text-brand-9 font-bold truncate line-clamp-1">
+                {accountOfficer ? `${accountOfficer.substring(0, 30)}...` : ""}
+              </p>
             </div>
           </motion.div>
         )}

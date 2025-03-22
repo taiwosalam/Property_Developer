@@ -130,7 +130,7 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
       if (res) {
         setModalIsOpen(true);
         toast.success("Record Added Successfully");
-        // router.push("/management/rent-unit");
+        router.push("/management/rent-unit");
       }
     } catch (err) {
       toast.error("Failed to switch Unit, please try again");

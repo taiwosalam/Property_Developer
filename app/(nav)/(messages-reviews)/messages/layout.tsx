@@ -54,10 +54,12 @@ import {
   useVoiceVisualizer,
   VoiceVisualizer,
 } from "@hasma/react-voice-visualizer";
+import { getLocalStorage } from "@/utils/local-storage";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { setChatData } = useChatStore();
   const { id } = useParams();
+  const loggedInUserId = getLocalStorage("user_id");
   const { isCustom } = useWindowWidth(900);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [message, setMessage] = useState("");
@@ -135,7 +137,9 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
 
   useEffect(() => {
     if (usersMessages) {
-      const transformed = transformUsersMessages(usersMessages);
+      const transformed = transformUsersMessages(usersMessages).filter(
+        (msg) => msg.id !== loggedInUserId
+      );
       setPageUsersMsg(transformed);
       setChatData("users_messages", transformed);
     }
@@ -184,7 +188,6 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       const res = await SendMessage(objectToFormData(payload), `${id}`);
       if (res) {
         // Clear the recording data after sending
-        // (Optionally, you may want to reset the voiceControls hook state)
         window.dispatchEvent(new Event("refetch-users-msg"));
       }
     } catch (err) {
@@ -226,14 +229,6 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   />
                 </div>
               </div>
-              {/* <Button
-                href="/reviews"
-                variant="sky_blue"
-                size="xs_medium"
-                className="py-2 px-7 dark:bg-darkBrand-primary"
-              >
-                see reviews
-              </Button> */}
             </div>
             {pageUsersMsg.length === 0 ? (
               <NoMessage loading={loadingUsers} />

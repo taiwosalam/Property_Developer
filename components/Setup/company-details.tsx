@@ -17,9 +17,17 @@ const CompanyDetails = ({data}: {data: any}) => {
     <div className="custom-flex-col gap-5">
       <SectionHeading title="company details">
         Kindly provide the following details below. Note your documents should
-        be in PDF format and should not exceed 2mb.
+        be in PDF or JPG format and should not exceed 2mb.
       </SectionHeading>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-[950px] specific-grid">
+        <Input
+          required
+          label="CAC Registration Number"
+          id="cac_registration_number"
+          placeholder="Write here"
+          inputClassName="rounded-[8px] setup-f bg-white"
+          defaultValue={data.cac_registration_number}
+        />
         <DateInput
           required
           id="date_of_registration"
@@ -29,15 +37,6 @@ const CompanyDetails = ({data}: {data: any}) => {
           disableFuture
           value={date}
         />
-        <Input
-          required
-          label="CAC Registration Number"
-          id="cac_registration_number"
-          placeholder="Write here"
-          inputClassName="rounded-[8px] setup-f bg-white"
-          defaultValue={data.cac_registration_number}
-        />
-
         <FileInput
           required
           id="cac_certificate"
@@ -53,7 +52,7 @@ const CompanyDetails = ({data}: {data: any}) => {
 
         <Select
           id="industry"
-          label="industry"
+          label="Select Your Industry"
           options={industryOptions}
           hiddenInputClassName="setup-f"
           defaultValue={data.industry}

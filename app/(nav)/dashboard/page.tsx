@@ -12,6 +12,7 @@ import {
   getDashboardCardData,
   initialDashboardStats,
   getRecentMessages,
+  dummyTasks,
 } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -201,42 +202,35 @@ const Dashboard = () => {
             }}
             tableHeadCellSx={{ fontSize: "1rem" }}
           />
+          {invoiceList.length === 0 && (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <p className="text-gray-500 dark:text-gray-400">
+                No Recent Invoice Yet.
+              </p>
+            </div>
+          )}
         </SectionContainer>
 
         <SectionContainer heading="Recent Complains" href="/tasks/complaints">
-          <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array(6)
-              .fill(null)
-              .map((_, index) => (
+          {dummyTasks.length === 0 ? (
+            <div className="bg-red-500 flex w-full justify-center items-center h-full bg-white min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
+              <p className="text-gray-500 dark:text-gray-400">
+                No Recent Complains.
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {dummyTasks.slice(0, 6).map((task, index) => (
                 <TaskCard
                   statusChanger={false}
                   noDrag
                   isNew
                   key={index}
-                  task={{
-                    id: "task9",
-                    columnId: "approved",
-                    content: {
-                      messageCount: 2,
-                      linkCount: 1,
-                      userAvatars: [
-                        "/empty/avatar.png",
-                        "/empty/avatar.png",
-                        "/empty/avatar.png",
-                      ],
-                      date: "25 Jan 2024",
-                      status: "pending",
-                      progress: 50,
-                    },
-                    name: "John Doe",
-                    title: "Project Manager",
-                    message:
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    avatarSrc: "/empty/avatar.png",
-                  }}
+                  task={task}
                 />
               ))}
-          </div>
+            </div>
+          )}
         </SectionContainer>
       </section>
     </>

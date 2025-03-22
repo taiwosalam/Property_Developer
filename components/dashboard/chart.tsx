@@ -51,7 +51,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     return initialState;
   });
 
-  const [timeRange, setTimeRange] = React.useState("30d");
+  const [timeRange, setTimeRange] = React.useState("90d");
   const [highestMetric, setHighestMetric] = React.useState<string | null>(null);
   const [primaryColor, setPrimaryColor] = React.useState<string | null>(null);
 
@@ -158,7 +158,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
               )}
               <Select value={timeRange} onValueChange={handleSelectChange}>
                 <SelectTrigger
-                  className="md:w-full px-2 lg:w-[120px] rounded-lg sm:ml-auto dark:text-whie dark:bg-[#020617]"
+                  className="md:w-full px-4 lg:w-[120p rounded-lg sm:ml-auto dark:text-whie dark:bg-[#020617]"
                   aria-label="Select a value"
                 >
                   <SelectValue placeholder="Last 3 months" />

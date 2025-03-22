@@ -140,12 +140,17 @@ const Setup = () => {
           <Section separatorStyles="max-w-[1200px]">
             <CompanyLogo />
             <CompanyDomain
-              companyName={companyData?.company_name ?? companyName}
+              companyName={companyData?.company_name || companyName}
             />
           </Section>
-          <SectionHeading title="directors details">
-            Fill the details below to add a director to your company
-          </SectionHeading>
+          <div className="flex gap-[2px] flex-col">
+            <h1 className="text-text-primary text-xl font-semibold capitalize dark:text-[#f1f1fd]">
+              directors details
+            </h1>
+            <p className="text-text-quaternary capitalize">
+              Fill the details below to add a director to your company
+            </p>
+          </div>
           <ProfilePicture />
           <ProfileInformation
             data={directorsData[0]}

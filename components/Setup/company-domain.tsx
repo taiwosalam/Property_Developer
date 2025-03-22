@@ -20,7 +20,6 @@ const CompanyDomain = ({ companyName }: { companyName: string }) => {
   }, [companyName]);
 
   const handleCustomDomainChange = (value: string) => {
-    console.log("User changed domain to:", value);
     setCustomDomain(value);
   };
 
@@ -60,12 +59,12 @@ const CompanyDomain = ({ companyName }: { companyName: string }) => {
         />
         {customDomain ? (
           <CopyText
-            text={`https://www.${customDomain}.ourlisting.ng`}
+            text={`https://${customDomain}.ourlisting.ng`}
             className="text-brand-9 text-xs sm:text-sm text-center break-all"
           />
         ) : (
           <p className="text-brand-9 text-xs sm:text-sm text-center break-all">
-            {`https://www.${customDomain}.ourlisting.ng`}
+            {`https://${customDomain}.ourlisting.ng`}
           </p>
         )}
         {customDomain && (

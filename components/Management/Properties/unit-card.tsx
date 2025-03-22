@@ -31,7 +31,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
 
   const keyValueData = {
     unit_details:
-      data.unit_type.toLowerCase() === "land"
+      data?.unit_type?.toLowerCase() === "land"
         ? `${data.unit_preference} - ${data.unit_type} - ${
             data.total_area_sqm
           }${

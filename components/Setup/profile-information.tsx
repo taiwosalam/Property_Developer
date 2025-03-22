@@ -14,9 +14,21 @@ const ProfileInformation = ({
   year?: string;
   bio?: string;
 }) => {
+  const yearsOptions = Array.from({ length: 10 }, (_, i) => {
+    const yearValue = i + 1;
+    return { label: `${yearValue} years +`, value: `${yearValue}+` };
+  });
   return (
     <div className="custom-flex-col gap-6 max-w-[940px]">
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <Select
+          id="director_personal_title"
+          label="personal title"
+          options={titles}
+          hiddenInputClassName="setup-f"
+          defaultValue={data?.designation}
+        />
+
         <Input
           required
           id="director_full_name"
@@ -26,36 +38,18 @@ const ProfileInformation = ({
           className="lg:col-span-2"
           defaultValue={data?.full_name}
         />
-        <Select
-          id="director_personal_title"
-          label="personal title / qualification"
-          options={titles}
-          hiddenInputClassName="setup-f"
-          defaultValue={data?.designation}
-        />
 
         <Select
           id="director_experience"
           label="years in business"
           placeholder="Write here"
-          options={[
-            "1+",
-            "2+",
-            "3+",
-            "4+",
-            "5+",
-            "6+",
-            "7+",
-            "8+",
-            "9+",
-            "10+",
-          ]}
+          options={yearsOptions}
           hiddenInputClassName="setup-f"
           defaultValue={year}
         />
         <Input
           id="director_email"
-          label="director email"
+          label="email"
           type="email"
           placeholder="Write here"
           inputClassName="rounded-[8px] setup-f bg-white"

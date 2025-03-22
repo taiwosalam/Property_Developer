@@ -210,7 +210,7 @@ const StaffAndBranches = () => {
           description:
             "This page contains a list of all Staff & Branch on the platform.",
         }}
-        searchInputPlaceholder="Search for Staff & Branch"
+        searchInputPlaceholder="Search Branch"
         handleFilterApply={handleFilterApply}
         appliedFilters={appliedFilters}
         isDateTrue

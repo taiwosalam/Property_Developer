@@ -13,6 +13,8 @@ import useStep from "@/hooks/useStep";
 import type { FormSteps } from "@/app/(onboarding)/auth/types";
 import Button from "../Form/Button/button";
 import SearchInput from "../SearchInput/search-input";
+import { AllBranchesResponse } from "../Management/Properties/types";
+import useFetch from "@/hooks/useFetch";
 
 type FilterOption = {
   label: string;
@@ -95,7 +97,7 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
     >
       <div
         className="sticky top-0 z-[2] flex items-center justify-between gap-4 mb-[10px] bg-white dark:bg-[#1C1C1C] px-4 pt-4 remove-tab-index"
-      // tabIndex={undefined}
+        // tabIndex={undefined}
       >
         <p className="text-base font-medium text-text-label dark:text-darkText-2 flex items-center gap-1">
           {activeStep !== 1 && (
@@ -166,74 +168,85 @@ const Step1Menu: React.FC<{
   onFilterApply,
   setSelectedLabel,
 }) => {
-    const handleFilterToggle = (label: string) => {
-      setSelectedFilters((prev) =>
-        prev.includes(label)
-          ? prev.filter((item) => item !== label)
-          : [...prev, label]
-      );
-    };
-
-    const applyFilters = () => {
-      if (onFilterApply) {
-        onFilterApply(selectedFilters);
-      }
-    };
-
-    return (
-      <>
-        <button
-          type="button"
-          className={commonClasses}
-          onClick={() => changeStep("next")}
-        >
-          By Branches
-          {hasSelectedBranches ? (
-            <CheckboxChecked size={18} />
-          ) : (
-            <CheckboxDefault size={18} />
-          )}
-        </button>
-        {filterOptions.map((option, index) => (
-          <button
-            type="button"
-            className={`${commonClasses} ${selectedFilters.includes(option.label) ? "!bg-[#bfb3b3]" : ""
-              }`}
-            key={index}
-            onClick={() => handleFilterToggle(option.label)}
-          >
-            <span>{option.label}</span>
-            <span
-              style={{ backgroundColor: option.bgColor || "#01BA4C" }}
-              className="text-white rounded-full p-1 flex items-center justify-center w-5 h-5"
-            >
-              {option.value}
-            </span>
-          </button>
-        ))}
-        <Button size="base_medium" onClick={applyFilters} className="!mt-8 w-full py-2 px-8">
-          Apply Filter
-        </Button>
-      </>
+  const handleFilterToggle = (label: string) => {
+    setSelectedFilters((prev) =>
+      prev.includes(label)
+        ? prev.filter((item) => item !== label)
+        : [...prev, label]
     );
   };
 
+  const applyFilters = () => {
+    if (onFilterApply) {
+      onFilterApply(selectedFilters);
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        className={commonClasses}
+        onClick={() => changeStep("next")}
+      >
+        By Branches
+        {hasSelectedBranches ? (
+          <CheckboxChecked size={18} />
+        ) : (
+          <CheckboxDefault size={18} />
+        )}
+      </button>
+      {filterOptions.map((option, index) => (
+        <button
+          type="button"
+          className={`${commonClasses} ${
+            selectedFilters.includes(option.label) ? "!bg-[#bfb3b3]" : ""
+          }`}
+          key={index}
+          onClick={() => handleFilterToggle(option.label)}
+        >
+          <span>{option.label}</span>
+          <span
+            style={{ backgroundColor: option.bgColor || "#01BA4C" }}
+            className="text-white rounded-full p-1 flex items-center justify-center w-5 h-5"
+          >
+            {option.value}
+          </span>
+        </button>
+      ))}
+      <Button
+        size="base_medium"
+        onClick={applyFilters}
+        className="!mt-8 w-full py-2 px-8"
+      >
+        Apply Filter
+      </Button>
+    </>
+  );
+};
 const Step2Menu: React.FC<{
   commonClasses: string;
   selectedBranches: string[];
   setSelectedBranches: React.Dispatch<React.SetStateAction<string[]>>;
 }> = ({ commonClasses, selectedBranches, setSelectedBranches }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const branches = ["Branch 1", "Branch 2", "Branch 3"];
-  const filteredBranches = branches.filter((branch) =>
-    branch.toLowerCase().includes(searchQuery.toLowerCase())
+  const { data: branchesData, loading } = useFetch<AllBranchesResponse>("/branches/select");
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
+
+  const filteredBranches = branchOptions.filter((branch) =>
+    branch.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleBranchToggle = (branch: string) => {
+  const handleBranchToggle = (branchId: string) => {
     setSelectedBranches((prev) =>
-      prev.includes(branch)
-        ? prev.filter((b) => b !== branch)
-        : [...prev, branch]
+      prev.includes(branchId)
+        ? prev.filter((id) => id !== branchId)
+        : [...prev, branchId]
     );
   };
 
@@ -250,17 +263,25 @@ const Step2Menu: React.FC<{
         placeholder="Search"
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      {filteredBranches.map((branch, index) => (
-        <Checkbox
-          key={index}
-          sm
-          className={`${commonClasses} w-full flex-row-reverse`}
-          checked={selectedBranches.includes(branch)}
-          onChange={() => handleBranchToggle(branch)}
-        >
-          {branch}
-        </Checkbox>
-      ))}
+      {loading ? (
+        <div className="space-y-2">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div key={index} className={`${commonClasses} animate-pulse bg-gray-300 h-10`} />
+          ))}
+        </div>
+      ) : (
+        filteredBranches.map((branch, index) => (
+          <Checkbox
+            key={index}
+            sm
+            className={`${commonClasses} w-full flex-row-reverse`}
+            checked={selectedBranches.includes(branch.value)}
+            onChange={() => handleBranchToggle(branch.value)}
+          >
+            {branch.label}
+          </Checkbox>
+        ))
+      )}
     </>
   );
 };

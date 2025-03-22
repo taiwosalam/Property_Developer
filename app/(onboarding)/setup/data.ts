@@ -14,6 +14,7 @@ interface Director {
 }
 
 interface CompanyPayload {
+  referrer: string;
   company_name: string;
   domain: string;
   company_logo: string | File;
@@ -48,6 +49,7 @@ export const transformFormData = (formData: FormData): CompanyPayload => {
   // Extract and organize data into the required structure
   data.domain = formData.get("custom_domain") as string;
   data.company_name = formData.get("company_name") as string;
+  data.referrer = formData.get("referral_id") as string;
   data.company_logo = formData.get("company_logo") as string | File;
   data.date_of_registration = dayjs(
     formData.get("date_of_registration") as string
@@ -118,7 +120,8 @@ export const checkDomainAvailability = async (
 ): Promise<boolean> => {
   try {
     const response = await api.post("/check-domain", { domain });
-    return response.status === 200;
+    const availability = response.data.message;
+    return availability === "available";
   } catch (error) {
     handleAxiosError(error, "Failed to check domain availability");
     return false;

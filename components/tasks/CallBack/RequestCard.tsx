@@ -146,10 +146,11 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             : ""}
         </p>
         {/* Property card and agent community card has no ID on display */}
-        {cardType !== "property" && cardType !== "agent-community" && (
+        {cardType !== "property" && cardType !== "agent-community" ? (
           <p>ID: {requestId}</p>
-        )}
-        {cardType === "agent-community" && <p>{requestDate}</p>}
+        ) : cardType === "agent-community" ? (
+          <p>{requestDate}</p>
+        ) : null}
       </div>
       <div className="px-[18px] grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4">
         {cardType === "callback"
@@ -230,9 +231,9 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             </button>
 
             <Link
-              href={`/management/agent-community/${
-                props.user ? "my-properties-request" : "property-request"
-              }/${requestId}/preview`}
+              href={`/management/agent-request/${
+                props.user ? "my-properties-request/" : ""
+              }${requestId}/preview`}
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
             >
               Preview

@@ -9,8 +9,9 @@ import {
   ManagePropertiesComments,
   PropertyRequestSecondSection,
 } from "@/components/Community/ManageRequest";
-import { textareaValue } from "../../../data";
+// import { textareaValue } from "../../../data";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { textareaValue } from "../../../agent-community/data";
 
 const ManagePropertyRequest = () => {
   const router = useRouter();

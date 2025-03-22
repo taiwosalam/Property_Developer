@@ -29,7 +29,6 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   const [occupantLoading, setOccupantLoading] = useState(false);
   const [occupantError, setOccupantError] = useState<Error | null>(null);
 
-
   return (
     <>
       {loading ? (
@@ -57,7 +56,12 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 setSelectedTenantId={setSelectedTenantId}
                 setStart_date={setStart_date}
               />
-              <FeeBreakdown id={id} total_package={total_package} feeDetails={feeDetails} isRental={isRental} />
+              <FeeBreakdown
+                id={id}
+                total_package={total_package}
+                feeDetails={feeDetails}
+                isRental={isRental}
+              />
             </div>
 
             {/* Right Column */}
@@ -76,7 +80,6 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   );
 };
 
-
 const OccupantProfileLoading = () => {
   return (
     <Skeleton
@@ -87,5 +90,5 @@ const OccupantProfileLoading = () => {
         transform: "none",
       }}
     />
-  )
-}
+  );
+};

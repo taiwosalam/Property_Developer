@@ -49707,8 +49707,12 @@ export const states: State[] = [
 
 export const adminRoutes = [
   "/dashboard",
+  "/messages",
+  "/notifications",
   "/dashboard/reports",
   "/auth/forgot-password",
+  "/management/agent-request",
+  "/management/agent-request/m",
   "/management/landlord",
   "/management/tenants",
   "/management/occupants",
@@ -49764,6 +49768,7 @@ export const adminRoutes = [
 
 // "/dashboard", "/auth/sign-up", "/auth/forgot-password"
 export const userRoutes = [
+  "/notifications",
   "/user/dashboard",
   "/auth/forgot-password",
   "/user/management/landlord",

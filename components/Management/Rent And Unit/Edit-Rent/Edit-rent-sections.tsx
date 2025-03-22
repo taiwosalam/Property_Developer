@@ -4,7 +4,11 @@ import {
   FeeDetails,
 } from "../rent-section-container";
 import { EstateDetailItem as DetailItem } from "../detail-item";
-import { getRenewalRentDetailItems, renewalRentDetailItems, RentPreviousRecords } from "../data";
+import {
+  getRenewalRentDetailItems,
+  renewalRentDetailItems,
+  RentPreviousRecords,
+} from "../data";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { useState } from "react";
 import DateInput from "@/components/Form/DateInput/date-input";
@@ -60,7 +64,7 @@ export const EditCurrentRent: React.FC<{
   action?: () => void;
   loading?: boolean;
   setStart_Date?: (date: string | null) => void;
-}> = ({ isRental, total, action, loading, setStart_Date, }) => {
+}> = ({ isRental, total, action, loading, setStart_Date }) => {
   const CURRENCY_SYMBOL = currencySymbols.naira;
   // const [reqLoading, setReqLoading] = useState(false);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
@@ -71,19 +75,20 @@ export const EditCurrentRent: React.FC<{
     if (setStart_Date) {
       setStart_Date(date?.format("YYYY-MM-DD") || null);
     }
-  }
+  };
 
   const handleUpdate = async () => {
     if (action) {
       await action();
       setModalIsOpen(true);
     }
-  }
+  };
 
   return (
     <div>
-      <RentSectionTitle>{`Add Upfront ${isRental ? "Payment" : "Fee"
-        }`}</RentSectionTitle>
+      <RentSectionTitle>{`Add Upfront ${
+        isRental ? "Payment" : "Fee"
+      }`}</RentSectionTitle>
       <SectionSeparator className="mt-4 mb-6" />
       <div className="grid md:grid-cols-2 gap-4 mb-6">
         <DateInput
@@ -116,9 +121,7 @@ export const EditCurrentRent: React.FC<{
           {loading ? "Please wait." : "Update"}
         </Button>
         {/* </ModalTrigger> */}
-        <Modal
-          state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}
-        >
+        <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
             <ModalPreset type="success" className="w-full">
               <div className="flex flex-col gap-10">
@@ -154,20 +157,20 @@ export const AddPartPayment: React.FC<{
     if (setStart_Date) {
       setStart_Date(date?.format("YYYY-MM-DD") || null);
     }
-  }
+  };
 
   const handleUpdate = async () => {
     if (action) {
       await action();
       setModalIsOpen(true);
     }
-  }
+  };
 
   const handleAmount = (amount: string) => {
     if (setAmt) {
       setAmt(amount);
     }
-  }
+  };
 
   return (
     <div>
@@ -207,9 +210,7 @@ export const AddPartPayment: React.FC<{
           {loading ? "Please wait." : "Update"}
         </Button>
         {/* </ModalTrigger> */}
-        <Modal
-          state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}
-        >
+        <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
             <ModalPreset type="success" className="w-full">
               <div className="flex flex-col gap-10">
@@ -235,10 +236,12 @@ export const AddPartPayment: React.FC<{
 
 export const TransferTenants = ({
   isRental,
-  propertyId
+  propertyId,
+  unitId,
 }: {
-  isRental: boolean,
+  isRental: boolean;
   propertyId?: number;
+  unitId?: number;
 }) => {
   return (
     <RentSectionContainer
@@ -263,7 +266,10 @@ export const TransferTenants = ({
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <SwitchPropertyModal isRental={isRental} />
+            <SwitchPropertyModal
+              isRental={isRental}
+              propertyId={propertyId ?? 0}
+            />
           </ModalContent>
         </Modal>
         <Modal>
@@ -273,7 +279,11 @@ export const TransferTenants = ({
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <SwitchUnitModal isRental={isRental} propertyId={propertyId as number} />
+            <SwitchUnitModal
+              isRental={isRental}
+              propertyId={propertyId as number}
+              unitId={unitId ?? 0} //FIX BY REMOVING 0 AFTER INTEGRATING OTHER ROLES
+            />
           </ModalContent>
         </Modal>
       </div>
@@ -285,47 +295,43 @@ export const PreviousUnitBalance: React.FC<{
   isRental: boolean;
   items: RentPreviousRecords[];
   total?: string;
-  calculation?: boolean
-  deduction?: boolean
-}> = ({
-  isRental,
-  items,
-  total,
-  calculation,
-  deduction,
-}) => {
-    // const displayDetails = feeDetails.length > 0 ? feeDetails : [{ label: "No Fee Details", value: "N/A" }];
-    const sub_title = deduction ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into." : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
+  calculation?: boolean;
+  deduction?: boolean;
+}> = ({ isRental, items, total, calculation, deduction }) => {
+  // const displayDetails = feeDetails.length > 0 ? feeDetails : [{ label: "No Fee Details", value: "N/A" }];
+  const sub_title = deduction
+    ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
+    : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
 
-    return (
-      <div className="space-y-1">
-        <RentSectionTitle>Previous Unit Balance</RentSectionTitle>
-        <p className="text-xs"> {sub_title} </p>
-        <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
-          <div className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
-              {getRenewalRentDetailItems(items).map((item, index) => (
-                <DetailItem
-                  key={index}
-                  label={item.label}
-                  value={item.value as string}
-                  style={{ width: "150px" }}
-                />
-              ))}
-            </div>
-            <div className="space-y-2">
-              <p className="text-[#747474] dark:text-white text-base font-normal">
-                Balance
-              </p>
-              <p className="text-lg lg:text-xl font-bold text-brand-9">
-                ₦{formatNumber(Number(total))}
-              </p>
-            </div>
+  return (
+    <div className="space-y-1">
+      <RentSectionTitle>Previous Unit Balance</RentSectionTitle>
+      <p className="text-xs"> {sub_title} </p>
+      <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
+        <div className="space-y-6">
+          <div className="grid md:grid-cols-2 gap-4">
+            {getRenewalRentDetailItems(items).map((item, index) => (
+              <DetailItem
+                key={index}
+                label={item.label}
+                value={item.value as string}
+                style={{ width: "150px" }}
+              />
+            ))}
           </div>
-        </RentSectionContainer>
-      </div>
-    );
-  };
+          <div className="space-y-2">
+            <p className="text-[#747474] dark:text-white text-base font-normal">
+              Balance
+            </p>
+            <p className="text-lg lg:text-xl font-bold text-brand-9">
+              ₦{formatNumber(Number(total))}
+            </p>
+          </div>
+        </div>
+      </RentSectionContainer>
+    </div>
+  );
+};
 
 export const NewUnitCost: React.FC<{
   isRental: boolean;
@@ -344,23 +350,29 @@ export const NewUnitCost: React.FC<{
   calculation,
   deduction,
   title,
-  noEdit
+  noEdit,
 }) => {
-    const feeTitle = isRental ? (deduction ? "Rent Details" : "Rent Calculation") : "Annual Fee";
-    const finalTitle = calculation ? `${feeTitle}` : `${feeTitle}`;
-    const sub_title = calculation ? "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the tenants that you are transferring to the new unit." : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
-    return (
-      <div className="space-y-1">
-        <RentSectionTitle>{title || "New Unit Cost"}</RentSectionTitle>
-        {!noEdit && <p className="text-xs">{sub_title}</p>}
-        <FeeDetails
-          noEdit={noEdit}
-          title={finalTitle}
-          feeDetails={feeDetails}
-          total_package={total as number}
-          deduction={deduction}
-          id={id as string}
-        />
-      </div>
-    );
-  };
+  const feeTitle = isRental
+    ? deduction
+      ? "Rent Details"
+      : "Rent Calculation"
+    : "Annual Fee";
+  const finalTitle = calculation ? `${feeTitle}` : `${feeTitle}`;
+  const sub_title = calculation
+    ? "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the tenants that you are transferring to the new unit."
+    : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
+  return (
+    <div className="space-y-1">
+      <RentSectionTitle>{title || "New Unit Cost"}</RentSectionTitle>
+      {!noEdit && <p className="text-xs">{sub_title}</p>}
+      <FeeDetails
+        noEdit={noEdit}
+        title={finalTitle}
+        feeDetails={feeDetails}
+        total_package={total as number}
+        deduction={deduction}
+        id={id as string}
+      />
+    </div>
+  );
+};

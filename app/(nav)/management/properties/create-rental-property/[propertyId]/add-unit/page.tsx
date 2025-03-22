@@ -14,6 +14,12 @@ import NetworkError from "@/components/Error/NetworkError";
 import { transformPropertyData } from "./data";
 // import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
 import { useRouter } from "next/navigation";
+import AddUntFooter from "@/components/Management/Properties/AddUnitFooter";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import Button from "@/components/Form/Button/button";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import FooterModal from "@/components/Management/Properties/footer-modal";
+import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
@@ -57,6 +63,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
   // useCustomBackNavigation({ customBackPath });
+  console.log("addedUnits", addedUnits);
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -89,6 +96,29 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
         {!hideEmptyForm && (
           <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
         )}
+
+        {/* {addedUnits.length > 0 && (
+          <FixedFooter>
+            <div className="flex justify-end w-full">
+              <Modal>
+                <ModalTrigger>
+                  <Button> Add More Units</Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <UnitFormContext.Consumer>
+                    {(context) => (
+                      <FooterModal
+                        duplicate={context?.duplicate}
+                        setDuplicate={context?.setDuplicate}
+                        submitLoading={context?.submitLoading}
+                      />
+                    )}
+                  </UnitFormContext.Consumer>
+                </ModalContent>
+              </Modal>
+            </div>
+          </FixedFooter>
+        )} */}
       </div>
     </div>
   );

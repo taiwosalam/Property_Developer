@@ -1,6 +1,6 @@
 "use client";
 
-import { comments } from "@/app/(nav)/management/agent-community/data";
+// import { comments } from "@/app/(nav)/management/agent-community/data";
 import TextArea from "../Form/TextArea/textarea";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { usePropertyRequestStore } from "@/store/createPropertyStore";
 import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
+import { comments } from "@/app/(nav)/accountant/management/agent-community/data";
 
 const SkeletonBox = ({ className }: { className: string }) => (
   <div
