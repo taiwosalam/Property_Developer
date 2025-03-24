@@ -36,6 +36,7 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
 import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
 import { TenantData } from "../../types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -45,7 +46,9 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
     data: apiData,
     error,
     loading,
+    refetch
   } = useFetch<IndividualTenantAPIResponse>(`tenant/${tenantId}`);
+   useRefetchOnEvent("refetchtenant", () => refetch({ silent: true }));
 
   const tenant = apiData ? transformIndividualTenantAPIResponse(apiData) : null;
 
@@ -152,7 +155,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <UpdateProfileWithIdModal />
+                    <UpdateProfileWithIdModal id={Number(tenant.id)} />
                   </ModalContent>
                 </Modal>
               </>

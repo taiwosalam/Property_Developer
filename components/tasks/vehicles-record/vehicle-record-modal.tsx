@@ -12,6 +12,7 @@ import { checkOutVehicle } from "./data";
 import { toast } from "sonner";
 import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import ModalPreset from "@/components/Modal/modal-preset";
+import dayjs from "dayjs";
 
 const VehicleRecordModal: React.FC<
   VehicleRecord & {
@@ -34,7 +35,7 @@ const VehicleRecordModal: React.FC<
       name: latest_check_in?.in_by || "---",
       passenger: latest_check_in?.passengers_in || "---",
       date: latest_check_in?.check_in_time
-        ? format_date_time(latest_check_in?.check_in_time)
+        ? dayjs(latest_check_in?.check_in_time).format("MMM DD YYYY hh:mma")
         : "---",
       inventory: latest_check_in?.inventory_in || "---",
     };
@@ -44,7 +45,7 @@ const VehicleRecordModal: React.FC<
       name: latest_check_in?.out_by || "---",
       passenger: latest_check_in?.passengers_out || "---",
       date: latest_check_in?.check_out_time
-        ? format_date_time(latest_check_in?.check_out_time)
+        ? dayjs(latest_check_in?.check_out_time).format("MMM DD YYYY hh:mma")
         : "---",
       inventory: latest_check_in?.inventory_out || "---",
     });

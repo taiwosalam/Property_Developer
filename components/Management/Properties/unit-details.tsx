@@ -61,7 +61,7 @@ const UnitDetails = () => {
   useEffect(() => {
     // Check if unit type is selected
     if (selectedUnitType) {
-      if (selectedUnitType.toLowerCase() === "land") {
+      if (selectedUnitType?.toLowerCase() === "land") {
         // Handle the special case for land based on the category
         if (
           ["commercial", "facility", "mixed use"].includes(
@@ -138,7 +138,7 @@ const UnitDetails = () => {
           requiredNoStar={isRental}
           resetKey={formResetKey}
         />
-        {(selectedUnitType.toLowerCase() !== "land" ||
+        {(selectedUnitType?.toLowerCase() !== "land" ||
           ["commercial", "facility", "mixed use"].includes(
             propertyDetails?.category?.toLowerCase() || ""
           )) && (

@@ -277,7 +277,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
           </>
         ) : (
           <>
-            {inputOff && (
+            {inputOff && !activeOptionMenu?.radio && (
               <input
                 type="text"
                 className="w-full border p-2"

@@ -129,7 +129,7 @@ export interface PropertyDataObject {
         id: string;
         staff_role: string;
         user: any;
-        estate_title: string;
+        professional_title: string;
         title: string;
       }[]
     | null;
@@ -246,7 +246,10 @@ export const transformPropertiesApiResponse = (
         web_tenants: 0,
         accountOfficer: accountOfficer,
         owing_units: 0,
-        available_units: 0,
+        // available_units: 0,
+        available_units: p.units.filter(
+          (unit) => unit.is_active === "vacant" || unit.is_active === "relocate"
+        ).length,
         isClickable: true,
         viewOnly: false,
       };

@@ -3,6 +3,7 @@ import type { TenantData } from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import api, { handleAxiosError } from "@/services/api";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -160,4 +161,16 @@ export const transformIndividualTenantAPIResponse = ({
       });
     }),
   };
+};
+
+export const updateWithEmailOrID = async (data: any, id: number) => {
+  try {
+    const res = await api.post(`tenant-update/email/${id}`, data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
 };

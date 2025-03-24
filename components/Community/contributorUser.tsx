@@ -6,7 +6,7 @@ interface Contributor {
   picture?: string;
   title?: string;
   role?: string;
-  real_estate_title?: string;
+  professional_title?: string;
   phone_number?: string;
   phone?: string;
   email?: string;
@@ -15,7 +15,7 @@ interface Contributor {
 
 const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
   // console.log("contributors here", contributors);
-  const { name, picture, title, role, phone_number, phone, email, bio, real_estate_title } =
+  const { name, picture, title, role, phone_number, phone, email, bio, professional_title } =
     contributors || {};
   return (
     <div className="flex flex-col mt-6 gap-4">
@@ -31,7 +31,7 @@ const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
         </div>
         <div className="userDetails flex flex-col gap-1">
           <p className="dark:text-white text-black text-[25px] font-bold">
-            {`${real_estate_title || "--- ---"} ${name || "--- ---"}`}
+            {`${professional_title || "--- ---"} ${name || "--- ---"}`}
           </p>
           <div className="flex flex-col lg:flex-col gap-2">
             <p className="text-brand-9 text-sm">{title || "--- ---"}</p>

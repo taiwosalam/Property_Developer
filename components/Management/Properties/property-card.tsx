@@ -204,7 +204,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <div className="col-span-3">
               <p className="text-label font-normal">Account Officer</p>
               <p className="text-brand-9 font-bold truncate line-clamp-1">
-                {accountOfficer ? `${accountOfficer.substring(0, 30)}...` : ""}
+                {accountOfficer}
+                {/* {accountOfficer ? `${accountOfficer.substring(0, 30)}...` : ""} */}
               </p>
             </div>
           </motion.div>

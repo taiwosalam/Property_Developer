@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export interface SingleVehicleRecordApiResponse {
   data: {
     vehicle_record: {
@@ -22,10 +24,12 @@ export interface SingleVehicleRecordApiResponse {
       visitor_category: string;
       deleted_at: string | "";
       color?: string;
-      notes: {
-        last_updated: string;
-        write_up: string;
-      } | undefined;
+      notes:
+        | {
+            last_updated: string;
+            write_up: string;
+          }
+        | undefined;
       user_tag: "web" | "mobile";
     };
     check_ins: {
@@ -71,20 +75,21 @@ export interface VehicleDetails {
 }
 
 export interface UserData {
-    user_tag: "web" | "mobile";
-    id: string | number;
-    pictureSrc: string;
-    full_name: string;
-    state: string;
-    local_government: string;
-    city: string;
-    address: string;
-    phone_number: string;
-    avatar: string;
-    notes?: {
-      last_updated: string;
-      write_up?: string;
-    };
+  user_tag: "web" | "mobile";
+  id: string | number;
+  pictureSrc: string;
+  full_name: string;
+  state: string;
+  local_government: string;
+  city: string;
+  address: string;
+  phone_number: string;
+  avatar: string;
+  notes?: {
+    last_updated: string;
+    write_up?: string;
+  };
+  registrationDate: string;
 }
 
 export interface WebContactInfo {
@@ -152,6 +157,9 @@ export const transformSingleVehicleRecordApiResponse = (
       address: vehicleRecord.address,
       phone_number: vehicleRecord.phone,
       avatar: vehicleRecord.avatar,
+      registrationDate: dayjs(vehicleRecord.created_at).format(
+        "MM/DD/YYYY (hh:mm a)"
+      ),
       notes: vehicleRecord.notes
         ? {
             last_updated: vehicleRecord.updated_at,

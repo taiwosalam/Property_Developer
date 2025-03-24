@@ -159,7 +159,7 @@ const VehilceRecords = () => {
   return (
     <div className="space-y-9">
       <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+        <div className="hidden flex md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Vehicle Records"
             newData={properties_this_month}

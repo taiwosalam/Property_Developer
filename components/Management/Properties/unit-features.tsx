@@ -146,7 +146,7 @@ const UnitFeatures = () => {
           />
         )}
       </div>
-      {unitType.toLowerCase() !== "land" &&
+      {unitType?.toLowerCase() !== "land" &&
         isRental &&
         propertyCategory?.toLowerCase() !== "commercial" && (
           <div className="flex gap-4 md:gap-5 flex-wrap">
