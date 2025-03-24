@@ -121,7 +121,7 @@ const PropeertyDetailsSettingsCard: React.FC<
               <DetailItem label="Caution Deposit" value={caution_deposit} />
               <DetailItem
                 label="Who to pay Agency Fee"
-                value={`New Tenant: ${who_to_charge_new_tenant}, Renewal Tenant: ${who_to_charge_renew_tenant}`}
+                value={`New Rent: ${who_to_charge_new_tenant}, Renewal Rent: ${who_to_charge_renew_tenant}`}
               />
               <DetailItem label="Book Visitors" value={book_visitors} />
               <DetailItem label="Request Call Back" value={request_call_back} />

@@ -55,14 +55,14 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?:
 
 
   const checkIn = {
-    date: dayjs(recordData.check_in_time).format("MMM DD YYYY"),
+    date: dayjs(recordData.check_in_time).format("MMM DD YYYY hh:mma"),
     name: recordData.in_by,
     passenger: recordData.passengers_in,
     inventory: recordData.inventory_in,
   }
 
   const checkOut = {
-    date: dayjs(recordData.check_out_time).format("MMM DD YYYY"),
+    date: recordData.check_out_time ? dayjs(recordData.check_out_time).format("MMM DD YYYY hh:mma") : "__,__,__",
     name: recordData.out_by,
     passenger: recordData.passengers_out,
     inventory: recordData.inventory_out,
@@ -104,20 +104,20 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?:
               Preview
             </Button>
           </ModalTrigger>
-          <ModalContent>
+            <ModalContent>
             <VehicleRecordModal 
-                status={status as "completed" | "pending"}
-                pictureSrc={pictureSrc}
-                name={checkIn.name}
-                id={recordData?.inventory_id?.toString() || userId?.toString() || ""}
-                category={category as "guest" | "visitor"}
-                registrationDate={format_date_time(registrationDate || "")}
-                latest_check_in={recordData as CheckInOut}
-                showOpenRecordsButton={false}
-                plate_number={recordData?.plate_number || ""}
-                last_update={recordData?.last_update || ""}
+              status={status as "completed" | "pending"}
+              pictureSrc={pictureSrc}
+              name={checkIn.name}
+              id={recordData?.inventory_id?.toString() || userId?.toString() || ""}
+              category={category as "guest" | "visitor"}
+              registrationDate={dayjs(registrationDate).format("DD MM YYYY hh:mma") || "__,__,__"}
+              latest_check_in={recordData as CheckInOut}
+              showOpenRecordsButton={false}
+              plate_number={recordData?.plate_number || ""}
+              last_update={recordData?.last_update || ""}
               />
-          </ModalContent>
+            </ModalContent>
         </Modal>
       </div>
     </InfoBox>

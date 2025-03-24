@@ -57,7 +57,7 @@ export const CommunitySlider: React.FC<PropertyImageSliderProps> = ({
               },
             }}
           />
-          {!isVideoPlaying && (
+          {/* {!isVideoPlaying && (
             <button
               aria-label="Play Video"
               onClick={() => setIsVideoPlaying(true)}
@@ -65,7 +65,7 @@ export const CommunitySlider: React.FC<PropertyImageSliderProps> = ({
             >
               ▶ Play Video
             </button>
-          )}
+          )} */}
         </div>
       )}
       {images.map((image, index) => (

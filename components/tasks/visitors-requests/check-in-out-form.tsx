@@ -49,8 +49,8 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
       }
       back={handleBack ? { handleBack } : undefined}
     >
-      <div className="flex md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
-        <form onSubmit={onSubmit} className="flex w-full gap-10 items-start">
+      <div className="flex flex-col md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
+        <form onSubmit={onSubmit} className="flex flex-col md:flex-row  w-full gap-10 items-start">
           <div className="md:min-w-fit custom-flex-col gap-6">
             <div className="flex-1 flex-col items-center gap-2">
               <div className="mb-[10px] flex items-center gap-4">
@@ -82,7 +82,7 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-4">
                       <p className="text-text-tertiary dark:text-darkText-1 min-w-[100px]">
-                        Category
+                        Guest/Visitor
                       </p>
                       <p className="text-text-primary dark:text-white capitalize">
                         {props.category}
@@ -104,7 +104,8 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               <Input
                 type="number"
                 min={0}
-                // max={3}
+                max={99}
+                maxLength={2}
                 inputClassName="keep-spinner"
                 label={
                   useCase === "visitor" ? "Companions" : "Select Passengers"

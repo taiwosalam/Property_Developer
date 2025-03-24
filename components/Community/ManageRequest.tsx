@@ -17,6 +17,7 @@ import { usePropertyRequestStore } from "@/store/createPropertyStore";
 import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
 import { comments } from "@/app/(nav)/accountant/management/agent-community/data";
+import AgentRequestLoader from "../Loader/agent-reuest";
 
 const SkeletonBox = ({ className }: { className: string }) => (
   <div
@@ -102,43 +103,7 @@ export const PropertyRequestSecondSection = ({
   const [timeRange, setTimeRange] = useState("90d");
   const CURRENCY_SYMBOL = currencySymbols.naira;
 
-  if (loading) {
-    return (
-      <>
-        <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-          {/* Request Types section */}
-          <SkeletonBox className="h-6 w-24" />
-          <div className="flex flex-wrap gap-3">
-            {[1, 2, 3].map((i) => (
-              <SkeletonBox key={i} className="h-10 w-24" />
-            ))}
-          </div>
-
-          {/* Budget section */}
-          <div className="budget flex flex-col gap-2">
-            <SkeletonBox className="h-6 w-16" />
-            <div className="space-y-4">
-              <SkeletonBox className="h-[72px] w-full" />
-              <SkeletonBox className="h-[72px] w-full" />
-            </div>
-          </div>
-
-          {/* Target Audience & Valid Till section */}
-          <div className="flex flex-col gap-2">
-            <div className="space-y-4">
-              <SkeletonBox className="h-6 w-32" />
-              <SkeletonBox className="h-10 w-full" />
-            </div>
-
-            <div className="space-y-4 mt-4">
-              <SkeletonBox className="h-6 w-20" />
-              <SkeletonBox className="h-10 w-full" />
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
+  if (loading) return <AgentRequestLoader />
 
   // Handle minimum budget change
   const handleMinChange = (value: string) => {
@@ -176,7 +141,7 @@ export const PropertyRequestSecondSection = ({
       <PropertyRequestUnitType data={data} />
       <div className="budget flex flex-col gap-2">
         <h3 className="text-black dark:text-white font-semibold mb-2">
-          Budget
+          Client Budget
         </h3>
         <Input
           required
@@ -286,7 +251,7 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
         defaultValue={selectedStates}
         name="target_audience"
         options={allOptions}
-        maxSelections={selectedStates.includes("All States") ? 1 : 10}
+        maxSelections={selectedStates.includes("All States") ? 1 : 3}
         id="target_audience"
         label="Select States"
         required

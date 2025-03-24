@@ -40,8 +40,8 @@ const VacantUnitCard = ({
   const [checked, setChecked] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const referenceObject = {
-    unit_details: "",
     "unit no/name": "",
+    // unit_details: "",
     rent: "",
     ...(unit_data.caution_fee ? { caution_deposit: "" } : {}),
     service_charge: "",
@@ -49,8 +49,11 @@ const VacantUnitCard = ({
 
   const unit_status = status === "pending"
     ? "under moderation"
-    : status
+    : status === "approved"
+    ? "published"
+    : status;
 
+    // console.log("unit_status", unit_status)
   const togglePublish = () => {
     if (status === 'approved') {
       setIsOpen(false);
@@ -64,15 +67,15 @@ const VacantUnitCard = ({
   }, [checked, unit_data])
 
   const keyValueData = {
-    unit_details:
-      unit_data.unit_type.toLowerCase() === "land"
-        ? `${unit_data.unit_preference} - ${unit_data.unit_type} - ${unit_data.total_area_sqm
-        }${unit_data.number_of && unit_data.number_of !== "0"
-          ? ` - ${unit_data.number_of}`
-          : ""
-        }`
-        : `${unit_data.unit_preference} - ${unit_data.bedroom || 0} bedroom${parseInt(unit_data.bedroom || "0") > 1 ? "s" : ""
-        } - ${unit_data.unit_sub_type} - ${unit_data.unit_type}`,
+    // unit_details:
+    //   unit_data?.unit_type?.toLowerCase() === "land"
+    //     ? `${unit_data.unit_preference} - ${unit_data.unit_type} - ${unit_data.total_area_sqm
+    //     }${unit_data.number_of && unit_data.number_of !== "0"
+    //       ? ` - ${unit_data.number_of}`
+    //       : ""
+    //     }`
+    //     : `${unit_data.unit_preference} - ${unit_data.bedroom || 0} bedroom${parseInt(unit_data.bedroom || "0") > 1 ? "s" : ""
+    //     } - ${unit_data.unit_sub_type} - ${unit_data.unit_type}`,
     "unit no/name": unit_data.unit_name,
     rent: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(unit_data.rent)

@@ -205,20 +205,6 @@ const MyArticlePage = () => {
         handleFilterApply={handleFilterApply}
         isDateTrue
         filterOptionsMenu={stateOptions}
-        filterOptions={[
-          {
-            label: "All Articles",
-            value: "all",
-          },
-          {
-            label: "Trending Articles",
-            value: "trending",
-          },
-          {
-            label: "New Articles",
-            value: "new",
-          },
-        ]}
         handleSearch={handleSearch}
         onSort={handleSort}
         appliedFilters={appliedFilters}

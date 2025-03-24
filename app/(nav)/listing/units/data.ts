@@ -3,22 +3,6 @@ import { RentalPropertyCardProps, UnitDataObject } from "../../management/rent-u
 
 export const listingUnitFilter: FilterOptionMenu[] = [
   {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
-  {
-    label: "branch",
-    value: [
-      { label: "branch 1", value: "branch1" },
-      { label: "branch 2", value: "branch2" },
-      { label: "branch 3", value: "branch3" },
-    ],
-  },
-  {
     radio: true,
     label: "Status",
     value: [
@@ -67,6 +51,7 @@ export interface UnitPageState {
 
 export const unit_listing_status = {
   published: "#01BA4C",
+  // approved: "#01BA4C",
   unpublished: "#FFBB53",
   "under moderation": "#702AC8",
   rejected: '#FB1818'

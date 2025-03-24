@@ -146,6 +146,7 @@ const RecordPage = () => {
   
   const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
 
+  console.log("userData", checkInsOutData)
 
   if (loading)
     return (
@@ -174,6 +175,7 @@ const RecordPage = () => {
     phone_number,
     id: userId,
     pictureSrc,
+    registrationDate,
   } = userData;
 
   const {
@@ -299,7 +301,7 @@ const RecordPage = () => {
                   </ModalContent>
                 </Modal>
                 <Button size="base_medium" className="py-2 px-8">
-                  Update with ID
+                  Update with Email
                 </Button>
               </>
             )}
@@ -443,7 +445,7 @@ const RecordPage = () => {
                 userName={full_name}
                 id={userId}
                 category={category}
-                registrationDate="12/01/2024 (08:09pm)" // Replace with dynamic data if available
+                registrationDate={registrationDate}
               />
           </ModalContent>
         </Modal>

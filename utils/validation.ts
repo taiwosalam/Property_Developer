@@ -84,7 +84,7 @@ export const validateData = (data: ValidateDataProps) => {
   if (!output.invalidKeys["confirm-pin"]) {
     if (
       data["new-pin"] !== undefined &&
-      data["confirm-pin"] !== undefined &&
+    data["confirm-pin"] !== undefined &&
       data["new-pin"] !== data["confirm-pin"]
     ) {
       output.invalidKeys["confirm-pin"] = "PINs do not match.";

@@ -3,7 +3,16 @@
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import VacantUnitCard from "@/components/Listing/Units/vacant-unit-card";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { initialState, listingUnitFilter, RentAndUnitState, transformRentUnitApiResponse, unit_listing_status, UnitApiResponse, UnitFilterResponse, UnitPageState } from "./data";
+import {
+  initialState,
+  listingUnitFilter,
+  RentAndUnitState,
+  transformRentUnitApiResponse,
+  unit_listing_status,
+  UnitApiResponse,
+  UnitFilterResponse,
+  UnitPageState,
+} from "./data";
 import { PropertyListingStatusItem } from "@/components/Listing/Property/property-listing-component";
 import { useEffect, useMemo, useState } from "react";
 import useFetch from "@/hooks/useFetch";
@@ -16,6 +25,10 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark } from "@/public/icons/icons";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/type";
+import CardsLoading from "@/components/Loader/CardsLoading";
 
 const Units = () => {
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
@@ -55,7 +68,9 @@ const Units = () => {
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
   const endpoint =
-    isFilterApplied() || search || sort ? "/unit/vacant/list/filter" : "/unit/vacant/lists";
+    isFilterApplied() || search || sort
+      ? "/unit/vacant/list/filter"
+      : "/unit/vacant/lists";
 
   const config: AxiosRequestConfig = useMemo(() => {
     return {
@@ -68,9 +83,9 @@ const Units = () => {
           ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
           : undefined,
         search: search,
-        branch_id: appliedFilters.menuOptions["Branch"] || [],
-        state: appliedFilters.menuOptions["State"] || [],
-        property_type: appliedFilters.menuOptions["Property Type"]?.[0],
+        branch: appliedFilters.menuOptions["Branch"] || [],
+        // state: appliedFilters.menuOptions["State"] || [],
+        property: appliedFilters.menuOptions["Property"],
         sort_by: sort,
       } as RentUnitFilterParams,
     };
@@ -109,20 +124,36 @@ const Units = () => {
   // Listen for the refetch event
   useRefetchOnEvent("refetchRentUnit", () => refetch({ silent: true }));
 
+  const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
+
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: p.id.toString(),
+      label: p.title,
+    })) || [];
+
   if (loading)
     return (
-      <CustomLoader
-        layout="page"
-        statsCardCount={3}
-        pageTitle="Vacant Units"
-      />
+      <CustomLoader layout="page" statsCardCount={3} pageTitle="Vacant Units" />
     );
 
   if (isNetworkError) return <NetworkError />;
 
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
-
 
   return (
     <div className="custom-flex-col gap-9">
@@ -165,13 +196,31 @@ const Units = () => {
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
         isDateTrue={false}
-        filterOptionsMenu={listingUnitFilter}
+        filterOptionsMenu={[
+          ...listingUnitFilter,
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
+          ...(propertyOptions.length > 0
+            ? [
+                {
+                  label: "Property",
+                  value: propertyOptions,
+                },
+              ]
+            : []),
+        ]}
         hasGridListToggle={false}
         onSort={handleSort}
         appliedFilters={appliedFilters}
       />
       <section className="custom-flex-col gap-8">
-      <div className="flex flex-wrap gap-4 justify-end">
+        <div className="flex flex-wrap gap-4 justify-end">
           {Object.entries(unit_listing_status).map(([key, value], idx) => (
             <PropertyListingStatusItem
               key={`${key}(${idx})`}
@@ -180,49 +229,48 @@ const Units = () => {
             />
           ))}
         </div>
-      {pageData.unit.length === 0 && !silentLoading ? (
+        {pageData.unit.length === 0 && !silentLoading ? (
           isFilterApplied() || search ? (
-            "No Search/Filter Found"
+            <SearchError />
           ) : (
             <EmptyList
-            buttonText="+ Add Unit"
-            title="You have not creared any unit yet"
-            body={
-              <p>
-                You can create a property by clicking on the &quot;Add
-                Property&quot; button. You can create two types of properties:
-                rental and facility properties. Rental properties are mainly
-                tailored for managing properties for rent, including landlord
-                and tenant management processes. Facility properties are
-                designed for managing occupants in gated estates, overseeing
-                their due payments, visitor access, and vehicle records.{" "}
-                <br />
-                <br />
-                Once a property is added to this page, this guide will
-                disappear. To learn more about this page in the future, you
-                can click on this icon{" "}
-                <span className="inline-block text-brand-10 align-text-top">
-                  <ExclamationMark />
-                </span>{" "}
-                at the top left of the dashboard page.
-                <br />
-                <br />
-                Property creation involves several segments: property
-                settings, details, what to showcase on the dashboard or user
-                app, unit creation, permissions, and assigning staff.
-              </p>
-            }
-          />
+              noButton
+              title="You have not created any unit yet"
+              body={
+                <p>
+                  You haven&apos;t created any property units yet, or you don&apos;t
+                  have any available rentals at the moment. This page
+                  automatically lists all available units for moderation before
+                  they are approved by an administrator for display on your
+                  company website and third-party platforms for marketing.
+                  <br />
+                  <br />
+                  Property units can be created when adding a rental property. A
+                  property unit refers to an individual flat, segment of a
+                  building, or an entire property itself. For example, a
+                  property with four three-bedroom flats is considered a single
+                  property, while each three-bedroom flat within the property is
+                  a unit. Once created under the property module, these units
+                  will be displayed on this page.
+                  <br />
+                  <br />
+                </p>
+              }
+            />
           )
         ) : (
           <div className="custom-flex-col gap-4">
-            {pageData.unit.map((item, idx) => (
-              <VacantUnitCard
-                key={idx}
-                unit_data={item}
-                status={item.status as "published" | "unpublished"}
-              />
-            ))}
+            {silentLoading ? (
+              <CardsLoading />
+            ) : (
+              pageData.unit.map((item, idx) => (
+                <VacantUnitCard
+                  key={idx}
+                  unit_data={item}
+                  status={item.status as "published" | "unpublished"}
+                />
+              ))
+            )}
           </div>
         )}
       </section>
