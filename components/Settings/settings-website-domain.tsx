@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SettingsSection from "./settings-section";
 import Input from "../Form/Input/input";
 import CopyText from "../CopyText/copy-text";
@@ -12,17 +12,69 @@ import {
   SettingsUpdateButton,
   ThemeCard,
 } from "./settings-components";
+import {
+  updateCompanyDomain,
+  updateCompanyWebsiteTemplate,
+} from "@/app/(nav)/settings/profile/data";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { templateSettings } from "lodash";
+import { CompanySettingsResponse } from "@/app/(nav)/settings/others/types";
+import useFetch from "@/hooks/useFetch";
 
 const SettingsWebsiteDomain = () => {
   const [customDomain, setCustomDomain] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const { company_id, user_id } = usePersonalInfoStore();
 
   const handleCustomDomainChange = (value: string) => {
-    setCustomDomain(value);
+    const cleanedValue = value
+      .trim()
+      .replace(/\s+/g, "")
+      .replace(/[^a-zA-Z0-9.-]/g, "");
+
+    setCustomDomain(cleanedValue);
   };
 
   const handleSelect = (type: string, value: string) => {
     setSelectedTemplate(value);
+  };
+
+  const { data: companySettings } =
+    useFetch<CompanySettingsResponse>("/company/settings");
+
+  useEffect(() => {
+    if (companySettings) {
+      const updatedDomain = companySettings?.data?.domain;
+      const domain = updatedDomain
+        ? updatedDomain.replace(/\.ourlisting\.ng$/, "")
+        : "";
+      const updatedTemplate =
+        companySettings?.data?.website_settings?.web_template;
+      setCustomDomain(domain);
+      setSelectedTemplate(updatedTemplate || "");
+    }
+  }, [companySettings]);
+
+  const handleUpdate = async () => {
+    // if (customDomain || selectedTemplate) return;
+
+    const payload = {
+      web_template: selectedTemplate || "template1",
+    };
+
+    setLoading(true);
+    try {
+      if (customDomain && company_id) {
+        await updateCompanyDomain(company_id.toString(), customDomain);
+      }
+      if (selectedTemplate) {
+        await updateCompanyWebsiteTemplate(payload);
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,13 +99,13 @@ const SettingsWebsiteDomain = () => {
           />
           {customDomain && (
             <CopyText
-              text={`https://www.${customDomain}.ourlisting.ng`}
+              text={`https://${customDomain}.ourlisting.ng`}
               className="text-brand-9 text-xs sm:text-sm text-center break-all"
             />
           )}
           {!customDomain && (
             <p className="text-brand-9 text-xs sm:text-sm text-center break-all">
-              {`https://www.${customDomain}.ourlisting.ng`}
+              {`https://${customDomain}.ourlisting.ng`}
             </p>
           )}
           {customDomain && (
@@ -68,7 +120,7 @@ const SettingsWebsiteDomain = () => {
             RSS Feed Link for Listings
           </h4>
           <CopyText
-            text="https://www.ourlisting.ng/user/324224535"
+            text={`https://www.ourlisting.ng/user/${user_id}`}
             className="text-brand-9 text-xs underline sm:text-sm"
           />
         </div>
@@ -100,7 +152,7 @@ const SettingsWebsiteDomain = () => {
               profile={true}
             />
           </div>
-          <SettingsUpdateButton />
+          <SettingsUpdateButton action={handleUpdate} loading={loading} />
         </div>
       </SettingsSection>
     </div>

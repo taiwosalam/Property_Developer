@@ -204,21 +204,21 @@ const ServiceProviders = () => {
       <div className="page-header-container">
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title="Total Users"
+            title="Total Providers"
             newData={totalUsers}
             total={total_month}
             className="w-[230px]"
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title="Mobile Users"
+            title="Mobile Providers"
             newData={0}
             total={0}
             className="w-[230px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Web Users"
+            title="Web Providers"
             newData={totalUsers}
             total={total_month}
             className="w-[230px]"
@@ -267,20 +267,29 @@ const ServiceProviders = () => {
               modalContent={<AddServiceProviderModal />}
               title="You have not created any service providers yet"
               body={
-                <p className="tracking-wider">
+                <p className="tracking-wider capitalize">
                   No service provider records found means there are currently no
                   registered or available service providers in the system.
                   Service providers refer to artisans and skilled workers
                   essential for property management, including carpenters,
                   plumbers, painters, electricians, and more. These
                   professionals handle maintenance, repairs, and improvements
-                  for residential and commercial properties. To add a service
-                  provider, click{" "}
+                  for residential and commercial properties.
+                  <br />
+                  <br />
+                  To add a service provider, click{" "}
                   <span className="font-bold">Create Service Provider </span>and
                   register them manually by entering their details or using
                   their unique ID for quick onboarding. Ensuring a complete list
                   of service providers enhances property management efficiency
                   and ensures access to reliable professionals when needed.
+                  <br />
+                  <br />
+                  <p>
+                    To Learn more about this page later, click your profile
+                    picture at the top right of the dashboard and select
+                    Assistance & Support.
+                  </p>
                   <br />
                   <br />
                 </p>

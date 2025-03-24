@@ -8,11 +8,11 @@ export const serviceProviderFilterOptionsWithDropdown = [
     radio: true,
     label: "Account Type",
     value: [
-      { label: "All", value: "all" },
-      { label: "Web", value: "web" },
-      { label: "Mobile", value: "mobile" },
+      { label: "All Service Providers", value: "all" },
+      { label: "Web Service Providers", value: "web" },
+      { label: "Mobile Service Providers", value: "mobile" },
     ],
-  },
+  }, 
 ];
 
 export const initialServiceProviderPageData: ServiceProviderPageData = {

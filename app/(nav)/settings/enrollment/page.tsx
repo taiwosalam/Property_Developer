@@ -237,7 +237,8 @@ const Enrollment = () => {
           </strong>
 
           <div className="w-full sm:w-1/2 lg:w-1/5 bg-brand-9 h-10 text-white px-4 py-2 rounded-md flex items-center justify-center">
-            <Link href="#" className="">
+            <Link href="https://ourproperty.com.ng/resources/professional-plan/" className=""
+            target="_blank">
               Read More
             </Link>
           </div>

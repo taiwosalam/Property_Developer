@@ -122,6 +122,8 @@ interface SettingsOthersCheckBoxProps {
   desc: string;
 }
 export interface SettingsOthersProps {
+  onClick?: () => void
+  id?: number;
   title: string;
   desc: string;
   icon: string | React.ReactNode;
@@ -129,6 +131,12 @@ export interface SettingsOthersProps {
   groupName?: string;
   selectedGroup?: string | null;
   setSelectedGroup?: (value: string | null) => void;
+  name?: string
+  state?: {
+    isChecked: boolean;
+    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  onChange?: (name: string, checked: boolean) => void; 
 }
 
 export interface GroupRadioProps {
@@ -148,12 +156,31 @@ export interface SettingsDirectorTypes {
 }
 
 export interface SettingsOthersCheckBoxProps {
+  // title: string;
+  // desc: string;
+  // checked?: boolean;
+  // value: string;
+  // onChange: (value: string, checked: boolean) => void;
+  // plan?: string;
+  // state?: {
+  //   isChecked: boolean;
+  //   setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  // };
+  // name?: string;
+  // onClick?: () => void;
+
   title: string;
   desc: string;
   checked?: boolean;
-  value: string;
-  onChange: (value: string, checked: boolean) => void;
+  value: string; // Keeping this for your use case, though name might be sufficient
+  onChange: (name: string, checked: boolean) => void; // Changed to use name
   plan?: string;
+  state?: {
+    isChecked: boolean;
+    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  name?: string; // Made required for consistency
+  onClick?: () => void;
 }
 
 export interface SettingsThemeTypes {

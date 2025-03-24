@@ -1,0 +1,395 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
+
+// Images
+import Transparent from "@/public/empty/transparent.png";
+// Imports
+import { industryOptions } from "@/data";
+import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
+import Input from "@/components/Form/Input/input";
+import Select from "@/components/Form/Select/select";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import SettingsSection from "@/components/Settings/settings-section";
+
+import {
+  SettingsSectionTitle,
+  SettingsUpdateButton,
+  SettingsVerifiedBadge,
+} from "@/components/Settings/settings-components";
+import DateInput from "@/components/Form/DateInput/date-input";
+import FileInput from "@/components/Form/FileInput/file-input";
+import CompanyMobileNumber from "@/components/Setup/company-mobile-number";
+import CompanyLogo from "../company/company-logo";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import {
+  cleanStringtoArray,
+  companyData,
+  CompanyDataApiResponse,
+  initialPageData,
+  ProfileSettingsPageState,
+  safeParse,
+  transformFormCompanyData,
+  transformProfileApiResponse,
+  updateCompanyDetails,
+  userData,
+} from "./data";
+import NetworkError from "@/components/Error/NetworkError";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import CompanySocials from "@/components/Settings/settings-company-social";
+import SettingsWebsiteDomain from "@/components/Settings/settings-website-domain";
+import WebsiteColor from "@/components/Settings/website-color";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { toast } from "sonner";
+import WebsitePages from "@/components/Settings/website-pages";
+import WebsiteTypography from "@/components/Settings/website-custom-typography";
+
+const Profile = () => {
+  const company_id = usePersonalInfoStore((state) => state.company_id);
+  const [requestLoading, setRequestLoading] = useState(false);
+
+  const [checkedStates, setCheckedStates] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  // console.log("company id", company_id)
+  const [address, setAddress] = useState({
+    state: "",
+    lga: "",
+    city: "",
+  });
+  const handleAddressChange = (key: keyof typeof address, value: string) => {
+    setAddress((prev) => ({
+      ...prev,
+      [key]: value,
+      ...(key === "state" && { lga: "", city: "" }),
+      ...(key === "lga" && { city: "" }),
+    }));
+  };
+
+  const [state, setState] = useState<ProfileSettingsPageState>(initialPageData);
+
+  const { verifications, companyData, directorsData } = state;
+
+  // FETCH API DATA
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch(`/companies/${company_id}`);
+  useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (apiData) {
+      const transformedData: ProfileSettingsPageState =
+        transformProfileApiResponse(apiData as CompanyDataApiResponse);
+      setState(transformedData);
+    }
+  }, [apiData]);
+
+  // console.log("apiData", apiData);
+  const { preview, handleImageChange } = useImageUploader({
+    placeholder: Transparent,
+  });
+
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+
+  const [uploadingUtility, setUploadingUtility] = useState(false);
+  const [uploadingMembership, setUploadingMembership] = useState(false);
+
+  const handleUploadUtility = (file: File | null) => {
+    console.log(file);
+    if (file) {
+      setUploadingUtility(true);
+    } else {
+      setUploadingUtility(false);
+    }
+  };
+
+  const handleUploadMembership = (file: File | null) => {
+    console.log(file);
+    if (file) {
+      setUploadingMembership(true);
+    } else {
+      setUploadingMembership(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (isNetworkError) return <NetworkError />;
+
+  //  if (error)
+  //    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  const handleSubmit = async (formData: FormData) => {
+    setRequestLoading(true);
+    const data = transformFormCompanyData(formData);
+    console.log(data);
+    try {
+      const status = await updateCompanyDetails(data, company_id as string);
+      console.log(status);
+      if (status) {
+        toast.success("Company Details Updated Successfully");
+        window.dispatchEvent(new Event("refetchProfile"));
+      }
+    } catch (err) {
+      toast.error("Failed to Update Company Details");
+    } finally {
+      setRequestLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <SettingsSection title="profile & details">
+        <AuthForm
+          skipValidation
+          onFormSubmit={handleSubmit}
+          returnType="form-data"
+        >
+          <div className="custom-flex-col gap-8">
+            <div className="">
+              <div className="flex w-full items-start gap-4 md:flex-row flex-col">
+                <div className="flex-1 gap-1 flex items-end">
+                  <Input
+                    required
+                    id="company_name"
+                    label="company name"
+                    placeholder={companyData.company_name}
+                    className="w-full"
+                    disabled
+                  />
+                  <div className="flex mt-2 sm:mt-0 sm:ml-2">
+                    <SettingsVerifiedBadge status="verified" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <Select
+                    id="director_experience"
+                    label="years in business"
+                    // defaultValue={pageData?.director_experience}
+                    placeholder="Select Option"
+                    options={[
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5",
+                      "6",
+                      "7",
+                      "8",
+                      "9",
+                      "10+",
+                    ]}
+                    hiddenInputClassName="setup-f"
+                  />
+                </div>
+                <div className="flex-1 gap-1 flex items-end">
+                  <Input
+                    required
+                    label="company mail"
+                    id="company_mail"
+                    placeholder="ourtenantsdeveloper@gmail.com"
+                    inputClassName="rounded-[8px] bg-white w-full"
+                    value={companyData.email}
+                    disabled
+                  />
+                  <div className="flex mt-2 sm:mt-0 sm:ml-2">
+                    <SettingsVerifiedBadge status="verified" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 w-full items-center justify-between">
+                <DateInput
+                  required
+                  id="cac_date"
+                  label="date of registration"
+                  value={dayjs(companyData.date_of_registration)}
+                  onChange={() => {}}
+                  disabled
+                />
+                <Input
+                  required
+                  label="CAC Registration Number"
+                  id="cac_number"
+                  placeholder="Write here"
+                  inputClassName="rounded-[8px] setup-f bg-white"
+                  value={companyData.cac_registration_number}
+                  disabled
+                />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
+                  <FileInput
+                    required
+                    noUpload
+                    id="membership_document"
+                    label="Membership document"
+                    placeholder=""
+                    buttonName="Document"
+                    fileType="pdf"
+                    size={2}
+                    sizeUnit="MB"
+                    hiddenInputClassName="setup-f required w-full sm:w-[250px]"
+                    settingsPage={true}
+                    defaultValue={companyData.cac_certificate}
+                  />
+                  <div className="flex pt-2 sm:pt-7">
+                    <SettingsVerifiedBadge status={verifications.cac_status} />
+                  </div>
+                </div>
+                <Select
+                  id="industry"
+                  label="industry"
+                  options={industryOptions}
+                  inputContainerClassName="bg-neutral-2 w-full"
+                  defaultValue={companyData.industry || ""}
+                />
+                <Input
+                  id="membership_number"
+                  label="membership number"
+                  placeholder="write here"
+                  className="w-full"
+                  defaultValue={companyData.membership_number || ""}
+                />
+                <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
+                  <FileInput
+                    required
+                    id="membership_document"
+                    label="Membership document"
+                    placeholder=""
+                    buttonName="Document"
+                    fileType="pdf"
+                    size={2}
+                    sizeUnit="MB"
+                    hiddenInputClassName="setup-f required w-full sm:w-[250px]"
+                    settingsPage={true}
+                    defaultValue={companyData.membership_certificate}
+                  />
+                  {companyData.membership_certificate && (
+                    <div className="flex pt-2 sm:pt-7">
+                      <SettingsVerifiedBadge
+                        status={verifications.membership_status}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <SettingsSectionTitle
+              title="company address"
+              desc="Provide your complete head office address for the verification process. Please select your state, local government area, city, and upload a utility bill that is no older than 3 months."
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <Select
+                options={getAllStates()}
+                id="state"
+                label="state"
+                value={address.state}
+                hiddenInputClassName="setup-f"
+                defaultValue={state.companyData.state}
+                onChange={(value) => handleAddressChange("state", value)} // Update handler
+                required
+              />
+
+              {/* Local Government Selector */}
+              <Select
+                options={getLocalGovernments(address.state)}
+                id="local_government"
+                label="local government"
+                hiddenInputClassName="setup-f"
+                onChange={(value) => handleAddressChange("lga", value)} // Update handler
+                value={address.lga} // Controlled value
+                required
+                defaultValue={state.companyData.local_government}
+              />
+
+              {/* City Selector */}
+              <Select
+                options={getCities(address.state, address.lga)}
+                id="city"
+                label="City / Area"
+                allowCustom={true}
+                hiddenInputClassName="setup-f"
+                onChange={(value) => handleAddressChange("city", value)} // Update handler
+                value={address.city} // Controlled value
+                required
+                defaultValue={state.companyData.city}
+              />
+            </div>
+            <div className="w-full flex flex-col lg:flex-row gap-4">
+              <Input
+                id="head_office_address"
+                label="Head Office Address"
+                placeholder=""
+                className="w-full lg:w-[500px]"
+                defaultValue={state.companyData.head_office_address}
+              />
+              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2 w-full lg:w-auto">
+                <FileInput
+                  required
+                  id="utility_document  "
+                  label="utility document"
+                  placeholder=""
+                  buttonName="Document"
+                  fileType="pdf"
+                  size={2}
+                  sizeUnit="MB"
+                  hiddenInputClassName="setup-f required w-full sm:w-[250px]"
+                  settingsPage={true}
+                  defaultValue={companyData.utility_document}
+                  // onChange={handleUploadUtility}
+                />
+                {companyData.utility_document && (
+                  <div className="flex pt-2 sm:pt-7">
+                    <SettingsVerifiedBadge
+                      status={verifications.utility_status}
+                    />
+                  </div>
+                )}
+                {uploadingUtility && (
+                  <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
+                    Verify Document
+                  </button>
+                )}
+              </div>
+            </div>
+            <CompanyMobileNumber
+              // phoneNumbers={JSON.parse(state.companyData.phone_number)}
+              phoneNumbers={safeParse<string[]>(
+                state.companyData.phone_number,
+                []
+              )}
+            />
+            <CompanyLogo
+              lightLogo={state.companyData.company_logo}
+              darkLogo={state.companyData.dark_logo}
+            />
+          </div>
+          <SettingsUpdateButton
+            submit
+            action={handleSubmit as any}
+            loading={requestLoading}
+          />
+        </AuthForm>
+      </SettingsSection>
+      <CompanySocials companyData={companyData} />
+      <SettingsWebsiteDomain />
+      <WebsitePages />
+      {/* <WebsiteColor /> */}
+      <WebsiteTypography />
+    </>
+  );
+};
+
+export default Profile;

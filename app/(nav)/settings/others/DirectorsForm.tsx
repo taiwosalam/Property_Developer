@@ -22,6 +22,7 @@ import Image from "next/image";
 interface DirectorsFormProps {
   submitAction: (data: any) => void;
   chooseAvatar: () => void;
+  isProcessing?: boolean
   avatar: string | null;
   setAvatar: React.Dispatch<React.SetStateAction<string | null>>;
   // setFormStep: React.Dispatch<React.SetStateAction<number>>;
@@ -35,6 +36,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
   chooseAvatar,
   avatar,
   setAvatar,
+  isProcessing
 }) => {
   const {
     preview: imagePreview,
@@ -79,7 +81,8 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         <Select
           options={titles}
           id="title"
-          label="Profile Tilte/Qualification"
+          name="title"
+          label="Profile Title/Qualification"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
           value={selectedState}
@@ -87,7 +90,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
         <Select
           isSearchable={false}
-          id="real-estate-title"
+          id="personal_title"
           label="real estate title"
           inputContainerClassName="bg-neutral-2"
           options={industryOptions}
@@ -110,12 +113,12 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         <Select
           validationErrors={errorMsgs}
           options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
-          id="experience"
+          id="years_in_business"
           label="Years of Experience"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          value={selectedState}
-          onChange={(value) => handleAddressChange("selectedState", value)}
+          //value={selectedState}
+          //onChange={(value) => handleAddressChange("selectedState", value)}
         />
         <PhoneNumberInput
           id="phone_number"
@@ -124,7 +127,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-        <div className="flex flex-col gap-4 md:gap-5 md:justify-between">
+        {/* <div className="flex flex-col gap-4 md:gap-5 md:justify-between">
           <Input
             id="password"
             type="password"
@@ -134,17 +137,17 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
             required
           />
           <Input
-            id="confirm-password"
+            id="password_confirmation"
             type="password"
             label="Confirm password"
             placeholder="Confirm password"
             validationErrors={errorMsgs}
             required
           />
-        </div>
-        <div className="md:col-span-2">
+        </div> */}
+        <div className="md:col-span-3 w-full">
           <TextArea
-            id="about"
+            id="about_director"
             label="About Director"
             placeholder=""
             inputSpaceClassName="md:!h-[120px]"
@@ -194,6 +197,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
               className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
               aria-label="choose avatar"
             >
+             { avatar && <input hidden  name="avatar" value={avatar}/>}
               {avatar ? (
                 <>
                   <Image
@@ -224,13 +228,15 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         <input
           type="file"
           ref={inputFileRef}
-          name="picture"
+          id="profile_picture"
+          name="profile_picture"
           style={{ display: "none" }}
           accept="image/*"
           onChange={handleImageChange}
         />
-        <Button type="submit" size="base_medium" className="py-2 px-8 ml-auto">
-          create
+        <Button type="submit" size="base_medium" className={`py-2 px-8 ml-auto ${isProcessing ? 'opacity-70' : 'opacity-100'}`}
+        disabled={isProcessing}>
+         { isProcessing ? "Creating..." : "Create"} 
         </Button>
       </div>
     </AuthForm>

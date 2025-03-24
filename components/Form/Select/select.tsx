@@ -165,7 +165,7 @@ const Select: React.FC<SelectProps> = ({
         type="hidden"
         className={hiddenInputClassName}
         value={selectedValue || ""}
-          required={required || requiredNoStar}
+        required={required || requiredNoStar}
         disabled={disabled}
       />
       {label && (

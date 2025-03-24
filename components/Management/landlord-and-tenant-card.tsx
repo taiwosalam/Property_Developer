@@ -11,6 +11,7 @@ export interface UserCardProps {
   user_tag: string;
   badge_color?: BadgeIconColors;
   other_info?: string | null;
+  className?: string;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -21,10 +22,11 @@ const UserCard: React.FC<UserCardProps> = ({
   user_tag,
   badge_color,
   other_info,
+  className
 }) => {
   return (
     <div
-      className="h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 justify-center items-center"
+      className={`h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 justify-center items-center ${className}`}
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px] bg-[#F0F2F5]">
