@@ -308,7 +308,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           <input name="property_type" type="hidden" value={formType} />
           <div className="mb-5 lg:mb-8">
             <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
-              Set {formType === "rental" ? "property" : "Estate/Facility"}{" "}
+              {/* Set {formType === "rental" ? "property" : "Estate/Facility"}{" "} */}
+              Set{" "}
+              {formType === "rental"
+                ? "property"
+                : selectedCategory?.toLocaleLowerCase() === "estate"
+                ? "Estate"
+                : selectedCategory?.toLocaleLowerCase() === "facility"
+                ? "Facility"
+                : "Estate/Facility"}{" "}
               pictures for easy recognition (maximum of {maxNumberOfImages}{" "}
               images). Please drag your preferred image and place it in the
               first position to make it the primary display.
@@ -587,6 +595,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               label={
                 formType === "rental"
                   ? "Property Description"
+                  : selectedCategory?.toLocaleLowerCase() === "estate"
+                  ? "Estate Description"
+                  : selectedCategory?.toLocaleLowerCase() === "facility"
+                  ? "Facility Description"
                   : "Estate/Facility Description"
               }
               className="md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent"

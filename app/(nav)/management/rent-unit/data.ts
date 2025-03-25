@@ -71,6 +71,9 @@ export interface UnitApiResponse {
     month_published_vacant?: number;
     unpublished_vacant?: number;
     month_unpublished_vacant?: number;
+    pagination: {
+      current_page: number;
+    }
     unit: {
       current_page: number;
       last_page: number;
@@ -84,6 +87,9 @@ export interface UnitFilterResponse {
     unit: UnitDataObject[];
     current_page: number;
     last_page: number;
+    pagination: {
+      current_page: number;
+    }
   };
 }
 

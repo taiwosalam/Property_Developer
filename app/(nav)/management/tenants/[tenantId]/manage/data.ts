@@ -84,6 +84,13 @@ export interface IndividualTenantAPIResponse {
       address: string;
       relationship: string;
     };
+    guarantor: {
+      name: string;
+      phone: string;
+      email: string;
+      address: string;
+      relationship: string;
+    }[];
     documents: {
       type: string;
       files: (
@@ -140,6 +147,8 @@ export const transformIndividualTenantAPIResponse = ({
       last_updated: lastUpdated,
       write_up: data.note.note,
     },
+    guarantor_1: data.guarantor[0],
+    guarantor_2: data.guarantor[1],
     documents: data.documents.flatMap((doc) => {
       return doc.files.map((file, index) => {
         if (typeof file === "string") {
@@ -163,7 +172,7 @@ export const transformIndividualTenantAPIResponse = ({
   };
 };
 
-export const updateWithEmailOrID = async (data: any, id: number) => {
+export const updateTenantWithEmailOrID = async (data: any, id: number) => {
   try {
     const res = await api.post(`tenant-update/email/${id}`, data);
     if (res.status === 201) {

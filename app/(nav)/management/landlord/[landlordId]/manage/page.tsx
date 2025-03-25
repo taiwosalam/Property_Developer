@@ -34,6 +34,7 @@ import {
 } from "./data";
 import { groupDocumentsByType } from "@/utils/group-documents";
 import useFetch from "@/hooks/useFetch";
+import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
 
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
@@ -44,7 +45,6 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const landlordData = data
     ? transformIndividualLandlordAPIResponse(data)
     : null;
-
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -66,7 +66,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     ),
   }));
 
-  console.log("landlord data", landlordData);
+  // console.log("landlord data", landlordData);
+  // console.log("landlordData?.user_tag", landlordData?.user_tag);
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -155,9 +156,19 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 >
                   edit
                 </Button>
-                <Button size="base_medium" className="py-2 px-8">
-                  update with email
-                </Button>
+                <Modal>
+                  <ModalTrigger>
+                    <Button size="base_medium" className="py-2 px-8">
+                      update with Email
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <UpdateProfileWithIdModal
+                      page="landlord"
+                      id={Number(landlordData.id)}
+                    />
+                  </ModalContent>
+                </Modal>
               </>
             )}
           </div>
@@ -302,14 +313,15 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           ))}
         </AutoResizingGrid>
       </LandlordTenantInfoSection>
-      <LandlordTenantInfoSection title="statement">
+      {/* INTEGRATE LATER IF BACKEND CAN FIX */}
+      {/* <LandlordTenantInfoSection title="statement">
         <CustomTable
           fields={statementTableFields}
           data={transformedTableData}
           tableBodyCellSx={{ fontSize: "1rem" }}
           tableHeadCellSx={{ fontSize: "1rem" }}
         />
-      </LandlordTenantInfoSection>
+      </LandlordTenantInfoSection> */}
       <LandlordTenantInfoSection title="previous property">
         <AutoResizingGrid minWidth={315}>
           {landlordData?.previous_properties?.map((property) => (

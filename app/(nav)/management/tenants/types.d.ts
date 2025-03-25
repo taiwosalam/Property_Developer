@@ -19,7 +19,7 @@ interface NextOfKin {
 interface Guarantor {
   name: string | null;
   email: string | null;
-  phone_number: string | null;
+  phone: string | null;
   address: string | null;
   relationship: string | null;
 }

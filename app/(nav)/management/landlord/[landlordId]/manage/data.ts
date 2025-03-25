@@ -3,6 +3,7 @@ import type { LandlordPageData } from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+import api, { handleAxiosError } from "@/services/api";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -100,9 +101,9 @@ export interface IndividualLandlordAPIResponse {
       type: string;
       files: (
         | {
-          url: string;
-          updated_at: string;
-        }
+            url: string;
+            updated_at: string;
+          }
         | string
       )[];
     }[];
@@ -167,11 +168,13 @@ export const transformIndividualLandlordAPIResponse = ({
       });
     }),
     properties_managed: data.properties.map((p) => {
-      const totalReturns = p.properties.units.reduce((sum:any, unit:any) => {
+      const totalReturns = p.properties.units.reduce((sum: any, unit: any) => {
         return sum + parseFloat(unit.fee_amount);
       }, 0);
       const feePercentage =
-      p.properties.property_type === "rental" ? p.properties.agency_fee : p.properties.management_fee;
+        p.properties.property_type === "rental"
+          ? p.properties.agency_fee
+          : p.properties.management_fee;
 
       return {
         id: p.properties.id,
@@ -196,14 +199,16 @@ export const transformIndividualLandlordAPIResponse = ({
         isClickable: true,
         viewOnly: false,
         branch: p.properties.branch.branch_name,
-      }
+      };
     }),
     previous_properties: data.previous_properties.map((p) => {
-      const totalReturns = p.properties.units.reduce((sum:any, unit:any) => {
+      const totalReturns = p.properties.units.reduce((sum: any, unit: any) => {
         return sum + parseFloat(unit.fee_amount);
       }, 0);
       const feePercentage =
-      p.properties.property_type === "rental" ? p.properties.agency_fee : p.properties.management_fee;
+        p.properties.property_type === "rental"
+          ? p.properties.agency_fee
+          : p.properties.management_fee;
 
       return {
         id: p.properties.id,
@@ -228,7 +233,20 @@ export const transformIndividualLandlordAPIResponse = ({
         isClickable: true,
         viewOnly: false,
         branch: p.properties.branch.branch_name,
-      }
+      };
     }),
   };
+};
+
+// 1/landlord-update/email/1
+export const updateLandlordWithEmailOrID = async (data: any, id: number) => {
+  try {
+    const res = await api.post(`landlord-update/email/${id}`, data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
 };

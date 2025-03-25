@@ -41,6 +41,8 @@ export const transformPropertyData = (
       land_lord_id: data.landlord_id,
       staff_id: data.staff?.filter((s) => s.staff_role === "staff" || s.staff_role === "manager").map((s) => s.id),
       officer_id: data.staff?.filter((s) => s.staff_role === "account officer").map((s) => s.id),
+      account_officer: data.staff?.filter((s) => s.staff_role === "account officer").map((s) => s.user.name)[0],
+      manager: data.staff?.filter((s) => s.staff_role === "manager").map((s) => s.user.name)[0],
     },
     propertySettings: {
       agency_fee: data.agency_fee || undefined,

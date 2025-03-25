@@ -130,7 +130,7 @@ const RentAndUnit = () => {
     };
   }, [appliedFilters, search, sort, page]);
 
-  // console.log("config", config)
+  // console.log("total_pages", state.current_page)
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -162,14 +162,13 @@ const RentAndUnit = () => {
     refetch,
   } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
 
-  // console.log("Braches", apiData)
   useEffect(() => {
     if (apiData) {
       setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
       setState((prevState) => ({
         ...prevState,
-        // current_page: apiData.data.unit?.current_page,
-        // last_page: apiData.data.unit?.last_page,
+        current_page: apiData.data.pagination?.current_page,
+        // last_page: apiData.data.pagination?.total_pages,
       }));
     }
   }, [apiData]);
@@ -377,8 +376,8 @@ const RentAndUnit = () => {
               )}
             </section>
             <Pagination
-              totalPages={last_page}
-              currentPage={current_page}
+              totalPages={state.last_page}
+              currentPage={state.current_page}
               onPageChange={handlePageChange}
             />
           </>
