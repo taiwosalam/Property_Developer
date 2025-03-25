@@ -8,23 +8,32 @@ import { AuthForm } from "../Auth/auth-components";
 import { toast } from "sonner";
 import { useState } from "react";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { updateWithEmailOrID } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
+import { updateTenantWithEmailOrID } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
 import { useModal } from "../Modal/modal";
+import { updateLandlordWithEmailOrID } from "@/app/(nav)/management/landlord/[landlordId]/manage/data";
 
-const UpdateProfileWithIdModal = ({ id }: { id: number }) => {
+const UpdateProfileWithIdModal = ({
+  id,
+  page,
+}: {
+  id: number;
+  page: "landlord" | "tenant";
+}) => {
   const [reqLoading, setReqLoading] = useState(false);
   const { setIsOpen } = useModal();
 
   const handleUpdateWithEmail = async (data: FormData) => {
     const payload = {
       identifier: data.get("profile_id"),
-      _method: "PUT"
+      _method: "PUT",
     };
-
-    // console.log(typeof payload.identifier)
     try {
       setReqLoading(true);
-      const res = await updateWithEmailOrID(payload, id);
+      const action =
+        page === "landlord"
+          ? updateLandlordWithEmailOrID(payload, id)
+          : updateTenantWithEmailOrID(payload, id);
+      const res = await action;
       if (res) {
         toast.success("Tenant Profile Updated Successfully");
         window.dispatchEvent(new Event("refetchtenant"));
@@ -38,7 +47,13 @@ const UpdateProfileWithIdModal = ({ id }: { id: number }) => {
   };
 
   return (
-    <LandlordTenantModalPreset heading={"Update Tenants/Occupant Profile"}>
+    <LandlordTenantModalPreset
+      heading={
+        page === "landlord"
+          ? "Update Landlord/Landlady Profile"
+          : "Update Tenants/Occupant Profile"
+      }
+    >
       <AuthForm
         returnType="form-data"
         onFormSubmit={handleUpdateWithEmail}

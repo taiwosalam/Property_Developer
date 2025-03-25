@@ -308,7 +308,7 @@ export const TenantEditGuarantorInfoSection = () => {
     name: "",
     email: "",
     address: "",
-    phone_number: "",
+    phone: "",
     relationship: "",
   };
 
@@ -316,7 +316,7 @@ export const TenantEditGuarantorInfoSection = () => {
     name: "",
     email: "",
     address: "",
-    phone_number: "",
+    phone: "",
     relationship: "",
   };
 
@@ -345,7 +345,7 @@ export const TenantEditGuarantorInfoSection = () => {
           id={`guarantor${index}_phone_number`}
           label="phone number"
           placeholder="Placeholder"
-          defaultValue={guarantor?.phone_number || ""}
+          defaultValue={guarantor?.phone || ""}
           inputContainerClassName="bg-neutral-2"
         />
         <Select

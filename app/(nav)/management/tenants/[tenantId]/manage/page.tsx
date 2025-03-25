@@ -1,4 +1,3 @@
-
 "use client";
 
 // Fonts
@@ -46,17 +45,15 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
     data: apiData,
     error,
     loading,
-    refetch
+    refetch,
   } = useFetch<IndividualTenantAPIResponse>(`tenant/${tenantId}`);
-   useRefetchOnEvent("refetchtenant", () => refetch({ silent: true }));
+  useRefetchOnEvent("refetchtenant", () => refetch({ silent: true }));
 
   const tenant = apiData ? transformIndividualTenantAPIResponse(apiData) : null;
 
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div className="text-red-500">{error}</div>;
   if (!tenant) return null;
-
-  // console.log("tenant", tenant)
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
 
@@ -155,7 +152,10 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <UpdateProfileWithIdModal id={Number(tenant.id)} />
+                    <UpdateProfileWithIdModal
+                      page="tenant"
+                      id={Number(tenant.id)}
+                    />
                   </ModalContent>
                 </Modal>
               </>
@@ -188,14 +188,15 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         {/* <UnitItem /> */}
         <div></div>
       </LandlordTenantInfoSection>
-      <LandlordTenantInfoSection title="statement">
+      {/* INTEGRATE LATER IF BACKEND FIX */}
+      {/* <LandlordTenantInfoSection title="statement">
         <CustomTable
           fields={statementTableFields}
           data={statementTableData}
           tableBodyCellSx={{ fontSize: "1rem" }}
           tableHeadCellSx={{ fontSize: "1rem" }}
         />
-      </LandlordTenantInfoSection>
+      </LandlordTenantInfoSection> */}
       <LandlordTenantInfoSection title="previous rent">
         <div className="opacity-40">
           {/* <UnitItem /> */}

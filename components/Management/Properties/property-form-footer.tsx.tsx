@@ -51,7 +51,7 @@ const PropertyFormFooter: React.FC<{
           size="sm_medium"
           className="py-2 px-6 block ml-auto mt-5"
           type="button"
-          disabled={requestLoading}
+          disabled={!canSubmit || requestLoading}
           onClick={handleSubmitClick}
           // form="edit-property-form"
         >
@@ -91,15 +91,17 @@ const PropertyFormFooter: React.FC<{
                 variant="sky_blue"
                 className="py-2 px-6"
                 onClick={onAddUnit}
+                disabled={!canSubmit || requestLoading}
               >
-                Add unit
+               { requestLoading ? "Please wait..." : "Add Unit" } 
               </Button>
               <Button
                 size="sm_medium"
                 className="py-2 px-6"
                 onClick={handleSave}
+                disabled={!canSubmit || requestLoading}
               >
-                Save
+                { requestLoading ? "Please wait..." : "Save" }
               </Button>
             </div>
           </>
@@ -116,7 +118,7 @@ const PropertyFormFooter: React.FC<{
             </Button>
             <Button
               type="button"
-              disabled={requestLoading}
+              disabled={!canSubmit || requestLoading}
               size="base_medium"
               className="py-2 px-6"
               onClick={handleSubmitClick}

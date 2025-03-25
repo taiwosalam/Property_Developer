@@ -6,27 +6,52 @@ import Button from "@/components/Form/Button/button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useUnitForm } from "./unit-form-context";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-const AddUntFooter = () => {
+interface AddUntFooterProps {
+  noForm?: boolean;
+}
+
+const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
   const { canSubmit, handleInputChange, missingFields } =
     useContext(FlowProgressContext);
   const { submitLoading, setSaveClick } = useUnitForm();
   const [footerModalOpen, setFooterModalOpen] = useState(false);
+  const router = useRouter();
+
+  const handleAddMoreClick = () => {
+    if (!noForm) {
+      // Form is present, validate it
+      handleInputChange();
+      if (!canSubmit) {
+        toast.error(
+          `The following fields are required: ${missingFields.join(", ")}`
+        );
+        return;
+      }
+    }
+    // If no form (noForm is false) or form is valid, open the modal
+    setFooterModalOpen(true);
+  };
 
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    handleInputChange();
-    if (!canSubmit) {
-      toast.error(
-        `The following fields are required: ${missingFields.join(", ")}`
-      );
-      return;
+    if (noForm) {
+      router.push("/management/properties");
+    } else {
+      handleInputChange();
+      if (!canSubmit) {
+        toast.error(
+          `The following fields are required: ${missingFields.join(", ")}`
+        );
+        return;
+      }
+      setSaveClick(true);
+      const form = e.currentTarget.form;
+      setTimeout(() => {
+        form?.requestSubmit();
+      }, 0);
     }
-    setSaveClick(true);
-    const form = e.currentTarget.form;
-    setTimeout(() => {
-      form?.requestSubmit();
-    }, 0);
   };
 
   return (
@@ -40,15 +65,16 @@ const AddUntFooter = () => {
         size="base_medium"
         className="py-2 px-6"
         disabled={submitLoading}
-        onClick={() => {
-          if (!canSubmit) {
-            toast.error(
-              `The following fields are required: ${missingFields.join(", ")}`
-            );
-            return;
-          }
-          setFooterModalOpen(true);
-        }}
+        onClick={handleAddMoreClick}
+        // onClick={() => {
+        //   if (!canSubmit) {
+        //     toast.error(
+        //       `The following fields are required: ${missingFields.join(", ")}`
+        //     );
+        //     return;
+        //   }
+        //   setFooterModalOpen(true);
+        // }}
       >
         {submitLoading ? "Adding..." : "Add More Unit"}
       </Button>
