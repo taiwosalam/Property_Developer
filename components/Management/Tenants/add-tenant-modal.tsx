@@ -6,7 +6,12 @@ import { useState } from "react";
 import type { AddTenantModalOptions } from "./types";
 
 // Imports
-import { addTenant, inviteTenantEmail, multipleCreateTenants, multipleInviteTenants } from "./data";
+import {
+  addTenant,
+  inviteTenantEmail,
+  multipleCreateTenants,
+  multipleInviteTenants,
+} from "./data";
 import InvitationForm from "../invitation-form";
 import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
@@ -14,6 +19,7 @@ import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants"
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
 import { useRouter, usePathname } from "next/navigation";
+import { addTenantWithEmail } from "../Landlord/data";
 
 const AddTenantModal = () => {
   const router = useRouter();
@@ -59,11 +65,11 @@ const AddTenantModal = () => {
     }
   };
 
-  const handleInviteTenantId = async (data: any) => {
-    // const success = await inviteTenantId(data);
-    // if (success) {
-    //   closeModalAndRefresh();
-    // }
+  const handleAddTenantWithEmmailOrID = async (data: any) => {
+    const success = await addTenantWithEmail(data);
+    if (success) {
+      closeModalAndRefresh();
+    }
   };
 
   const handleMultipleInviteTenants = async (file: File) => {
@@ -83,7 +89,6 @@ const AddTenantModal = () => {
       closeModalAndRefresh();
     }
   };
-
 
   const modal_states: Record<
     AddTenantModalOptions,
@@ -136,7 +141,10 @@ const AddTenantModal = () => {
     "add-user-with-email": {
       heading: "Add Landlord/Landlady with Email",
       content: (
-        <InvitationForm method="id" submitAction={handleInviteTenantId} />
+        <InvitationForm
+          method="id"
+          submitAction={handleAddTenantWithEmmailOrID}
+        />
       ),
     },
   };

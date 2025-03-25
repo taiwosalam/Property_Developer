@@ -1,4 +1,4 @@
- // Imports
+// Imports
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
 
@@ -20,6 +20,33 @@ export const inviteLandlordEmail = async (formData: any) => {
     return true;
   } catch (error) {
     handleAxiosError(error, "Failed to invite landlord");
+    return false;
+  }
+};
+
+export const addLandlordWithEmail = async (formData: any) => {
+  try {
+    const res = await api.post("/landlord-add/email", formData);
+    if (res.status === 201){
+      toast.success("Landlord created successfully");
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error, "Failed to create landlord");
+    return false;
+  }
+};
+
+
+export const addTenantWithEmail = async (formData: any) => {
+  try {
+    const res = await api.post("/tenant-add/email", formData);
+    if (res.status === 201){
+      toast.success("Tenant created successfully");
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error, "Failed to create landlord");
     return false;
   }
 };
