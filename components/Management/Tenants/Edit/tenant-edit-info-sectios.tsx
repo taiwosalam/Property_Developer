@@ -632,15 +632,16 @@ export const TenantEditAttachmentSection = () => {
     if (removeSuccess && uploadSuccess) {
       toast.success("Documents updated successfully");
       window.dispatchEvent(new Event("tenant-updated"));
+      window.dispatchEvent(new Event("refetchtenant"));
     } else {
       toast.error("An error occurred while updating documents");
     }
     setReqLoading(false);
   };
 
-  useEffect(() => {
-    setDocuments(tenant?.documents || []);
-  }, [tenant?.documents]);
+  // useEffect(() => {
+  //   setDocuments(tenant?.documents || []);
+  // }, [tenant?.documents]);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">

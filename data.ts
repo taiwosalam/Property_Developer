@@ -142,7 +142,7 @@ export const unitSubtypes = {
   land: {
     residential: ["sqm", "half plot", "plot", "acre", "hectare"],
     commercial: [
-      "joint venture",
+      "joint venture land",
       "agriculture land",
       "farm land",
       "industrial land",

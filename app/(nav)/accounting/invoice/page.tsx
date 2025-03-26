@@ -297,7 +297,7 @@ const AccountingInvoicePage = () => {
               trendDirection="up"
               trendColor="green"
               variant="blueIncoming"
-              percentage={53}
+              percentage={statistics.percentage_change_total}
             />
             <AccountStatsCard
               title="Total Paid Invoice"
@@ -305,7 +305,7 @@ const AccountingInvoicePage = () => {
               trendDirection="down"
               trendColor="red"
               variant="greenIncoming"
-              percentage={4.3}
+              percentage={statistics.percentage_change_paid}
             />
             <AccountStatsCard
               title="Total Pending Invoice"
@@ -313,7 +313,7 @@ const AccountingInvoicePage = () => {
               trendDirection="down"
               trendColor="red"
               variant="yellowCard"
-              percentage={4.3}
+              percentage={Number(statistics.total_pending_receipt)}
             />
           </AutoResizingGrid>
         </div>
@@ -343,7 +343,6 @@ const AccountingInvoicePage = () => {
           ) : (
             <CustomTable
               fields={invoiceTableFields}
-              // data={invoiceTableData}
               data={invoices}
               tableHeadStyle={{ height: "76px" }}
               tableHeadCellSx={{ fontSize: "1rem" }}

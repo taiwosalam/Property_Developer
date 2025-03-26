@@ -6,73 +6,108 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import BackButton from "@/components/BackButton/back-button";
 import CustomTable from "@/components/Table/table";
-import { invoiceTableData, invoiceExportTableFields } from "../data";
+import {
+  invoiceTableData,
+  invoiceExportTableFields,
+  transformInvoiceData,
+} from "../data";
 import Signature from "@/components/Signature/signature";
 import ExportPageFooter from "@/components/reports/export-page-footer";
+import { useEffect, useRef, useState } from "react";
+import { InvoiceListResponse, TransformedInvoiceData } from "../types";
+import useFetch from "@/hooks/useFetch";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
 
 const ExportInvoice = () => {
+  const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
+    null
+  );
+
+  const { data, error, loading, isNetworkError, silentLoading } =
+    useFetch<InvoiceListResponse>("/invoice/list");
+
+  useEffect(() => {
+    if (data) {
+      const transformed = transformInvoiceData(data);
+      setInvoiceData(transformed);
+    }
+  }, [data]);
+
+  const printRef = useRef<HTMLDivElement>(null);
+
+  if (loading)
+    return <CustomLoader layout="page" view="table" pageTitle="Invoices" />;
+  if (error) return <div>Error loading invoice data.</div>;
+  if (!invoiceData) return <div>No invoice data available.</div>;
+  if (isNetworkError) return <NetworkError />;
+
+  const { statistics, invoices } = invoiceData;
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
         <BackButton as="p">Back</BackButton>
-        <ExportPageHeader />
-        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
-          <KeyValueList
-            data={{}}
-            chunkSize={1}
-            direction="column"
-            referenceObject={{
-              "Summary ID": "",
-              "Start Date": "",
-              "End Date": "",
-            }}
-          />
+        <div ref={printRef}>
+          <ExportPageHeader />
+          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
+            <KeyValueList
+              data={{}}
+              chunkSize={1}
+              direction="column"
+              referenceObject={{
+                "Summary ID": "",
+                "Start Date": "",
+                "End Date": "",
+              }}
+            />
+          </div>
+          <div className="custom-flex-col gap-6">
+            <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
+              Invoice Summary
+            </h1>
+            <AutoResizingGrid gap={24} minWidth={300}>
+              <AccountStatsCard
+                title="Total Invoice Created"
+                balance={statistics.total_receipt}
+                trendDirection="up"
+                trendColor="green"
+                variant="blueIncoming"
+                percentage={statistics.percentage_change_total}
+              />
+              <AccountStatsCard
+                title="Total Paid Invoice"
+                balance={statistics.total_receipt}
+                trendDirection="down"
+                trendColor="red"
+                variant="greenIncoming"
+                percentage={statistics.percentage_change_paid}
+              />
+              <AccountStatsCard
+                title="Total Pending Invoice"
+                balance={statistics.total_pending_receipt}
+                trendDirection="down"
+                trendColor="red"
+                variant="yellowCard"
+                percentage={Number(statistics.total_pending_receipt)}
+              />
+            </AutoResizingGrid>
+            <CustomTable
+              fields={invoiceExportTableFields}
+              data={invoices}
+              tableHeadStyle={{ height: "76px" }}
+              tableHeadCellSx={{ fontSize: "1rem" }}
+              tableBodyCellSx={{
+                fontSize: "1rem",
+                paddingTop: "12px",
+                paddingBottom: "12px",
+              }}
+            />
+            <Signature />
+          </div>
         </div>
       </div>
-      <div className="custom-flex-col gap-6">
-        <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
-          Invoice Summary
-        </h1>
-        <AutoResizingGrid gap={30} minWidth={300}>
-          <AccountStatsCard
-            title="Total Receipts Created"
-            balance={12345432}
-            percentage={53}
-            variant="blueIncoming"
-            trendDirection="up"
-            trendColor="green"
-          />
-          <AccountStatsCard
-            title="Total Paid Receipts"
-            balance={12345432}
-            variant="greenIncoming"
-            trendDirection="down"
-            trendColor="red"
-            percentage={4.3}
-          />
-          <AccountStatsCard
-            title="Total Pending Receipts"
-            balance={12345432}
-            variant="yellowCard"
-            trendDirection="down"
-            trendColor="red"
-            percentage={4.3}
-          />
-        </AutoResizingGrid>
-        <CustomTable
-          fields={invoiceExportTableFields}
-          data={invoiceTableData}
-          tableHeadStyle={{ height: "76px" }}
-          tableHeadCellSx={{ fontSize: "1rem" }}
-          tableBodyCellSx={{
-            fontSize: "1rem",
-            paddingTop: "12px",
-            paddingBottom: "12px",
-          }}
-        />
-        <Signature />
-      </div>
-      <ExportPageFooter />
+      <ExportPageFooter printRef={printRef} />
     </div>
   );
 };
