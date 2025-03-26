@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // Images
 import { ExclamationMark } from "@/public/icons/icons";
@@ -26,11 +26,26 @@ import {
   accountingVatOptionsWithDropdown,
   vatTableFields,
   vatTableData,
+  VATPageState,
+  initialVATPageState,
+  VATFilterParams,
+  VATAPIResponse,
+  transformVATAPIResponse,
 } from "./data";
 import { useRouter } from "next/navigation";
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
 import ExportButton from "@/components/reports/export-button";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
+import { AxiosRequestConfig } from "axios";
+import useFetch from "@/hooks/useFetch";
+import NetworkError from "@/components/Error/NetworkError";
+import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/type";
+import useStaffRoles from "@/hooks/getStaffs";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import TableLoading from "@/components/Loader/TableLoading";
 
 const Vat = () => {
   const router = useRouter();
@@ -38,13 +53,126 @@ const Vat = () => {
     DateRange | undefined
   >();
 
+  const [pageData, setPageData] = useState<VATPageState>(initialVATPageState);
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const {
+    total_paid_vat,
+    total_pending_vat,
+    total_vat_created,
+    percentage_change_paid,
+    percentage_change_pending,
+    percentage_change_total,
+    vats,
+  } = pageData;
+
+  const isFilterApplied = useCallback(() => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  }, [appliedFilters]);
+
+  const [search, setSearch] = useState("");
+  const config: AxiosRequestConfig = useMemo(() => {
+    // Determine date_from and date_to, prioritizing selectedDateRange
+    const dateFrom = selectedDateRange?.from
+      ? dayjs(selectedDateRange.from).format("YYYY-MM-DD")
+      : appliedFilters.startDate
+      ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+      : undefined;
+    const dateTo = selectedDateRange?.to
+      ? dayjs(selectedDateRange.to).format("YYYY-MM-DD")
+      : appliedFilters.endDate
+      ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+      : undefined;
+
+    return {
+      params: {
+        from_date: dateFrom,
+        to_date: dateTo,
+        search: search,
+        account_officer: appliedFilters.menuOptions["Account Officer"] || [],
+        property_ids: appliedFilters.menuOptions["Property"] || [],
+      } as VATFilterParams,
+    };
+  }, [appliedFilters, search, selectedDateRange]); // Add selectedDateRange as dependency
+
+  const handleSearch = (query: string) => {
+    setSearch(query);
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    // If FilterModal sets dates, clear selectedDateRange to avoid conflicts
+    if (filters.startDate || filters.endDate) {
+      setSelectedDateRange(undefined);
+    }
+  };
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+  } = useFetch<VATAPIResponse>("/vat/list", config);
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData((x) => ({
+        ...x,
+        ...transformVATAPIResponse(apiData),
+      }));
+    }
+  }, [apiData]);
+
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: `${p.id}`,
+      label: p.title,
+    })) || [];
+
+  const {
+    getManagers,
+    getStaffs,
+    getAccountOfficers,
+    loading: loadingStaffs,
+    error: staffsError,
+  } = useStaffRoles();
+  const accountOfficers = getAccountOfficers();
+  const accountOfficersOptions =
+    accountOfficers?.map((o) => ({
+      label: o.name,
+      value: `${o.id}`,
+    })) || [];
+
   const [timeRange, setTimeRange] = useState("90d");
 
   const handleDateChange = (range: DateRange | undefined) => {
     setSelectedDateRange(range);
-    // If the user selects a custom range, set the timeRange to "custom"
     if (range?.from && range?.to) {
       setTimeRange("custom");
+      // Clear appliedFilters dates to avoid overlap
+      setAppliedFilters((prev) => ({
+        ...prev,
+        startDate: null,
+        endDate: null,
+      }));
     }
   };
 
@@ -61,19 +189,20 @@ const Vat = () => {
       const days =
         value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
       setSelectedDateRange(calculateDateRange(days));
+      // Clear appliedFilters dates when using predefined ranges
+      setAppliedFilters((prev) => ({
+        ...prev,
+        startDate: null,
+        endDate: null,
+      }));
     }
-  };
-
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
   };
 
   const handleRowClick = (item: DataItem) => {
     router.push(`/accounting/vat/${item.id}/PrintVat`);
   };
 
-  const transformedTableData = vatTableData.map((item) => ({
+  const transformedTableData = vats.map((item) => ({
     ...item,
     total_vat: (
       <p className={item.total_vat ? "text-status-success-3" : ""}>
@@ -81,6 +210,11 @@ const Vat = () => {
       </p>
     ),
   }));
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="custom-flex-col gap-10">
@@ -130,6 +264,7 @@ const Vat = () => {
               <SearchInput
                 placeholder="Search for Vat"
                 className="max-w-[255px]"
+                onSearch={handleSearch}
               />
               <Modal>
                 <ModalTrigger asChild>
@@ -137,9 +272,27 @@ const Vat = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
-                    filterOptionsMenu={accountingVatOptionsWithDropdown}
+                    filterOptionsMenu={[
+                      ...(propertyOptions.length > 0
+                        ? [
+                            {
+                              label: "Property",
+                              value: propertyOptions,
+                            },
+                          ]
+                        : []),
+                      ...(accountOfficersOptions.length > 0
+                        ? [
+                            {
+                              label: "Account Officer",
+                              value: accountOfficersOptions,
+                            },
+                          ]
+                        : []),
+                    ]}
                     handleFilterApply={handleFilterApply}
                     isDateTrue
+                    appliedFilters={appliedFilters}
                   />
                 </ModalContent>
               </Modal>
@@ -152,43 +305,72 @@ const Vat = () => {
           <AutoResizingGrid gap={24} minWidth={300}>
             <AccountStatsCard
               title="Total Vat Created"
-              balance={12345432}
-              percentage={53}
+              balance={total_vat_created}
+              percentage={percentage_change_total}
               variant="blueIncoming"
               trendDirection="up"
               trendColor="green"
             />
             <AccountStatsCard
               title="Total Paid Vat"
-              balance={12345432}
+              balance={total_paid_vat}
               variant="greenIncoming"
               trendDirection="down"
               trendColor="red"
-              percentage={73}
+              percentage={percentage_change_paid}
             />
             <AccountStatsCard
               title="Total Pending Vat"
-              balance={12345432}
+              balance={total_pending_vat}
               variant="yellowCard"
               trendDirection="down"
               trendColor="red"
-              percentage={53}
+              percentage={percentage_change_pending}
             />
           </AutoResizingGrid>
         </div>
       </div>
-      <CustomTable
-        fields={vatTableFields}
-        data={transformedTableData}
-        tableHeadStyle={{ height: "76px" }}
-        tableHeadCellSx={{ fontSize: "1rem" }}
-        tableBodyCellSx={{
-          fontSize: "1rem",
-          paddingTop: "12px",
-          paddingBottom: "12px",
-        }}
-        handleSelect={handleRowClick}
-      />
+      {vats.length === 0 && !silentLoading ? (
+        config.params.search || isFilterApplied() ? (
+          <SearchError />
+        ) : (
+          <EmptyList
+            title="No VAT yet"
+            body={
+              <p>
+                This section will display VAT records once they are generated.
+                VAT records are created based on transactions or activities that
+                are subject to Value Added Tax.
+                <br />
+                <br />
+                To start generating VAT records, ensure that you have entered
+                the necessary data, such as transactions or property items,
+                depending on your setup.
+                <br />
+                <br />
+                For more information on how VAT is handled in this system, click
+                your profile picture at the top right of the dashboard and
+                select Assistance & Support.
+              </p>
+            }
+          />
+        )
+      ) : silentLoading ? (
+        <TableLoading />
+      ) : (
+        <CustomTable
+          fields={vatTableFields}
+          data={transformedTableData}
+          tableHeadStyle={{ height: "76px" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+          tableBodyCellSx={{
+            fontSize: "1rem",
+            paddingTop: "12px",
+            paddingBottom: "12px",
+          }}
+          handleSelect={handleRowClick}
+        />
+      )}
     </div>
   );
 };

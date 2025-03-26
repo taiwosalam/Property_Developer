@@ -191,7 +191,7 @@ export const transformIndividualLandlordAPIResponse = ({
         total_units: units.length,
         total_income: (totalReturns * feePercentage) / 100,
         total_returns: totalReturns,
-        property_type: "facility", // Override for properties_managed
+        property_type: properties.property_type, // Override for properties_managed
         total_unit_pictures: 2,
         hasVideo: true,
         currency: "naira", // Hardcoded as per original component usage

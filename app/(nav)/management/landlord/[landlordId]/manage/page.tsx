@@ -285,26 +285,44 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         )}
       </div>
       <LandlordTenantInfoSection title="Property Managed">
-        <AutoResizingGrid minWidth={315}>
-          {landlordData?.properties_managed?.map((property) => (
-            <PropertyCard key={property.id} {...property} />
-          ))}
-        </AutoResizingGrid>
+        {landlordData?.properties_managed?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Nothing yet
+          </div>
+        ) : (
+          <AutoResizingGrid minWidth={315}>
+            {landlordData?.properties_managed?.map((property) => (
+              <PropertyCard key={property.id} {...property} />
+            ))}
+          </AutoResizingGrid>
+        )}
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="statement">
-        <CustomTable
-          fields={statementTableFields}
-          data={transformedTableData ?? []}
-          tableBodyCellSx={{ fontSize: "1rem" }}
-          tableHeadCellSx={{ fontSize: "1rem" }}
-        />
+        {landlordData?.statement?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Nothing yet
+          </div>
+        ) : (
+          <CustomTable
+            fields={statementTableFields}
+            data={transformedTableData ?? []}
+            tableBodyCellSx={{ fontSize: "1rem" }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+          />
+        )}
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous property">
-        <AutoResizingGrid minWidth={315}>
-          {landlordData?.previous_properties?.map((property) => (
-            <PropertyCard key={property.id} {...property} />
-          ))}
-        </AutoResizingGrid>
+        {landlordData?.previous_properties?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Nothing yet
+          </div>
+        ) : (
+          <AutoResizingGrid minWidth={315}>
+            {landlordData?.previous_properties?.map((property) => (
+              <PropertyCard key={property.id} {...property} />
+            ))}
+          </AutoResizingGrid>
+        )}
       </LandlordTenantInfoSection>
       {landlordData?.user_tag === "mobile" && (
         <LandlordEditContext.Provider value={{ data: landlordData }}>
@@ -312,6 +330,54 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         </LandlordEditContext.Provider>
       )}
       <LandlordTenantInfoSection title="shared documents">
+        {landlordData?.documents?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Nothing yet
+          </div>
+        ) : (
+          <>
+            {Object.entries(groupedDocuments).map(
+              ([documentType, documents]) => {
+                if (documentType === "others") return null; // Skip "others" for now
+                return (
+                  <LandlordTenantInfoSection
+                    minimized
+                    title={documentType}
+                    key={documentType}
+                  >
+                    <div className="flex flex-wrap gap-4">
+                      {documents?.map((document) => (
+                        <LandlordTenantInfoDocument
+                          key={document.id}
+                          {...document}
+                        />
+                      ))}
+                    </div>
+                  </LandlordTenantInfoSection>
+                );
+              }
+            )}
+            {groupedDocuments?.others && (
+              <LandlordTenantInfoSection
+                minimized
+                title="other documents"
+                key="other document"
+              >
+                <div className="flex flex-wrap gap-4">
+                  {groupedDocuments.others.map((document) => (
+                    <LandlordTenantInfoDocument
+                      key={document.id}
+                      {...document}
+                    />
+                  ))}
+                </div>
+              </LandlordTenantInfoSection>
+            )}
+          </>
+        )}
+      </LandlordTenantInfoSection>
+
+      {/* <LandlordTenantInfoSection title="shared documents">
         {Object.entries(groupedDocuments).map(([documentType, documents]) => {
           if (documentType === "others") return null; // Skip "others" for now
           return (
@@ -341,7 +407,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             </div>
           </LandlordTenantInfoSection>
         )}
-      </LandlordTenantInfoSection>
+      </LandlordTenantInfoSection> */}
     </div>
   );
 };
