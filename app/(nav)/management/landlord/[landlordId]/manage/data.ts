@@ -1,5 +1,5 @@
 import type { Field } from "@/components/Table/types";
-import type { LandlordPageData } from "../../types";
+import type { LandlordPageData, PreviousProperties, PropertiesManaged } from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
@@ -97,6 +97,7 @@ export interface IndividualLandlordAPIResponse {
     };
     properties: any[];
     previous_properties: any[];
+    statement: any[];
     documents: {
       type: string;
       files: (
@@ -113,15 +114,13 @@ export interface IndividualLandlordAPIResponse {
 export const transformIndividualLandlordAPIResponse = ({
   data,
 }: IndividualLandlordAPIResponse): LandlordPageData => {
-  // console.log('data', data)
   const lastUpdated = data.note.last_updated_at
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
+
   return {
     id: data.id,
     picture: data.picture || "",
-    // first_name: data.first_name,
-    // last_name: data.last_name,
     name: data.name,
     email: data.email,
     phone_number: data.phone,
@@ -168,77 +167,234 @@ export const transformIndividualLandlordAPIResponse = ({
       });
     }),
     properties_managed: data.properties.map((p) => {
-      const totalReturns = p.properties.units.reduce((sum: any, unit: any) => {
-        return sum + parseFloat(unit.fee_amount);
-      }, 0);
+      const properties = p.properties;
+      const units = properties.units;
+      const totalReturns = units.reduce(
+        (sum: number, unit: any) => sum + parseFloat(unit.fee_amount),
+        0
+      );
       const feePercentage =
-        p.properties.property_type === "rental"
-          ? p.properties.agency_fee
-          : p.properties.management_fee;
+        properties.property_type === "rental"
+          ? properties.agency_fee
+          : properties.management_fee;
+      const imageObjects = properties.images;
+      const images = imageObjects.map((image: any) => image.path);
+      const defaultImage =
+        imageObjects.find((image: any) => image.is_default)?.path || images[0];
 
       return {
-        id: p.properties.id,
-        name: p.properties.title,
-        address: `${p.properties.full_address}, ${p.properties.city_area}, ${p.properties.local_government}, ${p.properties.state}`,
-        state: p.properties.state,
-        local_govt: p.properties.local_government,
-        type: p.properties.type,
-        images: p.properties.images.map((image: any) => image.path),
-        status: p.properties.status,
-        tenant_count: p.properties.tenant_count,
-        total_units: p.properties.units.length,
-        currency: p.properties.currency,
-        last_updated: moment(p.properties.updated_at).format("DD/MM/YYYY"),
-        total_returns: totalReturns,
+        id: properties.id.toString(),
+        property_name: properties.title,
+        images,
+        default_image: defaultImage,
+        address: `${properties.full_address}, ${properties.city_area}, ${properties.local_government}, ${properties.state}`,
+        total_units: units.length,
         total_income: (totalReturns * feePercentage) / 100,
+        total_returns: totalReturns,
+        property_type: "facility", // Override for properties_managed
+        total_unit_pictures: 2,
+        hasVideo: true,
+        currency: "naira", // Hardcoded as per original component usage
         mobile_tenants: 0,
         web_tenants: 0,
-        accountOfficer: "",
         owing_units: 0,
         available_units: 0,
-        isClickable: true,
         viewOnly: false,
-        branch: p.properties.branch.branch_name,
+        isClickable: true,
+        branch: properties.branch.branch_name,
+        last_updated: moment(properties.updated_at).format("DD/MM/YYYY"),
+        accountOfficer: "", // Adjust if data is available
       };
     }),
     previous_properties: data.previous_properties.map((p) => {
-      const totalReturns = p.properties.units.reduce((sum: any, unit: any) => {
-        return sum + parseFloat(unit.fee_amount);
-      }, 0);
+      const properties = p.properties;
+      const units = properties.units;
+      const totalReturns = units.reduce(
+        (sum: number, unit: any) => sum + parseFloat(unit.fee_amount),
+        0
+      );
       const feePercentage =
-        p.properties.property_type === "rental"
-          ? p.properties.agency_fee
-          : p.properties.management_fee;
+        properties.property_type === "rental"
+          ? properties.agency_fee
+          : properties.management_fee;
+      const imageObjects = properties.images;
+      const images = imageObjects.map((image: any) => image.path);
+      const defaultImage =
+        imageObjects.find((image: any) => image.is_default)?.path || images[0];
 
       return {
-        id: p.properties.id,
-        name: p.properties.title,
-        address: `${p.properties.full_address}, ${p.properties.city_area}, ${p.properties.local_government}, ${p.properties.state}`,
-        state: p.properties.state,
-        local_govt: p.properties.local_government,
-        type: p.properties.type,
-        images: p.properties.images.map((image: any) => image.path),
-        status: p.properties.status,
-        tenant_count: p.properties.tenant_count,
-        total_units: p.properties.units.length,
-        currency: p.properties.currency,
-        last_updated: moment(p.properties.updated_at).format("DD/MM/YYYY"),
-        total_returns: totalReturns,
+        id: properties.id.toString(),
+        property_name: properties.title,
+        images,
+        default_image: defaultImage,
+        address: `${properties.full_address}, ${properties.city_area}, ${properties.local_government}, ${properties.state}`,
+        total_units: units.length,
         total_income: (totalReturns * feePercentage) / 100,
+        total_returns: totalReturns,
+        property_type: properties.property_type,
+        total_unit_pictures: 2,
+        hasVideo: true,
+        currency: "naira", // Hardcoded as per original component usage
         mobile_tenants: 0,
         web_tenants: 0,
-        accountOfficer: "",
         owing_units: 0,
         available_units: 0,
-        isClickable: true,
         viewOnly: false,
-        branch: p.properties.branch.branch_name,
+        isClickable: false,
+        branch: properties.branch.branch_name,
+        last_updated: moment(properties.updated_at).format("DD/MM/YYYY"),
+        accountOfficer: "",
+      };
+    }),
+    statement: data.statement.map((s) => {
+      const amount = parseFloat(s.amount_paid);
+      return {
+        id: s.id,
+        picture: s.payer_picture,
+        name: s.payer_name,
+        payment_id: s.payment_id,
+        details: s.details,
+        credit: amount > 0 ? `₦${amount.toLocaleString()}` : null,
+        debit: amount < 0 ? `₦${(-amount).toLocaleString()}` : null,
+        date: s.date ? moment(s.date).format("DD/MM/YYYY") : "--- ---",
       };
     }),
   };
 };
 
+// export const transformIndividualLandlordAPIResponse = ({
+//   data,
+// }: IndividualLandlordAPIResponse): LandlordPageData => {
+//   // console.log('data', data)
+//   const lastUpdated = data.note.last_updated_at
+//     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
+//     : "";
+//   return {
+//     id: data.id,
+//     picture: data.picture || "",
+//     // first_name: data.first_name,
+//     // last_name: data.last_name,
+//     name: data.name,
+//     email: data.email,
+//     phone_number: data.phone,
+//     gender: data.gender,
+//     notes: {
+//       last_updated: lastUpdated,
+//       write_up: data.note.note,
+//     },
+//     owner_type: data.owner_type,
+//     user_id: data.user_id,
+//     badge_color: data.tier_id ? tierColorMap[data.tier_id] : undefined,
+//     user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
+//     contact_address: {
+//       address: data.address,
+//       city: data.city,
+//       state: data.state,
+//       local_govt: data.local_government,
+//     },
+//     next_of_kin: data.next_of_kin,
+//     bank_details: data.bank_details,
+//     others: {
+//       employment: data.Others.occupation,
+//       employment_type: data.Others.job_type,
+//       family_type: data.Others.family_type,
+//     },
+//     documents: data.documents.flatMap((doc) => {
+//       return doc.files.map((file, index) => {
+//         if (typeof file === "string") {
+//           return {
+//             id: uuidv4(),
+//             name: `${doc.type} ${index + 1}`,
+//             link: file,
+//             document_type: doc.type,
+//           };
+//         } else {
+//           return {
+//             id: uuidv4(),
+//             name: `${doc.type} ${index + 1}`,
+//             date: moment(file.updated_at).format("DD/MM/YYYY"),
+//             link: file.url,
+//             document_type: doc.type,
+//           };
+//         }
+//       });
+//     }),
+//     properties_managed: data.properties.map((p) => {
+//       const totalReturns = p.properties.units.reduce((sum: any, unit: any) => {
+//         return sum + parseFloat(unit.fee_amount);
+//       }, 0);
+//       const feePercentage =
+//         p.properties.property_type === "rental"
+//           ? p.properties.agency_fee
+//           : p.properties.management_fee;
+
+//       return {
+//         id: p.properties.id,
+//         name: p.properties.title,
+//         property_type: p.property_type,
+//         address: `${p.properties.full_address}, ${p.properties.city_area}, ${p.properties.local_government}, ${p.properties.state}`,
+//         state: p.properties.state,
+//         local_govt: p.properties.local_government,
+//         type: p.properties.type,
+//         images: p.properties.images.map((image: any) => image.path),
+//         status: p.properties.status,
+//         tenant_count: p.properties.tenant_count,
+//         total_units: p.properties.units.length,
+//         currency: p.properties.currency,
+//         last_updated: moment(p.properties.updated_at).format("DD/MM/YYYY"),
+//         total_returns: totalReturns,
+//         total_income: (totalReturns * feePercentage) / 100,
+//         mobile_tenants: 0,
+//         web_tenants: 0,
+//         accountOfficer: "",
+//         owing_units: 0,
+//         available_units: 0,
+//         isClickable: true,
+//         viewOnly: false,
+//         branch: p.properties.branch.branch_name,
+//       };
+//     }),
+//     previous_properties: data.previous_properties.map((p) => {
+//       const totalReturns = p.properties.units.reduce((sum: any, unit: any) => {
+//         return sum + parseFloat(unit.fee_amount);
+//       }, 0);
+//       const feePercentage =
+//         p.properties.property_type === "rental"
+//           ? p.properties.agency_fee
+//           : p.properties.management_fee;
+
+//       return {
+//         id: p.properties.id,
+//         name: p.properties.title,
+//         property_type: p.property_type,
+//         address: `${p.properties.full_address}, ${p.properties.city_area}, ${p.properties.local_government}, ${p.properties.state}`,
+//         state: p.properties.state,
+//         local_govt: p.properties.local_government,
+//         type: p.properties.type,
+//         images: p.properties.images.map((image: any) => image.path),
+//         status: p.properties.status,
+//         tenant_count: p.properties.tenant_count,
+//         total_units: p.properties.units.length,
+//         currency: p.properties.currency,
+//         last_updated: moment(p.properties.updated_at).format("DD/MM/YYYY"),
+//         total_returns: totalReturns,
+//         total_income: (totalReturns * feePercentage) / 100,
+//         mobile_tenants: 0,
+//         web_tenants: 0,
+//         accountOfficer: "",
+//         owing_units: 0,
+//         available_units: 0,
+//         isClickable: true,
+//         viewOnly: false,
+//         branch: p.properties.branch.branch_name,
+//       };
+//     }),
+//   };
+// };
+
 // 1/landlord-update/email/1
+
+
 export const updateLandlordWithEmailOrID = async (data: any, id: number) => {
   try {
     const res = await api.post(`landlord-update/email/${id}`, data);

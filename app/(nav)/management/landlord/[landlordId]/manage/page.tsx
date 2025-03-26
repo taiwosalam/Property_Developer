@@ -52,7 +52,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   if (!landlordData) return null;
   const groupedDocuments = groupDocumentsByType(landlordData?.documents);
 
-  const transformedTableData = statementTableData.map((item) => ({
+  const transformedTableData = landlordData?.statement?.map((item) => ({
     ...item,
     credit: (
       <p className={item.credit ? "text-status-success-3" : ""}>
@@ -66,8 +66,6 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     ),
   }));
 
-  // console.log("landlord data", landlordData);
-  // console.log("landlordData?.user_tag", landlordData?.user_tag);
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -260,7 +258,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     employment_title: landlordData.others.employment_type,
                   }),
                 family_type: landlordData.others.family_type,
-                xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
+                // xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
               }}
             />
             <LandlordTenantInfo
@@ -289,63 +287,22 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       <LandlordTenantInfoSection title="Property Managed">
         <AutoResizingGrid minWidth={315}>
           {landlordData?.properties_managed?.map((property) => (
-            <PropertyCard
-              key={property.id}
-              images={property.images}
-              id={property.id.toString()}
-              property_name={property.name}
-              address={property.address}
-              total_units={property.total_units}
-              total_income={property.total_income}
-              total_returns={property.total_returns}
-              property_type="facility"
-              total_unit_pictures={2}
-              currency="naira"
-              mobile_tenants={property.mobile_tenants}
-              web_tenants={property.web_tenants}
-              owing_units={property.owing_units}
-              available_units={property.available_units}
-              viewOnly={property.viewOnly}
-              isClickable={property.isClickable}
-              hasVideo
-              branch={property.branch}
-            />
+            <PropertyCard key={property.id} {...property} />
           ))}
         </AutoResizingGrid>
       </LandlordTenantInfoSection>
-      {/* INTEGRATE LATER IF BACKEND CAN FIX */}
-      {/* <LandlordTenantInfoSection title="statement">
+      <LandlordTenantInfoSection title="statement">
         <CustomTable
           fields={statementTableFields}
-          data={transformedTableData}
+          data={transformedTableData ?? []}
           tableBodyCellSx={{ fontSize: "1rem" }}
           tableHeadCellSx={{ fontSize: "1rem" }}
         />
-      </LandlordTenantInfoSection> */}
+      </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous property">
         <AutoResizingGrid minWidth={315}>
           {landlordData?.previous_properties?.map((property) => (
-            <PropertyCard
-              key={property.id}
-              images={property.images}
-              id={property.id.toString()}
-              property_name={property.name}
-              address={property.address}
-              total_units={property.total_units}
-              total_income={property.total_income}
-              total_returns={property.total_returns}
-              property_type="facility"
-              total_unit_pictures={2}
-              currency="naira"
-              mobile_tenants={property.mobile_tenants}
-              web_tenants={property.web_tenants}
-              owing_units={property.owing_units}
-              available_units={property.available_units}
-              viewOnly={property.viewOnly}
-              isClickable={false}
-              hasVideo
-              branch={property.branch}
-            />
+            <PropertyCard key={property.id} {...property} />
           ))}
         </AutoResizingGrid>
       </LandlordTenantInfoSection>

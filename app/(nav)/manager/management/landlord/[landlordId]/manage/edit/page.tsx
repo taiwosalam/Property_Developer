@@ -53,7 +53,7 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
   if (!landlordData) return null;
 
   return (
-    <LandlordEditContext.Provider value={{ data: landlordData }}>
+    // <LandlordEditContext.Provider value={{ data: landlordData }}>
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
         <BackButton>Edit Landlord</BackButton>
         <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
@@ -105,7 +105,7 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
           </Button>
         </FixedFooter>
       </div>
-    </LandlordEditContext.Provider>
+    // </LandlordEditContext.Provider>
   );
 };
 
