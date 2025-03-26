@@ -337,9 +337,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         </AutoResizingGrid>
       </LandlordTenantInfoSection>
       {landlordData?.user_tag === "mobile" && (
-        <LandlordEditContext.Provider value={{ data: landlordData }}>
+        // <LandlordEditContext.Provider value={{ data: landlordData }}>
           <LandlordEditAttachmentInfoSection />
-        </LandlordEditContext.Provider>
+        // </LandlordEditContext.Provider>
       )}
       <LandlordTenantInfoSection title="shared documents">
         {Object.entries(groupedDocuments).map(([documentType, documents]) => {

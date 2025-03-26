@@ -36,6 +36,8 @@ import UpdateProfileWithIdModal from "@/components/Management/update-with-id-mod
 import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
 import { TenantData } from "../../types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
+import dayjs from "dayjs";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -181,33 +183,23 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         {tenant?.user_tag === "web" && <NotesInfoBox notes={tenant.notes} />}
       </div>
       <LandlordTenantInfoSection title="current rent">
-        {/* <UnitItem /> */}
-        <div></div>
+        {tenant?.current_rent?.length === 0 ? (
+          <p className="text-center text-gray-500 text-lg py-4">
+            Tenant does not have any rent yet!
+          </p>
+        ) : (
+          tenant?.current_rent?.map((rent, index) => (
+            <UnitItem key={index} {...rent} />
+          ))
+        )}
       </LandlordTenantInfoSection>
-      <LandlordTenantInfoSection title="Property">
-        {/* <UnitItem /> */}
-        <div></div>
-      </LandlordTenantInfoSection>
-      {/* INTEGRATE LATER IF BACKEND FIX */}
-      {/* <LandlordTenantInfoSection title="statement">
+      <LandlordTenantInfoSection title="statement">
         <CustomTable
           fields={statementTableFields}
-          data={statementTableData}
+          data={tenant.statement ?? []}
           tableBodyCellSx={{ fontSize: "1rem" }}
           tableHeadCellSx={{ fontSize: "1rem" }}
         />
-      </LandlordTenantInfoSection> */}
-      <LandlordTenantInfoSection title="previous rent">
-        <div className="opacity-40">
-          {/* <UnitItem /> */}
-          <div></div>
-        </div>
-      </LandlordTenantInfoSection>
-      <LandlordTenantInfoSection title="previous property">
-        <div className="opacity-40">
-          {/* <UnitItem /> */}
-          <div></div>
-        </div>
       </LandlordTenantInfoSection>
       {tenant?.user_tag === "mobile" && (
         <TenantEditContext.Provider value={{ data: tenant }}>
@@ -216,7 +208,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
       )}
       <LandlordTenantInfoSection title="shared documents">
         {Object.entries(groupedDocuments).map(([documentType, documents]) => {
-          if (documentType === "others") return null; // Skip "others" for now
+          if (documentType === "others") return null; 
           return (
             <LandlordTenantInfoSection
               minimized
@@ -244,6 +236,20 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             </div>
           </LandlordTenantInfoSection>
         )}
+      </LandlordTenantInfoSection>
+
+      <LandlordTenantInfoSection title="previous rent">
+        <div className="opacity-40">
+          {tenant?.previous_rent?.length === 0 ? (
+            <p className="text-center text-gray-500 text-lg py-4">
+              Empty Previous Rent
+            </p>
+          ) : (
+            tenant?.previous_rent?.map((rent, index) => (
+              <UnitItem key={index} {...rent} />
+            ))
+          )}
+        </div>
       </LandlordTenantInfoSection>
     </div>
   );

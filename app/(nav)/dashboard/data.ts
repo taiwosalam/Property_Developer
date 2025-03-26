@@ -138,7 +138,7 @@ export const initialDashboardStats = [
     icon: BuildingIcon,
     value: 0,
     subValue: 0,
-    link: "/management/staff-branch/",
+    link: "/management/properties/",
   },
   {
     title: "Landlords",

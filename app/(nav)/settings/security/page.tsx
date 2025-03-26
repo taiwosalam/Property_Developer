@@ -25,8 +25,18 @@ import {
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { FormState, initialData, InitialDataTypes, transformProfileData, updateDirectorProfile, updateUserProfile } from "./data";
+import {
+  cleanPhoneNumber,
+  objectToFormData,
+} from "@/utils/checkFormDataForImageOrAvatar";
+import {
+  FormState,
+  initialData,
+  InitialDataTypes,
+  transformProfileData,
+  updateDirectorProfile,
+  updateUserProfile,
+} from "./data";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import SettingsSignature from "@/components/Settings/settings-signature";
@@ -43,6 +53,11 @@ const Security = () => {
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
   const [pageData, setPageData] = useState<InitialDataTypes>(initialData);
 
+  const yearsOptions = Array.from({ length: 10 }, (_, i) => {
+    const yearValue = i + 1;
+    return { label: `${yearValue} years +`, value: `${yearValue}+` };
+  });
+
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
   ]);
@@ -56,20 +71,16 @@ const Security = () => {
     title: title || "",
   });
 
-  const {
-    data,
-    loading,
-    error
-  } = useFetch("/user/full-profile");
+  const { data, loading, error } = useFetch("/user/full-profile");
   // console.log("data", pageData)
   useEffect(() => {
-    if (data){
-      setPageData((x)=> ({
+    if (data) {
+      setPageData((x) => ({
         ...x,
-        ...transformProfileData(data)
-      }))
+        ...transformProfileData(data),
+      }));
     }
-  }, [data])
+  }, [data]);
 
   const setUpdateState = (fieldName: keyof FormState, value: any) => {
     setFormState((prev) => ({ ...prev, [fieldName]: value }));
@@ -93,7 +104,7 @@ const Security = () => {
     try {
       setReqLoading(true);
       const res = await updateDirectorProfile(objectToFormData(payload));
-      if (res && 'status' in res && res.status === 200) {
+      if (res && "status" in res && res.status === 200) {
         // console.log(res);
         toast.success("Profile updated successfully");
         setNext(true);
@@ -109,7 +120,11 @@ const Security = () => {
   return (
     <>
       <SettingsSection title="directors profile">
-        <AuthForm onFormSubmit={handleUpdateProfile} skipValidation returnType="form-data">
+        <AuthForm
+          onFormSubmit={handleUpdateProfile}
+          skipValidation
+          returnType="form-data"
+        >
           <div className="custom-flex-col gap-8">
             <div className="custom-flex-col gap-4">
               <SettingsSectionTitle
@@ -123,7 +138,7 @@ const Security = () => {
                   inputFileRef={inputFileRef}
                   onClick={changeImage}
                 />
-               <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <Select
                     id="personal_title"
                     name="title"
@@ -132,6 +147,16 @@ const Security = () => {
                     inputContainerClassName="bg-neutral-2"
                     defaultValue={pageData?.personal_title}
                   />
+                  
+                  <Select
+                    id="professional_title"
+                    name="professional_title"
+                    options={titles}
+                    label="professional title"
+                    inputContainerClassName="bg-neutral-2"
+                    // defaultValue={pageData?.personal_title}
+                  />
+
                   <Input
                     id="fullname"
                     name="name"
@@ -139,14 +164,7 @@ const Security = () => {
                     placeholder="Write Here"
                     defaultValue={pageData?.fullname}
                   />
-                  {/* <Select
-                    id="director_experience"
-                    label="years in business"
-                    defaultValue={pageData?.director_experience}
-                    placeholder="Select Option"
-                    options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
-                    hiddenInputClassName="setup-f"
-                  /> */}
+
                   <Input
                     id="director_email"
                     label="email"
@@ -155,6 +173,16 @@ const Security = () => {
                     inputClassName="rounded-[8px] setup-f bg-white"
                     defaultValue={pageData?.email}
                   />
+
+                   <Select
+                    id="experience"
+                    label="years of experience"
+                    placeholder="Write here"
+                    options={yearsOptions}
+                    hiddenInputClassName="setup-f"
+                    // defaultValue={year}
+                  />
+
                   <PhoneNumberInput
                     id="phone"
                     label="phone number"
@@ -180,7 +208,7 @@ const Security = () => {
             />
           </div>
         </AuthForm>
-      </SettingsSection >
+      </SettingsSection>
       <SettingsSignature />
       <SettingsWalletSection />
       <SettingsPasswordSection />

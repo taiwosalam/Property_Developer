@@ -1,5 +1,6 @@
 import type { AttachedDocumentCard } from "@/components/Management/landlord-tenant-info-components";
 import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+import { UnitItemProps } from "@/components/Management/Properties/unit-item";
 
 interface ContactAddress {
   address: string;
@@ -43,6 +44,57 @@ interface AttachedDocument extends AttachedDocumentCard {
   id: string;
 }
 
+export interface CurrentRent {
+  id: number;
+  unit_id: number;
+  unit_name: string;
+  unit_type: string;
+  unit_sub_type: string;
+  unit_preference: string;
+  rent_amount: string;
+  service_charge: string | null;
+  caution_deposit: string | null;
+  due_date: string;
+  tenant_name: string;
+  property_type: "rental" | "facility";
+  unit_status: "vacant" | "occupied" | "active" | "expired" | "relocate";
+  rent_type: string;
+  property_name: string;
+  property_description: string;
+  property_category: string;
+  unit_image: { path: string }[]; 
+}
+
+export interface PreviousRent {
+  id: number;
+  unit_id: number;
+  unit_name: string;
+  unit_type: string;
+  unit_sub_type: string;
+  unit_preference: string;
+  rent_amount: string;
+  service_charge?: string | null;
+  caution_deposit?: string | null;
+  due_date: string;
+  tenant_name: string;
+  property_type: "rental" | "facility";
+  unit_status: "vacant" | "occupied" | "active" | "expired" | "relocate";
+  rent_type: string;
+  property_name: string;
+  property_description: string;
+  property_category: string;
+  unit_image: { path: string }[]; 
+}
+
+export interface Statement {
+  id: number;
+  payment_date?: string | null; 
+  amount_paid: string;
+  details: string;
+  start_date: string;
+  end_date: string;
+}
+
 export interface TenantData {
   id: string;
   picture: string;
@@ -70,4 +122,7 @@ export interface TenantData {
     write_up: string;
   };
   documents: AttachedDocument[];
+  current_rent?: UnitItemProps[];
+  previous_rent?: UnitItemProps[];
+  statement?: Statement[];
 }
