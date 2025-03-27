@@ -113,7 +113,7 @@ export const unitSubtypes = {
     "tenement room",
     "shared house",
     "studio house",
-    "none",
+    // "none",
   ],
   "block of flat": [
     "twins",
@@ -124,7 +124,7 @@ export const unitSubtypes = {
     "semi-detached",
     "multiple",
     "detached",
-    "none",
+    // "none",
   ],
   house: [
     "detached bungalow",
@@ -137,12 +137,12 @@ export const unitSubtypes = {
     "mansion structure",
     "high rise",
     "tube",
-    "none",
+    // "none",
   ],
   land: {
     residential: ["sqm", "half plot", "plot", "acre", "hectare"],
     commercial: [
-      "joint venture",
+      "joint venture land",
       "agriculture land",
       "farm land",
       "industrial land",
@@ -151,7 +151,7 @@ export const unitSubtypes = {
       "mass housing land",
       "estate land",
       "mixed use land",
-      "none",
+      // "none",
     ],
   },
   others: [

@@ -240,20 +240,6 @@ const MyPropertiesRequestPage = () => {
         searchInputPlaceholder="Search My Properties Request"
         handleFilterApply={handleFilterApply}
         isDateTrue
-        filterOptions={[
-          {
-            label: "All Property Request",
-            value: "all",
-          },
-          {
-            label: "Trending Property Request",
-            value: "trending",
-          },
-          {
-            label: "New Property Request",
-            value: "new",
-          },
-        ]}
         hasGridListToggle={false}
         filterOptionsMenu={stateOptions}
         handleSearch={handleSearch}
@@ -268,12 +254,14 @@ const MyPropertiesRequestPage = () => {
           <section>
             <EmptyList
               buttonText="+ Create New Property Request"
-              buttonLink="/management/agent-community/my-properties-request/create"
+              buttonLink="/management/agent-request/my-properties-request/create"
               title="You do not have any property requests"
               body={
                 <p>
-                  Create a property request by clicking on the &quot;Create New
-                  Property Request&quot; button.
+                  Click the &rsqot;Create New Property Request&rsqot; button to submit a
+                  request. This will help you connect with other real estate
+                  professionals and receive relevant property options that match
+                  your client&apos;s needs.
                 </p>
               }
             />

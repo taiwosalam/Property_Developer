@@ -14,6 +14,9 @@ import useFetch from "@/hooks/useFetch";
 import { SinglePropertyResponse } from "../../../[id]/data";
 // import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
 import { transformPropertyData } from "../../../create-rental-property/[propertyId]/add-unit/data";
+import { UnitTypeKey } from "@/data";
+import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
+import AddUnitFooter from "@/components/Management/Properties/AddUnitFooter";
 
 const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
@@ -21,11 +24,23 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const customBackPath = `/management/properties/${propertyId}/edit-property`;
   const [dataNotFound, setDataNotFound] = useState(false);
   const [hideEmptyForm, setHideEmptyForm] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<(string | File)[]>([]);
+  const [unitType, setUnitType] = useState<"" | UnitTypeKey>("");
+  const [formResetKey, setFormResetKey] = useState(0);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [saveClick, setSaveClick] = useState(false);
+  const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
+
+  const resetForm = () => {
+    setImages([]);
+    setImageFiles([]);
+    setUnitType("");
+    setFormResetKey((prev) => prev + 1);
+  };
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-  // const resetStore = useAddUnitStore((s) => s.resetStore);
-  // resetStore();
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
 
   const {
@@ -68,33 +83,53 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   }
 
   return (
-    <div className="pb-[100px]">
-      <BackButton customBackPath={customBackPath}>Add Units</BackButton>
-      <PageProgressBar
-        breakpoints={[25, 50, 75]}
-        percentage={37}
-        className="mb-[52px]"
-      />
-      <div className="space-y-6 lg:space-y-8">
-        <PropertyDetails heading="Estate/Facility Details" />
-        <PropertySettings heading="Estate/Facility Settings" />
-        {addedUnits.length > 0 && (
-          <>
-            <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
-              {hideEmptyForm ? "Units Summary" : "Added Units"}
-            </h4>
-            <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
-            {addedUnits.map((unit, index) => (
-              <AddUnitFormCard key={index} index={index} data={unit} />
-            ))}
-          </>
-        )}
+    <UnitFormContext.Provider
+      value={{
+        images,
+        imageFiles,
+        unitType,
+        formResetKey,
+        setImages: (a) => {
+          setImages(a.images);
+          setImageFiles(a.imageFiles);
+        },
+        setUnitType,
+        submitLoading,
+        setSaveClick,
+        resetForm,
+        duplicate,
+        setDuplicate,
+      }}
+    >
+      <div className="pb-[100px]">
+        <BackButton customBackPath={customBackPath}>Add Units</BackButton>
+        <PageProgressBar
+          breakpoints={[25, 50, 75]}
+          percentage={37}
+          className="mb-[52px]"
+        />
+        <div className="space-y-6 lg:space-y-8">
+          <PropertyDetails heading="Estate/Facility Details" />
+          <PropertySettings heading="Estate/Facility Settings" />
+          {addedUnits.length > 0 && (
+            <>
+              <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+                {hideEmptyForm ? "Units Summary" : "Added Units"}
+              </h4>
+              <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
+              {addedUnits.map((unit, index) => (
+                <AddUnitFormCard key={index} index={index} data={unit} />
+              ))}
+            </>
+          )}
 
-        {!hideEmptyForm && (
-          <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
-        )}
+          {!hideEmptyForm && (
+            <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
+          )}
+        </div>
+        {addedUnits.length > 0 && <AddUnitFooter noForm={true} />}
       </div>
-    </div>
+    </UnitFormContext.Provider>
   );
 };
 

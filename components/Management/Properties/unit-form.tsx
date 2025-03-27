@@ -208,6 +208,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
                 isEditing: props.isEditing,
                 setIsEditing: props.setIsEditing,
                 unitData: props.data,
+                index: props.index,
               }
             : {
                 duplicate,

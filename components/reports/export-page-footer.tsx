@@ -9,10 +9,11 @@ interface ExportPageFooterProps {
   restOfContentRef?: React.RefObject<HTMLDivElement>;
 }
 
-const ExportPageFooter: React.FC<ExportPageFooterProps> = ({ printRef, firstPageRef, restOfContentRef  }) => {
-  // const { handlePrint, handleDownload } = useExport(printRef);
-  const { handlePrint, handleDownload } = useExport(firstPageRef, restOfContentRef);
+const ExportPageFooter: React.FC<ExportPageFooterProps> = ({ printRef, firstPageRef, restOfContentRef }) => {
+  const { handlePrint, handleDownload } = useExport(firstPageRef, restOfContentRef, printRef);
+
   const router = useRouter();
+
   return (
     <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
       <div className="flex">

@@ -181,7 +181,7 @@ export const transformVehicleRecordApiResponse = (
         vehicle_brand: record.vehicle_record.vehicle_brand,
         user_id: record.vehicle_record.user_id,
         property_id: record.vehicle_record.property_id,
-        plate_number: record.vehicle_record.plate_number,
+        plate_number: (record.vehicle_record.plate_number).toUpperCase(),
         created_at: record.vehicle_record.created_at,
         updated_at: record.vehicle_record.updated_at,
         pictureSrc: record.vehicle_record.avatar || "",
@@ -207,7 +207,7 @@ export const transformVehicleRecordApiResponse = (
         vehicle_state: record.vehicle_record.vehicle_state,
         vehicle_type: record.vehicle_record.vehicle_type,
         manufacture_year: record.vehicle_record.manufacture_year,
-        last_update: dayjs(record.vehicle_record.updated_at).format("MMM DD YYYY"),
+        last_update: dayjs(record.vehicle_record.updated_at).format("MMM DD YYYY hh:mm A"),
         latest_check_in: {
           ...record.vehicle_record.check_ins[0],
         },

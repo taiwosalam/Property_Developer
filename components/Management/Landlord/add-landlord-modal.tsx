@@ -13,21 +13,22 @@ import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants"
 import InvitationForm from "../invitation-form";
 import {
   addLandlord,
+  addLandlordWithEmail,
   inviteLandlordEmail,
   multipleCreateLandlord,
   multipleInviteLandlord,
 } from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
+import { toast } from "sonner";
 
 type AddLandlordModalOptions =
-  | 'options'
-  | 'add-landlord'
-  | 'add-multiple-owners'
-  | 'invite-owner'
-  | 'invite-multiple-owners'
-  | 'add-landlord-with-email';
-
+  | "options"
+  | "add-landlord"
+  | "add-multiple-owners"
+  | "invite-owner"
+  | "invite-multiple-owners"
+  | "add-landlord-with-email";
 
 const AddLandlordModal = () => {
   const router = useRouter();
@@ -68,6 +69,13 @@ const AddLandlordModal = () => {
 
   const handleInviteLandlordEmail = async (data: any) => {
     const status = await inviteLandlordEmail(data);
+    if (status) {
+      closeModalAndRefresh();
+    }
+  };
+
+  const handleAddLandlordWithEmmailOrID = async (data: any) => {
+    const status = await addLandlordWithEmail(data);
     if (status) {
       closeModalAndRefresh();
     }
@@ -145,7 +153,12 @@ const AddLandlordModal = () => {
     },
     "add-landlord-with-email": {
       heading: "Add Landlord/Landlady with Email",
-      content: <InvitationForm method="id" submitAction={async () => {}} />,
+      content: (
+        <InvitationForm
+          method="id"
+          submitAction={handleAddLandlordWithEmmailOrID}
+        />
+      ),
     },
   };
 

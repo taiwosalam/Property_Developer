@@ -42,6 +42,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
         setDataNotFound(true);
         return;
       }
+      // console.log(" transformedData.propertyDetails",  transformedData.propertyDetails)
       if (transformedData.propertyType === "facility") {
         router.push(
           `/management/properties/create-gated-estate-property/${propertyId}/add-unit`

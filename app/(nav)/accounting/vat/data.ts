@@ -1,4 +1,5 @@
 import type { Field } from "@/components/Table/types";
+
 export const accountingVatOptionsWithDropdown = [
   {
     label: "Account Officer",
@@ -6,14 +7,6 @@ export const accountingVatOptionsWithDropdown = [
       { label: "Account Officer 1", value: "Account Officer1" },
       { label: "Account Officer 2", value: "Account Officer2" },
       { label: "Account Officer 3", value: "Account Officer3" },
-    ],
-  },
-  {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
     ],
   },
 ];
@@ -61,3 +54,91 @@ const generateTableData = (numItems: number) => {
 };
 
 export const vatTableData = generateTableData(15);
+
+export interface Vat {
+  id: number;
+  vat_id: string;
+  name: string;
+  picture: string;
+  payment_reason: string;
+  total_vat: string;
+  date: string;
+}
+
+export interface VATPageState {
+  total_vat_created: number | string;
+  total_paid_vat: number | string;
+  total_pending_vat: number;
+  percentage_change_total: number;
+  percentage_change_paid: number;
+  percentage_change_pending: number;
+  vats: Vat[];
+}
+
+export const initialVATPageState: VATPageState = {
+  total_vat_created: 0,
+  total_paid_vat: 0,
+  total_pending_vat: 0,
+  percentage_change_total: 0,
+  percentage_change_paid: 0,
+  percentage_change_pending: 0,
+  vats: [],
+};
+
+export interface VATFilterParams {
+  from_date?: string;
+  to_date?: string;
+  property_ids?: string[];
+  account_officer?: string[];
+  search?: string;
+}
+
+export interface VatRaw {
+  id: number;
+  vat_id: string;
+  client_name: string;
+  client_picture: string;
+  description: string;
+  amount: string;
+  date: string;
+}
+
+export interface VATAPIResponse {
+  status: string;
+  message: string;
+  data: {
+    statistics: {
+      total_vat_created: string;
+      total_paid_vat: string;
+      total_pending_vat: number;
+      percentage_change_total: number;
+      percentage_change_paid: number;
+      percentage_change_pending: number;
+    };
+    vats: VatRaw[];
+  };
+}
+
+export const transformVATAPIResponse = (
+  response: VATAPIResponse
+): VATPageState => {
+  const { statistics, vats } = response.data;
+
+  return {
+    total_vat_created: parseFloat(statistics.total_vat_created),
+    total_paid_vat: parseFloat(statistics.total_paid_vat),
+    total_pending_vat: statistics.total_pending_vat,
+    percentage_change_total: statistics.percentage_change_total,
+    percentage_change_paid: statistics.percentage_change_paid,
+    percentage_change_pending: statistics.percentage_change_pending,
+    vats: vats.map((vat) => ({
+      id: vat.id,
+      vat_id: vat.vat_id,
+      name: vat.client_name,
+      picture: vat.client_picture,
+      payment_reason: vat.description,
+      total_vat: `₦${parseFloat(vat.amount)}`,
+      date: vat.date,
+    })),
+  };
+};

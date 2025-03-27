@@ -308,7 +308,7 @@ export const TenantEditGuarantorInfoSection = () => {
     name: "",
     email: "",
     address: "",
-    phone_number: "",
+    phone: "",
     relationship: "",
   };
 
@@ -316,7 +316,7 @@ export const TenantEditGuarantorInfoSection = () => {
     name: "",
     email: "",
     address: "",
-    phone_number: "",
+    phone: "",
     relationship: "",
   };
 
@@ -345,7 +345,7 @@ export const TenantEditGuarantorInfoSection = () => {
           id={`guarantor${index}_phone_number`}
           label="phone number"
           placeholder="Placeholder"
-          defaultValue={guarantor?.phone_number || ""}
+          defaultValue={guarantor?.phone || ""}
           inputContainerClassName="bg-neutral-2"
         />
         <Select
@@ -632,15 +632,16 @@ export const TenantEditAttachmentSection = () => {
     if (removeSuccess && uploadSuccess) {
       toast.success("Documents updated successfully");
       window.dispatchEvent(new Event("tenant-updated"));
+      window.dispatchEvent(new Event("refetchtenant"));
     } else {
       toast.error("An error occurred while updating documents");
     }
     setReqLoading(false);
   };
 
-  useEffect(() => {
-    setDocuments(tenant?.documents || []);
-  }, [tenant?.documents]);
+  // useEffect(() => {
+  //   setDocuments(tenant?.documents || []);
+  // }, [tenant?.documents]);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">

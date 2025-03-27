@@ -26,11 +26,21 @@ import {
   singleUnitApiResponse,
   transformSingleUnitData,
   transformUnitData,
-  UnitDetails
+  UnitDetails,
 } from "../../data";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
-import { getEstateData, getEstateSettingsData, getPropertySettingsData, getRentalData, initialTenants, startRent, Tenant, TenantResponse, transformUnitsTenants } from "./data";
+import {
+  getEstateData,
+  getEstateSettingsData,
+  getPropertySettingsData,
+  getRentalData,
+  initialTenants,
+  startRent,
+  Tenant,
+  TenantResponse,
+  transformUnitsTenants,
+} from "./data";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
@@ -43,12 +53,13 @@ const StartRent = () => {
 
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const [tenants_data, setTenants_data] = useState<Tenant[]>(initialTenants);
-  const [selectedTenantId, setSelectedTenantId] = useState("")
-  const [startDate, setStartDate] = useState("")
-  const [selectedCheckboxOptions, setSelectedCheckboxOptions] = useState<CheckBoxOptions>(defaultChecks)
-  const [reqLoading, setReqLoading] = useState(false)
+  const [selectedTenantId, setSelectedTenantId] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
+    useState<CheckBoxOptions>(defaultChecks);
+  const [reqLoading, setReqLoading] = useState(false);
 
-  const endpoint = `/unit/${id}/view`
+  const endpoint = `/unit/${id}/view`;
   const {
     data: apiData,
     loading,
@@ -71,17 +82,17 @@ const StartRent = () => {
     if (apiData) {
       setUnit_data((x: any) => ({
         ...x,
-        ...transformUnitData(apiData)
-      }))
+        ...transformUnitData(apiData),
+      }));
     }
-  }, [apiData])
+  }, [apiData]);
 
   useEffect(() => {
     if (allTenantData) {
       const transformedTenants = transformUnitsTenants(allTenantData);
       setTenants_data(transformedTenants);
     }
-  }, [allTenantData])
+  }, [allTenantData]);
 
   // console.log("unit data", unit_data);
   // console.log("api data", apiData);
@@ -107,14 +118,14 @@ const StartRent = () => {
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
       has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
-      // sms_alert: selectedCheckboxOptions.sms_alert, //TODO - uncomment after backend added it 
+      // sms_alert: selectedCheckboxOptions.sms_alert, //TODO - uncomment after backend added it
     };
     try {
       setReqLoading(true);
       const res = await startRent(payload);
       if (res) {
         toast.success("Rent Started Successfully");
-        router.back()
+        router.back();
       }
     } catch (err) {
       toast.error("Failed to start Rent");
@@ -122,8 +133,6 @@ const StartRent = () => {
       setReqLoading(false);
     }
   };
-
-
 
   if (loading)
     return (
@@ -169,12 +178,15 @@ const StartRent = () => {
           setSelectedTenantId={setSelectedTenantId} //Try better way aside drilling prop later
           setSelectedCheckboxOptions={setSelectedCheckboxOptions} //Try better way aside drilling prop later
           feeDetails={[
-            { name: isRental ? "Annual Rent" : "Annual Fee", amount: (unit_data.newTenantPrice as any) },
-            { name: "Service Charge", amount: (unit_data.service_charge as any) },
-            { name: "Caution Fee", amount: (unit_data.caution_fee as any) },
-            { name: "Security Fee", amount: (unit_data.security_fee as any) },
-            { name: "Agency Fee", amount: (unit_data.unitAgentFee as any) },
-            { name: "Other Charges", amount: (unit_data.other_charge as any) },
+            {
+              name: isRental ? "Annual Rent" : "Annual Fee",
+              amount: unit_data.newTenantPrice as any,
+            },
+            { name: "Service Charge", amount: unit_data.service_charge as any },
+            { name: "Caution Fee", amount: unit_data.caution_fee as any },
+            { name: "Security Fee", amount: unit_data.security_fee as any },
+            { name: "Agency Fee", amount: unit_data.unitAgentFee as any },
+            { name: "Other Charges", amount: unit_data.other_charge as any },
           ]}
           total_package={Number(unit_data.total_package)}
           loading={loading}

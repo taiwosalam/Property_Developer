@@ -110,7 +110,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
               options={titles}
             />
             <Select
-              id="estate_title"
+              id="professional_title"
               label="real estate title"
               inputContainerClassName="bg-neutral-2"
               options={industryOptions}

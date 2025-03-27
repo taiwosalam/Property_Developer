@@ -86,11 +86,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     resetKey,
   } = state;
 
-  // console.log("details", propertyDetails)
+  const isFacility = formType === "facility";
+  console.log("isFacility", isFacility);
 
   // const selectedBranchId = selectedBranch.value || propertyDetails?.branch_id;
   const selectedBranchId = selectedBranch.value;
-
 
   const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
@@ -308,7 +308,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           <input name="property_type" type="hidden" value={formType} />
           <div className="mb-5 lg:mb-8">
             <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
-              Set {formType === "rental" ? "property" : "Estate/Facility"}{" "}
+              {/* Set {formType === "rental" ? "property" : "Estate/Facility"}{" "} */}
+              Set{" "}
+              {formType === "rental"
+                ? "property"
+                : selectedCategory?.toLocaleLowerCase() === "estate"
+                ? "Estate"
+                : selectedCategory?.toLocaleLowerCase() === "facility"
+                ? "Facility"
+                : "Estate/Facility"}{" "}
               pictures for easy recognition (maximum of {maxNumberOfImages}{" "}
               images). Please drag your preferred image and place it in the
               first position to make it the primary display.
@@ -455,30 +463,32 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               }
             />
 
-            <SelectWithImage
-              options={landlordOptions}
-              id="land_lord_id"
-              label="Landlord"
-              inputContainerClassName="bg-white"
-              resetKey={resetKey}
-              defaultValue={
-                editMode && propertyDetails?.land_lord_id
-                  ? landlordOptions.find(
-                      (landlord) =>
-                        landlord.value === propertyDetails.land_lord_id
-                    )
-                  : undefined
-              }
-              hiddenInputClassName="property-form-input"
-              placeholder={
-                landlordsLoading
-                  ? "Loading landlords..."
-                  : landlordsError
-                  ? "Error loading landlords"
-                  : "Select landlord"
-              }
-              error={landlordsError}
-            />
+            {!isFacility && (
+              <SelectWithImage
+                options={landlordOptions}
+                id="land_lord_id"
+                label="Landlord"
+                inputContainerClassName="bg-white"
+                resetKey={resetKey}
+                defaultValue={
+                  editMode && propertyDetails?.land_lord_id
+                    ? landlordOptions.find(
+                        (landlord) =>
+                          landlord.value === propertyDetails.land_lord_id
+                      )
+                    : undefined
+                }
+                hiddenInputClassName="property-form-input"
+                placeholder={
+                  landlordsLoading
+                    ? "Loading landlords..."
+                    : landlordsError
+                    ? "Error loading landlords"
+                    : "Select landlord"
+                }
+                error={landlordsError}
+              />
+            )}
 
             {isDirector && (
               <Select
@@ -585,12 +595,16 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               label={
                 formType === "rental"
                   ? "Property Description"
+                  : selectedCategory?.toLocaleLowerCase() === "estate"
+                  ? "Estate Description"
+                  : selectedCategory?.toLocaleLowerCase() === "facility"
+                  ? "Facility Description"
                   : "Estate/Facility Description"
               }
               className="md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent"
               placeholder="Write here"
               resetKey={resetKey}
-              required
+              required={!isFacility}
               hiddenInputClassName="property-form-input"
               inputSpaceClassName="bg-white dark:bg-transparent"
               defaultValue={editMode ? propertyDetails?.description : undefined}

@@ -34,6 +34,7 @@ import {
 } from "./data";
 import { groupDocumentsByType } from "@/utils/group-documents";
 import useFetch from "@/hooks/useFetch";
+import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
 
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
@@ -45,14 +46,13 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     ? transformIndividualLandlordAPIResponse(data)
     : null;
 
-
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
   if (!landlordData) return null;
   const groupedDocuments = groupDocumentsByType(landlordData?.documents);
 
-  const transformedTableData = statementTableData.map((item) => ({
+  const transformedTableData = landlordData?.statement?.map((item) => ({
     ...item,
     credit: (
       <p className={item.credit ? "text-status-success-3" : ""}>
@@ -66,7 +66,6 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     ),
   }));
 
-  console.log("landlord data", landlordData);
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -155,9 +154,19 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 >
                   edit
                 </Button>
-                <Button size="base_medium" className="py-2 px-8">
-                  update with email
-                </Button>
+                <Modal>
+                  <ModalTrigger>
+                    <Button size="base_medium" className="py-2 px-8">
+                      update with Email
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <UpdateProfileWithIdModal
+                      page="landlord"
+                      id={Number(landlordData.id)}
+                    />
+                  </ModalContent>
+                </Modal>
               </>
             )}
           </div>
@@ -249,7 +258,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     employment_title: landlordData.others.employment_type,
                   }),
                 family_type: landlordData.others.family_type,
-                xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
+                // xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
               }}
             />
             <LandlordTenantInfo
@@ -276,66 +285,44 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         )}
       </div>
       <LandlordTenantInfoSection title="Property Managed">
-        <AutoResizingGrid minWidth={315}>
-          {landlordData?.properties_managed?.map((property) => (
-            <PropertyCard
-              key={property.id}
-              images={property.images}
-              id={property.id.toString()}
-              property_name={property.name}
-              address={property.address}
-              total_units={property.total_units}
-              total_income={property.total_income}
-              total_returns={property.total_returns}
-              property_type="facility"
-              total_unit_pictures={2}
-              currency="naira"
-              mobile_tenants={property.mobile_tenants}
-              web_tenants={property.web_tenants}
-              owing_units={property.owing_units}
-              available_units={property.available_units}
-              viewOnly={property.viewOnly}
-              isClickable={property.isClickable}
-              hasVideo
-              branch={property.branch}
-            />
-          ))}
-        </AutoResizingGrid>
+        {landlordData?.properties_managed?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Nothing yet
+          </div>
+        ) : (
+          <AutoResizingGrid minWidth={315}>
+            {landlordData?.properties_managed?.map((property) => (
+              <PropertyCard key={property.id} {...property} />
+            ))}
+          </AutoResizingGrid>
+        )}
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="statement">
-        <CustomTable
-          fields={statementTableFields}
-          data={transformedTableData}
-          tableBodyCellSx={{ fontSize: "1rem" }}
-          tableHeadCellSx={{ fontSize: "1rem" }}
-        />
+        {landlordData?.statement?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Nothing yet
+          </div>
+        ) : (
+          <CustomTable
+            fields={statementTableFields}
+            data={transformedTableData ?? []}
+            tableBodyCellSx={{ fontSize: "1rem" }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+          />
+        )}
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="previous property">
-        <AutoResizingGrid minWidth={315}>
-          {landlordData?.previous_properties?.map((property) => (
-            <PropertyCard
-              key={property.id}
-              images={property.images}
-              id={property.id.toString()}
-              property_name={property.name}
-              address={property.address}
-              total_units={property.total_units}
-              total_income={property.total_income}
-              total_returns={property.total_returns}
-              property_type="facility"
-              total_unit_pictures={2}
-              currency="naira"
-              mobile_tenants={property.mobile_tenants}
-              web_tenants={property.web_tenants}
-              owing_units={property.owing_units}
-              available_units={property.available_units}
-              viewOnly={property.viewOnly}
-              isClickable={false}
-              hasVideo
-              branch={property.branch}
-            />
-          ))}
-        </AutoResizingGrid>
+        {landlordData?.previous_properties?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Nothing yet
+          </div>
+        ) : (
+          <AutoResizingGrid minWidth={315}>
+            {landlordData?.previous_properties?.map((property) => (
+              <PropertyCard key={property.id} {...property} />
+            ))}
+          </AutoResizingGrid>
+        )}
       </LandlordTenantInfoSection>
       {landlordData?.user_tag === "mobile" && (
         <LandlordEditContext.Provider value={{ data: landlordData }}>
@@ -343,6 +330,54 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         </LandlordEditContext.Provider>
       )}
       <LandlordTenantInfoSection title="shared documents">
+        {landlordData?.documents?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Nothing yet
+          </div>
+        ) : (
+          <>
+            {Object.entries(groupedDocuments).map(
+              ([documentType, documents]) => {
+                if (documentType === "others") return null; // Skip "others" for now
+                return (
+                  <LandlordTenantInfoSection
+                    minimized
+                    title={documentType}
+                    key={documentType}
+                  >
+                    <div className="flex flex-wrap gap-4">
+                      {documents?.map((document) => (
+                        <LandlordTenantInfoDocument
+                          key={document.id}
+                          {...document}
+                        />
+                      ))}
+                    </div>
+                  </LandlordTenantInfoSection>
+                );
+              }
+            )}
+            {groupedDocuments?.others && (
+              <LandlordTenantInfoSection
+                minimized
+                title="other documents"
+                key="other document"
+              >
+                <div className="flex flex-wrap gap-4">
+                  {groupedDocuments.others.map((document) => (
+                    <LandlordTenantInfoDocument
+                      key={document.id}
+                      {...document}
+                    />
+                  ))}
+                </div>
+              </LandlordTenantInfoSection>
+            )}
+          </>
+        )}
+      </LandlordTenantInfoSection>
+
+      {/* <LandlordTenantInfoSection title="shared documents">
         {Object.entries(groupedDocuments).map(([documentType, documents]) => {
           if (documentType === "others") return null; // Skip "others" for now
           return (
@@ -372,7 +407,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             </div>
           </LandlordTenantInfoSection>
         )}
-      </LandlordTenantInfoSection>
+      </LandlordTenantInfoSection> */}
     </div>
   );
 };

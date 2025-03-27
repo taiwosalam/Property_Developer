@@ -326,7 +326,11 @@ export const signup = async (
   try {
     const { data } = await axios.post(`${base_url}register`, formData);
     const token = data.access_token;
+    const role = data.data.details.role[0];
+    await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
+    await saveClientRoleToCookie(role);
     useAuthStore.getState().setAuthState('token', token);
+    useAuthStore.getState().setAuthState('role', role);
     useAuthStore.getState().setAuthState('email', formData.email);
     toast.success(data?.message || 'Signup successful!');
     return true;
@@ -351,9 +355,6 @@ export const verifyEmail = async (otp: string): Promise<boolean> => {
     );
     const message = data?.message || 'Email verified successfully!';
     toast.success(message);
-
-    // Ensure the user is redirected to setup after email verification (from gpt)
-    // useAuthStore.getState().setAuthState('status', 'redirect to setup');
     return true;
   } catch (error) {
     handleAxiosError(error, 'Verification failed. Please try again.');

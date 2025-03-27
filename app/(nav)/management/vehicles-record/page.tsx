@@ -158,27 +158,25 @@ const VehilceRecords = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
-          <ManagementStatistcsCard
-            title="Total Vehicle Records"
-            newData={properties_this_month}
-            total={total_properties}
-            colorScheme={1}
-          />
-          <ManagementStatistcsCard
-            title="Rental Vehicle Records"
-            newData={vehicle_records_this_month}
-            total={total_vehicle_records}
-            colorScheme={2}
-          />
-          <ManagementStatistcsCard
-            title="Facility Vehicle Records"
-            newData={vehicle_records_this_month}
-            total={total_vehicle_records}
-            colorScheme={3}
-          />
-        </div>
+      <div className="hidden flex md:flex gap-5 flex-wrap">
+        <ManagementStatistcsCard
+          title="Total Vehicle Records"
+          newData={properties_this_month}
+          total={total_properties}
+          colorScheme={1}
+        />
+        <ManagementStatistcsCard
+          title="Rental Vehicle Records"
+          newData={vehicle_records_this_month}
+          total={total_vehicle_records}
+          colorScheme={2}
+        />
+        <ManagementStatistcsCard
+          title="Facility Vehicle Records"
+          newData={vehicle_records_this_month}
+          total={total_vehicle_records}
+          colorScheme={3}
+        />
       </div>
 
       {/* Page Title with search */}

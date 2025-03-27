@@ -83,6 +83,13 @@ export interface IndividualTenantAPIResponse {
       address: string;
       relationship: string;
     };
+    guarantor?: {
+      name: string;
+      phone: string;
+      email: string;
+      address: string;
+      relationship: string;
+    }[];
     documents: {
       type: string;
       files: (

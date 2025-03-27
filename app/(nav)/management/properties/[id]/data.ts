@@ -48,12 +48,12 @@ export const transformSinglePropertyData = (
     fee_period: data.fee_period,
     account_officer: `${accountOfficer?.title || "__"} ${accountOfficer?.user?.name || "__"}`, // to do
     landlord_name: "", //to do
-    branch_manager: `${manager?.estate_title ?? "--- ---"} ${manager?.user?.name ?? "--- ---"}`,
+    branch_manager: `${manager?.professional_title ?? "--- ---"} ${manager?.user?.name ?? "--- ---"}`,
     mobile_tenants: 0, // backend shit
     web_tenants: 0, // backend shit
     last_updated: moment(data.updated_at).format("Do MMM, YYYY"),
-    owing_units: 0, // backend shit
-    available_units: 0, // backend shit
+    available_units: data.units.filter(unit => unit.is_active === 'vacant' || unit.is_active === 'relocate').length,
+    // available_units: 1,
     total_returns: totalReturns,
     total_income: (totalReturns * feePercentage) / 100,
     landlord_info: data.landlord_info,
@@ -72,7 +72,7 @@ export const transformSinglePropertyData = (
         : undefined,
       unitImages: unit.images.map((img) => img.path),
       unitDetails:
-        unit.unit_type.toLowerCase() === "land"
+        unit.unit_type?.toLowerCase() === "land"
           ? `${unit.unit_preference} - ${unit.unit_type} - ${
               unit.total_area_sqm
             }${

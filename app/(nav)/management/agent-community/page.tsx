@@ -211,7 +211,7 @@ const AgentCommunityPage = () => {
           description:
             "This page contains a list of Agent Community on the platform.",
         }}
-        searchInputPlaceholder="Search for Agent Community"
+        searchInputPlaceholder="Search in or within Agent Community"
         handleFilterApply={handleFilterApply}
         isDateTrue
         filterOptionsMenu={stateOptions}

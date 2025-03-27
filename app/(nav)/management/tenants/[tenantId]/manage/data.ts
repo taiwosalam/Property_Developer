@@ -1,8 +1,17 @@
 import type { Field } from "@/components/Table/types";
-import type { TenantData } from "../../types";
+import type {
+  CurrentRent,
+  PreviousRent,
+  Statement,
+  TenantData,
+} from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import api, { handleAxiosError } from "@/services/api";
+import { UnitItemProps } from "@/components/Management/Properties/unit-item";
+import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
+import { formatNumber } from "@/utils/number-formatter";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -83,6 +92,13 @@ export interface IndividualTenantAPIResponse {
       address: string;
       relationship: string;
     };
+    guarantor: {
+      name: string;
+      phone: string;
+      email: string;
+      address: string;
+      relationship: string;
+    }[];
     documents: {
       type: string;
       files: (
@@ -93,6 +109,9 @@ export interface IndividualTenantAPIResponse {
         | string
       )[];
     }[];
+    current_rent: CurrentRent[];
+    previous_rent: PreviousRent[];
+    statement: Statement[];
   };
 }
 
@@ -102,6 +121,53 @@ export const transformIndividualTenantAPIResponse = ({
   const lastUpdated = data.note.last_updated_at
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
+
+  // Format statement data with "S/N" and readable dates
+  const formattedStatement = data.statement.map((stmt, index) => ({
+    ...stmt,
+    "S/N": (index + 1).toString(),
+    amount_paid: stmt.amount_paid
+      ? `${"₦"}${formatNumber(parseFloat(stmt.amount_paid))}`
+      : "--- ---",
+    payment_date: stmt.payment_date
+      ? moment(stmt.payment_date, "YYYY-MM-DD").format("DD/MM/YYYY")
+      : "",
+    start_date: moment(stmt.start_date).format("DD/MM/YYYY"),
+    end_date: moment(stmt.end_date).format("DD/MM/YYYY"),
+  }));
+
+  // Helper function to transform rent data into UnitItemProps
+  const transformRentToUnitItemProps = (
+    rent: CurrentRent | PreviousRent
+  ): UnitItemProps => ({
+    propertyType: rent.property_type,
+    unitId: rent.id.toString(),
+    unitImages: rent.unit_image.map((img) => img.path),
+    unitDetails: `${rent.unit_type} - ${rent.unit_sub_type}`,
+    unitStatus: rent.unit_status as keyof typeof UnitStatusColors,
+    unitName: rent.unit_name,
+    rent: rent.rent_amount
+      ? `${"₦"}${formatNumber(parseFloat(rent.rent_amount))}`
+      : "--- ---",
+    serviceCharge: rent.service_charge
+      ? `${"₦"}${formatNumber(parseFloat(rent.service_charge))}`
+      : "--- ---",
+    cautionDeposit: rent.caution_deposit
+      ? `${"₦"}${formatNumber(parseFloat(rent.caution_deposit))}`
+      : "--- ---",
+    tenantName: data.name,
+    tenantBadgeColor: data.tier_id ? tierColorMap[data.tier_id] : undefined,
+    dueDate: moment(rent.due_date).format("DD/MM/YYYY"),
+  });
+
+  // Transform current_rent and previous_rent into UnitItemProps[]
+  const formattedCurrentRent = data.current_rent.map(
+    transformRentToUnitItemProps
+  );
+  const formattedPreviousRent = data.previous_rent.map(
+    transformRentToUnitItemProps
+  );
+
   return {
     id: data.id,
     picture: data.picture || "",
@@ -139,6 +205,8 @@ export const transformIndividualTenantAPIResponse = ({
       last_updated: lastUpdated,
       write_up: data.note.note,
     },
+    guarantor_1: data.guarantor[0],
+    guarantor_2: data.guarantor[1],
     documents: data.documents.flatMap((doc) => {
       return doc.files.map((file, index) => {
         if (typeof file === "string") {
@@ -159,5 +227,20 @@ export const transformIndividualTenantAPIResponse = ({
         }
       });
     }),
+    current_rent: formattedCurrentRent,
+    previous_rent: formattedPreviousRent,
+    statement: formattedStatement,
   };
+};
+
+export const updateTenantWithEmailOrID = async (data: any, id: number) => {
+  try {
+    const res = await api.post(`tenant-update/email/${id}`, data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
 };

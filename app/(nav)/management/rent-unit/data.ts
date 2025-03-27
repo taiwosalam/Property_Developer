@@ -71,6 +71,9 @@ export interface UnitApiResponse {
     month_published_vacant?: number;
     unpublished_vacant?: number;
     month_unpublished_vacant?: number;
+    pagination: {
+      current_page: number;
+    }
     unit: {
       current_page: number;
       last_page: number;
@@ -84,6 +87,9 @@ export interface UnitFilterResponse {
     unit: UnitDataObject[];
     current_page: number;
     last_page: number;
+    pagination: {
+      current_page: number;
+    }
   };
 }
 
@@ -104,8 +110,8 @@ export const transformRentUnitApiResponse = (
       unitId: u.id.toString(),
       unit_title: u.property.title,
       unit_type: u.unit_type,
-      tenant_name: u.occupant.name !== null ? u.occupant.name : "____", //TODO
-      expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "____", //TODO
+      tenant_name: u.occupant.name !== null ? u.occupant.name : "--- ---", //TODO
+      expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "--- ---", //TODO
       rent: u.fee_amount,
       caution_deposit: u.caution_fee,
       service_charge: u.service_charge,
@@ -921,7 +927,7 @@ export const transformUnitData = (response: any) => {
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   // const previous_tenants = response.data.previous_tenants;
-  console.log("data to trans", data)
+  // console.log("data to trans", data)
   return {
     title: data.property.title,
     unit_id: data.id,
