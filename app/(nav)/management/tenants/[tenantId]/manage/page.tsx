@@ -38,6 +38,7 @@ import { TenantData } from "../../types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
 import dayjs from "dayjs";
+import { transformCardData } from "../../../landlord/data";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -52,6 +53,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   useRefetchOnEvent("refetchtenant", () => refetch({ silent: true }));
 
   const tenant = apiData ? transformIndividualTenantAPIResponse(apiData) : null;
+  const cardData = tenant ? transformCardData(tenant) : null;
 
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -157,6 +159,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     <UpdateProfileWithIdModal
                       page="tenant"
                       id={Number(tenant.id)}
+                      data={cardData}
                     />
                   </ModalContent>
                 </Modal>

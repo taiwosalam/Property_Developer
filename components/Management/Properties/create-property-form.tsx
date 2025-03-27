@@ -455,9 +455,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             />
             <Input
               id="full_address"
-              label="Full Address"
+              label="Property Street Address"
               inputClassName="bg-white rounded-[8px] property-form-input"
               required
+              maxLength={15}
               defaultValue={
                 editMode ? propertyDetails?.full_address : undefined
               }

@@ -1,4 +1,4 @@
- // Images
+// Images
 import { CameraIcon } from "@/public/icons/icons";
 
 // Imports
@@ -20,7 +20,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const removeUnit = useAddUnitStore((state) => state.removeUnit);
 
   const currency = propertySettings?.currency;
-
+  console.log("data hereeee", data);
   const referenceObject = {
     unit_details: "",
     "unit no/name": "",
@@ -32,13 +32,15 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const keyValueData = {
     unit_details:
       data?.unit_type?.toLowerCase() === "land"
-        ? `${data.unit_preference} - ${data.unit_type} - ${
-            data.total_area_sqm
+        ? `${data.unit_preference} ${data.total_area_sqm} ${
+            data.unit_sub_type
           }${
             data.number_of && data.number_of !== "0"
               ? ` - ${data.number_of}`
               : ""
           }`
+        : data?.unit_type?.toLowerCase() === "commercial"
+        ? `${data.unit_preference} ${data.unit_type} ${data.total_area_sqm} ${data.unit_sub_type}`
         : `${data.unit_preference} - ${data.bedroom || 0} bedroom${
             parseInt(data.bedroom || "0") > 1 ? "s" : ""
           } - ${data.unit_sub_type} - ${data.unit_type}`,
@@ -74,12 +76,16 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
     }
   };
 
-
   return (
     <>
       <div className="flex gap-4 flex-wrap items-center justify-between">
-        <p className="text-brand-10 text-base font-bold">
-          Unit ID: {(data.notYetUploaded ? "Not Yet Uploaded" : "") || data.id}
+        <p
+          className={`text-base font-bold ${
+            data.notYetUploaded ? "text-red-500" : "text-brand-10"
+          }`}
+        >
+          <span className="!text-brand-10">Unit ID:</span>{" "}
+          {(data.notYetUploaded ? "Not Yet Updated!" : "") || data.id}
         </p>
         <div className="flex gap-4 sm:gap-8">
           <Button

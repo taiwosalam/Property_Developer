@@ -35,6 +35,7 @@ import {
 import { groupDocumentsByType } from "@/utils/group-documents";
 import useFetch from "@/hooks/useFetch";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
+import { transformCardData } from "../../data";
 
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
@@ -45,6 +46,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const landlordData = data
     ? transformIndividualLandlordAPIResponse(data)
     : null;
+
+  const userData = landlordData ? transformCardData(landlordData) : null
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -164,6 +167,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     <UpdateProfileWithIdModal
                       page="landlord"
                       id={Number(landlordData.id)}
+                      data={userData && userData}
                     />
                   </ModalContent>
                 </Modal>
@@ -376,38 +380,6 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           </>
         )}
       </LandlordTenantInfoSection>
-
-      {/* <LandlordTenantInfoSection title="shared documents">
-        {Object.entries(groupedDocuments).map(([documentType, documents]) => {
-          if (documentType === "others") return null; // Skip "others" for now
-          return (
-            <LandlordTenantInfoSection
-              minimized
-              title={documentType}
-              key={documentType}
-            >
-              <div className="flex flex-wrap gap-4">
-                {documents?.map((document) => (
-                  <LandlordTenantInfoDocument key={document.id} {...document} />
-                ))}
-              </div>
-            </LandlordTenantInfoSection>
-          );
-        })}
-        {groupedDocuments?.others && (
-          <LandlordTenantInfoSection
-            minimized
-            title="other documents"
-            key="other document"
-          >
-            <div className="flex flex-wrap gap-4">
-              {groupedDocuments.others.map((document) => (
-                <LandlordTenantInfoDocument key={document.id} {...document} />
-              ))}
-            </div>
-          </LandlordTenantInfoSection>
-        )}
-      </LandlordTenantInfoSection> */}
     </div>
   );
 };

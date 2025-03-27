@@ -20,6 +20,7 @@ const UnitDetails = () => {
     setUnitType: setSelectedUnitType,
     formResetKey,
     unitData,
+    index,
   } = useUnitForm();
 
   const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>([]);
@@ -111,6 +112,11 @@ const UnitDetails = () => {
     }
   }, [selectedUnitType, propertyDetails?.category]);
 
+  const displayUnitName =
+    unitData && index !== undefined
+      ? `${unitData.unit_name} (Unit ${index + 1})`
+      : unitData?.unit_name || "";
+
   return (
     <div>
       <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
@@ -125,7 +131,8 @@ const UnitDetails = () => {
           inputClassName="bg-white rounded-[8px] unit-form-input"
           required={!isRental}
           requiredNoStar={isRental}
-          defaultValue={unitData?.unit_name}
+          // defaultValue={unitData?.unit_name}
+          defaultValue={displayUnitName}
         />
         <Select
           id="unit_type"

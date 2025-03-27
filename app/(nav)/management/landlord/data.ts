@@ -2,6 +2,7 @@
 import type { Field } from "@/components/Table/types";
 import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import { UserCardProps } from "@/components/Management/landlord-and-tenant-card";
 
 interface LandlordCardProps {
   id: string;
@@ -183,3 +184,30 @@ export interface LandlordRequestParams {
   agent?: string;
   branch_ids?: string;
 }
+
+export const transformMobileUseData = (res: any): UserCardProps => {
+  const { data } = res;
+  const badgeColor =
+    tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
+  return {
+    name: data.name,
+    picture_url: data.profile.picture,
+    email: data.email,
+    phone_number: data.profile.phone,
+    user_tag: "mobile",
+    badge_color: badgeColor,
+  };
+};
+
+export const transformCardData = (data: any): UserCardProps => {
+  // const badgeColor =
+    // tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
+  return {
+    name: data.name,
+    picture_url: data.picture,
+    email: data.email,
+    phone_number: data.phone_number,
+    user_tag: "web",
+    badge_color: "green",
+  };
+};
