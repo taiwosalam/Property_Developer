@@ -26,6 +26,7 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { InventoryApiResponse, InventoryPageState, transformInventoryApiResponse } from "./definitions";
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -47,7 +48,30 @@ const Inventory = () => {
   const [selectedView, setSelectedView] = useState<string>(
     selectedOptions.view || "grid"
   );
-  // const { branches } = getBranches();
+  const [branchId, setBranchId] = useState("");
+  const [inventoryData, setInventoryData] = useState<InventoryPageState | null>(null);
+
+  const { data: userProfile } = useFetch<{
+    data: { branch: { branch_id: number } };
+  }>(`/user/profile`);
+
+  useEffect(() => {
+    if (userProfile) {
+      setBranchId(userProfile?.data?.branch?.branch_id?.toString());
+    }
+  }, [userProfile]);
+
+  const { data: inventories } = useFetch<InventoryApiResponse>(`branch-data/inventories/${branchId}`);
+
+  useEffect(() => {
+    if (inventories) {
+      const transformedData = transformInventoryApiResponse(inventories);
+      setInventoryData(transformedData);
+    }
+  }, [inventories]);
+
+  console.log(inventories);
+
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
 
@@ -172,7 +196,6 @@ const Inventory = () => {
     }
   }, [apiData, error]);
 
-
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
@@ -219,15 +242,14 @@ const Inventory = () => {
     },
   ];
 
-
   return (
     <div className="custom-flex-col gap-9">
       <div className="page-header-container">
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Inventory"
-            newData={new_inventory_this_month}
-            total={total_inventory}
+            newData={inventoryData?.total || 0}
+            total={inventoryData?.this_month || 0}
             colorScheme={1}
           />
         </div>
@@ -290,7 +312,7 @@ const Inventory = () => {
                 {silentLoading ? (
                   <CardsLoading />
                 ) : (
-                  inventory.map((item, idx) => (
+                 inventoryData && inventoryData.inventories.map((item, idx) => (
                     <InventoryCard key={idx} data={item} />
                   ))
                 )}

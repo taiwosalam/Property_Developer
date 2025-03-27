@@ -28,6 +28,15 @@ import { ExclamationMark } from "@/public/icons/icons";
 import { ITransformUnitListing, transformUnitApiResponse } from "./pageData";
 import { UnitListingApiResponse, UnitListingRequestParams } from "./type";
 
+interface unitListingFilter {
+  options: string[];
+  menuOptions: { [key: string]: string[] };
+  startDate: string | null;
+  endDate: string | null;
+  status: string | null;
+  property: string[] | null;
+}
+
 const Units = () => {
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
   const {
@@ -42,20 +51,22 @@ const Units = () => {
     last_page: 1,
   });
 
-  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+  const [appliedFilters, setAppliedFilters] = useState<unitListingFilter>({
     options: [],
     menuOptions: {},
     startDate: null,
     endDate: null,
+    status: null,
+    property: null,
   });
-  
+
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
     return (
       options.length > 0 ||
       Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
       startDate !== null ||
-      endDate !== null
+      endDate !== null || status !== null
     );
   };
 
@@ -64,25 +75,23 @@ const Units = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
+  const [branchId, setBranchId] = useState("");
   const [unitData, setUnitData] = useState<ITransformUnitListing | null>(null);
+
+  const { data: userProfile } = useFetch<{
+    data: { branch: { branch_id: number } };
+  }>(`/user/profile`);
 
   const endpoint =
     isFilterApplied() || search || sort
       ? "/unit/vacant/list/filter"
       : "/unit/vacant/lists";
 
-  const {
-    data: unitListingData,
-    silentLoading: silent,
-    loading: pending,
-    error: err,
-  } = useFetch<UnitListingApiResponse>("branch-data/listing/11");
-
   useEffect(() => {
-    if (unitListingData) {
-      setUnitData(transformUnitApiResponse(unitListingData));
+    if (userProfile) {
+      setBranchId(userProfile.data.branch.branch_id.toString());
     }
-  }, [unitListingData]);
+  }, [userProfile]);
 
   const config: AxiosRequestConfig = useMemo(() => {
     return {
@@ -97,7 +106,8 @@ const Units = () => {
         search: search,
         branch_id: appliedFilters.menuOptions["Branch"] || [],
         state: appliedFilters.menuOptions["State"] || [],
-        property_type: appliedFilters.menuOptions["Property Type"]?.[0],
+        status: appliedFilters.menuOptions["Status"] || [],
+        property: appliedFilters.menuOptions["Property"] || [],
         sort_by: sort,
       } as RentUnitFilterParams,
     };
@@ -111,31 +121,49 @@ const Units = () => {
     setSearch(query);
   };
 
-  const handleFilterApply = (filters: FilterResult) => {
+  const handleFilterApply = (filters: unitListingFilter) => {
     setAppliedFilters(filters);
     setPage(1);
   };
 
   const {
-    data: apiData,
-    loading,
+    data: unitListingData,
     silentLoading,
     isNetworkError,
+    loading,
     error,
     refetch,
-  } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config); // endpoint // 'branch-data/listing/11'
+  } = useFetch<UnitListingApiResponse>(
+    `branch-data/listing/${branchId}`,
+    config
+  );
+
+  useEffect(() => {
+    if (unitListingData) {
+      setUnitData(transformUnitApiResponse(unitListingData));
+    }
+  }, [unitListingData]);
+
+  // const {
+  //   data: apiData,
+  //   loading,
+  //   silentLoading,
+  //   isNetworkError,
+  //   error,
+  //   refetch,
+  // } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config); // endpoint // 'branch-data/listing/11'
 
   //console.log(apiData);
 
-  useEffect(() => {
-    if (apiData) {
-      setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
-      setState((prevState) => ({
-        ...prevState,
-      }));
-    }
-  }, [apiData]);
-  // Listen for the refetch event
+  // useEffect(() => {
+  //   if (apiData) {
+  //     setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
+  //     setState((prevState) => ({
+  //       ...prevState,
+  //     }));
+  //   }
+  // }, [apiData]);
+  // // Listen for the refetch event
   useRefetchOnEvent("refetchRentUnit", () => refetch({ silent: true }));
 
   if (loading)
@@ -240,13 +268,14 @@ const Units = () => {
           )
         ) : (
           <div className="custom-flex-col gap-4">
-            {unitData && unitData.units?.map((item, idx) => (
-              <VacantUnitCard
-                key={idx}
-                unit_data={item}
-                status={item.status as "published" | "unpublished"}
-              />
-            ))}
+            {unitData &&
+              unitData.units?.map((item, idx) => (
+                <VacantUnitCard
+                  key={idx}
+                  unit_data={item}
+                  status={item.status as "published" | "unpublished"}
+                />
+              ))}
           </div>
         )}
       </section>

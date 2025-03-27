@@ -3,8 +3,8 @@
 export type UnitListingApiResponse = {
     status: string;
     total_unit: number;
-    published_unit: number;
-    unpublished_unit: number;
+    published: number;
+    unpublished: number;
     under_moderation: number;
     total_occupied: number;
     total_vacant: number;

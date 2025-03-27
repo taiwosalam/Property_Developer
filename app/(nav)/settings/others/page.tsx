@@ -464,7 +464,7 @@ const Others = () => {
       assign_staff: notification.assign_staff ?? true,
     });
 
-    const groupStatus =
+    const groupStatus = notification &&
     notification?.company_default_module != null &&
     typeof notification?.company_default_module !== "undefined"
       ? String(notification?.company_default_module)

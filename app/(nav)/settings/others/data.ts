@@ -233,7 +233,7 @@ export const transformOtherSetting = (
     notification: {
       document_creation: data?.notifications?.document_creation,
       company_default_module:
-        data?.company_default_module ?? data?.company_default_module.toString(),
+        data?.company_default_module ?? "1",
       new_messages: data?.notifications?.new_messages,
       task_updates: data?.notifications?.task_updates,
       profile_changes: data?.notifications?.profile_changes,
