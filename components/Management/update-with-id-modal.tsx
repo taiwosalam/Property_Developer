@@ -15,6 +15,7 @@ import UserCard, { UserCardProps } from "./landlord-and-tenant-card";
 import useFetch from "@/hooks/useFetch";
 import { transformMobileUseData } from "@/app/(nav)/management/landlord/data";
 import ModalPreset from "../Modal/modal-preset";
+import { ExportUserIcon } from "@/public/icons/dashboard-cards/icons";
 
 const UpdateProfileWithIdModal = ({
   id,
@@ -73,6 +74,7 @@ const UpdateProfileWithIdModal = ({
       if (res) {
         setActiveStep(3);
         window.dispatchEvent(new Event("refetchtenant"));
+        window.dispatchEvent(new Event("refetchlandlord"));
       }
     } catch (error) {
       toast.error("Failed to Update User");
@@ -141,12 +143,15 @@ const UpdateProfileWithIdModal = ({
         >
           <div className="w-[100%]">
             <h3>
-              Are you sure you want to Update the following
-              {isLandlord ? "Landlord/LandLady" : "tenants/occupants"} with the
+              Are you sure you want to Update the following { " " }
+              {isLandlord ? " Landlord/LandLady " : " tenants/occupants "} with the
               mobile users data?
             </h3>
-            <div className="flex gap-4 my-4">
+            <div className="flex gap-4 my-4 items-center justify-center w-full">
               {data && <UserCard {...data} />}
+              <div className="text-brand-9">
+                <ExportUserIcon size={50} />
+              </div>
               {mobileUser && <UserCard {...mobileUser} />}
             </div>
             <p>

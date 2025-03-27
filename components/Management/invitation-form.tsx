@@ -51,7 +51,7 @@ const InvitationForm: React.FC<InvitationFormProps> = ({
             className="py-2 px-8"
             disabled={isLoading}
           >
-            {isLoading ? "inviting..." : "invite"}
+            {isLoading ? "inviting..." : method === "email" ? "invite" : "Add"}
           </Button>
         </div>
       </div>
