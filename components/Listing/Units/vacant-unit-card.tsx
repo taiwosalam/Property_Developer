@@ -46,11 +46,11 @@ const VacantUnitCard = ({
   const [checked, setChecked] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const referenceObject = {
-    unit_details: "",
-    "unit no/name": "",
+    unit_details: unit_data?.description,
+    "unit no/name": unit_data?.unit_name,
     rent: "",
-    ...(unit_data.caution_fee ? { caution_deposit: "" } : {}),
-    service_charge: "",
+    ...(unit_data.caution_fee ? { caution_deposit: unit_data?.caution_fee } : {}),
+    service_charge: unit_data?.service_charge,
   };
 
   const unit_status = status === "pending" ? "under moderation" : status;

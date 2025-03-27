@@ -7,6 +7,7 @@ export interface ITransformUnitListing {
   under_moderation: number;
   units: {
     unitId: number;
+    unit_name: string;
     property_title: string;
     images: string[];
     property_id: number;
@@ -29,12 +30,13 @@ export const transformUnitApiResponse = (
 ): ITransformUnitListing => {
   return {
     total_unit: data?.total_unit ?? 0,
-    published_unit: data?.published_unit ?? 0,
-    unpublished_unit: data?.unpublished_unit ?? 0,
+    published_unit: data?.published ?? 0,
+    unpublished_unit: data?.unpublished ?? 0,
     under_moderation: data?.under_moderation ?? 0,
     units: data?.units.map((unit) => {
       return {
         unitId: unit.id,
+        unit_name: unit?.unit_name ?? "",
         property_title: unit?.property.title ?? "",
         images: unit?.images?.map((img) => img.path) ?? [],
         property_id: unit?.property_id ?? 0,
