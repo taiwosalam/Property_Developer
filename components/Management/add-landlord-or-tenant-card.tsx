@@ -7,6 +7,7 @@ interface AddLandlordOrTenantCardProps {
   buttonText: string;
   buttonHref?: string;
   onClick?: () => void;
+  loading?: boolean;
 }
 
 const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
@@ -15,6 +16,7 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
   onClick,
   buttonText,
   buttonHref,
+  loading,
 }) => {
   const { setIsOpen } = useModal();
   return (
@@ -33,8 +35,9 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
           : { onClick })}
         size="base_medium"
         className="py-2 px-8"
+        disabled={loading}
       >
-        {buttonText}
+        {loading ? "Please wait...": buttonText}
       </Button>
     </div>
   );

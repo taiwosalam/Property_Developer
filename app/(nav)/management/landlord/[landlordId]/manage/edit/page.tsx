@@ -23,7 +23,7 @@ import {
   LandlordEditNoteInfoSection,
   LandlordEditAvatarInfoSection,
 } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
-import { useRouter } from "next/navigation"; //only web can edit profile
+import { useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { deleteLandlord } from "./data";
@@ -97,7 +97,8 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
             size="base_medium"
             className="py-2 px-6"
             onClick={() => {
-              router.push(`/management/landlord/${landlordId}`);
+              // router.push(`/management/landlord/${landlordId}`);
+              router.push(`/management/landlord`);
             }}
           >
             save

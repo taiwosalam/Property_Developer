@@ -37,6 +37,9 @@ import useFetch from "@/hooks/useFetch";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
 import { transformCardData } from "../../data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import Link from "next/link";
+import { SectionContainer } from "@/components/Section/section-components";
+import EditMobileUser from "@/components/Management/edit-mobile-user";
 
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
@@ -127,13 +130,20 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 <Button size="base_medium" className="py-2 px-8">
                   message
                 </Button>
-                <Button
-                  variant="light_green"
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  unflag
-                </Button>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button
+                      variant="light_green"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      Edit
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <EditMobileUser page="landlord" id={landlordId} />
+                  </ModalContent>
+                </Modal>
 
                 <Modal>
                   <ModalTrigger asChild>
@@ -303,7 +313,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           </AutoResizingGrid>
         )}
       </LandlordTenantInfoSection>
-      <LandlordTenantInfoSection title="statement">
+      <SectionContainer
+        heading="Statement"
+        href={`/management/landlord/${landlordId}/export`}
+        style={{ fontSize: "25px", fontWeight: "700" }}
+      >
         {landlordData?.statement?.length === 0 ? (
           <div className="flex justify-center items-center h-32 text-neutral-500">
             The landlord does not have any statement yet
@@ -316,7 +330,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             tableHeadCellSx={{ fontSize: "1rem" }}
           />
         )}
-      </LandlordTenantInfoSection>
+      </SectionContainer>
 
       {landlordData?.user_tag === "mobile" && (
         <LandlordEditContext.Provider value={{ data: landlordData }}>
