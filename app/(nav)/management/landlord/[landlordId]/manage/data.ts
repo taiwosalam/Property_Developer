@@ -406,3 +406,4 @@ export const updateLandlordWithEmailOrID = async (data: any, id: number) => {
     return false;
   }
 };
+
