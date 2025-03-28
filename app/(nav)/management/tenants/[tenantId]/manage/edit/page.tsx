@@ -100,7 +100,8 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
             size="base_medium"
             className="py-2 px-6"
             onClick={() => {
-              router.push(`/management/tenants/${tenantId}`);
+              // router.push(`/management/tenants/${tenantId}`);
+              router.push(`/management/tenants`);
             }}
           >
             save

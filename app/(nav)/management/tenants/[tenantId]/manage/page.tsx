@@ -39,6 +39,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
 import dayjs from "dayjs";
 import { transformCardData } from "../../../landlord/data";
+import EditMobileUser from "@/components/Management/edit-mobile-user";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -118,13 +119,20 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 <Button size="base_medium" className="py-2 px-8">
                   message
                 </Button>
-                <Button
-                  variant="light_green"
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  unflag
-                </Button>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button
+                      variant="light_green"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      Edit
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <EditMobileUser page="tenant" id={Number(tenantId)} />
+                  </ModalContent>
+                </Modal>
                 <Modal>
                   <ModalTrigger asChild>
                     <Button
