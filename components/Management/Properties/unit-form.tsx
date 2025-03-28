@@ -92,13 +92,110 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     "negotiation",
   ];
 
+  // const handleSubmit = async (formData: Record<string, any>) => {
+  //   if (!propertyId) return;
+  //   if (propertyType !== "facility" && state.images.length === 0) {
+  //     toast.warning("Please add at least one picture");
+  //     return;
+  //   }
+  //   // Check if strings contain at least one digit
+  //   const hasNoDigits = (str: string) => !/\d/.test(str);
+  //   if (
+  //     (formData.number_of && hasNoDigits(formData.number_of)) ||
+  //     (formData.total_area_sqm && hasNoDigits(formData.total_area_sqm))
+  //   ) {
+  //     toast.warning("Please enter valid measurement values");
+  //     return;
+  //   }
+  //   setSubmitLoading(true);
+  //   convertYesNoToBoolean(formData, yesNoFields);
+  //   const transformedData = transformUnitFormData(
+  //     formData,
+  //     state.imageFiles,
+  //     propertyId
+  //   );
+  //   if (props.empty) {
+  //     const unitId = await createUnit(propertyId, transformedData);
+  //     if (unitId) {
+  //       if (saveClick) {
+  //         setSubmitLoading(false);
+  //         resetForm();
+  //         formRef.current?.reset();
+  //         router.push("/management/properties/");
+  //         return;
+  //       }
+  //       const unitData = await getUnitById(unitId);
+  //       if (unitData) {
+  //         if (duplicate?.val) {
+  //           addUnit(unitData, duplicate.count);
+  //           setDuplicate({
+  //             val: false,
+  //             count: 1,
+  //           });
+  //           props.hideEmptyForm();
+  //         } else {
+  //           addUnit(unitData);
+  //         }
+  //         formRef.current?.reset();
+  //         resetForm();
+  //       }
+  //     }
+  //   } else {
+  //     if (props.data.notYetUploaded) {
+  //       const unitId = await createUnit(propertyId, transformedData);
+  //       if (unitId) {
+  //         const unitData = await getUnitById(unitId);
+  //         if (unitData) {
+  //           editUnit(props.index, unitData);
+  //         }
+  //       }
+  //     } else {
+  //       const { newImages, retainedImages } = transformedData.images.reduce<{
+  //         newImages: File[];
+  //         retainedImages: string[];
+  //       }>(
+  //         (acc, image) => {
+  //           if (image instanceof File) {
+  //             acc.newImages.push(image);
+  //           } else {
+  //             const matchingImage = props.data.images.find(
+  //               (img) => img.path === image
+  //             );
+  //             if (matchingImage) {
+  //               acc.retainedImages.push(matchingImage.id);
+  //             }
+  //           }
+  //           return acc;
+  //         },
+  //         { newImages: [], retainedImages: [] }
+  //       );
+  //       const editUnitPayload = {
+  //         ...transformedData,
+  //         images: newImages,
+  //         retain_images: retainedImages,
+  //       };
+  //       const unitId = await editUnitApi(props.data.id, editUnitPayload);
+  //       if (unitId) {
+  //         const unitData = await getUnitById(unitId);
+  //         if (unitData) {
+  //           editUnit(props.index, unitData);
+  //         }
+  //       }
+  //     }
+  //     props.setIsEditing(false);
+  //   }
+  //   setSubmitLoading(false);
+  // };
+
+
   const handleSubmit = async (formData: Record<string, any>) => {
     if (!propertyId) return;
     if (propertyType !== "facility" && state.images.length === 0) {
       toast.warning("Please add at least one picture");
       return;
     }
-    // Check if strings contain at least one digit
+  
+    // Validate that numeric fields contain digits
     const hasNoDigits = (str: string) => !/\d/.test(str);
     if (
       (formData.number_of && hasNoDigits(formData.number_of)) ||
@@ -107,14 +204,20 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       toast.warning("Please enter valid measurement values");
       return;
     }
+  
     setSubmitLoading(true);
     convertYesNoToBoolean(formData, yesNoFields);
+  
+    // Transform the form data into the API payload
     const transformedData = transformUnitFormData(
       formData,
       state.imageFiles,
-      propertyId
+      propertyId,
+      props.empty ? [] : props.data.images // Pass original images when editing
     );
+  
     if (props.empty) {
+      // Handle creation of a new unit
       const unitId = await createUnit(propertyId, transformedData);
       if (unitId) {
         if (saveClick) {
@@ -142,6 +245,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       }
     } else {
       if (props.data.notYetUploaded) {
+        // Handle creation of a unit that hasn’t been uploaded yet
         const unitId = await createUnit(propertyId, transformedData);
         if (unitId) {
           const unitData = await getUnitById(unitId);
@@ -150,14 +254,17 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           }
         }
       } else {
-        const { newImages, retainedImages } = transformedData.images.reduce<{
+        // Handle editing an existing unit
+        const { newImages, retainedImages } = state.imageFiles.reduce<{
           newImages: File[];
           retainedImages: string[];
         }>(
           (acc, image) => {
             if (image instanceof File) {
+              // New images uploaded during this edit
               acc.newImages.push(image);
-            } else {
+            } else if (typeof image === "string") {
+              // Existing images to retain (match by path)
               const matchingImage = props.data.images.find(
                 (img) => img.path === image
               );
@@ -169,11 +276,18 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           },
           { newImages: [], retainedImages: [] }
         );
+  
+        // Debugging logs to verify the state
+        console.log("state.imageFiles:", state.imageFiles);
+        console.log("retainedImages:", retainedImages);
+        console.log("newImages:", newImages);
+  
         const editUnitPayload = {
           ...transformedData,
-          images: newImages,
-          retain_images: retainedImages,
+          images: newImages,          // New images to upload
+          retain_images: retainedImages, // IDs of images to keep
         };
+  
         const unitId = await editUnitApi(props.data.id, editUnitPayload);
         if (unitId) {
           const unitData = await getUnitById(unitId);
@@ -184,9 +298,10 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       }
       props.setIsEditing(false);
     }
+  
     setSubmitLoading(false);
   };
-
+  
   return (
     <FlowProgress
       steps={1}

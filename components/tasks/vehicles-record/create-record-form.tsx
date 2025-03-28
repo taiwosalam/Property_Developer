@@ -21,6 +21,7 @@ import {
   transformIndividualTenantAPIResponse,
 } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
 import SelectWithImage from "@/components/Form/Select/select-with-image";
+import { transformMobileUseDataForVehicleRecord } from "@/app/(nav)/management/landlord/data";
 
 const CreateRecordForm = () => {
   const router = useRouter();
@@ -29,12 +30,13 @@ const CreateRecordForm = () => {
   const propertyId = searchParams.get("p");
   const { selectedProperty } = useVehicleRecordStore();
   const [loading, setLoading] = useState(false);
+  const [mobileUser, setMobileUser] = useState<PersonalDataProps | null>(null);
+  const [userId, setUserId] = useState("");
   const [selectedTenantId, setSelectedTenantId] = useState<string | null>(null);
   const [tenants, setTenants] = useState<PersonalDataProps | null>(null);
   const [openFields, setOpenFields] = useState(false);
 
-  // console.log("selectedId", selectedTenantId);
-
+  // Fetch tenants for the dropdown
   const {
     data: tenantsData,
     loading: tenantsLoading,
@@ -48,8 +50,7 @@ const CreateRecordForm = () => {
       icon: tenant.picture,
     })) || [];
 
-    console.log("tenantsData", tenantsData)
-
+  // Fetch selected tenant data when a tenant is selected from the dropdown
   const {
     data: apiData,
     error: errorSelectedTenant,
@@ -58,37 +59,58 @@ const CreateRecordForm = () => {
     selectedTenantId ? `tenant/${selectedTenantId}` : ""
   );
 
-  // set tenant to null
+  // Fetch mobile user data when a user ID is submitted
+  const {
+    data: mobileUsersData,
+    error: mobileUsersError,
+    loading: loadingMobileUsers,
+    refetch,
+  } = useFetch<any>(userId ? `/get-users?identifier=${userId}` : null);
+
+  // Handle mobile user data fetch
+  useEffect(() => {
+    if (mobileUsersData && !mobileUsersError && !loadingMobileUsers && userId) {
+      const transformedData = transformMobileUseDataForVehicleRecord(mobileUsersData);
+      setTenants(transformedData);
+      setOpenFields(true); // Open the form fields after setting tenants
+    }
+  }, [mobileUsersData, mobileUsersError, loadingMobileUsers, userId]);
+
+  // Handle selected tenant data fetch
+  useEffect(() => {
+    if (apiData && !errorSelectedTenant && !loadingSelectedTenant) {
+      const transformedData = transformTenant(apiData);
+      setTenants(transformedData);
+      setOpenFields(true); // Open the form fields after setting tenants
+    }
+  }, [apiData, errorSelectedTenant, loadingSelectedTenant]);
+
+  // Reset tenant and form state when changing tenant
   const handleChangeTenant = () => {
     setTenants(null);
     setOpenFields(false);
     setSelectedTenantId(null);
+    setUserId(""); // Reset userId to allow re-fetching mobile user data
   };
 
-  useEffect(() => {
-    if (apiData) {
-      const transformedData = transformTenant(apiData);
-      setTenants(transformedData);
-      setOpenFields(true);
-    }
-  }, [apiData]);
-
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     formData.append("property_id", selectedProperty);
 
-    // Get the values of avatar and picture
+    // Handle avatar and picture fields
     const avatar = formData.get("avatar") as string;
     const picture = formData.get("picture") as string;
-    // Set avatar based on the conditions
     if (!avatar && picture) {
       formData.set("avatar", picture);
     }
     formData.delete("picture");
-    // Convert formData to an object
+
+    // Convert formData to an object for logging/debugging
     const data = Object.fromEntries(formData.entries());
-    console.log(data);
+    console.log("Form Data:", data);
+
     try {
       setLoading(true);
       const res = await createVehicleRecord(data);
@@ -98,12 +120,15 @@ const CreateRecordForm = () => {
         router.push(`/management/vehicles-record/${propertyId}`);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error creating vehicle record:", error);
       toast.error("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
+
+  // Debug log for tenants state
+  console.log("Tenants State:", tenants);
 
   return (
     <form
@@ -137,7 +162,7 @@ const CreateRecordForm = () => {
               label="Input Guest/Visitor ID"
               name="guest_id"
               btn_text="submit"
-              onSubmit={setSelectedTenantId}
+              onSubmit={setUserId}
             />
             <SelectWithImage
               label="Select From Record"

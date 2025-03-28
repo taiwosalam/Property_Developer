@@ -12,21 +12,22 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
     radio: true,
     label: "Status",
     value: [
-      { label: "No Record", value: "no_record" },
-      { label: "Pending", value: "pending" },
-      { label: "Completed", value: "completed" },
-    ],
-  },
-  {
-    radio: true,
-    label: "User Type",
-    value: [
-      { label: "Web", value: "web" },
-      { label: "Mobile", value: "mobile" },
-      { label: "All", value: "all" },
+      // { label: "No Record", value: "no record" },
+      { label: "Check In", value: "check-in" },
+      { label: "Check Out", value: "check-out" },
     ],
   },
 ];
+
+
+export interface VehicleRecordFilterParams {
+  from_date?: string;
+  to_date?: string;
+  sort_by?: "desc";
+  search?: string;
+  status: "no record" | "pending" | "completed"
+}
+
 
 export interface VehicleData {
   id: number;
@@ -76,10 +77,10 @@ export interface LatestCheckInData {
 
 export interface VehicleRecordPageData {
   check_ins: number;
-  check_ins_pending: number;
+  total: number;
+  total_this_month: number;
   check_ins_this_month: number;
   check_outs: number;
-  check_outs_pending: number;
   check_outs_this_month: number;
   vehicle_records: {
     data: VehicleData[];
@@ -152,7 +153,7 @@ export interface CheckIns {
 export interface Stats {
   check_ins: { total: number; this_month: number };
   check_outs: { total: number; this_month: number };
-  pending: { total: number; this_month: number };
+  total: { total: number; this_month: number };
 }
 
 export interface VehicleRecordApiResponse {
@@ -169,10 +170,10 @@ export const transformVehicleRecordApiResponse = (
   const vehicle_records = response.data.vehicle_records;
   return {
     check_ins: response.data.stats.check_ins.total,
-    check_ins_pending: response.data.stats.pending.total,
+    total: response.data.stats.total.total,
+    total_this_month: response.data.stats.total.this_month,
     check_ins_this_month: response.data.stats.check_ins.this_month,
     check_outs: response.data.stats.check_outs.total,
-    check_outs_pending: response.data.stats.pending.total,
     check_outs_this_month: response.data.stats.check_outs.this_month,
     vehicle_records: {
       last_page: 0,

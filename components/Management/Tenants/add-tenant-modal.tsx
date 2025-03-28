@@ -20,6 +20,7 @@ import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
 import { useRouter, usePathname } from "next/navigation";
 import { addTenantWithEmail } from "../Landlord/data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const AddTenantModal = () => {
   const router = useRouter();
@@ -27,6 +28,7 @@ const AddTenantModal = () => {
   const { setIsOpen } = useModal();
   const [activeStep, setActiveStep] =
     useState<AddTenantModalOptions>("options");
+  const [identifier, setIdentifier] = useState("");
 
   const closeModalAndRefresh = () => {
     setIsOpen(false);
@@ -39,13 +41,17 @@ const AddTenantModal = () => {
       }, 0);
     }
   };
-
+  // Modify handleBack to handle both modal and form steps
   const handleBack = () => {
     if (activeStep === "add-tenant" && formStep === 2) {
       setFormStep(1);
+    } else if (activeStep === "add-user-with-email" && formStep === 3) {
+      setFormStep(1);
+      setIdentifier("");
     } else {
       setActiveStep("options");
       setFormStep(1);
+      setIdentifier("");
     }
   };
 
@@ -66,7 +72,10 @@ const AddTenantModal = () => {
   };
 
   const handleAddTenantWithEmmailOrID = async (data: any) => {
-    const success = await addTenantWithEmail(data);
+    const payload = {
+      identifier: data
+    }
+    const success = await addTenantWithEmail(objectToFormData(payload));
     if (success) {
       closeModalAndRefresh();
     }
@@ -139,11 +148,16 @@ const AddTenantModal = () => {
       ),
     },
     "add-user-with-email": {
-      heading: "Add Landlord/Landlady with Email",
+      heading: formStep === 3 ? "Adding Warning!" : "Add Landlord/Landlady with Email",
       content: (
         <InvitationForm
           method="id"
-          submitAction={handleAddTenantWithEmmailOrID}
+          page="tenant"
+          formStep={formStep}
+          setFormStep={setFormStep}
+          identifier={identifier}
+          setIdentifier={setIdentifier}
+          submitAction={() => handleAddTenantWithEmmailOrID(identifier)}
         />
       ),
     },

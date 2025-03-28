@@ -533,8 +533,16 @@ button:disabled:not(.retain-opacity) {
   }
 }
 
+@keyframes blinkColor {
+  0%, 100% {
+    stroke: var(--primary-color); 
+  }
+  50% {
+    stroke: #ef4444;
+  }
+}
 
-
-
-
-
+.blink-color {
+  stroke: #1d4ed8; 
+  animation: blinkColor 1.5s infinite ease-in-out;
+}

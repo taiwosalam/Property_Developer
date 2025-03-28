@@ -169,6 +169,7 @@ const RentAndUnit = () => {
         ...prevState,
         current_page: apiData.data.pagination?.current_page,
         // last_page: apiData.data.pagination?.total_pages,
+        // total_pages: apiData.data.pagination.
       }));
     }
   }, [apiData]);
@@ -208,6 +209,7 @@ const RentAndUnit = () => {
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
+  console.log("satte", state)
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
