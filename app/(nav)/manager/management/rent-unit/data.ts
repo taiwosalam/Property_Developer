@@ -266,6 +266,7 @@ export interface RentUnitFilterParams {
   property_type?: "rental" | "facility";
   sort_by?: "desc";
   search?: string;
+  property?: string[]
 }
 
 export interface RentalPropertyCardProps {
