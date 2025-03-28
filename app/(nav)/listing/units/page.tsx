@@ -29,6 +29,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/type";
 import CardsLoading from "@/components/Loader/CardsLoading";
+import Pagination from "@/components/Pagination/pagination";
 
 const Units = () => {
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
@@ -104,6 +105,11 @@ const Units = () => {
     setPage(1);
   };
 
+  
+  const handlePageChange = (page: number) => {
+    setPage(page);
+  };
+
   const {
     data: apiData,
     loading,
@@ -113,11 +119,14 @@ const Units = () => {
     refetch,
   } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
 
+  // console.log("apiData", apiData)
   useEffect(() => {
     if (apiData) {
       setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
       setState((prevState) => ({
         ...prevState,
+        last_page: apiData.data.unit.last_page,
+        current_page: apiData.data.unit.current_page,
       }));
     }
   }, [apiData]);
@@ -186,13 +195,13 @@ const Units = () => {
       </div>
       <FilterBar
         azFilter
-        pageTitle="Vacant Units"
+        pageTitle="Listing Units"
         aboutPageModalData={{
-          title: "Vacant Units",
+          title: "Listing Units",
           description:
-            "This page contains a list of Vacant Units on the platform.",
+            "This page contains a list of Listing Units on the platform.",
         }}
-        searchInputPlaceholder="Search for vacant units"
+        searchInputPlaceholder="Search for Listing units"
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
         isDateTrue={false}
@@ -238,8 +247,8 @@ const Units = () => {
               title="You have not created any unit yet"
               body={
                 <p>
-                  You haven&apos;t created any property units yet, or you don&apos;t
-                  have any available rentals at the moment. This page
+                  You haven&apos;t created any property units yet, or you
+                  don&apos;t have any available rentals at the moment. This page
                   automatically lists all available units for moderation before
                   they are approved by an administrator for display on your
                   company website and third-party platforms for marketing.
@@ -274,6 +283,11 @@ const Units = () => {
           </div>
         )}
       </section>
+      <Pagination
+        totalPages={state.last_page}
+        currentPage={state.current_page}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

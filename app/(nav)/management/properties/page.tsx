@@ -145,7 +145,7 @@ const Properties = () => {
     }
   }, [apiData]);
 
-  // console.log("data", pageData)
+  console.log("total_pages", pageData)
 
   if (loading)
     return (
