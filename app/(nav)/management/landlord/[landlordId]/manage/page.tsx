@@ -40,6 +40,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import Link from "next/link";
 import { SectionContainer } from "@/components/Section/section-components";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
@@ -105,9 +106,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     {/* {landlordData?.first_name} {landlordData?.last_name} */}
                     {landlordData.name}
                   </p>
-                  {landlordData.badge_color && (
-                    <BadgeIcon color={landlordData.badge_color} />
-                  )}
+                  <div className="flex gap-2 items-center">
+                    {landlordData.badge_color && (
+                      <BadgeIcon color={landlordData.badge_color} />
+                    )}
+                  </div>
                 </div>
                 <p
                   className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}
@@ -116,7 +119,10 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 </p>
               </div>
               <div className="custom-flex-col gap-2">
-                <UserTag type={landlordData.user_tag} />
+                <div className="flex gap-2 items-center">
+                  <UserTag type={landlordData.user_tag} />
+                  <NoteBlinkingIcon size={20} className="blink-color" />
+                </div>
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: {landlordData?.id}
                 </p>

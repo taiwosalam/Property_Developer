@@ -172,6 +172,7 @@ export interface PropertiesApiResponse {
     properties: {
       current_page: number;
       last_page: number;
+      total: number;
       data: PropertyDataObject[];
     };
   };
@@ -181,6 +182,7 @@ export interface PropertyFilterResponse {
   data: {
     current_page: number;
     last_page: number;
+    total: number;
     data: PropertyDataObject[];
   };
 }
@@ -195,9 +197,10 @@ export const transformPropertiesApiResponse = (
   };
 
   const propertiesData = isPropertiesApiResponse(response)
-    ? response.data.properties
-    : response.data;
-
+  ? response.data.properties
+  : response.data;
+  
+  console.log("respin", propertiesData)
   const transformedProperties: PropertyCardProps[] = propertiesData.data.map(
     (p) => {
       const updatedAt = moment(p.updated_at);
@@ -258,7 +261,7 @@ export const transformPropertiesApiResponse = (
 
   if (isPropertiesApiResponse(response)) {
     return {
-      total_pages: propertiesData.last_page,
+      total_pages: propertiesData.total,
       current_page: propertiesData.current_page,
       total_properties: response.data.total_property,
       new_properties_count: response.data.current_month_property,
@@ -271,7 +274,7 @@ export const transformPropertiesApiResponse = (
     };
   } else {
     return {
-      total_pages: propertiesData.last_page,
+      total_pages: propertiesData.total,
       current_page: propertiesData.current_page,
       properties: transformedProperties,
     };

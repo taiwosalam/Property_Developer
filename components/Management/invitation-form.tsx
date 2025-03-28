@@ -69,10 +69,10 @@ const InvitationForm: React.FC<InvitationFormProps> = ({
   }, [error]);
 
   const handleProceed = async () => {
-    if (method === 'id'){
-      setIsLoading(true)
+    if (method === "id") {
+      setIsLoading(true);
       await submitAction(identifier!);
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -130,7 +130,11 @@ const InvitationForm: React.FC<InvitationFormProps> = ({
               Kindly verify if the name matches the ID or Email of the mobile
               user you intend to add
             </h3>
-            <div>{mobileUser && <UserCard {...mobileUser} />} </div>
+            <div>
+              {mobileUser && (
+                <UserCard className="min-w-[300px]" {...mobileUser} />
+              )}
+            </div>
             <div className="flex gap-4">
               <Button
                 type="button"

@@ -1,6 +1,6 @@
 import { empty } from "@/app/config";
 import { propertyCategories } from "@/data";
-import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import { Currency, currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { getAllStates } from "@/utils/states";
 import { number } from "zod";
 //
@@ -73,6 +73,7 @@ export interface UnitApiResponse {
     month_unpublished_vacant?: number;
     pagination: {
       current_page: number;
+      total_pages: number;
     }
     unit: {
       current_page: number;
@@ -89,6 +90,7 @@ export interface UnitFilterResponse {
     last_page: number;
     pagination: {
       current_page: number;
+      total_pages: number;
     }
   };
 }
@@ -124,7 +126,7 @@ export const transformRentUnitApiResponse = (
     };
   });
 
-  // console.log("Transformed unit data", transformedUnits)
+  console.log("Transformed unit data", response)
   if (isUnitApiResponse(response)) {
     // console.log("isUnitApiResponse", response)
     return {
@@ -230,7 +232,7 @@ export interface Property {
   book_visitors: number;
   vehicle_record: number;
   active_vat: number;
-  currency: string;
+  currency: Currency;
   coordinate: string | null;
   management_fee: number;
   fee_period: string | null;
