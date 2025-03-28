@@ -61,7 +61,7 @@ export const getDashboardCardData = (data: Record<string, any>) =>  [
     icon: BuildingIcon,
     value: data.data.property_count,
     subValue: data.data.month_count,
-    link: "/management/staff-branch/",
+    link: "/management/properties/",
   },
   {
     title: "Landlords",

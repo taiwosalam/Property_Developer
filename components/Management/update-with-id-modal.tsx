@@ -48,7 +48,7 @@ const UpdateProfileWithIdModal = ({
     }
   }, [loading, apiData, error, userId]);
 
-  console.log("mobileUser", mobileUser);
+  // console.log("mobileUser", mobileUser);
 
   const handleUpdateWithEmail = async (data: FormData) => {
     const identifier = data.get("profile_id");

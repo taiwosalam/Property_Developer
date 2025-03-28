@@ -11,7 +11,7 @@ export const getAllStates = (): string[] => {
 export const getLocalGovernments = (stateName: string): string[] => {
   const state = states.find(
     (stateObj) =>
-      Object.keys(stateObj)[0].toLowerCase() === stateName?.toLowerCase()
+      Object.keys(stateObj)[0]?.toLowerCase() === stateName?.toLowerCase()
   );
   if (state) {
     const stateKey = Object.keys(state)[0]; // Get the actual key from the state object
@@ -27,14 +27,14 @@ export const getCities = (
 ): string[] => {
   const state = states.find(
     (stateObj) =>
-      Object.keys(stateObj)[0].toLowerCase() === stateName.toLowerCase()
+      Object.keys(stateObj)[0]?.toLowerCase() === stateName?.toLowerCase()
   );
 
   if (state) {
     const stateKey = Object.keys(state)[0];
     const stateData = state[stateKey as keyof typeof state];
     const localGovtKey = Object.keys(stateData).find(
-      (key) => key.toLowerCase() === localGovernment.toLowerCase()
+      (key) => key?.toLowerCase() === localGovernment?.toLowerCase()
     );
     if (localGovtKey) {
       return Array.from(new Set(stateData[localGovtKey])).sort();

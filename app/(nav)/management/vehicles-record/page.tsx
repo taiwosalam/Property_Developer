@@ -96,17 +96,15 @@ const VehilceRecords = () => {
     };
     options.forEach((option) => {
       if (option === "all") {
-        queryParams.all = true;
-      } else if (option === "trending") {
-        queryParams.trending = true;
-      } else if (option === "new") {
-        queryParams.recent = true;
+        queryParams.all = "all";
+      } else if (option === "rental") {
+        queryParams.property_type = "rental"
+      } else if (option === "facility") {
+        queryParams.property_type = "facility";
       }
     });
 
-    if (statesArray.length > 0) {
-      queryParams.state = statesArray.join(",");
-    }
+
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
     }

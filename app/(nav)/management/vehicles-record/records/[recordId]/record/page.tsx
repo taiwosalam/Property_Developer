@@ -40,7 +40,6 @@ import { toast } from "sonner";
 import { Box as MuiBox, Modal as MuiModal } from "@mui/material";
 import { UseerSkeletonVehicleRecord } from "@/components/Skeleton/vehicle-record";
 
-
 interface TransformedData {
   userData: UserData | null;
   vehicleDetails: VehicleDetails | null;
@@ -68,8 +67,8 @@ interface Notes {
 const RecordPage = () => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
-  const [updateUserModal, setUpdateUserModal] = useState(false)
-  const [updateVehicleModal, setUpdateVehicleModal] = useState(false)
+  const [updateUserModal, setUpdateUserModal] = useState(false);
+  const [updateVehicleModal, setUpdateVehicleModal] = useState(false);
   const { recordId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [checking, setChecking] = useState(false);
@@ -83,26 +82,24 @@ const RecordPage = () => {
 
   const [states, setStates] = useState<TransformedData>(initialState);
 
-    const handlePageChange = (page: number) => {
-      setSearchQuery("");
-      setStates((prevState) => ({
-        ...prevState,
-        checkInsOutData: {
-          ...prevState.checkInsOutData,
-          current_page: page,
-          check_ins: prevState.checkInsOutData?.check_ins || [],
-          total: prevState.checkInsOutData?.total || 0,
-          prev_page_url: prevState.checkInsOutData?.prev_page_url || "",
-          last_page: prevState.checkInsOutData?.last_page || 0,
-          next_page_url: prevState.checkInsOutData?.next_page_url || "",
-          first_page_url: prevState.checkInsOutData?.first_page_url || "",
-          last_page_url: prevState.checkInsOutData?.last_page_url || "",
-          per_page: prevState.checkInsOutData?.per_page || 0,
-        },
-      }));
-    };
-
-
+  const handlePageChange = (page: number) => {
+    setSearchQuery("");
+    setStates((prevState) => ({
+      ...prevState,
+      checkInsOutData: {
+        ...prevState.checkInsOutData,
+        current_page: page,
+        check_ins: prevState.checkInsOutData?.check_ins || [],
+        total: prevState.checkInsOutData?.total || 0,
+        prev_page_url: prevState.checkInsOutData?.prev_page_url || "",
+        last_page: prevState.checkInsOutData?.last_page || 0,
+        next_page_url: prevState.checkInsOutData?.next_page_url || "",
+        first_page_url: prevState.checkInsOutData?.first_page_url || "",
+        last_page_url: prevState.checkInsOutData?.last_page_url || "",
+        per_page: prevState.checkInsOutData?.per_page || 0,
+      },
+    }));
+  };
 
   const config = useMemo(
     () => ({
@@ -121,7 +118,10 @@ const RecordPage = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<SingleVehicleRecordApiResponse>(`vehicle-records/${recordId}/show-details`, config);
+  } = useFetch<SingleVehicleRecordApiResponse>(
+    `vehicle-records/${recordId}/show-details`,
+    config
+  );
 
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
@@ -143,10 +143,10 @@ const RecordPage = () => {
       console.error("Invalid API data format:", apiData);
     }
   }, [apiData, loading]);
-  
+
   const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
 
-  console.log("userData", checkInsOutData)
+  console.log("userData", checkInsOutData);
 
   if (loading)
     return (
@@ -190,39 +190,54 @@ const RecordPage = () => {
     vehicle_type,
   } = vehicleDetails;
 
+  const handleCheckIn = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
 
-    const handleCheckIn = async (event: React.FormEvent) => {
-      event.preventDefault();
-      const form = event.target as HTMLFormElement;
-      const formData = new FormData(form);
+    // Modify keys in formData
+    const data = Object.fromEntries(formData.entries());
+    data.passengers_in = data.passenger;
+    delete data.passenger;
+    data.inventory_in = data.inventory;
+    delete data.inventory;
 
-      // Modify keys in formData
-      const data = Object.fromEntries(formData.entries());
-      data.passengers_in = data.passenger;
-      delete data.passenger;
-      data.inventory_in = data.inventory;
-      delete data.inventory;
-      
-      // Add vehicle_record to requestId
-      data.vehicle_record_id = `${recordId}`;
-      
-      
-      try {
-        setChecking(true);
-        const response = await checkInVehicle(data);
-        if (response) {
-          window.dispatchEvent(new Event("refetchVehicleRecord"));
-          toast.success("Vehicle checked in successfully");
-          setModalOpen(false);
-        } else {
-          toast.error("Failed to check in vehicle");
-        }
-      } catch (error) {
-        console.error(error);
-      } finally { 
-        setChecking(false);
+    // Add vehicle_record to requestId
+    data.vehicle_record_id = `${recordId}`;
+
+    try {
+      setChecking(true);
+      const response = await checkInVehicle(data);
+      if (response) {
+        window.dispatchEvent(new Event("refetchVehicleRecord"));
+        toast.success("Vehicle checked in successfully");
+        setModalOpen(false);
+      } else {
+        toast.error("Failed to check in vehicle");
       }
-    };
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  // Check if there's a pending record
+  const hasPendingRecord =
+    checkInsOutData?.check_ins?.some((record) => record.status === "pending") ||
+    false;
+
+  console.log("hasPendingRecord", hasPendingRecord);
+  // Handle button click when there's a pending record
+  const handleCreateNewRecordClick = () => {
+    if (hasPendingRecord) {
+      toast.warning(
+        "There’s a pending record that needs to be checked out before creating a new record."
+      );
+      return; // Prevent the modal from opening
+    }
+    setModalOpen(true); // Open the modal if no pending record
+  };
 
   return (
     <div className="space-y-5 pb-[100px]">
@@ -430,23 +445,28 @@ const RecordPage = () => {
       />
       <FixedFooter className="flex items-center justify-end">
         <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
-          <ModalTrigger asChild>
-            <Button size="sm_normal" className="py-2 px-8">
+          {/* <ModalTrigger asChild> */}
+            <Button
+              // disabled={hasPendingRecord}
+              onClick={handleCreateNewRecordClick}
+              size="sm_normal"
+              className="py-2 px-8"
+            >
               Create New Record
             </Button>
-          </ModalTrigger>
+          {/* </ModalTrigger> */}
           <ModalContent>
-              <CheckInOutForm
-                onSubmit={handleCheckIn}
-                loading={checking}
-                useCase="vehicle"
-                type="check-in"
-                pictureSrc={pictureSrc}
-                userName={full_name}
-                id={userId}
-                category={category}
-                registrationDate={registrationDate}
-              />
+            <CheckInOutForm
+              onSubmit={handleCheckIn}
+              loading={checking}
+              useCase="vehicle"
+              type="check-in"
+              pictureSrc={pictureSrc}
+              userName={full_name}
+              id={userId}
+              category={category}
+              registrationDate={registrationDate}
+            />
           </ModalContent>
         </Modal>
       </FixedFooter>

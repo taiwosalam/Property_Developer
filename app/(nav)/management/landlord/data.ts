@@ -3,6 +3,7 @@ import type { Field } from "@/components/Table/types";
 import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { UserCardProps } from "@/components/Management/landlord-and-tenant-card";
+import { PersonalDataProps } from "@/components/tasks/vehicles-record/form-sections";
 
 interface LandlordCardProps {
   id: string;
@@ -201,7 +202,7 @@ export const transformMobileUseData = (res: any): UserCardProps => {
 
 export const transformCardData = (data: any): UserCardProps => {
   // const badgeColor =
-    // tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
+  // tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
   return {
     name: data.name,
     picture_url: data.picture,
@@ -209,5 +210,24 @@ export const transformCardData = (data: any): UserCardProps => {
     phone_number: data.phone_number,
     user_tag: "web",
     badge_color: "green",
+  };
+};
+
+export const transformMobileUseDataForVehicleRecord = (
+  res: any
+): PersonalDataProps => {
+  const { data } = res;
+  console.log("res", data)
+  const badgeColor =
+    tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
+  return {
+    id: data.id,
+    full_name: data.name,
+    state: data.profile.state,
+    local_government: data.profile.lga,
+    avatar: data.profile.picture,
+    city: data.profile.city,
+    phone_number: data.phone,
+    address: data.profile.address,
   };
 };

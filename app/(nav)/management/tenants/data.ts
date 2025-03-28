@@ -85,7 +85,7 @@ export interface TenantApiResponse {
       phone: string;
       picture: string;
       agent: string;
-      tier_id?: 1 | 2 | 3 | 4 | 5;
+      user_tier: 1 | 2 | 3 | 4 | 5;
     }[];
   };
   mobile_tenant_count: number;
@@ -125,7 +125,7 @@ export const transformTenantApiResponse = (
       phone_number: tenant.phone,
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
-      badge_color: tenant.tier_id ? tierColorMap[tenant.tier_id] : undefined,
+      badge_color: tenant.user_tier ? tierColorMap[tenant.user_tier] : undefined,
     })),
   };
 };
