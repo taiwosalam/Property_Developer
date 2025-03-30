@@ -67,6 +67,8 @@ const ManageServiceProvider = () => {
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
+  console.log(apiData, "apiData");
+
   return (
     <div className="space-y-5">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -102,7 +104,7 @@ const ManageServiceProvider = () => {
                 </p>
               </div>
 
-             { providerData?.agent === "web" && <UserTag type="web" />}
+             { providerData?.agent === "web" ? <UserTag type="web" /> : <UserTag type="mobile" /> }
               {user_tag === "mobile" && (
                 <div className="custom-flex-col gap-1">
                   <p className="text-base font-normal">
@@ -136,13 +138,23 @@ const ManageServiceProvider = () => {
               </>
             ) : (
               <>
+              {providerData?.agent === "mobile" ? (
                 <Button
+                  size="base_medium"
+                  className="!w-fit ml-auto py-2 px-8"
+                  href={`/messages`}
+                >
+                  message
+                </Button>
+              ):
+               (<Button
                   size="base_medium"
                   className="py-2 px-8"
                   href={`/management/service-providers/${paramId}/manage/edit`}
                 >
                   Manage
-                </Button>
+                </Button>)
+}
                 <Button size="base_medium" className="py-2 px-8">
                   update with ID
                 </Button>

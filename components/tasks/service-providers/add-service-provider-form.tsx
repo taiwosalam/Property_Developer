@@ -194,7 +194,7 @@ const AddServiceProviderForm = ({
         </div>
         <div className="flex justify-between items-end gap-4 flex-wrap">
           <div className="custom-flex-col gap-3">
-            <p className="text-black text-base font-medium">
+            <p className="text-text-label dark:text-darkText-2 text-base font-medium">
              <span className="text-red-500 text-lg">*</span> Upload picture or select an avatar.
             </p>
             <div className="flex items-end gap-3">
