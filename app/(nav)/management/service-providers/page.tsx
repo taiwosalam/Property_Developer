@@ -165,8 +165,13 @@ const ServiceProviders = () => {
 
   const totalPages = apiData?.data?.providers?.last_page || 1;
 
-  const totalUsers = apiData?.data.total as number;
-  const total_month = apiData?.data?.total_month as number;
+  const totalUsers = apiData?.data.total ?? 0;
+  const total_month = apiData?.data?.total_month ?? 0;
+  const total_web = apiData?.data?.total_web ?? 0;
+  const total_web_month = apiData?.data?.total_web_month ?? 0;
+  const total_mobile = apiData?.data?.total_mobile ?? 0;
+  const total_mobile_month = apiData?.data?.total_mobile_month ?? 0;
+
   const current_page =
     "current_page" in (apiData?.data?.providers || {})
       ? (apiData?.data?.providers as ProvidersPagination).current_page
@@ -212,15 +217,15 @@ const ServiceProviders = () => {
           />
           <ManagementStatistcsCard
             title="Mobile Providers"
-            newData={0}
-            total={0}
+            newData={total_mobile}
+            total={total_mobile_month}
             className="w-[230px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Web Providers"
-            newData={totalUsers}
-            total={total_month}
+            newData={total_web}
+            total={total_web_month}
             className="w-[230px]"
             colorScheme={3}
           />

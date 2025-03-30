@@ -12,6 +12,7 @@ import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import {
   createServiceProvider,
+  inviteByIdOrEmail,
   inviteProviderByPhone,
 } from "@/app/(nav)/management/service-providers/data";
 import { toast } from "sonner";
@@ -29,6 +30,7 @@ const AddServiceProviderModal = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [inviteByPhoneLoading, setInviteByPhoneLoading] = useState(false);
+  const [inviteByEmailLoading, setInviteByEmailLoading] = useState(false);
 
   const handleBack = () => {
     if (activeStep === "add-service-provider" && formStep === 2) {
@@ -42,10 +44,7 @@ const AddServiceProviderModal = () => {
   const handleInviteProviderByPhone = async (data: FormData) => {
     try {
       setInviteByPhoneLoading(true);
-      const status = await inviteProviderByPhone(data);
-      if (status) {
-        toast.success("Invitation sent");
-      }
+       await inviteProviderByPhone(data);
     } catch (error) {
       if (error) {
         toast.error("Something went wrong");
@@ -55,6 +54,20 @@ const AddServiceProviderModal = () => {
     }
   };
 
+  const handleInviteProviderByEmail = async (data: FormData) => {
+    try {
+      setInviteByEmailLoading(true);
+       await inviteByIdOrEmail(data);
+    } catch (error) {
+      if (error) {
+        toast.error("Something went wrong");
+      }
+    } finally {
+      setInviteByEmailLoading(false);
+    }
+  };
+
+  
   const closeModalAndRefresh = () => {
     setIsOpen(false);
     if (pathname !== "/management/service-providers") {
@@ -134,7 +147,7 @@ const AddServiceProviderModal = () => {
                 className="py-2 px-8"
                 disabled={inviteByPhoneLoading}
               >
-                invite
+                { inviteByPhoneLoading ? "please wait" : "invite" }
               </Button>
             </div>
           </div>
@@ -144,20 +157,24 @@ const AddServiceProviderModal = () => {
     "add-with-email": {
       heading: "Add Service Provider with Email",
       content: (
-        <form className="flex justify-center" onSubmit={() => {}}>
+        <AuthForm
+          returnType="form-data"
+          onFormSubmit={ handleInviteProviderByEmail }
+          className="flex justify-center items-center"
+        >
           <div className="custom-flex-col gap-5 w-[300px]">
             <Input
-              id="service_provider_id"
+              id="identifier"
               label="Service Provider ID"
               inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
             />
             <div className="flex justify-center">
               <Button type="submit" size="base_medium" className="py-2 px-8">
-                invite
+                { inviteByEmailLoading ? "please wait..." : "invite" }
               </Button>
             </div>
           </div>
-        </form>
+        </AuthForm>
       ),
     },
   };

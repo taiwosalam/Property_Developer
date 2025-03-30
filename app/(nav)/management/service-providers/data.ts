@@ -12,7 +12,7 @@ export const serviceProviderFilterOptionsWithDropdown = [
       { label: "Web Service Providers", value: "web" },
       { label: "Mobile Service Providers", value: "mobile" },
     ],
-  }, 
+  },
 ];
 
 export const initialServiceProviderPageData: ServiceProviderPageData = {
@@ -26,8 +26,6 @@ export const initialServiceProviderPageData: ServiceProviderPageData = {
   vacant_units_this_month: 0,
   providers: [],
 };
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const getAllServiceProviders = async () => {
   try {
@@ -46,8 +44,6 @@ export const createServiceProvider = async (
   try {
     const response = await api.post("service-providers", formData);
 
-    console.log("Providers")
-
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetchServiceProvider"));
       return true;
@@ -59,9 +55,7 @@ export const createServiceProvider = async (
   }
 };
 
-export const inviteProviderByPhone = async (
-  formData: FormData
-): Promise<boolean> => {
+export const inviteProviderByPhone = async (formData: FormData) => {
   try {
     const response = await api.post(
       "service-providers/in/invite-provider",
@@ -70,17 +64,28 @@ export const inviteProviderByPhone = async (
 
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetchServiceProvider"));
-      if (response) {
-        toast.success("Invitation sent");
-      }
-      return true;
+      toast.success("Invitation sent");
     }
-    return false;
   } catch (error) {
     handleAxiosError(error);
-    return false;
   }
 };
+export const inviteByIdOrEmail = async (formData: FormData) => {
+  try {
+    const response = await api.post(
+      "/service-providers/add/email",
+      formData
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchServiceProvider"));
+      toast.success("Service provider added successfully");
+    }
+  } catch (error) {
+    handleAxiosError(error);
+  }
+};
+
 
 export const ServiceProviderTableFields: Field[] = [
   {
