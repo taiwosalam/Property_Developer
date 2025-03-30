@@ -2,6 +2,7 @@ import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";
 import BadgeIcon, { BadgeIconColors } from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 
 export interface UserCardProps {
   picture_url?: string | null;
@@ -22,7 +23,7 @@ const UserCard: React.FC<UserCardProps> = ({
   user_tag,
   badge_color,
   other_info,
-  className
+  className,
 }) => {
   return (
     <div
@@ -41,13 +42,20 @@ const UserCard: React.FC<UserCardProps> = ({
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
           <span className="text-ellipsis line-clamp-1 break-all">{name}</span>
-          {badge_color && user_tag && <BadgeIcon color={badge_color} />}
+          {badge_color && user_tag !== "web" && (
+            <BadgeIcon color={badge_color} />
+          )}
         </p>
         <p className="font-normal text-black dark:text-darkText-1 text-xs mb-1 text-ellipsis line-clamp-1 break-all">
           {email}
         </p>
         {user_tag === "mobile" || user_tag === "web" ? (
-          <UserTag type={user_tag} className="mb-2" />
+          <div className="flex gap-2 mb-2 items-center">
+            <UserTag type={user_tag} />
+            <div className="flex items-center">
+              <NoteBlinkingIcon size={20} className="blink-color" />
+            </div>
+          </div>
         ) : (
           <p className="text-xs text-brand-10 font-normal capitalize">
             {user_tag === "manager" ? "Branch Manager" : user_tag}

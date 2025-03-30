@@ -1,3 +1,5 @@
+import { CSSProperties } from "react";
+
 export interface SectionTitleProps {
   required?: boolean;
   children: React.ReactNode;
@@ -22,4 +24,5 @@ export interface SectionContainerProps {
   href?: string;
   heading: string;
   children: React.ReactNode;
+  style?: CSSProperties;
 }

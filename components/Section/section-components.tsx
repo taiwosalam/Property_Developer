@@ -71,10 +71,11 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
   href,
   heading,
   children,
+  style,
 }) => (
   <div className="custom-flex-col gap-4">
     <div className="flex items-center justify-between">
-      <h1 className="text-text-primary text-xl font-medium capitalize dark:text-[#f1f1fd]">
+      <h1 className="text-text-primary text-xl font-medium capitalize dark:text-[#f1f1fd]" style={style}>
         {heading}
       </h1>
       {href && (

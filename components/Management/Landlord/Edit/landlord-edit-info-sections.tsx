@@ -632,15 +632,19 @@ export const LandlordEditAttachmentInfoSection = () => {
     if (removeSuccess && uploadSuccess) {
       toast.success("Documents updated successfully");
       window.dispatchEvent(new Event("landlord-updated"));
+      window.dispatchEvent(new Event("refetchlandlord"));
+      setDocuments([]);
+      setUrlsToRemove([]);
+      setDocumentType("");
     } else {
       toast.error("An error occurred while updating documents");
     }
     setReqLoading(false);
   };
 
-  useEffect(() => {
-    setDocuments(landlord?.documents || []);
-  }, [landlord?.documents]);
+  // useEffect(() => {
+  //   setDocuments(landlord?.documents || []);
+  // }, [landlord?.documents]);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">

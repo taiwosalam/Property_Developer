@@ -38,6 +38,8 @@ import { TenantData } from "../../types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
 import dayjs from "dayjs";
+import { transformCardData } from "../../../landlord/data";
+import EditMobileUser from "@/components/Management/edit-mobile-user";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -52,6 +54,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   useRefetchOnEvent("refetchtenant", () => refetch({ silent: true }));
 
   const tenant = apiData ? transformIndividualTenantAPIResponse(apiData) : null;
+  const cardData = tenant ? transformCardData(tenant) : null;
 
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -116,13 +119,20 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 <Button size="base_medium" className="py-2 px-8">
                   message
                 </Button>
-                <Button
-                  variant="light_green"
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  unflag
-                </Button>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button
+                      variant="light_green"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      Edit
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <EditMobileUser page="tenant" id={Number(tenantId)} />
+                  </ModalContent>
+                </Modal>
                 <Modal>
                   <ModalTrigger asChild>
                     <Button
@@ -157,6 +167,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     <UpdateProfileWithIdModal
                       page="tenant"
                       id={Number(tenant.id)}
+                      data={cardData}
                     />
                   </ModalContent>
                 </Modal>
@@ -184,7 +195,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
       </div>
       <LandlordTenantInfoSection title="current rent">
         {tenant?.current_rent?.length === 0 ? (
-          <p className="text-center text-gray-500 text-lg py-4">
+          <p className="text-center text-gray-500 text-md py-4">
             Tenant does not have any rent yet!
           </p>
         ) : (
@@ -194,12 +205,18 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         )}
       </LandlordTenantInfoSection>
       <LandlordTenantInfoSection title="statement">
-        <CustomTable
-          fields={statementTableFields}
-          data={tenant.statement ?? []}
-          tableBodyCellSx={{ fontSize: "1rem" }}
-          tableHeadCellSx={{ fontSize: "1rem" }}
-        />
+        {tenant?.statement?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Tenant does not have any statement yet
+          </div>
+        ) : (
+          <CustomTable
+            fields={statementTableFields}
+            data={tenant.statement ?? []}
+            tableBodyCellSx={{ fontSize: "1rem" }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+          />
+        )}
       </LandlordTenantInfoSection>
       {tenant?.user_tag === "mobile" && (
         <TenantEditContext.Provider value={{ data: tenant }}>
@@ -207,34 +224,50 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         </TenantEditContext.Provider>
       )}
       <LandlordTenantInfoSection title="shared documents">
-        {Object.entries(groupedDocuments).map(([documentType, documents]) => {
-          if (documentType === "others") return null; 
-          return (
-            <LandlordTenantInfoSection
-              minimized
-              title={documentType}
-              key={documentType}
-            >
-              <div className="flex flex-wrap gap-4">
-                {documents?.map((document) => (
-                  <LandlordTenantInfoDocument key={document.id} {...document} />
-                ))}
-              </div>
-            </LandlordTenantInfoSection>
-          );
-        })}
-        {groupedDocuments?.["others"] && (
-          <LandlordTenantInfoSection
-            minimized
-            title="other documents"
-            key="other document"
-          >
-            <div className="flex flex-wrap gap-4">
-              {groupedDocuments?.["others"]?.map((document) => (
-                <LandlordTenantInfoDocument key={document.id} {...document} />
-              ))}
-            </div>
-          </LandlordTenantInfoSection>
+        {tenant?.documents?.length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            Tenant does not have any document yet
+          </div>
+        ) : (
+          <>
+            {Object.entries(groupedDocuments).map(
+              ([documentType, documents]) => {
+                if (documentType === "others") return null;
+                return (
+                  <LandlordTenantInfoSection
+                    minimized
+                    title={documentType}
+                    key={documentType}
+                  >
+                    <div className="flex flex-wrap gap-4">
+                      {documents?.map((document) => (
+                        <LandlordTenantInfoDocument
+                          key={document.id}
+                          {...document}
+                        />
+                      ))}
+                    </div>
+                  </LandlordTenantInfoSection>
+                );
+              }
+            )}
+            {groupedDocuments?.["others"] && (
+              <LandlordTenantInfoSection
+                minimized
+                title="other documents"
+                key="other document"
+              >
+                <div className="flex flex-wrap gap-4">
+                  {groupedDocuments?.["others"]?.map((document) => (
+                    <LandlordTenantInfoDocument
+                      key={document.id}
+                      {...document}
+                    />
+                  ))}
+                </div>
+              </LandlordTenantInfoSection>
+            )}
+          </>
         )}
       </LandlordTenantInfoSection>
 
@@ -242,7 +275,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         <div className="opacity-40">
           {tenant?.previous_rent?.length === 0 ? (
             <p className="text-center text-gray-500 text-lg py-4">
-              Empty Previous Rent
+              Tenant does not have any previous rent yet
             </p>
           ) : (
             tenant?.previous_rent?.map((rent, index) => (

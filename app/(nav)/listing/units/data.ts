@@ -1,5 +1,9 @@
 import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
-import { RentalPropertyCardProps, UnitDataObject } from "../../management/rent-unit/data";
+import {
+  RentalPropertyCardProps,
+  UnitDataObject,
+} from "../../management/rent-unit/data";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 export const listingUnitFilter: FilterOptionMenu[] = [
   {
@@ -32,7 +36,7 @@ export const initialState: UnitPageState = {
   pending_unit: 0,
   unit: [],
   current_page: 1,
-  last_page: 1
+  last_page: 1,
 };
 
 export interface UnitPageState {
@@ -40,7 +44,7 @@ export interface UnitPageState {
   month_vacant: number;
   published_vacant: number;
   month_published_vacant: number;
-  unpublished_vacant:number;
+  unpublished_vacant: number;
   month_unpublished_vacant: number;
   month_pending_unit: number;
   pending_unit: number;
@@ -54,7 +58,7 @@ export const unit_listing_status = {
   // approved: "#01BA4C",
   unpublished: "#FFBB53",
   "under moderation": "#702AC8",
-  rejected: '#FB1818'
+  rejected: "#FB1818",
 } as const;
 
 export interface UnitApiResponse {
@@ -63,7 +67,7 @@ export interface UnitApiResponse {
     month_vacant: number;
     published_vacant: number;
     month_published_vacant: number;
-    unpublished_vacant:number;
+    unpublished_vacant: number;
     month_unpublished_vacant: number;
     month_pending_unit: number;
     pending_unit: number;
@@ -80,57 +84,63 @@ export interface UnitFilterResponse {
     current_page: number;
     last_page: number;
     data: UnitDataObject[];
+    unit: {
+      last_page: number;
+      current_page: number;
+    };
   };
 }
-
 
 export const transformRentUnitApiResponse = (
   response: UnitApiResponse | UnitFilterResponse
 ): Partial<UnitPageState> => {
-  const isUnitApiResponse = (
-    response: any
-  ): response is UnitApiResponse => {
+  const isUnitApiResponse = (response: any): response is UnitApiResponse => {
     return "total_vacant" in response.data;
   };
 
-  // console.log("response", response)
+  console.log("response", response);
 
   const unitData = isUnitApiResponse(response)
     ? response.data.unit
     : response.data;
 
-  const transformedUnits: RentalPropertyCardProps[] = unitData.data.map(
-    (u) => {
-      return {
-        unitId: u.id.toString(),
-        description: u.property.description,
-        unit_title: u.property.title,
-        unit_preference: u.unit_preference,
-        bedroom: u.bedroom,
-        unit_type: u.unit_type,
-        unit_sub_type: u.unit_sub_type,        
-        total_area_sqm: u.total_area_sqm,
-        number_of: u.number_of,
-        tenant_name: "No Tenant", //TODO
-        expiry_date: "No Expiry", //TODO
-        rent: u.fee_amount,
-        caution_deposit: u.caution_fee,
-        service_charge: u.service_charge,
-        images: u.images.map((image) => image.path),
-        unit_name: u.unit_name,
-        caution_fee: u.caution_fee,
-        status: u.status,
-        property_id: u.property.id,
-        property_title: u.property.title,
-        propertyType: u.property.property_type as "rental" | "facility",
-        address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
-      };
-    }
-  );
+  const transformedUnits: RentalPropertyCardProps[] = unitData.data.map((u) => {
+    const currency = u.property.currency;
+    return {
+      unitId: u.id.toString(),
+      description: u.property.description,
+      unit_title: u.property.title,
+      unit_preference: u.unit_preference,
+      bedroom: u.bedroom,
+      unit_type: u.unit_type,
+      unit_sub_type: u.unit_sub_type,
+      total_area_sqm: u.total_area_sqm,
+      number_of: u.number_of,
+      tenant_name: "No Tenant", //TODO
+      expiry_date: "No Expiry", //TODO
+      rent: u.fee_amount,
+      caution_deposit: u.caution_fee,
+      service_charge: u.service_charge,
+      images: u.images.map((image) => image.path),
+      unit_name: u.unit_name,
+      caution_fee: u.caution_fee,
+      status: u.status,
+      property_id: u.property.id,
+      property_title: u.property.title,
+      propertyType: u.property.property_type as "rental" | "facility",
+      address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
+      total_package: u.total_package
+        ? `${
+            currencySymbols[u?.property.currency as keyof typeof currencySymbols] ||
+            "₦"
+          }${formatNumber(parseFloat(u.total_package))}`
+        : undefined,
+      currency: currency,
+    };
+  });
 
   // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {
-    console.log("isUnitApiResponse", response)
     return {
       current_page: response.data.unit.current_page,
       last_page: response.data.unit.last_page,

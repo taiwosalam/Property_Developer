@@ -130,7 +130,7 @@ const RentAndUnit = () => {
     };
   }, [appliedFilters, search, sort, page]);
 
-  // console.log("total_pages", state.current_page)
+  console.log("total_pages", state)
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -168,7 +168,8 @@ const RentAndUnit = () => {
       setState((prevState) => ({
         ...prevState,
         current_page: apiData.data.pagination?.current_page,
-        // last_page: apiData.data.pagination?.total_pages,
+        last_page: apiData.data.pagination?.total_pages,
+        // total_pages: apiData.data.pagination.
       }));
     }
   }, [apiData]);
@@ -208,6 +209,7 @@ const RentAndUnit = () => {
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
+  console.log("satte", state)
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">

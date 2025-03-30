@@ -40,3 +40,6 @@ export const currencySymbols = {
   dollar: "$",
   pound: "£",
 } as const;
+
+
+export type Currency = keyof typeof currencySymbols;

@@ -21,6 +21,7 @@ import {
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
 import { toast } from "sonner";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 type AddLandlordModalOptions =
   | "options"
@@ -35,6 +36,8 @@ const AddLandlordModal = () => {
   const pathname = usePathname();
   const { setIsOpen } = useModal();
 
+  const [identifier, setIdentifier] = useState("");
+
   const [activeStep, setActiveStep] =
     useState<AddLandlordModalOptions>("options");
   const [formStep, setFormStep] = useState(1);
@@ -43,9 +46,13 @@ const AddLandlordModal = () => {
   const handleBack = () => {
     if (activeStep === "add-landlord" && formStep === 2) {
       setFormStep(1);
+    } else if (activeStep === "add-landlord-with-email" && formStep === 3) {
+      setFormStep(1);
+      setIdentifier("");
     } else {
       setActiveStep("options");
       setFormStep(1);
+      setIdentifier("");
     }
   };
 
@@ -75,7 +82,10 @@ const AddLandlordModal = () => {
   };
 
   const handleAddLandlordWithEmmailOrID = async (data: any) => {
-    const status = await addLandlordWithEmail(data);
+    const payload = {
+      identifier: data
+    }
+    const status = await addLandlordWithEmail(objectToFormData(payload));
     if (status) {
       closeModalAndRefresh();
     }
@@ -152,11 +162,17 @@ const AddLandlordModal = () => {
       ),
     },
     "add-landlord-with-email": {
-      heading: "Add Landlord/Landlady with Email",
+      heading:
+        formStep === 3 ? "Adding Warning!" : "Add Landlord/Landlady with Email",
       content: (
         <InvitationForm
           method="id"
-          submitAction={handleAddLandlordWithEmmailOrID}
+          page="landlord"
+          formStep={formStep}
+          setFormStep={setFormStep}
+          identifier={identifier}
+          setIdentifier={setIdentifier}
+          submitAction={() => handleAddLandlordWithEmmailOrID(identifier)}
         />
       ),
     },

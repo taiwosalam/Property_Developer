@@ -88,10 +88,71 @@ export const transformPropertyFormData = (
   return payload;
 };
 
+// export const transformUnitFormData = (
+//   formData: Record<string, any>,
+//   images: (File | string)[],
+//   property_id: string
+// ) => {
+//   const parseFee = (value: string | undefined) => {
+//     if (!value) {
+//       return 0;
+//     }
+//     return parseFloat(value.replace(/,/g, ''));
+//   };
+
+//   const parseIntOrNull = (value: string | undefined | null) => {
+//     if (!value) return 0;
+//     const parsed = parseInt(value, 10);
+//     return isNaN(parsed) ? null : parsed;
+//   };
+
+//   const payload = {
+//     unit_name: formData.unit_name,
+//     unit_type: formData.unit_type,
+//     unit_sub_type: formData.unit_sub_type ?? null,
+//     unit_preference: formData.unit_preference,
+//     measurement: formData.measurement ?? null,
+//     total_area_sqm: formData.total_area_sqm ?? null,
+//     number_of: formData.number_of ?? 0,
+//     bedroom: parseIntOrNull(formData.bedroom),
+//     bathroom: parseIntOrNull(formData.bathroom),
+//     toilet: parseIntOrNull(formData.toilet),
+//     facilities: formData.facilities
+//       ? formData.facilities.split(',').map(decodeURIComponent)
+//       : [],
+//     en_suit: formData.en_suit ?? null,
+//     prepaid: formData.prepaid ?? null,
+//     wardrobe: formData.wardrobe ?? null,
+//     pet_allowed: formData.pets_allowed ?? null,
+//     fee_period: formData.fee_period ?? null,
+//     fee_amount: parseFee(formData.fee_amount),
+//     service_charge: parseFee(formData.service_charge),
+//     agency_fee: parseFee(formData.agency_fee),
+//     legal_fee: parseFee(formData.legal_fee),
+//     caution_fee: parseFee(formData.caution_fee),
+//     inspection_fee: parseFee(formData.inspection_fee),
+//     other_charge: parseFee(formData.other_charge),
+//     negotiation: formData.negotiation ?? null,
+//     security_fee: parseFee(formData.security_fee),
+//     total_package: parseFee(formData.total_package),
+//     renew_fee_period: formData.renew_fee_period ?? null,
+//     renew_fee_amount: parseFee(formData.renew_fee_amount),
+//     renew_service_charge: parseFee(formData.renew_service_charge),
+//     renew_other_charge: parseFee(formData.renew_other_charge),
+//     renew_total_package: parseFee(formData.renew_total_package),
+//     property_id,
+//     images,
+//     default_image: images[0] || null,
+//   };
+//   return payload;
+// };
+
+
 export const transformUnitFormData = (
   formData: Record<string, any>,
   images: (File | string)[],
-  property_id: string
+  property_id: string,
+  originalImages: { id: string; path: string }[] = [] // Default to empty array if not provided
 ) => {
   const parseFee = (value: string | undefined) => {
     if (!value) {
@@ -105,6 +166,20 @@ export const transformUnitFormData = (
     const parsed = parseInt(value, 10);
     return isNaN(parsed) ? null : parsed;
   };
+
+  // Determine the default image ID (first image in the list)
+  let defaultImageId: string | null = null;
+  if (images.length > 0) {
+    const firstImage = images[0];
+    if (typeof firstImage === "string") {
+      const matchingImage = originalImages.find((img) => img.path === firstImage);
+      if (matchingImage) {
+        defaultImageId = matchingImage.id;
+      }
+    }
+    // If the first image is a File (new upload), the server will assign its ID after upload
+    // In this case, defaultImageId remains null and can be handled server-side
+  }
 
   const payload = {
     unit_name: formData.unit_name,
@@ -142,10 +217,12 @@ export const transformUnitFormData = (
     renew_total_package: parseFee(formData.renew_total_package),
     property_id,
     images,
-    default_image: images[0] || null,
+    default_image: defaultImageId, // Set to the ID of the first existing image
   };
+
   return payload;
 };
+
 
 export const addPropertyWithId = async (
   property_id: string,

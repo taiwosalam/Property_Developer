@@ -7,6 +7,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useUnitForm } from "./unit-form-context";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useAddUnitStore } from "@/store/add-unit-store";
 
 interface AddUntFooterProps {
   noForm?: boolean;
@@ -18,6 +19,7 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
   const { submitLoading, setSaveClick } = useUnitForm();
   const [footerModalOpen, setFooterModalOpen] = useState(false);
   const router = useRouter();
+  const addedUnits = useAddUnitStore((s) => s.addedUnits);
 
   const handleAddMoreClick = () => {
     if (!noForm) {
@@ -37,7 +39,18 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (noForm) {
+      // Check if any unit has notYetUploaded set to true
+      const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
+      if (hasNotYetUploaded) {
+        // Show an error message and prevent navigation
+        toast.warning(
+          "There are units that have not been updated yet. Please update them to continue."
+        );
+        return;
+      }
+      // If no units are pending upload, navigate
       router.push("/management/properties");
+      // router.push("/management/properties");
     } else {
       handleInputChange();
       if (!canSubmit) {

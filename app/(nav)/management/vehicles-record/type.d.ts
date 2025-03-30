@@ -57,11 +57,12 @@ export interface VehicleRecordParams{
     search?: string;
     sort?: 'asc' | 'desc'
     page?: number;
-    all?: boolean;
+    all?: string;
     recent?: boolean;
     state?: string;
     trending?: boolean;
     start_date?: string;
     end_date?: string;
+    property_type?: string;
   }
   

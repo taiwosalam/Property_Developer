@@ -121,8 +121,8 @@ const VehicleRecordModal: React.FC<
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-4">
-              <p className="text-text-tertiary dark:text-darkText-1 min-w-[100px]">
-                Category
+              <p className="text-text-tertiary dark:text-darkText-1 min-w-[100px] capitalize">
+                record type
               </p>
               <p className="text-text-primary dark:text-white capitalize">
                 {category}

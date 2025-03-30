@@ -11,6 +11,7 @@ import {
   transformVehicleRecordApiResponse,
   VehicleData,
   VehicleRecordApiResponse,
+  VehicleRecordFilterParams,
   vehicleRecordFIltersOptionsWithDropdown,
   veicleRecordTablefields,
 } from "../data";
@@ -28,6 +29,9 @@ import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-recor
 import BackButton from "@/components/BackButton/back-button";
 import { useParams } from "next/navigation";
 import useVehicleRecordStore from "@/store/vehicle-record";
+import { FilterResult } from "../../service-providers/types";
+import dayjs from "dayjs";
+import { AxiosRequestConfig } from "axios";
 
 const VehiclesRecordPage = () => {
   const { id } = useParams();
@@ -49,6 +53,8 @@ const VehiclesRecordPage = () => {
     check_outs_pending: 0,
     check_outs_this_month: 0,
     total_records: 0,
+    total: 0,
+    total_this_month: 0,
     vehicle_records: {
       data: [] as VehicleData[],
       current_page: 1,
@@ -66,15 +72,13 @@ const VehiclesRecordPage = () => {
     check_ins_this_month,
     check_outs_this_month,
     total_records,
+    total: totalStats,
+    total_this_month,
     vehicle_records: { data, current_page, last_page, total },
   } = state;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
-  const handleSort = (order: "asc" | "desc") => {
-    setSortOrder(order);
-  };
 
   const handlePageChange = (page: number) => {
     setSearchQuery("");
@@ -84,20 +88,57 @@ const VehiclesRecordPage = () => {
     }));
   };
 
-  const handleSearch = async (query: string) => {
-    setSearchQuery(query);
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
   };
 
-  const config = useMemo(
-    () => ({
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    // setPage(1);
+  };
+
+  const { menuOptions, startDate, endDate } = appliedFilters;
+  // const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"asc" | "desc" | "">("");
+  const status = menuOptions["Status"]?.[0];
+  const config: AxiosRequestConfig = useMemo(() => {
+    return {
       params: {
-        page: current_page,
-        search: searchQuery,
-        sort_order: sortOrder,
-      },
-    }),
-    [current_page, searchQuery, sortOrder]
-  );
+        // page,
+        date_from: appliedFilters.startDate
+          ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+          : undefined,
+        date_to: appliedFilters.endDate
+          ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+          : undefined,
+        search: search,
+        sort_order: sort,
+        status: status,
+      } as VehicleRecordFilterParams,
+    };
+  }, [appliedFilters, search, sort]);
+
+  const handleSort = (order: "asc" | "desc") => {
+    setSort(order);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearch(query);
+  };
 
   const {
     data: apiData,
@@ -171,9 +212,9 @@ const VehiclesRecordPage = () => {
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Pending"
-            newData={check_ins_pending}
-            total={check_ins_pending}
+            title="Total"
+            newData={total}
+            total={total_this_month}
             colorScheme={3}
           />
         </div>
@@ -200,7 +241,7 @@ const VehiclesRecordPage = () => {
               "This page contains a list of Vehicle Record on the platform.",
           }}
           searchInputPlaceholder="Search for Vehicle Record"
-          handleFilterApply={() => {}}
+          handleFilterApply={handleFilterApply}
           isDateTrue
           filterOptionsMenu={vehicleRecordFIltersOptionsWithDropdown}
           hasGridListToggle={false}

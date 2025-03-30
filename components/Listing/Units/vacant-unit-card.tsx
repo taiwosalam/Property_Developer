@@ -26,6 +26,7 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import { unit_listing_status } from "@/app/(nav)/listing/units/data";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { useAddUnitStore } from "@/store/add-unit-store";
+import { transformUnitDetails } from "@/app/(nav)/listing/data";
 
 const VacantUnitCard = ({
   status,
@@ -41,25 +42,31 @@ const VacantUnitCard = ({
     | "pending";
 }) => {
   const propertySettings = useAddUnitStore((state) => state.propertySettings);
-  const currency = propertySettings?.currency;
+  const currency = unit_data.currency  || "naira";
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const referenceObject = {
-    "unit no/name": "",
-    // unit_details: "",
+    property_title: "",
+    unit_name: "",
+    unit_details: "",
     rent: "",
-    ...(unit_data.caution_fee ? { caution_deposit: unit_data?.caution_fee } : {}),
-    service_charge: unit_data?.service_charge,
+    ...(unit_data.caution_fee ? { caution_deposit: "" } : {}),
+    total_package: "",
+    // service_charge: "",
+    address: "",
+    unit_type: "",
+    account_officer: "",
   };
 
-  const unit_status = status === "pending"
-    ? "under moderation"
-    : status === "approved"
-    ? "published"
-    : status;
+  const unit_status =
+    status === "pending"
+      ? "under moderation"
+      : status === "approved"
+      ? "published"
+      : status;
 
-    // console.log("unit_status", unit_status)
+  console.log("unit_data", unit_data);
   const togglePublish = () => {
     if (status === "approved") {
       setIsOpen(false);
@@ -68,29 +75,26 @@ const VacantUnitCard = ({
   };
 
   const keyValueData = {
-    // unit_details:
-    //   unit_data?.unit_type?.toLowerCase() === "land"
-    //     ? `${unit_data.unit_preference} - ${unit_data.unit_type} - ${unit_data.total_area_sqm
-    //     }${unit_data.number_of && unit_data.number_of !== "0"
-    //       ? ` - ${unit_data.number_of}`
-    //       : ""
-    //     }`
-    //     : `${unit_data.unit_preference} - ${unit_data.bedroom || 0} bedroom${parseInt(unit_data.bedroom || "0") > 1 ? "s" : ""
-    //     } - ${unit_data.unit_sub_type} - ${unit_data.unit_type}`,
-    "unit no/name": unit_data.unit_name,
-    rent: `${currencySymbols[currency || "naira"]}${formatNumber(
+    property_title: unit_data.property_title,
+    unit_name: unit_data.unit_name,
+    unit_details: transformUnitDetails(unit_data),
+    rent: `${currencySymbols[currency as keyof typeof currencySymbols]}${formatNumber(
       parseFloat(unit_data.rent)
     )}`,
     ...(unit_data.caution_fee
       ? {
           caution_deposit: `${
-            currencySymbols[currency || "naira"]
+            currencySymbols[currency as keyof typeof currencySymbols]
           }${formatNumber(parseFloat(unit_data.caution_fee))}`,
         }
       : {}),
-    service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
-      parseFloat(unit_data.service_charge || "0")
-    )}`,
+      total_package: unit_data.total_package,
+    // service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
+    //   parseFloat(unit_data.service_charge || "0")
+    // )}`,
+    address: unit_data.address,
+    unit_type: unit_data.unit_type,
+    account_officer: "",
   };
 
   const color =
@@ -122,19 +126,19 @@ const VacantUnitCard = ({
                   referenceObject={referenceObject}
                 />
               </div>
-              <div className="flex items-start gap-[75px] text-base font-normal">
-                <p className="text-[#747474] dark:text-darkText-1">
+              {/* <div className="flex items-start gap-[75px] text-base font-normal"> */}
+              {/* <p className="text-[#747474] dark:text-darkText-1">
                   Property Title
-                </p>
-                {/* <TruncatedText
+                </p> */}
+              {/* <TruncatedText
                   lines={3}
                   className="text-text-quaternary dark:text-darkText-2"
                   as="div"
                 >
                   <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
                 </TruncatedText> */}
-                <span> {unit_data.property_title} </span>
-              </div>
+              {/* <span> {unit_data.property_title} </span> */}
+              {/* </div> */}
             </div>
             <div
               onClick={() => setIsModalOpen(true)}

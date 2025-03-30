@@ -93,7 +93,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
         return option.toLowerCase().includes(searchTerm.toLowerCase());
       } else {
         // If the option is an object, match the label
-        return option.label.toLowerCase().includes(searchTerm.toLowerCase());
+        return option.label?.toLowerCase()?.includes(searchTerm.toLowerCase());
       }
     });
   };
