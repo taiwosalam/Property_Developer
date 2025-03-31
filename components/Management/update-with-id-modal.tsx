@@ -16,6 +16,7 @@ import useFetch from "@/hooks/useFetch";
 import { transformMobileUseData } from "@/app/(nav)/management/landlord/data";
 import ModalPreset from "../Modal/modal-preset";
 import { ExportUserIcon } from "@/public/icons/dashboard-cards/icons";
+import { updateServiceProviderWithEmailOrID } from "@/app/(nav)/management/service-providers/[serviceProviderId]/manage/data";
 
 const UpdateProfileWithIdModal = ({
   id,
@@ -23,7 +24,7 @@ const UpdateProfileWithIdModal = ({
   data,
 }: {
   id: number;
-  page: "landlord" | "tenant";
+  page: "landlord" | "tenant" | "service-providers";
   data: UserCardProps | null;
 }) => {
   const [activeStep, setActiveStep] = useState(1);
@@ -66,15 +67,23 @@ const UpdateProfileWithIdModal = ({
     };
     try {
       setReqLoading(true);
-      const action =
-        page === "landlord"
-          ? updateLandlordWithEmailOrID(payload, id)
-          : updateTenantWithEmailOrID(payload, id);
+      let action;
+      if (page === "landlord") {
+        action = updateLandlordWithEmailOrID(payload, id);
+      } else if (page === "tenant") {
+        action = updateTenantWithEmailOrID(payload, id);
+      } else {
+        action = updateServiceProviderWithEmailOrID(payload, id);
+      }
+      // page === "landlord"
+      //   ? updateLandlordWithEmailOrID(payload, id)
+      //   : updateTenantWithEmailOrID(payload, id);
       const res = await action;
       if (res) {
         setActiveStep(3);
         window.dispatchEvent(new Event("refetchtenant"));
         window.dispatchEvent(new Event("refetchlandlord"));
+        window.dispatchEvent(new Event("updateServiceProvider"));
       }
     } catch (error) {
       toast.error("Failed to Update User");
@@ -84,6 +93,7 @@ const UpdateProfileWithIdModal = ({
   };
 
   const isLandlord = page === "landlord";
+  const isServiceProvider = page === "service-providers";
 
   useEffect(() => {
     if (error) {
@@ -143,9 +153,13 @@ const UpdateProfileWithIdModal = ({
         >
           <div className="w-[100%]">
             <h3>
-              Are you sure you want to Update the following { " " }
-              {isLandlord ? " Landlord/LandLady " : " tenants/occupants "} with the
-              mobile users data?
+              Are you sure you want to update the following{" "}
+              {isLandlord
+                ? "Landlord/LandLady"
+                : isServiceProvider
+                ? "Service Provider"
+                : "tenants/occupants"}{" "}
+              with the mobile user&apos;s data?
             </h3>
             <div className="flex gap-4 my-4 items-center justify-center w-full">
               {data && <UserCard {...data} />}
@@ -184,9 +198,15 @@ const UpdateProfileWithIdModal = ({
         <ModalPreset type="success">
           <div className="w-[100%]">
             <p className="text-green-600 text-base font-semibold mb-4">
-              The {isLandlord ? "Landlord/Landlady" : "Tenant/Occupant"} profile
-              has been successfully updated!
+              The{" "}
+              {isLandlord
+                ? "Landlord/Landlady"
+                : isServiceProvider
+                ? "Service Provider"
+                : "Tenant/Occupant"}{" "}
+              profile has been successfully updated!
             </p>
+
             <p className="text-gray-600 mb-6">
               All details have been synced with the mobile user data, except for
               rent records.
