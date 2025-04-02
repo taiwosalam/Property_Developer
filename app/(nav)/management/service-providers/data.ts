@@ -65,9 +65,11 @@ export const inviteProviderByPhone = async (formData: FormData) => {
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetchServiceProvider"));
       toast.success("Invitation sent");
+      return true
     }
   } catch (error) {
     handleAxiosError(error);
+    return false;
   }
 };
 export const inviteByIdOrEmail = async (formData: FormData) => {
@@ -80,9 +82,11 @@ export const inviteByIdOrEmail = async (formData: FormData) => {
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetchServiceProvider"));
       toast.success("Service provider added successfully");
+      return true
     }
   } catch (error) {
     handleAxiosError(error);
+    return false;
   }
 };
 

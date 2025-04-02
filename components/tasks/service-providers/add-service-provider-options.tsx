@@ -30,7 +30,7 @@ const AddServiceProviderOptions: React.FC<AddServiceProviderOptionsProps> = ({
           className="py-2 px-8"
           onClick={() => showForm("add-with-email")}
         >
-          Add with Email
+          Add with Email/ID
         </Button>
       </div>
     </>

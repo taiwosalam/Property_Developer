@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Link from "next/link";
@@ -59,6 +59,7 @@ const ServiceProviders = () => {
   };
 
   const storedView = useView();
+  const itemListView = useRef<HTMLDivElement | null>(null)
 
   const [view, setView] = useState<string | null>(storedView);
 
@@ -117,6 +118,8 @@ const ServiceProviders = () => {
     setConfig({
       params: { ...config.params, page },
     });
+
+    itemListView.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -302,7 +305,7 @@ const ServiceProviders = () => {
             />
           )
         ) : (
-          <>
+          <div ref={itemListView}>
             {view === "grid" ? (
               <AutoResizingGrid minWidth={284} gap={16}>
                 {silentLoading ? (
@@ -339,7 +342,7 @@ const ServiceProviders = () => {
                 )}
               </>
             )}
-          </>
+          </div>
         )}
       </section>
 

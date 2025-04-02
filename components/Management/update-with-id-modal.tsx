@@ -168,10 +168,17 @@ const UpdateProfileWithIdModal = ({
               </div>
               {mobileUser && <UserCard {...mobileUser} />}
             </div>
-            <p>
-              Proceeding will override all existing user profile details except
-              for the rent records, and inherit all property details
-            </p>
+            {isServiceProvider ? (
+              <p>
+                Proceeding will override all existing user profile details
+                except for the business records, and inherit all details
+              </p>
+            ) : (
+              <p>
+                Proceeding will override all existing user profile details
+                except for the rent records, and inherit all property details
+              </p>
+            )}
             <div className="flex justify-end items-center gap-4 mt-2">
               <Button
                 type="button"
