@@ -18,7 +18,6 @@ import {
 import { toast } from "sonner";
 import { useModal } from "@/components/Modal/modal";
 import { useRouter, usePathname } from "next/navigation";
-import { clockClasses } from "@mui/x-date-pickers";
 import { AuthForm } from "@/components/Auth/auth-components";
 
 const AddServiceProviderModal = () => {
@@ -41,10 +40,24 @@ const AddServiceProviderModal = () => {
     }
   };
 
+  const closeModalAndRefresh = () => {
+    setIsOpen(false);
+    if (pathname !== "/management/service-providers") {
+      router.push("/management/service-providers");
+    } else {
+      setTimeout(() => {
+        window.dispatchEvent(new Event("refetchServiceProviders"));
+      }, 0);
+    }
+  };
+
   const handleInviteProviderByPhone = async (data: FormData) => {
     try {
       setInviteByPhoneLoading(true);
-       await inviteProviderByPhone(data);
+       const res = await inviteProviderByPhone(data);
+       if(res){
+        closeModalAndRefresh();
+       }
     } catch (error) {
       if (error) {
         toast.error("Something went wrong");
@@ -57,25 +70,16 @@ const AddServiceProviderModal = () => {
   const handleInviteProviderByEmail = async (data: FormData) => {
     try {
       setInviteByEmailLoading(true);
-       await inviteByIdOrEmail(data);
+       const res = await inviteByIdOrEmail(data);
+       if (res){
+        closeModalAndRefresh()
+       }
     } catch (error) {
       if (error) {
         toast.error("Something went wrong");
       }
     } finally {
       setInviteByEmailLoading(false);
-    }
-  };
-
-  
-  const closeModalAndRefresh = () => {
-    setIsOpen(false);
-    if (pathname !== "/management/service-providers") {
-      router.push("/management/service-providers");
-    } else {
-      setTimeout(() => {
-        window.dispatchEvent(new Event("refetchServiceProviders"));
-      }, 0);
     }
   };
 
@@ -155,7 +159,7 @@ const AddServiceProviderModal = () => {
       ),
     },
     "add-with-email": {
-      heading: "Add Service Provider with Email",
+      heading: "Add Service Provider with Email/Id",
       content: (
         <AuthForm
           returnType="form-data"
@@ -165,7 +169,7 @@ const AddServiceProviderModal = () => {
           <div className="custom-flex-col gap-5 w-[300px]">
             <Input
               id="identifier"
-              label="Service Provider ID"
+              label="Service Provider Email/ID"
               inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
             />
             <div className="flex justify-center">

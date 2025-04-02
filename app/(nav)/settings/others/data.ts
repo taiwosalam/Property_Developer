@@ -165,10 +165,11 @@ export const updateResetSettings = async (data: string[]) => {
     });
     if (response.status === 200 || response.status === 201) {
       toast.success("Settings updated");
-      return response.data;
+      return true
     }
   } catch (error) {
     handleAxiosError(error);
+    return false;
   }
 };
 
@@ -179,6 +180,7 @@ export type DirectorCardProps = {
     full_name: string;
     email: string;
     phone_number: string;
+    title: string;
   }[];
 };
 export function transfromToDirectorCards(
@@ -196,7 +198,7 @@ export function transfromToDirectorCards(
           : item.full_name,
         email: item?.user?.email,
         phone_number: item?.phone_number || "___ ___",
-        //title: item?.personal_title ?? "___ ___"
+        title: item?.professional_title ?? "___ ___"
       };
     }),
   };

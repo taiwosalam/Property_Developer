@@ -15,6 +15,7 @@ type Director = {
   company_id: number;
   personal_title: string | null;
   years_in_business: string | null;
+  professional_title: string;
   phone_number: string;
   about_director: string | null;
   profile_picture: string | null;

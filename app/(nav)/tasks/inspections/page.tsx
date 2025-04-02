@@ -6,8 +6,13 @@ import Pagination from "@/components/Pagination/pagination";
 import InspectionCard from "@/components/tasks/Inspections/inspection-card";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { inspectionFilterOptionsWithDropdown } from "./data";
+import useFetch from "@/hooks/useFetch";
 
 const InspectionPage = () => {
+  const { data: apiData } = useFetch(`inspections`);
+
+  console.log(apiData);
+
   return (
     <div className="space-y-7">
       <div className="hidden md:flex gap-5 flex-wrap">
