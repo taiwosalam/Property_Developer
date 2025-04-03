@@ -15,7 +15,8 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState<TNotificationData | null>(
     null
   );
-  const { data: apiData } = useFetch<NotificationApiResponse>(`/notifications`);
+  const { data: apiData, silentLoading, error } =
+    useFetch<NotificationApiResponse>(`/notifications`);
 
   useEffect(() => {
     if (apiData) {
@@ -24,7 +25,10 @@ const Notifications = () => {
     }
   }, [apiData]);
 
-  console.log(notifications);
+  if(error){
+    return <p className="text-center text-slate-400">{"We are sorry something went wrong from our end"}</p>
+  }
+
   return (
     <div
       className="space-y-8 overflow-auto custom-round-scrollbar pr-2"
@@ -38,13 +42,15 @@ const Notifications = () => {
         <SectionSeparator />
       </div>
       <div className="custom-flex-col gap-6">
-        {notifications && notifications.notifications.length > 0 ?
+        {notifications && !notifications?.notifications.length && (
+          <p>You currently have no new notification at this time</p>
+        )}
+        {notifications &&
+          !silentLoading &&
+          notifications.notifications.length > 0 &&
           notifications.notifications.map((notification, index) => (
-            <Notification
-              key={index}
-              notification={notification}
-            />
-          )): <p>No Notification Yet</p>}
+            <Notification key={index} notification={notification} />
+          ))}
 
         {/* <Notification type="message" />
         <Notification type="payment" />

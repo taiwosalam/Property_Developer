@@ -10,8 +10,15 @@ import {
 } from "./inspection-card-components";
 import Button from "@/components/Form/Button/button";
 import { CancelIcon } from "@/public/icons/icons";
+import { Inspection } from "@/app/(nav)/tasks/inspections/type";
+import { formatToNaira } from "@/app/(nav)/tasks/inspections/data";
+import { formatTime } from "@/app/(nav)/notifications/data";
 
-const InspectionDetailModal = () => {
+interface InspectionDetailsModelProps {
+  data: Inspection
+}
+const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
+  const address = `${data?.full_address} ${data?.city_area} ${data?.local_government} ${data?.state}`
   return (
     <div
       className="w-[600px] max-w-[80%] max-h-[90vh] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col pb-14 gap-6 overflow-x-hidden overflow-y-auto custom-round-scrollbar"
@@ -31,28 +38,33 @@ const InspectionDetailModal = () => {
           Inspection details
         </h2>
       </div>
-      <InspectionCardInfo className="px-6" />
+      <InspectionCardInfo className="px-6" 
+        address={address}
+        unit_fee_period={data?.unit_fee_period}
+        total_price={formatToNaira(data?.total_package)}
+        image={null}
+        title={data?.property_name}
+        yearly_price={"12,000"}/>
+
       <div className="relative z-[1] custom-flex-col gap-4">
         <div className="w-full border-b border-dashed border-brand-7 opacity-50"></div>
         <div className="custom-flex-col gap-8 px-6">
           <div className="custom-flex-col gap-4">
             <InspectionCardTitle>other details</InspectionCardTitle>
-            <InspectionCardTitleDesc title="Booked by" desc="Salam AIshat" />
-            <InspectionCardTitleDesc title="Selected Date" desc="25/01/2024" />
-            <InspectionCardTitleDesc title="Selected Time" desc="12:30pm" />
-            <InspectionCardTitleDesc title="Phone" desc="09145434578" />
-            <InspectionCardTitleDesc title="Branch" desc="Bodija Branch" />
-            <InspectionCardTitleDesc title="Property" desc="Harmony Cottage" />
+            <InspectionCardTitleDesc title="Booked by" desc={data?.booked_by ?? ""} />
+            <InspectionCardTitleDesc title="Selected Date" desc={data?.inspection_date ?? ""} />
+            <InspectionCardTitleDesc title="Selected Time" desc={formatTime(data?.inspection_time) ?? ""} />
+            <InspectionCardTitleDesc title="Phone" desc={data?.phone ?? ""} />
+            <InspectionCardTitleDesc title="Branch" desc={data?.branch ?? ""} />
+            <InspectionCardTitleDesc title="Property" desc={data?.property_name} />
             <InspectionCardTitleDesc
               title="Inspection Type"
-              desc="Physical Inspection"
+              desc={ data?.inspection_type === "physical_inspection" ? "Physical Inspection" : "Virtual Inspection" }
             />
             <div className="custom-flex-col gap-1">
               <InspectionCardTitle>description</InspectionCardTitle>
               <InspectionCardDesc>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Praesent eget dictum sem, ut molestie eros. Morbi in dolor
-                augue. Sed aliquet ipsum fringilla sapien facilisis consectetur.
+                { data?.description}
               </InspectionCardDesc>
             </div>
           </div>

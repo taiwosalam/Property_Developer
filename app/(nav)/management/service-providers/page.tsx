@@ -42,6 +42,7 @@ import TableLoading from "@/components/Loader/TableLoading";
 import CustomTable from "@/components/Table/table";
 import { landlordTableFields } from "../landlord/data";
 import UserTag from "@/components/Tags/user-tag";
+import { entries } from "lodash";
 
 interface ServiceProviderCardProps {
   id: number;
@@ -59,7 +60,7 @@ const ServiceProviders = () => {
   };
 
   const storedView = useView();
-  const itemListView = useRef<HTMLDivElement | null>(null)
+  const itemListView = useRef<HTMLDivElement | null>(null);
 
   const [view, setView] = useState<string | null>(storedView);
 
@@ -119,7 +120,10 @@ const ServiceProviders = () => {
       params: { ...config.params, page },
     });
 
-    itemListView.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    itemListView.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -148,21 +152,6 @@ const ServiceProviders = () => {
 
   useRefetchOnEvent("refetchServiceProvider", () => refetch({ silent: true }));
 
-  if (loading) {
-    return (
-      <CustomLoader
-        layout="page"
-        statsCardCount={3}
-        pageTitle="Service Provider"
-      />
-    );
-  }
-
-  if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
   const serviceProviders: ServiceProviderCardProps[] =
     apiData?.data?.providers?.data || [];
 
@@ -180,7 +169,26 @@ const ServiceProviders = () => {
       ? (apiData?.data?.providers as ProvidersPagination).current_page
       : 1;
 
-  const transformedServiceProvider = serviceProviders.map((l) => ({
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < totalPages &&
+          !silentLoading
+        ) {
+          handlePageChange(current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, totalPages, silentLoading]
+  );
+
+  const transformedServiceProvider = serviceProviders.map((l, index) => ({
     ...l,
     avatar: l.avatar,
     full_name: <p className="flex items-center whitespace-nowrap">{l.name}</p>,
@@ -206,7 +214,27 @@ const ServiceProviders = () => {
         )}
       </div>
     ),
+
+    ref:
+      index === serviceProviders.length - 1 && current_page < totalPages
+        ? lastRowRef
+        : undefined,
   }));
+
+  if (loading) {
+    return (
+      <CustomLoader
+        layout="page"
+        statsCardCount={3}
+        pageTitle="Service Provider"
+      />
+    );
+  }
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
   return (
     <div className="space-y-9">
       <div className="page-header-container">
@@ -340,13 +368,18 @@ const ServiceProviders = () => {
                     tableBodyCellSx={{ color: "#3F4247" }}
                   />
                 )}
+                {silentLoading && current_page > 1 && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="loader" />
+                  </div>
+                )}
               </>
             )}
           </div>
         )}
       </section>
 
-      {serviceProviders.length > 0 && (
+      {view === "grid" && (
         <Pagination
           totalPages={totalPages}
           currentPage={current_page}

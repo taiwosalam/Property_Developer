@@ -29,20 +29,20 @@ interface NotificationProps {
     message?: string;
     time?: string;
     from_id: number | null;
+    sender_name: string;
+    sender_picture: string;
   };
 }
-const Notification: React.FC<NotificationProps> = ({
- notification
-}) => {
-  const [fromUser, setFromUser] = useState();
-  const { data: userData } = useFetch(`user/profile/${notification.from_id}`);
-
+const Notification: React.FC<NotificationProps> = ({ notification }) => {
   return (
     <div className="custom-flex-col gap-4">
       <div className="flex gap-4">
         <div className="flex items-start">
           <Picture
-            src={notification_icons[notification.type?.toLocaleLowerCase()] || empty}
+            src={
+              notification_icons[notification.type?.toLocaleLowerCase()] ||
+              empty
+            }
             alt="message"
             size={50}
           />
@@ -57,7 +57,9 @@ const Notification: React.FC<NotificationProps> = ({
                 (4 new messages)
               </span> */}
             </p>
-            <p className="text-text-secondary text-base font-normal first-letter:uppercase">{notification?.time}</p>
+            <p className="text-text-secondary text-base font-normal first-letter:uppercase">
+              {notification?.time}
+            </p>
           </div>
           <div className="py-2 px-4 rounded-md bg-brand-1 flex gap-3">
             <SectionSeparator
@@ -65,25 +67,33 @@ const Notification: React.FC<NotificationProps> = ({
               style={{ backgroundColor: "#787A7E" }}
             />
             <div className="flex gap-2 py-2">
-              {/* <div className="flex items-center">
-                <Picture
-                  src={Avatar}
-                  alt="profile picture"
-                  size={50}
-                  className="rounded-md"
-                />
-              </div> */}
+              {notification.sender_picture &&
+                notification.sender_picture !== "/img/system-logo.png" && (
+                  <div className="flex items-center">
+                    <Picture
+                      src={notification.sender_picture ?? Avatar}
+                      alt="profile picture"
+                      size={50}
+                      className="rounded-md"
+                    />
+                  </div>
+                )}
               <div className="custom-flex-col">
-                {notification?.message}
-                {/* <div className="flex items-center gap-2">
-                  <p className="text-text-secondary text-sm font-medium">
-                    Abimbola Adedeji
+                <div className="flex items-center gap-2">
+                  <p className="text-text-secondary text-sm font-medium capitalize">
+                    {notification.sender_name &&
+                      notification?.sender_name !== "System" &&
+                      notification.sender_name}
                   </p>
-                  <Picture src={VerifiedIcon} alt="verified" size={14} />
+                  {notification.sender_name &&
+                    notification?.sender_name !== "System" && (
+                      <Picture src={VerifiedIcon} alt="verified" size={14} />
+                    )}
                 </div>
-                <p className="text-text-tertiary text-sm font-medium">
+                {/*<p className="text-text-tertiary text-sm font-medium">
                   You just got 4 new messages sent by @username
                 </p> */}
+                {notification?.message}
               </div>
             </div>
           </div>
