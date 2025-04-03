@@ -2,6 +2,7 @@ import api, { handleAxiosError } from "@/services/api";
 import type { ServiceProviderData, ServiceProviderPage } from "./types";
 import { IndividualServiceProvidersAPIResponse } from "@/app/(nav)/accountant/management/service-providers/[serviceProviderId]/manage/types";
 import { toast } from "sonner";
+import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 
 export const serviceProviderData: ServiceProviderData = {
   id: 1,
@@ -207,4 +208,35 @@ export const updateServiceProviderPicture = async (id: string, payload: FormData
     return false;
   }
 }
+
+export const updateServiceProviderWithEmailOrID = async (data: any, id: number) => {
+  try {
+    const res = await api.post(`service-providers/update/email/${id}`, data);
+    if (res.status === 201) {
+      window.dispatchEvent(new Event("updateServiceProvider"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const transformUserCardData = (data: any) => {
+  const validateBadgeColor = (color: string): BadgeIconColors => {
+    const validColors: BadgeIconColors[] = ["green", "black", "blue", "red", "yellow", "gray"];
+    return validColors.includes(color as BadgeIconColors) 
+      ? (color as BadgeIconColors) 
+      : "gray"; // Default fallback color
+  };
+  return {
+    name: data.name,
+    picture_url: data.avatar,
+    email: data.email,
+    phone_number: data.phone,
+    user_tag: "web",
+    badge_color: validateBadgeColor(data.badge_color),
+  };
+};
+
  

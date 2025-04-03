@@ -12,14 +12,23 @@ import NotificationProfile from "@/public/icons/notification-profile.svg";
 import NotificationService from "@/public/icons/notification-service.svg";
 import NotificationProperty from "@/public/icons/notification-property.svg";
 import NotificationReservation from "@/public/icons/notification-reservation.svg";
+import NotificationInvoice from "@/public/icons/notification-invoice.svg";
+import NotificationPropertyRequest from "@/public/icons/property-request.svg";
+import NotificationSettings from "@/public/icons/notification-settings.svg";
 
-export const notification_icons: Record<NotificationType, StaticImageData> = {
+export const notification_icons: Record<string, StaticImageData | any> = {
   user: NotificationUser,
   review: NotificationReview,
   message: NotificationMessage,
-  payment: NotificationPayment,
+  invoice: NotificationInvoice,
   profile: NotificationProfile,
-  service: NotificationService,
-  property: NotificationProperty,
-  reservation: NotificationReservation,
+  setting: NotificationSettings,
+  listing: NotificationProperty,
+  location: NotificationSettings,
+  subscription: NotificationReservation,
+  "wallet transaction": NotificationPayment,
+  "rent and unit": NotificationProperty,
+  "agent community": NotificationService,
+  "property draft": NotificationProperty,
+  "property request": NotificationPropertyRequest,
 };

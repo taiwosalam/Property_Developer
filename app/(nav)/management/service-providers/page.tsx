@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Link from "next/link";
@@ -42,6 +42,7 @@ import TableLoading from "@/components/Loader/TableLoading";
 import CustomTable from "@/components/Table/table";
 import { landlordTableFields } from "../landlord/data";
 import UserTag from "@/components/Tags/user-tag";
+import { entries } from "lodash";
 
 interface ServiceProviderCardProps {
   id: number;
@@ -59,6 +60,7 @@ const ServiceProviders = () => {
   };
 
   const storedView = useView();
+  const itemListView = useRef<HTMLDivElement | null>(null);
 
   const [view, setView] = useState<string | null>(storedView);
 
@@ -117,6 +119,11 @@ const ServiceProviders = () => {
     setConfig({
       params: { ...config.params, page },
     });
+
+    itemListView.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -142,37 +149,45 @@ const ServiceProviders = () => {
     "service-providers",
     config
   );
-
   useRefetchOnEvent("refetchServiceProvider", () => refetch({ silent: true }));
-
-  if (loading) {
-    return (
-      <CustomLoader
-        layout="page"
-        statsCardCount={3}
-        pageTitle="Service Provider"
-      />
-    );
-  }
-
-  if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   const serviceProviders: ServiceProviderCardProps[] =
     apiData?.data?.providers?.data || [];
 
   const totalPages = apiData?.data?.providers?.last_page || 1;
 
-  const totalUsers = apiData?.data.total as number;
-  const total_month = apiData?.data?.total_month as number;
+  const totalUsers = apiData?.data.total ?? 0;
+  const total_month = apiData?.data?.total_month ?? 0;
+  const total_web = apiData?.data?.total_web ?? 0;
+  const total_web_month = apiData?.data?.total_web_month ?? 0;
+  const total_mobile = apiData?.data?.total_mobile ?? 0;
+  const total_mobile_month = apiData?.data?.total_mobile_month ?? 0;
+
   const current_page =
     "current_page" in (apiData?.data?.providers || {})
       ? (apiData?.data?.providers as ProvidersPagination).current_page
       : 1;
 
-  const transformedServiceProvider = serviceProviders.map((l) => ({
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < totalPages &&
+          !silentLoading
+        ) {
+          handlePageChange(current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, totalPages, silentLoading]
+  );
+
+  const transformedServiceProvider = serviceProviders.map((l, index) => ({
     ...l,
     avatar: l.avatar,
     full_name: <p className="flex items-center whitespace-nowrap">{l.name}</p>,
@@ -198,7 +213,27 @@ const ServiceProviders = () => {
         )}
       </div>
     ),
+
+    ref:
+      index === serviceProviders.length - 1 && current_page < totalPages
+        ? lastRowRef
+        : undefined,
   }));
+
+  if (loading) {
+    return (
+      <CustomLoader
+        layout="page"
+        statsCardCount={3}
+        pageTitle="Service Provider"
+      />
+    );
+  }
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
   return (
     <div className="space-y-9">
       <div className="page-header-container">
@@ -212,15 +247,15 @@ const ServiceProviders = () => {
           />
           <ManagementStatistcsCard
             title="Mobile Providers"
-            newData={0}
-            total={0}
+            newData={total_mobile}
+            total={total_mobile_month}
             className="w-[230px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Web Providers"
-            newData={totalUsers}
-            total={total_month}
+            newData={total_web}
+            total={total_web_month}
             className="w-[230px]"
             colorScheme={3}
           />
@@ -297,7 +332,7 @@ const ServiceProviders = () => {
             />
           )
         ) : (
-          <>
+          <div ref={itemListView}>
             {view === "grid" ? (
               <AutoResizingGrid minWidth={284} gap={16}>
                 {silentLoading ? (
@@ -332,13 +367,18 @@ const ServiceProviders = () => {
                     tableBodyCellSx={{ color: "#3F4247" }}
                   />
                 )}
+                {
+                  <div className="flex items-center justify-center py-4">
+                    <div className="loader" />
+                  </div>
+                }
               </>
             )}
-          </>
+          </div>
         )}
       </section>
 
-      {serviceProviders.length > 0 && (
+      {view === "grid" && (
         <Pagination
           totalPages={totalPages}
           currentPage={current_page}

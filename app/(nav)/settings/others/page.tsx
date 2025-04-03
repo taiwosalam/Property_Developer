@@ -69,6 +69,7 @@ import Button from "@/components/Form/Button/button";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import SettingsUpdateModal from "@/components/Settings/Modals/settings-update-modal";
 import RestoreRestrictedUserForm from "./RestoreRestrictedUserForm";
+import { useRouter } from "next/navigation";
 
 const companyTypes = [
   {
@@ -240,6 +241,7 @@ interface CompanyModuleSettings {
 }
 
 const Others = () => {
+  const router = useRouter();
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [activeStep, setActiveStep] = useState<DirectorsFormOptions>("options");
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
@@ -323,7 +325,10 @@ const Others = () => {
       const response = await updateResetSettings(payload);
       // reset the settings options when request is made
       setResetOptions([]);
-      console.log(response);
+      if (response) {
+        localStorage.clear();
+        router.replace("/auth/sign-in");
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -332,10 +337,7 @@ const Others = () => {
   };
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
-   
-
     if (userPlan !== "professional") {
-      
       toast.error(
         "You cannot toggle the switch until you upgrade to a professional plan."
       );
@@ -427,7 +429,6 @@ const Others = () => {
 
       await updateMessageAndReviewSettings(messageReviewSettingsState);
     } catch (error) {
-      console.error(error);
     } finally {
       setProcessingMessageReview(false);
     }
@@ -439,6 +440,9 @@ const Others = () => {
     isNetworkError,
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
+  
+  console.log(apiData);
+
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
@@ -464,11 +468,12 @@ const Others = () => {
       assign_staff: notification.assign_staff ?? true,
     });
 
-    const groupStatus = notification &&
-    notification?.company_default_module != null &&
-    typeof notification?.company_default_module !== "undefined"
-      ? String(notification?.company_default_module)
-      : "1";
+    const groupStatus =
+      notification &&
+      notification?.company_default_module != null &&
+      typeof notification?.company_default_module !== "undefined"
+        ? String(notification?.company_default_module)
+        : "1";
     setSelectedGroup(groupStatus);
   }, [otherSettingResponse]);
 
@@ -503,7 +508,8 @@ const Others = () => {
 
   useEffect(() => {
     if (planData) {
-      const premiumPlan = planData?.data?.plan?.plan_name.toLowerCase() ?? "free";
+      const premiumPlan =
+        planData?.data?.plan?.plan_name.toLowerCase() ?? "free";
       setUserPlan(premiumPlan);
     }
   }, [planData]);
@@ -560,7 +566,7 @@ const Others = () => {
   //type DirectorsFormOptions = "options" | "choose-avatar";
 
   // const handleSubmit = async (data: FormData) => {
-  //   console.log(data);
+  //
   //   // if (res) {
   //   //   setIsOpen(false);
   //   // }
@@ -654,7 +660,7 @@ const Others = () => {
   const [restoring, setRestoring] = useState<boolean>(false);
 
   const handleRestoreUser = async () => {
-    //console.log(propertyId, selectedRestrictedUser)
+    //
     if (!propertyId || !selectedRestrictedUser) return;
     const payload = {
       property_id: propertyId,
@@ -662,7 +668,7 @@ const Others = () => {
       is_active: true,
     };
 
-    //console.log(payload)
+    //
     setRestoring(true);
     try {
       const response = await restrictUserFromGroupChat(payload);
@@ -670,7 +676,6 @@ const Others = () => {
         toast.success("User restored");
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setRestoring(false);
     }
@@ -711,7 +716,7 @@ const Others = () => {
                   email={director.email}
                   phone_number={director.phone_number}
                   picture_url={director.picture}
-                  user_tag="Legal Practitioner"
+                  user_tag={director.title}
                 />
               );
             })}
@@ -750,7 +755,7 @@ const Others = () => {
             action={handleCompanyModuleUpdate}
             loading={updatingModule}
           /> */}
-          <Button disabled className="bg-opacity-70">
+          <Button disabled className="bg-opacity-70 mt-16">
             Update
           </Button>
         </div>
@@ -923,7 +928,11 @@ const Others = () => {
             />
           ))}
         </div>
-        <SettingsUpdateButton action={resetSettings} loading={loadingReset} />
+        <SettingsUpdateButton
+          action={resetSettings}
+          loading={loadingReset}
+          text="Reset"
+        />
       </SettingsSection>
     </>
   );

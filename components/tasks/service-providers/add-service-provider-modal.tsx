@@ -12,12 +12,12 @@ import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import {
   createServiceProvider,
+  inviteByIdOrEmail,
   inviteProviderByPhone,
 } from "@/app/(nav)/management/service-providers/data";
 import { toast } from "sonner";
 import { useModal } from "@/components/Modal/modal";
 import { useRouter, usePathname } from "next/navigation";
-import { clockClasses } from "@mui/x-date-pickers";
 import { AuthForm } from "@/components/Auth/auth-components";
 
 const AddServiceProviderModal = () => {
@@ -29,6 +29,7 @@ const AddServiceProviderModal = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [inviteByPhoneLoading, setInviteByPhoneLoading] = useState(false);
+  const [inviteByEmailLoading, setInviteByEmailLoading] = useState(false);
 
   const handleBack = () => {
     if (activeStep === "add-service-provider" && formStep === 2) {
@@ -36,22 +37,6 @@ const AddServiceProviderModal = () => {
     } else {
       setActiveStep("options");
       setFormStep(1);
-    }
-  };
-
-  const handleInviteProviderByPhone = async (data: FormData) => {
-    try {
-      setInviteByPhoneLoading(true);
-      const status = await inviteProviderByPhone(data);
-      if (status) {
-        toast.success("Invitation sent");
-      }
-    } catch (error) {
-      if (error) {
-        toast.error("Something went wrong");
-      }
-    } finally {
-      setInviteByPhoneLoading(false);
     }
   };
 
@@ -63,6 +48,38 @@ const AddServiceProviderModal = () => {
       setTimeout(() => {
         window.dispatchEvent(new Event("refetchServiceProviders"));
       }, 0);
+    }
+  };
+
+  const handleInviteProviderByPhone = async (data: FormData) => {
+    try {
+      setInviteByPhoneLoading(true);
+       const res = await inviteProviderByPhone(data);
+       if(res){
+        closeModalAndRefresh();
+       }
+    } catch (error) {
+      if (error) {
+        toast.error("Something went wrong");
+      }
+    } finally {
+      setInviteByPhoneLoading(false);
+    }
+  };
+
+  const handleInviteProviderByEmail = async (data: FormData) => {
+    try {
+      setInviteByEmailLoading(true);
+       const res = await inviteByIdOrEmail(data);
+       if (res){
+        closeModalAndRefresh()
+       }
+    } catch (error) {
+      if (error) {
+        toast.error("Something went wrong");
+      }
+    } finally {
+      setInviteByEmailLoading(false);
     }
   };
 
@@ -134,7 +151,7 @@ const AddServiceProviderModal = () => {
                 className="py-2 px-8"
                 disabled={inviteByPhoneLoading}
               >
-                invite
+                { inviteByPhoneLoading ? "please wait" : "invite" }
               </Button>
             </div>
           </div>
@@ -142,22 +159,26 @@ const AddServiceProviderModal = () => {
       ),
     },
     "add-with-email": {
-      heading: "Add Service Provider with Email",
+      heading: "Add Service Provider with Email/Id",
       content: (
-        <form className="flex justify-center" onSubmit={() => {}}>
+        <AuthForm
+          returnType="form-data"
+          onFormSubmit={ handleInviteProviderByEmail }
+          className="flex justify-center items-center"
+        >
           <div className="custom-flex-col gap-5 w-[300px]">
             <Input
-              id="service_provider_id"
-              label="Service Provider ID"
+              id="identifier"
+              label="Service Provider Email/ID"
               inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
             />
             <div className="flex justify-center">
               <Button type="submit" size="base_medium" className="py-2 px-8">
-                invite
+                { inviteByEmailLoading ? "please wait..." : "invite" }
               </Button>
             </div>
           </div>
-        </form>
+        </AuthForm>
       ),
     },
   };

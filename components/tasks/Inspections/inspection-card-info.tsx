@@ -15,6 +15,12 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 
 const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
   className,
+  image,
+  title,
+  total_price,
+  address,
+  yearly_price,
+  unit_fee_period
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   return (
@@ -34,7 +40,7 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
       <div className="flex items-center gap-4">
         <div className="relative rounded-[4px] overflow-hidden">
           <Picture
-            src={SampleProperty}
+            src={image ?? SampleProperty}
             alt="preview"
             width={130}
             height={117}
@@ -47,12 +53,12 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
           </div> */}
         </div>
         <div className="custom-flex-col gap-1 text-text-secondary dark:text-white text-sm lg:text-base font-bold">
-          <p>Newly Built 1 Bedroom</p>
-          <p>Room and Parlour</p>
-          <div className="text-text-disabled flex items-center gap-1">
+          <p>{ title }</p>
+          
+          <div className="text-text-disabled flex gap-1">
             <LocationIcon />
-            <p className="text-xs font-normal">
-              Street 23, All Avenue, Nigeria
+            <p className="text-xs font-normal max-w-[7.5rem]">
+             { address}
             </p>
           </div>
         </div>
@@ -61,13 +67,13 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
         <p
           className={`text-brand-primary text-lg md:text-xl lg:text-2xl font-bold ${secondaryFont.className}`}
         >
-          ₦1,950,000
+          {total_price}
         </p>
         <p className="text-text-label dark:text-darkText-1 text-xs font-semibold">
           Total Package
         </p>
         <p className="text-text-disabled text-sm font-medium">
-          <span className="text-highlight">₦700,000</span> / Yearly
+         { yearly_price && <span className="text-highlight">{yearly_price } / Yearly</span> }
         </p>
       </div>
     </div>

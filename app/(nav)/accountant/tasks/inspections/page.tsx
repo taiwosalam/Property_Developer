@@ -45,8 +45,9 @@ const InspectionPage = () => {
         hasGridListToggle={false}
       />
       <AutoResizingGrid minWidth={505} gap={32}>
-        <InspectionCard type="physical" />
-        <InspectionCard type="virtual" />
+        {/* <InspectionCard type="physical_inspection" />
+        <InspectionCard type="virtual_inspection" /> */}
+        <p>Inspection Card</p>
       </AutoResizingGrid>
       <Pagination totalPages={5} currentPage={1} onPageChange={() => {}} />
     </div>

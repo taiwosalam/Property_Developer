@@ -1,10 +1,34 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 
 // Imports
 import Notification from "@/components/Notification/notification";
 import { SectionSeparator } from "@/components/Section/section-components";
+import useFetch from "@/hooks/useFetch";
+import {
+  NotificationApiResponse,
+  TNotificationData,
+  transformNotificationData,
+} from "./data";
 
 const Notifications = () => {
+  const [notifications, setNotifications] = useState<TNotificationData | null>(
+    null
+  );
+  const { data: apiData, silentLoading, error } =
+    useFetch<NotificationApiResponse>(`/notifications`);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformedData = transformNotificationData(apiData);
+      setNotifications(transformedData);
+    }
+  }, [apiData]);
+
+  if(error){
+    return <p className="text-center text-slate-400">{"We are sorry something went wrong from our end"}</p>
+  }
+
   return (
     <div
       className="space-y-8 overflow-auto custom-round-scrollbar pr-2"
@@ -18,14 +42,24 @@ const Notifications = () => {
         <SectionSeparator />
       </div>
       <div className="custom-flex-col gap-6">
-        <Notification type="message" />
+        {notifications && !notifications?.notifications.length && (
+          <p>You currently have no new notification at this time</p>
+        )}
+        {notifications &&
+          !silentLoading &&
+          notifications.notifications.length > 0 &&
+          notifications.notifications.map((notification, index) => (
+            <Notification key={index} notification={notification} />
+          ))}
+
+        {/* <Notification type="message" />
         <Notification type="payment" />
         <Notification type="profile" />
         <Notification type="service" />
         <Notification type="review" />
         <Notification type="reservation" />
         <Notification type="user" />
-        <Notification type="property" />
+        <Notification type="property" /> */}
       </div>
     </div>
   );

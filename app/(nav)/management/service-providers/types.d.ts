@@ -28,6 +28,10 @@ export interface ServiceProviderApiResponse {
   data: {
     total: number;
     total_month: number;
+    total_web: number;
+    total_web_month: number;
+    total_mobile: number;
+    total_mobile_month: number;
     providers: ProvidersPagination;
   };
 }
@@ -38,6 +42,10 @@ export interface ServiceProviderFilterResponse {
     providers: { data: ServiceProvider[]; last_page: number };
     total: number;
     total_month: number;
+    total_web: number;
+    total_web_month: number;
+    total_mobile: number;
+    total_mobile_month: number;
   };
 }
 

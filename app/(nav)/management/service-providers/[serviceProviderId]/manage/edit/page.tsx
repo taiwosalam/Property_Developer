@@ -93,7 +93,7 @@ const EditServiceProvider = () => {
             size="base_medium"
             className="py-2 px-6"
             onClick={() => {
-              router.push(`/management/service-providers/${serviceProviderId}`);
+              router.push(`/management/service-providers`);
             }}
           >
             save

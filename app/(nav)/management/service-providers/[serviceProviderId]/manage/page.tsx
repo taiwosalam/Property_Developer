@@ -28,12 +28,15 @@ import type {
 import {
   serviceProviderData as Mockdata,
   remapServiceProviderData,
+  transformUserCardData,
 } from "./data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const ManageServiceProvider = () => {
   const params = useParams();
@@ -47,7 +50,9 @@ const ManageServiceProvider = () => {
     silentLoading,
   } = useFetch<ServiceProviderDetailsResponse>(`service-providers/${paramId}`);
 
-  const providerData = apiData?.data
+  useRefetchOnEvent("updateServiceProvider", () => refetch({ silent: true }));
+
+  const providerData = apiData?.data;
   // remove this search params stuff later
   const searchParams = useSearchParams();
   const tag = searchParams.get("user_tag");
@@ -61,6 +66,9 @@ const ManageServiceProvider = () => {
 
   if (!serviceProviderData) return null;
   const { notes, user_tag = "web" } = serviceProviderData;
+
+  const userData = apiData?.data ? transformUserCardData(providerData) : null;
+
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -84,7 +92,11 @@ const ManageServiceProvider = () => {
               <ChevronLeft />
             </button>
             <Picture
-              src={providerData?.avatar ? providerData.avatar : DefaultLandlordAvatar}
+              src={
+                providerData?.avatar
+                  ? providerData.avatar
+                  : DefaultLandlordAvatar
+              }
               alt="profile picture"
               size={120}
               rounded
@@ -102,13 +114,19 @@ const ManageServiceProvider = () => {
                 </p>
               </div>
 
-             { providerData?.agent === "web" && <UserTag type="web" />}
+              {providerData?.agent === "web" ? (
+                <UserTag type="web" />
+              ) : (
+                <UserTag type="mobile" />
+              )}
               {user_tag === "mobile" && (
                 <div className="custom-flex-col gap-1">
                   <p className="text-base font-normal">
-                  {providerData?.wallet_id ? providerData?.wallet_id : "---"}
+                    {providerData?.wallet_id ? providerData?.wallet_id : "---"}
                   </p>
-                  <p className="text-base font-normal">Phone NO: ${providerData?.phone ?? "---"}</p>
+                  <p className="text-base font-normal">
+                    Phone NO: ${providerData?.phone ?? "---"}
+                  </p>
                 </div>
               )}
             </div>
@@ -136,16 +154,38 @@ const ManageServiceProvider = () => {
               </>
             ) : (
               <>
-                <Button
-                  size="base_medium"
-                  className="py-2 px-8"
-                  href={`/management/service-providers/${paramId}/manage/edit`}
-                >
-                  Manage
-                </Button>
-                <Button size="base_medium" className="py-2 px-8">
-                  update with ID
-                </Button>
+                {providerData?.agent === "mobile" ? (
+                  <Button
+                    size="base_medium"
+                    className="!w-fit ml-auto py-2 px-8"
+                    href={`/messages`}
+                  >
+                    message
+                  </Button>
+                ) : (
+                  <Button
+                    size="base_medium"
+                    className="py-2 px-8"
+                    href={`/management/service-providers/${paramId}/manage/edit`}
+                  >
+                    Manage
+                  </Button>
+                )}
+                <Modal>
+                  <ModalTrigger>
+                    <Button size="base_medium" className="py-2 px-8">
+                      update with ID
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <UpdateProfileWithIdModal 
+                      page="service-providers"
+                      id={Number(providerData?.id)}
+                      data={userData}
+
+                    />
+                  </ModalContent>
+                </Modal>
               </>
             )}
           </div>
@@ -155,7 +195,9 @@ const ManageServiceProvider = () => {
           <ContactInfo
             containerClassName="flex flex-col justify-center rounded-lg"
             info={{
-              "Company Name": providerData?.company_name ? providerData.company_name : "",
+              "Company Name": providerData?.company_name
+                ? providerData.company_name
+                : "",
               "Full name": providerData?.name ?? "---",
               email: providerData?.company_email ?? "---",
               "Company Phone": providerData?.company_phone ?? "---",
@@ -174,10 +216,10 @@ const ManageServiceProvider = () => {
               height={67}
               containerClassName="ml-10"
             />
-            <p className="font-normal text-xs text-text-quaternary dark:text-darkText-1"
-            dangerouslySetInnerHTML={{__html: providerData?.note ?? "---"}}>
-             
-            </p>
+            <p
+              className="font-normal text-xs text-text-quaternary dark:text-darkText-1"
+              dangerouslySetInnerHTML={{ __html: providerData?.note ?? "---" }}
+            ></p>
           </InfoBox>
         )}
       </div>
