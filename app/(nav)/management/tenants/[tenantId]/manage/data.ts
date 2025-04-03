@@ -61,6 +61,7 @@ export interface IndividualTenantAPIResponse {
     email: string;
     phone: string;
     tier_id?: 1 | 2 | 3 | 4 | 5;
+    user_tier?: 1 | 2 | 3 | 4 | 5;
     picture?: string;
     agent: string;
     gender: string;
@@ -118,6 +119,7 @@ export interface IndividualTenantAPIResponse {
 export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
+  // console.log("res", data)
   const lastUpdated = data.note.last_updated_at
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
@@ -177,7 +179,7 @@ export const transformIndividualTenantAPIResponse = ({
     // last_name: data.last_name,
     email: data.email,
     user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
-    badge_color: data.tier_id ? tierColorMap[data.tier_id] : undefined,
+    badge_color: data.user_tier ? tierColorMap[data.user_tier] : undefined,
     phone_number: data.phone,
     tenant_type: data.tenant_type,
     gender: data.gender,
@@ -205,6 +207,7 @@ export const transformIndividualTenantAPIResponse = ({
       last_updated: lastUpdated,
       write_up: data.note.note,
     },
+    note: data.note.note !== null,
     guarantor_1: data.guarantor[0],
     guarantor_2: data.guarantor[1],
     documents: data.documents.flatMap((doc) => {

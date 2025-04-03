@@ -24,6 +24,7 @@ export interface UnitItemProps {
   tenantName?: string;
   tenantBadgeColor?: BadgeIconColors;
   dueDate?: string;
+  note?: boolean;
 }
 
 const UnitItem: React.FC<UnitItemProps> = ({

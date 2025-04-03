@@ -19,7 +19,13 @@ interface LockOTPModalProps {
   next?: boolean;
 }
 
-const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp, loading, next }) => {
+const LockOTPModal: React.FC<LockOTPModalProps> = ({
+  action,
+  otp,
+  setOtp,
+  loading,
+  next,
+}) => {
   const [countdown, setCountdown] = useState(120);
   const [canResend, setCanResend] = useState(false);
   const { activeStep, changeStep } = useStep(2);
@@ -44,7 +50,7 @@ const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp, loadin
 
   const handleAction = async () => {
     await action();
-    if(next){
+    if (next) {
       changeStep("next");
     }
   };
@@ -59,7 +65,6 @@ const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp, loadin
     return () => clearTimeout(timer);
   }, [countdown]);
 
-
   const handlePinChange = (pin: string) => {
     setOtp(pin);
   };
@@ -70,7 +75,9 @@ const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp, loadin
         <div className="space-y-3 text-center text-sm font-medium">
           <p className="text-text-tertiary">
             To validate your request, we&apos;ve sent a one-time password (OTP)
-            to your email (<span className="text-supporting-1">{obfuscatedEmail}</span>). Please input it to confirm your request.
+            to your email (
+            <span className="text-supporting-1">{obfuscatedEmail}</span>).
+            Please input it to confirm your request.
           </p>
           {!canResend && (
             <p>
@@ -98,7 +105,7 @@ const LockOTPModal: React.FC<LockOTPModalProps> = ({ action, otp, setOtp, loadin
         onClick={handleAction}
         disabled={loading}
       >
-        { loading ? "Please wait..." : "proceed"}
+        {loading ? "Please wait..." : "proceed"}
       </Button>
     </WalletModalPreset>
   ) : (

@@ -125,4 +125,5 @@ export interface TenantData {
   current_rent?: UnitItemProps[];
   previous_rent?: UnitItemProps[];
   statement?: Statement[];
+  note?: boolean;
 }

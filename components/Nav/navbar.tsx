@@ -65,7 +65,8 @@ const NotificationBadge = ({
   count: number | string;
   color: string;
 }) => {
-  if (count === 0) return null; // Don't render if count is 0
+  const numericCount = typeof count === 'string' ? parseInt(count) : count;
+  if (numericCount <= 0) return null; // Don't render if count is 0 or negative
   return (
     <span
       className={`absolute top-0 right-0 bg-${color}-500 text-white text-[10px] rounded-full px-1`}
@@ -74,6 +75,7 @@ const NotificationBadge = ({
     </span>
   );
 };
+
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
@@ -190,10 +192,7 @@ const Header = () => {
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo(
         "name",
-        // `${profile?.title ? profile.title + " " : ""}${user.name}`
-        `${director?.personal_title ? director.personal_title + " " : ""}${
-          user.name
-        }`
+        `${profile?.title ? profile.title + " " : ""}${user.name}`
       );
       setPersonalInfo("full_name", user.name);
       setPersonalInfo("user_email", user.email);
