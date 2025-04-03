@@ -16,6 +16,8 @@ import JpgThumbnail from "@/public/document-thumbnails/jpg-thumbnail.png";
 import ExcelThumbnail from "@/public/document-thumbnails/xlsx-thumbnail.jpg";
 import Mp3Thumbnail from "@/public/document-thumbnails/mp3_thumbnail.jpg";
 import Image from "next/image";
+import { updateTenantNote } from "@/app/(nav)/management/tenants/[tenantId]/manage/edit/data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -251,13 +253,30 @@ export const NotesInfoBox: React.FC<{
 
 export const MobileNotesModal: React.FC<{
   notes?: { last_updated: string; write_up: string };
-}> = ({ notes }) => {
+  id?: string;
+}> = ({ notes, id }) => {
   const [editNote, setEditNote] = useState(false);
   const [note, setNote] = useState(notes?.write_up);
+  const [reqLoading, setReqLoading] = useState(false);
 
   useEffect(() => {
     setNote(notes?.write_up);
   }, [notes]);
+
+  const handleUpdateNote = async () => {
+    if (id) {
+      setReqLoading(true);
+      const status = await updateTenantNote(
+        id,
+        objectToFormData({ note })
+      );
+      if (status) {
+        window.dispatchEvent(new Event("refetchtenant"));
+        setEditNote(false);
+      }
+      setReqLoading(false);
+    }
+  };
 
   return (
     <LandlordTenantInfoBox className="w-[600px] max-w-[80%] max-h-[85%] min-h-[250px] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar">
@@ -285,8 +304,10 @@ export const MobileNotesModal: React.FC<{
                   variant="sky_blue"
                   size="xs_normal"
                   className="py-1 px-2"
+                  type="button"
+                  onClick={handleUpdateNote}
                 >
-                  Update
+                 { reqLoading ? "Please wait..." : "Update" }
                 </Button>
               </>
             ) : (

@@ -404,6 +404,7 @@ const Tenants = () => {
                         badge_color={t.badge_color}
                         email={t.email}
                         phone_number={t.phone_number}
+                        note={t.note}
                       />
                     </Link>
                   ))

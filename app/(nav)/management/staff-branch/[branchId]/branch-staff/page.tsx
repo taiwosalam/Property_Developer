@@ -8,7 +8,7 @@ import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
 import { LocationIcon } from "@/public/icons/icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -63,7 +63,13 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     );
   };
 
-  const [state, setState] = useState<BranchStaffPageState | null>(null);
+  const [state, setState] = useState<BranchStaffPageState>({
+    total_pages: 0,
+    current_page: 1,
+    branch_name: "",
+    branch_address: "",
+    staffs: [],
+  });
 
   const handlePageChange = (page: number) => {
     setConfig({
@@ -115,22 +121,46 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   } = useFetch<StaffListResponse>(`staffs?branch_id=${branchId}`, config);
 
   useEffect(() => {
-    console.log("apiData", apiData);
     if (apiData) {
-      setState((x) => ({
-        ...x,
-        ...transformStaffListResponse(apiData),
-      }));
+      const transformedData = transformStaffListResponse(apiData);
+      setState((prevState) => {
+        const newStaffs =
+          transformedData.current_page === 1
+            ? transformedData.staffs
+            : [...prevState?.staffs, ...transformedData.staffs];
+        return {
+          ...transformedData,
+          staffs: newStaffs,
+        };
+      });
     }
   }, [apiData]);
 
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
-
   useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
-  const transformedTableData = state?.staffs.map((item) => ({
+  // Intersection Observer for infinite scroll
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (loading || silentLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          state.current_page < state.total_pages
+        ) {
+          handlePageChange(state.current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, silentLoading, state.current_page, state.total_pages]
+  );
+
+  const transformedTableData = state.staffs.map((item, index) => ({
     ...item,
     gender: ["male", "female"].includes(item.gender?.toLowerCase() || "") ? (
       <p
@@ -146,8 +176,14 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     ) : (
       ""
     ),
+    ref:
+      index === state.staffs.length - 1 &&
+      state.current_page < state.total_pages
+        ? lastRowRef
+        : undefined,
   }));
 
+  
   const handleSelectTableItem = (item: DataItem) => {
     router.push(`/management/staff-branch/${branchId}/branch-staff/${item.id}`);
   };
@@ -229,7 +265,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
           )
         ) : state?.staffs.length === 0 ? (
           config.params.search || isFilterApplied() ? (
-           <SearchError />
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="+ Create New Staff"
@@ -267,13 +303,20 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
             ))}
           </AutoResizingGrid>
         ) : (
-          <CustomTable
-            fields={branchStaffTableFields}
-            data={transformedTableData || []}
-            tableBodyCellSx={{ fontSize: "1rem" }}
-            tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
-            handleSelect={handleSelectTableItem}
-          />
+          <>
+            <CustomTable
+              fields={branchStaffTableFields}
+              data={transformedTableData || []}
+              tableBodyCellSx={{ fontSize: "1rem" }}
+              tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
+              handleSelect={handleSelectTableItem}
+            />
+            {silentLoading && state.current_page > 1 && (
+              <div className="flex items-center justify-center py-4">
+                <div className="loader" />
+              </div>
+            )}
+          </>
         )}
         {state && state.staffs.length && (
           <Pagination

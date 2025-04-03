@@ -104,7 +104,7 @@ const VacantUnitCard = ({
   return (
     <div
       className="p-6 custom-flex-col gap-4 rounded-2xl bg-white dark:bg-darkText-primary"
-      style={{ boxShadow: " 2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
+      style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="flex items-center gap-6 justify-between">
         <p className="text-brand-10 text-base font-bold">

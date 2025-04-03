@@ -13,6 +13,7 @@ export interface UserCardProps {
   badge_color?: BadgeIconColors;
   other_info?: string | null;
   className?: string;
+  note?: boolean;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -24,6 +25,7 @@ const UserCard: React.FC<UserCardProps> = ({
   badge_color,
   other_info,
   className,
+  note
 }) => {
   return (
     <div
@@ -52,9 +54,11 @@ const UserCard: React.FC<UserCardProps> = ({
         {user_tag === "mobile" || user_tag === "web" ? (
           <div className="flex gap-2 mb-2 items-center">
             <UserTag type={user_tag} />
-            <div className="flex items-center">
-              <NoteBlinkingIcon size={20} className="blink-color" />
-            </div>
+            {note && (
+              <div className="flex items-center">
+                <NoteBlinkingIcon size={20} className="blink-color" />
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-xs text-brand-10 font-normal capitalize">

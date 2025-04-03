@@ -13,6 +13,7 @@ interface LandlordCardProps {
   phone_number: string | null;
   picture_url: string | null;
   badge_color?: BadgeIconColors;
+  note?: boolean;
 }
 
 export interface LandlordsPageData {
@@ -125,6 +126,10 @@ export interface LandlordApiResponse {
       picture: string;
       agent: string;
       tier_id?: 1 | 2 | 3 | 4 | 5;
+      user_tier?: 1 | 2 | 3 | 4 | 5;
+      note: {
+        note: string | null;
+      };
     }[];
     pagination: {
       current_page: number;
@@ -143,6 +148,7 @@ export interface LandlordApiResponse {
 export const transformLandlordApiResponse = (
   response: LandlordApiResponse
 ): LandlordsPageData => {
+  // console.log("res", response)
   const {
     data: { landlords, pagination },
     mobile_landlord_count,
@@ -168,8 +174,9 @@ export const transformLandlordApiResponse = (
       phone_number: landlord.phone,
       user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: landlord.picture,
-      badge_color: landlord.tier_id
-        ? tierColorMap[landlord.tier_id]
+      note: landlord.note.note !== null,
+      badge_color: landlord.user_tier
+        ? tierColorMap[landlord.user_tier]
         : undefined,
     })),
   };

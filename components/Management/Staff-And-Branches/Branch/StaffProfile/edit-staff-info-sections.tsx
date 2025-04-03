@@ -38,7 +38,8 @@ export const StaffEditProfileInfoSection = () => {
     const payload = {
       full_name: data.fullname,
       title: data.personal_title,
-      estate_title: data.real_estate_title,
+      professional_title: data.real_estate_title,
+      // estate_title: data.real_estate_title,
       // email: data.email,
       phone_number: data.phone_number,
       gender: data.gender,
@@ -605,7 +606,7 @@ export const StaffEditAvatarInfoSection = () => {
           type="submit"
           disabled={reqLoading}
         >
-          {reqLoading ? "updating..." : "save"}
+          {reqLoading ? "updating..." : "Update"}
         </Button>
       </LandlordTenantInfoEditSection>
     </AuthForm>

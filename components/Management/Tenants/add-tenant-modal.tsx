@@ -35,7 +35,6 @@ const AddTenantModal = () => {
     if (pathname !== "/management/tenants") {
       router.push("/management/tenants");
     } else {
-      // location.reload();
       setTimeout(() => {
         window.dispatchEvent(new Event("refetchTenants"));
       }, 0);

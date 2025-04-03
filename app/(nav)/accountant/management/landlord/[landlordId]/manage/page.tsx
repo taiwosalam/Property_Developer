@@ -141,7 +141,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <MobileNotesModal notes={landlordData.notes} />
+                    <MobileNotesModal id={landlordData?.user_id} notes={landlordData.notes} />
                   </ModalContent>
                 </Modal>
               </>
