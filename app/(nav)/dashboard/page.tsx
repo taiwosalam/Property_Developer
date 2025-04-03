@@ -8,7 +8,6 @@ import {
   dashboardListingsChartData,
   dashboardPerformanceChartConfig,
   invoiceTableFields,
-  dashboardInvoiceTableData,
   getDashboardCardData,
   initialDashboardStats,
   getRecentMessages,
@@ -50,6 +49,7 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setChatData } = useChatStore();
   const company_status = usePersonalInfoStore((state) => state.company_status);
+  // console.log("company_status", company_status)
   const company_id = usePersonalInfoStore((state) => state.company_id);
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
     null
@@ -111,15 +111,15 @@ const Dashboard = () => {
     if (Apiinvoices) {
       const transformed = transformInvoiceData(Apiinvoices);
       setInvoiceData(transformed);
-      
     }
   }, [Apiinvoices]);
 
   // ================== CONDITIONAL RENDERING ================== //
-  if (!company_status || !invoiceData) {
+  if (!company_status) {
     return <DashboardLoading />;
   }
-  const { statistics, invoices } = invoiceData;
+
+  // Handle invoiceData nullability
   const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
 
   return (
@@ -213,7 +213,7 @@ const Dashboard = () => {
 
         <SectionContainer heading="Recent Complains" href="/tasks/complaints">
           {dummyTasks.length === 0 ? (
-            <div className="bg-red-500 flex w-full justify-center items-center h-full bg-white min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
+            <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
               <p className="text-gray-500 dark:text-gray-400">
                 No Recent Complains.
               </p>
