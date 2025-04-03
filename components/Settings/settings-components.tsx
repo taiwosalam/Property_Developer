@@ -404,16 +404,14 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   onSelect,
   isSelected,
   profile,
+  plan,
 }) => {
   const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
     if (
-      value === "theme2" ||
-      value === "theme3" ||
-      value === "template2" ||
-      value === "template3"
+      plan !== "professional" && (value === "template2" || value === "template3") // Fixed condition
     ) {
       setShowProfessionalMessage(true);
       setTimeout(() => setShowProfessionalMessage(false), 3000);

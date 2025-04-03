@@ -149,7 +149,6 @@ const ServiceProviders = () => {
     "service-providers",
     config
   );
-
   useRefetchOnEvent("refetchServiceProvider", () => refetch({ silent: true }));
 
   const serviceProviders: ServiceProviderCardProps[] =
@@ -368,11 +367,11 @@ const ServiceProviders = () => {
                     tableBodyCellSx={{ color: "#3F4247" }}
                   />
                 )}
-                {silentLoading && current_page > 1 && (
+                {
                   <div className="flex items-center justify-center py-4">
                     <div className="loader" />
                   </div>
-                )}
+                }
               </>
             )}
           </div>

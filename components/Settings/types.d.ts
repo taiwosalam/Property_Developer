@@ -208,6 +208,7 @@ export interface CheckboxProps {
 interface ThemeCardProps {
   img: any;
   value: string;
+  plan?: string;
   isSelected: boolean;
   onSelect: (value: string) => void;
   className?: string;

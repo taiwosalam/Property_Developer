@@ -18,7 +18,7 @@ import {
 } from "@/app/(nav)/settings/profile/data";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { templateSettings } from "lodash";
-import { CompanySettingsResponse } from "@/app/(nav)/settings/others/types";
+import { ApiResponseUserPlan, CompanySettingsResponse } from "@/app/(nav)/settings/others/types";
 import useFetch from "@/hooks/useFetch";
 
 const SettingsWebsiteDomain = () => {
@@ -26,6 +26,19 @@ const SettingsWebsiteDomain = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { company_id, user_id } = usePersonalInfoStore();
+  const [userPlan, setUserPlan] = useState("");
+
+  const { data: planData } = useFetch<ApiResponseUserPlan>(
+    "/property-manager-subscription/active"
+  );
+
+  useEffect(() => {
+    if (planData) {
+      const premiumPlan =
+        planData?.data?.plan?.plan_name?.toLowerCase() ?? "free";
+      setUserPlan(premiumPlan);
+    }
+  }, [planData]);
 
   const handleCustomDomainChange = (value: string) => {
     const cleanedValue = value
@@ -138,6 +151,7 @@ const SettingsWebsiteDomain = () => {
               profile={true}
             />
             <ThemeCard
+              plan="professional"
               img={WebsiteTemplate2}
               value="template2"
               onSelect={(value) => handleSelect("template2", value)}
@@ -145,6 +159,7 @@ const SettingsWebsiteDomain = () => {
               profile={true}
             />
             <ThemeCard
+              plan="professional"
               img={WebsiteTemplate3}
               value="template3"
               onSelect={(value) => handleSelect("template3", value)}
