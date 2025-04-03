@@ -40,8 +40,8 @@ export type TNotificationData = {
     from_id: number | null;
     sender_name: string;
     sender_picture: string;
-  }[]
-}
+  }[];
+};
 
 function extractNotificationType(notificationType: string): string {
   const match = notificationType.match(/([^\\]+)Notification$/);
@@ -57,8 +57,9 @@ export const formatTime = (timeString: string) => {
   return dayjs(timeString, "HH:mm:ss").format("h:mmA"); // Formats to 12-hour format with AM/PM
 };
 
-export const transformNotificationData = (data: NotificationApiResponse): TNotificationData => {
-
+export const transformNotificationData = (
+  data: NotificationApiResponse
+): TNotificationData => {
   return {
     notifications: data.data.map((notification) => ({
       id: notification.id,
@@ -68,8 +69,7 @@ export const transformNotificationData = (data: NotificationApiResponse): TNotif
       time: formatDateTime(notification.created_at),
       from_id: notification.from_id,
       sender_name: notification.sender_name,
-      sender_picture: notification?.sender_picture
+      sender_picture: notification?.sender_picture,
     })),
-  }
-}
-
+  };
+};

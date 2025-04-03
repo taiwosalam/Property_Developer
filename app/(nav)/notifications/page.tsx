@@ -15,8 +15,11 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState<TNotificationData | null>(
     null
   );
-  const { data: apiData, silentLoading, error } =
-    useFetch<NotificationApiResponse>(`/notifications`);
+  const {
+    data: apiData,
+    silentLoading,
+    error,
+  } = useFetch<NotificationApiResponse>(`/notifications`);
 
   useEffect(() => {
     if (apiData) {
@@ -25,8 +28,12 @@ const Notifications = () => {
     }
   }, [apiData]);
 
-  if(error){
-    return <p className="text-center text-slate-400">{"We are sorry something went wrong from our end"}</p>
+  if (error) {
+    return (
+      <p className="text-center text-slate-400">
+        {"We are sorry something went wrong from our end"}
+      </p>
+    );
   }
 
   return (

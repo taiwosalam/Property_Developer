@@ -8,12 +8,19 @@ import ThemeProvider from "./theme-provider";
 import { Theme } from "@/components/theme";
 import { RoleProvider } from "@/hooks/roleContext";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { fetchProfile } from "@/lib/profile";
 
-export const metadata = {
-  title: "Our Property",
-  description: "Admin Portal",
-  charset: "UTF-8",
-};
+export async function generateMetadata() {
+  const data = await fetchProfile();
+  const companyName = data.data.company?.company_name || "Our Property";
+  const companyLogo = data.data.company?.company_logo || "/default-favicon.ico";
+
+  return {
+    title: companyName,
+    description: "Admin Portal",
+    icons: { icon: companyLogo },
+  };
+}
 
 export default async function RootLayout({
   children,

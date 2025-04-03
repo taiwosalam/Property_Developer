@@ -90,7 +90,7 @@ export const transformInvoiceData = (
   response: InvoiceListResponse
 ): TransformedInvoiceData => {
   const { statistics, invoices } = response.data;
-  console.log("rece inveoice", invoices)
+  // console.log("rece inveoice", invoices)
   const transformedInvoices = invoices.map((invoice) => ({
     ...invoice,
     name: invoice.client_name,
