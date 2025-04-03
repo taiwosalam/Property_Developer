@@ -12,8 +12,27 @@ import InspectionCardInfo from "./inspection-card-info";
 import InspectionCardDetail from "./inspection-card-detail";
 import InspectionDetailModal from "./inspection-detail-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import useFetch from "@/hooks/useFetch";
+import {
+  Inspection,
+  InspectionDetailsResponse,
+} from "@/app/(nav)/tasks/inspections/type";
+import { useEffect, useState } from "react";
+import { formatTime } from "@/app/(nav)/notifications/data";
 
-const InspectionCard: React.FC<InspectionCardProps> = ({ type }) => {
+const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
+  const { data: inspectionData } = useFetch<InspectionDetailsResponse>(
+    `inspections/${data?.id}`
+  );
+  const [inspection, setInspection] = useState<Inspection | null>(null);
+
+  useEffect(() => {
+    if (inspectionData) {
+      setInspection(inspectionData.data);
+    }
+  }, [inspectionData]);
+
+  const propertyAddress = `${inspection?.full_address} ${inspection?.city_area} ${inspection?.local_government} ${inspection?.state}`
   return (
     <div
       className="rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-6 pb-6"
@@ -23,28 +42,44 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ type }) => {
       }}
     >
       <div className="custom-flex-col gap-3">
-        <InspectionCardInfo className="p-[18px]" />
+        { data && <InspectionCardInfo
+          className="p-[18px]"
+          address={propertyAddress}
+          image={null}
+          unit_fee_period={data.unit_fee_period}
+          title={data?.property_name}
+          total_price={data?.price}
+          yearly_price={data?.yearly_price}
+        />}
         <div className="py-2 px-[18px] bg-brand-1 flex justify-between text-base font-medium">
           <p className="text-text-secondary">Inspection details</p>
           <p
             className={clsx("capitalize", {
-              "text-support-2": type === "virtual",
-              "text-support-3": type === "physical",
+              "text-support-2": data?.inspection_type === "virtual_inspection",
+              "text-support-3": data?.inspection_type === "physical_inspection",
             })}
           >
-            {type} Inspection
+            {data?.inspection_type === "physical_inspection"
+              ? "Physical Inspection"
+              : "Virtual Inspection"}
           </p>
         </div>
       </div>
       <div className="custom-flex-col gap-8 px-[18px]">
         <div className="flex justify-between gap-2">
-          <InspectionCardDetail
+         { data && <InspectionCardDetail
             title="Booked by"
-            desc="Salam AIshat"
+            desc={data?.booked_by}
             verirified
-          />
-          <InspectionCardDetail title="Inspection Date" desc="25/01/2024" />
-          <InspectionCardDetail title="Inspection Time" desc="12:30pm" />
+          />}
+         { data && <InspectionCardDetail
+            title="Inspection Date"
+            desc={data?.inspection_date}
+          />}
+         {data && <InspectionCardDetail
+            title="Inspection Time"
+            desc={ formatTime(data?.inspection_time) }
+          /> }
         </div>
         <div className="flex items-center gap-4 justify-end">
           <Picture src={ChatIcon} alt="chat" size={24} />
@@ -55,7 +90,7 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ type }) => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <InspectionDetailModal />
+              { inspection && <InspectionDetailModal data={inspection}/>}
             </ModalContent>
           </Modal>
         </div>
