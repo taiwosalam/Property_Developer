@@ -47,7 +47,9 @@ const UnitBreakdownNewTenant = () => {
       otherCharges: unitData?.other_charge
         ? formatNumber(parseFloat(unitData.other_charge))
         : "",
-      vat: unitData?.vat ? formatNumber(parseFloat(unitData.vat as string)) : "0",
+      vat: unitData?.vat
+        ? formatNumber(parseFloat(unitData.vat as string))
+        : "0",
       totalPackage: unitData?.total_package
         ? formatNumber(parseFloat(unitData.total_package))
         : "",
@@ -103,11 +105,8 @@ const UnitBreakdownNewTenant = () => {
     const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
     // Calculate Agency Fee based on percentage
     const agencyFeeValue = (rentAmountValue * agencyFeePercentage) / 100;
-    // Get legal fee entered by the user
-    const legalFeeValue = parseFloat(legalFee.replace(/,/g, "")) || 0;
-    // Determine if VAT should be calculated
-    const shouldCalculateVAT =
-      propertySettings?.VAT?.toLowerCase() === "yes";
+    const legalFeeValue = (rentAmountValue * agencyFeePercentage) / 100;
+    const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
     const vatValue = shouldCalculateVAT
       ? (agencyFeeValue + legalFeeValue) * 0.075
       : 0;
@@ -227,36 +226,39 @@ const UnitBreakdownNewTenant = () => {
           onChange={(value) => handleInputChange("inspectionFee", value)}
           type="text"
         />
-        {otherChargesInput && (
-          <div className="relative">
-            <Input
-              id="other_charge"
-              label="Other Charges"
-              inputClassName="bg-white"
-              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-              value={otherCharges}
-              onChange={(value) => handleInputChange("otherCharges", value)}
-              type="text"
-            />
-            <button
-              type="button"
-              aria-label="Remove Other Charges"
-              onClick={handleRemoveOtherCharges}
-              className="absolute top-0 right-0 w-[18px] h-[18px]"
-            >
-              <DeleteIconX size={20} />
-            </button>
-          </div>
+        {/* Only display VAT input if VAT is enabled */}
+        {propertySettings?.VAT?.toLowerCase() === "yes" && (
+          <Input
+            id="vat"
+            label="Value Added Tax (VAT)"
+            inputClassName="bg-white"
+            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+            value={vat}
+            readOnly
+            type="text"
+          />
         )}
-        {!otherChargesInput && (
-          <button
-            type="button"
-            onClick={addOtherCharges}
-            className="text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start"
-          >
-            Add Other Charges
-          </button>
-        )}
+
+        <Input
+          id="other_charge"
+          label="Other Charges"
+          inputClassName="bg-white"
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          value={otherCharges}
+          onChange={(value) => handleInputChange("otherCharges", value)}
+          type="text"
+        />
+        <Input
+          required
+          id="total_package"
+          label="Total Package"
+          inputClassName="bg-white unit-form-input"
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          value={totalPackage}
+          readOnly
+          type="text"
+        />
+
         <Select
           required
           options={["yes", "no"]}
@@ -268,28 +270,6 @@ const UnitBreakdownNewTenant = () => {
           resetKey={formResetKey}
           hiddenInputClassName="unit-form-input"
           defaultValue={mapNumericToYesNo(unitData?.negotiation) || "no"}
-        />
-        {/* Only display VAT input if VAT is enabled */}
-        {propertySettings?.VAT?.toLowerCase() === "yes" && (
-          <Input
-            id="vat"
-            label="Value Added Tax"
-            inputClassName="bg-white"
-            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-            value={vat}
-            readOnly
-            type="text"
-          />
-        )}
-        <Input
-          required
-          id="total_package"
-          label="Total Package"
-          inputClassName="bg-white unit-form-input"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={totalPackage}
-          readOnly
-          type="text"
         />
       </div>
     </div>
