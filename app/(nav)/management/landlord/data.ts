@@ -208,6 +208,7 @@ export const transformMobileUseData = (res: any): UserCardProps => {
 };
 
 export const transformCardData = (data: any): UserCardProps => {
+  console.log("data", data)
   // const badgeColor =
   // tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
   return {
@@ -224,7 +225,7 @@ export const transformMobileUseDataForVehicleRecord = (
   res: any
 ): PersonalDataProps => {
   const { data } = res;
-  console.log("res", data)
+  // console.log("res", data)
   const badgeColor =
     tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
   return {

@@ -164,6 +164,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                   <ModalContent>
                     <MobileNotesModal
                       id={landlordId}
+                      page="landlord"
                       notes={landlordData.notes}
                     />
                   </ModalContent>

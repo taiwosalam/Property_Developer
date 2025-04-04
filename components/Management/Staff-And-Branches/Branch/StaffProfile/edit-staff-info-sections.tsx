@@ -56,6 +56,7 @@ export const StaffEditProfileInfoSection = () => {
       full_name: data.fullname,
       title: data.personal_title,
       professional_title: data.real_estate_title,
+      years_experience: data.years_experience,
       // estate_title: data.real_estate_title,
       // email: data.email,
       phone_number: data.phone_number,
@@ -111,12 +112,12 @@ export const StaffEditProfileInfoSection = () => {
             defaultValue={staff?.email}
           />
           <Select
-            id="director_experience"
+            id="years_experience"
             label="years of experience"
             placeholder="Write here"
             options={yearsOptions}
             hiddenInputClassName="setup-f"
-            // defaultValue={year}
+            defaultValue={`${staff?.experience}+`}
           />
           <Select
             id="gender"

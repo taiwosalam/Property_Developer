@@ -26,6 +26,7 @@ export interface StaffAPIResponse {
     properties: PropertiesRes[];
     landlords: any[];
     tenants: any[];
+    years_experience: string | number;
   };
   activities: StaffActivitiies[];
 }
@@ -108,6 +109,7 @@ export interface StaffPageTypes {
     updated_at: string;
     about_staff: any;
     status: string;
+    experience: number | string;
   };
   activities: StaffActivitiies[];
   chats: [];

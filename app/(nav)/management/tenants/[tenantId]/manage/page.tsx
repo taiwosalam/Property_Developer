@@ -151,7 +151,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <MobileNotesModal id={tenantId} notes={tenant.notes} />
+                    <MobileNotesModal
+                      page="tenant"
+                      id={tenantId}
+                      notes={tenant.notes}
+                    />
                   </ModalContent>
                 </Modal>
               </>

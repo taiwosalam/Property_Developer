@@ -93,7 +93,7 @@ const StaffProfile = () => {
 
   const sanitizedHTML = DOMPurify.sanitize(staff?.about_staff?.note || "");
 
-  // console.log("data -", apiData);
+  console.log("staff data -", staff);
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -172,6 +172,7 @@ const StaffProfile = () => {
               phone: staff?.phone,
               "personal title": staff?.title,
               "real estate title": staff?.real_estate_title,
+              "years of experience": `${staff?.experience} Years+`,
             }}
           />
           <LandlordTenantInfoBox>

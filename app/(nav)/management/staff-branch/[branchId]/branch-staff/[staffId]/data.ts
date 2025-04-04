@@ -55,6 +55,7 @@ export const staffData: StaffProfileProps = {
   picture: "",
   about: "",
   status: "",
+  experience: 0,
 };
 
 
@@ -80,6 +81,7 @@ export const initialPageData: StaffPageTypes = {
     updated_at: "",
     about_staff: "",
     status: "",
+    experience: "",
   },
   activities: [],
   chats: [],
@@ -358,6 +360,7 @@ export const transformStaffAPIResponse = (
       created_at: res.data.created_at,
       updated_at: res.data.updated_at,
       about_staff: res.data.about_staff,
+      experience: res.data.years_experience,
       status: yesNoToActiveInactive(res.data.status),
     },
     activities: res.activities?.map((a) => {
