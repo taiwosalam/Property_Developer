@@ -58,11 +58,39 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
 
-  const [state, setState] = useState<UnitFormState>({
-    images: props.empty ? [] : props.data.images.map((img) => img.path),
-    imageFiles: props.empty ? [] : props.data.images.map((img) => img.path),
-    unitType: props.empty ? "" : (props.data.unit_type as UnitTypeKey),
-    formResetKey: 0,
+  // const [state, setState] = useState<UnitFormState>({
+  //   images: props.empty ? [] : props.data.images.map((img) => img.path),
+  //   imageFiles: props.empty ? [] : props.data.images.map((img) => img.path),
+  //   unitType: props.empty ? "" : (props.data.unit_type as UnitTypeKey),
+  //   formResetKey: 0,
+  // });
+
+  const [state, setState] = useState<UnitFormState>(() => {
+    if (props.empty) {
+      // New unit: start with empty images
+      return {
+        images: [],
+        imageFiles: [],
+        unitType: "",
+        formResetKey: 0,
+      };
+    } else if (props.data.notYetUploaded) {
+      // Not yet uploaded: clear images to force upload
+      return {
+        images: [],
+        imageFiles: [],
+        unitType: props.data.unit_type as UnitTypeKey,
+        formResetKey: 0,
+      };
+    } else {
+      // Existing unit (editing or viewing): retain images
+      return {
+        images: props.data.images.map((img) => img.path),
+        imageFiles: props.data.images.map((img) => img.path),
+        unitType: props.data.unit_type as UnitTypeKey,
+        formResetKey: 0,
+      };
+    }
   });
 
   const maxImages = propertyType === "facility" ? 5 : 14;
@@ -98,7 +126,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       toast.warning("Please add at least one picture");
       return;
     }
-  
+
     // Validate that numeric fields contain digits
     const hasNoDigits = (str: string) => !/\d/.test(str);
     if (
@@ -108,10 +136,10 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       toast.warning("Please enter valid measurement values");
       return;
     }
-  
+
     setSubmitLoading(true);
     convertYesNoToBoolean(formData, yesNoFields);
-  
+
     // Transform the form data into the API payload
     const transformedData = transformUnitFormData(
       formData,
@@ -119,7 +147,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       propertyId,
       props.empty ? [] : props.data.images // Pass original images when editing
     );
-  
+
     if (props.empty) {
       // Handle creation of a new unit
       const unitId = await createUnit(propertyId, transformedData);
@@ -180,18 +208,18 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           },
           { newImages: [], retainedImages: [] }
         );
-  
+
         // Debugging logs to verify the state
         console.log("state.imageFiles:", state.imageFiles);
         console.log("retainedImages:", retainedImages);
         console.log("newImages:", newImages);
-  
+
         const editUnitPayload = {
           ...transformedData,
-          images: newImages,          // New images to upload
+          images: newImages, // New images to upload
           retain_images: retainedImages, // IDs of images to keep
         };
-  
+
         const unitId = await editUnitApi(props.data.id, editUnitPayload);
         if (unitId) {
           const unitData = await getUnitById(unitId);
@@ -202,10 +230,10 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       }
       props.setIsEditing(false);
     }
-  
+
     setSubmitLoading(false);
   };
-  
+
   return (
     <FlowProgress
       steps={1}

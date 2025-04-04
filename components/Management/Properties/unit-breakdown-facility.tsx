@@ -24,7 +24,7 @@ const UnitBreakdownFacility = () => {
     return {
       rentAmount: unitData?.fee_amount
         ? formatNumber(parseFloat(unitData.fee_amount))
-        : "",
+        : "", // Empty string if null/undefined
       securityFee: unitData?.security_fee
         ? formatNumber(parseFloat(unitData.security_fee))
         : "",
@@ -34,6 +34,9 @@ const UnitBreakdownFacility = () => {
       otherCharges: unitData?.other_charge
         ? formatNumber(parseFloat(unitData.other_charge))
         : "",
+      vat: unitData?.renew_vat
+        ? formatNumber(parseFloat(unitData.renew_vat as string))
+        : "0", // Default to "0" for VAT
       totalPackage: unitData?.total_package
         ? formatNumber(parseFloat(unitData.total_package))
         : "",
@@ -43,15 +46,22 @@ const UnitBreakdownFacility = () => {
     unitData?.security_fee,
     unitData?.service_charge,
     unitData?.other_charge,
+    unitData?.renew_vat,
     unitData?.total_package,
   ]);
 
   const [formValues, setFormValues] = useState(initialFormValues);
-  const { rentAmount, securityFee, serviceCharge, otherCharges, totalPackage } =
-    formValues;
+  const {
+    rentAmount,
+    securityFee,
+    serviceCharge,
+    otherCharges,
+    vat,
+    totalPackage,
+  } = formValues;
 
   type FormField = keyof typeof formValues;
-  // Update formValues based on input changes
+
   const handleInputChange = (field: FormField, value: string) => {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -71,24 +81,38 @@ const UnitBreakdownFacility = () => {
     }));
   };
 
-  // Calculate the total package
+  // Calculate VAT
+  useEffect(() => {
+    const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
+    const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
+    const rentTenPercent = rentAmountValue * 0.10;
+    const calculatedVAT = shouldCalculateVAT ? rentTenPercent * 0.075 : 0;
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      vat: formatNumber(calculatedVAT.toFixed(2)),
+    }));
+  }, [rentAmount, propertySettings?.VAT]);
+
+  // Calculate Total Package
   useEffect(() => {
     const total =
       (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
       (parseFloat(securityFee.replace(/,/g, "")) || 0) +
       (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
-      (parseFloat(otherCharges.replace(/,/g, "")) || 0);
+      (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
+      (parseFloat(vat.replace(/,/g, "")) || 0);
 
     setFormValues((prevValues) => ({
       ...prevValues,
-      totalPackage: formatNumber(parseFloat(total.toFixed(2))),
+      totalPackage: formatNumber(total.toFixed(2)),
     }));
-  }, [rentAmount, securityFee, serviceCharge, otherCharges]);
+  }, [rentAmount, securityFee, serviceCharge, otherCharges, vat]);
 
-  // reset form
+  // Reset form when formResetKey changes
   useEffect(() => {
     if (formResetKey !== 0) {
-      setOtherChargesInput(!!unitData?.other_charge);
+      setOtherChargesInput(!!parseFloat(unitData?.other_charge || "0"));
       setFormValues(initialFormValues);
     }
   }, [formResetKey, initialFormValues, unitData?.other_charge]);
@@ -106,8 +130,8 @@ const UnitBreakdownFacility = () => {
           options={rentPeriods}
           label="Fee Period"
           inputContainerClassName="bg-white"
-          resetKey={formResetKey}
           hiddenInputClassName="unit-form-input"
+          resetKey={formResetKey}
           defaultValue={unitData?.fee_period || "yearly"}
         />
         <Input
@@ -123,7 +147,7 @@ const UnitBreakdownFacility = () => {
         <Input
           id="security_fee"
           label="Security Fee"
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={securityFee}
           onChange={(value) => handleInputChange("securityFee", value)}
@@ -132,19 +156,18 @@ const UnitBreakdownFacility = () => {
         <Input
           id="service_charge"
           label="Service Charge"
-          inputClassName="bg-white"
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
         />
-
         {otherChargesInput && (
           <div className="relative">
             <Input
               id="other_charge"
               label="Other Charges"
-              inputClassName="bg-white"
+              inputClassName="bg-white unit-form-input"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               value={otherCharges}
               onChange={(value) => handleInputChange("otherCharges", value)}
@@ -168,6 +191,17 @@ const UnitBreakdownFacility = () => {
           >
             Add Other Charges
           </button>
+        )}
+        {propertySettings?.VAT?.toLowerCase() === "yes" && (
+          <Input
+            id="renew_vat"
+            label="VAT Fee"
+            inputClassName="bg-white unit-form-input"
+            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+            value={vat}
+            readOnly
+            type="text"
+          />
         )}
         <Input
           required

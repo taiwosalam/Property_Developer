@@ -455,7 +455,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             />
             <Input
               id="full_address"
-              label="Property Street Address"
+              label="Street Name/Number"
               inputClassName="bg-white rounded-[8px] property-form-input"
               required
               maxLength={15}
