@@ -81,9 +81,9 @@ const UpdateProfileWithIdModal = ({
       const res = await action;
       if (res) {
         setActiveStep(3);
-        window.dispatchEvent(new Event("refetchtenant"));
-        window.dispatchEvent(new Event("refetchlandlord"));
-        window.dispatchEvent(new Event("updateServiceProvider"));
+        page === "tenant" && window.dispatchEvent(new Event("refetchtenant"));
+        page === "landlord" && window.dispatchEvent(new Event("refetchlandlord"));
+        setTimeout(() => setIsOpen(false), 100);
       }
     } catch (error) {
       toast.error("Failed to Update User");

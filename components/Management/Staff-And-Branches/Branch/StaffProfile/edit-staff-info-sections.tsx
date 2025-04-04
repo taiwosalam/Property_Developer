@@ -17,28 +17,47 @@ import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import LockOTPModal from "./lock-otp-modal";
-import { checkFormDataForImageOrAvatar, cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import {
+  checkFormDataForImageOrAvatar,
+  cleanPhoneNumber,
+  objectToFormData,
+} from "@/utils/checkFormDataForImageOrAvatar";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import Image from "next/image";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { moveStaffToAnotherBranch, updateStaffAbout, updateStaffPicture, updateStaffProfile, updateStaffRole } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/edit/data";
+import {
+  moveStaffToAnotherBranch,
+  updateStaffAbout,
+  updateStaffPicture,
+  updateStaffProfile,
+  updateStaffRole,
+} from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/edit/data";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import useFetch from "@/hooks/useFetch";
-import { lockStaffAccount, sendVerifyStaffOTP } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/data";
+import {
+  lockStaffAccount,
+  sendVerifyStaffOTP,
+} from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/data";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
-
 
 export const StaffEditProfileInfoSection = () => {
   const { data: staff } = useStaffEditContext();
   const [reqLoading, setReqLoading] = useState(false);
 
+  const yearsOptions = Array.from({ length: 10 }, (_, i) => {
+    const yearValue = i + 1;
+    return { label: `${yearValue} years +`, value: `${yearValue}+` };
+  });
+
   const handleUpdateProfile = async (data: Record<string, string>) => {
     const payload = {
       full_name: data.fullname,
       title: data.personal_title,
-      estate_title: data.real_estate_title,
+      professional_title: data.real_estate_title,
+      years_experience: data.years_experience,
+      // estate_title: data.real_estate_title,
       // email: data.email,
       phone_number: data.phone_number,
       gender: data.gender,
@@ -60,64 +79,69 @@ export const StaffEditProfileInfoSection = () => {
     }
   };
   return (
-    <LandlordTenantInfoEditSection title='profile'>
-      <AuthForm
-        onFormSubmit={handleUpdateProfile}
-        skipValidation
-      >
+    <LandlordTenantInfoEditSection title="profile">
+      <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
         <LandlordTenantInfoEditGrid>
           <Select
             isSearchable={false}
-            id='personal_title'
-            label='personal title / qualifiction'
-            inputContainerClassName='bg-neutral-2'
+            id="personal_title"
+            label="personal title / qualifiction"
+            inputContainerClassName="bg-neutral-2"
             options={titles}
             defaultValue={staff?.personal_title}
           />
           <Select
             isSearchable={false}
-            id='real_estate_title'
-            label='real estate title'
-            inputContainerClassName='bg-neutral-2'
+            id="real_estate_title"
+            label="real estate title"
+            inputContainerClassName="bg-neutral-2"
             options={industryOptions}
             defaultValue={staff?.real_estate_title}
           />
           <Input
-            id='fullname'
-            label='full name'
+            id="fullname"
+            label="full name"
             required
             defaultValue={staff?.full_name}
           />
           <Input
-            id='email'
-            type='email'
-            label='email'
+            id="email"
+            type="email"
+            label="email"
             disabled
             defaultValue={staff?.email}
           />
           <Select
-            id='gender'
-            label='gender'
+            id="years_experience"
+            label="years of experience"
+            placeholder="Write here"
+            options={yearsOptions}
+            hiddenInputClassName="setup-f"
+            defaultValue={`${staff?.experience}+`}
+          />
+          <Select
+            id="gender"
+            label="gender"
             isSearchable={false}
             options={genderTypes}
-            inputContainerClassName='bg-neutral-2'
+            inputContainerClassName="bg-neutral-2"
             defaultValue={staff?.gender}
           />
           <PhoneNumberInput
-            id='phone_number'
-            label='phone number'
+            id="phone_number"
+            label="phone number"
             required
             defaultValue={staff?.phone_number}
           />
 
-          <div className='md:col-span-2 flex justify-end'>
+          <div className="md:col-span-2 flex justify-end">
             <Button
-              size='base_medium'
-              className='py-2 px-6'
-              type='submit'
+              size="base_medium"
+              className="py-2 px-6"
+              type="submit"
               disabled={reqLoading}
             >
-              {reqLoading ? 'updating...' : 'update'}
+              {reqLoading ? "updating..." : "update"}
             </Button>
           </div>
         </LandlordTenantInfoEditGrid>
@@ -132,7 +156,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
   const [moving, setMoving] = useState(false);
   const name = staff?.full_name;
   const position = staff?.position;
-  const branchId = Number(staff?.branch_id)
+  const branchId = Number(staff?.branch_id);
 
   const {
     data: branchesData,
@@ -147,7 +171,6 @@ export const StaffEditMoveToAnotherBranchSection = () => {
   } = useFetch<any>(`/staffs/${branchId}`);
   const staffs = staffsData?.data.staff;
 
-
   const branchOptions =
     branchesData?.data
       .filter((branch) => Number(branch.id) !== branchId)
@@ -156,12 +179,13 @@ export const StaffEditMoveToAnotherBranchSection = () => {
         label: branch.branch_name,
       })) || [];
 
-  const staffOptions = staffs
-    ?.filter((staffItem: any) => staffItem.id !== staff?.id)
-    .map((staff: any) => ({
-      value: staff.id,
-      label: `${staff.title} ${staff.name}`,
-    })) || [];
+  const staffOptions =
+    staffs
+      ?.filter((staffItem: any) => staffItem.id !== staff?.id)
+      .map((staff: any) => ({
+        value: staff.id,
+        label: `${staff.title} ${staff.name}`,
+      })) || [];
 
   const hasManager = staff?.position === "manager";
 
@@ -174,7 +198,10 @@ export const StaffEditMoveToAnotherBranchSection = () => {
     if (staff?.id) {
       try {
         setMoving(true);
-        const status = await moveStaffToAnotherBranch(staff.id, objectToFormData(payload));
+        const status = await moveStaffToAnotherBranch(
+          staff.id,
+          objectToFormData(payload)
+        );
         if (status) {
           window.dispatchEvent(new Event("staff-updated"));
         }
@@ -205,10 +232,10 @@ export const StaffEditMoveToAnotherBranchSection = () => {
               branchesLoading
                 ? "Loading branches..."
                 : branchesError
-                  ? "Error loading branches"
-                  : "Select branch"
+                ? "Error loading branches"
+                : "Select branch"
             }
-          //   defaultValue={staff?.real_estate_title}
+            //   defaultValue={staff?.real_estate_title}
           />
           <Select
             id="transfer_current_position_to"
@@ -220,12 +247,8 @@ export const StaffEditMoveToAnotherBranchSection = () => {
             id="select_new_branch_position"
             label="select new branch position"
             inputContainerClassName="bg-neutral-2"
-            options={[
-              "manager",
-              "account officer",
-              "staff",
-            ]}
-          //   defaultValue={staff?.real_estate_title}
+            options={["manager", "account officer", "staff"]}
+            //   defaultValue={staff?.real_estate_title}
           />
           <div className="md:col-span-2 flex justify-end">
             <Button type="submit" size="base_medium" className="py-2 px-6">
@@ -247,9 +270,9 @@ export const StaffEditChangePositionSection = () => {
 
   useEffect(() => {
     if (staff) {
-      setBranchId(staff.branch_id)
+      setBranchId(staff.branch_id);
     }
-  }, [staff, branchId])
+  }, [staff, branchId]);
 
   const {
     data: staffsData,
@@ -258,23 +281,20 @@ export const StaffEditChangePositionSection = () => {
   } = useFetch<any>(`/staffs/${branchId}`);
   const staffs = staffsData?.data.staff;
 
-  const staffOptions = staffs
-    ?.filter((staffItem: any) => staffItem.id !== staff?.id)
-    .map((staff: any) => ({
-      value: staff.id,
-      label: `${staff.title} ${staff.name}`,
-    })) || [];
+  const staffOptions =
+    staffs
+      ?.filter((staffItem: any) => staffItem.id !== staff?.id)
+      .map((staff: any) => ({
+        value: staff.id,
+        label: `${staff.title} ${staff.name}`,
+      })) || [];
 
   const hasManager = staff?.position === "manager";
   const positionOptions = [
-    ...(hasManager
-      ? []
-      : [{ value: "manager", label: "branch manager" }]),
+    ...(hasManager ? [] : [{ value: "manager", label: "branch manager" }]),
     { value: "account officer", label: "account officer" },
     { value: "staff", label: "staff" },
   ].filter((option) => option.value !== position);
-
-
 
   const handleUpdateStaffPosition = async (data: Record<string, string>) => {
     const payload = {
@@ -284,7 +304,10 @@ export const StaffEditChangePositionSection = () => {
     if (staff?.id) {
       try {
         setUpdating(true);
-        const status = await updateStaffRole(staff.id, objectToFormData(payload));
+        const status = await updateStaffRole(
+          staff.id,
+          objectToFormData(payload)
+        );
         if (status) {
           window.dispatchEvent(new Event("staff-updated"));
         }
@@ -309,7 +332,7 @@ export const StaffEditChangePositionSection = () => {
             label="new position"
             inputContainerClassName="bg-neutral-2"
             options={positionOptions}
-          //   defaultValue={staff?.real_estate_title}
+            //   defaultValue={staff?.real_estate_title}
           />
 
           <div className="md:col-span-2 flex justify-end">
@@ -319,7 +342,7 @@ export const StaffEditChangePositionSection = () => {
           </div>
         </LandlordTenantInfoEditGrid>
       </AuthForm>
-    </LandlordTenantInfoEditSection >
+    </LandlordTenantInfoEditSection>
   );
 };
 
@@ -339,7 +362,10 @@ export const StaffEditAboutSection = () => {
     if (staff?.id) {
       try {
         setUpdating(true);
-        const status = await updateStaffAbout(staff.id, objectToFormData(payload));
+        const status = await updateStaffAbout(
+          staff.id,
+          objectToFormData(payload)
+        );
         if (status) {
           window.dispatchEvent(new Event("staff-updated"));
         }
@@ -369,7 +395,11 @@ export const StaffEditAboutSection = () => {
           value={about}
           onChange={(value) => setAbout(value)}
         />
-        <Button type="submit" size="base_medium" className="!w-fit ml-auto py-2 px-6">
+        <Button
+          type="submit"
+          size="base_medium"
+          className="!w-fit ml-auto py-2 px-6"
+        >
           {updating ? "Updating..." : "Update"}
         </Button>
       </LandlordTenantInfoEditSection>
@@ -383,7 +413,7 @@ export const StaffLockAccountSection = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isLocking, setIsLocking] = useState(false);
-  const [next, setNext] = useState(false)
+  const [next, setNext] = useState(false);
   const [otp, setOtp] = useState("");
 
   const handleLockClicked = async () => {
@@ -395,7 +425,7 @@ export const StaffLockAccountSection = () => {
       }
     } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -403,23 +433,23 @@ export const StaffLockAccountSection = () => {
   const handleLockAccount = async () => {
     try {
       setIsLocking(true);
-      if(staff?.id){
-      const res = await lockStaffAccount(staff?.id, otp);
-      if (res) {
-        toast.success("Staff Locked Successfully")
-        window.dispatchEvent(new Event("staff-updated"));
-        setNext(true)
+      if (staff?.id) {
+        const res = await lockStaffAccount(staff?.id, otp);
+        if (res) {
+          toast.success("Staff Locked Successfully");
+          window.dispatchEvent(new Event("staff-updated"));
+          setNext(true);
+        }
       }
-    }
     } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       setIsLocking(false);
     }
   };
 
-  const inactive = staff?.status === 'inactive';
-  console.log("inactive", inactive)
+  const inactive = staff?.status === "inactive";
+  console.log("inactive", inactive);
 
   return (
     <LandlordTenantInfoEditSection title={`lock ${name} account`}>
@@ -438,16 +468,14 @@ export const StaffLockAccountSection = () => {
           >
             {loading ? "Please wait..." : inactive ? "Unlock" : "lock"}
           </Button>
-          <Modal
-            state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}
-          >
+          <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
             <ModalContent>
-              <LockOTPModal 
-               action={handleLockAccount}
-               otp={otp}
-               setOtp={setOtp}
-               loading={isLocking}
-               next={next}
+              <LockOTPModal
+                action={handleLockAccount}
+                otp={otp}
+                setOtp={setOtp}
+                loading={isLocking}
+                next={next}
               />
             </ModalContent>
           </Modal>
@@ -518,7 +546,6 @@ export const StaffEditAvatarInfoSection = () => {
       setPreview(data.picture);
     }
   }, [data?.picture, setPreview]);
-
 
   return (
     <AuthForm
@@ -605,7 +632,7 @@ export const StaffEditAvatarInfoSection = () => {
           type="submit"
           disabled={reqLoading}
         >
-          {reqLoading ? "updating..." : "save"}
+          {reqLoading ? "updating..." : "Update"}
         </Button>
       </LandlordTenantInfoEditSection>
     </AuthForm>

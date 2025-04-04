@@ -58,6 +58,7 @@ const EditStaffProfile = () => {
           picture: apiData.data.picture,
           about: apiData.data.about_staff,
           status: yesNoToActiveInactive(apiData.data.status),
+          experience: "",
         }
       )
     }

@@ -20,7 +20,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const removeUnit = useAddUnitStore((state) => state.removeUnit);
 
   const currency = propertySettings?.currency;
-  console.log("data hereeee", data);
+  // console.log("data hereeee", data);
   const referenceObject = {
     unit_details: "",
     "unit no/name": "",

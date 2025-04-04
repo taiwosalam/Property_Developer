@@ -52,7 +52,7 @@ const EditStaffProfile = () => {
         id: apiData.data.id,
         branch_id: branchId as string,
         personal_title: apiData.data.title,
-        real_estate_title: apiData.data.real_estate_title,
+        real_estate_title: apiData.data.professional_title,
         full_name: apiData.data.name,
         email: apiData.data.email,
         phone_number: apiData.data.phone,
@@ -60,6 +60,7 @@ const EditStaffProfile = () => {
         position: apiData.data.position,
         picture: apiData.data.picture,
         about: apiData.data.about_staff,
+        experience: apiData.data.years_experience,
         status: yesNoToActiveInactive(apiData.data.status),
       });
     }
@@ -71,9 +72,6 @@ const EditStaffProfile = () => {
       console.log(error);
     }
   };
-
-  // console.log("data -", apiData);
-  // console.log("page -", pageData);
 
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;

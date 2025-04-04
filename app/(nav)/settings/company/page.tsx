@@ -175,27 +175,6 @@ const Profile = () => {
                     <SettingsVerifiedBadge status="verified" />
                   </div>
                 </div>
-                <div className="flex-1">
-                  <Select
-                    id="director_experience"
-                    label="years in business"
-                    // defaultValue={pageData?.director_experience}
-                    placeholder="Select Option"
-                    options={[
-                      "1+",
-                      "2+",
-                      "3+",
-                      "4+",
-                      "5+",
-                      "6+",
-                      "7+",
-                      "8+",
-                      "9+",
-                      "10+",
-                    ]}
-                    hiddenInputClassName="setup-f"
-                  />
-                </div>
                 <div className="flex-1 gap-1 flex items-end">
                   <Input
                     required

@@ -28,7 +28,6 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   className,
   seeAllLink,
 }) => {
-  console.log("Notifications: ", notifications);
   const getEmptyState = () => {
     if (sectionHeader === "Recent Messages") {
       return {

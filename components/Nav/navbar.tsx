@@ -1,8 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Skeleton } from "@mui/material";
 import { empty } from "@/app/config";
-// import Avatar from "@/public/empty/avatar.png";
 import { useTheme } from "next-themes";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import Picture from "@/components/Picture/picture";
@@ -41,22 +42,9 @@ import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { getLocalStorage, saveLocalStorage } from "@/utils/local-storage";
-import { useRole } from "@/hooks/roleContext";
-import useDarkMode from "@/hooks/useCheckDarkMode";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { applyFont } from "@/app/(onboarding)/auth/data";
-import useSettingsStore from "@/store/settings";
-import {
-  roundUptoNine,
-  sumUnreadCount,
-  transformUsersMessages,
-} from "@/app/(nav)/(messages-reviews)/messages/data";
-import {
-  ConversationsAPIResponse,
-  PageMessages,
-} from "@/app/(nav)/(messages-reviews)/messages/types";
-import { useChatStore } from "@/store/message";
-import { message_card_data } from "../Message/data";
+import { roundUptoNine } from "@/app/(nav)/(messages-reviews)/messages/data";
 
 const NotificationBadge = ({
   count,
@@ -65,12 +53,13 @@ const NotificationBadge = ({
   count: number | string;
   color: string;
 }) => {
-  if (count === 0) return null; // Don't render if count is 0
+  const numericCount = typeof count === "string" ? parseInt(count, 10) : count;
+  if (numericCount <= 0) return null;
   return (
     <span
       className={`absolute top-0 right-0 bg-${color}-500 text-white text-[10px] rounded-full px-1`}
     >
-      {count}
+      {numericCount > 9 ? "9+" : numericCount}
     </span>
   );
 };
@@ -80,120 +69,47 @@ const Header = () => {
   const hasMounted = useRef(false);
   const setColor = useThemeStoreSelectors.getState().setColor;
   const { theme, setTheme } = useTheme();
-  const { role } = useRole();
-  const [pageUsersMsg, setPageUsersMsg] =
-    useState<PageMessages[]>(message_card_data);
-  const { setChatData } = useChatStore();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
+
   const loggedInUserDetails = getLocalStorage("additional_details");
-  let loggedUserCompany:
-    | {
-        company_id: string | null;
-        company_logo: string | null;
-        dark_logo: string | null;
-      }
-    | undefined;
-  let loggedUserBranch:
-    | { branch_id: string | null; picture: string | null }
-    | undefined;
-  let appearance:
-    | {
-        colorMode: string;
-        view: string;
-        navbar: string;
-        fonts: string;
-        dashboardColor: string;
-      }
-    | undefined;
-  if (loggedInUserDetails) {
-    ({
-      company: loggedUserCompany,
-      branch: loggedUserBranch,
-      appearance,
-    } = loggedInUserDetails);
-  }
+  const unreadMessageCount = getLocalStorage("msgCount") || 0;
+  const notificationCount = getLocalStorage("notificationCount") || 0;
 
-  useEffect(() => {
-    if (appearance && !hasMounted.current) {
-      // Run this only once during initialization
-      const { colorMode, view, navbar, fonts, dashboardColor } = appearance;
-      saveLocalStorage("navbar", navbar); // Save navbar to local storage for fixed footer, change later
-      setColor(dashboardColor);
-      applyFont(fonts);
-      setTheme(colorMode);
-
-      hasMounted.current = true; // Mark as initialized
-    }
-  }, [appearance, setColor, setTheme]);
-
-  const toggleTheme = () => {
-    if (!hasMounted.current) return; // Prevent toggling before initialization
-    const primaryColor = localStorage.getItem("primary-color");
-    if (primaryColor === "#000000") {
-      toast.error("Cannot use dark mode on the selected primary color"); // Show toast message
-      setTheme("light"); // Set theme to light
-      return; // Exit the function if the condition is met
-    }
-    switch (theme) {
-      case "light":
-        setTheme("dark");
-        break;
-      case "dark":
-        setTheme("light");
-        break;
-      default:
-        setTheme("light");
-        break;
-    }
-  };
-
-  const lgIconsInteractionClasses =
-    "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
-
-  const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
-  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
-
-  const {
-    data: usersMessages,
-    loading: usersMsgLoading,
-    error: usersMsgError,
-    refetch: refetchMsg,
-  } = useFetch<ConversationsAPIResponse>("/messages");
-  useRefetchOnEvent("refetch-users-msg", () => {
-    refetchMsg({ silent: true });
-  });
-
+  const { company: loggedUserCompany, appearance } = loggedInUserDetails || {};
   const setPersonalInfo = usePersonalInfoStore(
     (state) => state.setPersonalInfo
   );
   const name = usePersonalInfoStore((state) => state.name);
-  const title = usePersonalInfoStore((state) => state.title);
-  const company_logo = usePersonalInfoStore(
-    // (state) => state.company_logo || loggedUserCompany?.company_logo
-    (state) => {
-      if (theme === "light") {
-        return loggedUserCompany?.company_logo;
-      } else {
-        return loggedUserCompany?.dark_logo;
-      }
-    }
-  );
-
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture
   );
+  const company_logo = usePersonalInfoStore((state) =>
+    theme === "light"
+      ? loggedUserCompany?.company_logo
+      : loggedUserCompany?.dark_logo
+  );
 
-  // console.log("data", data)
+  const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
+  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (appearance && !hasMounted.current) {
+      const { colorMode, navbar, fonts, dashboardColor } = appearance;
+      saveLocalStorage("navbar", navbar);
+      setColor(dashboardColor);
+      applyFont(fonts);
+      setTheme(colorMode);
+      hasMounted.current = true;
+    }
+  }, [appearance, setColor, setTheme]);
+
   useEffect(() => {
     if (data?.data) {
-      const { user, company, profile, director, requestDemos } = data.data;
+      const { user, company, profile, requestDemos } = data.data;
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo(
         "name",
-        // `${profile?.title ? profile.title + " " : ""}${user.name}`
-        `${director?.personal_title ? director.personal_title + " " : ""}${
-          user.name
-        }`
+        `${profile?.title ? profile.title + " " : ""}${user.name}`
       );
       setPersonalInfo("full_name", user.name);
       setPersonalInfo("user_email", user.email);
@@ -222,48 +138,43 @@ const Header = () => {
           company.cac_registration_number
         );
       }
-      // Check if requestDemos array is not empty and update the store accordingly
-      if (Array.isArray(requestDemos)) {
-        setPersonalInfo("requestDemo", requestDemos.length > 0);
-      } else {
-        setPersonalInfo("requestDemo", false);
-      }
+      setPersonalInfo(
+        "requestDemo",
+        Array.isArray(requestDemos) && requestDemos.length > 0
+      );
     }
   }, [data, setPersonalInfo]);
 
-  // MESSAGES
-  useEffect(() => {
-    if (usersMessages) {
-      const transformed = transformUsersMessages(usersMessages);
-      setPageUsersMsg(transformed);
-      setChatData("users_messages", transformed);
+  const toggleTheme = () => {
+    if (!hasMounted.current) return;
+    const primaryColor = localStorage.getItem("primary-color");
+    if (primaryColor === "#000000") {
+      toast.error("Cannot use dark mode on the selected primary color");
+      setTheme("light");
+      return;
     }
-  }, [usersMessages]);
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
-  const unreadMsg = sumUnreadCount(pageUsersMsg);
+  const lgIconsInteractionClasses =
+    "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
 
   return (
     <header
       className={clsx(
-        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-solid border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
+        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
         loading && "skeleton"
       )}
     >
       <div className="flex-1 h-full flex gap-6 items-center">
         {/* Logo */}
-        <div
-          className={clsx(
-            "hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden"
-          )}
-        >
+        <div className="hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden">
           {loading ? (
             <Skeleton
               width="100%"
               height="100%"
               animation="wave"
-              sx={{
-                transform: "none",
-              }}
+              sx={{ transform: "none" }}
             />
           ) : (
             <Image
@@ -277,9 +188,9 @@ const Header = () => {
           )}
         </div>
 
-        {/*MD & Mobile Icons */}
-        <div className="lg:hidden flex items-center gap-2 md:justify-between md:flex-1 ml-auto md:ml-[unset]">
-          {/* MD (Tablet) Icons */}
+        {/* Mobile & Tablet Icons */}
+        <div className="lg:hidden flex items-center gap-2 md:justify-between md:flex-1 ml-auto md:ml-0">
+          {/* Tablet Icons */}
           <div className="hidden md:flex items-center gap-2 w-full justify-between">
             <div className="flex items-center gap-2">
               <NavIcon
@@ -314,7 +225,7 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Mobile nav toggle */}
+          {/* Mobile Toggle */}
           <div className="flex md:hidden items-center gap-2">
             <AnimatePresence mode="popLayout">
               {mobileToggleOpen ? (
@@ -375,7 +286,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Nav Switch User & Other buttons for LG & above */}
+        {/* Desktop Navigation */}
         <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
           <div className="flex-1 flex items-center gap-2">
             <NavSwitchUserSwitch />
@@ -417,7 +328,7 @@ const Header = () => {
               >
                 <MailIcon />
                 <NotificationBadge
-                  count={roundUptoNine(unreadMsg)}
+                  count={roundUptoNine(unreadMessageCount)}
                   color="red"
                 />
               </Link>
@@ -429,7 +340,10 @@ const Header = () => {
                 className={lgIconsInteractionClasses}
               >
                 <BellIcon />
-                <NotificationBadge count={roundUptoNine(31)} color="green" />
+                <NotificationBadge
+                  count={roundUptoNine(notificationCount)}
+                  color="green"
+                />
               </Link>
             </div>
             <button
@@ -444,7 +358,7 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Profile Pic and Name */}
+      {/* Profile Dropdown */}
       <Dropdown>
         <DropdownTrigger>
           <div className="flex items-center gap-4">

@@ -36,4 +36,5 @@ export interface StaffProfileProps {
   picture?: string;
   about:any;
   status: string;
+  experience: number | string;
 }

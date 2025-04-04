@@ -41,10 +41,29 @@ export const transformStaffListResponse = (
     current_page: data.pagination.current_page,
     branch_name: data.branch.name,
     branch_address: data.branch.address,
-    // branch_address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
-    staffs: data.staff.map((s) => {
-      const name = s.title ? `${s.title} ${s.name}` : s.name;
-      return { ...s, name, position: s.staff_role, phone_number: s.phone, gender: "" };
-    }),
+    staffs: data.staff?.map((s) => ({
+      ...s,
+      name: s.title ? `${s.title} ${s.name}` : s.name,
+      position: s.staff_role,
+      phone_number: s.phone,
+      gender: "",
+    })) || [], 
   };
 };
+
+// export const transformStaffListResponse = (
+//   response: StaffListResponse
+// ): BranchStaffPageState => {
+//   const { data } = response;
+//   return {
+//     total_pages: data.pagination.total_pages,
+//     current_page: data.pagination.current_page,
+//     branch_name: data.branch.name,
+//     branch_address: data.branch.address,
+//     // branch_address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
+//     staffs: data.staff.map((s) => {
+//       const name = s.title ? `${s.title} ${s.name}` : s.name;
+//       return { ...s, name, position: s.staff_role, phone_number: s.phone, gender: "" };
+//     }),
+//   };
+// };

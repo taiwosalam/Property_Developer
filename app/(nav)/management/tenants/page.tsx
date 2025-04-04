@@ -41,6 +41,7 @@ const states = getAllStates();
 
 const Tenants = () => {
   const storedView = useView();
+  const contentTopRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<string | null>(storedView);
   const [pageData, setPageData] = useState<TenantPageData>(
     defaultTenantPageData
@@ -135,6 +136,10 @@ const Tenants = () => {
         ...prevData,
         tenants: [],
       }));
+      // Scroll to the top where TenantCards start
+      if (contentTopRef.current) {
+        contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+      }
     }
   };
 
@@ -157,15 +162,6 @@ const Tenants = () => {
     error,
     refetch,
   } = useFetch<TenantApiResponse>("tenants", config);
-
-  // useEffect(() => {
-  //   if (apiData) {
-  //     setPageData((x) => ({
-  //       ...x,
-  //       ...transformTenantApiResponse(apiData),
-  //     }));
-  //   }
-  // }, [apiData]);
 
   // Handle view change with reset and silent refetch
   useEffect(() => {
@@ -228,24 +224,23 @@ const Tenants = () => {
     ),
     user_tag: <UserTag type={t.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full">
-        <Button
-          href={`/management/tenants/${t.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2 mx-auto"
-        >
-          Manage
-        </Button>
+      <div className="flex gap-x-[4%] items-center justify-end w-full">
         {t.user_tag === "mobile" && (
           <Button
             variant="sky_blue"
             size="sm_medium"
-            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-            // onClick={() => onClickChat(t)}
+            className="px-8 py-2 border-[1px] border-brand-9 bg-brand-tertiary bg-opacity-50 text-white"
           >
             Chat
           </Button>
         )}
+        <Button
+          href={`/management/tenants/${t.id}/manage`}
+          size="sm_medium"
+          className="px-8 py-2"
+        >
+          Manage
+        </Button>
       </div>
     ),
     ref:
@@ -271,7 +266,7 @@ const Tenants = () => {
 
   return (
     <div className="space-y-8">
-      <div className="page-header-container">
+      <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Users"
@@ -404,6 +399,7 @@ const Tenants = () => {
                         badge_color={t.badge_color}
                         email={t.email}
                         phone_number={t.phone_number}
+                        note={t.note}
                       />
                     </Link>
                   ))

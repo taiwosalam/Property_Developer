@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Form/Button/button";
@@ -40,6 +40,8 @@ const allStates = getAllStates();
 
 const StaffAndBranches = () => {
   const storedView = useView();
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<string | null>(storedView);
   const router = useRouter();
   const [state, setState] = useState<BranchesPageData>(initialBranchesPageData);
@@ -116,6 +118,10 @@ const StaffAndBranches = () => {
     setConfig({
       params: { ...config.params, page },
     });
+    // Scroll to the top
+    if (contentTopRef.current) {
+      contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSearch = async (query: string) => {
@@ -167,7 +173,7 @@ const StaffAndBranches = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-header-container">
+      <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Branches"

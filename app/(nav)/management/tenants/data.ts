@@ -9,6 +9,7 @@ interface TenantCardProps {
   user_tag: "mobile" | "web";
   picture_url: string;
   badge_color?: BadgeIconColors;
+  note?: boolean;
 }
 
 export const defaultTenantPageData: TenantPageData = {
@@ -86,6 +87,9 @@ export interface TenantApiResponse {
       picture: string;
       agent: string;
       user_tier: 1 | 2 | 3 | 4 | 5;
+      note: {
+        note: string | null;
+      }
     }[];
   };
   mobile_tenant_count: number;
@@ -125,6 +129,7 @@ export const transformTenantApiResponse = (
       phone_number: tenant.phone,
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
+      note: tenant.note.note !== null,
       badge_color: tenant.user_tier ? tierColorMap[tenant.user_tier] : undefined,
     })),
   };

@@ -185,3 +185,211 @@ check management/vehicles-record filter for reference
 // };
 
 // export default AddUnit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { NextRequest, NextResponse } from "next/server";
+// import { roleBasedRoutes } from "./data";
+
+// export async function middleware(req: NextRequest) {
+//   const emailVerified = req.cookies.get("emailVerified")?.value;
+//   const currentPath = req.nextUrl.pathname;
+//   const role = req.cookies.get("role")?.value;
+//   const company_status = req.cookies.get("company_status")?.value;
+
+//   console.log("server role", role);
+//   console.log("server company_status", company_status);
+
+//   // Public routes accessible without authentication
+//   const publicRoutes = [
+//     "/auth/user/sign-in",
+//     "/auth/sign-in",
+//     "/auth/sign-up",
+//     "/auth/setup",
+//     "/auth/forgot-password",
+//     "/management/agent-community",
+//   ];
+
+//   if (publicRoutes.includes(currentPath)) {
+//     return NextResponse.next();
+//   }
+
+//   // Allow access to `/auth/user/sign-in`
+//   if (currentPath === "/auth/user/sign-in") {
+//     return NextResponse.next();
+//   }
+
+//   // Allow `/auth/sign-in` for directors; redirect others to `/auth/user/sign-in`
+//   if (currentPath === "/auth/sign-in") {
+//     if (role === "director") return NextResponse.next();
+//     return NextResponse.redirect(new URL("/auth/user/sign-in", req.url));
+//   }
+
+//   // Define dashboard paths that should bypass the company_status check
+//   const dashboardPaths = [
+//     '/dashboard',
+//     '/accountant/dashboard',
+//     '/manager/dashboard',
+//     '/staff/dashboard',
+//     '/user/dashboard',
+//   ];
+
+//   // Company status check: if currentPath does NOT start with one of the dashboard paths,
+//   // then if company_status is "pending" or "rejected", redirect to unauthorized.
+//   if (
+//     !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
+//     (company_status === 'pending' || company_status === 'rejected')
+//   ) {
+//     return NextResponse.redirect(new URL('/unauthorized', req.url));
+//   }
+
+//   // Role-based route restrictions
+//   const allowedRoutes =
+//     roleBasedRoutes[role as keyof typeof roleBasedRoutes] || [];
+//   if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {
+//     return NextResponse.redirect(new URL("/unauthorized", req.url));
+//   }
+
+//   // Allow access and set headers for debugging or downstream use
+//   const response = NextResponse.next();
+//   response.headers.set("x-authorization-status", "authorized");
+//   return response;
+// }
+
+// export const config = {
+//   matcher: [
+//     "/dashboard/:path*",
+//     "/wallet/:path*",
+//     "/auth/:path*",
+//     "/manager/:path*",
+//     "/management/:path*",
+//     "/tasks/:path*",
+//     "/reports/:path*",
+//     "/listing/:path*",
+//     "/accounting/:path*",
+//     "/applications/:path*",
+//     "/documents/:path*",
+//     "/settings/:path*",
+//     "/messages/:path*",
+//     "/notifications/:path*",
+//   ],
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // const handleSubmit = async (formData: Record<string, any>) => {
+  //   if (!propertyId) return;
+  //   if (propertyType !== "facility" && state.images.length === 0) {
+  //     toast.warning("Please add at least one picture");
+  //     return;
+  //   }
+  //   // Check if strings contain at least one digit
+  //   const hasNoDigits = (str: string) => !/\d/.test(str);
+  //   if (
+  //     (formData.number_of && hasNoDigits(formData.number_of)) ||
+  //     (formData.total_area_sqm && hasNoDigits(formData.total_area_sqm))
+  //   ) {
+  //     toast.warning("Please enter valid measurement values");
+  //     return;
+  //   }
+  //   setSubmitLoading(true);
+  //   convertYesNoToBoolean(formData, yesNoFields);
+  //   const transformedData = transformUnitFormData(
+  //     formData,
+  //     state.imageFiles,
+  //     propertyId
+  //   );
+  //   if (props.empty) {
+  //     const unitId = await createUnit(propertyId, transformedData);
+  //     if (unitId) {
+  //       if (saveClick) {
+  //         setSubmitLoading(false);
+  //         resetForm();
+  //         formRef.current?.reset();
+  //         router.push("/management/properties/");
+  //         return;
+  //       }
+  //       const unitData = await getUnitById(unitId);
+  //       if (unitData) {
+  //         if (duplicate?.val) {
+  //           addUnit(unitData, duplicate.count);
+  //           setDuplicate({
+  //             val: false,
+  //             count: 1,
+  //           });
+  //           props.hideEmptyForm();
+  //         } else {
+  //           addUnit(unitData);
+  //         }
+  //         formRef.current?.reset();
+  //         resetForm();
+  //       }
+  //     }
+  //   } else {
+  //     if (props.data.notYetUploaded) {
+  //       const unitId = await createUnit(propertyId, transformedData);
+  //       if (unitId) {
+  //         const unitData = await getUnitById(unitId);
+  //         if (unitData) {
+  //           editUnit(props.index, unitData);
+  //         }
+  //       }
+  //     } else {
+  //       const { newImages, retainedImages } = transformedData.images.reduce<{
+  //         newImages: File[];
+  //         retainedImages: string[];
+  //       }>(
+  //         (acc, image) => {
+  //           if (image instanceof File) {
+  //             acc.newImages.push(image);
+  //           } else {
+  //             const matchingImage = props.data.images.find(
+  //               (img) => img.path === image
+  //             );
+  //             if (matchingImage) {
+  //               acc.retainedImages.push(matchingImage.id);
+  //             }
+  //           }
+  //           return acc;
+  //         },
+  //         { newImages: [], retainedImages: [] }
+  //       );
+  //       const editUnitPayload = {
+  //         ...transformedData,
+  //         images: newImages,
+  //         retain_images: retainedImages,
+  //       };
+  //       const unitId = await editUnitApi(props.data.id, editUnitPayload);
+  //       if (unitId) {
+  //         const unitData = await getUnitById(unitId);
+  //         if (unitData) {
+  //           editUnit(props.index, unitData);
+  //         }
+  //       }
+  //     }
+  //     props.setIsEditing(false);
+  //   }
+  //   setSubmitLoading(false);
+  // };

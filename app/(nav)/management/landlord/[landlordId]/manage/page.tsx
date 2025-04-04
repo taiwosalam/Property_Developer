@@ -162,7 +162,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <MobileNotesModal notes={landlordData.notes} />
+                    <MobileNotesModal
+                      id={landlordId}
+                      page="landlord"
+                      notes={landlordData.notes}
+                    />
                   </ModalContent>
                 </Modal>
               </>
@@ -176,7 +180,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                   edit
                 </Button>
                 <Modal>
-                  <ModalTrigger>
+                  <ModalTrigger asChild>
                     <Button size="base_medium" className="py-2 px-8">
                       update with Email
                     </Button>
@@ -321,10 +325,12 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       </LandlordTenantInfoSection>
       <SectionContainer
         heading="Statement"
-        href={`/management/landlord/${landlordId}/export`}
+        {...((landlordData?.statement?.length ?? 0) > 0 && {
+          href: `/management/landlord/${landlordId}/export`,
+        })}
         style={{ fontSize: "25px", fontWeight: "700" }}
       >
-        {landlordData?.statement?.length === 0 ? (
+        {(landlordData?.statement?.length ?? 0) === 0 ? (
           <div className="flex justify-center items-center h-32 text-neutral-500">
             The landlord does not have any statement yet
           </div>

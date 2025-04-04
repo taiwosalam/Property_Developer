@@ -40,6 +40,8 @@ import { UnitStatusColors } from "@/components/Management/Properties/property-pr
 import dayjs from "dayjs";
 import { transformCardData } from "../../../landlord/data";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { SectionContainer } from "@/components/Section/section-components";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -61,9 +63,9 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   if (!tenant) return null;
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
-
   const otherData = getObjectProperties({ obj: tenant, exceptions: ["notes"] });
 
+  console.log("tenant", tenant);
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -106,6 +108,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               </div>
               <div className="custom-flex-col gap-2">
                 <UserTag type={tenant.user_tag} />
+                {tenant.note && (
+                  <div className="flex items-center">
+                    <NoteBlinkingIcon size={20} className="blink-color" />
+                  </div>
+                )}
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: {tenant.id}
                 </p>
@@ -144,7 +151,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <MobileNotesModal notes={tenant.notes} />
+                    <MobileNotesModal
+                      page="tenant"
+                      id={tenantId}
+                      notes={tenant.notes}
+                    />
                   </ModalContent>
                 </Modal>
               </>
@@ -204,8 +215,14 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           ))
         )}
       </LandlordTenantInfoSection>
-      <LandlordTenantInfoSection title="statement">
-        {tenant?.statement?.length === 0 ? (
+      <SectionContainer
+        heading="Statement"
+        {...((tenant?.statement?.length ?? 0) > 0 && {
+          href: `/management/tenants/${tenantId}/export`,
+        })}
+        style={{ fontSize: "25px", fontWeight: "700" }}
+      >
+        {(tenant?.statement?.length ?? 0) === 0 ? (
           <div className="flex justify-center items-center h-32 text-neutral-500">
             Tenant does not have any statement yet
           </div>
@@ -217,7 +234,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             tableHeadCellSx={{ fontSize: "1rem" }}
           />
         )}
-      </LandlordTenantInfoSection>
+      </SectionContainer>
       {tenant?.user_tag === "mobile" && (
         <TenantEditContext.Provider value={{ data: tenant }}>
           <TenantEditAttachmentSection />

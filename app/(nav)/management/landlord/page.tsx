@@ -138,10 +138,17 @@ const Landlord = () => {
     });
   };
 
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
+
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
+    // Scroll to the top where LandlordCards start
+    if (contentTopRef.current) {
+      contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -233,23 +240,23 @@ const Landlord = () => {
     ),
     user_tag: <UserTag type={l.user_tag} />,
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full">
-        <Button
-          href={`/management/landlord/${l.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2 mx-auto"
-        >
-          Manage
-        </Button>
+      <div className="flex gap-x-[4%] items-center justify-end w-full">
         {l.user_tag === "mobile" && (
           <Button
             variant="sky_blue"
             size="sm_medium"
-            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
+            className="px-8 py-2 border-[1px] border-brand-9 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
           >
             Chat
           </Button>
         )}
+        <Button
+          href={`/management/landlord/${l.id}/manage`}
+          size="sm_medium"
+          className="px-8 py-2"
+        >
+          Manage
+        </Button>
       </div>
     ),
     // Attach the lastRowRef to the final row if more pages exist.
@@ -275,7 +282,7 @@ const Landlord = () => {
 
   return (
     <div className="space-y-8">
-      <div className="page-header-container">
+      <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex flex-wrap gap-5">
           <ManagementStatistcsCard
             title="Total Landlords"
@@ -408,6 +415,7 @@ const Landlord = () => {
                         email={l.email}
                         phone_number={l.phone_number}
                         badge_color={l.badge_color}
+                        note={l.note}
                       />
                     </Link>
                   ))

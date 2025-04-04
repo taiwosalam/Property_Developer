@@ -55,6 +55,7 @@ export const staffData: StaffProfileProps = {
   picture: "",
   about: "",
   status: "",
+  experience: 0,
 };
 
 
@@ -80,6 +81,7 @@ export const initialPageData: StaffPageTypes = {
     updated_at: "",
     about_staff: "",
     status: "",
+    experience: "",
   },
   activities: [],
   chats: [],
@@ -343,7 +345,7 @@ export const transformStaffAPIResponse = (
       name: res.data.name,
       email: res.data.email,
       title: res.data.title,
-      real_estate_title: res.data.real_estate_title,
+      real_estate_title: res.data.professional_title,
       phone: res.data.phone,
       picture: res.data.picture,
       username: res.data.username,
@@ -358,6 +360,7 @@ export const transformStaffAPIResponse = (
       created_at: res.data.created_at,
       updated_at: res.data.updated_at,
       about_staff: res.data.about_staff,
+      experience: res.data.years_experience,
       status: yesNoToActiveInactive(res.data.status),
     },
     activities: res.activities?.map((a) => {
@@ -369,7 +372,7 @@ export const transformStaffAPIResponse = (
         username: a.username,
         page_visits: a.page_visits,
         // action_taken: message,
-        action_taken: a.page_visits,
+        action_taken: a.action_taken,
         ip_address: a.ip_address,
         location: a.location,
         date: a.date,
