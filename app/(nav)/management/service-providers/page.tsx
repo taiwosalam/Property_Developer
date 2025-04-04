@@ -145,14 +145,6 @@ const ServiceProviders = () => {
     setConfig((prev) => ({
       params: { ...prev.params, page },
     }));
-
-    if (view === "grid") {
-      setPageData((prevData) => ({
-        ...prevData,
-        service_providers: [],
-      }));
-    }
-
     if (view === "grid") {
       itemListView.current?.scrollIntoView({
         behavior: "smooth",
@@ -389,6 +381,7 @@ const ServiceProviders = () => {
                         phone_number={provider.phone}
                         picture_url={provider.avatar}
                         other_info={provider.service_rendered || ""}
+                        note={!provider.note || provider.note === "<p><br></p>" ? false : true}
                       />
                     </Link>
                   ))

@@ -19,6 +19,8 @@ import Image from "next/image";
 import { updateTenantNote } from "@/app/(nav)/management/tenants/[tenantId]/manage/edit/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { updateLandlordNote } from "@/app/(nav)/management/landlord/[landlordId]/manage/edit/data";
+import { updateProviderNotes } from "@/app/(nav)/management/service-providers/[serviceProviderId]/manage/data";
+import { combine } from "zustand/middleware";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -228,8 +230,9 @@ export const LandlordTenantInfoEditGrid: React.FC<{
 
 export const NotesInfoBox: React.FC<{
   notes?: { last_updated: string; write_up: string };
-}> = ({ notes }) => {
-  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || "");
+  provider_note?: string;
+}> = ({ notes, provider_note }) => {
+  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || provider_note || "");
   return (
     <LandlordTenantInfoBox className="custom-flex-col gap-4">
       <div className="flex justify-between gap-4">
@@ -253,16 +256,23 @@ export const NotesInfoBox: React.FC<{
 };
 
 export const MobileNotesModal: React.FC<{
-  page?: "landlord" | "tenant";
+  page?: "landlord" | "tenant" | "service-provider";
   notes?: { last_updated: string; write_up: string };
   id?: string;
-}> = ({ notes, id, page }) => {
+  provider_data?: {
+    provider_notes: string;
+    company_id: string;
+    avatar: string;
+  }
+  
+}> = ({ notes, id, page, provider_data }) => {
+  const { provider_notes, company_id, avatar } = provider_data || {}
   const [editNote, setEditNote] = useState(false);
-  const [note, setNote] = useState(notes?.write_up);
+  const [note, setNote] = useState(notes?.write_up || provider_notes);
   const [reqLoading, setReqLoading] = useState(false);
 
   useEffect(() => {
-    setNote(notes?.write_up);
+    setNote(notes?.write_up || "");
   }, [notes]);
 
   const handleUpdateNote = async () => {
@@ -271,19 +281,26 @@ export const MobileNotesModal: React.FC<{
       const action =
         page === "landlord"
           ? updateLandlordNote(id, objectToFormData({ note }))
-          : updateTenantNote(id, objectToFormData({ note }));
+          : page === "tenant"
+          ? updateTenantNote(id, objectToFormData({ note }))
+          : updateProviderNotes(
+              id,
+              objectToFormData({ note: note, company_id, avatar_url: avatar })  
+            );
       const status = await action;
       if (status) {
         page === "tenant" && window.dispatchEvent(new Event("refetchtenant"));
         page === "landlord" &&
           window.dispatchEvent(new Event("refetchlandlord"));
+        page === "service-provider" &&
+          window.dispatchEvent(new Event("updateServiceProvider"));
         setEditNote(false);
       }
       setReqLoading(false);
     }
   };
 
-  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || "");
+  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || provider_notes || "");
 
   return (
     <LandlordTenantInfoBox className="w-[600px] max-w-[80%] max-h-[85%] min-h-[250px] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar">
@@ -337,7 +354,7 @@ export const MobileNotesModal: React.FC<{
         {editNote ? (
           <TextArea
             id="write_up"
-            value={note}
+            value={note || provider_notes}
             onChange={(value) => setNote(value)}
             inputSpaceClassName="!h-[auto] min-h-[160px]"
           />

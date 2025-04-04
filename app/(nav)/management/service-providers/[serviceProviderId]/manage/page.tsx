@@ -39,6 +39,8 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 
 const ManageServiceProvider = () => {
   const params = useParams();
@@ -52,8 +54,6 @@ const ManageServiceProvider = () => {
     silentLoading,
   } = useFetch<ServiceProviderDetailsResponse>(`service-providers/${paramId}`);
 
-  console.log(apiData);
-
   useRefetchOnEvent("updateServiceProvider", () => refetch({ silent: true }));
 
   const providerData = apiData?.data;
@@ -62,6 +62,8 @@ const ManageServiceProvider = () => {
   const tag = searchParams.get("user_tag");
   const isDarkMode = useDarkMode();
   const router = useRouter();
+
+  const { company_id } = usePersonalInfoStore();
 
   const serviceProviderData = {
     ...Mockdata,
@@ -73,7 +75,14 @@ const ManageServiceProvider = () => {
 
   const userData = apiData?.data ? transformUserCardData(providerData) : null;
 
-  console.log(providerData?.agent);
+  const hasNote = !userData?.note || userData?.note === "<p><br></p>" ? false : true;
+
+  const providerDataProps = {
+    provider_notes: userData?.note || "",
+    company_id: company_id ?? "",
+    avatar: providerData?.avatar || "",
+  }
+
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -118,12 +127,18 @@ const ManageServiceProvider = () => {
                   {providerData?.email}
                 </p>
               </div>
-
-              {providerData?.agent === "web" ? (
-                <UserTag type="web" />
-              ) : (
-                <UserTag type="mobile" />
-              )}
+              <div className="flex gap-6 items-center">
+                {providerData?.agent === "web" ? (
+                  <UserTag type="web" />
+                ) : (
+                  <UserTag type="mobile" />
+                )}
+                {hasNote && (
+                  <div className="flex items-center">
+                    <NoteBlinkingIcon size={20} className="blink-color" />
+                  </div>
+                )}
+              </div>
               {providerData?.agent === "mobile" && (
                 <div className="custom-flex-col gap-1">
                   <p className="text-base font-normal">
@@ -153,7 +168,12 @@ const ManageServiceProvider = () => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <MobileNotesModal notes={notes} />
+                    <MobileNotesModal
+                      provider_data={providerDataProps}
+                      page="service-provider"
+                      id={paramId as string}
+                     
+                    />
                   </ModalContent>
                 </Modal>
 
@@ -285,7 +305,9 @@ const ManageServiceProvider = () => {
             "Local Government": providerData?.local_government ?? "---",
           }}
         />
-        {providerData?.agent === "web" && <NotesInfoBox notes={notes} />}
+        {providerData?.agent === "web" && (
+          <NotesInfoBox provider_note={userData?.note} />
+        )}
       </div>
       {providerData?.agent === "mobile" && (
         <InfoSection title="Services">

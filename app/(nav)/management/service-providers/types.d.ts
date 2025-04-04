@@ -100,6 +100,7 @@ interface ServiceProviderCardProps {
   agent: string;
   avatar: string;
   service_rendered: string | null;
+  note: string | null;
 }
 
 type BadgeColor = "green" | "black" | "green" | "gray" | "red" | "yellow";
