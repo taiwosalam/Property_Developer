@@ -47,6 +47,7 @@ const UnitBreakdownNewTenant = () => {
       otherCharges: unitData?.other_charge
         ? formatNumber(parseFloat(unitData.other_charge))
         : "",
+      vat: unitData?.vat ? formatNumber(parseFloat(unitData.vat as string)) : "0",
       totalPackage: unitData?.total_package
         ? formatNumber(parseFloat(unitData.total_package))
         : "",
@@ -59,6 +60,7 @@ const UnitBreakdownNewTenant = () => {
     unitData?.caution_fee,
     unitData?.inspection_fee,
     unitData?.other_charge,
+    unitData?.vat,
     unitData?.total_package,
   ]);
 
@@ -71,6 +73,7 @@ const UnitBreakdownNewTenant = () => {
     cautionFee,
     inspectionFee,
     otherCharges,
+    vat,
     totalPackage,
   } = formValues;
 
@@ -95,16 +98,27 @@ const UnitBreakdownNewTenant = () => {
     }));
   };
 
+  // Calculate VAT (only if VAT is enabled in settings)
   useEffect(() => {
     const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
+    // Calculate Agency Fee based on percentage
     const agencyFeeValue = (rentAmountValue * agencyFeePercentage) / 100;
+    // Get legal fee entered by the user
+    const legalFeeValue = parseFloat(legalFee.replace(/,/g, "")) || 0;
+    // Determine if VAT should be calculated
+    const shouldCalculateVAT =
+      propertySettings?.VAT?.toLowerCase() === "yes";
+    const vatValue = shouldCalculateVAT
+      ? (agencyFeeValue + legalFeeValue) * 0.075
+      : 0;
 
     setFormValues((prevValues) => ({
       ...prevValues,
-      agencyFee: formatNumber(parseFloat(agencyFeeValue.toFixed(2))),
-      legalFee: formatNumber(parseFloat(agencyFeeValue.toFixed(2))),
+      agencyFee: formatNumber(agencyFeeValue.toFixed(2)),
+      // Keep legalFee as entered (or you can add additional formatting if needed)
+      vat: formatNumber(vatValue.toFixed(2)),
     }));
-  }, [rentAmount, agencyFeePercentage]);
+  }, [rentAmount, legalFee, agencyFeePercentage, propertySettings?.VAT]);
 
   // Calculate the total package
   useEffect(() => {
@@ -115,11 +129,12 @@ const UnitBreakdownNewTenant = () => {
       (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
       (parseFloat(cautionFee.replace(/,/g, "")) || 0) +
       (parseFloat(inspectionFee.replace(/,/g, "")) || 0) +
-      (parseFloat(otherCharges.replace(/,/g, "")) || 0);
+      (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
+      (parseFloat(vat.replace(/,/g, "")) || 0);
 
     setFormValues((prevValues) => ({
       ...prevValues,
-      totalPackage: formatNumber(parseFloat(total.toFixed(2))),
+      totalPackage: formatNumber(total.toFixed(2)),
     }));
   }, [
     rentAmount,
@@ -129,9 +144,10 @@ const UnitBreakdownNewTenant = () => {
     cautionFee,
     inspectionFee,
     otherCharges,
+    vat,
   ]);
 
-  // reset form
+  // Reset form when formResetKey changes
   useEffect(() => {
     if (formResetKey !== 0) {
       setOtherChargesInput(!!unitData?.other_charge);
@@ -253,6 +269,18 @@ const UnitBreakdownNewTenant = () => {
           hiddenInputClassName="unit-form-input"
           defaultValue={mapNumericToYesNo(unitData?.negotiation) || "no"}
         />
+        {/* Only display VAT input if VAT is enabled */}
+        {propertySettings?.VAT?.toLowerCase() === "yes" && (
+          <Input
+            id="vat"
+            label="VAT Fee"
+            inputClassName="bg-white"
+            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+            value={vat}
+            readOnly
+            type="text"
+          />
+        )}
         <Input
           required
           id="total_package"

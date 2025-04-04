@@ -87,6 +87,8 @@ export interface UnitDataObject {
   renew_other_charge?: string;
   renew_total_package?: string;
   is_active: keyof typeof UnitStatusColors;
+  vat?: string | number;
+  renew_vat?: string | number;
   // status: "pending";
   // reject_reason: null;
   // created_at: "2024-12-11T10:02:27.000000Z";
@@ -147,6 +149,8 @@ export interface PropertyDataObject {
   rent_penalty: 1 | 0;
   fee_penalty: 1 | 0;
   coordinate: string;
+  vat: string | number;
+  renew_vat: string | number;
   units: UnitDataObject[];
   landlord_id: string;
   landlord?: any;
@@ -200,7 +204,7 @@ export const transformPropertiesApiResponse = (
   ? response.data.properties
   : response.data;
   
-  console.log("respin", propertiesData)
+  // console.log("respin", propertiesData)
   const transformedProperties: PropertyCardProps[] = propertiesData.data.map(
     (p) => {
       const updatedAt = moment(p.updated_at);

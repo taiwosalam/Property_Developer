@@ -78,7 +78,6 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
         setDataNotFound(true);
         return;
       }
-      // console.log("prop data", transformedData.propertyDetails)
       setDataNotFound(false);
       setAddUnitStore("canDelete", transformedData.canDelete);
       setAddUnitStore("property_id", transformedData.property_id);
@@ -89,13 +88,19 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
     }
   }, [propertyData, setAddUnitStore]);
 
+  useEffect(() => {
+    if (showNewUnitForm) {
+      setAddUnitStore("editMode", true);
+    }
+  }, [showNewUnitForm, setAddUnitStore]);
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
   if (dataNotFound)
     return <div className="text-red-500">Property Data not found</div>;
   if (!propertyDetails) return null;
-  // if (propertyDetails) {
+  
   return (
     <div className="space-y-7 pb-[100px]">
       <BackButton>Edit Property</BackButton>
@@ -127,7 +132,6 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
       </div>
     </div>
   );
-  // }
 };
 
 export default EditProperty;
