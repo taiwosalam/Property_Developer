@@ -1,5 +1,5 @@
 import api, { handleAxiosError } from "@/services/api";
-import { ServiceProviderApiResponse, ServiceProviderPageData } from "./types";
+import { ServiceProviderApiResponse, ServiceProviderPageData, ServiceProviderResponseApi } from "./types";
 import { Field } from "@/components/Table/types";
 import { toast } from "sonner";
 
@@ -15,7 +15,7 @@ export const serviceProviderFilterOptionsWithDropdown = [
   },
 ];
 
-export const initialServiceProviderPageData: ServiceProviderPageData = {
+export const initialServiceProviderPageData = {
   total_pages: 1,
   current_page: 1,
   total_users: 0,
@@ -124,3 +124,29 @@ export const ServiceProviderTableFields: Field[] = [
   { id: "5", accessor: "service_render" },
   { id: "6", accessor: "manage/chat" },
 ];
+
+
+export const transformServiceProviderData = (response: ServiceProviderResponseApi): ServiceProviderPageData => {
+  const { data  } = response
+  return {
+    total: data?.total,
+    current_page: data?.providers?.current_page,
+    total_mobile: data?.total_mobile,
+    total_mobile_month: data?.total_mobile_month,
+    total_month: data?.total_month,
+    total_web: data?.total_web,
+    total_web_month: data?.total_web_month,
+    total_pages: data?.providers?.last_page,
+    service_providers: data?.providers?.data.map((provider) => ({
+      id: provider?.id,
+      name: provider.name,
+      email: provider?.email,
+      phone: provider?.phone,
+      agent: provider?.agent,
+      avatar: provider?.avatar,
+      service_rendered: provider?.service_render ?? "",
+    }))
+
+    
+  }
+}

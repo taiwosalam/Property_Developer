@@ -12,6 +12,7 @@ import {
   initialServiceProviderPageData,
   serviceProviderFilterOptionsWithDropdown,
   ServiceProviderTableFields,
+  transformServiceProviderData,
 } from "./data";
 
 import FilterBar from "@/components/FIlterBar/FilterBar";
@@ -26,6 +27,7 @@ import {
   ServiceProviderFilterResponse,
   ServiceProviderPageData,
   ServiceProviderRequestParams,
+  ServiceProviderResponseApi,
   ServiceProvidersFilterParams,
 } from "./types";
 
@@ -54,29 +56,53 @@ interface ServiceProviderCardProps {
   agent?: string;
 }
 
+const defaultServiceProviderPageData: ServiceProviderPageData = {
+  total_pages: 1,
+  current_page: 1,
+  total: 0,
+  total_month: 0,
+  total_web: 0,
+  total_web_month: 0,
+  total_mobile: 0,
+  total_mobile_month: 0,
+  service_providers: [],
+};
+
 const ServiceProviders = () => {
-  const handlePageChange = (page: number) => {
-    setPage(page);
-  };
-
   const storedView = useView();
-  const itemListView = useRef<HTMLDivElement | null>(null);
-
   const [view, setView] = useState<string | null>(storedView);
-
-  const [page, setPage] = useState(1);
   const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as ServiceProviderRequestParams,
+    params: { page: 1, search: "" } as ServiceProviderRequestParams,
   });
+  const [pageData, setPageData] = useState<ServiceProviderPageData>(
+    defaultServiceProviderPageData
+  );
+  const {
+    total_pages,
+    current_page,
+    total,
+    total_mobile,
+    total_mobile_month,
+    total_month,
+    total_web,
+    total_web_month,
+    service_providers,
+  } = pageData;
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
     startDate: null,
     endDate: null,
   });
+  const {
+    data: apiData,
+    silentLoading,
+    isNetworkError,
+    error,
+    loading,
+    refetch,
+  } = useFetch<ServiceProviderResponseApi>("service-providers", config);
+  const itemListView = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setView(storedView);
@@ -115,15 +141,24 @@ const ServiceProviders = () => {
     });
   };
 
-  const handlePageChanger = (page: number) => {
-    setConfig({
-      params: { ...config.params, page },
-    });
+  const handlePageChange = (page: number) => {
+    setConfig((prev) => ({
+      params: { ...prev.params, page },
+    }));
 
-    itemListView.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    if (view === "grid") {
+      setPageData((prevData) => ({
+        ...prevData,
+        service_providers: [],
+      }));
+    }
+
+    if (view === "grid") {
+      itemListView.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -138,87 +173,91 @@ const ServiceProviders = () => {
     });
   };
 
-  const {
-    data: apiData,
-    silentLoading,
-    isNetworkError,
-    error,
-    loading,
-    refetch,
-  } = useFetch<ServiceProviderApiResponse | ServiceProviderFilterResponse>(
-    "service-providers",
-    config
-  );
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setPageData((prevData) => ({
+      ...prevData,
+      service_providers: [],
+      current_page: 1,
+    }));
+    //refetch({ silent: true });
+    window.dispatchEvent(new Event("refetchServiceProvider"));
+  }, [view]);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformData = transformServiceProviderData(apiData);
+      setPageData((prevData) => {
+        const updatedProvider =
+          view === "grid" || transformData.current_page === 1
+            ? transformData.service_providers
+            : [
+                ...prevData.service_providers,
+                ...transformData.service_providers,
+              ];
+        return { ...transformData, service_providers: updatedProvider };
+      });
+    }
+  }, [apiData, view]);
+
   useRefetchOnEvent("refetchServiceProvider", () => refetch({ silent: true }));
-
-  const serviceProviders: ServiceProviderCardProps[] =
-    apiData?.data?.providers?.data || [];
-
-  const totalPages = apiData?.data?.providers?.last_page || 1;
-
-  const totalUsers = apiData?.data.total ?? 0;
-  const total_month = apiData?.data?.total_month ?? 0;
-  const total_web = apiData?.data?.total_web ?? 0;
-  const total_web_month = apiData?.data?.total_web_month ?? 0;
-  const total_mobile = apiData?.data?.total_mobile ?? 0;
-  const total_mobile_month = apiData?.data?.total_mobile_month ?? 0;
-
-  const current_page =
-    "current_page" in (apiData?.data?.providers || {})
-      ? (apiData?.data?.providers as ProvidersPagination).current_page
-      : 1;
 
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastRowRef = useCallback(
     (node: HTMLElement | null) => {
+      if (silentLoading || view === "grid") return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (
-          entries[0].isIntersecting &&
-          current_page < totalPages &&
-          !silentLoading
-        ) {
+        if (entries[0].isIntersecting && current_page < total_pages) {
           handlePageChange(current_page + 1);
         }
       });
       if (node) observer.current.observe(node);
     },
-    [current_page, totalPages, silentLoading]
+    [current_page, total_pages, silentLoading]
   );
 
-  const transformedServiceProvider = serviceProviders.map((l, index) => ({
-    ...l,
-    avatar: l.avatar,
-    full_name: <p className="flex items-center whitespace-nowrap">{l.name}</p>,
-    // user_tag: <UserTag type={l.user_tag} />,
-    "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full">
-        <Button
-          href={`/management/service-providers/${l.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2 mx-auto"
-        >
-          Manage
-        </Button>
-        {l.agent === "mobile" && (
+  const transformedServiceProvider = useMemo(() => {
+    return service_providers.map((l, index) => ({
+      ...l,
+      avatar: l.avatar,
+      full_name: (
+        <p className="flex items-center whitespace-nowrap">{l.name}</p>
+      ),
+      "manage/chat": (
+        <div className="flex gap-x-[4%] items-center w-full">
           <Button
-            variant="sky_blue"
+            href={`/management/service-providers/${l.id}/manage`}
             size="sm_medium"
-            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-            // onClick={() => onClickChat(l)}
+            className="px-8 py-2 mx-auto"
           >
-            Chat
+            Manage
           </Button>
-        )}
-      </div>
-    ),
+          {l.agent === "mobile" && (
+            <Button
+              variant="sky_blue"
+              size="sm_medium"
+              className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
+            >
+              Chat
+            </Button>
+          )}
+        </div>
+      ),
+      ref:
+        index === service_providers.length - 1 &&
+        current_page < total_pages &&
+        view !== "grid"
+          ? lastRowRef
+          : undefined,
+    }));
+  }, [service_providers, current_page, total_pages, view]);
 
-    ref:
-      index === serviceProviders.length - 1 && current_page < totalPages
-        ? lastRowRef
-        : undefined,
-  }));
+  //console.log(total_pages)
 
   if (loading) {
     return (
@@ -240,7 +279,7 @@ const ServiceProviders = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Providers"
-            newData={totalUsers}
+            newData={total}
             total={total_month}
             className="w-[230px]"
             colorScheme={1}
@@ -292,8 +331,8 @@ const ServiceProviders = () => {
         filterOptionsMenu={serviceProviderFilterOptionsWithDropdown}
         inputOff={false}
       />
-      <section>
-        {serviceProviders.length === 0 && !silentLoading ? (
+      <section ref={itemListView} className="pb-20">
+        {service_providers.length === 0 && !silentLoading ? (
           isFilterApplied() || config.params.search ? (
             <SearchError />
           ) : (
@@ -332,13 +371,13 @@ const ServiceProviders = () => {
             />
           )
         ) : (
-          <div ref={itemListView}>
+          <>
             {view === "grid" ? (
               <AutoResizingGrid minWidth={284} gap={16}>
                 {silentLoading ? (
                   <CardsLoading />
                 ) : (
-                  serviceProviders.map((provider) => (
+                  service_providers.map((provider) => (
                     <Link
                       key={provider.id}
                       href={`/management/service-providers/${provider.id}/manage`}
@@ -349,7 +388,7 @@ const ServiceProviders = () => {
                         user_tag={provider?.agent === "web" ? "web" : "mobile"}
                         phone_number={provider.phone}
                         picture_url={provider.avatar}
-                        other_info={provider.service_render || ""}
+                        other_info={provider.service_rendered || ""}
                       />
                     </Link>
                   ))
@@ -357,32 +396,29 @@ const ServiceProviders = () => {
               </AutoResizingGrid>
             ) : (
               <>
-                {silentLoading ? (
-                  <TableLoading />
-                ) : (
-                  <CustomTable
-                    displayTableHead={false}
-                    fields={ServiceProviderTableFields}
-                    data={transformedServiceProvider}
-                    tableBodyCellSx={{ color: "#3F4247" }}
-                  />
-                )}
-                {
+                <CustomTable
+                  displayTableHead={false}
+                  fields={ServiceProviderTableFields}
+                  data={transformedServiceProvider}
+                  tableBodyCellSx={{ color: "#3F4247" }}
+                />
+
+                 {silentLoading && ( 
                   <div className="flex items-center justify-center py-4">
                     <div className="loader" />
                   </div>
-                }
+                 )} 
               </>
             )}
-          </div>
+          </>
         )}
       </section>
 
       {view === "grid" && (
         <Pagination
-          totalPages={totalPages}
+          totalPages={total_pages}
           currentPage={current_page}
-          onPageChange={handlePageChanger}
+          onPageChange={handlePageChange}
         />
       )}
     </div>

@@ -12,16 +12,47 @@ export interface initialServiceProviderPageData {
   providers: ServiceProviderCard[];
 }
 
-export interface ServiceProviderPageData {
-  total_users: number;
-  total_user_this_month: number;
-  mobile_users: number;
-  mobile_users_this_month: number;
-  vacant_units: number;
-  vacant_units_this_month: number;
-  total_pages: number;
+type TUserProfile = {
+  id: number;
+  user_id: number;
+  company_id: number;
+  name: string;
+  email: string;
+  phone: string;
+  company_name: string | null;
+  company_email: string | null;
+  company_phone: string | null;
+  company_address: string;
+  company_logo: string | null;
+  service_render: string | null;
+  address: string;
+  state: string;
+  local_government: string | null;
+  avatar: string;
+  agent: string;
+  bank_name: string | null;
+  account_name: string | null;
+  account_number: string | null;
+  note: string | null;
+  deleted_at: string | null;
+};
+
+
+interface Providers {
   current_page: number;
-  providers: ServiceProviderCardProps[];
+  last_page: number;
+  data: TUserProfile[]
+}
+export interface ServiceProviderResponseApi {
+  data: {
+    total: number;
+    total_month: number;
+    total_web: number;
+    total_web_month: number;
+    total_mobile: number;
+    total_mobile_month: number;
+    providers: Providers;
+  };
 }
 
 export interface ServiceProviderApiResponse {
@@ -48,6 +79,30 @@ export interface ServiceProviderFilterResponse {
     total_mobile_month: number;
   };
 }
+
+export interface ServiceProviderPageData {
+  total_pages: number;
+  current_page: number;
+  total: number;
+  total_month: number;
+  total_web: number;
+  total_web_month: number;
+  total_mobile: number;
+  total_mobile_month: number;
+  service_providers: ServiceProviderCardProps[];
+}
+
+interface ServiceProviderCardProps {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  agent: string;
+  avatar: string;
+  service_rendered: string | null;
+}
+
+type BadgeColor = "green" | "black" | "green" | "gray" | "red" | "yellow";
 
 interface ProvidersPagination {
   current_page: number;
@@ -116,5 +171,3 @@ export interface ServiceProvidersFilterParams {
   sort_by?: "desc";
   account_type?: string;
 }
-
-
