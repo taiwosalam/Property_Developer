@@ -52,6 +52,7 @@ export const staffData: StaffProfileProps = {
     picture: "",
     about: "",
     status: "",
+    experience: "",
   };
 
 

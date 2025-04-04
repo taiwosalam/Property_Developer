@@ -12,7 +12,7 @@ import { fetchProfile } from "@/lib/profile";
 
 export async function generateMetadata() {
   const data = await fetchProfile();
-  const companyName = data.data.company?.company_name || "Our Property";
+  const companyName = data.data.company?.company_name || "Our Property NG";
   const companyLogo = data.data.company?.company_logo || "/default-favicon.ico";
 
   return {
