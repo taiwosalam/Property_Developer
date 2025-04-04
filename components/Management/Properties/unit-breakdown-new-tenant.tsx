@@ -115,7 +115,7 @@ const UnitBreakdownNewTenant = () => {
     setFormValues((prevValues) => ({
       ...prevValues,
       agencyFee: formatNumber(agencyFeeValue.toFixed(2)),
-      // Keep legalFee as entered (or you can add additional formatting if needed)
+      legalFee: formatNumber(legalFeeValue.toFixed(2)),
       vat: formatNumber(vatValue.toFixed(2)),
     }));
   }, [rentAmount, legalFee, agencyFeePercentage, propertySettings?.VAT]);
@@ -273,7 +273,7 @@ const UnitBreakdownNewTenant = () => {
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input
             id="vat"
-            label="VAT Fee"
+            label="Value Added Tax"
             inputClassName="bg-white"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             value={vat}

@@ -26,7 +26,7 @@ const FooterModal = ({
   const editMode = useAddUnitStore((s) => s.editMode);
   useOutsideClick(popupRef, () => setCountPopup(false));
 
-  console.log("edit mode", editMode);
+  // console.log("edit mode", editMode);
   // const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
   //   e.preventDefault();
   //   if (addedUnits.length > 0) {
@@ -47,8 +47,6 @@ const FooterModal = ({
   //     }, 0);
   //   }
   // };
-
-
 
   const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -126,16 +124,6 @@ const FooterModal = ({
               className="py-2 px-8"
               disabled={submitLoading}
               onClick={handleAddClick}
-              // onClick={(e) => {
-              //   e.preventDefault();
-              //   const form = e.currentTarget.form;
-              //   setDuplicate?.({ val: true, count });
-              //   // timeout to ensure state of duplicate is updated before form submission
-              //   setTimeout(() => {
-              //     setIsOpen(false); // Close the modal
-              //     form?.requestSubmit();
-              //   }, 0);
-              // }}
             >
               {submitLoading ? "Adding..." : "Add"}
             </Button>
