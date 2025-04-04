@@ -59,6 +59,8 @@ export const transformPropertyData = (
       vehicle_record: mapNumericToYesNo(data.vehicle_record),
       currency: data.currency || undefined,
       coordinate: data.coordinate || undefined,
+      vat: data.vat || undefined,
+      renew_vat: data.renew_vat || undefined,
     },
     // addedUnits: data.units,
     addedUnits: data.units.map((unit) => ({

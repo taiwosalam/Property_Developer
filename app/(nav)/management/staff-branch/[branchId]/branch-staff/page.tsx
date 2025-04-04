@@ -98,7 +98,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
       search: "",
     };
     if (position) {
-      queryParams.staff_positiion = position;
+      queryParams.position = position;
     }
     // if (startDate) {
     //   queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");

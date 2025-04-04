@@ -50,7 +50,6 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
       }
       // If no units are pending upload, navigate
       router.push("/management/properties");
-      // router.push("/management/properties");
     } else {
       handleInputChange();
       if (!canSubmit) {

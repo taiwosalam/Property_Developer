@@ -13,6 +13,7 @@ import ModalPreset from "@/components/Modal/modal-preset";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { deleteUnit } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
+import { empty } from "@/app/config";
 
 const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -76,6 +77,16 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
     }
   };
 
+  const hasImages = data.images.length > 0;
+  const imageSrc = data.notYetUploaded
+    ? empty // Use placeholder for unsaved units with no images
+    : hasImages
+    ? data.default_image || data.images[0].path
+    : empty; // Fallback to placeholder if no images exist
+
+  console.log("data passed", data);
+  console.log("imageSrc", imageSrc);
+
   return (
     <>
       <div className="flex gap-4 flex-wrap items-center justify-between">
@@ -117,7 +128,8 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
           {data.images.length > 0 && (
             <div className="relative rounded-2xl overflow-hidden">
               <Picture
-                src={data.default_image || data.images[0].path}
+                src={imageSrc}
+                // src={data.default_image || data.images[0].path}
                 alt="property preview"
                 size={168}
               />
@@ -130,7 +142,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
                     <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                       <CameraIcon />
                       <p className="text-black dark:text-white font-medium text-[10px]">
-                        +{data.images.length - 1}
+                        +{!data.notYetUploaded ? data.images.length - 1 : 0}
                       </p>
                     </div>
                   </div>

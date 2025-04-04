@@ -10,6 +10,7 @@ const initialState = {
   propertySettings: null,
   canDelete: false,
   addedUnits: [],
+  editMode: false,
 };
 
 type PropertyType = "rental" | "facility" | null;
@@ -49,12 +50,15 @@ interface PropertySettings {
   vehicle_record?: "Yes" | "No";
   currency?: keyof typeof currencySymbols | null;
   coordinate?: string;
+  vat?: string | number;
+  renew_vat?: string | number;
 }
 
 export interface AddUnitStore {
   property_id: string | null;
   propertyType: PropertyType;
   canDelete: boolean;
+  editMode?: boolean;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
   addedUnits: (UnitDataObject & { notYetUploaded?: boolean })[];

@@ -23,21 +23,70 @@ const FooterModal = ({
   const popupRef = useRef<HTMLDivElement>(null);
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const addUnit = useAddUnitStore((s) => s.addUnit);
+  const editMode = useAddUnitStore((s) => s.editMode);
   useOutsideClick(popupRef, () => setCountPopup(false));
+
+  console.log("edit mode", editMode);
+  // const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   if (addedUnits.length > 0) {
+  //     // Duplicate the last unit when no form is present
+  //     const lastUnit = addedUnits[addedUnits.length - 1];
+  //     for (let i = 0; i < count; i++) {
+  //       const newUnit = { ...lastUnit, id: `temp-${Date.now()}-${i}`, notYetUploaded: true };
+  //       addUnit(newUnit);
+  //     }
+  //     setIsOpen(false);
+  //   } else {
+  //     // Submit the form when a form is present
+  //     const form = e.currentTarget.form;
+  //     setDuplicate?.({ val: true, count });
+  //     setTimeout(() => {
+  //       setIsOpen(false);
+  //       form?.requestSubmit();
+  //     }, 0);
+  //   }
+  // };
+
+
 
   const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (addedUnits.length > 0) {
-      // Duplicate the last unit when no form is present
+    const form = e.currentTarget.form;
+  
+    if (editMode && addedUnits.length > 0) {
+      // If in edit mode and there are added units, submit first, then duplicate
+      setDuplicate?.({ val: true, count });
+  
+      setTimeout(() => {
+        form?.requestSubmit(); // Submit the form first
+        setTimeout(() => {
+          const lastUnit = addedUnits[addedUnits.length - 1];
+          for (let i = 0; i < count; i++) {
+            const newUnit = { 
+              ...lastUnit, 
+              id: `temp-${Date.now()}-${i}`, 
+              notYetUploaded: true 
+            };
+            addUnit(newUnit);
+          }
+          setIsOpen(false);
+        }, 500); // Delay duplication slightly to ensure form submission completes
+      }, 0);
+    } else if (addedUnits.length > 0) {
+      // Regular duplication logic
       const lastUnit = addedUnits[addedUnits.length - 1];
       for (let i = 0; i < count; i++) {
-        const newUnit = { ...lastUnit, id: `temp-${Date.now()}-${i}`, notYetUploaded: true };
+        const newUnit = { 
+          ...lastUnit, 
+          id: `temp-${Date.now()}-${i}`, 
+          notYetUploaded: true 
+        };
         addUnit(newUnit);
       }
       setIsOpen(false);
     } else {
-      // Submit the form when a form is present
-      const form = e.currentTarget.form;
+      // Submit the form when no added units exist
       setDuplicate?.({ val: true, count });
       setTimeout(() => {
         setIsOpen(false);
@@ -45,7 +94,7 @@ const FooterModal = ({
       }, 0);
     }
   };
-
+  
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
