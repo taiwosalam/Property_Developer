@@ -75,6 +75,8 @@ export const ServiceProviderEditProfileInfoSection = () => {
     });
   };
 
+  console.log(serviceProvider);
+
   const handleUpdateProfile = async (data: FormData) => {
     cleanPhoneNumber(data);
 
@@ -111,6 +113,12 @@ export const ServiceProviderEditProfileInfoSection = () => {
         skipValidation
       >
         <InfoEditGrid>
+          <input
+            type="hidden"
+            defaultValue={serviceProvider?.avatar}
+            name="avatar_url"
+          />
+
           <Input
             id="name"
             label="name"
@@ -226,6 +234,11 @@ export const ServiceProviderCompanyDetailsSection = () => {
           name="company_id"
           id="company_id"
         />
+         <input
+            type="hidden"
+            defaultValue={serviceProvider?.avatar}
+            name="avatar_url"
+          />
         <InfoEditGrid>
           <Input
             id="company_name"
@@ -381,6 +394,11 @@ export const ServiceProviderBankDetailsSection = () => {
           type="hidden"
           defaultValue={company_id as string}
         />
+         <input
+            type="hidden"
+            defaultValue={serviceProvider?.avatar}
+            name="avatar_url"
+          />
         <InfoEditGrid>
           <Select
             id="bank_name"
@@ -486,6 +504,11 @@ export const ServiceProviderNotesSection = () => {
           name="company_id"
           id="company_id"
         />
+         <input
+            type="hidden"
+            defaultValue={serviceProvider?.avatar}
+            name="avatar_url"
+          />
         <TextArea
           id="note"
           label="note"

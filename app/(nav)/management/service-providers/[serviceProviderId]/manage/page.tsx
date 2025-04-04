@@ -26,6 +26,7 @@ import type {
   ServiceProviderPageDetails,
 } from "./types";
 import {
+  deleteServiceProvider,
   serviceProviderData as Mockdata,
   remapServiceProviderData,
   transformUserCardData,
@@ -37,6 +38,9 @@ import NetworkError from "@/components/Error/NetworkError";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import DeleteAccountModal from "@/components/Management/delete-account-modal";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 
 const ManageServiceProvider = () => {
   const params = useParams();
@@ -59,6 +63,8 @@ const ManageServiceProvider = () => {
   const isDarkMode = useDarkMode();
   const router = useRouter();
 
+  const { company_id } = usePersonalInfoStore();
+
   const serviceProviderData = {
     ...Mockdata,
     user_tag: tag,
@@ -68,6 +74,14 @@ const ManageServiceProvider = () => {
   const { notes, user_tag = "web" } = serviceProviderData;
 
   const userData = apiData?.data ? transformUserCardData(providerData) : null;
+
+  const hasNote = !userData?.note || userData?.note === "<p><br></p>" ? false : true;
+
+  const providerDataProps = {
+    provider_notes: userData?.note || "",
+    company_id: company_id ?? "",
+    avatar: providerData?.avatar || "",
+  }
 
 
   if (loading) return <CustomLoader layout="profile" />;
@@ -113,26 +127,32 @@ const ManageServiceProvider = () => {
                   {providerData?.email}
                 </p>
               </div>
-
-              {providerData?.agent === "web" ? (
-                <UserTag type="web" />
-              ) : (
-                <UserTag type="mobile" />
-              )}
-              {user_tag === "mobile" && (
+              <div className="flex gap-6 items-center">
+                {providerData?.agent === "web" ? (
+                  <UserTag type="web" />
+                ) : (
+                  <UserTag type="mobile" />
+                )}
+                {hasNote && (
+                  <div className="flex items-center">
+                    <NoteBlinkingIcon size={20} className="blink-color" />
+                  </div>
+                )}
+              </div>
+              {providerData?.agent === "mobile" && (
                 <div className="custom-flex-col gap-1">
                   <p className="text-base font-normal">
                     {providerData?.wallet_id ? providerData?.wallet_id : "---"}
                   </p>
                   <p className="text-base font-normal">
-                    Phone NO: ${providerData?.phone ?? "---"}
+                    Phone NO: {providerData?.phone ?? "---"}
                   </p>
                 </div>
               )}
             </div>
           </div>
           <div className="w-fit mx-auto flex flex-wrap gap-4">
-            {user_tag === "mobile" ? (
+            {providerData?.agent === "mobile" ? (
               <>
                 <Button size="base_medium" className="!w-fit ml-auto py-2 px-8">
                   message
@@ -148,7 +168,35 @@ const ManageServiceProvider = () => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <MobileNotesModal notes={notes} />
+                    <MobileNotesModal
+                      provider_data={providerDataProps}
+                      page="service-provider"
+                      id={paramId as string}
+                     
+                    />
+                  </ModalContent>
+                </Modal>
+
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button
+                      size="custom"
+                      variant="light_red"
+                      className="py-2 px-6"
+                    >
+                      delete account
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <DeleteAccountModal
+                      accountType="service-providers"
+                      action={async () =>
+                        await deleteServiceProvider(paramId as string)
+                      }
+                      afterAction={() =>
+                        router.push("/management/service-providers")
+                      }
+                    />
                   </ModalContent>
                 </Modal>
               </>
@@ -178,11 +226,10 @@ const ManageServiceProvider = () => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <UpdateProfileWithIdModal 
+                    <UpdateProfileWithIdModal
                       page="service-providers"
                       id={Number(providerData?.id)}
                       data={userData}
-
                     />
                   </ModalContent>
                 </Modal>
@@ -191,7 +238,7 @@ const ManageServiceProvider = () => {
           </div>
         </InfoBox>
 
-        {!(user_tag === "web") ? (
+        {!(providerData?.agent === "web") ? (
           <ContactInfo
             containerClassName="flex flex-col justify-center rounded-lg"
             info={{
@@ -226,10 +273,10 @@ const ManageServiceProvider = () => {
       <div
         className={clsx(
           "grid gap-y-5 gap-x-8",
-          user_tag === "mobile" ? "lg:grid-cols-3" : "lg:grid-cols-2"
+          providerData?.agent === "mobile" ? "lg:grid-cols-3" : "lg:grid-cols-2"
         )}
       >
-        {user_tag === "mobile" && (
+        {providerData?.agent === "mobile" && (
           <ContactInfo
             containerClassName="rounded-lg"
             heading="Social Media"
@@ -258,9 +305,11 @@ const ManageServiceProvider = () => {
             "Local Government": providerData?.local_government ?? "---",
           }}
         />
-        {user_tag === "web" && <NotesInfoBox notes={notes} />}
+        {providerData?.agent === "web" && (
+          <NotesInfoBox provider_note={userData?.note} />
+        )}
       </div>
-      {user_tag === "mobile" && (
+      {providerData?.agent === "mobile" && (
         <InfoSection title="Services">
           <AutoResizingGrid minWidth={250}>
             {Array.from({ length: 6 }).map((_, index) => (

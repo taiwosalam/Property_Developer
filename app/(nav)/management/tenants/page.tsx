@@ -218,7 +218,7 @@ const Tenants = () => {
     ...t,
     full_name: (
       <p className="flex items-center whitespace-nowrap">
-        <span>{t.name}</span>
+        <span>{t.name}</span>o
         {t.badge_color && <BadgeIcon color={t.badge_color} />}
       </p>
     ),

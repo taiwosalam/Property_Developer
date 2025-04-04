@@ -36,7 +36,7 @@ export const serviceProviderData: ServiceProviderData = {
 
 export const remapServiceProviderData = (data: any): ServiceProviderPage => {
   return {
-    user:{
+    user: {
       user_id: data.user_id || null,
     },
     provider: {
@@ -62,11 +62,13 @@ export const remapServiceProviderData = (data: any): ServiceProviderPage => {
       name: data.bank_name || null,
       account_name: data.account_name || null,
       account_number: data.account_number || null,
-    }
-  }
-}
+    },
+  };
+};
 
-export const transformIndividualServiceProviderApiResponse = ({data}: IndividualServiceProvidersAPIResponse): ServiceProviderData => {
+export const transformIndividualServiceProviderApiResponse = ({
+  data,
+}: IndividualServiceProvidersAPIResponse): ServiceProviderData => {
   return {
     id: data.id,
     avatar: data.avatar,
@@ -93,123 +95,140 @@ export const transformIndividualServiceProviderApiResponse = ({data}: Individual
       last_updated: data.notes?.last_updated || "",
       write_up: data.notes?.write_up || "",
     },
-  }
-}
+  };
+};
 
-export const updateServiceProvider = async (id: string, formData: FormData): Promise<boolean> => {
-  try{
+export const updateServiceProvider = async (
+  id: string,
+  formData: FormData
+): Promise<boolean> => {
+  try {
     const { data } = await api.post(`service-providers/${id}`, formData);
-    if(data.status === "success" || data.message === "Provider Updated Successfully"){
-      toast.success("Provider Updated Successfully!")
+    if (
+      data.status === "success" ||
+      data.message === "Provider Updated Successfully"
+    ) {
+      toast.success("Provider Updated Successfully!");
       return true;
     }
     return false;
-
-  }catch(error){
+  } catch (error) {
     handleAxiosError(error, "Failed to update service provider");
     return false;
   }
-}
+};
 
-export const updateServiceProviderDetails = async (id: string, formData: FormData) => {
-  try{
+export const updateServiceProviderDetails = async (
+  id: string,
+  formData: FormData
+) => {
+  try {
     const { data } = await api.post(`service-providers/${id}`, formData);
 
     console.log(data);
-    if(data.status === "success"){
+    if (data.status === "success") {
       return true;
     }
-
-  }catch(error){
+  } catch (error) {
     handleAxiosError(error, "Failed to update profile");
     return false;
   }
-}
+};
 
-export const updateServiceProviderProfile = async (id: string, formData: FormData) => {
-  try{
+export const updateServiceProviderProfile = async (
+  id: string,
+  formData: FormData
+) => {
+  try {
     const { data } = await api.post(`service-providers/${id}`, formData);
 
-    console.log(data);
-    if(data.status === "success"){
+    if (data.status === "success") {
       toast.success("Profile Updated");
       return true;
     }
-
-  }catch(error){
+  } catch (error) {
     handleAxiosError(error, "Failed to update profile");
     return false;
   }
-}
+};
 
-export const updateProviderCompanyDetails = async (id: string, formData: FormData) => {
+export const updateProviderCompanyDetails = async (
+  id: string,
+  formData: FormData
+) => {
   try {
     const { data } = await api.post(`url/${id}`, formData);
-    if(data.status === 200 || data.status === "success"){
+    if (data.status === 200 || data.status === "success") {
       toast.success("Company details updated");
       return true;
     }
-  }catch(error){
+  } catch (error) {
     handleAxiosError(error);
     return false;
   }
-}
+};
 
 export const deleteServiceProvider = async (id: string) => {
-  try{
+  try {
     await api.delete(`service-providers/${id}`);
     window.dispatchEvent(new Event("refetchServiceProvider"));
-    return true
-
-  }catch(error){
+    return true;
+  } catch (error) {
     handleAxiosError(error, "Failed to delete service provider");
     return false;
   }
-}
+};
 
-export const updateProviderBankDetails = async (id: string, formData: FormData) => {
+export const updateProviderBankDetails = async (
+  id: string,
+  formData: FormData
+) => {
   try {
     const { data } = await api.post(`service-providers/${id}`, formData);
-    if(data.status === 200 || data.status === "success"){
+    if (data.status === 200 || data.status === "success") {
       toast.success("Bank details updated");
-      return true
+      return true;
     }
-
-  }catch(error){
+  } catch (error) {
     handleAxiosError(error, "Failed to bank details");
     return false;
   }
-}
+};
 
 export const updateProviderNotes = async (id: string, formData: FormData) => {
-  try{
+  try {
+    console.log(formData)
     const { data } = await api.post(`service-providers/${id}`, formData);
-    if(data.status === 200 || data.status === "success"){
+    if (data.status === 200 || data.status === "success") {
       toast.success("Note updated");
       return true;
     }
-
-  }catch(error){
-    handleAxiosError(error, "Failed to update notes")
+  } catch (error) {
+    handleAxiosError(error, "Failed to update notes");
     return false;
   }
-}
+};
 
-export const updateServiceProviderPicture = async (id: string, payload: FormData) => {
-  try{ 
+export const updateServiceProviderPicture = async (
+  id: string,
+  payload: FormData
+) => {
+  try {
     const { data } = await api.post(`service-providers/${id}`, payload);
-    if(data.status === 200 || data.status === "success"){
+    if (data.status === 200 || data.status === "success") {
       toast.success("Picture updated");
       return true;
     }
-
-  }catch(error){
-    handleAxiosError(error, "Failed to update picture")
+  } catch (error) {
+    handleAxiosError(error, "Failed to update picture");
     return false;
   }
-}
+};
 
-export const updateServiceProviderWithEmailOrID = async (data: any, id: number) => {
+export const updateServiceProviderWithEmailOrID = async (
+  data: any,
+  id: number
+) => {
   try {
     const res = await api.post(`service-providers/update/email/${id}`, data);
     if (res.status === 201) {
@@ -224,9 +243,16 @@ export const updateServiceProviderWithEmailOrID = async (data: any, id: number) 
 
 export const transformUserCardData = (data: any) => {
   const validateBadgeColor = (color: string): BadgeIconColors => {
-    const validColors: BadgeIconColors[] = ["green", "black", "blue", "red", "yellow", "gray"];
-    return validColors.includes(color as BadgeIconColors) 
-      ? (color as BadgeIconColors) 
+    const validColors: BadgeIconColors[] = [
+      "green",
+      "black",
+      "blue",
+      "red",
+      "yellow",
+      "gray",
+    ];
+    return validColors.includes(color as BadgeIconColors)
+      ? (color as BadgeIconColors)
       : "gray"; // Default fallback color
   };
   return {
@@ -235,8 +261,7 @@ export const transformUserCardData = (data: any) => {
     email: data.email,
     phone_number: data.phone,
     user_tag: "web",
+    note: data?.note,
     badge_color: validateBadgeColor(data.badge_color),
   };
 };
-
- 
