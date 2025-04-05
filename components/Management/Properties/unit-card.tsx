@@ -14,6 +14,7 @@ import { useAddUnitStore } from "@/store/add-unit-store";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { deleteUnit } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
 import { empty } from "@/app/config";
+import { transformUnitDetails } from "@/app/(nav)/listing/data";
 
 const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -27,24 +28,14 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
     "unit no/name": "",
     rent: "",
     ...(data.caution_fee ? { caution_deposit: "" } : {}),
+    total_package: "",
+    unit_type: "",
     service_charge: "",
+    account_officer: "",
   };
 
   const keyValueData = {
-    unit_details:
-      data?.unit_type?.toLowerCase() === "land"
-        ? `${data.unit_preference} ${data.total_area_sqm} ${
-            data.unit_sub_type
-          }${
-            data.number_of && data.number_of !== "0"
-              ? ` - ${data.number_of}`
-              : ""
-          }`
-        : data?.unit_type?.toLowerCase() === "commercial"
-        ? `${data.unit_preference} ${data.unit_type} ${data.total_area_sqm} ${data.unit_sub_type}`
-        : `${data.unit_preference} - ${data.bedroom || 0} bedroom${
-            parseInt(data.bedroom || "0") > 1 ? "s" : ""
-          } - ${data.unit_sub_type} - ${data.unit_type}`,
+    unit_details: transformUnitDetails(data),
     "unit no/name": data.unit_name,
     rent: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(data.fee_amount)
@@ -56,9 +47,14 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
           }${formatNumber(parseFloat(data.caution_fee))}`,
         }
       : {}),
+    total_package: `${currencySymbols[currency || "naira"]}${formatNumber(
+      parseFloat(data.total_package || "0")
+    )}`,
+    unit_type: data.unit_type,
     service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(data.service_charge || "0")
     )}`,
+    account_officer: data.account_officer || "Not Assigned Yet",
   };
 
   const handleRemove = async () => {
@@ -83,9 +79,6 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
     : hasImages
     ? data.default_image || data.images[0].path
     : empty; // Fallback to placeholder if no images exist
-
-  console.log("data passed", data);
-  console.log("imageSrc", imageSrc);
 
   return (
     <>
@@ -119,14 +112,14 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
       <SectionSeparator />
       <div className="overflow-x-auto custom-round-scrollbar">
         <div className="min-w-[700px] flex py-4 items-center justify-between">
-          <div className="flex-1 flex gap-6">
+          <div className="flex-1 flex gap-6 flex-wrap">
             <KeyValueList
               data={keyValueData}
               referenceObject={referenceObject}
             />
           </div>
           {data.images.length > 0 && (
-            <div className="relative rounded-2xl overflow-hidden">
+            <div className="relative rounded-2xl overflow-hidden min-w-[168px] ml-4">
               <Picture
                 src={imageSrc}
                 // src={data.default_image || data.images[0].path}

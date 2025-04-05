@@ -17,6 +17,8 @@ export const transformPropertyData = (
   const { data } = response;
   if (!data) return null;
 
+  console.log("data unit", data.units)
+
   return {
     property_id: data.id,
     propertyType: data.property_type === "rental" ? "rental" : "facility",

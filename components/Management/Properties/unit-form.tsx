@@ -58,13 +58,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
 
-  // const [state, setState] = useState<UnitFormState>({
-  //   images: props.empty ? [] : props.data.images.map((img) => img.path),
-  //   imageFiles: props.empty ? [] : props.data.images.map((img) => img.path),
-  //   unitType: props.empty ? "" : (props.data.unit_type as UnitTypeKey),
-  //   formResetKey: 0,
-  // });
-
   const [state, setState] = useState<UnitFormState>(() => {
     if (props.empty) {
       // New unit: start with empty images
@@ -209,11 +202,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           { newImages: [], retainedImages: [] }
         );
 
-        // Debugging logs to verify the state
-        console.log("state.imageFiles:", state.imageFiles);
-        console.log("retainedImages:", retainedImages);
-        console.log("newImages:", newImages);
-
         const editUnitPayload = {
           ...transformedData,
           images: newImages, // New images to upload
@@ -222,6 +210,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
 
         const unitId = await editUnitApi(props.data.id, editUnitPayload);
         if (unitId) {
+          window.dispatchEvent(new Event("refetchSingleProperty"));
           const unitData = await getUnitById(unitId);
           if (unitData) {
             editUnit(props.index, unitData);

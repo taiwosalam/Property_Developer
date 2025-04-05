@@ -14,7 +14,6 @@ const UnitPictures = () => {
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const maxImages = propertyType === "facility" ? 5 : 14;
 
-  console.log("images", images);
   const {
     fileInputRef,
     handleFileChange,
