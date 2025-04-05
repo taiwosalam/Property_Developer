@@ -30,6 +30,7 @@ type TUserProfile = {
   local_government: string | null;
   avatar: string;
   agent: string;
+  user_tier: number | null;
   bank_name: string | null;
   account_name: string | null;
   account_number: string | null;
@@ -99,6 +100,7 @@ interface ServiceProviderCardProps {
   phone: string;
   agent: string;
   avatar: string;
+  badge_color: number | null;
   service_rendered: string | null;
   note: string | null;
 }

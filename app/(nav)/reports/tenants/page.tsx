@@ -145,6 +145,18 @@ const TenantsReport = () => {
 
   const { total_tenants, monthly_tenants, tenants } = tenant_reports;
 
+  const hasActiveFilters = (filters: any) => {
+    return (
+      (filters.options && filters.options.length > 0) ||
+      (filters.menuOptions && Object.keys(filters.menuOptions).length > 0) ||
+      filters.startDate ||
+      filters.endDate
+    );
+  };
+
+  console.log(appliedFilters, "appliedFilters");
+  console.log(config.params.search, "config.params.search");
+
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
@@ -158,14 +170,14 @@ const TenantsReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Tenants"
-          newData={monthly_tenants}
-          total={total_tenants}
+          newData={total_tenants}
+          total={monthly_tenants}
           colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Total Occupants"
-          newData={monthly_tenants}
-          total={total_tenants}
+          newData={total_tenants}
+          total={monthly_tenants}
           colorScheme={2}
         />
       </div>
@@ -190,13 +202,17 @@ const TenantsReport = () => {
       />
       <section>
         {tenants.length === 0 && !loading ? (
-          config.params.search || appliedFilters ? (
+          !!config.params.search.trim() || hasActiveFilters(appliedFilters) ? (
             <div className="col-span-full text-center py-8 text-gray-500">
               No Search/Filter Found
             </div>
           ) : (
             <div className="col-span-full text-center py-8 text-gray-500">
-              Reports are empty
+              <EmptyList
+                noButton
+                title="No Tenants/Occupants Record Found"
+                body="Looks like you have no tenants/occupants report yet."
+              />
             </div>
           )
         ) : (

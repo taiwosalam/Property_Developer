@@ -144,6 +144,7 @@ export const transformServiceProviderData = (response: ServiceProviderResponseAp
       phone: provider?.phone,
       agent: provider?.agent,
       avatar: provider?.avatar,
+      badge_color: provider?.user_tier,
       note: provider?.note,
       service_rendered: provider?.service_render ?? "",
     }))
