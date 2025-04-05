@@ -446,11 +446,13 @@ export const verifyOtpAndResetPassword = async (code: string) => {
 
 export const updatePassword = async (formData: FormData) => {
   const email = useAuthStore.getState().email;
+  const code = useAuthStore.getState().code;
   try {
     const { data } = await axios.put(`${base_url}password/reset/update`, {
       identifier: email,
       password: formData.get("password"),
       password_confirmation: formData.get("password_confirmation"),
+      code: code,
     });
     const message = data?.message || "Password updated successfully!";
     toast.success(message);

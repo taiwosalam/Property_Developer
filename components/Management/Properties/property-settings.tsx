@@ -29,7 +29,7 @@ const PropertySettings = ({ heading }: { heading: string }) => {
           </div>
           {propertyType === "rental" && (
             <div>
-              <p className="text-[#747474]">Charge New Tenant</p>
+              <p className="text-[#747474]">Who to charge Agency Fee</p>
               <p className="text-black font-medium capitalize">
                 {propertySettings?.who_to_charge_new_tenant}
               </p>

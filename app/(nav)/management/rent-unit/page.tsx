@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import {
   initialState,
@@ -130,10 +130,16 @@ const RentAndUnit = () => {
     };
   }, [appliedFilters, search, sort, page]);
 
-  console.log("total_pages", state)
+  // console.log("total_pages", state)
 
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
   const handlePageChange = (page: number) => {
     setPage(page);
+    // Scroll to the top where cards start
+    if (contentTopRef.current) {
+      contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -209,10 +215,9 @@ const RentAndUnit = () => {
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
-  console.log("satte", state)
   return (
     <div className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
         <ManagementStatistcsCard
           title="Total Units"
           newData={pageData?.month_unit}
@@ -247,13 +252,13 @@ const RentAndUnit = () => {
         gridView={view === "grid" || gridView}
         setGridView={setGridView}
         setListView={setListView}
-        pageTitle="Rent & Unit"
+        pageTitle="Rent & Management"
         aboutPageModalData={{
-          title: "Rent & Unit",
+          title: "Rent & Management",
           description:
-            "This page contains a list of Rent & Unit on the platform.",
+            "This page contains a list of Rent & Management on the platform.",
         }}
-        searchInputPlaceholder="Search for Rent and Unit"
+        searchInputPlaceholder="Search for Rent and Management"
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
         onSort={handleSort}

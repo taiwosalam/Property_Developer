@@ -146,7 +146,7 @@ const RecordPage = () => {
 
   const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
 
-  console.log("userData", checkInsOutData);
+  // console.log("userData", checkInsOutData);
 
   if (loading)
     return (
@@ -446,14 +446,14 @@ const RecordPage = () => {
       <FixedFooter className="flex items-center justify-end">
         <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
           {/* <ModalTrigger asChild> */}
-            <Button
-              // disabled={hasPendingRecord}
-              onClick={handleCreateNewRecordClick}
-              size="sm_normal"
-              className="py-2 px-8"
-            >
-              Create New Record
-            </Button>
+          <Button
+            // disabled={hasPendingRecord}
+            onClick={handleCreateNewRecordClick}
+            size="sm_normal"
+            className="py-2 px-8"
+          >
+            Create New Record
+          </Button>
           {/* </ModalTrigger> */}
           <ModalContent>
             <CheckInOutForm

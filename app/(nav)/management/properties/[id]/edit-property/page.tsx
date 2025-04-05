@@ -16,6 +16,7 @@ import { updateProperty } from "./data";
 import { transformPropertyFormData } from "@/components/Management/Properties/data";
 import { useRouter } from "next/navigation";
 import UnitForm from "@/components/Management/Properties/unit-form";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const EditProperty = ({ params }: { params: { id: string } }) => {
   const { id: propertyId } = params;
@@ -60,9 +61,6 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
 
-  // console.log('added  units', addedUnits)
-  // const resetStore = useAddUnitStore((s) => s.resetStore);
-
   const {
     data: propertyData,
     loading,
@@ -70,6 +68,8 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
     error,
     refetch,
   } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
+  useRefetchOnEvent("refetchSingleProperty", () => refetch({ silent: true }));
+
 
   useEffect(() => {
     if (propertyData) {

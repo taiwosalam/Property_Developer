@@ -1,13 +1,13 @@
 // Imports
-import type { PropertyFormStateType, AllStaffResponse } from './types';
-import api, { handleAxiosError } from '@/services/api';
-import toast from 'sonner';
+import type { PropertyFormStateType, AllStaffResponse } from "./types";
+import api, { handleAxiosError } from "@/services/api";
+import toast from "sonner";
 
 export const property_form_state_data: PropertyFormStateType = {
-  state: '',
-  city: '',
-  lga: '',
-  selectedBranch: { value: '', label: '' },
+  state: "",
+  city: "",
+  lga: "",
+  selectedBranch: { value: "", label: "" },
   staff: [],
   staffOptions: [],
   accountOfficerOptions: [],
@@ -29,22 +29,19 @@ export const transformPropertyFormData = (
   data: Record<string, any>,
   imageFiles: (File | string)[],
   company_id: string,
-  selectedStaffs: any,
+  selectedStaffs: any
   // selectedLandlord: any,
   // selectedOfficer: any,
 ) => {
   const staffIds = [...selectedStaffs];
-  // Collect staff IDs
-  // const staffIds = Object.entries(data)
-  //   .filter(([key]) => key.startsWith('staff') && key.endsWith('_id'))
-  //   .map(([_, value]) => value as string)
-  //   .filter(Boolean);
   // Add account officer if present
   if (data.account_officer_id) {
-    console.log("officer", data.account_officer_id);
     staffIds.push(data.account_officer_id);
   }
 
+  // Set default image (first image) and filter it out from images list
+  const default_image = imageFiles.length > 0 ? imageFiles[0] : null;
+  const filteredImages = imageFiles.filter((img) => img !== default_image);
   const payload = {
     title: data.title,
     state: data.state,
@@ -78,75 +75,13 @@ export const transformPropertyFormData = (
     active_vat: data.active_vat,
     currency: data.currency,
     coordinate: data.coordinate,
-    images: imageFiles,
-    // images: imageFiles.slice(1),
-    default_image: imageFiles[0] || null,
+    images: filteredImages, // Exclude default image from images list
+    default_image,
     staff: staffIds,
-    // staff: selectedStaffs,
   };
 
   return payload;
 };
-
-// export const transformUnitFormData = (
-//   formData: Record<string, any>,
-//   images: (File | string)[],
-//   property_id: string
-// ) => {
-//   const parseFee = (value: string | undefined) => {
-//     if (!value) {
-//       return 0;
-//     }
-//     return parseFloat(value.replace(/,/g, ''));
-//   };
-
-//   const parseIntOrNull = (value: string | undefined | null) => {
-//     if (!value) return 0;
-//     const parsed = parseInt(value, 10);
-//     return isNaN(parsed) ? null : parsed;
-//   };
-
-//   const payload = {
-//     unit_name: formData.unit_name,
-//     unit_type: formData.unit_type,
-//     unit_sub_type: formData.unit_sub_type ?? null,
-//     unit_preference: formData.unit_preference,
-//     measurement: formData.measurement ?? null,
-//     total_area_sqm: formData.total_area_sqm ?? null,
-//     number_of: formData.number_of ?? 0,
-//     bedroom: parseIntOrNull(formData.bedroom),
-//     bathroom: parseIntOrNull(formData.bathroom),
-//     toilet: parseIntOrNull(formData.toilet),
-//     facilities: formData.facilities
-//       ? formData.facilities.split(',').map(decodeURIComponent)
-//       : [],
-//     en_suit: formData.en_suit ?? null,
-//     prepaid: formData.prepaid ?? null,
-//     wardrobe: formData.wardrobe ?? null,
-//     pet_allowed: formData.pets_allowed ?? null,
-//     fee_period: formData.fee_period ?? null,
-//     fee_amount: parseFee(formData.fee_amount),
-//     service_charge: parseFee(formData.service_charge),
-//     agency_fee: parseFee(formData.agency_fee),
-//     legal_fee: parseFee(formData.legal_fee),
-//     caution_fee: parseFee(formData.caution_fee),
-//     inspection_fee: parseFee(formData.inspection_fee),
-//     other_charge: parseFee(formData.other_charge),
-//     negotiation: formData.negotiation ?? null,
-//     security_fee: parseFee(formData.security_fee),
-//     total_package: parseFee(formData.total_package),
-//     renew_fee_period: formData.renew_fee_period ?? null,
-//     renew_fee_amount: parseFee(formData.renew_fee_amount),
-//     renew_service_charge: parseFee(formData.renew_service_charge),
-//     renew_other_charge: parseFee(formData.renew_other_charge),
-//     renew_total_package: parseFee(formData.renew_total_package),
-//     property_id,
-//     images,
-//     default_image: images[0] || null,
-//   };
-//   return payload;
-// };
-
 
 export const transformUnitFormData = (
   formData: Record<string, any>,
@@ -158,7 +93,7 @@ export const transformUnitFormData = (
     if (!value) {
       return 0;
     }
-    return parseFloat(value.replace(/,/g, ''));
+    return parseFloat(value.replace(/,/g, ""));
   };
 
   const parseIntOrNull = (value: string | undefined | null) => {
@@ -167,19 +102,32 @@ export const transformUnitFormData = (
     return isNaN(parsed) ? null : parsed;
   };
 
-  // Determine the default image ID (first image in the list)
+  console.log("images passed to ", images)
+
+  // Determine the default image (first image in the list)
   let defaultImageId: string | null = null;
+  let defaultImagePath: string | null = null;
+  let defaultImage: string | File | null = null;
+
   if (images.length > 0) {
     const firstImage = images[0];
+
     if (typeof firstImage === "string") {
-      const matchingImage = originalImages.find((img) => img.path === firstImage);
+      defaultImage = firstImage;
+      const matchingImage = originalImages.find(
+        (img) => img.path === firstImage
+      );
       if (matchingImage) {
         defaultImageId = matchingImage.id;
+        defaultImagePath = matchingImage.path;
       }
+    } else {
+      defaultImage = firstImage;
     }
-    // If the first image is a File (new upload), the server will assign its ID after upload
-    // In this case, defaultImageId remains null and can be handled server-side
   }
+
+  // Filter out the default image from images list
+  const filteredImages = images.filter((img) => img !== defaultImagePath && img !== defaultImage);
 
   const payload = {
     unit_name: formData.unit_name,
@@ -193,7 +141,7 @@ export const transformUnitFormData = (
     bathroom: parseIntOrNull(formData.bathroom),
     toilet: parseIntOrNull(formData.toilet),
     facilities: formData.facilities
-      ? formData.facilities.split(',').map(decodeURIComponent)
+      ? formData.facilities.split(",").map(decodeURIComponent)
       : [],
     en_suit: formData.en_suit ?? null,
     prepaid: formData.prepaid ?? null,
@@ -216,13 +164,12 @@ export const transformUnitFormData = (
     renew_other_charge: parseFee(formData.renew_other_charge),
     renew_total_package: parseFee(formData.renew_total_package),
     property_id,
-    images,
-    default_image: defaultImageId, // Set to the ID of the first existing image
+    images: filteredImages, // Exclude default image from images list
+    default_image: typeof defaultImage === "string" ? defaultImage : defaultImageId, // Set to the string or ID of the first image
   };
 
   return payload;
 };
-
 
 export const addPropertyWithId = async (
   property_id: string,

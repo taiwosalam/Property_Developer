@@ -11,6 +11,7 @@ import { ActionButton } from "./action-button";
 import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import { formatNumber } from "@/utils/number-formatter";
 import { StatusDots } from "./status-dot";
+import { empty } from "@/app/config";
 
 const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   propertyType,
@@ -27,6 +28,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   status,
   property_type,
 }) => {
+  // console.log("unit passed", unit)
   const [isOpened, setIsOpened] = useState(false);
   return (
     <div className="p-6 bg-white dark:bg-darkText-primary rounded-2xl shadow-md text-[16px]">
@@ -67,7 +69,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
           role="button"
         >
           <Image
-            src={images[0]}
+            src={images[0] || empty}
             alt="Property"
             fill
             sizes="auto"

@@ -16,6 +16,9 @@ const UnitBreakdownRenewalTenant = () => {
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
+  const agencyFeePercentage = parseFloat(
+    String(propertySettings?.agency_fee || "0")
+  );
   const [otherChargesInput, setOtherChargesInput] = useState(
     !!parseFloat(unitData?.renew_other_charge || "0")
   );
@@ -32,7 +35,9 @@ const UnitBreakdownRenewalTenant = () => {
         ? formatNumber(parseFloat(unitData.renew_other_charge))
         : "",
       // Initialize VAT to "0"
-      vat: unitData?.renew_vat ? formatNumber(parseFloat(unitData.renew_vat as string)) : "0",
+      vat: unitData?.renew_vat
+        ? formatNumber(parseFloat(unitData.renew_vat as string))
+        : "0",
       totalPackage: unitData?.renew_total_package
         ? formatNumber(parseFloat(unitData.renew_total_package))
         : "",
@@ -46,7 +51,8 @@ const UnitBreakdownRenewalTenant = () => {
   ]);
 
   const [formValues, setFormValues] = useState(initialFormValues);
-  const { rentAmount, serviceCharge, vat, totalPackage, otherCharges } = formValues;
+  const { rentAmount, serviceCharge, vat, totalPackage, otherCharges } =
+    formValues;
   type FormField = keyof typeof formValues;
 
   // Update formValues based on input changes
@@ -75,9 +81,8 @@ const UnitBreakdownRenewalTenant = () => {
   //   const calculatedVAT = rentTenPercent * 0.075
   useEffect(() => {
     const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
-    const shouldCalculateVAT =
-      propertySettings?.VAT?.toLowerCase() === "yes";
-    const rentTenPercent = rentAmountValue * 0.10;
+    const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
+    const rentTenPercent = (rentAmountValue * agencyFeePercentage) / 100;
     const calculatedVAT = shouldCalculateVAT ? rentTenPercent * 0.075 : 0;
 
     setFormValues((prevValues) => ({
@@ -143,41 +148,11 @@ const UnitBreakdownRenewalTenant = () => {
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
         />
-        {otherChargesInput && (
-          <div className="relative">
-            <Input
-              id="renew_other_charge"
-              label="Other Charges"
-              inputClassName="bg-white"
-              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-              value={otherCharges}
-              onChange={(value) => handleInputChange("otherCharges", value)}
-              type="text"
-            />
-            <button
-              type="button"
-              aria-label="Remove Other Charges"
-              onClick={handleRemoveOtherCharges}
-              className="absolute top-0 right-0 w-[18px] h-[18px]"
-            >
-              <DeleteIconX size={20} />
-            </button>
-          </div>
-        )}
-        {!otherChargesInput && (
-          <button
-            type="button"
-            onClick={addOtherCharges}
-            className="text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start"
-          >
-            Add Other Charges
-          </button>
-        )}
         {/* Only display VAT input if VAT is enabled */}
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input
             id="renew_vat"
-            label="VAT Fee"
+            label="Value Added Tax (VAT)"
             inputClassName="bg-white unit-form-input"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             value={vat}
@@ -185,6 +160,15 @@ const UnitBreakdownRenewalTenant = () => {
             type="text"
           />
         )}
+        <Input
+          id="renew_other_charge"
+          label="Other Charges"
+          inputClassName="bg-white"
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          value={otherCharges}
+          onChange={(value) => handleInputChange("otherCharges", value)}
+          type="text"
+        />
         <Input
           required
           id="renew_total_package"

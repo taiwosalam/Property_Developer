@@ -22,7 +22,7 @@ export const nav_items: NavItemsProps = [
       { label: "staff & branches", href: "/staff-branch" },
       { label: "inventory", href: "/inventory" },
       { label: "properties", href: "/properties" },
-      { label: "rent & unit", href: "/rent-unit" },
+      { label: "rent & mgmt", href: "/rent-unit" },
       { label: "service providers", href: "/service-providers" },
       { label: "vehicles record", href: "/vehicles-record" },
       { label: "team chat", href: "/team-chat" },

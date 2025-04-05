@@ -21,7 +21,10 @@ const UnitDetails = () => {
     formResetKey,
     unitData,
     index,
+    isEditing,
   } = useUnitForm();
+
+  console.log("isEditiing", isEditing);
 
   const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>([]);
   const [unitSubtypeOptions, setUnitSubtypeOptions] = useState<string[]>([]);
@@ -113,7 +116,7 @@ const UnitDetails = () => {
   }, [selectedUnitType, propertyDetails?.category]);
 
   const displayUnitName =
-    unitData && index !== undefined
+    !isEditing && unitData && index !== undefined
       ? `${unitData.unit_name} (Unit ${index + 1})`
       : unitData?.unit_name || "";
 

@@ -200,22 +200,28 @@ const VehiclesRecordPage = () => {
       <div className="page-header-container">
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
+            title="Total Record"
+            newData={total}
+            total={total_this_month}
+            colorScheme={1}
+          />
+          <ManagementStatistcsCard
             title="Check In"
             newData={check_ins_this_month}
             total={check_ins}
-            colorScheme={1}
+            colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Check Out"
             newData={check_outs_this_month}
             total={check_outs}
-            colorScheme={2}
+            colorScheme={3}
           />
           <ManagementStatistcsCard
-            title="Total"
+            title="Pending"
             newData={total}
             total={total_this_month}
-            colorScheme={3}
+            colorScheme={4}
           />
         </div>
         <Modal>
