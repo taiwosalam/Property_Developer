@@ -1,7 +1,7 @@
 "use client";
 
 // Imports
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import Button from "@/components/Form/Button/button";
 import InventoryCard from "@/components/Management/Inventory/inventory-card";
 import InventoryList from "@/components/Management/Inventory/inventory-list";
@@ -27,15 +27,17 @@ import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import useStaffRoles from "@/hooks/getStaffs";
+import { inventoryFIltersOptionsWithDropdown } from "./data";
 
 //  Expected structure of apiData
 interface InventoryApiData {
-  total_pages: number;
+  current_page: number;
   total: number;
   new_inventory_this_month: number;
   data: {
     last_page: number;
     total: number;
+    current_page: number;
     new_inventory_this_month: number;
     data: InventoryCardDataProps[];
   };
@@ -148,10 +150,16 @@ const Inventory = () => {
     });
   };
 
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
+    // Scroll to the top where inventories start
+    if (contentTopRef.current) {
+      contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -172,13 +180,14 @@ const Inventory = () => {
 
   useEffect(() => {
     if (apiData) {
-      // console.log("apiData", apiData);
+      console.log("apiData", apiData);
       setState((x) => ({
         ...x,
         inventoryPageData: {
           ...x.inventoryPageData,
           inventory: apiData.data.data,
-          total_pages: apiData.total_pages,
+          total_pages: apiData.data.last_page,
+          current_page: apiData.data.current_page,
           last_page: apiData.data.last_page,
           total_inventory: apiData.data.total,
           new_inventory_this_month: apiData.data.new_inventory_this_month,
@@ -229,13 +238,25 @@ const Inventory = () => {
 
   return (
     <div className="custom-flex-col gap-9">
-      <div className="page-header-container">
+      <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Inventory"
             newData={new_inventory_this_month}
             total={total_inventory}
             colorScheme={1}
+          />
+          <ManagementStatistcsCard
+            title="Used Inventory"
+            newData={20}
+            total={60}
+            colorScheme={2}
+          />
+          <ManagementStatistcsCard
+            title="Un-use Inventory"
+            newData={23}
+            total={45}
+            colorScheme={3}
           />
         </div>
 
@@ -261,6 +282,7 @@ const Inventory = () => {
         handleFilterApply={handleFilterApply}
         isDateTrue
         filterOptionsMenu={[
+          ...inventoryFIltersOptionsWithDropdown,
           ...(accountOfficersOptions.length > 0
             ? [
                 {

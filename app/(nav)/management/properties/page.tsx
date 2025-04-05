@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { ExclamationMark } from "@/public/icons/icons";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
@@ -73,7 +73,7 @@ const Properties = () => {
 
   // const endpoint =
   //   isFilterApplied() || search || sort ? "/property/filter" : "/property/list";
-  const endpoint = "/property/list"
+  const endpoint = "/property/list";
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
@@ -96,8 +96,14 @@ const Properties = () => {
     };
   }, [appliedFilters, search, sort, page]);
 
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
   const handlePageChange = (page: number) => {
     setPage(page);
+    // Scroll to the top where properties card start
+    if (contentTopRef.current) {
+      contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -146,7 +152,7 @@ const Properties = () => {
     }
   }, [apiData]);
 
-  console.log("total_pages", pageData)
+  // console.log("total_pages", pageData)
 
   if (loading)
     return (
@@ -161,7 +167,7 @@ const Properties = () => {
   return (
     <div className="space-y-9">
       {/* Header with statistics cards */}
-      <div className="page-header-container">
+      <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Properties"
@@ -246,9 +252,11 @@ const Properties = () => {
                   <br />
                   <br />
                   Once a property is added to this page, this guide will
-                  disappear. 
+                  disappear.
                   <br />
-                  To Learn more about this page later, click your profile picture at the top right of the dashboard and select Assistance & Support. 
+                  To Learn more about this page later, click your profile
+                  picture at the top right of the dashboard and select
+                  Assistance & Support.
                   <br />
                   <br />
                   Property creation involves several segments: property
