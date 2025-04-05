@@ -71,8 +71,9 @@ const Properties = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-  const endpoint =
-    isFilterApplied() || search || sort ? "/property/filter" : "/property/list";
+  // const endpoint =
+  //   isFilterApplied() || search || sort ? "/property/filter" : "/property/list";
+  const endpoint = "/property/list"
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {

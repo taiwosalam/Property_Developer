@@ -17,7 +17,7 @@ export const transformPropertyData = (
   const { data } = response;
   if (!data) return null;
 
-  // console.log("res", response)
+  console.log("res", response);
 
   return {
     property_id: data.id,
@@ -28,7 +28,7 @@ export const transformPropertyData = (
       state: data.state,
       city: data.city_area,
       local_govt: data.local_government,
-      full_address: data.full_address,
+      full_address: `${data.full_address}, ${data.city_area}, ${data.local_government}, ${data.state}`,
       category: data.category as Categories,
       description: data.description,
       inventory: data.inventory,
@@ -39,10 +39,18 @@ export const transformPropertyData = (
       branch_name: data.branch?.branch_name,
       branch_id: data.branch?.id,
       land_lord_id: data.landlord_id,
-      staff_id: data.staff?.filter((s) => s.staff_role === "staff" || s.staff_role === "manager").map((s) => s.id),
-      officer_id: data.staff?.filter((s) => s.staff_role === "account officer").map((s) => s.id),
-      account_officer: data.staff?.filter((s) => s.staff_role === "account officer").map((s) => s.user.name)[0],
-      manager: data.staff?.filter((s) => s.staff_role === "manager").map((s) => s.user.name)[0],
+      staff_id: data.staff
+        ?.filter((s) => s.staff_role === "staff" || s.staff_role === "manager")
+        .map((s) => s.id),
+      officer_id: data.staff
+        ?.filter((s) => s.staff_role === "account officer")
+        .map((s) => s.id),
+      account_officer: data.staff
+        ?.filter((s) => s.staff_role === "account officer")
+        .map((s) => s.user.name)[0],
+      manager: data.staff
+        ?.filter((s) => s.staff_role === "manager")
+        .map((s) => s.user.name)[0],
     },
     propertySettings: {
       agency_fee: data.agency_fee || undefined,
@@ -62,15 +70,15 @@ export const transformPropertyData = (
       vat: data.vat || undefined,
       renew_vat: data.renew_vat || undefined,
     },
-    // addedUnits: data.units,
     addedUnits: data.units.map((unit) => ({
       ...unit,
-      // default_image: unit.images.find((image) => image.is_default === 1)
-      //   ? unit.images.find((image) => image.is_default === 1)!.path
-      //   : unit.images[0].path,
+      images: unit.images
+        .sort((a, b) => (a.is_default === 1 ? -1 : b.is_default === 1 ? 1 : 0))
+        .map((img) => ({ path: img.path, id: img.id })),
       default_image:
         unit.images && unit.images.length > 0
-          ? unit.images.find((image) => image.is_default === 1)?.path || unit.images[0].path
+          ? unit.images.find((image) => image.is_default === 1)?.path ||
+            unit.images[0].path
           : undefined,
     })),
     canDelete:

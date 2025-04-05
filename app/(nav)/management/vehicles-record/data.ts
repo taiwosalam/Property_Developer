@@ -15,6 +15,7 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
       // { label: "No Record", value: "no record" },
       { label: "Check In", value: "check-in" },
       { label: "Check Out", value: "check-out" },
+      { label: "Pending", value: "pending" },
     ],
   },
 ];
@@ -25,7 +26,7 @@ export interface VehicleRecordFilterParams {
   to_date?: string;
   sort_by?: "desc";
   search?: string;
-  status: "no record" | "pending" | "completed"
+  status: "no record" | "pending" | "completed";
 }
 
 

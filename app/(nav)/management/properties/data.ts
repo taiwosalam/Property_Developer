@@ -81,6 +81,7 @@ export interface UnitDataObject {
   other_charge?: string;
   negotiation?: 1 | 0;
   total_package?: string;
+  address?: string;
   renew_fee_period?: string;
   renew_fee_amount?: string;
   renew_service_charge?: string;
@@ -89,6 +90,7 @@ export interface UnitDataObject {
   is_active: keyof typeof UnitStatusColors;
   vat?: string | number;
   renew_vat?: string | number;
+  account_officer?: string;
   // status: "pending";
   // reject_reason: null;
   // created_at: "2024-12-11T10:02:27.000000Z";
@@ -265,7 +267,7 @@ export const transformPropertiesApiResponse = (
 
   if (isPropertiesApiResponse(response)) {
     return {
-      total_pages: propertiesData.total,
+      total_pages: propertiesData.last_page,
       current_page: propertiesData.current_page,
       total_properties: response.data.total_property,
       new_properties_count: response.data.current_month_property,
@@ -278,7 +280,7 @@ export const transformPropertiesApiResponse = (
     };
   } else {
     return {
-      total_pages: propertiesData.total,
+      total_pages: propertiesData.last_page,
       current_page: propertiesData.current_page,
       properties: transformedProperties,
     };

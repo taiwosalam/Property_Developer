@@ -42,26 +42,36 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
     if (!objectLength(validation.invalidKeys)) {
       setIsLoading(true);
 
-      // Choose verification function based on type
-      const status =
-        type === "sign up"
-          ? await verifyEmail(code)
-          : await verifyOtpAndResetPassword(code);
+      try {
+        const handleSaveCode = async (code: string) => {
+          await useAuthStore.getState().setAuthState("code", code);
+          return true;
+        };
 
-      if (status) {
-        if (type === "sign up") {
-          console.log("role here for redirect", role)
-          if (role === "user") {
-            router.push("/setup"); 
-          } else {
-            const dashboardPage = getDashboardPage(role)
-            router.push(dashboardPage);
+        // Choose verification function based on type
+        const status =
+          type === "sign up"
+            ? await verifyEmail(code)
+            : await handleSaveCode(code);
+
+        if (status) {
+          if (type === "sign up") {
+            console.log("role here for redirect", role);
+            if (role === "user") {
+              router.push("/setup");
+            } else {
+              const dashboardPage = getDashboardPage(role);
+              router.push(dashboardPage);
+            }
+          } else if (type === "forgot password") {
+            changeStep("next");
           }
-        } else if (type === "forgot password") {
-          changeStep("next");
         }
+      } catch (error) {
+        console.error("Error during code submission:", error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     } else {
       setErrorMsgs(validation.invalidKeys);
     }
