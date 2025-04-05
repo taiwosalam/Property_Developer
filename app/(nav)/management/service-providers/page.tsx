@@ -45,6 +45,7 @@ import CustomTable from "@/components/Table/table";
 import { landlordTableFields } from "../landlord/data";
 import UserTag from "@/components/Tags/user-tag";
 import { entries } from "lodash";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 
 interface ServiceProviderCardProps {
   id: number;
@@ -218,26 +219,33 @@ const ServiceProviders = () => {
       ...l,
       avatar: l.avatar,
       full_name: (
-        <p className="flex items-center whitespace-nowrap">{l.name}</p>
+        <div className="flex gap-x-4 items-center">
+          <p className="flex items-center whitespace-nowrap">{l.name}</p>
+           {l.note && l.note !== "<p><br></p>" ? ( 
+            <div className="flex items-center">
+              <NoteBlinkingIcon size={20} className="blink-color" />
+            </div>
+          ): ""} 
+        </div>
       ),
       "manage/chat": (
-        <div className="flex gap-x-[4%] items-center w-full">
-          <Button
-            href={`/management/service-providers/${l.id}/manage`}
-            size="sm_medium"
-            className="px-8 py-2 mx-auto"
-          >
-            Manage
-          </Button>
+        <div className="flex gap-x-[4%] items-center w-full justify-end">
           {l.agent === "mobile" && (
             <Button
               variant="sky_blue"
               size="sm_medium"
-              className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
+              className="px-8 py-2 border-[1px] border-brand-9 bg-brand-tertiary bg-opacity-50 text-brand-9"
             >
               Chat
             </Button>
           )}
+          <Button
+            href={`/management/service-providers/${l.id}/manage`}
+            size="sm_medium"
+            className="px-8 py-2"
+          >
+            Manage
+          </Button>
         </div>
       ),
       ref:
@@ -378,10 +386,19 @@ const ServiceProviders = () => {
                         name={provider.name}
                         email={provider.email}
                         user_tag={provider?.agent === "web" ? "web" : "mobile"}
+                        badge_color={
+                          typeof provider?.badge_color === "number"
+                            ? undefined
+                            : provider?.badge_color || undefined
+                        }
                         phone_number={provider.phone}
                         picture_url={provider.avatar}
                         other_info={provider.service_rendered || ""}
-                        note={!provider.note || provider.note === "<p><br></p>" ? false : true}
+                        note={
+                          !provider.note || provider.note === "<p><br></p>"
+                            ? false
+                            : true
+                        }
                       />
                     </Link>
                   ))
@@ -396,11 +413,11 @@ const ServiceProviders = () => {
                   tableBodyCellSx={{ color: "#3F4247" }}
                 />
 
-                 {silentLoading && ( 
+                {silentLoading && (
                   <div className="flex items-center justify-center py-4">
                     <div className="loader" />
                   </div>
-                 )} 
+                )}
               </>
             )}
           </>
