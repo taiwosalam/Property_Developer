@@ -97,7 +97,7 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
         <TruncatedText
           as="div"
           className="text-text-quaternary dark:text-darkText-2 flex-1 max-w-[80%]"
-          lines={2}
+          lines={3}
         >
           <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
         </TruncatedText>
