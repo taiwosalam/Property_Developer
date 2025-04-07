@@ -793,7 +793,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               resetKey={resetKey}
               requiredNoStar
               hiddenInputClassName="property-form-input"
-              defaultValue={editMode ? propertySettings?.VAT : "no"}
+              defaultValue={editMode ? propertySettings?.VAT : "yes"}
             />
             {formType === "rental" && (
               <>

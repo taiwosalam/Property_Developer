@@ -85,7 +85,7 @@ const UnitBreakdownFacility = () => {
   useEffect(() => {
     const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
     const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
-    const rentTenPercent = rentAmountValue * 0.10;
+    const rentTenPercent = rentAmountValue * 0.1;
     const calculatedVAT = shouldCalculateVAT ? rentTenPercent * 0.075 : 0;
 
     setFormValues((prevValues) => ({
@@ -162,36 +162,6 @@ const UnitBreakdownFacility = () => {
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
         />
-        {otherChargesInput && (
-          <div className="relative">
-            <Input
-              id="other_charge"
-              label="Other Charges"
-              inputClassName="bg-white unit-form-input"
-              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-              value={otherCharges}
-              onChange={(value) => handleInputChange("otherCharges", value)}
-              type="text"
-            />
-            <button
-              type="button"
-              aria-label="Remove Other Charges"
-              onClick={handleRemoveOtherCharges}
-              className="absolute top-0 right-0 w-[18px] h-[18px]"
-            >
-              <DeleteIconX size={20} />
-            </button>
-          </div>
-        )}
-        {!otherChargesInput && (
-          <button
-            type="button"
-            onClick={addOtherCharges}
-            className="text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start"
-          >
-            Add Other Charges
-          </button>
-        )}
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input
             id="renew_vat"
@@ -203,6 +173,15 @@ const UnitBreakdownFacility = () => {
             type="text"
           />
         )}
+        <Input
+          id="other_charge"
+          label="Other Charges"
+          inputClassName="bg-white unit-form-input"
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          value={otherCharges}
+          onChange={(value) => handleInputChange("otherCharges", value)}
+          type="text"
+        />
         <Input
           required
           id="total_package"

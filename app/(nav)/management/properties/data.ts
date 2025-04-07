@@ -91,6 +91,7 @@ export interface UnitDataObject {
   vat?: string | number;
   renew_vat?: string | number;
   account_officer?: string;
+  notYetUploaded?: boolean;
   // status: "pending";
   // reject_reason: null;
   // created_at: "2024-12-11T10:02:27.000000Z";

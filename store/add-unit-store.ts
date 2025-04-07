@@ -59,6 +59,7 @@ export interface AddUnitStore {
   propertyType: PropertyType;
   canDelete: boolean;
   editMode?: boolean;
+  newForm?: boolean;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
   addedUnits: (UnitDataObject & { notYetUploaded?: boolean })[];
