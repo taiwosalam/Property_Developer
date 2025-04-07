@@ -104,6 +104,7 @@ const ServiceProviders = () => {
     refetch,
   } = useFetch<ServiceProviderResponseApi>("service-providers", config);
   const itemListView = useRef<HTMLDivElement | null>(null);
+  const [shouldScroll, setShouldScroll] = useState(false);
 
   useEffect(() => {
     setView(storedView);
@@ -147,12 +148,21 @@ const ServiceProviders = () => {
       params: { ...prev.params, page },
     }));
     if (view === "grid") {
-      itemListView.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      setShouldScroll(true);
     }
   };
+
+  useEffect(() => {
+    if (shouldScroll) {
+      if (itemListView.current) {
+        itemListView.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+      setShouldScroll(false);
+    }
+  }, [shouldScroll, service_providers]);
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
@@ -221,11 +231,13 @@ const ServiceProviders = () => {
       full_name: (
         <div className="flex gap-x-4 items-center">
           <p className="flex items-center whitespace-nowrap">{l.name}</p>
-           {l.note && l.note !== "<p><br></p>" ? ( 
+          {l.note && l.note !== "<p><br></p>" ? (
             <div className="flex items-center">
               <NoteBlinkingIcon size={20} className="blink-color" />
             </div>
-          ): ""} 
+          ) : (
+            ""
+          )}
         </div>
       ),
       "manage/chat": (

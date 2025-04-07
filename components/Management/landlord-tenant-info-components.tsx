@@ -272,9 +272,12 @@ export const MobileNotesModal: React.FC<{
   const [reqLoading, setReqLoading] = useState(false);
 
   useEffect(() => {
-    setNote(notes?.write_up || "");
-  }, [notes]);
+    setNote(notes?.write_up || provider_notes || "");
+  }, [notes, provider_notes]);
 
+  const clearNotes = () => {
+    setNote("")
+  }
   const handleUpdateNote = async () => {
     if (id) {
       setReqLoading(true);
@@ -354,7 +357,7 @@ export const MobileNotesModal: React.FC<{
         {editNote ? (
           <TextArea
             id="write_up"
-            value={note || provider_notes}
+            value={note}
             onChange={(value) => setNote(value)}
             inputSpaceClassName="!h-[auto] min-h-[160px]"
           />

@@ -201,7 +201,7 @@ const TenantsReport = () => {
         exportHref="/reports/tenants/export"
       />
       <section>
-        {tenants.length === 0 && !loading ? (
+        {[].length === 0 && !loading ? (
           !!config.params.search.trim() || hasActiveFilters(appliedFilters) ? (
             <div className="col-span-full text-center py-8 text-gray-500">
               No Search/Filter Found
