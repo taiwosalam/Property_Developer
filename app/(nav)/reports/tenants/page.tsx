@@ -19,6 +19,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { BranchFilter, FilterResult, PropertyFilter } from "./types";
 import dayjs from "dayjs";
 import { Branch, BranchStaff } from "../../(messages-reviews)/messages/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const TenantsReport = () => {
   const [tenant_reports, setTenant_reports] = useState<TenantReport>({
@@ -154,9 +155,6 @@ const TenantsReport = () => {
     );
   };
 
-  console.log(appliedFilters, "appliedFilters");
-  console.log(config.params.search, "config.params.search");
-
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
@@ -174,12 +172,12 @@ const TenantsReport = () => {
           total={monthly_tenants}
           colorScheme={1}
         />
-        <ManagementStatistcsCard
+        {/* <ManagementStatistcsCard
           title="Total Occupants"
           newData={total_tenants}
           total={monthly_tenants}
           colorScheme={2}
-        />
+        /> */}
       </div>
       <FilterBar
         azFilter
@@ -201,17 +199,27 @@ const TenantsReport = () => {
         exportHref="/reports/tenants/export"
       />
       <section>
-        {[].length === 0 && !loading ? (
+        {tenants.length === 0 && !loading ? (
           !!config.params.search.trim() || hasActiveFilters(appliedFilters) ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+            <SearchError />
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">
+            <div className="col-span-full text-left py-8 text-gray-500">
               <EmptyList
                 noButton
-                title="No Tenants/Occupants Record Found"
-                body="Looks like you have no tenants/occupants report yet."
+                title="No Tenant or Occupant Profiles Available Yet"
+                body={
+                  <p className="">
+                    At the moment, there are no tenant/occupant profiles
+                    available for export. Once profile records are added to the
+                    system, they will appear here and be available for download
+                    or export. <br /> <br />
+                    <p>
+                      This section will automatically populate with all
+                      available data as soon as new tenant or occupant profiles
+                      are created or imported into the platform.
+                    </p>
+                  </p>
+                }
               />
             </div>
           )

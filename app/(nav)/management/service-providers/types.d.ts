@@ -12,6 +12,28 @@ export interface initialServiceProviderPageData {
   providers: ServiceProviderCard[];
 }
 
+type MobileUser = {
+  id: number;
+  encodedId: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  username: string;
+  referrer_code: string;
+  email_verified_at: string;
+  phone_verified_at: string | null;
+  username_updated_at: string | null;
+  is_active: number;
+  is_company_owner: number;
+  tier_id: 1 | 2 | 3 | 4 | 5;
+  deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+  provider_id: string | null;
+  provider_name: string | null;
+};
+
+
 type TUserProfile = {
   id: number;
   user_id: number;
@@ -36,6 +58,7 @@ type TUserProfile = {
   account_number: string | null;
   note: string | null;
   deleted_at: string | null;
+  user: MobileUser | null;
 };
 
 
@@ -100,7 +123,8 @@ interface ServiceProviderCardProps {
   phone: string;
   agent: string;
   avatar: string;
-  badge_color: number | null;
+  badge_color: BadgeColor | null;
+ // user_tag: string;
   service_rendered: string | null;
   note: string | null;
 }

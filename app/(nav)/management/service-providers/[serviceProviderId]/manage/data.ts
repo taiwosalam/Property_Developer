@@ -256,10 +256,10 @@ export const transformUserCardData = (data: any) => {
       : "gray"; // Default fallback color
   };
   return {
-    name: data.name,
+    name: data.name || data?.user?.name,
     picture_url: data.avatar,
     email: data.email,
-    phone_number: data.phone,
+    phone_number: data.phone ?? data?.user?.phone,
     user_tag: "web",
     note: data?.note,
     badge_color: validateBadgeColor(data.badge_color),

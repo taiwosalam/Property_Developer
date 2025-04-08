@@ -41,6 +41,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import dayjs from "dayjs";
 
 const ManageServiceProvider = () => {
   const params = useParams();
@@ -73,7 +74,7 @@ const ManageServiceProvider = () => {
   if (!serviceProviderData) return null;
   const { notes, user_tag = "web" } = serviceProviderData;
 
-  const userData = apiData?.data ? transformUserCardData(providerData) : null;
+  const userData = providerData ? transformUserCardData(providerData) : null;
 
   const hasNote = !userData?.note || userData?.note === "<p><br></p>" ? false : true;
 
@@ -81,7 +82,10 @@ const ManageServiceProvider = () => {
     provider_notes: userData?.note || "",
     company_id: company_id ?? "",
     avatar: providerData?.avatar || "",
+    note_last_updated: providerData?.updated_at ? dayjs(providerData?.updated_at).format('DD/MM/YYYY') : "",
   }
+
+  
 
 
   if (loading) return <CustomLoader layout="profile" />;
@@ -118,7 +122,7 @@ const ManageServiceProvider = () => {
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
                 <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                  {providerData?.name}
+                  {userData?.name}
                 </p>
                 <p
                   style={{ color: isDarkMode ? "#FFFFFF" : "#151515B3" }}

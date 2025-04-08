@@ -263,10 +263,11 @@ export const MobileNotesModal: React.FC<{
     provider_notes: string;
     company_id: string;
     avatar: string;
+    note_last_updated: string;
   }
   
 }> = ({ notes, id, page, provider_data }) => {
-  const { provider_notes, company_id, avatar } = provider_data || {}
+  const { provider_notes, company_id, avatar, note_last_updated } = provider_data || {}
   const [editNote, setEditNote] = useState(false);
   const [note, setNote] = useState(notes?.write_up || provider_notes);
   const [reqLoading, setReqLoading] = useState(false);
@@ -275,9 +276,7 @@ export const MobileNotesModal: React.FC<{
     setNote(notes?.write_up || provider_notes || "");
   }, [notes, provider_notes]);
 
-  const clearNotes = () => {
-    setNote("")
-  }
+  
   const handleUpdateNote = async () => {
     if (id) {
       setReqLoading(true);
@@ -304,6 +303,7 @@ export const MobileNotesModal: React.FC<{
   };
 
   const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || provider_notes || "");
+  const providerNoteLastUpdated = provider_notes === "<p><br></p>" || provider_notes === "" ? "" : note_last_updated;
 
   return (
     <LandlordTenantInfoBox className="w-[600px] max-w-[80%] max-h-[85%] min-h-[250px] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar">
@@ -313,7 +313,7 @@ export const MobileNotesModal: React.FC<{
             <span>Note</span>
             <sub className="text-sm font-normal bottom-[unset]">
               <span className="font-bold">Last Updated</span>{" "}
-              {notes?.last_updated}
+              {notes?.last_updated || providerNoteLastUpdated }
             </sub>
           </h3>
           <div className="flex items-center gap-2">

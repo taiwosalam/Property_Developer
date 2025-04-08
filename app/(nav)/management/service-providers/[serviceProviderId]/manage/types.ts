@@ -100,6 +100,7 @@ export interface ServiceProviderDetailsResponse {
     local_government: string;
     name: string;
     note: string;
+    updated_at: string;
     phone: string;
     service_render: string;
     state: string;

@@ -1,7 +1,8 @@
 import api, { handleAxiosError } from "@/services/api";
-import { ServiceProviderApiResponse, ServiceProviderPageData, ServiceProviderResponseApi } from "./types";
+import { BadgeColor, ServiceProviderApiResponse, ServiceProviderPageData, ServiceProviderResponseApi } from "./types";
 import { Field } from "@/components/Table/types";
 import { toast } from "sonner";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const serviceProviderFilterOptionsWithDropdown = [
   {
@@ -139,12 +140,12 @@ export const transformServiceProviderData = (response: ServiceProviderResponseAp
     total_pages: data?.providers?.last_page,
     service_providers: data?.providers?.data.map((provider) => ({
       id: provider?.id,
-      name: provider.name,
+      name: provider.name || provider?.user?.name || "",
       email: provider?.email,
       phone: provider?.phone,
       agent: provider?.agent,
       avatar: provider?.avatar,
-      badge_color: provider?.user_tier,
+      badge_color: provider?.user?.tier_id ? (tierColorMap[provider?.user?.tier_id] as BadgeColor) : null,
       note: provider?.note,
       service_rendered: provider?.service_render ?? "",
     }))

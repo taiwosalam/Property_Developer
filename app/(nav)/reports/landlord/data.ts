@@ -30,23 +30,24 @@ export const reportsLandlordsFilterOptionsWithDropdown = [
 export const landlordsReportTableFields: Field[] = [
   { id: "0", label: "S/N", accessor: "S/N" },
   { id: "1", label: "ID", accessor: "id" },
+  { id: "7", label: "Landlord / Landlady", accessor: "landlord" },
   {
     id: "2",
     label: "Property",
     accessor: "property",
   },
-  { id: "3", label: "Branch", accessor: "branch" },
-  { id: "5", label: "Account Officer", accessor: "account_officer" },
+  { id: "3", label: "Phone", accessor: "phone" },
+  { id: "5", label: "Status", accessor: "agent"},
   { id: "6", label: "Date Created", accessor: "date_created" },
-  { id: "7", label: "Landlord / Landlady", accessor: "landlord" },
+  
 ];
 
 const generateTableData = (numItems: number) => {
   return Array.from({ length: numItems }, (_, index) => ({
     id: (index + 1).toString(),
     property: `Property ${index + 1}`,
-    branch: `Branch ${index + 1}`,
-    account_officer: `Account Officer ${index + 1}`,
+    phone: `Phone ${index + 1}`,
+    agent: `Status ${index + 1}`,
     date_created: `6/10/2024`,
     landlord: `John Doe`,
   }));
@@ -60,8 +61,8 @@ export interface Landlord {
   landlord_id: number;
   landlord_name: string;
   property_name: string;
-  branch_name: string;
-  account_officer: string;
+  phone: string;
+  agent: string;
   created_at: string;
 }
 
@@ -89,8 +90,8 @@ export interface LandlordsApiResponse {
 export interface LandlordReportEntry {
   id: number;
   property: string;
-  branch: string;
-  account_officer: string;
+  phone: string;
+  agent: string;
   date_created: string;
   landlord: string;
 }
@@ -112,12 +113,12 @@ export const transformLandlordsData = (apiResponse: LandlordsApiResponse): Landl
     total_landlords,
     monthly_landlords,
     landlords: landlords.map((item) => ({
-      id: item.landlord_id,
+      id: item.landlord_id ?? "___ ___",
       property: formatPropertyName(item.property_name),
-      branch: item.branch_name,
-      account_officer: formatPropertyName(item.account_officer),
-      date_created: item.created_at,
-      landlord: item.landlord_name,
+      phone: item.phone || "___ ___",
+      agent: item.agent || "___ ___",
+      date_created: item.created_at || "___ ___",
+      landlord: item.landlord_name || "___ ___",
     })),
   };
 };
