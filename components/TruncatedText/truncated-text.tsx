@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect, ReactNode } from "react";
+import { useState, useRef, useEffect, ReactNode, useCallback } from "react";
 import clsx from "clsx";
 
 interface TruncatedTextProps {
@@ -21,19 +21,30 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
   const [showFullText, setShowFullText] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
 
+  const checkIfTruncated = useCallback(() => {
+    if (textRef.current) {
+      const { clientHeight, scrollHeight } = textRef.current;
+      setIsTruncated(scrollHeight > clientHeight);
+    }
+  }, []);
+
   useEffect(() => {
-    const checkIfTruncated = () => {
-      if (textRef.current) {
-        const { clientHeight, scrollHeight } = textRef.current;
-        // Check if text is truncated by comparing clientHeight and scrollHeight
-        setIsTruncated(scrollHeight > clientHeight);
-      }
+    // Initial check after content is rendered
+    checkIfTruncated();
+
+    // Debounced resize handler
+    let timeout: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(checkIfTruncated, 100); // Debounce by 100ms
     };
 
-    checkIfTruncated();
-    window.addEventListener("resize", checkIfTruncated);
-    return () => window.removeEventListener("resize", checkIfTruncated);
-  }, []);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeout);
+    };
+  }, [children, checkIfTruncated]); // Depend on children to re-check when content changes
 
   const handleToggle = () => {
     setShowFullText(!showFullText);
@@ -44,7 +55,7 @@ const TruncatedText: React.FC<TruncatedTextProps> = ({
       <Component
         ref={textRef}
         className={clsx("overflow-hidden", {
-          "line-clamp": !showFullText, // Add "line-clamp" class conditionally based on state
+          "line-clamp": !showFullText,
         })}
         style={{
           display: "-webkit-box",

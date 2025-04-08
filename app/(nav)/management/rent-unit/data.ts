@@ -109,17 +109,17 @@ export const transformRentUnitApiResponse = (
 
   const transformedUnits: RentalPropertyCardProps[] = unitData.map((u: any) => {
     return {
-      unitId: u.id.toString(),
-      unit_title: u.property.title,
-      unit_type: u.unit_type,
+      unitId: u?.id?.toString() || "0",
+      unit_title: u?.property?.title || "--- ---",
+      unit_type: u?.unit_type || "--- ---",
       tenant_name: u.occupant.name !== null ? u.occupant.name : "--- ---", //TODO
       expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "--- ---", //TODO
-      rent: u.fee_amount,
-      caution_deposit: u.caution_fee,
-      service_charge: u.service_charge,
+      rent: u?.fee_amount || "--- ---",
+      caution_deposit: u?.caution_fee || "--- ---",
+      service_charge: u?.service_charge || "--- ---",
       images: u.images.map((image: any) => image.path),
-      unit_name: u.unit_name,
-      caution_fee: u.caution_fee,
+      unit_name: u?.unit_name || "--- ---",
+      caution_fee: u?.caution_fee || "--- ---",
       status: u.is_active,
       propertyType: u.property.property_type as "rental" | "facility",
       address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
