@@ -56,6 +56,7 @@ const NavProfileDropdown = () => {
             alt="profile picture"
             size={isMobile ? 50 : 60}
             status
+            containerClassName="bg-[var(--secondary-color)] rounded-full"
             rounded
           />
           <div className="custom-flex-col text-text-secondary font-medium">

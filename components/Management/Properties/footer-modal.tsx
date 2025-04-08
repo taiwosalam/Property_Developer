@@ -12,8 +12,10 @@ import { useAddUnitStore } from "@/store/add-unit-store";
 const FooterModal = ({
   showUnitForm,
   onAddUnits,
+  noForm,
 }: {
   showUnitForm?: boolean;
+  noForm?: boolean;
   onAddUnits?: (count: number) => void;
 }) => {
   const { setIsOpen } = useModal();
@@ -24,47 +26,27 @@ const FooterModal = ({
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editMode = useAddUnitStore((s) => s.editMode);
+  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
+  const newForm = useAddUnitStore((s) => s.newForm);
   useOutsideClick(popupRef, () => setCountPopup(false));
-
-  // console.log("edit mode", editMode);
-  // const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   if (addedUnits.length > 0) {
-  //     // Duplicate the last unit when no form is present
-  //     const lastUnit = addedUnits[addedUnits.length - 1];
-  //     for (let i = 0; i < count; i++) {
-  //       const newUnit = { ...lastUnit, id: `temp-${Date.now()}-${i}`, notYetUploaded: true };
-  //       addUnit(newUnit);
-  //     }
-  //     setIsOpen(false);
-  //   } else {
-  //     // Submit the form when a form is present
-  //     const form = e.currentTarget.form;
-  //     setDuplicate?.({ val: true, count });
-  //     setTimeout(() => {
-  //       setIsOpen(false);
-  //       form?.requestSubmit();
-  //     }, 0);
-  //   }
-  // };
 
   const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const form = e.currentTarget.form;
-  
+
     if (editMode && addedUnits.length > 0) {
       // If in edit mode and there are added units, submit first, then duplicate
       setDuplicate?.({ val: true, count });
-  
+
       setTimeout(() => {
         form?.requestSubmit(); // Submit the form first
         setTimeout(() => {
           const lastUnit = addedUnits[addedUnits.length - 1];
           for (let i = 0; i < count; i++) {
-            const newUnit = { 
-              ...lastUnit, 
-              id: `temp-${Date.now()}-${i}`, 
-              notYetUploaded: true 
+            const newUnit = {
+              ...lastUnit,
+              id: `temp-${Date.now()}-${i}`,
+              notYetUploaded: true,
             };
             addUnit(newUnit);
           }
@@ -75,10 +57,10 @@ const FooterModal = ({
       // Regular duplication logic
       const lastUnit = addedUnits[addedUnits.length - 1];
       for (let i = 0; i < count; i++) {
-        const newUnit = { 
-          ...lastUnit, 
-          id: `temp-${Date.now()}-${i}`, 
-          notYetUploaded: true 
+        const newUnit = {
+          ...lastUnit,
+          id: `temp-${Date.now()}-${i}`,
+          notYetUploaded: true,
         };
         addUnit(newUnit);
       }
@@ -91,8 +73,19 @@ const FooterModal = ({
         form?.requestSubmit();
       }, 0);
     }
+    setAddUnitStore("newForm", false);
   };
-  
+
+  const handleNoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (noForm) {
+      setIsOpen(false);
+      e.currentTarget.form?.requestSubmit();
+      setAddUnitStore("newForm", true);
+    } else {
+      setIsOpen(false);
+      e.currentTarget.form?.requestSubmit();
+    }
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
@@ -151,10 +144,11 @@ const FooterModal = ({
           form="add-unit-form"
           className="py-2 px-8"
           disabled={submitLoading}
-          onClick={(e) => {
-            setIsOpen(false);
-            e.currentTarget.form?.requestSubmit();
-          }}
+          onClick={handleNoClick}
+          // onClick={(e) => {
+          //   setIsOpen(false);
+          //   e.currentTarget.form?.requestSubmit();
+          // }}
           size="base_medium"
         >
           {submitLoading ? "Please wait..." : "No"}

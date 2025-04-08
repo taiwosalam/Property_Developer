@@ -98,46 +98,52 @@ export const transformRentUnitApiResponse = (
     return "total_vacant" in response.data;
   };
 
-  console.log("response", response);
+  // console.log("response", response);
 
   const unitData = isUnitApiResponse(response)
     ? response.data.unit
     : response.data;
 
-  const transformedUnits: RentalPropertyCardProps[] = unitData.data.map((u) => {
-    const currency = u.property.currency;
-    return {
-      unitId: u.id.toString(),
-      description: u.property.description,
-      unit_title: u.property.title,
-      unit_preference: u.unit_preference,
-      bedroom: u.bedroom,
-      unit_type: u.unit_type,
-      unit_sub_type: u.unit_sub_type,
-      total_area_sqm: u.total_area_sqm,
-      number_of: u.number_of,
-      tenant_name: "No Tenant", //TODO
-      expiry_date: "No Expiry", //TODO
-      rent: u.fee_amount,
-      caution_deposit: u.caution_fee,
-      service_charge: u.service_charge,
-      images: u.images.map((image) => image.path),
-      unit_name: u.unit_name,
-      caution_fee: u.caution_fee,
-      status: u.status,
-      property_id: u.property.id,
-      property_title: u.property.title,
-      propertyType: u.property.property_type as "rental" | "facility",
-      address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
-      total_package: u.total_package
-        ? `${
-            currencySymbols[u?.property.currency as keyof typeof currencySymbols] ||
-            "₦"
-          }${formatNumber(parseFloat(u.total_package))}`
-        : undefined,
-      currency: currency,
-    };
-  });
+  const transformedUnits: RentalPropertyCardProps[] = unitData?.data?.map(
+    (u) => {
+      const currency = u?.property?.currency;
+      return {
+        unitId: u.id.toString(),
+        description: u?.property?.description || "--- ---",
+        unit_title: u?.property?.title || "--- ---",
+        unit_preference: u?.unit_preference || "--- ---",
+        bedroom: u?.bedroom || "--- ---",
+        unit_type: u?.unit_type || "--- ---",
+        unit_sub_type: u?.unit_sub_type || "--- ---",
+        total_area_sqm: u?.total_area_sqm || 0,
+        number_of: u?.number_of || 0,
+        tenant_name: "No Tenant", //TODO
+        expiry_date: "No Expiry", //TODO
+        rent: u?.fee_amount || "0",
+        caution_deposit: u?.caution_fee || "0",
+        service_charge: u?.service_charge || "0",
+        images: u.images.map((image) => image.path),
+        unit_name: u?.unit_name || "--- ---",
+        caution_fee: u.caution_fee || "0",
+        status: u.status as keyof typeof unit_listing_status,
+        property_id: u?.property?.id || "--- ---",
+        property_title: u?.property?.title || "--- ---",
+        propertyType:
+          (u?.property?.property_type as "rental" | "facility") || "rental",
+        address: `${u?.property?.full_address || "--- ---"}, ${
+          u?.property?.local_government || "--- ---"
+        }, ${u?.property?.state || "--- ---"}`,
+        total_package: u.total_package
+          ? `${
+              currencySymbols[
+                u?.property?.currency as keyof typeof currencySymbols
+              ] || "₦"
+            }${formatNumber(parseFloat(u?.total_package))}`
+          : undefined,
+        currency: currency,
+      };
+    }
+  );
 
   // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {

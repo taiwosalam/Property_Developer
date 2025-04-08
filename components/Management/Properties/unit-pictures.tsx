@@ -47,6 +47,8 @@ const UnitPictures = () => {
     }
   }, [formResetKey, resetImages]);
 
+  console.log("images", images)
+
   return (
     <div className={clsx(isEditing && "!mt-0")}>
       <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">

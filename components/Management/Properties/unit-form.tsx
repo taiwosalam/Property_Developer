@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import UnitPictures from "./unit-pictures";
 import UnitDetails from "./unit-details";
 import UnitFeatures from "./unit-features";
@@ -54,6 +54,8 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   const editUnit = useAddUnitStore((s) => s.editUnit);
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const propertyId = useAddUnitStore((state) => state.property_id);
+  const { setSubmitLoading: setParentSubmitLoading } =
+    useContext(UnitFormContext) || {};
 
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
@@ -131,6 +133,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     }
 
     setSubmitLoading(true);
+    if (setParentSubmitLoading) setParentSubmitLoading(true);
     convertYesNoToBoolean(formData, yesNoFields);
 
     // Transform the form data into the API payload
@@ -143,10 +146,17 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
 
     if (props.empty) {
       // Handle creation of a new unit
+      if (!propertyId) {
+        toast.error("Property ID is missing.");
+        setSubmitLoading(false);
+        if (setParentSubmitLoading) setParentSubmitLoading(false);
+        return;
+      }
       const unitId = await createUnit(propertyId, transformedData);
       if (unitId) {
         if (saveClick) {
           setSubmitLoading(false);
+          if (setParentSubmitLoading) setParentSubmitLoading(false);
           resetForm();
           formRef.current?.reset();
           router.push("/management/properties/");
@@ -170,6 +180,12 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       }
     } else {
       if (props.data.notYetUploaded) {
+        if (!propertyId) {
+          toast.error("Property ID is missing.");
+          setSubmitLoading(false);
+          if (setParentSubmitLoading) setParentSubmitLoading(false);
+          return;
+        }
         // Handle creation of a unit that hasn’t been uploaded yet
         const unitId = await createUnit(propertyId, transformedData);
         if (unitId) {
@@ -221,6 +237,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     }
 
     setSubmitLoading(false);
+    if (setParentSubmitLoading) setParentSubmitLoading(false);
   };
 
   return (

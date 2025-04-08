@@ -7,6 +7,7 @@ import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
 interface UnitFormContextType extends UnitFormState {
   setImages: (a: { images: string[]; imageFiles: (File | string)[] }) => void;
   submitLoading: boolean;
+  setSubmitLoading?: (loading: boolean) => void;
   setSaveClick: (saveClick: boolean) => void;
   setUnitType: (unitType: "" | UnitTypeKey) => void;
   resetForm: () => void;

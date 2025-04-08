@@ -1,7 +1,13 @@
 import type { Field } from "@/components/Table/types";
-import { Invoice, InvoiceListResponse, InvoiceStatistics, TransformedInvoiceData } from "./types";
+import {
+  Invoice,
+  InvoiceListResponse,
+  InvoiceStatistics,
+  TransformedInvoiceData,
+} from "./types";
 import dayjs from "dayjs";
-
+import { formatNumber } from "@/utils/number-formatter";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const accountingInvoiceOptionsWithDropdown = [
   {
@@ -84,8 +90,6 @@ const generateTableData = (numItems: number) => {
 
 export const invoiceTableData = generateTableData(10);
 
-
-
 export const transformInvoiceData = (
   response: InvoiceListResponse
 ): TransformedInvoiceData => {
@@ -93,11 +97,13 @@ export const transformInvoiceData = (
   // console.log("rece inveoice", invoices)
   const transformedInvoices = invoices.map((invoice) => ({
     ...invoice,
-    name: invoice.client_name,
+    client_name: invoice.client_name,
     payment_reason: invoice.reason,
     picture: invoice.client_picture,
-    total_amount: `₦${invoice.total_amount}`,
-    // total_amount: parseFloat(invoice.total_amount).toFixed(2),
+    total_amount: `₦${formatNumber(invoice.total_amount)}`,
+    badge_color: invoice.client_tier
+      ? tierColorMap[invoice.client_tier as keyof typeof tierColorMap]
+      : undefined,
     date: dayjs(invoice.invoice_date).format("MMM DD YYYY"),
   }));
   return { statistics, invoices: transformedInvoices };

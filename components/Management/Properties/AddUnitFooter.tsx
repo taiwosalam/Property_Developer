@@ -1,5 +1,5 @@
 import { Modal, ModalContent } from "@/components/Modal/modal";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import FooterModal from "./footer-modal";
 import Button from "@/components/Form/Button/button";
@@ -20,21 +20,40 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
   const [footerModalOpen, setFooterModalOpen] = useState(false);
   const router = useRouter();
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const newForm = useAddUnitStore((s) => s.newForm);
+  const [checkSubmit, setCheckSubmit] = useState(false);
 
-  const handleAddMoreClick = () => {
-    if (!noForm) {
-      // Form is present, validate it
-      handleInputChange();
+  // Effect to handle validation after state updates
+  useEffect(() => {
+    if (checkSubmit) {
       if (!canSubmit) {
         toast.error(
           `The following fields are required: ${missingFields.join(", ")}`
         );
-        return;
+      } else {
+        setFooterModalOpen(true);
       }
+      setCheckSubmit(false); // Reset the trigger
     }
-    // If no form (noForm is false) or form is valid, open the modal
-    setFooterModalOpen(true);
+  }, [canSubmit, missingFields, checkSubmit]);
+
+  const handleAddMoreClick = () => {
+    handleInputChange(); // Trigger state update
+    setCheckSubmit(true); // Set flag to check validation in useEffect
   };
+
+  // const handleAddMoreClick = async () => {
+  //   // Explicitly call handleInputChange to ensure the latest state is used
+  //   // await handleInputChange();
+  //   console.log("footer can submit -", canSubmit);
+  //   if (!canSubmit) {
+  //     toast.error(
+  //       `The following fields are required: ${missingFields.join(", ")}`
+  //     );
+  //     return;
+  //   }
+  //   setFooterModalOpen(true);
+  // };
 
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -42,16 +61,14 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
       // Check if any unit has notYetUploaded set to true
       const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
       if (hasNotYetUploaded) {
-        // Show an error message and prevent navigation
         toast.warning(
           "There are units that have not been updated yet. Please update them to continue."
         );
         return;
       }
-      // If no units are pending upload, navigate
       router.push("/management/properties");
     } else {
-      handleInputChange();
+      // handleInputChange();
       if (!canSubmit) {
         toast.error(
           `The following fields are required: ${missingFields.join(", ")}`
@@ -70,23 +87,15 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
     <FixedFooter className="flex items-center justify-end gap-10">
       <Modal state={{ isOpen: footerModalOpen, setIsOpen: setFooterModalOpen }}>
         <ModalContent>
-          <FooterModal />
+          <FooterModal noForm={noForm} />
         </ModalContent>
       </Modal>
       <Button
         size="base_medium"
         className="py-2 px-6"
         disabled={submitLoading}
+        form="add-unit-form"
         onClick={handleAddMoreClick}
-        // onClick={() => {
-        //   if (!canSubmit) {
-        //     toast.error(
-        //       `The following fields are required: ${missingFields.join(", ")}`
-        //     );
-        //     return;
-        //   }
-        //   setFooterModalOpen(true);
-        // }}
       >
         {submitLoading ? "Adding..." : "Add More Unit"}
       </Button>

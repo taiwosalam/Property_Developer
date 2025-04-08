@@ -87,12 +87,10 @@ export const transformUnitFormData = (
   formData: Record<string, any>,
   images: (File | string)[],
   property_id: string,
-  originalImages: { id: string; path: string }[] = [] // Default to empty array if not provided
+  originalImages: { id: string; path: string }[] = []
 ) => {
   const parseFee = (value: string | undefined) => {
-    if (!value) {
-      return 0;
-    }
+    if (!value) return 0;
     return parseFloat(value.replace(/,/g, ""));
   };
 
@@ -102,32 +100,27 @@ export const transformUnitFormData = (
     return isNaN(parsed) ? null : parsed;
   };
 
-  console.log("images passed to ", images)
+  console.log("images passed to ", images);
 
   // Determine the default image (first image in the list)
-  let defaultImageId: string | null = null;
-  let defaultImagePath: string | null = null;
   let defaultImage: string | File | null = null;
+  let defaultImageId: string | null = null;
 
   if (images.length > 0) {
     const firstImage = images[0];
-
     if (typeof firstImage === "string") {
       defaultImage = firstImage;
-      const matchingImage = originalImages.find(
-        (img) => img.path === firstImage
-      );
+      const matchingImage = originalImages.find((img) => img.path === firstImage);
       if (matchingImage) {
         defaultImageId = matchingImage.id;
-        defaultImagePath = matchingImage.path;
       }
     } else {
-      defaultImage = firstImage;
+      defaultImage = firstImage; // File object
     }
   }
 
-  // Filter out the default image from images list
-  const filteredImages = images.filter((img) => img !== defaultImagePath && img !== defaultImage);
+  // Filter images, excluding the default image by index (not reference)
+  const filteredImages = images.slice(1); // Take all images after the first one
 
   const payload = {
     unit_name: formData.unit_name,
@@ -164,13 +157,12 @@ export const transformUnitFormData = (
     renew_other_charge: parseFee(formData.renew_other_charge),
     renew_total_package: parseFee(formData.renew_total_package),
     property_id,
-    images: filteredImages, // Exclude default image from images list
-    default_image: typeof defaultImage === "string" ? defaultImage : defaultImageId, // Set to the string or ID of the first image
+    images: filteredImages, // All images except the first one
+    default_image: defaultImage, // Keep as File or string
   };
 
   return payload;
 };
-
 export const addPropertyWithId = async (
   property_id: string,
   company_id: string

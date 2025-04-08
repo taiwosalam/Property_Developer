@@ -108,9 +108,10 @@ const RentAndUnit = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-  const endpoint =
-    isFilterApplied() || search || sort ? "/unit/filter" : "/unit/list";
+  // const endpoint =
+  //   isFilterApplied() || search || sort ? "/unit/filter" : "/unit/list";
 
+  const endpoint = "/unit/list";
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
@@ -125,6 +126,7 @@ const RentAndUnit = () => {
         branch_id: appliedFilters.menuOptions["Branch"] || [],
         state: appliedFilters.menuOptions["State"] || [],
         property_type: appliedFilters.menuOptions["Property Type"]?.[0],
+        status: appliedFilters.menuOptions["Status"]?.[0],
         sort_by: sort,
       } as RentUnitFilterParams,
     };

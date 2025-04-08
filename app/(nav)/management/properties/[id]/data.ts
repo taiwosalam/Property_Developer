@@ -3,6 +3,7 @@ import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
 import type { PropertyDataObject } from "../data";
 import moment from "moment";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
+import { transformUnitDetails } from "@/app/(nav)/listing/data";
 
 export interface SinglePropertyResponse {
   data: PropertyDataObject | null;
@@ -19,7 +20,9 @@ export const transformSinglePropertyData = (
   const feePercentage =
     data.property_type === "rental" ? data.agency_fee : data.management_fee;
   const manager = data?.staff?.find((staff) => staff.staff_role === "manager");
-  const accountOfficer = data?.staff?.find((staff) => staff.staff_role === "account officer");
+  const accountOfficer = data?.staff?.find(
+    (staff) => staff.staff_role === "account officer"
+  );
 
   return {
     id: data.id,
@@ -46,13 +49,19 @@ export const transformSinglePropertyData = (
     branch: data.branch?.branch_name,
     rent_penalty: mapNumericToYesNo(data.rent_penalty),
     fee_period: data.fee_period,
-    account_officer: `${accountOfficer?.title || "__"} ${accountOfficer?.user?.name || "__"}`, // to do
+    account_officer: `${accountOfficer?.title || "__"} ${
+      accountOfficer?.user?.name || "__"
+    }`, // to do
     landlord_name: "", //to do
-    branch_manager: `${manager?.professional_title ?? "--- ---"} ${manager?.user?.name ?? "--- ---"}`,
+    branch_manager: `${manager?.professional_title ?? "--- ---"} ${
+      manager?.user?.name ?? "--- ---"
+    }`,
     mobile_tenants: 0, // backend shit
     web_tenants: 0, // backend shit
     last_updated: moment(data.updated_at).format("Do MMM, YYYY"),
-    available_units: data.units.filter(unit => unit.is_active === 'vacant' || unit.is_active === 'relocate').length,
+    available_units: data.units.filter(
+      (unit) => unit.is_active === "vacant" || unit.is_active === "relocate"
+    ).length,
     // available_units: 1,
     total_returns: totalReturns,
     total_income: (totalReturns * feePercentage) / 100,
@@ -61,6 +70,7 @@ export const transformSinglePropertyData = (
     landlordData: data.landlord,
     units: data.units.map((unit) => ({
       unitId: unit.id,
+      unitType: unit.unit_type,
       propertyType: data.property_type as "rental" | "facility",
       rent: `${currencySymbols[data?.currency || "naira"]}${formatNumber(
         parseFloat(unit.fee_amount)
@@ -70,19 +80,13 @@ export const transformSinglePropertyData = (
             parseFloat(unit.service_charge)
           )}`
         : undefined,
+      totalPackage: unit.total_package
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.total_package)
+          )}`
+        : undefined,
       unitImages: unit.images.map((img) => img.path),
-      unitDetails:
-        unit.unit_type?.toLowerCase() === "land"
-          ? `${unit.unit_preference} - ${unit.unit_type} - ${
-              unit.total_area_sqm
-            }${
-              unit.number_of && unit.number_of !== "0"
-                ? ` - ${unit.number_of}`
-                : ""
-            }`
-          : `${unit.unit_preference} - ${unit.bedroom || 0} bedroom${
-              parseInt(unit.bedroom || "0") > 1 ? "s" : ""
-            } - ${unit.unit_sub_type} - ${unit.unit_type}`,
+      unitDetails: transformUnitDetails(unit),
       unitStatus: unit.is_active,
       unitName: unit.unit_name,
       cautionDeposit: unit.caution_fee

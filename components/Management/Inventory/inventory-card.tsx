@@ -21,12 +21,12 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
   const [isOpened, setIsOpened] = useState(false);
 
   const inventory_data_props: InventoryCardDataProps = {
-    inventory_id: data.id || "___",
-    created_date: dayjs(data.created_at).format("MMM DD, YYYY") || "___",
-    last_edited: dayjs(data.updated_at).format("MMM DD, YYYY") || "___",
-    property_name: data.property_name || "___",
-    branch_name: data.branch_name || "___",
-    account_officer: data?.account_officer?.name || "____",
+    inventory_id: data.id || "--- ---",
+    created_date: dayjs(data.created_at).format("MMM DD, YYYY") || "__,__,__",
+    last_edited: dayjs(data.updated_at).format("MMM DD, YYYY") || "__,__,__",
+    property_name: data.property_name || "--- ---",
+    branch_name: data.branch_name || "--- ---",
+    account_officer: data?.account_officer?.name || "--- ---",
   };
 
   return (

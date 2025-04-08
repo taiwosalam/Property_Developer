@@ -16,6 +16,9 @@ const UnitFeatures = () => {
     (state) => state.propertyDetails?.category
   );
 
+    const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+
+
   const [selectedAreaUnit, setSelectedAreaUnit] = useState(
     unitData?.measurement || "sqm"
   );
@@ -34,6 +37,8 @@ const UnitFeatures = () => {
       setSelectedAreaUnit(unitData?.measurement || "");
     }
   }, [formResetKey, unitData?.measurement]);
+
+  const bedroomTitle = propertyDetails?.category?.toLowerCase() === "commercial" ? "Room" : "Bedroom";
 
   const isRental = propertyType === "rental";
 
@@ -90,7 +95,7 @@ const UnitFeatures = () => {
               required={
                 isRental && propertyCategory?.toLowerCase() !== "commercial"
               }
-              label="Bedroom"
+              label={bedroomTitle}
               inputClassName="bg-white keep-spinner unit-form-input"
               type="number"
               min={0}
