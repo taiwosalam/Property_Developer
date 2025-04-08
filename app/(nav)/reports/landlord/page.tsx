@@ -163,8 +163,8 @@ const LandlordsReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total"
-          newData={total_landlords}
-          total={monthly_landlords}
+          newData={monthly_landlords}
+          total={total_landlords}
           colorScheme={1}
         />
       </div>

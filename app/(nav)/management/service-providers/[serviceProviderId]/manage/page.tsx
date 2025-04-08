@@ -85,6 +85,11 @@ const ManageServiceProvider = () => {
     note_last_updated: providerData?.updated_at ? dayjs(providerData?.updated_at).format('DD/MM/YYYY') : "",
   }
 
+  const webNote = {
+    note_last_updated: providerData?.updated_at && userData?.note ? dayjs(providerData?.updated_at).format('DD/MM/YYYY') : "",
+    provider_notes: userData?.note || "",
+  }
+
   
 
 
@@ -310,7 +315,7 @@ const ManageServiceProvider = () => {
           }}
         />
         {providerData?.agent === "web" && (
-          <NotesInfoBox provider_note={userData?.note} />
+          <NotesInfoBox provider_note={webNote} />
         )}
       </div>
       {providerData?.agent === "mobile" && (

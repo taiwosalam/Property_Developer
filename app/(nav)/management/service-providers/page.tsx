@@ -291,22 +291,22 @@ const ServiceProviders = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Providers"
-            newData={total}
-            total={total_month}
+            newData={total_month}
+            total={total}
             className="w-[230px]"
             colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Mobile Providers"
-            newData={total_mobile}
-            total={total_mobile_month}
+            newData={total_mobile_month}
+            total={total_mobile}
             className="w-[230px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Web Providers"
-            newData={total_web}
-            total={total_web_month}
+            newData={total_web_month}
+            total={total_web}
             className="w-[230px]"
             colorScheme={3}
           />
@@ -322,117 +322,120 @@ const ServiceProviders = () => {
           </ModalContent>
         </Modal>
       </div>
-      <FilterBar
-        azFilter
-        pageTitle="Service Provider"
-        noExclamationMark={false}
-        hasGridListToggle={true}
-        gridView={view === "grid"}
-        setGridView={() => setView("grid")}
-        setListView={() => setView("list")}
-        aboutPageModalData={{
-          title: "Service Provider",
-          description:
-            "This page contains a list of Service Provider on the platform.",
-        }}
-        searchInputPlaceholder="Search for service provider"
-        handleFilterApply={handleFilterApply}
-        handleSearch={handleSearch}
-        onSort={handleSort}
-        isDateTrue
-        filterOptionsMenu={serviceProviderFilterOptionsWithDropdown}
-        inputOff={false}
-      />
-      <section ref={itemListView} className="pb-20">
-        {service_providers.length === 0 && !silentLoading ? (
-          isFilterApplied() || config.params.search ? (
-            <SearchError />
-          ) : (
-            <EmptyList
-              buttonText="+ Create Service Provider"
-              modalContent={<AddServiceProviderModal />}
-              title="You have not created any service providers yet"
-              body={
-                <p className="tracking-wider capitalize">
-                  No service provider records found means there are currently no
-                  registered or available service providers in the system.
-                  Service providers refer to artisans and skilled workers
-                  essential for property management, including carpenters,
-                  plumbers, painters, electricians, and more. These
-                  professionals handle maintenance, repairs, and improvements
-                  for residential and commercial properties.
-                  <br />
-                  <br />
-                  To add a service provider, click{" "}
-                  <span className="font-bold">Create Service Provider </span>and
-                  register them manually by entering their details or using
-                  their unique ID for quick onboarding. Ensuring a complete list
-                  of service providers enhances property management efficiency
-                  and ensures access to reliable professionals when needed.
-                  <br />
-                  <br />
-                  <p>
-                    To Learn more about this page later, click your profile
-                    picture at the top right of the dashboard and select
-                    Assistance & Support.
-                  </p>
-                  <br />
-                  <br />
-                </p>
-              }
-            />
-          )
-        ) : (
-          <>
-            {view === "grid" ? (
-              <AutoResizingGrid minWidth={284} gap={16}>
-                {silentLoading ? (
-                  <CardsLoading />
-                ) : (
-                  service_providers.map((provider) => (
-                    <Link
-                      key={provider.id}
-                      href={`/management/service-providers/${provider.id}/manage`}
-                    >
-                      <ServiceProviderCard
-                        name={provider.name}
-                        email={provider.email}
-                        user_tag={provider?.agent === "web" ? "web" : "mobile"}
-                        badge_color={
-                         provider.badge_color || "gray"
-                        }
-                        phone_number={provider.phone}
-                        picture_url={provider.avatar}
-                        other_info={provider.service_rendered || ""}
-                        note={
-                          !provider.note || provider.note === "<p><br></p>"
-                            ? false
-                            : true
-                        }
-                      />
-                    </Link>
-                  ))
-                )}
-              </AutoResizingGrid>
+      <div ref={itemListView}>
+        <FilterBar
+          azFilter
+          pageTitle="Service Provider"
+          noExclamationMark={false}
+          hasGridListToggle={true}
+          gridView={view === "grid"}
+          setGridView={() => setView("grid")}
+          setListView={() => setView("list")}
+          aboutPageModalData={{
+            title: "Service Provider",
+            description:
+              "This page contains a list of Service Provider on the platform.",
+          }}
+          searchInputPlaceholder="Search for service provider"
+          handleFilterApply={handleFilterApply}
+          handleSearch={handleSearch}
+          onSort={handleSort}
+          isDateTrue
+          filterOptionsMenu={serviceProviderFilterOptionsWithDropdown}
+          inputOff={false}
+        />
+        <section className="pb-20 mt-4">
+          {service_providers.length === 0 && !silentLoading ? (
+            isFilterApplied() || config.params.search ? (
+              <SearchError />
             ) : (
-              <>
-                <CustomTable
-                  displayTableHead={false}
-                  fields={ServiceProviderTableFields}
-                  data={transformedServiceProvider}
-                  tableBodyCellSx={{ color: "#3F4247" }}
-                />
+              <EmptyList
+                buttonText="+ Create Service Provider"
+                modalContent={<AddServiceProviderModal />}
+                title="You have not created any service providers yet"
+                body={
+                  <p className="tracking-wider capitalize">
+                    No service provider records found means there are currently
+                    no registered or available service providers in the system.
+                    Service providers refer to artisans and skilled workers
+                    essential for property management, including carpenters,
+                    plumbers, painters, electricians, and more. These
+                    professionals handle maintenance, repairs, and improvements
+                    for residential and commercial properties.
+                    <br />
+                    <br />
+                    To add a service provider, click{" "}
+                    <span className="font-bold">Create Service Provider </span>
+                    and register them manually by entering their details or
+                    using their unique ID for quick onboarding. Ensuring a
+                    complete list of service providers enhances property
+                    management efficiency and ensures access to reliable
+                    professionals when needed.
+                    <br />
+                    <br />
+                    <p>
+                      To Learn more about this page later, click your profile
+                      picture at the top right of the dashboard and select
+                      Assistance & Support.
+                    </p>
+                    <br />
+                    <br />
+                  </p>
+                }
+              />
+            )
+          ) : (
+            <>
+              {view === "grid" ? (
+                <AutoResizingGrid minWidth={284} gap={16}>
+                  {silentLoading ? (
+                    <CardsLoading />
+                  ) : (
+                    service_providers.map((provider) => (
+                      <Link
+                        key={provider.id}
+                        href={`/management/service-providers/${provider.id}/manage`}
+                      >
+                        <ServiceProviderCard
+                          name={provider.name}
+                          email={provider.email}
+                          user_tag={
+                            provider?.agent === "web" ? "web" : "mobile"
+                          }
+                          badge_color={provider.badge_color || "gray"}
+                          phone_number={provider.phone}
+                          picture_url={provider.avatar}
+                          other_info={provider.service_rendered || ""}
+                          note={
+                            !provider.note || provider.note === "<p><br></p>"
+                              ? false
+                              : true
+                          }
+                        />
+                      </Link>
+                    ))
+                  )}
+                </AutoResizingGrid>
+              ) : (
+                <>
+                  <CustomTable
+                    displayTableHead={false}
+                    fields={ServiceProviderTableFields}
+                    data={transformedServiceProvider}
+                    tableBodyCellSx={{ color: "#3F4247" }}
+                  />
 
-                {silentLoading && (
-                  <div className="flex items-center justify-center py-4">
-                    <div className="loader" />
-                  </div>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </section>
+                  {silentLoading && (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="loader" />
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </section>
+      </div>
 
       {view === "grid" && (
         <Pagination
