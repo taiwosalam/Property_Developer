@@ -202,7 +202,7 @@ const Inventory = () => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
     const accountOfficerArray = menuOptions["Account Officer"] || [];
-    // const agent = menuOptions["Landlord Type"]?.[0];
+    const status = menuOptions["Status"]?.[0];
     const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: InventoryRequestParams = {
@@ -221,6 +221,9 @@ const Inventory = () => {
     }
     if (endDate) {
       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+    }
+    if (status) {
+      queryParams.status = status === "used" ? "used" : "unused";
     }
     setConfig({
       params: queryParams,

@@ -6,6 +6,7 @@ export interface InventoryRequestParams{
     accountOfficer_id?: string;
     start_date?: string;
     end_date?: string;
+    status?: "used" | "unused";
 }
 
 

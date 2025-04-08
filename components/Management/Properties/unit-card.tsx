@@ -105,7 +105,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
             className="py-2 px-8"
             onClick={handleRemove}
           >
-            remove
+            { data?.notYetUploaded ? "remove" : "delete" }
           </Button>
         </div>
       </div>

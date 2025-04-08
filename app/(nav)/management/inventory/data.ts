@@ -70,8 +70,8 @@ export const inventoryFIltersOptionsWithDropdown = [
     radio: true,
     label: "Status",
     value: [
-      { label: "Used Inventories", value: "used_inventories" },
-      { label: "Un-used Inventories", value: "unused_inventories" },
+      { label: "Used Inventories", value: "used" },
+      { label: "Un-used Inventories", value: "unused" },
     ],
   },
 ];
