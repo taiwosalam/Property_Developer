@@ -96,7 +96,7 @@ export const transformPropertyData = (apiData: PropertyApiResponse): Transformed
     property: property.property_name,
     branch: property.branch_name,
     account_officer: formatPropertyName(property.account_officer),
-    landlord: property.landlord_name,
+    landlord: formatPropertyName(property.landlord_name),
     date_created: property.created_at,
   }));
 
