@@ -14,7 +14,6 @@ const UnitDetails = () => {
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertyType = useAddUnitStore((s) => s.propertyType);
   const isRental = propertyType === "rental";
-
   const {
     unitType: selectedUnitType,
     setUnitType: setSelectedUnitType,
@@ -23,8 +22,6 @@ const UnitDetails = () => {
     index,
     isEditing,
   } = useUnitForm();
-
-  console.log("isEditiing", isEditing);
 
   const [unitTypeOptions, setUnitTypeOptions] = useState<string[]>([]);
   const [unitSubtypeOptions, setUnitSubtypeOptions] = useState<string[]>([]);
@@ -115,9 +112,8 @@ const UnitDetails = () => {
     }
   }, [selectedUnitType, propertyDetails?.category]);
 
-  const displayUnitName =
-    !isEditing && unitData && index !== undefined
-      ? `${unitData.unit_name} (Unit ${index + 1})`
+  const displayUnitName = unitData && unitData.notYetUploaded
+      ? `${unitData?.unit_name} (Unit ${(index ?? 0) + 1})`
       : unitData?.unit_name || "";
 
   return (

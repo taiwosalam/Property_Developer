@@ -716,3 +716,469 @@ check management/vehicles-record filter for reference
 
 
 
+
+
+
+
+
+// export const transformUnitFormData = (
+//   formData: Record<string, any>,
+//   images: (File | string)[],
+//   property_id: string,
+//   originalImages: { id: string; path: string }[] = [] // Default to empty array if not provided
+// ) => {
+//   const parseFee = (value: string | undefined) => {
+//     if (!value) {
+//       return 0;
+//     }
+//     return parseFloat(value.replace(/,/g, ""));
+//   };
+
+//   const parseIntOrNull = (value: string | undefined | null) => {
+//     if (!value) return 0;
+//     const parsed = parseInt(value, 10);
+//     return isNaN(parsed) ? null : parsed;
+//   };
+
+//   console.log("images passed to ", images)
+
+//   // Determine the default image (first image in the list)
+//   let defaultImageId: string | null = null;
+//   let defaultImagePath: string | null = null;
+//   let defaultImage: string | File | null = null;
+
+//   if (images.length > 0) {
+//     const firstImage = images[0];
+
+//     if (typeof firstImage === "string") {
+//       defaultImage = firstImage;
+//       const matchingImage = originalImages.find(
+//         (img) => img.path === firstImage
+//       );
+//       if (matchingImage) {
+//         defaultImageId = matchingImage.id;
+//         defaultImagePath = matchingImage.path;
+//       }
+//     } else {
+//       defaultImage = firstImage;
+//     }
+//   }
+
+//   // Filter out the default image from images list
+//   const filteredImages = images.filter((img) => img !== defaultImagePath && img !== defaultImage);
+
+//   const payload = {
+//     unit_name: formData.unit_name,
+//     unit_type: formData.unit_type,
+//     unit_sub_type: formData.unit_sub_type ?? null,
+//     unit_preference: formData.unit_preference,
+//     measurement: formData.measurement ?? null,
+//     total_area_sqm: formData.total_area_sqm ?? null,
+//     number_of: formData.number_of ?? 0,
+//     bedroom: parseIntOrNull(formData.bedroom),
+//     bathroom: parseIntOrNull(formData.bathroom),
+//     toilet: parseIntOrNull(formData.toilet),
+//     facilities: formData.facilities
+//       ? formData.facilities.split(",").map(decodeURIComponent)
+//       : [],
+//     en_suit: formData.en_suit ?? null,
+//     prepaid: formData.prepaid ?? null,
+//     wardrobe: formData.wardrobe ?? null,
+//     pet_allowed: formData.pets_allowed ?? null,
+//     fee_period: formData.fee_period ?? null,
+//     fee_amount: parseFee(formData.fee_amount),
+//     service_charge: parseFee(formData.service_charge),
+//     agency_fee: parseFee(formData.agency_fee),
+//     legal_fee: parseFee(formData.legal_fee),
+//     caution_fee: parseFee(formData.caution_fee),
+//     inspection_fee: parseFee(formData.inspection_fee),
+//     other_charge: parseFee(formData.other_charge),
+//     negotiation: formData.negotiation ?? null,
+//     security_fee: parseFee(formData.security_fee),
+//     total_package: parseFee(formData.total_package),
+//     renew_fee_period: formData.renew_fee_period ?? null,
+//     renew_fee_amount: parseFee(formData.renew_fee_amount),
+//     renew_service_charge: parseFee(formData.renew_service_charge),
+//     renew_other_charge: parseFee(formData.renew_other_charge),
+//     renew_total_package: parseFee(formData.renew_total_package),
+//     property_id,
+//     images: filteredImages, // Exclude default image from images list
+//     default_image: typeof defaultImage === "string" ? defaultImage : defaultImageId, // Set to the string or ID of the first image
+//   };
+
+//   return payload;
+// };
+
+
+
+
+
+
+
+"use client";
+
+import { useState, useRef, useContext } from "react";
+import Button from "@/components/Form/Button/button";
+import Input from "@/components/Form/Input/input";
+import { useModal } from "@/components/Modal/modal";
+import { Pointer } from "@/public/icons/icons";
+import { useUnitForm } from "./unit-form-context";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { useAddUnitStore } from "@/store/add-unit-store";
+import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import { toast } from "sonner";
+
+const FooterModal = ({
+  showUnitForm,
+  onAddUnits,
+  noForm,
+}: {
+  showUnitForm?: boolean;
+  noForm?: boolean;
+  onAddUnits?: (count: number) => void;
+}) => {
+  const { setIsOpen } = useModal();
+  const { canSubmit, missingFields, handleInputChange } =
+    useContext(FlowProgressContext);
+  const { duplicate, setDuplicate, submitLoading, setSaveClick } =
+    useUnitForm();
+  const [countPopup, setCountPopup] = useState(false);
+  const [count, setCount] = useState(duplicate?.count || 1);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const addUnit = useAddUnitStore((s) => s.addUnit);
+  const editMode = useAddUnitStore((s) => s.editMode);
+  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
+  const newForm = useAddUnitStore((s) => s.newForm);
+  useOutsideClick(popupRef, () => setCountPopup(false));
+
+  const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget.form;
+    if (noForm && newForm) {
+      handleInputChange();
+      if (!canSubmit) {
+        toast.warning(
+          `Please fill in all required fields: ${missingFields.join(", ")}`
+        );
+        return;
+      }
+      // When noForm and newForm are true, submit the current form first
+      setTimeout(() => {
+        form?.requestSubmit(); // Submit the current form
+        setTimeout(() => {
+          // After submission, proceed with duplication
+          setSaveClick?.(true);
+          setDuplicate?.({ val: true, count });
+
+          if (addedUnits.length > 0) {
+            const lastUnit = addedUnits[addedUnits.length - 1];
+            for (let i = 0; i < count; i++) {
+              const newUnit = {
+                ...lastUnit,
+                id: `temp-${Date.now()}-${i}`,
+                notYetUploaded: true,
+              };
+              addUnit(newUnit);
+            }
+          }
+          // setAddUnitStore("newForm", false);
+          setIsOpen(false);
+        }, 500); // Delay duplication to ensure form submission completes
+      }, 0);
+    } else if (editMode && addedUnits.length > 0) {
+      // If in edit mode and there are added units, submit first, then duplicate
+      setSaveClick?.(true);
+      setDuplicate?.({ val: true, count });
+
+      setTimeout(() => {
+        form?.requestSubmit(); // Submit the form first
+        setTimeout(() => {
+          const lastUnit = addedUnits[addedUnits.length - 1];
+          for (let i = 0; i < count; i++) {
+            const newUnit = {
+              ...lastUnit,
+              id: `temp-${Date.now()}-${i}`,
+              notYetUploaded: true,
+            };
+            addUnit(newUnit);
+          }
+          setIsOpen(false);
+        }, 500); // Delay duplication slightly to ensure form submission completes
+      }, 0);
+    } else if (addedUnits.length > 0) {
+      // Regular duplication logic
+      setSaveClick?.(true);
+      const lastUnit = addedUnits[addedUnits.length - 1];
+      for (let i = 0; i < count; i++) {
+        const newUnit = {
+          ...lastUnit,
+          id: `temp-${Date.now()}-${i}`,
+          notYetUploaded: true,
+        };
+        addUnit(newUnit);
+      }
+      setIsOpen(false);
+    } else {
+      // Submit the form when no added units exist
+      setSaveClick?.(true);
+      setDuplicate?.({ val: true, count });
+      setTimeout(() => {
+        setIsOpen(false);
+        form?.requestSubmit();
+      }, 0);
+    }
+  };
+
+  const handleNoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log("new from", newForm)
+    console.log("noform", noForm)
+    const form = e.currentTarget.form;
+
+    handleInputChange();
+    if (!canSubmit) {
+      toast.warning(
+        `Please fill in all required fields: ${missingFields.join(", ")}`
+      );
+      return;
+    }
+
+    if (noForm && newForm) {
+      setTimeout(() => {
+        form?.requestSubmit();
+        setAddUnitStore("newForm", true);
+        setIsOpen(false);
+      }, 0);
+    } else if (noForm) {
+      setAddUnitStore("newForm", true);
+      setIsOpen(false);
+    } else {
+      setIsOpen(false);
+      form?.requestSubmit();
+    }
+  };
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
+      {countPopup && (
+        <div
+          ref={popupRef}
+          className="absolute top-[-90%] left-[50%] translate-x-[-50%] bg-neutral-2 p-4"
+        >
+          <div className="flex items-center gap-4">
+            <div>
+              <p className="text-base text-text-secondary mb-2">
+                How many units more?
+              </p>
+              <Input
+                id=""
+                type="number"
+                placeholder="Select"
+                inputClassName="keep-spinner"
+                max={20}
+                min={1}
+                value={count.toString()}
+                onChange={(val) => setCount(Number(val))}
+              />
+            </div>
+            <Button
+              form="add-unit-form"
+              type="button"
+              size="base_medium"
+              className="py-2 px-8"
+              disabled={submitLoading}
+              onClick={handleAddClick}
+            >
+              {submitLoading ? "Adding..." : "Add"}
+            </Button>
+          </div>
+          <div className="text-neutral-2 absolute top-full left-[50%] translate-x-[-50%]">
+            <Pointer />
+          </div>
+        </div>
+      )}
+      <p className="text-brand-10 text-base font-medium mb-5">
+        Does the new unit you want to add have similar details, breakdown, and
+        features to the one you added last?
+      </p>
+      <div className="flex justify-center items-center gap-10">
+        <Button
+          type="button"
+          size="base_medium"
+          className="py-2 px-8"
+          onClick={() => setCountPopup(true)}
+        >
+          Yes
+        </Button>
+        <Button
+          type="button"
+          form="add-unit-form"
+          className="py-2 px-8"
+          disabled={submitLoading}
+          onClick={handleNoClick}
+          size="base_medium"
+        >
+          {submitLoading ? "Please wait..." : "No"}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+export default FooterModal;
+
+
+
+
+
+// "use client";
+// import { useState, useEffect } from "react";
+// import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+// import PropertyDetails from "@/components/Management/Properties/property-details";
+// import PropertySettings from "@/components/Management/Properties/property-settings";
+// import { useAddUnitStore } from "@/store/add-unit-store";
+// import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
+// import UnitForm from "@/components/Management/Properties/unit-form";
+// import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
+// import useFetch from "@/hooks/useFetch";
+// import BackButton from "@/components/BackButton/back-button";
+// import { SinglePropertyResponse } from "../../../[id]/data";
+// import NetworkError from "@/components/Error/NetworkError";
+// import { transformPropertyData } from "./data";
+// import { useRouter } from "next/navigation";
+// import AddUnitFooter from "@/components/Management/Properties/AddUnitFooter";
+// import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
+// import { UnitTypeKey } from "@/data";
+// import FlowProgress from "@/components/FlowProgress/flow-progress";
+
+// const AddUnit = ({ params }: { params: { propertyId: string } }) => {
+//   const { propertyId } = params;
+//   const customBackPath = `/management/properties/${propertyId}/edit-property`;
+//   const router = useRouter();
+//   const [dataNotFound, setDataNotFound] = useState(false);
+//   const [showUnitForm, setShowUnitForm] = useState(true);
+
+//   const addedUnits = useAddUnitStore((s) => s.addedUnits);
+//   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
+//   const newForm = useAddUnitStore((s) => s.newForm);
+
+//   const {
+//     data: propertyData,
+//     loading,
+//     isNetworkError,
+//     error,
+//   } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
+
+//   // State for UnitFormContext
+//   const [images, setImages] = useState<string[]>([]);
+//   const [imageFiles, setImageFiles] = useState<(string | File)[]>([]);
+//   const [unitType, setUnitType] = useState<"" | UnitTypeKey>("");
+//   const [formResetKey, setFormResetKey] = useState(0);
+//   const [submitLoading, setSubmitLoading] = useState(false);
+//   const [saveClick, setSaveClick] = useState(false);
+//   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
+
+//   const resetForm = () => {
+//     setImages([]);
+//     setImageFiles([]);
+//     setUnitType("");
+//     setFormResetKey((prev) => prev + 1);
+//   };
+
+//   useEffect(() => {
+//     if (propertyData) {
+//       const transformedData = transformPropertyData(propertyData);
+//       if (!transformedData) {
+//         setDataNotFound(true);
+//         return;
+//       }
+//       if (transformedData.propertyType === "facility") {
+//         router.push(
+//           `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
+//         );
+//       }
+//       setDataNotFound(false);
+//       setAddUnitStore("property_id", transformedData.property_id);
+//       setAddUnitStore("propertyType", transformedData.propertyType);
+//       setAddUnitStore("propertyDetails", transformedData.propertyDetails);
+//       setAddUnitStore("propertySettings", transformedData.propertySettings);
+//       setAddUnitStore("addedUnits", transformedData.addedUnits);
+//     }
+//   }, [propertyData, setAddUnitStore, router, propertyId]);
+
+//   // Effect to sync showUnitForm with newForm
+//   useEffect(() => {
+//     if (newForm) {
+//       setShowUnitForm(true);
+//     }
+//     // else {
+//     //       setShowUnitForm(false);
+//     //     }
+//   }, [newForm]);
+
+//   if (loading) return <PageCircleLoader />;
+//   if (isNetworkError) return <NetworkError />;
+//   if (error) return <div className="text-red-500">{error}</div>;
+//   if (dataNotFound)
+//     return <div className="text-red-500">Property Data not found</div>;
+
+//   console.log("newForm", newForm);
+
+//   return (
+//     <UnitFormContext.Provider
+//       value={{
+//         images,
+//         imageFiles,
+//         unitType,
+//         formResetKey,
+//         setImages: (a) => {
+//           setImages(a.images);
+//           setImageFiles(a.imageFiles);
+//         },
+//         setUnitType,
+//         submitLoading,
+//         setSaveClick,
+//         resetForm,
+//         duplicate,
+//         setDuplicate,
+//       }}
+//     >
+//       <div className="pb-[100px]">
+//         <BackButton customBackPath={customBackPath}>Add Units</BackButton>
+//         <PageProgressBar
+//           breakpoints={[25, 50, 75]}
+//           percentage={37}
+//           className="mb-[52px]"
+//         />
+//         <div className="space-y-6 lg:space-y-8">
+//           <PropertyDetails heading="Property Details" />
+//           <PropertySettings heading="Property Settings" />
+//           {addedUnits.length > 0 && (
+//             <>
+//               <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+//                 Added Units
+//               </h4>
+//               <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
+//               {addedUnits.map((unit, index) => (
+//                 <AddUnitFormCard key={index} index={index} data={unit} />
+//               ))}
+//             </>
+//           )}
+//           {(addedUnits.length === 0 || showUnitForm) && (
+//             <>
+//               <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
+//             </>
+//           )}
+//         </div>
+//         {addedUnits.length > 0 && (
+//           <>
+//             <AddUnitFooter noForm={true} />
+//           </>
+//         )}
+//       </div>
+//     </UnitFormContext.Provider>
+//   );
+// };
+
+// export default AddUnit;

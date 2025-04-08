@@ -70,7 +70,6 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   };
 
   const handleInputChange = useCallback(() => {
-    // console.log("first")
     const selector = inputClassName ? `.${inputClassName}` : "input";
     const inputs = Array.from(
       containerRef.current?.querySelectorAll(selector) || []
@@ -128,6 +127,10 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
       });
     };
   }, [activeStep, handleInputChange, inputClassName]);
+
+  useEffect(() => {
+    handleInputChange();
+  }, [children, handleInputChange]);
 
   return (
     <FlowProgressContext.Provider

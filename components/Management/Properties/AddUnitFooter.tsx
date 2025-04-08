@@ -20,19 +20,16 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
   const [footerModalOpen, setFooterModalOpen] = useState(false);
   const router = useRouter();
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const newForm = useAddUnitStore((s) => s.newForm);
 
   const handleAddMoreClick = () => {
-    if (!noForm) {
-      // Form is present, validate it
-      handleInputChange();
-      if (!canSubmit) {
-        toast.error(
-          `The following fields are required: ${missingFields.join(", ")}`
-        );
-        return;
-      }
+    handleInputChange();
+    if (!canSubmit) {
+      toast.error(
+        `The following fields are required: ${missingFields.join(", ")}`
+      );
+      return;
     }
-    // If no form (noForm is false) or form is valid, open the modal
     setFooterModalOpen(true);
   };
 
@@ -42,13 +39,11 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
       // Check if any unit has notYetUploaded set to true
       const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
       if (hasNotYetUploaded) {
-        // Show an error message and prevent navigation
         toast.warning(
           "There are units that have not been updated yet. Please update them to continue."
         );
         return;
       }
-      // If no units are pending upload, navigate
       router.push("/management/properties");
     } else {
       handleInputChange();
@@ -70,7 +65,7 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
     <FixedFooter className="flex items-center justify-end gap-10">
       <Modal state={{ isOpen: footerModalOpen, setIsOpen: setFooterModalOpen }}>
         <ModalContent>
-          <FooterModal />
+          <FooterModal noForm={noForm} />
         </ModalContent>
       </Modal>
       <Button
@@ -78,15 +73,6 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
         className="py-2 px-6"
         disabled={submitLoading}
         onClick={handleAddMoreClick}
-        // onClick={() => {
-        //   if (!canSubmit) {
-        //     toast.error(
-        //       `The following fields are required: ${missingFields.join(", ")}`
-        //     );
-        //     return;
-        //   }
-        //   setFooterModalOpen(true);
-        // }}
       >
         {submitLoading ? "Adding..." : "Add More Unit"}
       </Button>

@@ -25,6 +25,8 @@ export interface UnitItemProps {
   tenantBadgeColor?: BadgeIconColors;
   dueDate?: string;
   note?: boolean;
+  totalPackage?: string;
+  unitType?: string;
 }
 
 const UnitItem: React.FC<UnitItemProps> = ({
@@ -40,6 +42,8 @@ const UnitItem: React.FC<UnitItemProps> = ({
   tenantBadgeColor,
   dueDate,
   cautionDeposit,
+  totalPackage,
+  unitType,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
 
@@ -79,7 +83,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Unit No/Name</p>
-            <p className="text-black dark:text-darkText-1">{unitName}</p>
+            <p className="text-black dark:text-darkText-1 capitalize">{unitName}</p>
           </div>
           {cautionDeposit && (
             <div>
@@ -93,6 +97,18 @@ const UnitItem: React.FC<UnitItemProps> = ({
             <div>
               <p className="text-[#747474] dark:text-white">Service Charge</p>
               <p className="text-black dark:text-darkText-1">{serviceCharge}</p>
+            </div>
+          )}
+          {unitType && (
+            <div>
+              <p className="text-[#747474] dark:text-white">Unit Type</p>
+              <p className="text-black dark:text-darkText-1 capitalize">{unitType}</p>
+            </div>
+          )}
+          {totalPackage && (
+            <div>
+              <p className="text-[#747474] dark:text-white">Total Package</p>
+              <p className="text-black dark:text-darkText-1 capitalize">{totalPackage}</p>
             </div>
           )}
           {tenantName && (

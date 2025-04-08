@@ -7,7 +7,7 @@ import DOMPurify from "dompurify";
 
 const PropertyDetails = ({ heading }: { heading: string }) => {
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
-  console.log(propertyDetails);
+  // console.log(propertyDetails);
   const sanitizedHTML = DOMPurify.sanitize(propertyDetails?.description || "");
 
   return (
@@ -97,7 +97,7 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
         <TruncatedText
           as="div"
           className="text-text-quaternary dark:text-darkText-2 flex-1 max-w-[80%]"
-          lines={2}
+          lines={3}
         >
           <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
         </TruncatedText>
