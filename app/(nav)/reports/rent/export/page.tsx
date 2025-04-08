@@ -8,19 +8,25 @@ import Signature from "@/components/Signature/signature";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 import useFetch from "@/hooks/useFetch";
 import { RentListResponse, RentReportData } from "../types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 
+import dayjs from "dayjs";
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+
+dayjs.extend(advancedFormat);
+
 const ExportRent = () => {
+  const exportRef = useRef<HTMLDivElement>(null);
+  const [fullContent, setFullContent] = useState(false);
   const [rents, setRents] = useState<RentReportData>({
     total_rents: 0,
     current_month_rents: 0,
     rents: [],
   });
-  const { data, loading, error, isNetworkError } = useFetch<RentListResponse>(
-    "report/rents",
-  );
+  const { data, loading, error, isNetworkError } =
+    useFetch<RentListResponse>("report/rents");
 
   useEffect(() => {
     if (data) {
@@ -38,21 +44,28 @@ const ExportRent = () => {
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
-
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
-      <ExportPageHeader />
-      <h1 className="text-center text-black dark:text-darkText-1 text-lg md:text-xl lg:text-2xl font-medium">
-        Summary
-      </h1>
-      <CustomTable
-        fields={rentReportTableFields}
-        data={tableData}
-        tableHeadClassName="h-[45px]"
-      />
-      <Signature />
-      <ExportPageFooter />
+      <div ref={exportRef} className="space-y-9">
+        <ExportPageHeader />
+        <div className="space-y-3">
+          <h1 className="text-center text-black text-lg md:text-xl lg:text-2xl font-medium">
+            Summary{" "}
+            <span className="px-2">{`(${dayjs().format(
+              "Do MMMM YYYY"
+            )})`}</span>
+          </h1>
+        </div>
+        <CustomTable
+          className={`${fullContent && "max-h-none"}`}
+          fields={rentReportTableFields}
+          data={tableData}
+          tableHeadClassName="h-[45px]"
+        />
+        <Signature />
+      </div>
+      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} />
     </div>
   );
 };

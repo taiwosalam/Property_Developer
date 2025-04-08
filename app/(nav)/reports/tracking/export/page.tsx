@@ -18,6 +18,9 @@ import {
 import NetworkError from "@/components/Error/NetworkError";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+
+dayjs.extend(advancedFormat);
 
 const ExportTracking = () => {
   const exportRef = useRef<HTMLDivElement>(null);
@@ -53,18 +56,24 @@ const ExportTracking = () => {
         <div className="space-y-3">
           <h1 className="text-center text-black text-lg md:text-xl lg:text-2xl font-medium">
             Summary{" "}
-            <span className="px-2">{`(${dayjs().format("D-MM-YYYY")})`}</span>
+            <span className="px-2">{`(${dayjs().format(
+              "Do MMMM YYYY"
+            )})`}</span>
           </h1>
         </div>
         <CustomTable
-          className={`${fullContent && 'max-h-none'}`}
+          className={`${fullContent && "max-h-none"}`}
           fields={trackingTableFields}
           data={activity}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
       </div>
-      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} fullContent={fullContent}/>
+      <ExportPageFooter
+        printRef={exportRef}
+        setFullContent={setFullContent}
+        fullContent={fullContent}
+      />
     </div>
   );
 };

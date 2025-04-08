@@ -17,10 +17,15 @@ import { useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+
 import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+
+dayjs.extend(advancedFormat);
 
 const ExportLandlords = () => {
   const exportRef = useRef<HTMLDivElement>(null);
+  const [fullContent, setFullContent] = useState(false);
   const [landlords_report, setLandlords_report] = useState<LandlordsReport>({
     total_landlords: 0,
     monthly_landlords: 0,
@@ -53,17 +58,20 @@ const ExportLandlords = () => {
         <div className="space-y-3">
           <h1 className="text-center text-black text-lg md:text-xl lg:text-2xl font-medium">
             Summary{" "}
-            <span className="px-2">{`(${dayjs().format("D-MM-YYYY")})`}</span>
+            <span className="px-2">{`(${dayjs().format(
+              "Do MMMM YYYY"
+            )})`}</span>
           </h1>
         </div>
         <CustomTable
           fields={landlordsReportTableFields}
+          className={`${fullContent && "max-h-none"}`}
           data={landlords}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
       </div>
-      <ExportPageFooter printRef={exportRef} />
+      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} />
     </div>
   );
 };
