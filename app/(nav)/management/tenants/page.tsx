@@ -36,6 +36,8 @@ import { AxiosRequestConfig } from "axios";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 
 const states = getAllStates();
 
@@ -220,9 +222,16 @@ const Tenants = () => {
       <p className="flex items-center whitespace-nowrap">
         <span>{t.name}</span>o
         {t.badge_color && <BadgeIcon color={t.badge_color} />}
+        {t.note && <NoteBlinkingIcon size={20} className="blink-color" />}
       </p>
     ),
-    user_tag: <UserTag type={t.user_tag} />,
+    user_tag: (
+      <>
+        <div className="flex gap-2 mb-2 items-center">
+          <UserTag type={t.user_tag} />
+        </div>
+      </>
+    ),
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center justify-end w-full">
         {t.user_tag === "mobile" && (
@@ -346,9 +355,7 @@ const Tenants = () => {
       <section>
         {tenants.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="+ Create New"

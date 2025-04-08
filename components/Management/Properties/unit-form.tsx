@@ -34,6 +34,7 @@ export interface UnitFormState {
 interface emptyUnitFormProps {
   empty: true;
   hideEmptyForm: () => void;
+  formRef?: React.RefObject<HTMLFormElement>;
 }
 
 interface editUnitFormProps {
@@ -42,13 +43,16 @@ interface editUnitFormProps {
   data: UnitDataObject & { notYetUploaded?: boolean };
   isEditing: boolean;
   setIsEditing: (a: boolean) => void;
+  formRef?: React.RefObject<HTMLFormElement>;
 }
 
 type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
 
 const UnitForm: React.FC<UnitFormProps> = (props) => {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const internalFormRef = useRef<HTMLFormElement>(null);
+  const formRef = props.formRef || internalFormRef;
+  // const formRef = useRef<HTMLFormElement>(null);
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);

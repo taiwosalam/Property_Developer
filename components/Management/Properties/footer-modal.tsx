@@ -77,6 +77,7 @@ const FooterModal = ({
   };
 
   const handleNoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("noForm", noForm)
     if (noForm) {
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();

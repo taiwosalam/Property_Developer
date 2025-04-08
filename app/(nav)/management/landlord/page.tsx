@@ -39,6 +39,7 @@ import useFetch from "@/hooks/useFetch";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 
 const states = getAllStates();
 
@@ -236,9 +237,16 @@ const Landlord = () => {
       <p className="flex items-center whitespace-nowrap">
         <span>{l.name}</span>
         {l.badge_color && <BadgeIcon color={l.badge_color} />}
+        {l.note && <NoteBlinkingIcon size={20} className="blink-color" />}
       </p>
     ),
-    user_tag: <UserTag type={l.user_tag} />,
+    user_tag: (
+      <>
+        <div className="flex gap-2 mb-2 items-center">
+          <UserTag type={l.user_tag} />
+        </div>
+      </>
+    ),
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center justify-end w-full">
         {l.user_tag === "mobile" && (

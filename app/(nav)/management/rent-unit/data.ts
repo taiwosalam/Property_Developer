@@ -1,6 +1,10 @@
 import { empty } from "@/app/config";
 import { propertyCategories } from "@/data";
-import { Currency, currencySymbols, formatNumber } from "@/utils/number-formatter";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import { getAllStates } from "@/utils/states";
 import { number } from "zod";
 //
@@ -74,7 +78,7 @@ export interface UnitApiResponse {
     pagination: {
       current_page: number;
       total_pages: number;
-    }
+    };
     unit: {
       current_page: number;
       last_page: number;
@@ -91,7 +95,7 @@ export interface UnitFilterResponse {
     pagination: {
       current_page: number;
       total_pages: number;
-    }
+    };
   };
 }
 
@@ -126,7 +130,7 @@ export const transformRentUnitApiResponse = (
     };
   });
 
-  console.log("Transformed unit data", response)
+  console.log("Transformed unit data", response);
   if (isUnitApiResponse(response)) {
     // console.log("isUnitApiResponse", response)
     return {
@@ -306,6 +310,13 @@ export const RentAndUnitFiltersWithDropdown = [
       { label: "Vacant", value: "vacant" },
       { label: "Occupied", value: "occupied" },
       { label: "Expired", value: "expired" },
+    ],
+  },
+  {
+    label: "Property Type",
+    value: [
+      { label: "Rental", value: "rental" },
+      { label: "Facility", value: "facility" },
     ],
   },
 ];

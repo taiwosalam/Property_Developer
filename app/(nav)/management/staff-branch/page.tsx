@@ -35,6 +35,7 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { toast } from "sonner";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const allStates = getAllStates();
 
@@ -245,9 +246,7 @@ const StaffAndBranches = () => {
           )
         ) : branches.length === 0 ? (
           config.params.search || isFilterApplied() ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="+ create branch"
