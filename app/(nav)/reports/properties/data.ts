@@ -1,4 +1,10 @@
 import type { Field } from "@/components/Table/types";
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+
+dayjs.extend(advancedFormat);
+
+
 export const reportsPropertiessFilterOptions = [
   {
     label: "Account Officer",
@@ -97,7 +103,7 @@ export const transformPropertyData = (apiData: PropertyApiResponse): Transformed
     branch: property.branch_name,
     account_officer: formatPropertyName(property.account_officer),
     landlord: formatPropertyName(property.landlord_name),
-    date_created: property.created_at,
+    date_created: property.created_at ? dayjs(property.created_at).format("YYYY-MM-DD h:mm A") : "__ __",
   }));
 
   return {
