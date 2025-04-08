@@ -12,6 +12,11 @@ const useExport = (
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
 
+    // if (printRef && printRef.current) {
+    //   printRef.current.style.transform = "scale(1.2)";
+    //   printRef.current.style.transformOrigin = "top left";
+    // }
+
     // Define padding in millimeters and convert to points
     const desiredPaddingMM = 10;
     const pointsPerMM = 72 / 25.4;
@@ -23,7 +28,11 @@ const useExport = (
 
     if (printRef && printRef.current) {
       // Use printRef to capture all content as a single unit
-      const printCanvas = await html2canvas(printRef.current);
+      const printCanvas = await html2canvas(printRef.current, {
+        backgroundColor: null, 
+        scale: 2,
+        useCORS: true,
+      });
       const printWidth = printCanvas.width;
       const printHeight = printCanvas.height;
 

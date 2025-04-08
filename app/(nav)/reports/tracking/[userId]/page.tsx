@@ -23,6 +23,9 @@ import { BranchStaff } from "@/app/(nav)/(messages-reviews)/messages/types";
 import { AxiosRequestConfig } from "axios";
 import { ReportsRequestParams } from "../../tenants/data";
 import dayjs from "dayjs";
+import { hasActiveFilters } from "../../data/utils";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const UserTrackingPage = () => {
   const { userId } = useParams();
@@ -179,13 +182,28 @@ const UserTrackingPage = () => {
 
       <section>
         {activities.length === 0 && !loading ? (
-          config.params.search || appliedFilters ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+          !!config.params.search || hasActiveFilters(appliedFilters) ? (
+            <SearchError />
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              Reports are empty
+            <div className="col-span-full text-left py-8 text-gray-500">
+              <EmptyList
+                noButton
+                title="No Staff Activities Report Available Yet
+              "
+                body={
+                  <p className="">
+                    Currently, there are no staff activity reports available for
+                    export. Once activity records are logged into the system,
+                    they will appear here and be ready for download or export.{" "}
+                    <br /> <br />
+                    <p>
+                      This section will automatically display all available
+                      records related to staff activities as soon as they are
+                      generated within the platform.
+                    </p>
+                  </p>
+                }
+              />
             </div>
           )
         ) : (

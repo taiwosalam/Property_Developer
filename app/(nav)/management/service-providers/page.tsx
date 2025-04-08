@@ -12,6 +12,7 @@ import {
   initialServiceProviderPageData,
   serviceProviderFilterOptionsWithDropdown,
   ServiceProviderTableFields,
+  transformServiceProviderData,
 } from "./data";
 
 import FilterBar from "@/components/FIlterBar/FilterBar";
@@ -26,6 +27,7 @@ import {
   ServiceProviderFilterResponse,
   ServiceProviderPageData,
   ServiceProviderRequestParams,
+  ServiceProviderResponseApi,
   ServiceProvidersFilterParams,
 } from "./types";
 
@@ -43,6 +45,7 @@ import CustomTable from "@/components/Table/table";
 import { landlordTableFields } from "../landlord/data";
 import UserTag from "@/components/Tags/user-tag";
 import { entries } from "lodash";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 
 interface ServiceProviderCardProps {
   id: number;
@@ -54,29 +57,54 @@ interface ServiceProviderCardProps {
   agent?: string;
 }
 
+const defaultServiceProviderPageData: ServiceProviderPageData = {
+  total_pages: 1,
+  current_page: 1,
+  total: 0,
+  total_month: 0,
+  total_web: 0,
+  total_web_month: 0,
+  total_mobile: 0,
+  total_mobile_month: 0,
+  service_providers: [],
+};
+
 const ServiceProviders = () => {
-  const handlePageChange = (page: number) => {
-    setPage(page);
-  };
-
   const storedView = useView();
-  const itemListView = useRef<HTMLDivElement | null>(null);
-
   const [view, setView] = useState<string | null>(storedView);
-
-  const [page, setPage] = useState(1);
   const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as ServiceProviderRequestParams,
+    params: { page: 1, search: "" } as ServiceProviderRequestParams,
   });
+  const [pageData, setPageData] = useState<ServiceProviderPageData>(
+    defaultServiceProviderPageData
+  );
+  const {
+    total_pages,
+    current_page,
+    total,
+    total_mobile,
+    total_mobile_month,
+    total_month,
+    total_web,
+    total_web_month,
+    service_providers,
+  } = pageData;
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
     startDate: null,
     endDate: null,
   });
+  const {
+    data: apiData,
+    silentLoading,
+    isNetworkError,
+    error,
+    loading,
+    refetch,
+  } = useFetch<ServiceProviderResponseApi>("service-providers", config);
+  const itemListView = useRef<HTMLDivElement | null>(null);
+  const [shouldScroll, setShouldScroll] = useState(false);
 
   useEffect(() => {
     setView(storedView);
@@ -115,16 +143,26 @@ const ServiceProviders = () => {
     });
   };
 
-  const handlePageChanger = (page: number) => {
-    setConfig({
-      params: { ...config.params, page },
-    });
-
-    itemListView.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+  const handlePageChange = (page: number) => {
+    setConfig((prev) => ({
+      params: { ...prev.params, page },
+    }));
+    if (view === "grid") {
+      setShouldScroll(true);
+    }
   };
+
+  useEffect(() => {
+    if (shouldScroll) {
+      if (itemListView.current) {
+        itemListView.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+      setShouldScroll(false);
+    }
+  }, [shouldScroll, service_providers]);
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
@@ -138,87 +176,100 @@ const ServiceProviders = () => {
     });
   };
 
-  const {
-    data: apiData,
-    silentLoading,
-    isNetworkError,
-    error,
-    loading,
-    refetch,
-  } = useFetch<ServiceProviderApiResponse | ServiceProviderFilterResponse>(
-    "service-providers",
-    config
-  );
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setPageData((prevData) => ({
+      ...prevData,
+      service_providers: [],
+      current_page: 1,
+    }));
+    //refetch({ silent: true });
+    window.dispatchEvent(new Event("refetchServiceProvider"));
+  }, [view]);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformData = transformServiceProviderData(apiData);
+      setPageData((prevData) => {
+        const updatedProvider =
+          view === "grid" || transformData.current_page === 1
+            ? transformData.service_providers
+            : [
+                ...prevData.service_providers,
+                ...transformData.service_providers,
+              ];
+        return { ...transformData, service_providers: updatedProvider };
+      });
+    }
+  }, [apiData, view]);
+
   useRefetchOnEvent("refetchServiceProvider", () => refetch({ silent: true }));
-
-  const serviceProviders: ServiceProviderCardProps[] =
-    apiData?.data?.providers?.data || [];
-
-  const totalPages = apiData?.data?.providers?.last_page || 1;
-
-  const totalUsers = apiData?.data.total ?? 0;
-  const total_month = apiData?.data?.total_month ?? 0;
-  const total_web = apiData?.data?.total_web ?? 0;
-  const total_web_month = apiData?.data?.total_web_month ?? 0;
-  const total_mobile = apiData?.data?.total_mobile ?? 0;
-  const total_mobile_month = apiData?.data?.total_mobile_month ?? 0;
-
-  const current_page =
-    "current_page" in (apiData?.data?.providers || {})
-      ? (apiData?.data?.providers as ProvidersPagination).current_page
-      : 1;
 
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastRowRef = useCallback(
     (node: HTMLElement | null) => {
+      if (silentLoading || view === "grid") return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        if (
-          entries[0].isIntersecting &&
-          current_page < totalPages &&
-          !silentLoading
-        ) {
+        if (entries[0].isIntersecting && current_page < total_pages) {
           handlePageChange(current_page + 1);
         }
       });
       if (node) observer.current.observe(node);
     },
-    [current_page, totalPages, silentLoading]
+    [current_page, total_pages, silentLoading]
   );
 
-  const transformedServiceProvider = serviceProviders.map((l, index) => ({
-    ...l,
-    avatar: l.avatar,
-    full_name: <p className="flex items-center whitespace-nowrap">{l.name}</p>,
-    // user_tag: <UserTag type={l.user_tag} />,
-    "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full">
-        <Button
-          href={`/management/service-providers/${l.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2 mx-auto"
-        >
-          Manage
-        </Button>
-        {l.agent === "mobile" && (
+  const transformedServiceProvider = useMemo(() => {
+    return service_providers.map((l, index) => ({
+      ...l,
+      avatar: l.avatar,
+      full_name: (
+        <div className="flex gap-x-4 items-center">
+          <p className="flex items-center whitespace-nowrap">{l.name}</p>
+          {l.note && l.note !== "<p><br></p>" ? (
+            <div className="flex items-center">
+              <NoteBlinkingIcon size={20} className="blink-color" />
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+      ),
+      "manage/chat": (
+        <div className="flex gap-x-[4%] items-center w-full justify-end">
+          {l.agent === "mobile" && (
+            <Button
+              variant="sky_blue"
+              size="sm_medium"
+              className="px-8 py-2 border-[1px] border-brand-9 bg-brand-tertiary bg-opacity-50 text-brand-9"
+            >
+              Chat
+            </Button>
+          )}
           <Button
-            variant="sky_blue"
+            href={`/management/service-providers/${l.id}/manage`}
             size="sm_medium"
-            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-            // onClick={() => onClickChat(l)}
+            className="px-8 py-2"
           >
-            Chat
+            Manage
           </Button>
-        )}
-      </div>
-    ),
+        </div>
+      ),
+      ref:
+        index === service_providers.length - 1 &&
+        current_page < total_pages &&
+        view !== "grid"
+          ? lastRowRef
+          : undefined,
+    }));
+  }, [service_providers, current_page, total_pages, view]);
 
-    ref:
-      index === serviceProviders.length - 1 && current_page < totalPages
-        ? lastRowRef
-        : undefined,
-  }));
+  //console.log(total_pages)
 
   if (loading) {
     return (
@@ -240,22 +291,22 @@ const ServiceProviders = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Providers"
-            newData={totalUsers}
-            total={total_month}
+            newData={total_month}
+            total={total}
             className="w-[230px]"
             colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Mobile Providers"
-            newData={total_mobile}
-            total={total_mobile_month}
+            newData={total_mobile_month}
+            total={total_mobile}
             className="w-[230px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Web Providers"
-            newData={total_web}
-            total={total_web_month}
+            newData={total_web_month}
+            total={total_web}
             className="w-[230px]"
             colorScheme={3}
           />
@@ -271,118 +322,126 @@ const ServiceProviders = () => {
           </ModalContent>
         </Modal>
       </div>
-      <FilterBar
-        azFilter
-        pageTitle="Service Provider"
-        noExclamationMark={false}
-        hasGridListToggle={true}
-        gridView={view === "grid"}
-        setGridView={() => setView("grid")}
-        setListView={() => setView("list")}
-        aboutPageModalData={{
-          title: "Service Provider",
-          description:
-            "This page contains a list of Service Provider on the platform.",
-        }}
-        searchInputPlaceholder="Search for service provider"
-        handleFilterApply={handleFilterApply}
-        handleSearch={handleSearch}
-        onSort={handleSort}
-        isDateTrue
-        filterOptionsMenu={serviceProviderFilterOptionsWithDropdown}
-        inputOff={false}
-      />
-      <section>
-        {serviceProviders.length === 0 && !silentLoading ? (
-          isFilterApplied() || config.params.search ? (
-            <SearchError />
-          ) : (
-            <EmptyList
-              buttonText="+ Create Service Provider"
-              modalContent={<AddServiceProviderModal />}
-              title="You have not created any service providers yet"
-              body={
-                <p className="tracking-wider capitalize">
-                  No service provider records found means there are currently no
-                  registered or available service providers in the system.
-                  Service providers refer to artisans and skilled workers
-                  essential for property management, including carpenters,
-                  plumbers, painters, electricians, and more. These
-                  professionals handle maintenance, repairs, and improvements
-                  for residential and commercial properties.
-                  <br />
-                  <br />
-                  To add a service provider, click{" "}
-                  <span className="font-bold">Create Service Provider </span>and
-                  register them manually by entering their details or using
-                  their unique ID for quick onboarding. Ensuring a complete list
-                  of service providers enhances property management efficiency
-                  and ensures access to reliable professionals when needed.
-                  <br />
-                  <br />
-                  <p>
-                    To Learn more about this page later, click your profile
-                    picture at the top right of the dashboard and select
-                    Assistance & Support.
-                  </p>
-                  <br />
-                  <br />
-                </p>
-              }
-            />
-          )
-        ) : (
-          <div ref={itemListView}>
-            {view === "grid" ? (
-              <AutoResizingGrid minWidth={284} gap={16}>
-                {silentLoading ? (
-                  <CardsLoading />
-                ) : (
-                  serviceProviders.map((provider) => (
-                    <Link
-                      key={provider.id}
-                      href={`/management/service-providers/${provider.id}/manage`}
-                    >
-                      <ServiceProviderCard
-                        name={provider.name}
-                        email={provider.email}
-                        user_tag={provider?.agent === "web" ? "web" : "mobile"}
-                        phone_number={provider.phone}
-                        picture_url={provider.avatar}
-                        other_info={provider.service_render || ""}
-                      />
-                    </Link>
-                  ))
-                )}
-              </AutoResizingGrid>
+      <div ref={itemListView}>
+        <FilterBar
+          azFilter
+          pageTitle="Service Provider"
+          noExclamationMark={false}
+          hasGridListToggle={true}
+          gridView={view === "grid"}
+          setGridView={() => setView("grid")}
+          setListView={() => setView("list")}
+          aboutPageModalData={{
+            title: "Service Provider",
+            description:
+              "This page contains a list of Service Provider on the platform.",
+          }}
+          searchInputPlaceholder="Search for service provider"
+          handleFilterApply={handleFilterApply}
+          handleSearch={handleSearch}
+          onSort={handleSort}
+          isDateTrue
+          filterOptionsMenu={serviceProviderFilterOptionsWithDropdown}
+          inputOff={false}
+        />
+        <section className="pb-20 mt-4">
+          {service_providers.length === 0 && !silentLoading ? (
+            isFilterApplied() || config.params.search ? (
+              <SearchError />
             ) : (
-              <>
-                {silentLoading ? (
-                  <TableLoading />
-                ) : (
+              <EmptyList
+                buttonText="+ Create Service Provider"
+                modalContent={<AddServiceProviderModal />}
+                title="You have not created any service providers yet"
+                body={
+                  <p className="tracking-wider capitalize">
+                    No service provider records found means there are currently
+                    no registered or available service providers in the system.
+                    Service providers refer to artisans and skilled workers
+                    essential for property management, including carpenters,
+                    plumbers, painters, electricians, and more. These
+                    professionals handle maintenance, repairs, and improvements
+                    for residential and commercial properties.
+                    <br />
+                    <br />
+                    To add a service provider, click{" "}
+                    <span className="font-bold">Create Service Provider </span>
+                    and register them manually by entering their details or
+                    using their unique ID for quick onboarding. Ensuring a
+                    complete list of service providers enhances property
+                    management efficiency and ensures access to reliable
+                    professionals when needed.
+                    <br />
+                    <br />
+                    <p>
+                      To Learn more about this page later, click your profile
+                      picture at the top right of the dashboard and select
+                      Assistance & Support.
+                    </p>
+                    <br />
+                    <br />
+                  </p>
+                }
+              />
+            )
+          ) : (
+            <>
+              {view === "grid" ? (
+                <AutoResizingGrid minWidth={284} gap={16}>
+                  {silentLoading ? (
+                    <CardsLoading />
+                  ) : (
+                    service_providers.map((provider) => (
+                      <Link
+                        key={provider.id}
+                        href={`/management/service-providers/${provider.id}/manage`}
+                      >
+                        <ServiceProviderCard
+                          name={provider.name}
+                          email={provider.email}
+                          user_tag={
+                            provider?.agent === "web" ? "web" : "mobile"
+                          }
+                          badge_color={provider.badge_color || "gray"}
+                          phone_number={provider.phone}
+                          picture_url={provider.avatar}
+                          other_info={provider.service_rendered || ""}
+                          note={
+                            !provider.note || provider.note === "<p><br></p>"
+                              ? false
+                              : true
+                          }
+                        />
+                      </Link>
+                    ))
+                  )}
+                </AutoResizingGrid>
+              ) : (
+                <>
                   <CustomTable
                     displayTableHead={false}
                     fields={ServiceProviderTableFields}
                     data={transformedServiceProvider}
                     tableBodyCellSx={{ color: "#3F4247" }}
                   />
-                )}
-                {
-                  <div className="flex items-center justify-center py-4">
-                    <div className="loader" />
-                  </div>
-                }
-              </>
-            )}
-          </div>
-        )}
-      </section>
+
+                  {silentLoading && (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="loader" />
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </section>
+      </div>
 
       {view === "grid" && (
         <Pagination
-          totalPages={totalPages}
+          totalPages={total_pages}
           currentPage={current_page}
-          onPageChange={handlePageChanger}
+          onPageChange={handlePageChange}
         />
       )}
     </div>

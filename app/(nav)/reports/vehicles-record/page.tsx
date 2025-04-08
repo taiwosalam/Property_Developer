@@ -16,6 +16,9 @@ import {
   VehicleRecordsResponse,
   VehicleRecordsType,
 } from "./types";
+import { hasActiveFilters } from "../data/utils";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
 
 const VehiclesRecordReport = () => {
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -132,10 +135,10 @@ const VehiclesRecordReport = () => {
       queryParams.property_id = property.join(",");
     }
     if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
     }
     setConfig({
       params: queryParams,
@@ -143,7 +146,9 @@ const VehiclesRecordReport = () => {
   };
 
   if (loading)
-    return <CustomLoader layout="page" pageTitle="Vehicle Report" view="table" />;
+    return (
+      <CustomLoader layout="page" pageTitle="Vehicle Report" view="table" />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
@@ -172,13 +177,28 @@ const VehiclesRecordReport = () => {
 
       <section>
         {vehiclesRecordTableData.length === 0 && !loading ? (
-          config.params.search || appliedFilters ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+          !!config.params.search || hasActiveFilters(appliedFilters) ? (
+            <SearchError />
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              Reports are empty
+            <div className="col-span-full text-left py-8 text-gray-500">
+              <EmptyList
+                noButton
+                title="No Vehicle Records Available Yet
+             "
+                body={
+                  <p className="">
+                    At the moment, there are no vehicle records available for
+                    export. Once vehicle data is added to the system, it will
+                    appear here and be available for download or export. <br />{" "}
+                    <br />
+                    <p>
+                      This section will automatically populate with all
+                      available vehicle records as soon as new entries are
+                      created or imported into the platform.
+                    </p>
+                  </p>
+                }
+              />
             </div>
           )
         ) : (

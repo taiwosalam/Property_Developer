@@ -147,6 +147,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   {field.label}
                 </TableCell>
               ))}
+              
             </TableRow>
           </TableHead>
         )}
@@ -201,6 +202,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     actionButtonIcon,
                     onActionClick
                   )}
+                  
                 </TableCell>
               ))}
             </TableRow>

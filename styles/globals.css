@@ -546,3 +546,9 @@ button:disabled:not(.retain-opacity) {
   stroke: #1d4ed8; 
   animation: blinkColor 1.5s infinite ease-in-out;
 }
+
+@media print {
+  * {
+    box-shadow: none !important;
+  }
+}

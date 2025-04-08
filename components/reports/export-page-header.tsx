@@ -26,14 +26,14 @@ const ExportPageHeader = () => {
 
   return (
     <div
-      className="rounded-lg p-7 flex flex-col md:flex-row md:justify-between md:items-center gap-4 bg-white dark:bg-darkText-primary"
+      className="rounded-lg p-7 flex flex-col md:flex-row md:justify-between md:items-center gap-4 bg-white dark:bg-darkText-primary print:shadow-none"
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
       <div
-        className="w-[300px] h-[100px] relative overflow-hidden rounded-lg"
+        className="w-[300px] h-[100px] relative overflow-hidden rounded-lg print:shadow-none" 
         style={{
           boxShadow:
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 4px 6px 0px rgba(13, 23, 33, 0.08)",

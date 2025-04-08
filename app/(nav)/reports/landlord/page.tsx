@@ -20,6 +20,9 @@ import { BranchStaff } from "../../(messages-reviews)/messages/types";
 import { ReportsRequestParams } from "../tenants/data";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
+import { hasActiveFilters } from "../data/utils";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const LandlordsReport = () => {
   const [branches, setBranches] = useState<BranchFilter[]>([]);
@@ -43,7 +46,6 @@ const LandlordsReport = () => {
     startDate: null,
     endDate: null,
   });
-
 
   useEffect(() => {
     if (apiData) {
@@ -96,14 +98,13 @@ const LandlordsReport = () => {
     setConfig({
       params: { ...config.params, search: query },
     });
-    console.log("Searching...")
+    console.log("Searching...");
   };
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
       params: { ...config.params, sort_order: order },
     });
-    console.log("sorting....")
   };
 
   const handleAppliedFilter = (filters: FilterResult) => {
@@ -143,15 +144,12 @@ const LandlordsReport = () => {
   const { data, loading, error, isNetworkError } =
     useFetch<LandlordsApiResponse>("/report/landlords", config);
 
-    useEffect(() => {
-      if (data) {
-        setLandlords_report(transformLandlordsData(data));
-      }
-    }, [data]);
+  useEffect(() => {
+    if (data) {
+      setLandlords_report(transformLandlordsData(data));
+    }
+  }, [data]);
 
-
-
-  
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
@@ -191,13 +189,28 @@ const LandlordsReport = () => {
       />
       <section>
         {landlords.length === 0 && !loading ? (
-          config.params.search || appliedFilters ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+          !!config.params.search || hasActiveFilters(appliedFilters) ? (
+            <SearchError />
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              Reports are empty
+            <div className="col-span-full text-left py-8 text-gray-500">
+              <EmptyList
+                noButton
+                title="No Landlord or Landlady Profiles Available Yet
+"
+                body={
+                  <p className="">
+                    At the moment, there are no landlord or landlady profiles
+                    available for export. Once profile records are added to the
+                    system, they will appear here and be available for download
+                    or export. <br /> <br />
+                    <p>
+                      This section will automatically populate with all
+                      available data as soon as new landlord or landlady
+                      profiles are created or imported into the platform.
+                    </p>
+                  </p>
+                }
+              />
             </div>
           )
         ) : (

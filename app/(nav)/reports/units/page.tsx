@@ -21,6 +21,9 @@ import { FilterResult, BranchFilter, PropertyFilter } from "../tenants/types";
 import { AxiosRequestConfig } from "axios";
 import { ReportsRequestParams } from "../tenants/data";
 import dayjs from "dayjs";
+import { hasActiveFilters } from "../data/utils";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
 
 const UnitsReport = () => {
   const [unitData, setUnitData] = useState<UnitsReportType>({
@@ -183,13 +186,27 @@ const UnitsReport = () => {
 
       <section>
         {units.length === 0 && !loading ? (
-          config.params.search || appliedFilters ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+          !!config.params.search || hasActiveFilters(appliedFilters) ? (
+            <SearchError />
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              Reports are empty
+            <div className="col-span-full text-left py-8 text-gray-500">
+              <EmptyList
+                noButton
+                title="No Unit Data Available Yet"
+                body={
+                  <p className="">
+                    There is currently no unit data available for export. Once
+                    unit records are added to the system, they will
+                    automatically appear here and be available for download or
+                    export. <br /> <br />
+                    <p>
+                      This section will be updated in real-time as new unit
+                      profiles are created, allowing you to easily manage and
+                      export your data when needed.
+                    </p>
+                  </p>
+                }
+              />
             </div>
           )
         ) : (
