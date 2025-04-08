@@ -166,7 +166,11 @@ const useExport = (
 
     if (printRef && printRef.current) {
       // Use printRef to capture all content as a single unit
-      const printCanvas = await html2canvas(printRef.current);
+      const printCanvas = await html2canvas(printRef.current, {
+        backgroundColor: null, 
+        scale: 2,
+        useCORS: true,
+      });
       const printWidth = printCanvas.width;
       const printHeight = printCanvas.height;
 

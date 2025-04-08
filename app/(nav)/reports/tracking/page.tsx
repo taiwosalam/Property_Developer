@@ -183,7 +183,7 @@ const TrackingReport = () => {
           !!config.params.search || hasActiveFilters(appliedFilters) ? (
             <SearchError />
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">
+            <div className="col-span-full text-left py-8 text-gray-500">
               <EmptyList
                 noButton
                 title="No Staff Activities Report Available Yet

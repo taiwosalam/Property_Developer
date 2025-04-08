@@ -230,9 +230,13 @@ export const LandlordTenantInfoEditGrid: React.FC<{
 
 export const NotesInfoBox: React.FC<{
   notes?: { last_updated: string; write_up: string };
-  provider_note?: string;
+  provider_note?: {
+    note_last_updated: string;
+    provider_notes: string;
+  }
 }> = ({ notes, provider_note }) => {
-  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || provider_note || "");
+  const { note_last_updated, provider_notes } = provider_note || {};
+  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || provider_notes || "");
   return (
     <LandlordTenantInfoBox className="custom-flex-col gap-4">
       <div className="flex justify-between gap-4">
@@ -240,7 +244,7 @@ export const NotesInfoBox: React.FC<{
           <span>Note</span>
           <sub className="text-sm font-normal bottom-[unset]">
             <span className="font-bold">Last Updated</span>{" "}
-            {notes?.last_updated || "___"}
+            {notes?.last_updated || note_last_updated || "___"}
           </sub>
         </h3>
       </div>

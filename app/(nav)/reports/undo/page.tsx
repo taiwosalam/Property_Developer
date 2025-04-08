@@ -32,6 +32,9 @@ import { transformUnitListData } from "../units/types";
 import Link from "next/link";
 import TableMenu from "@/components/Table/table-menu";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { hasActiveFilters } from "../data/utils";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
 
 const Undo = () => {
   const [undoData, setUndoData] = useState<UndoTableData>({
@@ -99,14 +102,10 @@ const Undo = () => {
     loading,
     isNetworkError,
     error,
-    refetch
-  } = useFetch<TrashRecordsResponse>("/report/trashes");
-
-  console.log(undoApiData)
+    refetch,
+  } = useFetch<TrashRecordsResponse>("/report/trashes", config);
 
   useRefetchOnEvent("trashes", () => refetch({ silent: true }));
-
-  console.log(undoApiData)
 
   useEffect(() => {
     if (apiData) {
@@ -130,7 +129,6 @@ const Undo = () => {
   }, [undoApiData]);
 
   const { this_month, total, table } = undoData;
-
 
   const handleSearch = async (query: string) => {
     setConfig({
@@ -189,12 +187,12 @@ const Undo = () => {
     setSelectedItemId(null);
   };
 
-  async function handleDeleteItem(item: string){
-      await deleteUndoItem(item);
+  async function handleDeleteItem(item: string) {
+    await deleteUndoItem(item);
   }
 
-  async function restoreTrashItem(item: string){
-    await restoreItem(item)
+  async function restoreTrashItem(item: string) {
+    await restoreItem(item);
   }
 
   if (loading)
@@ -208,8 +206,8 @@ const Undo = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total"
-          newData={this_month}
-          total={total}
+          newData={total}
+          total={this_month}
           colorScheme={1}
         />
       </div>
@@ -232,13 +230,27 @@ const Undo = () => {
 
       <section>
         {table.length === 0 && !loading ? (
-          config.params.search || appliedFilters ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+          !!config.params.search || hasActiveFilters(appliedFilters) ? (
+            <SearchError />
           ) : (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              Reports are empty
+            <div className="col-span-full text-left py-8 text-gray-500">
+              <EmptyList
+                noButton
+                title="No Deleted Data Available Yet
+             "
+                body={
+                  <p className="">
+                    There are currently no deleted records available for
+                    restoration or permanent deletion. Once any data is removed
+                    from the system, it will automatically appear here for your
+                    review and action. <br /> <br />
+                    <p>
+                      This section will display all deleted data as soon as such
+                      records become available.
+                    </p>
+                  </p>
+                }
+              />
             </div>
           )
         ) : (
@@ -258,13 +270,17 @@ const Undo = () => {
         >
           <MenuItem onClick={handleMenuClose} disableRipple>
             <button
-            onClick={() => selectedItemId && restoreTrashItem(selectedItemId)}
+              onClick={() => selectedItemId && restoreTrashItem(selectedItemId)}
               className="w-full text-left"
             >
               Restore
             </button>
           </MenuItem>
-          <MenuItem onClick={handleMenuClose} disableRipple className="bg-red-200">
+          <MenuItem
+            onClick={handleMenuClose}
+            disableRipple
+            className="bg-red-200"
+          >
             <button
               onClick={() => selectedItemId && handleDeleteItem(selectedItemId)}
               className="w-full text-left"
@@ -272,7 +288,6 @@ const Undo = () => {
               Delete
             </button>
           </MenuItem>
-          
         </TableMenu>
       </section>
 

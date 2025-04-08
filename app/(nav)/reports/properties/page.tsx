@@ -160,8 +160,8 @@ const PropertiesReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total"
-          newData={total_properties}
-          total={monthly_properties}
+          newData={monthly_properties}
+          total={total_properties}
           colorScheme={1}
         />
       </div>
