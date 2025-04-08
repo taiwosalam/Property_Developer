@@ -1,5 +1,9 @@
 import type { Field } from "@/components/Table/types";
-import type { LandlordPageData, PreviousProperties, PropertiesManaged } from "../../types";
+import type {
+  LandlordPageData,
+  PreviousProperties,
+  PropertiesManaged,
+} from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
@@ -115,7 +119,7 @@ export interface IndividualLandlordAPIResponse {
 export const transformIndividualLandlordAPIResponse = ({
   data,
 }: IndividualLandlordAPIResponse): LandlordPageData => {
-  console.log("data", data)
+  console.log("data", data);
   const lastUpdated = data.note.last_updated_at
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
@@ -259,6 +263,9 @@ export const transformIndividualLandlordAPIResponse = ({
         credit: amount > 0 ? `₦${amount.toLocaleString()}` : null,
         debit: amount < 0 ? `₦${(-amount).toLocaleString()}` : null,
         date: s.date ? moment(s.date).format("DD/MM/YYYY") : "--- ---",
+        badge_color: s.payer_tier
+          ? tierColorMap[s.payer_tier as keyof typeof tierColorMap]
+          : "gray",
       };
     }),
   };
@@ -275,4 +282,3 @@ export const updateLandlordWithEmailOrID = async (data: any, id: number) => {
     return false;
   }
 };
-

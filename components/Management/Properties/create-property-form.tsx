@@ -87,8 +87,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = state;
 
   const isFacility = formType === "facility";
-  console.log("isFacility", isFacility);
-
   // const selectedBranchId = selectedBranch.value || propertyDetails?.branch_id;
   const selectedBranchId = selectedBranch.value;
 
