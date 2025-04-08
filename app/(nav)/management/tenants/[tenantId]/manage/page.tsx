@@ -87,7 +87,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               alt="profile picture"
               size={120}
               rounded
-              containerClassName="bg-[var(--secondary-bg)] w-fit rounded-full"
+              containerClassName="custom-secondary-bg w-fit rounded-full"
             />
 
             <div className="custom-flex-col gap-4">
@@ -107,12 +107,14 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 </p>
               </div>
               <div className="custom-flex-col gap-2">
-                <UserTag type={tenant.user_tag} />
-                {tenant.note && (
-                  <div className="flex items-center">
-                    <NoteBlinkingIcon size={20} className="blink-color" />
-                  </div>
-                )}
+                <div className="flex items-center gap-2">
+                  <UserTag type={tenant.user_tag} />
+                  {tenant.note && (
+                    <div className="flex items-center">
+                      <NoteBlinkingIcon size={20} className="blink-color" />
+                    </div>
+                  )}
+                </div>
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: {tenant.id}
                 </p>

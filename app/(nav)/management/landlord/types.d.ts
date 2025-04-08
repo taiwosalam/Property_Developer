@@ -135,6 +135,7 @@ export type LandlordPageData = {
     last_updated: string;
     write_up: string;
   };
+  note?: boolean;
   others: Others;
   documents: AttachedDocument[];
   properties_managed?: PropertiesManaged[];

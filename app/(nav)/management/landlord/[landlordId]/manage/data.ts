@@ -119,7 +119,7 @@ export interface IndividualLandlordAPIResponse {
 export const transformIndividualLandlordAPIResponse = ({
   data,
 }: IndividualLandlordAPIResponse): LandlordPageData => {
-  console.log("data", data);
+  // console.log("data", data);
   const lastUpdated = data.note.last_updated_at
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
@@ -135,6 +135,7 @@ export const transformIndividualLandlordAPIResponse = ({
       last_updated: lastUpdated,
       write_up: data.note.note,
     },
+    note: data?.note?.note !== null && data?.note?.note !== "",
     owner_type: data.owner_type,
     user_id: data.user_id,
     badge_color: data.user_tier ? tierColorMap[data.user_tier] : undefined,

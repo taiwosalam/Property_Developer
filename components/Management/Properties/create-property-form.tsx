@@ -834,8 +834,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     <Modal>
                       <ModalTrigger asChild>
                         <button className="bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
-                          {" "}
-                          Pick location{" "}
+                          set location
                         </button>
                       </ModalTrigger>
                       <ModalContent>

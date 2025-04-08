@@ -127,6 +127,7 @@ const RentAndUnit = () => {
         state: appliedFilters.menuOptions["State"] || [],
         property_type: appliedFilters.menuOptions["Property Type"]?.[0],
         status: appliedFilters.menuOptions["Status"]?.[0],
+        staff_id: appliedFilters.menuOptions["Account Officer"] || [],
         sort_by: sort,
       } as RentUnitFilterParams,
     };
@@ -266,7 +267,7 @@ const RentAndUnit = () => {
         onSort={handleSort}
         appliedFilters={appliedFilters}
         isDateTrue
-        filterOptions={RentAndUnitFilters}
+        // filterOptions={RentAndUnitFilters}
         filterOptionsMenu={[
           ...RentAndUnitFiltersWithDropdown,
           ...(branchOptions.length > 0

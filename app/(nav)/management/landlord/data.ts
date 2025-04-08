@@ -174,7 +174,7 @@ export const transformLandlordApiResponse = (
       phone_number: landlord.phone,
       user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: landlord.picture,
-      note: landlord.note.note !== null,
+      note: landlord.note.note !== null && landlord.note.note !== "",
       badge_color: landlord.user_tier
         ? tierColorMap[landlord.user_tier]
         : undefined,
@@ -198,6 +198,7 @@ export const transformMobileUseData = (res: any): UserCardProps => {
   const badgeColor =
     tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
   return {
+    id: data.id,
     name: data.name,
     picture_url: data.profile.picture,
     email: data.email,

@@ -237,17 +237,13 @@ const Landlord = () => {
       <p className="flex items-center whitespace-nowrap">
         <span>{l.name}</span>
         {l.badge_color && <BadgeIcon color={l.badge_color} />}
+        {l.note && <NoteBlinkingIcon size={20} className="blink-color" />}
       </p>
     ),
     user_tag: (
       <>
         <div className="flex gap-2 mb-2 items-center">
           <UserTag type={l.user_tag} />
-          {l.note && (
-            <div className="flex items-center">
-              <NoteBlinkingIcon size={20} className="blink-color" />
-            </div>
-          )}
         </div>
       </>
     ),

@@ -222,17 +222,13 @@ const Tenants = () => {
       <p className="flex items-center whitespace-nowrap">
         <span>{t.name}</span>o
         {t.badge_color && <BadgeIcon color={t.badge_color} />}
+        {t.note && <NoteBlinkingIcon size={20} className="blink-color" />}
       </p>
     ),
     user_tag: (
       <>
         <div className="flex gap-2 mb-2 items-center">
           <UserTag type={t.user_tag} />
-          {t.note && (
-            <div className="flex items-center">
-              <NoteBlinkingIcon size={20} className="blink-color" />
-            </div>
-          )}
         </div>
       </>
     ),
