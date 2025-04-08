@@ -399,9 +399,7 @@ const ServiceProviders = () => {
                         email={provider.email}
                         user_tag={provider?.agent === "web" ? "web" : "mobile"}
                         badge_color={
-                          typeof provider?.badge_color === "number"
-                            ? undefined
-                            : provider?.badge_color || undefined
+                         provider.badge_color || "gray"
                         }
                         phone_number={provider.phone}
                         picture_url={provider.avatar}

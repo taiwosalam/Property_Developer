@@ -17,6 +17,9 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import { BranchFilter, FilterResult, PropertyFilter } from "../tenants/types";
 import { BranchStaff } from "../../(messages-reviews)/messages/types";
 import dayjs from "dayjs";
+import { hasActiveFilters } from "../data/utils";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
 
 export interface RentRequestParams {
   page?: number;
@@ -192,13 +195,28 @@ const RentReport = () => {
 
       <section>
         {rents.length === 0 && !loading ? (
-          config.params.search || appliedFilters ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+          config.params.search || hasActiveFilters(appliedFilters) ? (
+            <SearchError />
           ) : (
             <div className="col-span-full text-center py-8 text-gray-500">
-              Reports are empty
+              <EmptyList
+                noButton
+                title="No Rent Report Data Available Yet
+"
+                body={
+                  <p className="">
+                    Currently, there are no rent report records available for
+                    export. Once rent report data is added to the system, it
+                    will appear here and be available for download or export.{" "}
+                    <br /> <br />
+                    <p>
+                      This section will automatically update to display all
+                      available rent reports as soon as they are generated or
+                      imported into the platform.
+                    </p>
+                  </p>
+                }
+              />
             </div>
           )
         ) : (

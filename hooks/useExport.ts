@@ -136,22 +136,6 @@
 
 // export default useExport;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { RefObject } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -165,6 +149,11 @@ const useExport = (
     const pdf = new jsPDF();
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();
+
+    // if (printRef && printRef.current) {
+    //   printRef.current.style.transform = "scale(1.2)";
+    //   printRef.current.style.transformOrigin = "top left";
+    // }
 
     // Define padding in millimeters and convert to points
     const desiredPaddingMM = 10;
@@ -182,7 +171,8 @@ const useExport = (
       const printHeight = printCanvas.height;
 
       // Calculate page height in pixels for the entire content
-      const pageHeightInPixels = (contentHeightInPoints / contentWidthInPoints) * printWidth;
+      const pageHeightInPixels =
+        (contentHeightInPoints / contentWidthInPoints) * printWidth;
       const numPages = Math.ceil(printHeight / pageHeightInPixels);
 
       for (let page = 0; page < numPages; page++) {
@@ -192,30 +182,62 @@ const useExport = (
         pageCanvas.width = printWidth;
         pageCanvas.height = endY - startY;
         const pageCtx = pageCanvas.getContext("2d")!;
-        pageCtx.drawImage(printCanvas, 0, startY, printWidth, endY - startY, 0, 0, printWidth, endY - startY);
+        pageCtx.drawImage(
+          printCanvas,
+          0,
+          startY,
+          printWidth,
+          endY - startY,
+          0,
+          0,
+          printWidth,
+          endY - startY
+        );
 
         const imageWidthInPoints = contentWidthInPoints;
-        const imageHeightInPoints = (pageCanvas.height / pageCanvas.width) * imageWidthInPoints;
+        const imageHeightInPoints =
+          (pageCanvas.height / pageCanvas.width) * imageWidthInPoints;
 
         if (page > 0) {
           pdf.addPage();
         }
-        pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", desiredPaddingPoints, desiredPaddingPoints, imageWidthInPoints, imageHeightInPoints);
+        pdf.addImage(
+          pageCanvas.toDataURL("image/png"),
+          "PNG",
+          desiredPaddingPoints,
+          desiredPaddingPoints,
+          imageWidthInPoints,
+          imageHeightInPoints
+        );
       }
-    } else if (firstPageRef && firstPageRef.current && restOfContentRef && restOfContentRef.current) {
+    } else if (
+      firstPageRef &&
+      firstPageRef.current &&
+      restOfContentRef &&
+      restOfContentRef.current
+    ) {
       // Original behavior with firstPageRef and restOfContentRef
       // First page
       const firstPageCanvas = await html2canvas(firstPageRef.current);
       const imageWidthInPoints = contentWidthInPoints;
-      const imageHeightInPoints = (firstPageCanvas.height / firstPageCanvas.width) * imageWidthInPoints;
-      pdf.addImage(firstPageCanvas.toDataURL("image/png"), "PNG", desiredPaddingPoints, desiredPaddingPoints, imageWidthInPoints, imageHeightInPoints);
+      const imageHeightInPoints =
+        (firstPageCanvas.height / firstPageCanvas.width) * imageWidthInPoints;
+      pdf.addImage(
+        firstPageCanvas.toDataURL("image/png"),
+        "PNG",
+        desiredPaddingPoints,
+        desiredPaddingPoints,
+        imageWidthInPoints,
+        imageHeightInPoints
+      );
 
       // Rest of the content
       const restOfContentCanvas = await html2canvas(restOfContentRef.current);
       const restOfContentWidth = restOfContentCanvas.width;
       const restOfContentHeight = restOfContentCanvas.height;
 
-      const pageHeightInPixels = (contentHeightInPoints / contentWidthInPoints) * restOfContentWidth;
+      const pageHeightInPixels =
+        (contentHeightInPoints / contentWidthInPoints) * restOfContentWidth;
       const numPages = Math.ceil(restOfContentHeight / pageHeightInPixels);
 
       for (let page = 0; page < numPages; page++) {
@@ -225,12 +247,30 @@ const useExport = (
         pageCanvas.width = restOfContentWidth;
         pageCanvas.height = endY - startY;
         const pageCtx = pageCanvas.getContext("2d")!;
-        pageCtx.drawImage(restOfContentCanvas, 0, startY, restOfContentWidth, endY - startY, 0, 0, restOfContentWidth, endY - startY);
+        pageCtx.drawImage(
+          restOfContentCanvas,
+          0,
+          startY,
+          restOfContentWidth,
+          endY - startY,
+          0,
+          0,
+          restOfContentWidth,
+          endY - startY
+        );
 
-        const imageHeightInPoints = (pageCanvas.height / pageCanvas.width) * imageWidthInPoints;
+        const imageHeightInPoints =
+          (pageCanvas.height / pageCanvas.width) * imageWidthInPoints;
 
         pdf.addPage();
-        pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", desiredPaddingPoints, desiredPaddingPoints, imageWidthInPoints, imageHeightInPoints);
+        pdf.addImage(
+          pageCanvas.toDataURL("image/png"),
+          "PNG",
+          desiredPaddingPoints,
+          desiredPaddingPoints,
+          imageWidthInPoints,
+          imageHeightInPoints
+        );
       }
     } else {
       console.error("Required refs are not set");
@@ -269,7 +309,8 @@ const useExport = (
       const printHeight = printCanvas.height;
 
       // Calculate page height in pixels for the entire content
-      const pageHeightInPixels = (contentHeightInPoints / contentWidthInPoints) * printWidth;
+      const pageHeightInPixels =
+        (contentHeightInPoints / contentWidthInPoints) * printWidth;
       const numPages = Math.ceil(printHeight / pageHeightInPixels);
 
       for (let page = 0; page < numPages; page++) {
@@ -279,30 +320,62 @@ const useExport = (
         pageCanvas.width = printWidth;
         pageCanvas.height = endY - startY;
         const pageCtx = pageCanvas.getContext("2d")!;
-        pageCtx.drawImage(printCanvas, 0, startY, printWidth, endY - startY, 0, 0, printWidth, endY - startY);
+        pageCtx.drawImage(
+          printCanvas,
+          0,
+          startY,
+          printWidth,
+          endY - startY,
+          0,
+          0,
+          printWidth,
+          endY - startY
+        );
 
         const imageWidthInPoints = contentWidthInPoints;
-        const imageHeightInPoints = (pageCanvas.height / pageCanvas.width) * imageWidthInPoints;
+        const imageHeightInPoints =
+          (pageCanvas.height / pageCanvas.width) * imageWidthInPoints;
 
         if (page > 0) {
           pdf.addPage();
         }
-        pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", desiredPaddingPoints, desiredPaddingPoints, imageWidthInPoints, imageHeightInPoints);
+        pdf.addImage(
+          pageCanvas.toDataURL("image/png"),
+          "PNG",
+          desiredPaddingPoints,
+          desiredPaddingPoints,
+          imageWidthInPoints,
+          imageHeightInPoints
+        );
       }
-    } else if (firstPageRef && firstPageRef.current && restOfContentRef && restOfContentRef.current) {
+    } else if (
+      firstPageRef &&
+      firstPageRef.current &&
+      restOfContentRef &&
+      restOfContentRef.current
+    ) {
       // Original behavior with firstPageRef and restOfContentRef
       // First page
       const firstPageCanvas = await html2canvas(firstPageRef.current);
       const imageWidthInPoints = contentWidthInPoints;
-      const imageHeightInPoints = (firstPageCanvas.height / firstPageCanvas.width) * imageWidthInPoints;
-      pdf.addImage(firstPageCanvas.toDataURL("image/png"), "PNG", desiredPaddingPoints, desiredPaddingPoints, imageWidthInPoints, imageHeightInPoints);
+      const imageHeightInPoints =
+        (firstPageCanvas.height / firstPageCanvas.width) * imageWidthInPoints;
+      pdf.addImage(
+        firstPageCanvas.toDataURL("image/png"),
+        "PNG",
+        desiredPaddingPoints,
+        desiredPaddingPoints,
+        imageWidthInPoints,
+        imageHeightInPoints
+      );
 
       // Rest of the content
       const restOfContentCanvas = await html2canvas(restOfContentRef.current);
       const restOfContentWidth = restOfContentCanvas.width;
       const restOfContentHeight = restOfContentCanvas.height;
 
-      const pageHeightInPixels = (contentHeightInPoints / contentWidthInPoints) * restOfContentWidth;
+      const pageHeightInPixels =
+        (contentHeightInPoints / contentWidthInPoints) * restOfContentWidth;
       const numPages = Math.ceil(restOfContentHeight / pageHeightInPixels);
 
       for (let page = 0; page < numPages; page++) {
@@ -312,12 +385,30 @@ const useExport = (
         pageCanvas.width = restOfContentWidth;
         pageCanvas.height = endY - startY;
         const pageCtx = pageCanvas.getContext("2d")!;
-        pageCtx.drawImage(restOfContentCanvas, 0, startY, restOfContentWidth, endY - startY, 0, 0, restOfContentWidth, endY - startY);
+        pageCtx.drawImage(
+          restOfContentCanvas,
+          0,
+          startY,
+          restOfContentWidth,
+          endY - startY,
+          0,
+          0,
+          restOfContentWidth,
+          endY - startY
+        );
 
-        const imageHeightInPoints = (pageCanvas.height / pageCanvas.width) * imageWidthInPoints;
+        const imageHeightInPoints =
+          (pageCanvas.height / pageCanvas.width) * imageWidthInPoints;
 
         pdf.addPage();
-        pdf.addImage(pageCanvas.toDataURL("image/png"), "PNG", desiredPaddingPoints, desiredPaddingPoints, imageWidthInPoints, imageHeightInPoints);
+        pdf.addImage(
+          pageCanvas.toDataURL("image/png"),
+          "PNG",
+          desiredPaddingPoints,
+          desiredPaddingPoints,
+          imageWidthInPoints,
+          imageHeightInPoints
+        );
       }
     } else {
       console.error("Required refs are not set");

@@ -27,6 +27,7 @@ const UserCard: React.FC<UserCardProps> = ({
   className,
   note
 }) => {
+ 
   return (
     <div
       className={`h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 justify-center items-center ${className}`}
