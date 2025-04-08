@@ -14,7 +14,7 @@ import {
   UnitPageState,
 } from "./data";
 import { PropertyListingStatusItem } from "@/components/Listing/Property/property-listing-component";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { AxiosRequestConfig } from "axios";
 import { FilterResult } from "@/components/Management/Landlord/types";
@@ -68,11 +68,12 @@ const Units = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-  const endpoint =
-    isFilterApplied() || search || sort
-      ? "/unit/vacant/list/filter"
-      : "/unit/vacant/lists";
+  // const endpoint =
+  //   isFilterApplied() || search || sort
+  //     ? "/unit/vacant/list/filter"
+  //     : "/unit/vacant/lists";
 
+  const endpoint = "/unit/vacant/lists"
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
@@ -105,9 +106,14 @@ const Units = () => {
     setPage(1);
   };
 
-  
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
   const handlePageChange = (page: number) => {
     setPage(page);
+    // Scroll to the top where properties card start
+    if (contentTopRef.current) {
+      contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const {
@@ -166,7 +172,7 @@ const Units = () => {
 
   return (
     <div className="custom-flex-col gap-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
         <ManagementStatistcsCard
           title="Total Units"
           newData={pageData.month_vacant}

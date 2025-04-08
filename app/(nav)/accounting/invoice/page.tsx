@@ -200,7 +200,6 @@ const AccountingInvoicePage = () => {
         <div className="w-full flex items-center justify-between">
           <div className="font-medium text-2xl flex items-center space-x-1">
             <span className="text-2xl font-bold">Invoices</span>
-            <ExclamationMark />
           </div>
           <Modal>
             <ModalTrigger asChild>

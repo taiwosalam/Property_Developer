@@ -17,7 +17,7 @@ const UnitFeatures = () => {
   );
 
     const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
-    console.log(propertyDetails);
+
 
   const [selectedAreaUnit, setSelectedAreaUnit] = useState(
     unitData?.measurement || "sqm"

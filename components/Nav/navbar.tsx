@@ -80,6 +80,7 @@ const Header = () => {
     (state) => state.setPersonalInfo
   );
   const name = usePersonalInfoStore((state) => state.name);
+  const user_online_status = usePersonalInfoStore((state) => state.user_online_status);
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture
   );
@@ -113,6 +114,7 @@ const Header = () => {
       );
       setPersonalInfo("full_name", user.name);
       setPersonalInfo("user_email", user.email);
+      setPersonalInfo("user_online_status", user.user_online_status);
       setPersonalInfo("title", profile?.title as string);
       setPersonalInfo("profile_picture", profile.picture);
       if (company) {
@@ -365,10 +367,10 @@ const Header = () => {
             <Picture
               src={profile_picture || empty}
               alt="profile picture"
-              status
+              status={user_online_status === "online"}
               size={isMobile ? 50 : 60}
               rounded
-              containerClassName="flex-shrink-0"
+              containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
             />
             <div className="flex flex-col text-text-secondary capitalize">
               <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">

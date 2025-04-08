@@ -41,6 +41,7 @@ import {
   TransformedInvoiceData,
 } from "../accounting/invoice/types";
 import { transformInvoiceData } from "../accounting/invoice/data";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -121,6 +122,15 @@ const Dashboard = () => {
 
   // Handle invoiceData nullability
   const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
+  const transformedRecentInvoiceTableData = invoiceList.map((i) => ({
+    ...i,
+    client_name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{i.client_name}</span>
+        {i.badge_color && <BadgeIcon color={i.badge_color} />}
+      </p>
+    ),
+  }));
 
   return (
     <>
@@ -192,7 +202,7 @@ const Dashboard = () => {
 
         <SectionContainer heading="Recent invoice" href="/accounting/invoice">
           <CustomTable
-            data={invoiceList}
+            data={transformedRecentInvoiceTableData}
             fields={invoiceTableFields}
             tableHeadClassName="h-[76px]"
             tableBodyCellSx={{
@@ -202,7 +212,7 @@ const Dashboard = () => {
             }}
             tableHeadCellSx={{ fontSize: "1rem" }}
           />
-          {invoiceList.length === 0 && (
+          {transformedRecentInvoiceTableData.length === 0 && (
             <div className="flex justify-center items-center min-h-[200px]">
               <p className="text-gray-500 dark:text-gray-400">
                 No Recent Invoice Yet.

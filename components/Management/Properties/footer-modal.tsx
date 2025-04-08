@@ -51,7 +51,7 @@ const FooterModal = ({
             addUnit(newUnit);
           }
           setIsOpen(false);
-        }, 0); // Delay duplication slightly to ensure form submission completes
+        }, 500); // Delay duplication slightly to ensure form submission completes
       }, 0);
     } else if (addedUnits.length > 0) {
       // Regular duplication logic
