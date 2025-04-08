@@ -6,6 +6,8 @@ export interface Invoice {
   reason: string | null;
   total_amount: string;
   invoice_date: string;
+  client_tier: number;
+  badge_color?: "red" | "green" | "black" | "blue" | "yellow" | "gray";
 }
 
 export interface InvoiceStatistics {

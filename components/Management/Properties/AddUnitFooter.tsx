@@ -1,5 +1,5 @@
 import { Modal, ModalContent } from "@/components/Modal/modal";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import FooterModal from "./footer-modal";
 import Button from "@/components/Form/Button/button";
@@ -21,17 +21,39 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
   const router = useRouter();
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const newForm = useAddUnitStore((s) => s.newForm);
+  const [checkSubmit, setCheckSubmit] = useState(false);
+
+  // Effect to handle validation after state updates
+  useEffect(() => {
+    if (checkSubmit) {
+      if (!canSubmit) {
+        toast.error(
+          `The following fields are required: ${missingFields.join(", ")}`
+        );
+      } else {
+        setFooterModalOpen(true);
+      }
+      setCheckSubmit(false); // Reset the trigger
+    }
+  }, [canSubmit, missingFields, checkSubmit]);
 
   const handleAddMoreClick = () => {
-    handleInputChange();
-    if (!canSubmit) {
-      toast.error(
-        `The following fields are required: ${missingFields.join(", ")}`
-      );
-      return;
-    }
-    setFooterModalOpen(true);
+    handleInputChange(); // Trigger state update
+    setCheckSubmit(true); // Set flag to check validation in useEffect
   };
+
+  // const handleAddMoreClick = async () => {
+  //   // Explicitly call handleInputChange to ensure the latest state is used
+  //   // await handleInputChange();
+  //   console.log("footer can submit -", canSubmit);
+  //   if (!canSubmit) {
+  //     toast.error(
+  //       `The following fields are required: ${missingFields.join(", ")}`
+  //     );
+  //     return;
+  //   }
+  //   setFooterModalOpen(true);
+  // };
 
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -46,7 +68,7 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
       }
       router.push("/management/properties");
     } else {
-      handleInputChange();
+      // handleInputChange();
       if (!canSubmit) {
         toast.error(
           `The following fields are required: ${missingFields.join(", ")}`
@@ -72,6 +94,7 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
         size="base_medium"
         className="py-2 px-6"
         disabled={submitLoading}
+        form="add-unit-form"
         onClick={handleAddMoreClick}
       >
         {submitLoading ? "Adding..." : "Add More Unit"}

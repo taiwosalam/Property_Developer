@@ -482,6 +482,7 @@ export interface ProfileResponse {
     user: {
       userid: string;
       name: string | null;
+      user_online_status: 'online' | 'offline' | null;
       email: string | null;
     };
     company?: {

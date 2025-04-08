@@ -95,31 +95,31 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     return <div className="text-red-500">Property Data not found</div>;
 
   return (
-    <UnitFormContext.Provider
-      value={{
-        images,
-        imageFiles,
-        unitType,
-        formResetKey,
-        setImages: (a) => {
-          setImages(a.images);
-          setImageFiles(a.imageFiles);
-        },
-        setUnitType,
-        submitLoading,
-        setSaveClick,
-        resetForm,
-        duplicate,
-        setDuplicate,
-        setSubmitLoading,
-      }}
+    <FlowProgress
+      steps={1}
+      activeStep={0}
+      inputClassName="unit-form-input"
+      showProgressBar={false}
+      key="unit-form-progress"
     >
-      <FlowProgress
-        steps={1}
-        activeStep={0}
-        inputClassName="unit-form-input"
-        showProgressBar={false}
-        key="add-unit-progress"
+      <UnitFormContext.Provider
+        value={{
+          images,
+          imageFiles,
+          unitType,
+          formResetKey,
+          setImages: (a) => {
+            setImages(a.images);
+            setImageFiles(a.imageFiles);
+          },
+          setUnitType,
+          submitLoading,
+          setSaveClick,
+          resetForm,
+          duplicate,
+          setDuplicate,
+          setSubmitLoading,
+        }}
       >
         <div className="pb-[100px]">
           <BackButton customBackPath={customBackPath}>Add Units</BackButton>
@@ -148,8 +148,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           </div>
           {addedUnits.length > 0 && <AddUnitFooter noForm={true} />}
         </div>
-      </FlowProgress>
-    </UnitFormContext.Provider>
+      </UnitFormContext.Provider>
+    </FlowProgress>
   );
 };
 
