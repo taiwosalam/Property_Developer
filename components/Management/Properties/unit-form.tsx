@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import UnitPictures from "./unit-pictures";
 import UnitDetails from "./unit-details";
 import UnitFeatures from "./unit-features";
@@ -34,6 +34,7 @@ export interface UnitFormState {
 interface emptyUnitFormProps {
   empty: true;
   hideEmptyForm: () => void;
+  formRef?: React.RefObject<HTMLFormElement>;
 }
 
 interface editUnitFormProps {
@@ -42,13 +43,17 @@ interface editUnitFormProps {
   data: UnitDataObject & { notYetUploaded?: boolean };
   isEditing: boolean;
   setIsEditing: (a: boolean) => void;
+  formRef?: React.RefObject<HTMLFormElement>;
 }
 
 type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
 
 const UnitForm: React.FC<UnitFormProps> = (props) => {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const internalFormRef = useRef<HTMLFormElement>(null);
+  const formRef = props.formRef || internalFormRef;
+  const unitPicturesRef = useRef<HTMLDivElement>(null);
+  // const formRef = useRef<HTMLFormElement>(null);
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
@@ -239,6 +244,15 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     setSubmitLoading(false);
     if (setParentSubmitLoading) setParentSubmitLoading(false);
   };
+  // SCOLL TO PICTURES
+  useEffect(() => {
+    if (unitPicturesRef.current) {
+      unitPicturesRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, []);
 
   return (
     <FlowProgress
@@ -285,7 +299,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
               <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
             </>
           )}
-          <UnitPictures />
+          <UnitPictures ref={unitPicturesRef} />
           <UnitDetails />
           <UnitFeatures />
           {propertyType === "rental" ? (
@@ -296,7 +310,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           ) : (
             <UnitBreakdownFacility />
           )}
-          {!props.empty ? <EditUnitActions /> : <AddUntFooter />}
+          {!props.empty ? <EditUnitActions /> : <AddUntFooter noForm={props.empty} />}
         </AuthForm>
       </UnitFormContext.Provider>
     </FlowProgress>

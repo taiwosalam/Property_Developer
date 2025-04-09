@@ -87,8 +87,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = state;
 
   const isFacility = formType === "facility";
-  console.log("isFacility", isFacility);
-
   // const selectedBranchId = selectedBranch.value || propertyDetails?.branch_id;
   const selectedBranchId = selectedBranch.value;
 
@@ -411,10 +409,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               id="title"
               label={
                 formType === "rental"
-                  ? "Property Title"
+                  ? "Property Name"
                   : selectedCategory?.toLocaleLowerCase() === "estate"
                   ? "Estate Name"
-                  : "Facility Name"
+                  : selectedCategory?.toLocaleLowerCase() === "facility"
+                  ? "Facility Name"
+                  : "Estate/Facility Name"
               }
               inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
               required
@@ -835,9 +835,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
                     <Modal>
                       <ModalTrigger asChild>
-                        <button className="bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
-                          {" "}
-                          Pick location{" "}
+                        <button className="capitalize bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
+                          Set Location
                         </button>
                       </ModalTrigger>
                       <ModalContent>

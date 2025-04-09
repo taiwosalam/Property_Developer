@@ -47,6 +47,7 @@ import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import TableLoading from "@/components/Loader/TableLoading";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const AccountingInvoicePage = () => {
   const isDarkMode = useDarkMode();
@@ -191,6 +192,15 @@ const AccountingInvoicePage = () => {
   if (isNetworkError) return <NetworkError />;
 
   const { statistics, invoices } = invoiceData;
+  const transformedInvoiceTableData = invoices.map((i) => ({
+    ...i,
+    client_name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{i.client_name}</span>
+        {i.badge_color && <BadgeIcon color={i.badge_color} />}
+      </p>
+    ),
+  }));
 
   // console.log("stats", invoices)
 
@@ -289,7 +299,7 @@ const AccountingInvoicePage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={300}>
+          <AutoResizingGrid gap={24} minWidth={320}>
             <AccountStatsCard
               title="Total Invoice Created"
               balance={statistics.total_receipt}
@@ -342,7 +352,7 @@ const AccountingInvoicePage = () => {
           ) : (
             <CustomTable
               fields={invoiceTableFields}
-              data={invoices}
+              data={transformedInvoiceTableData}
               tableHeadStyle={{ height: "76px" }}
               tableHeadCellSx={{ fontSize: "1rem" }}
               tableBodyCellSx={{

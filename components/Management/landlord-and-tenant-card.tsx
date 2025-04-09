@@ -7,6 +7,7 @@ import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 export interface UserCardProps {
   picture_url?: string | null;
   name: string;
+  id?: string | null;
   email?: string | null;
   phone_number?: string | null;
   user_tag: string;

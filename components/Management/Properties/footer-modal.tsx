@@ -145,10 +145,6 @@ const FooterModal = ({
           className="py-2 px-8"
           disabled={submitLoading}
           onClick={handleNoClick}
-          // onClick={(e) => {
-          //   setIsOpen(false);
-          //   e.currentTarget.form?.requestSubmit();
-          // }}
           size="base_medium"
         >
           {submitLoading ? "Please wait..." : "No"}

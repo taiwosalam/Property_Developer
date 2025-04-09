@@ -129,7 +129,7 @@ export const transformTenantApiResponse = (
       phone_number: tenant.phone,
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
-      note: tenant.note.note !== null,
+      note: tenant.note.note !== null && tenant.note.note !== "",
       badge_color: tenant.user_tier ? tierColorMap[tenant.user_tier] : undefined,
     })),
   };

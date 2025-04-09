@@ -1,21 +1,21 @@
-'use client';
-import clsx from 'clsx';
-import SearchInput from '../SearchInput/search-input';
-import { GridIcon, ListIcon } from '@/public/icons/icons';
-import { Modal, ModalContent, ModalTrigger } from '../Modal/modal';
-import FilterButton from '../FilterButton/filter-button';
-import FilterModal from '../Management/Landlord/filters-modal';
-import PageTitle from '../PageTitle/page-title';
-import SortButton from '../FilterButton/sort-button';
-import ExportButton from '../reports/export-button';
+"use client";
+import clsx from "clsx";
+import SearchInput from "../SearchInput/search-input";
+import { GridIcon, ListIcon } from "@/public/icons/icons";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import FilterButton from "../FilterButton/filter-button";
+import FilterModal from "../Management/Landlord/filters-modal";
+import PageTitle from "../PageTitle/page-title";
+import SortButton from "../FilterButton/sort-button";
+import ExportButton from "../reports/export-button";
 import {
   FilterOptionMenu,
   FilterOption,
   FilterResult,
   // FilterModalProps,
   // FilterOptionObj,
-} from '../Management/Landlord/types';
-import { ReactNode } from 'react';
+} from "../Management/Landlord/types";
+import { ReactNode } from "react";
 
 interface FilterModalProps {
   handleFilterApply: (selectedFilters: FilterResult) => void;
@@ -26,7 +26,6 @@ interface FilterModalProps {
   filterOptionsMenu?: FilterOptionMenu[];
   appliedFilters?: FilterResult;
 }
-
 
 export interface FilterOptionObj {
   radio?: boolean;
@@ -58,13 +57,16 @@ interface FilterBarProps extends FilterModalProps {
   iconOnly?: boolean;
   noExclamationMark?: boolean;
   handleSearch?: (query: string) => void;
-  onSort?: (order: 'asc' | 'desc') => void;
+  onSort?: (order: "asc" | "desc") => void;
   noFilterButton?: boolean;
   isDateTrue?: boolean;
   handleFilterApply: (filters: any) => void;
-  inputOff?: boolean
+  inputOff?: boolean;
   customLeft?: ReactNode;
   customRight?: ReactNode;
+  printRef?: React.RefObject<HTMLDivElement>;
+  firstPageRef?: React.RefObject<HTMLDivElement>;
+  restOfContentRef?: React.RefObject<HTMLDivElement>;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -94,13 +96,14 @@ const FilterBar: React.FC<FilterBarProps> = ({
   inputOff,
   customLeft,
   customRight,
+  firstPageRef,
+  restOfContentRef,
+  printRef,
 }) => {
   return (
-    <div className='page-title-container w-full'>
+    <div className="page-title-container w-full">
       {customLeft ? (
-        <div className="custom-left">
-          {customLeft}
-        </div>
+        <div className="custom-left">{customLeft}</div>
       ) : (
         pageTitle && (
           <PageTitle
@@ -113,39 +116,40 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
       <div
         className={clsx(
-          'flex items-center gap-4 flex-wrap',
-          !pageTitle && 'ml-auto'
+          "flex items-center gap-4 flex-wrap",
+          !pageTitle && "ml-auto"
         )}
       >
         <SearchInput
           placeholder={searchInputPlaceholder}
-          className={`max-w-[250px] md:max-w-max ${hiddenSearchInput && 'hidden'
-            }`}
+          className={`max-w-[250px] md:max-w-max ${
+            hiddenSearchInput && "hidden"
+          }`}
           onSearch={handleSearch}
         />
         {hasGridListToggle && (
-          <div className='flex items-center gap-3'>
+          <div className="flex items-center gap-3">
             <button
-              type='button'
-              aria-label='list-view'
+              type="button"
+              aria-label="list-view"
               className={clsx(
-                'p-1 rounded-md',
+                "p-1 rounded-md",
                 !gridView
-                  ? 'bg-black text-white dark:bg-[#020617] dark:text-darkText-1'
-                  : 'bg-transparent text-[unset]'
+                  ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
+                  : "bg-transparent text-[unset]"
               )}
               onClick={setListView}
             >
               <ListIcon />
             </button>
             <button
-              type='button'
-              aria-label='grid-view'
+              type="button"
+              aria-label="grid-view"
               className={clsx(
-                'p-1 rounded-md',
+                "p-1 rounded-md",
                 gridView
-                  ? 'bg-black text-white dark:bg-[#020617] dark:text-darkText-1'
-                  : 'bg-transparent text-[unset]'
+                  ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
+                  : "bg-transparent text-[unset]"
               )}
               onClick={setGridView}
             >
@@ -172,12 +176,21 @@ const FilterBar: React.FC<FilterBarProps> = ({
           </ModalContent>
         </Modal>
         {exports && (
-          <div className='flex items-center gap-4'>
+          <div className="flex items-center gap-4">
             <ExportButton
-              type='pdf'
+              type="pdf"
               href={exportHref}
+              printRef={printRef}
+              firstPageRef={firstPageRef}
+              restOfContentRef={restOfContentRef}
             />
-            <ExportButton type='csv' />
+            <ExportButton
+              type="csv"
+              href={exportHref}
+              printRef={printRef}
+              firstPageRef={firstPageRef}
+              restOfContentRef={restOfContentRef}
+            />
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { PlusIcon } from "@/public/icons/icons";
 import DraggableImage from "./draggable-image";
 import { useUnitForm } from "./unit-form-context";
@@ -9,7 +9,7 @@ import { useAddUnitStore } from "@/store/add-unit-store";
 // import { MAX_FILE_SIZE_MB } from "@/data";
 import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
 
-const UnitPictures = () => {
+const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   const { images, setImages, isEditing, formResetKey } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const maxImages = propertyType === "facility" ? 5 : 14;
@@ -47,10 +47,8 @@ const UnitPictures = () => {
     }
   }, [formResetKey, resetImages]);
 
-  console.log("images", images)
-
   return (
-    <div className={clsx(isEditing && "!mt-0")}>
+    <div ref={ref} className={clsx("scroll-mt-[160px]", isEditing && "!mt-0")}>
       <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
         Unit Pictures
       </h4>
@@ -110,6 +108,6 @@ const UnitPictures = () => {
       </DragDropContext>
     </div>
   );
-};
-
+});
+UnitPictures.displayName = "UnitPictures";
 export default UnitPictures;

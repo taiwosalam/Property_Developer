@@ -1,3 +1,5 @@
+"use client";
+
 import Select from "@/components/Form/Select/select";
 import { useState, useEffect } from "react";
 import { Occupant, TenantResponse } from "./types";
@@ -7,7 +9,7 @@ import AddOccupantWithId from "./add-occupant-with-id-modal";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { MatchedProfile } from "./matched-profile";
-import { DUMMY_OCCUPANT, calculateDueDate, transformTenantData, type RentPeriod } from "./data";
+import { calculateDueDate, transformTenantData, type RentPeriod } from "./data";
 import { RentSectionTitle } from "./rent-section-container";
 import { Dayjs } from "dayjs";
 import useFetch from "@/hooks/useFetch";
@@ -39,171 +41,166 @@ export const ProfileForm: React.FC<{
   period,
   setStart_date,
 }) => {
-    const [selectedId, setSelectedId] = useState<string>("");
+  const [selectedId, setSelectedId] = useState<string>("");
+  const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
 
-    const [startDate, setStartDate] = useState<Dayjs | null>(null);
-    const [dueDate, setDueDate] = useState<Dayjs | null>(null);
-    const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
 
+  console.log("selectedId", selectedId);
+  useEffect(() => {
+    if (period) {
+      setRentPeriod(period);
+    }
+  }, [period]);
 
-    useEffect(() => {
-      if (period) {
-        setRentPeriod(period);
-      }
-    }, [period]);
+  // Handle select id from dropdown
+  const handleSelectId = (id: string) => {
+    setSelectedId(id);
+    setSelectedTenantId(id);
+    setIsModalIdSelected(false); // Reset the flag when dropdown is used
+  };
 
-    // handle select id
-    const handleSelectId = (id: string) => {
-      setSelectedId(id);
-      setSelectedTenantId(id);
-    };
+  // Callback function to receive the ID from AddOccupantWithId
+  const handleTenantIdFromModal = (tenantId: string) => {
+    setSelectedId(tenantId);
+    setSelectedTenantId(tenantId);
+    setIsModalIdSelected(true); // Set the flag when modal is used
+  };
 
-    // Simulate API call
-    useEffect(() => {
-      if (!selectedId) {
-        onOccupantSelect(null);
-        onLoadingChange(false);
-        onError(null);
-        return;
-      }
-    }, [selectedId, onLoadingChange, onOccupantSelect])
+  useEffect(() => {
+    if (!selectedId) {
+      onOccupantSelect(null);
+      onError(null);
+      return;
+    }
+  }, [selectedId, onOccupantSelect, onError]);
 
-    const {
-      data,
-      loading,
-      error
-    } = useFetch<TenantResponse>(`/tenant/${selectedId}`)
+  const { data, loading, error } = useFetch<TenantResponse>(
+    `/tenant/${selectedId}`
+  );
 
-    useEffect(() => {
-      onLoadingChange(false)
-      // onError(error)
-      if (data) {
-        const transformedData = transformTenantData(data)
-        onOccupantSelect(transformedData)
-      }
-    }, [data])
+  useEffect(() => {
+    if (data) {
+      const transformedData = transformTenantData(data);
+      onOccupantSelect(transformedData);
+    }
+  }, [data]);
 
+  // Calculate due date when start date or rent period changes
+  useEffect(() => {
+    if (!startDate) {
+      setDueDate(null);
+      return;
+    }
+    const formattedStartDate = startDate.format("YYYY-MM-DD");
+    setStart_date(formattedStartDate);
+    setDueDate(calculateDueDate(startDate, rentPeriod));
+  }, [startDate, rentPeriod, setStart_date]);
 
-    // Calculate due date when start date or rent period changes
-    useEffect(() => {
-      if (!startDate) {
-        setDueDate(null);
-        return;
-      }
-      // Convert Dayjs object to a valid date string
-      const formattedStartDate = startDate.format("YYYY-MM-DD");
+  const [selectedOptions, setSelectedOptions] = useState<
+    Record<string, boolean>
+  >({
+    create_invoice: true,
+    mobile_notification: true,
+    sms_alert: true,
+    email_alert: true,
+  });
 
-      setStart_date(formattedStartDate);
-      setDueDate(calculateDueDate(startDate, rentPeriod));
-    }, [startDate, rentPeriod]);
+  const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [optionKey]: checked,
+    }));
+  };
 
-    // Initial state for each option
-    const [selectedOptions, setSelectedOptions] = useState<Record<string, boolean>>({
-      create_invoice: true,
-      mobile_notification: true,
-      sms_alert: true,
-      email_alert: true,
-    });
+  useEffect(() => {
+    if (setSelectedCheckboxOptions) {
+      setSelectedCheckboxOptions(selectedOptions);
+    }
+  }, [selectedOptions, setSelectedCheckboxOptions]);
 
+  const options = [
+    "Create Invoice",
+    "Mobile Notification",
+    "SMS Alert",
+    "Email Alert",
+  ];
 
-    // Handler for checkbox change events
-    const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
-      setSelectedOptions((prev) => ({
-        ...prev,
-        [optionKey]: checked,
-      }));
-    };
+  // Determine the value to set for the Select component
+  const selectValue = isModalIdSelected ? "" : selectedId;
 
-    // Update parent's state when selectedOptions changes
-    useEffect(() => {
-      if (setSelectedCheckboxOptions) {
-        setSelectedCheckboxOptions(selectedOptions);
-      }
-    }, [selectedOptions, setSelectedCheckboxOptions]);
-
-
-    // Optional: if you need a string representation
-    const optionsAsString = JSON.stringify(selectedOptions);
-
-    const options = [
-      "Create Invoice",
-      "Mobile Notification",
-      "SMS Alert",
-      "Email Alert",
-    ];
-
-
-    return (
-      <div className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex flex-col md:flex-row md:items-end gap-x-[35px] gap-y-4">
-            <Select
-              id={`available_${isRental ? "tenant" : "occupant"}`}
-              label={`Choose Available ${isRental ? "Tenant" : "Occupant"}`}
-              options={occupants.map((occupant) => ({
-                label: occupant.name,
-                value: occupant.id,
-              }))}
-              className="md:flex-1 md:max-w-[300px]"
-              // onChange={setSelectedId}
-              onChange={(value) => handleSelectId(value)}
-            />
-            <Modal>
-              <ModalTrigger asChild>
-                <Button size="16_bold" className="py-2 px-6">
-                  Choose With ID
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <AddOccupantWithId />
-              </ModalContent>
-            </Modal>
-          </div>
-          <div className="block lg:hidden">
-            <MatchedProfile
-              occupant={selectedOccupant}
-              // isLoading={occupantLoading}
-              isLoading={loading}
-              error={occupantError}
-              title="Matched Profile"
-            />
-          </div>
-        </div>
-        <RentSectionTitle>
-          Start {isRental ? "Rent" : "Counting"}
-        </RentSectionTitle>
-        <div className="h-[1px] bg-[#C0C2C8] mb-4" />
-        <div className="grid grid-cols-2 gap-4">
-          <DateInput
-            disablePast
-            id="start date"
-            label="Start Date"
-            value={startDate}
-            onChange={setStartDate}
+  return (
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <div className="flex flex-col md:flex-row md:items-end gap-x-[35px] gap-y-4">
+          <Select
+            id={`available_${isRental ? "tenant" : "occupant"}`}
+            label={`Choose Available ${isRental ? "Tenant" : "Occupant"}`}
+            options={occupants.map((occupant) => ({
+              label: occupant.name,
+              value: occupant.id,
+            }))}
+            className="md:flex-1 md:max-w-[300px]"
+            onChange={(value) => handleSelectId(value)}
+            // value={selectValue} // Conditionally set the value
           />
-          <DateInput
-            id="due date"
-            label="Due Date"
-            disabled
-            value={dueDate}
-            className="opacity-50"
-          />
+          <Modal>
+            <ModalTrigger asChild>
+              <Button size="16_bold" className="py-2 px-6">
+                Choose With ID
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddOccupantWithId onTenantIdSelect={handleTenantIdFromModal} />
+            </ModalContent>
+          </Modal>
         </div>
-        <div className="flex items-center justify-end gap-4 flex-wrap">
-          {options.map((option) => {
-            const key = option.toLowerCase().replace(/\s+/g, "_");
-            return (
-              <Checkbox
-                sm
-                key={key}
-                defaultChecked={selectedOptions[key]}
-                onChange={handleCheckboxChange(key)}
-              >
-                {option}
-              </Checkbox>
-            );
-          })}
+        <div className="block lg:hidden">
+          <MatchedProfile
+            occupant={selectedOccupant}
+            isLoading={loading}
+            error={occupantError}
+            title="Matched Profile"
+          />
         </div>
       </div>
-    );
-  };
+      <RentSectionTitle>
+        Start {isRental ? "Rent" : "Counting"}
+      </RentSectionTitle>
+      <div className="h-[1px] bg-[#C0C2C8] mb-4" />
+      <div className="grid grid-cols-2 gap-4">
+        <DateInput
+          disablePast
+          id="start date"
+          label="Start Date"
+          value={startDate}
+          onChange={setStartDate}
+        />
+        <DateInput
+          id="due date"
+          label="Due Date"
+          disabled
+          value={dueDate}
+          className="opacity-50"
+        />
+      </div>
+      <div className="flex items-center justify-end gap-4 flex-wrap">
+        {options.map((option) => {
+          const key = option.toLowerCase().replace(/\s+/g, "_");
+          return (
+            <Checkbox
+              sm
+              key={key}
+              defaultChecked={selectedOptions[key]}
+              onChange={handleCheckboxChange(key)}
+            >
+              {option}
+            </Checkbox>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

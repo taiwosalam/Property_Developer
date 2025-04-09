@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import PropertyDetails from "@/components/Management/Properties/property-details";
 import PropertySettings from "@/components/Management/Properties/property-settings";
@@ -143,7 +143,9 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
               </>
             )}
             {(addedUnits.length === 0 || showUnitForm) && (
-              <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
+              <div>
+                <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
+              </div>
             )}
           </div>
           {addedUnits.length > 0 && <AddUnitFooter noForm={true} />}

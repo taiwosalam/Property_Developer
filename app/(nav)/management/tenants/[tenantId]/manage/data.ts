@@ -207,7 +207,7 @@ export const transformIndividualTenantAPIResponse = ({
       last_updated: lastUpdated,
       write_up: data.note.note,
     },
-    note: data.note.note !== null,
+    note: data.note.note !== null && data.note.note !== "",
     guarantor_1: data.guarantor[0],
     guarantor_2: data.guarantor[1],
     documents: data.documents.flatMap((doc) => {
