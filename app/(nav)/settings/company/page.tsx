@@ -55,7 +55,7 @@ const Profile = () => {
     [key: string]: boolean;
   }>({});
 
-  // console.log("company id", company_id)
+  //
   const [address, setAddress] = useState({
     state: "",
     lga: "",
@@ -93,7 +93,7 @@ const Profile = () => {
     }
   }, [apiData]);
 
-  // console.log("apiData", apiData);
+  //
   const { preview, handleImageChange } = useImageUploader({
     placeholder: Transparent,
   });
@@ -104,7 +104,6 @@ const Profile = () => {
   const [uploadingMembership, setUploadingMembership] = useState(false);
 
   const handleUploadUtility = (file: File | null) => {
-    console.log(file);
     if (file) {
       setUploadingUtility(true);
     } else {
@@ -113,7 +112,6 @@ const Profile = () => {
   };
 
   const handleUploadMembership = (file: File | null) => {
-    console.log(file);
     if (file) {
       setUploadingMembership(true);
     } else {
@@ -136,10 +134,10 @@ const Profile = () => {
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);
     const data = transformFormCompanyData(formData);
-    console.log(data);
+
     try {
       const status = await updateCompanyDetails(data, company_id as string);
-      console.log(status);
+
       if (status) {
         toast.success("Company Details Updated Successfully");
         window.dispatchEvent(new Event("refetchProfile"));
@@ -212,9 +210,8 @@ const Profile = () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                   <FileInput
                     required
-                    noUpload
-                    id="membership_document"
-                    label="Membership document"
+                    id="cac_certificate"
+                    label="CAC document"
                     placeholder=""
                     buttonName="Document"
                     fileType="pdf"
@@ -245,7 +242,7 @@ const Profile = () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                   <FileInput
                     required
-                    id="membership_document"
+                    id="membership_certificate"
                     label="Membership document"
                     placeholder=""
                     buttonName="Document"
@@ -342,7 +339,6 @@ const Profile = () => {
                     Verify Document
                   </button>
                 )}
-          
               </div>
             </div>
             <CompanyMobileNumber
@@ -357,8 +353,13 @@ const Profile = () => {
             />
           </div>
           <div className="flex self-end mt-4 justify-end w-full">
-            <Button disabled={requestLoading} type="submit" className="px-8 py-2" size="base_medium">
-              {requestLoading ? "Please wait" : "Update"}
+            <Button
+              disabled={requestLoading}
+              type="submit"
+              className="px-8 py-2"
+              size="base_medium"
+            >
+              {requestLoading ? "Please wait..." : "Update"}
             </Button>
           </div>
         </AuthForm>

@@ -3,6 +3,7 @@ import {
   cleanPhoneNumber,
   objectToFormData,
 } from "@/utils/checkFormDataForImageOrAvatar";
+import { toast } from "sonner";
 
 interface SocialLinks {
   facebook: string;
@@ -338,6 +339,7 @@ interface CompanyPayload {
   bio: string;
   industry: string;
   membership_number: string;
+  membership_document: string | File;
   company_type_id: number;
   head_office_address: string;
   facebook: string;
@@ -348,6 +350,7 @@ interface CompanyPayload {
   youtube: string;
   website: string;
   cac_registration_number: string;
+  cac_document: string | File;
   dark_logo: string | File;
   utility_document: string | File;
   phone_number: string[];
@@ -359,12 +362,12 @@ export const transformFormCompanyData = (
 ): CompanyPayload => {
   const data = {} as CompanyPayload;
 
-  console.log(formData);
-
   data.company_logo = formData.get("light_company_logo") as string | File;
   data.dark_logo = formData.get("dark_company_logo") as string | File;
   data.industry = formData.get("industry") as string;
   data.membership_number = formData.get("membership_number") as string;
+  data.membership_document = formData.get("membership_certificate") as string | File;
+  data.cac_document = formData.get("cac_certificate") as string | File;
 
   data.head_office_address = formData.get("head_office_address") as string;
   data.state = formData.get("state") as string;
@@ -406,6 +409,25 @@ export const updateCompanyDetails = async (
     return false;
   }
 };
+
+export const updateCompanySocials = async (data: any, id: string) => {
+  try {
+    const response = await api.patch(`company/${id}/update`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Updated successfully!");
+      return response;
+    }
+    // console.log('res', response)
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const cleanStringtoArray = (phone_number: any) => {
   // Check if the string is empty or not
   if (phone_number && phone_number.trim()) {

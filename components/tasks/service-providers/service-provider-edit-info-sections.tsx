@@ -520,7 +520,7 @@ export const ServiceProviderNotesSection = () => {
         <Button
           size="base_medium"
           type="submit"
-          className="!w-fit ml-auto py-2 px-6"
+          className="!w-fit ml-auto py-2 px-6 mt-6 flex justify-end"
         >
           {loading ? "Updating..." : "Update"}
         </Button>
@@ -694,7 +694,7 @@ export const ServiceProviderEditAvatarInfoSection = () => {
           type="submit"
           disabled={loading}
         >
-          {loading ? "updating..." : "save"}
+          {loading ? "updating..." : "update"}
         </Button>
       </InfoEditSection>
     </AuthForm>

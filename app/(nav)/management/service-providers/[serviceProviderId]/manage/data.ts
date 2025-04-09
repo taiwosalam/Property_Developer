@@ -2,7 +2,7 @@ import api, { handleAxiosError } from "@/services/api";
 import type { ServiceProviderData, ServiceProviderPage } from "./types";
 import { IndividualServiceProvidersAPIResponse } from "@/app/(nav)/accountant/management/service-providers/[serviceProviderId]/manage/types";
 import { toast } from "sonner";
-import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+
 
 export const serviceProviderData: ServiceProviderData = {
   id: 1,
@@ -241,27 +241,44 @@ export const updateServiceProviderWithEmailOrID = async (
   }
 };
 
+// Define the valid colors used for badge display
+export const validBadgeColors = [
+  "green",
+  "black",
+  "blue",
+  "red",
+  "yellow",
+  "gray",
+] as const;
+
+export type BadgeIconColors = typeof validBadgeColors[number];
+
+// Map tier_id numbers to colors
+export const tierColorMap: Record<number, BadgeIconColors> = {
+  1: "red",
+  2: "yellow",
+  3: "blue",
+  4: "green",
+  5: "black",
+};
+
+// Extract a safe color based on the tier_id, with fallback to "gray"
+const getBadgeColor = (tierId: number | undefined | null): BadgeIconColors => {
+  const color = tierId ? tierColorMap[tierId] : undefined;
+  return validBadgeColors.includes(color as BadgeIconColors)
+    ? (color as BadgeIconColors)
+    : "gray"; // Fallback color
+};
+
+// Transform user card data into expected UI format
 export const transformUserCardData = (data: any) => {
-  const validateBadgeColor = (color: string): BadgeIconColors => {
-    const validColors: BadgeIconColors[] = [
-      "green",
-      "black",
-      "blue",
-      "red",
-      "yellow",
-      "gray",
-    ];
-    return validColors.includes(color as BadgeIconColors)
-      ? (color as BadgeIconColors)
-      : "gray"; // Default fallback color
-  };
   return {
-    name: data.name || data?.user?.name,
-    picture_url: data.avatar,
-    email: data.email,
-    phone_number: data.phone ?? data?.user?.phone,
-    user_tag: "web",
-    note: data?.note,
-    badge_color: validateBadgeColor(data.badge_color),
+    name: data.name || data?.user?.name || "",
+    picture_url: data.avatar || "",
+    email: data.email || "",
+    phone_number: data.phone ?? data?.user?.phone ?? "",
+    user_tag: data?.agent || "",
+    note: data?.note || "",
+    badge_color: getBadgeColor(data?.user?.tier_id),
   };
 };
