@@ -88,17 +88,6 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [showUnitForm, setAddUnitStore]);
 
-  // const unitFormRef = useRef<HTMLFormElement | null>(null);
-  const unitFormRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    if (showUnitForm && unitFormRef.current) {
-      unitFormRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [showUnitForm]);
-
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -154,12 +143,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
               </>
             )}
             {(addedUnits.length === 0 || showUnitForm) && (
-              <div ref={unitFormRef}>
-                <UnitForm
-                  // formRef={unitFormRef}
-                  empty
-                  hideEmptyForm={() => setShowUnitForm(false)}
-                />
+              <div>
+                <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
               </div>
             )}
           </div>

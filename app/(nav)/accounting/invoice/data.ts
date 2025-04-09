@@ -30,7 +30,7 @@ export const accountingInvoiceOptionsWithDropdown = [
 
 export const invoiceExportTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
-  { id: "2", label: "Client Name", accessor: "name" },
+  { id: "2", label: "Client Name", accessor: "client_name" },
   { id: "3", label: "Invoice ID", accessor: "invoice_id" },
   {
     id: "4",
@@ -49,7 +49,7 @@ export const invoiceExportTableFields: Field[] = [
 
 export const invoiceTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
-  { id: "2", label: "Client Name", accessor: "name" },
+  { id: "2", label: "Client Name", accessor: "client_name" },
   { id: "3", label: "Invoice ID", accessor: "invoice_id" },
   {
     id: "4",

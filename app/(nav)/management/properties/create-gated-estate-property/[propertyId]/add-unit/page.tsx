@@ -17,6 +17,7 @@ import { transformPropertyData } from "../../../create-rental-property/[property
 import { UnitTypeKey } from "@/data";
 import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
 import AddUnitFooter from "@/components/Management/Properties/AddUnitFooter";
+import FlowProgress from "@/components/FlowProgress/flow-progress";
 
 const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
@@ -31,6 +32,7 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
+  const [showUnitForm, setShowUnitForm] = useState(true);
 
   const resetForm = () => {
     setImages([]);
@@ -42,6 +44,7 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+  const newForm = useAddUnitStore((s) => s.newForm);
 
   const {
     data: propertyData,
@@ -71,6 +74,20 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
+  useEffect(() => {
+    if (newForm) {
+      setShowUnitForm(true);
+    } else {
+      setShowUnitForm(false);
+    }
+  }, [newForm]);
+
+  useEffect(() => {
+    if (showUnitForm) {
+      setAddUnitStore("editMode", true);
+    }
+  }, [showUnitForm, setAddUnitStore]);
+
   // useCustomBackNavigation({ customBackPath });
 
   if (loading) return <PageCircleLoader />;
@@ -83,53 +100,70 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   }
 
   return (
-    <UnitFormContext.Provider
-      value={{
-        images,
-        imageFiles,
-        unitType,
-        formResetKey,
-        setImages: (a) => {
-          setImages(a.images);
-          setImageFiles(a.imageFiles);
-        },
-        setUnitType,
-        submitLoading,
-        setSaveClick,
-        resetForm,
-        duplicate,
-        setDuplicate,
-      }}
+    <FlowProgress
+      steps={1}
+      activeStep={0}
+      inputClassName="unit-form-input"
+      showProgressBar={false}
+      key="unit-form-progress"
     >
-      <div className="pb-[100px]">
-        <BackButton customBackPath={customBackPath}>Add Units</BackButton>
-        <PageProgressBar
-          breakpoints={[25, 50, 75]}
-          percentage={37}
-          className="mb-[52px]"
-        />
-        <div className="space-y-6 lg:space-y-8">
-          <PropertyDetails heading="Estate/Facility Details" />
-          <PropertySettings heading="Estate/Facility Settings" />
-          {addedUnits.length > 0 && (
-            <>
-              <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
-                {hideEmptyForm ? "Units Summary" : "Added Units"}
-              </h4>
-              <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
-              {addedUnits.map((unit, index) => (
-                <AddUnitFormCard key={index} index={index} data={unit} />
-              ))}
-            </>
-          )}
+      <UnitFormContext.Provider
+        value={{
+          images,
+          imageFiles,
+          unitType,
+          formResetKey,
+          setImages: (a) => {
+            setImages(a.images);
+            setImageFiles(a.imageFiles);
+          },
+          setUnitType,
+          submitLoading,
+          setSaveClick,
+          resetForm,
+          duplicate,
+          setDuplicate,
+          setSubmitLoading,
+        }}
+      >
+        <div className="pb-[100px]">
+          <BackButton customBackPath={customBackPath}>Add Units</BackButton>
+          <PageProgressBar
+            breakpoints={[25, 50, 75]}
+            percentage={37}
+            className="mb-[52px]"
+          />
+          <div className="space-y-6 lg:space-y-8">
+            <PropertyDetails heading="Estate/Facility Details" />
+            <PropertySettings heading="Estate/Facility Settings" />
+            {addedUnits.length > 0 && (
+              <>
+                <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+                  {hideEmptyForm ? "Units Summary" : "Added Units"}
+                </h4>
+                <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
+                {addedUnits.map((unit, index) => (
+                  <AddUnitFormCard key={index} index={index} data={unit} />
+                ))}
+              </>
+            )}
 
-          {!hideEmptyForm && (
-            <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
-          )}
+            {/* {!hideEmptyForm && (
+              <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
+            )} */}
+            {(addedUnits.length === 0 || showUnitForm) && (
+              <div>
+                <UnitForm
+                  empty
+                  hideEmptyForm={() => setShowUnitForm(false)}
+                />
+              </div>
+            )}
+          </div>
+          {addedUnits.length > 0 && <AddUnitFooter noForm={true} />}
         </div>
-        {addedUnits.length > 0 && <AddUnitFooter noForm={true} />}
-      </div>
-    </UnitFormContext.Provider>
+      </UnitFormContext.Provider>
+    </FlowProgress>
   );
 };
 
