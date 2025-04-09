@@ -835,8 +835,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
                     <Modal>
                       <ModalTrigger asChild>
-                        <button className="bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
-                          Set location
+                        <button className="capitalize bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
+                          Set Location
                         </button>
                       </ModalTrigger>
                       <ModalContent>

@@ -310,7 +310,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           ) : (
             <UnitBreakdownFacility />
           )}
-          {!props.empty ? <EditUnitActions /> : <AddUntFooter />}
+          {!props.empty ? <EditUnitActions /> : <AddUntFooter noForm={props.empty} />}
         </AuthForm>
       </UnitFormContext.Provider>
     </FlowProgress>
