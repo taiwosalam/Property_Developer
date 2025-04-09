@@ -18,6 +18,7 @@ import { InvoiceListResponse, TransformedInvoiceData } from "../types";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const ExportInvoice = () => {
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
@@ -43,6 +44,15 @@ const ExportInvoice = () => {
   if (isNetworkError) return <NetworkError />;
 
   const { statistics, invoices } = invoiceData;
+  const transformedInvoiceTableData = invoices.map((i) => ({
+    ...i,
+    client_name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{i.client_name}</span>
+        {i.badge_color && <BadgeIcon color={i.badge_color} />}
+      </p>
+    ),
+  }));
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
@@ -63,10 +73,10 @@ const ExportInvoice = () => {
             />
           </div>
           <div className="custom-flex-col gap-6">
-            <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
+            <h1 className="text-black my-4 dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
               Invoice Summary
             </h1>
-            <AutoResizingGrid gap={24} minWidth={300}>
+            <AutoResizingGrid gap={24} minWidth={350}>
               <AccountStatsCard
                 title="Total Invoice Created"
                 balance={statistics.total_receipt}
@@ -94,7 +104,7 @@ const ExportInvoice = () => {
             </AutoResizingGrid>
             <CustomTable
               fields={invoiceExportTableFields}
-              data={invoices}
+              data={transformedInvoiceTableData}
               tableHeadStyle={{ height: "76px" }}
               tableHeadCellSx={{ fontSize: "1rem" }}
               tableBodyCellSx={{
