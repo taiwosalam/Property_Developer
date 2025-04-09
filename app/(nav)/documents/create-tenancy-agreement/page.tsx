@@ -24,6 +24,7 @@ import { TenancyAgreementPayload } from "@/components/Documents/types";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { createPropertyDocument } from "../data";
+import { property } from "lodash";
 
 const CreateTenancyAggrement = () => {
   const router = useRouter();
@@ -83,17 +84,17 @@ const CreateTenancyAggrement = () => {
           <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{
-                "property description": "--- ---",
-                "property address": propertyData?.address ?? "",
-                "annual rent": "",
-                "caution deposit": "",
+                "property name": propertyData?.property_name || "--- ---",
+                "property address": propertyData?.address || "--- ---",
+                "agency fee": propertyData?.agency_fee != null ? `${propertyData.agency_fee}%` : "--- ---",
+                "property type": propertyData?.propertyType || "--- ---",
               }}
               chunkSize={2}
               referenceObject={{
-                "property description": "",
+                "property name": "",
                 "property address": "",
-                "annual rent": "",
-                "caution deposit": "",
+                "agency fee": "",
+                "property type": "",
               }}
             />
           </div>
@@ -107,14 +108,14 @@ const CreateTenancyAggrement = () => {
             <KeyValueList
               data={{
                 "Landlord/Landlady Name":
-                  propertyData?.landlord_info?.name ?? "",
-                "Landlord/Landlady ID": propertyData?.landlord_id ?? "",
+                  propertyData?.landlord_info?.name || "--- ---",
+                "Landlord/Landlady ID": propertyData?.landlord_id || "--- ---",
                 "Landlord/Landlady Address": `${
-                  propertyData?.landlord_info?.address ?? ""
-                } ${propertyData?.landlord_info?.city ?? ""} ${
-                  propertyData?.landlord_info?.state ?? ""
+                  propertyData?.landlord_info?.address || "---"
+                } ${propertyData?.landlord_info?.city || "---"} ${
+                  propertyData?.landlord_info?.state || "---"
                 }`,
-                "account type": propertyData?.landlordData?.agent ?? "",
+                "account type": propertyData?.landlordData?.agent || "--- ---",
               }}
               chunkSize={2}
               referenceObject={{

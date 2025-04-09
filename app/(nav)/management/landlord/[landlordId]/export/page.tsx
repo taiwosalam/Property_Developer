@@ -30,7 +30,7 @@ const LandlordExport = () => {
     ...item,
     name: (
       <p className="flex items-center whitespace-nowrap">
-        <span>{item.name}</span>
+        <span>{item.name || "--- ---"}</span>
         {item.badge_color && <BadgeIcon color={item.badge_color} />}
       </p>
     ),

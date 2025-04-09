@@ -112,7 +112,7 @@ const Landlord = () => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
     const statesArray = menuOptions["State"] || [];
-    const agent = menuOptions["Landlord Type"]?.[0];
+    const agent = menuOptions["Landlord/Landlady Type"]?.[0];
     const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: LandlordRequestParams = {
@@ -236,8 +236,10 @@ const Landlord = () => {
     full_name: (
       <p className="flex items-center whitespace-nowrap">
         <span>{l.name}</span>
-        {l.badge_color && <BadgeIcon color={l.badge_color} />}
-        {l.note && <NoteBlinkingIcon size={20} className="blink-color" />}
+        <div className="flex gap-2 items-center">
+          {l.badge_color && <BadgeIcon color={l.badge_color} />}
+          {l.note && <NoteBlinkingIcon size={20} className="blink-color" />}
+        </div>
       </p>
     ),
     user_tag: (

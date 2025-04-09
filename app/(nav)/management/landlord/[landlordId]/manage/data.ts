@@ -266,7 +266,7 @@ export const transformIndividualLandlordAPIResponse = ({
         date: s.date ? moment(s.date).format("DD/MM/YYYY") : "--- ---",
         badge_color: s.payer_tier
           ? tierColorMap[s.payer_tier as keyof typeof tierColorMap]
-          : "gray",
+          : null,
       };
     }),
   };

@@ -39,21 +39,9 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
 
   const handleAddMoreClick = () => {
     handleInputChange(); // Trigger state update
-    setCheckSubmit(true); // Set flag to check validation in useEffect
+    setCheckSubmit(true); 
   };
 
-  // const handleAddMoreClick = async () => {
-  //   // Explicitly call handleInputChange to ensure the latest state is used
-  //   // await handleInputChange();
-  //   console.log("footer can submit -", canSubmit);
-  //   if (!canSubmit) {
-  //     toast.error(
-  //       `The following fields are required: ${missingFields.join(", ")}`
-  //     );
-  //     return;
-  //   }
-  //   setFooterModalOpen(true);
-  // };
 
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

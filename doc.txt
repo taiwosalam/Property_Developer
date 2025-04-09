@@ -81,1104 +81,349 @@ check management/vehicles-record filter for reference
 
 
 
-        // "use client";
-// import { useState, useEffect } from "react";
-// import PageCircleLoader from "@/components/Loader/PageCircleLoader";
-// import PropertyDetails from "@/components/Management/Properties/property-details";
-// import PropertySettings from "@/components/Management/Properties/property-settings";
-// import { useAddUnitStore } from "@/store/add-unit-store";
-// import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
-// import UnitForm from "@/components/Management/Properties/unit-form";
-// import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
-// import useFetch from "@/hooks/useFetch";
-// import BackButton from "@/components/BackButton/back-button";
-// import { SinglePropertyResponse } from "../../../[id]/data";
-// import NetworkError from "@/components/Error/NetworkError";
-// import { transformPropertyData } from "./data";
-// // import { useCustomBackNavigation } from "@/hooks/useCustomBackNavigation";
+ // "use client";
+
+// import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+// import Link from "next/link";
 // import { useRouter } from "next/navigation";
-// import AddUntFooter from "@/components/Management/Properties/AddUnitFooter";
-// import FixedFooter from "@/components/FixedFooter/fixed-footer";
 // import Button from "@/components/Form/Button/button";
+// import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
+// import CustomTable from "@/components/Table/table";
+// import type { DataItem } from "@/components/Table/types";
 // import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import FooterModal from "@/components/Management/Properties/footer-modal";
-// import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
-
-// const AddUnit = ({ params }: { params: { propertyId: string } }) => {
-//   const { propertyId } = params;
-//   const customBackPath = `/management/properties/${propertyId}/edit-property`;
-//   const router = useRouter();
-//   const [dataNotFound, setDataNotFound] = useState(false);
-
-//   const [hideEmptyForm, setHideEmptyForm] = useState(false);
-
-//   const addedUnits = useAddUnitStore((s) => s.addedUnits);
-
-//   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-//   // const resetStore = useAddUnitStore((s) => s.resetStore);
-//   // resetStore();
-//   const {
-//     data: propertyData,
-//     loading,
-//     isNetworkError,
-//     error,
-//   } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
-
-//   useEffect(() => {
-//     if (propertyData) {
-//       const transformedData = transformPropertyData(propertyData);
-//       if (!transformedData) {
-//         setDataNotFound(true);
-//         return;
-//       }
-//       if (transformedData.propertyType === "facility") {
-//         router.push(
-//           `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
-//         );
-//       }
-//       setDataNotFound(false);
-//       setAddUnitStore("property_id", transformedData.property_id);
-//       setAddUnitStore("propertyType", transformedData.propertyType);
-//       setAddUnitStore("propertyDetails", transformedData.propertyDetails);
-//       setAddUnitStore("propertySettings", transformedData.propertySettings);
-//       setAddUnitStore("addedUnits", transformedData.addedUnits);
-//     }
-//   }, [propertyData, setAddUnitStore, router, propertyId]);
-
-//   // useCustomBackNavigation({ customBackPath });
-//   // console.log("addedUnits", addedUnits);
-
-//   if (loading) return <PageCircleLoader />;
-//   if (isNetworkError) return <NetworkError />;
-//   if (error) return <div className="text-red-500">{error}</div>;
-//   if (dataNotFound)
-//     return <div className="text-red-500">Property Data not found</div>;
-
-//   return (
-//     <div className="pb-[100px]">
-//       <BackButton customBackPath={customBackPath}>Add Units</BackButton>
-//       <PageProgressBar
-//         breakpoints={[25, 50, 75]}
-//         percentage={37}
-//         className="mb-[52px]"
-//       />
-//       <div className="space-y-6 lg:space-y-8">
-//         <PropertyDetails heading="Property Details" />
-//         <PropertySettings heading="Property Settings" />
-//         {addedUnits.length > 0 && (
-//           <>
-//             <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
-//               {hideEmptyForm ? "Units Summary" : "Added Units"}
-//             </h4>
-//             <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
-//             {addedUnits.map((unit, index) => (
-//               <AddUnitFormCard key={index} index={index} data={unit} />
-//             ))}
-//           </>
-//         )}
-//         {!hideEmptyForm && (
-//           <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddUnit;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { NextRequest, NextResponse } from "next/server";
-// import { roleBasedRoutes } from "./data";
-
-// export async function middleware(req: NextRequest) {
-//   const emailVerified = req.cookies.get("emailVerified")?.value;
-//   const currentPath = req.nextUrl.pathname;
-//   const role = req.cookies.get("role")?.value;
-//   const company_status = req.cookies.get("company_status")?.value;
-
-//   console.log("server role", role);
-//   console.log("server company_status", company_status);
-
-//   // Public routes accessible without authentication
-//   const publicRoutes = [
-//     "/auth/user/sign-in",
-//     "/auth/sign-in",
-//     "/auth/sign-up",
-//     "/auth/setup",
-//     "/auth/forgot-password",
-//     "/management/agent-community",
-//   ];
-
-//   if (publicRoutes.includes(currentPath)) {
-//     return NextResponse.next();
-//   }
-
-//   // Allow access to `/auth/user/sign-in`
-//   if (currentPath === "/auth/user/sign-in") {
-//     return NextResponse.next();
-//   }
-
-//   // Allow `/auth/sign-in` for directors; redirect others to `/auth/user/sign-in`
-//   if (currentPath === "/auth/sign-in") {
-//     if (role === "director") return NextResponse.next();
-//     return NextResponse.redirect(new URL("/auth/user/sign-in", req.url));
-//   }
-
-//   // Define dashboard paths that should bypass the company_status check
-//   const dashboardPaths = [
-//     '/dashboard',
-//     '/accountant/dashboard',
-//     '/manager/dashboard',
-//     '/staff/dashboard',
-//     '/user/dashboard',
-//   ];
-
-//   // Company status check: if currentPath does NOT start with one of the dashboard paths,
-//   // then if company_status is "pending" or "rejected", redirect to unauthorized.
-//   if (
-//     !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
-//     (company_status === 'pending' || company_status === 'rejected')
-//   ) {
-//     return NextResponse.redirect(new URL('/unauthorized', req.url));
-//   }
-
-//   // Role-based route restrictions
-//   const allowedRoutes =
-//     roleBasedRoutes[role as keyof typeof roleBasedRoutes] || [];
-//   if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {
-//     return NextResponse.redirect(new URL("/unauthorized", req.url));
-//   }
-
-//   // Allow access and set headers for debugging or downstream use
-//   const response = NextResponse.next();
-//   response.headers.set("x-authorization-status", "authorized");
-//   return response;
-// }
-
-// export const config = {
-//   matcher: [
-//     "/dashboard/:path*",
-//     "/wallet/:path*",
-//     "/auth/:path*",
-//     "/manager/:path*",
-//     "/management/:path*",
-//     "/tasks/:path*",
-//     "/reports/:path*",
-//     "/listing/:path*",
-//     "/accounting/:path*",
-//     "/applications/:path*",
-//     "/documents/:path*",
-//     "/settings/:path*",
-//     "/messages/:path*",
-//     "/notifications/:path*",
-//   ],
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const handleSubmit = async (formData: Record<string, any>) => {
-  //   if (!propertyId) return;
-  //   if (propertyType !== "facility" && state.images.length === 0) {
-  //     toast.warning("Please add at least one picture");
-  //     return;
-  //   }
-  //   // Check if strings contain at least one digit
-  //   const hasNoDigits = (str: string) => !/\d/.test(str);
-  //   if (
-  //     (formData.number_of && hasNoDigits(formData.number_of)) ||
-  //     (formData.total_area_sqm && hasNoDigits(formData.total_area_sqm))
-  //   ) {
-  //     toast.warning("Please enter valid measurement values");
-  //     return;
-  //   }
-  //   setSubmitLoading(true);
-  //   convertYesNoToBoolean(formData, yesNoFields);
-  //   const transformedData = transformUnitFormData(
-  //     formData,
-  //     state.imageFiles,
-  //     propertyId
-  //   );
-  //   if (props.empty) {
-  //     const unitId = await createUnit(propertyId, transformedData);
-  //     if (unitId) {
-  //       if (saveClick) {
-  //         setSubmitLoading(false);
-  //         resetForm();
-  //         formRef.current?.reset();
-  //         router.push("/management/properties/");
-  //         return;
-  //       }
-  //       const unitData = await getUnitById(unitId);
-  //       if (unitData) {
-  //         if (duplicate?.val) {
-  //           addUnit(unitData, duplicate.count);
-  //           setDuplicate({
-  //             val: false,
-  //             count: 1,
-  //           });
-  //           props.hideEmptyForm();
-  //         } else {
-  //           addUnit(unitData);
-  //         }
-  //         formRef.current?.reset();
-  //         resetForm();
-  //       }
-  //     }
-  //   } else {
-  //     if (props.data.notYetUploaded) {
-  //       const unitId = await createUnit(propertyId, transformedData);
-  //       if (unitId) {
-  //         const unitData = await getUnitById(unitId);
-  //         if (unitData) {
-  //           editUnit(props.index, unitData);
-  //         }
-  //       }
-  //     } else {
-  //       const { newImages, retainedImages } = transformedData.images.reduce<{
-  //         newImages: File[];
-  //         retainedImages: string[];
-  //       }>(
-  //         (acc, image) => {
-  //           if (image instanceof File) {
-  //             acc.newImages.push(image);
-  //           } else {
-  //             const matchingImage = props.data.images.find(
-  //               (img) => img.path === image
-  //             );
-  //             if (matchingImage) {
-  //               acc.retainedImages.push(matchingImage.id);
-  //             }
-  //           }
-  //           return acc;
-  //         },
-  //         { newImages: [], retainedImages: [] }
-  //       );
-  //       const editUnitPayload = {
-  //         ...transformedData,
-  //         images: newImages,
-  //         retain_images: retainedImages,
-  //       };
-  //       const unitId = await editUnitApi(props.data.id, editUnitPayload);
-  //       if (unitId) {
-  //         const unitData = await getUnitById(unitId);
-  //         if (unitData) {
-  //           editUnit(props.index, unitData);
-  //         }
-  //       }
-  //     }
-  //     props.setIsEditing(false);
-  //   }
-  //   setSubmitLoading(false);
-  // };
-
-
-
-
-// import Input from "@/components/Form/Input/input";
-// import Select from "@/components/Form/Select/select";
-// import { rentPeriods } from "@/data";
-// import { useAddUnitStore } from "@/store/add-unit-store";
-// import { useState, useEffect, useMemo } from "react";
-// import { DeleteIconX } from "@/public/icons/icons";
+// import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+// import { getAllStates } from "@/utils/states";
 // import {
-//   formatNumber,
-//   currencySymbols,
-//   formatCostInputValue,
-// } from "@/utils/number-formatter";
-// import { useUnitForm } from "./unit-form-context";
+//   type BranchesPageData,
+//   initialBranchesPageData,
+//   branchTableFields,
+//   type BranchApiResponse,
+//   type BranchRequestParams,
+//   transformBranchApiResponse,
+// } from "./data";
+// import Pagination from "@/components/Pagination/pagination";
+// import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
+// import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+// import FilterBar from "@/components/FIlterBar/FilterBar";
+// import CustomLoader from "@/components/Loader/CustomLoader";
+// import TableLoading from "@/components/Loader/TableLoading";
+// import CardsLoading from "@/components/Loader/CardsLoading";
+// import useView from "@/hooks/useView";
+// import useFetch from "@/hooks/useFetch";
+// import NetworkError from "@/components/Error/NetworkError";
+// import EmptyList from "@/components/EmptyList/Empty-List";
+// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+// import { ExclamationMark } from "@/public/icons/icons";
+// import { FilterResult } from "@/components/Management/Landlord/types";
+// import { AxiosRequestConfig } from "axios";
+// import dayjs from "dayjs";
+// import { toast } from "sonner";
+// import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
-// const UnitBreakdownFacility = () => {
-//   const { formResetKey, unitData } = useUnitForm();
-//   const propertySettings = useAddUnitStore((s) => s.propertySettings);
-//   const CURRENCY_SYMBOL =
-//     currencySymbols[propertySettings?.currency || "naira"];
-//   const [otherChargesInput, setOtherChargesInput] = useState(
-//     !!parseFloat(unitData?.other_charge || "0")
+// const allStates = getAllStates();
+
+// const StaffAndBranches = () => {
+//   const storedView = useView();
+//   // Added a ref to the top of the content section
+//   const contentTopRef = useRef<HTMLDivElement>(null);
+//   const [view, setView] = useState<string | null>(storedView);
+//   const router = useRouter();
+//   const [state, setState] = useState<BranchesPageData>(initialBranchesPageData);
+//   const {
+//     total_pages,
+//     current_page,
+//     total_branches,
+//     new_branches_count,
+//     total_properties,
+//     new_properties_count,
+//     total_staffs,
+//     new_staffs_count,
+//     branches,
+//   } = state;
+
+//   useEffect(() => {
+//     setView(storedView);
+//   }, [storedView]);
+
+//   const handleFilterApply = (filters: FilterResult) => {
+//     setAppliedFilters(filters);
+//     const { menuOptions, startDate, endDate } = filters;
+//     const statesArray = menuOptions["State"] || [];
+//     const queryParams: BranchRequestParams = {
+//       page: 1,
+//       search: "",
+//     };
+//     if (statesArray.length > 0) {
+//       queryParams.states = statesArray.join(",");
+//     }
+//     if (startDate) {
+//       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
+//     }
+//     if (endDate) {
+//       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+//     }
+//     setConfig({
+//       params: queryParams,
+//     });
+//   };
+
+//   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+//     options: [],
+//     menuOptions: {},
+//     startDate: null,
+//     endDate: null,
+//   });
+//   const handleSelectTableItem = (item: DataItem) => {
+//     if (item.is_active !== 1) {
+//       toast.error("Branch is not active");
+//       return;
+//     }
+//     router.push(`/management/staff-branch/${item.id}`);
+//   };
+
+//   const [config, setConfig] = useState<AxiosRequestConfig>({
+//     params: {
+//       page: 1,
+//       search: "",
+//     } as BranchRequestParams,
+//   });
+
+//   const isFilterApplied = () => {
+//     const { options, menuOptions, startDate, endDate } = appliedFilters;
+//     return (
+//       options.length > 0 ||
+//       Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+//       startDate !== null ||
+//       endDate !== null
+//     );
+//   };
+
+//   const handlePageChange = (page: number) => {
+//     setConfig({
+//       params: { ...config.params, page },
+//     });
+//     // Scroll to the top
+//     if (contentTopRef.current) {
+//       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+//     }
+//   };
+
+//   const handleSearch = async (query: string) => {
+//     setConfig({
+//       params: { ...config.params, search: query },
+//     });
+//   };
+
+//   const handleSort = (order: "asc" | "desc") => {
+//     setConfig({
+//       params: { ...config.params, sort_order: order },
+//     });
+//   };
+
+//   const {
+//     data: apiData,
+//     loading,
+//     silentLoading,
+//     isNetworkError,
+//     error,
+//     refetch,
+//   } = useFetch<BranchApiResponse>("branches", config);
+
+//   useRefetchOnEvent("refetchBranches", () => refetch({ silent: true }));
+
+//   useEffect(() => {
+//     if (apiData) {
+//       setState((x) => ({
+//         ...transformBranchApiResponse(apiData),
+//       }));
+//     }
+//   }, [apiData]);
+
+//   // ---- Infinite Scroll for list view ----
+//   // Only attach the infinite scroll if in list view.
+//   // Create an IntersectionObserver to detect when the last row is visible.
+//   const observer = useRef<IntersectionObserver | null>(null);
+//   const lastRowRef = useCallback(
+//     (node: HTMLElement | null) => {
+//       if (observer.current) observer.current.disconnect();
+//       observer.current = new IntersectionObserver((entries) => {
+//         if (
+//           entries[0].isIntersecting &&
+//           current_page < total_pages &&
+//           !silentLoading
+//         ) {
+//           // Load the next page when the last row comes into view.
+//           handlePageChange(current_page + 1);
+//         }
+//       });
+//       if (node) observer.current.observe(node);
+//     },
+//     [current_page, total_pages, silentLoading, config]
 //   );
 
-//   const initialFormValues = useMemo(() => {
-//     return {
-//       rentAmount: unitData?.fee_amount
-//         ? formatNumber(parseFloat(unitData.fee_amount))
-//         : "",
-//       securityFee: unitData?.security_fee
-//         ? formatNumber(parseFloat(unitData.security_fee))
-//         : "",
-//       serviceCharge: unitData?.service_charge
-//         ? formatNumber(parseFloat(unitData.service_charge))
-//         : "",
-//       otherCharges: unitData?.other_charge
-//         ? formatNumber(parseFloat(unitData.other_charge))
-//         : "",
-//       // Initialize VAT to "0"
-//       vat: unitData?.renew_vat
-//         ? formatNumber(parseFloat(unitData.renew_vat as string))
-//         : "0",
-//       totalPackage: unitData?.total_package
-//         ? formatNumber(parseFloat(unitData.total_package))
-//         : "",
-//     };
-//   }, [
-//     unitData?.fee_amount,
-//     unitData?.security_fee,
-//     unitData?.service_charge,
-//     unitData?.other_charge,
-//     unitData?.renew_vat,
-//     unitData?.total_package,
-//   ]);
+//   // Map through the branch rows and add a "ref" property to the last one.
+//   const transformedBranches =
+//     view === "list"
+//       ? branches.map((b, index) => ({
+//           ...b,
+//           // Attach the lastRowRef to the final row if more pages exist.
+//           ref:
+//             index === branches.length - 1 && current_page < total_pages
+//               ? lastRowRef
+//               : undefined,
+//         }))
+//       : branches;
 
-//   const [formValues, setFormValues] = useState(initialFormValues);
-//   const {
-//     rentAmount,
-//     securityFee,
-//     serviceCharge,
-//     otherCharges,
-//     vat,
-//     totalPackage,
-//   } = formValues;
+//   if (loading)
+//     return (
+//       <CustomLoader
+//         layout="page"
+//         pageTitle="Staff & Branch"
+//         statsCardCount={3}
+//       />
+//     );
 
-//   type FormField = keyof typeof formValues;
-//   // Update formValues based on input changes
-//   const handleInputChange = (field: FormField, value: string) => {
-//     setFormValues((prevValues) => ({
-//       ...prevValues,
-//       [field]: formatCostInputValue(value),
-//     }));
-//   };
+//   // console.log("Branches", branches);
 
-//   const addOtherCharges = () => {
-//     setOtherChargesInput(true);
-//   };
+//   if (isNetworkError) return <NetworkError />;
 
-//   const handleRemoveOtherCharges = () => {
-//     setOtherChargesInput(false);
-//     setFormValues((prevValues) => ({
-//       ...prevValues,
-//       otherCharges: "0",
-//     }));
-//   };
-
-//   // calculate VAT price from rentAmount
-//   useEffect(() => {
-//     const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
-//     const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
-//     const rentTenPercent = rentAmountValue * 0.1;
-//     const calculatedVAT = shouldCalculateVAT ? rentTenPercent * 0.075 : 0;
-
-//     setFormValues((prevValues) => ({
-//       ...prevValues,
-//       vat: formatNumber(calculatedVAT.toFixed(2)),
-//     }));
-//   }, [rentAmount, propertySettings?.VAT]);
-
-//   // Calculate the total package
-//   useEffect(() => {
-//     const total =
-//       (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
-//       (parseFloat(securityFee.replace(/,/g, "")) || 0) +
-//       (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
-//       (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
-//       (parseFloat(vat.replace(/,/g, "")) || 0);
-
-//     setFormValues((prevValues) => ({
-//       ...prevValues,
-//       totalPackage: formatNumber(parseFloat(total.toFixed(2))),
-//     }));
-//   }, [rentAmount, securityFee, serviceCharge, otherCharges, vat]);
-
-//   // reset form
-//   useEffect(() => {
-//     if (formResetKey !== 0) {
-//       setOtherChargesInput(!!unitData?.other_charge);
-//       setFormValues(initialFormValues);
-//     }
-//   }, [formResetKey, initialFormValues, unitData?.other_charge]);
+//   if (error)
+//     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
 //   return (
-//     <div>
-//       <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-//         Unit Fee Breakdown
-//       </h4>
-//       <hr className="my-4" />
-//       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
-//         <Select
-//           id="fee_period"
-//           required
-//           options={rentPeriods}
-//           label="Fee Period"
-//           inputContainerClassName="bg-white"
-//           resetKey={formResetKey}
-//           hiddenInputClassName="unit-form-input"
-//           defaultValue={unitData?.fee_period || "yearly"}
-//         />
-//         <Input
-//           id="fee_amount"
-//           label="Fee Amount"
-//           required
-//           inputClassName="bg-white unit-form-input"
-//           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//           value={rentAmount}
-//           onChange={(value) => handleInputChange("rentAmount", value)}
-//           type="text"
-//         />
-//         <Input
-//           id="security_fee"
-//           label="Security Fee"
-//           inputClassName="bg-white"
-//           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//           value={securityFee}
-//           onChange={(value) => handleInputChange("securityFee", value)}
-//           type="text"
-//         />
-//         <Input
-//           id="service_charge"
-//           label="Service Charge"
-//           inputClassName="bg-white"
-//           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//           value={serviceCharge}
-//           onChange={(value) => handleInputChange("serviceCharge", value)}
-//           type="text"
-//         />
-
-//         {otherChargesInput && (
-//           <div className="relative">
-//             <Input
-//               id="other_charge"
-//               label="Other Charges"
-//               inputClassName="bg-white"
-//               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//               value={otherCharges}
-//               onChange={(value) => handleInputChange("otherCharges", value)}
-//               type="text"
-//             />
-//             <button
-//               type="button"
-//               aria-label="Remove Other Charges"
-//               onClick={handleRemoveOtherCharges}
-//               className="absolute top-0 right-0 w-[18px] h-[18px]"
-//             >
-//               <DeleteIconX size={20} />
-//             </button>
-//           </div>
-//         )}
-//         {!otherChargesInput && (
-//           <button
-//             type="button"
-//             onClick={addOtherCharges}
-//             className="text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start"
-//           >
-//             Add Other Charges
-//           </button>
-//         )}
-//         {/* Only display VAT input if VAT is enabled */}
-//         {propertySettings?.VAT?.toLowerCase() === "yes" && (
-//           <Input
-//             id="renew_vat"
-//             label="VAT Fee"
-//             inputClassName="bg-white unit-form-input"
-//             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//             value={vat}
-//             readOnly
-//             type="text"
+//     <div className="space-y-9">
+//       <div className="page-header-container" ref={contentTopRef}>
+//         <div className="hidden md:flex gap-5 flex-wrap">
+//           <ManagementStatistcsCard
+//             title="Total Branches"
+//             newData={new_branches_count}
+//             total={total_branches}
+//             colorScheme={1}
 //           />
-//         )}
-//         <Input
-//           required
-//           id="total_package"
-//           label="Total Package"
-//           inputClassName="bg-white unit-form-input"
-//           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//           value={totalPackage}
-//           readOnly
-//           type="text"
-//         />
+//           <ManagementStatistcsCard
+//             title="Total Properties"
+//             newData={new_properties_count}
+//             total={total_properties}
+//             colorScheme={2}
+//           />
+//           <ManagementStatistcsCard
+//             title="Total Staff"
+//             newData={new_staffs_count}
+//             total={total_staffs}
+//             colorScheme={3}
+//           />
+//         </div>
+//         <Modal>
+//           <ModalTrigger asChild>
+//             <Button type="button" className="page-header-button">
+//               + create branch
+//             </Button>
+//           </ModalTrigger>
+//           <ModalContent>
+//             <CreateBranchModal branches={branches} />
+//           </ModalContent>
+//         </Modal>
 //       </div>
+//       <FilterBar
+//         azFilter
+//         gridView={view === "grid"}
+//         setGridView={() => setView("grid")}
+//         setListView={() => setView("list")}
+//         pageTitle="Staff & Branch"
+//         aboutPageModalData={{
+//           title: "Staff & Branch",
+//           description:
+//             "This page contains a list of all Staff & Branch on the platform.",
+//         }}
+//         searchInputPlaceholder="Search Branch"
+//         handleFilterApply={handleFilterApply}
+//         appliedFilters={appliedFilters}
+//         isDateTrue
+//         dateLabel="Date Created"
+//         filterOptionsMenu={[
+//           {
+//             label: "State",
+//             value: allStates.map((state) => ({
+//               label: state,
+//               value: state,
+//             })),
+//           },
+//         ]}
+//         handleSearch={handleSearch}
+//         onSort={handleSort}
+//       />
+
+//       <section className="findthezero">
+//         {loading || silentLoading ? (
+//           view === "grid" ? (
+//             <AutoResizingGrid minWidth={284} gap={16} key="loading">
+//               <CardsLoading />
+//             </AutoResizingGrid>
+//           ) : (
+//             <TableLoading />
+//           )
+//         ) : branches.length === 0 ? (
+//           config.params.search || isFilterApplied() ? (
+//             <SearchError />
+//           ) : (
+//             <EmptyList
+//               buttonText="+ create branch"
+//               modalContent={<CreateBranchModal branches={branches} />}
+//               title="No branches or staff have been added yet."
+//               body={
+//                 <p>
+//                   You can create profiles for all your branches and assign staff
+//                   and properties to them by clicking on the &quot;Create
+//                   Branch&quot; button. Branch managers will have the same access
+//                   to their branch as you do, while you will have access to all
+//                   staff accounts and branches created.
+//                   <br />
+//                   <br />
+//                   To learn more about this page later, click your profile
+//                   picture at the top right of the dashboard and select
+//                   Assistance & Support.
+//                 </p>
+//               }
+//             />
+//           )
+//         ) : view === "grid" ? (
+//           <AutoResizingGrid minWidth={284} key="card">
+//             {branches.map((b) =>
+//               b.is_active === 1 ? (
+//                 <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
+//                   <BranchCard {...b} />
+//                 </Link>
+//               ) : (
+//                 <BranchCard {...b} key={b.id} />
+//               )
+//             )}
+//           </AutoResizingGrid>
+//         ) : (
+//           <>
+//             <CustomTable
+//               fields={branchTableFields}
+//               data={transformedBranches}
+//               tableHeadClassName="bg-brand-5 h-[76px]"
+//               tableHeadStyle={{
+//                 borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
+//               }}
+//               handleSelect={handleSelectTableItem}
+//             />
+//             {silentLoading && current_page > 1 && (
+//               <div className="flex items-center justify-center py-4">
+//                 <div className="loader" />
+//               </div>
+//             )}
+//           </>
+//         )}
+//         <Pagination
+//           totalPages={total_pages}
+//           currentPage={current_page}
+//           onPageChange={handlePageChange}
+//         />
+//       </section>
 //     </div>
 //   );
 // };
 
-// export default UnitBreakdownFacility;
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const transformUnitFormData = (
-//   formData: Record<string, any>,
-//   images: (File | string)[],
-//   property_id: string,
-//   originalImages: { id: string; path: string }[] = [] // Default to empty array if not provided
-// ) => {
-//   const parseFee = (value: string | undefined) => {
-//     if (!value) {
-//       return 0;
-//     }
-//     return parseFloat(value.replace(/,/g, ""));
-//   };
-
-//   const parseIntOrNull = (value: string | undefined | null) => {
-//     if (!value) return 0;
-//     const parsed = parseInt(value, 10);
-//     return isNaN(parsed) ? null : parsed;
-//   };
-
-//   // Determine the default image ID (first image in the list)
-//   let defaultImageId: string | null = null;
-//   if (images.length > 0) {
-//     const firstImage = images[0];
-//     if (typeof firstImage === "string") {
-//       const matchingImage = originalImages.find(
-//         (img) => img.path === firstImage
-//       );
-//       if (matchingImage) {
-//         defaultImageId = matchingImage.id;
-//       }
-//     }
-//     // If the first image is a File (new upload), the server will assign its ID after upload
-//     // In this case, defaultImageId remains null and can be handled server-side
-//   }
-
-//   const payload = {
-//     unit_name: formData.unit_name,
-//     unit_type: formData.unit_type,
-//     unit_sub_type: formData.unit_sub_type ?? null,
-//     unit_preference: formData.unit_preference,
-//     measurement: formData.measurement ?? null,
-//     total_area_sqm: formData.total_area_sqm ?? null,
-//     number_of: formData.number_of ?? 0,
-//     bedroom: parseIntOrNull(formData.bedroom),
-//     bathroom: parseIntOrNull(formData.bathroom),
-//     toilet: parseIntOrNull(formData.toilet),
-//     facilities: formData.facilities
-//       ? formData.facilities.split(",").map(decodeURIComponent)
-//       : [],
-//     en_suit: formData.en_suit ?? null,
-//     prepaid: formData.prepaid ?? null,
-//     wardrobe: formData.wardrobe ?? null,
-//     pet_allowed: formData.pets_allowed ?? null,
-//     fee_period: formData.fee_period ?? null,
-//     fee_amount: parseFee(formData.fee_amount),
-//     service_charge: parseFee(formData.service_charge),
-//     agency_fee: parseFee(formData.agency_fee),
-//     legal_fee: parseFee(formData.legal_fee),
-//     caution_fee: parseFee(formData.caution_fee),
-//     inspection_fee: parseFee(formData.inspection_fee),
-//     other_charge: parseFee(formData.other_charge),
-//     negotiation: formData.negotiation ?? null,
-//     security_fee: parseFee(formData.security_fee),
-//     total_package: parseFee(formData.total_package),
-//     renew_fee_period: formData.renew_fee_period ?? null,
-//     renew_fee_amount: parseFee(formData.renew_fee_amount),
-//     renew_service_charge: parseFee(formData.renew_service_charge),
-//     renew_other_charge: parseFee(formData.renew_other_charge),
-//     renew_total_package: parseFee(formData.renew_total_package),
-//     property_id,
-//     images,
-//     default_image: defaultImageId, // Set to the ID of the first existing image
-//   };
-
-//   return payload;
-// };
-
-
-
-
-
-
-
-
-
-
-
-// export const transformUnitFormData = (
-//   formData: Record<string, any>,
-//   images: (File | string)[],
-//   property_id: string,
-//   originalImages: { id: string; path: string }[] = [] // Default to empty array if not provided
-// ) => {
-//   const parseFee = (value: string | undefined) => {
-//     if (!value) {
-//       return 0;
-//     }
-//     return parseFloat(value.replace(/,/g, ""));
-//   };
-
-//   const parseIntOrNull = (value: string | undefined | null) => {
-//     if (!value) return 0;
-//     const parsed = parseInt(value, 10);
-//     return isNaN(parsed) ? null : parsed;
-//   };
-
-//   console.log("images passed to ", images)
-
-//   // Determine the default image (first image in the list)
-//   let defaultImageId: string | null = null;
-//   let defaultImagePath: string | null = null;
-//   let defaultImage: string | File | null = null;
-
-//   if (images.length > 0) {
-//     const firstImage = images[0];
-
-//     if (typeof firstImage === "string") {
-//       defaultImage = firstImage;
-//       const matchingImage = originalImages.find(
-//         (img) => img.path === firstImage
-//       );
-//       if (matchingImage) {
-//         defaultImageId = matchingImage.id;
-//         defaultImagePath = matchingImage.path;
-//       }
-//     } else {
-//       defaultImage = firstImage;
-//     }
-//   }
-
-//   // Filter out the default image from images list
-//   const filteredImages = images.filter((img) => img !== defaultImagePath && img !== defaultImage);
-
-//   const payload = {
-//     unit_name: formData.unit_name,
-//     unit_type: formData.unit_type,
-//     unit_sub_type: formData.unit_sub_type ?? null,
-//     unit_preference: formData.unit_preference,
-//     measurement: formData.measurement ?? null,
-//     total_area_sqm: formData.total_area_sqm ?? null,
-//     number_of: formData.number_of ?? 0,
-//     bedroom: parseIntOrNull(formData.bedroom),
-//     bathroom: parseIntOrNull(formData.bathroom),
-//     toilet: parseIntOrNull(formData.toilet),
-//     facilities: formData.facilities
-//       ? formData.facilities.split(",").map(decodeURIComponent)
-//       : [],
-//     en_suit: formData.en_suit ?? null,
-//     prepaid: formData.prepaid ?? null,
-//     wardrobe: formData.wardrobe ?? null,
-//     pet_allowed: formData.pets_allowed ?? null,
-//     fee_period: formData.fee_period ?? null,
-//     fee_amount: parseFee(formData.fee_amount),
-//     service_charge: parseFee(formData.service_charge),
-//     agency_fee: parseFee(formData.agency_fee),
-//     legal_fee: parseFee(formData.legal_fee),
-//     caution_fee: parseFee(formData.caution_fee),
-//     inspection_fee: parseFee(formData.inspection_fee),
-//     other_charge: parseFee(formData.other_charge),
-//     negotiation: formData.negotiation ?? null,
-//     security_fee: parseFee(formData.security_fee),
-//     total_package: parseFee(formData.total_package),
-//     renew_fee_period: formData.renew_fee_period ?? null,
-//     renew_fee_amount: parseFee(formData.renew_fee_amount),
-//     renew_service_charge: parseFee(formData.renew_service_charge),
-//     renew_other_charge: parseFee(formData.renew_other_charge),
-//     renew_total_package: parseFee(formData.renew_total_package),
-//     property_id,
-//     images: filteredImages, // Exclude default image from images list
-//     default_image: typeof defaultImage === "string" ? defaultImage : defaultImageId, // Set to the string or ID of the first image
-//   };
-
-//   return payload;
-// };
-
-
-
-
-
-
-
-"use client";
-
-import { useState, useRef, useContext } from "react";
-import Button from "@/components/Form/Button/button";
-import Input from "@/components/Form/Input/input";
-import { useModal } from "@/components/Modal/modal";
-import { Pointer } from "@/public/icons/icons";
-import { useUnitForm } from "./unit-form-context";
-import { useOutsideClick } from "@/hooks/useOutsideClick";
-import { useAddUnitStore } from "@/store/add-unit-store";
-import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
-import { toast } from "sonner";
-
-const FooterModal = ({
-  showUnitForm,
-  onAddUnits,
-  noForm,
-}: {
-  showUnitForm?: boolean;
-  noForm?: boolean;
-  onAddUnits?: (count: number) => void;
-}) => {
-  const { setIsOpen } = useModal();
-  const { canSubmit, missingFields, handleInputChange } =
-    useContext(FlowProgressContext);
-  const { duplicate, setDuplicate, submitLoading, setSaveClick } =
-    useUnitForm();
-  const [countPopup, setCountPopup] = useState(false);
-  const [count, setCount] = useState(duplicate?.count || 1);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const addedUnits = useAddUnitStore((s) => s.addedUnits);
-  const addUnit = useAddUnitStore((s) => s.addUnit);
-  const editMode = useAddUnitStore((s) => s.editMode);
-  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-  const newForm = useAddUnitStore((s) => s.newForm);
-  useOutsideClick(popupRef, () => setCountPopup(false));
-
-  const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget.form;
-    if (noForm && newForm) {
-      handleInputChange();
-      if (!canSubmit) {
-        toast.warning(
-          `Please fill in all required fields: ${missingFields.join(", ")}`
-        );
-        return;
-      }
-      // When noForm and newForm are true, submit the current form first
-      setTimeout(() => {
-        form?.requestSubmit(); // Submit the current form
-        setTimeout(() => {
-          // After submission, proceed with duplication
-          setSaveClick?.(true);
-          setDuplicate?.({ val: true, count });
-
-          if (addedUnits.length > 0) {
-            const lastUnit = addedUnits[addedUnits.length - 1];
-            for (let i = 0; i < count; i++) {
-              const newUnit = {
-                ...lastUnit,
-                id: `temp-${Date.now()}-${i}`,
-                notYetUploaded: true,
-              };
-              addUnit(newUnit);
-            }
-          }
-          // setAddUnitStore("newForm", false);
-          setIsOpen(false);
-        }, 500); // Delay duplication to ensure form submission completes
-      }, 0);
-    } else if (editMode && addedUnits.length > 0) {
-      // If in edit mode and there are added units, submit first, then duplicate
-      setSaveClick?.(true);
-      setDuplicate?.({ val: true, count });
-
-      setTimeout(() => {
-        form?.requestSubmit(); // Submit the form first
-        setTimeout(() => {
-          const lastUnit = addedUnits[addedUnits.length - 1];
-          for (let i = 0; i < count; i++) {
-            const newUnit = {
-              ...lastUnit,
-              id: `temp-${Date.now()}-${i}`,
-              notYetUploaded: true,
-            };
-            addUnit(newUnit);
-          }
-          setIsOpen(false);
-        }, 500); // Delay duplication slightly to ensure form submission completes
-      }, 0);
-    } else if (addedUnits.length > 0) {
-      // Regular duplication logic
-      setSaveClick?.(true);
-      const lastUnit = addedUnits[addedUnits.length - 1];
-      for (let i = 0; i < count; i++) {
-        const newUnit = {
-          ...lastUnit,
-          id: `temp-${Date.now()}-${i}`,
-          notYetUploaded: true,
-        };
-        addUnit(newUnit);
-      }
-      setIsOpen(false);
-    } else {
-      // Submit the form when no added units exist
-      setSaveClick?.(true);
-      setDuplicate?.({ val: true, count });
-      setTimeout(() => {
-        setIsOpen(false);
-        form?.requestSubmit();
-      }, 0);
-    }
-  };
-
-  const handleNoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    console.log("new from", newForm)
-    console.log("noform", noForm)
-    const form = e.currentTarget.form;
-
-    handleInputChange();
-    if (!canSubmit) {
-      toast.warning(
-        `Please fill in all required fields: ${missingFields.join(", ")}`
-      );
-      return;
-    }
-
-    if (noForm && newForm) {
-      setTimeout(() => {
-        form?.requestSubmit();
-        setAddUnitStore("newForm", true);
-        setIsOpen(false);
-      }, 0);
-    } else if (noForm) {
-      setAddUnitStore("newForm", true);
-      setIsOpen(false);
-    } else {
-      setIsOpen(false);
-      form?.requestSubmit();
-    }
-  };
-
-  return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
-      {countPopup && (
-        <div
-          ref={popupRef}
-          className="absolute top-[-90%] left-[50%] translate-x-[-50%] bg-neutral-2 p-4"
-        >
-          <div className="flex items-center gap-4">
-            <div>
-              <p className="text-base text-text-secondary mb-2">
-                How many units more?
-              </p>
-              <Input
-                id=""
-                type="number"
-                placeholder="Select"
-                inputClassName="keep-spinner"
-                max={20}
-                min={1}
-                value={count.toString()}
-                onChange={(val) => setCount(Number(val))}
-              />
-            </div>
-            <Button
-              form="add-unit-form"
-              type="button"
-              size="base_medium"
-              className="py-2 px-8"
-              disabled={submitLoading}
-              onClick={handleAddClick}
-            >
-              {submitLoading ? "Adding..." : "Add"}
-            </Button>
-          </div>
-          <div className="text-neutral-2 absolute top-full left-[50%] translate-x-[-50%]">
-            <Pointer />
-          </div>
-        </div>
-      )}
-      <p className="text-brand-10 text-base font-medium mb-5">
-        Does the new unit you want to add have similar details, breakdown, and
-        features to the one you added last?
-      </p>
-      <div className="flex justify-center items-center gap-10">
-        <Button
-          type="button"
-          size="base_medium"
-          className="py-2 px-8"
-          onClick={() => setCountPopup(true)}
-        >
-          Yes
-        </Button>
-        <Button
-          type="button"
-          form="add-unit-form"
-          className="py-2 px-8"
-          disabled={submitLoading}
-          onClick={handleNoClick}
-          size="base_medium"
-        >
-          {submitLoading ? "Please wait..." : "No"}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-export default FooterModal;
-
-
-
-
-
-// "use client";
-// import { useState, useEffect } from "react";
-// import PageCircleLoader from "@/components/Loader/PageCircleLoader";
-// import PropertyDetails from "@/components/Management/Properties/property-details";
-// import PropertySettings from "@/components/Management/Properties/property-settings";
-// import { useAddUnitStore } from "@/store/add-unit-store";
-// import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
-// import UnitForm from "@/components/Management/Properties/unit-form";
-// import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
-// import useFetch from "@/hooks/useFetch";
-// import BackButton from "@/components/BackButton/back-button";
-// import { SinglePropertyResponse } from "../../../[id]/data";
-// import NetworkError from "@/components/Error/NetworkError";
-// import { transformPropertyData } from "./data";
-// import { useRouter } from "next/navigation";
-// import AddUnitFooter from "@/components/Management/Properties/AddUnitFooter";
-// import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
-// import { UnitTypeKey } from "@/data";
-// import FlowProgress from "@/components/FlowProgress/flow-progress";
-
-// const AddUnit = ({ params }: { params: { propertyId: string } }) => {
-//   const { propertyId } = params;
-//   const customBackPath = `/management/properties/${propertyId}/edit-property`;
-//   const router = useRouter();
-//   const [dataNotFound, setDataNotFound] = useState(false);
-//   const [showUnitForm, setShowUnitForm] = useState(true);
-
-//   const addedUnits = useAddUnitStore((s) => s.addedUnits);
-//   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-//   const newForm = useAddUnitStore((s) => s.newForm);
-
-//   const {
-//     data: propertyData,
-//     loading,
-//     isNetworkError,
-//     error,
-//   } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
-
-//   // State for UnitFormContext
-//   const [images, setImages] = useState<string[]>([]);
-//   const [imageFiles, setImageFiles] = useState<(string | File)[]>([]);
-//   const [unitType, setUnitType] = useState<"" | UnitTypeKey>("");
-//   const [formResetKey, setFormResetKey] = useState(0);
-//   const [submitLoading, setSubmitLoading] = useState(false);
-//   const [saveClick, setSaveClick] = useState(false);
-//   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
-
-//   const resetForm = () => {
-//     setImages([]);
-//     setImageFiles([]);
-//     setUnitType("");
-//     setFormResetKey((prev) => prev + 1);
-//   };
-
-//   useEffect(() => {
-//     if (propertyData) {
-//       const transformedData = transformPropertyData(propertyData);
-//       if (!transformedData) {
-//         setDataNotFound(true);
-//         return;
-//       }
-//       if (transformedData.propertyType === "facility") {
-//         router.push(
-//           `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
-//         );
-//       }
-//       setDataNotFound(false);
-//       setAddUnitStore("property_id", transformedData.property_id);
-//       setAddUnitStore("propertyType", transformedData.propertyType);
-//       setAddUnitStore("propertyDetails", transformedData.propertyDetails);
-//       setAddUnitStore("propertySettings", transformedData.propertySettings);
-//       setAddUnitStore("addedUnits", transformedData.addedUnits);
-//     }
-//   }, [propertyData, setAddUnitStore, router, propertyId]);
-
-//   // Effect to sync showUnitForm with newForm
-//   useEffect(() => {
-//     if (newForm) {
-//       setShowUnitForm(true);
-//     }
-//     // else {
-//     //       setShowUnitForm(false);
-//     //     }
-//   }, [newForm]);
-
-//   if (loading) return <PageCircleLoader />;
-//   if (isNetworkError) return <NetworkError />;
-//   if (error) return <div className="text-red-500">{error}</div>;
-//   if (dataNotFound)
-//     return <div className="text-red-500">Property Data not found</div>;
-
-//   console.log("newForm", newForm);
-
-//   return (
-//     <UnitFormContext.Provider
-//       value={{
-//         images,
-//         imageFiles,
-//         unitType,
-//         formResetKey,
-//         setImages: (a) => {
-//           setImages(a.images);
-//           setImageFiles(a.imageFiles);
-//         },
-//         setUnitType,
-//         submitLoading,
-//         setSaveClick,
-//         resetForm,
-//         duplicate,
-//         setDuplicate,
-//       }}
-//     >
-//       <div className="pb-[100px]">
-//         <BackButton customBackPath={customBackPath}>Add Units</BackButton>
-//         <PageProgressBar
-//           breakpoints={[25, 50, 75]}
-//           percentage={37}
-//           className="mb-[52px]"
-//         />
-//         <div className="space-y-6 lg:space-y-8">
-//           <PropertyDetails heading="Property Details" />
-//           <PropertySettings heading="Property Settings" />
-//           {addedUnits.length > 0 && (
-//             <>
-//               <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
-//                 Added Units
-//               </h4>
-//               <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
-//               {addedUnits.map((unit, index) => (
-//                 <AddUnitFormCard key={index} index={index} data={unit} />
-//               ))}
-//             </>
-//           )}
-//           {(addedUnits.length === 0 || showUnitForm) && (
-//             <>
-//               <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
-//             </>
-//           )}
-//         </div>
-//         {addedUnits.length > 0 && (
-//           <>
-//             <AddUnitFooter noForm={true} />
-//           </>
-//         )}
-//       </div>
-//     </UnitFormContext.Provider>
-//   );
-// };
-
-// export default AddUnit;
+// export default StaffAndBranches;

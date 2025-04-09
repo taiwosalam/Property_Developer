@@ -8,48 +8,56 @@ import UserCard, { UserCardProps } from "../landlord-and-tenant-card";
 import { AuthForm } from "@/components/Auth/auth-components";
 import useFetch from "@/hooks/useFetch";
 import { toast } from "sonner";
-import { transformMobileUseData } from "@/app/(nav)/management/landlord/data";
+import {
+  transformMobileUseData,
+  transformTenantUserData,
+} from "@/app/(nav)/management/landlord/data";
 import { useModal } from "@/components/Modal/modal";
 import { AxiosRequestConfig } from "axios";
+import { getTenant } from "@/utils/getData";
 
 const AddOccupantWithId = ({
-  selectedId,
+  selectedId: initialSelectedId,
   setSelectedId,
   setSelectedTenantId,
+  onTenantIdSelect,
 }: {
   selectedId?: string | number;
   setSelectedId?: React.Dispatch<React.SetStateAction<string>>;
   setSelectedTenantId?: React.Dispatch<React.SetStateAction<string>>;
+  onTenantIdSelect: (tenantId: string) => void;
 }) => {
   const [formStep, setFormStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
   const [mobileUser, setMobileUser] = useState<UserCardProps | null>(null);
-  const [fetchUrl, setFetchUrl] = useState<string | null>(null);
   const { setIsOpen } = useModal();
-
-  const { data: apiData, error, loading } = useFetch<any>(fetchUrl || "");
+  const [apiData, setApiData] = useState<any>();
+  const [localIdentifier, setLocalIdentifier] = useState<string>("");
+  const [finding, setFinding] = useState(false)
 
   useEffect(() => {
-    if (!loading && apiData && !error) {
-      const transformed = transformMobileUseData(apiData);
+    if (apiData) {
+      const transformed = transformTenantUserData(apiData);
       setMobileUser(transformed);
       setFormStep(2);
     }
-  }, [loading, apiData, error]);
+  }, [apiData]);
 
-  useEffect(() => {
-    if (error) {
-      toast.warning("No User with that Identity");
-    }
-  }, [error]);
-
-  const handleSubmit = (data: any) => {
+  const handleSubmit = async (data: any) => {
     const input = data.identifier?.trim();
     if (!input) {
       toast.warning("Please enter a valid ID");
       return;
     }
-    setFetchUrl(`/get-users?identifier=${input}`);
+    setLocalIdentifier(input);
+    try {
+      setFinding(true);
+      const data = await getTenant(input);
+      setApiData(data)
+    } catch (err){
+      toast.error("Failed to get Tenant")
+    }finally{
+      setFinding(false);
+    }
   };
 
   const handleProceed = async () => {
@@ -57,10 +65,7 @@ const AddOccupantWithId = ({
       toast.error("Unable to confirm user.");
       return;
     }
-    setIsLoading(true);
-    setSelectedId?.(apiData.data.id);
-    setSelectedTenantId?.(apiData.data.id);
-    setIsLoading(false);
+    onTenantIdSelect(apiData.data.id);
     setIsOpen(false);
   };
 
@@ -84,6 +89,7 @@ const AddOccupantWithId = ({
             <Input
               id="identifier"
               label="Input Occupant ID"
+              type="number"
               inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
             />
             <div className="flex justify-center">
@@ -91,9 +97,9 @@ const AddOccupantWithId = ({
                 type="submit"
                 size="base_medium"
                 className="py-2 px-8"
-                disabled={loading}
+                disabled={finding}
               >
-                {loading ? "Searching User..." : "Add"}
+                {finding ? "Searching User..." : "Add"}
               </Button>
             </div>
           </div>
@@ -114,16 +120,14 @@ const AddOccupantWithId = ({
                   type="button"
                   size="base_medium"
                   className="py-2 px-8"
-                  disabled={isLoading}
                   onClick={handleProceed}
                 >
-                  {isLoading ? "Please wait..." : "Proceed"}
+                  Proceed
                 </Button>
                 <Button
                   size="custom"
                   onClick={() => {
                     setFormStep(1);
-                    setFetchUrl(null);
                     setMobileUser(null);
                   }}
                   type="button"

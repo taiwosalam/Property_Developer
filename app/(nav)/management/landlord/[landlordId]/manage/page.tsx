@@ -61,8 +61,16 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   if (!landlordData) return null;
   const groupedDocuments = groupDocumentsByType(landlordData?.documents);
 
+  console.log("landlordData?.statement", landlordData?.statement);
+
   const transformedTableData = landlordData?.statement?.map((item) => ({
     ...item,
+    name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{item.name || "--- ---"}</span>
+        {item?.badge_color && <BadgeIcon color={item.badge_color} />}
+      </p>
+    ),
     credit: (
       <p className={item.credit ? "text-status-success-3" : ""}>
         {item.credit ? item.credit : "--- ---"}
@@ -121,9 +129,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <div className="custom-flex-col gap-2">
                 <div className="flex gap-2 items-center">
                   <UserTag type={landlordData.user_tag} />
-                  {landlordData?.note && 
+                  {landlordData?.note && (
                     <NoteBlinkingIcon size={20} className="blink-color" />
-                  }
+                  )}
                 </div>
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: {landlordData?.id}

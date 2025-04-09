@@ -1,3 +1,5 @@
+"use client";
+
 import Select from "@/components/Form/Select/select";
 import { useState, useEffect } from "react";
 import { Occupant, TenantResponse } from "./types";
@@ -7,12 +9,7 @@ import AddOccupantWithId from "./add-occupant-with-id-modal";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { MatchedProfile } from "./matched-profile";
-import {
-  DUMMY_OCCUPANT,
-  calculateDueDate,
-  transformTenantData,
-  type RentPeriod,
-} from "./data";
+import { calculateDueDate, transformTenantData, type RentPeriod } from "./data";
 import { RentSectionTitle } from "./rent-section-container";
 import { Dayjs } from "dayjs";
 import useFetch from "@/hooks/useFetch";
@@ -45,41 +42,46 @@ export const ProfileForm: React.FC<{
   setStart_date,
 }) => {
   const [selectedId, setSelectedId] = useState<string>("");
+  const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
 
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
 
-  console.log("selectedId", selectedId)
+  console.log("selectedId", selectedId);
   useEffect(() => {
     if (period) {
       setRentPeriod(period);
     }
   }, [period]);
 
-  // handle select id
+  // Handle select id from dropdown
   const handleSelectId = (id: string) => {
     setSelectedId(id);
     setSelectedTenantId(id);
+    setIsModalIdSelected(false); // Reset the flag when dropdown is used
   };
 
-  // Simulate API call
+  // Callback function to receive the ID from AddOccupantWithId
+  const handleTenantIdFromModal = (tenantId: string) => {
+    setSelectedId(tenantId);
+    setSelectedTenantId(tenantId);
+    setIsModalIdSelected(true); // Set the flag when modal is used
+  };
+
   useEffect(() => {
     if (!selectedId) {
       onOccupantSelect(null);
-      onLoadingChange(false);
       onError(null);
       return;
     }
-  }, [selectedId, onLoadingChange, onOccupantSelect]);
+  }, [selectedId, onOccupantSelect, onError]);
 
   const { data, loading, error } = useFetch<TenantResponse>(
     `/tenant/${selectedId}`
   );
 
   useEffect(() => {
-    onLoadingChange(false);
-    // onError(error)
     if (data) {
       const transformedData = transformTenantData(data);
       onOccupantSelect(transformedData);
@@ -92,14 +94,11 @@ export const ProfileForm: React.FC<{
       setDueDate(null);
       return;
     }
-    // Convert Dayjs object to a valid date string
     const formattedStartDate = startDate.format("YYYY-MM-DD");
-
     setStart_date(formattedStartDate);
     setDueDate(calculateDueDate(startDate, rentPeriod));
-  }, [startDate, rentPeriod]);
+  }, [startDate, rentPeriod, setStart_date]);
 
-  // Initial state for each option
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, boolean>
   >({
@@ -109,7 +108,6 @@ export const ProfileForm: React.FC<{
     email_alert: true,
   });
 
-  // Handler for checkbox change events
   const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
     setSelectedOptions((prev) => ({
       ...prev,
@@ -117,15 +115,11 @@ export const ProfileForm: React.FC<{
     }));
   };
 
-  // Update parent's state when selectedOptions changes
   useEffect(() => {
     if (setSelectedCheckboxOptions) {
       setSelectedCheckboxOptions(selectedOptions);
     }
   }, [selectedOptions, setSelectedCheckboxOptions]);
-
-  // Optional: if you need a string representation
-  const optionsAsString = JSON.stringify(selectedOptions);
 
   const options = [
     "Create Invoice",
@@ -133,6 +127,9 @@ export const ProfileForm: React.FC<{
     "SMS Alert",
     "Email Alert",
   ];
+
+  // Determine the value to set for the Select component
+  const selectValue = isModalIdSelected ? "" : selectedId;
 
   return (
     <div className="space-y-6">
@@ -146,8 +143,8 @@ export const ProfileForm: React.FC<{
               value: occupant.id,
             }))}
             className="md:flex-1 md:max-w-[300px]"
-            // onChange={setSelectedId}
             onChange={(value) => handleSelectId(value)}
+            // value={selectValue} // Conditionally set the value
           />
           <Modal>
             <ModalTrigger asChild>
@@ -156,18 +153,13 @@ export const ProfileForm: React.FC<{
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <AddOccupantWithId
-                selectedId={selectedId}
-                setSelectedId={setSelectedTenantId}
-                setSelectedTenantId={setSelectedTenantId}
-              />
+              <AddOccupantWithId onTenantIdSelect={handleTenantIdFromModal} />
             </ModalContent>
           </Modal>
         </div>
         <div className="block lg:hidden">
           <MatchedProfile
             occupant={selectedOccupant}
-            // isLoading={occupantLoading}
             isLoading={loading}
             error={occupantError}
             title="Matched Profile"

@@ -123,6 +123,7 @@ const StaffProfile = () => {
                   alt="profile picture"
                   size={120}
                   rounded
+                  containerClassName="custom-secondary-bg rounded-full"
                 />
               </div>
               <div className="custom-flex-col gap-2">
