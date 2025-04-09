@@ -165,7 +165,7 @@ const StaffAndBranches = () => {
       />
     );
 
-  console.log("Branches", branches);
+  // console.log("Branches", branches);
 
   if (isNetworkError) return <NetworkError />;
 
