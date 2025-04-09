@@ -81,7 +81,6 @@ const FooterModal = ({
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();
       setAddUnitStore("newForm", true);
-      console.log("set new form here")
     } else {
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();
