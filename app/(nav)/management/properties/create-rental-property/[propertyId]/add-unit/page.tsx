@@ -76,11 +76,13 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
 
   useEffect(() => {
     if (newForm) {
+      console.log("newForm effect", newForm)
       setShowUnitForm(true);
     } else {
       setShowUnitForm(false);
     }
   }, [newForm]);
+  console.log("newForm", newForm)
 
   useEffect(() => {
     if (showUnitForm) {

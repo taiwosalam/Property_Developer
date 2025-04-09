@@ -123,8 +123,6 @@ const Documents = () => {
     total_document: null,
   };
 
-  // console.log("trans", transformedDocuments);
-
   if (isNetworkError) return <NetworkError />;
   if (error) return <div>{error}</div>;
   if (loading) return <CustomLoader view="grid" layout="page" />;
@@ -161,6 +159,7 @@ const Documents = () => {
           onSort={handleSort}
           appliedFilters={appliedFilters}
           searchInputPlaceholder="Document Search"
+          noExclamationMark
           filterOptionsMenu={[
             ...(propertyOptions.length > 0
               ? [
@@ -183,18 +182,41 @@ const Documents = () => {
           isDateTrue
         />
         <section>
-          {transformDocuments.length === 0 && !silentLoading ? (
+          {transformedDocuments.length === 0 && !silentLoading ? (
             isFilterApplied() || search ? (
               <SearchError />
             ) : (
               <EmptyList
-                title="No documents available"
+                title="No Lease/Rent Agreement Template Created Yet"
                 buttonText="Create Document"
                 modalContent={<CreateTenancyAggrementModal />}
                 body={
                   <p>
-                    You have not created any document yet. Click the button
-                    below to create a document.
+                    You haven&apos;t created any drafted lease or rent agreement
+                    templates for any properties yet.
+                    <br />
+                    Creating a template allows the system to automatically
+                    generate rent or lease agreements for every property unit
+                    when assigning a new tenant - whether its mobile tenant or
+                    web tenant.
+                    <br />
+                    Once a template is saved here: It will be used to
+                    auto-generate agreements during the &apos;Start Rent&apos;
+                    process.
+                    <br />
+                    You can easily share with mobile tenant or download the
+                    agreement for web tenants.
+                    <br />
+                    Each new tenant assigned to a property unit will receive a
+                    ready-to-use lease or rent agreement based on the saved
+                    template.
+                    <br />
+                    Once you save a drafted agreement, this notice will
+                    disappear.
+                    <br />
+                    To learn more or get help setting up your property agreement
+                    template, click your profile icon at the top left and select
+                    Assistance & Support.
                   </p>
                 }
               />

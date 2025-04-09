@@ -220,9 +220,11 @@ const Tenants = () => {
     ...t,
     full_name: (
       <p className="flex items-center whitespace-nowrap">
-        <span>{t.name}</span>o
-        {t.badge_color && <BadgeIcon color={t.badge_color} />}
-        {t.note && <NoteBlinkingIcon size={20} className="blink-color" />}
+        <span>{t.name}</span>
+        <div className="flex gap-2 items-center">
+          {t.badge_color && <BadgeIcon color={t.badge_color} />}
+          {t.note && <NoteBlinkingIcon size={20} className="blink-color" />}
+        </div>
       </p>
     ),
     user_tag: (

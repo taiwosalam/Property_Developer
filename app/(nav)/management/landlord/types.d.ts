@@ -149,7 +149,7 @@ export type LandlordPageData = {
     credit: string | null;
     debit: string | null;
     date: string;
-    badge_color: BadgeIconColors;
+    badge_color: BadgeIconColors | null;
   }>;
 };
 

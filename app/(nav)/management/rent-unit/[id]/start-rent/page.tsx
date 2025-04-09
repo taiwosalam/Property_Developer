@@ -94,9 +94,6 @@ const StartRent = () => {
     }
   }, [allTenantData]);
 
-  // console.log("unit data", unit_data);
-  // console.log("api data", apiData);
-
   const handleStartRent = async () => {
     // Validate that all required fields are available
     if (!unit_data?.unit_id || !selectedTenantId) {

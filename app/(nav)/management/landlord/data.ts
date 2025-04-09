@@ -4,6 +4,8 @@ import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { UserCardProps } from "@/components/Management/landlord-and-tenant-card";
 import { PersonalDataProps } from "@/components/tasks/vehicles-record/form-sections";
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
 
 interface LandlordCardProps {
   id: string;
@@ -240,3 +242,24 @@ export const transformMobileUseDataForVehicleRecord = (
     address: data.profile.address,
   };
 };
+
+
+
+
+
+export const transformTenantUserData = (res: any): UserCardProps => {
+  const { data } = res;
+  console.log("res", data)
+  const badgeColor =
+    tierColorMap[data.user_tier as keyof typeof tierColorMap] || "green";
+  return {
+    id: data.id,
+    name: data.name,
+    picture_url: data.picture,
+    email: data.email,
+    phone_number: data.phone,
+    user_tag: "mobile",
+    badge_color: badgeColor,
+  };
+};
+
