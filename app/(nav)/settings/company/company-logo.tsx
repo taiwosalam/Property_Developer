@@ -24,6 +24,9 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
     string | StaticImageData | null
   >(darkLogo || null);
 
+  console.log("lightPreview", lightPreview);
+  console.log("darkPreview", darkPreview);
+
   useEffect(() => {
     setLightPreview(lightLogo || null);
     setDarkPreview(darkLogo || null);

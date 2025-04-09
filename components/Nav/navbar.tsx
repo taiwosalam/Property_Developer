@@ -71,6 +71,8 @@ const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
 
+  const { company_id } = usePersonalInfoStore();
+
   const loggedInUserDetails = getLocalStorage("additional_details");
   const unreadMessageCount = getLocalStorage("msgCount") || 0;
   const notificationCount = getLocalStorage("notificationCount") || 0;
@@ -80,18 +82,34 @@ const Header = () => {
     (state) => state.setPersonalInfo
   );
   const name = usePersonalInfoStore((state) => state.name);
-  const user_online_status = usePersonalInfoStore((state) => state.user_online_status);
+  const user_online_status = usePersonalInfoStore(
+    (state) => state.user_online_status
+  );
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture
   );
   const company_logo = usePersonalInfoStore((state) =>
     theme === "light"
       ? loggedUserCompany?.company_logo
-      : loggedUserCompany?.dark_logo
+      : getLocalStorage("dark_logo")
+      ? getLocalStorage("dark_logo")
+      : loggedUserCompany?.company_logo
   );
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
+
+  const { data: companyData, refetch: companyRefetch } = useFetch<any>(
+    company_id ? `companies/${company_id}` : null
+  );
+  useRefetchOnEvent("refetchProfile", () => companyRefetch({ silent: true }));
+
+  useEffect(() => {
+    if (companyData?.data) {
+      setPersonalInfo("dark_logo", companyData.data.dark_logo);
+      saveLocalStorage("dark_logo", companyData?.data?.dark_logo);
+    }
+  }, [companyData, setPersonalInfo]);
 
   useEffect(() => {
     if (appearance && !hasMounted.current) {

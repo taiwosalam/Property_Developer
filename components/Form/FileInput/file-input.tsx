@@ -64,13 +64,13 @@ const FileInput: React.FC<FileInputProps> = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newFile = event.target.files?.[0];
     if (!newFile) {
-      restorePreviousFile();
+      //restorePreviousFile();
       return;
     }
     if (!fileType) {
       if (!newFile.type.startsWith("image/")) {
         toast.warning("Please upload an image file.");
-        restorePreviousFile();
+        //restorePreviousFile();
         return;
       }
     } else {
@@ -81,7 +81,7 @@ const FileInput: React.FC<FileInputProps> = ({
         fileExtension !== fileType.toLowerCase()
       ) {
         toast.warning(`Please upload a ${fileType} or image file.`);
-        restorePreviousFile();
+        //restorePreviousFile();
         // setShowVerifyBtn(true);
         return;
       }
@@ -92,7 +92,7 @@ const FileInput: React.FC<FileInputProps> = ({
     // Validate file size
     if (newFile.size > sizeInBytes) {
       toast.warning(`File size should not exceed ${size} ${sizeUnit}.`);
-      restorePreviousFile();
+      //restorePreviousFile();
       return;
     }
     setFile(newFile);

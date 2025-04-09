@@ -41,6 +41,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import dayjs from "dayjs";
 
 const ManageServiceProvider = () => {
@@ -76,22 +77,25 @@ const ManageServiceProvider = () => {
 
   const userData = providerData ? transformUserCardData(providerData) : null;
 
-  const hasNote = !userData?.note || userData?.note === "<p><br></p>" ? false : true;
+  const hasNote =
+    !userData?.note || userData?.note === "<p><br></p>" ? false : true;
 
   const providerDataProps = {
     provider_notes: userData?.note || "",
     company_id: company_id ?? "",
     avatar: providerData?.avatar || "",
-    note_last_updated: providerData?.updated_at ? dayjs(providerData?.updated_at).format('DD/MM/YYYY') : "",
-  }
+    note_last_updated: providerData?.updated_at
+      ? dayjs(providerData?.updated_at).format("DD/MM/YYYY")
+      : "",
+  };
 
   const webNote = {
-    note_last_updated: providerData?.updated_at && userData?.note ? dayjs(providerData?.updated_at).format('DD/MM/YYYY') : "",
+    note_last_updated:
+      providerData?.updated_at && userData?.note
+        ? dayjs(providerData?.updated_at).format("DD/MM/YYYY")
+        : "",
     provider_notes: userData?.note || "",
-  }
-
-  
-
+  };
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -126,9 +130,15 @@ const ManageServiceProvider = () => {
             />
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
-                <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                  {userData?.name}
-                </p>
+                <div className="flex items-center">
+                  <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+                    {userData?.name}
+                  </p>
+                  {userData?.badge_color && userData?.user_tag !== "web" && (
+                    <BadgeIcon color={userData?.badge_color} />
+                  )}
+                </div>
+
                 <p
                   style={{ color: isDarkMode ? "#FFFFFF" : "#151515B3" }}
                   className={`${secondaryFont.className} text-sm font-normal dark:text-darkText-1`}
@@ -181,7 +191,6 @@ const ManageServiceProvider = () => {
                       provider_data={providerDataProps}
                       page="service-provider"
                       id={paramId as string}
-                     
                     />
                   </ModalContent>
                 </Modal>
