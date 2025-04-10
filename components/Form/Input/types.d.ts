@@ -4,6 +4,11 @@ import { StaticImageData } from "next/image";
 // Types
 import type { ValidationErrors } from "@/utils/types";
 
+export interface RestrictedWordsOptions {
+  words?: string[];
+  hook?: () => string[];
+  errorMessage?: string;
+}
 export interface InputProps {
   id: string;
   name?: string;
@@ -19,7 +24,8 @@ export interface InputProps {
   type?: React.HTMLInputTypeAttribute;
   validationErrors?: ValidationErrors;
   onChange?: (
-    data: string,
+    // data: string | null,
+    data: any,
     event?: React.ChangeEvent<HTMLInputElement>
   ) => void;
   inputClassName?: string;
@@ -36,4 +42,5 @@ export interface InputProps {
   isPinField?: boolean;
   minLength?: number;
   onKeyDown?: (e: React.KeyboardEvent<HTMLFormElement>) => void;
+  restrictedWordsOptions?: RestrictedWordsOptions;
 }

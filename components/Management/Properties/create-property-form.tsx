@@ -9,12 +9,18 @@ import type {
   AllInventoryResponse,
 } from "./types";
 import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PlusIcon, DeleteIconX } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
-import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
+import {
+  getAllCities,
+  getAllLocalGovernments,
+  getAllStates,
+  getCities,
+  getLocalGovernments,
+} from "@/utils/states";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import DraggableImage from "./draggable-image";
@@ -68,7 +74,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
   const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
   const [selectedOfficer, setSelectedOfficer] = useState<string[]>([]);
-
+  const scrollTargetRef = useRef<HTMLDivElement>(null);
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
   const [coordinate, setCoordinate] = useState(
@@ -286,6 +292,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     setRequestLoading(false);
   };
 
+  useEffect(() => {
+    if (scrollTargetRef.current) {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <FlowProgress
       key="property-form-progress"
@@ -302,11 +314,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         // id={editMode ? "edit-property-form" : "create-property-form"}
         skipValidation
       >
-        <div className="max-w-[970px]">
+        <div className="max-w-[970px]" ref={scrollTargetRef}>
           <input name="property_type" type="hidden" value={formType} />
           <div className="mb-5 lg:mb-8">
             <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
-              {/* Set {formType === "rental" ? "property" : "Estate/Facility"}{" "} */}
               Set{" "}
               {formType === "rental"
                 ? "property"
@@ -458,10 +469,16 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               label="Street Name/Number"
               inputClassName="bg-white rounded-[8px] property-form-input"
               required
-              maxLength={15}
               defaultValue={
                 editMode ? propertyDetails?.full_address : undefined
               }
+              restrictedWordsOptions={{
+                words: [
+                  ...getAllStates(),
+                  ...getAllLocalGovernments(),
+                  ...getAllCities(),
+                ],
+              }}
             />
 
             {!isFacility && (

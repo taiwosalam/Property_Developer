@@ -115,7 +115,7 @@ const CreateInvoicePage = () => {
                 id="payment_title"
                 label="Payment Title"
                 value={paymentTitle}
-                onChange={(value) => setPaymentTitle(value)}
+                onChange={(value) => setPaymentTitle(value as string)}
               />
               <Input
                 type="text"
@@ -125,7 +125,7 @@ const CreateInvoicePage = () => {
                 CURRENCY_SYMBOL={"₦"}
                 formatNumber
                 value={paymentAmount}
-                onChange={(value) => setPaymentAmount(value)}
+                onChange={(value) => setPaymentAmount(value as string)}
               />
             </div>
             <div className="flex items-center justify-end">

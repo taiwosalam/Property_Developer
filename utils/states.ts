@@ -42,3 +42,25 @@ export const getCities = (
   }
   return [];
 };
+
+// GET ALL
+export const getAllLocalGovernments = (): string[] => {
+  const allLGAs: string[] = [];
+  getAllStates().forEach((stateName) => {
+    const lgas = getLocalGovernments(stateName);
+    allLGAs.push(...lgas);
+  });
+  return Array.from(new Set(allLGAs)).sort();
+};
+
+export const getAllCities = (): string[] => {
+  const allCities: string[] = [];
+  getAllStates().forEach((stateName) => {
+    const lgas = getLocalGovernments(stateName);
+    lgas.forEach((lga) => {
+      const cities = getCities(stateName, lga);
+      allCities.push(...cities);
+    });
+  });
+  return Array.from(new Set(allCities)).sort();
+};
