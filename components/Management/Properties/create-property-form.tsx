@@ -314,7 +314,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         // id={editMode ? "edit-property-form" : "create-property-form"}
         skipValidation
       >
-        <div className="max-w-[970px]" ref={scrollTargetRef}>
+        <div className="max-w-[970px] scroll-mt-[160px]" ref={scrollTargetRef}>
           <input name="property_type" type="hidden" value={formType} />
           <div className="mb-5 lg:mb-8">
             <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
