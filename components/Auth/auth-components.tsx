@@ -199,7 +199,8 @@ export const AuthNewPassword: React.FC<AuthNewPasswordProps> = ({
   const barRef = useRef<HTMLDivElement | null>(null);
 
   // Handle changes in the password input field
-  const handleOnChange = (value: string) => {
+  const handleOnChange = (value: string | null) => {
+    if (value === null) return; // Handle null case
     // Filter through password conditions and check which are met
     const conditions_met = Object.keys(password_conditions).filter((key) =>
       password_conditions[key].condition.test(value)
@@ -235,7 +236,7 @@ export const AuthNewPassword: React.FC<AuthNewPasswordProps> = ({
         id="password"
         type="password"
         label={label}
-        placeholder="Write here"
+        // onChange={(value, event) => handleOnChange(value)}
         onChange={handleOnChange}
         validationErrors={validationErrors} // Uncomment this line if validation errors are being handled elsewhere
       />

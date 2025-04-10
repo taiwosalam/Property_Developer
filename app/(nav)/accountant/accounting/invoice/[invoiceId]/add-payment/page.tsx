@@ -78,7 +78,7 @@ const PreviewExpenses = () => {
                 placeholder="1,000,000"
                 inputClassName="bg-white"
                 value={inputValues.annualRent}
-                onChange={(value) => handleInputChange("annualRent", value)}
+                onChange={(value) => handleInputChange("annualRent", value as string)}
               />
               <Input
                 id="service-charge"
@@ -87,7 +87,7 @@ const PreviewExpenses = () => {
                 placeholder="300,000"
                 inputClassName="bg-white"
                 value={inputValues.serviceCharge}
-                onChange={(value) => handleInputChange("serviceCharge", value)}
+                onChange={(value) => handleInputChange("serviceCharge", value as string)}
               />
               <Input
                 id="refundable-caution-fee"
@@ -97,7 +97,7 @@ const PreviewExpenses = () => {
                 inputClassName="bg-white"
                 value={inputValues.refundableCautionFee}
                 onChange={(value) =>
-                  handleInputChange("refundableCautionFee", value)
+                  handleInputChange("refundableCautionFee", value as string)
                 }
               />
               <Input
@@ -108,7 +108,7 @@ const PreviewExpenses = () => {
                 inputClassName="bg-white"
                 value={inputValues.nonRefundableAgencyFee}
                 onChange={(value) =>
-                  handleInputChange("nonRefundableAgencyFee", value)
+                  handleInputChange("nonRefundableAgencyFee", value as string)
                 }
               />
               <Input
@@ -119,7 +119,7 @@ const PreviewExpenses = () => {
                 inputClassName="bg-white"
                 value={inputValues.nonRefundableLegalFee}
                 onChange={(value) =>
-                  handleInputChange("nonRefundableLegalFee", value)
+                  handleInputChange("nonRefundableLegalFee", value as string)
                 }
               />
             </div>
@@ -144,7 +144,7 @@ const PreviewExpenses = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 placeholder="300,000"
                 value={inputValues.amount}
-                onChange={(value) => handleInputChange("amount", value)}
+                onChange={(value) => handleInputChange("amount", value as string)}
               />
             </div>
             <div className="flex justify-end">
