@@ -130,7 +130,6 @@ const UnitDetails = () => {
           inputClassName="bg-white rounded-[8px] unit-form-input"
           required={!isRental}
           requiredNoStar={isRental}
-          // defaultValue={unitData?.unit_name}
           defaultValue={displayUnitName}
         />
         <Select
