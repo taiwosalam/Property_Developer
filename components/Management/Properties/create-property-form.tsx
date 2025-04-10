@@ -46,6 +46,7 @@ import GoogleMapsModal from "./google-maps";
 import { MultiSelect } from "@/components/multiselect/multi-select";
 import { Cat } from "lucide-react";
 import SelectWithImage from "@/components/Form/Select/select-with-image";
+import RestrictInput from "@/components/Form/Input/InputWIthRestrict";
 
 const maxNumberOfImages = 6;
 
@@ -464,7 +465,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               required
               hiddenInputClassName="property-form-input"
             />
-            <Input
+            <RestrictInput
               id="full_address"
               label="Street Name/Number"
               inputClassName="bg-white rounded-[8px] property-form-input"

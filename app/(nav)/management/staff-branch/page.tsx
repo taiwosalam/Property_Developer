@@ -328,7 +328,7 @@ const StaffAndBranches = () => {
               handleSelect={handleSelectTableItem}
             />
             {silentLoading && current_page > 1 && (
-              <div className="flex items-center bg-red-500 justify-center py-4 my-8">
+              <div className="flex items-center justify-center py-4 my-8">
                 <div className="loader" />
               </div>
             )}

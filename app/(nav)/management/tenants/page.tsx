@@ -273,7 +273,7 @@ const Tenants = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <div>{error}</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="space-y-8">

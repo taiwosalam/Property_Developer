@@ -137,7 +137,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
           >
             {percentage}%
           </span>{" "}
-          {trendDirection === "up" ? "Up" : "Down"} from last week
+          {trendDirection === "up" ? "Up" : "Down"} from last month
         </p>
       </div>
     </div>

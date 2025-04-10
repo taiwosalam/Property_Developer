@@ -10,7 +10,7 @@ export const FeeBreakdown: React.FC<{
   return (
     <div className="space-y-6">
       <RentSectionTitle>  
-        {isRental ? "Commission & Fees" : "Estate Fee"}
+        {isRental ? "Rent Package" : "Estate Fee"}
       </RentSectionTitle>
       <FeeDetails
         title={isRental ? "New Tenant Fee" : "Occupant Fee"}
