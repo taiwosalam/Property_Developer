@@ -57,24 +57,48 @@ export const SettingsVerifiedBadge = ({
   status,
 }: {
   status: "verified" | "unverified" | "pending";
-}) => (
-  <div
-    className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${
-      status === "verified"
-        ? "bg-status-success-1"
-        : "bg-[#FF8EE] border-[#FFBB53]"
-    }`}
-  >
-    <p
-      className={`text-[10px] ${
-        status === "verified" ? "text-status-success-primary" : "text-[#FFBB53]"
-      } font-normal ${secondaryFont.className}`}
+}) => {
+  const isVerified = status === "verified";
+  const isPending = status === "pending";
+
+  const bgClass = isVerified
+    ? "bg-status-success-1"
+    : isPending
+    ? "bg-[#EDE9FF]" // light purple background
+    : "bg-[#FF8EE]";
+
+  const borderClass = isVerified
+    ? ""
+    : isPending
+    ? "border-[#A855F7]" // purple border
+    : "border-[#FFBB53]";
+
+  const textClass = isVerified
+    ? "text-status-success-primary"
+    : isPending
+    ? "text-[#A855F7]" // purple text
+    : "text-[#FFBB53]";
+
+  const iconColor = isVerified
+    ? "green"
+    : isPending
+    ? "purple"
+    : "yellow";
+
+  return (
+    <div
+      className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${bgClass} ${borderClass}`}
     >
-      {status}
-    </p>
-    <BadgeIcon color={status === "verified" ? "green" : "yellow"} />
-  </div>
-);
+      <p
+        className={`text-[10px] font-normal ${textClass} ${secondaryFont.className}`}
+      >
+        {status}
+      </p>
+      <BadgeIcon color={iconColor} />
+    </div>
+  );
+};
+
 
 export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
   title,

@@ -18,7 +18,7 @@ interface SocialLinks {
 interface Verification {
   cac_status: "verified" | "unverified";
   cac_reason: string;
-  membership_status: "verified" | "unverified";
+  membership_status: "verified" | "unverified" | "pending";
   membership_reason: string;
   utility_status: "verified" | "unverified";
   utility_reason: string;
@@ -245,9 +245,7 @@ export const transformProfileApiResponse = (
         | "verified"
         | "unverified",
       cac_reason: res.verification.cac_reason,
-      membership_status: convertYesNoToVerify(
-        res.verification.membership_status
-      ) as "verified" | "unverified",
+      membership_status: res.verification.membership_status,
       membership_reason: res.verification.membership_reason,
       utility_status: convertYesNoToVerify(res.verification.utility_status) as
         | "verified"

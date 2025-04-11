@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 // Imports
 import SettingsSection from "@/components/Settings/settings-section";
@@ -18,114 +18,146 @@ import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { updateServicesSettings, updateSettings } from "../security/data";
 import useFetch from "@/hooks/useFetch";
+import debounce from "lodash/debounce";
 
 interface ApiResponse {
   data: { [key: string]: { [key: string]: string[] } };
 }
+const MAX_SERVICE_PER_SECTION = 4;
 
 const Services = () => {
-  const [loading, setLoading] = useState(false);
-  const [selectedServices, setSelectedServices] = useState<{ [key: string]: string[] }>({});
+  const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+  const [clickLock, setClickLock] = useState<{ [key: string]: boolean }>({});
+  const [selectedServices, setSelectedServices] = useState<{
+    [key: string]: string[];
+  }>({});
 
   const [pageData, setPageData] = useState<{ [key: string]: string[] }>({});
 
-  const { data: apiData, error, refetch } = useFetch<ApiResponse>("/company/services");
+  const {
+    data: apiData,
+    error,
+    refetch,
+  } = useFetch<ApiResponse>("/company/services");
 
   const res = apiData?.data;
 
-useEffect(() => {
-  if (res) {
-    const initialServicesState: { [key: string]: string[] } = {};
+  useEffect(() => {
+    if (res) {
+      const initialServicesState: { [key: string]: string[] } = {};
 
-    Object.keys(res).forEach((key) => {
-      let transformedKey = key;
+      Object.keys(res).forEach((key) => {
+        let transformedKey = key;
 
-      // Transform the keys
-      switch (key) {
-        case "estate_surveyor_valuer":
-          transformedKey = "Estate Surveyor & Valuer";
-          break;
-        case "quantity_surveyor":
-          transformedKey = "Quantity Surveyor";
-          break;
-        case "legal_practitioner":
-          transformedKey = "Legal Practitioner";
-          break;
-        case "architect":
-          transformedKey = "Architect";
-          break;
-        case "civil_engineer":
-          transformedKey = "Civil Engineer";
-          break;
-        case "hospitality":
-          transformedKey = "Hospitality";
-          break;
-        case "realtor":
-          transformedKey = "Realtor";
-          break;
-        case "town_planner":
-          transformedKey = "Town Planner";
-          break;
-        default:
-          break;
-      }
+        // Transform the keys
+        switch (key) {
+          case "estate_surveyor_valuer":
+            transformedKey = "Estate Surveyor & Valuer";
+            break;
+          case "land_surveyor":
+            transformedKey = "Land Surveyor";
+            break;
+          case "quantity_surveyor":
+            transformedKey = "Quantity Surveyor";
+            break;
+          case "legal_practitioner":
+            transformedKey = "Legal Practitioner";
+            break;
+          case "architect":
+            transformedKey = "Architect";
+            break;
+          case "civil_engineer":
+            transformedKey = "Civil Engineer";
+            break;
+          case "hospitality":
+            transformedKey = "Hospitality";
+            break;
+          case "realtor":
+            transformedKey = "Realtor";
+            break;
+          case "town_planner":
+            transformedKey = "Town Planner";
+            break;
+          default:
+            break;
+        }
 
-      // console.log("transformedKey", transformedKey);
-      // Safely assigning values to initialServicesState
-      if (Array.isArray(res[key])) {
-        initialServicesState[transformedKey] = res[key];
-      } else {
-        console.error(`Expected an array for ${key}, but got`, res[key]);
-      }
-    });
+        //
+        // Safely assigning values to initialServicesState
+        if (Array.isArray(res[key])) {
+          initialServicesState[transformedKey] = res[key];
+        }
+        // } else {
+        //   toast.error(`Invalid data for ${key}. Contact support.`);
+        //   return;
+        // }
+      });
 
-    setSelectedServices((prevState) => ({
-      ...prevState,
-      ...initialServicesState,
-    }));
-  }
-}, [res]);
+      setSelectedServices((prevState) => ({
+        ...prevState,
+        ...initialServicesState,
+      }));
+    }
+  }, [res]);
 
-  
   const handleServiceClick = (section: string, serviceName: string) => {
+    const lockKey = `${section}-${serviceName}`;
+    if (clickLock[lockKey]) {
+      return; // Skip if locked
+    }
+
+    setClickLock((prev) => ({ ...prev, [lockKey]: true }));
+
+    let hasToasted = false; 
     setSelectedServices((prev) => {
       const currentSelection = prev[section] || [];
       const isSelected = currentSelection.includes(serviceName);
 
       if (isSelected) {
-        // Remove service if already selected
-        return { ...prev, [section]: currentSelection.filter((name) => name !== serviceName) };
+        // Deselect: Always allow
+        const newSelection = currentSelection.filter(
+          (name) => name !== serviceName
+        );
+        return { ...prev, [section]: newSelection };
       }
 
-      if (currentSelection.length >= 4) {
-        toast.warning(`You can only select up to 4 services in the "${section}" section.`);
-        return prev; // Prevent state update
+      if (currentSelection.length >= MAX_SERVICE_PER_SECTION) {
+        if (!hasToasted) {
+          toast.warning(
+            `You can only select up to ${MAX_SERVICE_PER_SECTION} services in the "${section}" section.`
+          );
+          hasToasted = true;
+        }
+        return prev;
       }
 
       return { ...prev, [section]: [...currentSelection, serviceName] };
     });
+
+    setClickLock((prev) => ({ ...prev, [lockKey]: false }));
   };
 
   const handleSubmit = async (section: string) => {
+    if (loading[section]) return;
     const payload = { data: selectedServices[section] || [] };
     const type = section
       .toLowerCase()
-      .replace(/\s/g, '_')
-      .replace(/&/g, '')
-      .replace(/__+/g, '_')
-      .split(' ')
-      .join('_');
+      .replace(/\s/g, "_")
+      .replace(/&/g, "")
+      .replace(/__+/g, "_")
+      .split(" ")
+      .join("_");
 
     try {
-      setLoading(true)
-      const res = await updateServicesSettings(objectToFormData(payload), type)
+      setLoading((prev) => ({ ...prev, [section]: true }));
+      const res = await updateServicesSettings(objectToFormData(payload), type);
       if (res && res.status === 200) {
-        toast.success(`Services updated successfully`)
+        toast.success(`Services updated successfully`);
       }
     } catch (err) {
-      toast.error("Failed to update services")
+      toast.error("Failed to update services");
     } finally {
-      setLoading(false)
+      setLoading((prev) => ({ ...prev, [section]: false }));
     }
   };
 
@@ -143,7 +175,9 @@ useEffect(() => {
                     active={selectedServices[section]?.includes(name)}
                     key={`${name}-${idx}`}
                     onClick={() => handleServiceClick(section, name)}
-                    isSelected={selectedServices[section]?.includes(name) || false}
+                    isSelected={
+                      selectedServices[section]?.includes(name) || false
+                    }
                   >
                     {name}
                   </SettingsServicesTag>
@@ -155,9 +189,9 @@ useEffect(() => {
                 size="base_bold"
                 className="py-[10px] px-8"
                 onClick={() => handleSubmit(section)}
-                disabled={loading}
+                disabled={loading[section]}
               >
-                {loading ? "Please wait..." : "Update"}
+                {loading[section] ? "Please wait..." : "Update"}
               </Button>
             </div>
             {/* <SettingsUpdateButton action={handleSubmit(section) as any} /> */}
