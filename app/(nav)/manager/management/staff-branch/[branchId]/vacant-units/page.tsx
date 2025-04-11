@@ -287,19 +287,7 @@ const RentAndUnit = () => {
                   {pageData?.unit.map((unit, index) => (
                     <RentalPropertyCard
                       key={index}
-                      propertyType={unit.propertyType as 'rental' | 'facility'}
-                      unitId={unit.unitId || ""}
-                      images={unit.images}
-                      unit_title={unit.unit_title}
-                      unit_name={unit.unit_name}
-                      unit_type={unit.unit_type}
-                      tenant_name={unit.tenant_name || ""}
-                      expiry_date={unit.expiry_date || ""}
-                      rent={unit.rent || ""}
-                      caution_deposit={unit.caution_deposit || ""}
-                      service_charge={unit.service_charge}
-                      status={unit.status || ""}
-                      property_type={unit.propertyType || ""}
+                      {...unit}
                     />
                   ))}
                 </AutoResizingGrid>
@@ -308,19 +296,7 @@ const RentAndUnit = () => {
                   {pageData?.unit.map((unit, index) => (
                     <RentalPropertyListCard
                       key={index}
-                      propertyType={unit.propertyType as 'rental' | 'facility'}
-                      unitId={unit.unitId || ""}
-                      images={unit.images}
-                      unit_title={unit.unit_title}
-                      unit_name={unit.unit_name}
-                      unit_type={unit.unit_type}
-                      tenant_name={unit.tenant_name || ""}
-                      expiry_date={unit.expiry_date || ""}
-                      rent={unit.rent || ""}
-                      caution_deposit={unit.caution_deposit || ""}
-                      service_charge={unit.service_charge}
-                      status={unit.status || ""}
-                      property_type={unit.propertyType || ""}
+                      {...unit}
                     />
                   ))}
                 </div>

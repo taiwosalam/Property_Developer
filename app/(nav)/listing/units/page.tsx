@@ -86,8 +86,8 @@ const Units = () => {
           : undefined,
         search: search,
         branch: appliedFilters.menuOptions["Branch"] || [],
-        // state: appliedFilters.menuOptions["State"] || [],
         property: appliedFilters.menuOptions["Property"],
+        status: appliedFilters.menuOptions["Status"]?.[0] || "",
         sort_by: sort,
       } as RentUnitFilterParams,
     };

@@ -23,10 +23,16 @@ import Link from "next/link";
 import UnitSponsorPopover from "./unit-sponsor-popover";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
-import { unit_listing_status } from "@/app/(nav)/listing/units/data";
+import {
+  ToggleUnitPublish,
+  unit_listing_status,
+} from "@/app/(nav)/listing/units/data";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { transformUnitDetails } from "@/app/(nav)/listing/data";
+import { PropertyListingRed } from "../Property/property-listing-component";
+import { toast } from "sonner";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const VacantUnitCard = ({
   status,
@@ -42,9 +48,9 @@ const VacantUnitCard = ({
     | "pending";
 }) => {
   const propertySettings = useAddUnitStore((state) => state.propertySettings);
-  const currency = unit_data.currency  || "naira";
+  const currency = unit_data.currency || "naira";
   const [isOpen, setIsOpen] = useState(false);
-  const [checked, setChecked] = useState(true);
+  const [publishing, setPublishing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const referenceObject = {
     property_title: "",
@@ -53,24 +59,48 @@ const VacantUnitCard = ({
     rent: "",
     ...(unit_data.caution_fee ? { caution_deposit: "" } : {}),
     total_package: "",
-    // service_charge: "",
     address: "",
     unit_type: "",
     account_officer: "",
   };
 
+  const published = unit_data.published;
   const unit_status =
     status === "pending"
       ? "under moderation"
-      : status === "approved"
+      : status === "approved" && published
       ? "published"
+      : status === "approved" && !published
+      ? "unpublished"
       : status;
 
-  console.log("unit_data", unit_data);
-  const togglePublish = () => {
-    if (status === "approved") {
-      setIsOpen(false);
-      setChecked(!checked);
+  const [checked, setChecked] = useState(unit_status === "published");
+  useEffect(() => {
+    setChecked(unit_status === "published");
+  }, [unit_status]);
+
+  const togglePublish = async () => {
+    if (status !== "approved") {
+      toast.warning("The Unit is not yet approved!");
+      return;
+    }
+    try {
+      setPublishing(true);
+      const payload = {
+        publish: unit_data.published ? 0 : 1,
+      };
+      const unitId = unit_data.unitId;
+      const res = await ToggleUnitPublish(unitId, objectToFormData(payload));
+      if (res) {
+        setIsOpen(false);
+        // setChecked(!checked);
+        toast.success("Updated Successfully");
+        window.dispatchEvent(new Event("refetchRentUnit"));
+      }
+    } catch (error) {
+      toast.error("Failed to Switch");
+    } finally {
+      setPublishing(false);
     }
   };
 
@@ -78,9 +108,9 @@ const VacantUnitCard = ({
     property_title: unit_data.property_title,
     unit_name: unit_data.unit_name,
     unit_details: transformUnitDetails(unit_data),
-    rent: `${currencySymbols[currency as keyof typeof currencySymbols]}${formatNumber(
-      parseFloat(unit_data.rent)
-    )}`,
+    rent: `${
+      currencySymbols[currency as keyof typeof currencySymbols]
+    }${formatNumber(parseFloat(unit_data.rent))}`,
     ...(unit_data.caution_fee
       ? {
           caution_deposit: `${
@@ -88,10 +118,7 @@ const VacantUnitCard = ({
           }${formatNumber(parseFloat(unit_data.caution_fee))}`,
         }
       : {}),
-      total_package: unit_data.total_package,
-    // service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
-    //   parseFloat(unit_data.service_charge || "0")
-    // )}`,
+    total_package: unit_data.total_package,
     address: unit_data.address,
     unit_type: unit_data.unit_type,
     account_officer: "",
@@ -126,19 +153,6 @@ const VacantUnitCard = ({
                   referenceObject={referenceObject}
                 />
               </div>
-              {/* <div className="flex items-start gap-[75px] text-base font-normal"> */}
-              {/* <p className="text-[#747474] dark:text-darkText-1">
-                  Property Title
-                </p> */}
-              {/* <TruncatedText
-                  lines={3}
-                  className="text-text-quaternary dark:text-darkText-2"
-                  as="div"
-                >
-                  <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
-                </TruncatedText> */}
-              {/* <span> {unit_data.property_title} </span> */}
-              {/* </div> */}
             </div>
             <div
               onClick={() => setIsModalOpen(true)}
@@ -172,49 +186,71 @@ const VacantUnitCard = ({
         <SectionSeparator />
       </div>
       <div
-        className={
-          "flex flex-wrap gap-4 lg:gap-12 justify-between lg:justify-end text-brand-9 text-base font-medium lato"
-        }
+        className={`flex flex-wrap items-center text-brand-9 text-base font-medium lato ${
+          status === "rejected" ? "justify-between" : "justify-end"
+        }`}
       >
-        {status === "approved" && (
-          <div className="flex  gap-2 capitalize">
-            <Switch checked={checked} onClick={() => setIsOpen(true)} />
-            <p>Under Moderation</p>
+        {status === "rejected" && (
+          <div className="flex items-center">
+            <PropertyListingRed>
+              {unit_data.rejection_reason}
+            </PropertyListingRed>
           </div>
         )}
-        <UnitSponsorPopover />
-        <Modal
-          state={{
-            isOpen,
-            setIsOpen,
-          }}
-        >
-          <ModalContent>
-            <UnitPublishModal isPublished={checked} onYes={togglePublish} />
-          </ModalContent>
-        </Modal>
 
-        <Link
-          href={`/management/properties/${unit_data.property_id}`}
-          className="flex items-center gap-2"
-        >
-          <PreviewEyeIcon />
-          <p>Preview</p>
-        </Link>
-        <Link
-          href={`/listing/statistics/${unit_data.unitId}`}
-          className="flex gap-2"
-        >
-          <StatsChartIcon />
-          <p>Stats</p>
-        </Link>
-        <Link
-          href={`/management/properties/${unit_data.property_id}/edit-property`}
-          className="flex gap-2"
-        >
-          <EditPencilIcon />
-          <p>Edit</p>
-        </Link>
+        <div className="flex gap-10 justify-end">
+          {status === "approved" && (
+            <div className="flex  gap-2 capitalize">
+              <Switch checked={checked} onClick={() => setIsOpen(true)} />
+              <p> {published ? "Unpublish" : "Publish"} </p>
+            </div>
+          )}
+
+          {!["under moderation", "rejected", "unpublished"].includes(
+            unit_status
+          ) && <UnitSponsorPopover />}
+
+          <Modal
+            state={{
+              isOpen,
+              setIsOpen,
+            }}
+          >
+            <ModalContent>
+              <UnitPublishModal
+                isPublished={checked}
+                onYes={togglePublish}
+                loading={publishing}
+              />
+            </ModalContent>
+          </Modal>
+
+          <Link
+            href={`/management/properties/${unit_data.property_id}`}
+            className="flex items-center gap-2"
+          >
+            <PreviewEyeIcon />
+            <p>Preview</p>
+          </Link>
+          {!["under moderation", "rejected", "unpublished"].includes(
+            unit_status
+          ) && (
+            <Link
+              href={`/listing/statistics/${unit_data.unitId}`}
+              className="flex gap-2"
+            >
+              <StatsChartIcon />
+              <p>Stats</p>
+            </Link>
+          )}
+          <Link
+            href={`/management/properties/${unit_data.property_id}/edit-property`}
+            className="flex gap-2"
+          >
+            <EditPencilIcon />
+            <p>Edit</p>
+          </Link>
+        </div>
       </div>
     </div>
   );

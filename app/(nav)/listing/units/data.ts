@@ -4,15 +4,16 @@ import {
   UnitDataObject,
 } from "../../management/rent-unit/data";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import api, { handleAxiosError } from "@/services/api";
 
 export const listingUnitFilter: FilterOptionMenu[] = [
   {
     radio: true,
     label: "Status",
     value: [
-      { label: "Published", value: "published" },
-      { label: "Unpublished", value: "unpublished" },
-      { label: "Under Moderation", value: "under_moderation" },
+      { label: "Published", value: "true" },
+      { label: "Unpublished", value: "false" },
+      { label: "Under Moderation", value: "pending" },
       { label: "Rejected", value: "rejected" },
     ],
   },
@@ -110,6 +111,7 @@ export const transformRentUnitApiResponse = (
       return {
         unitId: u.id.toString(),
         description: u?.property?.description || "--- ---",
+        rejection_reason: u.reject_reason || "--- ---",
         unit_title: u?.property?.title || "--- ---",
         unit_preference: u?.unit_preference || "--- ---",
         bedroom: u?.bedroom || "--- ---",
@@ -125,6 +127,7 @@ export const transformRentUnitApiResponse = (
         images: u.images.map((image) => image.path),
         unit_name: u?.unit_name || "--- ---",
         caution_fee: u.caution_fee || "0",
+        published: u.published,
         status: u.status as keyof typeof unit_listing_status,
         property_id: u?.property?.id || "--- ---",
         property_title: u?.property?.title || "--- ---",
@@ -164,5 +167,18 @@ export const transformRentUnitApiResponse = (
     return {
       unit: transformedUnits,
     };
+  }
+};
+
+// /unit/46/publish
+export const ToggleUnitPublish = async (unitId: number, status: FormData) => {
+  try {
+    const res = await api.post(`/unit/${unitId}/publish`, status);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
   }
 };

@@ -70,19 +70,21 @@ const UpdateProfileWithIdModal = ({
       let action;
       if (page === "landlord") {
         action = updateLandlordWithEmailOrID(payload, id);
-      } else if (page === "tenant") {
-        action = updateTenantWithEmailOrID(payload, id);
       } else {
-        action = updateServiceProviderWithEmailOrID(payload, id);
+        action = updateTenantWithEmailOrID(payload, id);
       }
-      // page === "landlord"
-      //   ? updateLandlordWithEmailOrID(payload, id)
-      //   : updateTenantWithEmailOrID(payload, id);
+      const toastMessage =
+        page === "landlord"
+          ? "Landlord Updated Successfully"
+          : "Tenant Updated Successfull";
+
       const res = await action;
       if (res) {
         setActiveStep(3);
         page === "tenant" && window.dispatchEvent(new Event("refetchtenant"));
-        page === "landlord" && window.dispatchEvent(new Event("refetchlandlord"));
+        page === "landlord" &&
+          window.dispatchEvent(new Event("refetchlandlord"));
+        toast.success(toastMessage);
         setTimeout(() => setIsOpen(false), 100);
       }
     } catch (error) {

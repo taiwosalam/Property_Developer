@@ -129,7 +129,7 @@ export const transformIndividualLandlordAPIResponse = ({
     picture: data.picture || "",
     name: data.name,
     email: data.email,
-    phone_number: data.phone,
+    phone_number: data.phone === "N/A" || !data.phone ? "--- ---" : data.phone,
     gender: data.gender,
     notes: {
       last_updated: lastUpdated,
