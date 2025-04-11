@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
+import { debounce } from "lodash";
 
 interface SettingsServicesTagProps {
   active?: boolean;
@@ -14,19 +15,27 @@ const SettingsServicesTag: React.FC<SettingsServicesTagProps> = ({
   active,
   children,
   onClick,
-  isSelected,
+  isSelected = false,
 }) => {
-  const [clicked, setClicked] = useState<boolean>(!!active);
+  const [clicked, setClicked] = useState<boolean>(isSelected);
 
   useEffect(() => {
-    if(isSelected){
-      setClicked(isSelected);
-    }
+    setClicked(isSelected);
   }, [isSelected]);
+
+  const debouncedOnClick = useCallback(
+    debounce(() => {
+      onClick?.();
+    }, 200),
+    [onClick]
+  );
 
   return (
     <button
-      onClick={onClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick?.();
+      }}
       className={clsx("py-3 px-4 rounded-[4px] group", {
         "bg-brand-1 dark:bg-darkBrand-1": clicked,
         "bg-[rgba(245,245,245,0.5)] dark:text-darkText-1": !clicked,

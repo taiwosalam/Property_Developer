@@ -130,20 +130,20 @@ const InspectionPage = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Inspections"
-          newData={inspectionData?.total_inspections ?? 0}
-          total={inspectionData?.total_months ?? 0}
+          newData={inspectionData?.total_months ?? 0}
+          total={inspectionData?.total_inspections ?? 0}
           colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Physical Inspections"
-          newData={inspectionData?.total_physical ?? 0}
-          total={inspectionData?.total_physical_month ?? 0}
+          newData={inspectionData?.total_physical_month ?? 0}
+          total={inspectionData?.total_physical ?? 0}
           colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Virtual Inspections"
-          newData={inspectionData?.total_virtual ?? 0}
-          total={inspectionData?.total_virtual_month ?? 0}
+          newData={inspectionData?.total_virtual_month ?? 0}
+          total={inspectionData?.total_virtual ?? 0}
           colorScheme={3}
         />
       </div>

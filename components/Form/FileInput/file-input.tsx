@@ -51,9 +51,6 @@ const FileInput: React.FC<FileInputProps> = ({
     }
   }, [defaultValue]);
 
-  console.log(defaultValue);
-  console.log(fileURL);
-
   const restorePreviousFile = () => {
     if (previousFileRef.current) {
       if (fileInputRef.current) {
@@ -108,6 +105,7 @@ const FileInput: React.FC<FileInputProps> = ({
       return;
     }
     setFile(newFile);
+    setDefaultFile("");
     // setShowVerifyBtn(true);
   };
 
@@ -259,11 +257,10 @@ const FileInput: React.FC<FileInputProps> = ({
             </Button>
           </div>
         )}
-         {(fileURL || defaultFile) && membership_status && (
+        {(defaultFile) && membership_status && (
           <div className="flex pt-2 sm:pt-7 ml-3">
-            <SettingsVerifiedBadge status={membership_status || "unverified"} />
+            <SettingsVerifiedBadge status={membership_status} />
           </div>
-          
         )}
         {/* {settingsPage && showVerifyBtn && (
           <button className="text-xs w-1/2 sm:w-auto sm:mt-0 text-brand-9">
