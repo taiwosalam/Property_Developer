@@ -129,8 +129,6 @@ export const transformRentUnitApiResponse = (
       address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
     };
   });
-
-  console.log("Transformed unit data", response);
   if (isUnitApiResponse(response)) {
     // console.log("isUnitApiResponse", response)
     return {
@@ -289,7 +287,8 @@ export interface RentalPropertyCardProps {
   caution_deposit: string | number;
   service_charge: string | number;
   status: string;
-  property_type?: string;
+  reject_reason?: string;
+  // property_type?: string;
   is_active?: string;
 }
 

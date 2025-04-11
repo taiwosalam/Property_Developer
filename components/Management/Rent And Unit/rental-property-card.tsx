@@ -138,9 +138,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   caution_deposit,
   service_charge,
   status,
-  property_type,
 }) => {
-
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
 
@@ -152,7 +150,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           className="absolute top-5 right-5 z-10"
         />
         {/* <PropertyImageSlider images={images} showOverlay={isHovered} /> */}
-        <ImageSlider images={images.map(image => image)} className="h-full" />
+        <ImageSlider images={images.map((image) => image)} className="h-full" />
       </div>
       <div
         role="button"
@@ -170,14 +168,13 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               <StatusDots status={status} propertyType={propertyType} />
             </div>
           </div>
-          <p className="text-sm font-normal">
-            {unit_name + " " + unit_type}
-          </p>
+          <p className="text-sm font-normal">{unit_name + " " + unit_type}</p>
 
           {/* Hover information */}
           <div
-            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
+            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${
+              isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
           >
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
@@ -189,9 +186,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Tenant&lsquo;s Name
               </span>
-              <p className="text-brand-primary font-medium">
-                {tenant_name}
-              </p>
+              <p className="text-brand-primary font-medium">{tenant_name}</p>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
@@ -224,7 +219,11 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               return label !== "Start Rent" && label !== "Start Counting";
             }
             if (status === "expire") {
-              return label === "Renew Rent" || label === "Renew Fee" || label === "Edit";
+              return (
+                label === "Renew Rent" ||
+                label === "Renew Fee" ||
+                label === "Edit"
+              );
             }
             return false; // Default: hide all buttons if status is unknown
           })

@@ -171,7 +171,6 @@ const Services = () => {
               <div className="flex gap-4 flex-wrap">
                 {services[service_owner].map(({ name, active }, idx) => (
                   <SettingsServicesTag
-                    // active={active}
                     active={selectedServices[section]?.includes(name)}
                     key={`${name}-${idx}`}
                     onClick={() => handleServiceClick(section, name)}
@@ -194,7 +193,6 @@ const Services = () => {
                 {loading[section] ? "Please wait..." : "Update"}
               </Button>
             </div>
-            {/* <SettingsUpdateButton action={handleSubmit(section) as any} /> */}
           </div>
         </SettingsSection>
       ))}
