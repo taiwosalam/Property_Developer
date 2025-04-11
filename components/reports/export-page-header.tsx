@@ -51,7 +51,7 @@ const ExportPageHeader = () => {
             <span className="text-brand-9 -ml-1">
               <LocationIcon size={22} />
             </span>
-            <p className="dark:text-darkText-1">{`${address}, ${city}, ${lga}, ${state}`}</p>
+            <p className="dark:text-darkText-1 capitalize">{`${address}, ${city}, ${lga}, ${state}`}</p>
           </li>
           <li>
             <span className="text-brand-9">

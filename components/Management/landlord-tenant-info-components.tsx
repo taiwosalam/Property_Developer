@@ -317,7 +317,7 @@ export const MobileNotesModal: React.FC<{
             <span>Note</span>
             <sub className="text-sm font-normal bottom-[unset]">
               <span className="font-bold">Last Updated</span>{" "}
-              {notes?.last_updated || providerNoteLastUpdated }
+              {notes?.last_updated || note_last_updated }
             </sub>
           </h3>
           <div className="flex items-center gap-2">

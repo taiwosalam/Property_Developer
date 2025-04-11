@@ -287,9 +287,6 @@ export const services: Record<string, { name: string; active?: boolean }[]> = {
         name: "Contract Drafting and Review",
       },
       {
-        name: "Litigation and Dispute Resolution",
-      },
-      {
         name: "Dispute Resolution",
       },
       {

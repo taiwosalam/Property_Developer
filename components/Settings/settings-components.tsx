@@ -56,7 +56,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 export const SettingsVerifiedBadge = ({
   status,
 }: {
-  status: "verified" | "unverified";
+  status: "verified" | "unverified" | "pending";
 }) => (
   <div
     className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${

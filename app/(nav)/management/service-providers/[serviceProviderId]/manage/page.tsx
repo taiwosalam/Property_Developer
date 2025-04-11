@@ -91,7 +91,7 @@ const ManageServiceProvider = () => {
 
   const webNote = {
     note_last_updated:
-      providerData?.updated_at && userData?.note
+      providerData?.updated_at
         ? dayjs(providerData?.updated_at).format("DD/MM/YYYY")
         : "",
     provider_notes: userData?.note || "",

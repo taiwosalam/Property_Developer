@@ -127,13 +127,13 @@ const WebsitePages = () => {
 
       //setPropertyVisibility({});
     }
-    if (companySettings && userPlan === "professional") {
+    // if (companySettings && userPlan === "professional") {
       setPropertyVisibility({
         rent_properties: websiteSettings?.rent_properties ?? false,
         sale_properties: websiteSettings?.sale_properties ?? false,
         shortlet_properties: websiteSettings?.shortlet_properties ?? false,
       });
-    }
+    //}
   }, [companySettings]);
 
   const handleCustomColorChange = (color: string) => {
@@ -150,18 +150,18 @@ const WebsitePages = () => {
     name: string,
     value: SetStateAction<boolean>
   ) => {
-    if (userPlan === "professional") {
+    // if (userPlan === "professional") {
       const newValue =
         typeof value === "function" ? value(propertyVisibility[name]) : value;
       setPropertyVisibility((prev) => ({
         ...prev,
         [name]: newValue,
       }));
-    }
+   // }
   };
 
   const handlePropertyVisibility = (name: string, checked: boolean) => {
-    if (userPlan !== "professional") return;
+    // if (userPlan !== "professional") return;
 
     setPropertyVisibility((prev) => ({
       ...prev,
@@ -186,16 +186,18 @@ const WebsitePages = () => {
     }
   };
 
+  console.log(companySettings?.data.website_settings)
+
   return (
     <div>
       <SettingsSection title="website page & Color Scheme">
         <div className="modules-list mb-5">
           <SettingsOthersCheckBox
-            plan={userPlan}
+            plan={"professional"}
             title="Website Page"
             name="module_listing"
             desc="Toggle on or off to control the visibility of your listing on the website, based on your subscription plan."
-            checked={checkedStates["modules_listing"] ?? true}
+            checked={checkedStates["modules_listing"]}
             value="module_listing"
             onChange={(value, checked) => {
               setCheckedStates((prev) => ({
@@ -231,10 +233,10 @@ const WebsitePages = () => {
           {websiteOptions.map((option, index) => (
             <SettingsOthersCheckBox
               key={index}
-              plan={userPlan} //Plan from API to determine whether user can toggle the switch
+              plan={"professional"} //Plan from API to determine whether user can toggle the switch
               title={option.title}
               desc={option.desc}
-              checked={userPlan === "professional"  ? checkedStates[option.name] : true}
+              checked={checkedStates[option.name]} // userPlan === "professional"  ? 
               value={option.name}
               onChange={(value, checked) => {
                 setCheckedStates((prev) => ({
