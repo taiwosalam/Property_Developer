@@ -21,3 +21,20 @@ export interface CheckValidatonErrorProps {
 
 // Object length
 export type ObjectLengthProps = Record<any, any>;
+
+
+
+
+// Define types for our fetch states
+export interface FetchState<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+}
+
+// Define type for all branch-dependent fetches
+export interface BranchDependentData {
+  inventory: FetchState<AllInventoryResponse>;
+  staff: FetchState<AllLandlordsResponse>;
+  accountOfficer: FetchState<AllLandlordsResponse>;
+}
