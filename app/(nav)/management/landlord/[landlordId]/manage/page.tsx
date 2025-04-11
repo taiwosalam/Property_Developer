@@ -61,7 +61,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   if (!landlordData) return null;
   const groupedDocuments = groupDocumentsByType(landlordData?.documents);
 
-  console.log("landlordData?.statement", landlordData?.statement);
+  // console.log("landlordData?.statement", landlordData?.statement);
 
   const transformedTableData = landlordData?.statement?.map((item) => ({
     ...item,

@@ -12,6 +12,7 @@ import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import { formatNumber } from "@/utils/number-formatter";
 import { StatusDots } from "./status-dot";
 import { empty } from "@/app/config";
+import Link from "next/link";
 
 const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   propertyType,
@@ -26,7 +27,6 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   caution_deposit,
   service_charge,
   status,
-  property_type,
 }) => {
   // console.log("unit passed", unit)
   const [isOpened, setIsOpened] = useState(false);
@@ -41,27 +41,33 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
         </div>
       </div>
       <div className="flex items-center justify-between gap-4 py-4 border-y border-gray-200 overflow-y-auto">
-        <div className="flex-grow-1 flex-shrink-0 grid grid-cols-2 gap-x-2 gap-y-4 w-fit xl:max-w-[calc(100%-200px-16px)]">
+        <div className="flex-grow-1 flex-shrink-0 grid grid-cols-2 gap-x-2 gap-y-4 w-fit xl:max-w-[calc(100%-200px-16px)] bg-red-500">
           <DetailItem
             label="Unit Details"
             value={unit_name + " " + unit_type}
           />
           <DetailItem label="Rent" value={`₦${formatNumber(Number(rent))}`} />
-          <DetailItem label="Unit No/Name" value="Flat 4" />
-          <DetailItem label="Caution Deposit" value={`₦${formatNumber(Number(caution_deposit))}`} />
+          <DetailItem label="Unit No/Name" value={unit_name} />
+          <DetailItem
+            label="Caution Deposit"
+            value={`₦${formatNumber(Number(caution_deposit))}`}
+          />
           <DetailItem label="Unit Description" value={unit_title} />
-          <DetailItem label="Service Charge" value={`₦${formatNumber(service_charge as number)}`} />
+          <DetailItem
+            label="Service Charge"
+            value={`₦${formatNumber(service_charge as number)}`}
+          />
           <DetailItem
             label="Tenants Name"
             value={
-              <span className="flex items-center">
+              <Link href={`/management/tenants/${8}/manage`} className="flex items-center">
                 <span className="border-black border-b">{tenant_name}</span>
                 {/* BADGE ICON IS FOR MOBILE USERS ONLY */}
-                {/* <BadgeIcon color="green" /> */} 
-              </span>
+                {/* <BadgeIcon color="green" /> */}
+              </Link>
             }
           />
-          <DetailItem label="Due Date" value="12/12/2024" />
+          <DetailItem label="Due Date" value={expiry_date} />
         </div>
         <div
           className="flex-shrink-0 relative w-[200px] h-[200px]"
@@ -105,7 +111,11 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 return label !== "Start Rent" && label !== "Start Counting";
               }
               if (status === "expire") {
-                return label === "Renew Rent" || label === "Renew Fee" || label === "Edit";
+                return (
+                  label === "Renew Rent" ||
+                  label === "Renew Fee" ||
+                  label === "Edit"
+                );
               }
               return false; // Default: hide all buttons if status is unknown
             })

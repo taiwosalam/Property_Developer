@@ -218,6 +218,8 @@ const RentAndUnit = () => {
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
+
+  console.log("pageData", pageData)
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
@@ -337,21 +339,7 @@ const RentAndUnit = () => {
                     pageData?.unit.map((unit, index) => (
                       <RentalPropertyCard
                         key={index}
-                        propertyType={
-                          unit.propertyType as "rental" | "facility"
-                        }
-                        unitId={unit.unitId || ""}
-                        images={unit.images}
-                        unit_title={unit.unit_title}
-                        unit_name={unit.unit_name}
-                        unit_type={unit.unit_type}
-                        tenant_name={unit.tenant_name || ""}
-                        expiry_date={unit.expiry_date || ""}
-                        rent={unit.rent || ""}
-                        caution_deposit={unit.caution_deposit || ""}
-                        service_charge={unit.service_charge}
-                        status={unit.status || ""}
-                        property_type={unit.propertyType || ""}
+                        {...unit}
                       />
                     ))
                   )}
@@ -359,26 +347,12 @@ const RentAndUnit = () => {
               ) : (
                 <div className="space-y-4">
                   {silentLoading ? (
-                    <TableLoading />
+                    <CardsLoading />
                   ) : (
                     pageData?.unit.map((unit, index) => (
                       <RentalPropertyListCard
                         key={index}
-                        propertyType={
-                          unit.propertyType as "rental" | "facility"
-                        }
-                        unitId={unit.unitId || ""}
-                        images={unit.images}
-                        unit_title={unit.unit_title}
-                        unit_name={unit.unit_name}
-                        unit_type={unit.unit_type}
-                        tenant_name={unit.tenant_name || ""}
-                        expiry_date={unit.expiry_date || ""}
-                        rent={unit.rent || ""}
-                        caution_deposit={unit.caution_deposit || ""}
-                        service_charge={unit.service_charge}
-                        status={unit.status || ""}
-                        property_type={unit.propertyType || ""}
+                        {...unit}
                       />
                     ))
                   )}

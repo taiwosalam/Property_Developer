@@ -71,7 +71,7 @@ const AddOccupantWithId = ({
 
   return (
     <ModalPreset
-      heading="Add occupant with ID"
+      heading="Add occupant with ID Only"
       style={{
         maxWidth: "600px",
         justifyContent: "center",
