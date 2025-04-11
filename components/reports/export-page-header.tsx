@@ -34,13 +34,13 @@ const ExportPageHeader = () => {
       }}
     >
       <div
-        className="w-[300px] h-[100px] relative overflow-hidden rounded-lg print:shadow-none" 
+        className="w-[300px] h-[150px] relative overflow-hidden rounded-lg print:shadow-none" 
         style={{
           boxShadow:
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 4px 6px 0px rgba(13, 23, 33, 0.08)",
         }}
       >
-        <Image src={logo || ""} alt="logo" fill className="object-contain" />
+        <Image src={logo || ""} alt="logo" width={1000} height={1000} className="object-cover w-full h-full" />
       </div>
       <div className="space-y-2">
         <h4 className="text-text-quaternary dark:text-white text-sm font-medium">
