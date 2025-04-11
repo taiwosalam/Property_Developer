@@ -56,7 +56,6 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
       }
       router.push("/management/properties");
     } else {
-      // handleInputChange();
       if (!canSubmit) {
         toast.error(
           `The following fields are required: ${missingFields.join(", ")}`

@@ -45,7 +45,9 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
+  const [clickedNo, setClickedNo] = useState(false);
 
+  
   const resetForm = () => {
     setImages([]);
     setImageFiles([]);
@@ -119,6 +121,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           duplicate,
           setDuplicate,
           setSubmitLoading,
+          clickedNo,
+          setClickedNo,
         }}
       >
         <div className="pb-[100px]">
