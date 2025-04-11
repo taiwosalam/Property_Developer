@@ -29,7 +29,7 @@ import {
   PageMessages,
 } from "../(messages-reviews)/messages/types";
 import { transformUsersMessages } from "../(messages-reviews)/messages/data";
-import { message_card_data } from "@/components/Message/data";
+// import { message_card_data } from "@/components/Message/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { useChatStore } from "@/store/message";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
@@ -46,7 +46,7 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
   const [pageUsersMsg, setPageUsersMsg] =
-    useState<PageMessages[]>(message_card_data);
+    useState<PageMessages[] | null>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setChatData } = useChatStore();
   const company_status = usePersonalInfoStore((state) => state.company_status);
