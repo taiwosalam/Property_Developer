@@ -9,7 +9,7 @@ import type {
   AllInventoryResponse,
 } from "./types";
 import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { PlusIcon, DeleteIconX } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
@@ -47,6 +47,12 @@ import { MultiSelect } from "@/components/multiselect/multi-select";
 import { Cat } from "lucide-react";
 import SelectWithImage from "@/components/Form/Select/select-with-image";
 import RestrictInput from "@/components/Form/Input/InputWIthRestrict";
+import {
+  fetchBranchDependentData,
+  getBranchInventories,
+} from "@/utils/getData";
+import { BranchDependentData } from "@/utils/types";
+import api, { handleAxiosError } from "@/services/api";
 
 const maxNumberOfImages = 6;
 
@@ -75,6 +81,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
   const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
   const [selectedOfficer, setSelectedOfficer] = useState<string[]>([]);
+  const [inventoryError, setInventoryError] = useState<string | null>(null);
+  const [inventoryLoading, setInventoryLoading] = useState<boolean>(false);
+  const [branchData, setBranchData] = useState<BranchDependentData>({
+    inventory: { data: null, loading: false, error: null },
+    staff: { data: null, loading: false, error: null },
+    accountOfficer: { data: null, loading: false, error: null },
+  });
+  const [inventoryData, setInventoryData] =
+    useState<AllInventoryResponse | null>(null);
   const scrollTargetRef = useRef<HTMLDivElement>(null);
   const [lat, setLat] = useState(0);
   const [lng, setLng] = useState(0);
@@ -138,29 +153,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     handleImageReorder(source.index, destination.index);
   };
 
-  const addStaff = () => {
-    if (staff.length < 3) {
-      setPropertyState({
-        staff: [
-          ...staff,
-          {
-            id: `staff${staff.length + 1}_id`,
-            label: `Staff ${staff.length + 1}`,
-          },
-        ],
-      });
-    }
-  };
-
-  const removeStaff = (id: string) => {
-    const updatedStaff = staff.filter((staffMember) => staffMember.id !== id);
-    updatedStaff.forEach((staffMember, index) => {
-      staffMember.id = `staff${index + 1}`;
-      staffMember.label = `Staff ${index + 1}`;
-    });
-    setPropertyState({ staff: updatedStaff });
-  };
-
   // Function to reset the state
   const handleReset = () => {
     setState((x) => ({
@@ -188,30 +180,64 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = useFetch<AllLandlordsResponse>("/landlord/select");
 
   const {
-    data: accountOfficerData,
-    loading: accountOfficerLoading,
-    error: accountOfficerError,
-  } = useFetch<AllLandlordsResponse>(
-    `branch/${selectedBranchId}/account_officer`
-  );
-
-  const {
     data: staffsData,
     loading: staffsLoading,
     error: staffsError,
   } = useFetch<AllLandlordsResponse>(`branch/${selectedBranchId}/staff`);
-
-  const {
-    data: inventoryData,
-    loading: inventoryLoading,
-    error: inventoryError,
-  } = useFetch<AllInventoryResponse>(`/inventories/select/${selectedBranchId}`);
 
   const branchOptions =
     branchesData?.data.map((branch) => ({
       value: branch.id,
       label: branch.branch_name,
     })) || [];
+
+  useEffect(() => {
+    const fetchInventory = async () => {
+      if (selectedBranchId) {
+        setInventoryLoading(true);
+        setInventoryError(null);
+        try {
+          const data = await getBranchInventories(selectedBranchId);
+          setInventoryData(data);
+        } catch (error) {
+          setInventoryError("Failed to load inventories");
+        } finally {
+          setInventoryLoading(false);
+        }
+      }
+    };
+    fetchInventory();
+  }, [selectedBranchId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!selectedBranchId) {
+        setBranchData({
+          inventory: { data: null, loading: false, error: null },
+          staff: { data: null, loading: false, error: null },
+          accountOfficer: { data: null, loading: false, error: null },
+        });
+        return;
+      }
+
+      const data = await fetchBranchDependentData(selectedBranchId);
+      setBranchData(data);
+    };
+
+    fetchData();
+  }, [selectedBranchId]);
+
+  useEffect(() => {
+    if (branchData.staff.data) {
+      setPropertyState({
+        staffOptions: branchData.staff.data.data.map((s: any) => ({
+          value: s.id,
+          label: s.user.name,
+          icon: s.user.profile.picture,
+        })),
+      });
+    }
+  }, [branchData.staff.data]);
 
   const landlordOptions =
     landlordsData?.data.map((landlord) => ({
@@ -220,23 +246,21 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       icon: landlord.picture,
     })) || [];
 
-  // console.log("l options", propertyDetails)
+  const inventoryOptions =
+    branchData.inventory.data?.data.map((inventory: any) => ({
+      value: inventory.id,
+      label: inventory.title,
+    })) || [];
 
   const officerOptions =
-    accountOfficerData?.data.map((officer: any) => ({
+    branchData.accountOfficer.data?.data.map((officer: any) => ({
       value: officer.id,
       label: officer.user.name,
       icon: officer.user.profile.picture,
     })) || [];
 
-  const inventoryOptions =
-    inventoryData?.data.map((inventory) => ({
-      value: inventory.id,
-      label: inventory.title,
-    })) || [];
-
   const staffOption =
-    staffsData?.data.map((s: any) => ({
+    branchData.staff.data?.data.map((s: any) => ({
       value: s.id,
       label: s.user.name,
       icon: s.user.profile.picture,
@@ -550,7 +574,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   defaultValue={
                     editMode
                       ? inventoryOptions.find(
-                          (option) =>
+                          (option: any) =>
                             option.value === propertyDetails?.inventory?.id
                         )
                       : undefined
@@ -574,11 +598,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             {!isAccountOfficer && (
               <SelectWithImage
                 options={officerOptions}
-                // defaultValue={selectedOfficer}
                 defaultValue={
                   editMode && (propertyDetails?.officer_id ?? [])[0]
                     ? officerOptions.find(
-                        (staff) =>
+                        (staff: any) =>
                           String(staff.value) ===
                           String((propertyDetails?.officer_id ?? [])[0])
                       ) || { value: "", label: "", icon: "" }
@@ -589,6 +612,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
                 hiddenInputClassName="property-form-input"
+                placeholder={
+                  branchData.accountOfficer.loading
+                    ? "Loading account officers..."
+                    : branchData.accountOfficer.error
+                    ? "Error loading account officers"
+                    : "Select account officer"
+                }
+                error={branchData.accountOfficer.error}
+                disabled={branchData.accountOfficer.loading}
               />
             )}
             <div className="bg-transparent flex flex-col gap-2 self-end">
@@ -603,7 +635,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     ? propertyDetails.staff_id
                     : []
                 }
-                placeholder="Select staffs"
+                placeholder={
+                  branchData.staff.loading
+                    ? "Loading staff..."
+                    : branchData.staff.error
+                    ? "Error loading staff"
+                    : "Select staff"
+                }
+                disabled={branchData.staff.loading}
                 variant="default"
                 maxCount={1}
                 className="bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
