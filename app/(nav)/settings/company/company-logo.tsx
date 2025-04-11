@@ -24,8 +24,6 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
     string | StaticImageData | null
   >(darkLogo || null);
 
-  console.log("lightPreview", lightPreview);
-  console.log("darkPreview", darkPreview);
 
   useEffect(() => {
     setLightPreview(lightLogo || null);
@@ -131,11 +129,12 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
               {(mode === "light" ? lightPreview : darkPreview) && (
                 <div className="flex items-end">
                   <Button
+                    className={`${mode === "light" ? "invisible" : "visible bg-red-300/30 text-red-600"}`}
                     variant="change"
                     size="sm"
                     onClick={() => handleButtonClick(mode)}
                   >
-                    Change logo
+                    Delete logo
                   </Button>
                 </div>
               )}

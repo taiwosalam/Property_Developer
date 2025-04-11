@@ -339,7 +339,7 @@ interface CompanyPayload {
   bio: string;
   industry: string;
   membership_number: string;
-  membership_document: string | File;
+  membership_certificate: string | File;
   company_type_id: number;
   head_office_address: string;
   facebook: string;
@@ -366,7 +366,7 @@ export const transformFormCompanyData = (
   data.dark_logo = formData.get("dark_company_logo") as string | File;
   data.industry = formData.get("industry") as string;
   data.membership_number = formData.get("membership_number") as string;
-  data.membership_document = formData.get("membership_certificate") as string | File;
+  data.membership_certificate = formData.get("membership_certificate") as string | File;
   data.cac_document = formData.get("cac_certificate") as string | File;
 
   data.head_office_address = formData.get("head_office_address") as string;

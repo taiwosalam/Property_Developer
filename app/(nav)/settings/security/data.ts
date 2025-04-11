@@ -165,14 +165,14 @@ export const transformProfileData = (data:any): InitialDataTypes => {
   return {
     profile_picture: data.data.profile.picture ?? "",
     email: data.data.user.email,
-    fullname: data.data.user.name,
+    fullname: data.data.user.name || "",
     personal_title: data.data.profile.title ?? "",
     professional_title: data.data.director.professional_title ?? "",
-    phone: data.data.user.phone,
-    about_director: data.data.director.about_director,
-    director_email: data.data.user.email,
-    picture: data.data.profile.picture,
-    director_experience: data.data.director.years_in_business
+    phone: data.data.user.phone || "",
+    about_director: data.data.director.about_director || "",
+    director_email: data.data.director.alt_email || "",
+    picture: data.data.profile.picture ?? "",
+    director_experience: data.data.director.years_in_business ?? ""
   }
 }
 

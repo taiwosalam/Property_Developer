@@ -96,13 +96,13 @@ const Security = () => {
   const handleUpdateProfile = async (data: FormData) => {
     const payload = {
       full_name: data.get("full_name"),
-      title: data.get("personal_title"),
+      title: data.get("title"),
       professional_title: data.get("professional_title"),
       profile_picture: data.get("picture"),
       years_in_business: data.get("years_in_business"),
       about_director: data.get("about_director"),
       phone_number: data.get("phone"),
-      email: data.get("director_email"),
+      alt_email: data.get("alt_email"),
     };
    
 
@@ -171,12 +171,12 @@ const Security = () => {
                   />
 
                   <Input
-                    id="director_email"
+                    id="alt_email"
                     label="email"
                     type="email"
                     placeholder="write here"
                     inputClassName="rounded-[8px] setup-f bg-white"
-                    defaultValue={pageData?.email}
+                    defaultValue={pageData?.director_email}
                   />
 
                    <Select

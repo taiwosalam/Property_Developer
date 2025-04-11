@@ -8,6 +8,7 @@ import Label from "../Label/label";
 import Button from "../Button/button";
 import { DeleteIconX, EyeShowIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import { SettingsVerifiedBadge } from "@/components/Settings/settings-components";
 
 const FileInput: React.FC<FileInputProps> = ({
   id,
@@ -24,6 +25,7 @@ const FileInput: React.FC<FileInputProps> = ({
   settingsPage,
   defaultValue,
   noUpload,
+  membership_status,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
@@ -32,6 +34,7 @@ const FileInput: React.FC<FileInputProps> = ({
   const [fileURL, setFileURL] = useState("");
   const { width } = useWindowDimensions();
   const [isLgScreen, setIsLgScreen] = useState(true);
+  const [defaultFile, setDefaultFile] = useState<string>(defaultValue || "");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previousFileRef = useRef<File | null>(null);
@@ -41,6 +44,15 @@ const FileInput: React.FC<FileInputProps> = ({
       fileInputRef.current.click();
     }
   };
+
+  useEffect(() => {
+    if (defaultValue) {
+      setDefaultFile(defaultValue);
+    }
+  }, [defaultValue]);
+
+  console.log(defaultValue);
+  console.log(fileURL);
 
   const restorePreviousFile = () => {
     if (previousFileRef.current) {
@@ -143,7 +155,11 @@ const FileInput: React.FC<FileInputProps> = ({
           {label}
         </Label>
       )}
-      <div className={`relative ${settingsPage && "flex"} `}>
+      <div
+        className={`relative ${settingsPage && "flex"}  ${clsx(
+          noUpload ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+        )}`}
+      >
         <input
           id={id}
           name={id}
@@ -152,7 +168,8 @@ const FileInput: React.FC<FileInputProps> = ({
           // required={required}
           className={clsx(
             "absolute w-0 h-0 opacity-0 pointer-events-none",
-            hiddenInputClassName
+            hiddenInputClassName,
+            noUpload && "cursor-not-allowed"
           )}
           ref={fileInputRef}
           onChange={handleFileChange}
@@ -175,12 +192,15 @@ const FileInput: React.FC<FileInputProps> = ({
             >
               {fileName
                 ? fileName
-                : `Click ${isLgScreen ? "the side button" : "here"} to upload ${placeholder || "file"
-                }`}
+                : `Click ${isLgScreen ? "the side button" : "here"} to upload ${
+                    placeholder || "file"
+                  }`}
             </span>
           ) : (
             <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-             {noUpload ? "Click eye icon to view document" : "Click to upload document"} 
+              {noUpload
+                ? "Click eye icon to view document"
+                : "Click to upload document"}
             </span>
           )}
 
@@ -200,6 +220,7 @@ const FileInput: React.FC<FileInputProps> = ({
                 type="button"
                 aria-label="Delete File"
                 onClick={(e) => {
+                  setDefaultFile("");
                   handleDeleteFile();
                   e.stopPropagation();
                 }}
@@ -209,8 +230,7 @@ const FileInput: React.FC<FileInputProps> = ({
             </div>
           )}
 
-
-          {defaultValue && (
+          {defaultFile && !fileURL && (
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -239,11 +259,17 @@ const FileInput: React.FC<FileInputProps> = ({
             </Button>
           </div>
         )}
-        {settingsPage && showVerifyBtn && (
+         {(fileURL || defaultFile) && membership_status && (
+          <div className="flex pt-2 sm:pt-7 ml-3">
+            <SettingsVerifiedBadge status={membership_status || "unverified"} />
+          </div>
+          
+        )}
+        {/* {settingsPage && showVerifyBtn && (
           <button className="text-xs w-1/2 sm:w-auto sm:mt-0 text-brand-9">
             Verify Document
           </button>
-        )}
+        )} */}
       </div>
     </div>
   );
