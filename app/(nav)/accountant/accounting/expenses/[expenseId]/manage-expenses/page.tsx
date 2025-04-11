@@ -152,7 +152,7 @@ const ManageExpenses = () => {
                 id="payment-title"
                 label="payment title"
                 value={paymentTitle}
-                onChange={(v) => setPaymentTitle(v)}
+                onChange={(v) => setPaymentTitle(v as string)}
               />
               <Input
                 id="payment_amount"
@@ -162,7 +162,7 @@ const ManageExpenses = () => {
                 inputClassName="bg-white"
                 formatNumber
                 value={paymentAmount}
-                onChange={(v) => setPaymentAmount(v)}
+                onChange={(v) => setPaymentAmount(v as string)}
               />
             </div>
             <div className="flex justify-end">
@@ -239,7 +239,7 @@ const ManageExpenses = () => {
                 inputClassName="bg-white"
                 formatNumber
                 value={deductionAmount}
-                onChange={(value) => setDeductionAmount(value)}
+                onChange={(value) => setDeductionAmount(value as string)}
               />
             </div>
             <div className="flex justify-end">

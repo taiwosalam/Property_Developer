@@ -10,7 +10,7 @@ interface EstateDetailItemProps {
 
 export const EstateDetailItem: React.FC<EstateDetailItemProps> = ({
   label,
-  value='',
+  value = "",
   style,
   truncate,
   column,
@@ -31,9 +31,6 @@ export const EstateDetailItem: React.FC<EstateDetailItemProps> = ({
       >
         {label}
       </p>
-      {/* <p className="lg:flex-1 text-black dark:text-darkText-2 capitalize">
-        {truncate ? <TruncatedText lines={3}>{value}</TruncatedText> : value}
-      </p> */}
       <p className="lg:flex-1 text-black dark:text-darkText-2 capitalize">
         {truncate ? (
           <TruncatedText lines={3}>

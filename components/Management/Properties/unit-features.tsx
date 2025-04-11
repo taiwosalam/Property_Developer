@@ -16,8 +16,7 @@ const UnitFeatures = () => {
     (state) => state.propertyDetails?.category
   );
 
-    const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
-
+  const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
 
   const [selectedAreaUnit, setSelectedAreaUnit] = useState(
     unitData?.measurement || "sqm"
@@ -25,8 +24,6 @@ const UnitFeatures = () => {
 
   const areaUnits = ["sqm", "half plot", "plot", "acre", "hectare"];
 
-  // const facilitiesOptions =
-  //   unitType === "land" ? unitFacilities.lands : unitFacilities.buildings;
   const facilitiesOptions =
     propertyCategory?.toLowerCase() === "commercial"
       ? unitFacilities.lands
@@ -38,7 +35,10 @@ const UnitFeatures = () => {
     }
   }, [formResetKey, unitData?.measurement]);
 
-  const bedroomTitle = propertyDetails?.category?.toLowerCase() === "commercial" ? "Room" : "Bedroom";
+  const bedroomTitle =
+    propertyDetails?.category?.toLowerCase() === "commercial"
+      ? "Room"
+      : "Bedroom";
 
   const isRental = propertyType === "rental";
 

@@ -71,7 +71,7 @@ const CreateExpensePage = () => {
               id="payment_title"
               label="Payment Title"
               value={paymentTitle}
-              onChange={(v) => setPaymentTitle(v)}
+              onChange={(v) => setPaymentTitle(v as string)}
             />
             <Input
               type="text"
@@ -81,7 +81,7 @@ const CreateExpensePage = () => {
               CURRENCY_SYMBOL={"₦"}
               formatNumber
               value={paymentAmount}
-              onChange={(v) => setPaymentAmount(v)}
+              onChange={(v) => setPaymentAmount(v as string)}
             />
           </div>
           <div className="flex items-center justify-end">
