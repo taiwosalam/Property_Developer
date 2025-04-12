@@ -18,5 +18,5 @@ interface User {
   }
 export interface StatisticsMessageCardProps {
   type: StatisticsDataTypes;
-  user: User;
+  user?: User;
 }

@@ -37,11 +37,11 @@ const StatisticsMessageCard: React.FC<StatisticsMessageCardProps> = ({
 }) => {
   const isOffers = false; //Note: This was removed: type === "offers"
 
-  const formattedDate = new Date(user.date).toLocaleDateString("en-GB", {
+  const formattedDate = user ?  new Date(user.date).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-  });
+  }): "";
 
   const router = useRouter();
   return (
@@ -56,7 +56,7 @@ const StatisticsMessageCard: React.FC<StatisticsMessageCardProps> = ({
         <div className="custom-flex-col text-text-primary dark:text-darkText-1 text-sm">
           <div className="flex items-center">
             <p className="font-bold">{user?.name ?? "___ ___"}</p>
-            <BadgeIcon color={mapTierToColor(user?.tier)} />
+            <BadgeIcon color={mapTierToColor(user?.tier ?? 0)} />
           </div>
           {isOffers && (
             <p className="font-normal">
