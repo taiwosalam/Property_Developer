@@ -43,6 +43,7 @@ import {
 } from "./data";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import ServerError from "@/components/Error/ServerError";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -140,7 +141,7 @@ const StartRent = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   const propertyId = unit_data.propertyId;
   const rentalData = getRentalData(unit_data);

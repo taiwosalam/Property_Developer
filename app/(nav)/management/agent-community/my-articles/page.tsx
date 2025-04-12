@@ -21,6 +21,7 @@ import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ThreadSkeleton from "@/components/Community/threadskeleton";
 import ThreadCard from "@/components/Community/ThreadCard";
+import ServerError from "@/components/Error/ServerError";
 
 interface ThreadApiResponse {
   data: any[];
@@ -168,8 +169,7 @@ const MyArticlePage = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   const handleCreateMyArticleClick = () => {
     router.push("/management/agent-community/my-articles/create");

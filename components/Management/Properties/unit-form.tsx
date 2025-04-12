@@ -125,17 +125,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     "negotiation",
   ];
 
-  const scrollToPictures = () => {
-    if (unitPicturesRef.current) {
-      console.log("Scrolling to UnitPictures after successful 'No' submission");
-      unitPicturesRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    } else {
-      console.log("unitPicturesRef.current is null");
-    }
-  };
 
   const handleSubmit = async (formData: Record<string, any>) => {
     if (!propertyId) return;
@@ -200,7 +189,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           resetForm();
           if (clickedNo) {
             setTimeout(() => {
-              scrollToPictures();
               setClickedNo?.(false);
             }, 0);
           }
@@ -270,21 +258,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   // SCOLL TO PICTURES
   useEffect(() => {
     if (unitPicturesRef.current) {
-      unitPicturesRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [props.empty, newForm]);
-
-  useEffect(() => {
-    console.log("UnitForm useEffect triggered:", {
-      empty: props.empty,
-      newForm,
-      hasRef: !!unitPicturesRef.current,
-    });
-    if (props.empty && newForm && unitPicturesRef.current) {
-      console.log("Attempting to scroll to UnitPictures");
       unitPicturesRef.current.scrollIntoView({
         behavior: "smooth",
         block: "start",

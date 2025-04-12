@@ -15,6 +15,9 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
 import { formatDateRange } from "../../../data";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import ServerError from "@/components/Error/ServerError";
+import NetworkError from "@/components/Error/NetworkError";
 
 interface PropertyRequestResponse {
   data: {
@@ -31,9 +34,10 @@ const PreviewPage = () => {
   const [readBy, setReadBy] = useState<any>(null);
   const [comments, setComments] = useState<any>([]);
   const [slug, setSlug] = useState("");
-  const { data, loading, error, refetch } = useFetch<PropertyRequestResponse>(
-    `/agent-community/property-requests/${id}`
-  );
+  const { data, loading, isNetworkError, error, refetch } =
+    useFetch<PropertyRequestResponse>(
+      `/agent-community/property-requests/${id}`
+    );
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -46,12 +50,9 @@ const PreviewPage = () => {
   }, [data]);
 
   // console.log(propertyRequest);
-  if (loading)
-    return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-      </div>
-    );
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div>
@@ -192,11 +193,26 @@ const MoreDetailsCard = ({ propertyRequest }: { propertyRequest: any }) => {
       label: "Target Audience:",
       value: propertyRequest?.target_audience?.join(", ") || "--- ---",
     },
-    { label: "Category:", value: propertyRequest?.property_category || "--- ---" },
-    { label: "Property Type:", value: propertyRequest?.property_type || "--- ---" },
-    { label: "Sub Type:", value: propertyRequest?.property_sub_type || "--- ---" },
-    { label: "Min Budget:", value: `₦${propertyRequest?.min_budget}` || "--- ---" },
-    { label: "Max Budget:", value: `₦${propertyRequest?.max_budget}` || "--- ---" },
+    {
+      label: "Category:",
+      value: propertyRequest?.property_category || "--- ---",
+    },
+    {
+      label: "Property Type:",
+      value: propertyRequest?.property_type || "--- ---",
+    },
+    {
+      label: "Sub Type:",
+      value: propertyRequest?.property_sub_type || "--- ---",
+    },
+    {
+      label: "Min Budget:",
+      value: `₦${propertyRequest?.min_budget}` || "--- ---",
+    },
+    {
+      label: "Max Budget:",
+      value: `₦${propertyRequest?.max_budget}` || "--- ---",
+    },
     {
       label: "Date Range:",
       value:

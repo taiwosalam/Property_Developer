@@ -7,4 +7,5 @@ export interface PropertyTagProps {
   propertyType: "rental" | "facility";
   className?: string;
   sm?: boolean;
+  list?: boolean;
 }

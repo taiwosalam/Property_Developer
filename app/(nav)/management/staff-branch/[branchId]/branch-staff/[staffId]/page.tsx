@@ -42,6 +42,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import useAddressFromCoords from "@/hooks/useGeoCoding";
 import DOMPurify from "dompurify";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
+import ServerError from "@/components/Error/ServerError";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -98,8 +99,7 @@ const StaffProfile = () => {
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
 
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10">

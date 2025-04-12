@@ -12,6 +12,8 @@ import useFetch from "@/hooks/useFetch";
 import { getBranch } from "@/components/Management/Inventory/data";
 import { ManageInventorySkeleton } from "@/components/Skeleton/manageInventory";
 import dayjs from "dayjs";
+import ServerError from "@/components/Error/ServerError";
+import NetworkError from "@/components/Error/NetworkError";
 
 interface InventoryData {
   title: string;
@@ -50,7 +52,7 @@ const PreviewInventory = () => {
   const { inventoryId } = useParams();
   const [inventoryItems, setInventoryItems] = useState<any>([]);
   const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
-  const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
+  const { data, loading, error, isNetworkError } = useFetch<FetchData>(`/inventory/${inventoryId}`);
   const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
   const [video, setVideo] = useState<string>("");
 
@@ -58,7 +60,6 @@ const PreviewInventory = () => {
   useEffect(() => {
     const fetchBranchData = async () => {
       if (data) {
-        console.log("apiData", data);
         const { data: apiData } = data;
         const updatedInventoryData: InventoryData = {
           title: apiData.title || "___",
@@ -78,6 +79,9 @@ const PreviewInventory = () => {
 
     fetchBranchData();
   }, [data]);
+
+  if(isNetworkError) return <NetworkError />
+  if (error) return <ServerError error={error} />;
 
   return (
     <>

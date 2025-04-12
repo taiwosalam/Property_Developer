@@ -26,6 +26,7 @@ import {
   vehicleRecordFIltersOptionsWithDropdown,
 } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import ServerError from "@/components/Error/ServerError";
 
 const VehilceRecords = () => {
   const storedView = useView();
@@ -98,12 +99,11 @@ const VehilceRecords = () => {
       if (option === "all") {
         queryParams.all = "all";
       } else if (option === "rental") {
-        queryParams.property_type = "rental"
+        queryParams.property_type = "rental";
       } else if (option === "facility") {
         queryParams.property_type = "facility";
       }
     });
-
 
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
@@ -150,9 +150,7 @@ const VehilceRecords = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">

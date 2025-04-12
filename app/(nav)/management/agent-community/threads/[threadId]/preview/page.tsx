@@ -17,6 +17,8 @@ import CommunityComments from "@/components/Community/CommunityComments";
 import { CommunitySlider } from "@/components/Community/CommunitySlider";
 import PreviewThreadArticle from "@/components/Community/PreviewArticle";
 import { ThreadResponse, transformApiData } from "./data";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
 
 const ThreadPreview = () => {
   const router = useRouter();
@@ -31,6 +33,7 @@ const ThreadPreview = () => {
     data,
     error,
     loading,
+    isNetworkError,
     refetch: refetchComments,
   } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
   useRefetchOnEvent("refetchComments", () => refetchComments({ silent: true }));
@@ -47,7 +50,8 @@ const ThreadPreview = () => {
     }
   }, [data]);
 
-  console.log("summary", companySummary);
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="mb-16">
