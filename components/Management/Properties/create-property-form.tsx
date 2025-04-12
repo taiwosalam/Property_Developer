@@ -529,7 +529,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     ? "Error loading landlords"
                     : "Select landlord"
                 }
-                error={landlordsError}
+                // error={landlordsError}
               />
             )}
 
@@ -562,7 +562,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     ? "Error loading branches"
                     : "Select branch"
                 }
-                error={branchesError}
+                // error={branchesError}
               />
             )}
 
@@ -590,7 +590,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       ? "Error loading inventories"
                       : "Select inventory"
                   }
-                  error={inventoryError}
+                  // error={inventoryError}
                 />
               </>
             )}
@@ -619,7 +619,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     ? "Error loading account officers"
                     : "Select account officer"
                 }
-                error={branchData.accountOfficer.error}
+                // error={branchData.accountOfficer.error}
                 disabled={branchData.accountOfficer.loading}
               />
             )}

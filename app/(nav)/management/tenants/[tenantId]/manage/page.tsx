@@ -42,6 +42,7 @@ import { transformCardData } from "../../../landlord/data";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import { SectionContainer } from "@/components/Section/section-components";
+import ServerError from "@/components/Error/ServerError";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -59,7 +60,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const cardData = tenant ? transformCardData(tenant) : null;
 
   if (loading) return <CustomLoader layout="profile" />;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <ServerError error={error} />;
   if (!tenant) return null;
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);

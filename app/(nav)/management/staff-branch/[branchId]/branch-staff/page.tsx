@@ -32,6 +32,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import ServerError from "@/components/Error/ServerError";
 
 const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -192,8 +193,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-6">

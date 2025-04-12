@@ -40,6 +40,7 @@ import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import ServerError from "@/components/Error/ServerError";
 
 const states = getAllStates();
 
@@ -286,9 +287,7 @@ const Landlord = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-8">

@@ -50,7 +50,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   return (
     <div ref={ref} className={clsx("scroll-mt-[160px]", isEditing && "!mt-0")}>
       <h4 className="flex items-center text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
-      <span className="text-red-500">*</span>
+        {propertyType === "rental" && <span className="text-red-500">*</span>}
         Unit Pictures
       </h4>
       <hr

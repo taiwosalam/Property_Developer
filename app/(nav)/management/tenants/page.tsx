@@ -38,6 +38,7 @@ import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import ServerError from "@/components/Error/ServerError";
 
 const states = getAllStates();
 
@@ -272,8 +273,7 @@ const Tenants = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-8">

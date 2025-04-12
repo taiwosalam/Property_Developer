@@ -29,7 +29,7 @@ import {
   PageMessages,
 } from "../(messages-reviews)/messages/types";
 import { transformUsersMessages } from "../(messages-reviews)/messages/data";
-import { message_card_data } from "@/components/Message/data";
+// import { message_card_data } from "@/components/Message/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { useChatStore } from "@/store/message";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
@@ -42,12 +42,12 @@ import {
 } from "../accounting/invoice/types";
 import { transformInvoiceData } from "../accounting/invoice/data";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import NetworkError from "@/components/Error/NetworkError";
 import { DashboardDataResponse } from "./types";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
-  const [pageUsersMsg, setPageUsersMsg] =
-    useState<PageMessages[]>(message_card_data);
+  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setChatData } = useChatStore();
   const company_status = usePersonalInfoStore((state) => state.company_status);
@@ -70,7 +70,8 @@ const Dashboard = () => {
   }));
 
   // Dashboard Stats
-  const { data, loading, error, refetch } = useFetch<DashboardDataResponse>("/dashboard/data");
+  const { data, loading, error, refetch, isNetworkError } =
+    useFetch<DashboardDataResponse>("/dashboard/data");
   const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
   const [performanceChart, setPerformanceChart] = useState<DashboardDataResponse | null>(null)
   useEffect(() => {
@@ -94,6 +95,7 @@ const Dashboard = () => {
     loading: usersMsgLoading,
     error: usersMsgError,
     refetch: refetchMsg,
+    isNetworkError: MsgNetworkError,
   } = useFetch<ConversationsAPIResponse>("/messages");
   useRefetchOnEvent("refetch-users-msg", () => {
     refetchMsg({ silent: true });
@@ -118,6 +120,7 @@ const Dashboard = () => {
     data: Apiinvoices,
     loading: invoicesLoading,
     error: invoicesError,
+    isNetworkError: invoiceNetworkError,
   } = useFetch<InvoiceListResponse>("/invoice/list");
   useEffect(() => {
     if (Apiinvoices) {
@@ -126,11 +129,7 @@ const Dashboard = () => {
     }
   }, [Apiinvoices]);
 
-  // ================== CONDITIONAL RENDERING ================== //
-  if (!company_status) {
-    return <DashboardLoading />;
-  }
-
+  
   // Handle invoiceData nullability
   const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
   const transformedRecentInvoiceTableData = invoiceList.map((i) => ({
@@ -143,6 +142,11 @@ const Dashboard = () => {
     ),
   }));
 
+  if (isNetworkError) return <NetworkError />
+  // ================== CONDITIONAL RENDERING ================== //
+  if (!company_status) {
+    return <DashboardLoading />;
+  }
   return (
     <>
       {isModalOpen && (

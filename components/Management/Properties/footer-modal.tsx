@@ -19,7 +19,7 @@ const FooterModal = ({
   onAddUnits?: (count: number) => void;
 }) => {
   const { setIsOpen } = useModal();
-  const { duplicate, setDuplicate, submitLoading } = useUnitForm();
+  const { duplicate, setDuplicate, submitLoading, setClickedNo } = useUnitForm();
   const [countPopup, setCountPopup] = useState(false);
   const [count, setCount] = useState(duplicate?.count || 1);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -81,7 +81,9 @@ const FooterModal = ({
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();
       setAddUnitStore("newForm", true);
+      setClickedNo?.(true);
     } else {
+      setClickedNo?.(true);
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();
     }

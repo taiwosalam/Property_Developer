@@ -26,6 +26,7 @@ import { PropertyRequestParams } from "../../agent-community/type";
 import { empty } from "@/app/config";
 import { RequestCardSkeleton } from "../../agent-community/components";
 import { transformToCardProps } from "./data";
+import ServerError from "@/components/Error/ServerError";
 
 interface PropertyRequestApiData {
   data: PropertyRequestDataType[];
@@ -208,10 +209,8 @@ const MyPropertiesRequestPage = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error) return <ServerError error={error} />;
+  
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap items-center justify-between">

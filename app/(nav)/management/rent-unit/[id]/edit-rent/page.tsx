@@ -44,6 +44,7 @@ import {
 } from "./data";
 import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import ServerError from "@/components/Error/ServerError";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
@@ -96,8 +97,7 @@ const EditRent = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   const record = (unit_data?.previous_records as any)?.data?.[0];
   const start_date = record?.start_date

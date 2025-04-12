@@ -20,6 +20,8 @@ interface UnitFormContextType extends UnitFormState {
   setIsEditing?: (isEditing: boolean) => void;
   unitData?: UnitDataObject;
   index?: number;
+  clickedNo?: boolean;
+  setClickedNo?: (clicked: boolean) => void; 
 }
 
 export const UnitFormContext = createContext<UnitFormContextType | undefined>(

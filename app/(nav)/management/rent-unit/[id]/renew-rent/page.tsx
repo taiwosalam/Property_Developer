@@ -25,6 +25,7 @@ import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 import { getPropertySettingsData, getRentalData } from "./data";
 import dayjs from "dayjs";
+import ServerError from "@/components/Error/ServerError";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
@@ -62,7 +63,7 @@ const RenewRent = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   const propertyId = unit_data.propertyId;
   const record = (unit_data?.previous_records as any)?.data?.[0];

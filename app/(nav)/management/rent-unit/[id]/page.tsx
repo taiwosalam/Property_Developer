@@ -18,6 +18,7 @@ import {
 } from "../data";
 import NetworkError from "@/components/Error/NetworkError";
 import { formatNumber } from "@/utils/number-formatter";
+import ServerError from "@/components/Error/ServerError";
 
 const PriceSection: React.FC<{
   period: string;
@@ -87,7 +88,7 @@ const UnitPreviewPage = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <section className="space-y-5">

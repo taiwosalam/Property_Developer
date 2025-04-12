@@ -229,7 +229,7 @@ const UnitBreakdownNewTenant = () => {
         {/* Only display VAT input if VAT is enabled */}
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input
-            id="vat"
+            id="vat_amount"
             label="Value Added Tax (VAT)"
             inputClassName="bg-white"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}

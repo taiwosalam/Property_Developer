@@ -35,6 +35,7 @@ import AddPropertyModal from "@/components/Management/Properties/add-property-mo
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
 import useStaffRoles from "@/hooks/getStaffs";
+import ServerError from "@/components/Error/ServerError";
 
 const RentAndUnit = () => {
   const view = useView();
@@ -215,11 +216,9 @@ const RentAndUnit = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
-
-  console.log("pageData", pageData)
+  console.log("pageData", pageData);
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
@@ -337,10 +336,7 @@ const RentAndUnit = () => {
                     <CardsLoading />
                   ) : (
                     pageData?.unit.map((unit, index) => (
-                      <RentalPropertyCard
-                        key={index}
-                        {...unit}
-                      />
+                      <RentalPropertyCard key={index} {...unit} />
                     ))
                   )}
                 </AutoResizingGrid>
@@ -350,10 +346,7 @@ const RentAndUnit = () => {
                     <CardsLoading />
                   ) : (
                     pageData?.unit.map((unit, index) => (
-                      <RentalPropertyListCard
-                        key={index}
-                        {...unit}
-                      />
+                      <RentalPropertyListCard key={index} {...unit} />
                     ))
                   )}
                 </div>

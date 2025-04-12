@@ -75,15 +75,15 @@ const NotificationCard: React.FC<notificationCardProps> = ({
           </p>
           {seeAllLink && (
             <Link
-              href={notifications.length === 0 ? "#" : seeAllLink}
+              href={notifications?.length === 0 ? "#" : seeAllLink}
               className={clsx(
                 "flex items-center font-medium",
-                notifications.length === 0
+                notifications?.length === 0
                   ? "text-[#C1C2C3] cursor-not-allowed"
                   : "text-[#4F5E71] dark:text-[#f1f1fd]"
               )}
               onClick={(e) => {
-                if (notifications.length === 0) {
+                if (notifications?.length === 0) {
                   e.preventDefault();
                 }
               }}
@@ -98,11 +98,11 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         className={clsx(
           "custom-flex-col gap-4 p-4 pt-0 flex-1 overflow-auto no-scrollbar",
           {
-            "py-[55px] px-[40px]": notifications.length === 0,
+            "py-[55px] px-[40px]": notifications?.length === 0,
           }
         )}
       >
-        {notifications.map((notification, index) => {
+        {notifications?.map((notification, index) => {
           const IconComponent = getIconByContentType(
             notification.content_type as string
           );
@@ -186,7 +186,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
             </div>
           );
         })}
-        {notifications.length === 0 && (
+        {notifications?.length === 0 && (
           <div className="flex flex-col items-center text-center gap-6">
             {emptyState.icon && (
               <div className="text-brand-9">{emptyState.icon}</div>

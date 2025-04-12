@@ -24,12 +24,15 @@ import {
   deletePropertyRequest,
   updatePropertyRequest,
 } from "@/app/(nav)/management/agent-community/data";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
 
 const ManageMyPropertyRequest = () => {
   const router = useRouter();
   const { id } = useParams();
 
-  const { data, loading, error } = useFetch<{
+  const { data, loading, error, isNetworkError } = useFetch<{
     data: {
       PropertyRequest: any;
       comments: any;
@@ -98,6 +101,10 @@ const ManageMyPropertyRequest = () => {
       }
     }
   };
+
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />; 
 
   return (
     <div className="wra mb-16">

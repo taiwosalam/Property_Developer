@@ -29,6 +29,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { deleteStaff } from "./data";
 import { useRouter } from "next/navigation";
+import ServerError from "@/components/Error/ServerError";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -76,7 +77,7 @@ const EditStaffProfile = () => {
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
   if (!apiData) return null;
 
   return (

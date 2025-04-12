@@ -34,6 +34,7 @@ import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { toast } from "sonner";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import ServerError from "@/components/Error/ServerError";
 
 const allStates = getAllStates();
 
@@ -212,8 +213,7 @@ const StaffAndBranches = () => {
       />
     );
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">

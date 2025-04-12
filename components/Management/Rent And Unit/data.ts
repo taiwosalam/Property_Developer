@@ -23,23 +23,23 @@ export const getBackgroundColor = (StatusName: string): string => {
 export const transformTenantData = (res: TenantResponse): Occupant => {
   const { data } = res;
   return {
-    id: data.id.toString(),
-    name: data.name || "___",
-    email: data.email,
-    userTag: (data.agent as "mobile" | "web") || "___",
+    id: String(data.id) || "",
+    name: data.name || "--- ---",
+    email: data.email || "--- ---",
+    userTag: (data.agent as "mobile" | "web") || "",
     avatar: data.picture || empty,
-    gender: data.gender,
-    birthday: "___", //TODO - Add birthday
-    phone: data.phone || "___",
-    maritalStatus: data.tenant_type || "___",
+    gender: data.gender || "--- ---",
+    birthday: "--- ---", //TODO - Add birthday
+    phone: data.phone || "--- ---",
+    maritalStatus: data.tenant_type || "--- ---",
     address:
-      `${data.city || "___"}, ${data.local_government || "___"}, ${
-        data.state || "_____"
-      }` || "___",
-    city: data.city || "___",
-    state: data.state || "____",
-    lg: data.local_government || "___",
-    religion: "___", //TODO - Add religion
+      `${data.city || "__"}, ${data.local_government || "__"}, ${
+        data.state || "__"
+      }`,
+    city: data.city || "--- ---",
+    state: data.state || "--- ---",
+    lg: data.local_government || "--- ---",
+    religion: "--- ---", //TODO - Add religion
   };
 };
 
