@@ -19,6 +19,7 @@ export interface StaffProfilePortfolioItemProps {
     email: string;
     verified?: boolean;
     phone_number: string;
+    badge_color?: "green" | "black" | "blue" | "red" | "yellow" | "gray";
   };
 }
 

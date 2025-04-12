@@ -334,12 +334,12 @@ const AccountingInvoicePage = () => {
           <section>
             <EmptyList
               buttonText="+ new invoice"
-              buttonLink="#"
+              modalContent={<CreateInvoiceModal />}
               title="You do not have any disbursements yet"
               body={
                 <p>
-                  Create a new invoice by clicking on the &rqous;+ new
-                  invoice&rqous; button.
+                  You can either create a new invoice manually or allow the
+                  system to generate an invoice automatically for a new rent.
                 </p>
               }
             />

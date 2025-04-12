@@ -452,7 +452,7 @@ export const invoiceTableFields: Field[] = [
   {
     id: "4",
     label: "Details",
-    accessor: "details",
+    accessor: "payment_reason",
     cellStyle: {
       textOverflow: "ellipsis",
       overflow: "hidden",

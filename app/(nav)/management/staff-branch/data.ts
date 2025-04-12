@@ -133,7 +133,7 @@ export const transformBranchApiResponse = (
       branch_picture: branch.picture,
       staff_count: branch.staffs_count,
       property_count: branch.properties_count,
-      unit_count: branch.units_count,
+      unit_count: branch.units_count || 0,
       manager_picture: branch.manager?.picture || null,
     })),
   };

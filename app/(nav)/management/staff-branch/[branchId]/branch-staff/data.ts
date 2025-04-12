@@ -47,6 +47,7 @@ export const transformStaffListResponse = (
       position: s.staff_role,
       phone_number: s.phone,
       gender: "",
+      // badge_color: s.
     })) || [], 
   };
 };

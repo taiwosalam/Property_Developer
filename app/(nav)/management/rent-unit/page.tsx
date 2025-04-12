@@ -127,7 +127,7 @@ const RentAndUnit = () => {
         branch_id: appliedFilters.menuOptions["Branch"] || [],
         state: appliedFilters.menuOptions["State"] || [],
         property_type: appliedFilters.menuOptions["Property Type"]?.[0],
-        status: appliedFilters.menuOptions["Status"]?.[0],
+        is_active: appliedFilters.menuOptions["Status"]?.[0],
         staff_id: appliedFilters.menuOptions["Account Officer"] || [],
         sort_by: sort,
       } as RentUnitFilterParams,

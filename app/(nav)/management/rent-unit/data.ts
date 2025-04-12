@@ -304,8 +304,9 @@ export const RentAndUnitFiltersWithDropdown = [
   },
   {
     label: "Status",
+    radio: true,
     value: [
-      { label: "All", value: "all" },
+      // { label: "All", value: "all" },
       { label: "Vacant", value: "vacant" },
       { label: "Occupied", value: "occupied" },
       { label: "Expired", value: "expired" },
