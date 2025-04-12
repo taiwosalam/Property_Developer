@@ -149,6 +149,8 @@ const Profile = () => {
     }
   };
 
+  console.log(companyData);
+
   return (
     <>
       <SettingsSection title="profile & details">

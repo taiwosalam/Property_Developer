@@ -179,7 +179,7 @@ const WebsitePages = () => {
   const handleWebsitePageAndColorScheme = async () => {
     const payload = {
       ...checkedStates,
-      ...propertyVisibility,
+      //...propertyVisibility,
       color_scheme: selectedColor ?? "default",
     };
 

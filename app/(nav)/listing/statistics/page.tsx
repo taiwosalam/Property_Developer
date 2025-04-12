@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Types
 import type { StatisticsDataTypes } from "@/components/Listing/Statistics/types";
 
 // Images
-import { ChevronLeft } from "@/public/icons/icons";
+import { ChevronLeft, EmptyStatisticIcon } from "@/public/icons/icons";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 // Imports
@@ -19,10 +19,28 @@ import {
   listingsStatisticsChartConfig,
   listingsStatisticsChartData,
 } from "./data";
+import useFetch from "@/hooks/useFetch";
+import { ListingStatisticResponse } from "./type";
+import DashboardLoading from "@/components/Loader/DashboardLoading";
 
 const Statistics = () => {
   const [activeStatIndex, setActiveStatIndex] = useState(0);
-  const [statsType, setStatsType] = useState<StatisticsDataTypes>("enquires");
+  const [statsType, setStatsType] = useState<StatisticsDataTypes>("views");
+  const [pageData, setPageData] = useState<ListingStatisticResponse | null>(
+    null
+  );
+
+  const {
+    data: apiData,
+    loading,
+    error,
+  } = useFetch<ListingStatisticResponse>(`unit/statistic`);
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData(apiData);
+    }
+  }, [apiData]);
 
   // Function to handle next button click
   const handleNext = () => {
@@ -38,38 +56,41 @@ const Statistics = () => {
     );
   };
 
+  const activeUsers =
+    statistics_data_types[activeStatIndex] === "views"
+      ? apiData?.view_users || []
+      : apiData?.bookmark_users || [];
+
+  const chartData =
+    apiData?.chart_data.map((item) => ({
+      date: item.date,
+      views: item.total_views,
+      bookmarks: item.total_bookmarks,
+    })) || [];
+
+  if (loading) {
+    return <DashboardLoading />;
+  }
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-5">
         <BackButton bold>Statistics</BackButton>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title="Enquires"
-            newData={34}
-            total={657}
+            title="Views"
+            newData={pageData?.total_month_views ?? 0}
+            total={pageData?.total_views ?? 0}
             className="w-[240px]"
             colorScheme={1}
           />
-          <ManagementStatistcsCard
-            title="Views"
-            newData={34}
-            total={657}
-            className="w-[240px]"
-            colorScheme={2}
-          />
-          <ManagementStatistcsCard
-            title="Offers"
-            newData={34}
-            total={657}
-            className="w-[240px]"
-            colorScheme={3}
-          />
+
           <ManagementStatistcsCard
             title="Bookmarked"
-            newData={34}
-            total={657}
+            newData={pageData?.total_month_bookmarks ?? 0}
+            total={pageData?.total_bookmarks ?? 0}
             className="w-[240px]"
-            colorScheme={4}
+            colorScheme={2}
           />
         </div>
       </div>
@@ -79,7 +100,7 @@ const Statistics = () => {
             visibleRange
             chartTitle="Performance"
             chartConfig={listingsStatisticsChartConfig}
-            chartData={listingsStatisticsChartData}
+            chartData={chartData}
           />
         </div>
         <div className="w-full xl:w-[334px]">
@@ -98,14 +119,25 @@ const Statistics = () => {
               </div>
             </div>
             <div className="custom-flex-col gap-5">
-              {Array(5)
-                .fill(null)
-                .map((_, index) => (
+              {activeUsers.length > 0 ? (
+                activeUsers.map((user) => (
                   <StatisticsMessageCard
-                    key={index}
+                    key={user.id}
                     type={statistics_data_types[activeStatIndex]}
+                    user={user}
                   />
-                ))}
+                ))
+              ) : (
+                <div className="flex justify-center items-center min-h-[290px]">
+                  <div className="flex flex-col justify-center items-center gap-4 text-brand-9 mb-10">
+                    <EmptyStatisticIcon />
+                    <p className="text-center text-sm text-brand-9">
+                      No potential clients have bookmarked your properties yet.
+                      Once they do, you&apos;ll see them here.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

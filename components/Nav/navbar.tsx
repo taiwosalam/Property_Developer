@@ -99,10 +99,13 @@ const Header = () => {
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
 
+
   const { data: companyData, refetch: companyRefetch } = useFetch<any>(
     company_id ? `companies/${company_id}` : null
   );
   useRefetchOnEvent("refetchProfile", () => companyRefetch({ silent: true }));
+
+  console.log(companyData)
 
   useEffect(() => {
     if (companyData?.data) {

@@ -163,15 +163,14 @@ export const updateSMSSettings = async (data: FormData) => {
 export const transformProfileData = (data:any): InitialDataTypes => {
   // console.log("data gotten", data)
   return {
-    profile_picture: data.data.profile.picture ?? "",
+    profile_picture: data.data.director.picture ?? "",
     email: data.data.user.email,
     fullname: data.data.user.name || "",
     personal_title: data.data.profile.title ?? "",
     professional_title: data.data.director.professional_title ?? "",
-    phone: data.data.user.phone || "",
+    phone: data.data.director.phone || "",
     about_director: data.data.director.about_director || "",
     director_email: data.data.director.alt_email || "",
-    picture: data.data.profile.picture ?? "",
     director_experience: data.data.director.years_in_business ?? ""
   }
 }
@@ -186,7 +185,6 @@ export interface InitialDataTypes {
   phone: string;
   about_director: string;
   director_email: string;
-  picture: string;
   director_experience: string;
 }
 
@@ -198,7 +196,6 @@ export const initialData: InitialDataTypes = {
   phone: "",
   about_director: "",
   director_email: "",
-  picture: "",
   director_experience: "",
   professional_title: ""
 }

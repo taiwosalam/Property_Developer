@@ -96,6 +96,8 @@ const InspectionPage = () => {
     silentLoading,
   } = useFetch<InspectionDataApiResponse>(`inspections`, config);
 
+  
+
   useEffect(() => {
     if (apiData) {
       const transformData = transformInspectionCard(apiData);

@@ -364,7 +364,9 @@ export const transformFormCompanyData = (
   data.dark_logo = formData.get("dark_company_logo") as string | File;
   data.industry = formData.get("industry") as string;
   data.membership_number = formData.get("membership_number") as string;
-  data.membership_certificate = formData.get("membership_certificate") as string | File;
+  data.membership_certificate = formData.get("membership_certificate") as
+    | string
+    | File;
   data.cac_document = formData.get("cac_certificate") as string | File;
 
   data.head_office_address = formData.get("head_office_address") as string;
@@ -402,6 +404,20 @@ export const updateCompanyDetails = async (
       return response;
     }
     // console.log('res', response)
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const deleteCompanyLogo = async (payload: any, company_id: string) => {
+  try {
+    const response = await api.delete(`/company/${company_id}/remove-logo`, payload);
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Logo deleted successfully");
+      window.dispatchEvent(new Event("refetchProfile"));
+      return true;
+    }
   } catch (error) {
     handleAxiosError(error);
     return false;

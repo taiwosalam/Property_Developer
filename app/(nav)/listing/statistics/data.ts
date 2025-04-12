@@ -1,13 +1,14 @@
 import { ChartConfig } from "@/components/ui/chart";
+import { ListingStatisticResponse } from "./type";
 
-export const listingsStatisticsChartConfig = {
+export const listingsStatisticsChartConfig: ChartConfig = {
   views: {
     label: "Views",
     color: "#01BA4C",
   },
-  enquiries: {
-    label: "Enquiries",
-    color: "#315EE7",
+  bookmarks: {
+    label: "Bookmarked",
+    color: "#2DD4BF",
   },
 } satisfies ChartConfig;
 
@@ -21,3 +22,18 @@ export const listingsStatisticsChartData = [
   { date: "2024-08-28", views: 100, enquiries: 60 },
   { date: "2024-09-30", views: 140, enquiries: 100 },
 ];
+
+export type ListingStatisticPageData = {
+  total_view: number;
+  total_month_views: number;
+  total_bookmarks: number;
+  total_month_bookmarks: number;
+};
+
+export const transformListingStatisticData = (
+  data: ListingStatisticResponse
+) => {
+  return {
+    total_view: data?.total_views ?? 0,
+  };
+};
