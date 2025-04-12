@@ -29,6 +29,7 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { deleteTenant } from "./data";
 import { useRouter } from "next/navigation";
+import ServerError from "@/components/Error/ServerError";
 
 const EditTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -51,7 +52,7 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
       <CustomLoader layout="edit-page" pageTitle="Edit Tenants & Occupant" />
     );
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
   if (!tenantData) return null;
 
   return (

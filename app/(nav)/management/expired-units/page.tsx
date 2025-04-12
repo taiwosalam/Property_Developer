@@ -32,6 +32,7 @@ import {
   UnitFilterResponse,
   UnitPageState,
 } from "../rent-unit/data";
+import ServerError from "@/components/Error/ServerError";
 
 const ExpiredUnits = () => {
   const view = useView();
@@ -190,8 +191,7 @@ const ExpiredUnits = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9 mt-8">

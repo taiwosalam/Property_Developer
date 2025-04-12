@@ -39,6 +39,7 @@ import { checkInVehicle } from "@/components/tasks/vehicles-record/data";
 import { toast } from "sonner";
 import { Box as MuiBox, Modal as MuiModal } from "@mui/material";
 import { UseerSkeletonVehicleRecord } from "@/components/Skeleton/vehicle-record";
+import ServerError from "@/components/Error/ServerError";
 
 interface TransformedData {
   userData: UserData | null;
@@ -156,9 +157,7 @@ const RecordPage = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error) return <ServerError error={error} />;
   if (!userData || !vehicleDetails || !webContactInfo) {
     return <div>No data available.</div>;
   }

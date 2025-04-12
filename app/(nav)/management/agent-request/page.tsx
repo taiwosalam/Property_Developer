@@ -25,6 +25,7 @@ import { formatNumber } from "@/utils/number-formatter";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { PropertyRequestParams } from "../agent-community/type";
 import { RequestCardSkeleton } from "../agent-community/components";
+import ServerError from "@/components/Error/ServerError";
 
 interface PropertyRequestApiData {
   data: PropertyRequestDataType[];
@@ -200,10 +201,7 @@ const PropertyRequest = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error) return <ServerError error={error} />;
   return (
     <div className="space-y-9">
       <div className="flex gap-5 flex-wrap items-center justify-between">

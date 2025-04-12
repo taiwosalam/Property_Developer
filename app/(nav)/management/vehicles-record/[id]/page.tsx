@@ -32,6 +32,7 @@ import useVehicleRecordStore from "@/store/vehicle-record";
 import { FilterResult } from "../../service-providers/types";
 import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";
+import ServerError from "@/components/Error/ServerError";
 
 const VehiclesRecordPage = () => {
   const { id } = useParams();
@@ -191,9 +192,7 @@ const VehiclesRecordPage = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
   // console.log("data needed", data)
   return (
     <div className="space-y-9">

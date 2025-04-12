@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import type { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import ServerError from "@/components/Error/ServerError";
 
 const Properties = () => {
   const storedView = useView();
@@ -153,16 +154,15 @@ const Properties = () => {
   }, [apiData]);
 
   // console.log("total_pages", pageData)
-
+  
   if (loading)
     return (
-      <CustomLoader layout="page" pageTitle="Properties" statsCardCount={3} />
-    );
+  <CustomLoader layout="page" pageTitle="Properties" statsCardCount={3} />
+);
 
-  if (isNetworkError) return <NetworkError />;
+if (isNetworkError) return <NetworkError />;
+if (error) return <ServerError error={error} />;
 
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="space-y-9">

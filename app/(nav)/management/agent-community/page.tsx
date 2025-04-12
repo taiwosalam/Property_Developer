@@ -25,6 +25,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ThreadSkeleton from "@/components/Community/threadskeleton";
 import ThreadCard from "@/components/Community/ThreadCard";
 import { transformToThreadCardProps } from "./data";
+import ServerError from "@/components/Error/ServerError";
 
 
 interface ThreadApiResponse {
@@ -180,7 +181,7 @@ const AgentCommunityPage = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   // console.log("threads", data);
   return (

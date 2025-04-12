@@ -24,6 +24,7 @@ import CommunityComments from "@/components/Community/CommunityComments";
 import { CommunitySlider } from "@/components/Community/CommunitySlider";
 import DOMPurify from "dompurify";
 import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
 
 
 interface ArticleResponse {
@@ -81,7 +82,7 @@ const ThreadPreview = () => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">

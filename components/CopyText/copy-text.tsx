@@ -4,9 +4,10 @@ import { toast } from "sonner";
 interface CopyTextProps {
   text: string;
   className?: string;
+  color?: string;
 }
 
-const CopyText: React.FC<CopyTextProps> = ({ text, className }) => {
+const CopyText: React.FC<CopyTextProps> = ({ text, className,color }) => {
   const handleCopy = () => {
     navigator.clipboard
       .writeText(text)
@@ -18,7 +19,7 @@ const CopyText: React.FC<CopyTextProps> = ({ text, className }) => {
     <p
       onClick={handleCopy}
       className={className}
-      style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+      style={{ cursor: "pointer", color: color ?? "blue", textDecoration: "underline" }}
       title="Click to copy"
     >
       {text}

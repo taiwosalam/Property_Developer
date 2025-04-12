@@ -28,6 +28,7 @@ import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import useStaffRoles from "@/hooks/getStaffs";
 import { inventoryFIltersOptionsWithDropdown } from "./data";
+import ServerError from "@/components/Error/ServerError";
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -238,6 +239,7 @@ const Inventory = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-9">

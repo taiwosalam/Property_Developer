@@ -157,7 +157,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
       <hr className="my-4" />
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2">
-          <PropertyTag propertyType={property_type} />
+          <PropertyTag propertyType={property_type} list />
           <p className="font-bold text-sm md:text-base text-brand-10">
             ID: {id}
           </p>
