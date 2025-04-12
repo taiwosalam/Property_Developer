@@ -151,7 +151,7 @@ const UnitBreakdownRenewalTenant = () => {
         {/* Only display VAT input if VAT is enabled */}
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input
-            id="renew_vat"
+            id="renew_vat_amount"
             label="Value Added Tax (VAT)"
             inputClassName="bg-white unit-form-input"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}

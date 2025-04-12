@@ -17,6 +17,7 @@ import { transformPropertyFormData } from "@/components/Management/Properties/da
 import { useRouter } from "next/navigation";
 import UnitForm from "@/components/Management/Properties/unit-form";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import ServerError from "@/components/Error/ServerError";
 
 const EditProperty = ({ params }: { params: { id: string } }) => {
   const { id: propertyId } = params;
@@ -96,7 +97,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <ServerError error={error} />
   if (dataNotFound)
     return <div className="text-red-500">Property Data not found</div>;
   if (!propertyDetails) return null;
