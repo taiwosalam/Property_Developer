@@ -212,7 +212,8 @@ const Inventory = () => {
       search: "",
     };
     if (branchIdsArray.length > 0) {
-      queryParams.branch_id = branchIdsArray.join(",");
+      queryParams.branch_id = branchIdsArray;
+      // queryParams.branch_id = branchIdsArray.join(",");
     }
     if (accountOfficerArray.length > 0) {
       queryParams.accountOfficer_id = accountOfficerArray.join(",");
