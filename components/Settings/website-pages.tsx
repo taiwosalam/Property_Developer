@@ -34,7 +34,7 @@ const websiteOptions = [
     desc: "Control services and contact page display in your website menu by toggling it on or off.",
   },
   {
-    name: "staff_branch_options",
+    name: "staffs_branch_options",
     title: "Staffs and Branch Options",
     desc: "Toggle staff and branch pages on or off in your website menu",
   },
@@ -85,6 +85,8 @@ const WebsitePages = () => {
   const { data: companySettings } =
     useFetch<CompanySettingsResponse>("/company/settings");
 
+  console.log(companySettings);
+
   const { data: planData } = useFetch<ApiResponseUserPlan>(
     "/property-manager-subscription/active"
   );
@@ -97,9 +99,9 @@ const WebsitePages = () => {
     }
   }, [planData]);
 
+  
   useEffect(() => {
-    if (companySettings) {
-      // I could use this here:  && userPlan === "professional"
+    if (companySettings && companySettings?.data) {
       const webSetting = companySettings?.data?.website_settings;
       const updatedSettings: IWebsiteSettings = {
         about_us_display: webSetting?.about_us_display ?? true,
@@ -109,32 +111,37 @@ const WebsitePages = () => {
         sale_properties: webSetting?.sale_properties ?? true,
         shortlet_properties: webSetting?.shortlet_properties ?? true,
         social_link_visibility: webSetting?.social_link_visibility,
-        sponsored_logo: webSetting?.sponsored_logo,
-        staff_branch_options: userPlan === "professional" ? webSetting?.staffs_branch_options : true,
-        modules_listing: webSetting?.modules_listing,
+        sponsored_logo: webSetting?.sponsored_logo ?? true,
+        staffs_branch_options: webSetting?.staffs_branch_options ?? true,
+        modules_listing: webSetting?.modules_listing ?? true,
       };
       setWebsiteSettings(updatedSettings);
-      setSelectedColor(websiteSettings?.color_scheme ?? "#000000");
-      setCustomColor(webSetting?.color_scheme ?? "");
+    }
+  }, [companySettings]);
+
+  
+  useEffect(() => {
+    if (websiteSettings) {
+      setSelectedColor(websiteSettings.color_scheme ?? "#000000");
+      setCustomColor(websiteSettings.color_scheme ?? "#000000");
+
       setCheckedStates({
-        modules_listing: websiteSettings?.modules_listing ?? true,
-        about_us_display: websiteSettings?.about_us_display ?? true,
-        services_contact_page: websiteSettings?.rent_properties ?? true,
-        social_link_visibility: websiteSettings?.social_link_visibility ?? true,
-        sponsored_logo: websiteSettings?.sponsored_logo ?? true,
-        staff_branch_options: websiteSettings?.staff_branch_options ?? true,
+        modules_listing: websiteSettings.modules_listing ?? true,
+        about_us_display: websiteSettings.about_us_display ?? true,
+        services_contact_page: websiteSettings.services_contact_page ?? true,
+        social_link_visibility: websiteSettings.social_link_visibility ?? true,
+        sponsored_logo: websiteSettings.sponsored_logo ?? true,
+        staffs_branch_options: websiteSettings.staffs_branch_options ?? true
+        ?? true,
       });
 
-      //setPropertyVisibility({});
-    }
-    // if (companySettings && userPlan === "professional") {
       setPropertyVisibility({
-        rent_properties: websiteSettings?.rent_properties ?? false,
-        sale_properties: websiteSettings?.sale_properties ?? false,
-        shortlet_properties: websiteSettings?.shortlet_properties ?? false,
+        rent_properties: websiteSettings.rent_properties ?? false,
+        sale_properties: websiteSettings.sale_properties ?? false,
+        shortlet_properties: websiteSettings.shortlet_properties ?? false,
       });
-    //}
-  }, [companySettings]);
+    }
+  }, [websiteSettings]);
 
   const handleCustomColorChange = (color: string) => {
     setCustomColor(color);
@@ -151,13 +158,13 @@ const WebsitePages = () => {
     value: SetStateAction<boolean>
   ) => {
     // if (userPlan === "professional") {
-      const newValue =
-        typeof value === "function" ? value(propertyVisibility[name]) : value;
-      setPropertyVisibility((prev) => ({
-        ...prev,
-        [name]: newValue,
-      }));
-   // }
+    const newValue =
+      typeof value === "function" ? value(propertyVisibility[name]) : value;
+    setPropertyVisibility((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
+    // }
   };
 
   const handlePropertyVisibility = (name: string, checked: boolean) => {
@@ -172,13 +179,13 @@ const WebsitePages = () => {
   const handleWebsitePageAndColorScheme = async () => {
     const payload = {
       ...checkedStates,
-      ...propertyVisibility,
+      //...propertyVisibility,
       color_scheme: selectedColor ?? "default",
     };
 
     setLoading(true);
     try {
-       await updateWebsitePageAndColorScheme(payload);
+      await updateWebsitePageAndColorScheme(payload);
     } catch (error) {
       console.log(error);
     } finally {
@@ -186,7 +193,7 @@ const WebsitePages = () => {
     }
   };
 
-  console.log(companySettings?.data.website_settings)
+  //console.log(websiteSettings)
 
   return (
     <div>
@@ -236,7 +243,7 @@ const WebsitePages = () => {
               plan={"professional"} //Plan from API to determine whether user can toggle the switch
               title={option.title}
               desc={option.desc}
-              checked={checkedStates[option.name]} // userPlan === "professional"  ? 
+              checked={checkedStates[option.name]} // userPlan === "professional"  ?
               value={option.name}
               onChange={(value, checked) => {
                 setCheckedStates((prev) => ({

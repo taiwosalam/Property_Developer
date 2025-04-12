@@ -402,7 +402,7 @@ export const dashboardPerformanceChartConfig = {
   },
   credit: {
     label: "Credit",
-    color: "#2DD4BF ",
+    color: "#2DD4BF",
   },
   debit: {
     label: "Debit",
@@ -415,9 +415,9 @@ export const dashboardListingsChartConfig = {
     label: "Views",
     color: "#01BA4C",
   },
-  enquiries: {
-    label: "Enquiries",
-    color: "#315EE7",
+  bookmarks: {
+    label: "Bookmarked",
+    color: "#2DD4BF",
   },
 };
 

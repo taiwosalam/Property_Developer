@@ -22,7 +22,7 @@ import {
 
 const Statistics = () => {
   const [activeStatIndex, setActiveStatIndex] = useState(0);
-  const [statsType, setStatsType] = useState<StatisticsDataTypes>("enquires");
+  //const [statsType, setStatsType] = useState<StatisticsDataTypes>("enquires");
 
   // Function to handle next button click
   const handleNext = () => {
