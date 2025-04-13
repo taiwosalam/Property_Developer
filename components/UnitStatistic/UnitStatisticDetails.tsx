@@ -77,9 +77,7 @@ const UnitStatisticDetails = ({ id }: { id: string }) => {
     return <DashboardLoading />;
   }
 
-  if (error) {
-    return <SearchError />;
-  }
+  
 
   return (
     <div className="custom-flex-col gap-10">
