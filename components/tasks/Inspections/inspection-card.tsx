@@ -15,24 +15,28 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import useFetch from "@/hooks/useFetch";
 import {
   Inspection,
-  InspectionDetailsResponse,
+  InspectionDetailsApiResponse,
 } from "@/app/(nav)/tasks/inspections/type";
 import { useEffect, useState } from "react";
 import { formatTime } from "@/app/(nav)/notifications/data";
+import { TInspectionDetails, transformInspectionDetails } from "@/app/(nav)/tasks/inspections/data";
 
 const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
-  const { data: inspectionData } = useFetch<InspectionDetailsResponse>(
+  const { data: inspectionData } = useFetch<InspectionDetailsApiResponse>(
     `inspections/${data?.id}`
   );
-  const [inspection, setInspection] = useState<Inspection | null>(null);
+  const [inspection, setInspection] = useState<TInspectionDetails | null>(null);
+
+  
 
   useEffect(() => {
     if (inspectionData) {
-      setInspection(inspectionData.data);
+      const transformedData = transformInspectionDetails(inspectionData)
+      setInspection(transformedData);
     }
   }, [inspectionData]);
 
-  const propertyAddress = `${inspection?.full_address} ${inspection?.city_area} ${inspection?.local_government} ${inspection?.state}`
+
   return (
     <div
       className="rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-6 pb-6"
@@ -44,12 +48,12 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
       <div className="custom-flex-col gap-3">
         { data && <InspectionCardInfo
           className="p-[18px]"
-          address={propertyAddress}
-          image={null}
-          unit_fee_period={data.unit_fee_period}
+          address={data?.address}
+          image={data?.images}
+          unit_fee_period={data?.unit_fee_amount}
           title={data?.property_name}
-          total_price={data?.price}
-          yearly_price={data?.yearly_price}
+          total_price={data?.total_package}
+          yearly_price={data?.fee_amount}
         />}
         <div className="py-2 px-[18px] bg-brand-1 flex justify-between text-base font-medium">
           <p className="text-text-secondary">Inspection details</p>

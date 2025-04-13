@@ -11,14 +11,17 @@ import {
 import Button from "@/components/Form/Button/button";
 import { CancelIcon } from "@/public/icons/icons";
 import { Inspection } from "@/app/(nav)/tasks/inspections/type";
-import { formatToNaira } from "@/app/(nav)/tasks/inspections/data";
+import { formatToNaira, TInspectionDetails } from "@/app/(nav)/tasks/inspections/data";
 import { formatTime } from "@/app/(nav)/notifications/data";
+import { useRouter } from "next/navigation";
 
 interface InspectionDetailsModelProps {
-  data: Inspection
+  data: TInspectionDetails
 }
 const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
-  const address = `${data?.full_address} ${data?.city_area} ${data?.local_government} ${data?.state}`
+
+  const router = useRouter();
+  
   return (
     <div
       className="w-[600px] max-w-[80%] max-h-[90vh] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col pb-14 gap-6 overflow-x-hidden overflow-y-auto custom-round-scrollbar"
@@ -39,24 +42,24 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
         </h2>
       </div>
       <InspectionCardInfo className="px-6" 
-        address={address}
-        unit_fee_period={data?.unit_fee_period}
-        total_price={formatToNaira(data?.total_package)}
-        image={null}
+        address={data?.address}
+        unit_fee_period={data?.unit_fee_amount}
+        total_price={data?.total_package}
+        image={data?.images || []}
         title={data?.property_name}
-        yearly_price={"12,000"}/>
+        yearly_price={data?.fee_amount}/>
 
       <div className="relative z-[1] custom-flex-col gap-4">
         <div className="w-full border-b border-dashed border-brand-7 opacity-50"></div>
         <div className="custom-flex-col gap-8 px-6">
           <div className="custom-flex-col gap-4">
             <InspectionCardTitle>other details</InspectionCardTitle>
-            <InspectionCardTitleDesc title="Booked by" desc={data?.booked_by ?? ""} />
-            <InspectionCardTitleDesc title="Selected Date" desc={data?.inspection_date ?? ""} />
-            <InspectionCardTitleDesc title="Selected Time" desc={formatTime(data?.inspection_time) ?? ""} />
-            <InspectionCardTitleDesc title="Phone" desc={data?.phone ?? ""} />
-            <InspectionCardTitleDesc title="Branch" desc={data?.branch ?? ""} />
-            <InspectionCardTitleDesc title="Property" desc={data?.property_name} />
+            <InspectionCardTitleDesc title="Booked by" desc={data?.booked_by} />
+            <InspectionCardTitleDesc title="Selected Date" desc={data?.inspection_date} />
+            <InspectionCardTitleDesc title="Selected Time" desc={data?.inspection_time} />
+            <InspectionCardTitleDesc title="Phone" desc={data?.phone} />
+            <InspectionCardTitleDesc title="Branch" desc={data?.branch_name ?? ""} />
+            <InspectionCardTitleDesc title="Property" desc={data?.property} />
             <InspectionCardTitleDesc
               title="Inspection Type"
               desc={ data?.inspection_type === "physical_inspection" ? "Physical Inspection" : "Virtual Inspection" }
@@ -72,7 +75,7 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
             <Button variant="sky_blue" size="xs_normal" className="py-2 px-6">
               Request Application
             </Button>
-            <Button size="xs_normal" className="py-2 px-6">
+            <Button size="xs_normal" className="py-2 px-6" onClick={() => router.push("/message")}>
               Message
             </Button>
           </div>

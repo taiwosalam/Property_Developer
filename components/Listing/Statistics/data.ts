@@ -3,3 +3,5 @@ export const statistics_data_types = [
   // "offers",
   "bookmark",
 ] as const;
+
+export const statisticsHeaderCard = ["Viewers via Mobile App", "Bookmarks via Mobile App"]

@@ -54,6 +54,7 @@ const InspectionPage = () => {
   const handleFilterApply = (filter: FilterResult) => {
     setAppliedFilters(filter);
     const { menuOptions, startDate, endDate } = filter;
+    const propertyIdArray = menuOptions["Property"] || []
 
     const queryParams: InspectionRequestParams = {
       page: 1,
@@ -64,6 +65,9 @@ const InspectionPage = () => {
     }
     if (endDate) {
       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+    }
+    if(propertyIdArray.length > 0){
+      queryParams.property_ids = propertyIdArray.join(",");
     }
 
     setConfig({
@@ -112,7 +116,7 @@ const InspectionPage = () => {
         inspectionData?.card
           .map((item) => {
             return item?.property_name
-              ? { label: item.property_name, value: item.property_name }
+              ? { label: item.property_name, value: item.property_id.toString() }
               : null;
           })
           .filter(
