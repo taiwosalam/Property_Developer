@@ -23,6 +23,8 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
   unit_fee_period
 }) => {
   const [screenModal, setScreenModal] = useState(false);
+
+
   return (
     <div
       className={clsx(
@@ -35,12 +37,12 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
         onClose={() => {
           setScreenModal(false);
         }}
-        images={[{ src: SampleProperty }]}
+        images={image}
       />
-      <div className="flex items-center gap-4">
+      <div className="flex gap-4">
         <div className="relative rounded-[4px] overflow-hidden">
           <Picture
-            src={image ?? SampleProperty}
+            src={image[0]?.src ?? SampleProperty}
             alt="preview"
             width={130}
             height={117}
@@ -52,7 +54,7 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
             </p>
           </div> */}
         </div>
-        <div className="custom-flex-col gap-1 text-text-secondary dark:text-white text-sm lg:text-base font-bold">
+        <div className="custom-flex-col gap-1 text-text-secondary dark:text-white text-sm lg:text-base font-bold capitalize">
           <p>{ title }</p>
           
           <div className="text-text-disabled flex gap-1">

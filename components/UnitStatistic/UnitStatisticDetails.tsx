@@ -11,31 +11,35 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 // Imports
 import BackButton from "@/components/BackButton/back-button";
-import { statistics_data_types, statisticsHeaderCard } from "@/components/Listing/Statistics/data";
+import {
+  statistics_data_types,
+  statisticsHeaderCard,
+} from "@/components/Listing/Statistics/data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import StatisticsMessageCard from "@/components/Listing/Statistics/statistics-message-card";
 import { DashboardChart } from "@/components/dashboard/chart";
-import {
-  listingsStatisticsChartConfig,
-  listingsStatisticsChartData,
-} from "./data";
+import { listingsStatisticsChartConfig } from "@/app/(nav)/listing/statistics/data";
 import useFetch from "@/hooks/useFetch";
-import { ListingStatisticResponse } from "./type";
+import { ListingStatisticResponse } from "@/app/(nav)/listing/statistics/type";
 import DashboardLoading from "@/components/Loader/DashboardLoading";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
-const Statistics = () => {
+import { useParams } from "next/navigation";
+
+const UnitStatisticDetails = ({ id }: { id: string }) => {
   const [activeStatIndex, setActiveStatIndex] = useState(0);
   const [statsType, setStatsType] = useState<StatisticsDataTypes>("views");
   const [pageData, setPageData] = useState<ListingStatisticResponse | null>(
     null
   );
 
+  const params = useParams();
+
   const {
     data: apiData,
     loading,
     error,
-  } = useFetch<ListingStatisticResponse>(`unit/statistic`);
+  } = useFetch<ListingStatisticResponse>(`unit/statistic/${params?.id}`);
 
   useEffect(() => {
     if (apiData) {
@@ -73,9 +77,7 @@ const Statistics = () => {
     return <DashboardLoading />;
   }
 
-  if(error){
-    return <SearchError />
-  }
+  
 
   return (
     <div className="custom-flex-col gap-10">
@@ -151,4 +153,4 @@ const Statistics = () => {
   );
 };
 
-export default Statistics;
+export default UnitStatisticDetails;

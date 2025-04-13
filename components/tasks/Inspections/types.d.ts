@@ -1,16 +1,24 @@
+import { StaticImageData } from "next/image";
+
 export interface InspectionDefaultExport {
   children: React.ReactNode;
 }
 
+type Image = {
+  src: string | StaticImageData;
+  isVideo?: boolean
+};
 export interface InspectionCardProps {
   type?: "physical" | "virtual"
   data?: {
     id: number;
     property_name: string;
-    price: string;
+    total_package: string;
+    fee_amount: string;
+    unit_fee_amount: string;
     address: string;
-    unit_fee_period: string;
-    yearly_price: string;
+    address: string;
+    images: Image[];
     inspection_type: "virtual_inspection" | "physical_inspection";
     booked_by: string;
     inspection_date: string;
@@ -18,10 +26,15 @@ export interface InspectionCardProps {
   }
 }
 
+type Image = {
+  src: string | StaticImageData,
+  isVideo?: boolean
+ 
+};
 export interface InspectionCardInfoProps {
   className?: string;
   unit_fee_period: string;
-  image: string | null;
+  image: Image[];
   title: string;
   address: string;
   total_price: string;

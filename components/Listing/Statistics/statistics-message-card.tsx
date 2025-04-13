@@ -52,6 +52,7 @@ const StatisticsMessageCard: React.FC<StatisticsMessageCardProps> = ({
           alt="profile picture"
           size={40}
           rounded
+          className="bg-blue-400"
         />
         <div className="custom-flex-col text-text-primary dark:text-darkText-1 text-sm">
           <div className="flex items-center">
