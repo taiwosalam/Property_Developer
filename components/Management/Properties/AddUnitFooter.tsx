@@ -9,64 +9,92 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAddUnitStore } from "@/store/add-unit-store";
 
-interface AddUntFooterProps {
+interface AddUnitFooterProps {
   noForm?: boolean;
 }
 
-const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
+const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
   const { canSubmit, handleInputChange, missingFields } =
     useContext(FlowProgressContext);
   const { submitLoading, setSaveClick } = useUnitForm();
   const [footerModalOpen, setFooterModalOpen] = useState(false);
   const router = useRouter();
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
-  const newForm = useAddUnitStore((s) => s.newForm);
+  const newForm = useAddUnitStore((s) => s.newForm ?? false); // Fallback to false if undefined
   const [checkSubmit, setCheckSubmit] = useState(false);
 
-  // Effect to handle validation after state updates
   useEffect(() => {
     if (checkSubmit) {
-      if (!canSubmit) {
+      console.log("Validation Effect:", { canSubmit, noForm, missingFields });
+      if (!canSubmit && !noForm) {
         toast.error(
           `The following fields are required: ${missingFields.join(", ")}`
         );
       } else {
         setFooterModalOpen(true);
       }
-      setCheckSubmit(false); // Reset the trigger
+      setCheckSubmit(false);
     }
-  }, [canSubmit, missingFields, checkSubmit]);
+  }, [canSubmit, missingFields, checkSubmit, noForm]);
 
   const handleAddMoreClick = () => {
-    handleInputChange(); // Trigger state update
-    setCheckSubmit(true); 
+    console.log("Add More Clicked:", { noForm, newForm, canSubmit });
+    if (!noForm) {
+      handleInputChange();
+      setCheckSubmit(true);
+    } else {
+      setFooterModalOpen(true);
+    }
   };
-
 
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (noForm) {
-      // Check if any unit has notYetUploaded set to true
+    console.log("Save Clicked:", {
+      noForm,
+      newForm,
+      canSubmit,
+      addedUnitsLength: addedUnits.length,
+      hasNotYetUploaded: addedUnits.some((unit) => unit.notYetUploaded),
+      missingFields,
+    });
+
+    // Check for unuploaded units
+    if (addedUnits.length > 0) {
       const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
       if (hasNotYetUploaded) {
+        console.log("Blocked: Units not yet uploaded");
         toast.warning(
           "There are units that have not been updated yet. Please update them to continue."
         );
         return;
       }
-      router.push("/management/properties");
-    } else {
+    }
+
+    // Check if a form exists (based on noForm, newForm, or missingFields)
+    if (!noForm || newForm || missingFields.length > 0) {
+      console.log("Form validation required:", { canSubmit, missingFields });
       if (!canSubmit) {
+        console.log("Validation failed, showing toast");
         toast.error(
           `The following fields are required: ${missingFields.join(", ")}`
         );
         return;
       }
+      console.log("Form valid, proceeding with submission");
       setSaveClick(true);
       const form = e.currentTarget.form;
       setTimeout(() => {
         form?.requestSubmit();
       }, 0);
+    } else if (addedUnits.length === 0) {
+      console.log("No units added, no valid form, showing warning");
+      toast.warning("Please add at least one unit before saving.");
+      return;
+    } else {
+      console.log(
+        "No form, units added, redirecting to /management/properties"
+      );
+      router.push("/management/properties");
     }
   };
 
@@ -100,4 +128,4 @@ const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
   );
 };
 
-export default AddUntFooter;
+export default AddUnitFooter;

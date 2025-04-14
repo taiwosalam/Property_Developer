@@ -80,7 +80,7 @@ export const EditCurrentRent: React.FC<{
   const handleUpdate = async () => {
     if (action) {
       await action();
-      setModalIsOpen(true);
+      // setModalIsOpen(true);
     }
   };
 
@@ -96,6 +96,7 @@ export const EditCurrentRent: React.FC<{
           id="payment_date"
           label="Payment Date"
           value={startDate}
+          lastYear
           onChange={handleStartDate}
           containerClassName="bg-white"
         />
@@ -162,7 +163,7 @@ export const AddPartPayment: React.FC<{
   const handleUpdate = async () => {
     if (action) {
       await action();
-      setModalIsOpen(true);
+      // setModalIsOpen(true);
     }
   };
 
@@ -190,6 +191,7 @@ export const AddPartPayment: React.FC<{
           id="date"
           label="Date"
           value={startDate}
+          lastYear
           onChange={handleStartDate}
           containerClassName="bg-white"
           disablePast

@@ -1,11 +1,12 @@
 "use client";
+
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import FormModalPreset from "../../landlord-tenant-modal-preset";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 import { toast } from "sonner";
@@ -20,6 +21,7 @@ const SwitchPropertyModal: React.FC<{
   const router = useRouter();
   const [modalView, setModalView] = useState<"warning" | "form">("warning");
   const [selectedProperty, setPropertySelected] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const {
     data: propertyData,
@@ -27,20 +29,34 @@ const SwitchPropertyModal: React.FC<{
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
-  // Property options without current tenant property for the select input
+  // Property options without current tenant property
   const propertyOptions =
     propertyData?.data
       .filter((p) => p.id !== propertyId)
       .map((p) => ({
-        value: p.id,
+        value: String(p.id), // Convert to string for select compatibility
         label: p.title,
       })) || [];
 
-  const handleContinue = () => {
-    if (!selectedProperty) return toast.warning("Please select a property");
-    router.push(
-      `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${selectedProperty}`
-    );
+  const handleContinue = async () => {
+    if (!selectedProperty) {
+      toast.warning("Please select a property");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Simulate async operation (e.g., API call or validation)
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Mock delay
+      // toast.success("Property selected successfully");
+      router.push(
+        `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${selectedProperty}`
+      );
+    } catch {
+      toast.error("Failed to proceed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (modalView === "warning") {
@@ -74,7 +90,7 @@ const SwitchPropertyModal: React.FC<{
       >
         <div className="space-y-5 max-w-[300px] mx-auto mt-5">
           <Select
-            id=""
+            id="property-select"
             label={`Choose ${isRental ? "Property" : "Facility"}`}
             options={propertyOptions}
             onChange={setPropertySelected}
@@ -86,15 +102,25 @@ const SwitchPropertyModal: React.FC<{
                 : "Select property"
             }
             error={propertyError}
-            disabled={propertyLoading}
+            disabled={propertyLoading || loading}
           />
           <div className="w-full flex items-center justify-center">
             <Button
               onClick={handleContinue}
               className="py-2 px-8"
               size="base_medium"
+              disabled={loading}
+              aria-disabled={loading}
+              aria-label={loading ? "Processing" : "Add property"}
             >
-              Add
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
+                  Please wait...
+                </span>
+              ) : (
+                "Add"
+              )}
             </Button>
           </div>
         </div>

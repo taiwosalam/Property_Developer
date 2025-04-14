@@ -19,6 +19,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   setSelectedCheckboxOptions,
   period,
   setStart_date,
+  setIsPastDate,
 }) => {
   const [selectedOccupant, setSelectedOccupant] = useState<Occupant | null>(
     null
@@ -55,6 +56,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 occupantError={occupantError}
                 setSelectedTenantId={setSelectedTenantId}
                 setStart_date={setStart_date}
+                setIsPastDate={setIsPastDate} 
               />
               <FeeBreakdown
                 id={id}

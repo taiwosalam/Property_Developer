@@ -45,29 +45,247 @@ check management/vehicles-record filter for reference
 
 
 
+"use client";
+import BackButton from "@/components/BackButton/back-button";
+import Input from "@/components/Form/Input/input";
+import Button from "@/components/Form/Button/button";
+import { useSearchParams, useRouter } from "next/navigation";
+import {
+  PersonalDataProps,
+  PersonalDetailsFormFields,
+  VehicleDetailsFormFields,
+} from "./form-sections";
+import useVehicleRecordStore from "@/store/vehicle-record";
+import { createVehicleRecord, transformTenant } from "./data";
+import { toast } from "sonner";
+import { useCallback, useEffect, useState } from "react";
+import Select from "@/components/Form/Select/select";
+import InputWithButton from "./input-with-button";
+import { TenantApiResponse } from "./types";
+import useFetch from "@/hooks/useFetch";
+import {
+  IndividualTenantAPIResponse,
+  transformIndividualTenantAPIResponse,
+} from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
+import SelectWithImage from "@/components/Form/Select/select-with-image";
+import { transformMobileUseDataForVehicleRecord } from "@/app/(nav)/management/landlord/data";
+import { getTenantById, getUsers } from "@/utils/getData";
 
-               {/* {addedUnits.length > 0 && (
-          <FixedFooter>
-            <div className="flex justify-end w-full">
-              <Modal>
-                <ModalTrigger>
-                  <Button> Add More Units</Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <UnitFormContext.Consumer>
-                    {(context) => (
-                      <FooterModal
-                        duplicate={context?.duplicate}
-                        setDuplicate={context?.setDuplicate}
-                        submitLoading={context?.submitLoading}
-                      />
-                    )}
-                  </UnitFormContext.Consumer>
-                </ModalContent>
-              </Modal>
-            </div>
-          </FixedFooter>
-        )} */}
+const CreateRecordForm = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type") as "manual" | "id" | null;
+  const propertyId = searchParams.get("p");
+  const { selectedProperty } = useVehicleRecordStore();
+  const [loading, setLoading] = useState(false);
+  const [mobileUser, setMobileUser] = useState<PersonalDataProps | null>(null);
+  const [userId, setUserId] = useState("");
+  const [selectedTenantId, setSelectedTenantId] = useState<string | null>(null);
+  const [tenants, setTenants] = useState<PersonalDataProps | null>(null);
+  const [openFields, setOpenFields] = useState(false);
+  const [reqLoading, setReqLoading] = useState(false);
+  const [reqError, setReqError] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
+  // Fetch tenants for the dropdown
+  const {
+    data: tenantsData,
+    loading: tenantsLoading,
+    error: tenantsError,
+  } = useFetch<TenantApiResponse>(`/report/tenants?property_id=${propertyId}`);
+
+  const tenantOptions =
+    tenantsData?.data.tenants.map((tenant) => ({
+      value: tenant.tenant_id,
+      label: tenant.name,
+      icon: tenant.picture,
+    })) || [];
+
+  // // Fetch selected tenant data when a tenant is selected from the dropdown
+  // const {
+  //   data: apiData,
+  //   error: errorSelectedTenant,
+  //   loading: loadingSelectedTenant,
+  // } = useFetch<IndividualTenantAPIResponse>(
+  //   selectedTenantId ? `tenant/${selectedTenantId}` : ""
+  // );
+
+  // Fetch selected tenant data
+  const fetchSelectedTenant = useCallback(async () => {
+    if (!selectedTenantId) return;
+    setLoading(true);
+    try {
+      const data = await getTenantById(selectedTenantId);
+      const transformedData = transformTenant(data);
+      setTenants(transformedData);
+      setOpenFields(true);
+      setFetchError(null);
+    } catch (err) {
+      setFetchError("Failed to load tenant data");
+      toast.error("Failed to load tenant data");
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedTenantId]);
+
+  useEffect(() => {
+    fetchSelectedTenant();
+  }, [fetchSelectedTenant]);
+
+  // Fetch mobile user data
+  const fetchMobileUser = useCallback(async () => {
+    if (!userId) return;
+    setLoading(true);
+    try {
+      const data = await getUsers(userId);
+      const transformedData = transformMobileUseDataForVehicleRecord(data);
+      setTenants(transformedData);
+      setOpenFields(true);
+      setFetchError(null);
+    } catch (err) {
+      setFetchError("Failed to load user data");
+      toast.error("Failed to load user data");
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    fetchMobileUser();
+  }, [fetchMobileUser]);
+
+  // // Fetch mobile user data when a user ID is submitted
+  // const {
+  //   data: mobileUsersData,
+  //   error: mobileUsersError,
+  //   loading: loadingMobileUsers,
+  //   refetch,
+  // } = useFetch<any>(userId ? `/get-users?identifier=${userId}` : null);
+
+  // // Handle mobile user data fetch
+  // useEffect(() => {
+  //   if (mobileUsersData && !mobileUsersError && !loadingMobileUsers && userId) {
+  //     const transformedData =
+  //       transformMobileUseDataForVehicleRecord(mobileUsersData);
+  //     setTenants(transformedData);
+  //     setOpenFields(true); // Open the form fields after setting tenants
+  //   }
+  // }, [mobileUsersData, mobileUsersError, loadingMobileUsers, userId]);
+
+  // Handle selected tenant data fetch
+  // useEffect(() => {
+  //   if (apiData && !errorSelectedTenant && !loadingSelectedTenant) {
+  //     const transformedData = transformTenant(apiData);
+  //     setTenants(transformedData);
+  //     setOpenFields(true); // Open the form fields after setting tenants
+  //   } 
+  // }, [apiData, errorSelectedTenant, loadingSelectedTenant]);
+
+  // Reset tenant and form state when changing tenant
+  const handleChangeTenant = () => {
+    setTenants(null);
+    setOpenFields(false);
+    setSelectedTenantId(null);
+    setUserId(""); // Reset userId to allow re-fetching mobile user data
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    formData.append("property_id", selectedProperty);
+
+    // Handle avatar and picture fields
+    const avatar = formData.get("avatar") as string;
+    const picture = formData.get("picture") as string;
+    if (!avatar && picture) {
+      formData.set("avatar", picture);
+    }
+    formData.delete("picture");
+
+    // Convert formData to an object for logging/debugging
+    const data = Object.fromEntries(formData.entries());
+    console.log("Form Data:", data);
+
+    try {
+      setLoading(true);
+      const res = await createVehicleRecord(data);
+      if (res) {
+        toast.success("Vehicle record created successfully");
+        useVehicleRecordStore.setState({ selectedProperty: "" });
+        router.push(`/management/vehicles-record/${propertyId}`);
+      }
+    } catch (error) {
+      console.error("Error creating vehicle record:", error);
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form
+      className="bg-white dark:bg-darkText-primary rounded-[20px] p-10 space-y-6"
+      onSubmit={handleSubmit}
+    >
+      <div className="space-y-4">
+        <BackButton className="text-primary-navy" bold>
+          Profile
+        </BackButton>
+        {type === "manual" ? (
+          <PersonalDetailsFormFields
+            formstep={1}
+            setFormstep={() => {}}
+            loading={loading}
+          />
+        ) : openFields && tenants ? (
+          <>
+            <PersonalDetailsFormFields
+              editMode={true}
+              data={tenants}
+              formstep={1}
+              setFormstep={() => {}}
+              loading={loading}
+              changeTenant={handleChangeTenant}
+            />
+          </>
+        ) : (
+          <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <InputWithButton
+              label="Input Guest/Visitor ID"
+              name="guest_id"
+              btn_text="submit"
+              onSubmit={setUserId}
+              loading={loading}
+            />
+            <SelectWithImage
+              label="Select From Record"
+              id="guest_id"
+              options={tenantOptions}
+              onChange={setSelectedTenantId}
+              placeholder={
+                tenantsLoading
+                  ? "Loading tenants..."
+                  : tenantsError
+                  ? "Error loading tenants"
+                  : "Select tenant"
+              }
+              error={tenantsError}
+            />
+          </div>
+        )}
+      </div>
+      <div className="space-y-4">
+        <h2 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+          Vehicle Details
+        </h2>
+        <VehicleDetailsFormFields showSubmitButton loading={loading} />
+      </div>
+    </form>
+  );
+};
+
+export default CreateRecordForm;
 
 
 
@@ -78,352 +296,567 @@ check management/vehicles-record filter for reference
 
 
 
+// "use client";
+// import { useEffect, useState } from "react";
+// import { CameraIcon } from "@/public/icons/icons";
+// import Image from "next/image";
+// import Sample from "@/public/empty/SampleProperty.jpeg";
+// import { SectionSeparator } from "@/components/Section/section-components";
+// import Sample2 from "@/public/empty/SampleProperty2.jpeg";
+// import Sample3 from "@/public/empty/SampleProperty3.jpeg";
+// import Sample4 from "@/public/empty/SampleProperty4.png";
+// import Sample5 from "@/public/empty/SampleProperty5.jpg";
+// import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+// import Checkbox from "@/components/Form/Checkbox/checkbox";
+// import Switch from "@/components/Form/Switch/switch";
+// import { useOccupantStore } from "@/hooks/occupant-store";
 
+// interface PropertySwitchUnitItemProps {
+//   id: string;
+//   isSelected: boolean;
+//   onSelect: (id: string) => void;
+//   isRental?: boolean;
+//   cautionDeposit?: string;
+//   serviceCharge?: string;
+//   unitDetails: string;
+//   unitImages: string[];
+//   rent: string;
+//   propertyType: string;
+//   unitName: string;
+// }
 
-
- // "use client";
-
-// import { useEffect, useState, useMemo, useRef, useCallback } from "react";
-// import Link from "next/link";
-// import { useRouter } from "next/navigation";
-// import Button from "@/components/Form/Button/button";
-// import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
-// import CustomTable from "@/components/Table/table";
-// import type { DataItem } from "@/components/Table/types";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-// import { getAllStates } from "@/utils/states";
-// import {
-//   type BranchesPageData,
-//   initialBranchesPageData,
-//   branchTableFields,
-//   type BranchApiResponse,
-//   type BranchRequestParams,
-//   transformBranchApiResponse,
-// } from "./data";
-// import Pagination from "@/components/Pagination/pagination";
-// import CreateBranchModal from "@/components/Management/Staff-And-Branches/create-branch-modal";
-// import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-// import FilterBar from "@/components/FIlterBar/FilterBar";
-// import CustomLoader from "@/components/Loader/CustomLoader";
-// import TableLoading from "@/components/Loader/TableLoading";
-// import CardsLoading from "@/components/Loader/CardsLoading";
-// import useView from "@/hooks/useView";
-// import useFetch from "@/hooks/useFetch";
-// import NetworkError from "@/components/Error/NetworkError";
-// import EmptyList from "@/components/EmptyList/Empty-List";
-// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-// import { ExclamationMark } from "@/public/icons/icons";
-// import { FilterResult } from "@/components/Management/Landlord/types";
-// import { AxiosRequestConfig } from "axios";
-// import dayjs from "dayjs";
-// import { toast } from "sonner";
-// import SearchError from "@/components/SearchNotFound/SearchNotFound";
-
-// const allStates = getAllStates();
-
-// const StaffAndBranches = () => {
-//   const storedView = useView();
-//   // Added a ref to the top of the content section
-//   const contentTopRef = useRef<HTMLDivElement>(null);
-//   const [view, setView] = useState<string | null>(storedView);
-//   const router = useRouter();
-//   const [state, setState] = useState<BranchesPageData>(initialBranchesPageData);
+// const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
+//   id,
+//   isSelected,
+//   onSelect,
+//   isRental,
+//   cautionDeposit,
+//   serviceCharge,
+//   unitDetails,
+//   unitImages,
+//   rent,
+//   propertyType,
+//   unitName,
+// }) => {
 //   const {
-//     total_pages,
-//     current_page,
-//     total_branches,
-//     new_branches_count,
-//     total_properties,
-//     new_properties_count,
-//     total_staffs,
-//     new_staffs_count,
-//     branches,
-//   } = state;
+//     occupant,
+//     propertyData,
+//     records,
+//     unitBalance,
+//     calculation,
+//     deduction,
+//     setCalculation,
+//     setDeduction,
+//   } = useOccupantStore();
+//   const [screenModal, setScreenModal] = useState(false);
 
 //   useEffect(() => {
-//     setView(storedView);
-//   }, [storedView]);
-
-//   const handleFilterApply = (filters: FilterResult) => {
-//     setAppliedFilters(filters);
-//     const { menuOptions, startDate, endDate } = filters;
-//     const statesArray = menuOptions["State"] || [];
-//     const queryParams: BranchRequestParams = {
-//       page: 1,
-//       search: "",
-//     };
-//     if (statesArray.length > 0) {
-//       queryParams.states = statesArray.join(",");
-//     }
-//     if (startDate) {
-//       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
-//     }
-//     if (endDate) {
-//       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
-//     }
-//     setConfig({
-//       params: queryParams,
-//     });
-//   };
-
-//   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
-//     options: [],
-//     menuOptions: {},
-//     startDate: null,
-//     endDate: null,
-//   });
-//   const handleSelectTableItem = (item: DataItem) => {
-//     if (item.is_active !== 1) {
-//       toast.error("Branch is not active");
-//       return;
-//     }
-//     router.push(`/management/staff-branch/${item.id}`);
-//   };
-
-//   const [config, setConfig] = useState<AxiosRequestConfig>({
-//     params: {
-//       page: 1,
-//       search: "",
-//     } as BranchRequestParams,
-//   });
-
-//   const isFilterApplied = () => {
-//     const { options, menuOptions, startDate, endDate } = appliedFilters;
-//     return (
-//       options.length > 0 ||
-//       Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
-//       startDate !== null ||
-//       endDate !== null
-//     );
-//   };
-
-//   const handlePageChange = (page: number) => {
-//     setConfig({
-//       params: { ...config.params, page },
-//     });
-//     // Scroll to the top
-//     if (contentTopRef.current) {
-//       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
-//     }
-//   };
-
-//   const handleSearch = async (query: string) => {
-//     setConfig({
-//       params: { ...config.params, search: query },
-//     });
-//   };
-
-//   const handleSort = (order: "asc" | "desc") => {
-//     setConfig({
-//       params: { ...config.params, sort_order: order },
-//     });
-//   };
-
-//   const {
-//     data: apiData,
-//     loading,
-//     silentLoading,
-//     isNetworkError,
-//     error,
-//     refetch,
-//   } = useFetch<BranchApiResponse>("branches", config);
-
-//   useRefetchOnEvent("refetchBranches", () => refetch({ silent: true }));
+//     setChecked1(calculation);
+//   }, [calculation]);
 
 //   useEffect(() => {
-//     if (apiData) {
-//       setState((x) => ({
-//         ...transformBranchApiResponse(apiData),
-//       }));
-//     }
-//   }, [apiData]);
+//     setChecked2(deduction);
+//   }, [deduction]);
 
-//   // ---- Infinite Scroll for list view ----
-//   // Only attach the infinite scroll if in list view.
-//   // Create an IntersectionObserver to detect when the last row is visible.
-//   const observer = useRef<IntersectionObserver | null>(null);
-//   const lastRowRef = useCallback(
-//     (node: HTMLElement | null) => {
-//       if (observer.current) observer.current.disconnect();
-//       observer.current = new IntersectionObserver((entries) => {
-//         if (
-//           entries[0].isIntersecting &&
-//           current_page < total_pages &&
-//           !silentLoading
-//         ) {
-//           // Load the next page when the last row comes into view.
-//           handlePageChange(current_page + 1);
-//         }
-//       });
-//       if (node) observer.current.observe(node);
-//     },
-//     [current_page, total_pages, silentLoading, config]
-//   );
+//   const handleChecked1Click = () => {
+//     const newChecked1 = !checked1;
+//     setChecked1(newChecked1);
+//     setCalculation(newChecked1);
+//   };
 
-//   // Map through the branch rows and add a "ref" property to the last one.
-//   const transformedBranches =
-//     view === "list"
-//       ? branches.map((b, index) => ({
-//           ...b,
-//           // Attach the lastRowRef to the final row if more pages exist.
-//           ref:
-//             index === branches.length - 1 && current_page < total_pages
-//               ? lastRowRef
-//               : undefined,
-//         }))
-//       : branches;
+//   const handleChecked2Click = () => {
+//     const newChecked2 = !checked2;
+//     setChecked2(newChecked2);
+//     setDeduction(newChecked2);
+//   };
 
-//   if (loading)
-//     return (
-//       <CustomLoader
-//         layout="page"
-//         pageTitle="Staff & Branch"
-//         statsCardCount={3}
-//       />
-//     );
-
-//   // console.log("Branches", branches);
-
-//   if (isNetworkError) return <NetworkError />;
-
-//   if (error)
-//     return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+//   const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
+//   const [checked1, setChecked1] = useState(false);
+//   const [checked2, setChecked2] = useState(false);
+//   console.log("calculation", checked1)
+//   console.log("deduction", checked2)
 //   return (
-//     <div className="space-y-9">
-//       <div className="page-header-container" ref={contentTopRef}>
-//         <div className="hidden md:flex gap-5 flex-wrap">
-//           <ManagementStatistcsCard
-//             title="Total Branches"
-//             newData={new_branches_count}
-//             total={total_branches}
-//             colorScheme={1}
-//           />
-//           <ManagementStatistcsCard
-//             title="Total Properties"
-//             newData={new_properties_count}
-//             total={total_properties}
-//             colorScheme={2}
-//           />
-//           <ManagementStatistcsCard
-//             title="Total Staff"
-//             newData={new_staffs_count}
-//             total={total_staffs}
-//             colorScheme={3}
+//     <div
+//       className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
+//       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
+//     >
+//       {/* Image Modal */}
+//       <PopupImageModal
+//         isOpen={screenModal}
+//         onClose={() => setScreenModal(false)}
+//         images={unitImages.map((image) => ({
+//           src: image,
+//         }))}
+//       />
+//       <div className="flex items-center justify-between">
+//         <h4 className="text-brand-10 text-base font-bold">
+//           Unit ID: {id}
+//         </h4>
+//         <Checkbox onChange={() => onSelect(id)} checked={isSelected} />
+//       </div>
+//       <SectionSeparator className="my-4 h-[2px]" />
+//       <div className="flex items-center gap-2 justify-between overflow-y-auto custom-round-scrollbar pb-2">
+//         <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
+//           <div>
+//             <p className="text-[#747474] dark:text-white">Unit Details</p>
+//             <p className="text-black dark:text-darkText-1">{unitDetails}</p>
+//           </div>
+//           <div>
+//             <p className="text-[#747474] dark:text-white">Rent</p>
+//             <p className="text-black dark:text-darkText-1">{rent}</p>
+//           </div>
+//           <div>
+//             <p className="text-[#747474] dark:text-white">Unit No/Name</p>
+//             <p className="text-black dark:text-darkText-1">{unitName}</p>
+//           </div>
+//           <div>
+//             <p className="text-[#747474] dark:text-white">Caution Deposit</p>
+//             <p className="text-black dark:text-darkText-1">{cautionDeposit}</p>
+//           </div>
+//           <div>
+//             <p className="text-[#747474] dark:text-white">Unit Description</p>
+//             <p className="text-black dark:text-darkText-1">{unitDetails}</p>
+//           </div>
+//           <div>
+//             <p className="text-[#747474] dark:text-white">Service Charge</p>
+//             <p className="text-black dark:text-darkText-1">{serviceCharge}</p>
+//           </div>
+//         </div>
+
+//         {/* Image */}
+//         <div
+//           role="button"
+//           className="flex-shrink-0 w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
+//           onClick={() => setScreenModal(true)}
+//         >
+//           <div className="absolute z-[1] left-[65%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+//             <CameraIcon />
+//             <p className="text-black font-medium text-[10px]">+{unitImages.length}</p>
+//           </div>
+//           <Image
+//             src={unitImages[0]}
+//             alt={""}
+//             fill
+//             className="object-cover object-center"
 //           />
 //         </div>
-//         <Modal>
-//           <ModalTrigger asChild>
-//             <Button type="button" className="page-header-button">
-//               + create branch
-//             </Button>
-//           </ModalTrigger>
-//           <ModalContent>
-//             <CreateBranchModal branches={branches} />
-//           </ModalContent>
-//         </Modal>
 //       </div>
-//       <FilterBar
-//         azFilter
-//         gridView={view === "grid"}
-//         setGridView={() => setView("grid")}
-//         setListView={() => setView("list")}
-//         pageTitle="Staff & Branch"
-//         aboutPageModalData={{
-//           title: "Staff & Branch",
-//           description:
-//             "This page contains a list of all Staff & Branch on the platform.",
-//         }}
-//         searchInputPlaceholder="Search Branch"
-//         handleFilterApply={handleFilterApply}
-//         appliedFilters={appliedFilters}
-//         isDateTrue
-//         dateLabel="Date Created"
-//         filterOptionsMenu={[
-//           {
-//             label: "State",
-//             value: allStates.map((state) => ({
-//               label: state,
-//               value: state,
-//             })),
-//           },
-//         ]}
-//         handleSearch={handleSearch}
-//         onSort={handleSort}
-//       />
-
-//       <section className="findthezero">
-//         {loading || silentLoading ? (
-//           view === "grid" ? (
-//             <AutoResizingGrid minWidth={284} gap={16} key="loading">
-//               <CardsLoading />
-//             </AutoResizingGrid>
-//           ) : (
-//             <TableLoading />
-//           )
-//         ) : branches.length === 0 ? (
-//           config.params.search || isFilterApplied() ? (
-//             <SearchError />
-//           ) : (
-//             <EmptyList
-//               buttonText="+ create branch"
-//               modalContent={<CreateBranchModal branches={branches} />}
-//               title="No branches or staff have been added yet."
-//               body={
-//                 <p>
-//                   You can create profiles for all your branches and assign staff
-//                   and properties to them by clicking on the &quot;Create
-//                   Branch&quot; button. Branch managers will have the same access
-//                   to their branch as you do, while you will have access to all
-//                   staff accounts and branches created.
-//                   <br />
-//                   <br />
-//                   To learn more about this page later, click your profile
-//                   picture at the top right of the dashboard and select
-//                   Assistance & Support.
-//                 </p>
-//               }
-//             />
-//           )
-//         ) : view === "grid" ? (
-//           <AutoResizingGrid minWidth={284} key="card">
-//             {branches.map((b) =>
-//               b.is_active === 1 ? (
-//                 <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
-//                   <BranchCard {...b} />
-//                 </Link>
-//               ) : (
-//                 <BranchCard {...b} key={b.id} />
-//               )
-//             )}
-//           </AutoResizingGrid>
-//         ) : (
-//           <>
-//             <CustomTable
-//               fields={branchTableFields}
-//               data={transformedBranches}
-//               tableHeadClassName="bg-brand-5 h-[76px]"
-//               tableHeadStyle={{
-//                 borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
-//               }}
-//               handleSelect={handleSelectTableItem}
-//             />
-//             {silentLoading && current_page > 1 && (
-//               <div className="flex items-center justify-center py-4">
-//                 <div className="loader" />
-//               </div>
-//             )}
-//           </>
-//         )}
-//         <Pagination
-//           totalPages={total_pages}
-//           currentPage={current_page}
-//           onPageChange={handlePageChange}
-//         />
-//       </section>
+//       <SectionSeparator className="my-4 h-[2px]" />
+//       {isSelected && isRental && (
+//         <div className="space-y-6 text-text-secondary dark:text-darkText-1 text-sm font-medium">
+//           <div className="space-y-[10px]">
+//             <div className="flex items-center gap-2">
+//               <Switch
+//                 checked={checked1}
+//                 onClick={handleChecked1Click}
+//                 // onClick={() => setChecked1((x) => !x)}
+//               />
+//               <p>Calclation</p>
+//             </div>
+//             <p>
+//               {!checked1
+//                 ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before"
+//                 : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges) for the tenants that you are transferring to the new unit."}
+//             </p>
+//           </div>
+//           <div className="space-y-[10px]">
+//             <div className="flex items-center gap-2">
+//               <Switch
+//                 checked={checked2}
+//                 onClick={handleChecked2Click}
+//                 // onClick={() => setChecked2((x) => !x)}
+//               />
+//               <p>Deduction</p>
+//             </div>
+//             <p>
+//               {!checked2
+//                 ? "Do not deduct the current outstanding rent balance from the cost of the new units that the occupants are moving into"
+//                 : "Calculate the total package of the new fee, including service charge and other Charges for the occupant that you are transferring to the new unit."}
+//             </p>
+//           </div>
+//         </div>
+//       )}
 //     </div>
 //   );
 // };
 
-// export default StaffAndBranches;
+// export default PropertySwitchUnitItem;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import Button from "@/components/Form/Button/button";
+// import Select from "@/components/Form/Select/select";
+// import Switch from "@/components/Form/Switch/switch";
+// import { ModalTrigger } from "@/components/Modal/modal";
+// import ModalPreset from "@/components/Modal/modal-preset";
+// import MenuModalPreset from "../../landlord-tenant-modal-preset";
+// import { useRouter, useSearchParams } from "next/navigation";
+// import { useEffect, useState } from "react";
+// import useFetch from "@/hooks/useFetch";
+// import { transformUnitOptions, UnitsApiResponse } from "./data";
+// import { useOccupantStore } from "@/hooks/occupant-store";
+// import { toast } from "sonner";
+
+// const SwitchUnitModal: React.FC<{
+//   isRental: boolean;
+//   propertyId: number;
+//   unitId: number;
+// }> = ({ isRental, propertyId, unitId }) => {
+//   const searchParams = useSearchParams();
+//   const id = searchParams.get("id");
+//   const propertyType = searchParams.get("type") as "rental" | "facility";
+//   const { calculation, deduction, setCalculation, setDeduction } =
+//     useOccupantStore();
+//   const [checked1, setChecked1] = useState(calculation);
+//   const [checked2, setChecked2] = useState(deduction);
+//   const router = useRouter();
+//   const [modalView, setModalView] = useState<"warning" | "menu">("warning");
+//   const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
+//   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
+
+//   const {
+//     data: unitsData,
+//     error: unitsError,
+//     loading: UnitsLoading,
+//   } = useFetch<UnitsApiResponse>(`/unit/${propertyId}/all`);
+
+//   useEffect(() => {
+//     if (unitsData) {
+//       const unitsTransformOptions = transformUnitOptions(unitsData).filter(
+//         (unit) => unit.value !== unitId
+//       );
+//       setUnitsOptions(unitsTransformOptions);
+//     }
+//   }, [unitsData, unitId]);
+
+//   // console.log("unitsOptions", unitsData);
+
+//   useEffect(() => {
+//     setChecked1(calculation);
+//   }, [calculation]);
+
+//   useEffect(() => {
+//     setChecked2(deduction);
+//   }, [deduction]);
+
+//   const handleChecked1Click = () => {
+//     const newChecked1 = !checked1;
+//     setChecked1(newChecked1);
+//     setCalculation(newChecked1);
+//   };
+
+//   const handleChecked2Click = () => {
+//     const newChecked2 = !checked2;
+//     setChecked2(newChecked2);
+//     setDeduction(newChecked2);
+//   };
+
+//   const handleContinue = () => {
+//     if (!selectedUnitId) {
+//       toast.warning("Please select a unit");
+//       return;
+//     }
+//     router.push(
+//       `/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${propertyId}&u=${selectedUnitId}`
+//     );
+//   };
+
+//   if (modalView === "warning") {
+//     return (
+//       <ModalPreset type="warning">
+//         <div className="flex flex-col gap-10">
+//           <p className="text-text-tertiary text-[14px]">
+//             Are you sure you want to proceed with moving the{" "}
+//             {isRental ? "tenant's" : "occupant's"} records from the current unit
+//             to another unit of the same property?
+//           </p>
+//           <div className="flex flex-col gap-2">
+//             <Button onClick={() => setModalView("menu")}>OK</Button>
+//             <ModalTrigger asChild close>
+//               <Button variant="blank" className="text-brand-9">
+//                 Back
+//               </Button>
+//             </ModalTrigger>
+//           </div>
+//         </div>
+//       </ModalPreset>
+//     );
+//   }
+
+//   if (modalView === "menu") {
+//     return (
+//       <MenuModalPreset
+//         heading="Transfer To New Unit"
+//         back={{ handleBack: () => setModalView("warning") }}
+//         style={{ maxWidth: "600px", height: isRental ? "auto" : "400px" }}
+//       >
+//         <div className="flex flex-col gap-14">
+//           {isRental && (
+//             <div className="flex flex-col gap-4 text-text-secondary text-[14px] font-medium">
+//               <div className="flex flex-col gap-4">
+//                 <div className="flex items-center gap-2">
+//                   <Switch
+//                     size={15}
+//                     checked={checked1}
+//                     onClick={handleChecked1Click}
+//                     // onClick={() => {
+//                     //   setChecked1((x) => !x);
+//                     // }}
+//                   />
+//                   <p>Calculation</p>
+//                 </div>
+//                 <p>
+//                   {!checked1
+//                     ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before."
+//                     : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the tenants that you are transferring to the new unit."}
+//                 </p>
+//               </div>
+//               <div className="flex items-center gap-2">
+//                 <Switch
+//                   size={15}
+//                   checked={checked2}
+//                   onClick={handleChecked2Click}
+//                   // onClick={() => {
+//                   //   setChecked2((x) => !x);
+//                   // }}
+//                 />
+//                 <p>Deduction</p>
+//               </div>
+//               <p>
+//                 {!checked2
+//                   ? "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost."
+//                   : "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."}
+//               </p>
+//             </div>
+//           )}
+//           <div className="flex items-center justify-center my-auto">
+//             <div className="space-y-5">
+//               <Select
+//                 id=""
+//                 label="Select Unit"
+//                 className="min-w-[300px]"
+//                 options={unitsOptions}
+//                 onChange={setSelectedUnitId}
+//                 placeholder={
+//                   UnitsLoading
+//                     ? "Loading Units..."
+//                     : unitsError
+//                     ? "Error loading Units"
+//                     : "Select Unit"
+//                 }
+//                 error={unitsError}
+//                 disabled={UnitsLoading}
+//               />
+//               <div className="w-full flex items-center justify-center">
+//                 <Button
+//                   onClick={handleContinue}
+//                   className="py-2 px-8"
+//                   size="base_medium"
+//                 >
+//                   Add
+//                 </Button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </MenuModalPreset>
+//     );
+//   }
+//   return null;
+// };
+
+// export default SwitchUnitModal;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { Modal, ModalContent } from "@/components/Modal/modal";
+import { useContext, useEffect, useState } from "react";
+import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import FooterModal from "./footer-modal";
+import Button from "@/components/Form/Button/button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { useUnitForm } from "./unit-form-context";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAddUnitStore } from "@/store/add-unit-store";
+
+interface AddUntFooterProps {
+  noForm?: boolean;
+}
+
+const AddUntFooter = ({ noForm }: AddUntFooterProps) => {
+  const { canSubmit, handleInputChange, missingFields } =
+    useContext(FlowProgressContext);
+  const { submitLoading, setSaveClick } = useUnitForm();
+  const [footerModalOpen, setFooterModalOpen] = useState(false);
+  const router = useRouter();
+  const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const newForm = useAddUnitStore((s) => s.newForm);
+  const [checkSubmit, setCheckSubmit] = useState(false);
+
+  // // Effect to handle validation after state updates
+  // useEffect(() => {
+  //   if (checkSubmit) {
+  //     if (!canSubmit) {
+  //       toast.error(
+  //         `The following fields are required: ${missingFields.join(", ")}`
+  //       );
+  //     } else {
+  //       setFooterModalOpen(true);
+  //     }
+  //     setCheckSubmit(false); // Reset the trigger
+  //   }
+  // }, [canSubmit, missingFields, checkSubmit]);
+
+  useEffect(() => {
+    if (checkSubmit) {
+      if (!canSubmit && !noForm) {
+        toast.error(
+          `The following fields are required: ${missingFields.join(", ")}`
+        );
+      } else {
+        setFooterModalOpen(true);
+      }
+      setCheckSubmit(false); // Reset the trigger
+    }
+  }, [canSubmit, missingFields, checkSubmit, noForm]);
+
+  const handleAddMoreClick = () => {
+    handleInputChange(); // Trigger state update
+    setCheckSubmit(true);
+  };
+
+  // const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   if (noForm) {
+  //     // Check if any unit has notYetUploaded set to true
+  //     const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
+  //     if (hasNotYetUploaded) {
+  //       toast.warning(
+  //         "There are units that have not been updated yet. Please update them to continue."
+  //       );
+  //       return;
+  //     }
+  //     router.push("/management/properties");
+  //   } else {
+  //     if (!canSubmit) {
+  //       toast.error(
+  //         `The following fields are required: ${missingFields.join(", ")}`
+  //       );
+  //       return;
+  //     }
+  //     setSaveClick(true);
+  //     const form = e.currentTarget.form;
+  //     setTimeout(() => {
+  //       form?.requestSubmit();
+  //     }, 0);
+  //   }
+  // };
+
+  const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    // If there are added units, check for notYetUploaded
+    if (addedUnits.length > 0) {
+      const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
+      if (hasNotYetUploaded) {
+        toast.warning(
+          "There are units that have not been updated yet. Please update them to continue."
+        );
+        return;
+      }
+    }
+
+    // If a form exists (noForm is false or newForm is true), validate canSubmit
+    if (!noForm || newForm) {
+      if (!canSubmit) {
+        toast.error(
+          `The following fields are required: ${missingFields.join(", ")}`
+        );
+        return;
+      }
+      setSaveClick(true);
+      const form = e.currentTarget.form;
+      setTimeout(() => {
+        form?.requestSubmit();
+      }, 0);
+    } else {
+      // If no form and no unuploaded units, navigate
+      router.push("/management/properties");
+    }
+  };
+
+  return (
+    <FixedFooter className="flex items-center justify-end gap-10">
+      <Modal state={{ isOpen: footerModalOpen, setIsOpen: setFooterModalOpen }}>
+        <ModalContent>
+          <FooterModal noForm={noForm} />
+        </ModalContent>
+      </Modal>
+      <Button
+        size="base_medium"
+        className="py-2 px-6"
+        disabled={submitLoading}
+        form="add-unit-form"
+        onClick={handleAddMoreClick}
+      >
+        {submitLoading ? "Adding..." : "Add More Unit"}
+      </Button>
+      <Button
+        form="add-unit-form"
+        type="button"
+        size="base_medium"
+        className="py-2 px-6"
+        disabled={submitLoading}
+        onClick={handleSaveClick}
+      >
+        {submitLoading ? "Saving..." : "Save"}
+      </Button>
+    </FixedFooter>
+  );
+};
+
+export default AddUntFooter;

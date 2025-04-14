@@ -73,6 +73,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
       setAddUnitStore("propertyDetails", transformedData.propertyDetails);
       setAddUnitStore("propertySettings", transformedData.propertySettings);
       setAddUnitStore("addedUnits", transformedData.addedUnits);
+      setAddUnitStore("newForm", showUnitForm);
     }
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
@@ -152,7 +153,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
               </div>
             )}
           </div>
-          {addedUnits.length > 0 && <AddUnitFooter noForm={true} />}
+          {/* {addedUnits.length > 0 && <AddUnitFooter noForm={true} />} */}
+          {addedUnits.length > 0 && <AddUnitFooter noForm={!showUnitForm} />}
         </div>
       </UnitFormContext.Provider>
     </FlowProgress>

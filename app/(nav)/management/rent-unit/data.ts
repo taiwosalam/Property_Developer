@@ -1,4 +1,8 @@
 import { empty } from "@/app/config";
+import {
+  BadgeIconColors,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 import { propertyCategories } from "@/data";
 import {
   Currency,
@@ -127,6 +131,10 @@ export const transformRentUnitApiResponse = (
       status: u.is_active,
       propertyType: u.property.property_type as "rental" | "facility",
       address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
+      badge_color: u.occupant?.tier
+        ? tierColorMap[u.occupant?.tier as keyof typeof tierColorMap]
+        : undefined,
+      tenant_id: u.occupant.tenant_id,
     };
   });
   if (isUnitApiResponse(response)) {
@@ -287,8 +295,9 @@ export interface RentalPropertyCardProps {
   caution_deposit: string | number;
   service_charge: string | number;
   status: string;
+  badge_color?: BadgeIconColors;
   reject_reason?: string;
-  // property_type?: string;
+  tenant_id?: string;
   is_active?: string;
 }
 
@@ -958,6 +967,7 @@ export const transformUnitData = (response: any) => {
     accountOfficer: data.property.account_officer.name || "--- ---",
     bedrooms: data.bedroom,
     bathrooms: data.bathroom,
+    landlord_name: data.landlord.name,
     toilets: data.toilet,
     tenant_name: data.user.name,
     unit_features: data.facilities,

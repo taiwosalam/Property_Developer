@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { CalendarIcon } from "@/public/icons/icons";
 import { styled } from "@mui/system";
 import useDarkMode from "@/hooks/useCheckDarkMode";
@@ -38,6 +38,7 @@ interface CustomDatePickerProps {
   containerClassName?: string;
   disableFuture?: boolean;
   disablePast?: boolean;
+  lastYear?: boolean;
   minDate?: Dayjs;
   maxDate?: Dayjs;
   disabled?: boolean;
@@ -54,11 +55,16 @@ export default function CustomDatePicker({
   minDate,
   maxDate,
   disabled,
+  lastYear,
 }: CustomDatePickerProps) {
   const isDarkMode = useDarkMode();
   const CustomCalendarIcon = () => (
     <CalendarIcon {...(isDarkMode && { color: "#fff" })} />
   );
+  // If lastYear is true, set minDate to one year ago from today, unless minDate is provided
+  const computedMinDate = lastYear
+    ? minDate || dayjs().subtract(1, "year")
+    : minDate;
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div
@@ -70,8 +76,10 @@ export default function CustomDatePicker({
         <CustomStyledDatePicker
           disabled={disabled}
           disableFuture={disableFuture}
-          disablePast={disablePast}
-          minDate={minDate}
+          // disablePast={disablePast}
+          disablePast={lastYear ? false : disablePast}
+          // minDate={minDate}
+          minDate={computedMinDate}
           maxDate={maxDate}
           openTo="year"
           views={["year", "month", "day"]}
