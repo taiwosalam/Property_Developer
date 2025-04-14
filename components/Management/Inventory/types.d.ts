@@ -13,6 +13,10 @@ export interface InventoryCardDataProps {
   branch_id?: string;
   title?: string;
   id?: string;
+  imgSrc?: string;
+  property_image?: {
+    path: string;
+  }[];
 }
 
 export interface AccountOfficer {

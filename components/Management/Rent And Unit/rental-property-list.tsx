@@ -41,7 +41,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
         </div>
       </div>
       <div className="flex items-center justify-between gap-4 py-4 border-y border-gray-200 overflow-y-auto">
-        <div className="flex-grow-1 flex-shrink-0 grid grid-cols-2 gap-x-2 gap-y-4 w-fit xl:max-w-[calc(100%-200px-16px)] bg-red-500">
+        <div className="flex-grow-1 flex-shrink-0 grid grid-cols-2 gap-x-10 gap-y-4 xl:max-w-[calc(100%-100px-16px)]">
           <DetailItem
             label="Unit Details"
             value={unit_name + " " + unit_type}

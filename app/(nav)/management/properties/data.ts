@@ -101,6 +101,10 @@ export interface UnitDataObject {
     path: string;
     is_default?: number;
   }[];
+  tenants_by_agent?: {
+    Web: number;
+    Mobile: number;
+  }
 }
 
 export interface PropertyDataObject {
@@ -129,6 +133,10 @@ export interface PropertyDataObject {
     id: string;
     branch_name: string;
   } | null;
+  tenants_by_agent: {
+    Mobile: number;
+    Web: number;
+  },
   staff:
     | {
         id: string;
@@ -252,8 +260,8 @@ export const transformPropertiesApiResponse = (
         branch: p.branch?.branch_name,
         total_returns: totalReturns,
         total_income: (totalReturns * feePercentage) / 100,
-        mobile_tenants: 0,
-        web_tenants: 0,
+        mobile_tenants: p.tenants_by_agent.Mobile || 0,
+        web_tenants: p.tenants_by_agent.Web || 0,
         accountOfficer: accountOfficer,
         owing_units: 0,
         // available_units: 0,

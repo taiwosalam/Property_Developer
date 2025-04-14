@@ -50,6 +50,7 @@ import { walletTableFields } from "@/app/(nav)/wallet/data";
 import clsx from "clsx";
 import { getTransactionIcon } from "@/components/Wallet/icons";
 import useStaffRoles from "@/hooks/getStaffs";
+import ServerError from "@/components/Error/ServerError";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -73,7 +74,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   // console.log("rec t")
 
-  console.log("receipt_statistics", receipt_statistics);
+  // console.log("receipt_statistics", receipt_statistics);
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
     wallet_id:
@@ -84,6 +85,8 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       branch_wallet !== null &&
       yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
   });
+
+  console.log("branch data", branchData)
 
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
@@ -258,7 +261,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />
   if (!branchData) return null;
 
   return (
