@@ -65,7 +65,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
           src: image,
         }))}
       />
-      <div className="flex items-center gap-4 justify-between overflow-y-auto custom-round-scrollbar">
+      <div className="flex items-center gap-4 justify-between overflow-y-auto custom-round-scrollbar bg-red-500">
         <div className="flex-grow-1 flex-shrink-0 text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[170px,1fr] xl:max-w-[calc(100%-220px-16px)] w-fit">
           <div>
             <p className="text-[#747474] dark:text-white">Last Updated</p>

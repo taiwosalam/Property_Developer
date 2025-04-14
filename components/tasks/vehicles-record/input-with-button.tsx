@@ -5,11 +5,13 @@ const InputWithButton = ({
   label,
   btn_text,
   onSubmit,
+  loading,
 }: {
   name: string;
   label: string;
   btn_text: string;
   onSubmit: (id: string) => void;
+  loading?: boolean;
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -33,8 +35,9 @@ const InputWithButton = ({
           type="button"
           className="bg-brand-9 text-xs rounded-md px-2 text-white h-3/4"
           onClick={handleSubmit}
+          disabled={loading}
         >
-          {btn_text}
+          {loading ? "Please wait..." : btn_text}
         </button>
       </div>
     </div>

@@ -1,3 +1,5 @@
+import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+
 interface Staff {
   id: string;
   name: string;
@@ -7,6 +9,7 @@ interface Staff {
   phone_number?: string;
   gender?: string;
   picture: string | null;
+  badge_color?: BadgeIconColors;
 }
 
 export interface BranchStaffPageState {
@@ -33,6 +36,7 @@ export interface StaffListResponse {
       phone: string;
       picture: string | null;
       staff_role: string;
+      tier: 1 | 2 | 3 | 4 | 5;
       title: string | null;
     }[];
     branch: {

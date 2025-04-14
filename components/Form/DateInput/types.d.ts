@@ -15,4 +15,5 @@ export interface DateInputProps {
   containerClassName?: string;
   labelclassName?: string;
   disabled?: boolean;
+  lastYear?: boolean;
 }

@@ -36,7 +36,7 @@ export const getRentalData = (unit_data: any): RentalField[] => {
     { label: "Full Address", value: unit_data.property_address },
     { label: "Branch", value: unit_data.branchName },
     { label: "Account Officer", value: unit_data.accountOfficer },
-    { label: "Landlord", value: unit_data.landlord || "--- ---" },
+    { label: "Landlord", value: unit_data.landlord_name || "--- ---" },
     { label: "Categories", value: unit_data.categories },
     { label: "Unit ID", value: unit_data.unit_id },
   ];
