@@ -172,7 +172,7 @@ export const ProfileForm: React.FC<{
       <div className="h-[1px] bg-[#C0C2C8] mb-4" />
       <div className="grid grid-cols-2 gap-4">
         <DateInput
-          disablePast
+          // disablePast
           id="start date"
           label="Start Date"
           value={startDate}

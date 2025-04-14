@@ -6,6 +6,7 @@ import type {
 } from "./types";
 import api, { handleAxiosError } from "@/services/api";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const branchIdChartConfig = {
   totalfunds: {
@@ -60,15 +61,24 @@ export const transformSingleBranchAPIResponse = (
       total: branch.tenants_count,
       new_this_month: branch.current_month_tenants_count,
     },
-    vacant_units: { total: 0, new_this_month: 0 },
-    expired: { total: 0, new_this_month: 0 },
-    invoices: { total: 0, new_this_month: 0 },
+    vacant_units: {
+      total: branch.vacant_unit,
+      new_this_month: branch.vacant_month_unit,
+    },
+    expired: {
+      total: branch.expired_unit,
+      new_this_month: branch.expired_month_unit,
+    },
+    invoices: {
+      total: branch.invoice_count,
+      new_this_month: branch.current_month_invoice_count,
+    },
     inquiries: { total: 0, new_this_month: 0 },
     complaints: {
       total: branch.complaints_count,
       new_this_month: branch.current_month_complaints_count,
     },
-    listings: { total: 0, new_this_month: 0 },
+    listings: { total: branch.listing, new_this_month: branch.listing_month },
     branch_wallet: sub_wallet !== null ? { ...sub_wallet } : null,
     receipt_statistics: branch.receipt_statistic,
     staffs: branch.staffs.slice(0, 5).map((s) => {
@@ -78,6 +88,9 @@ export const transformSingleBranchAPIResponse = (
         position: s.staff_role,
         staff_ID: s.id,
         user_id: s.user_id,
+        badgeColor: s.tier
+          ? tierColorMap[s.tier as keyof typeof tierColorMap]
+          : undefined,
       };
     }),
     transactions:
@@ -176,12 +189,8 @@ export const determineUpOrDown = (totalValue: number, newValue: number) => {
   return "down";
 };
 
-
 // determine red pr green color between totalvalues and newValues
-export const determineRedOrGreen = (
-  totalValue: number,
-  newValue: number
-) => {
+export const determineRedOrGreen = (totalValue: number, newValue: number) => {
   const adjustedNewValue = totalValue - newValue;
   if (adjustedNewValue > newValue) return "green";
   if (adjustedNewValue < newValue) return "red";

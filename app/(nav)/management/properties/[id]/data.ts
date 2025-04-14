@@ -56,7 +56,7 @@ export const transformSinglePropertyData = (
     branch_manager: `${manager?.professional_title ?? "--- ---"} ${
       manager?.user?.name ?? "--- ---"
     }`,
-    mobile_tenants: 0, // backend shit
+    mobile_tenants: 0., // backend shit
     web_tenants: 0, // backend shit
     last_updated: moment(data.updated_at).format("Do MMM, YYYY"),
     available_units: data.units.filter(

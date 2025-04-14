@@ -37,9 +37,9 @@ const renderValue = (
       <div style={field.contentStyle}>
         <Avatar
           src={value || empty}
-          className="mx-auto"
+          className="mx-auto bg-[var(--secondary-color)]"
           alt="avatar"
-          sx={{ width: field.picSize || 60, height: field.picSize || 60 }}
+          sx={{ width: field.picSize || 60, height: field.picSize || 60, backgroundColor: "bg-[var(--secondary-color)]" }}
         />
       </div>
     ) : (

@@ -8,6 +8,7 @@ import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import api, { handleAxiosError } from "@/services/api";
+import dayjs from "dayjs";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -29,7 +30,7 @@ export const statementTableFields: Field[] = [
     },
   },
   { id: "5", label: "Credit", accessor: "credit" },
-  { id: "6", label: "Debit", accessor: "debit" },
+  { id: "6", label: "Unit Name", accessor: "unit_name" },
   { id: "7", label: "Date", accessor: "date" },
 ];
 
@@ -129,7 +130,7 @@ export const transformIndividualLandlordAPIResponse = ({
     picture: data.picture || "",
     name: data.name,
     email: data.email,
-    phone_number: data.phone === "N/A" || !data.phone ? "--- ---" : data.phone,
+    phone_number: data.phone === "" || !data.phone ? "" : data.phone,
     gender: data.gender,
     notes: {
       last_updated: lastUpdated,
@@ -261,9 +262,10 @@ export const transformIndividualLandlordAPIResponse = ({
         name: s.payer_name,
         payment_id: s.payment_id,
         details: s.details,
+        unit_name: s.unit_name,
         credit: amount > 0 ? `₦${amount.toLocaleString()}` : null,
         debit: amount < 0 ? `₦${(-amount).toLocaleString()}` : null,
-        date: s.date ? moment(s.date).format("DD/MM/YYYY") : "--- ---",
+        date: s.date ? dayjs(s.date).format("DD/MM/YYYY") : "--- ---",
         badge_color: s.payer_tier
           ? tierColorMap[s.payer_tier as keyof typeof tierColorMap]
           : null,

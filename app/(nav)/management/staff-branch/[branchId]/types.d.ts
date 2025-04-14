@@ -100,6 +100,14 @@ export type SingleBranchResponseType = {
       units_count: number;
       complaints_count: number;
       current_month_complaints_count: number;
+      vacant_unit: number;
+      vacant_month_unit: number;
+      expired_unit: number;
+      expired_month_unit: number;
+      invoice_count: number;
+      current_month_invoice_count: number;
+      listing: number;
+      listing_month: number;
       staffs_count: number; // do d monthly/this month stuff
       properties_count: number; // do d monthly/this month stuff
       receipt_statistic: receipt_statistics | null;
@@ -110,6 +118,7 @@ export type SingleBranchResponseType = {
         is_active: 1 | 0;
         title: string | null;
         user_id: string;
+        tier: 1 | 2 | 3 | 4 | 5;
         // estate_title: string | null;
         staff_role: "manager" | "staff" | "account officer";
         name: string;
