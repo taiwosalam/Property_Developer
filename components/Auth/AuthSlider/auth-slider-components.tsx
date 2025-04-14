@@ -29,7 +29,7 @@ export const AuthSliderContent = React.forwardRef<
 >(({ height, title, children }, ref) => (
   <div
     ref={ref}
-    className="p-4 xl:p-5 custom-flex-col gap-3 justify-center opacity-0"
+    className="p-4 xl:p-5 custom-flex-col gap-3 justify-center opacity-0 dark"
     style={{ height }}
   >
     <p className="custom-primary-color text-3xl xl:text-4xl font-bold capitalize">

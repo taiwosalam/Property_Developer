@@ -90,7 +90,7 @@ const SignIn = () => {
             </Checkbox>
             <Link
               href='/auth/forgot-password'
-              className='custom-primary-color text-sm font-medium'
+              className='custom-primary-color dark:text-darkText-1 text-sm font-medium'
             >
               Forgot Password?
             </Link>
