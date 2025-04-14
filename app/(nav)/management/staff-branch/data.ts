@@ -1,3 +1,4 @@
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import type { BranchCardProps } from "@/components/Management/Staff-And-Branches/branch-card";
 import type { Field } from "@/components/Table/types";
 
@@ -100,6 +101,7 @@ export interface BranchApiResponse {
     manager: {
       id: string;
       name: string;
+      tier: 1 | 2 | 3 | 4| 5;
       picture: string | null;
     } | null;
   }[];
@@ -133,8 +135,11 @@ export const transformBranchApiResponse = (
       branch_picture: branch.picture,
       staff_count: branch.staffs_count,
       property_count: branch.properties_count,
-      unit_count: branch.units_count,
+      unit_count: branch.units_count || 0,
       manager_picture: branch.manager?.picture || null,
+      badgeColor: branch?.manager?.tier
+        ? tierColorMap[branch?.manager?.tier as keyof typeof tierColorMap]
+        : undefined,
     })),
   };
 };

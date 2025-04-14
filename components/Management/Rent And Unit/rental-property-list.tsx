@@ -1,18 +1,17 @@
+"use client";
 import { useState } from "react";
-import { actions, activeStatuses, getBackgroundColor } from "./data";
 import Image from "next/image";
 import { CameraIcon } from "lucide-react";
-import { DetailItem } from "../detail-item";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
-import { images } from "@/components/PopupSlider/data";
-import PropertyTag from "@/components/Tags/property-tag";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
-import { ActionButton } from "./action-button";
-import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import { formatNumber } from "@/utils/number-formatter";
+import PropertyTag from "@/components/Tags/property-tag";
 import { StatusDots } from "./status-dot";
-import { empty } from "@/app/config";
+import { ActionButton } from "./action-button";
+import { actions } from "./data";
+import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import Link from "next/link";
+import { empty } from "@/app/config";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   propertyType,
@@ -27,11 +26,24 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   caution_deposit,
   service_charge,
   status,
+  badge_color,
+  tenant_id,
 }) => {
-  // console.log("unit passed", unit)
   const [isOpened, setIsOpened] = useState(false);
+
   return (
-    <div className="p-6 bg-white dark:bg-darkText-primary rounded-2xl shadow-md text-[16px]">
+    <div
+      className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
+      style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
+    >
+      {/* Image Modal */}
+      <PopupImageModal
+        isOpen={isOpened}
+        onClose={() => setIsOpened(false)}
+        images={images.map((image) => ({ src: image, isVideo: false }))}
+      />
+
+      {/* Unit ID and Status */}
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm font-bold text-brand-10 dark:text-darkText-1">
           Unit ID: {unitId}
@@ -40,70 +52,121 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
           <StatusDots status={status} propertyType={propertyType} />
         </div>
       </div>
-      <div className="flex items-center justify-between gap-4 py-4 border-y border-gray-200 overflow-y-auto">
-        <div className="flex-grow-1 flex-shrink-0 grid grid-cols-2 gap-x-2 gap-y-4 w-fit xl:max-w-[calc(100%-200px-16px)] bg-red-500">
-          <DetailItem
-            label="Unit Details"
-            value={unit_name + " " + unit_type}
-          />
-          <DetailItem label="Rent" value={`₦${formatNumber(Number(rent))}`} />
-          <DetailItem label="Unit No/Name" value={unit_name} />
-          <DetailItem
-            label="Caution Deposit"
-            value={`₦${formatNumber(Number(caution_deposit))}`}
-          />
-          <DetailItem label="Unit Description" value={unit_title} />
-          <DetailItem
-            label="Service Charge"
-            value={`₦${formatNumber(service_charge as number)}`}
-          />
-          <DetailItem
-            label="Tenants Name"
-            value={
-              <Link href={`/management/tenants/${8}/manage`} className="flex items-center">
-                <span className="border-black border-b">{tenant_name}</span>
-                {/* BADGE ICON IS FOR MOBILE USERS ONLY */}
-                {/* <BadgeIcon color="green" /> */}
+
+      {/* Main Content */}
+      <div className="flex items-center justify-between gap-8">
+        <div className="flex-grow text-sm md:text-base grid grid-cols-2 gap-x-4 gap-y-4 w-full">
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Unit Details
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1">
+              {unit_name} {unit_type}
+            </p>
+          </div>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">Rent</p>
+            <p className="text-black dark:text-darkText-2 flex-1">
+              ₦{formatNumber(Number(rent))}
+            </p>
+          </div>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Unit No/Name
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1">
+              {unit_name}
+            </p>
+          </div>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Caution Deposit
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1">
+              ₦{formatNumber(Number(caution_deposit))}
+            </p>
+          </div>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Unit Description
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1">
+              {unit_title}
+            </p>
+          </div>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Service Charge
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1">
+              ₦{formatNumber(Number(service_charge))}
+            </p>
+          </div>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Tenants Name
+            </p>
+            <div className="text-black dark:text-darkText-2">
+              <Link
+                href={`/management/tenants/${tenant_id}/manage`}
+                className="flex items-center gap-1"
+              >
+                <span className="font-medium text-brand-primary border-b border-black dark:border-darkText-2">
+                  {tenant_name}
+                </span>
+                {badge_color && <BadgeIcon color={badge_color} />}
               </Link>
-            }
-          />
-          <DetailItem label="Due Date" value={expiry_date} />
-        </div>
-        <div
-          className="flex-shrink-0 relative w-[200px] h-[200px]"
-          onClick={() => setIsOpened(true)}
-          role="button"
-        >
-          <Image
-            src={images[0] || empty}
-            alt="Property"
-            fill
-            sizes="auto"
-            className="rounded-lg"
-          />
-          <PopupImageModal
-            images={images.map((image) => ({ src: image, isVideo: false }))}
-            isOpen={isOpened}
-            onClose={() => setIsOpened(false)}
-          />
-          <div className="absolute top-3 right-3 bg-blue-50 rounded py-1 px-2 flex items-center space-x-2">
-            <CameraIcon width={10} height={10} />
-            <span className="text-xs"> {images.length} </span>
+            </div>
+          </div>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Due Date
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1">
+              {expiry_date}
+            </p>
           </div>
         </div>
+
+        <div className="w-[220px] h-[220px] rounded-2xl relative overflow-hidden group cursor-pointer flex-shrink-0">
+          <div
+            role="button"
+            className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+            onClick={() => setIsOpened(true)}
+          >
+            <div className="flex items-stretch gap-[10px] absolute z-[1] left-[35%] bottom-4">
+              <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+                <CameraIcon width={12} height={12} />
+                <p className="text-black font-medium text-[10px]">
+                  +{images.length}
+                </p>
+              </div>
+            </div>
+          </div>
+          <Image
+            src={images[0] || empty}
+            alt={unit_name}
+            fill
+            sizes="220px"
+            className="object-cover rounded-2xl"
+          />
+        </div>
       </div>
-      <div className="flex items-center justify-between mt-5 gap-2 px-2 flex-wrap">
-        <PropertyTag propertyType={propertyType} />
-        {/* BUTTONS WITH STATUS */}
-        <div className="flex items-center justify-end gap-2 px-2 flex-wrap">
+
+      {/* Divider and Footer */}
+      <hr className="my-4" />
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
+          <PropertyTag propertyType={propertyType} list />
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
           {actions
             .filter((action) => {
               const label =
                 typeof action.label === "function"
                   ? action.label(propertyType)
                   : action.label;
-
-              // Define button visibility based on status
               if (status === "vacant" || status === "relocate") {
                 return label === "Start Rent" || label === "Start Counting";
               }
@@ -117,15 +180,13 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                   label === "Edit"
                 );
               }
-              return false; // Default: hide all buttons if status is unknown
+              return false;
             })
             .filter((action) => {
               const label =
                 typeof action.label === "function"
                   ? action.label(propertyType)
                   : action.label;
-
-              // Additional filtering based on propertyType
               if (propertyType === "rental" && label === "Relocate") {
                 return false;
               }

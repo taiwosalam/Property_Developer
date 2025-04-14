@@ -165,7 +165,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             ) : (
               <>
                 <Button
-                  href={`/management/tenants/${tenant?.id}/manage/edit`}
+                  href={`/management/tenants/${tenantId}/manage/edit`}
                   size="base_medium"
                   className="py-2 px-8"
                 >

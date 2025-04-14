@@ -1,3 +1,4 @@
+import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 import { StaffProfilePortfolioProps } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/types";
 
 export interface StaffAPIResponse {
@@ -26,6 +27,7 @@ export interface StaffAPIResponse {
     properties: PropertiesRes[];
     landlords: any[];
     tenants: any[];
+    tier: 1 | 2 | 3 | 4 | 5;
     years_experience: string | number;
   };
   activities: StaffActivitiies[];
@@ -110,6 +112,7 @@ export interface StaffPageTypes {
     about_staff: any;
     status: string;
     experience: number | string;
+    badge_color?: BadgeIconColors;
   };
   activities: StaffActivitiies[];
   chats: [];

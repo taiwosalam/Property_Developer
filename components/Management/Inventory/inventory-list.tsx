@@ -17,18 +17,26 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { getBranch } from "./data";
 import dayjs from "dayjs";
+import Image from "next/image";
+import { CameraIcon } from "@/public/icons/icons";
 
 const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
   const [isOpened, setIsOpened] = useState(false);
   // const [branchName, setBranchName ] = useState<string | null>(null);
+  const images =
+    data?.property_image?.map((img) => ({
+      src: img?.path || ClipboardCheck,
+      isVideo: false,
+    })) || [];
 
+  const previewImg = images[0]?.src || ClipboardCheck;
   const inventoryData: InventoryCardDataProps = {
-      inventory_id: data.id || "___",
-      created_date: dayjs(data.created_at).format("MMM DD, YYYY") || "___",
-      last_edited: dayjs(data.updated_at).format("MMM DD, YYYY") || "___",
-      property_name: data.property_name || "___",
-      branch_name: data.branch_name || "___",
-      account_officer: data?.account_officer?.name || "____",
+    inventory_id: data.id || "--- ---",
+    created_date: dayjs(data.created_at).format("MMM DD, YYYY") || "--- ---",
+    last_edited: dayjs(data.updated_at).format("MMM DD, YYYY") || "--- ---",
+    property_name: data.property_name || "--- ---",
+    branch_name: data.branch_name || "--- ---",
+    account_officer: data?.account_officer?.name || "--- ---",
   };
 
   // Ensure data is not null or undefined
@@ -51,17 +59,29 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
               style={{ backgroundColor: "#CCCCCC" }}
               className="p-8 rounded-lg dark:bg-white cursor-pointer"
             >
-              <Picture
-                src={ClipboardCheck}
+              <Image
+                src={previewImg as string}
                 alt="clipboard with check mark"
-                size={60}
+                width={60}
+                height={60}
+                className="w-full h-full object-cover"
               />
               <PopupImageModal
                 isOpen={isOpened}
-                images={[{ src: empty, isVideo: false }]}
+                images={images}
                 onClose={() => setIsOpened(false)}
                 currentIndex={0}
               />
+            </div>
+            <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 top-2">
+              {images && (
+                <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+                  <CameraIcon />
+                  <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
+                    +{images.length}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
           <KeyValueList

@@ -94,7 +94,7 @@ const StaffProfile = () => {
 
   const sanitizedHTML = DOMPurify.sanitize(staff?.about_staff?.note || "");
 
-  console.log("staff data -", staff);
+  // console.log("staff data -", staff);
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -131,8 +131,7 @@ const StaffProfile = () => {
                   <div>
                     <div className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-center">
                       {staff?.name}
-                      {/* BADGE TO BE ADDED USING COMPANY VERIFICATION */}
-                      {/* <BadgeIcon color="blue" />  */}
+                     {staff.badge_color && <BadgeIcon color={staff.badge_color} /> }
                     </div>
                     <p
                       className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-darkText-2`}

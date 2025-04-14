@@ -84,6 +84,7 @@ export interface OccupantProfileProps {
   id: string;
   setSelectedTenantId?: (id: string) => void;
   setStart_date?: (date: string) => void;
+  setIsPastDate?: ((isPast: boolean) => void) | undefined
   setSelectedCheckboxOptions?: (options: CheckBoxOptions) => void;
 }
 

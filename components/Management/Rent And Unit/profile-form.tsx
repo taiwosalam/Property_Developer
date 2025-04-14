@@ -13,6 +13,7 @@ import { calculateDueDate, transformTenantData, type RentPeriod } from "./data";
 import { RentSectionTitle } from "./rent-section-container";
 import { Dayjs } from "dayjs";
 import useFetch from "@/hooks/useFetch";
+import dayjs from "dayjs";
 
 export const ProfileForm: React.FC<{
   occupants: { name: string; id: string }[];
@@ -27,6 +28,7 @@ export const ProfileForm: React.FC<{
   setStart_date?: any;
   setSelectedCheckboxOptions?: any;
   period: RentPeriod;
+  setIsPastDate?: (isPast: boolean) => void;
 }> = ({
   occupants,
   isRental,
@@ -40,6 +42,7 @@ export const ProfileForm: React.FC<{
   setSelectedCheckboxOptions,
   period,
   setStart_date,
+  setIsPastDate,
 }) => {
   const [selectedId, setSelectedId] = useState<string>("");
   const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
@@ -59,14 +62,14 @@ export const ProfileForm: React.FC<{
   const handleSelectId = (id: string) => {
     setSelectedId(id);
     setSelectedTenantId(id);
-    setIsModalIdSelected(false); // Reset the flag when dropdown is used
+    setIsModalIdSelected(false);
   };
 
   // Callback function to receive the ID from AddOccupantWithId
   const handleTenantIdFromModal = (tenantId: string) => {
     setSelectedId(tenantId);
     setSelectedTenantId(tenantId);
-    setIsModalIdSelected(true); // Set the flag when modal is used
+    setIsModalIdSelected(true);
   };
 
   useEffect(() => {
@@ -88,16 +91,19 @@ export const ProfileForm: React.FC<{
     }
   }, [data]);
 
-  // Calculate due date when start date or rent period changes
+  // Calculate due date and update isPastDate when start date changes
   useEffect(() => {
     if (!startDate) {
       setDueDate(null);
+      setIsPastDate?.(false);
       return;
     }
     const formattedStartDate = startDate.format("YYYY-MM-DD");
     setStart_date(formattedStartDate);
     setDueDate(calculateDueDate(startDate, rentPeriod));
-  }, [startDate, rentPeriod, setStart_date]);
+    const isPast = startDate.isBefore(dayjs(), "day");
+    setIsPastDate?.(isPast);
+  }, [startDate, rentPeriod, setStart_date, setIsPastDate]);
 
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, boolean>
@@ -144,7 +150,6 @@ export const ProfileForm: React.FC<{
             }))}
             className="md:flex-1 md:max-w-[300px]"
             onChange={(value) => handleSelectId(value)}
-            // value={selectValue} // Conditionally set the value
           />
           <Modal>
             <ModalTrigger asChild>
@@ -172,11 +177,11 @@ export const ProfileForm: React.FC<{
       <div className="h-[1px] bg-[#C0C2C8] mb-4" />
       <div className="grid grid-cols-2 gap-4">
         <DateInput
-          disablePast
           id="start date"
           label="Start Date"
           value={startDate}
           onChange={setStartDate}
+          lastYear={true}
         />
         <DateInput
           id="due date"

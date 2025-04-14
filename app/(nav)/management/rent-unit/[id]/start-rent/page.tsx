@@ -59,6 +59,7 @@ const StartRent = () => {
   const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
     useState<CheckBoxOptions>(defaultChecks);
   const [reqLoading, setReqLoading] = useState(false);
+  const [isPastDate, setIsPastDate] = useState(false); // New state for isPastDate
 
   const endpoint = `/unit/${id}/view`;
   const {
@@ -73,8 +74,6 @@ const StartRent = () => {
   const {
     data: allTenantData,
     loading: allTenantsLoading,
-    // silentLoading,
-    // isNetworkError,
     error: allTenantsError,
     refetch: refetchTenants,
   } = useFetch<TenantResponse>("/all-tenants");
@@ -96,7 +95,6 @@ const StartRent = () => {
   }, [allTenantData]);
 
   const handleStartRent = async () => {
-    // Validate that all required fields are available
     if (!unit_data?.unit_id || !selectedTenantId) {
       toast.error("Missing required information: unit or tenant not selected.");
       return;
@@ -116,7 +114,6 @@ const StartRent = () => {
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
       has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
-      // sms_alert: selectedCheckboxOptions.sms_alert, //TODO - uncomment after backend added it
     };
     try {
       setReqLoading(true);
@@ -173,8 +170,8 @@ const StartRent = () => {
           }))}
           period={unit_data?.fee_period as RentPeriod}
           setStart_date={setStartDate}
-          setSelectedTenantId={setSelectedTenantId} //Try better way aside drilling prop later
-          setSelectedCheckboxOptions={setSelectedCheckboxOptions} //Try better way aside drilling prop later
+          setSelectedTenantId={setSelectedTenantId}
+          setSelectedCheckboxOptions={setSelectedCheckboxOptions}
           feeDetails={[
             {
               name: isRental ? "Annual Rent" : "Annual Fee",
@@ -189,9 +186,9 @@ const StartRent = () => {
           total_package={Number(unit_data.total_package)}
           loading={loading}
           id={propertyId as string}
+          setIsPastDate={setIsPastDate} 
         />
       </section>
-      {/* <FixedFooter className={`flex justify-${isRental ? "between" : "end"}`}> */}
       <FixedFooter className={`flex justify-end gap-4`}>
         {isRental && (
           <Button size="base_medium" className="py-2 px-6">
@@ -204,7 +201,11 @@ const StartRent = () => {
           disabled={reqLoading}
           onClick={handleStartRent}
         >
-          {reqLoading ? "Please wait..." : "Start Rent"}
+          {reqLoading
+            ? "Please wait..."
+            : isPastDate
+            ? "Save Rent"
+            : "Start Rent"}
         </Button>
       </FixedFooter>
     </div>

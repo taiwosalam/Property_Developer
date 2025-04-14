@@ -54,7 +54,7 @@ function getBackgroundColor(title: string): string {
   return backgroundColor;
 }
 
-export const getDashboardCardData = (data: Record<string, any>) =>  [
+export const getDashboardCardData = (data: Record<string, any>) => [
   {
     title: "Properties",
     bg: getBackgroundColor("properties"),
@@ -129,7 +129,6 @@ export const getDashboardCardData = (data: Record<string, any>) =>  [
     link: "/listing/units",
   },
 ];
-
 
 export const initialDashboardStats = [
   {
@@ -320,21 +319,18 @@ export const recentMessagesData = [
 ];
 
 export const getRecentMessages = (data: any) => {
-  return (
-    data
-      ?.slice(0, 7) // Limit to the first 7 messages
-      .map((m: any) => ({
-        id: m?.id,
-        avatarSrc: m?.pfp,
-        name: m?.fullname,
-        message: m?.desc,
-        time: m?.time,
-        count: m?.unread_count,
-        content_type: m?.content_type,
-      }))
-  );
+  return data
+    ?.slice(0, 7) // Limit to the first 7 messages
+    .map((m: any) => ({
+      id: m?.id,
+      avatarSrc: m?.pfp,
+      name: m?.fullname,
+      message: m?.desc,
+      time: m?.time,
+      count: m?.unread_count,
+      content_type: m?.content_type,
+    }));
 };
-
 
 export const complaintsData = [
   // {
@@ -373,7 +369,6 @@ export const complaintsData = [
   //   title: "Door complain",
   // },
 ];
-
 
 export const getDashboardData = async (access_token: string | null) => {
   const response = await fetch(
@@ -442,7 +437,12 @@ export const dashboardListingsChartData = Array.from({ length: 90 }, (_, i) => {
 }).reverse();
 
 export const invoiceTableFields: Field[] = [
-  { id: "1", accessor: "client_picture", isImage: true, picSize: 40 },
+  {
+    id: "1",
+    accessor: "client_picture",
+    isImage: true,
+    picSize: 40,
+  },
   {
     id: "2",
     label: "Name",
@@ -452,7 +452,7 @@ export const invoiceTableFields: Field[] = [
   {
     id: "4",
     label: "Details",
-    accessor: "details",
+    accessor: "payment_reason",
     cellStyle: {
       textOverflow: "ellipsis",
       overflow: "hidden",
@@ -487,22 +487,18 @@ export const dashboardInvoiceTableData = Array.from(
   }
 );
 
-
-export const sendDemoRequest = async(data: FormData) => {
+export const sendDemoRequest = async (data: FormData) => {
   try {
-    const res = await api.post("/request-demos", data)
-    console.log("res", res)
+    const res = await api.post("/request-demos", data);
+    console.log("res", res);
     if (res.status === 201) {
-      return true
+      return true;
     }
   } catch (error) {
-    handleAxiosError(error)
-    return false
-  } 
-}
-
-
-
+    handleAxiosError(error);
+    return false;
+  }
+};
 
 export const dummyTasks: Task[] = [
   // {

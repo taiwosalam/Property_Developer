@@ -1,17 +1,14 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { CameraIcon } from "@/public/icons/icons";
 import Image from "next/image";
-import Sample from "@/public/empty/SampleProperty.jpeg";
-import { SectionSeparator } from "@/components/Section/section-components";
-import Sample2 from "@/public/empty/SampleProperty2.jpeg";
-import Sample3 from "@/public/empty/SampleProperty3.jpeg";
-import Sample4 from "@/public/empty/SampleProperty4.png";
-import Sample5 from "@/public/empty/SampleProperty5.jpg";
+import { CameraIcon } from "lucide-react"; // Use lucide-react for consistency
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import Switch from "@/components/Form/Switch/switch";
 import { useOccupantStore } from "@/hooks/occupant-store";
+import { SectionSeparator } from "@/components/Section/section-components";
+import { formatNumber } from "@/utils/number-formatter";
 
 interface PropertySwitchUnitItemProps {
   id: string;
@@ -40,44 +37,34 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
   propertyType,
   unitName,
 }) => {
-  const {
-    occupant,
-    propertyData,
-    records,
-    unitBalance,
-    calculation,
-    deduction,
-    setCalculation,
-    setDeduction,
-  } = useOccupantStore();
+  const { setCalculation, setDeduction, calculation, deduction } =
+    useOccupantStore();
   const [screenModal, setScreenModal] = useState(false);
+  const [calcChecked, setCalcChecked] = useState(calculation);
+  const [deductChecked, setDeductChecked] = useState(deduction);
 
-
+  // Sync store with local state
   useEffect(() => {
-    setChecked1(calculation);
+    setCalcChecked(calculation);
   }, [calculation]);
 
   useEffect(() => {
-    setChecked2(deduction);
+    setDeductChecked(deduction);
   }, [deduction]);
 
-  const handleChecked1Click = () => {
-    const newChecked1 = !checked1;
-    setChecked1(newChecked1);
-    setCalculation(newChecked1);
+  // Handle switch toggles
+  const handleCalculationToggle = () => {
+    const newValue = !calcChecked;
+    setCalcChecked(newValue);
+    setCalculation(newValue);
   };
 
-  const handleChecked2Click = () => {
-    const newChecked2 = !checked2;
-    setChecked2(newChecked2);
-    setDeduction(newChecked2);
+  const handleDeductionToggle = () => {
+    const newValue = !deductChecked;
+    setDeductChecked(newValue);
+    setDeduction(newValue);
   };
 
-  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
-  const [checked1, setChecked1] = useState(false);
-  const [checked2, setChecked2] = useState(false);
-  console.log("calculation", checked1)
-  console.log("deduction", checked2)
   return (
     <div
       className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
@@ -87,42 +74,63 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
       <PopupImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
-        images={unitImages.map((image) => ({
-          src: image,
-        }))}
+        images={unitImages.map((image) => ({ src: image, isVideo: false }))}
       />
-      <div className="flex items-center justify-between">
-        <h4 className="text-brand-10 text-base font-bold">
+
+      {/* Unit ID and Checkbox */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-sm font-bold text-brand-10 dark:text-darkText-1">
           Unit ID: {id}
-        </h4>
+        </span>
         <Checkbox onChange={() => onSelect(id)} checked={isSelected} />
       </div>
-      <SectionSeparator className="my-4 h-[2px]" />
-      <div className="flex items-center gap-2 justify-between overflow-y-auto custom-round-scrollbar pb-2">
-        <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
-          <div>
-            <p className="text-[#747474] dark:text-white">Unit Details</p>
-            <p className="text-black dark:text-darkText-1">{unitDetails}</p>
+
+      {/* Main Content */}
+      <div className="flex items-center gap-2 justify-between">
+        <div className="flex-grow text-sm md:text-base grid grid-cols-2 gap-x-4 gap-y-4 w-full">
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Unit Details
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1 capitalize">
+              {unitDetails}
+            </p>
           </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Rent</p>
-            <p className="text-black dark:text-darkText-1">{rent}</p>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">Rent</p>
+            <p className="text-black dark:text-darkText-2 flex-1 capitalize">
+              {rent}
+            </p>
           </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Unit No/Name</p>
-            <p className="text-black dark:text-darkText-1">{unitName}</p>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Unit No/Name
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1 capitalize">{unitName}</p>
           </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Caution Deposit</p>
-            <p className="text-black dark:text-darkText-1">{cautionDeposit}</p>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Caution Deposit
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1 capitalize">
+              {cautionDeposit}
+            </p>
           </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Unit Description</p>
-            <p className="text-black dark:text-darkText-1">{unitDetails}</p>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Unit Description
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1 capitalize">
+              {unitDetails}
+            </p>
           </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Service Charge</p>
-            <p className="text-black dark:text-darkText-1">{serviceCharge}</p>
+          <div className="flex flex-row items-start gap-8">
+            <p className="text-[#747474] dark:text-white min-w-[120px]">
+              Service Charge
+            </p>
+            <p className="text-black dark:text-darkText-2 flex-1 capitalize">
+              {serviceCharge}
+            </p>
           </div>
         </div>
 
@@ -133,48 +141,44 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
           onClick={() => setScreenModal(true)}
         >
           <div className="absolute z-[1] left-[65%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
-            <CameraIcon />
-            <p className="text-black font-medium text-[10px]">+{unitImages.length}</p>
+            <CameraIcon width={12} height={12} />
+            <p className="text-black font-medium text-[10px]">
+              +{unitImages.length}
+            </p>
           </div>
           <Image
-            src={unitImages[0]}
-            alt={""}
+            src={unitImages[0] || "/empty/SampleProperty.jpeg"}
+            alt={unitName || "Unit image"}
             fill
-            className="object-cover object-center"
+            className="object-cover object-center rounded-2xl"
           />
         </div>
       </div>
+
+      {/* Divider and Switches */}
       <SectionSeparator className="my-4 h-[2px]" />
       {isSelected && isRental && (
         <div className="space-y-6 text-text-secondary dark:text-darkText-1 text-sm font-medium">
           <div className="space-y-[10px]">
             <div className="flex items-center gap-2">
-              <Switch
-                checked={checked1}
-                onClick={handleChecked1Click}
-                // onClick={() => setChecked1((x) => !x)}
-              />
-              <p>Calclation</p>
+              <Switch checked={calcChecked} onClick={handleCalculationToggle} />
+              <p>Calculation</p>
             </div>
             <p>
-              {!checked1
-                ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before"
-                : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges) for the tenants that you are transferring to the new unit."}
+              {calcChecked
+                ? "Calculate the total package of the new rent, including caution deposit, service charge, agency fee, legal fee, and other charges for the tenants transferring to the new unit."
+                : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before."}
             </p>
           </div>
           <div className="space-y-[10px]">
             <div className="flex items-center gap-2">
-              <Switch
-                checked={checked2}
-                onClick={handleChecked2Click}
-                // onClick={() => setChecked2((x) => !x)}
-              />
+              <Switch checked={deductChecked} onClick={handleDeductionToggle} />
               <p>Deduction</p>
             </div>
             <p>
-              {!checked2
-                ? "Do not deduct the current outstanding rent balance from the cost of the new units that the occupants are moving into"
-                : "Calculate the total package of the new fee, including service charge and other Charges for the occupant that you are transferring to the new unit."}
+              {deductChecked
+                ? "Calculate the total package of the new fee, including service charge and other charges for the occupant transferring to the new unit."
+                : "Do not deduct the current outstanding rent balance from the cost of the new units that the occupants are moving into."}
             </p>
           </div>
         </div>

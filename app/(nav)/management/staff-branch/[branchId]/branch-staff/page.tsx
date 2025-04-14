@@ -40,6 +40,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const companyVerified = usePersonalInfoStore((state) => state.is_verified);
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
+  const gridSectionRef = useRef<HTMLDivElement>(null);
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -76,6 +77,9 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     setConfig({
       params: { ...config.params, page },
     });
+    if (view === "grid" && gridSectionRef.current) {
+      gridSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -184,7 +188,6 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
         : undefined,
   }));
 
-  
   const handleSelectTableItem = (item: DataItem) => {
     router.push(`/management/staff-branch/${branchId}/branch-staff/${item.id}`);
   };
@@ -231,101 +234,103 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
           </Modal>
         </div>
       </div>
-      <FilterBar
-        pageTitle="Branch Staff"
-        searchInputPlaceholder="Search within Branch"
-        azFilter
-        filterOptionsMenu={[
-          {
-            label: "Position",
-            radio: true,
-            value: [
-              { label: "Account Officer", value: "account_officer" },
-              { label: "Staff", value: "staff" },
-              { label: "Branch Manager", value: "manager" },
-            ],
-          },
-        ]}
-        handleFilterApply={handleFilterApply}
-        gridView={view === "grid"}
-        setGridView={() => setView("grid")}
-        setListView={() => setView("list")}
-        appliedFilters={appliedFilters}
-        handleSearch={handleSearch}
-        onSort={handleSort}
-      />
-      <section>
-        {loading || silentLoading ? (
-          view === "grid" ? (
-            <AutoResizingGrid minWidth={284} gap={16} key="loading">
-              <CardsLoading />
+      <div ref={gridSectionRef}>
+        <FilterBar
+          pageTitle="Branch Staff"
+          searchInputPlaceholder="Search within Branch"
+          azFilter
+          filterOptionsMenu={[
+            {
+              label: "Position",
+              radio: true,
+              value: [
+                { label: "Account Officer", value: "account_officer" },
+                { label: "Staff", value: "staff" },
+                { label: "Branch Manager", value: "manager" },
+              ],
+            },
+          ]}
+          handleFilterApply={handleFilterApply}
+          gridView={view === "grid"}
+          setGridView={() => setView("grid")}
+          setListView={() => setView("list")}
+          appliedFilters={appliedFilters}
+          handleSearch={handleSearch}
+          onSort={handleSort}
+        />
+        <section>
+          {loading || silentLoading ? (
+            view === "grid" ? (
+              <AutoResizingGrid minWidth={284} gap={16} key="loading">
+                <CardsLoading />
+              </AutoResizingGrid>
+            ) : (
+              <TableLoading />
+            )
+          ) : state?.staffs.length === 0 ? (
+            config.params.search || isFilterApplied() ? (
+              <SearchError />
+            ) : (
+              <EmptyList
+                buttonText="+ Create New Staff"
+                modalContent={
+                  <CreateStaffModal
+                    branchId={branchId as string}
+                    hasManager={true}
+                  />
+                }
+                title="The branch staff is empty"
+                body={
+                  <p>
+                    You can create a staff by clicking on the &quot;Create
+                    Staff&quot; button.
+                  </p>
+                }
+              />
+            )
+          ) : view === "grid" ? (
+            <AutoResizingGrid minWidth={284} gap={16} key="data">
+              {state?.staffs.map((staff) => (
+                <Link
+                  key={staff.id}
+                  href={`/management/staff-branch/${branchId}/branch-staff/${staff.id}`}
+                >
+                  <UserCard
+                    badge_color={staff.badge_color}
+                    email={staff.email}
+                    name={staff.name}
+                    phone_number={staff.phone_number}
+                    user_tag={staff.position}
+                    picture_url={staff.picture}
+                  />
+                </Link>
+              ))}
             </AutoResizingGrid>
           ) : (
-            <TableLoading />
-          )
-        ) : state?.staffs.length === 0 ? (
-          config.params.search || isFilterApplied() ? (
-            <SearchError />
-          ) : (
-            <EmptyList
-              buttonText="+ Create New Staff"
-              modalContent={
-                <CreateStaffModal
-                  branchId={branchId as string}
-                  hasManager={true}
-                />
-              }
-              title="The branch staff is empty"
-              body={
-                <p>
-                  You can create a staff by clicking on the &quot;Create
-                  Staff&quot; button.
-                </p>
-              }
+            <>
+              <CustomTable
+                fields={branchStaffTableFields}
+                data={transformedTableData || []}
+                tableBodyCellSx={{ fontSize: "1rem" }}
+                tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
+                handleSelect={handleSelectTableItem}
+              />
+              {silentLoading && state.current_page > 1 && (
+                <div className="flex items-center justify-center py-4">
+                  <div className="loader" />
+                </div>
+              )}
+            </>
+          )}
+          {state && state.staffs.length && (
+            <Pagination
+              totalPages={state.total_pages}
+              currentPage={state.current_page}
+              onPageChange={handlePageChange}
             />
-          )
-        ) : view === "grid" ? (
-          <AutoResizingGrid minWidth={284} gap={16} key="data">
-            {state?.staffs.map((staff) => (
-              <Link
-                key={staff.id}
-                href={`/management/staff-branch/${branchId}/branch-staff/${staff.id}`}
-              >
-                <UserCard
-                  badge_color={companyVerified ? "gray" : undefined}
-                  email={staff.email}
-                  name={staff.name}
-                  phone_number={staff.phone_number}
-                  user_tag={staff.position}
-                  picture_url={staff.picture}
-                />
-              </Link>
-            ))}
-          </AutoResizingGrid>
-        ) : (
-          <>
-            <CustomTable
-              fields={branchStaffTableFields}
-              data={transformedTableData || []}
-              tableBodyCellSx={{ fontSize: "1rem" }}
-              tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
-              handleSelect={handleSelectTableItem}
-            />
-            {silentLoading && state.current_page > 1 && (
-              <div className="flex items-center justify-center py-4">
-                <div className="loader" />
-              </div>
-            )}
-          </>
-        )}
-        {state && state.staffs.length && (
-          <Pagination
-            totalPages={state.total_pages}
-            currentPage={state.current_page}
-            onPageChange={handlePageChange}
-          />
-        )}
-      </section>
+          )}
+        </section>
+      </div>
     </div>
   );
 };

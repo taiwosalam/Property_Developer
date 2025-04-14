@@ -119,117 +119,117 @@ export interface IndividualTenantAPIResponse {
 export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
-  // console.log("res", data)
-  const lastUpdated = data.note.last_updated_at
+  const lastUpdated = data?.note?.last_updated_at
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
 
-  // Format statement data with "S/N" and readable dates
-  const formattedStatement = data.statement.map((stmt, index) => ({
-    ...stmt,
-    "S/N": (index + 1).toString(),
-    amount_paid: stmt.amount_paid
-      ? `${"₦"}${formatNumber(parseFloat(stmt.amount_paid))}`
-      : "--- ---",
-    payment_date: stmt.payment_date
-      ? moment(stmt.payment_date, "YYYY-MM-DD").format("DD/MM/YYYY")
-      : "",
-    start_date: moment(stmt.start_date).format("DD/MM/YYYY"),
-    end_date: moment(stmt.end_date).format("DD/MM/YYYY"),
-  }));
+  const formattedStatement =
+    data?.statement?.map((stmt, index) => ({
+      ...stmt,
+      "S/N": (index + 1).toString(),
+      amount_paid: stmt?.amount_paid
+        ? `₦${formatNumber(parseFloat(stmt.amount_paid))}`
+        : "--- ---",
+      payment_date: stmt?.payment_date
+        ? moment(stmt.payment_date, "YYYY-MM-DD").format("DD/MM/YYYY")
+        : "",
+      start_date: stmt?.start_date
+        ? moment(stmt.start_date).format("DD/MM/YYYY")
+        : "",
+      end_date: stmt?.end_date
+        ? moment(stmt.end_date).format("DD/MM/YYYY")
+        : "",
+    })) || [];
 
-  // Helper function to transform rent data into UnitItemProps
   const transformRentToUnitItemProps = (
     rent: CurrentRent | PreviousRent
   ): UnitItemProps => ({
-    propertyType: rent.property_type,
-    unitId: rent.id.toString(),
-    unitImages: rent.unit_image.map((img) => img.path),
-    unitDetails: `${rent.unit_type} - ${rent.unit_sub_type}`,
-    unitStatus: rent.unit_status as keyof typeof UnitStatusColors,
-    unitName: rent.unit_name,
-    rent: rent.rent_amount
-      ? `${"₦"}${formatNumber(parseFloat(rent.rent_amount))}`
+    propertyType: rent?.property_type || "",
+    unitId: rent?.id?.toString() || "",
+    unitImages: rent?.unit_image?.map((img) => img?.path || "") || [],
+    unitDetails: `${rent?.unit_type || ""} - ${rent?.unit_sub_type || ""}`,
+    unitStatus: rent?.unit_status as keyof typeof UnitStatusColors,
+    unitName: rent?.unit_name || "",
+    rent: rent?.rent_amount
+      ? `₦${formatNumber(parseFloat(rent.rent_amount))}`
       : "--- ---",
-    serviceCharge: rent.service_charge
-      ? `${"₦"}${formatNumber(parseFloat(rent.service_charge))}`
+    serviceCharge: rent?.service_charge
+      ? `₦${formatNumber(parseFloat(rent.service_charge))}`
       : "--- ---",
-    cautionDeposit: rent.caution_deposit
-      ? `${"₦"}${formatNumber(parseFloat(rent.caution_deposit))}`
+    cautionDeposit: rent?.caution_deposit
+      ? `₦${formatNumber(parseFloat(rent.caution_deposit))}`
       : "--- ---",
-    tenantName: data.name,
-    tenantBadgeColor: data.tier_id ? tierColorMap[data.tier_id] : undefined,
-    dueDate: moment(rent.due_date).format("DD/MM/YYYY"),
+    tenantName: data?.name || "",
+    tenantBadgeColor: data?.tier_id ? tierColorMap[data.tier_id] : undefined,
+    dueDate: rent?.due_date ? moment(rent.due_date).format("DD/MM/YYYY") : "",
   });
 
-  // Transform current_rent and previous_rent into UnitItemProps[]
-  const formattedCurrentRent = data.current_rent.map(
-    transformRentToUnitItemProps
-  );
-  const formattedPreviousRent = data.previous_rent.map(
-    transformRentToUnitItemProps
-  );
+  const formattedCurrentRent =
+    data?.current_rent?.map(transformRentToUnitItemProps) || [];
+  const formattedPreviousRent =
+    data?.previous_rent?.map(transformRentToUnitItemProps) || [];
 
   return {
-    id: data.id,
-    picture: data.picture || "",
-    name: data.name,
-    user_id: data.user_id,
-    // first_name: data.first_name,
-    // last_name: data.last_name,
-    email: data.email,
-    user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
-    badge_color: data.user_tier ? tierColorMap[data.user_tier] : undefined,
-    phone_number: data.phone,
-    tenant_type: data.tenant_type,
-    gender: data.gender,
+    id: data?.id || "",
+    picture: data?.picture || "",
+    name: data?.name || "",
+    user_id: data?.user_id || "",
+    email: data?.email || "",
+    user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
+    badge_color: data?.user_tier ? tierColorMap[data.user_tier] : undefined,
+    phone_number: data?.phone || "",
+    tenant_type: data?.tenant_type || "",
+    gender: data?.gender || "",
     birthdate: "",
     religion: "",
     marital_status: "",
     contact_address: {
-      address: data.address,
-      city: data.city,
-      state: data.state,
-      local_govt: data.local_government,
+      address: data?.address || "",
+      city: data?.city || "",
+      state: data?.state || "",
+      local_govt: data?.local_government || "",
     },
-    next_of_kin: data.next_of_kin,
+    next_of_kin: data?.next_of_kin || {},
     others: {
-      occupation: data.Others.occupation,
-      ...(data.Others.occupation &&
-        data.Others.occupation.toLowerCase() === "employed" && {
-          employment_type: data.Others.job_type,
-        }),
-      family_type: data.Others.family_type,
-      tenant_type: data.tenant_type,
+      occupation: data?.Others?.occupation || "",
+      ...(data?.Others?.occupation?.toLowerCase() === "employed" && {
+        employment_type: data?.Others?.job_type || "",
+      }),
+      family_type: data?.Others?.family_type || "",
+      tenant_type: data?.tenant_type || "",
     },
-    bank_details: data.bank_details,
+    bank_details: data?.bank_details || [],
     notes: {
       last_updated: lastUpdated,
-      write_up: data.note.note,
+      write_up: data?.note?.note || "",
     },
-    note: data.note.note !== null && data.note.note !== "",
-    guarantor_1: data.guarantor[0],
-    guarantor_2: data.guarantor[1],
-    documents: data.documents.flatMap((doc) => {
-      return doc.files.map((file, index) => {
-        if (typeof file === "string") {
-          return {
-            id: uuidv4(),
-            name: `${doc.type} ${index + 1}`,
-            link: file,
-            document_type: doc.type,
-          };
-        } else {
-          return {
-            id: uuidv4(),
-            name: `${doc.type} ${index + 1}`,
-            date: moment(file.updated_at).format("DD/MM/YYYY"),
-            link: file.url,
-            document_type: doc.type,
-          };
-        }
-      });
-    }),
+    note: !!data?.note?.note,
+    guarantor_1: data?.guarantor?.[0] || {},
+    guarantor_2: data?.guarantor?.[1] || {},
+    documents:
+      data?.documents?.flatMap(
+        (doc) =>
+          doc?.files?.map((file, index) => {
+            if (typeof file === "string") {
+              return {
+                id: uuidv4(),
+                name: `${doc.type} ${index + 1}`,
+                link: file,
+                document_type: doc.type,
+              };
+            } else {
+              return {
+                id: uuidv4(),
+                name: `${doc.type} ${index + 1}`,
+                date: file?.updated_at
+                  ? moment(file.updated_at).format("DD/MM/YYYY")
+                  : "",
+                link: file?.url || "",
+                document_type: doc.type,
+              };
+            }
+          }) || []
+      ) || [],
     current_rent: formattedCurrentRent,
     previous_rent: formattedPreviousRent,
     statement: formattedStatement,

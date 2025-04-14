@@ -128,12 +128,13 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   />
                 </div>
                 <div className="w-full gap-1">
-                  <p className="text-sm font-medium text-text-primary dark:text-[#f1f1fd] flex items-center line-clamp-1 text-ellipsis">
-                    {notification.name}
-                    {/* {sectionHeader !== "Staffs" && (
-                      <BadgeIcon color={notification.badgeColor || "red"} />
-                    )} */}
-                  </p>
+                  <div className="flex items-center gap-1 text-sm font-medium text-text-primary dark:text-[#f1f1fd] line-clamp-1 text-ellipsis">
+                    <span className="truncate">{notification.name}</span>
+                    {notification.badgeColor && (
+                      <BadgeIcon color={notification.badgeColor} />
+                    )}
+                  </div>
+
                   {sectionHeader === "Staffs"
                     ? notification.position && (
                         <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
@@ -147,6 +148,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                           {notification.title}
                         </p>
                       )}
+
                   <p className="text-xs text-text-tertiary font-normal capitalize">
                     {notification.content_type === "text" ? (
                       sectionHeader !== "Staffs" ? (

@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import { StatusDots } from "./status-dot";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -138,6 +139,8 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   caution_deposit,
   service_charge,
   status,
+  tenant_id,
+  badge_color,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
@@ -184,9 +187,14 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
-                Tenant&lsquo;s Name
+                Tenant‘s Name
               </span>
-              <p className="text-brand-primary font-medium">{tenant_name}</p>
+              <div className="flex items-center gap-1">
+                <span className="font-medium text-brand-primary border-b border-brand-primary">
+                  {tenant_name}
+                </span>
+                {badge_color && <BadgeIcon color={badge_color} />}
+              </div>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">

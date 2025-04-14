@@ -39,49 +39,49 @@ export const initialTenants: Tenant[] = [
 ];
 
 export const getPropertySettingsData = (unit_data: any) => [
-  { label: "Agency Fee", value: `${unit_data?.agency_fee ?? "___"}%` },
-  { label: "Period", value: unit_data?.fee_period ?? "___" },
-  { label: "Charge", value: unit_data?.whoToCharge ?? "___" },
-  { label: "Caution Deposit", value: unit_data?.caution_deposit ?? "___" },
-  { label: "Group Chat", value: `${unit_data?.group_chat ?? "___"}` },
-  { label: "Rent Penalty", value: `${unit_data?.rent_penalty ?? "___"}` },
+  { label: "Agency Fee", value: `${unit_data?.agency_fee ?? "--- ---"}%` },
+  { label: "Period", value: unit_data?.fee_period ?? "--- ---" },
+  { label: "Who to charge", value: unit_data?.whoToCharge ?? "--- ---" },
+  { label: "Caution Deposit", value: unit_data?.caution_deposit ?? "--- ---" },
+  { label: "Group Chat", value: `${unit_data?.group_chat ?? "--- ---"}` },
+  { label: "Rent Penalty", value: `${unit_data?.rent_penalty ?? "--- ---"}` },
 ];
 
 export const getEstateData = (unit_data: any) => [
-  { label: "Property Title", value: unit_data?.property_title ?? "___" },
-  { label: "State", value: unit_data?.state ?? "___" },
-  { label: "Local Government", value: unit_data?.localGovernment ?? "___" },
-  { label: "Full Address", value: unit_data?.address ?? "___" },
-  { label: "Branch", value: unit_data?.branchName ?? "___" },
+  { label: "Property Title", value: unit_data?.property_title ?? "--- ---" },
+  { label: "State", value: unit_data?.state ?? "--- ---" },
+  { label: "Local Government", value: unit_data?.localGovernment ?? "--- ---" },
+  { label: "Full Address", value: unit_data?.address ?? "--- ---" },
+  { label: "Branch", value: unit_data?.branchName ?? "--- ---" },
   {
     label: "Account Officer",
     value: unit_data?.accountOfficer ?? "No Officer",
   },
   { label: "Description", value: unit_data?.description ?? "No Description" },
-  { label: "Categories", value: unit_data?.categories ?? "___" },
-  { label: "Unit ID", value: unit_data?.unit_id ?? "___" },
+  { label: "Categories", value: unit_data?.categories ?? "--- ---" },
+  { label: "Unit ID", value: unit_data?.unit_id ?? "--- ---" },
 ];
 
 export const getEstateSettingsData = (unit_data: any) => [
-  { label: "Management Fee", value: unit_data?.management_fee ?? "___" },
-  { label: "Period", value: unit_data?.fee_period ?? "___" },
-  { label: "Fee Penalty", value: unit_data?.rent_penalty ?? "___" },
-  { label: "Group Chat", value: unit_data?.group_chat ?? "___" },
+  { label: "Management Fee", value: unit_data?.management_fee ?? "--- ---" },
+  { label: "Period", value: unit_data?.fee_period ?? "--- ---" },
+  { label: "Fee Penalty", value: unit_data?.rent_penalty ?? "--- ---" },
+  { label: "Group Chat", value: unit_data?.group_chat ?? "--- ---" },
 ];
 
 export const getRentalData = (unit_data: any) => [
-  { label: "Property Title", value: unit_data?.title ?? "___" },
-  { label: "State", value: unit_data?.state ?? "___" },
-  { label: "Local Government", value: unit_data?.localGovernment ?? "___" },
-  { label: "Full Address", value: unit_data?.address ?? "___" },
-  { label: "Branch", value: unit_data?.branchName ?? "___" },
+  { label: "Property Title", value: unit_data?.title ?? "--- ---" },
+  { label: "State", value: unit_data?.state ?? "--- ---" },
+  { label: "Local Government", value: unit_data?.localGovernment ?? "--- ---" },
+  { label: "Full Address", value: unit_data?.address ?? "--- ---" },
+  { label: "Branch", value: unit_data?.branchName ?? "--- ---" },
   {
     label: "Account Officer",
-    value: unit_data?.accountOfficer ?? "No Officer",
+    value: unit_data?.accountOfficer ?? "--- ---",
   }, // TODO
-  { label: "Landlord", value: unit_data?.landlord ?? "No Landlord" }, // TODO
-  { label: "Categories", value: unit_data?.categories ?? "___" },
-  { label: "Unit ID", value: unit_data?.unit_id ?? "___" },
+  { label: "Landlord", value: unit_data?.landlord ?? "--- ---" }, // TODO
+  { label: "Categories", value: unit_data?.categories ?? "--- ---" },
+  { label: "Unit ID", value: unit_data?.unit_id ?? "--- ---" },
 ];
 
 export const transformUnitsTenants = (res: TenantResponse): Tenant[] => {

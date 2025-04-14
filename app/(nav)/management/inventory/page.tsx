@@ -40,6 +40,10 @@ interface InventoryApiData {
     total: number;
     current_page: number;
     new_inventory_this_month: number;
+    used_inventory: number;
+    unused_inventory: number;
+    month_used_inventory: number;
+    month_unused_inventory: number;
     data: InventoryCardDataProps[];
   };
   searchQuery: string;
@@ -73,6 +77,10 @@ const Inventory = () => {
       current_page: 1,
       total_inventory: 0,
       new_inventory_this_month: 0,
+      used_inventory: 0,
+      unused_inventory: 0,
+      month_used_inventory: 0,
+      month_unused_inventory: 0,
       inventory: [] as any[],
     },
   };
@@ -98,6 +106,10 @@ const Inventory = () => {
       current_page,
       total_inventory,
       new_inventory_this_month,
+      used_inventory,
+      unused_inventory,
+      month_used_inventory,
+      month_unused_inventory,
       inventory,
     },
     // searchQuery,
@@ -191,6 +203,10 @@ const Inventory = () => {
           current_page: apiData.data.current_page,
           last_page: apiData.data.last_page,
           total_inventory: apiData.data.total,
+          used_inventory: apiData.data.used_inventory,
+          unused_inventory: apiData.data.unused_inventory,
+          month_used_inventory: apiData.data.month_used_inventory,
+          month_unused_inventory: apiData.data.month_unused_inventory,
           new_inventory_this_month: apiData.data.new_inventory_this_month,
         },
       }));
@@ -254,14 +270,14 @@ const Inventory = () => {
           />
           <ManagementStatistcsCard
             title="Used Inventory"
-            newData={20}
-            total={60}
+            newData={month_used_inventory}
+            total={used_inventory}
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Un-use Inventory"
-            newData={23}
-            total={45}
+            newData={month_unused_inventory}
+            total={unused_inventory}
             colorScheme={3}
           />
         </div>

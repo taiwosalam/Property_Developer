@@ -1,6 +1,8 @@
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
 import { BranchDependentData } from "./types";
+import { IndividualTenantAPIResponse } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
+import { TenantApiResponse } from "@/components/tasks/vehicles-record/types";
 
 export const getTenant = async (id: string) => {
   try {
@@ -68,5 +70,51 @@ export const fetchBranchDependentData = async (
       staff: { data: null, loading: false, error: errorMessage },
       accountOfficer: { data: null, loading: false, error: errorMessage },
     };
+  }
+};
+
+// Fetch tenants for a given property
+export const getTenants = async (propertyId: string) => {
+  try {
+    const res = await api.get<TenantApiResponse>(
+      `/report/tenants?property_id=${propertyId}`
+    );
+    if (res.status === 200) {
+      return res.data;
+    }
+    throw new Error("Failed to fetch tenants");
+  } catch (err) {
+    handleAxiosError(err);
+    throw err; // Re-throw to allow component to handle
+  }
+};
+
+// Fetch individual tenant by ID
+export const getTenantById = async (tenantId: string) => {
+  try {
+    const res = await api.get<IndividualTenantAPIResponse>(
+      `tenant/${tenantId}`
+    );
+    if (res.status === 200) {
+      return res.data;
+    }
+    throw new Error("Failed to fetch tenant");
+  } catch (err) {
+    handleAxiosError(err);
+    throw err;
+  }
+};
+
+// Fetch user by identifier (mobile user)
+export const getUsers = async (identifier: string) => {
+  try {
+    const res = await api.get(`/get-users?identifier=${identifier}`);
+    if (res.status === 200) {
+      return res.data;
+    }
+    throw new Error("Failed to fetch user");
+  } catch (err) {
+    handleAxiosError(err);
+    throw err;
   }
 };

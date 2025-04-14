@@ -1,5 +1,8 @@
 // Types
-import type { StaffProfilePortfolioProps, StaffProfileProps } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/types";
+import type {
+  StaffProfilePortfolioProps,
+  StaffProfileProps,
+} from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/types";
 import type { Field } from "@/components/Table/types";
 // Images
 import SampleProperty from "@/public/empty/SampleProperty.jpeg";
@@ -16,6 +19,7 @@ import api, { handleAxiosError } from "@/services/api";
 import { properties } from "@/app/(nav)/user/management/landlord/data";
 import { empty } from "@/app/config";
 import { link } from "fs";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const sendVerifyStaffOTP = async () => {
   try {
@@ -41,7 +45,6 @@ export const lockStaffAccount = async (id: string, otp: string) => {
   }
 };
 
-
 export const staffData: StaffProfileProps = {
   branch_id: "",
   id: "",
@@ -57,7 +60,6 @@ export const staffData: StaffProfileProps = {
   status: "",
   experience: 0,
 };
-
 
 export const initialPageData: StaffPageTypes = {
   staff: {
@@ -95,8 +97,8 @@ export const initialPageData: StaffPageTypes = {
     ],
     landlords: [],
     tenants: [],
-  }
-}
+  },
+};
 
 export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
   {
@@ -267,42 +269,46 @@ export const getPortfolioData = (portfolio: any) => {
   return [
     {
       title: "Properties",
-      items: portfolio.properties?.map((p: any) => ({
-        link: `/management/properties/${p.id}`,
-        image: p.image,
-        property: {
-          name: p.property_name,
-          location: p.address,
-        },
-      })) || [],
+      items:
+        portfolio.properties?.map((p: any) => ({
+          link: `/management/properties/${p.id}`,
+          image: p.image,
+          property: {
+            name: p.property_name,
+            location: p.address,
+          },
+        })) || [],
     },
     {
       title: "Landlords",
-      items: portfolio.landlords?.map((l: any) => ({
-        link: `/management/landlord/${l.id}/manage`,
-        image: l.image || "", 
-        user: {
-          name: l.name,
-          email: l.email,
-          phone_number: l.phone,
-        },
-      })) || [],
+      items:
+        portfolio.landlords?.map((l: any) => ({
+          link: `/management/landlord/${l.id}/manage`,
+          image: l.image || "",
+          user: {
+            name: l.name,
+            email: l.email,
+            phone_number: l.phone,
+            badge_color: l.badge_color,
+          },
+        })) || [],
     },
     {
       title: "Occupants & Tenants",
-      items: portfolio.tenants?.map((t: any) => ({
-        link: `/management/tenants/${t.id}/manage`,
-        image: t.image || "", 
-        user: {
-          name: t.name,
-          email: t.email,
-          phone_number: t.phone,
-        },
-      })) || [],
+      items:
+        portfolio.tenants?.map((t: any) => ({
+          link: `/management/tenants/${t.id}/manage`,
+          image: t.image || "",
+          user: {
+            name: t.name,
+            email: t.email,
+            phone_number: t.phone,
+            badge_color: t.badge_color,
+          },
+        })) || [],
     },
   ];
 };
-
 
 export const staffActivitiesTableFields: Field[] = [
   { id: "1", label: "S/N", accessor: "S/N" },
@@ -338,7 +344,7 @@ export const yesNoToActiveInactive = (yesNo: string): string => {
 export const transformStaffAPIResponse = (
   res: StaffAPIResponse
 ): StaffPageTypes => {
-  console.log("our res", res)
+  console.log("our res", res);
   return {
     staff: {
       id: res.data.id.toString(),
@@ -362,51 +368,64 @@ export const transformStaffAPIResponse = (
       about_staff: res.data.about_staff,
       experience: res.data.years_experience,
       status: yesNoToActiveInactive(res.data.status),
+      badge_color: res.data.tier
+        ? tierColorMap[res.data.tier as keyof typeof tierColorMap]
+        : undefined,
     },
-    activities: res.activities?.map((a) => {
-      // const actionTaken = JSON.parse(a.action_taken);
-      // const message = actionTaken.message;
-      const { latitude, longitude } = a.location;
-      return {
-        id: a["S/N"],
-        username: a.username,
-        page_visits: a.page_visits,
-        // action_taken: message,
-        action_taken: a.action_taken,
-        ip_address: a.ip_address,
-        location: a.location,
-        date: a.date,
-        time: a.time,
-      }
-    }) || [],
+    activities:
+      res.activities?.map((a) => {
+        // const actionTaken = JSON.parse(a.action_taken);
+        // const message = actionTaken.message;
+        const { latitude, longitude } = a.location;
+        return {
+          id: a["S/N"],
+          username: a.username,
+          page_visits: a.page_visits,
+          // action_taken: message,
+          action_taken: a.action_taken,
+          ip_address: a.ip_address,
+          location: a.location,
+          date: a.date,
+          time: a.time,
+        };
+      }) || [],
     chats: [],
     portfolio: {
-      properties: res?.data?.properties?.map((p) => {
-        return {
-          id: p.id.toString(),
-          property_name: p.name,
-          address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
-          image: p.images?.[0]?.path || empty,
-        }
-      }) || [],
-      landlords: res?.data?.landlords?.map((l)=> {
-        return{
-          id: l.id.toString(),
-          name: l.name,
-          email: l.email,
-          phone: l.phone || "",
-          image: l.picture || empty,
-        }
-      }) || [],
-      tenants: res?.data?.tenants?.map((t)=> {
-        return {
-          id: t.id.toString(),
-          name: t.name,
-          email: t.email,
-          phone: t.phone,
-          image: t.picture || empty,
-        }
-      }) || [],
-    }
-  }
-}
+      properties:
+        res?.data?.properties?.map((p) => {
+          return {
+            id: p.id.toString(),
+            property_name: p.name,
+            address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
+            image: p.images?.[0]?.path || empty,
+          };
+        }) || [],
+      landlords:
+        res?.data?.landlords?.map((l) => {
+          return {
+            id: l.id.toString(),
+            name: l.name,
+            email: l.email,
+            phone: l.phone || "",
+            image: l.picture || empty,
+            badge_color: l.user_tier
+              ? tierColorMap[l.user_tier as keyof typeof tierColorMap]
+              : undefined,
+          };
+        }) || [],
+      tenants:
+        res?.data?.tenants?.map((t) => {
+          return {
+            id: t.id.toString(),
+            name: t.name,
+            email: t.email,
+            phone: t.phone,
+            image: t.picture || empty,
+            badge_color: t.user_tier
+              ? tierColorMap[t.user_tier as keyof typeof tierColorMap]
+              : undefined,
+          };
+        }) || [],
+    },
+  };
+};
