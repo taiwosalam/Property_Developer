@@ -50,7 +50,7 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
         <div className="flex-1 custom-flex-col gap-2">
           <div className="custom-flex-col gap-1">
             <p>
-              <span className="text-text-primary text-base font-medium">
+              <span className="text-text-primary text-base font-medium dark:text-slate-400">
                 {notification?.subject}
               </span>
               {/* <span className="text-text-secondary text-sm font-normal">
@@ -61,7 +61,7 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
               {notification?.time}
             </p>
           </div>
-          <div className="py-2 px-4 rounded-md bg-brand-1 flex gap-3">
+          <div className="py-2 px-4 rounded-md bg-brand-1 flex gap-3 dark:text-black">
             <SectionSeparator
               direction="y"
               style={{ backgroundColor: "#787A7E" }}

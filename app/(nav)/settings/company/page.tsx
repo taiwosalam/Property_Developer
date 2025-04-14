@@ -46,6 +46,7 @@ import { toast } from "sonner";
 import WebsitePages from "@/components/Settings/website-pages";
 import WebsiteTypography from "@/components/Settings/website-custom-typography";
 import Button from "@/components/Form/Button/button";
+import { StaticImageData } from "next/image";
 
 const Profile = () => {
   const company_id = usePersonalInfoStore((state) => state.company_id);
@@ -85,6 +86,14 @@ const Profile = () => {
   } = useFetch(`/companies/${company_id}`);
   useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
 
+  const [companyLogo, setCompanyLogo] = useState<{
+    light: string | StaticImageData | null;
+    dark: string | StaticImageData | null;
+  }>({
+    light: state.companyData.company_logo,
+    dark: state.companyData?.dark_logo,
+  });
+
   useEffect(() => {
     if (apiData) {
       const transformedData: ProfileSettingsPageState =
@@ -92,6 +101,15 @@ const Profile = () => {
       setState(transformedData);
     }
   }, [apiData]);
+
+  useEffect(() => {
+    if (state) {
+      setCompanyLogo({
+        light: state.companyData.company_logo,
+        dark: state.companyData.dark_logo,
+      });
+    }
+  }, [state]);
 
   //
   const { preview, handleImageChange } = useImageUploader({
@@ -136,20 +154,14 @@ const Profile = () => {
     const data = transformFormCompanyData(formData);
 
     try {
-      const status = await updateCompanyDetails(data, company_id as string);
-
-      if (status) {
-        toast.success("Company Details Updated Successfully");
-        window.dispatchEvent(new Event("refetchProfile"));
-      }
+      const res = await updateCompanyDetails(data, company_id as string);
+      if (res) toast.success("Company Details Updated Successfully");
     } catch (err) {
       toast.error("Failed to Update Company Details");
     } finally {
       setRequestLoading(false);
     }
   };
-
-  console.log(companyData);
 
   return (
     <>
@@ -359,8 +371,9 @@ const Profile = () => {
               )}
             />
             <CompanyLogo
-              lightLogo={state.companyData.company_logo}
-              darkLogo={state.companyData.dark_logo}
+              lightLogo={companyLogo.light}
+              darkLogo={companyLogo.dark}
+              onChangeLogo={setCompanyLogo}
             />
           </div>
           <div className="flex self-end mt-4 justify-end w-full">

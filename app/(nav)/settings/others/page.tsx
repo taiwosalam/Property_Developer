@@ -326,8 +326,9 @@ const Others = () => {
       // reset the settings options when request is made
       setResetOptions([]);
       if (response) {
-        localStorage.clear();
+        localStorage.removeItem("authToken");
         router.replace("/auth/sign-in");
+
       }
     } catch (error) {
       console.error(error);
