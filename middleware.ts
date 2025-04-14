@@ -4,7 +4,12 @@ import { roleBasedRoutes } from "./data";
 export async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
   const role = req.cookies.get("role")?.value;
+  //const authToken = req.cookies.get("authToken")?.value;
   const company_status = req.cookies.get("company_status")?.value;
+
+  // if(!authToken){
+  //   return NextResponse.redirect(new URL("/auth/sign-in", req.url))
+  // }
 
   // Public routes accessible without authentication
   const publicRoutes = [

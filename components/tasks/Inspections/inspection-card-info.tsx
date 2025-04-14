@@ -20,10 +20,9 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
   total_price,
   address,
   yearly_price,
-  unit_fee_period
+  unit_fee_period,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
-
 
   return (
     <div
@@ -55,13 +54,11 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
           </div> */}
         </div>
         <div className="custom-flex-col gap-1 text-text-secondary dark:text-white text-sm lg:text-base font-bold capitalize">
-          <p>{ title }</p>
-          
-          <div className="text-text-disabled flex gap-1">
+          <p>{title}</p>
+
+          <div className="text-text-disabled flex gap-1  max-w-full">
             <LocationIcon />
-            <p className="text-xs font-normal max-w-[7.5rem]">
-             { address}
-            </p>
+            <p className="text-xs font-normal w-full break-words line-clamp-3">{address}</p>
           </div>
         </div>
       </div>
@@ -75,7 +72,9 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
           Total Package
         </p>
         <p className="text-text-disabled text-sm font-medium">
-         { yearly_price && <span className="text-highlight">{yearly_price } / Yearly</span> }
+          {yearly_price && (
+            <span className="text-highlight">{yearly_price} / Yearly</span>
+          )}
         </p>
       </div>
     </div>

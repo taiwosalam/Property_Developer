@@ -8,11 +8,22 @@ import { deleteCompanyLogo } from "./data";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 interface CompanyLogoProps {
-  lightLogo?: string | StaticImageData;
-  darkLogo?: string | StaticImageData;
+  lightLogo?: string | StaticImageData | null;
+  darkLogo?: string | StaticImageData | null;
+  onChangeLogo?: ({
+    light,
+    dark,
+  }: {
+    light: string | StaticImageData | null;
+    dark: string | StaticImageData | null;
+  }) => void;
 }
 
-const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
+const CompanyLogo: React.FC<CompanyLogoProps> = ({
+  lightLogo,
+  darkLogo,
+  onChangeLogo,
+}) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputFileRefs = {
     light: useRef<HTMLInputElement>(null),
@@ -84,6 +95,10 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
         const res = await deleteCompanyLogo(payload, company_id);
         if (res) {
           setDarkPreview(null);
+          onChangeLogo?.({ light: lightPreview, dark: null });
+          if (inputFileRefs.dark.current) {
+            inputFileRefs.dark.current.value = "";
+          }
         }
       }
     } catch (error) {

@@ -349,7 +349,7 @@ interface CompanyPayload {
   website: string;
   cac_registration_number: string;
   cac_document: string | File;
-  dark_logo: string | File;
+  dark_logo: string | File | null;
   utility_document: string | File;
   phone_number: string[];
   // directors: Director[];
@@ -361,7 +361,7 @@ export const transformFormCompanyData = (
   const data = {} as CompanyPayload;
 
   data.company_logo = formData.get("light_company_logo") as string | File;
-  data.dark_logo = formData.get("dark_company_logo") as string | File;
+  data.dark_logo = formData.get("dark_company_logo") as string | File | null;
   data.industry = formData.get("industry") as string;
   data.membership_number = formData.get("membership_number") as string;
   data.membership_certificate = formData.get("membership_certificate") as
@@ -401,6 +401,7 @@ export const updateCompanyDetails = async (
     data.append("_method", "PATCH");
     const response = await api.post(`/company/${id}/update`, data);
     if (response.status === 200) {
+      window.dispatchEvent(new Event("refetchProfile"));
       return response;
     }
     // console.log('res', response)
@@ -412,7 +413,12 @@ export const updateCompanyDetails = async (
 
 export const deleteCompanyLogo = async (payload: any, company_id: string) => {
   try {
-    const response = await api.delete(`/company/${company_id}/remove-logo`, payload);
+    const response = await api.delete(`/company/${company_id}/remove-logo`, {
+      data: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (response.status === 200 || response.status === 201) {
       toast.success("Logo deleted successfully");
       window.dispatchEvent(new Event("refetchProfile"));

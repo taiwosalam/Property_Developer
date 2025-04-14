@@ -45,6 +45,12 @@ import { getLocalStorage, saveLocalStorage } from "@/utils/local-storage";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { applyFont } from "@/app/(onboarding)/auth/data";
 import { roundUptoNine } from "@/app/(nav)/(messages-reviews)/messages/data";
+import {
+  clearAllNotification,
+  NotificationApiResponse,
+  transformNotificationData,
+} from "@/app/(nav)/notifications/data";
+import { usePathname } from "next/navigation";
 
 const NotificationBadge = ({
   count,
@@ -71,6 +77,8 @@ const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
 
+  const pathname = usePathname();
+
   const { company_id } = usePersonalInfoStore();
 
   const loggedInUserDetails = getLocalStorage("additional_details");
@@ -90,27 +98,58 @@ const Header = () => {
   );
   const company_logo = usePersonalInfoStore((state) =>
     theme === "light"
-      ? loggedUserCompany?.company_logo
+      ? getLocalStorage("light_logo")
       : getLocalStorage("dark_logo")
       ? getLocalStorage("dark_logo")
-      : loggedUserCompany?.company_logo
+      : getLocalStorage("light_logo")
   );
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
 
+  console.log(data);
 
   const { data: companyData, refetch: companyRefetch } = useFetch<any>(
     company_id ? `companies/${company_id}` : null
   );
   useRefetchOnEvent("refetchProfile", () => companyRefetch({ silent: true }));
 
-  console.log(companyData)
+  /* NOTIFICATION LOGIC*/
+  const [notificationIds, setNotificationIds] = useState<string[]>([]);
+  const {
+    data: apiData,
+    silentLoading,
+    error,
+    refetch: refetchNotifications,
+  } = useFetch<NotificationApiResponse>(`/notifications`);
+
+  useEffect(() => {
+    if (apiData) {
+      const ids = apiData.data.length
+        ? apiData?.data?.map((item) => item.id)
+        : [];
+      setNotificationIds(ids);
+    }
+  }, [apiData]);
+
+  const handleClearNotifications = async () => {
+    if (!notificationIds.length) return;
+
+    try {
+      const res = await clearAllNotification(notificationIds);
+      if (res && pathname === "/notifications") {
+        saveLocalStorage("notificationCount", 0);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     if (companyData?.data) {
       setPersonalInfo("dark_logo", companyData.data.dark_logo);
       saveLocalStorage("dark_logo", companyData?.data?.dark_logo);
+      saveLocalStorage("light_logo", companyData?.data?.company_logo);
     }
   }, [companyData, setPersonalInfo]);
 
@@ -356,7 +395,7 @@ const Header = () => {
                 />
               </Link>
             </div>
-            <div className="relative">
+            <div className="relative" onClick={handleClearNotifications}>
               <Link
                 href="/notifications"
                 aria-label="notifications"
