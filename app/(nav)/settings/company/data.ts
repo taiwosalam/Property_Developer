@@ -463,3 +463,22 @@ export const cleanStringtoArray = (phone_number: any) => {
     console.error("The phone_number string is empty or invalid.");
   }
 };
+
+export const checkWebsiteDomain = async (domainName: string) => {
+  const payload = {
+    domain: domainName
+  }
+  try{
+    const data = await api.post('check-domain', payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if(data.status === 200 || data.status === 201){
+      return data
+    }
+  }catch(error){
+    handleAxiosError(error);
+    return false;
+  }
+}
