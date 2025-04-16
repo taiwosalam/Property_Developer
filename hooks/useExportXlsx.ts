@@ -14,7 +14,7 @@ export const useExportToXLSX = () => {
     const timestamp = dayjs().format('DD-MM-YYYY h-mm-ss A');
 
     // special character are not allowed in the file name
-    const fileName = `${tableLabel}_${timestamp}.xlsx`;
+    const fileName = `${tableLabel}_${timestamp}`;
     const sheetName = `${tableLabel}_${timestamp}`.slice(0, 31);
 
     const ws = XLSX.utils.json_to_sheet(data);
