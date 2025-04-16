@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export type ActivityApiResponse = {
   data: {
     activities: [
@@ -119,7 +121,7 @@ export const transformActivityAData = (
       ip_address: activity.ip_address,
       location: activity.location.city,
       date: activity.date,
-      time: activity.time,
+      time: activity.time ? dayjs(activity.time, "HH:mm").format("hh:mm A") : "___ ___",
       longitude: activity.location.longitude,
       latitude: activity.location.latitude,
     };

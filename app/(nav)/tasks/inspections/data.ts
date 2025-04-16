@@ -88,7 +88,7 @@ export const transformInspectionDetails = (data: InspectionDetailsApiResponse): 
     inspection_time: inspections?.inspection_time || "___ ___",
     phone: inspections?.phone || "___ ___",
     branch_name: inspections?.unit?.property?.branch?.branch_name || "___ ___",
-    property: inspections?.unit?.unit_name || "___ ___",
+    property: inspections?.property_name || "___ ___",
     description: inspections?.description || "___ ___",
 
   }

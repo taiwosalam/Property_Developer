@@ -186,6 +186,8 @@ const LandlordsReport = () => {
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/landlord/export"
+        xlsxData={landlords}
+        fileLabel={"Landlord & Landlady Reports"}
       />
       <section>
         {landlords.length === 0 && !loading ? (

@@ -19,7 +19,7 @@ export type Rent = {
   rent_end_date: string;
   status: string | null;
   caution_deposit: number;
-  total_package: number;
+  total_fee: string;
 };
 
 export type RentReportData = {

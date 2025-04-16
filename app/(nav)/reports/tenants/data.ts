@@ -106,4 +106,6 @@ export interface ReportsRequestParams {
   end_date?: string;
   property_id?: string;
   branch_id?: string;
+  status?: string;
+  is_active?: string;
 }

@@ -88,6 +88,7 @@ const RentReport = () => {
     }
   }, [apiData, staff, property]);
 
+  const filterStatus = ["expired", "active", "relocate", "vacant"];
   const reportTenantFilterOption = [
     {
       label: "Account Officer",
@@ -111,6 +112,13 @@ const RentReport = () => {
         value: property.id.toString(),
       })),
     },
+    {
+      label: "Status",
+      value: filterStatus.map((status) => ({
+        label: status,
+        value: status,
+      }))
+    }
   ];
 
   const handleSearch = async (query: string) => {
@@ -131,6 +139,7 @@ const RentReport = () => {
     const accountOfficer = menuOptions["Account Officer"] || [];
     const branch = menuOptions["Branch"] || [];
     const property = menuOptions["Property"] || [];
+    const status = menuOptions["Status"] || [];
 
     const queryParams: ReportsRequestParams = {
       page: 1,
@@ -151,6 +160,9 @@ const RentReport = () => {
     }
     if (endDate) {
       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+    }
+    if(status){
+      queryParams.status = status.join(",");
     }
     setConfig({
       params: queryParams,
@@ -191,6 +203,8 @@ const RentReport = () => {
         searchInputPlaceholder="Search for Rent Roll"
         hasGridListToggle={false}
         exportHref="/reports/rent/export"
+        xlsxData={rents}
+        fileLabel={`Rent Reports`}
       />
 
       <section>

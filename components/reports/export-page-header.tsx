@@ -8,6 +8,7 @@ import {
 } from "@/public/icons/icons";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useAuthStore } from "@/store/authStore";
+import useFetch from "@/hooks/useFetch";
 
 const ExportPageHeader = () => {
   const email = useAuthStore((s) => s.email);
@@ -21,9 +22,10 @@ const ExportPageHeader = () => {
   const phoneNumbers = usePersonalInfoStore(
     (state) => state.company_phone_number
   );
+  const { company_id } = usePersonalInfoStore();
+  const { data } = useFetch<any>(`/companies/${company_id}`);
 
   // console.log("number", phoneNumbers)
-
 
   return (
     <div
@@ -34,13 +36,19 @@ const ExportPageHeader = () => {
       }}
     >
       <div
-        className="w-[300px] h-[150px] relative overflow-hidden rounded-lg print:shadow-none" 
+        className="w-[300px] h-[150px] relative overflow-hidden rounded-lg print:shadow-none"
         style={{
           boxShadow:
             "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 4px 6px 0px rgba(13, 23, 33, 0.08)",
         }}
       >
-        <Image src={logo || ""} alt="logo" width={1000} height={1000} className="object-cover w-full h-full" />
+        <Image
+          src={logo || ""}
+          alt="logo"
+          width={1000}
+          height={1000}
+          className="object-contain w-full h-full"
+        />
       </div>
       <div className="space-y-2">
         <h4 className="text-text-quaternary dark:text-white text-sm font-medium">
@@ -53,12 +61,16 @@ const ExportPageHeader = () => {
             </span>
             <p className="dark:text-darkText-1 capitalize">{`${address}, ${city}, ${lga}, ${state}`}</p>
           </li>
-          <li>
-            <span className="text-brand-9">
-              <WebIcon />
-            </span>
-            <p className="dark:text-darkText-1">website link not available</p>
-          </li>
+          {data && data?.data?.social_links?.website && (
+            <li>
+              <span className="text-brand-9">
+                <WebIcon />
+              </span>
+              <p className="dark:text-darkText-1">
+                {data?.data?.social_links?.website}
+              </p>
+            </li>
+          )}
           <li>
             <span className="text-brand-9">
               <EmailIcon />
@@ -70,7 +82,10 @@ const ExportPageHeader = () => {
               <TelephoneIcon />
             </span>
             <p className="dark:text-darkText-1">
-              {(typeof phoneNumbers === "object" ? phoneNumbers : JSON.parse(`${phoneNumbers}`)).join(", ")}
+              {(typeof phoneNumbers === "object"
+                ? phoneNumbers
+                : JSON.parse(`${phoneNumbers}`)
+              ).join(", ")}
             </p>
           </li>
         </ul>

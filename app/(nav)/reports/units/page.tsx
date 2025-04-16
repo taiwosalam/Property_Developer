@@ -25,6 +25,8 @@ import { hasActiveFilters } from "../data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 
+import * as XLSX from "xlsx";
+
 const UnitsReport = () => {
   const [unitData, setUnitData] = useState<UnitsReportType>({
     total_unit: 0,
@@ -80,6 +82,7 @@ const UnitsReport = () => {
 
   const { total_unit, monthly_unit, units } = unitData;
 
+  const unitStatus = ["occupied", "relocate", "vacant", "expired"];
   const reportTenantFilterOption = [
     {
       label: "Account Officer",
@@ -103,6 +106,13 @@ const UnitsReport = () => {
         value: property.id.toString(),
       })),
     },
+    {
+      label: "Status",
+      value: unitStatus.map((status) => ({
+        label: status,
+        value: status,
+      })),
+    },
   ];
 
   const handleSearch = async (query: string) => {
@@ -123,6 +133,7 @@ const UnitsReport = () => {
     const accountOfficer = menuOptions["Account Officer"] || [];
     const branch = menuOptions["Branch"] || [];
     const property = menuOptions["Property"] || [];
+    const status = menuOptions["Status"] || [];
 
     const queryParams: ReportsRequestParams = {
       page: 1,
@@ -137,6 +148,9 @@ const UnitsReport = () => {
     }
     if (property.length > 0) {
       queryParams.property_id = property.join(",");
+    }
+    if (status.length > 0) {
+      queryParams.status = status.join(",");
     }
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -182,6 +196,8 @@ const UnitsReport = () => {
         searchInputPlaceholder="Search for Units"
         hasGridListToggle={false}
         exportHref="/reports/units/export"
+        xlsxData={units}
+        fileLabel={`Unit Reports`}
       />
 
       <section>

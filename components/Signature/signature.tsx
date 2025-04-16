@@ -15,7 +15,7 @@ interface CompanySignature {
   updated_at: string;
 }
 
-interface CompanySignaturesResponse {
+export interface CompanySignaturesResponse {
   message: string;
   signatures: CompanySignature[];
 }
@@ -25,7 +25,7 @@ const Signature = () => {
 
   if (loading) return <p>Loading signature...</p>;
   if (error) return <p>Error loading signature</p>;
-  if (!data || data.signatures.length === 0) return <p>No signature available</p>;
+  if (!data || data.signatures.length === 0) return null;
 
   return (
     <>
