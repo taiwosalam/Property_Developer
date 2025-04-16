@@ -176,6 +176,8 @@ const TrackingReport = () => {
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/tracking/export"
+        xlsxData={activity}
+        fileLabel={`Activity Reports`}
       />
 
       <section>

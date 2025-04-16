@@ -97,3 +97,24 @@ export const clearAllNotification = async (ids: string[]) => {
     return false;
   }
 };
+export const deleteAllNotification = async (ids: string[]) => {
+  const payload = {
+    notification_ids: ids,
+  };
+
+  try {
+    const res = await api.post(`/notifications/clear-all`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("refetchNotifications"));
+      toast.success("Notifications Cleared");
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};

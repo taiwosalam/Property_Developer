@@ -59,7 +59,6 @@ const VehiclesRecordReport = () => {
     }
   }, [vehicleData]);
 
-  console.log(vehiclesRecordTableData);
 
   useEffect(() => {
     if (apiData) {
@@ -173,6 +172,8 @@ const VehiclesRecordReport = () => {
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/vehicles-record/export"
+        xlsxData={vehiclesRecordTableData}
+        fileLabel={`Vehicle Reports`}
       />
 
       <section>

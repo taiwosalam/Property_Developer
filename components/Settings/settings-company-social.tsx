@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { updateCompanySocials } from "@/app/(nav)/settings/company/data";
 
 const CompanySocials = ({ companyData }: { companyData: any }) => {
-  const { instagram, facebook, x, linkedin, tiktok, youtube } = companyData;
+  const { instagram, facebook, x, linkedin, tiktok, youtube, website } = companyData;
   // console.log("social data fetch", companyData)
   const [loading, setLoading] = useState(false);
   const [socialInputs, setSocialInputs] = useState({
@@ -22,6 +22,7 @@ const CompanySocials = ({ companyData }: { companyData: any }) => {
     linkedin: companyData.linkedin || "https://www.linkedin.com/company/",
     tiktok: companyData.tiktok || "https://tiktok.com/",
     youtube: companyData.youtube || "https://www.youtube.com/@",
+    website: companyData.website || "",
     bio: "",
   });
 
@@ -33,6 +34,7 @@ const CompanySocials = ({ companyData }: { companyData: any }) => {
       linkedin: companyData.linkedin || "https://www.linkedin.com/company/",
       tiktok: companyData.tiktok || "https://tiktok.com/",
       youtube: companyData.youtube || "https://www.youtube.com/@",
+      website: companyData.website || "",
       bio: companyData.bio || "",
     });
   }, [companyData]);
@@ -53,6 +55,7 @@ const CompanySocials = ({ companyData }: { companyData: any }) => {
       linkedin: socialInputs.linkedin,
       tiktok: socialInputs.tiktok,
       youtube: socialInputs.youtube,
+      website: socialInputs.website,
       bio: socialInputs.bio,
     };
     try {
@@ -145,6 +148,17 @@ const CompanySocials = ({ companyData }: { companyData: any }) => {
                   defaultValue={youtube}
                   onChange={(value) =>
                     handleSocialInputChange("youtube", value)
+                  }
+                />
+                <Input
+                  id="website"
+                  label="website"
+                  name="website"
+                  placeholder="Enter your website"
+                  value={socialInputs.website}
+                  defaultValue={website || ""}
+                  onChange={(value) =>
+                    handleSocialInputChange("website", value)
                   }
                 />
               </div>

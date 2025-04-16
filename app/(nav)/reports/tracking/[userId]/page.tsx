@@ -178,6 +178,8 @@ const UserTrackingPage = () => {
         hasGridListToggle={false}
         exports
         exportHref={`/reports/tracking/${userId}/export`}
+        xlsxData={activities}
+        fileLabel={`Activities Reports`}
       />
 
       <section>

@@ -183,6 +183,8 @@ const PropertiesReport = () => {
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/properties/export"
+        xlsxData={properties}
+        fileLabel={"Properties Reports"}
       />
       <section>
         {properties.length === 0 && !loading ? (

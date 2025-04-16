@@ -20,6 +20,8 @@ import {
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
+import { CompanySignaturesResponse } from "@/components/Signature/signature";
+
 dayjs.extend(advancedFormat);
 
 const ExportUnits = () => {
@@ -32,6 +34,8 @@ const ExportUnits = () => {
   });
   const { data, loading, error, isNetworkError } =
     useFetch<UnitListResponse>("/report/units");
+
+     const { data: signatureData, loading: sigLoading, error: sigError } = useFetch<CompanySignaturesResponse>("/company-signatures");
 
   useEffect(() => {
     if (data) {
@@ -69,6 +73,7 @@ const ExportUnits = () => {
           tableHeadClassName="h-[45px]"
         />
         <Signature />
+       {/* {signatureData && signatureData?.signatures.length > 0 && <Signature /> } */}
       </div>
       <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} fullContent={fullContent}/>
     </div>

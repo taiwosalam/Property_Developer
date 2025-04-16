@@ -27,15 +27,12 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
   );
   const [inspection, setInspection] = useState<TInspectionDetails | null>(null);
 
-  
-
   useEffect(() => {
     if (inspectionData) {
       const transformedData = transformInspectionDetails(inspectionData)
       setInspection(transformedData);
     }
   }, [inspectionData]);
-
 
   return (
     <div

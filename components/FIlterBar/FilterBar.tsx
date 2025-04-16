@@ -67,6 +67,8 @@ interface FilterBarProps extends FilterModalProps {
   printRef?: React.RefObject<HTMLDivElement>;
   firstPageRef?: React.RefObject<HTMLDivElement>;
   restOfContentRef?: React.RefObject<HTMLDivElement>;
+  xlsxData?: any;
+  fileLabel?: string;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -99,6 +101,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
   firstPageRef,
   restOfContentRef,
   printRef,
+  xlsxData,
+  fileLabel,
 }) => {
   return (
     <div className="page-title-container w-full">
@@ -185,11 +189,13 @@ const FilterBar: React.FC<FilterBarProps> = ({
               restOfContentRef={restOfContentRef}
             />
             <ExportButton
+              data={xlsxData}
+              fileLabel={fileLabel}
               type="csv"
-              href={exportHref}
-              printRef={printRef}
-              firstPageRef={firstPageRef}
-              restOfContentRef={restOfContentRef}
+              //href={exportHref}
+              //printRef={printRef}
+              //firstPageRef={firstPageRef}
+              //restOfContentRef={restOfContentRef}
             />
           </div>
         )}

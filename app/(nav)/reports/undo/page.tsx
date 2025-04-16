@@ -226,6 +226,8 @@ const Undo = () => {
         filterOptionsMenu={reportTenantFilterOption}
         searchInputPlaceholder="Search for undo"
         hasGridListToggle={false}
+        xlsxData={table}
+        fileLabel={`Undo Reports`}
       />
 
       <section>

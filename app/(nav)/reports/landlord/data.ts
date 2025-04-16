@@ -1,4 +1,5 @@
 import type { Field } from "@/components/Table/types";
+import dayjs from "dayjs";
 
 export const reportsLandlordsFilterOptionsWithDropdown = [
   {
@@ -117,7 +118,7 @@ export const transformLandlordsData = (apiResponse: LandlordsApiResponse): Landl
       property: formatPropertyName(item.property_name),
       phone: item.phone || "___ ___",
       agent: item.agent || "___ ___",
-      date_created: item.created_at || "___ ___",
+      date_created: item.created_at ?  dayjs(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD hh:mm A') : "___ ___",
       landlord: item.landlord_name || "___ ___",
     })),
   };

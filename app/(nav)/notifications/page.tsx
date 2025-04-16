@@ -7,6 +7,7 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import useFetch from "@/hooks/useFetch";
 import {
   clearAllNotification,
+  deleteAllNotification,
   NotificationApiResponse,
   TNotificationData,
   transformNotificationData,
@@ -46,12 +47,12 @@ const Notifications = () => {
     );
   }
 
-  const handleClearNotifications = async () => {
+  const handleDeleteNotifications = async () => {
     if (!notificationIds.length) return;
 
     try {
       setIsClearingNotifications(true);
-      await clearAllNotification(notificationIds);
+      await deleteAllNotification(notificationIds);
     } catch (error) {
       console.error(error);
     } finally {
@@ -69,6 +70,7 @@ const Notifications = () => {
           <h1>Notifications</h1>
           <button
             type="button"
+            onClick={handleDeleteNotifications}
             disabled={isClearingNotifications}
             className={`text-base ml-3 ${
               isClearingNotifications
