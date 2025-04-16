@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import SettingsSection from "./settings-section";
 import Input from "../Form/Input/input";
 import CopyText from "../CopyText/copy-text";
@@ -17,9 +17,16 @@ import {
   updateCompanyWebsiteTemplate,
 } from "@/app/(nav)/settings/profile/data";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { templateSettings } from "lodash";
-import { ApiResponseUserPlan, CompanySettingsResponse } from "@/app/(nav)/settings/others/types";
+import { debounce, templateSettings } from "lodash";
+import {
+  ApiResponseUserPlan,
+  CompanySettingsResponse,
+} from "@/app/(nav)/settings/others/types";
 import useFetch from "@/hooks/useFetch";
+import { checkWebsiteDomain } from "@/app/(nav)/settings/company/data";
+import { toast } from "sonner";
+import Button from "../Form/Button/button";
+import Link from "next/link";
 
 const SettingsWebsiteDomain = () => {
   const [customDomain, setCustomDomain] = useState("");
@@ -27,6 +34,7 @@ const SettingsWebsiteDomain = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { company_id, user_id } = usePersonalInfoStore();
   const [userPlan, setUserPlan] = useState("");
+  const [isCheckingDomain, setCheckingDomain] = useState(false);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
     "/property-manager-subscription/active"
@@ -39,15 +47,6 @@ const SettingsWebsiteDomain = () => {
       setUserPlan(premiumPlan);
     }
   }, [planData]);
-
-  const handleCustomDomainChange = (value: string) => {
-    const cleanedValue = value
-      .trim()
-      .replace(/\s+/g, "")
-      .replace(/[^a-zA-Z0-9.-]/g, "");
-
-    setCustomDomain(cleanedValue);
-  };
 
   const handleSelect = (type: string, value: string) => {
     setSelectedTemplate(value);
@@ -78,8 +77,15 @@ const SettingsWebsiteDomain = () => {
 
     setLoading(true);
     try {
-      if (customDomain && company_id) {
-        await updateCompanyDomain(company_id.toString(), customDomain);
+      if (domainStatus !== "available") {
+        toast.error("Domain name can't be updated ");
+        return;
+      }
+      if (customDomain && company_id && domainStatus === "available") {
+        const res = await updateCompanyDomain(company_id.toString(), customDomain);
+        if(res){
+          setDomainStatus("")
+        }
       }
       if (selectedTemplate) {
         await updateCompanyWebsiteTemplate(payload);
@@ -87,6 +93,87 @@ const SettingsWebsiteDomain = () => {
     } catch (error) {
     } finally {
       setLoading(false);
+    }
+  };
+
+  /* Check Domain */
+  const [domainStatus, setDomainStatus] = useState<string | null>("");
+  const [error, setError] = useState<string | null>("");
+
+  const checkDomainAvailability = useCallback(
+    debounce(async (value) => {
+      const cleanedValue = value
+        .trim()
+        .replace(/\s+/g, "")
+        .replace(/[^a-zA-Z0-9.-]/g, "");
+
+      setError("Please enter a valid domain (e.g., example.com)");
+      setDomainStatus(null);
+      setCustomDomain(cleanedValue);
+
+      setCustomDomain(cleanedValue);
+      setCheckingDomain(true);
+      setDomainStatus("searching");
+      setError(null);
+
+      try {
+        const res = await checkWebsiteDomain(cleanedValue);
+        if (res && res.data) {
+          setDomainStatus(
+            res.data.message === "available" ? "available" : "not-available"
+          );
+        } else {
+          setError("Error checking domain availability");
+          setDomainStatus(null);
+        }
+      } catch (error) {
+        setError("Error checking domain availability");
+        setDomainStatus(null);
+      } finally {
+        setCheckingDomain(false);
+      }
+    }, 500),
+    []
+  );
+
+  // Handle input change (runs immediately for smooth typing)
+  const handleInputChange = (value: string) => {
+    setCustomDomain(value); // Update input state immediately
+    if (!value.trim()) {
+      // Clear status and error when input is empty
+      setDomainStatus(null);
+      setError(null);
+      checkDomainAvailability.cancel(); // Cancel any pending debounced API call
+    } else {
+      checkDomainAvailability(value); // Trigger debounced API check
+    }
+  };
+
+  // Conditional styles for the status container
+  const getStatusStyles = () => {
+    switch (domainStatus) {
+      case "searching":
+        return "bg-black opacity-80 text-white";
+      case "available":
+        return "bg-green-500 text-white";
+      case "not-available":
+        return "bg-red-500 text-white";
+      default:
+        return "bg-gray-200 text-gray-700 hidden"; // Hide when no status
+    }
+  };
+
+  // Conditional status text
+  const getStatusText = () => {
+    switch (domainStatus) {
+      case "searching":
+        return "Searching...";
+      case "available":
+        return "Available";
+      case "not-available":
+        return "Not Available";
+      default:
+        return "";
     }
   };
 
@@ -107,28 +194,30 @@ const SettingsWebsiteDomain = () => {
             label=""
             placeholder=""
             value={customDomain}
-            onChange={(value) => handleCustomDomainChange(value)}
+            onChange={(value) => handleInputChange(value)}
             className="w-full sm:w-auto min-w-[200px] sm:min-w-[300px]"
           />
-          {customDomain && (
-            <CopyText
-              text={`https://${customDomain}.ourlisting.ng`}
-              className="text-brand-9 text-xs sm:text-sm text-center break-all"
-            />
-          )}
-          {!customDomain && (
+          {customDomain ? (
+            <Link
+              href={`https://${customDomain}.ourlisting.ng`}
+              target="_blank"
+              className="text-brand-9 text-xs sm:text-sm text-center break-all underline"
+            >{`https://${customDomain}.ourlisting.ng`}</Link>
+          ) : (
             <p className="text-brand-9 text-xs sm:text-sm text-center break-all">
-              {`https://${customDomain}.ourlisting.ng`}
+              https://example.ourlisting.ng
             </p>
           )}
-          {customDomain && (
-            <div className="status bg-green-500 text-white px-2 py-1 rounded-md text-xs">
-              Available
+          {domainStatus && customDomain && (
+            <div
+              className={`status px-4 py-1 rounded-md text-xs font-semibold ${getStatusStyles()}`}
+            >
+              {getStatusText()}
             </div>
           )}
         </div>
 
-        <div className="rssFeed flex flex-col gap-1 mb-4">
+        {/* <div className="rssFeed flex flex-col gap-1 mb-4">
           <h4 className="text-text-secondary dark:text-darkText-1 text-md font-normal">
             RSS Feed Link for Listings
           </h4>
@@ -136,7 +225,7 @@ const SettingsWebsiteDomain = () => {
             text={`https://www.ourlisting.ng/user/${user_id}`}
             className="text-brand-9 text-xs underline sm:text-sm"
           />
-        </div>
+        </div> */}
         <div className="custom-flex-col gap-6 mt-6">
           <SettingsSectionTitle
             title="choose template"
@@ -167,7 +256,13 @@ const SettingsWebsiteDomain = () => {
               profile={true}
             />
           </div>
-          <SettingsUpdateButton action={handleUpdate} loading={loading} />
+          {domainStatus !== "available" ? (
+            <div className="flex justify-end">
+              <Button disabled={domainStatus === "available"}>Update</Button>
+            </div>
+          ) : (
+            <SettingsUpdateButton action={handleUpdate} loading={loading} />
+          )}
         </div>
       </SettingsSection>
     </div>

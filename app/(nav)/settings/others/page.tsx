@@ -70,6 +70,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import SettingsUpdateModal from "@/components/Settings/Modals/settings-update-modal";
 import RestoreRestrictedUserForm from "./RestoreRestrictedUserForm";
 import { useRouter } from "next/navigation";
+import { logout } from "@/app/(onboarding)/auth/data";
 
 const companyTypes = [
   {
@@ -313,6 +314,16 @@ const Others = () => {
     });
   };
 
+  useEffect(() => {
+    const handlePopState = () => {
+      if (!localStorage.getItem("authToken")) {
+        window.location.replace("/auth/sign-in");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const resetSettings = async () => {
     if (!Array.isArray(resetOptions) || resetOptions.length === 0) return;
 
@@ -327,11 +338,11 @@ const Others = () => {
       setResetOptions([]);
       if (response) {
         localStorage.removeItem("authToken");
-        router.replace("/auth/sign-in");
-
+        sessionStorage.clear();
+        await logout();
+        window.location.href = "/auth/sign-in";
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setLoadingReset(false);
     }
@@ -441,8 +452,6 @@ const Others = () => {
     isNetworkError,
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
-  
-  console.log(apiData);
 
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
@@ -661,15 +670,14 @@ const Others = () => {
   const [restoring, setRestoring] = useState<boolean>(false);
 
   const handleRestoreUser = async () => {
-    //
-    if (!propertyId || !selectedRestrictedUser) return;
+    if (!selectedRestrictedUser) return;
+
+    console.log("Restricted user!!!");
     const payload = {
-      property_id: propertyId,
       user_id: selectedRestrictedUser?.id,
       is_active: true,
     };
 
-    //
     setRestoring(true);
     try {
       const response = await restrictUserFromGroupChat(payload);

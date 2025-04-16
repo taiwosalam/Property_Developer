@@ -25,7 +25,7 @@ import SettingsWebsiteDomain from "./settings-website-domain";
 const websiteOptions = [
   {
     name: "about_us_display",
-    title: "About Us and Reviews Display",
+    title: "About Us and Review Page",
     desc: "Easily toggle the About Us page on or off in your website menu.",
   },
   {
@@ -35,7 +35,7 @@ const websiteOptions = [
   },
   {
     name: "staffs_branch_options",
-    title: "Staffs and Branch Options",
+    title: "Staffs and Branch Page",
     desc: "Toggle staff and branch pages on or off in your website menu",
   },
   {
@@ -84,8 +84,6 @@ const WebsitePages = () => {
 
   const { data: companySettings } =
     useFetch<CompanySettingsResponse>("/company/settings");
-
-  console.log(companySettings);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
     "/property-manager-subscription/active"
@@ -179,7 +177,7 @@ const WebsitePages = () => {
   const handleWebsitePageAndColorScheme = async () => {
     const payload = {
       ...checkedStates,
-      //...propertyVisibility,
+      ...propertyVisibility,
       color_scheme: selectedColor ?? "default",
     };
 
@@ -187,13 +185,13 @@ const WebsitePages = () => {
     try {
       await updateWebsitePageAndColorScheme(payload);
     } catch (error) {
-      console.log(error);
+      
     } finally {
       setLoading(false);
     }
   };
 
-  //console.log(websiteSettings)
+  //
 
   return (
     <div>
@@ -201,7 +199,7 @@ const WebsitePages = () => {
         <div className="modules-list mb-5">
           <SettingsOthersCheckBox
             plan={"professional"}
-            title="Website Page"
+            title="Property Pages"
             name="module_listing"
             desc="Toggle on or off to control the visibility of your listing on the website, based on your subscription plan."
             checked={checkedStates["modules_listing"]}
