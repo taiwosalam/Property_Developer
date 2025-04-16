@@ -17,10 +17,10 @@ import useFetch from "@/hooks/useFetch";
 import { CompanySettingsResponse } from "@/app/(nav)/settings/others/types";
 
 const settings = [
-  {
-    title: "Site Title",
-    desc: "Specify the site title properties.",
-  },
+  // {
+  //   title: "Site Title",
+  //   desc: "Specify the site title properties.",
+  // },
   {
     title: "Body Font",
     desc: "Specify the body font properties.",

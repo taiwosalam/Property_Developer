@@ -336,7 +336,7 @@ const Others = () => {
       const response = await updateResetSettings(payload);
       // reset the settings options when request is made
       setResetOptions([]);
-      if (response) {
+      if (response && resetOptions.includes("resetAll")) {
         localStorage.removeItem("authToken");
         sessionStorage.clear();
         await logout();
@@ -453,6 +453,7 @@ const Others = () => {
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
 
+
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
@@ -535,10 +536,10 @@ const Others = () => {
 
   type DirectorsFormOptions = "options" | "choose-avatar";
 
-  const handleSubmit = async (data: FormData) => {
+  const submitDirectorForm = async (data: FormData) => {
     const fields = [
       "title",
-      "personal_title",
+      "professional_title",
       "full_name",
       "email",
       "years_in_business",
@@ -593,7 +594,7 @@ const Others = () => {
       heading: "Create New Director",
       content: (
         <DirectorsForm
-          submitAction={handleSubmit}
+          submitAction={submitDirectorForm}
           isProcessing={processing}
           chooseAvatar={() => setActiveStep("choose-avatar")}
           avatar={selectedAvatar}
@@ -725,7 +726,7 @@ const Others = () => {
                   email={director.email}
                   phone_number={director.phone_number}
                   picture_url={director.picture}
-                  user_tag={director.title}
+                  user_tag={director.professional_title}
                 />
               );
             })}

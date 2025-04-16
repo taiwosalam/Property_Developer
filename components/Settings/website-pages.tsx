@@ -97,7 +97,6 @@ const WebsitePages = () => {
     }
   }, [planData]);
 
-  
   useEffect(() => {
     if (companySettings && companySettings?.data) {
       const webSetting = companySettings?.data?.website_settings;
@@ -117,7 +116,6 @@ const WebsitePages = () => {
     }
   }, [companySettings]);
 
-  
   useEffect(() => {
     if (websiteSettings) {
       setSelectedColor(websiteSettings.color_scheme ?? "#000000");
@@ -129,8 +127,8 @@ const WebsitePages = () => {
         services_contact_page: websiteSettings.services_contact_page ?? true,
         social_link_visibility: websiteSettings.social_link_visibility ?? true,
         sponsored_logo: websiteSettings.sponsored_logo ?? true,
-        staffs_branch_options: websiteSettings.staffs_branch_options ?? true
-        ?? true,
+        staffs_branch_options:
+          websiteSettings.staffs_branch_options ?? true ?? true,
       });
 
       setPropertyVisibility({
@@ -185,7 +183,6 @@ const WebsitePages = () => {
     try {
       await updateWebsitePageAndColorScheme(payload);
     } catch (error) {
-      
     } finally {
       setLoading(false);
     }

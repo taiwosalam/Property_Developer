@@ -27,6 +27,7 @@ import { checkWebsiteDomain } from "@/app/(nav)/settings/company/data";
 import { toast } from "sonner";
 import Button from "../Form/Button/button";
 import Link from "next/link";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const SettingsWebsiteDomain = () => {
   const [customDomain, setCustomDomain] = useState("");
@@ -35,6 +36,7 @@ const SettingsWebsiteDomain = () => {
   const { company_id, user_id } = usePersonalInfoStore();
   const [userPlan, setUserPlan] = useState("");
   const [isCheckingDomain, setCheckingDomain] = useState(false);
+  //const [isOwner, setIsOwner] = useState<boolean | string>(false);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
     "/property-manager-subscription/active"
@@ -52,8 +54,14 @@ const SettingsWebsiteDomain = () => {
     setSelectedTemplate(value);
   };
 
-  const { data: companySettings } =
+  const { data: companySettings, refetch } =
     useFetch<CompanySettingsResponse>("/company/settings");
+    useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
+
+    const isOwner =
+      customDomain &&
+      (`${customDomain}.ourlisting.ng` === companySettings?.data?.domain);
+
 
   useEffect(() => {
     if (companySettings) {
@@ -77,14 +85,17 @@ const SettingsWebsiteDomain = () => {
 
     setLoading(true);
     try {
-      if (domainStatus !== "available") {
-        toast.error("Domain name can't be updated ");
+      if (!isOwner && domainStatus !== "available") {
+        toast.error("Domain name is not available for update");
         return;
       }
       if (customDomain && company_id && domainStatus === "available") {
-        const res = await updateCompanyDomain(company_id.toString(), customDomain);
-        if(res){
-          setDomainStatus("")
+        const res = await updateCompanyDomain(
+          company_id.toString(),
+          customDomain
+        );
+        if (res) {
+          setDomainStatus("");
         }
       }
       if (selectedTemplate) {
@@ -208,7 +219,7 @@ const SettingsWebsiteDomain = () => {
               https://example.ourlisting.ng
             </p>
           )}
-          {domainStatus && customDomain && (
+          {!isOwner && customDomain && domainStatus && (
             <div
               className={`status px-4 py-1 rounded-md text-xs font-semibold ${getStatusStyles()}`}
             >
@@ -217,7 +228,7 @@ const SettingsWebsiteDomain = () => {
           )}
         </div>
 
-        {/* <div className="rssFeed flex flex-col gap-1 mb-4">
+        {/* { <div className="rssFeed flex flex-col gap-1 mb-4">
           <h4 className="text-text-secondary dark:text-darkText-1 text-md font-normal">
             RSS Feed Link for Listings
           </h4>
@@ -225,7 +236,7 @@ const SettingsWebsiteDomain = () => {
             text={`https://www.ourlisting.ng/user/${user_id}`}
             className="text-brand-9 text-xs underline sm:text-sm"
           />
-        </div> */}
+        </div> } */}
         <div className="custom-flex-col gap-6 mt-6">
           <SettingsSectionTitle
             title="choose template"
@@ -256,9 +267,9 @@ const SettingsWebsiteDomain = () => {
               profile={true}
             />
           </div>
-          {domainStatus !== "available" ? (
+          {domainStatus !== "available" && !isOwner ? (
             <div className="flex justify-end">
-              <Button disabled={domainStatus === "available"}>Update</Button>
+              <Button onClick={handleUpdate}>Update</Button>
             </div>
           ) : (
             <SettingsUpdateButton action={handleUpdate} loading={loading} />
