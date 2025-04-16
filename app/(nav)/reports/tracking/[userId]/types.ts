@@ -28,13 +28,13 @@ export type ActivityTable = {
   id: number;
   username: string;
   page_visited: string;
-  action_taken: string;
+  //action_taken: string;
   ip_address: string;
   location: string;
   date: string;
   time: string;
-  longitude: string;
-  latitude: string;
+  //longitude: string;
+  //latitude: string;
 };
 
 interface Location {
@@ -117,13 +117,13 @@ export const transformActivityAData = (
       id: activity?.user_id,
       username: activity.user_name,
       page_visited: getLastSegment(activity.page_visited) || "",
-      action_taken: activity.action,
+      //action_taken: activity.action,
       ip_address: activity.ip_address,
       location: activity.location.city,
       date: activity.date,
       time: activity.time ? dayjs(activity.time, "HH:mm").format("hh:mm A") : "___ ___",
-      longitude: activity.location.longitude,
-      latitude: activity.location.latitude,
+      //longitude: activity.location.longitude,
+      //latitude: activity.location.latitude,
     };
   });
 };

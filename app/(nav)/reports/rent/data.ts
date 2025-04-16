@@ -63,8 +63,8 @@ export const transformRentData = (data: RentListResponse): RentReportData => {
     rents: data.data.rents.map((rent) => ({
       unit_id: rent.unit_id || 0,
       unit_name: rent.unit_name || "__ __",
-      property_name:
-        rent.property_name === "N/A" ? "__ __" : rent.property_name,
+      // property_name:
+      //   rent.property_name === "N/A" ? "__ __" : rent.property_name,
       tenant_name: rent.tenant_name || "__ __",
       rent_start_date: formatDate(rent.rent_start_date),
       rent_end_date: formatDate(rent.rent_start_date),
@@ -75,7 +75,7 @@ export const transformRentData = (data: RentListResponse): RentReportData => {
             maximumFractionDigits: 2,
           })}`
         : "___ ___",
-      caution_deposit: rent.caution_deposit || 0,
+      //caution_deposit: rent.caution_deposit || 0,
     })),
   };
 };

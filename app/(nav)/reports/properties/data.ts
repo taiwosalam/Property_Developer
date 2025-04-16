@@ -78,8 +78,6 @@ export interface PropertyApiResponse {
 interface TransformedProperty {
   id: number;
   property: string;
-  branch: string;
-  account_officer: string;
   landlord: string;
   date_created: string;
   total_units: number;
@@ -106,8 +104,6 @@ export const transformPropertyData = (
   const transformedProperties = properties.map((property) => ({
     id: property.property_id,
     property: property.property_name,
-    branch: property.branch_name,
-    account_officer: formatPropertyName(property.account_officer),
     landlord: formatPropertyName(property.landlord_name),
     date_created: property.created_at
       ? dayjs(property.created_at).format("YYYY-MM-DD h:mm A")
