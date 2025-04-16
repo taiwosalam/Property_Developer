@@ -5,6 +5,7 @@ import {
 } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { CompanySettingsResponse } from "../others/types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 interface SocialLinks {
   facebook: string;
@@ -405,7 +406,9 @@ export const updateCompanyWebsiteTemplate = async (
       }
     );
     if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchProfile"));
       toast.success("Update successful");
+      
       return true;
     }
     console.log("res", response);
@@ -428,6 +431,7 @@ export const updateCompanyDomain = async (
       payload
     );
     if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchProfile"));
       return true;
     }
     console.log("res", response);

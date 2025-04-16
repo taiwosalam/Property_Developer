@@ -90,7 +90,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
         <Select
           isSearchable={false}
-          id="personal_title"
+          id="professional_title"
           label="real estate title"
           inputContainerClassName="bg-neutral-2"
           options={industryOptions}
@@ -199,7 +199,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
             >
              { avatar && <input hidden  name="avatar" value={avatar}/>}
               {avatar ? (
-                <>
+                <div>
                   <Image
                     src={avatar}
                     alt="selected avatar"
@@ -218,7 +218,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
                   >
                     <DeleteIconOrange size={20} />
                   </div>
-                </>
+                </div>
               ) : (
                 <PersonIcon />
               )}
