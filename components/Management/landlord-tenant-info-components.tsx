@@ -21,6 +21,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { updateLandlordNote } from "@/app/(nav)/management/landlord/[landlordId]/manage/edit/data";
 import { updateProviderNotes } from "@/app/(nav)/management/service-providers/[serviceProviderId]/manage/data";
 import { combine } from "zustand/middleware";
+import { updateVehicleDetails } from "../tasks/vehicles-record/data";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -233,10 +234,12 @@ export const NotesInfoBox: React.FC<{
   provider_note?: {
     note_last_updated: string;
     provider_notes: string;
-  }
+  };
 }> = ({ notes, provider_note }) => {
   const { note_last_updated, provider_notes } = provider_note || {};
-  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || provider_notes || "");
+  const sanitizedHTML = DOMPurify.sanitize(
+    notes?.write_up || provider_notes || ""
+  );
   return (
     <LandlordTenantInfoBox className="custom-flex-col gap-4">
       <div className="flex justify-between gap-4">
@@ -260,27 +263,29 @@ export const NotesInfoBox: React.FC<{
 };
 
 export const MobileNotesModal: React.FC<{
-  page?: "landlord" | "tenant" | "service-provider";
+  page?: "landlord" | "tenant" | "service-provider" | "vehicle-record";
   notes?: { last_updated: string; write_up: string };
+  defaultNote?: string;
   id?: string;
   provider_data?: {
     provider_notes: string;
     company_id: string;
     avatar: string;
     note_last_updated: string;
-  }
-  
-}> = ({ notes, id, page, provider_data }) => {
-  const { provider_notes, company_id, avatar, note_last_updated } = provider_data || {}
+  };
+}> = ({ notes, id, page, provider_data, defaultNote }) => {
+  const { provider_notes, company_id, avatar, note_last_updated } =
+    provider_data || {};
   const [editNote, setEditNote] = useState(false);
-  const [note, setNote] = useState(notes?.write_up || provider_notes);
+  const [note, setNote] = useState(
+    notes?.write_up || provider_notes || defaultNote
+  );
   const [reqLoading, setReqLoading] = useState(false);
 
   useEffect(() => {
-    setNote(notes?.write_up || provider_notes || "");
+    setNote(notes?.write_up || provider_notes || defaultNote || "");
   }, [notes, provider_notes]);
 
-  
   const handleUpdateNote = async () => {
     if (id) {
       setReqLoading(true);
@@ -289,9 +294,14 @@ export const MobileNotesModal: React.FC<{
           ? updateLandlordNote(id, objectToFormData({ note }))
           : page === "tenant"
           ? updateTenantNote(id, objectToFormData({ note }))
+          : page === "vehicle-record"
+          ? updateVehicleDetails(
+              objectToFormData({ note: note, _method: "patch" }),
+              Number(id)
+            )
           : updateProviderNotes(
               id,
-              objectToFormData({ note: note, company_id, avatar_url: avatar })  
+              objectToFormData({ note: note, company_id, avatar_url: avatar })
             );
       const status = await action;
       if (status) {
@@ -300,14 +310,21 @@ export const MobileNotesModal: React.FC<{
           window.dispatchEvent(new Event("refetchlandlord"));
         page === "service-provider" &&
           window.dispatchEvent(new Event("updateServiceProvider"));
+        page === "vehicle-record" &&
+          window.dispatchEvent(new Event("refetchVehicleRecord"));
         setEditNote(false);
       }
       setReqLoading(false);
     }
   };
 
-  const sanitizedHTML = DOMPurify.sanitize(notes?.write_up || provider_notes || "");
-  const providerNoteLastUpdated = provider_notes === "<p><br></p>" || provider_notes === "" ? "" : note_last_updated;
+  const sanitizedHTML = DOMPurify.sanitize(
+    notes?.write_up || provider_notes || defaultNote || ""
+  );
+  const providerNoteLastUpdated =
+    provider_notes === "<p><br></p>" || provider_notes === ""
+      ? ""
+      : note_last_updated;
 
   return (
     <LandlordTenantInfoBox className="w-[600px] max-w-[80%] max-h-[85%] min-h-[250px] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar">
@@ -317,7 +334,7 @@ export const MobileNotesModal: React.FC<{
             <span>Note</span>
             <sub className="text-sm font-normal bottom-[unset]">
               <span className="font-bold">Last Updated</span>{" "}
-              {notes?.last_updated || providerNoteLastUpdated }
+              {notes?.last_updated || providerNoteLastUpdated}
             </sub>
           </h3>
           <div className="flex items-center gap-2">

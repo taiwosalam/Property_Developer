@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import { CheckInOut } from "./types";
 import dayjs from "dayjs";
+import { empty } from "@/app/config";
 
 interface checkInOutData {
   id: number;
@@ -107,7 +108,7 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?:
             <ModalContent>
             <VehicleRecordModal 
               status={status as "completed" | "pending"}
-              pictureSrc={pictureSrc}
+              pictureSrc={pictureSrc || empty}
               name={checkIn.name}
               id={recordData?.inventory_id?.toString() || userId?.toString() || ""}
               category={category as "guest" | "visitor"}

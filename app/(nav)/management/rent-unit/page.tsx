@@ -36,6 +36,7 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
 import useStaffRoles from "@/hooks/getStaffs";
 import ServerError from "@/components/Error/ServerError";
+import { PropertyListResponse } from "./[id]/edit-rent/type";
 
 const RentAndUnit = () => {
   const view = useView();
@@ -154,6 +155,12 @@ const RentAndUnit = () => {
     setSearch(query);
   };
 
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
 
@@ -163,6 +170,13 @@ const RentAndUnit = () => {
       value: branch.id,
     })) || [];
 
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: `${p.id}`,
+      label: p.title,
+    })) || [];
+
+    console.log("propertyOptions", propertyOptions)
   const {
     data: apiData,
     loading,
@@ -218,7 +232,6 @@ const RentAndUnit = () => {
 
   if (error) return <ServerError error={error} />;
 
-  console.log("pageData", pageData);
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
@@ -271,6 +284,14 @@ const RentAndUnit = () => {
         // filterOptions={RentAndUnitFilters}
         filterOptionsMenu={[
           ...RentAndUnitFiltersWithDropdown,
+          ...(propertyOptions.length > 0 
+            ? [
+              {
+                label: "Properties",
+                value: propertyOptions,
+              },
+            ]
+          : []),
           ...(branchOptions.length > 0
             ? [
                 {

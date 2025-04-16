@@ -78,6 +78,7 @@ const VehiclesRecordPage = () => {
     vehicle_records: { data, current_page, last_page, total },
   } = state;
 
+  console.log("data", data)
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 

@@ -13,6 +13,7 @@ import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { useAuthStore } from "@/store/authStore";
 import { getLocalStorage } from "@/utils/local-storage";
 import Link from "next/link";
+import useGetConversationWithPusher from "@/hooks/useGetPusherMsg";
 
 const Chat = () => {
   const router = useRouter();
@@ -34,7 +35,9 @@ const Chat = () => {
   }, [id, setChatData]);
 
   // Initiate fetching messages (this hook handles SSE.)
-  useGetConversation(`${id}`);
+  // useGetConversation(`${id}`);
+    // Initiate fetching messages with Pusher
+    useGetConversationWithPusher(id);
 
   // When store_messages updates, group messages by day and update local state.
   useEffect(() => {

@@ -40,6 +40,9 @@ import { toast } from "sonner";
 import { Box as MuiBox, Modal as MuiModal } from "@mui/material";
 import { UseerSkeletonVehicleRecord } from "@/components/Skeleton/vehicle-record";
 import ServerError from "@/components/Error/ServerError";
+import UpdateVehicleWithEmail from "@/components/Modal/update-vehicle-record";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { NotepadTextDashed } from "lucide-react";
 
 interface TransformedData {
   userData: UserData | null;
@@ -147,8 +150,6 @@ const RecordPage = () => {
 
   const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
 
-  // console.log("userData", checkInsOutData);
-
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -165,6 +166,7 @@ const RecordPage = () => {
   const {
     user_tag,
     notes,
+    note,
     full_name,
     state: userState,
     address,
@@ -221,21 +223,32 @@ const RecordPage = () => {
     }
   };
 
+  // Check if there's a record
+  const hasRecords = (checkInsOutData?.check_ins ?? []).length > 0;
+
+  // Handle Edit Vehicle button click
+  const handleEditVehicleClick = () => {
+    if (hasRecords) {
+      toast.warning("Cannot update details if there's a record.");
+      return;
+    }
+    setUpdateVehicleModal(true);
+  };
+
   // Check if there's a pending record
   const hasPendingRecord =
     checkInsOutData?.check_ins?.some((record) => record.status === "pending") ||
     false;
 
-  console.log("hasPendingRecord", hasPendingRecord);
   // Handle button click when there's a pending record
   const handleCreateNewRecordClick = () => {
     if (hasPendingRecord) {
       toast.warning(
         "There’s a pending record that needs to be checked out before creating a new record."
       );
-      return; // Prevent the modal from opening
+      return;
     }
-    setModalOpen(true); // Open the modal if no pending record
+    setModalOpen(true);
   };
 
   return (
@@ -252,6 +265,7 @@ const RecordPage = () => {
               alt="profile picture"
               size={120}
               rounded
+              className="custom-secondary-bg"
             />
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
@@ -268,7 +282,12 @@ const RecordPage = () => {
                 </p>
               </div>
               <div className="custom-flex-col gap-2">
-                <UserTag type={user_tag} />
+                <div className="flex gap-2 items-center">
+                  <UserTag type={user_tag} />
+                  {note && (
+                    <NoteBlinkingIcon size={20} className="blink-color" />
+                  )}
+                </div>
                 {user_tag === "mobile" && (
                   <p className="text-neutral-800 dark:text-darkText-2 text-base font-medium">
                     ID: {userId}
@@ -314,9 +333,16 @@ const RecordPage = () => {
                     />
                   </ModalContent>
                 </Modal>
-                <Button size="base_medium" className="py-2 px-8">
-                  Update with Email
-                </Button>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button size="base_medium" className="py-2 px-8">
+                      Update with Email
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <UpdateVehicleWithEmail recordId={recordId.toString()} />
+                  </ModalContent>
+                </Modal>
               </>
             )}
             <Modal>
@@ -331,10 +357,9 @@ const RecordPage = () => {
               </ModalTrigger>
               <ModalContent>
                 <MobileNotesModal
-                  notes={{
-                    last_updated: notes?.last_updated || "",
-                    write_up: notes?.write_up ?? "",
-                  }}
+                  page="vehicle-record"
+                  id={recordId.toString()}
+                  defaultNote={note}
                 />
               </ModalContent>
             </Modal>
@@ -387,17 +412,19 @@ const RecordPage = () => {
             <Detail label="Color" value={color || "N/A"} />
             <Detail label="Manufacture Year" value={manufacture_year} />
           </div>
+          <Button
+            size="base_medium"
+            className="py-2 px-8 ml-auto self-end"
+            onClick={handleEditVehicleClick}
+          >
+            Edit
+          </Button>
           <Modal
             state={{
               isOpen: updateVehicleModal,
               setIsOpen: setUpdateVehicleModal,
             }}
           >
-            <ModalTrigger asChild>
-              <Button size="base_medium" className="py-2 px-8 ml-auto self-end">
-                Edit
-              </Button>
-            </ModalTrigger>
             <ModalContent>
               <EditVehicleDetailsFormModal
                 data={{
@@ -444,16 +471,13 @@ const RecordPage = () => {
       />
       <FixedFooter className="flex items-center justify-end">
         <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
-          {/* <ModalTrigger asChild> */}
           <Button
-            // disabled={hasPendingRecord}
             onClick={handleCreateNewRecordClick}
             size="sm_normal"
             className="py-2 px-8"
           >
             Create New Record
           </Button>
-          {/* </ModalTrigger> */}
           <ModalContent>
             <CheckInOutForm
               onSubmit={handleCheckIn}

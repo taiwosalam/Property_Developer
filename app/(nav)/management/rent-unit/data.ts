@@ -323,6 +323,7 @@ export const RentAndUnitFiltersWithDropdown = [
   },
   {
     label: "Property Type",
+    radio: true,
     value: [
       { label: "Rental", value: "rental" },
       { label: "Facility", value: "facility" },

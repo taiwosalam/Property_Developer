@@ -1,163 +1,175 @@
-// Imports
+import { useCallback, useState } from "react";
 import Input from "../Form/Input/input";
-import { useEffect, useState } from "react";
 import Button from "../Form/Button/button";
 import { AuthForm } from "../Auth/auth-components";
-import LandlordTenantModalPreset from "./landlord-tenant-modal-preset";
 import UserCard, { UserCardProps } from "./landlord-and-tenant-card";
-import useFetch from "@/hooks/useFetch";
 import { transformMobileUseData } from "@/app/(nav)/management/landlord/data";
 import { toast } from "sonner";
+import { getUsers } from "@/utils/getData";
 
 interface InvitationFormProps {
   method: "id" | "email";
   submitAction: (data: any) => Promise<void>;
   formStep?: number;
-  identifier?: number | string;
+  identifier?: string | number;
   setIdentifier?: React.Dispatch<React.SetStateAction<string>>;
   setFormStep?: React.Dispatch<React.SetStateAction<number>>;
   page?: "landlord" | "tenant";
 }
 
+interface FormData {
+  name?: string;
+  email?: string;
+  identifier?: string;
+}
+
 const InvitationForm: React.FC<InvitationFormProps> = ({
-  submitAction,
   method,
-  formStep,
-  setFormStep,
+  submitAction,
+  formStep = 1,
   identifier,
   setIdentifier,
+  setFormStep,
   page,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [mobileUser, setMobileUser] = useState<UserCardProps | null>(null);
-  const {
-    data: apiData,
-    error,
-    loading,
-    refetch,
-  } = useFetch<any>(identifier ? `/get-users?identifier=${identifier}` : null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Move to step 2 when fetch completes successfully
-  useEffect(() => {
-    if (!loading && apiData && !error && identifier) {
-      const trans = transformMobileUseData(apiData);
-      setMobileUser(trans);
-      setFormStep && setFormStep(3);
-    }
-  }, [loading, apiData, error, identifier]);
+  // Handle form submission
+  const handleSubmit = useCallback(
+    async (data: FormData) => {
+      setError(null);
 
-  const handleSubmit = async (data: any) => {
-    if (method === "id" && setFormStep && setIdentifier) {
-      const identifier = data.identifier;
-      if (!identifier) {
-        toast.warning("Please enter a profile email or ID");
+      if (method === "id") {
+        const id = data.identifier?.trim();
+        if (!id) {
+          toast.warning("Please enter a profile email or ID");
+          return;
+        }
+
+        setIsLoading(true);
+        try {
+          const userData = await getUsers(id);
+          const transformedData = transformMobileUseData(userData);
+          setMobileUser(transformedData);
+          setIdentifier?.(id);
+          setFormStep?.(3);
+        } catch (err) {
+          setError("No mobile user found with that identifier");
+          toast.error("No mobile user found with that identifier");
+        } finally {
+          setIsLoading(false);
+        }
         return;
       }
-      setIdentifier(identifier);
-      return;
-    } else {
+
+      // Handle email method
       setIsLoading(true);
-      await submitAction(data);
+      try {
+        await submitAction(data);
+      } catch (err) {
+        toast.error("Failed to send invitation");
+        console.error("Invitation error:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [method, setIdentifier, setFormStep, submitAction]
+  );
+
+  // Handle proceed action for step 3
+  const handleProceed = useCallback(async () => {
+    if (method !== "id" || !identifier) return;
+    setIsLoading(true);
+    try {
+      await submitAction({ identifier });
+    } catch (err) {
+      toast.error("Failed to proceed with invitation");
+      console.error("Proceed error:", err);
+    } finally {
       setIsLoading(false);
     }
-  };
+  }, [method, identifier, submitAction]);
 
-  useEffect(() => {
-    if (error) {
-      toast.warning("No Mobile User with that Identity");
-    }
-  }, [error]);
-
-  const handleProceed = async () => {
-    if (method === "id") {
-      setIsLoading(true);
-      await submitAction(identifier!);
-      setIsLoading(false);
-    }
-  };
+  // Reset form to step 1
+  const handleCancel = useCallback(() => {
+    setFormStep?.(1);
+    setIdentifier?.("");
+    setMobileUser(null);
+    setError(null);
+  }, [setFormStep, setIdentifier]);
 
   return (
     <div className="relative min-h-[200px]">
       <AuthForm
-        className={`items-center justify-center custom-flex-col gap-5 transition-opacity duration-150 ${
+        className={`flex flex-col items-center gap-5 transition-opacity duration-150 ${
           formStep === 3 ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
         onFormSubmit={handleSubmit}
       >
-        <div className="custom-flex-col gap-5 max-w-[400px]">
+        <div className="flex flex-col gap-5 max-w-[400px] w-full">
           {method === "email" ? (
             <>
               <Input
                 id="name"
-                label="name"
+                label="Name"
                 inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+                disabled={isLoading}
               />
               <Input
                 id="email"
-                label="email"
+                label="Email"
                 type="email"
                 inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+                disabled={isLoading}
               />
             </>
           ) : (
             <Input
-              // id="profile_id"
               id="identifier"
-              label="Input Profile Email/ID"
+              label="Profile Email/ID"
               inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
+              disabled={isLoading}
             />
           )}
-          <div className="flex justify-center">
+          <Button
+            type="submit"
+            size="base_medium"
+            className="py-2 px-8 mx-auto"
+            disabled={isLoading}
+          >
+            {isLoading ? "Processing..." : method === "email" ? "Invite" : "Add"}
+          </Button>
+        </div>
+      </AuthForm>
+
+      {formStep === 3 && mobileUser && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-white p-4">
+          <h3 className="text-base font-medium text-gray-900 mb-4 text-center">
+            Verify if this is the correct mobile user to add
+          </h3>
+          <UserCard className="min-w-[300px] max-w-[400px] mb-4" {...mobileUser} />
+          <div className="flex gap-4">
             <Button
-              type="submit"
+              type="button"
               size="base_medium"
               className="py-2 px-8"
               disabled={isLoading}
+              onClick={handleProceed}
             >
-              {isLoading
-                ? "Please wait..."
-                : method === "email"
-                ? "invite"
-                : "Add"}
+              {isLoading ? "Processing..." : "Proceed"}
             </Button>
-          </div>
-        </div>
-      </AuthForm>
-      {formStep === 3 && (
-        <div className="absolute top-0 left-0 right-0 pb-[20px] min-h-[200px]">
-          <div className="flex flex-col gap-4 bg-white items-center justify-center">
-            <h3 className="text-black dark:text-darkText-1 text-base font-medium">
-              Kindly verify if the name matches the ID or Email of the mobile
-              user you intend to add
-            </h3>
-            <div>
-              {mobileUser && (
-                <UserCard className="min-w-[300px]" {...mobileUser} />
-              )}
-            </div>
-            <div className="flex gap-4">
-              <Button
-                type="button"
-                size="base_medium"
-                className="py-2 px-8"
-                disabled={isLoading}
-                onClick={handleProceed}
-              >
-                {isLoading ? "Please wait..." : "Proceed"}
-              </Button>
-              <Button
-                size="custom"
-                onClick={() => {
-                  setFormStep && setFormStep(1);
-                  setIdentifier && setIdentifier("");
-                }}
-                type="button"
-                className="py-2 px-8 font-bold text-sm lg:text-base"
-                variant="sky_blue"
-              >
-                Cancel
-              </Button>
-            </div>
+            <Button
+              type="button"
+              size="base_medium"
+              variant="sky_blue"
+              className="py-2 px-8"
+              disabled={isLoading}
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
           </div>
         </div>
       )}

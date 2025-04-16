@@ -13,6 +13,8 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { createArticle, transformFormArticleData } from "../data";
 import { toast } from "sonner";
 import { handleAxiosError } from "@/services/api";
+import Select from "@/components/Form/Select/select";
+import { getAllStates, getLocalGovernments } from "@/utils/states";
 
 const CreateArticle = () => {
   const router = useRouter();
@@ -23,14 +25,16 @@ const CreateArticle = () => {
     // Check the lenght of the content char
     const content = formData.get("content");
     if (typeof content === "string" && content.length < 200) {
-        toast.error("Content must be at least 200 characters long.");
+      toast.error("Content must be at least 200 characters long.");
       return;
     }
 
     // Check if the user has uploaded at least one picture or provided a video link
     const videoLink = formData.get("video_link");
     if (imageFiles.length === 0 && !videoLink) {
-      toast.error("Please upload at least one picture or provide a video link.");
+      toast.error(
+        "Please upload at least one picture or provide a video link."
+      );
       return;
     }
 
@@ -38,7 +42,9 @@ const CreateArticle = () => {
     const targetAudience = formData.get("target_audience");
     if (typeof targetAudience === "string") {
       const audienceArray = targetAudience.split(",").slice(0, 60); // Split into an array and limit to 60 items
-      audienceArray.forEach((audience) => formData.append("target_audience[]", audience.trim()));
+      audienceArray.forEach((audience) =>
+        formData.append("target_audience[]", audience.trim())
+      );
     }
 
     imageFiles.forEach((file) => formData.append("pictures[]", file));
@@ -62,8 +68,6 @@ const CreateArticle = () => {
     }
   };
 
-
-
   return (
     <>
       <div className="wra mb-16">
@@ -86,7 +90,7 @@ const CreateArticle = () => {
           returnType="form-data"
           onFormSubmit={handleSubmit}
           className="custom-flex-col gap-5"
-          setValidationErrors={() => { }}
+          setValidationErrors={() => {}}
         >
           <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
             <div className="first flex flex-col w-full lg:w-[60%]">
@@ -114,11 +118,47 @@ const CreateArticle = () => {
 
 export default CreateArticle;
 
-const SecondSection = ({ setImageFiles }: { setImageFiles: (files: File[]) => void }) => {
+const SecondSection = ({
+  setImageFiles,
+}: {
+  setImageFiles: (files: File[]) => void;
+}) => {
+  const stateOptions = getAllStates();
+  const [address, setAddress] = useState({
+    state: "",
+    lga: "",
+    city: "",
+  });
+  const handleAddressChange = (key: keyof typeof address, value: string) => {
+    setAddress((prev) => ({
+      ...prev,
+      [key]: value,
+      ...(key === "state" && { lga: "", city: "" }),
+      ...(key === "lga" && { city: "" }),
+    }));
+  };
+
   return (
     <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
       <AddPhotoAndVideo onFilesChange={(files) => setImageFiles(files)} />
-      <StateAndLocalGovt />
+      <Select
+        options={getAllStates()}
+        id="taget_audience"
+        label="state"
+        value={address.state}
+        onChange={(value) => handleAddressChange("state", value)} 
+        required
+      />
+
+      <Select
+        options={getLocalGovernments(address.state)}
+        id="local_government"
+        label="local government"
+        onChange={(value) => handleAddressChange("lga", value)} 
+        value={address.lga} 
+        required
+      />
+      {/* <StateAndLocalGovt /> */}
     </div>
   );
 };
