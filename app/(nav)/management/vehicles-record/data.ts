@@ -22,6 +22,7 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
 
 export interface VehicleRecordFilterParams {
   from_date?: string;
+  page?: number;
   to_date?: string;
   sort_by?: "desc";
   search?: string;

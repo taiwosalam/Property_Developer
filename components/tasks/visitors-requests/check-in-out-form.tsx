@@ -4,6 +4,7 @@ import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import TextArea from "@/components/Form/TextArea/textarea";
 import ModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import { empty } from "@/app/config";
 
 interface BaseProps {
   type: "check-in" | "check-out" | "decline";
@@ -54,13 +55,13 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
           <div className="md:min-w-fit custom-flex-col gap-6">
             <div className="flex-1 flex-col items-center gap-2">
               <div className="mb-[10px] flex items-center gap-4">
-                <Picture src={pictureSrc} alt="empty" size={80} rounded />
+                <Picture src={pictureSrc || empty} alt="empty" size={80} rounded />
                 <div className="flex flex-col">
                   <p className="flex items-center">
                     <span className="text-text-primary dark:text-white text-base font-medium">
                       {userName}
                     </span>
-                    <BadgeIcon color="green" />
+                    {/* <BadgeIcon color="green" /> */}
                   </p>
                   <p className="flex items-center gap-1 text-sm font-normal">
                     <span className="text-text-tertiary dark:text-darkText-2">

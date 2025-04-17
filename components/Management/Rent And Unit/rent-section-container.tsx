@@ -47,9 +47,10 @@ export const FeeDetails: React.FC<{
   id: string;
   noEdit?: boolean;
   deduction?: boolean;
-}> = ({ title, feeDetails, total_package, id, noEdit, deduction }) => {
+  owing?: boolean;
+}> = ({ title, feeDetails, total_package, id, noEdit, deduction, owing }) => {
   const totalFee = feeDetails
-    .reduce((acc, fee) => acc + fee.amount, 0)
+    .reduce((acc, fee) => (acc + Number(fee.amount)), 0)
     .toLocaleString();
   return (
     <RentSectionContainer title={title}>
@@ -60,28 +61,35 @@ export const FeeDetails: React.FC<{
               key={index}
               style={{ width: "120px" }}
               label={fee.name}
-              // value={`₦${fee?.amount?.toLocaleString()}`}
               value={`${fee?.amount}`}
             />
           ))}
         </div>
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="space-y-2">
-            {noEdit &&
+            {noEdit && (
               <p className="text-[#747474] dark:text-white text-base font-normal">
-                {deduction ? "Total Package" : "Total Balance"}
-              </p>}
-            {!noEdit &&
+                {deduction
+                  ? "Total Package"
+                  : owing
+                  ? "Current Total Package"
+                  : "Total Balance"}
+              </p>
+            )}
+            {!noEdit && (
               <p className="text-[#747474] dark:text-white text-base font-normal">
-               Total Package
-              </p>}
+                Total Package
+              </p>
+            )}
             <p className="text-lg lg:text-xl text-brand-9 font-bold">
-              {total_package ? `${currencySymbols['₦' as keyof typeof currencySymbols] || '₦'}${formatNumber(
-                parseFloat(total_package.toString())
-              )}` : undefined}
+              {total_package
+                ? `${
+                    currencySymbols["₦" as keyof typeof currencySymbols] || "₦"
+                  }${formatNumber(parseFloat(total_package.toString()))}`
+                : undefined}
             </p>
           </div>
-          {!noEdit &&
+          {!noEdit && (
             <Modal>
               <ModalTrigger asChild>
                 <Button type="submit" className="py-2 px-6" size="base_medium">
@@ -91,7 +99,8 @@ export const FeeDetails: React.FC<{
               <ModalContent>
                 <EditWarningModal id={id} />
               </ModalContent>
-            </Modal>}
+            </Modal>
+          )}
         </div>
       </div>
     </RentSectionContainer>

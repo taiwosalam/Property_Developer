@@ -1,20 +1,16 @@
 import React from "react";
 
+// Enum-like object for status values to ensure consistency
+const STATUS_COLORS: Record<string, string> = {
+  vacant: "#FFBB53",
+  occupied: "#01BA4C",
+  active: "#0033C4",
+  expired: "#E9212E",
+  relocate: "#620E13",
+};
+
 export const getBackgroundColor = (status: string): string => {
-  switch (status) {
-    case "vacant":
-      return "#FFBB53";
-    case "occupied":
-      return "#01BA4C";
-    case "active":
-      return "#0033C4";
-    case "expired":
-      return "#E9212E";
-    case "relocate":
-      return "#620E13";
-    default:
-      return "#000";
-  }
+  return STATUS_COLORS[status] || "#000";
 };
 
 interface StatusDotsProps {
@@ -25,21 +21,21 @@ interface StatusDotsProps {
 export const StatusDots: React.FC<StatusDotsProps> = ({ status, propertyType }) => {
   let colors: string[] = [];
 
-  // If propertyType is 'facility' and status is 'occupied', show only the active color.
+  // Handle specific cases based on propertyType and status
   if (propertyType === "facility" && status === "occupied") {
+    // Show only the "active" dot for occupied facilities
     colors = [getBackgroundColor("active")];
+  } else if (propertyType === "facility" && status === "expired") {
+    // Show "expired" and "active" dots for expired facilities
+    colors = [getBackgroundColor("expired"), getBackgroundColor("active")];
+  } else if (propertyType === "rental" && status === "expired") {
+    // Show "occupied" and "expired" dots for expired rentals
+    colors = [getBackgroundColor("occupied"), getBackgroundColor("expired")];
   } else if (status === "relocate") {
-    // Show two dots: one for "vacant" and one for "relocate"
+    // Show "vacant" and "relocate" dots for relocate status
     colors = [getBackgroundColor("vacant"), getBackgroundColor("relocate")];
-  } else if (status === "expired") {
-    // Show three dots: one for "occupied", one for "expired", one for "active"
-    colors = [
-      getBackgroundColor("occupied"),
-      getBackgroundColor("expired"),
-      getBackgroundColor("active"),
-    ];
   } else {
-    // Otherwise, show a single dot with the corresponding status color
+    // Default case: show a single dot for the given status
     colors = [getBackgroundColor(status)];
   }
 
@@ -50,6 +46,7 @@ export const StatusDots: React.FC<StatusDotsProps> = ({ status, propertyType }) 
           key={index}
           className="w-4 h-4 rounded-full"
           style={{ backgroundColor: color }}
+          data-testid={`status-dot-${index}`} 
         />
       ))}
     </div>

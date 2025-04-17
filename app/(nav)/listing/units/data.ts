@@ -136,6 +136,8 @@ export const transformRentUnitApiResponse = (
         unit_name: u?.unit_name || "--- ---",
         caution_fee: u.caution_fee || "0",
         published: u.published,
+        is_sponsored: u.is_sponsored,
+        is_active: u.is_active,
         status: u.status as keyof typeof unit_listing_status,
         property_id: u?.property?.id || "--- ---",
         property_title: u?.property?.title || "--- ---",

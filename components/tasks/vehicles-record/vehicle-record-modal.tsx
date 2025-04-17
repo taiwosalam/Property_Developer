@@ -29,69 +29,70 @@ const VehicleRecordModal: React.FC<
   latest_check_in,
   showOpenRecordsButton = true,
 }) => {
-    const [ loading, setLoading ] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-    const checkIn = {
-      id: latest_check_in?.id,
-      name: latest_check_in?.in_by || "---",
-      passenger: latest_check_in?.passengers_in || "---",
-      date: latest_check_in?.check_in_time
-        ? dayjs(latest_check_in?.check_in_time).format("MMM DD YYYY hh:mma")
-        : "---",
-      inventory: latest_check_in?.inventory_in || "---",
-    };
+  const checkIn = {
+    id: latest_check_in?.id,
+    name: latest_check_in?.in_by || "---",
+    passenger: latest_check_in?.passengers_in || "---",
+    date: latest_check_in?.check_in_time
+      ? dayjs(latest_check_in?.check_in_time).format("MMM DD YYYY hh:mma")
+      : "---",
+    inventory: latest_check_in?.inventory_in || "---",
+  };
 
-    const [checkOut, setCheckOut] = useState({
-      id: latest_check_in?.id,
-      name: latest_check_in?.out_by || "---",
-      passenger: latest_check_in?.passengers_out || "---",
-      date: latest_check_in?.check_out_time
-        ? dayjs(latest_check_in?.check_out_time).format("MMM DD YYYY hh:mma")
-        : "---",
-      inventory: latest_check_in?.inventory_out || "---",
-    });
+  const [checkOut, setCheckOut] = useState({
+    id: latest_check_in?.id,
+    name: latest_check_in?.out_by || "---",
+    passenger: latest_check_in?.passengers_out || "---",
+    date: latest_check_in?.check_out_time
+      ? dayjs(latest_check_in?.check_out_time).format("MMM DD YYYY hh:mma")
+      : "---",
+    inventory: latest_check_in?.inventory_out || "---",
+  });
 
-    const handleCheckOut = async (event: React.FormEvent) => {
-      event.preventDefault();
-      const form = event.target as HTMLFormElement;
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+  const handleCheckOut = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
 
-      if (data.passenger) {
-        data.passengers_out = data.passenger;
-        delete data.passenger;
+    if (data.passenger) {
+      data.passengers_out = data.passenger;
+      delete data.passenger;
+    }
+
+    if (data.inventory) {
+      data.inventory_out = data.inventory;
+      delete data.inventory;
+    }
+
+    try {
+      setLoading(true);
+      const response = await checkOutVehicle(data, checkIn.id);
+      if (response) {
+        // console.log("response", response);
+        setCheckOut({
+          id: response.id || checkOut.id,
+          name: response.data.out_by || checkOut.name,
+          passenger: response.data.passengers_out || checkOut.passenger,
+          date: response.data.check_out_time
+            ? format_date_time(response.data.check_out_time)
+            : checkOut.date,
+          inventory: response.data.inventory_out || checkOut.inventory,
+        });
+        window.dispatchEvent(new Event("refetchVehicleRecord"));
+        toast.success("Vehicle checked out successfully");
+        setActiveStep("success-action");
+      } else {
+        toast.error("Failed to check out vehicle");
       }
-
-      if (data.inventory) {
-        data.inventory_out = data.inventory;
-        delete data.inventory;
-      }
-
-      try {
-        setLoading(true);
-        const response = await checkOutVehicle(data, checkIn.id);
-        if (response) {
-          // console.log("response", response);
-          setCheckOut({
-            id: response.id || checkOut.id,
-            name: response.data.out_by || checkOut.name,
-            passenger: response.data.passengers_out || checkOut.passenger,
-            date: response.data.check_out_time ? format_date_time(response.data.check_out_time) : checkOut.date,
-            inventory: response.data.inventory_out || checkOut.inventory,
-          });
-          window.dispatchEvent(new Event("refetchVehicleRecord"));
-          toast.success("Vehicle checked out successfully");
-          setActiveStep("success-action");
-        } else {
-          toast.error("Failed to check out vehicle");
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [activeStep, setActiveStep] = useState<
     "default" | "check-out" | "success-action"
@@ -99,7 +100,6 @@ const VehicleRecordModal: React.FC<
   const handleBack = () => {
     setActiveStep("default");
   };
-
 
   if (activeStep === "default") {
     return (
@@ -110,7 +110,7 @@ const VehicleRecordModal: React.FC<
             <div className="text-base text-text-primary dark:text-white space-y-1">
               <p className="flex items-center">
                 <span>{name}</span>
-                <BadgeIcon color="blue" />
+                {/* <BadgeIcon color="blue" /> */}
               </p>
               <p>
                 <span className="text-text-tertiary dark:text-darkText-1">
@@ -239,22 +239,22 @@ const VehicleRecordModal: React.FC<
       </WalletModalPreset>
     );
   }
-  
+
   if (activeStep === "check-out") {
     return (
       <>
-      <CheckInOutForm
-        loading={loading}
-        type="check-out"
-        useCase="vehicle"
-        handleBack={handleBack}
-        pictureSrc={pictureSrc}
-        userName={name}
-        id={id}
-        category={category}
-        registrationDate={registrationDate}
-        onSubmit={handleCheckOut}
-        />  
+        <CheckInOutForm
+          loading={loading}
+          type="check-out"
+          useCase="vehicle"
+          handleBack={handleBack}
+          pictureSrc={pictureSrc}
+          userName={name}
+          id={id}
+          category={category}
+          registrationDate={registrationDate}
+          onSubmit={handleCheckOut}
+        />
       </>
     );
   }

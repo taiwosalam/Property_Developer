@@ -183,10 +183,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
             <div>
               <p className="text-label font-normal">
-                {isRental ? "Available" : "Owing"} Units
+                Available Units
+                {/* {isRental ? "Available" : "Owing"} Units */}
               </p>
               <p className="text-brand-9 font-bold">
-                {isRental ? available_units : owing_units}
+                {available_units}
+                {/* {isRental ? available_units : owing_units} */}
               </p>
             </div>
             <div>

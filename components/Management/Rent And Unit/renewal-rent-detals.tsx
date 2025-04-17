@@ -22,8 +22,9 @@ import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 import TableLoading from "@/components/Loader/TableLoading";
 // import { PreviousRecords } from "@/app/(nav)/management/rent-unit/data";
-import { formatNumber } from "@/utils/number-formatter";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { useOccupantStore } from "@/hooks/occupant-store";
+import { calculateOverduePeriods, formatOwingPeriod } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
 
 export const RenewalRentDetails: React.FC<{
   isRental: boolean;
@@ -31,39 +32,33 @@ export const RenewalRentDetails: React.FC<{
   dueDate: string;
   rentFee: string;
   otherFee: string;
-}> = ({
-  isRental,
-  startDate,
-  dueDate,
-  rentFee,
-  otherFee
-}) => {
-    const renewalRentDetailItems = [
-      { label: "Current Start Date", value: startDate },
-      { label: "Due Date", value: dueDate },
-      { label: "Annual Rent", value: rentFee },
-      { label: "Other Fees", value: otherFee },
-    ];
-    return (
-      <div className="space-y-6">
-        <RentSectionTitle>
-          {isRental ? "Renew Rent Details" : "Fee Renewal Details"}
-        </RentSectionTitle>
-        <RentSectionContainer title={isRental ? "Rent Fee" : "Fee"}>
-          <div className="grid md:grid-cols-2 gap-4">
-            {renewalRentDetailItems.map((item, index) => (
-              <DetailItem
-                key={index}
-                label={item.label}
-                value={item.value}
-                style={{ width: "150px" }}
-              />
-            ))}
-          </div>
-        </RentSectionContainer>
-      </div>
-    );
-  };
+}> = ({ isRental, startDate, dueDate, rentFee, otherFee }) => {
+  const renewalRentDetailItems = [
+    { label: "Current Start Date", value: startDate },
+    { label: "Due Date", value: dueDate },
+    // { label: "Annual Rent", value: rentFee },
+    // { label: "Other Fees", value: otherFee },
+  ];
+  return (
+    <div className="space-y-6">
+      <RentSectionTitle>
+        {isRental ? "Rent Details" : "Fee Renewal Details"}
+      </RentSectionTitle>
+      <RentSectionContainer title={isRental ? "Current Rent" : "Fee"}>
+        <div className="grid md:grid-cols-2 gap-4">
+          {renewalRentDetailItems.map((item, index) => (
+            <DetailItem
+              key={index}
+              label={item.label}
+              value={item.value}
+              style={{ width: "150px" }}
+            />
+          ))}
+        </div>
+      </RentSectionContainer>
+    </div>
+  );
+};
 
 export const RenewalFee: React.FC<{
   isRental: boolean;
@@ -79,6 +74,65 @@ export const RenewalFee: React.FC<{
         title={isRental ? "Renewal Details" : "Annual Fee"}
         feeDetails={feeDetails}
         total_package={total_package}
+        id={id}
+      />
+    </div>
+  );
+};
+
+export const OwingFee: React.FC<{
+  isRental: boolean;
+  feeDetails: FeeDetail[];
+  total_package: number;
+  id: string;
+  period?: string;
+  dueDate?: string;
+}> = ({ isRental, feeDetails, total_package, id, period, dueDate }) => {
+  const [owingAmount, setOwingAmount] = useState<number>(0);
+  const [overduePeriods, setOverduePeriods] = useState<number>(0);
+  // Calculate owing amount when dueDate, period, or totalPackage changes
+  useEffect(() => {
+    if (dueDate && period && total_package) {
+      const overduePeriods = calculateOverduePeriods(
+        dueDate,
+        period as RentPeriod
+      );
+      const calculatedOwing = overduePeriods * total_package;
+      setOwingAmount(calculatedOwing);
+      const periods = calculateOverduePeriods(dueDate, period as RentPeriod);
+      setOverduePeriods(periods);
+    }
+  }, [dueDate, period, total_package]);
+
+  // Combine original fee details with the calculated owing amount
+  const updatedFeeDetails: FeeDetail[] = [
+    ...feeDetails,
+    {
+      name: "Owing Period",
+      amount: formatOwingPeriod(overduePeriods, period as RentPeriod),
+    },
+    {
+      name: "Owing Amount",
+      amount: owingAmount
+        ? `${
+            currencySymbols["₦" as keyof typeof currencySymbols] ?? "₦"
+          }${formatNumber(Number(owingAmount))}`
+        : "",
+    },
+    {name: "Rent Penalty", amount: "--- ---"}
+  ];
+
+  // Update total package cost to include owing amount
+  const updatedTotalPackage = total_package + owingAmount;
+  return (
+    <div className="space-y-6">
+      <RentSectionTitle>Owing Details</RentSectionTitle>
+      <FeeDetails
+        owing
+        noEdit
+        title={isRental ? "Owing Renewal Details" : "Owing Annual Fee"}
+        feeDetails={updatedFeeDetails}
+        total_package={updatedTotalPackage}
         id={id}
       />
     </div>
@@ -137,11 +191,11 @@ export const RenewalRent: React.FC<{
 
   const handleStartDate = (date: Dayjs | null) => {
     setStartDate(date);
-    if(setStart_Date){
+    if (setStart_Date) {
       setStart_Date(date?.format("YYYY-MM-DD") || null);
     }
-  }
-  
+  };
+
   return (
     <div>
       <RentSectionTitle>
@@ -180,26 +234,30 @@ export const RenewalRent: React.FC<{
         {start ? (
           <>
             {checkboxStates["Create Invoice"]
-              ? `Payment will be reflected once the ${isRental ? "tenant" : "occupant"
-              } makes a payment towards the generated invoice.`
-              : `Confirms that you have received payment for the Unit Change.  However, if you intend to receive the payment, you can click 'create invoice' for ${isRental ? "tenant" : "occupant"
-              } to make the payment.`}
+              ? `Payment will be reflected once the ${
+                  isRental ? "tenant" : "occupant"
+                } makes a payment towards the generated invoice.`
+              : `Confirms that you have received payment for the Unit Change.  However, if you intend to receive the payment, you can click 'create invoice' for ${
+                  isRental ? "tenant" : "occupant"
+                } to make the payment.`}
           </>
         ) : (
           <>
             {checkboxStates["Create Invoice"]
-              ? `${isRental ? "Rent" : "Fee"} will commence upon ${isRental ? "tenant" : "occupant"
-              } making payment for the generated invoice.`
-              : `Confirms that you have received payment for the ${isRental ? "rent" : "fee"
-              } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${isRental ? "tenant" : "occupant"
-              } to make the payment.`}
+              ? `${isRental ? "Rent" : "Fee"} will commence upon ${
+                  isRental ? "tenant" : "occupant"
+                } making payment for the generated invoice.`
+              : `Confirms that you have received payment for the ${
+                  isRental ? "rent" : "fee"
+                } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${
+                  isRental ? "tenant" : "occupant"
+                } to make the payment.`}
           </>
         )}
       </p>
     </div>
   );
 };
-
 
 type UnitViewResponse = {
   data: {
@@ -353,8 +411,8 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   }, [data]);
 
   if (isNetworkError) return <NetworkError />;
-  if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="previous-records-container">

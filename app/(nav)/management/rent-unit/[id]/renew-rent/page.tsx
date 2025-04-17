@@ -4,6 +4,7 @@ import {
   propertySettingsData,
   estateData,
   rentalData,
+  RentPeriod,
 } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
@@ -12,6 +13,7 @@ import {
   RenewalFee,
   RenewalRent,
   PreviousRentRecords,
+  OwingFee,
 } from "@/components/Management/Rent And Unit/renewal-rent-detals";
 import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
@@ -19,13 +21,19 @@ import { useSearchParams } from "next/navigation";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { MatchedProfile } from "@/components/Management/Rent And Unit/matched-profile";
 import { DUMMY_OCCUPANT } from "@/components/Management/Rent And Unit/data";
-import { initData, initDataProps, singleUnitApiResponse, transformUnitData } from "../../data";
+import {
+  initData,
+  initDataProps,
+  singleUnitApiResponse,
+  transformUnitData,
+} from "../../data";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 import { getPropertySettingsData, getRentalData } from "./data";
 import dayjs from "dayjs";
 import ServerError from "@/components/Error/ServerError";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
@@ -33,7 +41,7 @@ const RenewRent = () => {
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
   const isRental = propertyType === "rental";
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-  const endpoint = `/unit/${id}/view`
+  const endpoint = `/unit/${id}/view`;
 
   const {
     data: apiData,
@@ -48,12 +56,11 @@ const RenewRent = () => {
     if (apiData) {
       setUnit_data((x: any) => ({
         ...x,
-        ...transformUnitData(apiData)
-      }))
+        ...transformUnitData(apiData),
+      }));
     }
-  }, [apiData])
+  }, [apiData]);
 
-  console.log("data here -", unit_data);
 
   if (loading)
     return (
@@ -67,10 +74,14 @@ const RenewRent = () => {
 
   const propertyId = unit_data.propertyId;
   const record = (unit_data?.previous_records as any)?.data?.[0];
-  const start_date = record?.start_date ? dayjs(record?.start_date).format("DD/MM/YYYY") : "__,__,___";
-  const due_date = record?.due_date ? dayjs(record?.due_date).format("DD/MM/YYYY") : "___,___,___";
-  const propertySettingsData = getPropertySettingsData(unit_data)
-  const rentalData = getRentalData(unit_data)
+  const start_date = record?.start_date
+    ? dayjs(record?.start_date).format("DD/MM/YYYY")
+    : "__,__,___";
+  const due_date = record?.due_date
+    ? dayjs(record?.due_date).format("DD/MM/YYYY")
+    : "___,___,___";
+  const propertySettingsData = getPropertySettingsData(unit_data);
+  const rentalData = getRentalData(unit_data);
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -99,18 +110,52 @@ const RenewRent = () => {
             />
             <RenewalFee
               isRental={isRental}
+              period={(unit_data.fee_period as RentPeriod) ?? "yearly"}
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: (unit_data.renewalTenantPrice as any),
+                  amount: unit_data.renewalTenantPrice as any,
                 },
-                { name: "Service Charge", amount: (unit_data.renew_service_charge as any) },
-                { name: "Other Charges", amount: (unit_data.renew_other_charge as any) },
+                {
+                  name: "Service Charge",
+                  amount: unit_data.renew_service_charge as any,
+                },
+                {
+                  name: "Other Charges",
+                  amount: unit_data.renew_other_charge as any,
+                },
               ]}
               total_package={Number(unit_data.total_package)}
               id={propertyId as string}
             />
-            <RenewalRent isRental={isRental} rentPeriod="yearly" />
+
+            <OwingFee
+              isRental={isRental}
+              dueDate={due_date}
+              period={(unit_data.fee_period as RentPeriod) ?? "yearly"}
+              feeDetails={[
+                {
+                  name: isRental
+                    ? "Renewal Total Package"
+                    : "Renewal Total Fee",
+                  amount: unit_data?.total_package?.toString() || '0'
+                    ? `${
+                        currencySymbols["₦" as keyof typeof currencySymbols] ||
+                        "₦"
+                      }${formatNumber(
+                        parseFloat(unit_data?.total_package?.toString() ?? "0")
+                      )}`
+                    : "",
+                },
+              ]}
+              total_package={Number(unit_data.total_package)}
+              id={propertyId as string}
+            />
+
+            <RenewalRent
+              isRental={isRental}
+              rentPeriod={(unit_data.fee_period as RentPeriod) ?? "yearly"}
+            />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
             <MatchedProfile

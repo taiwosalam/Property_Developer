@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Button from "@/components/Form/Button/button";
 import CustomTable from "@/components/Table/table";
@@ -78,7 +78,7 @@ const VehiclesRecordPage = () => {
     vehicle_records: { data, current_page, last_page, total },
   } = state;
 
-  console.log("data", data)
+  console.log("data", data);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -155,14 +155,70 @@ const VehiclesRecordPage = () => {
   );
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
+  // useEffect(() => {
+  //   if (apiData) {
+  //     setState((x) => ({
+  //       ...x,
+  //       ...transformVehicleRecordApiResponse(apiData),
+  //     }));
+  //   }
+  // }, [apiData]);
+
   useEffect(() => {
     if (apiData) {
-      setState((x) => ({
-        ...x,
-        ...transformVehicleRecordApiResponse(apiData),
+      const transformedData = transformVehicleRecordApiResponse(apiData);
+      setState((prevState) => ({
+        ...prevState,
+        ...transformedData,
+        vehicle_records: {
+          ...transformedData.vehicle_records,
+          data:
+            transformedData.vehicle_records.current_page === 1
+              ? transformedData.vehicle_records.data
+              : [
+                  ...prevState.vehicle_records.data,
+                  ...transformedData.vehicle_records.data,
+                ],
+        },
       }));
     }
   }, [apiData]);
+
+  // --- Infinite Scroll Logic ---
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < last_page &&
+          !silentLoading
+        ) {
+          // Load next page when the last row becomes visible
+          setState((prevState) => ({
+            ...prevState,
+            vehicle_records: {
+              ...prevState.vehicle_records,
+              current_page: current_page + 1,
+            },
+          }));
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, last_page, silentLoading]
+  );
+
+  // Transform vehicle records to attach lastRowRef to the last row
+  const transformedRecords = data.map((record, index) => ({
+    ...record,
+    ref:
+      index === data.length - 1 && current_page < last_page
+        ? lastRowRef
+        : undefined,
+  }));
 
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
@@ -361,18 +417,23 @@ const VehiclesRecordPage = () => {
           )
         ) : (
           <>
-            {silentLoading ? (
+            {silentLoading && current_page === 1 ? (
               <TableLoading />
             ) : (
               <CustomTable
                 fields={veicleRecordTablefields}
-                data={data}
+                data={transformedRecords}
                 tableHeadClassName="h-[76px]"
                 tableHeadCellSx={{
                   borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
                 }}
                 handleSelect={handleActionClick}
               />
+            )}
+            {silentLoading && current_page > 1 && (
+              <div className="flex items-center justify-center py-4">
+                <div className="loader" />
+              </div>
             )}
             <Modal
               state={{
@@ -384,11 +445,6 @@ const VehiclesRecordPage = () => {
                 <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
               </ModalContent>
             </Modal>
-            <Pagination
-              totalPages={last_page}
-              currentPage={current_page}
-              onPageChange={handlePageChange}
-            />
           </>
         )}
       </section>

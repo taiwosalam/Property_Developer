@@ -107,7 +107,6 @@ const Header = () => {
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
 
-  console.log(data);
 
   const { data: companyData, refetch: companyRefetch } = useFetch<any>(
     company_id ? `companies/${company_id}` : null

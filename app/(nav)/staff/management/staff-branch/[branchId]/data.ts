@@ -36,22 +36,39 @@ export const branchIdChartData = [
 export const transformSingleBranchAPIResponse = (
   response: SingleBranchResponseType
 ): SingleBranchPageData => {
-  console.log('res', response)
+  console.log("res", response);
   const {
-    data: { branch, manager, sub_wallet, recent_transactions: recentTransactions },
+    data: {
+      branch,
+      manager,
+      sub_wallet,
+      recent_transactions: recentTransactions,
+    },
   } = response;
   return {
     branch_name: branch.branch_name,
     picture: branch.picture,
     address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
-    properties: { total: branch.properties_count, new_this_month: branch.current_month_properties_count },
-    landlords: { total: branch.landlords_count, new_this_month: branch.current_month_landlords_count },
-    tenants: { total: branch.tenants_count, new_this_month: branch.current_month_tenants_count },
+    properties: {
+      total: branch.properties_count,
+      new_this_month: branch.current_month_properties_count,
+    },
+    landlords: {
+      total: branch.landlords_count,
+      new_this_month: branch.current_month_landlords_count,
+    },
+    tenants: {
+      total: branch.tenants_count,
+      new_this_month: branch.current_month_tenants_count,
+    },
     vacant_units: { total: 0, new_this_month: 0 },
     expired: { total: 0, new_this_month: 0 },
     invoices: { total: 0, new_this_month: 0 },
     inquiries: { total: 0, new_this_month: 0 },
-    complaints: { total: branch.complaints_count, new_this_month: branch.current_month_complaints_count },
+    complaints: {
+      total: branch.complaints_count,
+      new_this_month: branch.current_month_complaints_count,
+    },
     listings: { total: 0, new_this_month: 0 },
     branch_wallet: sub_wallet !== null ? { ...sub_wallet } : null,
     staffs: branch.staffs.map((s) => {
@@ -63,35 +80,47 @@ export const transformSingleBranchAPIResponse = (
         user_id: s.user_id,
       };
     }),
-    transactions: recentTransactions !== null ? recentTransactions.map((t) => {
-      return {
-        id: t.id,
-        amount: currencySymbols.naira + formatNumber(t.amount, { forceTwoDecimals: true }),
-        transaction_type: t.transaction_type,
-        reference: t.reference,
-        description: t.description,
-        status: t.status,
-        balance_before: currencySymbols.naira + formatNumber(t.balance_before, { forceTwoDecimals: true }),
-        balance_after: currencySymbols.naira + formatNumber(t.balance_after, { forceTwoDecimals: true }),
-        source: t.source_name,
-        date: t.date.split(" ")[0],
-        time: t.date.split(" ")[1],
-      };
-    }) : [],
-    recent_transactions: recentTransactions !== null ? recentTransactions.map((t)=> {
-      return{
-        id: t.id,
-        amount: t.amount,
-        transaction_type: t.transaction_type,
-        date: t.date.split(" ")[0],
-        time: t.date.split(" ")[1],
-        description: t.description,
-        reference: t.reference,
-        status: t.status,
-        balance_before: t.balance_before,
-        balance_after: t.balance_after,
-      }
-    }) : [],
+    transactions:
+      recentTransactions !== null
+        ? recentTransactions.map((t) => {
+            return {
+              id: t.id,
+              amount:
+                currencySymbols.naira +
+                formatNumber(t.amount, { forceTwoDecimals: true }),
+              transaction_type: t.transaction_type,
+              reference: t.reference,
+              description: t.description,
+              status: t.status,
+              balance_before:
+                currencySymbols.naira +
+                formatNumber(t.balance_before, { forceTwoDecimals: true }),
+              balance_after:
+                currencySymbols.naira +
+                formatNumber(t.balance_after, { forceTwoDecimals: true }),
+              source: t.source_name,
+              date: t.date.split(" ")[0],
+              time: t.date.split(" ")[1],
+            };
+          })
+        : [],
+    recent_transactions:
+      recentTransactions !== null
+        ? recentTransactions.map((t) => {
+            return {
+              id: t.id,
+              amount: t.amount,
+              transaction_type: t.transaction_type,
+              date: t.date.split(" ")[0],
+              time: t.date.split(" ")[1],
+              description: t.description,
+              reference: t.reference,
+              status: t.status,
+              balance_before: t.balance_before,
+              balance_after: t.balance_after,
+            };
+          })
+        : [],
     hasManager: manager !== null && manager.length > 0,
   };
 };
@@ -117,16 +146,15 @@ export const transformSingleBranchAPIResponseToEditBranchFormDetails = (
   };
 };
 
-
 // /branch/1/hold-wallet
-export const holdBranchWallet = async(id:string)=>{
-  try{
-    const res = await api.post(`/branch/${id}/hold-wallet`)
-    if (res.status === 200){
-      return true
+export const holdBranchWallet = async (id: string) => {
+  try {
+    const res = await api.post(`/branch/${id}/hold-wallet`);
+    if (res.status === 200) {
+      return true;
     }
-  }catch(err){
-    handleAxiosError(err)
-    return false
+  } catch (err) {
+    handleAxiosError(err);
+    return false;
   }
-}
+};

@@ -148,7 +148,9 @@ const Units = () => {
     data: sponsors,
     loading: loadingSponsors,
     error: sponsorsErr,
+    refetch:refetchSponsorVal
   } = useFetch<SponsorValueResponse>("/sponsor/value");
+  useRefetchOnEvent("refetchRentSponsors", () => refetchSponsorVal({ silent: true }));
   const setSponsorValue = useGlobalStore((s) => s.setGlobalInfoStore);
   const getSponsorValue = useGlobalStore((s) => s.getGlobalInfoStore);
   const availableSponsors = getSponsorValue("sponsorValue");
