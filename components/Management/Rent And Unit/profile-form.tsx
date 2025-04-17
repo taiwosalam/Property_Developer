@@ -15,9 +15,10 @@ import { Dayjs } from "dayjs";
 import useFetch from "@/hooks/useFetch";
 import dayjs from "dayjs";
 import SelectWithImage from "@/components/Form/Select/select-with-image";
+import { empty } from "@/app/config";
 
 export const ProfileForm: React.FC<{
-  occupants: { name: string; id: string; picture: string }[];
+  occupants: { name: string; id: string; picture?: string }[];
   isRental: boolean;
   selectedOccupant: Occupant | null;
   onOccupantSelect: (occupant: Occupant | null) => void;
@@ -152,7 +153,7 @@ export const ProfileForm: React.FC<{
             options={occupants.map((occupant) => ({
               label: occupant.name,
               value: occupant.id,
-              icon: occupant.picture,
+              icon: occupant.picture || empty,
             }))}
             className="md:flex-1 md:max-w-[300px]"
             onChange={(value) => handleSelectId(value)}

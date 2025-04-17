@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // Imports
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
@@ -13,9 +13,15 @@ import { CounterButton } from "./SettingsEnrollment/settings-enrollment-componen
 import CustomTable from "../Table/table";
 import { added_units } from "@/app/(nav)/settings/subscription/data";
 import { CustomTableProps } from "../Table/types";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import SponsorModal from "./Modals/sponsor-modal";
+import useFetch from "@/hooks/useFetch";
 
 const SponsorUnit = () => {
   const [count, setCount] = useState<number>(1);
+  const [ availableSponsors, setAvailableSponsors ] = useState<number>(0);
 
   const handleIncrement = () => {
     setCount((prevCount) => (prevCount < 12 ? prevCount + 1 : prevCount));
@@ -28,7 +34,7 @@ const SponsorUnit = () => {
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
-  
+
   return (
     <SettingsSection title="listing Sponsor">
       <SettingsSectionTitle desc="Sponsor your property listing on the mobile app to appear first, attract clients faster, and increase visibility to potential tenants and occupants. You can sponsor individual property units directly under listings module" />
@@ -42,6 +48,10 @@ const SponsorUnit = () => {
                 </p>
               </div>
             </div>
+            <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
+              Sponsor Cost{" "}
+              <span className="text-xs font-normal">(₦100/per unit)</span>
+            </p>
             <div className="flex gap-4 flex-col md:flex-row">
               <div className="flex gap-2 items-end justify-end">
                 <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
@@ -66,39 +76,42 @@ const SponsorUnit = () => {
                 </div>
 
                 <div className="flex items-end">
-                  <Button
-                    variant="change"
-                    size="xs_normal"
-                    className="py-2 px-3"
-                  >
-                    Buy More Unit
-                  </Button>
-                </div>
-              </div>
-              <div className="flex flex-col gap-4 md:flex-row">
-                <Input
-                  id="sponsor-proprty"
-                  label="Sponsor Proprty"
-                  placeholder="Insert unit ID"
-                  className="flex-1"
-                />
-                <div className="flex items-end">
-                  <Button
-                    variant="change"
-                    size="xs_normal"
-                    className="py-2 px-3"
-                  >
-                    Add Unit ID
-                  </Button>
+                  <Modal>
+                    <ModalTrigger>
+                      <Button
+                        variant="change"
+                        size="xs_normal"
+                        className="py-2 px-3"
+                      >
+                        Subscribe
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <SponsorModal count={count} />
+                    </ModalContent>
+                  </Modal>
                 </div>
               </div>
             </div>
           </div>
-          <CustomTable
-            data={added_units.data}
-            fields={added_units.fields}
-            {...table_style_props}
-          />
+          <div className="custom-flex-col gap-4">
+            <div className="flex justify-between">
+              <h2 className="text-text-primary dark:text-white text-xl font-medium">
+                Recent Sponsors
+              </h2>
+              <Link href="/settings/subscription/sponsors" className="flex items-center gap-1">
+                <span className="text-text-label dark:text-darkText-1">
+                  See all
+                </span>
+                <ChevronRight color="#5A5D61" size={16} />
+              </Link>
+            </div>
+            <CustomTable
+              data={added_units.data}
+              fields={added_units.fields}
+              {...table_style_props}
+            />
+          </div>
         </div>
         <SettingsUpdateButton />
       </div>

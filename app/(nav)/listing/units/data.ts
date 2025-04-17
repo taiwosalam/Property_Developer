@@ -54,6 +54,14 @@ export interface UnitPageState {
   last_page: number;
 }
 
+export interface SponsorValueResponse {
+  status: "success" | "error";
+  data: {
+    value: string;  
+  };
+}
+
+
 export const unit_listing_status = {
   published: "#01BA4C",
   // approved: "#01BA4C",

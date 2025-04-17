@@ -75,7 +75,7 @@ export interface FeeDetail {
 }
 
 export interface OccupantProfileProps {
-  occupants: { name: string; id: string; picture: string }[];
+  occupants: { name: string; id: string; picture?: string }[];
   period?: RentPeriod;
   isRental: boolean;
   feeDetails: FeeDetail[];
@@ -86,7 +86,7 @@ export interface OccupantProfileProps {
   setStart_date?: (date: string) => void;
   setIsPastDate?: ((isPast: boolean) => void) | undefined
   setSelectedCheckboxOptions?: (options: CheckBoxOptions) => void;
-  setDueDate: (date: Dayjs | null) => void;
+  setDueDate?: (date: Dayjs | null) => void;
 }
 
 

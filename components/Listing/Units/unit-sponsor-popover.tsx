@@ -14,10 +14,38 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { trackOutsideClick } from "@/utils/track-outside-click";
 import { SponsorIcon } from "@/public/icons/icons";
+import BuySponsorModal from "@/components/Settings/Modals/buy-sponsor-modal";
+import { toast } from "sonner";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { parseCurrencyToNumber, sponsorUnit } from "../data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
-const UnitSponsorPopover = () => {
+const UnitSponsorPopover = ({
+  availableSponsors,
+  unitId,
+  propertyName,
+  unitName,
+  unitDesc,
+  status,
+  annualRent,
+}: {
+  availableSponsors: number;
+  unitId?: number;
+  propertyName?: string;
+  unitName?: string;
+  unitDesc?: string;
+  status?: string;
+  annualRent?: number | string;
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
+  const [reqLoading, setReqLoading] = useState(false);
+  const companyId = usePersonalInfoStore((state) => state.company_id) || "";
+
+  const text =
+    availableSponsors > 0
+      ? "The sponsor will prioritize it to appear first to all users, rank higher for potential, and automatically renew and update the listings."
+      : "Sorry, you currently don't have any available sponsorships to apply to your property unit.";
 
   const popover = useRef(null);
   const continer = useRef(null);
@@ -26,9 +54,30 @@ const UnitSponsorPopover = () => {
     if (showPopover) setShowPopover(false);
   }, [showPopover]);
 
-  const proceed = () => {
+  const proceed = async() => {
+    const numericRent = parseCurrencyToNumber(annualRent as string);
+    const payload = {
+      company_id: companyId,
+      unit_id: unitId,
+      property_name: propertyName,
+      unit_name: unitName,
+      unit_description: unitDesc,
+      status: status,
+      annual_rent: numericRent,
+    };
+
     setShowPopover(false);
-    setModalOpen(true);
+    try {
+      setReqLoading(true);
+      const res = await sponsorUnit(objectToFormData(payload));
+      if (res){
+        setModalOpen(true);
+      }
+    } catch (error) {
+      toast.error("Failed to sponsor Unit");
+    } finally {
+      setReqLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -60,21 +109,31 @@ const UnitSponsorPopover = () => {
           <div className="custom-flex-col gap-5">
             <div className="flex items-center justify-between">
               <p className="text-text-primary dark:text-white text-base font-bold">
-                Promote this Property
+                {availableSponsors > 0
+                  ? "Promote this Property"
+                  : "No Sponsorships Available"}
               </p>
               <button onClick={close}>
                 <Picture src={Cancel} alt="cancel" size={24} />
               </button>
             </div>
             <p className="text-[#A4A7B0] dark:text-darkText-1 text-sm font-normal">
-              The sponsor will prioritize it to appear first to all users, rank
-              higher for potential, and automatically renew and update the
-              listings.
+              {text}
             </p>
+            {availableSponsors < 1 && (
+              <p className="text-[#A4A7B0] dark:text-darkText-1 text-sm font-normal">
+                To promote your listing and have it appear first to potential
+                tenants and occupants, click on &apos;Buy Sponsor&apos; to
+                subscribe and sponsor your unit.
+              </p>
+            )}
           </div>
           <div className="flex items-center text-base gap-2">
             <div className="p-2 rounded-[4px] bg-support-2">
-              <p className="text-brand-disabled font-bold">34</p>
+              <p className="text-brand-disabled font-bold">
+                {" "}
+                {availableSponsors}{" "}
+              </p>
             </div>
             <p className="text-black dark:text-white font-normal">
               Available sponsor units
@@ -89,9 +148,22 @@ const UnitSponsorPopover = () => {
             >
               cancel
             </Button>
-            <Button onClick={proceed} size="sm_medium" className="py-2 px-8">
-              proceed
-            </Button>
+            {availableSponsors > 0 ? (
+              <Button onClick={proceed} size="sm_medium" className="py-2 px-8">
+                proceed
+              </Button>
+            ) : (
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button size="sm_medium" className="py-2 px-8">
+                    proceed
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <BuySponsorModal />
+                </ModalContent>
+              </Modal>
+            )}
           </div>
         </div>
         <svg

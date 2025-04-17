@@ -59,18 +59,6 @@ const Subscriptions = () => {
     ),
   }));
 
-  const transformedPersonalizedDomain = personalized_domain.data.map(
-    (data) => ({
-      ...data,
-      status: (
-        <div className="flex">
-          <p className="p-2 bg-brand-1 rounded-[4px] text-brand-9">
-            {data.status}
-          </p>
-        </div>
-      ),
-    })
-  );
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -78,30 +66,6 @@ const Subscriptions = () => {
     setIsDrawerOpen(true); // Function to open the drawer
   };
 
-  const [count, setCount] = useState<number>(1);
-
-  const handleIncrement = () => {
-    setCount((prevCount) => (prevCount < 12 ? prevCount + 1 : prevCount));
-  };
-
-  const handleDecrement = () => {
-    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
-  };
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-
-  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setSelectedItemId(String(item.id));
-    setAnchorEl(e.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedItemId(null);
-  };
-
-  const [open, setOpen] = useState(false);
 
   return (
     <>

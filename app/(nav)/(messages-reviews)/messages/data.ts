@@ -123,7 +123,16 @@ export const roundUptoNine = (num: number): string => {
   return num > 9 ? "9+" : num.toString();
 };
 
-export const formatMessageText = (message: string) => {
+// export const formatMessageText = (message: string) => {
+//   return message.replace(/(?:\r\n|\r|\n)/g, "<br />");
+// };
+
+export const formatMessageText = (
+  message: string | undefined | null
+): string => {
+  if (!message || typeof message !== "string") {
+    return "";
+  }
   return message.replace(/(?:\r\n|\r|\n)/g, "<br />");
 };
 
@@ -160,65 +169,148 @@ export const transformMessages = (data: any) => {
     .sort((a: any, b: any) => a.timestamp - b.timestamp);
 };
 
-export const groupMessagesByDay = (data: any[]) => {
-  // console.log("data", data)
+interface Message {
+  id: number;
+  text: string | null;
+  senderId: number;
+  timestamp: string;
+  content_type: string;
+}
+
+interface GroupedMessage {
+  id: number;
+  text: string | null;
+  sender_id: number;
+  time: string;
+  content_type: string;
+  seen: boolean;
+}
+
+interface Message {
+  id: number;
+  text: string | null;
+  senderId: number;
+  timestamp: string;
+  content_type: string;
+}
+
+interface GroupedMessage {
+  id: number;
+  text: string | null;
+  sender_id: number;
+  time: string;
+  content_type: string;
+  seen: boolean;
+}
+
+export const groupMessagesByDay = (data: Message[]): { day: string; messages: GroupedMessage[] }[] => {
+  console.log("groupMessagesByDay input:", data);
   if (!data || !data.length) return [];
 
-  // Sort messages by timestamp in ascending order.
+  // Sort messages by timestamp
   const sorted = [...data].sort(
-    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    (a, b) =>
+      moment(a.timestamp, "YYYY-MM-DD hh:mm A").valueOf() -
+      moment(b.timestamp, "YYYY-MM-DD hh:mm A").valueOf()
   );
 
-  // Reduce the sorted messages into groups based on day.
+  // Group by day
   const groups = sorted.reduce((acc, message) => {
-    // Use 'YYYY-MM-DD' for grouping.
-    const dayKey = moment(message.timestamp).format("YYYY-MM-DD");
-    // Use calendar format for display (e.g., "Today", "Yesterday", etc.).
-    const displayDay = moment(message.timestamp).calendar();
+    const dayKey = moment(message.timestamp, "YYYY-MM-DD hh:mm A").format("YYYY-MM-DD");
+    const displayDay = moment(message.timestamp, "YYYY-MM-DD hh:mm A").format("MMMM D, YYYY");
 
     if (!acc[dayKey]) {
       acc[dayKey] = { day: displayDay, messages: [] };
     }
 
-    // Determine the appropriate content type.
-    let finalContentType = message.content_type;
-    let contentDisplay = message.content;
-
-    if (message.content_type !== "text") {
-      // If it's a file, check the file extension.
-      if (message.content_type === "file") {
-        const extension = message.content.split(".").pop()?.toLowerCase() || "";
-        if (["mp3", "wav", "ogg"].includes(extension)) {
-          finalContentType = "audio";
-        } else if (["mp4", "webm", "avi", "mov"].includes(extension)) {
-          finalContentType = "video";
-        } else if (["jpg", "jpeg", "png", "gif", "bmp"].includes(extension)) {
-          finalContentType = "image";
-        } else if (["pdf", "doc", "docx", "txt"].includes(extension)) {
-          finalContentType = "document";
-        } else {
-          // Fallback for unrecognized file types.
-          finalContentType = "file";
-        }
-      }
-    }
-
-    // Push the transformed message details.
     acc[dayKey].messages.push({
       id: message.id,
-      text: contentDisplay,
-      sender_id: Number(message.sender_id),
-      time: moment(message.timestamp).format("hh:mm A"),
-      content_type: finalContentType,
-      seen: message.read_at,
+      text: message.text,
+      sender_id: message.senderId,
+      time: moment(message.timestamp, "YYYY-MM-DD hh:mm A").format("hh:mm A"),
+      content_type: message.content_type,
+      seen: false,
     });
 
     return acc;
-  }, {} as Record<string, { day: string; messages: any[] }>);
+  }, {} as Record<string, { day: string; messages: GroupedMessage[] }>);
 
-  // Convert the groups object into an array.
-  return Object.values(groups);
+  const result = Object.values(groups);
+  console.log("groupMessagesByDay output:", result);
+  return result;
 };
+
+// Keep existing SendMessage, transform functions
+// export const SendMessage = async (payload: FormData, id: string) => {
+//   try {
+//     const response = await api.post(`/messages/${id}`, payload);
+//     console.log("SendMessage response:", response.data);
+//     return response.data;
+//   } catch (error: any) {
+//     console.error("SendMessage error:", error.response?.data || error.message);
+//     throw error;
+//   }
+// };
+
+// export const groupMessagesByDay = (data: any[]) => {
+//   // console.log("data", data)
+//   if (!data || !data.length) return [];
+
+//   // Sort messages by timestamp in ascending order.
+//   const sorted = [...data].sort(
+//     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+//   );
+
+//   // Reduce the sorted messages into groups based on day.
+//   const groups = sorted.reduce((acc, message) => {
+//     // Use 'YYYY-MM-DD' for grouping.
+//     const dayKey = moment(message.timestamp).format("YYYY-MM-DD");
+//     // Use calendar format for display (e.g., "Today", "Yesterday", etc.).
+//     const displayDay = moment(message.timestamp).calendar();
+
+//     if (!acc[dayKey]) {
+//       acc[dayKey] = { day: displayDay, messages: [] };
+//     }
+
+//     // Determine the appropriate content type.
+//     let finalContentType = message.content_type;
+//     let contentDisplay = message.content;
+
+//     if (message.content_type !== "text") {
+//       // If it's a file, check the file extension.
+//       if (message.content_type === "file") {
+//         const extension = message.content.split(".").pop()?.toLowerCase() || "";
+//         if (["mp3", "wav", "ogg"].includes(extension)) {
+//           finalContentType = "audio";
+//         } else if (["mp4", "webm", "avi", "mov"].includes(extension)) {
+//           finalContentType = "video";
+//         } else if (["jpg", "jpeg", "png", "gif", "bmp"].includes(extension)) {
+//           finalContentType = "image";
+//         } else if (["pdf", "doc", "docx", "txt"].includes(extension)) {
+//           finalContentType = "document";
+//         } else {
+//           // Fallback for unrecognized file types.
+//           finalContentType = "file";
+//         }
+//       }
+//     }
+
+//     // Push the transformed message details.
+//     acc[dayKey].messages.push({
+//       id: message.id,
+//       text: contentDisplay,
+//       sender_id: Number(message.sender_id),
+//       time: moment(message.timestamp).format("hh:mm A"),
+//       content_type: finalContentType,
+//       seen: message.read_at,
+//     });
+
+//     return acc;
+//   }, {} as Record<string, { day: string; messages: any[] }>);
+
+//   // Convert the groups object into an array.
+//   return Object.values(groups);
+// };
 
 export const positionMap: Record<string, string> = {
   "Branch Manager": "manager",
