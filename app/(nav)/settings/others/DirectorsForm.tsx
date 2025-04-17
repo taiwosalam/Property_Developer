@@ -22,11 +22,11 @@ import Image from "next/image";
 interface DirectorsFormProps {
   submitAction: (data: any) => void;
   chooseAvatar: () => void;
-  isProcessing?: boolean
+  isProcessing?: boolean;
   avatar: string | null;
   setAvatar: React.Dispatch<React.SetStateAction<string | null>>;
-  // setFormStep: React.Dispatch<React.SetStateAction<number>>;
-  // formStep: number;
+  formData?: Record<string, string>;
+  onFormChange?: (field: string, value: string) => void;
 }
 
 type Address = "selectedState" | "selectedLGA" | "selectedCity";
@@ -36,7 +36,9 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
   chooseAvatar,
   avatar,
   setAvatar,
-  isProcessing
+  isProcessing,
+  formData,
+  onFormChange,
 }) => {
   const {
     preview: imagePreview,
@@ -85,8 +87,8 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           label="Profile Title/Qualification"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          value={selectedState}
-          onChange={(value) => handleAddressChange("selectedState", value)}
+          value={formData?.title || ""}
+          onChange={(value) => onFormChange?.("title", value)}
         />
         <Select
           isSearchable={false}
@@ -94,10 +96,14 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           label="real estate title"
           inputContainerClassName="bg-neutral-2"
           options={industryOptions}
+          value={formData?.professional_title || ""}
+          onChange={(value) => onFormChange?.("professional_title", value)}
         />
         <Input
           id="full_name"
           label="Full Name"
+          value={formData?.full_name}
+          onChange={(value) => onFormChange?.("full_name", value)}
           inputClassName="rounded-[8px]"
           validationErrors={errorMsgs}
           required
@@ -106,6 +112,8 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           id="email"
           label="email"
           type="email"
+          value={formData?.email || ""}
+          onChange={(value) => onFormChange?.("email", value)}
           inputClassName="rounded-[8px]"
           validationErrors={errorMsgs}
           required
@@ -117,6 +125,8 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           label="Years of Experience"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
+          value={formData?.years_in_business || ""}
+          onChange={(value) => onFormChange?.("years_in_business", value)}
           //value={selectedState}
           //onChange={(value) => handleAddressChange("selectedState", value)}
         />
@@ -124,6 +134,8 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           id="phone_number"
           label="phone number"
           inputClassName="!bg-neutral-2"
+          value={formData?.phone_number || ""}
+          onChange={(value) => onFormChange?.("phone_number", value)}
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
@@ -151,6 +163,8 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
             label="About Director"
             placeholder=""
             inputSpaceClassName="md:!h-[120px]"
+            value={formData?.about_director || ""}
+            onChange={(value) => onFormChange?.("about_director", value)}
           />
         </div>
       </div>
@@ -193,11 +207,11 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
             </button>
             <button
               type="button"
-              onClick={chooseAvatar}
+              onClick={() => chooseAvatar()}
               className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
               aria-label="choose avatar"
             >
-             { avatar && <input hidden  name="avatar" value={avatar}/>}
+              {avatar && <input hidden name="avatar" value={avatar} />}
               {avatar ? (
                 <div>
                   <Image
@@ -234,9 +248,15 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           accept="image/*"
           onChange={handleImageChange}
         />
-        <Button type="submit" size="base_medium" className={`py-2 px-8 ml-auto ${isProcessing ? 'opacity-70' : 'opacity-100'}`}
-        disabled={isProcessing}>
-         { isProcessing ? "Creating..." : "Create"} 
+        <Button
+          type="submit"
+          size="base_medium"
+          className={`py-2 px-8 ml-auto ${
+            isProcessing ? "opacity-70" : "opacity-100"
+          }`}
+          disabled={isProcessing}
+        >
+          {isProcessing ? "Creating..." : "Create"}
         </Button>
       </div>
     </AuthForm>

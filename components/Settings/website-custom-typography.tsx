@@ -28,26 +28,38 @@ const settings = [
   {
     title: "H1",
     desc: "Specify the H1 tag font properties.",
+    min: 32,
+    max: 64,
   },
   {
     title: "H2",
     desc: "Specify the H2 tag font properties.",
+    min: 28,
+    max: 48,
   },
   {
     title: "H3",
     desc: "Specify the H3 tag font properties.",
+    min: 24,
+    max: 40,
   },
   {
     title: "H4",
     desc: "Specify the H4 tag font properties.",
+    min: 20,
+    max: 32,
   },
   {
     title: "H5",
     desc: "Specify the H5 tag font properties.",
+    min: 16,
+    max: 24,
   },
   {
     title: "H6",
     desc: "Specify the H6 tag font properties.",
+    min: 14,
+    max: 20,
   },
 ];
 
@@ -110,7 +122,7 @@ const WebsiteTypography = () => {
   // Update the font size for a setting.
   // Allow only numbers and maximum 2 digits.
   const handleFontSizeChange = (title: string, fontSize: string) => {
-    if (!/^\d{0,2}$/.test(fontSize)) return;
+    if (!/^\d{0,2}$/.test(fontSize)) return; // Rejects empty string
     setTypographySettings((prev) => ({
       ...prev,
       [title]: {
@@ -240,19 +252,20 @@ const WebsiteTypography = () => {
                     </label>
                     <div className="flex pr-2 gap-2 items-center rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out">
                       <input
-                        className="max-w-[250px] px-3 py-[9px] text-xs md:text-sm rounded-[4px] font-normal focus:outline-none"
+                        className="w-[200px] px-3 py-[9px] text-xs md:text-sm rounded-[4px] font-normal focus:outline-none keep-spinner"
                         type="number"
                         id={`${setting.title}-size`}
                         placeholder="size"
                         value={
-                          typographySettings[setting.title]?.fontSize || ""
+                          typographySettings[setting.title]?.fontSize || setting.min
                         }
                         onChange={(e) =>
                           handleFontSizeChange(setting.title, e.target.value)
                         }
-                        max={99}
+                         max={setting.max}
+                         min={setting.min}
                       />
-                      <span className="text-text-disabled">px</span>
+                       <span className="text-text-disabled">px</span>
                     </div>
                   </div>
                 </div>
