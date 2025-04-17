@@ -11,17 +11,35 @@ import {
 } from "@/components/Settings/settings-components";
 import { CounterButton } from "./SettingsEnrollment/settings-enrollment-components";
 import CustomTable from "../Table/table";
-import { added_units } from "@/app/(nav)/settings/subscription/data";
+import {
+  added_units,
+  SponsorDataTypes,
+  SponsorFields,
+  transformSponsorResponse,
+} from "@/app/(nav)/settings/subscription/data";
 import { CustomTableProps } from "../Table/types";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SponsorModal from "./Modals/sponsor-modal";
 import useFetch from "@/hooks/useFetch";
+import { SponsorListingsResponse } from "./types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import CustomLoader from "../Loader/CustomLoader";
+import TableLoading from "../Loader/TableLoading";
 
 const SponsorUnit = () => {
   const [count, setCount] = useState<number>(1);
-  const [ availableSponsors, setAvailableSponsors ] = useState<number>(0);
+  const [availableSponsors, setAvailableSponsors] = useState<number>(0);
+  const [pageData, setPageData] = useState<SponsorDataTypes>({
+    sponsor_value: 0,
+    sponsor_listings: [],
+    pagination: {
+      current_page: 1,
+      total_pages: 1,
+      total: 0,
+    },
+  });
 
   const handleIncrement = () => {
     setCount((prevCount) => (prevCount < 12 ? prevCount + 1 : prevCount));
@@ -31,10 +49,23 @@ const SponsorUnit = () => {
     setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
   };
 
+  const { data, error, loading, refetch } =
+    useFetch<SponsorListingsResponse>("/sponsor/listings");
+  useRefetchOnEvent("refetchRentSponsors", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (data) {
+      const transformed = transformSponsorResponse(data);
+      setPageData(transformed);
+    }
+  }, [data]);
+
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
 
+  const { sponsor_value, sponsor_listings } = pageData;
+  if (loading) return <TableLoading />;
   return (
     <SettingsSection title="listing Sponsor">
       <SettingsSectionTitle desc="Sponsor your property listing on the mobile app to appear first, attract clients faster, and increase visibility to potential tenants and occupants. You can sponsor individual property units directly under listings module" />
@@ -44,7 +75,8 @@ const SponsorUnit = () => {
             <div className="flex">
               <div className="w-[164px] py-2 px-3 rounded-[4px] bg-neutral-2 text-center">
                 <p className="text-brand-9 text-xs font-normal">
-                  Available Sponsors: <span className="font-medium">400</span>
+                  Available Sponsors:{" "}
+                  <span className="font-medium"> {sponsor_value} </span>
                 </p>
               </div>
             </div>
@@ -99,7 +131,10 @@ const SponsorUnit = () => {
               <h2 className="text-text-primary dark:text-white text-xl font-medium">
                 Recent Sponsors
               </h2>
-              <Link href="/settings/subscription/sponsors" className="flex items-center gap-1">
+              <Link
+                href="/settings/subscription/sponsors"
+                className="flex items-center gap-1"
+              >
                 <span className="text-text-label dark:text-darkText-1">
                   See all
                 </span>
@@ -107,8 +142,8 @@ const SponsorUnit = () => {
               </Link>
             </div>
             <CustomTable
-              data={added_units.data}
-              fields={added_units.fields}
+              data={sponsor_listings}
+              fields={SponsorFields}
               {...table_style_props}
             />
           </div>

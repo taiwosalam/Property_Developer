@@ -192,10 +192,6 @@ const FilterBar: React.FC<FilterBarProps> = ({
               data={xlsxData}
               fileLabel={fileLabel}
               type="csv"
-              //href={exportHref}
-              //printRef={printRef}
-              //firstPageRef={firstPageRef}
-              //restOfContentRef={restOfContentRef}
             />
           </div>
         )}

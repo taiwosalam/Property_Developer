@@ -46,7 +46,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
       "relative w-8 h-8 m-auto rounded-sm flex items-center justify-center",
       {
         "opacity-50": !isCurrentMonth,
-        "bg-white": isToday && isCurrentMonth,
+        "bg-white dark:bg-darkText-primary border border-darkText-2": isToday && isCurrentMonth,
         "outline outline-2 custom-primary-outline-color": isActive,
       }
     )}

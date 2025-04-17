@@ -131,7 +131,9 @@ const StaffProfile = () => {
                   <div>
                     <div className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-center">
                       {staff?.name}
-                     {staff.badge_color && <BadgeIcon color={staff.badge_color} /> }
+                      {staff.badge_color && (
+                        <BadgeIcon color={staff.badge_color} />
+                      )}
                     </div>
                     <p
                       className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-darkText-2`}

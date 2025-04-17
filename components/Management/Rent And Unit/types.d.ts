@@ -71,7 +71,7 @@ export interface Occupant {
 
 export interface FeeDetail {
   name: string;
-  amount: number;
+  amount: number | string;
 }
 
 export interface OccupantProfileProps {

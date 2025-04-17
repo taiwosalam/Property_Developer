@@ -1,5 +1,11 @@
 // Types
+import {
+  SponsoredListing,
+  SponsorListingsResponse,
+} from "@/components/Settings/types";
 import type { SubscriptionTableType } from "./types";
+import dayjs from "dayjs";
+import { formatNumber } from "@/utils/number-formatter";
 
 export const current_subscriptions: SubscriptionTableType = {
   fields: [
@@ -96,6 +102,94 @@ export const personalized_domain: SubscriptionTableType = {
     },
   ],
 };
+
+export interface SponsorDataTypes {
+  sponsor_value: string | number;
+  sponsor_listings: SponsorDataObjectTypes[];
+  pagination: {
+    current_page: number;
+    total_pages: number;
+    total: number;
+  };
+}
+
+interface SponsorDataObjectTypes {
+  unit_id: string;
+  property_name: string;
+  unit_description: string;
+  status: string;
+  annual_rent: string;
+  date: string;
+}
+
+export const SponsorFields = [
+  {
+    id: "0",
+    label: "Unit ID",
+    accessor: "unit_id",
+  },
+  {
+    id: "1",
+    label: "Property Name",
+    accessor: "property_name",
+  },
+  {
+    id: "2",
+    label: "Unit Name",
+    accessor: "unit_name",
+  },
+  {
+    id: "5",
+    label: "Status",
+    accessor: "status",
+  },
+  {
+    id: "6",
+    label: "Total Package",
+    accessor: "annual_rent",
+  },
+  {
+    id: "3",
+    label: "Date",
+    accessor: "date",
+  },
+];
+
+export const transformSponsorResponse = (
+  response: SponsorListingsResponse
+): SponsorDataTypes => {
+  return {
+    sponsor_value: Number(response.data.value),
+    sponsor_listings: response.data.listings.data.map(
+      (listing: SponsoredListing) => ({
+        unit_id: listing.unit_id.toString(),
+        property_name: listing.property_name,
+        unit_name: listing.unit_name,
+        unit_description: listing.unit_description,
+        status: listing.status,
+        annual_rent: `₦${formatNumber(Number(listing.annual_rent))}`,
+        date: dayjs(listing.created_at).format("MMM DD YYYY"),
+      })
+    ),
+    pagination: {
+      current_page: response.data.listings.current_page,
+      total_pages: response.data.listings.last_page,
+      total: response.data.listings.total,
+    },
+  };
+};
+
+export const SponsorData = [
+  {
+    unit_id: "12345678990",
+    property_name: "Alabata Road 3 Room 7",
+    unit_name: "Room 04",
+    unit_description: "Bodija Branch",
+    status: "vacant",
+    annual_rent: "₦13,600,000",
+    date: "12/02/2024",
+  },
+];
 
 export const added_units: SubscriptionTableType = {
   fields: [

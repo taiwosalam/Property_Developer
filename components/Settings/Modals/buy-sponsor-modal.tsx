@@ -36,6 +36,8 @@ const BuySponsorModal = () => {
       const res = await BuySponsor(objectToFormData(payload));
       if (res) {
         toast.success("Sponsor bought successfully!");
+        window.dispatchEvent(new Event("refetchRentSponsors"));
+        window.dispatchEvent(new Event("refetchRentUnit"));
         setIsOpen(false);
       }
     } catch (error) {

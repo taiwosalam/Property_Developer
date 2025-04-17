@@ -27,7 +27,7 @@ export interface StaffAPIResponse {
     properties: PropertiesRes[];
     landlords: any[];
     tenants: any[];
-    tier: 1 | 2 | 3 | 4 | 5;
+    tier_id: 1 | 2 | 3 | 4 | 5;
     years_experience: string | number;
   };
   activities: StaffActivitiies[];

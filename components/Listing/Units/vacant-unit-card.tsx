@@ -56,6 +56,8 @@ const VacantUnitCard = ({
   const [isOpen, setIsOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const is_sponsored = unit_data.is_sponsored;
+
 
   const referenceObject = {
     property_title: "",
@@ -217,10 +219,12 @@ const VacantUnitCard = ({
             <UnitSponsorPopover
               unitId={unit_data.unitId}
               unitName={keyValueData.unit_name}
+              propertyName={unit_data.property_title}
               annualRent={keyValueData.rent}
-              status={status}
+              status={unit_data.is_active}
               unitDesc={keyValueData.unit_details}
               availableSponsors={availableSponsors || 0}
+              is_sponsored={is_sponsored}
             />
           )}
 

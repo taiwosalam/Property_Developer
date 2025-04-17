@@ -122,7 +122,7 @@ interface SettingsOthersCheckBoxProps {
   desc: string;
 }
 export interface SettingsOthersProps {
-  onClick?: () => void
+  onClick?: () => void;
   id?: number;
   title: string;
   desc: string;
@@ -131,12 +131,12 @@ export interface SettingsOthersProps {
   groupName?: string;
   selectedGroup?: string | null;
   setSelectedGroup?: (value: string | null) => void;
-  name?: string
+  name?: string;
   state?: {
     isChecked: boolean;
     setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
   };
-  onChange?: (name: string, checked: boolean) => void; 
+  onChange?: (name: string, checked: boolean) => void;
 }
 
 export interface GroupRadioProps {
@@ -269,4 +269,48 @@ export interface SelectedOptions {
   navbar: string;
   mode: string;
   font: string;
+}
+
+export interface SponsorListingsResponse {
+  status: string;
+  message: string;
+  data: {
+    value: string;
+    listings: Listings;
+  };
+}
+
+export interface Listings {
+  current_page: number;
+  data: SponsoredListing[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  links: PaginationLink[];
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+}
+
+export interface SponsoredListing {
+  id: number;
+  company_id: number;
+  unit_id: number;
+  property_name: string;
+  unit_name: string;
+  unit_description: string;
+  status: string;
+  annual_rent: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PaginationLink {
+  url: string | null;
+  label: string;
+  active: boolean;
 }

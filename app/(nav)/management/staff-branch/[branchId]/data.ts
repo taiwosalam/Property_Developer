@@ -6,7 +6,7 @@ import type {
 } from "./types";
 import api, { handleAxiosError } from "@/services/api";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
-import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import { staffTierColorMap, tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const branchIdChartConfig = {
   totalfunds: {
@@ -89,7 +89,7 @@ export const transformSingleBranchAPIResponse = (
         staff_ID: s.id,
         user_id: s.user_id,
         badgeColor: s.tier
-          ? tierColorMap[s.tier as keyof typeof tierColorMap]
+          ? staffTierColorMap[s.tier as keyof typeof staffTierColorMap]
           : undefined,
       };
     }),

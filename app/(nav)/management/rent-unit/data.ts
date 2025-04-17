@@ -202,6 +202,7 @@ export interface UnitDataObject {
   renew_total_package: string;
   is_active: string;
   published: number;
+  is_sponsored?: boolean;
   status: string;
   reject_reason: string | null;
   created_at: string;

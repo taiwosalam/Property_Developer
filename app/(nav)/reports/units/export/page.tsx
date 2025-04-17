@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import { CompanySignaturesResponse } from "@/components/Signature/signature";
+import ServerError from "@/components/Error/ServerError";
 
 dayjs.extend(advancedFormat);
 
@@ -35,7 +36,11 @@ const ExportUnits = () => {
   const { data, loading, error, isNetworkError } =
     useFetch<UnitListResponse>("/report/units");
 
-     const { data: signatureData, loading: sigLoading, error: sigError } = useFetch<CompanySignaturesResponse>("/company-signatures");
+  const {
+    data: signatureData,
+    loading: sigLoading,
+    error: sigError,
+  } = useFetch<CompanySignaturesResponse>("/company-signatures");
 
   useEffect(() => {
     if (data) {
@@ -50,8 +55,7 @@ const ExportUnits = () => {
       <CustomLoader layout="page" pageTitle="Export Report" view="table" />
     );
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />
 
   return (
     <div className="space-y-9 pb-[100px]">
@@ -73,9 +77,13 @@ const ExportUnits = () => {
           tableHeadClassName="h-[45px]"
         />
         <Signature />
-       {/* {signatureData && signatureData?.signatures.length > 0 && <Signature /> } */}
+        {/* {signatureData && signatureData?.signatures.length > 0 && <Signature /> } */}
       </div>
-      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} fullContent={fullContent}/>
+      <ExportPageFooter
+        printRef={exportRef}
+        setFullContent={setFullContent}
+        fullContent={fullContent}
+      />
     </div>
   );
 };

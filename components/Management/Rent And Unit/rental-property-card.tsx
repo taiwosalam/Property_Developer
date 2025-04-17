@@ -226,11 +226,13 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
             if (status === "occupied") {
               return label !== "Start Rent" && label !== "Start Counting";
             }
-            if (status === "expire") {
+            if (status === "expired") {
               return (
                 label === "Renew Rent" ||
                 label === "Renew Fee" ||
-                label === "Edit"
+                label === "Edit" ||
+                label === "Move Out" ||
+                label === "Relocate"
               );
             }
             return false; // Default: hide all buttons if status is unknown

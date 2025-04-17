@@ -342,21 +342,6 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
           }))
         }
       />
-      {/* {vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.colors
-        ?.length > 0 && (
-          <Select
-            label="Color"
-            id="color"
-            options={
-              vehicleData[vehicleRecord.type as keyof typeof vehicleData]
-                ?.colors || []
-            }
-            value={vehicleRecord.color}
-            onChange={(option) =>
-              setVehicleRecord((prev) => ({ ...prev, color: option }))
-            }
-          />
-        )} */}
       <Select
         label="Color"
         id="color"

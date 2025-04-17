@@ -1,10 +1,9 @@
 "use client";
-
-import React, { use, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 // Images
 import Cancel from "@/public/icons/cancel.svg";
-import Sponsor from "@/public/icons/sponsor.svg";
+import { SponsorIcon } from "@/public/icons/icons";
 
 // Imports
 import gsap from "gsap";
@@ -13,12 +12,22 @@ import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { trackOutsideClick } from "@/utils/track-outside-click";
-import { SponsorIcon } from "@/public/icons/icons";
 import BuySponsorModal from "@/components/Settings/Modals/buy-sponsor-modal";
 import { toast } from "sonner";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { parseCurrencyToNumber, sponsorUnit } from "../data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+
+interface UnitSponsorPopoverProps {
+  availableSponsors: number;
+  unitId?: number;
+  propertyName?: string;
+  unitName?: string;
+  unitDesc?: string;
+  status?: string;
+  annualRent?: number | string;
+  is_sponsored?: boolean;
+}
 
 const UnitSponsorPopover = ({
   availableSponsors,
@@ -28,24 +37,25 @@ const UnitSponsorPopover = ({
   unitDesc,
   status,
   annualRent,
-}: {
-  availableSponsors: number;
-  unitId?: number;
-  propertyName?: string;
-  unitName?: string;
-  unitDesc?: string;
-  status?: string;
-  annualRent?: number | string;
-}) => {
+  is_sponsored = true,
+}: UnitSponsorPopoverProps) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [buyModal, setBuyModal] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
   const [reqLoading, setReqLoading] = useState(false);
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
 
-  const text =
-    availableSponsors > 0
-      ? "The sponsor will prioritize it to appear first to all users, rank higher for potential, and automatically renew and update the listings."
-      : "Sorry, you currently don't have any available sponsorships to apply to your property unit.";
+  const title = is_sponsored
+    ? "Sponsorship Already Activated"
+    : availableSponsors > 0
+    ? "Promote this Property"
+    : "No Sponsorships Available";
+
+  const description = is_sponsored
+    ? "This unit is already sponsored and prioritized to appear first to all users, rank higher for potential tenants, and automatically renew and update listings."
+    : availableSponsors > 0
+    ? "The sponsor will prioritize it to appear first to all users, rank higher for potential, and automatically renew and update the listings."
+    : "Sorry, you currently don't have any available sponsorships to apply to your property unit.";
 
   const popover = useRef(null);
   const continer = useRef(null);
@@ -54,7 +64,15 @@ const UnitSponsorPopover = ({
     if (showPopover) setShowPopover(false);
   }, [showPopover]);
 
-  const proceed = async() => {
+  const handleOpen = ()=> {
+    close();
+    console.log("cliecked")
+    // setBuyModal(true)
+  }
+
+  const proceed = async () => {
+    if (is_sponsored) return; // Prevent proceeding if already sponsored
+
     const numericRent = parseCurrencyToNumber(annualRent as string);
     const payload = {
       company_id: companyId,
@@ -66,11 +84,13 @@ const UnitSponsorPopover = ({
       annual_rent: numericRent,
     };
 
-    setShowPopover(false);
     try {
       setReqLoading(true);
       const res = await sponsorUnit(objectToFormData(payload));
-      if (res){
+      if (res) {
+        setShowPopover(false);
+        window.dispatchEvent(new Event("refetchRentSponsors"));
+        window.dispatchEvent(new Event("refetchRentUnit"));
         setModalOpen(true);
       }
     } catch (error) {
@@ -105,40 +125,39 @@ const UnitSponsorPopover = ({
         className="absolute bottom-full left-2/4 -translate-x-2/4 custom-flex-col max-w-[394px]"
         style={{ display: "none" }}
       >
-        <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3c3d37] custom-flex-col gap-6 shadow-lg">
+        <div className="p-6 min-w-[250px] rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3c3d37] custom-flex-col gap-6 shadow-lg">
           <div className="custom-flex-col gap-5">
             <div className="flex items-center justify-between">
               <p className="text-text-primary dark:text-white text-base font-bold">
-                {availableSponsors > 0
-                  ? "Promote this Property"
-                  : "No Sponsorships Available"}
+                {title}
               </p>
               <button onClick={close}>
                 <Picture src={Cancel} alt="cancel" size={24} />
               </button>
             </div>
             <p className="text-[#A4A7B0] dark:text-darkText-1 text-sm font-normal">
-              {text}
+              {description}
             </p>
-            {availableSponsors < 1 && (
+            {!is_sponsored && availableSponsors < 1 && (
               <p className="text-[#A4A7B0] dark:text-darkText-1 text-sm font-normal">
                 To promote your listing and have it appear first to potential
-                tenants and occupants, click on &apos;Buy Sponsor&apos; to
-                subscribe and sponsor your unit.
+                tenants and occupants, click on &apos;Buy Sponsor&apos; to subscribe and
+                sponsor your unit.
               </p>
             )}
           </div>
-          <div className="flex items-center text-base gap-2">
-            <div className="p-2 rounded-[4px] bg-support-2">
-              <p className="text-brand-disabled font-bold">
-                {" "}
-                {availableSponsors}{" "}
+          {/* {!is_sponsored && ( */}
+            <div className="flex items-center text-base gap-2">
+              <div className="p-2 rounded-[4px] bg-support-2">
+                <p className="text-brand-disabled font-bold">
+                  {availableSponsors}
+                </p>
+              </div>
+              <p className="text-black dark:text-white font-normal">
+                Available sponsor units
               </p>
             </div>
-            <p className="text-black dark:text-white font-normal">
-              Available sponsor units
-            </p>
-          </div>
+          {/* // )} */}
           <div className="flex justify-end gap-3">
             <Button
               onClick={close}
@@ -146,24 +165,29 @@ const UnitSponsorPopover = ({
               variant="change"
               className="py-2 px-8"
             >
-              cancel
+              Cancel
             </Button>
-            {availableSponsors > 0 ? (
-              <Button onClick={proceed} size="sm_medium" className="py-2 px-8">
-                proceed
+            {!is_sponsored && availableSponsors > 0 ? (
+              <Button
+                onClick={proceed}
+                size="sm_medium"
+                className="py-2 px-8"
+                disabled={reqLoading}
+              >
+                { reqLoading ? "Please wait" : "Proceed" }
               </Button>
-            ) : (
-              <Modal>
+            ) : !is_sponsored ? (
+              <Modal state={{ isOpen: buyModal, setIsOpen: setBuyModal }}>
                 <ModalTrigger asChild>
-                  <Button size="sm_medium" className="py-2 px-8">
-                    proceed
+                  <Button onClick={handleOpen} size="sm_medium" className="py-2 px-8">
+                    Proceed
                   </Button>
                 </ModalTrigger>
                 <ModalContent>
                   <BuySponsorModal />
                 </ModalContent>
               </Modal>
-            )}
+            ) : null}
           </div>
         </div>
         <svg
@@ -182,10 +206,9 @@ const UnitSponsorPopover = ({
         onClick={() => setShowPopover((prev) => !prev)}
       >
         <SponsorIcon />
-        <p>sponsor</p>
+        <p>Sponsor</p>
       </button>
-      {/* Modal is used to display the success message */}
-      {/* Only visible when the user clicks "proceed" */}
+      {/* Modal for success message */}
       <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
         <ModalContent>
           <ModalPreset type="success" className="max-w-[326px]">
@@ -195,7 +218,7 @@ const UnitSponsorPopover = ({
             </p>
             <div className="flex justify-center">
               <ModalTrigger close asChild>
-                <Button>ok</Button>
+                <Button>OK</Button>
               </ModalTrigger>
             </div>
           </ModalPreset>

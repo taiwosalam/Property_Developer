@@ -30,6 +30,7 @@ const SponsorModal = ({ count }: { count: number }) => {
       const res = await BuySponsor(objectToFormData(payload));
       if (res) {
         toast.success("Sponsor bought successfully!");
+        window.dispatchEvent(new Event("refetchRentSponsors"));
         setIsOpen(false);
       }
     } catch (error) {

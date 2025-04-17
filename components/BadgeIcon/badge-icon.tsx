@@ -22,6 +22,16 @@ export const tierColorMap = {
   6: "purple",
 } as const;
 
+
+export const staffTierColorMap = {
+  1: "gray",
+  2: "yellow",
+  3: "blue",
+  4: "green",
+  5: "black",
+  6: "purple",
+} as const;
+
 interface BadgeIconProps {
   color: BadgeIconColors;
   noMargin?: boolean;

@@ -167,26 +167,32 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 typeof action.label === "function"
                   ? action.label(propertyType)
                   : action.label;
+
+              // Define button visibility based on status
               if (status === "vacant" || status === "relocate") {
                 return label === "Start Rent" || label === "Start Counting";
               }
               if (status === "occupied") {
                 return label !== "Start Rent" && label !== "Start Counting";
               }
-              if (status === "expire") {
+              if (status === "expired") {
                 return (
                   label === "Renew Rent" ||
                   label === "Renew Fee" ||
-                  label === "Edit"
+                  label === "Edit" ||
+                  label === "Move Out" ||
+                  label === "Relocate"
                 );
               }
-              return false;
+              return false; // Default: hide all buttons if status is unknown
             })
             .filter((action) => {
               const label =
                 typeof action.label === "function"
                   ? action.label(propertyType)
                   : action.label;
+
+              // Additional filtering based on propertyType
               if (propertyType === "rental" && label === "Relocate") {
                 return false;
               }
@@ -197,6 +203,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
             })
             .map((action, i) => (
               <ActionButton
+                unit_id={unitId}
                 key={i}
                 {...action}
                 route={
