@@ -70,6 +70,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import SettingsUpdateModal from "@/components/Settings/Modals/settings-update-modal";
 import RestoreRestrictedUserForm from "./RestoreRestrictedUserForm";
 import { useRouter } from "next/navigation";
+import { logout } from "@/app/(onboarding)/auth/data";
 
 const companyTypes = [
   {
@@ -313,6 +314,16 @@ const Others = () => {
     });
   };
 
+  useEffect(() => {
+    const handlePopState = () => {
+      if (!localStorage.getItem("authToken")) {
+        window.location.replace("/auth/sign-in");
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const resetSettings = async () => {
     if (!Array.isArray(resetOptions) || resetOptions.length === 0) return;
 
@@ -325,12 +336,13 @@ const Others = () => {
       const response = await updateResetSettings(payload);
       // reset the settings options when request is made
       setResetOptions([]);
-      if (response) {
-        localStorage.clear();
-        router.replace("/auth/sign-in");
+      if (response && resetOptions.includes("resetAll")) {
+        localStorage.removeItem("authToken");
+        sessionStorage.clear();
+        await logout();
+        window.location.href = "/auth/sign-in";
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setLoadingReset(false);
     }
@@ -440,8 +452,7 @@ const Others = () => {
     isNetworkError,
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
-  
-  console.log(apiData);
+
 
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
@@ -525,10 +536,10 @@ const Others = () => {
 
   type DirectorsFormOptions = "options" | "choose-avatar";
 
-  const handleSubmit = async (data: FormData) => {
+  const submitDirectorForm = async (data: FormData) => {
     const fields = [
       "title",
-      "personal_title",
+      "professional_title",
       "full_name",
       "email",
       "years_in_business",
@@ -583,7 +594,7 @@ const Others = () => {
       heading: "Create New Director",
       content: (
         <DirectorsForm
-          submitAction={handleSubmit}
+          submitAction={submitDirectorForm}
           isProcessing={processing}
           chooseAvatar={() => setActiveStep("choose-avatar")}
           avatar={selectedAvatar}
@@ -660,15 +671,14 @@ const Others = () => {
   const [restoring, setRestoring] = useState<boolean>(false);
 
   const handleRestoreUser = async () => {
-    //
-    if (!propertyId || !selectedRestrictedUser) return;
+    if (!selectedRestrictedUser) return;
+
+    console.log("Restricted user!!!");
     const payload = {
-      property_id: propertyId,
       user_id: selectedRestrictedUser?.id,
       is_active: true,
     };
 
-    //
     setRestoring(true);
     try {
       const response = await restrictUserFromGroupChat(payload);
@@ -716,7 +726,7 @@ const Others = () => {
                   email={director.email}
                   phone_number={director.phone_number}
                   picture_url={director.picture}
-                  user_tag={director.title}
+                  user_tag={director.professional_title}
                 />
               );
             })}

@@ -1,6 +1,8 @@
 // import { states } from "@/data";
 import { getAllStates } from "@/utils/states";
-import { InspectionPageType, InspectionDataApiResponse } from "./type";
+import { InspectionPageType, InspectionDataApiResponse, InspectionDetailsApiResponse } from "./type";
+import { transformUnitDetails } from "../../listing/data";
+import { boolean } from "zod";
 
 export const inspectionFilterOptionsWithDropdown = [
   {
@@ -49,6 +51,50 @@ export const formatToNaira = (amount: string): string => {
   }).format(Number(amount));
 };
 
+export type TInspectionDetails = {
+  id: number;
+  property_name: string;
+  total_package: string;
+  fee_amount: string;
+  unit_fee_amount: string;
+  inspection_type: "physical_inspection" | "virtual_inspection";
+  address: string;
+  images: { src: string}[],
+  booked_by: string;
+  inspection_date: string;
+  inspection_time: string;
+  phone: string;
+  branch_name: string;
+  property: string;
+  description: string;
+}
+
+export const transformInspectionDetails = (data: InspectionDetailsApiResponse): TInspectionDetails => {
+  const inspections = data?.data;
+
+  return {
+    id: inspections?.id ?? 0,
+    property_name: inspections?.unit ? transformUnitDetails(inspections?.unit) : "___ ____",
+    total_package: inspections?.unit ? formatToNaira(inspections?.unit?.total_package) : "___ ___",
+    fee_amount: inspections?.unit?.fee_amount ? formatToNaira(inspections?.unit?.fee_amount) : "___ ___",
+    unit_fee_amount: inspections?.unit?.fee_period || "___ ___",
+    inspection_type: inspections?.inspection_type || "virtual_inspection",
+    address: `${inspections?.full_address}, ${inspections?.city_area}, ${inspections?.local_government} ${inspections?.state}` || "___ ___",
+    images: inspections?.unit?.images.map((img) => {
+      return { src: img.path }
+    }) || [],
+    booked_by: inspections?.booked_by ?? "___ ___", 
+    inspection_date: inspections?.inspection_date || "___ ___",
+    inspection_time: inspections?.inspection_time || "___ ___",
+    phone: inspections?.phone || "___ ___",
+    branch_name: inspections?.unit?.property?.branch?.branch_name || "___ ___",
+    property: inspections?.property_name || "___ ___",
+    description: inspections?.description || "___ ___",
+
+  }
+
+}
+
 export const transformInspectionCard = (
   data: InspectionDataApiResponse
 ): InspectionPageType => {
@@ -65,16 +111,19 @@ export const transformInspectionCard = (
       data?.inspections.map((item) => {
         return {
           id: item?.id,
-          property_name: item?.property_name,
-          price: formatToNaira(item?.total_package),
-          address: item?.full_address,
-          yearly_price: "",
-          image: item?.image,
-          unit_fee_period: item?.unit_fee_period,
-          inspection_type: item?.inspection_type,
-          booked_by: item?.booked_by,
-          inspection_date: item?.inspection_date,
-          inspection_time: item?.inspection_time,
+          property_id: item?.unit?.property_id,
+          property_name: item?.unit ? transformUnitDetails(item?.unit) : "___ ____",
+          total_package: item?.unit?.total_package ? formatToNaira(item?.unit?.total_package) : "___ ___",
+          fee_amount: item?.unit?.fee_amount ? formatToNaira(item?.unit?.fee_amount) : "___ ___",
+          unit_fee_amount: item?.unit?.fee_period || "___ ___",
+          inspection_type: item?.inspection_type || "virtual_inspection",
+          address: `${item?.full_address}, ${item?.city_area}, ${item?.local_government} ${item.state}` || "___ ___",
+          images: item?.unit?.images.map((img) => {
+            return { src: img.path }
+          }) || [],
+          booked_by: item?.booked_by ?? "___ ___", 
+          inspection_date: item?.inspection_date || "___ ___",
+          inspection_time: item?.inspection_time || "___ ___",
         };
       }) ?? [],
   };
@@ -86,6 +135,7 @@ export interface InspectionRequestParams {
   sort_order?: "asc" | "desc";
   start_date?: string;
   end_date?: string;
+  property_ids?: string;
 }
 export interface FilterResult {
   options: string[];

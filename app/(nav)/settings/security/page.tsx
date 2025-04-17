@@ -30,6 +30,7 @@ import {
   objectToFormData,
 } from "@/utils/checkFormDataForImageOrAvatar";
 import {
+  base64ToBlob,
   FormState,
   initialData,
   InitialDataTypes,
@@ -55,7 +56,7 @@ const Security = () => {
 
   const yearsOptions = Array.from({ length: 10 }, (_, i) => {
     const yearValue = i + 1;
-    return { label: `${yearValue} years +`, value: `${yearValue}+` };
+    return { label: `${yearValue} years +`, value: `${yearValue}` };
   });
 
   const [inputFields, setInputFields] = useState([
@@ -71,7 +72,8 @@ const Security = () => {
     title: title || "",
   });
 
-  const { data, loading, error } = useFetch("/user/full-profile");
+  const { data, loading, error } = useFetch("/user/profile");
+
   // console.log("data", pageData)
   useEffect(() => {
     if (data) {
@@ -90,16 +92,19 @@ const Security = () => {
     inputFileRef?.current?.click();
   };
 
+
   const handleUpdateProfile = async (data: FormData) => {
     const payload = {
-      full_name: data.get("fullname"),
-      personal_title: data.get("personal_title"),
+      full_name: data.get("full_name"),
+      title: data.get("title"),
+      professional_title: data.get("professional_title"),
       profile_picture: data.get("picture"),
-      // years_in_business: data.get("director_experience"),
+      years_in_business: data.get("years_in_business"),
       about_director: data.get("about_director"),
       phone_number: data.get("phone"),
-      email: data.get("director_email"),
+      alt_email: data.get("alt_email"),
     };
+   
 
     try {
       setReqLoading(true);
@@ -133,14 +138,14 @@ const Security = () => {
               />
               <div className="custom-flex-col gap-[18px]">
                 <ProfileUpload
-                  preview={preview || profile_picture || ""}
+                  preview={preview || pageData?.profile_picture || ""}
                   onChange={handleImageChange}
                   inputFileRef={inputFileRef}
                   onClick={changeImage}
                 />
                 <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <Select
-                    id="personal_title"
+                    id="title"
                     name="title"
                     options={titles}
                     label="personal title"
@@ -151,36 +156,36 @@ const Security = () => {
                   <Select
                     id="professional_title"
                     name="professional_title"
-                    options={titles}
+                    options={industryOptions}
                     label="professional title"
                     inputContainerClassName="bg-neutral-2"
-                    // defaultValue={pageData?.personal_title}
+                     defaultValue={pageData?.professional_title}
                   />
 
                   <Input
-                    id="fullname"
-                    name="name"
+                    id="full_name"
+                    name="full_name"
                     label="full name"
                     placeholder="Write Here"
                     defaultValue={pageData?.fullname}
                   />
 
                   <Input
-                    id="director_email"
+                    id="alt_email"
                     label="email"
                     type="email"
                     placeholder="write here"
                     inputClassName="rounded-[8px] setup-f bg-white"
-                    defaultValue={pageData?.email}
+                    defaultValue={pageData?.director_email}
                   />
 
                    <Select
-                    id="experience"
+                    id="years_in_business"
                     label="years of experience"
                     placeholder="Write here"
                     options={yearsOptions}
                     hiddenInputClassName="setup-f"
-                    // defaultValue={year}
+                     defaultValue={pageData?.director_experience}
                   />
 
                   <PhoneNumberInput
@@ -204,7 +209,7 @@ const Security = () => {
               submit
               loading={reqLoading}
               action={handleUpdateProfile as any}
-              next={next}
+             
             />
           </div>
         </AuthForm>

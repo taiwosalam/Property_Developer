@@ -4,18 +4,33 @@ import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { SectionHeading } from "@/components/Section/section-components";
 import Button from "@/components/Form/Button/button";
+import { deleteCompanyLogo } from "./data";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 interface CompanyLogoProps {
-  lightLogo?: string | StaticImageData;
-  darkLogo?: string | StaticImageData;
+  lightLogo?: string | StaticImageData | null;
+  darkLogo?: string | StaticImageData | null;
+  onChangeLogo?: ({
+    light,
+    dark,
+  }: {
+    light: string | StaticImageData | null;
+    dark: string | StaticImageData | null;
+  }) => void;
 }
 
-const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
+const CompanyLogo: React.FC<CompanyLogoProps> = ({
+  lightLogo,
+  darkLogo,
+  onChangeLogo,
+}) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputFileRefs = {
     light: useRef<HTMLInputElement>(null),
     dark: useRef<HTMLInputElement>(null),
   };
+
+  const { company_id } = usePersonalInfoStore();
 
   const [lightPreview, setLightPreview] = useState<
     string | StaticImageData | null
@@ -23,11 +38,12 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
   const [darkPreview, setDarkPreview] = useState<
     string | StaticImageData | null
   >(darkLogo || null);
+  const [deleteLogoLoading, setDeleteLogoLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setLightPreview(lightLogo || null);
     setDarkPreview(darkLogo || null);
-  }, [lightLogo, darkLogo]);    
+  }, [lightLogo, darkLogo]);
 
   // Handle file input click
   const handleButtonClick = (mode: "light" | "dark") => {
@@ -64,6 +80,32 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
       setDarkPreview(null);
     }
     handleInputChange(); // Notify flow progress change
+  };
+
+  const handleDeleteCompanyLogo = async (mode: "light" | "dark") => {
+    let payload;
+    if (mode === "light") {
+      payload = { remove_company_logo: true };
+    } else {
+      payload = { remove_dark_logo: true };
+    }
+    try {
+      setDeleteLogoLoading(true);
+      if (company_id) {
+        const res = await deleteCompanyLogo(payload, company_id);
+        if (res) {
+          setDarkPreview(null);
+          onChangeLogo?.({ light: lightPreview, dark: null });
+          if (inputFileRefs.dark.current) {
+            inputFileRefs.dark.current.value = "";
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setDeleteLogoLoading(false);
+    }
   };
 
   return (
@@ -128,11 +170,16 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({ lightLogo, darkLogo }) => {
               {(mode === "light" ? lightPreview : darkPreview) && (
                 <div className="flex items-end">
                   <Button
+                    className={`${
+                      mode === "light"
+                        ? "invisible"
+                        : "visible bg-red-300/30 text-red-600"
+                    }`}
                     variant="change"
                     size="sm"
-                    onClick={() => handleButtonClick(mode)}
+                    onClick={() => handleDeleteCompanyLogo("dark")}
                   >
-                    Change logo
+                    {deleteLogoLoading ? "Please wait..." : "Delete logo"}
                   </Button>
                 </div>
               )}

@@ -37,8 +37,8 @@ export const rentReportTableFields: Field[] = [
   { id: "1", label: "Unit ID", accessor: "unit_id" },
   {
     id: "2",
-    label: "Property Name",
-    accessor: "property_name",
+    label: "Unit Name",
+    accessor: "unit_name",
   },
   { id: "3", label: "Tenant / Occupant", accessor: "tenant_name" },
   {
@@ -47,8 +47,8 @@ export const rentReportTableFields: Field[] = [
     accessor: "rent_start_date",
   },
   { id: "6", label: "End Date", accessor: "rent_end_date" },
+  { id: "8", label: "Total Package", accessor: "total_fee" },
   { id: "7", label: "Status", accessor: "status" },
-  { id: "8", label: "Caution Deposit", accessor: "caution_deposit" },
 ];
 
 const formatDate = (timeStamp: string): string => {
@@ -62,12 +62,20 @@ export const transformRentData = (data: RentListResponse): RentReportData => {
     current_month_rents: data.data.current_month_rents,
     rents: data.data.rents.map((rent) => ({
       unit_id: rent.unit_id || 0,
-      property_name: rent.property_name === "N/A" ? "__ __" : rent.property_name,
+      unit_name: rent.unit_name || "__ __",
+      // property_name:
+      //   rent.property_name === "N/A" ? "__ __" : rent.property_name,
       tenant_name: rent.tenant_name || "__ __",
       rent_start_date: formatDate(rent.rent_start_date),
       rent_end_date: formatDate(rent.rent_start_date),
       status: rent.status || "__ __",
-      caution_deposit: rent.caution_deposit || 0,
+      total_fee: rent.total_fee
+        ? `₦${Number(rent.total_fee).toLocaleString("en-NG", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`
+        : "___ ___",
+      //caution_deposit: rent.caution_deposit || 0,
     })),
   };
 };

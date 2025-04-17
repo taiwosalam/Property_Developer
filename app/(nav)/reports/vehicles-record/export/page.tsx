@@ -19,6 +19,7 @@ import dayjs from "dayjs";
 
 const ExportVehiclesRecord = () => {
   const exportRef = useRef<HTMLDivElement>(null);
+  const [fullContent, setFullContent] = useState(false);
   const [vehiclesRecordTableData, setVehiclesRecordTableData] = useState<
     VehicleRecordsType[]
   >([]);
@@ -52,17 +53,24 @@ const ExportVehiclesRecord = () => {
         <div className="space-y-3">
           <h1 className="text-center text-black text-lg md:text-xl lg:text-2xl font-medium">
             Summary{" "}
-            <span className="px-2">{`(${dayjs().format("D-MM-YYYY")})`}</span>
+            <span className="px-2">{`(${dayjs().format(
+              "Do MMMM YYYY"
+            )})`}</span>
           </h1>
         </div>
         <CustomTable
+          className={`${fullContent && "max-h-none"}`}
           fields={vehicleRecordReportTableFields}
           data={vehiclesRecordTableData}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
       </div>
-      <ExportPageFooter printRef={exportRef}/>
+      <ExportPageFooter
+        printRef={exportRef}
+        setFullContent={setFullContent}
+        fullContent={fullContent}
+      />
     </div>
   );
 };

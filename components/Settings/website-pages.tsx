@@ -25,7 +25,7 @@ import SettingsWebsiteDomain from "./settings-website-domain";
 const websiteOptions = [
   {
     name: "about_us_display",
-    title: "About Us and Reviews Display",
+    title: "About Us and Review Page",
     desc: "Easily toggle the About Us page on or off in your website menu.",
   },
   {
@@ -34,8 +34,8 @@ const websiteOptions = [
     desc: "Control services and contact page display in your website menu by toggling it on or off.",
   },
   {
-    name: "staff_branch_options",
-    title: "Staffs and Branch Options",
+    name: "staffs_branch_options",
+    title: "Staffs and Branch Page",
     desc: "Toggle staff and branch pages on or off in your website menu",
   },
   {
@@ -98,8 +98,7 @@ const WebsitePages = () => {
   }, [planData]);
 
   useEffect(() => {
-    if (companySettings) {
-      // I could use this here:  && userPlan === "professional"
+    if (companySettings && companySettings?.data) {
       const webSetting = companySettings?.data?.website_settings;
       const updatedSettings: IWebsiteSettings = {
         about_us_display: webSetting?.about_us_display ?? true,
@@ -109,32 +108,36 @@ const WebsitePages = () => {
         sale_properties: webSetting?.sale_properties ?? true,
         shortlet_properties: webSetting?.shortlet_properties ?? true,
         social_link_visibility: webSetting?.social_link_visibility,
-        sponsored_logo: webSetting?.sponsored_logo,
-        staff_branch_options: userPlan === "professional" ? webSetting?.staffs_branch_options : true,
-        modules_listing: webSetting?.modules_listing,
+        sponsored_logo: webSetting?.sponsored_logo ?? true,
+        staffs_branch_options: webSetting?.staffs_branch_options ?? true,
+        modules_listing: webSetting?.modules_listing ?? true,
       };
       setWebsiteSettings(updatedSettings);
-      setSelectedColor(websiteSettings?.color_scheme ?? "#000000");
-      setCustomColor(webSetting?.color_scheme ?? "");
-      setCheckedStates({
-        modules_listing: websiteSettings?.modules_listing ?? true,
-        about_us_display: websiteSettings?.about_us_display ?? true,
-        services_contact_page: websiteSettings?.rent_properties ?? true,
-        social_link_visibility: websiteSettings?.social_link_visibility ?? true,
-        sponsored_logo: websiteSettings?.sponsored_logo ?? true,
-        staff_branch_options: websiteSettings?.staff_branch_options ?? true,
-      });
-
-      //setPropertyVisibility({});
-    }
-    if (companySettings && userPlan === "professional") {
-      setPropertyVisibility({
-        rent_properties: websiteSettings?.rent_properties ?? false,
-        sale_properties: websiteSettings?.sale_properties ?? false,
-        shortlet_properties: websiteSettings?.shortlet_properties ?? false,
-      });
     }
   }, [companySettings]);
+
+  useEffect(() => {
+    if (websiteSettings) {
+      setSelectedColor(websiteSettings.color_scheme ?? "#000000");
+      setCustomColor(websiteSettings.color_scheme ?? "#000000");
+
+      setCheckedStates({
+        modules_listing: websiteSettings.modules_listing ?? true,
+        about_us_display: websiteSettings.about_us_display ?? true,
+        services_contact_page: websiteSettings.services_contact_page ?? true,
+        social_link_visibility: websiteSettings.social_link_visibility ?? true,
+        sponsored_logo: websiteSettings.sponsored_logo ?? true,
+        staffs_branch_options:
+          websiteSettings.staffs_branch_options ?? true ?? true,
+      });
+
+      setPropertyVisibility({
+        rent_properties: websiteSettings.rent_properties ?? false,
+        sale_properties: websiteSettings.sale_properties ?? false,
+        shortlet_properties: websiteSettings.shortlet_properties ?? false,
+      });
+    }
+  }, [websiteSettings]);
 
   const handleCustomColorChange = (color: string) => {
     setCustomColor(color);
@@ -150,18 +153,18 @@ const WebsitePages = () => {
     name: string,
     value: SetStateAction<boolean>
   ) => {
-    if (userPlan === "professional") {
-      const newValue =
-        typeof value === "function" ? value(propertyVisibility[name]) : value;
-      setPropertyVisibility((prev) => ({
-        ...prev,
-        [name]: newValue,
-      }));
-    }
+    // if (userPlan === "professional") {
+    const newValue =
+      typeof value === "function" ? value(propertyVisibility[name]) : value;
+    setPropertyVisibility((prev) => ({
+      ...prev,
+      [name]: newValue,
+    }));
+    // }
   };
 
   const handlePropertyVisibility = (name: string, checked: boolean) => {
-    if (userPlan !== "professional") return;
+    // if (userPlan !== "professional") return;
 
     setPropertyVisibility((prev) => ({
       ...prev,
@@ -178,24 +181,25 @@ const WebsitePages = () => {
 
     setLoading(true);
     try {
-       await updateWebsitePageAndColorScheme(payload);
+      await updateWebsitePageAndColorScheme(payload);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+  //
 
   return (
     <div>
       <SettingsSection title="website page & Color Scheme">
         <div className="modules-list mb-5">
           <SettingsOthersCheckBox
-            plan={userPlan}
-            title="Website Page"
+            plan={"professional"}
+            title="Property Pages"
             name="module_listing"
             desc="Toggle on or off to control the visibility of your listing on the website, based on your subscription plan."
-            checked={checkedStates["modules_listing"] ?? true}
+            checked={checkedStates["modules_listing"]}
             value="module_listing"
             onChange={(value, checked) => {
               setCheckedStates((prev) => ({
@@ -231,10 +235,10 @@ const WebsitePages = () => {
           {websiteOptions.map((option, index) => (
             <SettingsOthersCheckBox
               key={index}
-              plan={userPlan} //Plan from API to determine whether user can toggle the switch
+              plan={"professional"} //Plan from API to determine whether user can toggle the switch
               title={option.title}
               desc={option.desc}
-              checked={userPlan === "professional"  ? checkedStates[option.name] : true}
+              checked={checkedStates[option.name]} // userPlan === "professional"  ?
               value={option.name}
               onChange={(value, checked) => {
                 setCheckedStates((prev) => ({

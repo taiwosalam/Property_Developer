@@ -206,8 +206,8 @@ const Undo = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total"
-          newData={total}
-          total={this_month}
+          newData={this_month}
+          total={total}
           colorScheme={1}
         />
       </div>
@@ -226,6 +226,8 @@ const Undo = () => {
         filterOptionsMenu={reportTenantFilterOption}
         searchInputPlaceholder="Search for undo"
         hasGridListToggle={false}
+        xlsxData={table}
+        fileLabel={`Undo Reports`}
       />
 
       <section>

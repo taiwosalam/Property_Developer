@@ -46,6 +46,7 @@ import { toast } from "sonner";
 import WebsitePages from "@/components/Settings/website-pages";
 import WebsiteTypography from "@/components/Settings/website-custom-typography";
 import Button from "@/components/Form/Button/button";
+import { StaticImageData } from "next/image";
 
 const Profile = () => {
   const company_id = usePersonalInfoStore((state) => state.company_id);
@@ -55,7 +56,7 @@ const Profile = () => {
     [key: string]: boolean;
   }>({});
 
-  // console.log("company id", company_id)
+  //
   const [address, setAddress] = useState({
     state: "",
     lga: "",
@@ -85,6 +86,14 @@ const Profile = () => {
   } = useFetch(`/companies/${company_id}`);
   useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
 
+  const [companyLogo, setCompanyLogo] = useState<{
+    light: string | StaticImageData | null;
+    dark: string | StaticImageData | null;
+  }>({
+    light: state.companyData.company_logo,
+    dark: state.companyData?.dark_logo,
+  });
+
   useEffect(() => {
     if (apiData) {
       const transformedData: ProfileSettingsPageState =
@@ -93,7 +102,16 @@ const Profile = () => {
     }
   }, [apiData]);
 
-  // console.log("apiData", apiData);
+  useEffect(() => {
+    if (state) {
+      setCompanyLogo({
+        light: state.companyData.company_logo,
+        dark: state.companyData.dark_logo,
+      });
+    }
+  }, [state]);
+
+  //
   const { preview, handleImageChange } = useImageUploader({
     placeholder: Transparent,
   });
@@ -104,7 +122,6 @@ const Profile = () => {
   const [uploadingMembership, setUploadingMembership] = useState(false);
 
   const handleUploadUtility = (file: File | null) => {
-    console.log(file);
     if (file) {
       setUploadingUtility(true);
     } else {
@@ -113,7 +130,6 @@ const Profile = () => {
   };
 
   const handleUploadMembership = (file: File | null) => {
-    console.log(file);
     if (file) {
       setUploadingMembership(true);
     } else {
@@ -136,14 +152,10 @@ const Profile = () => {
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);
     const data = transformFormCompanyData(formData);
-    console.log(data);
+
     try {
-      const status = await updateCompanyDetails(data, company_id as string);
-      console.log(status);
-      if (status) {
-        toast.success("Company Details Updated Successfully");
-        window.dispatchEvent(new Event("refetchProfile"));
-      }
+      const res = await updateCompanyDetails(data, company_id as string);
+      if (res) toast.success("Company Details Updated Successfully");
     } catch (err) {
       toast.error("Failed to Update Company Details");
     } finally {
@@ -162,7 +174,7 @@ const Profile = () => {
           <div className="custom-flex-col gap-8">
             <div className="">
               <div className="flex w-full items-start gap-4 md:flex-row flex-col">
-                <div className="flex-1 gap-1 flex items-end">
+                <div className="flex-1 w-full gap-1 flex items-end">
                   <Input
                     required
                     id="company_name"
@@ -175,8 +187,9 @@ const Profile = () => {
                     <SettingsVerifiedBadge status="verified" />
                   </div>
                 </div>
-                <div className="flex-1 gap-1 flex items-end">
+                <div className="flex-1 w-full gap-1 flex items-end">
                   <Input
+                    className="w-full"
                     required
                     label="company mail"
                     id="company_mail"
@@ -212,10 +225,10 @@ const Profile = () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                   <FileInput
                     required
-                    noUpload
-                    id="membership_document"
-                    label="Membership document"
+                    id="cac_certificate"
+                    label="CAC document"
                     placeholder=""
+                    noUpload={true}
                     buttonName="Document"
                     fileType="pdf"
                     size={2}
@@ -245,7 +258,7 @@ const Profile = () => {
                 <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                   <FileInput
                     required
-                    id="membership_document"
+                    id="membership_certificate"
                     label="Membership document"
                     placeholder=""
                     buttonName="Document"
@@ -255,14 +268,15 @@ const Profile = () => {
                     hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                     settingsPage={true}
                     defaultValue={companyData.membership_certificate}
+                    membership_status={verifications.membership_status}
                   />
-                  {companyData.membership_certificate && (
+                  {/* {companyData.membership_certificate && (
                     <div className="flex pt-2 sm:pt-7">
                       <SettingsVerifiedBadge
                         status={verifications.membership_status}
                       />
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
@@ -280,6 +294,7 @@ const Profile = () => {
                 defaultValue={state.companyData.state}
                 onChange={(value) => handleAddressChange("state", value)} // Update handler
                 required
+                disabled
               />
 
               {/* Local Government Selector */}
@@ -291,6 +306,7 @@ const Profile = () => {
                 onChange={(value) => handleAddressChange("lga", value)} // Update handler
                 value={address.lga} // Controlled value
                 required
+                disabled
                 defaultValue={state.companyData.local_government}
               />
 
@@ -304,6 +320,7 @@ const Profile = () => {
                 onChange={(value) => handleAddressChange("city", value)} // Update handler
                 value={address.city} // Controlled value
                 required
+                disabled
                 defaultValue={state.companyData.city}
               />
             </div>
@@ -312,13 +329,15 @@ const Profile = () => {
                 id="head_office_address"
                 label="Head Office Address"
                 placeholder=""
+                disabled
                 className="w-full lg:w-[500px]"
                 defaultValue={state.companyData.head_office_address}
               />
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2 w-full lg:w-auto">
                 <FileInput
                   required
-                  id="utility_document  "
+                  noUpload={true}
+                  id="utility_document"
                   label="utility document"
                   placeholder=""
                   buttonName="Document"
@@ -328,21 +347,21 @@ const Profile = () => {
                   hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                   settingsPage={true}
                   defaultValue={companyData.utility_document}
+                  membership_status={verifications.utility_status}
                   // onChange={handleUploadUtility}
                 />
-                {companyData.utility_document && (
+                {/* {companyData.utility_document && (
                   <div className="flex pt-2 sm:pt-7">
                     <SettingsVerifiedBadge
                       status={verifications.utility_status}
                     />
                   </div>
-                )}
-                {uploadingUtility && (
+                )} */}
+                {/* {uploadingUtility && (
                   <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
                     Verify Document
                   </button>
-                )}
-          
+                )} */}
               </div>
             </div>
             <CompanyMobileNumber
@@ -352,13 +371,19 @@ const Profile = () => {
               )}
             />
             <CompanyLogo
-              lightLogo={state.companyData.company_logo}
-              darkLogo={state.companyData.dark_logo}
+              lightLogo={companyLogo.light}
+              darkLogo={companyLogo.dark}
+              onChangeLogo={setCompanyLogo}
             />
           </div>
           <div className="flex self-end mt-4 justify-end w-full">
-            <Button disabled={requestLoading} type="submit" className="px-8 py-2" size="base_medium">
-              {requestLoading ? "Please wait" : "Update"}
+            <Button
+              disabled={requestLoading}
+              type="submit"
+              className="px-8 py-2"
+              size="base_medium"
+            >
+              {requestLoading ? "Please wait..." : "Update"}
             </Button>
           </div>
         </AuthForm>

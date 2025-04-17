@@ -13,7 +13,7 @@ export interface BranchCardProps {
   branch_full_address: string;
   manager_name: string;
   manager_picture?: string | null;
-  badgeColor?: "red" | "yellow" | "blue" | "green" | "black";
+  badgeColor?: "red" | "yellow" | "blue" | "green" | "black" | "purple";
   staff_count: number;
   property_count: number;
   unit_count: number;

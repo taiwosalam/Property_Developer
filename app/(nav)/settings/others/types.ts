@@ -38,6 +38,9 @@ type User = {
   email_verified_at: string | null;
   phone_verified_at: string | null;
   username_updated_at: string | null;
+  profile: {
+    title: string;
+  }
   is_active: number;
   is_company_owner: number;
   tier_id: number;

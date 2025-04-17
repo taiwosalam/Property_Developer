@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { InspectionCardInfoProps } from "./types";
 
 // Images
-import { LocationIcon } from "@/public/icons/icons";
+import { CameraIcon, LocationIcon } from "@/public/icons/icons";
 import SampleProperty from "@/public/empty/SampleProperty.jpeg";
 
 // Imports
@@ -20,9 +20,10 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
   total_price,
   address,
   yearly_price,
-  unit_fee_period
+  unit_fee_period,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
+
   return (
     <div
       className={clsx(
@@ -35,30 +36,37 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
         onClose={() => {
           setScreenModal(false);
         }}
-        images={[{ src: SampleProperty }]}
+        images={image}
       />
-      <div className="flex items-center gap-4">
-        <div className="relative rounded-[4px] overflow-hidden">
+      <div className="flex gap-4">
+        <div className="relative rounded-[4px] overflow-hidden min-w-[130px]">
           <Picture
-            src={image ?? SampleProperty}
+            src={image[0]?.src ?? SampleProperty}
             alt="preview"
             width={130}
             height={117}
             onClick={() => setScreenModal(true)}
           />
-          {/* <div className="absolute top-0 left-0 w-[120px] -rotate-45 -translate-x-[30px] translate-y-[20px] py-[2px] px-2 bg-status-error-2">
-            <p className="text-text-invert dark:text-white text-xs font-semibold text-center">
-              For Rent
-            </p>
-          </div> */}
+          <div className="absolute top-0 left-0 py-[2px] px-2">
+            {image.length && (
+              <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+                <CameraIcon />
+                <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
+                  +{image.length}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="custom-flex-col gap-1 text-text-secondary dark:text-white text-sm lg:text-base font-bold">
-          <p>{ title }</p>
-          
-          <div className="text-text-disabled flex gap-1">
+        <div className="pr-4 custom-flex-col gap-1 text-text-secondary dark:text-white text-sm lg:text-base font-bold capitalize max-w-[500px] min-w-0 overflow-hidden break-words">
+          <p className="break-words whitespace-normal">
+            {title}
+          </p>
+
+          <div className="text-text-disabled flex gap-1 min-w-0  max-w-full">
             <LocationIcon />
-            <p className="text-xs font-normal max-w-[7.5rem]">
-             { address}
+            <p className="text-xs font-normal w-full break-words whitespace-normal line-clamp-3">
+              {address}
             </p>
           </div>
         </div>
@@ -73,7 +81,9 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
           Total Package
         </p>
         <p className="text-text-disabled text-sm font-medium">
-         { yearly_price && <span className="text-highlight">{yearly_price } / Yearly</span> }
+          {yearly_price && (
+            <span className="text-highlight">{yearly_price} / Yearly</span>
+          )}
         </p>
       </div>
     </div>

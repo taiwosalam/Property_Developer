@@ -3,6 +3,7 @@ import {
   cleanPhoneNumber,
   objectToFormData,
 } from "@/utils/checkFormDataForImageOrAvatar";
+import { toast } from "sonner";
 
 interface SocialLinks {
   facebook: string;
@@ -17,7 +18,7 @@ interface SocialLinks {
 interface Verification {
   cac_status: "verified" | "unverified";
   cac_reason: string;
-  membership_status: "verified" | "unverified";
+  membership_status: "verified" | "unverified" | "pending";
   membership_reason: string;
   utility_status: "verified" | "unverified";
   utility_reason: string;
@@ -244,9 +245,7 @@ export const transformProfileApiResponse = (
         | "verified"
         | "unverified",
       cac_reason: res.verification.cac_reason,
-      membership_status: convertYesNoToVerify(
-        res.verification.membership_status
-      ) as "verified" | "unverified",
+      membership_status: res.verification.membership_status,
       membership_reason: res.verification.membership_reason,
       utility_status: convertYesNoToVerify(res.verification.utility_status) as
         | "verified"
@@ -338,6 +337,7 @@ interface CompanyPayload {
   bio: string;
   industry: string;
   membership_number: string;
+  membership_certificate: string | File;
   company_type_id: number;
   head_office_address: string;
   facebook: string;
@@ -348,7 +348,8 @@ interface CompanyPayload {
   youtube: string;
   website: string;
   cac_registration_number: string;
-  dark_logo: string | File;
+  cac_document: string | File;
+  dark_logo: string | File | null;
   utility_document: string | File;
   phone_number: string[];
   // directors: Director[];
@@ -359,12 +360,14 @@ export const transformFormCompanyData = (
 ): CompanyPayload => {
   const data = {} as CompanyPayload;
 
-  console.log(formData);
-
   data.company_logo = formData.get("light_company_logo") as string | File;
-  data.dark_logo = formData.get("dark_company_logo") as string | File;
+  data.dark_logo = formData.get("dark_company_logo") as string | File | null;
   data.industry = formData.get("industry") as string;
   data.membership_number = formData.get("membership_number") as string;
+  data.membership_certificate = formData.get("membership_certificate") as
+    | string
+    | File;
+  data.cac_document = formData.get("cac_certificate") as string | File;
 
   data.head_office_address = formData.get("head_office_address") as string;
   data.state = formData.get("state") as string;
@@ -398,6 +401,7 @@ export const updateCompanyDetails = async (
     data.append("_method", "PATCH");
     const response = await api.post(`/company/${id}/update`, data);
     if (response.status === 200) {
+      window.dispatchEvent(new Event("refetchProfile"));
       return response;
     }
     // console.log('res', response)
@@ -406,6 +410,44 @@ export const updateCompanyDetails = async (
     return false;
   }
 };
+
+export const deleteCompanyLogo = async (payload: any, company_id: string) => {
+  try {
+    const response = await api.delete(`/company/${company_id}/remove-logo`, {
+      data: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Logo deleted successfully");
+      window.dispatchEvent(new Event("refetchProfile"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const updateCompanySocials = async (data: any, id: string) => {
+  try {
+    const response = await api.patch(`company/${id}/update`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status === 200 || response.status === 201) {
+      toast.success("Updated successfully!");
+      return response;
+    }
+    // console.log('res', response)
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const cleanStringtoArray = (phone_number: any) => {
   // Check if the string is empty or not
   if (phone_number && phone_number.trim()) {
@@ -421,3 +463,22 @@ export const cleanStringtoArray = (phone_number: any) => {
     console.error("The phone_number string is empty or invalid.");
   }
 };
+
+export const checkWebsiteDomain = async (domainName: string) => {
+  const payload = {
+    domain: domainName
+  }
+  try{
+    const data = await api.post('check-domain', payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if(data.status === 200 || data.status === 201){
+      return data
+    }
+  }catch(error){
+    handleAxiosError(error);
+    return false;
+  }
+}

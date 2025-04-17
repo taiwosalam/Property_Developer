@@ -8,6 +8,7 @@ const useExport = (
   printRef?: RefObject<HTMLDivElement>
 ) => {
   const handlePrint = async () => {
+   
     const pdf = new jsPDF();
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
     const pdfPageHeight = pdf.internal.pageSize.getHeight();

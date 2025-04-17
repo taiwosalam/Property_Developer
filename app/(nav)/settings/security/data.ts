@@ -1,4 +1,5 @@
 import api, { handleAxiosError } from "@/services/api";
+import { StaticImageData } from "next/image";
 import { toast } from "sonner";
 
 export const updateUserProfile = async (data: FormData) => {
@@ -162,36 +163,65 @@ export const updateSMSSettings = async (data: FormData) => {
 export const transformProfileData = (data:any): InitialDataTypes => {
   // console.log("data gotten", data)
   return {
-    email: data.user.email,
-    fullname: data.user.name,
-    personal_title: data.user.profile.title,
-    phone: data.user.company.directors[0].phone_number,
-    about_director: data.user.company.directors[0].about_director,
-    director_email: data.user.email,
-    picture: data.user.profile.picture,
-    director_experience: data.user.company.directors[0].years_in_business
+    profile_picture: data.data.director.picture ?? "",
+    email: data.data.user.email,
+    fullname: data.data.user.name || "",
+    personal_title: data.data.profile.title ?? "",
+    professional_title: data.data.director.professional_title ?? "",
+    phone: data.data.director.phone || "",
+    about_director: data.data.director.about_director || "",
+    director_email: data.data.director.alt_email || "",
+    director_experience: data.data.director.years_in_business ?? ""
   }
 }
 
 
 export interface InitialDataTypes {
+  profile_picture: string | null;
   email: string;
   personal_title: string;
+  professional_title: string;
   fullname: string;
   phone: string;
   about_director: string;
   director_email: string;
-  picture: string;
   director_experience: string;
 }
 
 export const initialData: InitialDataTypes = {
+  profile_picture: null,
   email: "",
   fullname: "",
   personal_title: "",
   phone: "",
   about_director: "",
   director_email: "",
-  picture: "",
-  director_experience: ""
+  director_experience: "",
+  professional_title: ""
 }
+
+
+export function base64ToBlob(base64Data: string): Blob {
+  if (!base64Data?.includes(',')) {
+    throw new Error("Invalid Base64 format: missing comma separator");
+  }
+
+  const [header, base64] = base64Data.split(',');
+  const mimeMatch = header.match(/data:(.*?);base64/);
+
+  if (!mimeMatch) {
+    throw new Error('Invalid MIME type in Base64 header');
+  }
+
+  const mimeType: string = mimeMatch[1];
+  const byteString = atob(base64);
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const intArray = new Uint8Array(arrayBuffer);
+
+  for (let i = 0; i < byteString.length; i++) {
+    intArray[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([intArray], { type: mimeType });
+}
+

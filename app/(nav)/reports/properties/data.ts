@@ -1,4 +1,9 @@
 import type { Field } from "@/components/Table/types";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+
+dayjs.extend(advancedFormat);
+
 export const reportsPropertiessFilterOptions = [
   {
     label: "Account Officer",
@@ -33,18 +38,18 @@ export const propertiesReportTablefields: Field[] = [
     label: "Property",
     accessor: "property",
   },
-  { id: "3", label: "Branch", accessor: "branch" },
+  { id: "3", label: "landlord / landlady", accessor: "landlord" },
+  { id: "4", label: "Occupied Units", accessor: "occupied_units" },
   {
     id: "5",
-    label: "Account Officer",
-    accessor: "account_officer",
+    label: "Available Units",
+    accessor: "available_units",
     cellStyle: { textTransform: "uppercase" },
   },
-  { id: "6", label: "landlord / landlady", accessor: "landlord" },
+
+  { id: "6", label: "Total Units", accessor: "total_units" },
   { id: "7", label: "Date Created", accessor: "date_created" },
 ];
-
-
 
 interface Property {
   property_id: number;
@@ -53,6 +58,9 @@ interface Property {
   branch_name: string;
   account_officer: string;
   created_at: string;
+  total_units: number;
+  available_units: number;
+  occupied_units: number;
 }
 interface PropertyData {
   total_properties: number;
@@ -66,15 +74,15 @@ export interface PropertyApiResponse {
   data: PropertyData;
 }
 
-
 // Interface representing the transformed property data
 interface TransformedProperty {
   id: number;
   property: string;
-  branch: string;
-  account_officer: string;
   landlord: string;
   date_created: string;
+  total_units: number;
+  available_units: number;
+  occupied_units: number;
 }
 
 // Interface representing the transformed state
@@ -88,16 +96,21 @@ const formatPropertyName = (propertyName?: string | null): string => {
   return !propertyName || propertyName === "N/A" ? "__ __" : propertyName;
 };
 
-export const transformPropertyData = (apiData: PropertyApiResponse): TransformedPropertyData => {
+export const transformPropertyData = (
+  apiData: PropertyApiResponse
+): TransformedPropertyData => {
   const { total_properties, monthly_properties, properties } = apiData.data;
 
   const transformedProperties = properties.map((property) => ({
     id: property.property_id,
     property: property.property_name,
-    branch: property.branch_name,
-    account_officer: formatPropertyName(property.account_officer),
-    landlord: property.landlord_name,
-    date_created: property.created_at,
+    landlord: formatPropertyName(property.landlord_name),
+    date_created: property.created_at
+      ? dayjs(property.created_at).format("YYYY-MM-DD h:mm A")
+      : "__ __",
+    total_units: property.total_units,
+    available_units: property.available_units,
+    occupied_units: property.occupied_units,
   }));
 
   return {

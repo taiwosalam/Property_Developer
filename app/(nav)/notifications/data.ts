@@ -3,11 +3,13 @@ import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
 
 dayjs.extend(customParseFormat);
 
 export type Notification = {
-  id: number;
+  id: string;
   type: string;
   notifiable_type: string;
   notifiable_id: number;
@@ -32,7 +34,7 @@ export type NotificationApiResponse = {
 
 export type TNotificationData = {
   notifications: {
-    id: number;
+    id: string;
     type: string;
     subject: string;
     message: string;
@@ -72,4 +74,47 @@ export const transformNotificationData = (
       sender_picture: notification?.sender_picture,
     })),
   };
+};
+
+export const clearAllNotification = async (ids: string[]) => {
+  const payload = {
+    notification_ids: ids,
+  };
+
+  try {
+    const res = await api.post(`/notifications/mark-read`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.status === 200 || res.status === 201) {
+      //window.dispatchEvent(new Event("refetchNotifications"));
+      //toast.success("Notifications Cleared");
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+export const deleteAllNotification = async (ids: string[]) => {
+  const payload = {
+    notification_ids: ids,
+  };
+
+  try {
+    const res = await api.post(`/notifications/clear-all`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("refetchNotifications"));
+      toast.success("Notifications Cleared");
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
 };

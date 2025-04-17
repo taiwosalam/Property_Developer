@@ -43,6 +43,7 @@ import {
 import { transformInvoiceData } from "../accounting/invoice/data";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import NetworkError from "@/components/Error/NetworkError";
+import { DashboardDataResponse } from "./types";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -70,13 +71,23 @@ const Dashboard = () => {
 
   // Dashboard Stats
   const { data, loading, error, refetch, isNetworkError } =
-    useFetch("/dashboard/data");
+    useFetch<DashboardDataResponse>("/dashboard/data");
   const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
+  const [performanceChart, setPerformanceChart] = useState<DashboardDataResponse | null>(null)
   useEffect(() => {
     if (data) {
       setDashboardStats(getDashboardCardData(data));
+      setPerformanceChart(data);
     }
   }, [data]);
+
+  const bookmarkChartData =data?.data?.chart_data.map((item) => ({
+    date: item?.date,
+    views: item?.total_views,
+    bookmarks: item?.total_bookmarks
+  })) || [];
+
+
 
   // Recent messages
   const {
@@ -180,7 +191,7 @@ const Dashboard = () => {
                   chartTitle="listing Performance"
                   visibleRange
                   chartConfig={dashboardListingsChartConfig}
-                  chartData={dashboardListingsChartData}
+                  chartData={bookmarkChartData}
                 />
               </div>
             </div>

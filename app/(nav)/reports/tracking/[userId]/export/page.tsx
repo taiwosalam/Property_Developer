@@ -6,19 +6,31 @@ import CustomTable from "@/components/Table/table";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import { trackingTableFields } from "../../data";
-import { transformUserActivityData, UserActivityResponse, UserActivityTable } from "../types";
+import {
+  transformUserActivityData,
+  UserActivityResponse,
+  UserActivityTable,
+} from "../types";
 import { useParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+
+dayjs.extend(advancedFormat);
+
 const UserActivitiesExportPage = () => {
+  const exportRef = useRef<HTMLDivElement>(null);
+  const [fullContent, setFullContent] = useState(false);
+
   const [userActivity, setUserActivity] = useState<UserActivityTable>({
-      name: "",
-      activities: [],
-    });
-  const { userId } = useParams()
+    name: "",
+    activities: [],
+  });
+  const { userId } = useParams();
   const {
     data: activityData,
     loading,
@@ -26,17 +38,18 @@ const UserActivitiesExportPage = () => {
     error,
   } = useFetch<UserActivityResponse>(`report/activities/${userId}`);
 
-   useEffect(() => {
-      if (activityData) {
-        setUserActivity(transformUserActivityData(activityData));
-      }
-    }, [activityData]);
+  useEffect(() => {
+    if (activityData) {
+      setUserActivity(transformUserActivityData(activityData));
+    }
+  }, [activityData]);
 
-  const { name, activities } = userActivity
+  const { name, activities } = userActivity;
 
-  
   if (loading)
-    return <CustomLoader layout="page" pageTitle="Tracking Report" view="table" />;
+    return (
+      <CustomLoader layout="page" pageTitle="Tracking Report" view="table" />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
@@ -44,13 +57,24 @@ const UserActivitiesExportPage = () => {
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">{name}</BackButton>
-      <ExportPageHeader />
-      <h1 className="text-center text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium">
-        Summary
-      </h1>
-      <CustomTable fields={trackingTableFields} data={activities} />
-      <Signature />
-      <ExportPageFooter />
+      <div ref={exportRef}>
+        <ExportPageHeader />
+        <div className="space-y-3">
+          <h1 className="text-center text-black text-lg md:text-xl lg:text-2xl font-medium">
+            Summary{" "}
+            <span className="px-2">{`(${dayjs().format(
+              "Do MMMM YYYY"
+            )})`}</span>
+          </h1>
+        </div>
+        <CustomTable
+          fields={trackingTableFields}
+          data={activities}
+          className={`${fullContent && "max-h-none"}`}
+        />
+        <Signature />
+      </div>
+      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} fullContent={fullContent}/>
     </div>
   );
 };

@@ -180,7 +180,7 @@ export type DirectorCardProps = {
     full_name: string;
     email: string;
     phone_number: string;
-    title: string;
+    professional_title: string;
   }[];
 };
 export function transfromToDirectorCards(
@@ -193,12 +193,12 @@ export function transfromToDirectorCards(
       return {
         id: item?.id,
         picture: item?.profile_picture ?? "/empty/avatar.png",
-        full_name: item?.personal_title
-          ? `${item.personal_title} ${item.full_name}`
+        full_name: item?.user?.profile?.title
+          ? `${item?.user?.profile?.title} ${item.full_name}`
           : item.full_name,
         email: item?.user?.email,
         phone_number: item?.phone_number || "___ ___",
-        title: item?.professional_title ?? "___ ___"
+        professional_title: item?.professional_title ?? "___ ___"
       };
     }),
   };

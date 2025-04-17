@@ -9,6 +9,8 @@ import { PopupImageModalProps } from "./types";
 import Image from "next/image";
 import ReactPlayer from "react-player";
 
+import SampleProperty from "@/public/empty/SampleProperty.jpeg";
+
 const PopupImageModal: React.FC<PopupImageModalProps> = ({
   isOpen,
   images,
@@ -92,7 +94,7 @@ const PopupImageModal: React.FC<PopupImageModalProps> = ({
               className="keen-slider__slide relative w-full h-full"
             >
               <Image
-                src={image.src}
+                src={image.src ?? SampleProperty}
                 alt={`Image ${index + 1}`}
                 fill
                 sizes="auto"

@@ -1,3 +1,5 @@
+import { formatToNaira } from "../../tasks/inspections/data";
+
 export type UnitListResponse = {
   status: "success" | "error";
   message: string;
@@ -20,6 +22,9 @@ export type Units = {
   unit_description: string;
   status: string;
   annual_rent: string;
+  total_package: string;
+  period: string;
+  is_active: string;
 };
 
 export type UnitsReportType = {
@@ -27,29 +32,31 @@ export type UnitsReportType = {
   monthly_unit: number;
   units: {
     unit_id: number | string;
-    property_name: string;
     unit_name: string;
     status: string;
+    period: string;
+    total_package: string;
     annual_rent: string;
   }[];
 };
-
 
 const formatPropertyName = (propertyName?: string | null): string => {
   return !propertyName || propertyName === "N/A" ? "__ __" : propertyName;
 };
 
-export const transformUnitListData = (data: UnitListResponse): UnitsReportType => {
+export const transformUnitListData = (
+  data: UnitListResponse
+): UnitsReportType => {
   return {
     total_unit: data.data.total_units,
     monthly_unit: data.data.published_this_month,
     units: data.data.units.map((unit) => ({
       unit_id: unit.unit_id || "__ __",
-      property_name: unit.property_name || "__ __",
       unit_name: unit.unit_name || "__ __",
-      status: unit.status || "__ __",
+      status: unit.is_active || "__ __",
       annual_rent: unit.annual_rent || "__ __",
-      unit_description: formatPropertyName(unit.unit_description),
+      total_package: `₦${unit.total_package}` || "__ __",
+      period: unit.period || "__ __",
     })),
   };
 };

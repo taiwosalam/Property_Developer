@@ -21,6 +21,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { hasActiveFilters } from "../../reports/data/utils";
 
 const InspectionPage = () => {
   const [inspectionData, setInspectionData] =
@@ -53,6 +54,7 @@ const InspectionPage = () => {
   const handleFilterApply = (filter: FilterResult) => {
     setAppliedFilters(filter);
     const { menuOptions, startDate, endDate } = filter;
+    const propertyIdArray = menuOptions["Property"] || []
 
     const queryParams: InspectionRequestParams = {
       page: 1,
@@ -63,6 +65,9 @@ const InspectionPage = () => {
     }
     if (endDate) {
       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+    }
+    if(propertyIdArray.length > 0){
+      queryParams.property_ids = propertyIdArray.join(",");
     }
 
     setConfig({
@@ -95,6 +100,8 @@ const InspectionPage = () => {
     silentLoading,
   } = useFetch<InspectionDataApiResponse>(`inspections`, config);
 
+  
+
   useEffect(() => {
     if (apiData) {
       const transformData = transformInspectionCard(apiData);
@@ -109,7 +116,7 @@ const InspectionPage = () => {
         inspectionData?.card
           .map((item) => {
             return item?.property_name
-              ? { label: item.property_name, value: item.property_name }
+              ? { label: item.property_name, value: item.property_id.toString() }
               : null;
           })
           .filter(
@@ -130,20 +137,20 @@ const InspectionPage = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Inspections"
-          newData={inspectionData?.total_inspections ?? 0}
-          total={inspectionData?.total_months ?? 0}
+          newData={inspectionData?.total_months ?? 0}
+          total={inspectionData?.total_inspections ?? 0}
           colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Physical Inspections"
-          newData={inspectionData?.total_physical ?? 0}
-          total={inspectionData?.total_physical_month ?? 0}
+          newData={inspectionData?.total_physical_month ?? 0}
+          total={inspectionData?.total_physical ?? 0}
           colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Virtual Inspections"
-          newData={inspectionData?.total_virtual ?? 0}
-          total={inspectionData?.total_virtual_month ?? 0}
+          newData={inspectionData?.total_virtual_month ?? 0}
+          total={inspectionData?.total_virtual ?? 0}
           colorScheme={3}
         />
       </div>
@@ -163,40 +170,47 @@ const InspectionPage = () => {
         filterOptionsMenu={propertyFilterOptionMenu}
         hasGridListToggle={false}
       />
-      {inspectionData &&
-        inspectionData.card.length === 0 &&
-        !isFilteredApplied() &&
-        silentLoading &&
-        !config.params.search && (
-          <EmptyList
-            title="No Inspection records yet"
-            body={
-              <p>
-                You currently don&apos;t have any inspection requests. <br />
-                Please ensure all your vacant listings are published so
-                potential clients can browse them via the mobile app and your
-                website. To start receiving inspection bookings, create a
-                property record with unit details, and vacant units will
-                automatically be available for users to book. <br /> <br />
-                To learn more about this page later, click your profile picture
-                at the top right of the dashboard and select Assistance &
-                Support.
-              </p>
-            }
-          />
+      <section ref={eleScrollIn}>
+        {inspectionData?.card.length === 0 && !loading ? (
+          !!config.params?.search || hasActiveFilters(appliedFilter) ? (
+            <SearchError />
+          ) : (
+            <div className="col-span-full text-left py-8 text-gray-500">
+              <EmptyList
+                noButton
+                title="No Inspection Records Yet
+"
+                body={
+                  <p className="">
+                    Currently, there are no inspection records linked to your
+                    property listings. Once a potential client submits an
+                    inspection request, the details will appear here, allowing
+                    you to view and book appointments. <br /> <br />
+                    <p>
+                      This message will automatically disappear once inspection
+                      data becomes available.
+                    </p>{" "}
+                    <br /> <br />
+                    <p>
+                      Need help? Click on your profile icon at the top right
+                      corner and select &quot;Assistance & Support&quot; to
+                      learn more about how this page works.
+                    </p>
+                  </p>
+                }
+              />
+            </div>
+          )
+        ) : (
+          <AutoResizingGrid minWidth={505} gap={32}>
+            {inspectionData &&
+              inspectionData?.card.map((item) => {
+                return <InspectionCard key={item?.id} data={item} />;
+              })}
+          </AutoResizingGrid>
         )}
+      </section>
 
-      {(isFilteredApplied() || config.params.search) &&
-        inspectionData?.card.length === 0 && <SearchError />}
-
-      <div ref={eleScrollIn}>
-        <AutoResizingGrid minWidth={505} gap={32}>
-          {inspectionData &&
-            inspectionData?.card.map((item) => {
-              return <InspectionCard key={item.id} data={item} />;
-            })}
-        </AutoResizingGrid>
-      </div>
       {inspectionData && inspectionData.card.length > 0 && (
         <Pagination
           totalPages={inspectionData?.total_page as number}

@@ -5,6 +5,7 @@ import {
 } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { CompanySettingsResponse } from "../others/types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 interface SocialLinks {
   facebook: string;
@@ -405,7 +406,9 @@ export const updateCompanyWebsiteTemplate = async (
       }
     );
     if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchProfile"));
       toast.success("Update successful");
+      
       return true;
     }
     console.log("res", response);
@@ -428,6 +431,7 @@ export const updateCompanyDomain = async (
       payload
     );
     if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchProfile"));
       return true;
     }
     console.log("res", response);
@@ -491,7 +495,7 @@ export interface IWebsiteSettings {
   shortlet_properties: boolean;
   social_link_visibility: boolean;
   sponsored_logo: boolean;
-  staff_branch_options: boolean;
+  staffs_branch_options: boolean;
 }
 export const transformWebsiteSettings = (
   data: CompanySettingsResponse
@@ -506,7 +510,7 @@ export const transformWebsiteSettings = (
     social_link_visibility:
       data?.data?.website_settings?.social_link_visibility,
     sponsored_logo: data?.data?.website_settings?.sponsored_logo,
-    staff_branch_options: data?.data?.website_settings?.staffs_branch_options,
+    staffs_branch_options: data?.data?.website_settings?.staffs_branch_options,
     modules_listing: data?.data?.website_settings?.modules_listing,
   };
 };
