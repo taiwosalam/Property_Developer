@@ -115,19 +115,19 @@ export const added_units: SubscriptionTableType = {
       accessor: "unit_name",
     },
     {
-      id: "3",
-      label: "Unit Description",
-      accessor: "unit_description",
-    },
-    {
       id: "5",
       label: "Status",
       accessor: "status",
     },
     {
       id: "6",
-      label: "Annual Rent",
+      label: "Total Package",
       accessor: "annual_rent",
+    },
+    {
+      id: "3",
+      label: "Date",
+      accessor: "date",
     },
   ],
   data: [
@@ -138,6 +138,7 @@ export const added_units: SubscriptionTableType = {
       unit_description: "Bodija Branch",
       status: "vacant",
       annual_rent: "₦13,600,000",
+      date: "12/02/2024",
     },
   ],
 };

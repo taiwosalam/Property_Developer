@@ -37,9 +37,13 @@ const renderValue = (
       <div style={field.contentStyle}>
         <Avatar
           src={value || empty}
-          className="mx-auto bg-[var(--secondary-color)]"
+          className="mx-auto bg-var(--secondary-color)"
           alt="avatar"
-          sx={{ width: field.picSize || 60, height: field.picSize || 60, backgroundColor: "bg-[var(--secondary-color)]" }}
+          sx={{
+            width: field.picSize || 60,
+            height: field.picSize || 60,
+            backgroundColor: "var(--secondary-color)",
+          }}
         />
       </div>
     ) : (
@@ -47,7 +51,11 @@ const renderValue = (
         src={value}
         className="mx-auto"
         alt="avatar"
-        sx={{ width: field.picSize || 60, height: field.picSize || 60 }}
+        sx={{
+          width: field.picSize || 60,
+          height: field.picSize || 60,
+          backgroundColor: "var(--secondary-color)",
+        }}
       />
     );
   }
@@ -147,7 +155,6 @@ const CustomTable: React.FC<CustomTableProps> = ({
                   {field.label}
                 </TableCell>
               ))}
-              
             </TableRow>
           </TableHead>
         )}
@@ -202,7 +209,6 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     actionButtonIcon,
                     onActionClick
                   )}
-                  
                 </TableCell>
               ))}
             </TableRow>

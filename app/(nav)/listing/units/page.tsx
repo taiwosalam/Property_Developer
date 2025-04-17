@@ -7,6 +7,7 @@ import {
   initialState,
   listingUnitFilter,
   RentAndUnitState,
+  SponsorValueResponse,
   transformRentUnitApiResponse,
   unit_listing_status,
   UnitApiResponse,
@@ -30,6 +31,7 @@ import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/type";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import Pagination from "@/components/Pagination/pagination";
+import { useGlobalStore } from "@/store/general-store";
 
 const Units = () => {
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
@@ -73,7 +75,7 @@ const Units = () => {
   //     ? "/unit/vacant/list/filter"
   //     : "/unit/vacant/lists";
 
-  const endpoint = "/unit/vacant/lists"
+  const endpoint = "/unit/vacant/lists";
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
@@ -141,6 +143,21 @@ const Units = () => {
 
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
+
+  const {
+    data: sponsors,
+    loading: loadingSponsors,
+    error: sponsorsErr,
+  } = useFetch<SponsorValueResponse>("/sponsor/value");
+  const setSponsorValue = useGlobalStore((s) => s.setGlobalInfoStore);
+  const getSponsorValue = useGlobalStore((s) => s.getGlobalInfoStore);
+  const availableSponsors = getSponsorValue("sponsorValue");
+  useEffect(() => {
+    if (!loading && sponsors?.data?.value) {
+      const parsed = parseFloat(sponsors.data.value);
+      setSponsorValue("sponsorValue", parsed);
+    }
+  }, [loading, sponsors, setSponsorValue]);
 
   const branchOptions =
     branchesData?.data.map((branch) => ({
@@ -282,6 +299,7 @@ const Units = () => {
                 <VacantUnitCard
                   key={idx}
                   unit_data={item}
+                  availableSponsors={availableSponsors}
                   status={item.status as "published" | "unpublished"}
                 />
               ))

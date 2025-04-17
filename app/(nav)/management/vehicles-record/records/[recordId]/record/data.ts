@@ -1,3 +1,4 @@
+import api, { handleAxiosError } from "@/services/api";
 import dayjs from "dayjs";
 
 export interface SingleVehicleRecordApiResponse {
@@ -6,6 +7,7 @@ export interface SingleVehicleRecordApiResponse {
       address: string;
       avatar: string;
       city: string;
+      note: string;
       created_at: string;
       id: number;
       lga: string;
@@ -89,6 +91,7 @@ export interface UserData {
     last_updated: string;
     write_up?: string;
   };
+  note?: string;
   registrationDate: string;
 }
 
@@ -157,6 +160,7 @@ export const transformSingleVehicleRecordApiResponse = (
       address: vehicleRecord.address,
       phone_number: vehicleRecord.phone,
       avatar: vehicleRecord.avatar,
+      note: vehicleRecord.note,
       registrationDate: dayjs(vehicleRecord.created_at).format(
         "MM/DD/YYYY (hh:mm a)"
       ),
@@ -214,4 +218,17 @@ export const transformSingleVehicleRecordApiResponse = (
       per_page: response.data.check_ins.per_page,
     },
   };
+};
+
+// /vehicle-records/1/email?user_id
+export const updateVehicle = async (recordId: string, payload: FormData) => {
+  try {
+    const res = await api.post(`/vehicle-records/${recordId}/email`, payload);
+    if (res.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
 };

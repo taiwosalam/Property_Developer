@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useChatStore } from "@/store/message";
 import { groupMessagesByDay } from "../data"; // The new grouping helper
 import Picture from "@/components/Picture/picture";
@@ -13,6 +13,17 @@ import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { useAuthStore } from "@/store/authStore";
 import { getLocalStorage } from "@/utils/local-storage";
 import Link from "next/link";
+import useGetConversationWithPusher from "@/hooks/useGetPusherMsg";
+import useConversationListener from "@/hooks/useConversationListen";
+import api from "@/services/api";
+
+interface Message {
+  id: number;
+  text: string | null;
+  senderId: number;
+  timestamp: string;
+  content_type: string;
+}
 
 const Chat = () => {
   const router = useRouter();
@@ -25,24 +36,78 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(true);
   const store_messages = useChatStore((state) => state?.data?.conversations);
   const [conversations, setConversations] = useState<any[]>([]);
-  const users_Id = getLocalStorage("user_id")
-  
+  const users_Id = getLocalStorage("user_id");
+
+  // Initiate fetching messages (this hook handles SSE.)
+  // useGetConversation(`${id}`);
+  // Initiate fetching messages with Pusher
+  // useGetConversationWithPusher(id);
+
+  // Clear local conversation & store state when conversation id changes.
+
   // Clear local conversation & store state when conversation id changes.
   useEffect(() => {
+    console.log("Chat user_id:", user_id, "participant id:", id);
     setConversations([]);
     setChatData("conversations", []);
   }, [id, setChatData]);
 
-  // Initiate fetching messages (this hook handles SSE.)
-  useGetConversation(`${id}`);
+  // Memoize the callback to prevent re-subscribing on every render.
+  const handleNewMessage = useCallback(
+    (newMessage: Message) => {
+      console.log("Adding new message:", newMessage);
+      const updatedConversations = [...(store_messages || []), newMessage].sort(
+        (a, b) => a.id - b.id
+      );
+      setChatData("conversations", updatedConversations);
+    },
+    [store_messages, setChatData]
+  );
 
-  // When store_messages updates, group messages by day and update local state.
+  // Initiate fetching messages with Pusher
+  useConversationListener(id, handleNewMessage);
+
   useEffect(() => {
-    if (store_messages) {
+    const fetchMessages = async () => {
+      try {
+        const response = await api.get(`/messages/conversations/user/${id}`);
+        console.log("API response:", response.data);
+        if (response.data.status === "success") {
+          const mappedMessages: Message[] = response.data.messages.map(
+            (msg: any) => ({
+              id: msg.id,
+              text: msg.content ?? null,
+              senderId: msg.sender_id,
+              timestamp: `${msg.date} ${msg.timestamp}`,
+              content_type: msg.content_type,
+            })
+          );
+          console.log("Mapped messages:", mappedMessages);
+          setChatData("conversations", mappedMessages);
+        }
+      } catch (error: any) {
+        console.error("API error:", error.response?.data || error.message);
+      }
+    };
+    if (id) fetchMessages();
+  }, [id, setChatData]);
+
+  useEffect(() => {
+    console.log("Store messages updated:", store_messages);
+    if (store_messages && store_messages.length > 0) {
       const groupedMessages = groupMessagesByDay(store_messages);
+      console.log("Grouped messages:", groupedMessages);
       setConversations(groupedMessages);
     }
   }, [store_messages]);
+
+  // When store_messages updates, group messages by day and update local state.
+  // useEffect(() => {
+  //   if (store_messages) {
+  //     const groupedMessages = groupMessagesByDay(store_messages);
+  //     setConversations(groupedMessages);
+  //   }
+  // }, [store_messages]);
 
   useEffect(() => {
     if (usersData) {
@@ -54,7 +119,7 @@ const Chat = () => {
     return <ChatSkeleton />;
   }
 
-  // 
+  //
 
   // // If user not found, redirect to messages page.
   const user = users.find((user: UsersProps) => Number(user.id) === userId);
@@ -85,7 +150,7 @@ const Chat = () => {
             />
             <div className="custom-flex-col">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {user?.name} 
+                {user?.name}
               </p>
               <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
                 Tap here for contact info

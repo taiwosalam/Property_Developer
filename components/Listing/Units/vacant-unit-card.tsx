@@ -33,12 +33,16 @@ import { transformUnitDetails } from "@/app/(nav)/listing/data";
 import { PropertyListingRed } from "../Property/property-listing-component";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import useFetch from "@/hooks/useFetch";
+import { useGlobalStore } from "@/store/general-store";
 
 const VacantUnitCard = ({
   status,
   unit_data,
+  availableSponsors,
 }: {
   unit_data: any;
+  availableSponsors?: number;
   status:
     | "published"
     | "unpublished"
@@ -52,6 +56,7 @@ const VacantUnitCard = ({
   const [isOpen, setIsOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const referenceObject = {
     property_title: "",
     unit_name: "",
@@ -208,7 +213,16 @@ const VacantUnitCard = ({
 
           {!["under moderation", "rejected", "unpublished"].includes(
             unit_status
-          ) && <UnitSponsorPopover />}
+          ) && (
+            <UnitSponsorPopover
+              unitId={unit_data.unitId}
+              unitName={keyValueData.unit_name}
+              annualRent={keyValueData.rent}
+              status={status}
+              unitDesc={keyValueData.unit_details}
+              availableSponsors={availableSponsors || 0}
+            />
+          )}
 
           <Modal
             state={{

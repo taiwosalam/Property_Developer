@@ -26,6 +26,8 @@ const SkeletonBox = ({ className }: { className: string }) => (
   />
 );
 
+
+
 export const PropertyRequestFirstSection = ({
   data,
   placeholderText,
@@ -87,6 +89,9 @@ export const PropertyRequestFirstSection = ({
     </div>
   );
 };
+
+
+
 
 export const PropertyRequestSecondSection = ({
   loading,
@@ -188,6 +193,9 @@ export const PropertyRequestSecondSection = ({
   );
 };
 
+
+
+
 export const ManagePropertiesComments = () => {
   return (
     <div className="mt-4">
@@ -197,6 +205,8 @@ export const ManagePropertiesComments = () => {
     </div>
   );
 };
+
+
 
 export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);

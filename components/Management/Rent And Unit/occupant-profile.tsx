@@ -20,6 +20,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   period,
   setStart_date,
   setIsPastDate,
+  setDueDate,
 }) => {
   const [selectedOccupant, setSelectedOccupant] = useState<Occupant | null>(
     null
@@ -57,6 +58,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 setSelectedTenantId={setSelectedTenantId}
                 setStart_date={setStart_date}
                 setIsPastDate={setIsPastDate} 
+                setDueDate={setDueDate}
               />
               <FeeBreakdown
                 id={id}

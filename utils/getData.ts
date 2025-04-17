@@ -105,7 +105,7 @@ export const getTenantById = async (tenantId: string) => {
   }
 };
 
-// Fetch user by identifier (mobile user)
+// Fetch user by identifier 
 export const getUsers = async (identifier: string) => {
   try {
     const res = await api.get(`/get-users?identifier=${identifier}`);
