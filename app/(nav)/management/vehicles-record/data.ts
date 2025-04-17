@@ -20,7 +20,6 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
   },
 ];
 
-
 export interface VehicleRecordFilterParams {
   from_date?: string;
   to_date?: string;
@@ -28,7 +27,6 @@ export interface VehicleRecordFilterParams {
   search?: string;
   status: "no record" | "pending" | "completed";
 }
-
 
 export interface VehicleData {
   id: number;
@@ -183,7 +181,7 @@ export const transformVehicleRecordApiResponse = (
         vehicle_brand: record.vehicle_record.vehicle_brand,
         user_id: record.vehicle_record.user_id,
         property_id: record.vehicle_record.property_id,
-        plate_number: (record.vehicle_record.plate_number).toUpperCase(),
+        plate_number: record.vehicle_record.plate_number.toUpperCase(),
         created_at: record.vehicle_record.created_at,
         updated_at: record.vehicle_record.updated_at,
         pictureSrc: record.vehicle_record.avatar || "",
@@ -194,24 +192,27 @@ export const transformVehicleRecordApiResponse = (
         state: record.vehicle_record.state,
         name: record.vehicle_record.name,
         model: record.vehicle_record.model,
-        // status: !record.vehicle_record.latest_check_in
-        //   ? "no_record"
-        //   : Object.keys(record.vehicle_record.latest_check_in).length === 0
-        //     ? "completed"
-        //     : "pending",
         status:
-          record.vehicle_record?.check_ins[0]?.status === undefined
-            ? "no_record"
-            : record.vehicle_record?.check_ins[0]?.status,
+          record.vehicle_record.check_ins?.length > 0
+            ? record.vehicle_record.check_ins[
+                record.vehicle_record.check_ins.length - 1
+              ]?.status ?? "no_record"
+            : "no_record",
         category: record.vehicle_record.visitor_category,
-        registrationDate: dayjs(record.vehicle_record.created_at).format("MMM DD YYYY"),
+        registrationDate: dayjs(record.vehicle_record.created_at).format(
+          "MMM DD YYYY"
+        ),
         visitor_category: record.vehicle_record.visitor_category,
         vehicle_state: record.vehicle_record.vehicle_state,
         vehicle_type: record.vehicle_record.vehicle_type,
         manufacture_year: record.vehicle_record.manufacture_year,
-        last_update: dayjs(record.vehicle_record.updated_at).format("MMM DD YYYY hh:mm A"),
+        last_update: dayjs(record.vehicle_record.updated_at).format(
+          "MMM DD YYYY hh:mm A"
+        ),
         latest_check_in: {
-          ...record.vehicle_record.check_ins[0],
+          ...record.vehicle_record.check_ins[
+            record.vehicle_record.check_ins.length - 1
+          ],
         },
       })),
       current_page: 0,
@@ -280,7 +281,7 @@ export const initialRecord: VehicleRecordData = {
 };
 
 export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
-  console.log("res", res);
+  // console.log("res", res);
   return {
     stats: {
       total_properties: res.stats.total_properties,

@@ -14,9 +14,11 @@ import { RentSectionTitle } from "./rent-section-container";
 import { Dayjs } from "dayjs";
 import useFetch from "@/hooks/useFetch";
 import dayjs from "dayjs";
+import SelectWithImage from "@/components/Form/Select/select-with-image";
+import { empty } from "@/app/config";
 
 export const ProfileForm: React.FC<{
-  occupants: { name: string; id: string }[];
+  occupants: { name: string; id: string; picture?: string }[];
   isRental: boolean;
   selectedOccupant: Occupant | null;
   onOccupantSelect: (occupant: Occupant | null) => void;
@@ -26,6 +28,7 @@ export const ProfileForm: React.FC<{
   occupantError: Error | null;
   setSelectedTenantId?: any;
   setStart_date?: any;
+  setDueDate?: (date: Dayjs | null) => void; // Add setDueDate
   setSelectedCheckboxOptions?: any;
   period: RentPeriod;
   setIsPastDate?: (isPast: boolean) => void;
@@ -39,19 +42,19 @@ export const ProfileForm: React.FC<{
   occupantLoading,
   occupantError,
   setSelectedTenantId,
+  setStart_date,
+  setDueDate,
   setSelectedCheckboxOptions,
   period,
-  setStart_date,
   setIsPastDate,
 }) => {
   const [selectedId, setSelectedId] = useState<string>("");
   const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
 
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [dueDate, setDueDateLocal] = useState<Dayjs | null>(null);
   const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
 
-  console.log("selectedId", selectedId);
   useEffect(() => {
     if (period) {
       setRentPeriod(period);
@@ -94,16 +97,19 @@ export const ProfileForm: React.FC<{
   // Calculate due date and update isPastDate when start date changes
   useEffect(() => {
     if (!startDate) {
-      setDueDate(null);
+      setDueDateLocal(null);
+      setDueDate?.(null);
       setIsPastDate?.(false);
       return;
     }
     const formattedStartDate = startDate.format("YYYY-MM-DD");
     setStart_date(formattedStartDate);
-    setDueDate(calculateDueDate(startDate, rentPeriod));
+    const calculatedDueDate = calculateDueDate(startDate, rentPeriod);
+    setDueDateLocal(calculatedDueDate);
+    setDueDate?.(calculatedDueDate);
     const isPast = startDate.isBefore(dayjs(), "day");
     setIsPastDate?.(isPast);
-  }, [startDate, rentPeriod, setStart_date, setIsPastDate]);
+  }, [startDate, rentPeriod, setStart_date, setDueDate, setIsPastDate]);
 
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, boolean>
@@ -141,12 +147,13 @@ export const ProfileForm: React.FC<{
     <div className="space-y-6">
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row md:items-end gap-x-[35px] gap-y-4">
-          <Select
+          <SelectWithImage
             id={`available_${isRental ? "tenant" : "occupant"}`}
             label={`Choose Available ${isRental ? "Tenant" : "Occupant"}`}
             options={occupants.map((occupant) => ({
               label: occupant.name,
               value: occupant.id,
+              icon: occupant.picture || empty,
             }))}
             className="md:flex-1 md:max-w-[300px]"
             onChange={(value) => handleSelectId(value)}

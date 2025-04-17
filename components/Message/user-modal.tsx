@@ -53,13 +53,13 @@ const SelectChatUsersModal = ({
 
   const handleFilterApply = (selectedFilters: string[]) => {
     if (selectedFilters.length === 0) {
-      setFilteredUsers(usersData.filter((user) => user.id !== loggedInUserId)); // Reset to all users except the logged-in user if no filter is selected
+      setFilteredUsers(usersData?.filter((user) => user.id !== loggedInUserId)); // Reset to all users except the logged-in user if no filter is selected
     } else {
       const normalizedFilters = selectedFilters
         .map((filter) => positionMap[filter]) // Convert filters to match user.position
         .filter(Boolean); // Remove undefined values
 
-      const filtered = usersData.filter(
+      const filtered = usersData?.filter(
         (user) =>
           normalizedFilters.includes(user.position) &&
           user.id !== loggedInUserId
@@ -71,7 +71,7 @@ const SelectChatUsersModal = ({
 
   useEffect(() => {
     if (searchTerm.trim() === "") {
-      setFilteredUsers(usersData.filter((user) => user.id !== loggedInUserId)); // Show all users except the logged-in user when search is empty
+      setFilteredUsers(usersData?.filter((user) => user.id !== loggedInUserId)); // Show all users except the logged-in user when search is empty
     } else {
       const lowercasedTerm = searchTerm.toLowerCase();
       const filtered = usersData.filter(

@@ -44,6 +44,8 @@ import {
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import ServerError from "@/components/Error/ServerError";
+import { empty } from "@/app/config";
+import dayjs, { Dayjs } from "dayjs";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -59,7 +61,8 @@ const StartRent = () => {
   const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
     useState<CheckBoxOptions>(defaultChecks);
   const [reqLoading, setReqLoading] = useState(false);
-  const [isPastDate, setIsPastDate] = useState(false); // New state for isPastDate
+  const [isPastDate, setIsPastDate] = useState(false);
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
   const endpoint = `/unit/${id}/view`;
   const {
@@ -94,6 +97,41 @@ const StartRent = () => {
     }
   }, [allTenantData]);
 
+  // const handleStartRent = async () => {
+  //   if (!unit_data?.unit_id || !selectedTenantId) {
+  //     toast.error("Missing required information: unit or tenant not selected.");
+  //     return;
+  //   }
+
+  //   if (!selectedCheckboxOptions) {
+  //     toast.error("Notification preferences not set.");
+  //     return;
+  //   }
+
+  //   const payload = {
+  //     unit_id: unit_data.unit_id,
+  //     tenant_id: selectedTenantId,
+  //     start_date: startDate,
+  //     payment_type: "full",
+  //     rent_type: "new",
+  //     mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
+  //     email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
+  //     has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+  //   };
+  //   try {
+  //     setReqLoading(true);
+  //     const res = await startRent(payload);
+  //     if (res) {
+  //       toast.success("Rent Started Successfully");
+  //       router.back();
+  //     }
+  //   } catch (err) {
+  //     toast.error("Failed to start Rent");
+  //   } finally {
+  //     setReqLoading(false);
+  //   }
+  // };
+
   const handleStartRent = async () => {
     if (!unit_data?.unit_id || !selectedTenantId) {
       toast.error("Missing required information: unit or tenant not selected.");
@@ -102,6 +140,12 @@ const StartRent = () => {
 
     if (!selectedCheckboxOptions) {
       toast.error("Notification preferences not set.");
+      return;
+    }
+
+    // Validate dueDate
+    if (dueDate && dueDate.isBefore(dayjs(), "day")) {
+      toast.warning("End date cannot be in the past.");
       return;
     }
 
@@ -167,6 +211,7 @@ const StartRent = () => {
           occupants={tenants_data.map((tenant) => ({
             name: tenant.name,
             id: tenant.id,
+            picture: tenant.picture || empty,
           }))}
           period={unit_data?.fee_period as RentPeriod}
           setStart_date={setStartDate}
@@ -174,7 +219,9 @@ const StartRent = () => {
           setSelectedCheckboxOptions={setSelectedCheckboxOptions}
           feeDetails={[
             {
-              name: isRental ? "Annual Rent" : "Annual Fee",
+              name: isRental
+                ? `${unit_data?.fee_period} Rent`
+                : `${unit_data?.fee_period} Fee`,
               amount: unit_data.newTenantPrice as any,
             },
             { name: "Service Charge", amount: unit_data.service_charge as any },
@@ -186,7 +233,8 @@ const StartRent = () => {
           total_package={Number(unit_data.total_package)}
           loading={loading}
           id={propertyId as string}
-          setIsPastDate={setIsPastDate} 
+          setIsPastDate={setIsPastDate}
+          setDueDate={setDueDate}
         />
       </section>
       <FixedFooter className={`flex justify-end gap-4`}>

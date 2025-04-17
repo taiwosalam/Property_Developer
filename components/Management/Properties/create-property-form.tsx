@@ -260,11 +260,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     })) || [];
 
   const staffOption =
-    branchData.staff.data?.data.map((s: any) => ({
-      value: s.id,
-      label: s.user.name,
-      icon: s.user.profile.picture,
-    })) || [];
+    branchData.staff.data?.data
+      .filter((s: any) => s.staff_role !== "manager")
+      .map((s: any) => ({
+        value: s.id,
+        label: s.user.name,
+        icon: s.user.profile.picture,
+      })) || [];
 
   useEffect(() => {
     if (staffsData) {

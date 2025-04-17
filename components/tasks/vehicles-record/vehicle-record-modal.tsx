@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import ModalPreset from "@/components/Modal/modal-preset";
 import dayjs from "dayjs";
+import { empty } from "@/app/config";
 
 const VehicleRecordModal: React.FC<
   VehicleRecord & {
@@ -105,7 +106,7 @@ const VehicleRecordModal: React.FC<
       <WalletModalPreset title="Vehicle Record">
         <div className="flex flex-col md:flex-row items-center justify-between font-medium gap-2">
           <div className="flex items-center gap-2">
-            <Picture size={80} src={pictureSrc} rounded />
+            <Picture size={80} src={pictureSrc || empty} rounded />
             <div className="text-base text-text-primary dark:text-white space-y-1">
               <p className="flex items-center">
                 <span>{name}</span>

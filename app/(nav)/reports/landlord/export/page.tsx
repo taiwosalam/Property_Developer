@@ -19,6 +19,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 
 import dayjs from "dayjs";
+import ServerError from "@/components/Error/ServerError";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 dayjs.extend(advancedFormat);
@@ -48,8 +49,7 @@ const ExportLandlords = () => {
       <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
     );
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
