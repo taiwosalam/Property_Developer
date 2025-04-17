@@ -17,7 +17,7 @@ import {
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { industryOptions } from "@/data";
-import { Modal } from "@/components/Modal/modal";
+import { Modal, useModal } from "@/components/Modal/modal";
 import { ModalContent } from "@/components/Modal/modal";
 import { ModalTrigger } from "@/components/Modal/modal";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
@@ -272,9 +272,10 @@ const Others = () => {
   const [userPlan, setUserPlan] = useState<string>("");
   const [defaultOtherSettings, setDefaultOtherSettings] =
     useState<ITransformedOtherSettings | null>(null);
+  // const { setIsOpen } = useModal();
   const [selectedModule, setSelectedModule] =
     useState<CompanyModuleSettings | null>(null);
-
+  const [isDirectorModalOpen, setIsDirectorModalOpen] = useState(false);
   const { company_id } = usePersonalInfoStore();
 
   const [notificationSettings, setNotificationSettings] =
@@ -349,12 +350,12 @@ const Others = () => {
   };
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
-    if (userPlan !== "professional") {
-      toast.error(
-        "You cannot toggle the switch until you upgrade to a professional plan."
-      );
-      return;
-    }
+    // if (userPlan !== "professional") {
+    //   toast.error(
+    //     "You cannot toggle the switch until you upgrade to a professional plan."
+    //   );
+    //   return;
+    // }
     setNotificationSettings((prev) => ({
       ...prev,
       [name]: checked,
@@ -376,15 +377,15 @@ const Others = () => {
   const handleSetIsChecked = (name: string, value: SetStateAction<boolean>) => {
     const newValue =
       typeof value === "function" ? value(notificationSettings[name]) : value;
-    if (userPlan !== "professional") {
-      return;
-    } else {
-      setNotificationSettings((prev) => ({
-        ...prev,
+    // if (userPlan !== "professional") {
+    //   return;
+    // } else {
+    setNotificationSettings((prev) => ({
+      ...prev,
 
-        [name]: newValue,
-      }));
-    }
+      [name]: newValue,
+    }));
+    //}
   };
 
   const handleSetIsCheckedMessageReview = (
@@ -453,7 +454,6 @@ const Others = () => {
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
 
-
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
@@ -489,32 +489,34 @@ const Others = () => {
   }, [otherSettingResponse]);
 
   useEffect(() => {
-    if (!otherSettingResponse || userPlan !== "professional") return;
+    // if (!otherSettingResponse || userPlan !== "professional") return;
 
     // Transform response before setting state
-    const transformedSettings = transformOtherSetting(otherSettingResponse);
-    setDefaultOtherSettings(transformedSettings);
+    if (otherSettingResponse) {
+      const transformedSettings = transformOtherSetting(otherSettingResponse);
+      setDefaultOtherSettings(transformedSettings);
 
-    // Extract notification settings safely
-    const notification = transformedSettings?.notification ?? {};
+      // Extract notification settings safely
+      const notification = transformedSettings?.notification ?? {};
 
-    setNotificationSettings({
-      profile_changes: notification.profile_changes ?? true,
-      new_messages: notification.new_messages ?? true,
-      task_updates: notification.task_updates ?? true,
-      profile_approval: notification.profile_approval ?? true,
-      property_approval: notification.property_approval ?? true,
-      property_vacant: notification.property_vacant ?? true,
-      document_creation: notification.document_creation ?? true,
-    });
+      setNotificationSettings({
+        profile_changes: notification.profile_changes ?? true,
+        new_messages: notification.new_messages ?? true,
+        task_updates: notification.task_updates ?? true,
+        profile_approval: notification.profile_approval ?? true,
+        property_approval: notification.property_approval ?? true,
+        property_vacant: notification.property_vacant ?? true,
+        document_creation: notification.document_creation ?? true,
+      });
 
-    setCheckedStates({
-      sms_notification: notification.sms_notification ?? true,
-      email_notification: notification.email_notification ?? true,
-      subscription_due_rent_notification:
-        notification.subscription_due_rent_notification ?? true,
-      general_notification: notification.general_notification ?? true,
-    });
+      setCheckedStates({
+        sms_notification: notification.sms_notification ?? true,
+        email_notification: notification.email_notification ?? true,
+        subscription_due_rent_notification:
+          notification.subscription_due_rent_notification ?? true,
+        general_notification: notification.general_notification ?? true,
+      });
+    }
   }, [otherSettingResponse, userPlan]);
 
   useEffect(() => {
@@ -566,6 +568,22 @@ const Others = () => {
       if (response) {
         toast.success("New director added");
         window.dispatchEvent(new Event("addNewDirector"));
+
+        setIsDirectorModalOpen(false);
+        setFormData({
+          title: "",
+          full_name: "",
+          email: "",
+          professional_title: "",
+          years_in_business: "",
+          phone_number: "",
+          about_director: "",
+          selectedState: "",
+          selectedLGA: "",
+        });
+        setSelectedAvatar(null);
+        setActiveStep("options");
+        handleBack();
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -583,6 +601,26 @@ const Others = () => {
   //   // }
   // };
 
+  const [formData, setFormData] = useState({
+    title: "",
+    full_name: "",
+    email: "",
+    professional_title: "",
+    years_in_business: "",
+    phone_number: "",
+    about_director: "",
+    selectedState: "",
+    selectedLGA: "",
+  });
+
+  const handleFormChange = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+      ...(field === "selectedState" && { selectedLGA: "" }), // Reset LGA when state changes
+    }));
+  };
+
   const modal_states: Record<
     DirectorsFormOptions,
     {
@@ -599,6 +637,8 @@ const Others = () => {
           chooseAvatar={() => setActiveStep("choose-avatar")}
           avatar={selectedAvatar}
           setAvatar={setSelectedAvatar}
+          formData={formData}
+          onFormChange={handleFormChange}
         />
       ),
     },
@@ -715,7 +755,7 @@ const Others = () => {
         <div className="custom-flex-col gap-6 mt-4">
           <SettingsSectionTitle
             title="Company Director"
-            desc="Please provide the details of the additional directors you wish to include on your landing page. You can click on the current card to edit and add their information."
+            desc="Please provide the details of the additional user you wish to grant the same Director-level access as your account within the company."
           />
           <AutoResizingGrid minWidth={284} gap={16}>
             {cardView?.card?.map((director) => {
@@ -731,10 +771,15 @@ const Others = () => {
               );
             })}
 
-            <Modal>
+            <Modal
+              state={{
+                isOpen: isDirectorModalOpen,
+                setIsOpen: setIsDirectorModalOpen,
+              }}
+            >
               <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
                 <ModalTrigger>
-                  <div className="flex flex-col items-center gap-1 justify-center">
+                  <div className="flex flex-col items-center gap-1 justify-center py-4">
                     <Image
                       src="/icons/profile.svg"
                       alt="add director"
@@ -794,8 +839,9 @@ const Others = () => {
         {/* RESTRICTED USERS */}
         <div className="custom-flex-col flex-wrap gap-6 mt-4">
           <SettingsSectionTitle
-            title="Restricted Users"
-            desc="Please provide the details of the tenants, occupant, owner, landlord or landlady you wish to restrict from the group chat. Once restricted, they will not have access to chat in the group until the restriction is removed. You can click on the current card to delete or add restrictions."
+            title="Access Control"
+            desc="Select the property and the tenant(s) or occupant(s) you wish to restrict from the group chat.
+Once restricted, they will no longer have access to participate in the property's group chat until the restriction is lifted."
           />
           <div className="flex gap-4">
             <div className=" flex gap-2">
@@ -835,14 +881,14 @@ const Others = () => {
             <Modal>
               <div className="ml-8 card p-2 flex w-full max-w-[280px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
                 <ModalTrigger>
-                  <div className="flex flex-col items-center gap-1 justify-center">
+                  <div className="flex flex-col items-center gap-1 justify-center py-4">
                     <Image
                       src="/icons/profile.svg"
                       alt="add director"
                       width={30}
                       height={30}
                     />
-                    <span> + Add new Profile </span>
+                    <span> + Restrict User </span>
                   </div>
                 </ModalTrigger>
               </div>
@@ -908,7 +954,8 @@ const Others = () => {
         <div className="flex justify-end mt-2">
           <SettingsUpdateButton
             loading={loadingNotification}
-            action={userPlan === "professional" ? saveSettings : undefined}
+            action={saveSettings}
+            //action={userPlan === "professional" ? saveSettings : undefined}
           />
         </div>
       </SettingsSection>

@@ -26,7 +26,7 @@ export const trackingTableFields: Field[] = [
     label: "Page Visit",
     accessor: "page_visited",
   },
-  //{ id: "3", label: "Action Taken", accessor: "action_taken" },
+  { id: "3", label: "Action Taken", accessor: "action_taken" },
   {
     id: "5",
     label: "IP Address",

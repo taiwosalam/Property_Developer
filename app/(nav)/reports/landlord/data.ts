@@ -38,8 +38,8 @@ export const landlordsReportTableFields: Field[] = [
     accessor: "property",
   },
   { id: "3", label: "Phone", accessor: "phone" },
-  { id: "5", label: "Status", accessor: "agent"},
-  { id: "6", label: "Date Created", accessor: "date_created" },
+  { id: "5", label: "User Type", accessor: "agent"},
+  { id: "6", label: "Date & Time Created", accessor: "date_created" },
   
 ];
 

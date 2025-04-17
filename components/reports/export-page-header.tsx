@@ -61,7 +61,7 @@ const ExportPageHeader = () => {
             </span>
             <p className="dark:text-darkText-1 capitalize">{`${address}, ${city}, ${lga}, ${state}`}</p>
           </li>
-          {data && data?.data?.social_links?.website && (
+          {data && data?.data?.domain ||  data?.data?.social_links?.website  && (
             <li>
               <span className="text-brand-9">
                 <WebIcon />
