@@ -157,10 +157,12 @@ const PropeertyDetailsSettingsCard: React.FC<
         </div>
         <div>
           <p className="text-label font-normal">
-            {isRental ? "Available Units" : "Owing Units"}
+          Available Units
+            {/* {isRental ? "Available Units" : "Owing Units"} */}
           </p>
           <p className="text-brand-9 font-bold">
-            {isRental ? available_units : owing_units}
+            {available_units}
+            {/* {isRental ? available_units : owing_units} */}
           </p>
         </div>
         <div>

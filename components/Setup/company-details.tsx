@@ -35,7 +35,7 @@ const CompanyDetails = ({data}: {data: any}) => {
           onChange={handleInputChange}
           inputClassName="setup-f required"
           disableFuture
-          value={date}
+          // value={date}
         />
         <FileInput
           required
