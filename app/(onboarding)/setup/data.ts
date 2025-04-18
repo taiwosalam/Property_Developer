@@ -115,6 +115,20 @@ export const createCompany = async (
   }
 };
 
+export const updateCompany = async (
+  id: number,
+  formData: Record<string, any>
+): Promise<boolean> => {
+  try {
+    const { data } = await api.post(`/company/${id}/update`, formData);
+    toast.success(data?.message || "Company created successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to create company");
+    return false;
+  }
+};
+
 export const checkDomainAvailability = async (
   domain: string
 ): Promise<boolean> => {
