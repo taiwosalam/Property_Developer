@@ -192,7 +192,7 @@ export function transfromToDirectorCards(
     card: apiData?.directors.map((item) => {
       return {
         id: item?.id,
-        picture: item?.profile_picture ?? "/empty/avatar.png",
+        picture: item?.profile_picture ??  "/empty/avatar.png",
         full_name: item?.user?.profile?.title
           ? `${item?.user?.profile?.title} ${item.full_name}`
           : item.full_name,

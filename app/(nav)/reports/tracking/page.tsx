@@ -24,6 +24,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import { hasActiveFilters } from "../data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
+import useAddressFromCoords from "@/hooks/useGeoCoding";
 
 const TrackingReport = () => {
   const [branches, setBranches] = useState<BranchFilter[]>([]);
@@ -53,6 +54,27 @@ const TrackingReport = () => {
     isNetworkError,
     error,
   } = useFetch<ActivityApiResponse>("report/activities", config);
+
+  const [lat, setLat] = useState<number>(0);
+  const [lng, setLng] = useState<number>(0);
+  const {
+    address,
+    loading: addressLoading,
+    error: addressError,
+  } = useAddressFromCoords(lat, lng);
+
+  useEffect(() => {
+    if (activity && activity.length > 0) {
+      activity.forEach((activity) => {
+        const longitude = activity?.longitude;
+        const latitude = activity?.latitude;
+        if (latitude && longitude) {
+          setLat(parseFloat(`${latitude}`));
+          setLng(parseFloat(`${longitude}`));
+        }
+      });
+    }
+  }, [activity]);
 
   useEffect(() => {
     if (apiData) {
@@ -144,6 +166,11 @@ const TrackingReport = () => {
     });
   };
 
+  const activities = activity.map((activity) => ({
+    ...activity,
+    location: address?.formattedAddress ? address?.formattedAddress : "___ ___",
+  }));
+
   const router = useRouter();
 
   const handleSelectTableItem = (item: DataItem) => {
@@ -176,7 +203,7 @@ const TrackingReport = () => {
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/tracking/export"
-        xlsxData={activity}
+        xlsxData={activities}
         fileLabel={`Activity Reports`}
       />
 
@@ -210,7 +237,12 @@ const TrackingReport = () => {
         ) : (
           <CustomTable
             fields={trackingTableFields}
-            data={activity}
+            data={activity.map((activity) => ({
+              ...activity,
+              location: address?.formattedAddress
+                ? address?.formattedAddress
+                : "___ ___",
+            }))}
             tableHeadClassName="h-[45px]"
             handleSelect={handleSelectTableItem}
           />
