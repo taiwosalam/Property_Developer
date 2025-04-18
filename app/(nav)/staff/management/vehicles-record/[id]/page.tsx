@@ -110,15 +110,16 @@ const VehiclesRecordPage = () => {
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
-    console.log("api data", apiData)
     if (apiData) {
+      console.log("api data", apiData)
       setState((x) => ({
         ...x,
         ...transformVehicleRecordApiResponse(apiData),
       }));
     }
   }, [apiData]);
-
+  
+  console.log("table data", data[0].latest_check_in)
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
     const updatedRecord = {

@@ -11,6 +11,7 @@ export interface SelectProps {
   options: (string | SelectOptionObject)[];
   value?: string | SelectOptionObject;
   label?: string;
+  desc?: string;
   className?: string;
   required?: boolean;
   placeholder?: string;

@@ -6,18 +6,34 @@ import Input from "../Form/Input/input";
 import CopyText from "../CopyText/copy-text";
 import { checkDomainAvailability } from "@/app/(onboarding)/setup/data";
 
-const CompanyDomain = ({ companyName }: { companyName: string }) => {
-  const [customDomain, setCustomDomain] = useState("");
-  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
-  const [searching, setSearching] = useState(false);
+//  Props interface
+interface CompanyDomainProps {
+  companyName: string;
+  isEditMode: boolean;
+  domain?: string; 
+}
 
-  // When companyName prop changes, compute and set the default domain.
+const CompanyDomain: React.FC<CompanyDomainProps> = ({
+  companyName,
+  isEditMode,
+  domain,
+}) => {
+  const [customDomain, setCustomDomain] = useState<string>("");
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+  const [searching, setSearching] = useState<boolean>(false);
+
+  // Initialize customDomain based on isEditMode and domain or companyName
   useEffect(() => {
-    if (companyName) {
+    if (isEditMode && domain) {
+      // In editMode, extract the subdomain from the full domain (e.g., "example" from "example.ourlisting.ng")
+      const subdomain = domain.replace(/\.ourlisting\.ng$/, "");
+      setCustomDomain(subdomain);
+    } else if (companyName) {
+      // When not in editMode, derive from companyName
       const defaultDomain = companyName.trim().toLowerCase().replace(/\s+/g, "");
       setCustomDomain(defaultDomain);
     }
-  }, [companyName]);
+  }, [companyName, isEditMode, domain]);
 
   const handleCustomDomainChange = (value: string) => {
     setCustomDomain(value);
@@ -25,21 +41,24 @@ const CompanyDomain = ({ companyName }: { companyName: string }) => {
 
   // Debounce API call for domain availability
   useEffect(() => {
-    if (customDomain.trim() !== "") {
-      const timer = setTimeout(async () => {
-        setSearching(true);
-        const available = await checkDomainAvailability(customDomain);
-        setIsAvailable(available);
-        setSearching(false);
-      }, 500);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    } else {
+    if (customDomain.trim() === "") {
       setIsAvailable(null);
+      setSearching(false);
+      return;
     }
+
+    const timer = setTimeout(async () => {
+      setSearching(true);
+      const available = await checkDomainAvailability(customDomain);
+      setIsAvailable(available);
+      setSearching(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [customDomain]);
+
+  // Check if the current customDomain matches the domain prop (i.e., it’s the owner’s domain)
+  const isOwner = customDomain && domain && `${customDomain}.ourlisting.ng` === domain;
 
   return (
     <div>
@@ -67,7 +86,8 @@ const CompanyDomain = ({ companyName }: { companyName: string }) => {
             {`https://${customDomain}.ourlisting.ng`}
           </p>
         )}
-        {customDomain && (
+        {/* Show status div only if not in editMode or if in editMode and not the owner's domain */}
+        {(!isEditMode || !isOwner) && customDomain && (
           <>
             {searching ? (
               <div className="status bg-gray-500 text-white px-2 py-1 rounded-md text-xs">
@@ -76,9 +96,8 @@ const CompanyDomain = ({ companyName }: { companyName: string }) => {
             ) : (
               isAvailable !== null && (
                 <div
-                  className={`status ${
-                    isAvailable ? "bg-green-500" : "bg-red-500"
-                  } text-white px-2 py-1 rounded-md text-xs`}
+                  className={`status ${isAvailable ? "bg-green-500" : "bg-red-500"
+                    } text-white px-2 py-1 rounded-md text-xs`}
                 >
                   {isAvailable ? "Available" : "Not Available"}
                 </div>

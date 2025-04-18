@@ -97,40 +97,6 @@ const StartRent = () => {
     }
   }, [allTenantData]);
 
-  // const handleStartRent = async () => {
-  //   if (!unit_data?.unit_id || !selectedTenantId) {
-  //     toast.error("Missing required information: unit or tenant not selected.");
-  //     return;
-  //   }
-
-  //   if (!selectedCheckboxOptions) {
-  //     toast.error("Notification preferences not set.");
-  //     return;
-  //   }
-
-  //   const payload = {
-  //     unit_id: unit_data.unit_id,
-  //     tenant_id: selectedTenantId,
-  //     start_date: startDate,
-  //     payment_type: "full",
-  //     rent_type: "new",
-  //     mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
-  //     email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
-  //     has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
-  //   };
-  //   try {
-  //     setReqLoading(true);
-  //     const res = await startRent(payload);
-  //     if (res) {
-  //       toast.success("Rent Started Successfully");
-  //       router.back();
-  //     }
-  //   } catch (err) {
-  //     toast.error("Failed to start Rent");
-  //   } finally {
-  //     setReqLoading(false);
-  //   }
-  // };
 
   const handleStartRent = async () => {
     if (!unit_data?.unit_id || !selectedTenantId) {

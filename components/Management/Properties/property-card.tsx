@@ -192,11 +192,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </p>
             </div>
             <div>
-              <p className="text-label font-normal">Mobile Tenants</p>
+              <p className="text-label font-normal">{ isRental ? "Web Tenants" : "Web Occupants" }</p>
               <p className="text-brand-9 font-bold">{mobile_tenants}</p>
             </div>
             <div>
-              <p className="text-label font-normal">Web Tenants</p>
+              <p className="text-label font-normal">{ isRental ? "Web Tenants" : "Web Occupants" }</p>
               <p className="text-brand-9 font-bold">{web_tenants}</p>
             </div>
             <div>

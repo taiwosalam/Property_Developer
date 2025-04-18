@@ -125,6 +125,7 @@ export interface CheckBoxOptions {
   email_alert: boolean;
   create_invoice: boolean;
   sms_alert: boolean;
+  rent_agreement?: boolean;
 }
 
 export const defaultChecks: CheckBoxOptions = {
@@ -132,6 +133,7 @@ export const defaultChecks: CheckBoxOptions = {
   email_alert: true,
   create_invoice: true,
   sms_alert: true,
+  rent_agreement: false,
 };
 
 export const getEstateData = (estate_data: any) => {
