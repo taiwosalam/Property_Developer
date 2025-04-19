@@ -70,12 +70,6 @@ const CreateMyPropertyRequest = () => {
         </div>
         <FixedFooter className="flex gap-6 justify-end">
           <button
-            type="button"
-            className="py-2 px-7 bg-[#FDE9EA] text-[#E9212E] rounded-[4px] text-sm font-medium"
-          >
-            Cancel
-          </button>
-          <button
             type="submit"
             disabled={isCreating}
             className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"

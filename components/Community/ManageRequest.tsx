@@ -26,8 +26,6 @@ const SkeletonBox = ({ className }: { className: string }) => (
   />
 );
 
-
-
 export const PropertyRequestFirstSection = ({
   data,
   placeholderText,
@@ -90,9 +88,6 @@ export const PropertyRequestFirstSection = ({
   );
 };
 
-
-
-
 export const PropertyRequestSecondSection = ({
   loading,
   data,
@@ -106,9 +101,15 @@ export const PropertyRequestSecondSection = ({
   const { minBudget, maxBudget, setMinBudget, setMaxBudget } =
     usePropertyRequestStore();
   const [timeRange, setTimeRange] = useState("90d");
+  const stateOptions = getAllStates();
+  const [address, setAddress] = useState({
+    state: "",
+    lga: "",
+    city: "",
+  });
   const CURRENCY_SYMBOL = currencySymbols.naira;
 
-  if (loading) return <AgentRequestLoader />
+  if (loading) return <AgentRequestLoader />;
 
   // Handle minimum budget change
   const handleMinChange = (value: string) => {
@@ -133,6 +134,15 @@ export const PropertyRequestSecondSection = ({
     }
   };
 
+  const handleAddressChange = (key: keyof typeof address, value: string) => {
+    setAddress((prev) => ({
+      ...prev,
+      [key]: value,
+      ...(key === "state" && { lga: "", city: "" }),
+      ...(key === "lga" && { city: "" }),
+    }));
+  };
+
   const calculateDateRange = (days: number) => {
     const now = new Date();
     const fromDate = new Date();
@@ -142,7 +152,9 @@ export const PropertyRequestSecondSection = ({
 
   return (
     <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-      <h2>Request Types</h2>
+      <h3 className="text-black dark:text-white font-semibold mb-2">
+        Request Type
+      </h3>
       <PropertyRequestUnitType data={data} />
       <div className="budget flex flex-col gap-2">
         <h3 className="text-black dark:text-white font-semibold mb-2">
@@ -157,9 +169,12 @@ export const PropertyRequestSecondSection = ({
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           inputClassName="bg-white"
           onChange={handleMinChange}
-          value={
+          defaultValue={
             minBudget !== null ? minBudget.toString() : data?.min_budget || ""
           }
+          // value={
+          //   minBudget !== null ? minBudget.toString() : data?.min_budget || ""
+          // }
         />
         <Input
           required
@@ -170,14 +185,37 @@ export const PropertyRequestSecondSection = ({
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           inputClassName="bg-white"
           onChange={handleMaxChange}
-          value={
+          defaultValue={
             maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""
           }
+          // value={
+          //   maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""
+          // }
         />
       </div>
       <div className="flex flex-col gap-2">
-        <StateAndLocalGovt data={data} />
-        <div className="flex flex-col gap-2">
+        <h3 className="text-black dark:text-white font-semibold mb-2">
+          Location
+        </h3>
+        <Select
+          options={stateOptions}
+          id="state"
+          label="state"
+          value={address.state}
+          onChange={(value) => handleAddressChange("state", value)}
+          required
+        />
+
+        <Select
+          options={getLocalGovernments(address.state)}
+          id="lga"
+          label="local government"
+          onChange={(value) => handleAddressChange("lga", value)}
+          value={address.lga}
+          required
+        />
+        {/* <StateAndLocalGovt data={data} /> */}
+        <div className="flex flex-col gap-2 mt-2">
           <h3 className="text-black dark:text-white font-semibold mb-2">
             Valid Till
           </h3>
@@ -193,9 +231,6 @@ export const PropertyRequestSecondSection = ({
   );
 };
 
-
-
-
 export const ManagePropertiesComments = () => {
   return (
     <div className="mt-4">
@@ -205,8 +240,6 @@ export const ManagePropertiesComments = () => {
     </div>
   );
 };
-
-
 
 export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
@@ -249,8 +282,8 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const allOptions = selectedStates.includes("All States")
     ? ["All States"] // Limit options to "All States" when selected
     : ["All States", ...getAllStates()].filter(
-      (option, index, self) => self.indexOf(option) === index // Remove duplicates
-    );
+        (option, index, self) => self.indexOf(option) === index // Remove duplicates
+      );
 
   return (
     <div className="audience flex flex-col gap-2">
