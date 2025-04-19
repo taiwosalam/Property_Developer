@@ -4,38 +4,49 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { PersonalDataProps } from "./form-sections";
 
-export const createVehicleRecord = async (data: any) => {
-  try {
-    const response = await api.post("/vehicle-records", data);
-    return response.status === 200 || response.status === 201;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      const errorMessage = error.response?.data?.message || error.message;
-      const additionalErrors = error.response?.data?.errors.messages;
-      const idError = error?.response?.data.error;
-      console.log("idError", idError);
-      if (idError) {
-        if (typeof idError === "string" && idError.trim() !== "") {
-          toast.error(`Error: ${idError}`);
-        }
-      } else {
-        toast.error(`Error: ${errorMessage}`);
-      }
-      if (additionalErrors) {
-        Object.keys(additionalErrors).forEach((key) => {
-          additionalErrors[key].forEach((msg: string) => {
-            toast.error(`Error: ${msg}`);
-          });
-        });
-      }
-    } else {
-      console.error(error);
-      toast.error("An unexpected error occurred.");
-    }
-    return false;
-  }
-};
+// export const createVehicleRecord = async (data: any) => {
+//   try {
+//     const response = await api.post("/vehicle-records", data);
+//     return response.status === 200 || response.status === 201;
+//   } catch (error) {
+//     if (error instanceof AxiosError) {
+//       const errorMessage = error.response?.data?.message || error.message;
+//       const additionalErrors = error.response?.data?.errors.messages;
+//       const idError = error?.response?.data.error;
+//       if (idError) {
+//         if (typeof idError === "string" && idError.trim() !== "") {
+//           toast.error(`Error: ${idError}`);
+//         }
+//       } else {
+//         toast.error(`Error: ${errorMessage}`);
+//       }
+//       if (additionalErrors) {
+//         Object.keys(additionalErrors).forEach((key) => {
+//           additionalErrors[key].forEach((msg: string) => {
+//             toast.error(`Error: ${msg}`);
+//           });
+//         });
+//       }
+//     } else {
+//       console.error(error);
+//       toast.error("An unexpected error occurred.");
+//     }
+//     return false;
+//   }
+// };
 
+
+export const createVehicleRecord = async (data: any) => {
+ try{
+  const res = await api.post("/vehicle-records", data);
+  if (res.status === 200 || res.status === 201) {
+    return true
+  }
+ } catch(err){
+  handleAxiosError(err)
+  return false
+ } 
+}
 export const updateVehicleDetails = async (data: any, id: number) => {
   try {
     const response = await api.post(`/vehicle-records/${id}`, data);

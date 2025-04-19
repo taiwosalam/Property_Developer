@@ -57,7 +57,7 @@ type VehicleFieldProps = BaseFieldProps &
 
 type PersonalFieldProps = BaseFieldProps & {
   formstep: number;
-  
+
   setFormstep: (step: number) => void;
   changeTenant?: () => void;
 } & (
@@ -383,6 +383,7 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
         <Button
           type="submit"
           size="16_bold"
+          disabled={props.loading}
           className="ml-auto rounded-lg py-2 px-8 self-end justify-self-start md:col-span-2 lg:col-span-1 lg:col-start-3"
         >
           {props.loading ? "Loading..." : editMode ? "Update" : "Create"}

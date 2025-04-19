@@ -200,7 +200,7 @@ const CreateRecordModal = ({ data, propertyId }: { data: any; propertyId?: numbe
                           <h3 className="dark:text-white truncate text-xl">
                             {selectedPlate.name}
                           </h3>
-                          <BadgeIcon color="green" />
+                          {/* <BadgeIcon color="green" /> */}
                         </div>
                       </div>
                       <p className="text-brand-9 text-sm">
