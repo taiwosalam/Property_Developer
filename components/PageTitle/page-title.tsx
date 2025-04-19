@@ -19,7 +19,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
         <Modal>
           <ModalTrigger asChild>
             <button type="button" aria-label="Guide" className="p-1">
-             {noExclamationMark && <ExclamationMark />}
+             {/* {noExclamationMark && <ExclamationMark />} */}
             </button>
           </ModalTrigger>
           <ModalContent>
@@ -33,7 +33,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
         </Modal>
       ) : !noExclamationMark ? (
         <button type="button" aria-label="Guide" className="p-1">
-          <ExclamationMark />
+          {/* <ExclamationMark /> */}
         </button>
       ) : null}
     </div>

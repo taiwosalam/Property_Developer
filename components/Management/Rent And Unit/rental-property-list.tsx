@@ -173,13 +173,19 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 return label === "Start Rent" || label === "Start Counting";
               }
               if (status === "occupied") {
-                return label !== "Start Rent" && label !== "Start Counting";
+                // Exclude "Renew Rent" and "Renew Fee" for occupied status
+                return (
+                  label !== "Start Rent" &&
+                  label !== "Start Counting" &&
+                  label !== "Renew Rent" &&
+                  label !== "Renew Fee"
+                );
               }
               if (status === "expired") {
                 return (
                   label === "Renew Rent" ||
                   label === "Renew Fee" ||
-                  label === "Edit" ||
+                  // label === "Edit" ||
                   label === "Move Out" ||
                   label === "Relocate"
                 );

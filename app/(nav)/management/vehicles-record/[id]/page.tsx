@@ -1,12 +1,10 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Button from "@/components/Form/Button/button";
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
-import Pagination from "@/components/Pagination/pagination";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-
 import {
   transformVehicleRecordApiResponse,
   VehicleData,
@@ -21,7 +19,6 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
-import { ExclamationMark } from "@/public/icons/icons";
 import TableLoading from "@/components/Loader/TableLoading";
 import { VehicleRecord } from "@/components/tasks/vehicles-record/types";
 import CreateRecordModal from "@/components/tasks/vehicles-record/create-record-modal";
@@ -78,18 +75,6 @@ const VehiclesRecordPage = () => {
     vehicle_records: { data, current_page, last_page, total },
   } = state;
 
-  console.log("data", data);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
-  const handlePageChange = (page: number) => {
-    setSearchQuery("");
-    setState((prevState) => ({
-      ...prevState,
-      current_page: page,
-    }));
-  };
-
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -109,18 +94,25 @@ const VehiclesRecordPage = () => {
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
-    // setPage(1);
+    setState((prevState) => ({
+      ...prevState,
+      vehicle_records: {
+        ...prevState.vehicle_records,
+        current_page: 1,
+        data: [], // Reset data when filters change
+      },
+    }));
   };
 
   const { menuOptions, startDate, endDate } = appliedFilters;
-  // const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
   const status = menuOptions["Status"]?.[0];
+
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
-        // page,
+        page: current_page,
         date_from: appliedFilters.startDate
           ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
           : undefined,
@@ -132,14 +124,30 @@ const VehiclesRecordPage = () => {
         status: status,
       } as VehicleRecordFilterParams,
     };
-  }, [appliedFilters, search, sort]);
+  }, [appliedFilters, search, sort, current_page]);
 
   const handleSort = (order: "asc" | "desc") => {
     setSort(order);
+    setState((prevState) => ({
+      ...prevState,
+      vehicle_records: {
+        ...prevState.vehicle_records,
+        current_page: 1,
+        data: [], // Reset data when sort changes
+      },
+    }));
   };
 
   const handleSearch = (query: string) => {
     setSearch(query);
+    setState((prevState) => ({
+      ...prevState,
+      vehicle_records: {
+        ...prevState.vehicle_records,
+        current_page: 1,
+        data: [], // Reset data when search changes
+      },
+    }));
   };
 
   const {
@@ -155,75 +163,29 @@ const VehiclesRecordPage = () => {
   );
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
-  // useEffect(() => {
-  //   if (apiData) {
-  //     setState((x) => ({
-  //       ...x,
-  //       ...transformVehicleRecordApiResponse(apiData),
-  //     }));
-  //   }
-  // }, [apiData]);
-
   useEffect(() => {
     if (apiData) {
       const transformedData = transformVehicleRecordApiResponse(apiData);
-      setState((prevState) => ({
-        ...prevState,
-        ...transformedData,
-        vehicle_records: {
-          ...transformedData.vehicle_records,
-          data:
-            transformedData.vehicle_records.current_page === 1
-              ? transformedData.vehicle_records.data
-              : [
-                  ...prevState.vehicle_records.data,
-                  ...transformedData.vehicle_records.data,
-                ],
-        },
-      }));
+      setState((prevState) => {
+        return {
+          ...prevState,
+          ...transformedData,
+          vehicle_records: {
+            ...transformedData.vehicle_records,
+            data: transformedData.vehicle_records.data, // Replace data
+            current_page: transformedData.vehicle_records.current_page,
+            last_page: transformedData.vehicle_records.last_page,
+            total: transformedData.vehicle_records.total,
+          },
+        };
+      });
     }
   }, [apiData]);
-
-  // --- Infinite Scroll Logic ---
-  const observer = useRef<IntersectionObserver | null>(null);
-
-  const lastRowRef = useCallback(
-    (node: HTMLElement | null) => {
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (
-          entries[0].isIntersecting &&
-          current_page < last_page &&
-          !silentLoading
-        ) {
-          // Load next page when the last row becomes visible
-          setState((prevState) => ({
-            ...prevState,
-            vehicle_records: {
-              ...prevState.vehicle_records,
-              current_page: current_page + 1,
-            },
-          }));
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [current_page, last_page, silentLoading]
-  );
-
-  // Transform vehicle records to attach lastRowRef to the last row
-  const transformedRecords = data.map((record, index) => ({
-    ...record,
-    ref:
-      index === data.length - 1 && current_page < last_page
-        ? lastRowRef
-        : undefined,
-  }));
 
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
     const updatedRecord = {
-      ...data,
+      ...vehicleRecord,
       latest_check_in: vehicleRecord.latest_check_in,
       pictureSrc: vehicleRecord.pictureSrc,
       status: vehicleRecord.status,
@@ -239,6 +201,7 @@ const VehiclesRecordPage = () => {
     setModalOpen(true);
   };
 
+
   if (loading)
     return (
       <CustomLoader
@@ -250,7 +213,7 @@ const VehiclesRecordPage = () => {
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
-  // console.log("data needed", data)
+
   return (
     <div className="space-y-9">
       <div className="page-header-container">
@@ -313,7 +276,7 @@ const VehiclesRecordPage = () => {
       </div>
       <section className="capitalize">
         {data.length === 0 && !silentLoading ? (
-          searchQuery ? (
+          search ? (
             <div className="col-span-full text-center py-8 text-gray-500">
               No Search/Filter Found
             </div>
@@ -422,18 +385,13 @@ const VehiclesRecordPage = () => {
             ) : (
               <CustomTable
                 fields={veicleRecordTablefields}
-                data={transformedRecords}
+                data={data} // Pass data directly
                 tableHeadClassName="h-[76px]"
                 tableHeadCellSx={{
                   borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
                 }}
                 handleSelect={handleActionClick}
               />
-            )}
-            {silentLoading && current_page > 1 && (
-              <div className="flex items-center justify-center py-4">
-                <div className="loader" />
-              </div>
             )}
             <Modal
               state={{

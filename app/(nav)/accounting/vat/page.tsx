@@ -46,9 +46,11 @@ import useStaffRoles from "@/hooks/getStaffs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import TableLoading from "@/components/Loader/TableLoading";
+import { useGlobalStore } from "@/store/general-store";
 
 const Vat = () => {
   const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -128,12 +130,19 @@ const Vat = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
-        ...x,
-        ...transformVATAPIResponse(apiData),
-      }));
+      const transformedVat = transformVATAPIResponse(apiData);
+      const newVat = transformedVat.vats;
+      const currentVat = useGlobalStore.getState()?.accounting_vat;
+      if (JSON.stringify(currentVat) !== JSON.stringify(newVat)) {
+        setGlobalStore("accounting_vat", newVat);
+      }
+      setPageData({ ...transformedVat, vats: newVat });
+      // setPageData((x) => ({
+      //   ...x,
+      //   ...transformVATAPIResponse(apiData),
+      // }));
     }
-  }, [apiData]);
+  }, [apiData, setPageData, setGlobalStore]);
 
   const {
     data: propertyData,
@@ -205,7 +214,11 @@ const Vat = () => {
   const transformedTableData = vats.map((item) => ({
     ...item,
     total_vat: (
-      <p className={item.total_vat ? "text-status-success-3" : ""}>
+      <p
+        className={
+          item.total_vat ? "text-status-success-3 dark:text-white" : ""
+        }
+      >
         {item.total_vat ? item.total_vat : "--- ---"}
       </p>
     ),
@@ -223,7 +236,7 @@ const Vat = () => {
           <h1 className="text-black dark:text-white text-2xl font-medium">
             Vat
           </h1>
-          <ExclamationMark />
+          {/* <ExclamationMark /> */}
         </div>
         <div className="bg-white dark:bg-[#3C3D37] rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
           <div className="flex flex-wrap gap-y-4 items-center justify-between">
@@ -298,7 +311,11 @@ const Vat = () => {
               </Modal>
               <div className="flex items-center gap-2">
                 <ExportButton type="pdf" href="/accounting/vat/export" />
-                <ExportButton type="csv" href="/accounting/vat/export" />
+                <ExportButton
+                  fileLabel="Accounting Vat"
+                  data={transformedTableData}
+                  type="csv"
+                />
               </div>
             </div>
           </div>
@@ -308,23 +325,23 @@ const Vat = () => {
               balance={total_vat_created}
               percentage={percentage_change_total}
               variant="blueIncoming"
-              trendDirection="up"
-              trendColor="green"
+              trendDirection={percentage_change_total < 0 ? "down" : "up"}
+              trendColor={percentage_change_total < 0 ? "red" : "green"}
             />
             <AccountStatsCard
               title="Total Paid Vat"
               balance={total_paid_vat}
               variant="greenIncoming"
-              trendDirection="down"
-              trendColor="red"
+              trendDirection={percentage_change_paid < 0 ? "down" : "up"}
+              trendColor={percentage_change_paid < 0 ? "red" : "green"}
               percentage={percentage_change_paid}
             />
             <AccountStatsCard
               title="Total Pending Vat"
               balance={total_pending_vat}
               variant="yellowCard"
-              trendDirection="down"
-              trendColor="red"
+              trendDirection={percentage_change_pending < 0 ? "down" : "up"}
+              trendColor={percentage_change_pending < 0 ? "red" : "green"}
               percentage={percentage_change_pending}
             />
           </AutoResizingGrid>

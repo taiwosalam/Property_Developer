@@ -1,3 +1,5 @@
+"use client";
+
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Input from "@/components/Form/Input/input";
@@ -5,6 +7,8 @@ import Button from "@/components/Form/Button/button";
 import TextArea from "@/components/Form/TextArea/textarea";
 import ModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import { empty } from "@/app/config";
+import { useState } from "react";
+import { CounterButton } from "@/components/Wallet/AddFunds/payment-method";
 
 interface BaseProps {
   type: "check-in" | "check-out" | "decline";
@@ -29,6 +33,7 @@ interface VehicleFormProps extends BaseProps {
 const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
   props
 ) => {
+  const [count, setCount] = useState<number>(0);
   const {
     type,
     handleBack,
@@ -39,6 +44,25 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
     onSubmit,
     loading,
   } = props;
+  const handleIncrement = () => {
+    setCount((prevCount) => (prevCount < 99 ? prevCount + 1 : prevCount));
+  };
+
+  const handleDecrement = () => {
+    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Allow only numbers and ensure the value is between 1 and 99
+    if (/^\d*$/.test(value)) {
+      const numValue = Number(value);
+      if (value === "" || (numValue >= 1 && numValue <= 99)) {
+        setCount(numValue || 1); // Default to 1 if input is empty
+      }
+    }
+  };
+
   return (
     <ModalPreset
       heading={
@@ -51,11 +75,19 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
       back={handleBack ? { handleBack } : undefined}
     >
       <div className="flex flex-col md:flex-row gap-x-10 lg:gap-x-20 md:justify-between gap-y-5 mb-4">
-        <form onSubmit={onSubmit} className="flex flex-col md:flex-row  w-full gap-10 items-start">
+        <form
+          onSubmit={onSubmit}
+          className="flex flex-col md:flex-row  w-full gap-10 items-start"
+        >
           <div className="md:min-w-fit custom-flex-col gap-6">
             <div className="flex-1 flex-col items-center gap-2">
               <div className="mb-[10px] flex items-center gap-4">
-                <Picture src={pictureSrc || empty} alt="empty" size={80} rounded />
+                <Picture
+                  src={pictureSrc || empty}
+                  alt="empty"
+                  size={80}
+                  rounded
+                />
                 <div className="flex flex-col">
                   <p className="flex items-center">
                     <span className="text-text-primary dark:text-white text-base font-medium">
@@ -102,17 +134,36 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               </div>
             </div>
             {type !== "decline" && (
-              <Input
-                type="number"
-                min={0}
-                max={99}
-                maxLength={2}
-                inputClassName="keep-spinner"
-                label={
-                  useCase === "visitor" ? "Companions" : "Select Passengers"
-                }
-                id={useCase === "visitor" ? "companion" : "passenger"}
-              />
+              <>
+                <span className="-mb-3">
+                  {useCase === "visitor" ? "Companions" : "Select Passengers"}
+                </span>
+                <div className="flex justify-between max-w-[200px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
+                  <input
+                    id={useCase === "visitor" ? "companion" : "passenger"}
+                    name={useCase === "visitor" ? "companion" : "passenger"}
+                    type="number"
+                    value={count}
+                    minLength={0}
+                    maxLength={2}
+                    onChange={handleInputChange}
+                    // onChange={(e) => setCount(Number(e.target.value))}
+                    className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
+                  />
+                  <div className="btn flex flex-col items-end justify-end">
+                    <CounterButton
+                      onClick={handleIncrement}
+                      icon="/icons/plus.svg"
+                      alt="plus"
+                    />
+                    <CounterButton
+                      onClick={handleDecrement}
+                      icon="/icons/minus.svg"
+                      alt="minus"
+                    />
+                  </div>
+                </div>
+              </>
             )}
           </div>
           <div className="md:flex-1">

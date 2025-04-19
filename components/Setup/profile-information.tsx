@@ -1,9 +1,13 @@
 // Imports
+import { useContext } from "react";
+import DateInput from "../Form/DateInput/date-input";
 import Input from "../Form/Input/input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
 import Select from "../Form/Select/select";
 import TextArea from "../Form/TextArea/textarea";
 import { titles } from "@/data";
+import { FlowProgressContext } from "../FlowProgress/flow-progress";
+import dayjs from "dayjs";
 
 const ProfileInformation = ({
   data,
@@ -14,6 +18,7 @@ const ProfileInformation = ({
   year?: string;
   bio?: string;
 }) => {
+  const { handleInputChange } = useContext(FlowProgressContext);
   const yearsOptions = Array.from({ length: 10 }, (_, i) => {
     const yearValue = i + 1;
     return { label: `${yearValue} years +`, value: `${yearValue}+` };
@@ -39,13 +44,21 @@ const ProfileInformation = ({
           defaultValue={data?.full_name}
         />
 
-        <Select
+        {/* <Select
           id="director_experience"
           label="years in business"
           placeholder="Write here"
           options={yearsOptions}
           hiddenInputClassName="setup-f"
           defaultValue={year}
+        /> */}
+        <DateInput
+          id="director_experience"
+          label="years in business"
+          // onChange={handleInputChange}
+          inputClassName="setup-f required"
+          disableFuture
+          defaultValue={year ? dayjs(year) : undefined}
         />
         <Input
           id="director_email"

@@ -31,6 +31,7 @@ const Select: React.FC<SelectProps> = ({
   requiredNoStar,
   disabled,
   error,
+  desc,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -172,6 +173,11 @@ const Select: React.FC<SelectProps> = ({
         <Label id={id} required={required}>
           {label}
         </Label>
+      )}
+      {desc && (
+        <p className="text-text-disabled text-xs md:text-sm font-normal">
+          {desc}
+        </p>
       )}
       <div className={clsx("relative", dropdownRefClassName)} ref={dropdownRef}>
         {/* Trigger for the custom dropdown with embedded search field */}

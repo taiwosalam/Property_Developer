@@ -41,6 +41,8 @@ import {
   sendVerifyStaffOTP,
 } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/data";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
+import DateInput from "@/components/Form/DateInput/date-input";
+import dayjs from "dayjs";
 
 export const StaffEditProfileInfoSection = () => {
   const { data: staff } = useStaffEditContext();
@@ -52,20 +54,24 @@ export const StaffEditProfileInfoSection = () => {
   });
 
   const handleUpdateProfile = async (data: Record<string, string>) => {
-    const payload = {
+    // Initialize payload with fields that are always included
+    const payload: Record<string, string> = {
       full_name: data.fullname,
       title: data.personal_title,
       professional_title: data.real_estate_title,
       years_experience: data.years_experience,
-      // estate_title: data.real_estate_title,
-      // email: data.email,
-      phone_number: data.phone_number,
       gender: data.gender,
     };
-    cleanPhoneNumber(payload);
-    if (!payload.phone_number) {
-      payload.phone_number = "";
+
+    // Only include phone_number if it has changed
+    if (data.phone_number !== staff?.phone_number) {
+      payload.phone_number = data.phone_number;
+      cleanPhoneNumber(payload);
+      if (!payload.phone_number) {
+        payload.phone_number = "";
+      }
     }
+
     if (staff?.id) {
       setReqLoading(true);
       const status = await updateStaffProfile(
@@ -111,13 +117,20 @@ export const StaffEditProfileInfoSection = () => {
             disabled
             defaultValue={staff?.email}
           />
-          <Select
+          {/* <Select
             id="years_experience"
             label="years of experience"
             placeholder="Write here"
             options={yearsOptions}
             hiddenInputClassName="setup-f"
             defaultValue={`${staff?.experience}+`}
+          /> */}
+          <DateInput
+            id="years_experience"
+            label="years of experience"
+            inputClassName="setup-f required"
+            disableFuture
+            defaultValue={staff?.experience ? dayjs(staff?.experience) : undefined}
           />
           <Select
             id="gender"
@@ -232,10 +245,10 @@ export const StaffEditMoveToAnotherBranchSection = () => {
               branchesLoading
                 ? "Loading branches..."
                 : branchesError
-                ? "Error loading branches"
-                : "Select branch"
+                  ? "Error loading branches"
+                  : "Select branch"
             }
-            //   defaultValue={staff?.real_estate_title}
+          //   defaultValue={staff?.real_estate_title}
           />
           <Select
             id="transfer_current_position_to"
@@ -248,7 +261,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
             label="select new branch position"
             inputContainerClassName="bg-neutral-2"
             options={["manager", "account officer", "staff"]}
-            //   defaultValue={staff?.real_estate_title}
+          //   defaultValue={staff?.real_estate_title}
           />
           <div className="md:col-span-2 flex justify-end">
             <Button type="submit" size="base_medium" className="py-2 px-6">
@@ -332,7 +345,7 @@ export const StaffEditChangePositionSection = () => {
             label="new position"
             inputContainerClassName="bg-neutral-2"
             options={positionOptions}
-            //   defaultValue={staff?.real_estate_title}
+          //   defaultValue={staff?.real_estate_title}
           />
 
           <div className="md:col-span-2 flex justify-end">

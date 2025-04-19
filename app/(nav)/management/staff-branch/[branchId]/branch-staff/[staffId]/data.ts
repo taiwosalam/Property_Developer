@@ -369,9 +369,10 @@ export const transformStaffAPIResponse = (
       about_staff: res.data.about_staff,
       experience: res.data.years_experience,
       status: yesNoToActiveInactive(res.data.status),
-      badge_color: res.data.tier_id
-        ? staffTierColorMap[res.data.tier_id as keyof typeof staffTierColorMap]
-        : undefined,
+      badge_color: res.data.tier_id && "gray" 
+      // badge_color: res.data.tier_id
+      //   ? staffTierColorMap[res.data.tier_id as keyof typeof staffTierColorMap]
+      //   : undefined,
     },
     activities:
       res.activities?.map((a) => {

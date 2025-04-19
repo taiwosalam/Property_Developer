@@ -21,7 +21,7 @@ const DeleteAccountModal: React.FC<{
     if (success) {
       changeStep("next");
       setTimeout(() => afterAction?.(), 1000);
-    }
+    } 
     setReqLoading(false);
   };
 

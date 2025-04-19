@@ -39,13 +39,13 @@ const CreateArticle = () => {
     }
 
     // Parse and append target_audience as an array
-    const targetAudience = formData.get("target_audience");
-    if (typeof targetAudience === "string") {
-      const audienceArray = targetAudience.split(",").slice(0, 60); // Split into an array and limit to 60 items
-      audienceArray.forEach((audience) =>
-        formData.append("target_audience[]", audience.trim())
-      );
-    }
+    // const targetAudience = formData.get("target_audience");
+    // if (typeof targetAudience === "string") {
+    //   const audienceArray = targetAudience.split(",").slice(0, 60); // Split into an array and limit to 60 items
+    //   audienceArray.forEach((audience) =>
+    //     formData.append("target_audience[]", audience.trim())
+    //   );
+    // }
 
     imageFiles.forEach((file) => formData.append("pictures[]", file));
 
@@ -142,20 +142,20 @@ const SecondSection = ({
     <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
       <AddPhotoAndVideo onFilesChange={(files) => setImageFiles(files)} />
       <Select
-        options={getAllStates()}
-        id="taget_audience"
+        options={stateOptions}
+        id="state"
         label="state"
         value={address.state}
-        onChange={(value) => handleAddressChange("state", value)} 
+        onChange={(value) => handleAddressChange("state", value)}
         required
       />
 
       <Select
         options={getLocalGovernments(address.state)}
-        id="local_government"
+        id="lga"
         label="local government"
-        onChange={(value) => handleAddressChange("lga", value)} 
-        value={address.lga} 
+        onChange={(value) => handleAddressChange("lga", value)}
+        value={address.lga}
         required
       />
       {/* <StateAndLocalGovt /> */}

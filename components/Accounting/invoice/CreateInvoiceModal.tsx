@@ -1,10 +1,28 @@
+"use client";
+
+import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import useFetch from "@/hooks/useFetch";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const CreateInvoiceModal = () => {
   const router = useRouter();
+  const [selectedProperty, setSelectedProperty] = useState<number>(0);
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: `${p.id}`,
+      label: p.title,
+    })) || [];
+
   return (
     <LandlordTenantModalPreset
       heading="Create Invoice"
@@ -12,25 +30,25 @@ const CreateInvoiceModal = () => {
     >
       <div className="space-y-5 max-w-[300px] mx-auto mt-5">
         <Select
-          id=""
+          id="property"
           label={`Choose Property`}
-          options={[
-            { value: "1", label: "Option 1" },
-            { value: "2", label: "Option 2" },
-            { value: "3", label: "Option 3" },
-            { value: "3", label: "Option 3" },
-            { value: "3", label: "Option 3" },
-            { value: "3", label: "Option 3" },
-            { value: "3", label: "Option 3" },
-            { value: "3", label: "Option 3" },
-            { value: "3", label: "Option 3" },
-            { value: "3", label: "Option 3" },
-          ]}
+          options={propertyOptions}
+          disabled={propertyLoading}
+          placeholder={
+            propertyLoading
+              ? "Loading properties..."
+              : propertyError
+              ? "Failed to load properties"
+              : "Select a property"
+          }
+          onChange={(value) => setSelectedProperty(Number(value))}
         />
         <div className="w-full flex items-center justify-center">
           <Button
             onClick={() => {
-              router.push(`/accounting/invoice/create-invoice`);
+              router.push(
+                `/accounting/invoice/create-invoice?p=${selectedProperty}`
+              );
             }}
             className="py-2 px-8"
             size="base_medium"

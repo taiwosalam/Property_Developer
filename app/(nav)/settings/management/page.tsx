@@ -29,10 +29,11 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { updateSettings } from "../security/data";
 import { useSettings } from "@/hooks/settingsContext";
-import useFetch from "@/hooks/useFetch";
+import RentPenalty from "@/components/Management/rent-penalty";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { ManagementConfigApiResponse } from "./types";
+import useFetch from "@/hooks/useFetch";
 import ManagementCheckbox from "@/components/Documents/DocumentCheckbox/management-checkbox";
+
 
 const roleMapping: Record<string, string> = {
   "staff configuration (branch manager)": "manager",
@@ -344,6 +345,9 @@ const Management = () => {
             />
           </AuthForm>
         </div>
+        <RentPenalty />
+      {/* </SettingsSection >
+      <SettingsSection title="rent penalty settings"> */}
       </SettingsSection>
       <SettingsSection title="rent penalty settings">
         <div className="custom-flex-col gap-8">

@@ -36,6 +36,7 @@ export interface InvoicePageData {
   service_charge: string | number;
   caution_fee: string | number;
   agency_fee: string | number;
+  legal_fee?: string | number;
   inspection_fee: string | number;
   total_package: string | number;  
   details: string;

@@ -20,6 +20,7 @@ import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import ServerError from "@/components/Error/ServerError";
 
 const ManageInvoice = () => {
   const CURRENCY_SYMBOL = currencySymbols.naira;
@@ -28,8 +29,15 @@ const ManageInvoice = () => {
   const { data, error, loading, isNetworkError } = useFetch<InvoiceResponse>(
     `/invoice/${invoiceId}`
   );
-  
-  
+
+  // Helper function to safely format numbers
+  const safeFormatNumber = (value: number | undefined | null): string => {
+    if (typeof value !== "number" || isNaN(value)) {
+      return ""; // Return empty string as fallback
+    }
+    return formatNumber(value);
+  };
+
   useEffect(() => {
     if (data) {
       setPageData(transformInvoiceData(data.data));
@@ -37,7 +45,7 @@ const ManageInvoice = () => {
   }, [data]);
 
   if (loading) return <PageCircleLoader />;
-  if (error) return <div>Error loading invoice data.</div>;
+  if (error) return <ServerError error={error} />;
   if (isNetworkError) return <NetworkError />;
 
   return (
@@ -69,8 +77,7 @@ const ManageInvoice = () => {
         </div>
         <AccountingTitleSection title="Details">
           <p className="font-normal text-[14px] text-[#6C6D6D] dark:text-darkText-1">
-            New rent payment for 3 bedroom bungalow at Ajibade road 2, Lekki
-            Lagos
+            New rent payment for {pageData.unit_name}
           </p>
           <div>
             <Breakdown data={pageData} />
@@ -82,43 +89,41 @@ const ManageInvoice = () => {
                 label="Annual Rent"
                 required
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                // placeholder="1,000,000"
                 inputClassName="bg-white"
                 formatNumber
-                defaultValue={formatNumber(pageData.annual_fee) as string}
+                defaultValue={safeFormatNumber(pageData.annual_fee as number)}
+                // defaultValue={`${formatNumber(pageData.annual_fee)}`}
               />
               <Input
                 id="service-charge"
                 label="service charge"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                // placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
-                defaultValue={formatNumber(pageData.service_charge) as string}
+                defaultValue={safeFormatNumber(
+                  pageData.service_charge as number
+                )}
               />
               <Input
                 id="refundable-caution-fee"
                 label="refundable caution fee"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                // placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
-                defaultValue={formatNumber(pageData.caution_fee) as string}
+                defaultValue={safeFormatNumber(pageData.caution_fee as number)}
               />
               <Input
                 id="non-refundable-agency-fee"
                 label="non refundable agency fee"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                // placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
-                defaultValue={formatNumber(pageData.agency_fee) as string}
+                defaultValue={safeFormatNumber(pageData.agency_fee as number)}
               />
               <Input
                 id="non-refundable-legal-fee"
                 label="non refundable legal fee"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                // placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
                 // defaultValue={formatNumber(pageData.) as string}

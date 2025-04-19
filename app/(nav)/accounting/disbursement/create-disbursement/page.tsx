@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { createDisbursement } from "../data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { useRouter } from "next/navigation";
 
 const paymentModes = [
   "Bank Transfer",
@@ -36,6 +37,7 @@ const paymentModes = [
 ];
 
 const CreateDisbursement = () => {
+  const router = useRouter();
   const companyId = usePersonalInfoStore((state) => state.company_id) || '';
   const [selectedPropertyId, setSelectedPropertyId] = useState('')
   const [reqLoading, setReqLoading] = useState(false)
@@ -120,7 +122,7 @@ const CreateDisbursement = () => {
       company_id: companyId,
       property_id: data.property,
       description: data.description,
-      disburse_mode: data.disbursement_mode.toLowerCase(), // 'bank transfer', 'wallet', 'cash deposit', 'bank deposit', 'other mode'
+      disburse_mode: data.disbursement_mode?.toLowerCase(), // 'bank transfer', 'wallet', 'cash deposit', 'bank deposit', 'other mode'
       disbursement: isAddPaymentChecked ? payments : unitPayments,
     }
     try {
@@ -129,6 +131,7 @@ const CreateDisbursement = () => {
       const res = await createDisbursement(objectToFormData(payload))
       if (res) {
         toast.success("Disbursement Created Successfully")
+        router.back();
       }
     } catch (error) {
       toast.error('Failed to create disbursement. Please try again!')
@@ -177,7 +180,7 @@ const CreateDisbursement = () => {
         </div>
 
         <div className="space-y-6">
-          <div className="flex gap-1 flex-col">
+          <div className="flex gap-1 flex-col mt-4">
             <div className="flex gap-2">
               <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
                 Add Property Disbursement

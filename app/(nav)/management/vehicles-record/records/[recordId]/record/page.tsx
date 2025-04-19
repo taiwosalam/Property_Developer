@@ -434,7 +434,7 @@ const RecordPage = () => {
                   state: vehicleState,
                   model: model,
                   vehicle_type: vehicle_type,
-                  color: color || "N/A",
+                  color: color || "",
                   manufacturer_year: manufacture_year,
                   visitor_category: category,
                 }}

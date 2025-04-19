@@ -49,14 +49,14 @@ export const transformSinglePropertyData = (
     branch: data.branch?.branch_name,
     rent_penalty: mapNumericToYesNo(data.rent_penalty),
     fee_period: data.fee_period,
-    account_officer: `${accountOfficer?.title || "__"} ${
-      accountOfficer?.user?.name || "__"
+    account_officer: `${accountOfficer?.title || "--"} ${
+      accountOfficer?.user?.name || "--"
     }`, // to do
-    landlord_name: "", //to do
+    landlord_name: data.landlord || "--- ---", //to do
     branch_manager: `${manager?.professional_title ?? "--- ---"} ${
       manager?.user?.name ?? "--- ---"
     }`,
-    mobile_tenants: 0., // backend shit
+    mobile_tenants: 0, // backend shit
     web_tenants: 0, // backend shit
     last_updated: moment(data.updated_at).format("Do MMM, YYYY"),
     available_units: data.units.filter(
