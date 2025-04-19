@@ -121,10 +121,10 @@ export const updateCompany = async (
 ): Promise<boolean> => {
   try {
     const { data } = await api.post(`/company/${id}/update`, formData);
-    toast.success(data?.message || "Company created successfully");
+    toast.success(data?.message || "Company updated successfully");
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to create company");
+    handleAxiosError(error, "Failed to update company");
     return false;
   }
 };

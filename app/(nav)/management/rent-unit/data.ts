@@ -129,6 +129,7 @@ export const transformRentUnitApiResponse = (
       unit_name: u?.unit_name || "--- ---",
       caution_fee: u?.caution_fee || "--- ---",
       status: u.is_active,
+      fee_period: u.fee_period,
       propertyType: u.property.property_type as "rental" | "facility",
       address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
       badge_color: u.occupant?.tier
@@ -300,6 +301,7 @@ export interface RentalPropertyCardProps {
   reject_reason?: string;
   tenant_id?: string;
   is_active?: string;
+  fee_period?: string;
 }
 
 const allStates = getAllStates() || [];
@@ -936,6 +938,8 @@ export interface initDataProps {
   unitAgentFee?: string;
   service_charge?: string;
   renew_other_charge?: string;
+  renew_vat_amount?: string;
+  vat_amount?: string;
   occupant: Occupant;
   previous_records?: PreviousRecords[];
   whoToChargeRenew?: string;
@@ -951,7 +955,7 @@ export const transformUnitData = (response: any) => {
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   // const previous_tenants = response.data.previous_tenants;
-  // console.log("data to trans", data)
+  console.log("data to trans", data)
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -979,6 +983,16 @@ export const transformUnitData = (response: any) => {
           currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
         }${formatNumber(parseFloat(data.fee_amount))}`
       : undefined,
+    vat_amount: data.user.vat_amount
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.user.vat_amount))}`
+      : "--- ---",
+    renew_vat_amount: data.user.renew_vat_amount
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.user.renew_vat_amount))}`
+      : "--- ---",
     renewalTenantTotalPrice: data.renew_total_package,
     renew_fee_period: data.renew_fee_period,
     renewalTenantPrice: data.renew_fee_amount

@@ -40,7 +40,7 @@ const Picture: React.FC<PictureProps> = ({
         height={imageHeight * resolutionMultiplier}
         className={clsx(
           {
-            "rounded-full": rounded,
+            "rounded-full custom-secondary-bg": rounded,
           },
           className
         )}

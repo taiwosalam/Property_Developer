@@ -10,6 +10,7 @@ import {
   previousRentRecordsTableFields,
   type RentPeriod,
   calculateDueDate,
+  CheckBoxOptions,
 } from "./data";
 import type { FeeDetail } from "./types";
 import { SectionSeparator } from "@/components/Section/section-components";
@@ -24,7 +25,10 @@ import TableLoading from "@/components/Loader/TableLoading";
 // import { PreviousRecords } from "@/app/(nav)/management/rent-unit/data";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { useOccupantStore } from "@/hooks/occupant-store";
-import { calculateOverduePeriods, formatOwingPeriod } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
+import {
+  calculateOverduePeriods,
+  formatOwingPeriod,
+} from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
 
 export const RenewalRentDetails: React.FC<{
   isRental: boolean;
@@ -119,7 +123,7 @@ export const OwingFee: React.FC<{
           }${formatNumber(Number(owingAmount))}`
         : "",
     },
-    {name: "Rent Penalty", amount: "--- ---"}
+    { name: "Rent Penalty", amount: "--- ---" },
   ];
 
   // Update total package cost to include owing amount
@@ -142,12 +146,27 @@ export const OwingFee: React.FC<{
 export const RenewalRent: React.FC<{
   isRental: boolean;
   rentPeriod: RentPeriod;
+  due_date?: Dayjs | null;
   title?: string;
   start?: boolean;
+  allowStartDateInput?: boolean;
   setStart_Date?: (date: string | null) => void;
-}> = ({ isRental, rentPeriod, title, start, setStart_Date }) => {
+  setDueDate?: (date: Dayjs | null) => void;
+  setSelectedCheckboxOptions?: (options: CheckBoxOptions) => void;
+}> = ({
+  isRental,
+  rentPeriod,
+  due_date,
+  title,
+  start,
+  setStart_Date,
+  allowStartDateInput = true,
+  setDueDate,
+  setSelectedCheckboxOptions,
+}) => {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  // const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [dueDate, setLocalDueDate] = useState<Dayjs | null>(null);
 
   type CheckboxOption =
     | "Create Invoice"
@@ -174,20 +193,63 @@ export const RenewalRent: React.FC<{
     "Rent Agreement": true,
   });
 
+  // Update parent with checkbox changes
+  useEffect(() => {
+    setSelectedCheckboxOptions?.({
+      create_invoice: checkboxStates["Create Invoice"],
+      mobile_notification: checkboxStates["Mobile Notification"],
+      sms_alert: checkboxStates["SMS Alert"],
+      email_alert: checkboxStates["Email Alert"],
+      rent_agreement: checkboxStates["Rent Agreement"],
+    });
+  }, [checkboxStates, setSelectedCheckboxOptions]);
+
   const handleCheckboxChange = (option: CheckboxOption) => {
     setCheckboxStates((prevState) => ({
       ...prevState,
       [option]: !prevState[option],
     }));
   };
-
+  // Set startDate based on expiryDate when allowStartDateInput is false
   useEffect(() => {
-    if (!startDate) {
-      setDueDate(null);
+    if (!allowStartDateInput && due_date) {
+      setStartDate(due_date);
+      if (setStart_Date) {
+        setStart_Date(due_date.format("YYYY-MM-DD"));
+      }
+    }
+  }, [allowStartDateInput, due_date, setStart_Date]);
+
+  // // Calculate due_date based on startDate or expiryDate
+  // useEffect(() => {
+  //   const effectiveStartDate = allowStartDateInput ? startDate : dueDate;
+  //   if (!effectiveStartDate) {
+  //     setDueDate(null);
+  //     return;
+  //   }
+  //   setDueDate(calculateDueDate(effectiveStartDate, rentPeriod));
+  // }, [startDate, dueDate, rentPeriod, allowStartDateInput]);
+
+  // Calculate due_date based on startDate or due_date
+  useEffect(() => {
+    const effectiveStartDate = allowStartDateInput ? startDate : due_date;
+    if (!effectiveStartDate) {
+      setLocalDueDate(null);
+      setDueDate?.(null);
       return;
     }
-    setDueDate(calculateDueDate(startDate, rentPeriod));
-  }, [startDate, rentPeriod]);
+    const calculatedDueDate = calculateDueDate(effectiveStartDate, rentPeriod);
+    setLocalDueDate(calculatedDueDate);
+    setDueDate?.(calculatedDueDate);
+  }, [startDate, due_date, rentPeriod, allowStartDateInput, setDueDate]);
+
+  // useEffect(() => {
+  //   if (!startDate) {
+  //     setDueDate(null);
+  //     return;
+  //   }
+  //   setDueDate(calculateDueDate(startDate, rentPeriod));
+  // }, [startDate, rentPeriod]);
 
   const handleStartDate = (date: Dayjs | null) => {
     setStartDate(date);
@@ -198,25 +260,33 @@ export const RenewalRent: React.FC<{
 
   return (
     <div>
-      <RentSectionTitle>
-        {title || (isRental ? "Renew Rent" : "Renewal Fee")}
-      </RentSectionTitle>
-      <SectionSeparator className="mt-4 mb-6" />
+      {allowStartDateInput && (
+        <>
+          <RentSectionTitle>
+            {title || (isRental ? "Renew Rent" : "Renewal Fee")}
+          </RentSectionTitle>
+          <SectionSeparator className="mt-4 mb-6" />
+        </>
+      )}
       <div className="grid grid-cols-2 gap-4 mb-8">
-        <DateInput
-          id="payment_date"
-          label="Payment Date"
-          disablePast
-          value={startDate}
-          onChange={handleStartDate}
-        />
-        <DateInput
-          id="due_date"
-          label="Due Date"
-          value={dueDate}
-          disabled
-          className="opacity-50"
-        />
+        {allowStartDateInput && (
+          <>
+            <DateInput
+              id="payment_date"
+              label="Payment Date"
+              disablePast
+              value={startDate}
+              onChange={handleStartDate}
+            />
+            <DateInput
+              id="due_date"
+              label="Due Date"
+              value={dueDate}
+              disabled
+              className="opacity-50"
+            />
+          </>
+        )}
       </div>
       <div className="flex items-center justify-end gap-4 flex-wrap mb-4">
         {checkboxOptions.map((option) => (

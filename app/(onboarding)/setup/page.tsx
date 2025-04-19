@@ -156,7 +156,9 @@ const Setup = () => {
           <Section separatorStyles="max-w-[1200px]">
             <CompanyLogo />
             <CompanyDomain
-              companyName={companyData?.company_name || companyName}
+              domain={companyData?.domain}
+              isEditMode={isEditMode}
+              companyName={isEditMode ? companyData?.company_name : companyName}
             />
           </Section>
           <div className="flex gap-[2px] flex-col">

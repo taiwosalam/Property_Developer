@@ -5,6 +5,8 @@ import {
   estateData,
   rentalData,
   RentPeriod,
+  CheckBoxOptions,
+  defaultChecks,
 } from "@/components/Management/Rent And Unit/data";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
@@ -31,9 +33,12 @@ import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 import { getPropertySettingsData, getRentalData } from "./data";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import ServerError from "@/components/Error/ServerError";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { toast } from "sonner";
+import { startRent } from "../start-rent/data";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
@@ -41,6 +46,12 @@ const RenewRent = () => {
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
   const isRental = propertyType === "rental";
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  // const [startDate, setStartDate] = useState<string>("");
+  const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
+    useState<CheckBoxOptions>(defaultChecks);
+  const [reqLoading, setReqLoading] = useState(false);
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const endpoint = `/unit/${id}/view`;
 
   const {
@@ -61,17 +72,6 @@ const RenewRent = () => {
     }
   }, [apiData]);
 
-
-  if (loading)
-    return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-      </div>
-    );
-
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
-
   const propertyId = unit_data.propertyId;
   const record = (unit_data?.previous_records as any)?.data?.[0];
   const start_date = record?.start_date
@@ -82,6 +82,52 @@ const RenewRent = () => {
     : "___,___,___";
   const propertySettingsData = getPropertySettingsData(unit_data);
   const rentalData = getRentalData(unit_data);
+
+  const handleRenewRent = async () => {
+    if (!unit_data?.unit_id || !unit_data?.occupant?.id) {
+      toast.error("Missing required information: unit or occupant not found.");
+      return;
+    }
+    if (!selectedCheckboxOptions) {
+      toast.error("Notification preferences not set.");
+      return;
+    }
+    if (!startDate) {
+      toast.error("Start date is required.");
+      return;
+    }
+    // Validate dueDate
+    if (dueDate && dueDate.isBefore(dayjs(startDate), "day")) {
+      toast.warning("Due date cannot be before the start date.");
+      return;
+    }
+    const payload = {
+      unit_id: unit_data.unit_id,
+      tenant_id: unit_data.occupant.id,
+      start_date: startDate,
+      payment_type: "full",
+      rent_type: "renew",
+      mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
+      email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
+      has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+    };
+    try {
+      setReqLoading(true);
+      const res = await startRent(payload);
+      if (res) {
+        toast.success("Rent Renewed Successfully");
+        // router.back();
+      }
+    } catch (err) {
+      toast.error("Failed to renew rent");
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -124,8 +170,12 @@ const RenewRent = () => {
                   name: "Other Charges",
                   amount: unit_data.renew_other_charge as any,
                 },
+                {
+                  name: "VAT Amount",
+                  amount: unit_data.renew_vat_amount as any,
+                },
               ]}
-              total_package={Number(unit_data.total_package)}
+              total_package={Number(unit_data.renewalTenantTotalPrice)}
               id={propertyId as string}
             />
 
@@ -138,14 +188,18 @@ const RenewRent = () => {
                   name: isRental
                     ? "Renewal Total Package"
                     : "Renewal Total Fee",
-                  amount: unit_data?.total_package?.toString() || '0'
-                    ? `${
-                        currencySymbols["₦" as keyof typeof currencySymbols] ||
-                        "₦"
-                      }${formatNumber(
-                        parseFloat(unit_data?.total_package?.toString() ?? "0")
-                      )}`
-                    : "",
+                  amount:
+                    unit_data?.total_package?.toString() || "0"
+                      ? `${
+                          currencySymbols[
+                            "₦" as keyof typeof currencySymbols
+                          ] || "₦"
+                        }${formatNumber(
+                          parseFloat(
+                            unit_data?.total_package?.toString() ?? "0"
+                          )
+                        )}`
+                      : "",
                 },
               ]}
               total_package={Number(unit_data.total_package)}
@@ -153,8 +207,15 @@ const RenewRent = () => {
             />
 
             <RenewalRent
+              allowStartDateInput={false}
               isRental={isRental}
+              due_date={dayjs(due_date, "DD/MM/YYYY")}
               rentPeriod={(unit_data.fee_period as RentPeriod) ?? "yearly"}
+              setStart_Date={(date: string | null) =>
+                date ? setStartDate(dayjs(date)) : setStartDate(null)
+              }
+              setDueDate={setDueDate}
+              setSelectedCheckboxOptions={setSelectedCheckboxOptions}
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
@@ -171,8 +232,13 @@ const RenewRent = () => {
         />
       </section>
       <FixedFooter className="flex items-center justify-end">
-        <Button size="base_medium" className="py-2 px-6">
-          {isRental ? "Renew Rent" : "Renew"}
+        <Button
+          size="base_medium"
+          className="py-2 px-6"
+          disabled={reqLoading}
+          onClick={handleRenewRent}
+        >
+          {reqLoading ? "Please wait..." : isRental ? "Renew Rent" : "Renew"}
         </Button>
       </FixedFooter>
     </div>

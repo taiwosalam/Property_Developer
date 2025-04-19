@@ -141,6 +141,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   status,
   tenant_id,
   badge_color,
+  fee_period,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
@@ -175,9 +176,8 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
 
           {/* Hover information */}
           <div
-            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${
-              isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+              }`}
           >
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
@@ -198,7 +198,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
-                Expiry Date
+                Expiry Date 
               </span>
               <p className="text-brand-primary font-medium"> {expiry_date} </p>
             </div>
@@ -224,13 +224,19 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               return label === "Start Rent" || label === "Start Counting";
             }
             if (status === "occupied") {
-              return label !== "Start Rent" && label !== "Start Counting";
+              // Exclude "Renew Rent" and "Renew Fee" for occupied status
+              return (
+                label !== "Start Rent" &&
+                label !== "Start Counting" &&
+                label !== "Renew Rent" &&
+                label !== "Renew Fee"
+              );
             }
             if (status === "expired") {
               return (
                 label === "Renew Rent" ||
                 label === "Renew Fee" ||
-                label === "Edit" ||
+                // label === "Edit" ||
                 label === "Move Out" ||
                 label === "Relocate"
               );

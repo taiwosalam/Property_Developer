@@ -29,6 +29,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { updateSettings } from "../security/data";
 import { useSettings } from "@/hooks/settingsContext";
+import RentPenalty from "@/components/Management/rent-penalty";
 
 
 const roleMapping: Record<string, string> = {
@@ -279,8 +280,9 @@ const Management = () => {
             />
           </AuthForm>
         </div>
-      </SettingsSection >
-      <SettingsSection title="rent penalty settings">
+        <RentPenalty />
+      {/* </SettingsSection >
+      <SettingsSection title="rent penalty settings"> */}
         <div className="custom-flex-col gap-8">
           <p className="text-text-disabled text-sm font-normal">
             The tenant is required to make full rent payment on or before the

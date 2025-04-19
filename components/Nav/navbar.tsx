@@ -124,7 +124,7 @@ const Header = () => {
 
   useEffect(() => {
     if (apiData) {
-      const ids = apiData.data.length
+      const ids = apiData?.data?.length
         ? apiData?.data?.map((item) => item.id)
         : [];
       setNotificationIds(ids);
