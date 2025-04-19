@@ -48,9 +48,12 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import TableLoading from "@/components/Loader/TableLoading";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { useGlobalStore } from "@/store/general-store";
+import ServerError from "@/components/Error/ServerError";
 
 const AccountingInvoicePage = () => {
   const isDarkMode = useDarkMode();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -130,9 +133,14 @@ const AccountingInvoicePage = () => {
   useEffect(() => {
     if (data) {
       const transformed = transformInvoiceData(data);
-      setInvoiceData(transformed);
+      const newInvoices = transformed.invoices;
+      const currentInvoices = useGlobalStore.getState()?.accounting_invoices;
+      if (JSON.stringify(currentInvoices) !== JSON.stringify(newInvoices)) {
+        setGlobalStore("accounting_invoices", newInvoices);
+      }
+      setInvoiceData({ ...transformed, invoices: newInvoices });
     }
-  }, [data]);
+  }, [data, setGlobalStore]);
 
   const [state, setState] = useState<{ selectedState: string }>({
     selectedState: "",
@@ -187,7 +195,7 @@ const AccountingInvoicePage = () => {
 
   if (loading)
     return <CustomLoader layout="page" view="table" pageTitle="Invoices" />;
-  if (error) return <div>Error loading invoice data.</div>;
+  if (error) return <ServerError error={error} />;
   if (!invoiceData) return <div>No invoice data available.</div>;
   if (isNetworkError) return <NetworkError />;
 
@@ -295,7 +303,11 @@ const AccountingInvoicePage = () => {
               </Modal>
               <div className="flex items-center gap-2">
                 <ExportButton type="pdf" href="/accounting/invoice/export" />
-                <ExportButton type="csv" href="/accounting/invoice/export" />
+                <ExportButton
+                  fileLabel="Invoice"
+                  data={transformedInvoiceTableData}
+                  type="csv"
+                />
               </div>
             </div>
           </div>
@@ -303,24 +315,36 @@ const AccountingInvoicePage = () => {
             <AccountStatsCard
               title="Total Invoice Created"
               balance={statistics.total_receipt}
-              trendDirection="up"
-              trendColor="green"
+              trendDirection={
+                statistics.percentage_change_total < 0 ? "down" : "up"
+              }
+              trendColor={
+                statistics.percentage_change_total < 0 ? "red" : "green"
+              }
               variant="blueIncoming"
               percentage={statistics.percentage_change_total}
             />
             <AccountStatsCard
               title="Total Paid Invoice"
               balance={statistics.total_receipt}
-              trendDirection="down"
-              trendColor="red"
+              trendDirection={
+                statistics.percentage_change_paid < 0 ? "down" : "up"
+              }
+              trendColor={
+                statistics.percentage_change_paid < 0 ? "red" : "green"
+              }
               variant="greenIncoming"
               percentage={statistics.percentage_change_paid}
             />
             <AccountStatsCard
               title="Total Pending Invoice"
               balance={statistics.total_pending_receipt}
-              trendDirection="down"
-              trendColor="red"
+              trendDirection={
+                statistics.percentage_change_pending < 0 ? "down" : "up"
+              }
+              trendColor={
+                statistics.percentage_change_pending < 0 ? "red" : "green"
+              }
               variant="yellowCard"
               percentage={Number(statistics.total_pending_receipt)}
             />
@@ -333,9 +357,9 @@ const AccountingInvoicePage = () => {
         ) : (
           <section>
             <EmptyList
-              buttonText="+ new invoice"
+              buttonText="+ create invoice"
               modalContent={<CreateInvoiceModal />}
-              title="You do not have any disbursements yet"
+              title="You haven't created any invoices yet."
               body={
                 <p>
                   You can either create a new invoice manually or allow the

@@ -1,4 +1,8 @@
 // store/globalStore.ts
+import { TransformedDisburseItem } from "@/app/(nav)/accounting/disbursement/data";
+import { Expense } from "@/app/(nav)/accounting/expenses/types.";
+import { Invoice } from "@/app/(nav)/accounting/invoice/types";
+import { Vat } from "@/app/(nav)/accounting/vat/data";
 import { LandlordReportEntry } from "@/app/(nav)/reports/landlord/data";
 import { TransformedProperty } from "@/app/(nav)/reports/properties/data";
 import { Rent } from "@/app/(nav)/reports/rent/types";
@@ -18,7 +22,10 @@ interface GlobalStoreState {
   rents?: Rent[]
   activities?: ActivityDataReport[]
   user_activities?: ActivityDataReport[]
-  // add more k
+  accounting_invoices?: Invoice[]
+  accounting_vat?: Vat[]
+  accounting_expenses?: Expense[]
+  accounting_disbursements?: TransformedDisburseItem[]
   // add more keys here as needed…
 }
 
@@ -44,13 +51,17 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   vehicle_records: [],
   rent: [],
   user_activities: [],
+  accounting_invoices: [],
+  accounting_vat: [],
+  accounting_expenses: [],
+  accounting_disbursements: [],
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {
     set({ [key]: value } as Pick<GlobalStoreState, typeof key>);
   },
 
-  // optional type‑safe getter:
+  // type‑safe getter:
   getGlobalInfoStore: (key) => {
     return get()[key];
   },

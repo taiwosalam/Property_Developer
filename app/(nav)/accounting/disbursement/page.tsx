@@ -28,9 +28,12 @@ import { AllLandlordsResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import TableLoading from "@/components/Loader/TableLoading";
+import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
 
 const Disbursement = () => {
   const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [tableData, setTableData] = useState<TransformedDisburseItem[]>([]);
@@ -84,7 +87,7 @@ const Disbursement = () => {
       ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
       : undefined;
 
-    const toDate = appliedFilters.endDate 
+    const toDate = appliedFilters.endDate
       ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
       : undefined;
 
@@ -128,16 +131,22 @@ const Disbursement = () => {
 
   useEffect(() => {
     if (data) {
-      const transformed = transformDisburseData(data);
-      setTableData(transformed);
+      const newTransformed = transformDisburseData(data);
+      const currentDisbursements =
+        useGlobalStore.getState()?.accounting_disbursements;
+      if (
+        JSON.stringify(currentDisbursements) !== JSON.stringify(newTransformed)
+      ) {
+        setGlobalStore("accounting_disbursements", newTransformed);
+      }
+      setTableData(newTransformed);
     }
-  }, [data]);
+  }, [data, setGlobalStore]);
 
   if (loading)
     return <CustomLoader layout="page" pageTitle="Disbursement" view="table" />;
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-8">
@@ -158,9 +167,12 @@ const Disbursement = () => {
           searchInputPlaceholder="Search for disbursement"
           handleFilterApply={handleFilterApply}
           isDateTrue
+          noExclamationMark
           hasGridListToggle={false}
           exports
           exportHref="/accounting/disbursement/export"
+          xlsxData={useGlobalStore.getState().accounting_disbursements}
+          fileLabel="Accounting Disbursement"
           pageTitle="Disbursement"
           filterOptionsMenu={[
             ...(landlordOptions.length > 0
@@ -195,7 +207,8 @@ const Disbursement = () => {
                 title="You do not have any disbursements yet"
                 body={
                   <p>
-                    Create a new disbursement by clicking on the &rqous;+ new disbursement&rqous; button.
+                    Create a new disbursement by clicking on the &apos;+ new
+                    disbursement&apos; button.
                   </p>
                 }
               />

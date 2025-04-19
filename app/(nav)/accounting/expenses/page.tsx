@@ -45,10 +45,18 @@ import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import TableLoading from "@/components/Loader/TableLoading";
-import { ExpensesApiResponse, ExpenseStats, StaffListResponse, TransformedExpensesData } from "./types.";
+import {
+  ExpensesApiResponse,
+  ExpenseStats,
+  StaffListResponse,
+  TransformedExpensesData,
+} from "./types.";
+import { useGlobalStore } from "@/store/general-store";
+import ServerError from "@/components/Error/ServerError";
 
 const AccountingExpensesPage = () => {
   const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [pageData, setPageData] = useState<TransformedExpensesData>({
     expenses: [],
     stats: {
@@ -130,9 +138,16 @@ const AccountingExpensesPage = () => {
 
   useEffect(() => {
     if (data) {
-      setPageData(transformExpensesData(data));
+      const transformed = transformExpensesData(data);
+      const newExpense = transformed.expenses;
+      const currentExpenses = useGlobalStore.getState()?.accounting_expenses;
+      if (JSON.stringify(currentExpenses) !== JSON.stringify(newExpense)) {
+        setGlobalStore("accounting_expenses", newExpense);
+      }
+      setPageData({ ...transformed, expenses: newExpense });
+      // setPageData(transformExpensesData(data));
     }
-  }, [data]);
+  }, [data, setGlobalStore, setPageData]);
 
   const {
     data: propertyData,
@@ -140,14 +155,13 @@ const AccountingExpensesPage = () => {
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
-  const { 
+  const {
     data: staffsData,
     error: staffsError,
     loading: staffsLoading,
   } = useFetch<StaffListResponse>("/report/staffs");
-  
-  const staffOptions =
-    staffsData ? transformStaffs(staffsData) : [];
+
+  const staffOptions = staffsData ? transformStaffs(staffsData) : [];
 
   const propertyOptions =
     propertyData?.data.map((p) => ({
@@ -195,7 +209,9 @@ const AccountingExpensesPage = () => {
 
   const transformedTableData = expenses.map((item) => ({
     ...item,
-    amount: <p className="text-status-success-3">{item.amount}</p>,
+    amount: (
+      <p className="text-status-success-3 dark:text-white">{item.amount}</p>
+    ),
     payment: <p className="text-status-error-2">{item.payment}</p>,
     balance: item.balance ? item.balance : "--- ---",
   }));
@@ -203,8 +219,7 @@ const AccountingExpensesPage = () => {
   if (loading)
     return <CustomLoader layout="page" pageTitle="Expenses" view="table" />;
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <section className="space-y-8 mt-4">
@@ -212,7 +227,6 @@ const AccountingExpensesPage = () => {
         <div className="w-full flex items-center justify-between">
           <div className="font-medium text-2xl flex items-center space-x-1">
             <span className="text-2xl font-bold">Expenses</span>
-            <ExclamationMark />
           </div>
           <Button
             type="button"
@@ -228,7 +242,10 @@ const AccountingExpensesPage = () => {
             <FilterBar
               hasGridListToggle={false}
               exports
+              noExclamationMark
               exportHref="/accounting/expenses/export"
+              xlsxData={useGlobalStore.getState().accounting_expenses}
+              fileLabel="Accounting Expenses"
               customLeft={
                 <>
                   <div
@@ -278,12 +295,14 @@ const AccountingExpensesPage = () => {
               handleFilterApply={handleFilterApply}
               isDateTrue
               filterOptionsMenu={[
-                ...staffOptions.length > 0 ? [
-                  {
-                    label: "Account Officer",
-                    value: staffOptions,
-                  },
-                ] : [],
+                ...(staffOptions.length > 0
+                  ? [
+                      {
+                        label: "Account Officer",
+                        value: staffOptions,
+                      },
+                    ]
+                  : []),
                 ...(propertyOptions.length > 0
                   ? [
                       {
@@ -302,31 +321,37 @@ const AccountingExpensesPage = () => {
               title="Total Expenses"
               balance={Number(stats.total_amount)}
               variant="redOutgoing"
-              trendDirection="up"
-              trendColor="red"
+              trendDirection={
+                stats.percentage_change_amount < 0 ? "down" : "up"
+              }
+              trendColor={stats.percentage_change_amount < 0 ? "red" : "green"}
               percentage={stats.percentage_change_amount}
             />
             <AccountStatsCard
               title="Part Payment"
               balance={Number(stats.total_deduct)}
               variant="blueIncoming"
-              trendDirection="down"
-              trendColor="green"
+              trendDirection={
+                stats.percentage_change_deduct < 0 ? "down" : "up"
+              }
+              trendColor={stats.percentage_change_deduct < 0 ? "red" : "green"}
               percentage={stats.percentage_change_deduct}
             />
             <AccountStatsCard
               title="Balance"
               balance={Number(stats.total_balance)}
               variant="yellowCard"
-              trendDirection="down"
-              trendColor="green"
+              trendDirection={
+                stats.percentage_change_balance < 0 ? "down" : "up"
+              }
+              trendColor={stats.percentage_change_balance < 0 ? "red" : "green"}
               percentage={stats.percentage_change_balance}
             />
           </AutoResizingGrid>
         </div>
       </div>
-    {/* Table and Menu */}
-    {transformedTableData.length === 0 && !silentLoading ? (
+      {/* Table and Menu */}
+      {transformedTableData.length === 0 && !silentLoading ? (
         config.params.search || isFilterApplied() ? (
           <SearchError />
         ) : (
@@ -337,7 +362,8 @@ const AccountingExpensesPage = () => {
               title="You do not have any expenses yet!"
               body={
                 <p>
-                  Create an expense by clicking on the &rqous;Create New Expense&rqous; button.
+                  Create an expense by clicking on the &rqous;Create New
+                  Expense&rqous; button.
                 </p>
               }
             />
@@ -355,7 +381,8 @@ const AccountingExpensesPage = () => {
                 title="You do not have any expenses yet!"
                 body={
                   <p>
-                    Create an expense by clicking on the &rqous;Create New Expense&rqous; button.
+                    Create an expense by clicking on the &rqous;Create New
+                    Expense&rqous; button.
                   </p>
                 }
               />

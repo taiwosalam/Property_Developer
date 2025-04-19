@@ -19,14 +19,21 @@ import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { useGlobalStore } from "@/store/general-store";
+import ServerError from "@/components/Error/ServerError";
 
 const ExportInvoice = () => {
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
     null
   );
+  const [fullContent, setFullContent] = useState(false);
 
   const { data, error, loading, isNetworkError, silentLoading } =
     useFetch<InvoiceListResponse>("/invoice/list");
+
+  const filteredAccountingInvoices = useGlobalStore(
+    (s) => s.accounting_invoices
+  );
 
   useEffect(() => {
     if (data) {
@@ -39,7 +46,7 @@ const ExportInvoice = () => {
 
   if (loading)
     return <CustomLoader layout="page" view="table" pageTitle="Invoices" />;
-  if (error) return <div>Error loading invoice data.</div>;
+  if (error) return <ServerError error={error} />;
   if (!invoiceData) return <div>No invoice data available.</div>;
   if (isNetworkError) return <NetworkError />;
 
@@ -60,7 +67,7 @@ const ExportInvoice = () => {
         <BackButton as="p">Back</BackButton>
         <div ref={printRef}>
           <ExportPageHeader />
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
+          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex mt-4">
             <KeyValueList
               data={{}}
               chunkSize={1}
@@ -103,8 +110,10 @@ const ExportInvoice = () => {
               />
             </AutoResizingGrid>
             <CustomTable
+              className={`${fullContent && "max-h-none"}`}
               fields={invoiceExportTableFields}
-              data={transformedInvoiceTableData}
+              // data={transformedInvoiceTableData}
+              data={filteredAccountingInvoices || []}
               tableHeadStyle={{ height: "76px" }}
               tableHeadCellSx={{ fontSize: "1rem" }}
               tableBodyCellSx={{
@@ -117,7 +126,7 @@ const ExportInvoice = () => {
           </div>
         </div>
       </div>
-      <ExportPageFooter printRef={printRef} />
+      <ExportPageFooter printRef={printRef} setFullContent={setFullContent} />
     </div>
   );
 };
