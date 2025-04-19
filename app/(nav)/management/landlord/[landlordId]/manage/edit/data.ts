@@ -111,7 +111,8 @@ export const deleteLandlord = async (id: string) => {
     await api.delete(`landlord/${id}`);
     return true;
   } catch (error) {
-    handleAxiosError(error, "Failed to delete landlord");
+    toast.error("Failed to delete landlord");
+    // handleAxiosError("Failed to delete landlord");
     return false;
   }
 };

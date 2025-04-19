@@ -260,7 +260,7 @@ const PropertyRequest = () => {
           <section>
             <EmptyList
               buttonText="+ Create New Property Request"
-              buttonLink="/management/agent-community/my-properties-request/create"
+              buttonLink="/management/agent-request/my-properties-request/create"
               title="The property request files are empty"
               body={
                 <p>
