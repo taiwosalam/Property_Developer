@@ -18,7 +18,7 @@ import CompanyAddress from "@/components/Setup/company-address";
 import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { transformFormData, createCompany } from "./data";
+import { transformFormData, createCompany, updateCompany } from "./data";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
@@ -32,12 +32,14 @@ import {
   transformProfileApiResponse,
 } from "@/app/(nav)/settings/company/data";
 import useFetch from "@/hooks/useFetch";
+import { toast } from "sonner";
 
 const Setup = () => {
   const router = useRouter();
   const [companyName, setCompanyName] = useState("");
   const searchParams = useSearchParams();
   const idParam = searchParams.get("id");
+  const isEditMode = searchParams.get("edit") !== null;
   const company_id = idParam ? Number(idParam) : null;
 
   const { role, setRole } = useRole();
@@ -75,8 +77,22 @@ const Setup = () => {
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);
     const data = transformFormData(formData);
-    // console.log("payload", data)
-    const status = await createCompany(data);
+
+    // Create a new payload object to avoid mutating the original data
+    const payload = {
+      ...data,
+      ...(isEditMode ? { _method: "PATCH" } : {}),
+    };
+    if (isEditMode && !company_id) {
+      return toast.warning("Company Id is missing")
+    }
+    const action = isEditMode
+      ? updateCompany(company_id!, payload)
+      : createCompany(payload);
+
+    console.log("payload", payload);
+    // const status = await createCompany(payload);
+    const status = await action;
     if (status) {
       await setRole("director");
       await setAuthState("role", "director");

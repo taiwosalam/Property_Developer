@@ -273,7 +273,7 @@ const RecordPage = () => {
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
                     {full_name}
                   </p>
-                  <BadgeIcon color="blue" />
+                  {/* <BadgeIcon color="blue" /> */}
                 </div>
                 <p
                   className={`${secondaryFont.className} text-sm dark:text-darkText-2 font-normal`}
