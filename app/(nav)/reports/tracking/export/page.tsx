@@ -19,6 +19,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { useGlobalStore } from "@/store/general-store";
 
 dayjs.extend(advancedFormat);
 
@@ -26,6 +27,9 @@ const ExportTracking = () => {
   const exportRef = useRef<HTMLDivElement>(null);
   const [activity, setActivity] = useState<ActivityTable[]>([]);
   const [fullContent, setFullContent] = useState(false);
+  
+
+  const filteredActivities = useGlobalStore((s) => s.activities);
 
   const {
     data: activityData,
@@ -64,7 +68,7 @@ const ExportTracking = () => {
         <CustomTable
           className={`${fullContent && "max-h-none"}`}
           fields={trackingTableFields}
-          data={activity}
+          data={filteredActivities || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />

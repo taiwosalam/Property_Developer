@@ -9,7 +9,7 @@ import {
   PropertyApiResponse,
   transformPropertyData,
 } from "./data";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -21,13 +21,19 @@ import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../data/utils";
 import EmptyList from "@/components/EmptyList/Empty-List";
+import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+import { useRouter } from "next/navigation";
+import { debounce } from "lodash"
 
 const PropertiesReport = () => {
+  const router = useRouter();
   const [pageData, setPageData] = useState<TransformedPropertyData>({
     total_properties: 0,
     monthly_properties: 0,
     properties: [],
   });
+  const setPropertiesStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -36,27 +42,22 @@ const PropertiesReport = () => {
     endDate: null,
   });
   const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
-    BranchStaff[]
-  >([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
+
   useEffect(() => {
-    if (apiData) {
-      setBranches(apiData.data);
-    }
+    if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
       );
       setBranchAccountOfficers(filterStaff);
     }
-    if (property) {
-      setPropertyList(property.data);
-    }
+    if (property) setPropertyList(property.data);
   }, [apiData, staff, property]);
 
   const reportTenantFilterOption = [
@@ -74,7 +75,6 @@ const PropertiesReport = () => {
         value: branch?.id.toString(),
       })),
     },
-
     {
       label: "Property",
       value: propertyList.map((property: any) => ({
@@ -85,75 +85,69 @@ const PropertiesReport = () => {
   ];
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as ReportsRequestParams,
+    params: { page: 1, search: "" } as ReportsRequestParams,
   });
 
-  const handleSearch = async (query: string) => {
-    setConfig({
-      params: { ...config.params, search: query },
-    });
+  const handleSearch = (query: string) => {
+    setConfig({ params: { ...config.params, search: query } });
   };
 
   const handleSort = (order: "asc" | "desc") => {
-    setConfig({
-      params: { ...config.params, sort_order: order },
-    });
+    setConfig({ params: { ...config.params, sort_order: order } });
   };
 
-  const handleAppliedFilter = (filters: FilterResult) => {
-    setAppliedFilters(filters);
-    const { menuOptions, startDate, endDate } = filters;
-    const accountOfficer = menuOptions["Account Officer"] || [];
-    const branch = menuOptions["Branch"] || [];
-    const property = menuOptions["Property"] || [];
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const branch = menuOptions["Branch"] || [];
+      const property = menuOptions["Property"] || [];
 
-    const queryParams: ReportsRequestParams = {
-      page: 1,
-      search: "",
-    };
+      const queryParams: ReportsRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
+      if (branch.length > 0) queryParams.branch_id = branch.join(",");
+      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
+  );
 
-    if (accountOfficer.length > 0) {
-      queryParams.account_officer_id = accountOfficer.join(",");
-    }
-    if (branch.length > 0) {
-      queryParams.branch_id = branch.join(",");
-    }
-    if (property.length > 0) {
-      queryParams.property_id = property.join(",");
-    }
-    if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-    }
-    if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-    }
-    setConfig({
-      params: queryParams,
-    });
-  };
+  const { data, loading, error, isNetworkError } = useFetch<PropertyApiResponse>(
+    "/report/properties",
+    config
+  );
 
-  const { data, loading, error, isNetworkError } =
-    useFetch<PropertyApiResponse>("/report/properties", config);
 
   useEffect(() => {
-    if (data) {
+    if (!loading && data) {
       const transformedData = transformPropertyData(data);
-      setPageData(transformedData);
+      console.log("API data:", data);
+      console.log("Transformed data:", transformedData);
+      const newProperties = transformedData.properties;
+      const currentProperties = useGlobalStore.getState().properties;
+      if (JSON.stringify(currentProperties) !== JSON.stringify(newProperties)) {
+        setPageData(transformedData);
+        setPropertiesStore("properties", newProperties);
+        console.log("Store after update:", useGlobalStore.getState().properties);
+      }
     }
-  }, [data]);
+    
+  }, [data, loading, setPropertiesStore]);
 
-  const { total_properties, monthly_properties, properties } = pageData;
+  const { properties, monthly_properties, total_properties } = pageData
 
-  if (loading)
-    return (
-      <CustomLoader layout="page" pageTitle="Properties Report" view="table" />
-    );
+  const handleExport = () => {
+    if (!data || loading) return;
+    setPropertiesStore("properties", properties);
+    router.push("/reports/properties/export");
+  };
+
+  if (loading) return <CustomLoader layout="page" pageTitle="Properties Report" view="table" />;
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
@@ -172,8 +166,7 @@ const PropertiesReport = () => {
         pageTitle="Properties Report"
         aboutPageModalData={{
           title: "Properties Report",
-          description:
-            "This page contains a list of Properties Report on the platform.",
+          description: "This page contains a list of Properties Report on the platform.",
         }}
         searchInputPlaceholder="Search for Properties Report"
         handleFilterApply={handleAppliedFilter}
@@ -183,37 +176,33 @@ const PropertiesReport = () => {
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/properties/export"
-        xlsxData={properties}
+        xlsxData={useGlobalStore.getState().properties}
         fileLabel={"Properties Reports"}
       />
       <section>
-        {properties.length === 0 && !loading ? (
+        {pageData.properties.length === 0 && !loading ? (
           !!config.params.search || hasActiveFilters(appliedFilters) ? (
             <SearchError />
           ) : (
-            <div className="col-span-full text-left py-8 text-gray-500">
-              <EmptyList
-                noButton
-                title="No Property Data Available Yet"
-                body={
-                  <p className="">
-                    Currently, there is no property data available for export.
-                    Once data is added to the system, they will be displayed
-                    here and ready for download or export. <br /> <br />
-                    <p>
-                      This section will automatically update to show all
-                      available property records as they are created or imported
-                      into the platform.
-                    </p>
+            <EmptyList
+              noButton
+              title="No Property Data Available Yet"
+              body={
+                <p>
+                  Currently, there is no property data available for export.
+                  Once data is added to the system, they will be displayed here and ready for download or export.
+                  <br /><br />
+                  <p>
+                    This section will automatically update to show all available property records as they are created or imported into the platform.
                   </p>
-                }
-              />
-            </div>
+                </p>
+              }
+            />
           )
         ) : (
           <CustomTable
             fields={propertiesReportTablefields}
-            data={properties}
+            data={pageData.properties || []}
             tableHeadClassName="h-[45px]"
           />
         )}

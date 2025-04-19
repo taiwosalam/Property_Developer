@@ -19,6 +19,7 @@ import NetworkError from "@/components/Error/NetworkError";
 
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { useGlobalStore } from "@/store/general-store";
 
 dayjs.extend(advancedFormat);
 
@@ -31,6 +32,9 @@ const ExportProperties = () => {
     properties: [],
   });
 
+  const filteredProperties = useGlobalStore((s) => s.properties);
+
+
   const { data, loading, error, isNetworkError } =
     useFetch<PropertyApiResponse>("/report/properties");
 
@@ -40,6 +44,8 @@ const ExportProperties = () => {
       setPageData(transformedData);
     }
   }, [data]);
+
+ 
 
   const { total_properties, monthly_properties, properties } = pageData;
 
@@ -67,7 +73,7 @@ const ExportProperties = () => {
         <CustomTable
           className={`${fullContent && "max-h-none"}`}
           fields={propertiesReportTablefields}
-          data={properties}
+          data={filteredProperties || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />

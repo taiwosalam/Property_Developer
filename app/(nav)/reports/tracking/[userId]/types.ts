@@ -4,7 +4,7 @@ export type ActivityApiResponse = {
   data: {
     activities: [
       {
-        action: string;
+        description: string;
         user_id: number;
         date: string;
         ip_address: string;
@@ -24,6 +24,16 @@ export type ActivityApiResponse = {
   status: string;
 };
 
+export type ActivityDataReport = {
+  id: number;
+  username: string;
+  page_visited: string;
+  action_taken: string;
+  ip_address: string;
+  location: string;
+  date: string;
+  time: string;
+}
 export type ActivityTable = {
   id: number;
   username: string;
@@ -44,7 +54,7 @@ interface Location {
   longitude: number;
 }
 
-interface Activity {
+export interface UserActivity {
   user_id: number;
   user_name: string;
   page_visited: string;
@@ -55,11 +65,11 @@ interface Activity {
 }
 
 interface ActivitiesData {
-  activities: Activity[];
+  activities: UserActivity[];
 }
 
 export interface UserActivityResponse {
-  status: string;
+  status: string; 
   message: string;
   data: ActivitiesData;
 }
@@ -85,6 +95,9 @@ export interface UserActivityTable {
     ip_address: string;
     username: string;
     date: string;
+    longitude: number;
+    latitude: number;
+    action_taken: string;
   }[];
 }
 export const transformUserActivityData = (
@@ -103,6 +116,11 @@ export const transformUserActivityData = (
         ip_address: activity?.ip_address ?? "____ ____",
         username: activity?.user_name ?? "____ ____",
         date: activity?.date ?? "____ ____",
+        longitude: activity?.location?.longitude,
+        latitude: activity?.location?.latitude,
+        action_taken: "___ ___"
+
+
       };
     }),
   };
@@ -117,7 +135,7 @@ export const transformActivityAData = (
       id: activity?.user_id,
       username: activity.user_name,
       page_visited: getLastSegment(activity.page_visited) || "",
-      action_taken: activity.action,
+      action_taken: activity.description,
       ip_address: activity.ip_address,
       location:  activity.location.city,
       date: activity.date,

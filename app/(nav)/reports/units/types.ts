@@ -27,17 +27,19 @@ export type Units = {
   is_active: string;
 };
 
+export type UnitListRequest = {
+  unit_id: number | string;
+  unit_name: string;
+  status: string;
+  period: string;
+  total_package: string;
+  annual_rent: string;
+};
+
 export type UnitsReportType = {
   total_unit: number;
   monthly_unit: number;
-  units: {
-    unit_id: number | string;
-    unit_name: string;
-    status: string;
-    period: string;
-    total_package: string;
-    annual_rent: string;
-  }[];
+  units: UnitListRequest[];
 };
 
 const formatPropertyName = (propertyName?: string | null): string => {

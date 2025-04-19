@@ -22,6 +22,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import { CompanySignaturesResponse } from "@/components/Signature/signature";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
 
 dayjs.extend(advancedFormat);
 
@@ -35,6 +36,8 @@ const ExportUnits = () => {
   });
   const { data, loading, error, isNetworkError } =
     useFetch<UnitListResponse>("/report/units");
+
+    const filteredUnits = useGlobalStore((s) => s.units);
 
   const {
     data: signatureData,
@@ -73,7 +76,7 @@ const ExportUnits = () => {
         <CustomTable
           className={`${fullContent && "max-h-none"}`}
           fields={unitsReportTableFields}
-          data={units}
+          data={filteredUnits || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />

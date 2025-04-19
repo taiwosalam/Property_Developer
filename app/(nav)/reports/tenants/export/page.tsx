@@ -19,6 +19,7 @@ import NetworkError from "@/components/Error/NetworkError";
 
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { useGlobalStore } from "@/store/general-store";
 
 dayjs.extend(advancedFormat);
 
@@ -30,6 +31,8 @@ const ExportTenants = () => {
     monthly_tenants: 0,
     tenants: [],
   });
+
+   const filteredTenants = useGlobalStore((s) => s.tenants);
 
   const { data, loading, error, isNetworkError } =
     useFetch<TenantListResponse>("/report/tenants");
@@ -65,7 +68,7 @@ const ExportTenants = () => {
         <CustomTable
           className={`${fullContent && "max-h-none"}`}
           fields={tenantsReportTableFields}
-          data={tenants}
+          data={filteredTenants || []}
           tableHeadClassName="h-[45px]"
           tableBodyCellSx={{ color: "#3F4247" }}
         />

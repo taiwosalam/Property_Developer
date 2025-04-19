@@ -7,85 +7,56 @@ import {
   rentReportTableFields,
   transformRentData,
 } from "./data";
-import useFetch from "@/hooks/useFetch";
-import { AxiosRequestConfig } from "axios";
-import { useState, useEffect } from "react";
-import { ReportsRequestParams } from "../tenants/data";
 import { RentListResponse, RentReportData } from "./types";
-import NetworkError from "@/components/Error/NetworkError";
+import { useCallback, useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
 import { BranchFilter, FilterResult, PropertyFilter } from "../tenants/types";
 import { BranchStaff } from "../../(messages-reviews)/messages/types";
 import dayjs from "dayjs";
-import { hasActiveFilters } from "../data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { hasActiveFilters } from "../data/utils";
 import EmptyList from "@/components/EmptyList/Empty-List";
-
-export interface RentRequestParams {
-  page?: number;
-  search?: string;
-  sort_order?: "asc" | "desc";
-  account_officer_id?: string;
-  start_date?: string;
-  end_date?: string;
-  property_id?: string;
-  branch_id?: string;
-}
+import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+import { useRouter } from "next/navigation";
+import { debounce } from "lodash";
+import { AxiosRequestConfig } from "axios";
+import { ReportsRequestParams } from "../tenants/data";
 
 const RentReport = () => {
-  const [rentPageData, setRentPageData] = useState<RentReportData>({
+  const router = useRouter();
+  const [pageData, setPageData] = useState<RentReportData>({
     total_rents: 0,
     current_month_rents: 0,
     rents: [],
   });
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as RentRequestParams,
-  });
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const filteredRents = useGlobalStore((s) => s.rents);
+
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
     startDate: null,
     endDate: null,
   });
-
   const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
-    BranchStaff[]
-  >([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
-  const { data, loading, error, isNetworkError } = useFetch<RentListResponse>(
-    "report/rents",
-    config
-  );
-
   useEffect(() => {
-    if (data) {
-      setRentPageData(transformRentData(data));
-    }
-  }, [data]);
-
-  const { rents, total_rents, current_month_rents } = rentPageData;
-
-  useEffect(() => {
-    if (apiData) {
-      setBranches(apiData.data);
-    }
+    if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
       );
       setBranchAccountOfficers(filterStaff);
     }
-    if (property) {
-      setPropertyList(property.data);
-    }
+    if (property) setPropertyList(property.data);
   }, [apiData, staff, property]);
 
   const filterStatus = ["expired", "active", "relocate", "vacant"];
@@ -104,7 +75,6 @@ const RentReport = () => {
         value: branch?.id.toString(),
       })),
     },
-
     {
       label: "Property",
       value: propertyList.map((property: any) => ({
@@ -117,71 +87,75 @@ const RentReport = () => {
       value: filterStatus.map((status) => ({
         label: status,
         value: status,
-      }))
-    }
+      })),
+    },
   ];
 
-  const handleSearch = async (query: string) => {
-    setConfig({
-      params: { ...config.params, search: query },
-    });
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: { page: 1, search: "" } as ReportsRequestParams,
+  });
+
+  const handleSearch = (query: string) => {
+    setConfig({ params: { ...config.params, search: query } });
   };
 
   const handleSort = (order: "asc" | "desc") => {
-    setConfig({
-      params: { ...config.params, sort_order: order },
-    });
+    setConfig({ params: { ...config.params, sort_order: order } });
   };
 
-  const handleAppliedFilter = (filters: FilterResult) => {
-    setAppliedFilters(filters);
-    const { menuOptions, startDate, endDate } = filters;
-    const accountOfficer = menuOptions["Account Officer"] || [];
-    const branch = menuOptions["Branch"] || [];
-    const property = menuOptions["Property"] || [];
-    const status = menuOptions["Status"] || [];
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const branch = menuOptions["Branch"] || [];
+      const property = menuOptions["Property"] || [];
+      const status = menuOptions["Status"] || [];
 
-    const queryParams: ReportsRequestParams = {
-      page: 1,
-      search: "",
-    };
+      const queryParams: ReportsRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
+      if (branch.length > 0) queryParams.branch_id = branch.join(",");
+      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (status.length > 0) queryParams.status = status.join(",");
+      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
+  );
 
-    if (accountOfficer.length > 0) {
-      queryParams.account_officer_id = accountOfficer.join(",");
-    }
-    if (branch.length > 0) {
-      queryParams.branch_id = branch.join(",");
-    }
-    if (property.length > 0) {
-      queryParams.property_id = property.join(",");
-    }
-    if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-    }
-    if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-    }
-    if(status){
-      queryParams.status = status.join(",");
-    }
-    setConfig({
-      params: queryParams,
-    });
-  };
+  const { data, loading, error, isNetworkError } = useFetch<RentListResponse>(
+    "report/rents",
+    config
+  );
 
-  if (loading)
-    return <CustomLoader layout="page" pageTitle="Rent Report" view="table" />;
+  useEffect(() => {
+    if (!loading && data) {
+      const transformedData = transformRentData(data);
+      console.log("API data:", data);
+      console.log("Transformed data:", transformedData);
+      const newRents = transformedData.rents;
+      const currentRents = useGlobalStore.getState().rents;
+      if (JSON.stringify(currentRents) !== JSON.stringify(newRents)) {
+        setPageData(transformedData);
+        setGlobalStore("rents", newRents);
+      }
+    }
+    if (error) console.error("Fetch error:", error);
+    if (isNetworkError) console.error("Network error");
+  }, [data, loading, setGlobalStore]);
+
+  if (loading) return <CustomLoader layout="page" pageTitle="Rent Report" view="table" />;
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Rent / Due"
-          newData={rentPageData.current_month_rents}
-          total={rentPageData.total_rents}
+          newData={pageData.current_month_rents}
+          total={pageData.total_rents}
           colorScheme={1}
         />
       </div>
@@ -192,51 +166,43 @@ const RentReport = () => {
         pageTitle="Rent / Due Roll"
         aboutPageModalData={{
           title: "Rent / Due Roll",
-          description:
-            "This page contains a list of Rent / Due Roll on the platform.",
+          description: "This page contains a list of Rent / Due Roll on the platform.",
         }}
-        handleSearch={handleSearch}
-        onSort={handleSort}
+        searchInputPlaceholder="Search for Rent Roll"
         handleFilterApply={handleAppliedFilter}
         appliedFilters={appliedFilters}
+        onSort={handleSort}
+        handleSearch={handleSearch}
         filterOptionsMenu={reportTenantFilterOption}
-        searchInputPlaceholder="Search for Rent Roll"
         hasGridListToggle={false}
         exportHref="/reports/rent/export"
-        xlsxData={rents}
-        fileLabel={`Rent Reports`}
+        xlsxData={useGlobalStore.getState().rents}
+        fileLabel={"Rent Reports"}
       />
-
       <section>
-        {rents.length === 0 && !loading ? (
-          config.params.search || hasActiveFilters(appliedFilters) ? (
+        {pageData.rents.length === 0 && !loading ? (
+          !!config.params.search.trim() || hasActiveFilters(appliedFilters) ? (
             <SearchError />
           ) : (
-            <div className="col-span-full text-left py-8 text-gray-500">
-              <EmptyList
-                noButton
-                title="No Rent Report Data Available Yet
-"
-                body={
-                  <p className="">
-                    Currently, there are no rent report records available for
-                    export. Once rent report data is added to the system, it
-                    will appear here and be available for download or export.{" "}
-                    <br /> <br />
-                    <p>
-                      This section will automatically update to display all
-                      available rent reports as soon as they are generated or
-                      imported into the platform.
-                    </p>
+            <EmptyList
+              noButton
+              title="No Rent Report Data Available Yet"
+              body={
+                <p>
+                  Currently, there are no rent report records available for export.
+                  Once rent report data is added to the system, it will appear here and be available for download or export.
+                  <br /><br />
+                  <p>
+                    This section will automatically update to display all available rent reports as soon as they are generated or imported into the platform.
                   </p>
-                }
-              />
-            </div>
+                </p>
+              }
+            />
           )
         ) : (
           <CustomTable
             fields={rentReportTableFields}
-            data={rents}
+            data={pageData.rents}
             tableHeadClassName="h-[45px]"
           />
         )}
