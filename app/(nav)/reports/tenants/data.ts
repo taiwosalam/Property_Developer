@@ -42,9 +42,6 @@ export const tenantsReportTableFields: Field[] = [
   { id: "6", label: "Status", accessor: "status" },
 ];
 
-
-
-
 interface Tenant {
   tenant_id: number;
   name: string;
@@ -69,7 +66,6 @@ export interface TenantListResponse {
   data: Data;
 }
 
-
 export interface ITenantListReport {
   id: number | string;
   name: string;
@@ -84,15 +80,19 @@ export interface TenantReport {
   tenants: ITenantListReport[];
 }
 
-
-export const transformTenantData = (data: TenantListResponse): TenantReport => ({
+export const transformTenantData = (
+  data: TenantListResponse
+): TenantReport => ({
   total_tenants: data.data.total_tenants,
   monthly_tenants: data.data.monthly_tenants,
-  tenants: data.data.tenants.map(tenant => ({
+  tenants: data.data.tenants.map((tenant) => ({
     id: tenant.tenant_id || "__ __",
     name: tenant.name || "__ __",
     gender: tenant.gender || "__ __",
-    address: tenant.address || "__ __",
+    address:
+      [tenant.address, tenant.lga, tenant.city, tenant.state]
+        .filter(Boolean)
+        .join(", ") || "__ __",
     telephone: tenant.telephone || "__ __",
     status: tenant.status || "__ __",
   })),

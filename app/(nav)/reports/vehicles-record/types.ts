@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 
 export interface VehicleRecordsResponse {
   status: string;
@@ -41,8 +42,12 @@ export const transformVehicleRecordsData = (
       full_name: vehicle.name,
       plate_number: vehicle.plate_number,
       record_type: vehicle.type,
-      check_in: vehicle.checkin,
-      check_out: vehicle.checkout,
+      check_in: vehicle.checkin
+        ? dayjs(vehicle.checkin).format("MMM DD, YYYY hh:mm:ss A")
+        : "___ ___",
+      check_out: vehicle.checkout
+        ? dayjs(vehicle.checkout).format("MMM DD, YYYY hh:mm:ss A")
+        : "___ ___",
       passenger_in: vehicle.passengers_in,
       passenger_out: vehicle.passengers_out,
       status: vehicle.status,
