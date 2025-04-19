@@ -170,9 +170,12 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
       </div>
       <div className="flex justify-between items-end flex-wrap gap-4 md:gap-5">
         <div className="custom-flex-col gap-3">
-          <p className="text-black dark:text-darkText-1 text-base font-medium">
-            Upload picture or select an avatar.
-          </p>
+          <div className="flex gap-1">
+            <span className="text-red-600">*</span>
+            <p className="text-black dark:text-darkText-1 text-base font-medium">
+              Upload picture or select an avatar.
+            </p>
+          </div>
           <div className="flex items-end gap-3">
             <button
               type="button"

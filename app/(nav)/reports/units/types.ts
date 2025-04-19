@@ -56,7 +56,7 @@ export const transformUnitListData = (
       unit_id: unit.unit_id || "__ __",
       unit_name: unit.unit_name || "__ __",
       status: unit.is_active || "__ __",
-      annual_rent: unit.annual_rent || "__ __",
+      annual_rent: `₦${unit.annual_rent}` || "__ __",
       total_package: `₦${unit.total_package}` || "__ __",
       period: unit.period || "__ __",
     })),

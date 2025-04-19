@@ -85,20 +85,20 @@ export const staffConfigurations = [
         ],
       ],
     },
-    // {
-    //   title: "Users Configuration (Landlord, Occupant & Tenants)",
-    //   subTitle: "Can be accessed through mobile app or web cross-platform.",
-    //   permissions: [
-    //     [
-    //       "Create Profile Account For Tenants/Occupant",
-    //       "Create Profile Account For Landlord/Landlady",
-    //     ],
-    //     [
-    //       "Create Profile Account For Service Provider",
-    //       "Create Profile Account When You Sent Invite",
-    //     ],
-    //   ],
-    // },
+    {
+      title: "Users Configuration (Landlord, Occupant & Tenants)",
+      subTitle: "Can be accessed through mobile app or web cross-platform.",
+      permissions: [
+        [
+          "Create Profile Account For Tenants/Occupant",
+          "Create Profile Account For Landlord/Landlady",
+        ],
+        [
+          "Create Profile Account For Service Provider",
+          "Create Profile Account When You Sent Invite",
+        ],
+      ],
+    },
 ];
 
 // /company/permissions
@@ -106,10 +106,12 @@ export const updateSettingsManagement = async(data: FormData)=> {
     try{
         data.append("_method", "PATCH")
         const res = await api.post('/company/permissions', data)
-        if (res.status === 200) {
+        if (res.status === 200 || res.status === 201) {
+          window.dispatchEvent(new Event("refetchManagementSettings"));
           return true
         }
     }catch(err){
-        handleAxiosError(err)
+        handleAxiosError(err);
+        return false;
     }
 }
