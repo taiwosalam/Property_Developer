@@ -13,4 +13,5 @@ export interface TextAreaProps {
   requiredNoStar?: boolean;
   minChar?: number;
   ai?: boolean;
+  restrictedWords?: string[];
 }

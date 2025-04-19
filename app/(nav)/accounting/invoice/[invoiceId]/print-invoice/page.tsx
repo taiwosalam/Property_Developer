@@ -44,12 +44,12 @@ console.log("bank ", companyBankDetails)
         <BackButton as="p">Back</BackButton>
         <ExportPageHeader />
         <h1 className="text-center my-7 font-medium text-2xl">Invoice</h1>
-        <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{
               "invoice id": pageData.invoice_id,
               "property name": pageData.property_name,
-              "Customer name": pageData.client_name,
+              "Client name": pageData.client_name,
               date: pageData.invoice_date,
               "account officer": pageData.account_officer,
               "unit id": pageData.unit_id,
@@ -58,7 +58,7 @@ console.log("bank ", companyBankDetails)
             direction="column"
             referenceObject={{
               "invoice id": "",
-              "Customer name": "",
+              "Client name": "",
               "property name": "",
               date: "",
               "account officer": "",
@@ -67,11 +67,10 @@ console.log("bank ", companyBankDetails)
           />
         </div>
         <AccountingTitleSection title="Details">
-          <p className="font-normal text-[14px] text-[#6C6D6D]">
-            New rent payment for 3 bedroom bungalow at Ajibade road 2, Lekki
-            Lagos
+          <p className="font-normal text-[14px] text-[#6C6D6D] capitalize">
+            { pageData.details } Payment for { pageData.unit_name }
           </p>
-          <div className="p-6 rounded-lg space-y-5 bg-white">
+          <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
             <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
               <KeyValueList
                 data={{
@@ -109,7 +108,7 @@ console.log("bank ", companyBankDetails)
           </div>
         </AccountingTitleSection>
         <AccountingTitleSection title="Account Details">
-          <div className="p-6 rounded-lg bg-white">
+          <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
             <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
               <KeyValueList
                 data={{

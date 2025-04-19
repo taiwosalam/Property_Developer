@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { DeleteIconX } from "@/public/icons/icons";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import { SinglePropertyResponse, transformSinglePropertyData } from "@/app/(nav)/management/properties/[id]/data";
 import { transformUnitOptions, UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
@@ -29,6 +29,7 @@ import { createExpense } from "../data";
 
 
 const CreateExpensePage = () => {
+  const router = useRouter();
   const companyId = usePersonalInfoStore((state) => state.company_id) || '';
   const [payments, setPayments] = useState<{ payment_title: string; amount: number }[]>(
     []
@@ -113,6 +114,7 @@ const CreateExpensePage = () => {
       const res = await createExpense(objectToFormData(payload))
       if (res){
         toast.success("Expense created Successfully.")
+        router.back();
       }
     } catch (error) {
       toast.error("Failed to create expenses, please try again!");
@@ -126,7 +128,7 @@ const CreateExpensePage = () => {
       <AuthForm onFormSubmit={handleCreateExpense}>
         <BackButton>Create New Expense</BackButton>
         <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
+          <div className="grid grid-cols-1 mt-4 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
             <Select
               id="property"
               label={`Choose Property`}

@@ -16,8 +16,11 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { DeleteIconX } from "@/public/icons/icons";
+import { useSearchParams } from "next/navigation";
 
 const CreateInvoicePage = () => {
+  const searchParams = useSearchParams();
+  const propertyId = searchParams.get("p");
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false);
   const handleGenerateInvoiceCheckboxChange = (checked: boolean) => {

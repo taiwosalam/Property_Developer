@@ -22,8 +22,10 @@ import { useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { variants } from "@/utils/slider";
 import NetworkError from "@/components/Error/NetworkError";
+import { useGlobalStore } from "@/store/general-store";
 
 const ExportVat = () => {
+  const [fullContent, setFullContent] = useState(false);
   const [pageData, setPageData] = useState<VATPageState>(initialVATPageState);
   const {
     total_paid_vat,
@@ -42,6 +44,7 @@ const ExportVat = () => {
     isNetworkError,
     error,
   } = useFetch<VATAPIResponse>("/vat/list");
+  const filteredAccountingVat = useGlobalStore((s) => s.accounting_vat);
 
   useEffect(() => {
     if (apiData) {
@@ -73,12 +76,12 @@ const ExportVat = () => {
         <BackButton as="p">Back</BackButton>
         <div ref={printRef}>
           <ExportPageHeader />
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
+          <div className="rounded-lg my-4 bg-white dark:bg-darkText-primary p-8 flex">
             <KeyValueList
               data={{
-                "summary id": "123456",
-                "start date": "02/03/2024",
-                "end date": "02/03/2024",
+                "summary id": "-- --",
+                "start date": "--- ---",
+                "end date": "--- ---",
               }}
               chunkSize={1}
               direction="column"
@@ -99,29 +102,31 @@ const ExportVat = () => {
                 balance={total_vat_created}
                 percentage={percentage_change_total}
                 variant="blueIncoming"
-                trendDirection="up"
-                trendColor="green"
+                trendDirection={percentage_change_total < 0 ? "down" : "up"}
+                trendColor={percentage_change_total < 0 ? "red" : "green"}
               />
               <AccountStatsCard
                 title="Total Paid Vat"
                 balance={total_paid_vat}
                 variant="greenIncoming"
-                trendDirection="down"
-                trendColor="red"
+                trendDirection={percentage_change_paid < 0 ? "down" : "up"}
+                trendColor={percentage_change_paid < 0 ? "red" : "green"}
                 percentage={percentage_change_paid}
               />
               <AccountStatsCard
                 title="Total Pending Vat"
                 balance={total_pending_vat}
                 variant="yellowCard"
-                trendDirection="down"
-                trendColor="red"
+                trendDirection={percentage_change_pending < 0 ? "down" : "up"}
+                trendColor={percentage_change_pending < 0 ? "red" : "green"}
                 percentage={percentage_change_pending}
               />
             </AutoResizingGrid>
             <CustomTable
+              className={`${fullContent && "max-h-none"}`}
               fields={vatTableFields}
-              data={transformedTableData}
+              // data={transformedTableData}
+              data={filteredAccountingVat || []}
               tableHeadStyle={{ height: "76px" }}
               tableHeadCellSx={{ fontSize: "1rem" }}
               tableBodyCellSx={{
@@ -134,7 +139,7 @@ const ExportVat = () => {
           </div>
         </div>
       </div>
-      <ExportPageFooter printRef={printRef} />
+      <ExportPageFooter printRef={printRef} setFullContent={setFullContent} />
     </div>
   );
 };
