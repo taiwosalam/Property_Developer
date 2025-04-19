@@ -69,13 +69,7 @@ export const transformRentData = (data: RentListResponse): RentReportData => {
       rent_start_date: formatDate(rent.rent_start_date),
       rent_end_date: formatDate(rent.rent_start_date),
       status: rent.status || "__ __",
-      total_fee: rent.total_fee
-        ? `₦${Number(rent.total_fee).toLocaleString("en-NG", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`
-        : "___ ___",
-      //caution_deposit: rent.caution_deposit || 0,
+      total_fee: `₦${rent.total_fee}` || "___ ___",
     })),
   };
 };

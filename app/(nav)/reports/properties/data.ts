@@ -75,7 +75,7 @@ export interface PropertyApiResponse {
 }
 
 // Interface representing the transformed property data
-interface TransformedProperty {
+export interface TransformedProperty {
   id: number;
   property: string;
   landlord: string;

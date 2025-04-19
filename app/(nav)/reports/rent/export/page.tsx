@@ -13,7 +13,8 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 
 import dayjs from "dayjs";
-import advancedFormat from 'dayjs/plugin/advancedFormat';
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import { useGlobalStore } from "@/store/general-store";
 
 dayjs.extend(advancedFormat);
 
@@ -27,6 +28,8 @@ const ExportRent = () => {
   });
   const { data, loading, error, isNetworkError } =
     useFetch<RentListResponse>("report/rents");
+
+  const filteredRents = useGlobalStore((s) => s.rents);
 
   useEffect(() => {
     if (data) {
@@ -60,7 +63,7 @@ const ExportRent = () => {
         <CustomTable
           className={`${fullContent && "max-h-none"}`}
           fields={rentReportTableFields}
-          data={tableData}
+          data={filteredRents || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />

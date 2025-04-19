@@ -83,7 +83,7 @@ export const nav_items: NavItemsProps = [
       { label: "tracking", href: "/tracking" },
       { label: "call request", href: "/call" },
       { label: "visitors request", href: "/visitors" },
-      { label: "undo", href: "/undo" },
+      { label: "undo / trash", href: "/undo" },
       { label: "vehicles record", href: "/vehicles-record" },
     ],
   },

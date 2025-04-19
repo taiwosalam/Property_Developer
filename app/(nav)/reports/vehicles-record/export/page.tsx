@@ -16,6 +16,8 @@ import { useEffect, useRef, useState } from "react";
 import NetworkError from "@/components/Error/NetworkError";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import dayjs from "dayjs";
+import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
 
 const ExportVehiclesRecord = () => {
   const exportRef = useRef<HTMLDivElement>(null);
@@ -31,6 +33,8 @@ const ExportVehiclesRecord = () => {
     isNetworkError,
   } = useFetch<VehicleRecordsResponse>("report/vehicle-records");
 
+  const filteredVehicleRecords = useGlobalStore((s) => s.vehicle_records);
+
   useEffect(() => {
     if (vehicleData) {
       setVehiclesRecordTableData(transformVehicleRecordsData(vehicleData));
@@ -42,9 +46,9 @@ const ExportVehiclesRecord = () => {
       <CustomLoader layout="page" pageTitle="Export Report" view="table" />
     );
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error) {
+    return <ServerError error={error} />;
+  }
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
@@ -61,7 +65,7 @@ const ExportVehiclesRecord = () => {
         <CustomTable
           className={`${fullContent && "max-h-none"}`}
           fields={vehicleRecordReportTableFields}
-          data={vehiclesRecordTableData}
+          data={filteredVehicleRecords || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />

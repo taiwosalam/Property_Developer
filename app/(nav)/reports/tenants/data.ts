@@ -70,17 +70,18 @@ export interface TenantListResponse {
 }
 
 
+export interface ITenantListReport {
+  id: number | string;
+  name: string;
+  gender: string;
+  address: string;
+  telephone: string;
+  status: string;
+}
 export interface TenantReport {
   total_tenants: number;
   monthly_tenants: number;
-  tenants: {
-    id: number | string;
-    name: string;
-    gender: string;
-    address: string;
-    telephone: string;
-    status: string;
-  }[];
+  tenants: ITenantListReport[];
 }
 
 

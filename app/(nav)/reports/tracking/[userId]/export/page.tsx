@@ -19,6 +19,8 @@ import NetworkError from "@/components/Error/NetworkError";
 
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
 
 dayjs.extend(advancedFormat);
 
@@ -38,6 +40,8 @@ const UserActivitiesExportPage = () => {
     error,
   } = useFetch<UserActivityResponse>(`report/activities/${userId}`);
 
+  const filteredActivities = useGlobalStore((s) => s.user_activities)
+
   useEffect(() => {
     if (activityData) {
       setUserActivity(transformUserActivityData(activityData));
@@ -51,9 +55,9 @@ const UserActivitiesExportPage = () => {
       <CustomLoader layout="page" pageTitle="Tracking Report" view="table" />
     );
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error) {
+    return <ServerError error={error} />;
+  }
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">{name}</BackButton>
@@ -69,7 +73,7 @@ const UserActivitiesExportPage = () => {
         </div>
         <CustomTable
           fields={trackingTableFields}
-          data={activities}
+          data={filteredActivities || []}
           className={`${fullContent && "max-h-none"}`}
         />
         <Signature />

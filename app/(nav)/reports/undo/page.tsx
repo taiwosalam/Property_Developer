@@ -35,6 +35,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { hasActiveFilters } from "../data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
+import ServerError from "@/components/Error/ServerError";
 
 const Undo = () => {
   const [undoData, setUndoData] = useState<UndoTableData>({
@@ -198,9 +199,9 @@ const Undo = () => {
   if (loading)
     return <CustomLoader layout="page" pageTitle="Undo Report" view="table" />;
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+   if (error) {
+      return <ServerError error={error} />;
+    }
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">

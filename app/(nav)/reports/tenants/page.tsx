@@ -1,4 +1,3 @@
-
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import CustomTable from "@/components/Table/table";
@@ -11,23 +10,31 @@ import {
   tenantsReportTableFields,
   transformTenantData,
 } from "./data";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { AxiosRequestConfig } from "axios";
-import EmptyList from "@/components/EmptyList/Empty-List";
 import { BranchFilter, FilterResult, PropertyFilter } from "./types";
+import { BranchStaff } from "../../(messages-reviews)/messages/types";
 import dayjs from "dayjs";
-import { Branch, BranchStaff } from "../../(messages-reviews)/messages/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { hasActiveFilters } from "../data/utils";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+import { useRouter } from "next/navigation";
+import { debounce } from "lodash";
 
 const TenantsReport = () => {
-  const [tenant_reports, setTenant_reports] = useState<TenantReport>({
+  const router = useRouter();
+  const [pageData, setPageData] = useState<TenantReport>({
     total_tenants: 0,
     monthly_tenants: 0,
     tenants: [],
   });
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -44,18 +51,14 @@ const TenantsReport = () => {
   const { data: property } = useFetch<any>(`property/all`);
 
   useEffect(() => {
-    if (apiData) {
-      setBranches(apiData.data);
-    }
+    if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
       );
       setBranchAccountOfficers(filterStaff);
     }
-    if (property) {
-      setPropertyList(property.data);
-    }
+    if (property) setPropertyList(property.data);
   }, [apiData, staff, property]);
 
   const reportTenantFilterOption = [
@@ -73,7 +76,6 @@ const TenantsReport = () => {
         value: branch?.id.toString(),
       })),
     },
-
     {
       label: "Property",
       value: propertyList.map((property: any) => ({
@@ -84,55 +86,38 @@ const TenantsReport = () => {
   ];
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as ReportsRequestParams,
+    params: { page: 1, search: "" } as ReportsRequestParams,
   });
 
-  const handleSearch = async (query: string) => {
-    setConfig({
-      params: { ...config.params, search: query },
-    });
+  const handleSearch = (query: string) => {
+    setConfig({ params: { ...config.params, search: query } });
   };
 
   const handleSort = (order: "asc" | "desc") => {
-    setConfig({
-      params: { ...config.params, sort_order: order },
-    });
+    setConfig({ params: { ...config.params, sort_order: order } });
   };
 
-  const handleAppliedFilter = (filters: FilterResult) => {
-    setAppliedFilters(filters);
-    const { menuOptions, startDate, endDate } = filters;
-    const accountOfficer = menuOptions["Account Officer"] || [];
-    const branch = menuOptions["Branch"] || [];
-    const property = menuOptions["Property"] || [];
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const branch = menuOptions["Branch"] || [];
+      const property = menuOptions["Property"] || [];
 
-    const queryParams: ReportsRequestParams = {
-      page: 1,
-      search: "",
-    };
-
-    if (accountOfficer.length > 0) {
-      queryParams.account_officer_id = accountOfficer.join(",");
-    }
-    if (branch.length > 0) {
-      queryParams.branch_id = branch.join(",");
-    }
-    if (property.length > 0) {
-      queryParams.property_id = property.join(",");
-    }
-    if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-    }
-    if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-    }
-    setConfig({
-      params: queryParams,
-    });
-  };
+      const queryParams: ReportsRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
+      if (branch.length > 0) queryParams.branch_id = branch.join(",");
+      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
+  );
 
   const { data, loading, error, isNetworkError } = useFetch<TenantListResponse>(
     "/report/tenants",
@@ -140,45 +125,35 @@ const TenantsReport = () => {
   );
 
   useEffect(() => {
-    if (data) {
-      setTenant_reports(transformTenantData(data));
+    if (!loading && data) {
+      const transformedData = transformTenantData(data);
+      console.log("API data:", data);
+      console.log("Transformed data:", transformedData);
+      const newTenants = transformedData.tenants;
+      const currentTenants = useGlobalStore.getState().tenants;
+      if (JSON.stringify(currentTenants) !== JSON.stringify(newTenants)) {
+        setPageData(transformedData);
+        setGlobalStore("tenants", newTenants);
+      }
     }
-  }, [data]);
-
-  const { total_tenants, monthly_tenants, tenants } = tenant_reports;
-
-  const hasActiveFilters = (filters: any) => {
-    return (
-      (filters.options && filters.options.length > 0) ||
-      (filters.menuOptions && Object.keys(filters.menuOptions).length > 0) ||
-      filters.startDate ||
-      filters.endDate
-    );
-  };
+  }, [data, loading, setGlobalStore]);
 
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Tenants/Occupants" view="table" />
     );
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Tenants"
-          newData={monthly_tenants}
-          total={total_tenants}
+          newData={pageData.monthly_tenants}
+          total={pageData.total_tenants}
           colorScheme={1}
         />
-        {/* <ManagementStatistcsCard
-          title="Total Occupants"
-          newData={total_tenants}
-          total={monthly_tenants}
-          colorScheme={2}
-        /> */}
       </div>
       <FilterBar
         azFilter
@@ -190,46 +165,45 @@ const TenantsReport = () => {
           description:
             "This page contains a list of Tenants/Occupants on the platform.",
         }}
-        handleSearch={handleSearch}
-        onSort={handleSort}
         searchInputPlaceholder="Search for Tenants/Occupants"
         handleFilterApply={handleAppliedFilter}
         appliedFilters={appliedFilters}
+        onSort={handleSort}
+        handleSearch={handleSearch}
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/tenants/export"
-        xlsxData={tenants}
-        fileLabel={`Tenants Reports`}
+        xlsxData={useGlobalStore.getState().properties}
+        fileLabel={"Tenants Reports"}
       />
       <section>
-        {tenants.length === 0 && !loading ? (
+        {pageData.tenants.length === 0 && !loading ? (
           !!config.params.search.trim() || hasActiveFilters(appliedFilters) ? (
             <SearchError />
           ) : (
-            <div className="col-span-full text-left py-8 text-gray-500">
-              <EmptyList
-                noButton
-                title="No Tenant or Occupant Profiles Available Yet"
-                body={
-                  <p className="">
-                    At the moment, there are no tenant/occupant profiles
-                    available for export. Once profile records are added to the
-                    system, they will appear here and be available for download
-                    or export. <br /> <br />
-                    <p>
-                      This section will automatically populate with all
-                      available data as soon as new tenant or occupant profiles
-                      are created or imported into the platform.
-                    </p>
+            <EmptyList
+              noButton
+              title="No Tenant or Occupant Profiles Available Yet"
+              body={
+                <p>
+                  At the moment, there are no tenant/occupant profiles available
+                  for export. Once profile records are added to the system, they
+                  will appear here and be available for download or export.
+                  <br />
+                  <br />
+                  <p>
+                    This section will automatically populate with all available
+                    data as soon as new tenant or occupant profiles are created
+                    or imported into the platform.
                   </p>
-                }
-              />
-            </div>
+                </p>
+              }
+            />
           )
         ) : (
           <CustomTable
             fields={tenantsReportTableFields}
-            data={tenants}
+            data={pageData.tenants}
             tableHeadClassName="h-[45px]"
             tableBodyCellSx={{ color: "#3F4247" }}
           />

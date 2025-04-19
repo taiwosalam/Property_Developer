@@ -6,14 +6,14 @@ import {
   reportsUnitsFilterOptionsWithDropdown,
   unitsReportTableFields,
 } from "./data";
-import useFetch from "@/hooks/useFetch";
 import {
   transformUnitListData,
   UnitListResponse,
   Units,
   UnitsReportType,
 } from "./types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { BranchStaff } from "../../(messages-reviews)/messages/types";
@@ -21,18 +21,24 @@ import { FilterResult, BranchFilter, PropertyFilter } from "../tenants/types";
 import { AxiosRequestConfig } from "axios";
 import { ReportsRequestParams } from "../tenants/data";
 import dayjs from "dayjs";
-import { hasActiveFilters } from "../data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { hasActiveFilters } from "../data/utils";
 import EmptyList from "@/components/EmptyList/Empty-List";
-
-import * as XLSX from "xlsx";
+import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+import { useRouter } from "next/navigation";
+import { debounce } from "lodash";
 
 const UnitsReport = () => {
-  const [unitData, setUnitData] = useState<UnitsReportType>({
+  const router = useRouter();
+  const [pageData, setPageData] = useState<UnitsReportType>({
     total_unit: 0,
     monthly_unit: 0,
     units: [],
   });
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const filteredUnits = useGlobalStore((s) => s.units);
+
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -40,47 +46,26 @@ const UnitsReport = () => {
     endDate: null,
   });
   const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
-    BranchStaff[]
-  >([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as ReportsRequestParams,
-  });
-
-  const { data, loading, error, isNetworkError } = useFetch<UnitListResponse>(
-    "/report/units",
-    config
-  );
 
   useEffect(() => {
-    if (apiData) {
-      setBranches(apiData.data);
-    }
+    console.log("Source page - filteredUnits:", filteredUnits);
+  }, [filteredUnits]);
+
+  useEffect(() => {
+    if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
       );
       setBranchAccountOfficers(filterStaff);
     }
-    if (property) {
-      setPropertyList(property.data);
-    }
+    if (property) setPropertyList(property.data);
   }, [apiData, staff, property]);
-
-  useEffect(() => {
-    if (data) {
-      setUnitData(transformUnitListData(data));
-    }
-  }, [data]);
-
-  const { total_unit, monthly_unit, units } = unitData;
 
   const unitStatus = ["occupied", "relocate", "vacant", "expired"];
   const reportTenantFilterOption = [
@@ -98,7 +83,6 @@ const UnitsReport = () => {
         value: branch?.id.toString(),
       })),
     },
-
     {
       label: "Property",
       value: propertyList.map((property: any) => ({
@@ -115,67 +99,75 @@ const UnitsReport = () => {
     },
   ];
 
-  const handleSearch = async (query: string) => {
-    setConfig({
-      params: { ...config.params, search: query },
-    });
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: { page: 1, search: "" } as ReportsRequestParams,
+  });
+
+  const handleSearch = (query: string) => {
+    setConfig({ params: { ...config.params, search: query } });
   };
 
   const handleSort = (order: "asc" | "desc") => {
-    setConfig({
-      params: { ...config.params, sort_order: order },
-    });
+    setConfig({ params: { ...config.params, sort_order: order } });
   };
 
-  const handleAppliedFilter = (filters: FilterResult) => {
-    setAppliedFilters(filters);
-    const { menuOptions, startDate, endDate } = filters;
-    const accountOfficer = menuOptions["Account Officer"] || [];
-    const branch = menuOptions["Branch"] || [];
-    const property = menuOptions["Property"] || [];
-    const status = menuOptions["Status"] || [];
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const branch = menuOptions["Branch"] || [];
+      const property = menuOptions["Property"] || [];
+      const status = menuOptions["Status"] || [];
 
-    const queryParams: ReportsRequestParams = {
-      page: 1,
-      search: "",
-    };
+      const queryParams: ReportsRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
+      if (branch.length > 0) queryParams.branch_id = branch.join(",");
+      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (status.length > 0) queryParams.status = status.join(",");
+      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
+  );
 
-    if (accountOfficer.length > 0) {
-      queryParams.account_officer_id = accountOfficer.join(",");
+  const { data, loading, error, isNetworkError } = useFetch<UnitListResponse>(
+    "/report/units",
+    config
+  );
+
+  useEffect(() => {
+    if (!loading && data) {
+      const transformedData = transformUnitListData(data);
+      console.log("API data:", data);
+      console.log("Transformed data:", transformedData);
+      const newUnits = transformedData.units;
+      const currentUnits = useGlobalStore.getState().units;
+      if (JSON.stringify(currentUnits) !== JSON.stringify(newUnits)) {
+        setPageData(transformedData);
+        setGlobalStore("units", newUnits);
+      }
     }
-    if (branch.length > 0) {
-      queryParams.branch_id = branch.join(",");
-    }
-    if (property.length > 0) {
-      queryParams.property_id = property.join(",");
-    }
-    if (status.length > 0) {
-      queryParams.status = status.join(",");
-    }
-    if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-    }
-    if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-    }
-    setConfig({
-      params: queryParams,
-    });
+  }, [data, loading, setGlobalStore]);
+
+  const handleExport = () => {
+    if (!data || loading) return;
+    setGlobalStore("units", pageData.units);
+    router.push("/reports/units/export");
   };
 
-  if (loading)
-    return <CustomLoader layout="page" pageTitle="Units Report" view="table" />;
+  if (loading) return <CustomLoader layout="page" pageTitle="Units Report" view="table" />;
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Units"
-          newData={monthly_unit}
-          total={total_unit}
+          newData={pageData.monthly_unit}
+          total={pageData.total_unit}
           colorScheme={1}
         />
       </div>
@@ -188,47 +180,40 @@ const UnitsReport = () => {
           title: "Units",
           description: "This page contains a list of Units on the platform.",
         }}
-        handleSearch={handleSearch}
-        onSort={handleSort}
+        searchInputPlaceholder="Search for Units"
         handleFilterApply={handleAppliedFilter}
         appliedFilters={appliedFilters}
+        onSort={handleSort}
+        handleSearch={handleSearch}
         filterOptionsMenu={reportTenantFilterOption}
-        searchInputPlaceholder="Search for Units"
         hasGridListToggle={false}
         exportHref="/reports/units/export"
-        xlsxData={units}
-        fileLabel={`Unit Reports`}
+        xlsxData={useGlobalStore.getState().units}
+        fileLabel={"Unit Reports"}
       />
-
       <section>
-        {units.length === 0 && !loading ? (
-          !!config.params.search || hasActiveFilters(appliedFilters) ? (
+        {pageData.units.length === 0 && !loading ? (
+          !!config.params.search.trim() || hasActiveFilters(appliedFilters) ? (
             <SearchError />
           ) : (
-            <div className="col-span-full text-left py-8 text-gray-500">
-              <EmptyList
-                noButton
-                title="No Unit Data Available Yet"
-                body={
-                  <p className="">
-                    There is currently no unit data available for export. Once
-                    unit records are added to the system, they will
-                    automatically appear here and be available for download or
-                    export. <br /> <br />
-                    <p>
-                      This section will be updated in real-time as new unit
-                      profiles are created, allowing you to easily manage and
-                      export your data when needed.
-                    </p>
+            <EmptyList
+              noButton
+              title="No Unit Data Available Yet"
+              body={
+                <p>
+                  There is currently no unit data available for export. Once unit records are added to the system, they will automatically appear here and be available for download or export.
+                  <br /><br />
+                  <p>
+                    This section will be updated in real-time as new unit profiles are created, allowing you to easily manage and export your data when needed.
                   </p>
-                }
-              />
-            </div>
+                </p>
+              }
+            />
           )
         ) : (
           <CustomTable
             fields={unitsReportTableFields}
-            data={units}
+            data={pageData.units}
             tableHeadClassName="h-[45px]"
           />
         )}

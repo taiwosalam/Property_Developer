@@ -21,6 +21,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import dayjs from "dayjs";
 import ServerError from "@/components/Error/ServerError";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { useGlobalStore } from "@/store/general-store";
 
 dayjs.extend(advancedFormat);
 
@@ -32,6 +33,8 @@ const ExportLandlords = () => {
     monthly_landlords: 0,
     landlords: [],
   });
+
+  const filteredLandlords = useGlobalStore((s) => s.landlords);
 
   const { total_landlords, monthly_landlords, landlords } = landlords_report;
 
@@ -66,7 +69,7 @@ const ExportLandlords = () => {
         <CustomTable
           fields={landlordsReportTableFields}
           className={`${fullContent && "max-h-none"}`}
-          data={landlords}
+          data={filteredLandlords || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
