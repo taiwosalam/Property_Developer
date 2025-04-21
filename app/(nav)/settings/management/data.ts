@@ -87,20 +87,20 @@ export const staffConfigurations = [
       ],
     ],
   },
-  // {
-  //   title: "Users Configuration (Landlord, Occupant & Tenants)",
-  //   subTitle: "Can be accessed through mobile app or web cross-platform.",
-  //   permissions: [
-  //     [
-  //       "Create Profile Account For Tenants/Occupant",
-  //       "Create Profile Account For Landlord/Landlady",
-  //     ],
-  //     [
-  //       "Create Profile Account For Service Provider",
-  //       "Create Profile Account When You Sent Invite",
-  //     ],
-  //   ],
-  // },
+  {
+    title: "Users Configuration (Landlord, Occupant & Tenants)",
+    subTitle: "Can be accessed through mobile app or web cross-platform.",
+    permissions: [
+      [
+        "Create Profile Account For Tenants/Occupant",
+        "Create Profile Account For Landlord/Landlady",
+      ],
+      [
+        "Create Profile Account For Service Provider",
+        "Create Profile Account When You Sent Invite",
+      ],
+    ],
+  },
 ];
 
 export type RentPeriod =
