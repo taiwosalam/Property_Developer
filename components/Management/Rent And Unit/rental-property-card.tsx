@@ -221,13 +221,13 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
 
             // Define button visibility based on status
             if (status === "vacant" || status === "relocate") {
-              return label === "Start Rent" || label === "Start Counting";
+              return label === "Start Rent" || label === "Move In";
             }
             if (status === "occupied") {
               // Exclude "Renew Rent" and "Renew Fee" for occupied status
               return (
                 label !== "Start Rent" &&
-                label !== "Start Counting" &&
+                label !== "Move In" &&
                 label !== "Renew Rent" &&
                 label !== "Renew Fee"
               );
@@ -262,6 +262,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
             <ActionButton
               unit_id={unitId}
               key={i}
+              propertyType={propertyType} 
               {...action}
               route={
                 typeof action.route === "function"

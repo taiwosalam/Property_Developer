@@ -104,7 +104,9 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             <p className="text-black dark:text-darkText-2">{branch}</p>
           </div>
           <div>
-            <p className="text-[#747474] dark:text-white">Mobile Tenants</p>
+            <p className="text-[#747474] dark:text-white">
+              {isRental ? "Mobile Tenants" : "Mobile Occupants"}
+            </p>
             <p className="text-black dark:text-darkText-2">{mobile_tenants}</p>
           </div>
           <div>
@@ -112,7 +114,9 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             <p className="text-black dark:text-darkText-2">{accountOfficer}</p>
           </div>
           <div>
-            <p className="text-[#747474] dark:text-white">Web Tenants</p>
+            <p className="text-[#747474] dark:text-white">
+              {isRental ? "Web Tenants" : "Web Occupants"}
+            </p>
             <p className="text-black dark:text-darkText-2">{web_tenants}</p>
           </div>
           <div>

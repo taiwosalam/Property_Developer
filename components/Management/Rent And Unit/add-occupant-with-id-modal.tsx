@@ -107,7 +107,7 @@ const AddOccupantWithId = ({
 
         {formStep === 2 && (
           <div className="absolute top-0 left-0 right-0 pb-[20px] min-h-[200px]">
-            <div className="flex flex-col gap-4 bg-white items-center justify-center">
+            <div className="flex flex-col gap-4 bg-white dark:bg-transparent items-center justify-center">
               <h3 className="text-black dark:text-darkText-1 text-base font-medium">
                 Kindly verify if the name matches the ID of the mobile user you
                 intend to add

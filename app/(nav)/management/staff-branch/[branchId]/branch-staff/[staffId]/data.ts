@@ -345,7 +345,7 @@ export const yesNoToActiveInactive = (yesNo: string): string => {
 export const transformStaffAPIResponse = (
   res: StaffAPIResponse
 ): StaffPageTypes => {
-  console.log("our res", res);
+  // console.log("our res", res);
   return {
     staff: {
       id: res.data.id.toString(),
@@ -369,7 +369,8 @@ export const transformStaffAPIResponse = (
       about_staff: res.data.about_staff,
       experience: res.data.years_experience,
       status: yesNoToActiveInactive(res.data.status),
-      badge_color: res.data.tier_id && "gray" 
+      badge_color: res.data.tier_id && "gray",
+      online: res.data.online_status === "online",
       // badge_color: res.data.tier_id
       //   ? staffTierColorMap[res.data.tier_id as keyof typeof staffTierColorMap]
       //   : undefined,

@@ -118,3 +118,19 @@ export const getUsers = async (identifier: string) => {
     throw err;
   }
 };
+
+
+
+
+export const getSingleTenantData = async(id: string) => {
+  try {
+    const res = await api.get(`tenant/${id}`);
+    if (res.status === 200) {
+      return res.data;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    toast.error("Failed to fetch tenant data");
+    return null; 
+  }
+}

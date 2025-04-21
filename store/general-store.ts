@@ -7,25 +7,33 @@ import { LandlordReportEntry } from "@/app/(nav)/reports/landlord/data";
 import { TransformedProperty } from "@/app/(nav)/reports/properties/data";
 import { Rent } from "@/app/(nav)/reports/rent/types";
 import { ITenantListReport } from "@/app/(nav)/reports/tenants/data";
-import { ActivityDataReport, UserActivity } from "@/app/(nav)/reports/tracking/[userId]/types";
+import {
+  ActivityDataReport,
+  UserActivity,
+} from "@/app/(nav)/reports/tracking/[userId]/types";
 import { UnitListRequest } from "@/app/(nav)/reports/units/types";
 import { VehicleRecordsType } from "@/app/(nav)/reports/vehicles-record/types";
+import { Occupant } from "@/components/Management/Rent And Unit/types";
 import { create } from "zustand";
 
 interface GlobalStoreState {
   sponsorValue: number;
-  properties?: TransformedProperty[] 
-  landlords?: LandlordReportEntry[]
-  tenants?: ITenantListReport[]
-  units?: UnitListRequest[]
-  vehicle_records?: VehicleRecordsType[]
-  rents?: Rent[]
-  activities?: ActivityDataReport[]
-  user_activities?: ActivityDataReport[]
-  accounting_invoices?: Invoice[]
-  accounting_vat?: Vat[]
-  accounting_expenses?: Expense[]
-  accounting_disbursements?: TransformedDisburseItem[]
+  properties?: TransformedProperty[];
+  landlords?: LandlordReportEntry[];
+  tenants?: ITenantListReport[];
+  units?: UnitListRequest[];
+  vehicle_records?: VehicleRecordsType[];
+  rents?: Rent[];
+  activities?: ActivityDataReport[];
+  user_activities?: ActivityDataReport[];
+  accounting_invoices?: Invoice[];
+  accounting_vat?: Vat[];
+  accounting_expenses?: Expense[];
+  accounting_disbursements?: TransformedDisburseItem[];
+  selectedOccupant: Occupant | null;
+  isPastDate: boolean;
+  tenantLoading: boolean;
+  tenantError: Error | null;
   // add more keys here as needed…
 }
 
@@ -38,6 +46,8 @@ type GlobalStore = GlobalStoreState & {
   getGlobalInfoStore: <K extends keyof GlobalStoreState>(
     key: K
   ) => GlobalStoreState[K];
+
+  resetTenantState: () => void;
 };
 
 export const useGlobalStore = create<GlobalStore>((set, get) => ({
@@ -55,6 +65,10 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   accounting_vat: [],
   accounting_expenses: [],
   accounting_disbursements: [],
+  selectedOccupant: null,
+  isPastDate: false,
+  tenantLoading: false,
+  tenantError: null,
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {
@@ -64,5 +78,15 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   // type‑safe getter:
   getGlobalInfoStore: (key) => {
     return get()[key];
+  },
+
+  // reset tenant
+  resetTenantState: () => {
+    set({
+      selectedOccupant: null,
+      isPastDate: false,
+      tenantLoading: false,
+      tenantError: null,
+    });
   },
 }));
