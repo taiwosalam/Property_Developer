@@ -229,7 +229,6 @@ const RentAndUnit = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
   if (error) return <ServerError error={error} />;
 
   return (

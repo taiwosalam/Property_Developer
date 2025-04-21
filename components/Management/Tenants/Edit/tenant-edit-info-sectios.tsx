@@ -846,7 +846,7 @@ export const TenantEditAvatarInfoSection = () => {
         </label>
 
         <div className="custom-flex-col gap-3">
-          <p className="text-black text-base font-medium">Choose Avatar</p>
+          <p className="text-black dark:text-white text-base font-medium">Choose Avatar</p>
           <Modal
             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >

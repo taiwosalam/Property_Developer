@@ -7,6 +7,7 @@ import { ProfileForm } from "./profile-form";
 import { RentSectionTitle } from "./rent-section-container";
 import { Skeleton } from "@mui/material";
 import { RentPeriod } from "./data";
+import { useGlobalStore } from "@/store/general-store";
 
 export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   isRental,
@@ -22,14 +23,16 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   setIsPastDate,
   setDueDate,
 }) => {
-  const [selectedOccupant, setSelectedOccupant] = useState<Occupant | null>(
-    null
-  );
-  const handleOccupantSelect = (occupant: Occupant | null) => {
-    setSelectedOccupant(occupant);
-  };
-  const [occupantLoading, setOccupantLoading] = useState(false);
-  const [occupantError, setOccupantError] = useState<Error | null>(null);
+  const { selectedOccupant, tenantLoading, tenantError } = useGlobalStore();
+
+  // const [selectedOccupant, setSelectedOccupant] = useState<Occupant | null>(
+  //   null
+  // );
+  // const handleOccupantSelect = (occupant: Occupant | null) => {
+  //   setSelectedOccupant(occupant);
+  // };
+  // const [occupantLoading, setOccupantLoading] = useState(false);
+  // const [occupantError, setOccupantError] = useState<Error | null>(null);
 
   return (
     <>
@@ -48,16 +51,9 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 period={period as RentPeriod}
                 setSelectedCheckboxOptions={setSelectedCheckboxOptions}
                 isRental={isRental}
-                selectedOccupant={selectedOccupant}
                 occupants={occupants}
-                onOccupantSelect={handleOccupantSelect}
-                onLoadingChange={setOccupantLoading}
-                onError={setOccupantError}
-                occupantLoading={occupantLoading}
-                occupantError={occupantError}
                 setSelectedTenantId={setSelectedTenantId}
                 setStart_date={setStart_date}
-                setIsPastDate={setIsPastDate} 
                 setDueDate={setDueDate}
               />
               <FeeBreakdown
@@ -72,8 +68,8 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
             <div className="mt-5 lg:mt-0 lg:flex-1 hidden lg:block">
               <MatchedProfile
                 occupant={selectedOccupant}
-                isLoading={occupantLoading}
-                error={occupantError}
+                isLoading={tenantLoading}
+                error={tenantError}
                 title="Matched Profile"
               />
             </div>

@@ -936,6 +936,8 @@ export interface initDataProps {
   security_fee?: string;
   other_charge?: string;
   unitAgentFee?: string;
+  legalFee?: string;
+  inspectionFee?: string;
   service_charge?: string;
   renew_other_charge?: string;
   renew_vat_amount?: string;
@@ -955,7 +957,7 @@ export const transformUnitData = (response: any) => {
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   // const previous_tenants = response.data.previous_tenants;
-  console.log("data to trans", data)
+  console.log("data to trans", data);
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -970,7 +972,7 @@ export const transformUnitData = (response: any) => {
     unitSubType: data.unit_sub_type,
     state: data.property.state,
     localGovernment: data.property.local_government,
-    accountOfficer: data.property.account_officer.name || "--- ---",
+    accountOfficer: data.property.account_officer.name,
     bedrooms: data.bedroom,
     bathrooms: data.bathroom,
     landlord_name: data.landlord.name,
@@ -982,6 +984,16 @@ export const transformUnitData = (response: any) => {
       ? `${
           currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
         }${formatNumber(parseFloat(data.fee_amount))}`
+      : undefined,
+    inspectionFee: data.inspection_fee
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.inspection_fee))}`
+      : undefined,
+    legalFee: data.legal_fee
+      ? `${
+          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+        }${formatNumber(parseFloat(data.legal_fee))}`
       : undefined,
     vat_amount: data.user.vat_amount
       ? `${
@@ -1063,19 +1075,19 @@ export const transformUnitData = (response: any) => {
     occupant: occupant
       ? {
           id: occupant.id,
-          name: occupant.name || "--- ---",
-          email: occupant.email || "--- ---",
-          userTag: occupant.userTag || "--- ---",
+          name: occupant.name,
+          email: occupant.email,
+          userTag: occupant.userTag,
           avatar: occupant.avatar || empty,
-          gender: occupant.gender || "--- ---",
-          birthday: occupant.birthday || "--- ---",
-          religion: occupant.religion || "--- ---",
-          phone: occupant.phone || "--- ---",
-          maritalStatus: occupant.maritalStatus || "--- ---",
-          address: occupant.address || "--- ---",
-          city: occupant.city || "--- ---",
-          state: occupant.state || "--- ---",
-          lg: occupant.lg || "--- ---",
+          gender: occupant.gender,
+          birthday: occupant.birthday,
+          religion: occupant.religion,
+          phone: occupant.phone,
+          maritalStatus: occupant.maritalStatus,
+          address: occupant.address,
+          city: occupant.city,
+          state: occupant.state,
+          lg: occupant.lg,
         }
       : undefined,
     previous_records: previous_records ? previous_records : undefined,

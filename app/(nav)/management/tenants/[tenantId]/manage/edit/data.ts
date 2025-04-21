@@ -138,3 +138,9 @@ export const removeDocuments = async (
     return false;
   }
 };
+
+
+
+export const isValidValue = (value: string | undefined | null): boolean => {
+  return value !== undefined && value !== null && value.trim() !== "";
+};

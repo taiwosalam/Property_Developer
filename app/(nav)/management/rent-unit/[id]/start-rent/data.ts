@@ -79,7 +79,7 @@ export const getRentalData = (unit_data: any) => [
     label: "Account Officer",
     value: unit_data?.accountOfficer ?? "--- ---",
   }, // TODO
-  { label: "Landlord", value: unit_data?.landlord ?? "--- ---" }, // TODO
+  { label: "Landlord", value: unit_data?.landlord_name ?? "--- ---" }, // TODO
   { label: "Categories", value: unit_data?.categories ?? "--- ---" },
   { label: "Unit ID", value: unit_data?.unit_id ?? "--- ---" },
 ];

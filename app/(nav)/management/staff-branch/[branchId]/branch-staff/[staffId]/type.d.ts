@@ -29,6 +29,7 @@ export interface StaffAPIResponse {
     tenants: any[];
     tier_id: 1 | 2 | 3 | 4 | 5;
     years_experience: string | number;
+    online_status?: "online" | "offline";
   };
   activities: StaffActivitiies[];
 }
@@ -113,6 +114,7 @@ export interface StaffPageTypes {
     status: string;
     experience: number | string;
     badge_color?: BadgeIconColors;
+    online?: boolean;
   };
   activities: StaffActivitiies[];
   chats: [];

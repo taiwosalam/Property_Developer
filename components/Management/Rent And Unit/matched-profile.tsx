@@ -2,6 +2,7 @@ import Picture from "@/components/Picture/picture";
 import { Occupant } from "./types";
 import { RentSectionContainer } from "./rent-section-container";
 import UserTag from "@/components/Tags/user-tag";
+import { isValidValue } from "@/app/(nav)/management/tenants/[tenantId]/manage/edit/data";
 
 export const MatchedProfile: React.FC<{
   occupant: Occupant | null;
@@ -9,6 +10,7 @@ export const MatchedProfile: React.FC<{
   isLoading?: boolean;
   error?: Error | null;
 }> = ({ occupant, title, isLoading, error }) => {
+  const isMobile = occupant?.userTag?.toLocaleLowerCase() === "mobile";
   return (
     <RentSectionContainer title={title} hidebar className="p-8">
       {occupant ? (
@@ -42,24 +44,47 @@ export const MatchedProfile: React.FC<{
             <h4 className="text-brand-9 text-[16px] font-medium">About</h4>
             <div className="space-y-4">
               <RentFeeDetails label="Gender" value={occupant?.gender} />
-              <RentFeeDetails label="Birthday" value={occupant?.birthday} />
-              <RentFeeDetails label="Religion" value={occupant?.religion} />
-              <RentFeeDetails label="Phone" value={occupant?.phone} />
               <RentFeeDetails
-                label="Marital Status"
-                value={occupant?.maritalStatus}
+                label="Occupation"
+                value={occupant?.occupation}
+              />
+              <RentFeeDetails label="Phone" value={occupant?.phone} />
+              <RentFeeDetails label="Address" value={occupant?.address} />
+              <RentFeeDetails
+                label={isMobile ? "Family Type" : "Tenant Type"}
+                value={
+                  isMobile
+                    ? occupant?.family_type
+                    : occupant?.tenant_type
+                }
               />
             </div>
           </div>
           <div className="space-y-2">
             <h4 className="text-brand-9 text-[16px] font-medium">
-              Contact Address
+              Next of Kin
             </h4>
             <div className="space-y-4">
-              <RentFeeDetails label="Address" value={occupant?.address} />
-              <RentFeeDetails label="City" value={occupant?.city} />
-              <RentFeeDetails label="State" value={occupant?.state} />
-              <RentFeeDetails label="LG" value={occupant?.lg} />
+              <RentFeeDetails
+                label="Name"
+                value={occupant?.nextOfKin?.name}
+              />
+              <RentFeeDetails
+                label="Email"
+                value={occupant?.nextOfKin?.email}
+              />
+              <RentFeeDetails
+                label="Phone"
+                value={occupant?.nextOfKin?.phone}
+              />
+              <RentFeeDetails
+                label="Relationship"
+                value={occupant?.nextOfKin?.relationship}
+              />
+              <RentFeeDetails
+                label="Address"
+                value={occupant?.nextOfKin?.address}
+              />
             </div>
           </div>
         </div>
@@ -83,10 +108,18 @@ const RentFeeDetails = ({
   value,
 }: {
   label: string;
-  value: string | undefined;
-}) => (
-  <div className="flex items-start">
-    <p className="text-[#747474] dark:text-white w-[140px]">{label}</p>
-    <p className="text-black dark:text-darkText-2">{value || "N/A"}</p>
-  </div>
-);
+  value: string | undefined | null;
+}) => {
+  // Only render if the value is valid
+  if (!isValidValue(value)) {
+    return null;
+  }
+  return (
+    <div className="flex items-start">
+      <p className="text-[#747474] dark:text-white w-[140px] capitalize">
+        {label}
+      </p>
+      <p className="text-black dark:text-darkText-2 capitalize">{value}</p>
+    </div>
+  );
+};
