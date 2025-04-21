@@ -34,7 +34,6 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import useFetch from "@/hooks/useFetch";
 import ManagementCheckbox from "@/components/Documents/DocumentCheckbox/management-checkbox";
 
-
 const roleMapping: Record<string, string> = {
   "staff configuration (branch manager)": "manager",
   "staff configuration (account officer)": "account",
@@ -192,11 +191,13 @@ const Management = () => {
 
   // TENANT & OCCUPANT SCREENING LEVEL
   const handleUpdateScreeningLevel = async (data: Record<string, any>) => {
-
-    if(!data?.tenant_screening_level_type && !data?.tenant_screening_level_type){
+    if (
+      !data?.tenant_screening_level_type &&
+      !data?.tenant_screening_level_type
+    ) {
       //toast.error("Please select a tenant screening level type");
       return;
-    } 
+    }
     const payload = {
       tenant_screening_level: data.tenant_screening_level_type,
       occupant_screening_level: data.occupant_screening_level_type,
@@ -345,10 +346,10 @@ const Management = () => {
             />
           </AuthForm>
         </div>
-        <RentPenalty />
-      {/* </SettingsSection >
+        {/* </SettingsSection >
       <SettingsSection title="rent penalty settings"> */}
       </SettingsSection>
+      <RentPenalty />
       <SettingsSection title="rent penalty settings">
         <div className="custom-flex-col gap-8">
           <p className="text-text-disabled text-sm font-normal">
