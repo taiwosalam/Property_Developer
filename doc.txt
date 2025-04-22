@@ -427,3 +427,217 @@ check management/vehicles-record filter for reference
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+// import Image from "next/image";
+// import { useContext, useEffect, useState } from "react";
+// // Import
+// import { SectionHeading } from "../Section/section-components";
+// import Button from "../Form/Button/button";
+// import { DeleteIconOrange, PersonIcon, UploadImageIcon } from "@/public/icons/icons";
+// import { FlowProgressContext } from "../FlowProgress/flow-progress";
+// import { useImageUploader } from "@/hooks/useImageUploader";
+// import CameraCircle from "@/public/icons/camera-circle.svg";
+// import Picture from "../Picture/picture";
+// import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+// import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
+// import Avatars from "../Avatars/avatars";
+
+// const ProfilePicture = () => {
+//   const { handleInputChange } = useContext(FlowProgressContext);
+
+//   const {
+//     preview,
+//     handleImageChange: originalHandleImageChange,
+//     inputFileRef,
+//     clearSelection: clearImageSelection,
+//     setPreview,
+//   } = useImageUploader({
+//     placeholder: CameraCircle,
+//     maxSize: {
+//       unit: "MB",
+//       value: 2,
+//     },
+//   });
+
+//   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+//   const [selectedAvatar, setSelectedAvatar] = useState("");
+
+//   const handleAvatarSelection = (avatarUrl: string) => {
+//     clearImageSelection();
+//     setSelectedAvatar(avatarUrl);
+//     setAvatarModalOpen(false);
+//   };
+
+//   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setSelectedAvatar("");
+//     originalHandleImageChange(e);
+//   };
+
+//   // const { preview, inputFileRef, handleImageChange, clearSelection } =
+//   //   useImageUploader({
+//   //     maxSize: { unit: "MB", value: 2 },
+//   //   });
+
+//   const handleButtonClick = () => {
+//     if (inputFileRef.current) {
+//       inputFileRef.current.click();
+//     }
+//   };
+
+//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     handleImageChange(e);
+//     handleInputChange();
+//   };
+
+//   const handleDeleteImage = () => {
+//     clearImageSelection();
+//     handleInputChange();
+//   };
+
+//   return (
+//     <div className="custom-flex-col gap-5">
+//       <SectionHeading required title="profile picture">
+//         The profile photo size should be 100 x 100 pixels with a maximum file
+//         size of 2MB.
+//       </SectionHeading>
+
+//       <div className="flex gap-4 items-center">
+//         <input type="hidden" name="avatar" value={selectedAvatar} />
+//         <div className="flex gap-2">
+//           <input
+//             name="director_profile_picture"
+//             type="file"
+//             accept="image/*"
+//             ref={inputFileRef}
+//             onChange={handleFileChange}
+//             className="hidden setup-f required"
+//           />
+//           {preview && preview !== CameraCircle ? (
+//             <div className="w-[100px] h-[100px] relative">
+//               <button
+//                 type="button"
+//                 onClick={handleDeleteImage}
+//                 className="absolute top-[-15px] right-[-25px] z-10"
+//                 aria-label="Delete"
+//               >
+//                 <DeleteIconOrange />
+//               </button>
+//               <Image
+//                 src={preview}
+//                 alt="Profile Picture"
+//                 fill
+//                 style={{ objectFit: "cover" }}
+//                 className="rounded-lg w-[100px] h-[100px]"
+//               />
+//             </div>
+//           ) : (
+//             <button
+//               type="button"
+//               onClick={handleButtonClick}
+//               className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
+//             >
+//               <UploadImageIcon />
+//               <span className="text-text-secondary text-xs font-normal">
+//                 Upload Profile Picture
+//               </span>
+//             </button>
+//           )}
+//           {preview && (
+//             <div className="flex items-end">
+//               <Button
+//                 type="button"
+//                 variant="change"
+//                 size="sm"
+//                 onClick={handleButtonClick}
+//               >
+//                 Change Picture
+//               </Button>
+//             </div>
+//           )}
+//         </div>
+
+//         <label htmlFor="picture" className="!w-fit cursor-pointer relative">
+//           <Picture src={preview} alt="Camera" size={90} rounded />
+//           {preview && preview !== CameraCircle && (
+//             <div
+//               role="button"
+//               aria-label="remove image"
+//               className="absolute top-0 right-0"
+//               onClick={(e) => {
+//                 e.preventDefault();
+//                 clearImageSelection();
+//               }}
+//             >
+//               <DeleteIconOrange size={20} />
+//             </div>
+//           )}
+//           <input
+//             type="file"
+//             id="picture"
+//             name="picture"
+//             accept="image/*"
+//             className="hidden pointer-events-none"
+//             onChange={handleImageChange}
+//             ref={inputFileRef}
+//           />
+//         </label>
+//         <div className="custom-flex-col gap-3">
+//           <p className="text-black text-base font-medium">Choose Avatar</p>
+//           <Modal
+//             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
+//           >
+//             <ModalTrigger
+//               className="bg-[rgba(42,42,42,0.63)] !w-[60px] h-[60px] rounded-full flex items-center justify-center text-white relative"
+//               aria-label="choose avatar"
+//             >
+//               {selectedAvatar ? (
+//                 <>
+//                   <Image
+//                     src={selectedAvatar}
+//                     alt="selected avatar"
+//                     width={60}
+//                     height={60}
+//                     className="object-cover object-center w-[60px] h-[60px] rounded-full bg-brand-9"
+//                   />
+//                   <div
+//                     role="button"
+//                     aria-label="remove avatar"
+//                     className="absolute top-0 right-0"
+//                     onClick={(e) => {
+//                       e.stopPropagation();
+//                       setSelectedAvatar("");
+//                     }}
+//                   >
+//                     <DeleteIconOrange size={20} />
+//                   </div>
+//                 </>
+//               ) : (
+//                 <PersonIcon size={18} />
+//               )}
+//             </ModalTrigger>
+//             <ModalContent>
+//               <LandlordTenantModalPreset
+//                 heading="Choose Avatar"
+//                 style={{ maxWidth: "700px" }}
+//               >
+//                 <Avatars onClick={handleAvatarSelection} />
+//               </LandlordTenantModalPreset>
+//             </ModalContent>
+//           </Modal>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ProfilePicture;

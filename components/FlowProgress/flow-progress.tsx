@@ -130,6 +130,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
 
   useEffect(() => {
     handleInputChange();
+    console.log("can submit", canSubmit);
   }, [children, handleInputChange]);
 
   return (

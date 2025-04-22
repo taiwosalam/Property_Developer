@@ -1,207 +1,178 @@
 import Image from "next/image";
-import { useContext } from "react";
-// Import
+import { useState, useRef } from "react";
+// Imports
 import { SectionHeading } from "../Section/section-components";
 import Button from "../Form/Button/button";
-import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
-import { FlowProgressContext } from "../FlowProgress/flow-progress";
+import {
+  DeleteIconOrange,
+  UploadImageIcon,
+  PersonIcon,
+} from "@/public/icons/icons";
 import { useImageUploader } from "@/hooks/useImageUploader";
+import CameraCircle from "@/public/icons/camera-circle.svg";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
+import Avatars from "../Avatars/avatars";
 
 const ProfilePicture = () => {
-  const { handleInputChange } = useContext(FlowProgressContext);
+  const {
+    preview,
+    inputFileRef,
+    handleImageChange: originalHandleImageChange,
+    clearSelection: clearImageSelection,
+  } = useImageUploader({
+    placeholder: CameraCircle,
+    maxSize: { unit: "MB", value: 2 },
+  });
 
-  const { preview, inputFileRef, handleImageChange, clearSelection } =
-    useImageUploader({
-      maxSize: { unit: "MB", value: 2 },
-    });
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
 
-  const handleButtonClick = () => {
+  // Handle avatar selection
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection(); // Clear uploaded file
+    setSelectedAvatar(avatarUrl); // Set avatar
+    setAvatarModalOpen(false); // Close modal
+  };
+
+  // Handle file upload
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedAvatar(""); // Clear avatar
+    originalHandleImageChange(e); // Handle file upload
+  };
+
+  // Handle deletion of image or avatar
+  const handleDelete = () => {
+    clearImageSelection(); // Clear file
+    setSelectedAvatar(""); // Clear avatar
+  };
+
+  // Trigger file input click
+  const handleUploadClick = () => {
     if (inputFileRef.current) {
       inputFileRef.current.click();
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleImageChange(e);
-    handleInputChange();
-  };
-
-  const handleDeleteImage = () => {
-    clearSelection();
-    handleInputChange();
+  // Open avatar modal
+  const handleChooseAvatarClick = () => {
+    setAvatarModalOpen(true);
   };
 
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="profile picture">
         The profile photo size should be 100 x 100 pixels with a maximum file
-        size of 2MB.
+        size of 2MB. Or choose an avatar.
       </SectionHeading>
 
-      <div className="flex gap-2">
+      <div className="flex gap-8 items-end">
+        {/* Hidden inputs for form data */}
+        <input type="hidden" name="avatar" className="setu-f" value={selectedAvatar} />
         <input
           name="director_profile_picture"
           type="file"
           accept="image/*"
           ref={inputFileRef}
-          onChange={handleFileChange}
-          className="hidden setup-f required"
+          onChange={handleImageChange}
+          className="hidden setu-f"
         />
-        {preview ? (
-          <div className="w-[100px] h-[100px] relative">
+
+        {/* File upload side */}
+        <div className="flex gap-2">
+          {preview && preview !== CameraCircle ? (
+            <div className="w-[100px] h-[100px] relative">
+              <Image
+                src={preview}
+                alt="Profile Picture"
+                fill
+                style={{ objectFit: "cover" }}
+                className="rounded-lg w-[100px] h-[100px]"
+              />
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="absolute top-[-15px] right-[-25px] z-10"
+                aria-label="Delete"
+              >
+                <DeleteIconOrange />
+              </button>
+            </div>
+          ) : (
             <button
               type="button"
-              onClick={handleDeleteImage}
-              className="absolute top-[-15px] right-[-25px] z-10"
-              aria-label="Delete"
+              onClick={handleUploadClick}
+              className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
             >
-              <DeleteIconOrange />
+              <UploadImageIcon />
+              <span className="text-text-secondary text-xs font-normal">
+                Upload Profile Picture
+              </span>
             </button>
-            <Image
-              src={preview}
-              alt="Profile Picture"
-              fill
-              style={{ objectFit: "cover" }}
-              className="rounded-lg w-[100px] h-[100px]"
-            />
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={handleButtonClick}
-            className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
+          )}
+          {/* {preview && preview !== CameraCircle && (
+            <div className="flex items-end">
+              <Button
+                type="button"
+                variant="change"
+                size="sm"
+                onClick={handleUploadClick}
+              >
+                Change Picture
+              </Button>
+            </div>
+          )} */}
+        </div>
+
+        {/* Avatar selection button */}
+        <div className="custom-flex-col gap-3">
+          {/* <p className="text-black text-base font-medium">Choose Avatar</p> */}
+          <Modal
+            state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >
-            <UploadImageIcon />
-            <span className="text-text-secondary text-xs font-normal">
-              Upload Profile Picture
-            </span>
-          </button>
-        )}
-        {preview && (
-          <div className="flex items-end">
-            <Button
-              type="button"
-              variant="change"
-              size="sm"
-              onClick={handleButtonClick}
+            <ModalTrigger
+              className="bg-[rgba(42,42,42,0.63)] !w-[60px] h-[60px] rounded-full flex items-center justify-center text-white relative"
+              aria-label="choose avatar"
             >
-              Change Picture
-            </Button>
-          </div>
-        )}
+              {selectedAvatar ? (
+                <>
+                  <Image
+                    src={selectedAvatar}
+                    alt="Selected avatar"
+                    width={60}
+                    height={60}
+                    className="object-cover object-center w-[60px] h-[60px] rounded-full bg-brand-9"
+                  />
+                  <div
+                    role="button"
+                    aria-label="Remove avatar"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedAvatar("");
+                      clearImageSelection();
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
+                </>
+              ) : (
+                <PersonIcon size={18} />
+              )}
+            </ModalTrigger>
+            <ModalContent>
+              <LandlordTenantModalPreset
+                heading="Choose Avatar"
+                style={{ maxWidth: "700px" }}
+              >
+                <Avatars onClick={handleAvatarSelection} />
+              </LandlordTenantModalPreset>
+            </ModalContent>
+          </Modal>
+        </div>
       </div>
     </div>
   );
 };
 
 export default ProfilePicture;
-
-
-
-//FOR FUTURE -if need for default profile
-
-
-// import Image from "next/image";
-// import { useContext } from "react";
-// // Imports
-// import { SectionHeading } from "../Section/section-components";
-// import Button from "../Form/Button/button";
-// import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
-// import { FlowProgressContext } from "../FlowProgress/flow-progress";
-// import { useImageUploader } from "@/hooks/useImageUploader";
-
-// interface ProfilePictureProps {
-//   defaultImage?: string; // Path to the default image
-// }
-
-// const ProfilePicture: React.FC<ProfilePictureProps> = ({ defaultImage }) => {
-//   const { handleInputChange } = useContext(FlowProgressContext);
-
-//   const { preview, inputFileRef, handleImageChange, clearSelection } =
-//     useImageUploader({
-//       maxSize: { unit: "MB", value: 2 },
-//     });
-
-//   const handleButtonClick = () => {
-//     if (inputFileRef.current) {
-//       inputFileRef.current.click();
-//     }
-//   };
-
-//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     handleImageChange(e);
-//     handleInputChange();
-//   };
-
-//   const handleDeleteImage = () => {
-//     clearSelection();
-//     handleInputChange();
-//   };
-
-//   // Use the uploaded preview if available; otherwise, fallback to the defaultImage
-//   const imageToShow = preview || defaultImage;
-
-//   return (
-//     <div className="custom-flex-col gap-5">
-//       <SectionHeading title="profile picture">
-//         The profile photo size should be 100 x 100 pixels with a maximum file
-//         size of 2MB.
-//       </SectionHeading>
-
-//       <div className="flex gap-2">
-//         <input
-//           name="director_profile_picture"
-//           type="file"
-//           accept="image/*"
-//           ref={inputFileRef}
-//           onChange={handleFileChange}
-//           className="hidden setup-f required"
-//         />
-//         {imageToShow ? (
-//           <div className="w-[100px] h-[100px] relative">
-//             <button
-//               type="button"
-//               onClick={handleDeleteImage}
-//               className="absolute top-[-15px] right-[-25px] z-10"
-//               aria-label="Delete"
-//             >
-//               <DeleteIconOrange />
-//             </button>
-//             <Image
-//               src={imageToShow}
-//               alt="Profile Picture"
-//               fill
-//               style={{ objectFit: "cover" }}
-//               className="rounded-lg w-[100px] h-[100px]"
-//             />
-//           </div>
-//         ) : (
-//           <button
-//             type="button"
-//             onClick={handleButtonClick}
-//             className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
-//           >
-//             <UploadImageIcon />
-//             <span className="text-text-secondary text-xs font-normal">
-//               Upload Profile Picture
-//             </span>
-//           </button>
-//         )}
-//         {imageToShow && (
-//           <div className="flex items-end">
-//             <Button
-//               type="button"
-//               variant="change"
-//               size="sm"
-//               onClick={handleButtonClick}
-//             >
-//               Change Picture
-//             </Button>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProfilePicture;
