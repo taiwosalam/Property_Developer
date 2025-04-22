@@ -262,6 +262,7 @@ const Select: React.FC<SelectProps> = ({
               <button
                 type="button"
                 aria-label="Clear"
+                className="ml-2"
                 onClick={(e) => {
                   handleSelection("");
                   e.stopPropagation();

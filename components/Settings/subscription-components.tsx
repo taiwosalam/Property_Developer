@@ -6,8 +6,16 @@ import {
 } from "./settings-components";
 import Input from "../Form/Input/input";
 import { CounterButton } from "./SettingsEnrollment/settings-enrollment-components";
+import { FeatureFields, SMSFields, SponsorFields } from "@/app/(nav)/settings/subscription/data";
+import { ChevronRight } from "lucide-react";
+import CustomTable from "../Table/table";
+import { CustomTableProps } from "../Table/types";
+import Link from "next/link";
 
 export const SMSUnit = () => {
+  const table_style_props: Partial<CustomTableProps> = {
+    tableHeadClassName: "h-[45px]",
+  };
   return (
     <SettingsSection title="SMS unit">
       <div className="custom-flex-col gap-6">
@@ -33,6 +41,28 @@ export const SMSUnit = () => {
           </div>
         </div>
         <SettingsUpdateButton text="purchase unit" type="purchase unit" />
+
+        <div className="custom-flex-col gap-4">
+          <div className="flex justify-between">
+            <h2 className="text-text-primary dark:text-white text-xl font-medium">
+              Recent Sponsors
+            </h2>
+            <Link
+              href="/settings/subscription/sponsors"
+              className="flex items-center gap-1"
+            >
+              <span className="text-text-label dark:text-darkText-1">
+                See all
+              </span>
+              <ChevronRight color="#5A5D61" size={16} />
+            </Link>
+          </div>
+          <CustomTable
+            data={[]}
+            fields={SMSFields}
+            {...table_style_props}
+          />
+        </div>
       </div>
     </SettingsSection>
   );
@@ -49,6 +79,10 @@ export const FeatureCompany = () => {
   const handleDecrement = () => {
     setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
   };
+
+   const table_style_props: Partial<CustomTableProps> = {
+      tableHeadClassName: "h-[45px]",
+    };
 
   return (
     <SettingsSection title="Feature Your Company">
@@ -81,6 +115,29 @@ export const FeatureCompany = () => {
           </div>
         </div>
         <SettingsUpdateButton text="feature now" type="feature" />
+
+        <div className="custom-flex-col gap-4">
+          <div className="flex justify-between">
+            <h2 className="text-text-primary dark:text-white text-xl font-medium">
+              Recent Sponsors
+            </h2>
+            <Link
+              href="/settings/subscription/sponsors"
+              className="flex items-center gap-1"
+            >
+              <span className="text-text-label dark:text-darkText-1">
+                See all
+              </span>
+              <ChevronRight color="#5A5D61" size={16} />
+            </Link>
+          </div>
+          <CustomTable
+            data={[]}
+            fields={FeatureFields}
+            {...table_style_props}
+          />
+        </div>
+      
       </div>
     </SettingsSection>
   );

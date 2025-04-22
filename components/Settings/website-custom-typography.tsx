@@ -89,13 +89,11 @@ const WebsiteTypography = () => {
   const googleFonts = useGoogleFonts();
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
   const [hasChanged, setHasChanged] = useState(false);
- 
+
   const [typographySettings, setTypographySettings] = useState<{
     [key: string]: { fontWeight?: string; fontSize?: string };
   }>({});
   const [loading, setLoading] = useState<boolean>(false);
-
-    
 
   const handleFontSelect = (fontName: string) => {
     setSelectedFont(fontName);
@@ -197,10 +195,12 @@ const WebsiteTypography = () => {
           </p>
         </div>
 
+       
         <SettingsSectionTitle
           title="Website Typography"
           desc="Define the font size and style for your website's display."
         />
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
         {settings.map((setting) => {
           // Get the current font weight (default is "400")
           const currentWeight =
@@ -215,13 +215,12 @@ const WebsiteTypography = () => {
             typographySettings[setting.title]?.fontWeight ||
             typographySettings[setting.title]?.fontSize;
 
-           
           return (
             <div
               key={setting.title}
-              className="flex flex-wrap items-center justify-between my-8"
+              className="my-4"
             >
-              <div className="flex flex-col flex-1">
+              <div className="flex flex-col flex-1 mb-4">
                 <h3 className="text-text-quaternary dark:text-white text-base font-medium capitalize">
                   {setting.title}
                 </h3>
@@ -233,39 +232,40 @@ const WebsiteTypography = () => {
                   <Select
                     id={setting.title}
                     options={fontWeightsOptions}
-                    label="Font Weight & Style"
-                    inputContainerClassName="max-w-[250px]"
+                    label="Font Weight"
+                    inputContainerClassName="max-w-[250px] "
                     onChange={(value) =>
                       handleFontWeightSelect(setting.title, value)
                     }
                     value={
-                      typographySettings[setting.title]?.fontWeight || "400"
+                      typographySettings[setting.title]?.fontWeight || ""
                     }
                   />
 
                   <div className="flex flex-col gap-2">
                     <label
                       htmlFor={`${setting.title}-size`}
-                      className="text-text-label dark:text-darkText-2"
+                      className="text-text-label dark:text-darkText-2 text-sm md:text-base font-normal"
                     >
                       Font Size
                     </label>
                     <div className="flex pr-2 gap-2 items-center rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out">
                       <input
-                        className="w-[200px] px-3 py-[9px] text-xs md:text-sm rounded-[4px] font-normal focus:outline-none keep-spinner"
+                        className="w-[200px] px-3 py-[11px] text-xs md:text-sm rounded-[8px] font-normal focus:outline-none keep-spinner"
                         type="number"
                         id={`${setting.title}-size`}
                         placeholder="size"
                         value={
-                          typographySettings[setting.title]?.fontSize || setting.min
+                          typographySettings[setting.title]?.fontSize ||
+                          setting.min
                         }
                         onChange={(e) =>
                           handleFontSizeChange(setting.title, e.target.value)
                         }
-                         max={setting.max}
-                         min={setting.min}
+                        max={setting.max}
+                        min={setting.min}
                       />
-                       <span className="text-text-disabled">px</span>
+                      <span className="text-text-disabled">px</span>
                     </div>
                   </div>
                 </div>
@@ -288,8 +288,10 @@ const WebsiteTypography = () => {
                 )}
               </div>
             </div>
+            
           );
         })}
+        </div>
         <div className="flex justify-end gap-4">
           {hasChanged && (
             <Button

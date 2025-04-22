@@ -2,16 +2,25 @@
 
 import React, { useState } from "react";
 import SettingsSection from "./settings-section";
-import { SettingsSectionTitle, SettingsUpdateButton } from "./settings-components";
+import {
+  SettingsSectionTitle,
+  SettingsUpdateButton,
+} from "./settings-components";
 import CustomTable from "../Table/table";
-import { personalized_domain } from "@/app/(nav)/settings/subscription/data";
+import { DomainFields, personalized_domain, SponsorFields } from "@/app/(nav)/settings/subscription/data";
 import { CustomTableProps, DataItem } from "../Table/types";
 import TableMenu from "../Table/table-menu";
 import { Box, MenuItem, Modal } from "@mui/material";
 import PaymentMethod from "../Wallet/AddFunds/payment-method";
 import useSubscriptionStore from "@/store/subscriptionStore";
-import { ConfirmModal, EditModal, SuccessModal } from "@/app/(nav)/settings/subscription/components";
+import {
+  ConfirmModal,
+  EditModal,
+  SuccessModal,
+} from "@/app/(nav)/settings/subscription/components";
 import Input from "../Form/Input/input";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const style = {
   position: "absolute",
@@ -159,6 +168,27 @@ const PersonalizedDomain = () => {
           </div>
         </div>
         <SettingsUpdateButton text="add domain" type="add domain" />
+        <div className="custom-flex-col gap-4">
+          <div className="flex justify-between">
+            <h2 className="text-text-primary dark:text-white text-xl font-medium">
+              Recent Sponsors
+            </h2>
+            <Link
+              href="/settings/subscription/sponsors"
+              className="flex items-center gap-1"
+            >
+              <span className="text-text-label dark:text-darkText-1">
+                See all
+              </span>
+              <ChevronRight color="#5A5D61" size={16} />
+            </Link>
+          </div>
+          <CustomTable
+            data={[]}
+            fields={DomainFields}
+            {...table_style_props}
+          />
+        </div>
       </div>
     </SettingsSection>
   );

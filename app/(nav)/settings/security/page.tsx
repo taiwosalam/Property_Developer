@@ -47,12 +47,28 @@ import SettingsSMS from "@/components/Settings/settings-sms";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import TextArea from "@/components/Form/TextArea/textarea";
 import useFetch from "@/hooks/useFetch";
+import { Button } from "@/components/ui/button";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
+import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import NameVerification from "@/components/Settings/name-verification";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
   const [pageData, setPageData] = useState<InitialDataTypes>(initialData);
+
+  const [fullName, setFullName] = useState<string>(pageData?.fullname || "");
+
+  useEffect(() => {
+    setFullName(pageData?.fullname || "");
+  }, [pageData?.fullname]);
+
+  const onChangeFullName = (value: string) => {
+    setFullName(value);
+  };
 
   const yearsOptions = Array.from({ length: 10 }, (_, i) => {
     const yearValue = i + 1;
@@ -92,7 +108,6 @@ const Security = () => {
     inputFileRef?.current?.click();
   };
 
-
   const handleUpdateProfile = async (data: FormData) => {
     const payload = {
       full_name: data.get("full_name"),
@@ -104,7 +119,6 @@ const Security = () => {
       phone_number: data.get("phone"),
       alt_email: data.get("alt_email"),
     };
-   
 
     try {
       setReqLoading(true);
@@ -152,23 +166,35 @@ const Security = () => {
                     inputContainerClassName="bg-neutral-2"
                     defaultValue={pageData?.personal_title}
                   />
-                  
+
                   <Select
                     id="professional_title"
                     name="professional_title"
                     options={industryOptions}
                     label="professional title"
                     inputContainerClassName="bg-neutral-2"
-                     defaultValue={pageData?.professional_title}
+                    defaultValue={pageData?.professional_title}
                   />
-
-                  <Input
-                    id="full_name"
-                    name="full_name"
-                    label="full name"
-                    placeholder="Write Here"
-                    defaultValue={pageData?.fullname}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="full_name"
+                      name="full_name"
+                      label="full name"
+                      placeholder="Write Here"
+                      value={fullName}
+                      onChange={onChangeFullName}
+                    />
+                    <Modal>
+                      <ModalTrigger>
+                        <Button className="bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white absolute top-9 right-2 py-2 h-9">
+                          Verify
+                        </Button>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <NameVerification fullName={fullName} />
+                      </ModalContent>
+                    </Modal>
+                  </div>
 
                   <Input
                     id="alt_email"
@@ -179,13 +205,13 @@ const Security = () => {
                     defaultValue={pageData?.director_email}
                   />
 
-                   <Select
+                  <Select
                     id="years_in_business"
                     label="years of experience"
                     placeholder="Write here"
                     options={yearsOptions}
                     hiddenInputClassName="setup-f"
-                     defaultValue={pageData?.director_experience}
+                    defaultValue={pageData?.director_experience}
                   />
 
                   <PhoneNumberInput
@@ -209,7 +235,6 @@ const Security = () => {
               submit
               loading={reqLoading}
               action={handleUpdateProfile as any}
-             
             />
           </div>
         </AuthForm>

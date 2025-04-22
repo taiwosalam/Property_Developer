@@ -2,7 +2,35 @@ import api, { handleAxiosError } from "@/services/api";
 
 export const staffConfigurations = [
   {
-    title: "staff configuration (branch manager)",
+    title: "admin configuration (company director)",
+    subTitle:
+      "Can be accessed through mobile app, software, or web cross-platform.",
+    permissions: [
+      [
+        "Add Other Directors",
+        "Change Company Module",
+        "Manage Messages & Reviews",
+        "Notification Preferences",
+        "Reset System Settings",
+        "Customize Appearance",
+        "Manage Enrollment Settings",
+        "Set Authorized Signature",
+        "Change Wallet PIN",
+      ],
+      [
+        "Update Bank Details",
+        "Modify SMS Sender Name",
+        "Configure SMTP Settings",
+        "Edit Services",
+        "Manage Subscription Settings",
+        "Access Management Settings",
+        "Modify Company Information",
+        "Full Wallet Access",
+      ],
+    ],
+  },
+  {
+    title: "partner configuration (branch manager)",
     subTitle:
       "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [
@@ -19,10 +47,9 @@ export const staffConfigurations = [
         "Can manage inspections",
         "Can create and manage announcement",
         "Can add and manage tenants/occupants",
-        "Can view and reply branch reviews",
       ],
       [
-        "Can add/delete branch staff",
+        "Can view and reply branch reviews",
         "Can add/delete branch staff",
         "Can view branch account statement",
         "Can approve/decline account officer portfolio",
@@ -38,7 +65,7 @@ export const staffConfigurations = [
     ],
   },
   {
-    title: "staff configuration (account officer)",
+    title: "colleague configuration (account officer)",
     subTitle:
       "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [
@@ -65,7 +92,7 @@ export const staffConfigurations = [
     ],
   },
   {
-    title: "staff configuration (staff)",
+    title: "staff configuration (other staff)",
     subTitle: "Can be accessed through mobile app or web cross-platform.",
     permissions: [
       [
@@ -119,7 +146,6 @@ export type RentPeriod =
   | "nonennial"
   | "decennial";
 
-
 export const PERCENTAGE_OPTIONS = [
   "1%",
   "2%",
@@ -144,85 +170,85 @@ export const RENT_PERIODS: Array<{
   {
     value: "daily",
     label: "Daily",
-    desc: "Description 1",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "weekly",
     label: "Weekly",
-    desc: "Description 2",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "monthly",
     label: "Monthly",
-    desc: "Description 3",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "quarterly",
     label: "Quarterly",
-    desc: "Description 4",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "yearly",
     label: "Yearly",
-    desc: "Description 5",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "biennially",
     label: "Biennially",
-    desc: "Description 6",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "triennially",
     label: "Triennially",
-    desc: "Description 7",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "quadrennial",
     label: "Quadrennial",
-    desc: "Description 8",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "quinquennial",
     label: "Quinquennial",
-    desc: "Description 9",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "sexennial",
     label: "Sexennial",
-    desc: "Description 10",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "septennial",
     label: "Septennial",
-    desc: "Description 11",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "octennial",
     label: "Octennial",
-    desc: "Description 12",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "nonennial",
     label: "Nonennial",
-    desc: "Description 13",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
   {
     value: "decennial",
     label: "Decennial",
-    desc: "Description 14",
+    desc: "They will be subject to a monthly interest charge on rent",
     options: PERCENTAGE_OPTIONS,
   },
 ];
