@@ -7,6 +7,59 @@ import type { SubscriptionTableType } from "./types";
 import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
 
+
+export const enrollment_subscriptions: SubscriptionTableType = {
+  fields: [
+    {
+      id: "0",
+      label: "Subscription Type",
+      accessor: "subscription_type",
+    },
+    {
+      id: "1",
+      label: "Duration",
+      accessor: "duration",
+    },
+    {
+      id: "2",
+      label: "Discount(%)",
+      accessor: "discount",
+    },
+    {
+      id: "3",
+      label: "Price",
+      accessor: "price",
+    },
+    {
+      id: "4",
+      label: "Start Date",
+      accessor: "start_date",
+    },
+    {
+      id: "5",
+      label: "Due Date",
+      accessor: "due_date",
+    },
+    {
+      id: "6",
+      label: "Status",
+      accessor: "status",
+    },
+  ],
+  data: Array(5)
+    .fill(null)
+    .map((_, idx) => ({
+      id: `${idx + 1}`,
+      subscription_type: "Personalized Domain",
+      duration: "1 month",
+      discount: "1",
+      price: "₦1,000",
+      start_date: "12/12/12",
+      due_date: "12/12/12",
+      status: "Active",
+    })),
+};
+
 export const current_subscriptions: SubscriptionTableType = {
   fields: [
     {
@@ -153,6 +206,98 @@ export const SponsorFields = [
     label: "Date",
     accessor: "date",
   },
+];
+export const DomainFields = [
+  {
+    id: "0",
+    label: "Domain",
+    accessor: "domain",
+  },
+  {
+    id: "1",
+    label: "Activation Date",
+    accessor: "activation_date",
+  },
+  {
+    id: "2",
+    label: "Start Date",
+    accessor: "start_date",
+  },
+  {
+    id: "4",
+    label: "Due Date",
+    accessor: "due_date",
+  },
+  {
+    id: "5",
+    label: "Status",
+    accessor: "status",
+  },
+];
+
+export const FeatureFields = [
+  {
+    id: "0",
+    label: "Feature ID",
+    accessor: "feature_id",
+  },
+  {
+    id: "1",
+    label: "Duration",
+    accessor: "duration",
+  },
+  {
+    id: "2",
+    label: "Price",
+    accessor: "price",
+  },
+  {
+    id: "3",
+    label: "Start Date",
+    accessor: "start_date",
+  },
+  {
+    id: "4",
+    label: "Due Date",
+    accessor: "due_date",
+  },
+  {
+    id: "5",
+    label: "Status",
+    accessor: "status",
+  },
+];
+export const SMSFields = [
+  {
+    id: "0",
+    label: "Purchase ID",
+    accessor: "purchase_id",
+  },
+  {
+    id: "1",
+    label: "Quantity",
+    accessor: "quantity",
+  },
+  {
+    id: "2",
+    label: "Price",
+    accessor: "price",
+  },
+  {
+    id: "3",
+    label: "Status",
+    accessor: "status",
+  },
+  {
+    id: "4",
+    label: "Purchase Date",
+    accessor: "purchase_date",
+  },
+  // {
+  //   id: "5",
+  //   label: "Date",
+  //   accessor: "date",
+  // },
 ];
 
 export const transformSponsorResponse = (

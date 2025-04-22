@@ -350,7 +350,7 @@ const Management = () => {
       <SettingsSection title="rent penalty settings"> */}
       </SettingsSection>
       <RentPenalty />
-      <SettingsSection title="rent penalty settings">
+      {/* <SettingsSection title="rent penalty settings">
         <div className="custom-flex-col gap-8">
           <p className="text-text-disabled text-sm font-normal">
             The tenant is required to make full rent payment on or before the
@@ -392,7 +392,7 @@ const Management = () => {
             </div>
           </AuthForm>
         </div>
-      </SettingsSection>
+      </SettingsSection> */}
     </>
   );
 };

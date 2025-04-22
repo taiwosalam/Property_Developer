@@ -65,7 +65,7 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
               desc={ data?.inspection_type === "physical_inspection" ? "Physical Inspection" : "Virtual Inspection" }
             />
             <div className="custom-flex-col gap-1">
-              <InspectionCardTitle>description</InspectionCardTitle>
+              <InspectionCardTitle>client brief</InspectionCardTitle>
               <InspectionCardDesc>
                 { data?.description}
               </InspectionCardDesc>

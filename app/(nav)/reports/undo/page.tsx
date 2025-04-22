@@ -215,9 +215,9 @@ const Undo = () => {
       <FilterBar
         azFilter
         isDateTrue
-        pageTitle="undo"
+        pageTitle="undo/trash"
         aboutPageModalData={{
-          title: "undo",
+          title: "undo/trash",
           description: "This page contains a list of undo on the platform.",
         }}
         handleSearch={handleSearch}

@@ -5,11 +5,12 @@ import type { SettingsServiceOwners, TenantOccupantTier } from "./types";
 export const settings_link_tabs = [
   "company",
   "management",
-  "subscription",
   "services",
-  "security",
-  "enrollment",
   "appearance",
+
+  "enrollment",
+  "subscription",
+  "security",
   // "preference",
   "others",
 ] as const;
@@ -73,7 +74,7 @@ export const tenant_occupant_tiers = [
   "tier 3",
   "tier 4",
   "tier 5",
-]
+];
 
 export const tenant_occupant_level_types: Record<
   TenantOccupantTier,
