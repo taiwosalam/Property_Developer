@@ -38,7 +38,7 @@ const Signature = () => {
                 src={sig.signature}
                 alt="signature"
                 height={60}
-                width={200} // Adjust width as needed
+                width={150} // Adjust width as needed
               />
             </div>
             <p>
