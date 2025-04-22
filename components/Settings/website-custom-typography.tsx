@@ -24,42 +24,51 @@ const settings = [
   {
     title: "Body Font",
     desc: "Specify the body font properties.",
+    min: 12,
+    max: 72,
+    default: 16,
   },
   {
     title: "H1",
     desc: "Specify the H1 tag font properties.",
     min: 32,
     max: 64,
+    default: 32,
   },
   {
     title: "H2",
     desc: "Specify the H2 tag font properties.",
-    min: 28,
+    min: 24,
     max: 48,
+    default: 28,
   },
   {
     title: "H3",
     desc: "Specify the H3 tag font properties.",
-    min: 24,
+    min: 19,
     max: 40,
+    default: 24,
   },
   {
     title: "H4",
     desc: "Specify the H4 tag font properties.",
-    min: 20,
+    min: 16,
     max: 32,
+    default: 20,
   },
   {
     title: "H5",
     desc: "Specify the H5 tag font properties.",
-    min: 16,
+    min: 13,
     max: 24,
+    default: 16,
   },
   {
     title: "H6",
     desc: "Specify the H6 tag font properties.",
-    min: 14,
+    min: 11,
     max: 20,
+    default: 14,
   },
 ];
 
@@ -168,12 +177,14 @@ const WebsiteTypography = () => {
     setTypographySettings({});
   };
 
+  console.log(googleFonts)
+
   return (
     <div>
       <SettingsSection title="Website Typography & Font Template">
         <SettingsSectionTitle
           title="Fonts Templates"
-          desc="Choose Your Preferred Font Style for Your Company Profile Website"
+          desc="Choose Your Preferred Font Style for Your Company Website"
         />
         <div className="flex w-full items-start lg:items-center lg:flex-row flex-col gap-2 mb-8">
           <Select
@@ -182,115 +193,118 @@ const WebsiteTypography = () => {
             placeholder="Select a font"
             onChange={(value) => handleFontSelect(value)}
             options={googleFonts}
-            value={selectedFont || ""}
+            value={selectedFont || "Lato"}
             inputContainerClassName="bg-neutral-2 w-full mt-2 lg:min-w-[300px]"
           />
-          <p
-            className="font text-sm text-brand-9"
-            style={{ fontFamily: selectedFont || googleFonts[0] }}
-          >
-            Your website will display a default font initially, but selecting
-            your preferred font will update all text on your website to match
-            the chosen style.
-          </p>
+
+          
+            <div className="mb-4 mt-2 max-w-full">
+              <p
+                className="text-lg"
+                style={{
+                  fontFamily: selectedFont ?? "Lato",
+                  // fontSize: typographySettings[setting.title]?.fontSize
+                  //   ? typographySettings[setting.title].fontSize + "px"
+                  //   : "inherit",
+                }}
+              >
+                AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+              </p>
+            </div>
+        
         </div>
 
-       
         <SettingsSectionTitle
           title="Website Typography"
           desc="Define the font size and style for your website's display."
         />
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-        {settings.map((setting) => {
-          // Get the current font weight (default is "400")
-          const currentWeight =
-            typographySettings[setting.title]?.fontWeight || "400";
-          // Determine if the style is italic.
-          const isItalic = currentWeight.includes("italic");
-          // Extract the numeric part of the weight.
-          const numericWeight = currentWeight.replace("italic", "") || "400";
+          {settings.map((setting) => {
+            // Get the current font weight (default is "400")
+            const currentWeight =
+              typographySettings[setting.title]?.fontWeight || "400";
+            // Determine if the style is italic.
+            const isItalic = currentWeight.includes("italic");
+            // Extract the numeric part of the weight.
+            const numericWeight = currentWeight.replace("italic", "") || "400";
 
-          // Check if the user has changed something for this setting.
-          const hasChanged =
-            typographySettings[setting.title]?.fontWeight ||
-            typographySettings[setting.title]?.fontSize;
+            // Check if the user has changed something for this setting.
+            const hasChanged =
+              typographySettings[setting.title]?.fontWeight ||
+              typographySettings[setting.title]?.fontSize;
 
-          return (
-            <div
-              key={setting.title}
-              className="my-4"
-            >
-              <div className="flex flex-col flex-1 mb-4">
-                <h3 className="text-text-quaternary dark:text-white text-base font-medium capitalize">
-                  {setting.title}
-                </h3>
-                <p className="text-text-disabled">{setting.desc}</p>
-              </div>
-
-              <div className="flex flex-col flex-1 justify-end">
-                <div className="wrapper flex md:flex-nowrap sm:flex-wrap gap-2">
-                  <Select
-                    id={setting.title}
-                    options={fontWeightsOptions}
-                    label="Font Weight"
-                    inputContainerClassName="max-w-[250px] "
-                    onChange={(value) =>
-                      handleFontWeightSelect(setting.title, value)
-                    }
-                    value={
-                      typographySettings[setting.title]?.fontWeight || ""
-                    }
-                  />
-
-                  <div className="flex flex-col gap-2">
-                    <label
-                      htmlFor={`${setting.title}-size`}
-                      className="text-text-label dark:text-darkText-2 text-sm md:text-base font-normal"
-                    >
-                      Font Size
-                    </label>
-                    <div className="flex pr-2 gap-2 items-center rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out">
-                      <input
-                        className="w-[200px] px-3 py-[11px] text-xs md:text-sm rounded-[8px] font-normal focus:outline-none keep-spinner"
-                        type="number"
-                        id={`${setting.title}-size`}
-                        placeholder="size"
-                        value={
-                          typographySettings[setting.title]?.fontSize ||
-                          setting.min
-                        }
-                        onChange={(e) =>
-                          handleFontSizeChange(setting.title, e.target.value)
-                        }
-                        max={setting.max}
-                        min={setting.min}
-                      />
-                      <span className="text-text-disabled">px</span>
-                    </div>
-                  </div>
+            return (
+              <div key={setting.title} className="my-4">
+                <div className="flex flex-col flex-1 mb-4">
+                  <h3 className="text-text-quaternary dark:text-white text-base font-medium capitalize">
+                    {setting.title}
+                  </h3>
+                  <p className="text-text-disabled">{setting.desc}</p>
                 </div>
 
-                {/* PREVIEW ONLY SHOWS WHEN CHANGED */}
-                {hasChanged && (
-                  <div className="mb-4 mt-2 max-w-[300px] overflow-auto custom-round-scrollbar">
-                    <p
-                      style={{
-                        fontWeight: numericWeight,
-                        fontStyle: isItalic ? "italic" : "normal",
-                        fontSize: typographySettings[setting.title]?.fontSize
-                          ? typographySettings[setting.title].fontSize + "px"
-                          : "inherit",
-                      }}
-                    >
-                      AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
-                    </p>
+                <div className="flex flex-col flex-1 justify-end">
+                  <div className="wrapper flex md:flex-nowrap sm:flex-wrap gap-2">
+                    <Select
+                      id={setting.title}
+                      options={fontWeightsOptions}
+                      label="Font Weight"
+                      inputContainerClassName="max-w-[250px] "
+                      onChange={(value) =>
+                        handleFontWeightSelect(setting.title, value)
+                      }
+                      value={
+                        typographySettings[setting.title]?.fontWeight || "500"
+                      }
+                    />
+
+                    <div className="flex flex-col gap-2">
+                      <label
+                        htmlFor={`${setting.title}-size`}
+                        className="text-text-label dark:text-darkText-2 text-sm md:text-base font-normal"
+                      >
+                        Font Size
+                      </label>
+                      <div className="flex pr-2 gap-2 items-center rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out">
+                        <input
+                          className="typography w-[200px] px-3 py-[11px] text-xs md:text-sm rounded-[8px] font-normal focus:outline-none keep-spinner appearance-auto opacity-100"
+                          type="number"
+                          id={`${setting.title}-size`}
+                          placeholder="size"
+                          value={
+                            typographySettings[setting.title]?.fontSize ||
+                            setting.default
+                          }
+                          onChange={(e) =>
+                            handleFontSizeChange(setting.title, e.target.value)
+                          }
+                          max={setting.max}
+                          min={setting.min}
+                        />
+                        <span className="text-text-disabled">px</span>
+                      </div>
+                    </div>
                   </div>
-                )}
+
+                  {/* PREVIEW ONLY SHOWS WHEN CHANGED */}
+                  {/* {hasChanged && ( */}
+                    <div className="mb-4 mt-2 max-w-[300px] overflow-auto custom-round-scrollbar">
+                      <p
+                        style={{
+                          fontWeight: numericWeight,
+                          fontStyle: isItalic ? "italic" : "normal",
+                          fontSize: typographySettings[setting.title]?.fontSize
+                            ? typographySettings[setting.title].fontSize + "px"
+                            : "inherit",
+                        }}
+                      >
+                        AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+                      </p>
+                    </div>
+                  {/* )} */}
+                </div>
               </div>
-            </div>
-            
-          );
-        })}
+            );
+          })}
         </div>
         <div className="flex justify-end gap-4">
           {hasChanged && (

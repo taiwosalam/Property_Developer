@@ -181,6 +181,7 @@ const Profile = () => {
                     label="company name"
                     placeholder={companyData.company_name}
                     className="w-full"
+                    value={companyData?.company_name}
                     disabled
                   />
                   <div className="flex mt-2 sm:mt-0 sm:ml-2">
@@ -294,7 +295,7 @@ const Profile = () => {
                 defaultValue={state.companyData.state}
                 onChange={(value) => handleAddressChange("state", value)} // Update handler
                 required
-                disabled
+                disabled={verifications?.utility_status === "verified"}
               />
 
               {/* Local Government Selector */}
@@ -306,7 +307,7 @@ const Profile = () => {
                 onChange={(value) => handleAddressChange("lga", value)} // Update handler
                 value={address.lga} // Controlled value
                 required
-                disabled
+                disabled={verifications?.utility_status === "verified"}
                 defaultValue={state.companyData.local_government}
               />
 
@@ -320,7 +321,7 @@ const Profile = () => {
                 onChange={(value) => handleAddressChange("city", value)} // Update handler
                 value={address.city} // Controlled value
                 required
-                disabled
+                disabled={verifications?.utility_status === "verified"}
                 defaultValue={state.companyData.city}
               />
             </div>
@@ -329,7 +330,7 @@ const Profile = () => {
                 id="head_office_address"
                 label="Head Office Address"
                 placeholder=""
-                disabled
+                disabled={verifications?.utility_status === "verified"}
                 className="w-full lg:w-[500px]"
                 defaultValue={state.companyData.head_office_address}
               />
