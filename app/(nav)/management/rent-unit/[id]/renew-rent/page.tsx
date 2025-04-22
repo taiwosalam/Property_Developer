@@ -151,8 +151,20 @@ const RenewRent = () => {
               isRental={isRental}
               startDate={start_date}
               dueDate={due_date}
-              rentFee={unit_data.newTenantPrice}
+              rentFee={unit_data.renewalTenantPrice}
               otherFee={unit_data.other_charge as string}
+              totalPackage={
+                unit_data?.newTenantTotalPrice?.toString() || "0"
+                  ? `${
+                      currencySymbols["₦" as keyof typeof currencySymbols] ||
+                      "₦"
+                    }${formatNumber(
+                      parseFloat(
+                        unit_data?.newTenantTotalPrice?.toString() ?? "0"
+                      )
+                    )}`
+                  : ""
+              }
             />
             <RenewalFee
               isRental={isRental}
@@ -189,20 +201,21 @@ const RenewRent = () => {
                     ? "Renewal Total Package"
                     : "Renewal Total Fee",
                   amount:
-                    unit_data?.total_package?.toString() || "0"
+                    unit_data?.renewalTenantTotalPrice?.toString() || "0"
                       ? `${
                           currencySymbols[
                             "₦" as keyof typeof currencySymbols
                           ] || "₦"
                         }${formatNumber(
                           parseFloat(
-                            unit_data?.total_package?.toString() ?? "0"
+                            unit_data?.renewalTenantTotalPrice?.toString() ??
+                              "0"
                           )
                         )}`
                       : "",
                 },
               ]}
-              total_package={Number(unit_data.total_package)}
+              total_package={Number(unit_data.renewalTenantTotalPrice)}
               id={propertyId as string}
             />
 
@@ -215,6 +228,7 @@ const RenewRent = () => {
                 date ? setStartDate(dayjs(date)) : setStartDate(null)
               }
               setDueDate={setDueDate}
+              occupant={unit_data?.occupant}
               setSelectedCheckboxOptions={setSelectedCheckboxOptions}
             />
           </div>

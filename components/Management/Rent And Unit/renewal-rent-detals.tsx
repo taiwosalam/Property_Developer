@@ -36,19 +36,21 @@ export const RenewalRentDetails: React.FC<{
   dueDate: string;
   rentFee: string;
   otherFee: string;
-}> = ({ isRental, startDate, dueDate, rentFee, otherFee }) => {
+  totalPackage?: string;
+}> = ({ isRental, startDate, dueDate, rentFee, otherFee, totalPackage }) => {
   const renewalRentDetailItems = [
-    { label: "Current Start Date", value: startDate },
+    { label: "Start Date", value: startDate },
     { label: "Due Date", value: dueDate },
+    { label: "Total Package", value: totalPackage },
     // { label: "Annual Rent", value: rentFee },
     // { label: "Other Fees", value: otherFee },
   ];
   return (
     <div className="space-y-6">
       <RentSectionTitle>
-        {isRental ? "Rent Details" : "Fee Renewal Details"}
+        {isRental ? "Current Rent" : "Fee Renewal Details"}
       </RentSectionTitle>
-      <RentSectionContainer title={isRental ? "Current Rent" : "Fee"}>
+      <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
         <div className="grid md:grid-cols-2 gap-4">
           {renewalRentDetailItems.map((item, index) => (
             <DetailItem
@@ -130,11 +132,11 @@ export const OwingFee: React.FC<{
   const updatedTotalPackage = total_package + owingAmount;
   return (
     <div className="space-y-6">
-      <RentSectionTitle>Owing Details</RentSectionTitle>
+      <RentSectionTitle>Oustanding Details</RentSectionTitle>
       <FeeDetails
         owing
         noEdit
-        title={isRental ? "Owing Renewal Details" : "Owing Annual Fee"}
+        title={isRental ? "Breakdown" : "Breakdown"}
         feeDetails={updatedFeeDetails}
         total_package={updatedTotalPackage}
         id={id}
@@ -153,6 +155,7 @@ export const RenewalRent: React.FC<{
   setStart_Date?: (date: string | null) => void;
   setDueDate?: (date: Dayjs | null) => void;
   setSelectedCheckboxOptions?: (options: CheckBoxOptions) => void;
+  occupant?: { userTag?: string };
 }> = ({
   isRental,
   rentPeriod,
@@ -163,9 +166,11 @@ export const RenewalRent: React.FC<{
   allowStartDateInput = true,
   setDueDate,
   setSelectedCheckboxOptions,
+  occupant,
 }) => {
+  const isWebUser = occupant?.userTag?.toLowerCase() === "web";
+  const isMobileUser = occupant?.userTag?.toLowerCase() === "mobile";
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
-  // const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [dueDate, setLocalDueDate] = useState<Dayjs | null>(null);
 
   type CheckboxOption =
@@ -175,39 +180,99 @@ export const RenewalRent: React.FC<{
     | "Email Alert"
     | "Rent Agreement";
 
-  const checkboxOptions: CheckboxOption[] = [
-    "Create Invoice",
-    "Mobile Notification",
-    "SMS Alert",
-    "Email Alert",
-    "Rent Agreement",
+  // const checkboxOptions: CheckboxOption[] = [
+  //   "Create Invoice",
+  //   "Mobile Notification",
+  //   "SMS Alert",
+  //   "Email Alert",
+  //   "Rent Agreement",
+  // ];
+
+  // Checkbox options
+  const checkboxOptions = [
+    { label: "Create Invoice", key: "create_invoice" },
+    { label: "Mobile Notification", key: "mobile_notification" },
+    { label: "SMS Alert", key: "sms_alert" },
+    { label: "Email Alert", key: "email_alert" },
+    { label: "Rent Agreement", key: "rent_agreement" },
   ];
 
-  const [checkboxStates, setCheckboxStates] = useState<
-    Record<CheckboxOption, boolean>
-  >({
-    "Create Invoice": false,
-    "Mobile Notification": true,
-    "SMS Alert": true,
-    "Email Alert": true,
-    "Rent Agreement": true,
-  });
+  // Initialize checkbox states
+  const [checkboxStates, setCheckboxStates] = useState<Record<string, boolean>>(
+    {
+      create_invoice: true,
+      mobile_notification: true,
+      sms_alert: true,
+      email_alert: true,
+      rent_agreement: true,
+    }
+  );
+
+  // Filter checkbox options to hide Create Invoice and Mobile Notification for web users
+  const visibleCheckboxOptions = isWebUser
+    ? checkboxOptions.filter(
+        (option) =>
+          option.key !== "create_invoice" &&
+          option.key !== "mobile_notification"
+      )
+    : checkboxOptions;
+
+  // const [checkboxStates, setCheckboxStates] = useState<
+  //   Record<CheckboxOption, boolean>
+  // >({
+  //   "Create Invoice": true,
+  //   "Mobile Notification": true,
+  //   "SMS Alert": true,
+  //   "Email Alert": true,
+  //   "Rent Agreement": true,
+  // });
+
+  // // Update parent with checkbox changes
+  // useEffect(() => {
+  //   setSelectedCheckboxOptions?.({
+  //     create_invoice: checkboxStates["Create Invoice"],
+  //     mobile_notification: checkboxStates["Mobile Notification"],
+  //     sms_alert: checkboxStates["SMS Alert"],
+  //     email_alert: checkboxStates["Email Alert"],
+  //     rent_agreement: checkboxStates["Rent Agreement"],
+  //   });
+  // }, [checkboxStates, setSelectedCheckboxOptions]);
+
+  // Update checkbox states based on userTag
+  useEffect(() => {
+    setCheckboxStates((prev) => ({
+      ...prev,
+      mobile_notification: isWebUser
+        ? false
+        : isMobileUser
+        ? true
+        : prev.mobile_notification,
+      create_invoice: isMobileUser ? true : true,
+    }));
+  }, [isWebUser, isMobileUser]);
 
   // Update parent with checkbox changes
   useEffect(() => {
     setSelectedCheckboxOptions?.({
-      create_invoice: checkboxStates["Create Invoice"],
-      mobile_notification: checkboxStates["Mobile Notification"],
-      sms_alert: checkboxStates["SMS Alert"],
-      email_alert: checkboxStates["Email Alert"],
-      rent_agreement: checkboxStates["Rent Agreement"],
+      create_invoice: checkboxStates.create_invoice,
+      mobile_notification: checkboxStates.mobile_notification,
+      sms_alert: checkboxStates.sms_alert,
+      email_alert: checkboxStates.email_alert,
+      rent_agreement: checkboxStates.rent_agreement,
     });
   }, [checkboxStates, setSelectedCheckboxOptions]);
 
-  const handleCheckboxChange = (option: CheckboxOption) => {
-    setCheckboxStates((prevState) => ({
-      ...prevState,
-      [option]: !prevState[option],
+  // Handle checkbox changes with restrictions
+  const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+    if (optionKey === "mobile_notification" && isWebUser) {
+      return; // Prevent changes for web users
+    }
+    if (optionKey === "create_invoice" && !isMobileUser) {
+      return; // Prevent changes for non-mobile users
+    }
+    setCheckboxStates((prev) => ({
+      ...prev,
+      [optionKey]: checked,
     }));
   };
   // Set startDate based on expiryDate when allowStartDateInput is false
@@ -220,16 +285,6 @@ export const RenewalRent: React.FC<{
     }
   }, [allowStartDateInput, due_date, setStart_Date]);
 
-  // // Calculate due_date based on startDate or expiryDate
-  // useEffect(() => {
-  //   const effectiveStartDate = allowStartDateInput ? startDate : dueDate;
-  //   if (!effectiveStartDate) {
-  //     setDueDate(null);
-  //     return;
-  //   }
-  //   setDueDate(calculateDueDate(effectiveStartDate, rentPeriod));
-  // }, [startDate, dueDate, rentPeriod, allowStartDateInput]);
-
   // Calculate due_date based on startDate or due_date
   useEffect(() => {
     const effectiveStartDate = allowStartDateInput ? startDate : due_date;
@@ -238,18 +293,14 @@ export const RenewalRent: React.FC<{
       setDueDate?.(null);
       return;
     }
-    const calculatedDueDate = calculateDueDate(effectiveStartDate, rentPeriod);
+
+    const calculatedDueDate: Dayjs = calculateDueDate(
+      effectiveStartDate,
+      rentPeriod
+    );
     setLocalDueDate(calculatedDueDate);
     setDueDate?.(calculatedDueDate);
   }, [startDate, due_date, rentPeriod, allowStartDateInput, setDueDate]);
-
-  // useEffect(() => {
-  //   if (!startDate) {
-  //     setDueDate(null);
-  //     return;
-  //   }
-  //   setDueDate(calculateDueDate(startDate, rentPeriod));
-  // }, [startDate, rentPeriod]);
 
   const handleStartDate = (date: Dayjs | null) => {
     setStartDate(date);
@@ -289,42 +340,48 @@ export const RenewalRent: React.FC<{
         )}
       </div>
       <div className="flex items-center justify-end gap-4 flex-wrap mb-4">
-        {checkboxOptions.map((option) => (
+        {visibleCheckboxOptions.map(({ label, key }) => (
           <Checkbox
             sm
-            key={option}
-            checked={checkboxStates[option]}
-            onChange={() => handleCheckboxChange(option)}
+            key={key}
+            checked={checkboxStates[key]}
+            onChange={handleCheckboxChange(key)}
+            disabled={
+              (key === "mobile_notification" && isWebUser) ||
+              (key === "create_invoice" && !isMobileUser)
+            }
           >
-            {option}
+            {label}
           </Checkbox>
         ))}
       </div>
-      <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit ml-auto">
-        {start ? (
-          <>
-            {checkboxStates["Create Invoice"]
-              ? `Payment will be reflected once the ${
-                  isRental ? "tenant" : "occupant"
-                } makes a payment towards the generated invoice.`
-              : `Confirms that you have received payment for the Unit Change.  However, if you intend to receive the payment, you can click 'create invoice' for ${
-                  isRental ? "tenant" : "occupant"
-                } to make the payment.`}
-          </>
-        ) : (
-          <>
-            {checkboxStates["Create Invoice"]
-              ? `${isRental ? "Rent" : "Fee"} will commence upon ${
-                  isRental ? "tenant" : "occupant"
-                } making payment for the generated invoice.`
-              : `Confirms that you have received payment for the ${
-                  isRental ? "rent" : "fee"
-                } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${
-                  isRental ? "tenant" : "occupant"
-                } to make the payment.`}
-          </>
-        )}
-      </p>
+      {!isWebUser && (
+        <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit ml-auto">
+          {start ? (
+            <>
+              {checkboxStates.create_invoice
+                ? `Payment will be reflected once the ${
+                    isRental ? "tenant" : "occupant"
+                  } makes a payment towards the generated invoice.`
+                : `Confirms that you have received payment for the Unit Change. However, if you intend to receive the payment, you can click 'create invoice' for ${
+                    isRental ? "tenant" : "occupant"
+                  } to make the payment.`}
+            </>
+          ) : (
+            <>
+              {checkboxStates.create_invoice
+                ? `${isRental ? "Rent" : "Fee"} will commence upon ${
+                    isRental ? "tenant" : "occupant"
+                  } making payment for the generated invoice.`
+                : `Confirms that you have received payment for the ${
+                    isRental ? "rent" : "fee"
+                  } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${
+                    isRental ? "tenant" : "occupant"
+                  } to make the payment.`}
+            </>
+          )}
+        </p>
+      )}
     </div>
   );
 };

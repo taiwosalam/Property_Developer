@@ -9,7 +9,7 @@ const EditWarningModal = ({ id }: { id:string }) => {
   const router = useRouter();
 
   return (
-    <div className="bg-white px-4 py-5 lg:py-10 absolute bottom-0 left-0 right-0">
+    <div className="bg-white dark:bg-darkText-primary px-4 py-5 lg:py-10 absolute bottom-0 left-0 right-0">
       <p className="text-center font-semibold my-4 text-brand-9">
         This action will navigate you away from the Rent and Unit menu to
         another menu. You can choose to continue or exit from the process

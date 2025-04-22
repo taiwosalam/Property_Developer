@@ -46,10 +46,13 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import ServerError from "@/components/Error/ServerError";
 import { empty } from "@/app/config";
 import dayjs, { Dayjs } from "dayjs";
+import { useGlobalStore } from "@/store/general-store";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { selectedOccupant, isPastDate } = useGlobalStore();
   const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
@@ -61,7 +64,7 @@ const StartRent = () => {
   const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
     useState<CheckBoxOptions>(defaultChecks);
   const [reqLoading, setReqLoading] = useState(false);
-  const [isPastDate, setIsPastDate] = useState(false);
+  // const [isPastDate, setIsPastDate] = useState(false);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
   const endpoint = `/unit/${id}/view`;
@@ -96,7 +99,6 @@ const StartRent = () => {
       setTenants_data(transformedTenants);
     }
   }, [allTenantData]);
-
 
   const handleStartRent = async () => {
     if (!unit_data?.unit_id || !selectedTenantId) {
@@ -139,15 +141,8 @@ const StartRent = () => {
     }
   };
 
-  if (loading)
-    return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-      </div>
-    );
-
+  if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
-
   if (error) return <ServerError error={error} />;
 
   const propertyId = unit_data.propertyId;
@@ -192,23 +187,28 @@ const StartRent = () => {
             },
             { name: "Service Charge", amount: unit_data.service_charge as any },
             { name: "Caution Fee", amount: unit_data.caution_fee as any },
-            { name: "Security Fee", amount: unit_data.security_fee as any },
+            { name: "Inspection Fee", amount: unit_data.inspectionFee as any },
             { name: "Agency Fee", amount: unit_data.unitAgentFee as any },
+            { name: "Legal Fee", amount: unit_data.legalFee as any },
+            { name: "VAT", amount: unit_data.vat_amount as any },
             { name: "Other Charges", amount: unit_data.other_charge as any },
           ]}
           total_package={Number(unit_data.total_package)}
           loading={loading}
           id={propertyId as string}
-          setIsPastDate={setIsPastDate}
+          // setIsPastDate={setIsPastDate}
           setDueDate={setDueDate}
         />
       </section>
       <FixedFooter className={`flex justify-end gap-4`}>
-        {isRental && (
-          <Button size="base_medium" className="py-2 px-6">
-            Download Agreement
-          </Button>
-        )}
+        {isRental &&
+          selectedOccupant?.userTag?.toLocaleLowerCase() === "web" &&
+          !isPastDate && (
+            <Button size="base_medium" className="py-2 px-6">
+              Download Agreement
+            </Button>
+          )}
+
         <Button
           size="base_medium"
           className="py-2 px-6"

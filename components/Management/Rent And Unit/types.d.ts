@@ -9,7 +9,9 @@ export interface PropertyDetailsProps {
 
 export interface ActionButtonProps {
   label: string;
-  color: string;
+  // color: string;
+  propertyType: "rental" | "facility";
+  color: string | ((propertyType: string) => string);
   route?: string;
   modal?: string;
   unit_id?: string;
@@ -60,13 +62,17 @@ export interface Occupant {
   avatar: string;
   gender: string;
   birthday: string;
+  occupation?: string;
   religion: string;
   phone: string;
   maritalStatus: string;
   address: string;
   city: string;
+  tenant_type?: string;
+  family_type?: string;
   state: string;
   lg: string;
+  nextOfKin?: NextOfKin;
 }
 
 export interface FeeDetail {
@@ -103,7 +109,7 @@ interface Others {
   family_type: string | null;
 }
 
-interface NextOfKin {
+export interface NextOfKin {
   name: string | null;
   phone: string | null;
   email: string | null;
@@ -138,6 +144,8 @@ interface TenantData {
   Others: Others;
   next_of_kin: NextOfKin;
   note: Note;
+  marital_status: string;
+  religion?: string;
   documents: any[]; // You can replace 'any' with a specific type if needed
   units: any[]; // Replace 'any' with a specific type if needed
   created_at: string;

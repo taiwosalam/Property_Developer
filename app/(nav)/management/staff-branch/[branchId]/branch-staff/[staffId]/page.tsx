@@ -121,6 +121,7 @@ const StaffProfile = () => {
                 <Picture
                   src={staff.picture || empty}
                   alt="profile picture"
+                  status={staff.online}
                   size={120}
                   rounded
                   containerClassName="custom-secondary-bg rounded-full"

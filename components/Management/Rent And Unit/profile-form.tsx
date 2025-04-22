@@ -8,7 +8,6 @@ import Button from "@/components/Form/Button/button";
 import AddOccupantWithId from "./add-occupant-with-id-modal";
 import DateInput from "@/components/Form/DateInput/date-input";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
-import { MatchedProfile } from "./matched-profile";
 import { calculateDueDate, transformTenantData, type RentPeriod } from "./data";
 import { RentSectionTitle } from "./rent-section-container";
 import { Dayjs } from "dayjs";
@@ -16,44 +15,39 @@ import useFetch from "@/hooks/useFetch";
 import dayjs from "dayjs";
 import SelectWithImage from "@/components/Form/Select/select-with-image";
 import { empty } from "@/app/config";
+import { useGlobalStore } from "@/store/general-store";
+import { MatchedProfile } from "./matched-profile";
+import { getSingleTenantData } from "@/utils/getData";
 
 export const ProfileForm: React.FC<{
   occupants: { name: string; id: string; picture?: string }[];
   isRental: boolean;
-  selectedOccupant: Occupant | null;
-  onOccupantSelect: (occupant: Occupant | null) => void;
-  onLoadingChange: (isLoading: boolean) => void;
-  onError: (error: Error | null) => void;
-  occupantLoading: boolean;
-  occupantError: Error | null;
   setSelectedTenantId?: any;
   setStart_date?: any;
-  setDueDate?: (date: Dayjs | null) => void; // Add setDueDate
+  setDueDate?: (date: Dayjs | null) => void;
   setSelectedCheckboxOptions?: any;
   period: RentPeriod;
-  setIsPastDate?: (isPast: boolean) => void;
 }> = ({
   occupants,
   isRental,
-  selectedOccupant,
-  onOccupantSelect,
-  onError,
-  onLoadingChange,
-  occupantLoading,
-  occupantError,
   setSelectedTenantId,
   setStart_date,
   setDueDate,
   setSelectedCheckboxOptions,
   period,
-  setIsPastDate,
 }) => {
   const [selectedId, setSelectedId] = useState<string>("");
   const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
-
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [dueDate, setDueDateLocal] = useState<Dayjs | null>(null);
   const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const { setGlobalInfoStore, selectedOccupant, tenantLoading } =
+    useGlobalStore();
+  const isWebUser = selectedOccupant?.userTag?.toLowerCase() === "web";
+  const isMobileUser = selectedOccupant?.userTag?.toLowerCase() === "mobile";
 
   useEffect(() => {
     if (period) {
@@ -76,30 +70,50 @@ export const ProfileForm: React.FC<{
   };
 
   useEffect(() => {
-    if (!selectedId) {
-      onOccupantSelect(null);
-      onError(null);
-      return;
-    }
-  }, [selectedId, onOccupantSelect, onError]);
+    const fetchTenantData = async () => {
+      if (!selectedId) {
+        setGlobalInfoStore("selectedOccupant", null);
+        setGlobalInfoStore("tenantLoading", false);
+        setGlobalInfoStore("tenantError", null);
+        setLoading(false);
+        setError(null);
+        return;
+      }
 
-  const { data, loading, error } = useFetch<TenantResponse>(
-    `/tenant/${selectedId}`
-  );
+      setLoading(true);
+      setGlobalInfoStore("tenantLoading", true);
+      setError(null);
+      setGlobalInfoStore("tenantError", null);
 
-  useEffect(() => {
-    if (data) {
-      const transformedData = transformTenantData(data);
-      onOccupantSelect(transformedData);
-    }
-  }, [data]);
+      try {
+        const data = await getSingleTenantData(selectedId);
+        if (data) {
+          const transformedData = transformTenantData(data);
+          setGlobalInfoStore("selectedOccupant", transformedData);
+        } else {
+          setGlobalInfoStore("selectedOccupant", null);
+        }
+      } catch (err) {
+        setError(new Error("Failed to fetch tenant data"));
+        setGlobalInfoStore("selectedOccupant", null);
+        setGlobalInfoStore(
+          "tenantError",
+          new Error("Failed to fetch tenant data")
+        ); // Sync with global store
+      } finally {
+        setLoading(false);
+        setGlobalInfoStore("tenantLoading", false);
+      }
+    };
 
-  // Calculate due date and update isPastDate when start date changes
+    fetchTenantData();
+  }, [selectedId, setGlobalInfoStore]);
+
   useEffect(() => {
     if (!startDate) {
       setDueDateLocal(null);
       setDueDate?.(null);
-      setIsPastDate?.(false);
+      setGlobalInfoStore("isPastDate", false); // Update store
       return;
     }
     const formattedStartDate = startDate.format("YYYY-MM-DD");
@@ -108,8 +122,8 @@ export const ProfileForm: React.FC<{
     setDueDateLocal(calculatedDueDate);
     setDueDate?.(calculatedDueDate);
     const isPast = startDate.isBefore(dayjs(), "day");
-    setIsPastDate?.(isPast);
-  }, [startDate, rentPeriod, setStart_date, setDueDate, setIsPastDate]);
+    setGlobalInfoStore("isPastDate", isPast); // Update store
+  }, [startDate, rentPeriod, setStart_date, setDueDate, setGlobalInfoStore]);
 
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, boolean>
@@ -121,16 +135,33 @@ export const ProfileForm: React.FC<{
   });
 
   const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+    if (optionKey === "mobile_notification" && isWebUser) {
+      return; // Prevent changing this option
+    }
+    if (optionKey === "create_invoice" && !isMobileUser) {
+      return; // Prevent changes for mobile users
+    }
     setSelectedOptions((prev) => ({
       ...prev,
       [optionKey]: checked,
     }));
   };
 
+  // Update selectedOptions when userTag changes
   useEffect(() => {
-    if (setSelectedCheckboxOptions) {
-      setSelectedCheckboxOptions(selectedOptions);
-    }
+    setSelectedOptions((prev) => ({
+      ...prev,
+      mobile_notification: isWebUser
+        ? false
+        : isMobileUser
+        ? true
+        : prev.mobile_notification,
+      create_invoice: !isMobileUser ? true : prev.create_invoice,
+    }));
+  }, [isWebUser, isMobileUser]);
+
+  useEffect(() => {
+    setSelectedCheckboxOptions(selectedOptions);
   }, [selectedOptions, setSelectedCheckboxOptions]);
 
   const options = [
@@ -140,8 +171,12 @@ export const ProfileForm: React.FC<{
     "Email Alert",
   ];
 
-  // Determine the value to set for the Select component
-  const selectValue = isModalIdSelected ? "" : selectedId;
+  const checkboxOptions = [
+    { label: "Create Invoice", key: "create_invoice" },
+    { label: "Mobile Notification", key: "mobile_notification" },
+    { label: "SMS Alert", key: "sms_alert" },
+    { label: "Email Alert", key: "email_alert" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -172,8 +207,8 @@ export const ProfileForm: React.FC<{
         <div className="block lg:hidden">
           <MatchedProfile
             occupant={selectedOccupant}
-            isLoading={loading}
-            error={occupantError}
+            isLoading={tenantLoading}
+            error={error}
             title="Matched Profile"
           />
         </div>
@@ -198,7 +233,7 @@ export const ProfileForm: React.FC<{
           className="opacity-50"
         />
       </div>
-      <div className="flex items-center justify-end gap-4 flex-wrap">
+      {/* <div className="flex items-center justify-end gap-4 flex-wrap">
         {options.map((option) => {
           const key = option.toLowerCase().replace(/\s+/g, "_");
           return (
@@ -212,7 +247,34 @@ export const ProfileForm: React.FC<{
             </Checkbox>
           );
         })}
+      </div> */}
+      <div className="flex items-center justify-end gap-4 flex-wrap">
+        {checkboxOptions.map(({ label, key }) => (
+          <Checkbox
+            sm
+            key={key}
+            checked={selectedOptions[key]}
+            onChange={handleCheckboxChange(key)}
+            disabled={
+              (key === "mobile_notification" && isWebUser) ||
+              (key === "create_invoice" && !isMobileUser)
+            }
+          >
+            {label}
+          </Checkbox>
+        ))}
       </div>
+      <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit ml-auto">
+        {selectedOptions["create_invoice"]
+          ? `Payment will be reflected once the ${
+              isRental ? "tenant" : "occupant"
+            } makes a payment towards the generated invoice.`
+          : `Confirms that you have received payment for the ${
+              isRental ? "rent" : "counting"
+            }. However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+              isRental ? "tenant" : "occupant"
+            } to make the payment.`}
+      </p>
     </div>
   );
 };

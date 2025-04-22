@@ -22,6 +22,7 @@ export const getBackgroundColor = (StatusName: string): string => {
 
 export const transformTenantData = (res: TenantResponse): Occupant => {
   const { data } = res;
+  console.log("data here- --", data);
   return {
     id: String(data.id) || "",
     name: data.name || "--- ---",
@@ -31,7 +32,9 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
     gender: data.gender || "--- ---",
     birthday: "--- ---", //TODO - Add birthday
     phone: data.phone || "--- ---",
-    maritalStatus: data.tenant_type || "--- ---",
+    maritalStatus: data.marital_status || "--- ---",
+    tenant_type: data.tenant_type || "--- ---",
+    family_type: data.Others.family_type || "--- ---",
     address:
       `${data.city || "__"}, ${data.local_government || "__"}, ${
         data.state || "__"
@@ -39,7 +42,9 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
     city: data.city || "--- ---",
     state: data.state || "--- ---",
     lg: data.local_government || "--- ---",
-    religion: "--- ---", //TODO - Add religion
+    occupation: data.Others.occupation || "--- ---",
+    religion: data.religion || "--- ---", //TODO - Add religion
+    nextOfKin: data.next_of_kin || {},
   };
 };
 
@@ -52,7 +57,8 @@ export const activeStatuses = [
 ];
 
 type Action = {
-  color: string;
+  // color: string;
+  color: string | ((propertyType: string) => string); 
   label: string | ((propertyType: "rental" | "facility") => string);
   route?:
     | string
@@ -64,7 +70,7 @@ export const actions: Action[] = [
   {
     color: "#FF9800",
     label: (propertyType) =>
-      propertyType === "rental" ? "Start Rent" : "Start Counting",
+      propertyType === "rental" ? "Start Rent" : "Move In",
     route: (id, propertyType) =>
       `/management/rent-unit/${id}/start-rent?type=${propertyType}&id=${id}`,
   },
@@ -77,7 +83,8 @@ export const actions: Action[] = [
       `/management/rent-unit/${id}/renew-rent?type=${propertyType}&id=${id}`,
   },
   {
-    color: "#60A5FA",
+    // color: "#60A5FA",
+    color: (propertyType) => (propertyType === "rental" ? "#4CAF50" : "#60A5FA"), 
     label: "Edit",
     route: (id, propertyType) =>
       `/management/rent-unit/${id}/edit-rent?type=${propertyType}&id=${id}`,

@@ -96,7 +96,7 @@ export default function CustomDatePicker({
               name: inputId,
               id: inputId,
               inputProps: {
-                className: `date-input dark:bg-darkText-primary ${inputClassName}`,
+                className: `date-input dark:bg-darkText-primary dark:text-white ${inputClassName}`,
                 sx: {
                   height: "unset",
                   paddingTop: "13px",

@@ -1,6 +1,7 @@
 import { Skeleton } from "@mui/material";
 import { EstateDetailItem } from "./detail-item";
 import { RentSectionTitle } from "./rent-section-container";
+import { isValidValue } from "@/app/(nav)/management/tenants/[tenantId]/manage/edit/data";
 
 const EstateDetails = ({
   title,
