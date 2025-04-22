@@ -10,7 +10,8 @@ interface Director {
   years_in_business: string | number;
   phone_number: string;
   about_director: string;
-  profile_picture: string | File;
+  avatar?: string;
+  profile_picture?: string | File;
 }
 
 interface CompanyPayload {
@@ -79,25 +80,51 @@ export const transformFormData = (formData: FormData): CompanyPayload => {
   ].filter(Boolean) as string[];
 
   // Organize directors data
-  data.directors = [
-    {
-      full_name: formData.get("director_full_name") as string,
-      personal_title: formData.get("director_personal_title") as string,
-      years_in_business: formData.get("director_experience") as string | number,
-      phone_number: formData.get("director_phone_number") as string,
-      about_director: formData.get("about_director") as string,
-      profile_picture: formData.get("director_profile_picture") as
-        | string
-        | File,
-    },
-  ];
+  const director = {
+    full_name: formData.get("director_full_name") as string,
+    personal_title: formData.get("director_personal_title") as string,
+    years_in_business: formData.get("director_experience") as string | number,
+    phone_number: formData.get("director_phone_number") as string,
+    about_director: formData.get("about_director") as string,
+  };
+
+  // Check for avatar or profile_picture and include only one
+  const avatar = formData.get("avatar") as string;
+  const profilePicture = formData.get("director_profile_picture") as File;
+
+  if (avatar && avatar.trim() !== "") {
+    (director as any).avatar = avatar;
+    // Remove profile_picture if avatar is present
+    formData.delete("director_profile_picture");
+  } else if (profilePicture && profilePicture.size > 0) {
+    (director as any).profile_picture = profilePicture;
+    // Remove avatar if profile_picture is present
+    formData.delete("avatar");
+  }
+
+  data.directors = [director];
+
+  // // Organize directors data
+  // data.directors = [
+  //   {
+  //     full_name: formData.get("director_full_name") as string,
+  //     personal_title: formData.get("director_personal_title") as string,
+  //     years_in_business: formData.get("director_experience") as string | number,
+  //     phone_number: formData.get("director_phone_number") as string,
+  //     about_director: formData.get("about_director") as string,
+  //     avatar: formData.get("avatar") as string,
+  //     profile_picture: formData.get("director_profile_picture") as
+  //       | string
+  //       | File,
+  //   },
+  // ];
 
   // Add certificates
   data.cac_certificate = formData.get("cac_certificate") as string | File;
   data.membership_certificate = formData.get("membership_certificate") as
     | string
     | File;
-  data.status = 'pending'
+  data.status = "pending";
 
   return data;
 };
