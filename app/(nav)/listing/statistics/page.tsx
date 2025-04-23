@@ -11,7 +11,10 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 // Imports
 import BackButton from "@/components/BackButton/back-button";
-import { statistics_data_types, statisticsHeaderCard } from "@/components/Listing/Statistics/data";
+import {
+  statistics_data_types,
+  statisticsHeaderCard,
+} from "@/components/Listing/Statistics/data";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import StatisticsMessageCard from "@/components/Listing/Statistics/statistics-message-card";
 import { DashboardChart } from "@/components/dashboard/chart";
@@ -73,8 +76,8 @@ const Statistics = () => {
     return <DashboardLoading />;
   }
 
-  if(error){
-    return <SearchError />
+  if (error) {
+    return <SearchError />;
   }
 
   return (
@@ -83,11 +86,26 @@ const Statistics = () => {
         <BackButton bold>Statistics</BackButton>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title="Views"
+            title="Total Views"
             newData={pageData?.total_month_views ?? 0}
             total={pageData?.total_views ?? 0}
             className="w-[240px]"
             colorScheme={1}
+          />
+
+          <ManagementStatistcsCard
+            title="Web Viewers"
+            newData={pageData?.total_web_month_views ?? 0}
+            total={pageData?.total_web_views ?? 0}
+            className="w-[240px]"
+            colorScheme={3}
+          />
+          <ManagementStatistcsCard
+            title="Mobile Viewers"
+            newData={pageData?.total_mobile_month_views ?? 0}
+            total={pageData?.total_mobile_views ?? 0}
+            className="w-[240px]"
+            colorScheme={4}
           />
 
           <ManagementStatistcsCard

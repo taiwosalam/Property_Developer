@@ -26,6 +26,10 @@ export type ListingStatisticResponse = {
     status: "success";
     total_views: number;
     total_month_views: number;
+    total_web_views: number;
+    total_web_month_views: number;
+    total_mobile_month_views: number;
+    total_mobile_views: number;
     total_bookmarks: number;
     total_month_bookmarks: number;
     view_users: User[];

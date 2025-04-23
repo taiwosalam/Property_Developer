@@ -67,7 +67,7 @@ const ExportPageHeader = () => {
                 <WebIcon />
               </span>
               <p className="dark:text-darkText-1">
-                { data?.data?.domain ?? data?.data?.social_links?.website}
+                {data?.data?.social_links?.website ?? data?.data?.domain}
               </p>
             </li>
           )}
