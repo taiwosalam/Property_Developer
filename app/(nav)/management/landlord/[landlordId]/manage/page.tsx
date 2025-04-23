@@ -72,7 +72,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       </p>
     ),
     credit: (
-      <p className={item.credit ? "text-status-success-3" : ""}>
+      <p className={item.credit ? "text-status-success-3 dark:text-white" : ""}>
         {item.credit ? item.credit : "--- ---"}
       </p>
     ),

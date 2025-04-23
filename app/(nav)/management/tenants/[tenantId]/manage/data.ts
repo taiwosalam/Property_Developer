@@ -12,6 +12,7 @@ import api, { handleAxiosError } from "@/services/api";
 import { UnitItemProps } from "@/components/Management/Properties/unit-item";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
 import { formatNumber } from "@/utils/number-formatter";
+import dayjs from "dayjs";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -66,11 +67,19 @@ export interface IndividualTenantAPIResponse {
     agent: string;
     gender: string;
     tenant_type: string;
+    flag: {
+      is_flagged: 1 | 0,
+      flagged_by: number | string,
+      reason: string,
+    },
     user_id: string;
     state: string;
     local_government: string;
     address: string;
     city: string;
+    birthday?: string;
+    religion: string;
+    marital_status: string;
     note: {
       last_updated_at: Date;
       note: string;
@@ -180,9 +189,11 @@ export const transformIndividualTenantAPIResponse = ({
     phone_number: data?.phone || "",
     tenant_type: data?.tenant_type || "",
     gender: data?.gender || "",
-    birthdate: "",
-    religion: "",
-    marital_status: "",
+    birthdate: dayjs(data.birthday).format("MMM D YYYY") || "",
+    religion: data.religion || "",
+    marital_status: data.marital_status || "",
+    is_flagged: data.flag.is_flagged === 1,
+    flag: data.flag,
     contact_address: {
       address: data?.address || "",
       city: data?.city || "",
@@ -240,6 +251,18 @@ export const updateTenantWithEmailOrID = async (data: any, id: number) => {
   try {
     const res = await api.post(`tenant-update/email/${id}`, data);
     if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const flagTenant = async (id: number, data: FormData) => {
+  try {
+    const res = await api.post(`tenant/${id}/flag`, data);
+    if (res.status === 200) {
       return true;
     }
   } catch (error) {

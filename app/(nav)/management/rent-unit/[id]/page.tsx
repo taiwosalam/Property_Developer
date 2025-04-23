@@ -17,7 +17,11 @@ import {
   transformUnitData,
 } from "../data";
 import NetworkError from "@/components/Error/NetworkError";
-import { formatNumber } from "@/utils/number-formatter";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import ServerError from "@/components/Error/ServerError";
 
 const PriceSection: React.FC<{
@@ -25,23 +29,30 @@ const PriceSection: React.FC<{
   title: string;
   total_package: number;
   price: number;
-}> = ({ title, price, total_package, period }) => (
-  <div className="space-y-4">
-    <h3 className="font-medium text-base text-brand-10">{title}</h3>
-    <div>
-      <p className="text-lg lg:text-xl font-bold text-brand-9">{price}</p>
-      <p className="text-xs font-normal text-text-label dark:text-darkText-1">
-        Total Package
-      </p>
-      <p className="text-sm font-medium text-text-disabled dark:text-darkText-1">
-        <span className="text-highlight">
-          ₦{formatNumber(total_package).toLocaleString()}
-        </span>{" "}
-        / {period}
-      </p>
+  currency: Currency;
+}> = ({ title, price, total_package, period, currency }) => {
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
+  return (
+    <div className="space-y-4">
+      <h3 className="font-medium text-base text-brand-10">{title}</h3>
+      <div>
+        <p className="text-lg lg:text-xl font-bold text-brand-9">{price}</p>
+        <p className="text-xs font-normal text-text-label dark:text-darkText-1">
+          Total Package
+        </p>
+        <p className="text-sm font-medium text-text-disabled dark:text-darkText-1">
+          <span className="text-highlight">
+            {CURRENCY}
+            {formatNumber(total_package).toLocaleString()}
+          </span>{" "}
+          / {period}
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const DetailItem: React.FC<{ label: string; value: string | number }> = ({
   label,
@@ -159,11 +170,13 @@ const UnitPreviewPage = () => {
                 period={unit_data.fee_period}
                 price={(unit_data.newTenantPrice as any) || 0}
                 total_package={(unit_data.newTenantTotalPrice as any) || 0}
+                currency={unit_data?.currency || "naira"}
               />
               <PriceSection
                 title="Renewal Tenant"
                 period={unit_data.renew_fee_period}
                 price={(unit_data.renewalTenantPrice as any) || 0}
+                currency={unit_data?.currency || "naira"}
                 total_package={(unit_data.renewalTenantTotalPrice as any) || 0}
               />
             </div>
@@ -178,7 +191,12 @@ const UnitPreviewPage = () => {
             <p className="text-center">No Previous Tenant Record</p>
           ) : (
             unit_data?.previous_tenants?.map((t: any, index: number) => (
-              <TenancyRecord key={index} unit_id={id} {...t} />
+              <TenancyRecord
+                key={index}
+                unit_id={id}
+                {...t}
+                currency={unit_data.currency}
+              />
             ))
           )}
         </div>

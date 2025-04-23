@@ -484,6 +484,8 @@ export interface ProfileResponse {
       name: string | null;
       user_online_status: 'online' | 'offline' | null;
       email: string | null;
+      unread_messages_count: number;
+      unread_notifications_count: number;
     };
     company?: {
       company_id: string;

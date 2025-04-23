@@ -20,9 +20,12 @@ import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import NetworkError from "@/components/Error/NetworkError";
 import { getTransactionIcon } from "@/components/Wallet/icons";
+import { useGlobalStore } from "@/store/general-store";
 
 const TransactionHistory = () => {
   const [state, setState] = useState(initialPageData);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const filteredTransactions = useGlobalStore((s) => s.wallet_transactions);
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: 1,
@@ -95,6 +98,16 @@ const TransactionHistory = () => {
           (transaction, index, self) =>
             index === self.findIndex((t) => t.id === transaction.id)
         );
+
+        // Save unique transactions to global store
+        const currentTransactions =
+          useGlobalStore.getState()?.wallet_transactions;
+        if (
+          JSON.stringify(currentTransactions) !==
+          JSON.stringify(uniqueTransactions)
+        ) {
+          setGlobalStore("wallet_transactions", uniqueTransactions);
+        }
 
         // Check if page number is 1 to decide whether to overwrite or append
         if (newTransactions.current_page === 1) {
@@ -192,6 +205,8 @@ const TransactionHistory = () => {
         exportHref="/wallet/audit-trail/export"
         filterOptionsMenu={transactionHistoryFilterMenu}
         appliedFilters={appliedFilters}
+        fileLabel={"Wallet Transactions"}
+        xlsxData={filteredTransactions}
       />
 
       {loading ? (

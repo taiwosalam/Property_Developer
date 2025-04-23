@@ -22,17 +22,9 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   setStart_date,
   setIsPastDate,
   setDueDate,
+  currency,
 }) => {
   const { selectedOccupant, tenantLoading, tenantError } = useGlobalStore();
-
-  // const [selectedOccupant, setSelectedOccupant] = useState<Occupant | null>(
-  //   null
-  // );
-  // const handleOccupantSelect = (occupant: Occupant | null) => {
-  //   setSelectedOccupant(occupant);
-  // };
-  // const [occupantLoading, setOccupantLoading] = useState(false);
-  // const [occupantError, setOccupantError] = useState<Error | null>(null);
 
   return (
     <>
@@ -61,6 +53,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 total_package={total_package}
                 feeDetails={feeDetails}
                 isRental={isRental}
+                currency={currency || "naira"}
               />
             </div>
 

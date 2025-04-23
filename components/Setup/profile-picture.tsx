@@ -75,7 +75,7 @@ const ProfilePicture = () => {
           accept="image/*"
           ref={inputFileRef}
           onChange={handleImageChange}
-          className="hidden setu-f"
+          className="hidden setup-f"
         />
 
         {/* File upload side */}

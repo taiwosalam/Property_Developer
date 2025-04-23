@@ -29,7 +29,7 @@ export const statementTableFields: Field[] = [
       maxWidth: "350px",
     },
   },
-  { id: "5", label: "Credit", accessor: "credit" },
+  { id: "5", label: "Rent Amount", accessor: "credit" },
   { id: "6", label: "Unit Name", accessor: "unit_name" },
   { id: "7", label: "Date", accessor: "date" },
 ];

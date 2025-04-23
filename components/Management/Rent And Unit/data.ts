@@ -2,6 +2,7 @@ import { empty } from "@/app/config";
 import type { Occupant, TenantResponse, UnitDetails } from "./types";
 import type { Field } from "@/components/Table/types";
 import dayjs, { Dayjs } from "dayjs";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const getBackgroundColor = (StatusName: string): string => {
   switch (StatusName) {
@@ -35,16 +36,18 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
     maritalStatus: data.marital_status || "--- ---",
     tenant_type: data.tenant_type || "--- ---",
     family_type: data.Others.family_type || "--- ---",
-    address:
-      `${data.city || "__"}, ${data.local_government || "__"}, ${
-        data.state || "__"
-      }`,
+    address: `${data.city || "__"}, ${data.local_government || "__"}, ${
+      data.state || "__"
+    }`,
     city: data.city || "--- ---",
     state: data.state || "--- ---",
     lg: data.local_government || "--- ---",
     occupation: data.Others.occupation || "--- ---",
     religion: data.religion || "--- ---", //TODO - Add religion
     nextOfKin: data.next_of_kin || {},
+    badgeColor: data.user_tier
+      ? tierColorMap  [data?.user_tier as keyof typeof tierColorMap]
+      : undefined,
   };
 };
 
@@ -58,7 +61,7 @@ export const activeStatuses = [
 
 type Action = {
   // color: string;
-  color: string | ((propertyType: string) => string); 
+  color: string | ((propertyType: string) => string);
   label: string | ((propertyType: "rental" | "facility") => string);
   route?:
     | string
@@ -84,7 +87,8 @@ export const actions: Action[] = [
   },
   {
     // color: "#60A5FA",
-    color: (propertyType) => (propertyType === "rental" ? "#4CAF50" : "#60A5FA"), 
+    color: (propertyType) =>
+      propertyType === "rental" ? "#4CAF50" : "#0033C4",
     label: "Edit",
     route: (id, propertyType) =>
       `/management/rent-unit/${id}/edit-rent?type=${propertyType}&id=${id}`,

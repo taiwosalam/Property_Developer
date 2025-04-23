@@ -4,6 +4,8 @@ interface PersonalInfoStoreState {
   user_id: string | null;
   name: string | null;
   user_online_status: 'online' | 'offline' | null;
+  unread_notifications_count: number | null;
+  unread_messages_count: number | null;
   full_name: string | null;
   user_email: string | null;
   profile_picture: string | null;
@@ -40,6 +42,8 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   // Personal Info
   user_id: null,
   user_online_status: null,
+  unread_messages_count: null,
+  unread_notifications_count: null,
   name: null,
   full_name: null,
   user_email: null,

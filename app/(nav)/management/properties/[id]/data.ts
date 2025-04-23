@@ -52,7 +52,7 @@ export const transformSinglePropertyData = (
     account_officer: `${accountOfficer?.title || "--"} ${
       accountOfficer?.user?.name || "--"
     }`, // to do
-    landlord_name: data.landlord || "--- ---", //to do
+    // landlord_name: data.landlord || "--- ---", //to do
     branch_manager: `${manager?.professional_title ?? "--- ---"} ${
       manager?.user?.name ?? "--- ---"
     }`,

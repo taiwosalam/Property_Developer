@@ -15,6 +15,7 @@ import { UnitListRequest } from "@/app/(nav)/reports/units/types";
 import { VehicleRecordsType } from "@/app/(nav)/reports/vehicles-record/types";
 import { Occupant } from "@/components/Management/Rent And Unit/types";
 import { create } from "zustand";
+import { Transaction } from "./wallet-store";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -30,6 +31,7 @@ interface GlobalStoreState {
   accounting_vat?: Vat[];
   accounting_expenses?: Expense[];
   accounting_disbursements?: TransformedDisburseItem[];
+  wallet_transactions?: Transaction[];
   selectedOccupant: Occupant | null;
   isPastDate: boolean;
   tenantLoading: boolean;
@@ -65,6 +67,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   accounting_vat: [],
   accounting_expenses: [],
   accounting_disbursements: [],
+  wallet_transactions: [],
   selectedOccupant: null,
   isPastDate: false,
   tenantLoading: false,

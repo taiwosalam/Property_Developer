@@ -35,5 +35,7 @@ export interface notificationCardProps {
     badgeColor?: BadgeIconColors;
     count?: number;
     content_type?: string;
+    online?: boolean;
+    
   }[];
 }

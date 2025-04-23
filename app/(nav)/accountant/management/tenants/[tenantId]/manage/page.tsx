@@ -134,8 +134,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 </Modal>
               </>
             ) : (
-              <>
-              </>
+              <></>
             )}
           </div>
         </LandlordTenantInfoBox>
@@ -186,7 +185,14 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         </div>
       </LandlordTenantInfoSection>
       {tenant?.user_tag === "mobile" && (
-        <TenantEditContext.Provider value={{ data: tenant }}>
+        <TenantEditContext.Provider
+          value={{
+            data: {
+              ...tenant,
+              flag: { is_flagged: 0, flagged_by: "", reason: "" }, //from backend later
+            },
+          }}
+        >
           <TenantEditAttachmentSection />
         </TenantEditContext.Provider>
       )}

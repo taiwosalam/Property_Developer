@@ -17,7 +17,11 @@ import {
 } from "./data";
 import { groupDocumentsByType } from "@/utils/group-documents";
 import { empty } from "@/app/config";
-import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import useFetch from "@/hooks/useFetch";
 import { TenancyRecordProps } from "./types";
 import dayjs from "dayjs";
@@ -36,6 +40,7 @@ const TenancyRecord = ({
   tenant,
   unit_id,
   documents,
+  currency,
 }: {
   unit_id?: string;
   name?: string;
@@ -48,15 +53,19 @@ const TenancyRecord = ({
   renewalPackage?: string;
   tenant?: any;
   documents?: any[];
+  currency?: Currency;
 }) => {
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
   const transformedDocs = transformDocuments(documents || []);
   const groupedDocuments = groupDocumentsByType(transformedDocs);
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
 
   console.log("grouped doc", groupedDocuments);
 
   // Initialize records and pagination from the tenant prop
-  const [records, setRecords] = useState<any[]>(tenant?.rents || []); 
+  const [records, setRecords] = useState<any[]>(tenant?.rents || []);
   const [pagination, setPagination] = useState<{
     current_page: number;
     total_pages: number;
@@ -79,10 +88,9 @@ const TenancyRecord = ({
     [pagination.current_page]
   );
 
-  const { data, loading, silentLoading, error, isNetworkError } = useFetch<{ data: { previous_records: { data: any[], pagination: any } } }>(
-    `/unit/${unit_id}/view`,
-    fetchOptions
-  );
+  const { data, loading, silentLoading, error, isNetworkError } = useFetch<{
+    data: { previous_records: { data: any[]; pagination: any } };
+  }>(`/unit/${unit_id}/view`, fetchOptions);
 
   const fetchNextPage = useCallback(
     debounce(() => {
@@ -132,7 +140,6 @@ const TenancyRecord = ({
     }
   }, [data]);
 
-
   // Map records to tableData ensuring keys match tableFields accessors.
   const tableData = records.map((record, index) => ({
     "S/N": index + 1,
@@ -140,7 +147,7 @@ const TenancyRecord = ({
       ? dayjs(record.payment_date).format("MMM D, YYYY")
       : "",
     amount_paid: record.amount_paid
-      ? `₦${formatNumber(record.amount_paid)}`
+      ? `${CURRENCY} ${formatNumber(record.amount_paid)}`
       : "",
     details: record.details || "",
     start_date: record.start_date
@@ -154,8 +161,8 @@ const TenancyRecord = ({
   }));
 
   if (isNetworkError) return <NetworkError />;
-  if (error) return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div
@@ -188,7 +195,7 @@ const TenancyRecord = ({
             value={
               <span className="flex items-center">
                 {name}
-                {/* <BadgeIcon color="yellow" /> */} 
+                {/* <BadgeIcon color="yellow" /> */}
               </span>
             }
             style={{ width: "130px" }}
@@ -198,16 +205,18 @@ const TenancyRecord = ({
             value={period}
             style={{ width: "130px" }}
           />
-          <DetailItem
-            label="Email"
-            value={email}
-            style={{ width: "130px" }}
-          />
+          <DetailItem label="Email" value={email} style={{ width: "130px" }} />
           <DetailItem
             label="Renewal Rent"
-            value={renew_rent ? `${currencySymbols[renew_rent as keyof typeof currencySymbols] || '₦'}${formatNumber(
-              parseFloat(renew_rent)
-            )}` : undefined}
+            value={
+              renew_rent
+                ? `${
+                    currencySymbols[
+                      currency as keyof typeof currencySymbols
+                    ] || "₦"
+                  }${formatNumber(parseFloat(renew_rent))}`
+                : undefined
+            }
             style={{ width: "130px" }}
           />
           <DetailItem
@@ -217,9 +226,15 @@ const TenancyRecord = ({
           />
           <DetailItem
             label="Renewal Package"
-            value={renew_total_package ? `${currencySymbols[renew_total_package as keyof typeof currencySymbols] || '₦'}${formatNumber(
-              parseFloat(renew_total_package)
-            )}` : undefined}
+            value={
+              renew_total_package
+                ? `${
+                    currencySymbols[
+                      currency as keyof typeof currencySymbols
+                    ] || "₦"
+                  }${formatNumber(parseFloat(renew_total_package))}`
+                : undefined
+            }
             style={{ width: "130px" }}
           />
         </div>

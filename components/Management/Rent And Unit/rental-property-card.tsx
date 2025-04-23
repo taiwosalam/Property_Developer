@@ -91,8 +91,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   rent,
   cautionDeposit,
   serviceCharge,
+  currency,
 }) => {
-  const CURRENCY = currencySymbols["naira"];
+  const CURRENCY = currencySymbols[currency as keyof typeof currencySymbols] || currencySymbols["naira"];
   return (
     <div className="flex items-center justify-between flex-wrap space-y-1">
       <div>
@@ -141,6 +142,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   status,
   tenant_id,
   badge_color,
+  currency,
   fee_period,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -191,9 +193,9 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               </span>
               <div className="flex items-center gap-1">
                 <span className="font-medium text-brand-primary border-b border-brand-primary">
-                  {tenant_name}
+                  {status === "relocate" ? "--- ---" : tenant_name}
                 </span>
-                {badge_color && <BadgeIcon color={badge_color} />}
+                {(badge_color && status !== "relocate") && <BadgeIcon color={badge_color} />}
               </div>
             </div>
             <div className="text-sm">
@@ -208,6 +210,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           rent={Number(rent)}
           cautionDeposit={Number(caution_deposit)}
           serviceCharge={Number(service_charge)}
+          currency={currency}
         />
       </div>
       {/* BUTTONS ACCORDING TO STATUS */}
