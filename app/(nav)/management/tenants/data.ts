@@ -145,3 +145,27 @@ export interface TenantRequestParams {
   agent?: string;
   branch_ids?: string;
 }
+
+
+
+export const tenantRejectOptions = [
+  "Consistent Late Rent Payments: Frequent failure to pay rent on time, causing disruptions to the payment schedule.",
+  "Non-Payment of Rent: Missed rent payments without resolution.",
+  "Property Damage: Intentional or careless damage caused to the property.",
+  "Violation of Lease Terms: Breach of rules outlined in the lease agreement.",
+  "Noise Complaints from Neighbors: Reports of excessive or disruptive noise from neighboring residents.",
+  "Unauthorized Occupants: Unapproved individuals residing in the unit without management's consent.",
+  "Subletting Without Permission: Subletting of the property without prior landlord approval.",
+  "Illegal Activities on Property: Suspicion or evidence of unlawful behavior occurring on the premises.",
+  "Harassment or Threats to Neighbors or Staff: Aggressive, threatening, or inappropriate conduct toward others.",
+  "Tampering with Utilities or Safety Equipment: Interference with systems such as smoke detectors, water meters, or electrical panels.",
+  "Unauthorized Pets: Keeping pets in the unit without permission, violating lease terms.",
+  "Unauthorized Pets: Keeping pets in the unit without permission, violating lease terms.",
+  "Refusing Property Inspections or Maintenance Access: Repeated denial of access for inspections or maintenance services.",
+  "Hosting Large Parties or Events Without Notice: Unapproved gatherings causing disturbances or policy violations.",
+  "Improper Disposal of Waste: Incorrect disposal of garbage, leading to hygiene or pest issues.",
+  "Neglecting Property Cleanliness: Maintaining the property in an unclean or hazardous condition.",
+  "Use of Property for Commercial Purposes Without Approval: Operating a business from the unit without appropriate approval.",
+  "Repeated Complaints from Other Occupants or Neighbors: Ongoing or multiple complaints reported by others.",
+  "Providing False Information During Application or Lease Renewal: Submission of inaccurate or misleading details during application or renewal."
+]

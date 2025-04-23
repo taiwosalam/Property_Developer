@@ -45,6 +45,7 @@ import {
 import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import ServerError from "@/components/Error/ServerError";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
@@ -58,6 +59,7 @@ const EditRent = () => {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [amt, setAmt] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
+  const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
 
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const endpoint = `/unit/${id}/view`;
@@ -89,13 +91,7 @@ const EditRent = () => {
     }
   }, [apiData, setOccupant, setUnitBalance]);
 
-  if (loading)
-    return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-      </div>
-    );
-
+  if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -212,21 +208,30 @@ const EditRent = () => {
                   amount: unit_data.renew_other_charge as any,
                 },
               ]}
+              currency={unit_data.currency || "naira"}
               total_package={unit_data.renewalTenantTotalPrice as any}
               id={propertyId as string}
             />
+
             <EditCurrentRent
+              currency={unit_data.currency || "naira"}
               isRental={isRental}
               total={unit_data.renewalTenantTotalPrice}
               setStart_Date={setStartDate}
               action={handleUpfrontRent}
               loading={reqLoading}
+              setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+              isUpfrontPaymentChecked={isUpfrontPaymentChecked}
             />
             <AddPartPayment
+              isRental={isRental}
+              currency={unit_data.currency || "naira"}
               setStart_Date={setStartDate}
               action={handlePartPayment}
               loading={reqLoading}
               setAmt={setAmt}
+              setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+              isUpfrontPaymentChecked={isUpfrontPaymentChecked}
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px] space-y-8">
@@ -246,6 +251,7 @@ const EditRent = () => {
           isRental={isRental}
           previous_records={unit_data.previous_records as any}
           unit_id={id as string}
+          currency={unit_data.currency || "naira"}
         />
       </section>
 

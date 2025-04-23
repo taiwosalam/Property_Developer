@@ -23,7 +23,11 @@ import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
 import TableLoading from "@/components/Loader/TableLoading";
 // import { PreviousRecords } from "@/app/(nav)/management/rent-unit/data";
-import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import {
   calculateOverduePeriods,
@@ -41,7 +45,7 @@ export const RenewalRentDetails: React.FC<{
   const renewalRentDetailItems = [
     { label: "Start Date", value: startDate },
     { label: "Due Date", value: dueDate },
-    { label: "Total Package", value: totalPackage },
+    { label: "Total", value: totalPackage },
     // { label: "Annual Rent", value: rentFee },
     // { label: "Other Fees", value: otherFee },
   ];
@@ -72,7 +76,8 @@ export const RenewalFee: React.FC<{
   total_package: number;
   id: string;
   period?: string;
-}> = ({ isRental, feeDetails, total_package, id, period }) => {
+  currency?: Currency;
+}> = ({ isRental, feeDetails, total_package, id, period, currency }) => {
   return (
     <div className="space-y-6">
       <RentSectionTitle>Renewal Rent</RentSectionTitle>
@@ -81,6 +86,7 @@ export const RenewalFee: React.FC<{
         feeDetails={feeDetails}
         total_package={total_package}
         id={id}
+        currency={currency}
       />
     </div>
   );
@@ -93,7 +99,8 @@ export const OwingFee: React.FC<{
   id: string;
   period?: string;
   dueDate?: string;
-}> = ({ isRental, feeDetails, total_package, id, period, dueDate }) => {
+  currency: Currency;
+}> = ({ isRental, feeDetails, total_package, id, period, dueDate, currency }) => {
   const [owingAmount, setOwingAmount] = useState<number>(0);
   const [overduePeriods, setOverduePeriods] = useState<number>(0);
   // Calculate owing amount when dueDate, period, or totalPackage changes
@@ -121,7 +128,7 @@ export const OwingFee: React.FC<{
       name: "Owing Amount",
       amount: owingAmount
         ? `${
-            currencySymbols["₦" as keyof typeof currencySymbols] ?? "₦"
+            currencySymbols[currency as keyof typeof currencySymbols] ?? "₦"
           }${formatNumber(Number(owingAmount))}`
         : "",
     },
@@ -136,6 +143,7 @@ export const OwingFee: React.FC<{
       <FeeDetails
         owing
         noEdit
+        currency={currency}
         title={isRental ? "Breakdown" : "Breakdown"}
         feeDetails={updatedFeeDetails}
         total_package={updatedTotalPackage}
@@ -411,6 +419,7 @@ type PreviousRentRecordsProps = {
   previous_records?: PreviousRecords;
   unit_id?: string;
   noRefetch?: boolean;
+  currency?: Currency;
 };
 
 export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
@@ -418,6 +427,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   previous_records,
   unit_id,
   noRefetch = false,
+  currency,
 }) => {
   // console.log(unit_id);
   // Initialize records state from props
@@ -515,10 +525,14 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
     }
   }, [data, noRefetch]);
 
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
+
   // Map records to tableData with formatted fields.
   const tableData = records.map((record, index) => ({
     ...record,
-    amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
+    amount_paid: `${CURRENCY} ${formatNumber(record.amount_paid) || 0}`,
     start_date: record.start_date
       ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
       : null,

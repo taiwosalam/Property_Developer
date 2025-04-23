@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { CameraIcon } from "lucide-react";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
-import { formatNumber } from "@/utils/number-formatter";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import PropertyTag from "@/components/Tags/property-tag";
 import { StatusDots } from "./status-dot";
 import { ActionButton } from "./action-button";
@@ -28,8 +28,12 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   status,
   badge_color,
   tenant_id,
+  currency,
 }) => {
   const [isOpened, setIsOpened] = useState(false);
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
 
   return (
     <div
@@ -67,7 +71,8 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
           <div className="flex flex-row items-start gap-8">
             <p className="text-[#747474] dark:text-white min-w-[120px]">Rent</p>
             <p className="text-black dark:text-darkText-2 flex-1">
-              ₦{formatNumber(Number(rent))}
+              {CURRENCY}
+              {formatNumber(Number(rent))}
             </p>
           </div>
           <div className="flex flex-row items-start gap-8">
@@ -83,7 +88,8 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
               Caution Deposit
             </p>
             <p className="text-black dark:text-darkText-2 flex-1">
-              ₦{formatNumber(Number(caution_deposit))}
+              {CURRENCY}
+              {formatNumber(Number(caution_deposit))}
             </p>
           </div>
           <div className="flex flex-row items-start gap-8">
@@ -99,7 +105,8 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
               Service Charge
             </p>
             <p className="text-black dark:text-darkText-2 flex-1">
-              ₦{formatNumber(Number(service_charge))}
+              {CURRENCY}
+              {formatNumber(Number(service_charge))}
             </p>
           </div>
           <div className="flex flex-row items-start gap-8">
@@ -112,9 +119,11 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 className="flex items-center gap-1"
               >
                 <span className="font-medium text-brand-primary border-b border-black dark:border-darkText-2">
-                  {tenant_name}
+                  {status === "relocate" ? "--- ---" : tenant_name}
                 </span>
-                {badge_color && <BadgeIcon color={badge_color} />}
+                {badge_color && status !== "relocate" && (
+                  <BadgeIcon color={badge_color} />
+                )}
               </Link>
             </div>
           </div>
@@ -211,7 +220,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
               <ActionButton
                 unit_id={unitId}
                 key={i}
-                propertyType={propertyType} 
+                propertyType={propertyType}
                 {...action}
                 route={
                   typeof action.route === "function"

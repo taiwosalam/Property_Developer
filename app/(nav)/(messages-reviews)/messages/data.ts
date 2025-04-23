@@ -110,6 +110,7 @@ export const transformUsersMessages = (
       content_type: finalContentType,
       // content_type: c.latest_message_type,
       unread_count: c.unread_count,
+      online: c.participant_onlineStatus === "online",
     };
   });
 };

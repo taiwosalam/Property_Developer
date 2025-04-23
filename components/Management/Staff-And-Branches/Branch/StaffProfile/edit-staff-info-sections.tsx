@@ -127,7 +127,7 @@ export const StaffEditProfileInfoSection = () => {
           /> */}
           <DateInput
             id="years_experience"
-            label="years of experience"
+            label="years of experience (since)"
             inputClassName="setup-f required"
             disableFuture
             defaultValue={staff?.experience ? dayjs(staff?.experience) : undefined}
@@ -596,7 +596,7 @@ export const StaffEditAvatarInfoSection = () => {
         </label>
 
         <div className="custom-flex-col gap-3">
-          <p className="text-black text-base font-medium">Choose Avatar</p>
+          <p className="text-black dark:text-white text-base font-medium">Choose Avatar</p>
           <Modal
             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >

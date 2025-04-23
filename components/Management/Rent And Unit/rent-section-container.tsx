@@ -5,7 +5,7 @@ import { DetailItem } from "../detail-item";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import EditWarningModal from "./edit-warning-modal";
 import Button from "@/components/Form/Button/button";
-import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import { Currency, currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 export const RentSectionContainer: React.FC<{
   title: string;
@@ -48,7 +48,11 @@ export const FeeDetails: React.FC<{
   noEdit?: boolean;
   deduction?: boolean;
   owing?: boolean;
-}> = ({ title, feeDetails, total_package, id, noEdit, deduction, owing }) => {
+  currency?: Currency;
+}> = ({ title, feeDetails, total_package, id, noEdit, deduction, owing, currency }) => {
+  const CURRENCY =
+  currencySymbols[currency as keyof typeof currencySymbols] ||
+  currencySymbols["naira"];
   const totalFee = feeDetails
     .reduce((acc, fee) => (acc + Number(fee.amount)), 0)
     .toLocaleString();
@@ -83,9 +87,7 @@ export const FeeDetails: React.FC<{
             )}
             <p className="text-lg lg:text-xl text-brand-9 font-bold">
               {total_package
-                ? `${
-                    currencySymbols["₦" as keyof typeof currencySymbols] || "₦"
-                  }${formatNumber(parseFloat(total_package.toString()))}`
+                ? `${CURRENCY}${formatNumber(parseFloat(total_package.toString()))}`
                 : undefined}
             </p>
           </div>

@@ -103,7 +103,10 @@ const CreateInvoicePage = () => {
               onChange={() => setIsAddPaymentChecked(true)}
             />
           </div>
-          <p>Choose to create a manual payment for a specific bill or set it to auto-payment for a designated period.</p>
+          <p>
+            Choose to create a manual payment for a specific bill or set it to
+            auto-payment for a designated period.
+          </p>
         </div>
         {isAddPaymentChecked && (
           <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
@@ -152,7 +155,10 @@ const CreateInvoicePage = () => {
               onChange={() => setIsAddPaymentChecked(false)}
             />
           </div>
-          <p>Select to create a pending payment for tenants/occupants to pay their renewal fees.</p>
+          <p>
+            Select to create a pending payment for tenants/occupants to pay
+            their renewal fees.
+          </p>
         </div>
         {!isAddPaymentChecked && <Breakdown />}
       </div>

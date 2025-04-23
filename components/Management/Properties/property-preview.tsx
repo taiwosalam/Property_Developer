@@ -39,6 +39,7 @@ export interface PropertyPreviewProps
 }
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
+  console.log("propss", props)
   const {
     id,
     property_name,

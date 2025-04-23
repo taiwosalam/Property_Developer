@@ -80,11 +80,9 @@ const Header = () => {
   const pathname = usePathname();
 
   const { company_id } = usePersonalInfoStore();
-
+  const unreadMessageCount = usePersonalInfoStore((state) => state.unread_messages_count) || 0;
+  const notificationCount = usePersonalInfoStore((state) => state.unread_notifications_count) || 0;
   const loggedInUserDetails = getLocalStorage("additional_details");
-  const unreadMessageCount = getLocalStorage("msgCount") || 0;
-  const notificationCount = getLocalStorage("notificationCount") || 0;
-
   const { company: loggedUserCompany, appearance } = loggedInUserDetails || {};
   const setPersonalInfo = usePersonalInfoStore(
     (state) => state.setPersonalInfo
@@ -163,6 +161,7 @@ const Header = () => {
     }
   }, [appearance, setColor, setTheme]);
 
+
   useEffect(() => {
     if (data?.data) {
       const { user, company, profile, requestDemos } = data.data;
@@ -174,6 +173,8 @@ const Header = () => {
       setPersonalInfo("full_name", user.name);
       setPersonalInfo("user_email", user.email);
       setPersonalInfo("user_online_status", user.user_online_status);
+      setPersonalInfo("unread_notifications_count", user.unread_notifications_count);
+      setPersonalInfo("unread_messages_count", user.unread_messages_count);
       setPersonalInfo("title", profile?.title as string);
       setPersonalInfo("profile_picture", profile.picture);
       if (company) {
