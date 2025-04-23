@@ -91,14 +91,14 @@ const UnitStatisticDetails = ({ id }: { id: string }) => {
           />
 
           <ManagementStatistcsCard
-            title="Bookmarked"
+            title="Web Viewers"
             newData={pageData?.total_web_month_views ?? 0}
             total={pageData?.total_web_views ?? 0}
             className="w-[240px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Bookmarked"
+            title="Mobile Viewers"
             newData={pageData?.total_mobile_month_views ?? 0}
             total={pageData?.total_mobile_views ?? 0}
             className="w-[240px]"

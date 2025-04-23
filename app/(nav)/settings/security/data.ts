@@ -132,6 +132,7 @@ export const updateSettings = async (data: FormData, type: string) => {
 };
 
 
+
 ///company/services/legal_practitioner
 export const updateServicesSettings = async (data: FormData, type: string) => {
   try {
