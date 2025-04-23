@@ -13,6 +13,7 @@ export interface InspectionCardProps {
   data?: {
     id: number;
     property_name: string;
+    tier: number;
     total_package: string;
     fee_amount: string;
     unit_fee_amount: string;
@@ -45,6 +46,7 @@ export interface InspectionCardDetailProps {
   desc: string;
   title: string;
   verirified?: boolean;
+  tier?: number
 }
 
 export interface InspectionCardTitleDescProps {

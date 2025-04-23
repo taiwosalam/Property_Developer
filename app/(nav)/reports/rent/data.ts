@@ -3,6 +3,7 @@ import { RentListResponse, RentReportData } from "./types";
 import dayjs from "dayjs";
 
 import utc from "dayjs/plugin/utc";
+import { CURRENCY_SIGN } from "../units/data";
 
 dayjs.extend(utc);
 
@@ -65,11 +66,14 @@ export const transformRentData = (data: RentListResponse): RentReportData => {
       unit_name: rent.unit_name || "__ __",
       // property_name:
       //   rent.property_name === "N/A" ? "__ __" : rent.property_name,
-      tenant_name: rent.tenant_name || "__ __",
+      tenant_name: rent.tenant_name === "N/A" ? "__ __" : rent.tenant_name.toLocaleLowerCase(),
       rent_start_date: formatDate(rent.rent_start_date),
       rent_end_date: formatDate(rent.rent_start_date),
       status: rent.status || "__ __",
-      total_fee: `₦${rent.total_fee}` || "___ ___",
+      total_fee:  `${CURRENCY_SIGN[rent.rent_currency as keyof typeof CURRENCY_SIGN] || "₦"}${
+                rent.total_fee
+              }` || "__ __",
+      rent_currency: rent.rent_currency || "₦",
     })),
   };
 };

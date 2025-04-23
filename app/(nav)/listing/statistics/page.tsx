@@ -6,7 +6,11 @@ import { useEffect, useState } from "react";
 import type { StatisticsDataTypes } from "@/components/Listing/Statistics/types";
 
 // Images
-import { ChevronLeft, EmptyStatisticIcon } from "@/public/icons/icons";
+import {
+  ChevronLeft,
+  EmptyStatisticIcon,
+  EmptyViewsStatisticIcon,
+} from "@/public/icons/icons";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 // Imports
@@ -153,11 +157,24 @@ const Statistics = () => {
               ) : (
                 <div className="flex justify-center items-center min-h-[290px]">
                   <div className="flex flex-col justify-center items-center gap-4 text-brand-9 mb-10">
-                    <EmptyStatisticIcon />
-                    <p className="text-center text-sm text-brand-9">
-                      No potential clients have bookmarked your properties yet.
-                      Once they do, you&apos;ll see them here.
-                    </p>
+                    {statistics_data_types[activeStatIndex] !== "views" ? (
+                      <div className="flex flex-col justify-center items-center gap-4 text-brand-9 mb-10">
+                        <EmptyStatisticIcon />
+                        <p className="text-center text-sm text-brand-9">
+                          No potential clients have bookmarked your properties
+                          yet. Once they do, you&apos;ll see them here.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col justify-center items-center gap-4 text-brand-9 mb-10">
+                        <EmptyViewsStatisticIcon />
+                        <p className="text-center text-sm text-brand-9">
+                          You don&apos;t have any viewers yet. Once your
+                          property units are listed and approved, all viewers
+                          records will appear here.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

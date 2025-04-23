@@ -90,7 +90,7 @@ export const SettingsVerifiedBadge = ({
       className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${bgClass} ${borderClass}`}
     >
       <p
-        className={`text-[10px] font-normal ${textClass} ${secondaryFont.className}`}
+        className={`capitalize text-[10px] font-normal ${textClass} ${secondaryFont.className}`}
       >
         {status}
       </p>

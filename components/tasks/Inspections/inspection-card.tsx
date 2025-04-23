@@ -67,11 +67,12 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
         </div>
       </div>
       <div className="custom-flex-col gap-8 px-[18px]">
-        <div className="flex justify-between gap-2">
+        <div className="flex justify-between gap-2 capitalize">
          { data && <InspectionCardDetail
             title="Booked by"
             desc={data?.booked_by}
-            verirified
+            verirified={data?.tier ? true : false}
+            tier={data?.tier}
           />}
          { data && <InspectionCardDetail
             title="Inspection Date"

@@ -46,3 +46,9 @@ export const unitsReportTableFields: Field[] = [
     accessor: "total_package",
   },
 ];
+
+export const CURRENCY_SIGN = {
+  naira: "₦",
+  dollar: "$",
+  pound: "£",
+}
