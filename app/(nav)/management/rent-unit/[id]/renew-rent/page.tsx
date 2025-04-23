@@ -35,7 +35,11 @@ import NetworkError from "@/components/Error/NetworkError";
 import { getPropertySettingsData, getRentalData } from "./data";
 import dayjs, { Dayjs } from "dayjs";
 import ServerError from "@/components/Error/ServerError";
-import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { toast } from "sonner";
 import { startRent } from "../start-rent/data";
@@ -156,7 +160,7 @@ const RenewRent = () => {
               totalPackage={
                 unit_data?.newTenantTotalPrice?.toString() || "0"
                   ? `${
-                      currencySymbols["₦" as keyof typeof currencySymbols] ||
+                      currencySymbols[unit_data.currency as keyof typeof currencySymbols] ||
                       "₦"
                     }${formatNumber(
                       parseFloat(
@@ -167,6 +171,7 @@ const RenewRent = () => {
               }
             />
             <RenewalFee
+              currency={unit_data.currency as Currency}
               isRental={isRental}
               period={(unit_data.fee_period as RentPeriod) ?? "yearly"}
               feeDetails={[
@@ -192,6 +197,7 @@ const RenewRent = () => {
             />
 
             <OwingFee
+              currency={unit_data.currency as Currency}
               isRental={isRental}
               dueDate={due_date}
               period={(unit_data.fee_period as RentPeriod) ?? "yearly"}
@@ -204,7 +210,7 @@ const RenewRent = () => {
                     unit_data?.renewalTenantTotalPrice?.toString() || "0"
                       ? `${
                           currencySymbols[
-                            "₦" as keyof typeof currencySymbols
+                            unit_data.currency as keyof typeof currencySymbols
                           ] || "₦"
                         }${formatNumber(
                           parseFloat(
@@ -231,6 +237,7 @@ const RenewRent = () => {
               occupant={unit_data?.occupant}
               setSelectedCheckboxOptions={setSelectedCheckboxOptions}
             />
+            
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
             <MatchedProfile
@@ -240,6 +247,7 @@ const RenewRent = () => {
           </div>
         </div>
         <PreviousRentRecords
+          currency={unit_data.currency as Currency}
           isRental={isRental}
           unit_id={id as string}
           previous_records={unit_data.previous_records as any}

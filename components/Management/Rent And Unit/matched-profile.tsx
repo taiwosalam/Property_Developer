@@ -3,6 +3,7 @@ import { Occupant } from "./types";
 import { RentSectionContainer } from "./rent-section-container";
 import UserTag from "@/components/Tags/user-tag";
 import { isValidValue } from "@/app/(nav)/management/tenants/[tenantId]/manage/edit/data";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 export const MatchedProfile: React.FC<{
   occupant: Occupant | null;
@@ -11,6 +12,8 @@ export const MatchedProfile: React.FC<{
   error?: Error | null;
 }> = ({ occupant, title, isLoading, error }) => {
   const isMobile = occupant?.userTag?.toLocaleLowerCase() === "mobile";
+
+  console.log("occupant", occupant);
   return (
     <RentSectionContainer title={title} hidebar className="p-8">
       {occupant ? (
@@ -24,7 +27,13 @@ export const MatchedProfile: React.FC<{
               containerClassName="w-fit mx-auto custom-secondary-bg rounded-full"
             />
             <div className="w-full text-center">
-              <p className="font-bold text-xl">{occupant?.name}</p>
+              <div className="flex items-center gap-1">
+                <p className="font-bold text-xl">{occupant?.name}</p>
+                {occupant.badgeColor && (
+                  <BadgeIcon color={occupant.badgeColor} />
+                )}
+              </div>
+              {/* <p className="font-bold text-xl">{occupant?.name}</p> */}
               <p className="text-xs text-text-label dark:text-darkText-1 mb-4">
                 {occupant?.email}
               </p>
@@ -44,19 +53,12 @@ export const MatchedProfile: React.FC<{
             <h4 className="text-brand-9 text-[16px] font-medium">About</h4>
             <div className="space-y-4">
               <RentFeeDetails label="Gender" value={occupant?.gender} />
-              <RentFeeDetails
-                label="Occupation"
-                value={occupant?.occupation}
-              />
+              <RentFeeDetails label="Occupation" value={occupant?.occupation} />
               <RentFeeDetails label="Phone" value={occupant?.phone} />
               <RentFeeDetails label="Address" value={occupant?.address} />
               <RentFeeDetails
                 label={isMobile ? "Family Type" : "Tenant Type"}
-                value={
-                  isMobile
-                    ? occupant?.family_type
-                    : occupant?.tenant_type
-                }
+                value={isMobile ? occupant?.family_type : occupant?.tenant_type}
               />
             </div>
           </div>
@@ -65,10 +67,7 @@ export const MatchedProfile: React.FC<{
               Next of Kin
             </h4>
             <div className="space-y-4">
-              <RentFeeDetails
-                label="Name"
-                value={occupant?.nextOfKin?.name}
-              />
+              <RentFeeDetails label="Name" value={occupant?.nextOfKin?.name} />
               <RentFeeDetails
                 label="Email"
                 value={occupant?.nextOfKin?.email}

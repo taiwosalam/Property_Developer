@@ -48,6 +48,7 @@ import { empty } from "@/app/config";
 import dayjs, { Dayjs } from "dayjs";
 import { useGlobalStore } from "@/store/general-store";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { Currency } from "@/utils/number-formatter";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -178,6 +179,7 @@ const StartRent = () => {
           setStart_date={setStartDate}
           setSelectedTenantId={setSelectedTenantId}
           setSelectedCheckboxOptions={setSelectedCheckboxOptions}
+          currency={unit_data.currency as Currency}
           feeDetails={[
             {
               name: isRental
@@ -196,7 +198,6 @@ const StartRent = () => {
           total_package={Number(unit_data.total_package)}
           loading={loading}
           id={propertyId as string}
-          // setIsPastDate={setIsPastDate}
           setDueDate={setDueDate}
         />
       </section>

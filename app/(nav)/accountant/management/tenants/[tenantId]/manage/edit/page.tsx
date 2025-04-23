@@ -55,7 +55,14 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
   if (!tenantData) return null;
 
   return (
-    <TenantEditContext.Provider value={{ data: tenantData }}>
+    <TenantEditContext.Provider
+      value={{
+        data: {
+          ...tenantData,
+          flag: { is_flagged: 0, flagged_by: "", reason: "" }, //FLAG FROM API - fixed later
+        },
+      }}
+    >
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
         <BackButton>Edit Tenants & Occupant</BackButton>
         <div className="flex flex-col lg:flex-row gap-8">

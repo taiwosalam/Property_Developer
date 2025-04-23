@@ -123,6 +123,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   <Picture
                     src={notification.avatarSrc || empty}
                     alt="profile picture"
+                    status={notification.online}
                     size={36}
                     rounded
                   />

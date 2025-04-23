@@ -118,6 +118,7 @@ export const transformRentUnitApiResponse = (
   const transformedUnits: RentalPropertyCardProps[] = unitData.map((u: any) => {
     return {
       unitId: u?.id?.toString() || "0",
+      currency: u.property.currency,
       unit_title: u?.property?.title || "--- ---",
       unit_type: u?.unit_type || "--- ---",
       tenant_name: u.occupant.name !== null ? u.occupant.name : "--- ---", //TODO
@@ -302,6 +303,7 @@ export interface RentalPropertyCardProps {
   tenant_id?: string;
   is_active?: string;
   fee_period?: string;
+  currency?: Currency;
 }
 
 const allStates = getAllStates() || [];
@@ -900,6 +902,7 @@ export interface initDataProps {
   id?: string;
   title: string;
   management_fee?: string;
+  currency?: Currency;
   description: string;
   unit_id: string;
   unit_name: string;
@@ -957,7 +960,7 @@ export const transformUnitData = (response: any) => {
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   // const previous_tenants = response.data.previous_tenants;
-  console.log("data to trans", data);
+  console.log("data to trans", occupant);
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -980,51 +983,70 @@ export const transformUnitData = (response: any) => {
     tenant_name: data.user.name,
     unit_features: data.facilities,
     newTenantTotalPrice: data.total_package,
+    currency: data.property.currency,
     newTenantPrice: data.fee_amount
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.fee_amount))}`
       : undefined,
     inspectionFee: data.inspection_fee
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.inspection_fee))}`
       : undefined,
     legalFee: data.legal_fee
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.legal_fee))}`
       : undefined,
     vat_amount: data.user.vat_amount
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.user.vat_amount))}`
       : "--- ---",
     renew_vat_amount: data.user.renew_vat_amount
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.user.renew_vat_amount))}`
       : "--- ---",
     renewalTenantTotalPrice: data.renew_total_package,
     renew_fee_period: data.renew_fee_period,
     renewalTenantPrice: data.renew_fee_amount
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.renew_fee_amount))}`
       : undefined,
     renew_service_charge: data.renew_service_charge
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.renew_service_charge))}`
       : undefined,
     renew_other_charge: data.renew_other_charge
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.renew_other_charge))}`
       : undefined,
     management_fee: data.management_fee
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.management_fee))}`
       : undefined,
     en_suit: data.en_suit,
@@ -1044,7 +1066,9 @@ export const transformUnitData = (response: any) => {
     property_address: `${data.property.full_address}, ${data.property.city_area} ${data.property.local_government}, ${data.property.state}`,
     caution_fee: data.caution_fee
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.caution_fee))}`
       : undefined,
     location: "",
@@ -1054,22 +1078,30 @@ export const transformUnitData = (response: any) => {
     // caution_fee: data.caution_fee,
     security_fee: data.security_fee
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.security_fee))}`
       : undefined,
     other_charge: data.other_charge
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.other_charge))}`
       : undefined,
     unitAgentFee: data.agency_fee
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.agency_fee))}`
       : undefined,
     service_charge: data.service_charge
       ? `${
-          currencySymbols[data?.currency as keyof typeof currencySymbols] || "₦"
+          currencySymbols[
+            data?.property?.currency as keyof typeof currencySymbols
+          ] || "₦"
         }${formatNumber(parseFloat(data.service_charge))}`
       : undefined,
     occupant: occupant
@@ -1088,6 +1120,13 @@ export const transformUnitData = (response: any) => {
           city: occupant.city,
           state: occupant.state,
           lg: occupant.lg,
+          badgeColor:
+            occupant.user_tier || occupant.tier
+              ? tierColorMap[
+                  (occupant?.user_tier ||
+                    occupant.tier) as keyof typeof tierColorMap
+                ]
+              : undefined,
         }
       : undefined,
     previous_records: previous_records ? previous_records : undefined,

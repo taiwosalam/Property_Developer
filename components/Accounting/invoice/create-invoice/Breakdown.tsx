@@ -9,9 +9,9 @@ const Breakdown = ({data} : {data?:any}) => {
         <KeyValueList
           chunkSize={1}
           data={{
-            "annual fee": formatNumber(data.annual_fee),
-            "service charge": formatNumber(data.service_charge),
-            "refundable caution fee": formatNumber(data.caution_fee)
+            "annual fee": formatNumber(data?.annual_fee),
+            "service charge": formatNumber(data?.service_charge),
+            "refundable caution fee": formatNumber(data?.caution_fee)
           }}
           direction="column"
           referenceObject={{
@@ -31,7 +31,7 @@ const Breakdown = ({data} : {data?:any}) => {
             style: "currency",
             currency: "NGN",
           })
-            .format(Number(data.total_package))
+            .format(Number(data?.total_package))
             .split(".")}
         </p>
       </div>

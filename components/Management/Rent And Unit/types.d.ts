@@ -1,10 +1,13 @@
 import { StaticImageData } from "next/image";
 import { CheckBoxOptions, RentPeriod } from "./data";
+import { Currency } from "@/utils/number-formatter";
+import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 
 export interface PropertyDetailsProps {
   rent: number;
   cautionDeposit: number;
   serviceCharge: number;
+  currency?: Currency;
 }
 
 export interface ActionButtonProps {
@@ -73,6 +76,7 @@ export interface Occupant {
   state: string;
   lg: string;
   nextOfKin?: NextOfKin;
+  badgeColor?: BadgeIconColors;
 }
 
 export interface FeeDetail {
@@ -88,6 +92,7 @@ export interface OccupantProfileProps {
   total_package: number;
   loading?: boolean;
   id: string;
+  currency?: Currency;
   setSelectedTenantId?: (id: string) => void;
   setStart_date?: (date: string) => void;
   setIsPastDate?: ((isPast: boolean) => void) | undefined
@@ -150,6 +155,7 @@ interface TenantData {
   units: any[]; // Replace 'any' with a specific type if needed
   created_at: string;
   updated_at: string;
+  user_tier: 1 | 2 | 3 | 4 | 5;
 }
 
 interface TenantResponse {

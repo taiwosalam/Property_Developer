@@ -62,7 +62,7 @@ export interface CurrentRent {
   property_name: string;
   property_description: string;
   property_category: string;
-  unit_image: { path: string }[]; 
+  unit_image: { path: string }[];
 }
 
 export interface PreviousRent {
@@ -83,12 +83,12 @@ export interface PreviousRent {
   property_name: string;
   property_description: string;
   property_category: string;
-  unit_image: { path: string }[]; 
+  unit_image: { path: string }[];
 }
 
 export interface Statement {
   id: number;
-  payment_date?: string | null; 
+  payment_date?: string | null;
   amount_paid: string;
   details: string;
   start_date: string;
@@ -111,6 +111,12 @@ export interface TenantData {
   birthdate: string;
   religion: string | null;
   marital_status: string | null;
+  is_flagged?: boolean;
+  flag?: {
+    is_flagged: 1 | 0;
+    flagged_by: number | string;
+    reason: string;
+  };
   contact_address: ContactAddress;
   next_of_kin: NextOfKin;
   guarantor_1?: Guarantor;

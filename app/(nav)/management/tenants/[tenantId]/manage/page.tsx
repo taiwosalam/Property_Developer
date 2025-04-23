@@ -64,7 +64,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   if (!tenant) return null;
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
-  const otherData = getObjectProperties({ obj: tenant, exceptions: ["notes"] });
+  const otherData = getObjectProperties({ obj: tenant, exceptions: ["notes", "flag"] });
 
   console.log("tenant", tenant);
   return (
@@ -136,11 +136,16 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                       size="base_medium"
                       className="py-2 px-8"
                     >
-                      Edit
+                      {tenant.is_flagged ? "Unflag" : "Edit"}
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <EditMobileUser page="tenant" id={Number(tenantId)} />
+                    <EditMobileUser
+                      is_flagged={tenant?.is_flagged}
+                      flag_reason={tenant?.flag?.reason || ""}
+                      page="tenant"
+                      id={Number(tenantId)}
+                    />
                   </ModalContent>
                 </Modal>
                 <Modal>

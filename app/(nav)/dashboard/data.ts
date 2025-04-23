@@ -329,6 +329,7 @@ export const getRecentMessages = (data: any) => {
       time: m?.time,
       count: m?.unread_count,
       content_type: m?.content_type,
+      online: m?.online,
     }));
 };
 

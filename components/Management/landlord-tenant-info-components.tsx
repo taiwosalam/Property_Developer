@@ -66,7 +66,7 @@ export const LandlordTenantInfo: React.FC<{
         <div className="custom-flex-col gap-4">
           {Object.values(info).map((value, idx) => (
             <p key={idx} className="text-black dark:text-darkText-2">
-              {value?.split("_").join(" ") || "___"}
+              {typeof value === 'string' ? value.split('_').join(' ') : '___'}
             </p>
           ))}
         </div>

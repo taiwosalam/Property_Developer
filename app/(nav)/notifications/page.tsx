@@ -52,7 +52,10 @@ const Notifications = () => {
 
     try {
       setIsClearingNotifications(true);
-      await deleteAllNotification(notificationIds);
+      const res = await deleteAllNotification(notificationIds);
+      if (res) {
+        window.dispatchEvent(new Event("refetchProfile"));
+      }
     } catch (error) {
       console.error(error);
     } finally {

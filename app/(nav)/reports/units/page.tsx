@@ -140,8 +140,6 @@ const UnitsReport = () => {
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformUnitListData(data);
-      console.log("API data:", data);
-      console.log("Transformed data:", transformedData);
       const newUnits = transformedData.units;
       const currentUnits = useGlobalStore.getState().units;
       if (JSON.stringify(currentUnits) !== JSON.stringify(newUnits)) {

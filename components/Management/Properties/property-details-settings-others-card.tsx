@@ -51,6 +51,7 @@ const PropeertyDetailsSettingsCard: React.FC<
   isRental,
   property_name,
   landlord_name,
+  landlord_info,
   category,
   state,
   local_government,
@@ -91,7 +92,7 @@ const PropeertyDetailsSettingsCard: React.FC<
             label={`${isRental ? "Property" : "Facility"} Title`}
             value={property_name}
           />
-          {isRental && <DetailItem label="Landlord" value={landlord_name} />}
+          {isRental && <DetailItem label="Landlord" value={landlord_info.name} />}
           <DetailItem label="Category" value={category} />
           <DetailItem label="State" value={state} />
           <DetailItem label="Local Government" value={local_government} />
