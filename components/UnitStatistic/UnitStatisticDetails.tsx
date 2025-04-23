@@ -77,21 +77,33 @@ const UnitStatisticDetails = ({ id }: { id: string }) => {
     return <DashboardLoading />;
   }
 
-  
-
   return (
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-5">
         <BackButton bold>Statistics</BackButton>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title="Views"
+            title="Total Views"
             newData={pageData?.total_month_views ?? 0}
             total={pageData?.total_views ?? 0}
             className="w-[240px]"
             colorScheme={1}
           />
 
+          <ManagementStatistcsCard
+            title="Bookmarked"
+            newData={pageData?.total_web_month_views ?? 0}
+            total={pageData?.total_web_views ?? 0}
+            className="w-[240px]"
+            colorScheme={2}
+          />
+          <ManagementStatistcsCard
+            title="Bookmarked"
+            newData={pageData?.total_mobile_month_views ?? 0}
+            total={pageData?.total_mobile_views ?? 0}
+            className="w-[240px]"
+            colorScheme={2}
+          />
           <ManagementStatistcsCard
             title="Bookmarked"
             newData={pageData?.total_month_bookmarks ?? 0}
