@@ -33,7 +33,7 @@ export const transformSinglePropertyData = (
     propertyType: data.property_type as "rental" | "facility",
     total_units: data.units_count,
     images: data.images.map((img) => img.path),
-    isRental: data.property_type === "rental",
+    isRental: data.property_type.toLocaleLowerCase() === "rental",
     category: data.category,
     state: data.state,
     local_government: data.local_government,

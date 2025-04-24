@@ -133,8 +133,8 @@ export const transformBranchApiResponse = (
       branch_full_address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
       manager_name: branch.manager?.name || "",
       branch_picture: branch.picture,
-      staff_count: branch.staffs_count,
-      property_count: branch.properties_count,
+      staff_count: branch.staffs_count || 0,
+      property_count: branch.properties_count || 0,
       unit_count: branch.units_count || 0,
       manager_picture: branch.manager?.picture || null,
       badgeColor: branch?.manager?.tier && "gray"

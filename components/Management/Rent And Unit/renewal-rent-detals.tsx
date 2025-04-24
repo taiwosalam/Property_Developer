@@ -79,6 +79,8 @@ export const RenewalFee: React.FC<{
   currency?: Currency;
   setIsUpfrontPaymentChecked?: (checked: boolean) => void;
   isUpfrontPaymentChecked?: boolean;
+  noEdit?: boolean;
+  title?: string;
 }> = ({
   isRental,
   feeDetails,
@@ -88,34 +90,50 @@ export const RenewalFee: React.FC<{
   currency,
   isUpfrontPaymentChecked,
   setIsUpfrontPaymentChecked,
+  noEdit,
+  title,
 }) => {
+  // Check if toggle props are provided
+  const hasToggleProps =
+    isUpfrontPaymentChecked !== undefined && setIsUpfrontPaymentChecked;
+
   return (
     <div className="space-y-6">
+      {hasToggleProps ? (
+        // Render with toggle (checkbox and description)
         <div className="flex gap-1 flex-col">
-        <div className="flex gap-2">
-          <RentSectionTitle>Renewal Rent</RentSectionTitle>
-          <Checkbox
-            radio
-            checked={!isUpfrontPaymentChecked}
-            onChange={() =>
-              setIsUpfrontPaymentChecked && setIsUpfrontPaymentChecked(false)
-            }
-          />
+          <div className="flex gap-2">
+            <RentSectionTitle>
+              {title ? title : isRental ? "Renewal Rent" : "Renewal Fee"}
+            </RentSectionTitle>
+            <Checkbox
+              radio
+              checked={isUpfrontPaymentChecked}
+              onChange={() => setIsUpfrontPaymentChecked(true)}
+            />
+          </div>
+          <p>
+            Select this option if the client wishes to make a partial advance
+            payment of the total amount.
+          </p>
         </div>
-        <p>
-          Select this option if the client wishes to make a partial advance
-          payment of the total amount.
-        </p>
-      </div>
-      {/* <RentSectionTitle>Renewal Rent</RentSectionTitle> */}
-      {!isUpfrontPaymentChecked && (
-      <FeeDetails
-        title={isRental ? "Renewal Details" : "Annual Fee"}
-        feeDetails={feeDetails}
-        total_package={total_package}
-        id={id}
-        currency={currency}
-      />
+      ) : (
+        // Render title without checkbox
+        <RentSectionTitle>
+          {title ? title : isRental ? "Renewal Rent" : "Renewal Fee"}
+        </RentSectionTitle>
+      )}
+
+      {(!hasToggleProps || isUpfrontPaymentChecked) && (
+        // Render FeeDetails if no toggle props or if toggle is checked
+        <FeeDetails
+          title={isRental ? "Breakdown" : "Annual Fee"}
+          feeDetails={feeDetails}
+          total_package={total_package}
+          id={id}
+          currency={currency}
+          noEdit={noEdit}
+        />
       )}
     </div>
   );
@@ -129,6 +147,7 @@ export const OwingFee: React.FC<{
   period?: string;
   dueDate?: string;
   currency: Currency;
+  isUpfrontPaymentChecked?: boolean;
 }> = ({
   isRental,
   feeDetails,
@@ -137,6 +156,7 @@ export const OwingFee: React.FC<{
   period,
   dueDate,
   currency,
+  isUpfrontPaymentChecked,
 }) => {
   const [owingAmount, setOwingAmount] = useState<number>(0);
   const [overduePeriods, setOverduePeriods] = useState<number>(0);
@@ -153,6 +173,11 @@ export const OwingFee: React.FC<{
       setOverduePeriods(periods);
     }
   }, [dueDate, period, total_package]);
+
+  // If no owing amount or toggle is off, don't render
+  if (owingAmount <= 0 || !isUpfrontPaymentChecked) {
+    return null;
+  }
 
   // Combine original fee details with the calculated owing amount
   const updatedFeeDetails: FeeDetail[] = [

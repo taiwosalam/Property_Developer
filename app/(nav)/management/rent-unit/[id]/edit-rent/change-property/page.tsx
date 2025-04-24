@@ -28,7 +28,7 @@ const DynamicReactPlayer = dynamic(() => import("react-player"), {
 const ChangePropertyPage: React.FC = () => {
   const searchParams = useSearchParams();
   const property_id = searchParams.get("p");
-  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
+  const propertyType = searchParams.get("type") as "rental" | "facility"; 
   // const isRental = propertyType === "rental";
 
   useEffect(() => {
@@ -51,7 +51,6 @@ const ChangePropertyPage: React.FC = () => {
     useFetch<SinglePropertyResponse>(`property/${property_id}/view`);
 
   const propertyData = data ? transformSinglePropertyData(data) : null;
-
   useEffect(() => {
     if (
       propertyData &&
@@ -66,7 +65,6 @@ const ChangePropertyPage: React.FC = () => {
   if (error) return <div>{error}</div>;
   if (!propertyData) return <div>No property data found</div>;
 
-  // console.log("property", propertyData)
 
   if (step1Done) {
     return <PostProceedContent selectedUnitId={selectedUnitId as string} />;

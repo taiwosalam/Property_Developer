@@ -13,7 +13,6 @@ export const MatchedProfile: React.FC<{
 }> = ({ occupant, title, isLoading, error }) => {
   const isMobile = occupant?.userTag?.toLocaleLowerCase() === "mobile";
 
-  console.log("occupant", occupant);
   return (
     <RentSectionContainer title={title} hidebar className="p-8">
       {occupant ? (
@@ -28,7 +27,7 @@ export const MatchedProfile: React.FC<{
             />
             <div className="w-full text-center">
               <div className="flex items-center gap-1">
-                <p className="font-bold text-xl">{occupant?.name}</p>
+                <p className="font-bold text-xl capitalize">{occupant?.name}</p>
                 {occupant.badgeColor && (
                   <BadgeIcon color={occupant.badgeColor} />
                 )}

@@ -959,9 +959,22 @@ export const transformUnitData = (response: any) => {
   const data = response.data;
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
-  // const previous_tenants = response.data.previous_tenants;
-  console.log("data to trans", data);
-  return {
+
+  // Helper function to format and validate fee amounts
+  const formatFee = (
+    amount: string | number | undefined | null,
+    currency: string
+  ): string | undefined => {
+    if (!amount || amount === "") return undefined; // Skip undefined, null, or empty string
+    const parsedAmount = parseFloat(amount.toString());
+    if (isNaN(parsedAmount) || parsedAmount === 0) return undefined; // Skip NaN or zero
+    const currencySymbol =
+      currencySymbols[currency as keyof typeof currencySymbols] || "₦";
+    return `${currencySymbol}${formatNumber(parsedAmount)}`;
+  };
+
+  // Transform data with conditional inclusion of fee fields
+  const transformedData = {
     title: data.property.title,
     unit_id: data.id,
     description: data.property.description,
@@ -984,74 +997,8 @@ export const transformUnitData = (response: any) => {
     unit_features: data.facilities,
     newTenantTotalPrice: data.total_package,
     currency: data.property.currency,
-    newTenantPrice: data.fee_amount
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.fee_amount))}`
-      : undefined,
-    inspectionFee: data.inspection_fee
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.inspection_fee))}`
-      : undefined,
-    legalFee: data.legal_fee
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.legal_fee))}`
-      : undefined,
-    vat_amount: data.user.vat_amount
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.user.vat_amount))}`
-      : "--- ---",
-    renew_vat_amount: data.user.renew_vat_amount
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.user.renew_vat_amount))}`
-      : "--- ---",
     renewalTenantTotalPrice: data.renew_total_package,
     renew_fee_period: data.renew_fee_period,
-    renewalTenantPrice: data.renew_fee_amount
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.renew_fee_amount))}`
-      : undefined,
-    renew_service_charge: data.renew_service_charge
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.renew_service_charge))}`
-      : undefined,
-    renew_other_charge: data.renew_other_charge
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.renew_other_charge))}`
-      : undefined,
-    management_fee: data.management_fee
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.management_fee))}`
-      : undefined,
-    en_suit: data.en_suit,
-    prepaid: data.prepaid,
-    wardrobe: data.wardrobe,
     fee_period: data.fee_period,
     branchName: data.property.branch.branch_name,
     agency_fee: data.user.property.agency_fee,
@@ -1064,46 +1011,11 @@ export const transformUnitData = (response: any) => {
     whoToChargeRenew: data.user.property.who_to_charge_renew_tenant,
     property_state: data.property.state,
     property_address: `${data.property.full_address}, ${data.property.city_area} ${data.property.local_government}, ${data.property.state}`,
-    caution_fee: data.caution_fee
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.caution_fee))}`
-      : undefined,
-    location: "",
-    fee_amount: data.fee_amount,
     propertyId: data.property.id,
     total_package: data.total_package,
-    // caution_fee: data.caution_fee,
-    security_fee: data.security_fee
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.security_fee))}`
-      : undefined,
-    other_charge: data.other_charge
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.other_charge))}`
-      : undefined,
-    unitAgentFee: data.agency_fee
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.agency_fee))}`
-      : undefined,
-    service_charge: data.service_charge
-      ? `${
-          currencySymbols[
-            data?.property?.currency as keyof typeof currencySymbols
-          ] || "₦"
-        }${formatNumber(parseFloat(data.service_charge))}`
-      : undefined,
+    en_suit: data.en_suit,
+    prepaid: data.prepaid,
+    wardrobe: data.wardrobe,
     occupant: occupant
       ? {
           id: occupant.id,
@@ -1131,5 +1043,45 @@ export const transformUnitData = (response: any) => {
       : undefined,
     previous_records: previous_records ? previous_records : undefined,
     previous_tenants: data.previous_tenants ? data.previous_tenants : undefined,
+  };
+
+  // Conditionally include fee fields only if valid
+  const feeFields: { [key: string]: string | undefined } = {
+    newTenantPrice: formatFee(data.fee_amount, data.property.currency),
+    inspectionFee: formatFee(data.inspection_fee, data.property.currency),
+    legalFee: formatFee(data.legal_fee, data.property.currency),
+    vat_amount: formatFee(data.user.vat_amount, data.property.currency),
+    renew_vat_amount: formatFee(
+      data.user.renew_vat_amount,
+      data.property.currency
+    ),
+    renewalTenantPrice: formatFee(
+      data.renew_fee_amount,
+      data.property.currency
+    ),
+    renew_service_charge: formatFee(
+      data.renew_service_charge,
+      data.property.currency
+    ),
+    renew_other_charge: formatFee(
+      data.renew_other_charge,
+      data.property.currency
+    ),
+    management_fee: formatFee(data.management_fee, data.property.currency),
+    caution_fee: formatFee(data.caution_fee, data.property.currency),
+    security_fee: formatFee(data.security_fee, data.property.currency),
+    other_charge: formatFee(data.other_charge, data.property.currency),
+    unitAgentFee: formatFee(data.agency_fee, data.property.currency),
+    service_charge: formatFee(data.service_charge, data.property.currency),
+  };
+
+  // Merge only defined fee fields into the transformed data
+  const validFeeFields = Object.fromEntries(
+    Object.entries(feeFields).filter(([_, value]) => value !== undefined)
+  );
+
+  return {
+    ...transformedData,
+    ...validFeeFields,
   };
 };

@@ -46,8 +46,6 @@ const MoveOutModal = ({ unit_id }: { unit_id: string; }) => {
     } catch (error) {
       toast.error("Fail to Move out. Please try again later.");
     }
-
-    console.log("payload", payload);
   };
 
 

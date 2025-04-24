@@ -5,7 +5,11 @@ import { DetailItem } from "../detail-item";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import EditWarningModal from "./edit-warning-modal";
 import Button from "@/components/Form/Button/button";
-import { Currency, currencySymbols, formatNumber } from "@/utils/number-formatter";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 
 export const RentSectionContainer: React.FC<{
   title: string;
@@ -49,13 +53,23 @@ export const FeeDetails: React.FC<{
   deduction?: boolean;
   owing?: boolean;
   currency?: Currency;
-}> = ({ title, feeDetails, total_package, id, noEdit, deduction, owing, currency }) => {
+}> = ({
+  title,
+  feeDetails,
+  total_package,
+  id,
+  noEdit,
+  deduction,
+  owing,
+  currency,
+}) => {
   const CURRENCY =
-  currencySymbols[currency as keyof typeof currencySymbols] ||
-  currencySymbols["naira"];
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
   const totalFee = feeDetails
-    .reduce((acc, fee) => (acc + Number(fee.amount)), 0)
+    .reduce((acc, fee) => acc + Number(fee.amount), 0)
     .toLocaleString();
+
   return (
     <RentSectionContainer title={title}>
       <div className="space-y-6">
@@ -77,7 +91,7 @@ export const FeeDetails: React.FC<{
                   ? "Total Package"
                   : owing
                   ? "Current Total Package"
-                  : "Total Balance"}
+                  : "Total"}
               </p>
             )}
             {!noEdit && (
@@ -87,7 +101,9 @@ export const FeeDetails: React.FC<{
             )}
             <p className="text-lg lg:text-xl text-brand-9 font-bold">
               {total_package
-                ? `${CURRENCY}${formatNumber(parseFloat(total_package.toString()))}`
+                ? `${CURRENCY}${formatNumber(
+                    parseFloat(total_package.toString())
+                  )}`
                 : `${CURRENCY}0`}
             </p>
           </div>

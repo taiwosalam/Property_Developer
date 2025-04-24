@@ -57,6 +57,185 @@ check management/vehicles-record filter for reference
 
 
 
+// ================ transform /unit/${id}/view =================
+// export const transformUnitData = (response: any) => {
+//   const data = response.data;
+//   const occupant = response?.data?.occupant;
+//   const previous_records = response.data.previous_records;
+//   // const previous_tenants = response.data.previous_tenants;
+//   console.log("data to trans", data);
+//   return {
+//     title: data.property.title,
+//     unit_id: data.id,
+//     description: data.property.description,
+//     unit_name: `${data.unit_name} ${data.unit_type}`,
+//     address: data.property.full_address,
+//     unitNumber: "",
+//     images: data.images.map((image: any) => image.path),
+//     categories: data.property.category,
+//     unitPreference: data.unit_preference,
+//     unitType: data.unit_type,
+//     unitSubType: data.unit_sub_type,
+//     state: data.property.state,
+//     localGovernment: data.property.local_government,
+//     accountOfficer: data.property.account_officer.name,
+//     bedrooms: data.bedroom,
+//     bathrooms: data.bathroom,
+//     landlord_name: data.landlord.name,
+//     toilets: data.toilet,
+//     tenant_name: data.user.name,
+//     unit_features: data.facilities,
+//     newTenantTotalPrice: data.total_package,
+//     currency: data.property.currency,
+//     newTenantPrice: data.fee_amount
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.fee_amount))}`
+//       : undefined,
+//     inspectionFee: data.inspection_fee
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.inspection_fee))}`
+//       : undefined,
+//     legalFee: data.legal_fee
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.legal_fee))}`
+//       : undefined,
+//     vat_amount: data.user.vat_amount
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.user.vat_amount))}`
+//       : "",
+//     renew_vat_amount: data.user.renew_vat_amount
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.user.renew_vat_amount))}`
+//       : "--- ---",
+//     renewalTenantTotalPrice: data.renew_total_package,
+//     renew_fee_period: data.renew_fee_period,
+//     renewalTenantPrice: data.renew_fee_amount
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.renew_fee_amount))}`
+//       : undefined,
+//     renew_service_charge: data.renew_service_charge
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.renew_service_charge))}`
+//       : undefined,
+//     renew_other_charge: data.renew_other_charge
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.renew_other_charge))}`
+//       : undefined,
+//     management_fee: data.management_fee
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.management_fee))}`
+//       : undefined,
+//     en_suit: data.en_suit,
+//     prepaid: data.prepaid,
+//     wardrobe: data.wardrobe,
+//     fee_period: data.fee_period,
+//     branchName: data.property.branch.branch_name,
+//     agency_fee: data.user.property.agency_fee,
+//     group_chat: convertToYesNo(Number(data.property.group_chat)),
+//     rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
+//     caution_deposit: data.user.property.caution_deposit,
+//     // PROPERTY VALUES
+//     property_title: data.property.title,
+//     whoToCharge: data.user.property.who_to_charge_new_tenant,
+//     whoToChargeRenew: data.user.property.who_to_charge_renew_tenant,
+//     property_state: data.property.state,
+//     property_address: `${data.property.full_address}, ${data.property.city_area} ${data.property.local_government}, ${data.property.state}`,
+//     caution_fee: data.caution_fee
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.caution_fee))}`
+//       : undefined,
+//     location: "",
+//     fee_amount: data.fee_amount,
+//     propertyId: data.property.id,
+//     total_package: data.total_package,
+//     // caution_fee: data.caution_fee,
+//     security_fee: data.security_fee
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.security_fee))}`
+//       : undefined,
+//     other_charge: data.other_charge
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.other_charge))}`
+//       : undefined,
+//     unitAgentFee: data.agency_fee
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.agency_fee))}`
+//       : undefined,
+//     service_charge: data.service_charge
+//       ? `${
+//           currencySymbols[
+//             data?.property?.currency as keyof typeof currencySymbols
+//           ] || "₦"
+//         }${formatNumber(parseFloat(data.service_charge))}`
+//       : undefined,
+//     occupant: occupant
+//       ? {
+//           id: occupant.id,
+//           name: occupant.name,
+//           email: occupant.email,
+//           userTag: occupant.userTag,
+//           avatar: occupant.avatar || empty,
+//           gender: occupant.gender,
+//           birthday: occupant.birthday,
+//           religion: occupant.religion,
+//           phone: occupant.phone,
+//           maritalStatus: occupant.maritalStatus,
+//           address: occupant.address,
+//           city: occupant.city,
+//           state: occupant.state,
+//           lg: occupant.lg,
+//           badgeColor:
+//             occupant.user_tier || occupant.tier
+//               ? tierColorMap[
+//                   (occupant?.user_tier ||
+//                     occupant.tier) as keyof typeof tierColorMap
+//                 ]
+//               : undefined,
+//         }
+//       : undefined,
+//     previous_records: previous_records ? previous_records : undefined,
+//     previous_tenants: data.previous_tenants ? data.previous_tenants : undefined,
+//   };
+// };
 
 
 

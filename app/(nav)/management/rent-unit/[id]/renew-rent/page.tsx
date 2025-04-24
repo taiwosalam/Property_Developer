@@ -44,10 +44,15 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { toast } from "sonner";
 import { startRent } from "../start-rent/data";
 import { AddPartPayment } from "@/components/Management/Rent And Unit/Edit-Rent/Edit-rent-sections";
+import { editRent } from "../edit-rent/data";
+import { useOccupantStore } from "@/hooks/occupant-store";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  //STORE TO SAVE SELECTED OCCUPANT/TENANT
+  const { setOccupant, occupant, setUnitBalance, unitBalance } =
+  useOccupantStore();
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
   const isRental = propertyType === "rental";
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
@@ -73,10 +78,17 @@ const RenewRent = () => {
 
   useEffect(() => {
     if (apiData) {
+      const transformedData = transformUnitData(apiData);
       setUnit_data((x: any) => ({
         ...x,
         ...transformUnitData(apiData),
       }));
+      if (transformedData.occupant) {
+        setOccupant(transformedData.occupant); // Store occupant data in Zustand
+      }
+      if (transformedData.previous_records) {
+        setUnitBalance(transformedData.previous_records); // Store balance data in Zustand
+      }
     }
   }, [apiData]);
 
@@ -128,6 +140,34 @@ const RenewRent = () => {
       }
     } catch (err) {
       toast.error("Failed to renew rent");
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+  // ADD PART PAYMENT
+  const handlePartPayment = async () => {
+    if (!unitBalance || unitBalance.length === 0) {
+      toast.error("No unit balance available");
+      return;
+    }
+    const payload = {
+      unit_id: id,
+      amount: parseFloat(amt),
+      rent_id: unitBalance.data[0].id,
+      payment_date: startDate,
+      tenant_id: unit_data.occupant.id,
+      type: "part_payment",
+    };
+    try {
+      setReqLoading(true);
+      const success = await editRent(payload);
+      if (success) {
+        toast.success("Part payment added successfully");
+        window.dispatchEvent(new Event("refech-unit"));
+      }
+    } catch (err) {
+      toast.error("Failed to create part payment");
     } finally {
       setReqLoading(false);
     }
@@ -200,6 +240,8 @@ const RenewRent = () => {
               ]}
               total_package={Number(unit_data.renewalTenantTotalPrice)}
               id={propertyId as string}
+              setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+              isUpfrontPaymentChecked={isUpfrontPaymentChecked}
             />
 
             <OwingFee
@@ -229,6 +271,7 @@ const RenewRent = () => {
               ]}
               total_package={Number(unit_data.renewalTenantTotalPrice)}
               id={propertyId as string}
+              isUpfrontPaymentChecked={isUpfrontPaymentChecked}
             />
 
             <RenewalRent
@@ -248,7 +291,7 @@ const RenewRent = () => {
               isRental={isRental}
               currency={unit_data.currency || "naira"}
               setStart_Date={set_Start_Date}
-              action={() => {}}
+              noBtn
               loading={reqLoading}
               setAmt={setAmt}
               setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
@@ -270,14 +313,25 @@ const RenewRent = () => {
         />
       </section>
       <FixedFooter className="flex items-center justify-end">
-        <Button
-          size="base_medium"
-          className="py-2 px-6"
-          disabled={reqLoading}
-          onClick={handleRenewRent}
-        >
-          {reqLoading ? "Please wait..." : isRental ? "Renew Rent" : "Renew"}
-        </Button>
+        {isUpfrontPaymentChecked ? (
+          <Button
+            size="base_medium"
+            className="py-2 px-6"
+            disabled={reqLoading}
+            onClick={handleRenewRent}
+          >
+            {reqLoading ? "Please wait..." : isRental ? "Renew Rent" : "Renew"}
+          </Button>
+        ) : (
+          <Button
+            size="base_medium"
+            className="py-2 px-6"
+            disabled={reqLoading}
+            onClick={handlePartPayment}
+          >
+            {reqLoading ? "Please wait..." : "Update"}
+          </Button>
+        )}
       </FixedFooter>
     </div>
   );

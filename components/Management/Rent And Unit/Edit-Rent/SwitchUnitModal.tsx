@@ -77,6 +77,12 @@ const SwitchUnitModal: React.FC<{
     );
   };
 
+  const proceedToSelectUnit = () => {
+    router.push(
+      `/management/rent-unit/${id}/edit-rent/select-unit?type=${propertyType}&p=${propertyId}`
+    );
+  };
+
   if (modalView === "warning") {
     return (
       <ModalPreset type="warning">
@@ -87,7 +93,8 @@ const SwitchUnitModal: React.FC<{
             to another unit of the same property?
           </p>
           <div className="flex flex-col gap-2">
-            <Button onClick={() => setModalView("menu")}>OK</Button>
+            {/* <Button onClick={() => setModalView("menu")}>Proceed</Button> */}
+            <Button onClick={proceedToSelectUnit}>Proceed</Button>
             <ModalTrigger asChild close>
               <Button variant="blank" className="text-brand-9">
                 Back
@@ -104,7 +111,11 @@ const SwitchUnitModal: React.FC<{
       <MenuModalPreset
         heading="Transfer To New Unit"
         back={{ handleBack: () => setModalView("warning") }}
-        style={{ maxWidth: "600px", height: isRental ? "auto" : "400px", overflow: "visible" }}
+        style={{
+          maxWidth: "600px",
+          height: isRental ? "auto" : "400px",
+          overflow: "visible",
+        }}
       >
         <div className="flex flex-col gap-14">
           {isRental && (
@@ -132,9 +143,6 @@ const SwitchUnitModal: React.FC<{
                   size={15}
                   checked={checked2}
                   onClick={handleChecked2Click}
-                  // onClick={() => {
-                  //   setChecked2((x) => !x);
-                  // }}
                 />
                 <p>Deduction</p>
               </div>
@@ -169,7 +177,7 @@ const SwitchUnitModal: React.FC<{
                   className="py-2 px-8"
                   size="base_medium"
                 >
-                  Add
+                  Proceed
                 </Button>
               </div>
             </div>

@@ -46,6 +46,7 @@ import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { FeeDetail } from "@/components/Management/Rent And Unit/types";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
@@ -190,43 +191,68 @@ const EditRent = () => {
               period={unit_data.fee_period}
               dueDate={due_date}
               rentFee={unit_data.newTenantPrice}
-              otherFee={unit_data.other_charge as string}
+              unitData={unit_data}
             />
+
             <RenewalFee
               isRental={isRental}
+              noEdit
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: unit_data.renewalTenantPrice as any,
+                  amount: isRental
+                    ? unit_data.renewalTenantPrice
+                    : unit_data.newTenantPrice,
                 },
                 {
                   name: "Service Charge",
-                  amount: unit_data.renew_service_charge as any,
+                  amount: isRental
+                    ? unit_data.renew_service_charge
+                    : unit_data.service_charge,
                 },
                 {
-                  name: "Renew VAT Amount",
-                  amount: unit_data.renew_vat_amount as any,
+                  name: isRental ? "Renew VAT Amount" : "VAT Amount",
+                  amount: isRental
+                    ? unit_data.renew_vat_amount
+                    : unit_data.vat_amount,
+                },
+                {
+                  name: "Security Fee",
+                  amount: isRental
+                    ? unit_data.security_fee
+                    : unit_data.security_fee,
                 },
                 {
                   name: "Other Charges",
-                  amount: unit_data.renew_other_charge as any,
+                  amount: isRental
+                    ? unit_data.renew_other_charge
+                    : unit_data.other_charge,
                 },
-              ]}
+              ].filter((fee) => fee.amount !== undefined && fee.amount !== "")}
               currency={unit_data.currency || "naira"}
-              total_package={unit_data.renewalTenantTotalPrice as any}
+              total_package={
+                isRental
+                  ? (unit_data.renewalTenantTotalPrice as any)
+                  : unit_data.newTenantTotalPrice
+              }
               id={propertyId as string}
             />
 
             <EditCurrentRent
               currency={unit_data.currency || "naira"}
               isRental={isRental}
-              total={unit_data.renewalTenantTotalPrice}
+              total={
+                isRental
+                  ? unit_data.renewalTenantTotalPrice
+                  : unit_data.newTenantTotalPrice
+              }
               setStart_Date={setStartDate}
               action={handleUpfrontRent}
               loading={reqLoading}
               setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
               isUpfrontPaymentChecked={isUpfrontPaymentChecked}
             />
+            
             <AddPartPayment
               isRental={isRental}
               currency={unit_data.currency || "naira"}

@@ -278,10 +278,13 @@ function capitalizeDateString(dateStr: string): string {
   return dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
 }
 
-// Helper: Convert a currency string like "₦30,000" into a number (30000)
+// Helper: Convert a currency string like "$9,513,570.48" into a number (9513570.48)
 function parseCurrency(amountStr: string): number {
-  if (!amountStr) return 0;
-  return Number(amountStr.replace(/[₦,]/g, ""));
+  if (!amountStr || typeof amountStr !== "string") return 0;
+  // Remove currency symbols (₦, $, £, €, ¥) and commas, keep decimal point
+  const cleaned = amountStr.replace(/^[₦$£€¥]+|,/g, "");
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
 }
 
 export function calculateBalance(
