@@ -27,7 +27,12 @@ import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import { useOccupantStore } from "@/hooks/occupant-store";
-import { initData, initDataProps, singleUnitApiResponse, transformUnitData } from "../../../data";
+import {
+  initData,
+  initDataProps,
+  singleUnitApiResponse,
+  transformUnitData,
+} from "../../../data";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
@@ -57,7 +62,7 @@ const ChangeUnitpage = () => {
     setDeduction,
   } = useOccupantStore();
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-  const endpoint = `/unit/${id}/view`
+  const endpoint = `/unit/${id}/view`;
 
   const {
     data: apiData,
@@ -79,8 +84,8 @@ const ChangeUnitpage = () => {
   }, [apiData]);
 
   if (!unitBalance) {
-    toast.warning("Back to Rent Unit for security reasons")
-    router.back()
+    toast.warning("Back to Rent Unit for security reasons");
+    router.back();
     return;
   }
 
@@ -98,21 +103,25 @@ const ChangeUnitpage = () => {
       : null,
   }));
 
+  console.log("unit_data", unit_data);
 
-  const propertySettingsData = getPropertySettingsData(unit_data)
+  const propertySettingsData = getPropertySettingsData(unit_data);
   const rentalData = getRentalData(unit_data);
 
   const startday = balance?.[0]?.start_date;
   const endDay = balance?.[0]?.due_date;
   const amt = balance?.[0]?.amount_paid;
   // Only calculate the balance if all values exist, otherwise default to 0
-  const bal = startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
-  const newUnitTotal = calculation ? Number(unit_data.newTenantTotalPrice) : Number(unit_data.renewalTenantTotalPrice);
+  const bal =
+    startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
+  const newUnitTotal = calculation
+    ? Number(unit_data.newTenantTotalPrice)
+    : Number(unit_data.renewalTenantTotalPrice);
   const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
 
-  const prev_unit_bal = bal ? `${'₦'}${formatNumber(
-    parseFloat(`${bal}`)
-  )}` : undefined;
+  const prev_unit_bal = bal
+    ? `${"₦"}${formatNumber(parseFloat(`${bal}`))}`
+    : undefined;
 
   // console.log("Total Payable:", balance[0].id);
 
@@ -140,7 +149,7 @@ const ChangeUnitpage = () => {
     } finally {
       setReqLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -173,13 +182,17 @@ const ChangeUnitpage = () => {
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
+                  amount: calculation
+                    ? (unit_data.newTenantPrice as any)
+                    : unit_data.renewalTenantPrice,
                 },
                 {
                   name: "Service Charge",
-                  amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
+                  amount: calculation
+                    ? unit_data.service_charge
+                    : unit_data.renew_service_charge,
                 },
-                { name: "Other Charges", amount: (unit_data.other_charge) },
+                { name: "Other Charges", amount: unit_data.other_charge },
               ]}
               total={newUnitTotal}
               calculation={calculation}
@@ -192,15 +205,15 @@ const ChangeUnitpage = () => {
               feeDetails={[
                 {
                   name: "Previous Unit",
-                  amount: (prev_unit_bal as any),
+                  amount: prev_unit_bal as any,
                   // amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
                 },
                 {
                   name: "Current Unit",
-                  amount: (unit_data.newTenantPrice as any),
+                  amount: unit_data.newTenantPrice as any,
                   // amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
-                { name: "Other Charges", amount: (unit_data.other_charge) },
+                { name: "Other Charges", amount: unit_data.other_charge },
               ]}
               total={totalPayable}
               calculation={calculation}
@@ -236,9 +249,7 @@ const ChangeUnitpage = () => {
         >
           {reqLoading ? "Please wait..." : "Proceed"}
         </Button>
-        <Modal
-          state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}
-        >
+        <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
             <ModalPreset type="success" className="w-full">
               <div className="flex flex-col gap-8">

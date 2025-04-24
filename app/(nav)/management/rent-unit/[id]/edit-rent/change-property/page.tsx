@@ -11,7 +11,10 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-section-container";
 import PropeertyDetailsSettingsCard from "@/components/Management/Properties/property-details-settings-others-card";
 import { useSearchParams } from "next/navigation";
-import { SinglePropertyResponse, transformSinglePropertyData } from "@/app/(nav)/management/properties/[id]/data";
+import {
+  SinglePropertyResponse,
+  transformSinglePropertyData,
+} from "@/app/(nav)/management/properties/[id]/data";
 import useFetch from "@/hooks/useFetch";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -21,7 +24,6 @@ import Select from "@/components/Form/Select/select";
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
 });
-
 
 const ChangePropertyPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -51,7 +53,10 @@ const ChangePropertyPage: React.FC = () => {
   const propertyData = data ? transformSinglePropertyData(data) : null;
 
   useEffect(() => {
-    if (propertyData && propertyData.id !== useOccupantStore.getState().propertyData?.id) {
+    if (
+      propertyData &&
+      propertyData.id !== useOccupantStore.getState().propertyData?.id
+    ) {
       setPropertyData(propertyData);
     }
   }, [propertyData, setPropertyData]);
@@ -85,7 +90,8 @@ const ChangePropertyPage: React.FC = () => {
         </h1>
         <p className="text-sm text-text-label font-normal flex items-center gap-1">
           <LocationIcon />
-          {propertyData.address}, {propertyData.local_government}, {propertyData.state}
+          {propertyData.address}, {propertyData.local_government},{" "}
+          {propertyData.state}
         </p>
       </div>
 
@@ -99,15 +105,15 @@ const ChangePropertyPage: React.FC = () => {
 
           {/* Videos */}
           {isRental && isClient && propertyData.video_link && (
-            <div className='space-y-4'>
-              <p className='text-black text-lg md:text-xl lg:text-2xl font-bold'>
+            <div className="space-y-4">
+              <p className="text-black text-lg md:text-xl lg:text-2xl font-bold">
                 Video
               </p>
-              <div className='relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]'>
+              <div className="relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]">
                 <DynamicReactPlayer
                   url={propertyData.video_link}
-                  width='100%'
-                  height='100%'
+                  width="100%"
+                  height="100%"
                   pip
                   controls
                 />
@@ -116,16 +122,16 @@ const ChangePropertyPage: React.FC = () => {
           )}
         </div>
         <div className="lg:flex-1 space-y-4">
-          <PropeertyDetailsSettingsCard
-            {...propertyData}
-          />
+          <PropeertyDetailsSettingsCard {...propertyData} />
         </div>
       </div>
 
       <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle>
       <section className="space-y-4">
         {propertyData.units
-          .filter((u) => u.unitStatus === "vacant" || u.unitStatus === "relocate")
+          .filter(
+            (u) => u.unitStatus === "vacant" || u.unitStatus === "relocate"
+          )
           .map((u, index) => (
             <PropertySwitchUnitItem
               key={index}
@@ -136,21 +142,25 @@ const ChangePropertyPage: React.FC = () => {
               {...u}
             />
           )).length > 0 ? (
-            propertyData.units
-              .filter((u) => u.unitStatus === "vacant" || u.unitStatus === "relocate")
-              .map((u, index) => (
-          <PropertySwitchUnitItem
-            key={index}
-            id={u.unitId}
-            isSelected={selectedUnitId === u.unitId}
-            onSelect={handleUnitSelect}
-            isRental={isRental}
-            {...u}
-          />
-              ))
-          ) : (
-            <div className="flex items-center w-full justify-center">You do not have any Vacant Unit</div>
-          )}
+          propertyData.units
+            .filter(
+              (u) => u.unitStatus === "vacant" || u.unitStatus === "relocate"
+            )
+            .map((u, index) => (
+              <PropertySwitchUnitItem
+                key={index}
+                id={u.unitId}
+                isSelected={selectedUnitId === u.unitId}
+                onSelect={handleUnitSelect}
+                isRental={isRental}
+                {...u}
+              />
+            ))
+        ) : (
+          <div className="flex items-center w-full justify-center">
+            You do not have any Vacant Unit
+          </div>
+        )}
       </section>
       <FixedFooter className="flex justify-end">
         <Button

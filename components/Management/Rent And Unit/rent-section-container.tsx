@@ -88,7 +88,7 @@ export const FeeDetails: React.FC<{
             <p className="text-lg lg:text-xl text-brand-9 font-bold">
               {total_package
                 ? `${CURRENCY}${formatNumber(parseFloat(total_package.toString()))}`
-                : undefined}
+                : `${CURRENCY}0`}
             </p>
           </div>
           {!noEdit && (

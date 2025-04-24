@@ -35,7 +35,8 @@ export const RentDetails: React.FC<{
   rentFee: string;
   otherFee: string;
   period?: string;
-}> = ({ isRental, startDate, dueDate, rentFee, otherFee, period }) => {
+  totalPackage?: string;
+}> = ({ isRental, startDate, dueDate, rentFee, otherFee, period,  }) => {
   const renewalRentDetailItems = [
     { label: "Start Date", value: startDate },
     { label: "Due Date", value: dueDate },

@@ -25,7 +25,12 @@ import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useSearchParams } from "next/navigation";
 import { useOccupantStore } from "@/hooks/occupant-store";
-import { initData, initDataProps, singleUnitApiResponse, transformUnitData } from "@/app/(nav)/management/rent-unit/data";
+import {
+  initData,
+  initDataProps,
+  singleUnitApiResponse,
+  transformUnitData,
+} from "@/app/(nav)/management/rent-unit/data";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import dayjs from "dayjs";
@@ -35,7 +40,11 @@ import { getPropertySettingsData, getRentalData } from "./data";
 import { switchUnit } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
-const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => {
+const PostProceedContent = ({
+  selectedUnitId,
+}: {
+  selectedUnitId?: string;
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const propertyType = searchParams.get("type") as "rental" | "facility";
@@ -45,7 +54,6 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
   const [startDate, setStartDate] = useState<string | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-
   const {
     occupant,
     propertyData,
@@ -54,12 +62,12 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
     calculation,
     deduction,
     setCalculation,
-    setDeduction
+    setDeduction,
   } = useOccupantStore();
 
   // SELECTED UNIT DATA FETCH
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-  const endpoint = `/unit/${selectedUnitId}/view`
+  const endpoint = `/unit/${selectedUnitId}/view`;
   const {
     data: apiData,
     loading,
@@ -85,31 +93,44 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
     return null;
   }
 
-  const balance = unitBalance?.data?.map((record: any, index: any) => ({
-    ...record,
-    amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
-    start_date: record.start_date
-      ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
-      : null,
-    due_date: record.due_date
-      ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
-      : null,
-    payment_date: record.payment_date
-      ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
-      : null,
-  })) || [];
+  const balance =
+    unitBalance?.data?.map((record: any, index: any) => ({
+      ...record,
+      amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
+      start_date: record.start_date
+        ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+        : null,
+      due_date: record.due_date
+        ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+        : null,
+      payment_date: record.payment_date
+        ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
+        : null,
+    })) || [];
 
   const startday = balance?.[0]?.start_date;
   const endDay = balance?.[0]?.due_date;
   const amt = balance?.[0]?.amount_paid;
 
   // Only calculate the balance if all values exist, otherwise default to 0
-  const bal = startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
-  const newUnitTotal = calculation ? Number(unit_data.newTenantTotalPrice) : Number(unit_data.renewalTenantTotalPrice);
+  const bal =
+    startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
+  const newUnitTotal = calculation
+    ? Number(unit_data.newTenantTotalPrice)
+    : Number(unit_data.renewalTenantTotalPrice);
   const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
-  const prev_unit_bal = bal ? `${'₦'}${formatNumber(
-    parseFloat(`${bal}`)
-  )}` : undefined;
+  const prev_unit_bal = bal
+    ? `${"₦"}${formatNumber(parseFloat(`${bal}`))}`
+    : undefined;
+  const refundAmount = totalPayable < 0 ? Math.abs(totalPayable) : 0;
+
+  // Calculate excess or refund amount for the third card
+  const isExcess = newUnitTotal < totalPayable;
+  const balanceAmount = isExcess
+    ? totalPayable - newUnitTotal
+    : Math.abs(totalPayable);
+  const balanceLabel = isExcess ? "Excess Amount" : "Refund Amount";
+  const showBalanceCard = totalPayable < 0 || isExcess;
 
   const rentalData = getRentalData(propertyData);
   const propertySettingsData = getPropertySettingsData(propertyData);
@@ -123,7 +144,7 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
       deduction: deduction ? 1 : 0,
       payment_date: startDate,
     };
-    console.log("payload", data)
+    console.log("payload", data);
     try {
       setReqLoading(true);
       const res = await switchUnit(id as string, objectToFormData(data));
@@ -137,7 +158,7 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
     } finally {
       setReqLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -167,15 +188,19 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
+                  amount: calculation
+                    ? (unit_data.newTenantPrice as any)
+                    : unit_data.renewalTenantPrice,
                 },
                 {
                   name: "Service Charge",
-                  amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
+                  amount: calculation
+                    ? unit_data.service_charge
+                    : unit_data.renew_service_charge,
                 },
                 {
                   name: "Other Charges",
-                  amount: (unit_data?.other_charge)
+                  amount: unit_data?.other_charge,
                 },
               ]}
               total={newUnitTotal}
@@ -189,19 +214,36 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
               feeDetails={[
                 {
                   name: "Previous Unit",
-                  amount: (prev_unit_bal as any),
+                  amount: prev_unit_bal as any,
                   // amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
                 },
                 {
                   name: "Current Unit",
-                  amount: (unit_data.newTenantPrice as any),
+                  amount: unit_data.newTenantPrice as any,
                   // amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
-                { name: "Other Charges", amount: (unit_data.other_charge) },
+                { name: "Other Charges", amount: unit_data.other_charge },
               ]}
-              total={totalPayable}
+              total={totalPayable < 0 ? 0 : totalPayable}
               calculation={calculation}
             />
+
+            {showBalanceCard && (
+              <NewUnitCost
+                title="Balance after deduction"
+                noEdit
+                isRental={isRental}
+                feeDetails={[
+                  {
+                    name: balanceLabel,
+                    amount: `₦${formatNumber(balanceAmount)}`,
+                  },
+                ]}
+                total={balanceAmount}
+                calculation={calculation}
+              />
+            )}
+
             <StartRent
               isRental={isRental}
               rentPeriod="yearly"
@@ -211,14 +253,11 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
-            <MatchedProfile
-              occupant={occupant}
-              title="User Profile"
-            />
+            <MatchedProfile occupant={occupant} title="User Profile" />
           </div>
         </div>
         <PreviousRentRecords
-          previous_records={unitBalance && unitBalance as any}
+          previous_records={unitBalance && (unitBalance as any)}
           isRental={isRental}
           unit_id={selectedUnitId}
           noRefetch={true}
@@ -231,13 +270,12 @@ const PostProceedContent = ({ selectedUnitId }: { selectedUnitId?: string }) => 
           size="base_medium"
           className="py-2 px-6"
           disabled={reqLoading}
-          onClick={handleSwitchUnit}>
+          onClick={handleSwitchUnit}
+        >
           {reqLoading ? "Please wait..." : "Proceed"}
         </Button>
         {/* </ModalTrigger> */}
-        <Modal
-          state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}
-        >
+        <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
             <ModalPreset type="success" className="w-full">
               <div className="flex flex-col gap-8">

@@ -43,6 +43,7 @@ import {
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { toast } from "sonner";
 import { startRent } from "../start-rent/data";
+import { AddPartPayment } from "@/components/Management/Rent And Unit/Edit-Rent/Edit-rent-sections";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
@@ -50,12 +51,15 @@ const RenewRent = () => {
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
   const isRental = propertyType === "rental";
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-  // const [startDate, setStartDate] = useState<string>("");
+  // const [start_Date, set_Start_Date] = useState<string>("");
   const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
     useState<CheckBoxOptions>(defaultChecks);
   const [reqLoading, setReqLoading] = useState(false);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [start_Date, set_Start_Date] = useState<string | null>(null);
+  const [amt, setAmt] = useState("");
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
   const endpoint = `/unit/${id}/view`;
 
   const {
@@ -160,8 +164,9 @@ const RenewRent = () => {
               totalPackage={
                 unit_data?.newTenantTotalPrice?.toString() || "0"
                   ? `${
-                      currencySymbols[unit_data.currency as keyof typeof currencySymbols] ||
-                      "₦"
+                      currencySymbols[
+                        unit_data.currency as keyof typeof currencySymbols
+                      ] || "₦"
                     }${formatNumber(
                       parseFloat(
                         unit_data?.newTenantTotalPrice?.toString() ?? "0"
@@ -170,6 +175,7 @@ const RenewRent = () => {
                   : ""
               }
             />
+
             <RenewalFee
               currency={unit_data.currency as Currency}
               isRental={isRental}
@@ -237,7 +243,17 @@ const RenewRent = () => {
               occupant={unit_data?.occupant}
               setSelectedCheckboxOptions={setSelectedCheckboxOptions}
             />
-            
+
+            <AddPartPayment
+              isRental={isRental}
+              currency={unit_data.currency || "naira"}
+              setStart_Date={set_Start_Date}
+              action={() => {}}
+              loading={reqLoading}
+              setAmt={setAmt}
+              setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+              isUpfrontPaymentChecked={isUpfrontPaymentChecked}
+            />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
             <MatchedProfile

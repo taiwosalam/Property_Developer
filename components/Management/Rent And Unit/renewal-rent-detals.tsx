@@ -77,10 +77,38 @@ export const RenewalFee: React.FC<{
   id: string;
   period?: string;
   currency?: Currency;
-}> = ({ isRental, feeDetails, total_package, id, period, currency }) => {
+  setIsUpfrontPaymentChecked?: (checked: boolean) => void;
+  isUpfrontPaymentChecked?: boolean;
+}> = ({
+  isRental,
+  feeDetails,
+  total_package,
+  id,
+  period,
+  currency,
+  isUpfrontPaymentChecked,
+  setIsUpfrontPaymentChecked,
+}) => {
   return (
     <div className="space-y-6">
-      <RentSectionTitle>Renewal Rent</RentSectionTitle>
+        <div className="flex gap-1 flex-col">
+        <div className="flex gap-2">
+          <RentSectionTitle>Renewal Rent</RentSectionTitle>
+          <Checkbox
+            radio
+            checked={!isUpfrontPaymentChecked}
+            onChange={() =>
+              setIsUpfrontPaymentChecked && setIsUpfrontPaymentChecked(false)
+            }
+          />
+        </div>
+        <p>
+          Select this option if the client wishes to make a partial advance
+          payment of the total amount.
+        </p>
+      </div>
+      {/* <RentSectionTitle>Renewal Rent</RentSectionTitle> */}
+      {!isUpfrontPaymentChecked && (
       <FeeDetails
         title={isRental ? "Renewal Details" : "Annual Fee"}
         feeDetails={feeDetails}
@@ -88,6 +116,7 @@ export const RenewalFee: React.FC<{
         id={id}
         currency={currency}
       />
+      )}
     </div>
   );
 };
@@ -100,7 +129,15 @@ export const OwingFee: React.FC<{
   period?: string;
   dueDate?: string;
   currency: Currency;
-}> = ({ isRental, feeDetails, total_package, id, period, dueDate, currency }) => {
+}> = ({
+  isRental,
+  feeDetails,
+  total_package,
+  id,
+  period,
+  dueDate,
+  currency,
+}) => {
   const [owingAmount, setOwingAmount] = useState<number>(0);
   const [overduePeriods, setOverduePeriods] = useState<number>(0);
   // Calculate owing amount when dueDate, period, or totalPackage changes

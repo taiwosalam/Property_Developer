@@ -86,9 +86,9 @@ const SwitchPropertyModal: React.FC<{
       <FormModalPreset
         heading={`Add ${isRental ? "Property" : "Facility"}`}
         back={{ handleBack: () => setModalView("warning") }}
-        style={{ maxWidth: "600px", height: "400px" }}
+        style={{ maxWidth: "600px", height: "400px", overflow: "visible" }}
       >
-        <div className="space-y-5 max-w-[300px] mx-auto mt-5">
+        <div className="space-y-5 max-w-[300px] mx-auto mt-5 relative z-[1000]">
           <Select
             id="property-select"
             label={`Choose ${isRental ? "Property" : "Facility"}`}

@@ -145,7 +145,7 @@ const EditRent = () => {
     }
     const payload = {
       unit_id: id,
-      amount: amt,
+      amount: parseFloat(amt),
       rent_id: unitBalance.data[0].id,
       payment_date: startDate,
       tenant_id: unit_data.occupant.id,
@@ -202,6 +202,10 @@ const EditRent = () => {
                 {
                   name: "Service Charge",
                   amount: unit_data.renew_service_charge as any,
+                },
+                {
+                  name: "Renew VAT Amount",
+                  amount: unit_data.renew_vat_amount as any,
                 },
                 {
                   name: "Other Charges",

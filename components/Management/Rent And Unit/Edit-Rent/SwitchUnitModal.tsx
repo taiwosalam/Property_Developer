@@ -104,7 +104,7 @@ const SwitchUnitModal: React.FC<{
       <MenuModalPreset
         heading="Transfer To New Unit"
         back={{ handleBack: () => setModalView("warning") }}
-        style={{ maxWidth: "600px", height: isRental ? "auto" : "400px" }}
+        style={{ maxWidth: "600px", height: isRental ? "auto" : "400px", overflow: "visible" }}
       >
         <div className="flex flex-col gap-14">
           {isRental && (
@@ -145,7 +145,7 @@ const SwitchUnitModal: React.FC<{
               </p>
             </div>
           )}
-          <div className="flex items-center justify-center my-auto">
+          <div className="flex items-center justify-center my-auto relative z-[1000]">
             <div className="space-y-5">
               <Select
                 id=""
