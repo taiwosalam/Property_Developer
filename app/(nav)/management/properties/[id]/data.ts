@@ -24,6 +24,7 @@ export const transformSinglePropertyData = (
     (staff) => staff.staff_role === "account officer"
   );
 
+
   return {
     id: data.id,
     video_link: data.video_link,
@@ -32,7 +33,7 @@ export const transformSinglePropertyData = (
     propertyType: data.property_type as "rental" | "facility",
     total_units: data.units_count,
     images: data.images.map((img) => img.path),
-    isRental: data.property_type === "rental",
+    isRental: data.property_type.toLocaleLowerCase() === "rental",
     category: data.category,
     state: data.state,
     local_government: data.local_government,
@@ -72,6 +73,41 @@ export const transformSinglePropertyData = (
       unitId: unit.id,
       unitType: unit.unit_type,
       propertyType: data.property_type as "rental" | "facility",
+      vatAmount: unit.vat_amount
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.vat_amount)
+          )}`
+        : undefined,
+      renewVatAmount: unit.renew_vat_amount
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.renew_vat_amount)
+          )}`
+        : undefined,
+      renewOtherCharge: unit.renew_other_charge
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.renew_other_charge)
+          )}`
+        : undefined,
+      otherCharge: unit.other_charge
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.other_charge)
+          )}`
+        : undefined,
+      legalFee: unit.legal_fee
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.legal_fee)
+          )}`
+        : undefined,
+      agencyFee: unit.agency_fee
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.agency_fee)
+          )}`
+        : undefined,
+      inspectionFee: unit.inspection_fee
+        ? `${currencySymbols[data?.currency || "naira"]}${formatNumber(
+            parseFloat(unit.inspection_fee)
+          )}`
+        : undefined,
       rent: `${currencySymbols[data?.currency || "naira"]}${formatNumber(
         parseFloat(unit.fee_amount)
       )}`,

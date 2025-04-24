@@ -1,4 +1,7 @@
+import { transformUnitDetails } from "@/app/(nav)/listing/data";
+import { empty } from "@/app/config";
 import api, { handleAxiosError } from "@/services/api";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 export interface Unit {
   id: number;
@@ -43,6 +46,8 @@ export interface Unit {
   reject_reason: string | null;
   created_at: string;
   updated_at: string;
+  vat_amount?: string;
+  renew_vat_amount?: string;
 }
 
 export interface UnitOptionTypes {
@@ -62,6 +67,60 @@ export const transformUnitOptions = (
     .map((unit) => ({
       value: unit.id,
       label: unit.unit_name,
+    }));
+};
+
+// Helper function to format monetary values with Naira as fallback
+export const formatCurrency = (
+  value: string | null | undefined,
+  currency: string = "naira"
+): string => {
+  if (value === null || value === undefined || value === "") return "";
+  const parsed = parseFloat(value);
+  if (isNaN(parsed)) return "";
+  const symbol =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
+  return `${symbol}${formatNumber(parsed)}`;
+};
+
+export interface TransferUnit {
+  id: string;
+  cautionDeposit: string;
+  serviceCharge: string;
+  unitDetails: string;
+  totalPackage: string;
+  rent: string;
+  unitName: string;
+  VatAmount: string;
+  otherCharge: string;
+  legalFee: string;
+  inspectionFee: string;
+  agencyFee: string;
+  unitImages: string[];
+}
+
+export const transformTransferUnits = (
+  data: UnitsApiResponse
+): TransferUnit[] => {
+  return data.data
+    .filter(
+      (unit) => unit.is_active === "vacant" || unit.is_active === "relocated"
+    )
+    .map((unit) => ({
+      id: unit.id.toString(),
+      cautionDeposit: formatCurrency(unit.caution_fee, "naira"),
+      serviceCharge: formatCurrency(unit.service_charge),
+      unitDetails: transformUnitDetails(unit),
+      totalPackage: formatCurrency(unit.total_package),
+      rent: formatCurrency(unit.fee_amount),
+      unitName: unit.unit_name,
+      VatAmount: formatCurrency(unit.vat_amount),
+      otherCharge: formatCurrency(unit.other_charge),
+      legalFee: formatCurrency(unit.legal_fee),
+      inspectionFee: formatCurrency(unit.inspection_fee),
+      agencyFee: formatCurrency(unit.agency_fee),
+      unitImages: [empty],
     }));
 };
 

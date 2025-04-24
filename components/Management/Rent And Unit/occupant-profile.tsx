@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { OccupantProfileProps, Occupant } from "./types";
+import { OccupantProfileProps, Occupant, FeeDetail } from "./types";
 import { MatchedProfile } from "./matched-profile";
 import { FeeBreakdown } from "./fee-breakdown";
 import { ProfileForm } from "./profile-form";
@@ -25,7 +25,6 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   currency,
 }) => {
   const { selectedOccupant, tenantLoading, tenantError } = useGlobalStore();
-
   return (
     <>
       {loading ? (

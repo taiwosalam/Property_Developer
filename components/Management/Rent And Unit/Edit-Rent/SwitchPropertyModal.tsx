@@ -69,7 +69,7 @@ const SwitchPropertyModal: React.FC<{
             to another unit of another property?
           </p>
           <div className="flex flex-col gap-2">
-            <Button onClick={() => setModalView("form")}>OK</Button>
+            <Button onClick={() => setModalView("form")}>Proceed</Button>
             <ModalTrigger asChild close>
               <Button variant="blank" className="text-brand-9">
                 Back
@@ -86,9 +86,9 @@ const SwitchPropertyModal: React.FC<{
       <FormModalPreset
         heading={`Add ${isRental ? "Property" : "Facility"}`}
         back={{ handleBack: () => setModalView("warning") }}
-        style={{ maxWidth: "600px", height: "400px" }}
+        style={{ maxWidth: "600px", height: "400px", overflow: "visible" }}
       >
-        <div className="space-y-5 max-w-[300px] mx-auto mt-5">
+        <div className="space-y-5 max-w-[300px] mx-auto mt-5 relative z-[1000]">
           <Select
             id="property-select"
             label={`Choose ${isRental ? "Property" : "Facility"}`}
@@ -119,7 +119,7 @@ const SwitchPropertyModal: React.FC<{
                   Please wait...
                 </span>
               ) : (
-                "Add"
+                "Proceed"
               )}
             </Button>
           </div>

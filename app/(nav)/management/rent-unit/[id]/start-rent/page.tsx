@@ -2,10 +2,6 @@
 
 import Button from "@/components/Form/Button/button";
 import {
-  estateSettingsDta,
-  estateData,
-  propertySettingsData,
-  rentalData,
   RentPeriod,
   CheckBoxOptions,
   defaultChecks,
@@ -20,9 +16,6 @@ import { useEffect, useState } from "react";
 import {
   initData,
   initDataProps,
-  initialSingleData,
-  InitialSingleUnit,
-  InitialSingleUnitProps,
   singleUnitApiResponse,
   transformSingleUnitData,
   transformUnitData,
@@ -87,6 +80,7 @@ const StartRent = () => {
 
   useEffect(() => {
     if (apiData) {
+      console.log("API DATA", apiData);
       setUnit_data((x: any) => ({
         ...x,
         ...transformUnitData(apiData),
@@ -103,7 +97,11 @@ const StartRent = () => {
 
   const handleStartRent = async () => {
     if (!unit_data?.unit_id || !selectedTenantId) {
-      toast.error("Missing required information: unit or tenant not selected.");
+      toast.error(
+        `Missing required information: Unit or ${
+          isRental ? "Tenant" : "Occupant"
+        } not selected.`
+      );
       return;
     }
 
@@ -117,7 +115,12 @@ const StartRent = () => {
       toast.warning("End date cannot be in the past.");
       return;
     }
-
+    const successMsg = isRental
+      ? "Rent Started Succesfully"
+      : "Occupant Moved In Successfully";
+    const failedMsg = isRental
+      ? "Failed to start Rent, Try Again!"
+      : "Failed to Move Occupant In, Try Again!";
     const payload = {
       unit_id: unit_data.unit_id,
       tenant_id: selectedTenantId,
@@ -132,11 +135,11 @@ const StartRent = () => {
       setReqLoading(true);
       const res = await startRent(payload);
       if (res) {
-        toast.success("Rent Started Successfully");
+        toast.success(successMsg);
         router.back();
       }
     } catch (err) {
-      toast.error("Failed to start Rent");
+      toast.error(failedMsg);
     } finally {
       setReqLoading(false);
     }
@@ -151,6 +154,8 @@ const StartRent = () => {
   const propertySettingsData = getPropertySettingsData(unit_data);
   const estateData = getEstateData(unit_data);
   const estateSettingsDta = getEstateSettingsData(unit_data);
+
+  console.log("unit data", unit_data);
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -185,16 +190,17 @@ const StartRent = () => {
               name: isRental
                 ? `${unit_data?.fee_period} Rent`
                 : `${unit_data?.fee_period} Fee`,
-              amount: unit_data.newTenantPrice as any,
+              amount: unit_data.newTenantPrice,
             },
-            { name: "Service Charge", amount: unit_data.service_charge as any },
-            { name: "Caution Fee", amount: unit_data.caution_fee as any },
-            { name: "Inspection Fee", amount: unit_data.inspectionFee as any },
-            { name: "Agency Fee", amount: unit_data.unitAgentFee as any },
-            { name: "Legal Fee", amount: unit_data.legalFee as any },
-            { name: "VAT", amount: unit_data.vat_amount as any },
-            { name: "Other Charges", amount: unit_data.other_charge as any },
-          ]}
+            { name: "Service Charge", amount: unit_data.service_charge },
+            { name: "Caution Fee", amount: unit_data.caution_fee },
+            { name: "Inspection Fee", amount: unit_data.inspectionFee },
+            { name: "Agency Fee", amount: unit_data.unitAgentFee },
+            { name: "Legal Fee", amount: unit_data.legalFee },
+            { name: "Security Fee", amount: unit_data.security_fee },
+            { name: "VAT", amount: unit_data.vat_amount },
+            { name: "Other Charges", amount: unit_data.other_charge },
+          ].filter((fee) => fee.amount !== undefined && fee.amount !== "")}
           total_package={Number(unit_data.total_package)}
           loading={loading}
           id={propertyId as string}
@@ -220,7 +226,9 @@ const StartRent = () => {
             ? "Please wait..."
             : isPastDate
             ? "Save Rent"
-            : "Start Rent"}
+            : isRental
+            ? "Start Rent"
+            : "Move In"}
         </Button>
       </FixedFooter>
     </div>

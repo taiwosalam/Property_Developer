@@ -55,9 +55,9 @@ export const getEstateData = (unit_data: any) => [
   { label: "Branch", value: unit_data?.branchName ?? "--- ---" },
   {
     label: "Account Officer",
-    value: unit_data?.accountOfficer ?? "No Officer",
+    value: unit_data?.accountOfficer ?? "--- ---",
   },
-  { label: "Description", value: unit_data?.description ?? "No Description" },
+  { label: "Description", value: unit_data?.description ?? "--- ---" },
   { label: "Categories", value: unit_data?.categories ?? "--- ---" },
   { label: "Unit ID", value: unit_data?.unit_id ?? "--- ---" },
 ];

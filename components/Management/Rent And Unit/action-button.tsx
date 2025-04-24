@@ -37,7 +37,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
         </ModalTrigger>
         {modal === "Relocate" ? (
           <ModalContent>
-            <RelocateModal />
+            <RelocateModal unit_id={unit_id as string} />
           </ModalContent>
         ) : (
           <ModalContent>
