@@ -13,6 +13,7 @@ import {
   transformNotificationData,
 } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import ServerError from "@/components/Error/ServerError";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<TNotificationData | null>(
@@ -39,14 +40,6 @@ const Notifications = () => {
     }
   }, [apiData]);
 
-  if (error) {
-    return (
-      <p className="text-center text-slate-400">
-        {"We are sorry something went wrong from our end"}
-      </p>
-    );
-  }
-
   const handleDeleteNotifications = async () => {
     if (!notificationIds.length) return;
 
@@ -62,6 +55,8 @@ const Notifications = () => {
       setIsClearingNotifications(false);
     }
   };
+
+  if (error) return <ServerError error={error} />;
 
   return (
     <div

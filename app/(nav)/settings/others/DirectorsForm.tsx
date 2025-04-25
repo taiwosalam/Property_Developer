@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "@/components/Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
@@ -18,6 +18,10 @@ import {
 import Avatars from "@/components/Avatars/avatars";
 import TextArea from "@/components/Form/TextArea/textarea";
 import Image from "next/image";
+import DateInput from "@/components/Form/DateInput/date-input";
+import dayjs from "dayjs";
+import { deleteDirector } from "./data";
+import { toast } from "sonner";
 
 interface DirectorsFormProps {
   submitAction: (data: any) => void;
@@ -25,8 +29,11 @@ interface DirectorsFormProps {
   isProcessing?: boolean;
   avatar: string | null;
   setAvatar: React.Dispatch<React.SetStateAction<string | null>>;
+  setIsCloseUpdate?: React.Dispatch<React.SetStateAction<boolean>>;
   formData?: Record<string, string>;
   onFormChange?: (field: string, value: string) => void;
+  isEditing?: boolean;
+  initialImage?: string | null;
 }
 
 type Address = "selectedState" | "selectedLGA" | "selectedCity";
@@ -39,12 +46,16 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
   isProcessing,
   formData,
   onFormChange,
+  isEditing,
+  initialImage,
+  setIsCloseUpdate
 }) => {
   const {
     preview: imagePreview,
     inputFileRef,
     handleImageChange: originalHandleImageChange,
     clearSelection: clearImageSelection,
+    setPreview,
   } = useImageUploader();
 
   const [state, setState] = useState({
@@ -56,10 +67,30 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
 
   const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
 
+  useEffect(() => {
+    if (initialImage) {
+      setPreview(initialImage);
+    }
+  }, [initialImage, setPreview]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAvatar(null); // Clear the avatar when an image is selected
     originalHandleImageChange(e);
   };
+
+  const handleAvatarSelect = () => {
+    clearImageSelection(); // Clear the image preview when choosing avatar
+    chooseAvatar();
+  };
+
+  useEffect(() => {
+    if (avatar) {
+      clearImageSelection();
+    }
+  }, [avatar]);
+
+
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleAddressChange = (field: Address, value: string) => {
     setState((prevState) => ({
@@ -68,6 +99,22 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
       ...(field === "selectedState" && { selectedLGA: "", selectedCity: "" }),
       ...(field === "selectedLGA" && { selectedCity: "" }),
     }));
+  };
+
+  const handleDeleteDirector = async () => {
+    try {
+      setIsDeleting(true);
+      if (isEditing && formData?.id) {
+        const res = await deleteDirector(formData?.id || "");
+        if (res) {
+          toast.success("Director deleted");
+          setIsCloseUpdate?.(false);
+        }
+      }
+    } catch (error) {
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -99,10 +146,11 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           value={formData?.professional_title || ""}
           onChange={(value) => onFormChange?.("professional_title", value)}
         />
+
         <Input
           id="full_name"
           label="Full Name"
-          value={formData?.full_name}
+          value={formData?.full_name || ""}
           onChange={(value) => onFormChange?.("full_name", value)}
           inputClassName="rounded-[8px]"
           validationErrors={errorMsgs}
@@ -118,7 +166,20 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           validationErrors={errorMsgs}
           required
         />
-        <Select
+        <DateInput
+          id="years_in_business"
+          label=" Years of Experience (Since)"
+          onChange={(value) =>
+            onFormChange?.("years_in_business", value ? value.toString() : "")
+          }
+          value={
+            formData?.years_in_business
+              ? dayjs(formData.years_in_business)
+              : null
+          }
+          className="bg-neutral-2"
+        />
+        {/* <Select
           validationErrors={errorMsgs}
           options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
           id="years_in_business"
@@ -126,10 +187,10 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
           value={formData?.years_in_business || ""}
-          onChange={(value) => onFormChange?.("years_in_business", value)}
+          onChange={(value) => onFormChange?.("years_in_business", value)} 
           //value={selectedState}
           //onChange={(value) => handleAddressChange("selectedState", value)}
-        />
+        />*/}
         <PhoneNumberInput
           id="phone_number"
           label="phone number"
@@ -210,7 +271,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
             </button>
             <button
               type="button"
-              onClick={() => chooseAvatar()}
+              onClick={() => handleAvatarSelect()}
               className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
               aria-label="choose avatar"
             >
@@ -251,19 +312,44 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           accept="image/*"
           onChange={handleImageChange}
         />
-        <Button
-          type="submit"
-          size="base_medium"
-          className={`py-2 px-8 ml-auto ${
-            isProcessing ? "opacity-70" : "opacity-100"
-          }`}
-          disabled={isProcessing}
-        >
-          {isProcessing ? "Creating..." : "Create"}
-        </Button>
+        {isEditing ? (
+          <div className="flex gap-4">
+            <Button
+              onClick={handleDeleteDirector}
+              size="base_medium"
+              className={`py-2 px-8 ml-auto text-white bg-opacity-90 font-semibold ${
+                isDeleting ? "opacity-70" : "opacity-100"
+              }`}
+              variant="red"
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Please wait..." : "Delete"}
+            </Button>
+            <Button
+              type="submit"
+              size="base_medium"
+              className={`py-2 px-8 ml-auto ${
+                isProcessing ? "opacity-70" : "opacity-100"
+              }`}
+              disabled={isProcessing}
+            >
+              {isProcessing ? "Please wait..." : "Update"}
+            </Button>
+          </div>
+        ) : (
+          <Button
+            type="submit"
+            size="base_medium"
+            className={`py-2 px-8 ml-auto ${
+              isProcessing ? "opacity-70" : "opacity-100"
+            }`}
+            disabled={isProcessing}
+          >
+            {isProcessing ? "Creating..." : "Create"}
+          </Button>
+        )}
       </div>
     </AuthForm>
   );
 };
-
 export default DirectorsForm;

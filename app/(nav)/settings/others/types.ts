@@ -39,7 +39,10 @@ type User = {
   phone_verified_at: string | null;
   username_updated_at: string | null;
   profile: {
+    picture: string;
     title: string;
+    state: string | null;
+    lga: string | null;
   }
   is_active: number;
   is_company_owner: number;

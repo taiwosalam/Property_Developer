@@ -41,7 +41,7 @@ const Signature = () => {
                 width={150} // Adjust width as needed
               />
             </div>
-            <p>
+            <p className="py-3 mt-2">
               {sig.name}
               <br />
               {sig.professional_title}
