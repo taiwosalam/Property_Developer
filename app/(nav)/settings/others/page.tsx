@@ -1,7 +1,14 @@
 "use client";
 
-import { SetStateAction, useEffect, useState } from "react";
+import React, {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import Image from "next/image";
+import { debounce } from "lodash";
 
 // Imports
 // import Select from "@/components/Form/Select/select";
@@ -17,11 +24,15 @@ import {
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { industryOptions } from "@/data";
-import { Modal, useModal } from "@/components/Modal/modal";
-import { ModalContent } from "@/components/Modal/modal";
-import { ModalTrigger } from "@/components/Modal/modal";
+
+import {
+  Modal,
+  useModal,
+  ModalContent,
+  ModalTrigger,
+} from "@/components/Modal/modal";
+
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
-import DirectorsForm from "./DirectorsForm";
 import RestrictUserForm from "./RestrictUserForm";
 import UserCard from "@/components/Management/landlord-and-tenant-card";
 import {
@@ -49,6 +60,7 @@ import {
   transformOtherSetting,
   transfromToDirectorCards,
   updateCompanyNotification,
+  updateDirector,
   updateMessageAndReviewSettings,
   updateResetSettings,
 } from "./data";
@@ -63,14 +75,19 @@ import {
   RestrictedUserApiResponse,
 } from "./types";
 
-import { useCallback } from "react";
-import debounce from "lodash/debounce";
+import DirectorsForm from "./DirectorsForm";
+
 import Button from "@/components/Form/Button/button";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import SettingsUpdateModal from "@/components/Settings/Modals/settings-update-modal";
 import RestoreRestrictedUserForm from "./RestoreRestrictedUserForm";
 import { useRouter } from "next/navigation";
 import { logout } from "@/app/(onboarding)/auth/data";
+import {
+  BadgeIconColors,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
+import { title } from "process";
 
 const companyTypes = [
   {
@@ -120,45 +137,25 @@ const notificationOtherSettings: NotificationSetting[] = [
 
 interface MessageReviewSetting {
   title: string;
-  desc: string;
   name: string;
-  icon?: React.ReactNode;
-  enabled?: boolean;
+  enabled: boolean;
+  desc: string;
+  icon: React.ReactNode;
 }
+
 const messageReviewSettings: MessageReviewSetting[] = [
   {
-    title: "Landlord/Landlady",
-    name: "landlord_landlady",
-    enabled: true,
-    desc: "Automatically add the attached landlord/landlady profile to the property group, enabling them to view group conversations from all occupants/tenants, assigned staff, and account officers.",
-    icon: <ProfileCircleIcon />,
-  },
-  {
-    title: "Account Officer",
-    name: "account_officer",
-    enabled: true,
-    desc: "This will designate the assigned account officer for a property as a participant of the property group, enabling them to view and respond to all messages within the group.",
-    icon: <UserEditIcon />,
-  },
-  {
-    title: "Assign Staff",
-    name: "assign_staff",
-    enabled: true,
-    desc: "Clicking on this option will grant assigned staff members access to group chats and property group conversations that are assigned to them.",
-    icon: <UserTagIcon />,
-  },
-  {
-    title: "Disable Messages",
-    name: "messages",
-    enabled: true,
-    desc: "When you click on this option, it means that all messaging functionality will be disabled for all users. They will not be able to send messages under your company profile or chat in the property group.",
-    icon: <UserEditIcon />,
-  },
-  {
-    title: "Disable Reviews",
+    title: "Reviews",
     name: "reviews",
     enabled: true,
     desc: "When you click on this option, it means that reviews will not be displayed anymore under your company profile. New potential clients will not be able to see your previous reviews or comment under them.",
+    icon: <UserEditIcon />,
+  },
+  {
+    title: "Messages",
+    name: "messages",
+    enabled: true,
+    desc: "When you click on this option, it means that all messaging functionality will be disabled for all users. They will not be able to send messages under your company profile or chat in the property group.",
     icon: <UserTagIcon />,
   },
 ];
@@ -255,9 +252,6 @@ const Others = () => {
   }>({
     reviews: true,
     messages: true,
-    assign_staff: true,
-    account_officer: true,
-    landlord_landlady: true,
   });
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
@@ -469,23 +463,15 @@ const Others = () => {
     const transformedSettings = transformOtherSetting(otherSettingResponse);
     setDefaultOtherSettings(transformedSettings);
 
-    const notification = transformedSettings?.notification ?? {};
-
-    setMessageReviewSettingsState({
-      reviews: notification.reviews ?? true,
-      messages: notification.messages ?? true,
-      account_officer: notification.account_officer ?? true,
-      landlord_landlady: notification.landlord_landlady ?? true,
-      assign_staff: notification.assign_staff ?? true,
-    });
-
-    const groupStatus =
-      notification &&
-      notification?.company_default_module != null &&
-      typeof notification?.company_default_module !== "undefined"
-        ? String(notification?.company_default_module)
+    // Extract notification settings with proper type checking
+    const defaultModule =
+      transformedSettings?.notification?.company_default_module;
+    const moduleValue =
+      defaultModule != null && typeof defaultModule !== "undefined"
+        ? String(defaultModule)
         : "1";
-    setSelectedGroup(groupStatus);
+
+    setSelectedGroup(moduleValue);
   }, [otherSettingResponse]);
 
   useEffect(() => {
@@ -528,6 +514,11 @@ const Others = () => {
   }, [planData]);
 
   useRefetchOnEvent("addNewDirector", () => refetch({ silent: true }));
+
+  const getBadgeColor = (tier?: number): BadgeIconColors => {
+    if (!tier) return "blue";
+    return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
+  };
 
   useEffect(() => {
     if (apiData) {
@@ -592,14 +583,6 @@ const Others = () => {
       setProcessing(false);
     }
   };
-  //type DirectorsFormOptions = "options" | "choose-avatar";
-
-  // const handleSubmit = async (data: FormData) => {
-  //
-  //   // if (res) {
-  //   //   setIsOpen(false);
-  //   // }
-  // };
 
   const [formData, setFormData] = useState({
     title: "",
@@ -614,11 +597,15 @@ const Others = () => {
   });
 
   const handleFormChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-      ...(field === "selectedState" && { selectedLGA: "" }), // Reset LGA when state changes
-    }));
+    if (field === "avatar") {
+      setSelectedAvatar((prev) => value as string | null);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+        ...(field === "selectedState" && { selectedLGA: "" }), // Reset LGA when state changes
+      }));
+    }
   };
 
   const modal_states: Record<
@@ -636,7 +623,12 @@ const Others = () => {
           isProcessing={processing}
           chooseAvatar={() => setActiveStep("choose-avatar")}
           avatar={selectedAvatar}
-          setAvatar={setSelectedAvatar}
+          setAvatar={React.useCallback<Dispatch<SetStateAction<string | null>>>(
+            (value) => {
+              setSelectedAvatar(value);
+            },
+            [setSelectedAvatar]
+          )}
           formData={formData}
           onFormChange={handleFormChange}
         />
@@ -709,6 +701,8 @@ const Others = () => {
   useRefetchOnEvent("restrictedUser", () => refetchUser({ silent: true }));
   const [propertyId, setPropertyId] = useState<number | null>(null);
   const [restoring, setRestoring] = useState<boolean>(false);
+  const [isUserRestored, setIsUserRestored] = useState(false);
+  const [isUserRestricted, setIsUserRestricted] = useState(false);
 
   const handleRestoreUser = async () => {
     if (!selectedRestrictedUser) return;
@@ -724,12 +718,94 @@ const Others = () => {
       const response = await restrictUserFromGroupChat(payload);
       if (response) {
         toast.success("User restored");
+        setIsUserRestored(false);
       }
     } catch (error) {
     } finally {
       setRestoring(false);
     }
   };
+
+  const [isCloseOnUpdate, setIsCloseOnUpdate] = useState(false);
+  const [isCloseOnDelete, setIsCloseOnDelete] = useState(false);
+
+  const handleUpdateDirector = async (data: FormData, id: string) => {
+    const fields = [
+      "title",
+      "professional_title",
+      "full_name",
+      "email",
+      "years_in_business",
+      "about_director",
+      "phone_number",
+      "profile_picture",
+      "avatar",
+    ];
+
+    const payload = new FormData();
+    fields.forEach((field) => {
+      const value = data.get(field);
+      if (value) {
+        payload.append(field, value);
+      }
+    });
+
+    try {
+      setProcessing(true);
+      const response = await updateDirector(payload, id);
+
+      if (response) {
+        toast.success("Director updated successfully");
+        window.dispatchEvent(new Event("addNewDirector"));
+
+        setIsCloseOnUpdate(false);
+      }
+    } catch (error) {
+      toast.error("Failed to update director");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const [formStateById, setFormStateById] = useState<
+    Record<string, Record<string, string>>
+  >({});
+
+  useEffect(() => {
+    if (cardView?.card) {
+      const initialState = cardView.card.reduce((acc, director) => {
+        acc[director.id] = {
+          id: director.id.toString(),
+          full_name: director.name || "",
+          email: director.email || "",
+          phone_number: director.phone_number || "",
+          title: director.title || "",
+          professional_title: director.professional_title || "",
+          years_in_business: director.years_in_business || "",
+          about_director: director.about_director || "",
+          avatar: director?.picture || "",
+        };
+        return acc;
+      }, {} as Record<string, Record<string, string>>);
+
+      setFormStateById(initialState);
+    }
+  }, [cardView?.card]);
+
+  const [activeStepById, setActiveStepById] = useState<
+    Record<string, "options" | "choose-avatar">
+  >({});
+
+  const setStepForDirector = (
+    id: string,
+    step: "options" | "choose-avatar"
+  ) => {
+    setActiveStepById((prev) => ({
+      ...prev,
+      [id]: step,
+    }));
+  };
+  const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
 
   return (
     <>
@@ -757,49 +833,123 @@ const Others = () => {
             title="Company Director"
             desc="Please provide the details of the additional user you wish to grant the same Director-level access as your account within the company."
           />
-          <AutoResizingGrid minWidth={284} gap={16}>
-            {cardView?.card?.map((director) => {
-              return (
-                <UserCard
-                  key={director.id}
-                  name={director.full_name}
-                  email={director.email}
-                  phone_number={director.phone_number}
-                  picture_url={director.picture}
-                  user_tag={director.professional_title}
-                />
-              );
-            })}
+          <div className="">
+            <AutoResizingGrid minWidth={284} gap={16}>
+              {cardView?.card?.map((director) => {
+                const directorId = director.id.toString();
+                const formData = formStateById[directorId];
+                const activeStep = activeStepById[directorId] || "options";
 
-            <Modal
-              state={{
-                isOpen: isDirectorModalOpen,
-                setIsOpen: setIsDirectorModalOpen,
-              }}
-            >
-              <div className="ml-8 card p-2 flex max-w-[397px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
-                <ModalTrigger>
-                  <div className="flex flex-col items-center gap-1 justify-center py-4">
-                    <Image
-                      src="/icons/profile.svg"
-                      alt="add director"
-                      width={30}
-                      height={30}
-                    />
-                    <span> + Add new Profile </span>
-                  </div>
-                </ModalTrigger>
-              </div>
-              <ModalContent>
-                <LandlordTenantModalPreset
-                  heading={modal_states[activeStep].heading}
-                  back={activeStep !== "options" ? { handleBack } : undefined}
-                >
-                  {modal_states[activeStep].content}
-                </LandlordTenantModalPreset>
-              </ModalContent>
-            </Modal>
-          </AutoResizingGrid>
+                const handleFormChange = (field: string, value: string) => {
+                  setFormStateById((prev) => ({
+                    ...prev,
+                    [directorId]: {
+                      ...prev[directorId],
+                      [field]: value,
+                    },
+                  }));
+                };
+                return (
+                  <Modal
+                    key={director.id}
+                    state={{
+                      isOpen:
+                        isCloseOnUpdate && activeDirectorId === directorId,
+                      setIsOpen: (isOpen) => {
+                        setIsCloseOnUpdate(isOpen);
+                        setActiveDirectorId(isOpen ? directorId : null);
+                      },
+                    }}
+                  >
+                    <ModalTrigger>
+                      <UserCard
+                        key={director.id}
+                        name={director.full_name}
+                        email={director.email}
+                        phone_number={director.phone_number}
+                        picture_url={director.picture}
+                        user_tag={director.professional_title}
+                        badge_color={getBadgeColor(director.tier_id)}
+                      />
+                    </ModalTrigger>
+
+                    <ModalContent>
+                      <LandlordTenantModalPreset
+                        heading={
+                          activeStep === "options"
+                            ? "Director Details"
+                            : "Choose Avatar"
+                        }
+                        back={
+                          activeStep === "choose-avatar"
+                            ? {
+                                handleBack: () =>
+                                  setStepForDirector(directorId, "options"),
+                              }
+                            : undefined
+                        }
+                      >
+                        {activeStep === "options" ? (
+                          <DirectorsForm
+                            submitAction={(data: any) =>
+                              handleUpdateDirector(data, director.id.toString())
+                            }
+                            isProcessing={processing}
+                            chooseAvatar={() =>
+                              setStepForDirector(directorId, "choose-avatar")
+                            }
+                            setAvatar={setSelectedAvatar}
+                            avatar={selectedAvatar}
+                            formData={formData}
+                            onFormChange={handleFormChange}
+                            isEditing={true}
+                            initialImage={director.picture || ""}
+                            setIsCloseUpdate={setIsCloseOnUpdate}
+                          />
+                        ) : (
+                          <Avatars
+                            onClick={(avatarUrl) => {
+                              handleFormChange("avatar", avatarUrl);
+                              setSelectedAvatar(avatarUrl);
+                              setStepForDirector(directorId, "options");
+                            }}
+                          />
+                        )}
+                      </LandlordTenantModalPreset>
+                    </ModalContent>
+                  </Modal>
+                );
+              })}
+              <Modal
+                state={{
+                  isOpen: isDirectorModalOpen,
+                  setIsOpen: setIsDirectorModalOpen,
+                }}
+              >
+                <div className="card p-2 flex max-w-[290px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+                  <ModalTrigger>
+                    <div className="flex flex-col items-center gap-1 justify-center py-4">
+                      <Image
+                        src="/icons/profile.svg"
+                        alt="add director"
+                        width={30}
+                        height={30}
+                      />
+                      <span> + Add new Profile </span>
+                    </div>
+                  </ModalTrigger>
+                </div>
+                <ModalContent>
+                  <LandlordTenantModalPreset
+                    heading={modal_states[activeStep].heading}
+                    back={activeStep !== "options" ? { handleBack } : undefined}
+                  >
+                    {modal_states[activeStep].content}
+                  </LandlordTenantModalPreset>
+                </ModalContent>
+              </Modal>
+            </AutoResizingGrid>
+          </div>
         </div>
         <div className="flex justify-end mt-2">
           {/* 
@@ -843,12 +993,18 @@ const Others = () => {
             desc="Select the property and the tenant(s) or occupant(s) you wish to restrict from the group chat.
 Once restricted, they will no longer have access to participate in the property's group chat until the restriction is lifted."
           />
-          <div className="flex gap-4">
-            <div className=" flex gap-2">
+          <div className="">
+            <AutoResizingGrid minWidth={284} gap={16}>
               {restrictedUsers?.data?.map((user) => {
                 return (
-                  <Modal key={user.id}>
-                    <ModalTrigger className="flex gap-2">
+                  <Modal
+                    key={user.id}
+                    state={{
+                      isOpen: isUserRestored,
+                      setIsOpen: setIsUserRestored,
+                    }}
+                  >
+                    <ModalTrigger className="">
                       <div onClick={() => setSelectedRestrictedUser(user)}>
                         <UserCard
                           className="cursor-pointer"
@@ -862,44 +1018,51 @@ Once restricted, they will no longer have access to participate in the property'
                         />
                       </div>
                     </ModalTrigger>
-                    <div className="w-[00px]">
-                      <ModalContent>
-                        <LandlordTenantModalPreset heading="Restore User">
-                          <RestoreRestrictedUserForm
-                            submitAction={handleRestoreUser}
-                            user={selectedRestrictedUser}
-                            loading={restoring}
-                          />
-                        </LandlordTenantModalPreset>
-                      </ModalContent>
-                    </div>
+
+                    <ModalContent>
+                      <LandlordTenantModalPreset heading="Access Control">
+                        <RestoreRestrictedUserForm
+                          submitAction={handleRestoreUser}
+                          user={selectedRestrictedUser}
+                          loading={restoring}
+                        />
+                      </LandlordTenantModalPreset>
+                    </ModalContent>
                   </Modal>
                 );
               })}
-            </div>
 
-            <Modal>
-              <div className="ml-8 card p-2 flex w-full max-w-[280px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
-                <ModalTrigger>
-                  <div className="flex flex-col items-center gap-1 justify-center py-4">
-                    <Image
-                      src="/icons/profile.svg"
-                      alt="add director"
-                      width={30}
-                      height={30}
-                    />
-                    <span> + Restrict User </span>
-                  </div>
-                </ModalTrigger>
-              </div>
-              <div className="w-[00px]">
-                <ModalContent>
-                  <LandlordTenantModalPreset heading="Restrict User">
-                    <RestrictUserForm submitAction={() => {}} />
-                  </LandlordTenantModalPreset>
-                </ModalContent>
-              </div>
-            </Modal>
+              <Modal
+                state={{
+                  isOpen: isUserRestricted,
+                  setIsOpen: setIsUserRestricted,
+                }}
+              >
+                <div className="card p-2 flex w-full max-w-[280px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+                  <ModalTrigger>
+                    <div className="py-4 flex flex-col items-center gap-1 justify-center">
+                      <Image
+                        src="/icons/profile.svg"
+                        alt="add director"
+                        width={30}
+                        height={30}
+                      />
+                      <span> + Restrict User </span>
+                    </div>
+                  </ModalTrigger>
+                </div>
+                <div className="rounded-t-xl">
+                  <ModalContent>
+                    <LandlordTenantModalPreset heading="Restrict User" style={{ maxHeight: "80vh", overflow: "visible" }}>
+                      <RestrictUserForm
+                        submitAction={() => {}}
+                        setIsUserRestricted={setIsUserRestricted}
+                      />
+                    </LandlordTenantModalPreset>
+                  </ModalContent>
+                </div>
+              </Modal>
+            </AutoResizingGrid>
           </div>
         </div>
         <div className="flex justify-end mt-2">

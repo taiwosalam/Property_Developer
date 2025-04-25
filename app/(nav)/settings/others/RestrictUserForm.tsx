@@ -25,7 +25,8 @@ import { toast } from "sonner";
 
 interface RestrictUserFormProps {
   submitAction?: (data: any) => void;
-  setRestrictedTenantId?: (prevState: number) => void
+  setRestrictedTenantId?: (prevState: number) => void;
+  setIsUserRestricted?: (prevState: boolean) => void;
 }
 
 type Address = "selectedState" | "selectedLGA" | "selectedCity";
@@ -42,6 +43,7 @@ interface IPropertyWithId {
 const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
   submitAction,
   setRestrictedTenantId,
+  setIsUserRestricted,
 }) => {
   const { preview, setPreview, inputFileRef, handleImageChange } =
     useImageUploader({
@@ -53,9 +55,6 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
   const { data: propertyListResponse } =
     useFetch<IPropertyApi>("/property/list");
   const { data: tenantListResponse } = useFetch<ITenantsApi>("all-tenants");
-
-  console.log(propertyListResponse);
-  console.log(tenantListResponse)
 
   useEffect(() => {
     if (propertyListResponse) {
@@ -95,13 +94,51 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
     name: null,
   });
 
- 
-
   const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
   const [tenantUser, setTenantUser] = useState<ITenantResponse | null>(null);
   const [selectedProperty, setSelectedProperty] =
     useState<IPropertyWithId | null>(null);
   const [restricting, setRestricting] = useState(false);
+  const [tenantIds, setTenantIds] = useState<number[]>([]);
+  const { data: propertyWithId } = useFetch<any>(
+    selectedProperty ? `property/${selectedProperty.title}/view` : null
+  );
+  const [propertyTenants, setPropertyTenants] = useState<ITenantResponse[]>([]);
+
+  // Add new fetch hook for tenant profiles
+  const { data: tenantProfiles } = useFetch<any>(
+    tenantIds.length ? `tenant/${tenantIds.join(",")}` : null
+  );
+
+  console.log(tenantProfiles, "tenantProfiles");
+
+  useEffect(() => {
+    if (tenantProfiles) {
+      // Update the tenants state with the fetched profiles
+      const filteredTenants = tenantProfiles.data;
+      const profileTenants = {
+        id: filteredTenants?.id as number,
+        name: filteredTenants?.name as string,
+          // filteredTenants?.agent !== "Web"
+          //   ? filteredTenants?.name
+          //   : "No Tenant",
+      };
+      setTenants([profileTenants]);
+    }
+  }, [tenantProfiles]);
+
+  useEffect(() => {
+    if (propertyWithId) {
+      const transformedData = [
+        ...new Set(
+          propertyWithId?.data?.units
+            .map((item: any) => item.tenant_id)
+            .filter(Boolean)
+        ),
+      ];
+      setTenantIds(transformedData as number[]);
+    }
+  }, [propertyWithId]);
 
   useEffect(() => {
     if (selectedTenant && selectedTenant.name) {
@@ -118,13 +155,12 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
   }, [selectedTenant]);
 
   useEffect(() => {
-    if(selectedProperty){
+    if (selectedProperty) {
       if (setRestrictedTenantId) {
         setRestrictedTenantId(Number(selectedProperty?.title));
       }
     }
-
-  }, [selectedTenant])
+  }, [selectedTenant]);
 
   const handleRestrictUserAction = async () => {
     if (!selectedTenant?.name || !selectedProperty?.title) {
@@ -139,8 +175,9 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
     setRestricting(true);
     try {
       const response = await restrictUserFromGroupChat(payload);
-      if(response){
-        toast.success("User restricted")
+      if (response) {
+        toast.success("User restricted");
+        setIsUserRestricted?.(false);
       }
     } catch (error) {
       console.error(error);
@@ -153,7 +190,7 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
     <AuthForm
       returnType="form-data"
       onFormSubmit={handleRestrictUserAction}
-      className="custom-flex-col gap-5"
+      className="custom-flex-col gap-5 overflow-visible z-[100]"
       setValidationErrors={(errors: ValidationErrors) =>
         setState((prevState) => ({ ...prevState, errorMsgs: errors }))
       }
@@ -169,7 +206,7 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
           />
         </div>
       )}
-      <div className="flex items-center justify-center gap-8 w-full">
+      <div className="flex items-center justify-center gap-8 w-full z-[10000]">
         <Select
           validationErrors={errorMsgs}
           options={
@@ -235,9 +272,11 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
           type="submit"
           size="base_bold"
           variant="light_red"
-          className={`py-2 px-8 ml-auto ${restricting ? 'opacity-70' : 'opacity-100'}`}
+          className={`py-2 px-8 ml-auto ${
+            restricting ? "opacity-70" : "opacity-100"
+          }`}
         >
-          {restricting ? "Please wait..." :"Restrict User"}
+          {restricting ? "Please wait..." : "Restrict User"}
         </Button>
       </div>
     </AuthForm>

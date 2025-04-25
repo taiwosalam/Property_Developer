@@ -79,11 +79,7 @@ export const SettingsVerifiedBadge = ({
     ? "text-[#A855F7]" // purple text
     : "text-[#FFBB53]";
 
-  const iconColor = isVerified
-    ? "green"
-    : isPending
-    ? "purple"
-    : "yellow";
+  const iconColor = isVerified ? "green" : isPending ? "purple" : "yellow";
 
   return (
     <div
@@ -98,7 +94,6 @@ export const SettingsVerifiedBadge = ({
     </div>
   );
 };
-
 
 export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
   title,
@@ -333,7 +328,7 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
     //   );
     //   return;
     // } else {
-      onChange(value, !checked);
+    onChange(value, !checked);
     //}
   };
 
@@ -435,7 +430,8 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 
   const handleClick = () => {
     if (
-      plan !== "professional" && (value === "template2" || value === "template3") // Fixed condition
+      plan !== "professional" &&
+      (value === "template2" || value === "template3") // Fixed condition
     ) {
       setShowProfessionalMessage(true);
       setTimeout(() => setShowProfessionalMessage(false), 3000);
@@ -443,6 +439,13 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
       onSelect(value);
     }
   };
+
+  const previewDemoLink =
+    value === "template1"
+      ? "https://templates.ourlisting.ng/?design=design1"
+      : value === "template2"
+      ? "https://templates.ourlisting.ng/?design=design2"
+      : "https://templates.ourlisting.ng/?design=design3";
 
   return (
     <div
@@ -473,7 +476,8 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
                 className="absolute inset-0 flex items-center justify-center"
               >
                 <Link
-                  href="#"
+                  href={previewDemoLink}
+                  target="_blank"
                   className="bg-brand-9 text-white py-2 px-5 rounded flex items-center justify-center z-20 text-sm sm:text-md"
                 >
                   Preview Demo

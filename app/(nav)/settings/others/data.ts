@@ -25,6 +25,41 @@ export const addNewDirector = async (formData: FormData): Promise<boolean> => {
     return false;
   }
 };
+export const updateDirector = async (
+  formData: FormData,
+  id: string
+): Promise<boolean> => {
+  try {
+    //const data = objectToFormData(formData);
+    formData.append("_method", "PATCH");
+    const response = await api.post(`/directors/${id}`, formData);
+
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("addNewDirector"));
+
+      return true;
+    }
+    return false;
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const deleteDirector = async (id: string): Promise<boolean> => {
+  try {
+    const response = await api.delete(`/directors/${id}`);
+
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("addNewDirector"));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
 export const updateCompanyType = async (companyName: string) => {
   try {
     const formData = new FormData();
@@ -165,7 +200,7 @@ export const updateResetSettings = async (data: string[]) => {
     });
     if (response.status === 200 || response.status === 201) {
       toast.success("Settings updated");
-      return true
+      return true;
     }
   } catch (error) {
     handleAxiosError(error);
@@ -176,11 +211,19 @@ export const updateResetSettings = async (data: string[]) => {
 export type DirectorCardProps = {
   card: {
     id: number;
+    about_director: string;
+    years_in_business: string;
+    state: string;
+    lga: string;
+    name: string;
+    title: string;
     picture: string | null;
     full_name: string;
     email: string;
     phone_number: string;
     professional_title: string;
+    tier_id: number;
+    //avatar: string;
   }[];
 };
 export function transfromToDirectorCards(
@@ -192,13 +235,21 @@ export function transfromToDirectorCards(
     card: apiData?.directors.map((item) => {
       return {
         id: item?.id,
-        picture: item?.profile_picture ??  "/empty/avatar.png",
+        picture: item?.profile_picture ?? item?.user?.profile?.picture,
+        //avatar: item?.user?.profile?.picture ?? "/empty/avatar.png",
         full_name: item?.user?.profile?.title
           ? `${item?.user?.profile?.title} ${item.full_name}`
           : item.full_name,
         email: item?.user?.email,
+        name: item?.full_name,
+        tier_id: item?.user?.tier_id,
         phone_number: item?.phone_number || "___ ___",
-        professional_title: item?.professional_title ?? "___ ___"
+        professional_title: item?.professional_title ?? "___ ___",
+        about_director: item?.about_director ?? "___ ___",
+        years_in_business: item?.years_in_business ?? "___ ___",
+        state: item?.user?.profile?.state ?? "___ ___",
+        lga: item?.user?.profile?.lga ?? "___ ___",
+        title: item?.user?.profile?.title ?? "___ ___",
       };
     }),
   };
@@ -234,8 +285,7 @@ export const transformOtherSetting = (
     company_module: true,
     notification: {
       document_creation: data?.notifications?.document_creation,
-      company_default_module:
-        data?.company_default_module ?? "1",
+      company_default_module: data?.company_default_module ?? "1",
       new_messages: data?.notifications?.new_messages,
       task_updates: data?.notifications?.task_updates,
       profile_changes: data?.notifications?.profile_changes,
