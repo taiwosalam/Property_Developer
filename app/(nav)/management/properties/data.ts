@@ -56,6 +56,8 @@ export interface UnitDataObject {
   // property_id: string;
   unit_name: string;
   unit_type: string;
+  vat_amount?: string;
+  renew_vat_amount?: string;
   unit_sub_type: string;
   unit_preference: string;
   measurement: string;

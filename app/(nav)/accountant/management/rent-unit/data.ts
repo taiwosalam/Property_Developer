@@ -45,7 +45,7 @@ export interface UnitPageState {
   month_relocate: number;
   published_vacant?: number;
   month_published_vacant?: number;
-  unpublished_vacant?:number;
+  unpublished_vacant?: number;
   month_unpublished_vacant?: number;
   unit: RentalPropertyCardProps[];
 }
@@ -66,7 +66,7 @@ export interface UnitApiResponse {
     month_relocate: number;
     published_vacant?: number;
     month_published_vacant?: number;
-    unpublished_vacant?:number;
+    unpublished_vacant?: number;
     month_unpublished_vacant?: number;
     unit: {
       current_page: number;
@@ -75,7 +75,6 @@ export interface UnitApiResponse {
     };
   };
 }
-
 
 export interface UnitFilterResponse {
   data: {
@@ -88,9 +87,7 @@ export interface UnitFilterResponse {
 export const transformRentUnitApiResponse = (
   response: UnitApiResponse | UnitFilterResponse
 ): Partial<UnitPageState> => {
-  const isUnitApiResponse = (
-    response: any
-  ): response is UnitApiResponse => {
+  const isUnitApiResponse = (response: any): response is UnitApiResponse => {
     return "total_unit" in response.data;
   };
 
@@ -98,26 +95,24 @@ export const transformRentUnitApiResponse = (
     ? response.data.unit
     : response.data;
 
-  const transformedUnits: RentalPropertyCardProps[] = unitData.data.map(
-    (u) => {
-      return {
-        unitId: u.id.toString(),
-        unit_title: u.property.title,
-        unit_type: u.unit_type,
-        tenant_name: "No Tenant", //TODO
-        expiry_date: "No Expiry", //TODO
-        rent: u.fee_amount,
-        caution_deposit: u.caution_fee,
-        service_charge: u.service_charge,
-        images: u.images.map((image) => image.path),
-        unit_name: u.unit_name,
-        caution_fee: u.caution_fee,
-        status: u.is_active,
-        propertyType: u.property.property_type as "rental" | "facility",
-        address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
-      };
-    }
-  );
+  const transformedUnits: RentalPropertyCardProps[] = unitData.data.map((u) => {
+    return {
+      unitId: u.id.toString(),
+      unit_title: u.property.title,
+      unit_type: u.unit_type,
+      tenant_name: "No Tenant", //TODO
+      expiry_date: "No Expiry", //TODO
+      rent: u.fee_amount,
+      caution_deposit: u.caution_fee,
+      service_charge: u.service_charge,
+      images: u.images.map((image) => image.path),
+      unit_name: u.unit_name,
+      caution_fee: u.caution_fee,
+      status: u.is_active,
+      propertyType: u.property.property_type as "rental" | "facility",
+      address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
+    };
+  });
 
   // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {
@@ -146,7 +141,6 @@ export const transformRentUnitApiResponse = (
     };
   }
 };
-
 
 export interface UnitDataObject {
   id: number;
@@ -198,7 +192,6 @@ export interface UnitDataObject {
   property: Property;
   user: User;
 }
-
 
 export interface Property {
   id: number;
@@ -255,7 +248,6 @@ export interface User {
   provider_id: string | null;
   provider_name: string | null;
 }
-
 
 export interface RentUnitFilterParams {
   date_from?: string;
@@ -335,8 +327,8 @@ interface UnitData {
   property: {
     property_type: string;
     title: string;
-  }
-};
+  };
+}
 
 export const initialRentUnitPageData: RentUnitPageData = {
   stats: {
@@ -358,8 +350,7 @@ export const initialRentUnitPageData: RentUnitPageData = {
     last_page: 1,
   },
   unit_data: [],
-
-}
+};
 
 export interface RentUnitPageData {
   stats: StatsData;
@@ -407,7 +398,6 @@ export interface RentUnitApiResponse {
   };
 }
 
-
 export interface RentUnitRequestParams {
   page?: number;
   search?: string;
@@ -424,11 +414,10 @@ export interface RentUnitFilterResponse {
     current_page: number;
     last_page: number;
     unit: UnitData;
-  }
+  };
 }
 
-
-// SINGLE UNIT 
+// SINGLE UNIT
 
 export const initialSingleData: InitialSingleUnitProps = {
   data: [
@@ -463,10 +452,9 @@ export const initialSingleData: InitialSingleUnitProps = {
       group_chat: "",
       rent_penalty: "",
       caution_deposit: "",
-    }
-  ]
-}
-
+    },
+  ],
+};
 
 export interface pageInitialObject {
   title: string;
@@ -536,7 +524,7 @@ export const InitialSingleUnit = {
   group_chat: "",
   rent_penalty: "",
   caution_deposit: "",
-}
+};
 
 export interface singleDataObject {
   unit_id: string;
@@ -570,7 +558,6 @@ export interface singleDataObject {
   group_chat?: string;
   rent_penalty?: string;
 }
-
 
 export interface singleUnitApiResponse {
   data: {
@@ -655,7 +642,7 @@ export interface singleUnitApiResponse {
         updated_at: string;
         branch: {
           branch_name: string;
-        }
+        };
       };
       user: {
         id: number;
@@ -693,7 +680,7 @@ export interface singleUnitApiResponse {
     prev_page_url: string | null;
     to: number;
     total: number;
-  }
+  };
 }
 
 export interface UnitDetails {
@@ -725,8 +712,8 @@ export interface UnitDetails {
   property?: {
     branch?: {
       branch_name?: string;
-    }
-  }
+    };
+  };
 }
 
 export const transformSingleUnitData = (
@@ -736,7 +723,7 @@ export const transformSingleUnitData = (
   // console.log("res", response)
   // console.log("single response", data)
   return {
-    data: data.data.map(unit => ({
+    data: data.data.map((unit) => ({
       title: unit.property.title,
       unit_id: unit.id,
       unit_name: `${unit.unit_name} ${unit.unit_type}`,
@@ -774,7 +761,7 @@ export const transformSingleUnitData = (
       caution_deposit: unit.property.caution_deposit,
       location: "",
       fee_amount: "",
-    }))
+    })),
   };
 };
 
@@ -821,34 +808,33 @@ export const initData = {
   service_charge: "",
   renew_service_charge: "",
   renew_other_charge: "",
-}
+};
 
-
-export interface initDataProps{
-  title:string;
-  unit_id:string;
-  unit_name:string;
-  address:string;
+export interface initDataProps {
+  title: string;
+  unit_id: string;
+  unit_name: string;
+  address: string;
   images: string[];
-  categories:string;
-  unitNumber:string;
-  unitPreference:string;
-  unitType: string,
+  categories: string;
+  unitNumber: string;
+  unitPreference: string;
+  unitType: string;
   unitSubType: string;
-  state:string;
-  localGovernment:string;
-  accountOfficer:string;
-  bedrooms:string;
-  bathrooms:string;
-  toilets:string;
-  fee_period:string;
-  newTenantPrice:string;
-  newTenantTotalPrice:string;
-  renew_fee_period:string;
-  renewalTenantPrice:string;
-  renewalTenantTotalPrice:string;
+  state: string;
+  localGovernment: string;
+  accountOfficer: string;
+  bedrooms: string;
+  bathrooms: string;
+  toilets: string;
+  fee_period: string;
+  newTenantPrice: string;
+  newTenantTotalPrice: string;
+  renew_fee_period: string;
+  renewalTenantPrice: string;
+  renewalTenantTotalPrice: string;
   renew_service_charge?: string;
-  branchName?: string,
+  branchName?: string;
   agency_fee?: string;
   whoToCharge?: string;
   caution_deposit?: string;
@@ -867,7 +853,7 @@ export interface initDataProps{
 // ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
-  console.log("data", data)
+  console.log("data", data);
   return {
     title: data.property.title,
     unit_id: data.id,
@@ -908,10 +894,20 @@ export const transformUnitData = (response: any) => {
     fee_amount: "",
     propertyId: data.property.id,
     total_package: data.total_package,
-    caution_fee: data.caution_fee, 
+    caution_fee: data.caution_fee,
     security_fee: data.security_fee,
     other_charge: data.other_charge,
     unitAgentFee: data.agency_fee,
     service_charge: data.service_charge,
-  }
-}
+  };
+};
+
+// Utility function to strip currency symbol and convert to number
+export const cleanAmount = (amount: string | number | undefined): number => {
+  if (!amount) return 0;
+  const amountStr = amount.toString();
+  // Remove any known currency symbols from the start
+  const cleaned = amountStr.replace(/^[₦$£€¥]+/, "");
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
+};

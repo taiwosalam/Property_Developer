@@ -66,8 +66,8 @@ type PropertySetting = {
 export const getPropertySettingsData = (unit_data: any): PropertySetting[] => {
   return [
     { label: "Agency Fee", value: unit_data.unitAgentFee },
-    { label: "Period", value: unit_data.renew_fee_period },
-    { label: "Who to Charge", value: unit_data.whoToChargeRenew },
+    { label: "Period", value: unit_data.fee_period },
+    { label: "Who to Charge", value: unit_data.whoToCharge },
     { label: "Caution Deposit", value: unit_data.caution_deposit },
     { label: "Group Chat", value: unit_data.group_chat },
     { label: "Rent Penalty", value: unit_data.rent_penalty },

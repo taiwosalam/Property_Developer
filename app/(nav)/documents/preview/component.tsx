@@ -17,10 +17,14 @@ export const Parties: React.FC<PartiesProps> = ({ landlord, tenant }) => (
     <h2 className="text-[74px] font-bold mt-10"> TENANCY AGREEMENT </h2>
     <h2 className="text-[32px] font-normal uppercase my-10"> between </h2>
     <p className="text-[50px] uppercase font-semibold">{landlord}</p>
-    <span className="text-[20px] font-semibold uppercase tracking-wide">(landlord/landlady)</span>
+    <span className="text-[20px] font-semibold uppercase tracking-wide">
+      (landlord/landlady)
+    </span>
     <p className="text-[30px] text-base uppercase mt-[100px] mb-8"> and </p>
     <p className="text-[50px] uppercase font-semibold">{tenant}</p>
-    <span className="text-[20px] uppercase font-semibold tracking-wide">(Tenant)</span>
+    <span className="text-[20px] uppercase font-semibold tracking-wide">
+      (Tenant)
+    </span>
   </div>
 );
 
@@ -92,7 +96,8 @@ export const Attestation: React.FC<AttestationProps> = ({
     <p className="mt-4">
       <span className="uppercase font-bold">{landlord.name} </span>
       <span>
-        of <b className="font-bold">{landlord.address} </b> (hereinafter referred to as the <b className="font-bold">“LANDLORD” </b> which
+        of <b className="font-bold">{landlord.address} </b> (hereinafter
+        referred to as the <b className="font-bold">“LANDLORD” </b> which
         expression shall where the context so admits includes his heirs
         successors-in-title, representatives and assigns) of the one part.
       </span>
@@ -100,9 +105,10 @@ export const Attestation: React.FC<AttestationProps> = ({
     <p className="uppercase my-4 font-bold">AND</p>
     <p>
       <span>
-       <b className="font-bold">{tenant.name} </b>
+        <b className="font-bold">{tenant.name} </b>
         <span>
-          of <b className="font-bold">{tenant.address} </b> (hereinafter referred to as the <b className="font-bold"> “TENANT” </b> which
+          of <b className="font-bold">{tenant.address} </b> (hereinafter
+          referred to as the <b className="font-bold"> “TENANT” </b> which
           expression shall where the context so admits includes his heirs
           successors-in-title, representatives and assigns) of the other part.
         </span>
@@ -120,7 +126,8 @@ export const Clause: React.FC<ClauseProps> = ({
   <li className="relative pl-8 mb-4" style={{ counterIncrement: "item" }}>
     <div className="absolute left-0 text-[30px] font-bold before:content-[counter(item)'.']"></div>
     <p className="uppercase font-bold text-[30px]">{title}</p>
-    {content && <p className="font-semibold text-[25px]">{content}</p>}
+    {/* {content && <p className="font-semibold text-[25px]">{content}</p>} */}
+    {content && <p className="font-semibold text-[25px]" dangerouslySetInnerHTML={{ __html: content }} />}
     {subClauses && subClauses.length > 0 && (
       <ol className="list-none pl-4 mt-2" style={{ counterReset: "subitem" }}>
         {subClauses.map((subClause, index) => (
@@ -148,7 +155,6 @@ export const ClauseList: React.FC<ClauseListProps> = ({ clauses }) => (
     </ol>
   </div>
 );
-
 
 export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
   landlord,
@@ -193,46 +199,6 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
           IN THE PRESENCE OF:
         </h2>
         <Signature />
-        {/* <div className="flex gap-2">
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            NAME:
-          </p>
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            {witness.name}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            ADDRESS:
-          </p>
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            {witness.address}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            OCCUPATION:
-          </p>
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            {witness.occupation}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            SIGNATURE:
-          </p>
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            ---------------------------------
-          </p>
-        </div> */}
-        {/* <div className="flex gap-2">
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            DATE:
-          </p>
-          <p className="uppercase text-[25px] font-bold tracking-wide">
-            {witness.date}
-          </p>
-        </div> */}
       </div>
 
       <div className="preparedby w-full flex flex-col items-center justify-center">

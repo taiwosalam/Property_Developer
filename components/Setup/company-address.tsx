@@ -9,7 +9,7 @@ import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 
-const CompanyAddress = ({data}: {data:any}) => {
+const                                CompanyAddress = ({data}: {data:any}) => {
   // State to hold selected values
   const [address, setAddress] = useState({
     state: "",

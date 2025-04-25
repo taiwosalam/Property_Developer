@@ -27,21 +27,48 @@ import SwitchUnitModal from "./SwitchUnitModal";
 import SwitchPropertyModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchPropertyModal";
 import { Dayjs } from "dayjs";
 import { useOccupantStore } from "@/hooks/occupant-store";
+import { UnitDataObject } from "@/app/(nav)/management/rent-unit/data";
 
 export const RentDetails: React.FC<{
   isRental: boolean;
   startDate: string;
   dueDate: string;
-  rentFee: string;
-  otherFee: string;
+  rentFee?: string;
+  otherFee?: string;
   period?: string;
-}> = ({ isRental, startDate, dueDate, rentFee, otherFee, period }) => {
+  totalPackage?: string;
+  vat?: string;
+  unitData?: any;
+}> = ({
+  isRental,
+  startDate,
+  dueDate,
+  rentFee,
+  otherFee,
+  period,
+  vat,
+  unitData,
+}) => {
   const renewalRentDetailItems = [
     { label: "Start Date", value: startDate },
     { label: "Due Date", value: dueDate },
     { label: `${period} Rent`, value: rentFee },
-    { label: "Other Fees", value: otherFee },
-  ];
+    { label: `Inspection Fee`, value: unitData.inspection_fee },
+    { label: `Legal Fee`, value: unitData.legal_fee },
+    { label: `Caution Fee`, value: unitData.caution_fee },
+    { label: `VAT Amount`, value: unitData.vat_amount },
+    { label: "Other Fees", value: unitData.other_charge },
+  ].filter((item) => {
+    // Exclude items where value is undefined, empty, or an invalid placeholder
+    if (item.value === undefined || item.value === "") return false;
+    if (typeof item.value === "string" && /^_.*,.*,_*$/.test(item.value))
+      return false;
+    return true;
+  });
+
+  // Only render the section if there are valid items
+  if (renewalRentDetailItems.length === 0) return null;
+
   return (
     <div className="space-y-6">
       <RentSectionTitle>
@@ -162,7 +189,7 @@ export const EditCurrentRent: React.FC<{
       <div className="flex gap-1 flex-col">
         <div className="flex gap-2">
           <RentSectionTitle>
-            {`Add Upfront ${isRental ? "Payment" : "Fee"}`}
+            {`Upfront ${isRental ? "Payment" : "Fee"}`}
           </RentSectionTitle>
           <Checkbox
             radio
@@ -201,7 +228,7 @@ export const EditCurrentRent: React.FC<{
               formatNumber
             />
           </div>
-          <div className="flex items-center justify-end gap-4 flex-wrap mb-4">
+          <div className="flex items-center justify-start gap-4 flex-wrap mb-4">
             {checkboxOptions.map(({ label, key }) => (
               <Checkbox
                 sm
@@ -216,7 +243,7 @@ export const EditCurrentRent: React.FC<{
                 {label}
               </Checkbox>
             ))}
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit ml-auto">
+            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
               {selectedOptions["create_invoice"]
                 ? `Payment will be reflected once the ${
                     isRental ? "tenant" : "occupant"
@@ -264,6 +291,7 @@ export const AddPartPayment: React.FC<{
   action?: () => void;
   isRental?: boolean;
   loading?: boolean;
+  noBtn?: boolean;
   setAmt?: (amount: string) => void;
   setStart_Date?: (date: string | null) => void;
   currency?: Currency;
@@ -274,6 +302,7 @@ export const AddPartPayment: React.FC<{
   action,
   isRental,
   loading,
+  noBtn,
   setStart_Date,
   setAmt,
   currency,
@@ -366,7 +395,7 @@ export const AddPartPayment: React.FC<{
     <div>
       <div className="flex gap-1 flex-col">
         <div className="flex gap-2">
-          <RentSectionTitle>Add Part Payment</RentSectionTitle>
+          <RentSectionTitle>Part Payment</RentSectionTitle>
           <Checkbox
             // disabled={isUpfrontPaymentChecked}
             radio
@@ -425,15 +454,17 @@ export const AddPartPayment: React.FC<{
               ))}
             </div>
             {/* <ModalTrigger asChild> */}
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              onClick={handleUpdate}
-              type="button"
-              disabled={loading}
-            >
-              {loading ? "Please wait." : "Update"}
-            </Button>
+            {!noBtn && (
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                onClick={handleUpdate}
+                type="button"
+                disabled={loading}
+              >
+                {loading ? "Please wait." : "Update"}
+              </Button>
+            )}
             {/* </ModalTrigger> */}
             <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
               <ModalContent>
@@ -450,22 +481,17 @@ export const AddPartPayment: React.FC<{
               </ModalContent>
             </Modal>
           </div>
-          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit ml-auto">
+          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
             {selectedOptions["create_invoice"]
               ? `Payment will be reflected once the ${
                   isRental ? "tenant" : "occupant"
                 } makes a payment towards the generated invoice.`
-              : `Confirms that you have received payment for the ${
+              : `Confirms that you havwe received payment for the ${
                   isRental ? "rent" : "counting"
                 }. However, if you intend to receive the payment, you can click 'Create Invoice' for ${
                   isRental ? "tenant" : "occupant"
                 } to make the payment.`}
           </p>
-          {/* <p className="text-sm font-medium text-text-secondary dark:text-darkText-1 w-fit ml-auto">
-            {selectedOptions["create_invoice"]
-              ? "Partial payment will be reflected once the tenant makes a payment towards the generated invoice."
-              : "Clicking 'update' confirms the partial payment. However, if you intend to receive the payment, you can click 'Create Invoice' for tenants to make the payment."}
-          </p> */}
         </>
       )}
     </div>
@@ -535,8 +561,11 @@ export const PreviousUnitBalance: React.FC<{
   total?: string;
   calculation?: boolean;
   deduction?: boolean;
-}> = ({ isRental, items, total, calculation, deduction }) => {
-  // const displayDetails = feeDetails.length > 0 ? feeDetails : [{ label: "No Fee Details", value: "N/A" }];
+  currency?: Currency;
+}> = ({ isRental, items, total, calculation, deduction, currency }) => {
+  const currencySymbol =
+    currencySymbols[currency as keyof typeof currencySymbols] || "₦";
+
   const sub_title = deduction
     ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
     : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
@@ -562,7 +591,8 @@ export const PreviousUnitBalance: React.FC<{
               Balance
             </p>
             <p className="text-lg lg:text-xl font-bold text-brand-9">
-              ₦{formatNumber(Number(total))}
+              {currencySymbol}
+              {formatNumber(Number(total))}
             </p>
           </div>
         </div>
@@ -580,6 +610,7 @@ export const NewUnitCost: React.FC<{
   deduction?: boolean;
   title?: string;
   noEdit?: boolean;
+  currency?: Currency;
 }> = ({
   isRental,
   feeDetails,
@@ -589,6 +620,7 @@ export const NewUnitCost: React.FC<{
   deduction,
   title,
   noEdit,
+  currency,
 }) => {
   const feeTitle = isRental
     ? deduction
@@ -602,11 +634,13 @@ export const NewUnitCost: React.FC<{
   return (
     <div className="space-y-1">
       <RentSectionTitle>{title || "New Unit Cost"}</RentSectionTitle>
-      {!noEdit && <p className="text-xs">{sub_title}</p>}
+      <p className="text-xs">{title ? sub_title : ""}</p>
+      {/* {!noEdit && <p className="text-xs">{sub_title}</p>} */}
       <FeeDetails
         noEdit={noEdit}
         title={finalTitle}
         feeDetails={feeDetails}
+        currency={currency}
         total_package={total as number}
         deduction={deduction}
         id={id as string}

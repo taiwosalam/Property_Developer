@@ -10,7 +10,6 @@ const EstateDetails = ({
   title: string;
   estateData: { label: string; value?: string }[];
 }) => {
-  console.log("estateData", estateData);
   return (
     <div
       className="p-6 bg-white dark:bg-darkText-primary shadow rounded-lg space-y-4"

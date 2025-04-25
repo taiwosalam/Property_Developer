@@ -85,6 +85,10 @@ export interface UnitDataObject {
   renew_service_charge?: string;
   renew_other_charge?: string;
   renew_total_package?: string;
+  vat_amount?: string;
+  renew_vat_amount?: string;
+  renew_vat?: string;
+  account_officer?: string;
   is_active: keyof typeof UnitStatusColors;
   // status: "pending";
   // reject_reason: null;

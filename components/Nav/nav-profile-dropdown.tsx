@@ -3,7 +3,7 @@ import Link from "next/link";
 import Avatar from "@/public/empty/avatar.png";
 
 // Imports
-import { getGreeting } from "./data";
+import { getGreeting, truncateName } from "./data";
 import Picture from "../Picture/picture";
 import { LogoutIcon } from "@/public/icons/icons";
 import useWindowWidth from "@/hooks/useWindowWidth";
@@ -63,7 +63,7 @@ const NavProfileDropdown = () => {
             <p className="text-xs font-normal dark:text-darkText-2">
               {getGreeting()}
             </p>
-            <p className="dark:text-white">{name}</p>
+            <p className="dark:text-white">{truncateName(name, 50)}</p>
             <p className="dark:text-darkText-2">ID: {userId}</p>
           </div>
         </div>

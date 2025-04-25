@@ -14,7 +14,7 @@ import {
   DropdownTrigger,
 } from "@/components/Dropdown/dropdown";
 import clsx from "clsx";
-import { getGreeting } from "./data";
+import { getGreeting, truncateName } from "./data";
 import NavCreateNew from "./nav-create-new";
 import NavGlobalSearch from "./nav-global-search";
 import { NavIcon } from "@/components/Nav/nav-components";
@@ -80,8 +80,10 @@ const Header = () => {
   const pathname = usePathname();
 
   const { company_id } = usePersonalInfoStore();
-  const unreadMessageCount = usePersonalInfoStore((state) => state.unread_messages_count) || 0;
-  const notificationCount = usePersonalInfoStore((state) => state.unread_notifications_count) || 0;
+  const unreadMessageCount =
+    usePersonalInfoStore((state) => state.unread_messages_count) || 0;
+  const notificationCount =
+    usePersonalInfoStore((state) => state.unread_notifications_count) || 0;
   const loggedInUserDetails = getLocalStorage("additional_details");
   const { company: loggedUserCompany, appearance } = loggedInUserDetails || {};
   const setPersonalInfo = usePersonalInfoStore(
@@ -104,7 +106,6 @@ const Header = () => {
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
-
 
   const { data: companyData, refetch: companyRefetch } = useFetch<any>(
     company_id ? `companies/${company_id}` : null
@@ -161,7 +162,6 @@ const Header = () => {
     }
   }, [appearance, setColor, setTheme]);
 
-
   useEffect(() => {
     if (data?.data) {
       const { user, company, profile, requestDemos } = data.data;
@@ -173,7 +173,10 @@ const Header = () => {
       setPersonalInfo("full_name", user.name);
       setPersonalInfo("user_email", user.email);
       setPersonalInfo("user_online_status", user.user_online_status);
-      setPersonalInfo("unread_notifications_count", user.unread_notifications_count);
+      setPersonalInfo(
+        "unread_notifications_count",
+        user.unread_notifications_count
+      );
       setPersonalInfo("unread_messages_count", user.unread_messages_count);
       setPersonalInfo("title", profile?.title as string);
       setPersonalInfo("profile_picture", profile.picture);
@@ -437,7 +440,7 @@ const Header = () => {
                 {getGreeting()},
               </p>
               <p className="text-xs md:text-base font-medium dark:text-white">
-                {name}
+                {truncateName(name, 50)}
               </p>
             </div>
           </div>

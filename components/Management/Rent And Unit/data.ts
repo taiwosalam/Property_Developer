@@ -46,7 +46,7 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
     religion: data.religion || "--- ---", //TODO - Add religion
     nextOfKin: data.next_of_kin || {},
     badgeColor: data.user_tier
-      ? tierColorMap  [data?.user_tier as keyof typeof tierColorMap]
+      ? tierColorMap[data?.user_tier as keyof typeof tierColorMap]
       : undefined,
   };
 };
@@ -164,6 +164,15 @@ export const getEstateData = (estate_data: any) => {
   ];
 };
 
+export const getEstateSettingsDta = (estate_data: any) => {
+  return [
+    { label: "Management Fee", value: `${estate_data.management_fee}%` },
+    { label: "Period", value: estate_data.fee_period ?? "" },
+    { label: "Fee Penalty", value: estate_data.rent_penalty ?? "" },
+    { label: "Group Chat", value: estate_data.group_chat ?? "" },
+  ];
+};
+
 export const estateData = [
   { label: "Property Title", value: "Golden Estate" },
   { label: "State", value: "Oyo State" },
@@ -278,10 +287,13 @@ function capitalizeDateString(dateStr: string): string {
   return dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
 }
 
-// Helper: Convert a currency string like "₦30,000" into a number (30000)
+// Helper: Convert a currency string like "$9,513,570.48" into a number (9513570.48)
 function parseCurrency(amountStr: string): number {
-  if (!amountStr) return 0;
-  return Number(amountStr.replace(/[₦,]/g, ""));
+  if (!amountStr || typeof amountStr !== "string") return 0;
+  // Remove currency symbols (₦, $, £, €, ¥) and commas, keep decimal point
+  const cleaned = amountStr.replace(/^[₦$£€¥]+|,/g, "");
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
 }
 
 export function calculateBalance(

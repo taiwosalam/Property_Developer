@@ -1,39 +1,56 @@
 "use client";
+
 import {
-  estateSettingsDta,
-  estateData,
-  propertySettingsData,
-  DUMMY_OCCUPANT,
-  rentalData,
-  initialPreviousRecords,
-  RentPreviousRecords,
   calculateBalance,
+  RentPeriod,
+  RentPreviousRecords,
 } from "@/components/Management/Rent And Unit/data";
 import {
   RenewalRent as StartRent,
   PreviousRentRecords,
+  OwingFee,
+  RenewalFee,
 } from "@/components/Management/Rent And Unit/renewal-rent-detals";
-import {
-  PreviousUnitBalance,
-  NewUnitCost,
-} from "@/components/Management/Rent And Unit/Edit-Rent/Edit-rent-sections";
 import { MatchedProfile } from "@/components/Management/Rent And Unit/matched-profile";
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import Button from "@/components/Form/Button/button";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent } from "@/components/Modal/modal";
 import { useRouter, useSearchParams } from "next/navigation";
 import ModalPreset from "@/components/Modal/modal-preset";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
 import { useOccupantStore } from "@/hooks/occupant-store";
-import { initData, initDataProps, singleUnitApiResponse, transformUnitData } from "../../../data";
+import {
+  initData,
+  initDataProps,
+  singleUnitApiResponse,
+  transformUnitData,
+} from "../../../data";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
-import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import dayjs from "dayjs";
-import { getPropertySettingsData, getRentalData, switchUnit } from "../data";
+import {
+  getEstateData,
+  getEstateSettingsData,
+  getPropertySettingsData,
+  getRentalData,
+  switchUnit,
+} from "../data";
 import { toast } from "sonner";
+import {
+  NewUnitCost,
+  PreviousUnitBalance,
+} from "@/components/Management/Rent And Unit/Edit-Rent/Edit-rent-sections";
+import { calculateOverduePeriods } from "../../renew-rent/data";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
 
 const ChangeUnitpage = () => {
   const searchParams = useSearchParams();
@@ -46,26 +63,15 @@ const ChangeUnitpage = () => {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const {
-    occupant,
-    propertyData,
-    records,
-    unitBalance,
-    calculation,
-    deduction,
-    setCalculation,
-    setDeduction,
-  } = useOccupantStore();
+  const { occupant, unitBalance, calculation, deduction } = useOccupantStore();
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-  const endpoint = `/unit/${id}/view`
+  const endpoint = `/unit/${id}/view`;
 
   const {
     data: apiData,
     loading,
-    silentLoading,
     isNetworkError,
     error,
-    refetch,
   } = useFetch<singleUnitApiResponse>(endpoint);
 
   useEffect(() => {
@@ -78,15 +84,19 @@ const ChangeUnitpage = () => {
     }
   }, [apiData]);
 
+  const currencySymbol =
+    currencySymbols[unit_data.currency as keyof typeof currencySymbols] || "₦";
+
   if (!unitBalance) {
-    toast.warning("Back to Rent Unit for security reasons")
-    router.back()
-    return;
+    toast.warning("Back to Rent Unit for security reasons");
+    router.back();
+    return null;
   }
 
-  const balance = unitBalance?.data?.map((record: any, index: any) => ({
+  // Process unit balance records
+  const balance = unitBalance?.data?.map((record: any) => ({
     ...record,
-    amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
+    amount_paid: `${currencySymbol}${formatNumber(record.amount_paid) || 0}`,
     start_date: record?.start_date
       ? dayjs(record?.start_date).format("MMM D, YYYY").toLowerCase()
       : null,
@@ -98,26 +108,70 @@ const ChangeUnitpage = () => {
       : null,
   }));
 
-
-  const propertySettingsData = getPropertySettingsData(unit_data)
+  // PROPERTY SETTINGS DATA
+  const propertySettingsData = getPropertySettingsData(unit_data);
   const rentalData = getRentalData(unit_data);
+  const estateData = getEstateData(unit_data);
+  const estateSettingsDta = getEstateSettingsData(unit_data);
 
+  // Calculate outstanding balance and total cost
   const startday = balance?.[0]?.start_date;
   const endDay = balance?.[0]?.due_date;
   const amt = balance?.[0]?.amount_paid;
-  // Only calculate the balance if all values exist, otherwise default to 0
-  const bal = startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
-  const newUnitTotal = calculation ? Number(unit_data.newTenantTotalPrice) : Number(unit_data.renewalTenantTotalPrice);
-  const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
+  // Calculate previous unit balance
+  const outstandingBalance =
+    startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
 
-  const prev_unit_bal = bal ? `${'₦'}${formatNumber(
-    parseFloat(`${bal}`)
-  )}` : undefined;
+  // Determine base cost based on calculation flag
+  const baseCost = calculation
+    ? Number(unit_data.newTenantTotalPrice)
+    : Number(unit_data.renewalTenantTotalPrice);
 
-  // console.log("Total Payable:", balance[0].id);
+  // Calculate net owing amount
+  // const netOwing = deduction ? baseCost - outstandingBalance : baseCost;
+  const netOwing = deduction ? outstandingBalance - baseCost : baseCost;
 
-  //FUNCTION TO SWITH UNIT
+  const due_date = balance?.[0]?.due_date
+    ? dayjs(balance[0].due_date).format("DD/MM/YYYY")
+    : "__,__,__";
+
+  // Calculate overdue periods
+  const period = unit_data.fee_period as RentPeriod;
+  const overduePeriods =
+    due_date !== "__,__,__" && period
+      ? calculateOverduePeriods(due_date, period)
+      : 0;
+
+  // Format amounts for display
+  const formattedOutstandingBalance = outstandingBalance
+    ? `${currencySymbol}${formatNumber(Math.abs(outstandingBalance))}`
+    : `${currencySymbol}0`;
+  const formattedNetOwing = netOwing
+    ? `${currencySymbol}${formatNumber(Math.abs(netOwing))}`
+    : `${currencySymbol}0`;
+
+  // Determine owing/refunded status
+  const owingLabel = netOwing >= 0 ? "Amount Owed" : "Refund Due";
+
+  // Common feeDetails for both OwingFee and RenewalFee
+  const feeDetails = [
+    {
+      name: "Outstanding Balance",
+      amount: formattedOutstandingBalance,
+    },
+    {
+      name: owingLabel,
+      amount: formattedNetOwing,
+    },
+  ];
+
+  // Function to switch unit
   const handleSwitchUnit = async () => {
+    if (!startDate) {
+      toast.error("Please select a payment date.");
+      return;
+    }
+
     const id = balance[0].id;
     const data = {
       new_unit_id: selectedUnitId,
@@ -126,21 +180,28 @@ const ChangeUnitpage = () => {
       payment_date: startDate,
     };
 
-    // console.log("payload", data)
     try {
       setReqLoading(true);
       const res = await switchUnit(id as string, data);
       if (res) {
         setModalIsOpen(true);
-        toast.success("Record Added Successfully");
-        // router.push("/management/rent-unit");
+        toast.success("Unit Switched Successfully");
       }
     } catch (err) {
       toast.error("Failed to switch Unit, please try again");
     } finally {
       setReqLoading(false);
     }
-  }
+  };
+
+  if (loading)
+    return (
+      <div className="flex flex-col gap-5">
+        <CardsLoading length={10} />;
+      </div>
+    );
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -159,56 +220,117 @@ const ChangeUnitpage = () => {
           {...(isRental ? { gridThree: true } : {})}
         />
 
-        <PreviousUnitBalance
-          calculation={calculation}
-          deduction={deduction}
-          isRental={isRental}
-          items={balance as RentPreviousRecords[]}
-          total={`${bal}`}
-        />
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
-            <NewUnitCost
-              isRental={isRental}
-              feeDetails={[
-                {
-                  name: isRental ? "Rent" : "Fee",
-                  amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
-                },
-                {
-                  name: "Service Charge",
-                  amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
-                },
-                { name: "Other Charges", amount: (unit_data.other_charge) },
-              ]}
-              total={newUnitTotal}
+            {/* PREVIOUS UNIT BREAKDOWN */}
+            <PreviousUnitBalance
               calculation={calculation}
+              currency={unit_data.currency}
+              deduction={deduction}
+              isRental={isRental}
+              items={balance as RentPreviousRecords[]}
+              total={`${outstandingBalance}`}
             />
 
+            {/* NEW UNIT COST */}
             <NewUnitCost
-              title="Payable Cost"
               noEdit
               isRental={isRental}
               feeDetails={[
                 {
-                  name: "Previous Unit",
-                  amount: (prev_unit_bal as any),
-                  // amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
+                  name: isRental ? "Rent" : "Fee",
+                  amount: calculation
+                    ? unit_data.newTenantPrice
+                    : // : isRental
+                      // ? unit_data.renewalTenantPrice
+                      unit_data.renewalTenantPrice,
                 },
                 {
-                  name: "Current Unit",
-                  amount: (unit_data.newTenantPrice as any),
-                  // amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
+                  name: "Security Fee",
+                  amount: calculation
+                    ? unit_data.security_fee
+                    : unit_data.security_fee,
                 },
-                { name: "Other Charges", amount: (unit_data.other_charge) },
+                {
+                  name: "Agency Fee",
+                  amount: calculation ? unit_data.unitAgentFee : "",
+                },
+                {
+                  name: "Caution Fee",
+                  amount: calculation ? unit_data.caution_fee : "",
+                },
+                {
+                  name: "Service Charge",
+                  amount: calculation
+                    ? unit_data.service_charge
+                    : // : isRental
+                      // ? unit_data.renew_service_charge
+                      unit_data.renew_service_charge,
+                },
+                {
+                  name: "VAT Amount",
+                  amount: calculation
+                    ? unit_data.vat_amount
+                    : unit_data.renew_vat_amount,
+                },
+                {
+                  name: "Other Charges",
+                  amount: calculation
+                    ? unit_data.other_charge
+                    : unit_data.renew_other_charge,
+                },
               ]}
-              total={totalPayable}
+              total={baseCost}
               calculation={calculation}
-              deduction={deduction}
+              currency={unit_data.currency}
             />
+
+            {/* Owing/Refund Amount */}
+            <OwingFee
+              currency={unit_data.currency as Currency}
+              isRental={isRental}
+              isUpfrontPaymentChecked={true} // Always show owing/refunded amount
+              feeDetails={[
+                {
+                  name: "Outstanding Balance",
+                  amount: formattedOutstandingBalance,
+                },
+                {
+                  name: owingLabel,
+                  amount: formattedNetOwing,
+                },
+              ]}
+              total_package={baseCost}
+              id={id as string}
+            />
+
+            {/* Outstanding Details */}
+            {overduePeriods > 0 ? (
+              <OwingFee
+                currency={unit_data.currency as Currency}
+                isRental={isRental}
+                isUpfrontPaymentChecked={true}
+                feeDetails={feeDetails}
+                total_package={baseCost}
+                id={id as string}
+                dueDate={due_date}
+                period={period}
+              />
+            ) : (
+              <RenewalFee
+                title="Payable Package"
+                isRental={isRental}
+                feeDetails={feeDetails}
+                total_package={netOwing >= 0 ? netOwing : 0}
+                id={id as string}
+                currency={unit_data.currency as Currency}
+                noEdit
+              />
+            )}
+
             <StartRent
               isRental={isRental}
-              rentPeriod="yearly"
+              rentPeriod={unit_data.fee_period as RentPeriod}
               title={`Start ${isRental ? "Rent" : "Fee"}`}
               start
               setStart_Date={setStartDate}
@@ -227,7 +349,6 @@ const ChangeUnitpage = () => {
       </section>
 
       <FixedFooter className="flex items-center justify-end">
-        {/* <ModalTrigger asChild> */}
         <Button
           size="base_medium"
           className="py-2 px-6"
@@ -236,14 +357,12 @@ const ChangeUnitpage = () => {
         >
           {reqLoading ? "Please wait..." : "Proceed"}
         </Button>
-        <Modal
-          state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}
-        >
+        <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
             <ModalPreset type="success" className="w-full">
               <div className="flex flex-col gap-8">
                 <p className="text-text-tertiary text-sm">
-                  Record Added Successfully
+                  Unit Switched Successfully
                 </p>
                 <Button
                   onClick={() => {
@@ -255,7 +374,6 @@ const ChangeUnitpage = () => {
               </div>
             </ModalPreset>
           </ModalContent>
-          {/* </ModalTrigger> */}
         </Modal>
       </FixedFooter>
     </div>
