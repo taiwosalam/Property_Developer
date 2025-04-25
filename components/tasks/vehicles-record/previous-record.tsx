@@ -39,42 +39,48 @@ const Detail: React.FC<{
 }> = ({ label, value }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
-      <p className="text-[#747474] dark:text-darkText-1 w-[120px]">
-        {label}
-      </p>
-      <p className="text-black dark:text-white font-bold capitalize">
-        {value}
-      </p>
+      <p className="text-[#747474] dark:text-darkText-1 w-[120px]">{label}</p>
+      <p className="text-black dark:text-white font-bold capitalize">{value}</p>
     </div>
   );
 };
 
-const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?: string, userId?: number, registrationDate?: string }> = (props) => {
+const PreviousRecord: React.FC<
+  checkInOutData & {
+    pictureSrc: string;
+    category?: string;
+    userId?: number;
+    registrationDate?: string;
+  }
+> = (props) => {
   const { pictureSrc, category, userId, registrationDate, ...record } = props;
   const [status, setStatus] = useState<string>("");
   const [recordData, setRecordData] = useState<checkInOutData>(record);
-
 
   const checkIn = {
     date: dayjs(recordData.check_in_time).format("MMM DD YYYY hh:mma"),
     name: recordData.in_by,
     passenger: recordData.passengers_in,
     inventory: recordData.inventory_in,
-  }
+  };
 
   const checkOut = {
-    date: recordData.check_out_time ? dayjs(recordData.check_out_time).format("MMM DD YYYY hh:mma") : "__,__,__",
+    date: recordData.check_out_time
+      ? dayjs(recordData.check_out_time).format("MMM DD YYYY hh:mma")
+      : "__,__,__",
     name: recordData.out_by,
     passenger: recordData.passengers_out,
     inventory: recordData.inventory_out,
-  }
+  };
 
   // console.log("recordData", recordData);
 
   return (
     <InfoBox>
       <div className="flex gap-2 items-center justify-between">
-        <p className="text-brand-5 font-bold text-base">ID: {record?.id?.toString() || ""}</p>
+        <p className="text-brand-5 font-bold text-base">
+          ID: {record?.id?.toString() || ""}
+        </p>
         <p
           className={clsx(
             "p-2 font-normal text-xs border capitalize",
@@ -94,10 +100,7 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?:
           <Detail label="Passengers In" value={checkIn.passenger.toString()} />
           <Detail label="Check Out" value={checkOut?.date || "---"} />
           <Detail label="Check Out by" value={checkOut?.name || "---"} />
-          <Detail
-            label="Passengers Out"
-            value={checkOut?.passenger || "---"}
-          />
+          <Detail label="Passengers Out" value={checkOut?.passenger || "---"} />
         </div>
         <Modal>
           <ModalTrigger asChild>
@@ -105,20 +108,25 @@ const PreviousRecord: React.FC<checkInOutData & { pictureSrc: string, category?:
               Preview
             </Button>
           </ModalTrigger>
-            <ModalContent>
-            <VehicleRecordModal 
+          <ModalContent>
+            <VehicleRecordModal
               status={status as "completed" | "pending"}
               pictureSrc={pictureSrc || empty}
               name={checkIn.name}
-              id={recordData?.inventory_id?.toString() || userId?.toString() || ""}
+              id={
+                recordData?.inventory_id?.toString() || userId?.toString() || ""
+              }
               category={category as "guest" | "visitor"}
-              registrationDate={dayjs(registrationDate).format("DD MM YYYY hh:mma") || "__,__,__"}
+              registrationDate={
+                dayjs(registrationDate).format("DD MM YYYY hh:mma") ||
+                "__,__,__"
+              }
               latest_check_in={recordData as CheckInOut}
               showOpenRecordsButton={false}
               plate_number={recordData?.plate_number || ""}
               last_update={recordData?.last_update || ""}
-              />
-            </ModalContent>
+            />
+          </ModalContent>
         </Modal>
       </div>
     </InfoBox>

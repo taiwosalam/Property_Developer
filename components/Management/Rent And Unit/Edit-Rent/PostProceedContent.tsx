@@ -9,6 +9,8 @@ import {
   DUMMY_OCCUPANT,
   RentPreviousRecords,
   calculateBalance,
+  getEstateData,
+  getEstateSettingsDta,
 } from "@/components/Management/Rent And Unit/data";
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -26,6 +28,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useSearchParams } from "next/navigation";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import {
+  formatFee,
   initData,
   initDataProps,
   singleUnitApiResponse,
@@ -39,6 +42,9 @@ import { toast } from "sonner";
 import { getPropertySettingsData, getRentalData } from "./data";
 import { switchUnit } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
 
 const PostProceedContent = ({
   selectedUnitId,
@@ -132,8 +138,16 @@ const PostProceedContent = ({
   const balanceLabel = isExcess ? "Excess Amount" : "Refund Amount";
   const showBalanceCard = totalPayable < 0 || isExcess;
 
+  // CURRENT UNIT AMOUNT
+  const currentUnitAmt = formatFee(newUnitTotal, unit_data.currency || "naira");
+
+  // GET PROPERTY DATA
   const rentalData = getRentalData(propertyData);
   const propertySettingsData = getPropertySettingsData(propertyData);
+  const estateData = getEstateData(propertyData);
+  const estateSettingsDta = getEstateSettingsDta(propertyData);
+
+  console.log("propertyData", propertyData);
 
   // FUNCTION TO SWITCH UNIT
   const handleSwitchUnit = async () => {
@@ -160,6 +174,10 @@ const PostProceedContent = ({
     }
   };
 
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Change Property Unit</BackButton>
@@ -185,6 +203,7 @@ const PostProceedContent = ({
           <div className="lg:w-3/5 space-y-8">
             <NewUnitCost
               isRental={isRental}
+              noEdit
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
@@ -219,7 +238,8 @@ const PostProceedContent = ({
                 },
                 {
                   name: "Current Unit",
-                  amount: unit_data.newTenantPrice as any,
+                  amount: currentUnitAmt,
+                  // amount: unit_data.newTenantPrice as any,
                   // amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
                 { name: "Other Charges", amount: unit_data.other_charge },
@@ -230,7 +250,7 @@ const PostProceedContent = ({
 
             {showBalanceCard && (
               <NewUnitCost
-                title="Balance after deduction"
+                title="Balance After Deduction"
                 noEdit
                 isRental={isRental}
                 feeDetails={[

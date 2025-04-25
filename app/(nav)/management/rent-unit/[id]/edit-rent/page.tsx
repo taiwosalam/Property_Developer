@@ -92,10 +92,6 @@ const EditRent = () => {
     }
   }, [apiData, setOccupant, setUnitBalance]);
 
-  if (loading) return <PageCircleLoader />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
-
   const record = (unit_data?.previous_records as any)?.data?.[0];
   const start_date = record?.start_date
     ? dayjs(record?.start_date).format("DD/MM/YYYY")
@@ -165,6 +161,10 @@ const EditRent = () => {
       setReqLoading(false);
     }
   };
+
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -252,7 +252,7 @@ const EditRent = () => {
               setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
               isUpfrontPaymentChecked={isUpfrontPaymentChecked}
             />
-            
+
             <AddPartPayment
               isRental={isRental}
               currency={unit_data.currency || "naira"}

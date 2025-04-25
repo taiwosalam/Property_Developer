@@ -634,7 +634,7 @@ export const NewUnitCost: React.FC<{
   return (
     <div className="space-y-1">
       <RentSectionTitle>{title || "New Unit Cost"}</RentSectionTitle>
-      <p className="text-xs">{sub_title}</p>
+      <p className="text-xs">{title ? sub_title : ""}</p>
       {/* {!noEdit && <p className="text-xs">{sub_title}</p>} */}
       <FeeDetails
         noEdit={noEdit}

@@ -21,6 +21,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import dynamic from "next/dynamic";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import Select from "@/components/Form/Select/select";
+import ServerError from "@/components/Error/ServerError";
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
 });
@@ -62,7 +63,7 @@ const ChangePropertyPage: React.FC = () => {
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
   if (!propertyData) return <div>No property data found</div>;
 
 

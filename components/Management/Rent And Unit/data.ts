@@ -46,7 +46,7 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
     religion: data.religion || "--- ---", //TODO - Add religion
     nextOfKin: data.next_of_kin || {},
     badgeColor: data.user_tier
-      ? tierColorMap  [data?.user_tier as keyof typeof tierColorMap]
+      ? tierColorMap[data?.user_tier as keyof typeof tierColorMap]
       : undefined,
   };
 };
@@ -161,6 +161,15 @@ export const getEstateData = (estate_data: any) => {
     { label: "Description", value: estate_data.description ?? "-- -- " },
     { label: "Categories", value: estate_data.categories ?? "-- --" },
     { label: "Unit ID", value: estate_data.unit_id ?? "-- --" },
+  ];
+};
+
+export const getEstateSettingsDta = (estate_data: any) => {
+  return [
+    { label: "Management Fee", value: `${estate_data.management_fee}%` },
+    { label: "Period", value: estate_data.fee_period ?? "" },
+    { label: "Fee Penalty", value: estate_data.rent_penalty ?? "" },
+    { label: "Group Chat", value: estate_data.group_chat ?? "" },
   ];
 };
 

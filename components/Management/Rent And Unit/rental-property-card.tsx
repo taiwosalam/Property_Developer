@@ -167,14 +167,14 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
       >
         <div className="relative">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold text-[#374151] dark:text-white">
+            <h3 className="text-2xl font-bold text-[#374151] dark:text-white truncate">
               {unit_title}
             </h3>
             <div className="flex items-center space-x-1">
               <StatusDots status={status} propertyType={propertyType} />
             </div>
           </div>
-          <p className="text-sm font-normal">{unit_name + " " + unit_type}</p>
+          <p className="text-sm font-normal truncate">{unit_name + " " + unit_type}</p>
 
           {/* Hover information */}
           <div

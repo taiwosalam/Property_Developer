@@ -28,6 +28,9 @@ export interface Unit {
   security_fee: string;
   service_charge: string;
   agency_fee: string;
+  images: {
+    path: string;
+  }[];
   legal_fee: string;
   caution_fee: string;
   inspection_fee: string;
@@ -120,7 +123,8 @@ export const transformTransferUnits = (
       legalFee: formatCurrency(unit.legal_fee),
       inspectionFee: formatCurrency(unit.inspection_fee),
       agencyFee: formatCurrency(unit.agency_fee),
-      unitImages: [empty],
+      unitImages: unit.images.map((i) => i.path),
+      // unitImages: [empty],
     }));
 };
 
@@ -228,4 +232,16 @@ export const moveOut = async (data: any) => {
     handleAxiosError(error);
     return false;
   }
+};
+
+// Helper function to clean and parse amount
+export const parseAmount = (
+  amount: string | number | null | undefined
+): number => {
+  if (!amount) return 0;
+  // Convert to string if it's a number
+  const amountStr = amount.toString();
+  // Remove currency symbols and commas, then parse
+  const cleanAmount = amountStr.replace(/[₦$£,]/g, "");
+  return parseFloat(cleanAmount) || 0;
 };

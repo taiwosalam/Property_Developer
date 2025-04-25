@@ -27,7 +27,10 @@ const SwitchPropertyModal: React.FC<{
     data: propertyData,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>("/property/all");
+  } = useFetch<PropertyListResponse>("/property/rental");
+
+  console.log("property", propertyData)
+  console.log("propertyId", propertyId)
 
   // Property options without current tenant property
   const propertyOptions =
