@@ -1,58 +1,69 @@
+import { WitnessLawFirm } from "./data";
+
 export interface PartiesProps {
-    landlord: string;
-    tenant: string;
+  landlord: string;
+  tenant: string;
 }
 
 export interface PropertyDescriptionProps {
-    description: string;
+  description: string;
 }
 
 export interface AttorneyInfoProps {
-    attorney: string;
+  attorney: string;
 }
 
 export interface ContactDetail {
-    text: string;
-    className: string;
+  text: string;
+  className: string;
 }
 
 export interface LawFirm {
-    logoSrc: string;
-    contactDetails: ContactDetail[];
-    sealSrc: string;
+  logoSrc: string;
+  contactDetails: ContactDetail[];
+  sealSrc: string;
 }
 
 export interface LawFirmInfoProps {
-    lawFirm: LawFirm;
+  lawFirm: LawFirm;
 }
 
 export interface Party {
-    name: string;
-    address: string;
+  name: string;
+  address: string;
 }
 
 export interface AttestationProps {
-    date: string;
-    landlord: Party;
-    tenant: Party;
+  date: string;
+  landlord: Party;
+  tenant: Party;
 }
 
 export interface ClauseData {
-    title: string;
-    content?: string; // Optional
-    subClauses?: string[]; // Optional
+  title: string;
+  content?: string;
+  subClauses?: string[];
 }
 
 export interface ClauseProps extends ClauseData {}
 
 export interface ClauseListProps {
-    clauses: ClauseData[];
+  clauses: ClauseData[];
 }
 
-
-// export interface WitnessSignatureDateProps {
-//     landlord: Party;
-//     tenant: Party;
-//     witness: Witness;
-//     lawFirm: LawFirm;
-//   }
+export interface DocumentPreviewData {
+  parties: {
+    landlord: string;
+    tenant: string;
+  };
+  propertyDescription: string;
+  attorney: string;
+  lawFirm: LawFirm;
+  attestation: {
+    date: string;
+    landlord: Party;
+    tenant: Party;
+  };
+  witnessLawFirm: WitnessLawFirm;
+  clauses: ClauseData[];
+}

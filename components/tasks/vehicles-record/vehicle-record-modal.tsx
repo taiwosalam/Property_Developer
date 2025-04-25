@@ -8,12 +8,13 @@ import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CheckInOutForm from "../visitors-requests/check-in-out-form";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { checkOutVehicle } from "./data";
+import { checkInVehicle, checkOutVehicle } from "./data";
 import { toast } from "sonner";
 import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import ModalPreset from "@/components/Modal/modal-preset";
 import dayjs from "dayjs";
 import { empty } from "@/app/config";
+import { useModal } from "@/components/Modal/modal";
 
 const VehicleRecordModal: React.FC<
   VehicleRecord & {
@@ -30,6 +31,7 @@ const VehicleRecordModal: React.FC<
   showOpenRecordsButton = true,
 }) => {
   const [loading, setLoading] = useState(false);
+  const { setIsOpen } = useModal()
 
   const checkIn = {
     id: latest_check_in?.id,
@@ -94,8 +96,40 @@ const VehicleRecordModal: React.FC<
     }
   };
 
+  const handleCheckIn = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    // Modify keys in formData
+    const data = Object.fromEntries(formData.entries());
+    data.passengers_in = data.passenger;
+    delete data.passenger;
+    data.inventory_in = data.inventory;
+    delete data.inventory;
+
+    // Add vehicle_record to requestId
+    data.vehicle_record_id = `${id}`;
+
+    try {
+      setLoading(true);
+      const response = await checkInVehicle(data);
+      if (response) {
+        window.dispatchEvent(new Event("refetchVehicleRecord"));
+        toast.success("Vehicle checked in successfully");
+        setIsOpen(false);
+      } else {
+        toast.error("Failed to check in vehicle");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const [activeStep, setActiveStep] = useState<
-    "default" | "check-out" | "success-action"
+    "default" | "check-out" | "success-action" | "check-in"
   >("default");
   const handleBack = () => {
     setActiveStep("default");
@@ -226,6 +260,16 @@ const VehicleRecordModal: React.FC<
               Check Out
             </Button>
           )}
+
+          {status === "no_record" && (
+            <Button
+              size="sm_bold"
+              className="py-[10px] px-6 rounded-lg"
+              onClick={() => setActiveStep("check-in")}
+            >
+              Check In
+            </Button>
+          )}
           {showOpenRecordsButton && (
             <Button
               size="sm_bold"
@@ -254,6 +298,25 @@ const VehicleRecordModal: React.FC<
           category={category}
           registrationDate={registrationDate}
           onSubmit={handleCheckOut}
+        />
+      </>
+    );
+  }
+
+  if (activeStep === "check-in") {
+    return (
+      <>
+        <CheckInOutForm
+          loading={loading}
+          type="check-in"
+          useCase="vehicle"
+          handleBack={handleBack}
+          pictureSrc={pictureSrc}
+          userName={name}
+          id={id}
+          category={category}
+          registrationDate={registrationDate}
+          onSubmit={handleCheckIn}
         />
       </>
     );

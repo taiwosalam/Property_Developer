@@ -82,6 +82,9 @@ export interface VehicleRecordPageData {
   check_ins_this_month: number;
   check_outs: number;
   check_outs_this_month: number;
+  check_ins_pending: number;
+  check_outs_pending: number;
+  total_records: number;
   vehicle_records: {
     data: VehicleData[];
     current_page: number;
@@ -150,6 +153,16 @@ export interface CheckIns {
   total: number;
 }
 
+
+export interface PaginationTypes {
+  total: number;
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  from: number;
+  to: number;
+};
+
 export interface Stats {
   check_ins: { total: number; this_month: number };
   check_outs: { total: number; this_month: number };
@@ -160,15 +173,16 @@ export interface VehicleRecordApiResponse {
   data: {
     vehicle_records: { vehicle_record: VehicleRecord; check_ins: CheckIns }[];
     stats: Stats;
+    pagination: PaginationTypes;
   };
 }
 
 // export const transformVehicleRecordApiResponse = (
 //   response: VehicleRecordApiResponse
 // ): VehicleRecordPageData => {
-//   console.log("response", response);
+//   // console.log("transformVehicleRecordApiResponse input:", response);
 //   const vehicle_records = response.data.vehicle_records;
-//   return {
+//   const transformed = {
 //     check_ins: response.data.stats.check_ins.total,
 //     total: response.data.stats.total.total,
 //     total_this_month: response.data.stats.total.this_month,
@@ -176,7 +190,9 @@ export interface VehicleRecordApiResponse {
 //     check_outs: response.data.stats.check_outs.total,
 //     check_outs_this_month: response.data.stats.check_outs.this_month,
 //     vehicle_records: {
-//       last_page: 0,
+//       last_page: vehicle_records.length > 0 ? 1 : 0, // Single page if data exists
+//       current_page: 1, // Default to page 1
+//       total: vehicle_records.length, // Total records
 //       data: vehicle_records.map((record) => ({
 //         id: record.vehicle_record.id,
 //         vehicle_brand: record.vehicle_record.vehicle_brand,
@@ -210,103 +226,132 @@ export interface VehicleRecordApiResponse {
 //         last_update: dayjs(record.vehicle_record.updated_at).format(
 //           "MMM DD YYYY hh:mm A"
 //         ),
-//         latest_check_in: {
-//           ...record.vehicle_record.check_ins[
-//             record.vehicle_record.check_ins.length - 1
-//           ],
-//         },
+//         latest_check_in:
+//           record.vehicle_record.check_ins?.length > 0
+//             ? record.vehicle_record.check_ins[
+//                 record.vehicle_record.check_ins.length - 1
+//               ]
+//             : null, // Null if no check-ins
 //       })),
-//       current_page: 0,
-//       total: 0,
 //     },
 //   };
+
+//   const transformedWithDefaultCheckIn = {
+//     ...transformed,
+//     vehicle_records: {
+//       ...transformed.vehicle_records,
+//       data: transformed.vehicle_records.data.map(record => ({
+//         ...record,
+//         latest_check_in: record.latest_check_in || {
+//           id: 0,
+//           vehicle_record_id: record.id,
+//           in_by: '',
+//           out_by: '',
+//           passengers_in: '',
+//           passengers_out: '',
+//           inventory_in: '',
+//           inventory_out: '',
+//           check_in_time: '',
+//           check_out_time: '',
+//           status: 'no_record',
+//           created_at: '',
+//           updated_at: '',
+//           deleted_at: ''
+//         }
+//       }))
+//     }
+//   };
+
+//   return transformedWithDefaultCheckIn;
 // };
 
 export const transformVehicleRecordApiResponse = (
   response: VehicleRecordApiResponse
 ): VehicleRecordPageData => {
   console.log("transformVehicleRecordApiResponse input:", response);
-  const vehicle_records = response.data.vehicle_records;
+
+  // Extract data from the response
+  const { vehicle_records, stats, pagination } = response.data;
+
+  // Transform the data
   const transformed = {
-    check_ins: response.data.stats.check_ins.total,
-    total: response.data.stats.total.total,
-    total_this_month: response.data.stats.total.this_month,
-    check_ins_this_month: response.data.stats.check_ins.this_month,
-    check_outs: response.data.stats.check_outs.total,
-    check_outs_this_month: response.data.stats.check_outs.this_month,
+    check_ins: stats.check_ins.total,
+    total: stats.total.total,
+    total_this_month: stats.total.this_month,
+    check_ins_this_month: stats.check_ins.this_month,
+    check_outs: stats.check_outs.total,
+    check_outs_this_month: stats.check_outs.this_month,
+    total_records: pagination.total,
+    check_outs_pending: 0,
+    check_ins_pending: 0,
     vehicle_records: {
-      last_page: vehicle_records.length > 0 ? 1 : 0, // Single page if data exists
-      current_page: 1, // Default to page 1
-      total: vehicle_records.length, // Total records
-      data: vehicle_records.map((record) => ({
-        id: record.vehicle_record.id,
-        vehicle_brand: record.vehicle_record.vehicle_brand,
-        user_id: record.vehicle_record.user_id,
-        property_id: record.vehicle_record.property_id,
-        plate_number: record.vehicle_record.plate_number.toUpperCase(),
-        created_at: record.vehicle_record.created_at,
-        updated_at: record.vehicle_record.updated_at,
-        pictureSrc: record.vehicle_record.avatar || "",
-        city: record.vehicle_record.city,
-        address: record.vehicle_record.address,
-        phone: record.vehicle_record.phone,
-        lga: record.vehicle_record.lga,
-        state: record.vehicle_record.state,
-        name: record.vehicle_record.name,
-        model: record.vehicle_record.model,
-        status:
-          record.vehicle_record.check_ins?.length > 0
-            ? record.vehicle_record.check_ins[
-                record.vehicle_record.check_ins.length - 1
-              ]?.status ?? "no_record"
-            : "no_record",
-        category: record.vehicle_record.visitor_category,
-        registrationDate: dayjs(record.vehicle_record.created_at).format(
-          "MMM DD YYYY"
-        ),
-        visitor_category: record.vehicle_record.visitor_category,
-        vehicle_state: record.vehicle_record.vehicle_state,
-        vehicle_type: record.vehicle_record.vehicle_type,
-        manufacture_year: record.vehicle_record.manufacture_year,
-        last_update: dayjs(record.vehicle_record.updated_at).format(
-          "MMM DD YYYY hh:mm A"
-        ),
-        latest_check_in:
-          record.vehicle_record.check_ins?.length > 0
-            ? record.vehicle_record.check_ins[
-                record.vehicle_record.check_ins.length - 1
-              ]
-            : null, // Null if no check-ins
-      })),
+      last_page: pagination.last_page,
+      current_page: pagination.current_page,
+      total: pagination.total,
+      data: vehicle_records.map((record) => {
+        const vehicle = record.vehicle_record;
+        const latestCheckIn =
+          vehicle.check_ins?.length > 0
+            ? vehicle.check_ins[vehicle.check_ins.length - 1]
+            : null;
+
+        return {
+          id: vehicle.id,
+          vehicle_brand: vehicle.vehicle_brand,
+          user_id: vehicle.user_id,
+          property_id: vehicle.property_id,
+          plate_number: vehicle.plate_number.toUpperCase(),
+          created_at: vehicle.created_at,
+          updated_at: vehicle.updated_at,
+          pictureSrc: vehicle.avatar || "",
+          city: vehicle.city,
+          address: vehicle.address,
+          phone: vehicle.phone,
+          lga: vehicle.lga,
+          state: vehicle.state,
+          name: vehicle.name,
+          model: vehicle.model,
+          status: latestCheckIn?.status ?? "no_record",
+          category: vehicle.visitor_category,
+          registrationDate: dayjs(vehicle.created_at).format("MMM DD YYYY"),
+          visitor_category: vehicle.visitor_category,
+          vehicle_state: vehicle.vehicle_state,
+          vehicle_type: vehicle.vehicle_type,
+          manufacture_year: vehicle.manufacture_year,
+          last_update: dayjs(vehicle.updated_at).format("MMM DD YYYY hh:mm A"),
+          latest_check_in: latestCheckIn,
+        };
+      }),
     },
   };
-  
+
+  // Add default check-in if none exists
   const transformedWithDefaultCheckIn = {
     ...transformed,
     vehicle_records: {
       ...transformed.vehicle_records,
-      data: transformed.vehicle_records.data.map(record => ({
+      data: transformed.vehicle_records.data.map((record) => ({
         ...record,
         latest_check_in: record.latest_check_in || {
           id: 0,
           vehicle_record_id: record.id,
-          in_by: '',
-          out_by: '',
-          passengers_in: '',
-          passengers_out: '',
-          inventory_in: '',
-          inventory_out: '',
-          check_in_time: '',
-          check_out_time: '',
-          status: 'no_record',
-          created_at: '',
-          updated_at: '',
-          deleted_at: ''
-        }
-      }))
-    }
+          in_by: "",
+          out_by: "",
+          passengers_in: "",
+          passengers_out: "",
+          inventory_in: "",
+          inventory_out: "",
+          check_in_time: "",
+          check_out_time: "",
+          status: "no_record",
+          created_at: "",
+          updated_at: "",
+          deleted_at: "",
+        },
+      })),
+    },
   };
-  
+
   return transformedWithDefaultCheckIn;
 };
 

@@ -1085,3 +1085,16 @@ export const transformUnitData = (response: any) => {
     ...validFeeFields,
   };
 };
+
+// Helper function to format and validate fee amounts
+export const formatFee = (
+  amount: string | number | undefined | null,
+  currency: string
+): string | undefined => {
+  if (!amount || amount === "") return undefined; // Skip undefined, null, or empty string
+  const parsedAmount = parseFloat(amount.toString());
+  if (isNaN(parsedAmount) || parsedAmount === 0) return undefined; // Skip NaN or zero
+  const currencySymbol =
+    currencySymbols[currency as keyof typeof currencySymbols] || "₦";
+  return `${currencySymbol}${formatNumber(parsedAmount)}`;
+};

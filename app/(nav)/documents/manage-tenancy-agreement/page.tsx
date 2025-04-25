@@ -34,13 +34,15 @@ const ManageTenancyAgreement = () => {
   const { data, loading, error, isNetworkError } =
     useFetch<ManageDocumentsAPIResponse>(`/property-document/${documentId}`);
 
+  const propertyID = data?.document?.property_id;  
+
   const {
     data: propData,
     loading: propertyLoading,
     error: propertyError,
     isNetworkError: propertyNetworkError,
   } = useFetch<SinglePropertyResponse>(
-    `property/${data?.document?.property_id}/view`
+    `property/${propertyID}/view`
   );
 
   const propertyData = propData ? transformSinglePropertyData(propData) : null;

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Button from "@/components/Form/Button/button";
 import CustomTable from "@/components/Table/table";
@@ -59,6 +59,7 @@ const VehiclesRecordPage = () => {
       last_page: 0,
       total: 0,
     },
+    hasMore: true,
   };
 
   const [state, setState] = useState(initialState);
@@ -73,6 +74,7 @@ const VehiclesRecordPage = () => {
     total: totalStats,
     total_this_month,
     vehicle_records: { data, current_page, last_page, total },
+    hasMore,
   } = state;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -162,25 +164,78 @@ const VehiclesRecordPage = () => {
     config
   );
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
-
+  // Update state with fetched data, appending for subsequent pages
   useEffect(() => {
     if (apiData) {
       const transformedData = transformVehicleRecordApiResponse(apiData);
       setState((prevState) => {
+        const newRecords = transformedData.vehicle_records.data;
+        const isFirstPage = transformedData.vehicle_records.current_page === 1;
+        const updatedRecords = isFirstPage
+          ? newRecords
+          : [...prevState.vehicle_records.data, ...newRecords];
+        const hasMore =
+          transformedData.vehicle_records.current_page <
+          transformedData.vehicle_records.last_page;
         return {
-          ...prevState,
           ...transformedData,
           vehicle_records: {
             ...transformedData.vehicle_records,
-            data: transformedData.vehicle_records.data, // Replace data
-            current_page: transformedData.vehicle_records.current_page,
-            last_page: transformedData.vehicle_records.last_page,
-            total: transformedData.vehicle_records.total,
+            data: updatedRecords,
           },
+          hasMore,
         };
       });
     }
   }, [apiData]);
+
+  // Intersection Observer for infinite scrolling
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (silentLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setState((prevState) => ({
+            ...prevState,
+            vehicle_records: {
+              ...prevState.vehicle_records,
+              current_page: prevState.vehicle_records.current_page + 1,
+            },
+          }));
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [silentLoading, hasMore]
+  );
+
+  // Map data to include ref for the last row
+  const tableData = data.map((record, index) => ({
+    ...record,
+    ref: index === data.length - 1 ? lastRowRef : null,
+  }));
+
+  // useEffect(() => {
+  //   if (apiData) {
+  //     const transformedData = transformVehicleRecordApiResponse(apiData);
+  //     setState((prevState) => {
+  //       return {
+  //         ...prevState,
+  //         ...transformedData,
+  //         vehicle_records: {
+  //           ...transformedData.vehicle_records,
+  //           data: transformedData.vehicle_records.data, // Replace data
+  //           current_page: transformedData.vehicle_records.current_page,
+  //           last_page: transformedData.vehicle_records.last_page,
+  //           total: transformedData.vehicle_records.total,
+  //         },
+  //       };
+  //     });
+  //   }
+  // }, [apiData]);
 
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
@@ -200,7 +255,6 @@ const VehiclesRecordPage = () => {
     setSelectedRecord(updatedRecord);
     setModalOpen(true);
   };
-
 
   if (loading)
     return (
@@ -238,8 +292,8 @@ const VehiclesRecordPage = () => {
           />
           <ManagementStatistcsCard
             title="Pending"
-            newData={total}
-            total={total_this_month}
+            newData={check_ins_this_month}
+            total={check_ins}
             colorScheme={4}
           />
         </div>
@@ -383,15 +437,22 @@ const VehiclesRecordPage = () => {
             {silentLoading && current_page === 1 ? (
               <TableLoading />
             ) : (
-              <CustomTable
-                fields={veicleRecordTablefields}
-                data={data} // Pass data directly
-                tableHeadClassName="h-[76px]"
-                tableHeadCellSx={{
-                  borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
-                }}
-                handleSelect={handleActionClick}
-              />
+              <>
+                <CustomTable
+                  fields={veicleRecordTablefields}
+                  data={tableData} // Pass data directly
+                  tableHeadClassName="h-[76px]"
+                  tableHeadCellSx={{
+                    borderBottom: "1px solid rgba(234, 236, 240, 0.20)",
+                  }}
+                  handleSelect={handleActionClick}
+                />
+                {silentLoading && current_page > 1 && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="loader" />
+                  </div>
+                )}
+              </>
             )}
             <Modal
               state={{

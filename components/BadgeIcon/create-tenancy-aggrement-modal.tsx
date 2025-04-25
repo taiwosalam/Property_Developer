@@ -50,7 +50,7 @@ const CreateTenancyAggrementModal = () => {
         {...(selectedOption
           ? { back: { handleBack: () => setSelectedOption(null) } }
           : {})}
-        style={{ maxWidth: "714px" }}
+        style={{ maxWidth: "714px", overflow: "visible" }}
         heading={
           selectedOption
             ? checkboxOptions.find((option) => option.value === selectedOption)
@@ -100,7 +100,7 @@ const CreateTenancyAggrementModal = () => {
                   }}
                   noCheckbox={true}
                 >
-                  <p className="text-sm text-darkText-secondary text-text-disabled tracking-[0px]">
+                  <p className="text-sm text-darkText-secondary capitalize text-text-disabled tracking-[0px]">
                     {option.description}
                   </p>
                 </Checkbox>
@@ -114,8 +114,6 @@ const CreateTenancyAggrementModal = () => {
 };
 
 export default CreateTenancyAggrementModal;
-
-
 
 // DRAWER COMPONENT FLOW
 export const DrawerComponent = () => {

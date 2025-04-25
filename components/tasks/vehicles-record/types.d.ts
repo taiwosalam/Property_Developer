@@ -16,7 +16,7 @@ interface CheckInOut {
 }
 
 interface BaseVehicleRecord {
-  status: "pending" | "completed";
+  status: "pending" | "completed" | "no_record";
   pictureSrc: string;
   name: string;
   id: string | number;
@@ -38,8 +38,12 @@ interface CompletedVehicleRecord extends BaseVehicleRecord {
   checkOut?: CheckInOut;
 }
 
-export type VehicleRecord = PendingVehicleRecord | CompletedVehicleRecord;
+interface NoRecordVehicleRecord extends BaseVehicleRecord {
+  status: "no_record";
+  checkOut?: CheckInOut;
+}
 
+export type VehicleRecord = PendingVehicleRecord | CompletedVehicleRecord | NoRecordVehicleRecord;
 
 interface Tenant {
   tenant_id: number;

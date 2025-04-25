@@ -29,6 +29,7 @@ import Pagination from "@/components/Pagination/pagination";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import ServerError from "@/components/Error/ServerError";
 
 const Documents = () => {
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -124,7 +125,7 @@ const Documents = () => {
   };
 
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
   if (loading) return <CustomLoader view="grid" layout="page" />;
 
   return (

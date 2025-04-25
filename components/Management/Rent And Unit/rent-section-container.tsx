@@ -10,6 +10,7 @@ import {
   currencySymbols,
   formatNumber,
 } from "@/utils/number-formatter";
+import { parseAmount } from "./Edit-Rent/data";
 
 export const RentSectionContainer: React.FC<{
   title: string;
@@ -70,11 +71,17 @@ export const FeeDetails: React.FC<{
     .reduce((acc, fee) => acc + Number(fee.amount), 0)
     .toLocaleString();
 
+  // Filter out fee details with invalid amounts
+  const validFeeDetails = feeDetails.filter((fee) => {
+    const parsedAmount = parseAmount(fee.amount);
+    return parsedAmount > 0;
+  });
+
   return (
     <RentSectionContainer title={title}>
       <div className="space-y-6">
         <div className="grid md:grid-cols-2 gap-y-4 gap-x-2">
-          {feeDetails.map((fee, index) => (
+          {validFeeDetails.map((fee, index) => (
             <DetailItem
               key={index}
               style={{ width: "120px" }}

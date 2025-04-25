@@ -27,6 +27,7 @@ import {
 } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import ServerError from "@/components/Error/ServerError";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const VehilceRecords = () => {
   const storedView = useView();
@@ -202,9 +203,7 @@ const VehilceRecords = () => {
       <section className="capitalize">
         {pageData.data.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+            <SearchError />
           ) : (
             <EmptyList
               noButton

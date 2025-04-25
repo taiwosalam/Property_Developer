@@ -193,8 +193,8 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               {loading
                 ? "Loading..."
                 : type === "check-in"
-                ? "Create"
-                : "Submit"}
+                ? "Check In"
+                : "Check Out"}
             </Button>
           </div>
         </form>

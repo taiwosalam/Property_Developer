@@ -53,8 +53,10 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
   const { setCalculation, setDeduction, calculation, deduction } =
     useOccupantStore();
   const [screenModal, setScreenModal] = useState(false);
-  const [calcChecked, setCalcChecked] = useState(calculation);
-  const [deductChecked, setDeductChecked] = useState(deduction);
+  // const [calcChecked, setCalcChecked] = useState(calculation);
+  const [calcChecked, setCalcChecked] = useState(false);
+  // const [deductChecked, setDeductChecked] = useState(deduction);
+  const [deductChecked, setDeductChecked] = useState(false);
 
   // Sync local state with store
   useEffect(() => {
