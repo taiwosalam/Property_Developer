@@ -6,11 +6,11 @@ import {
 } from "./settings-components";
 import Input from "../Form/Input/input";
 import { CounterButton } from "./SettingsEnrollment/settings-enrollment-components";
-import { FeatureFields, SMSFields, SponsorFields } from "@/app/(nav)/settings/subscription/data";
 import { ChevronRight } from "lucide-react";
 import CustomTable from "../Table/table";
 import { CustomTableProps } from "../Table/types";
 import Link from "next/link";
+import { FeatureFields, SMSFields } from "@/app/(nav)/settings/add-on/data";
 
 export const SMSUnit = () => {
   const table_style_props: Partial<CustomTableProps> = {

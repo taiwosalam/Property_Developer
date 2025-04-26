@@ -7,20 +7,16 @@ import {
   SettingsUpdateButton,
 } from "./settings-components";
 import CustomTable from "../Table/table";
-import { DomainFields, personalized_domain, SponsorFields } from "@/app/(nav)/settings/subscription/data";
 import { CustomTableProps, DataItem } from "../Table/types";
 import TableMenu from "../Table/table-menu";
 import { Box, MenuItem, Modal } from "@mui/material";
 import PaymentMethod from "../Wallet/AddFunds/payment-method";
 import useSubscriptionStore from "@/store/subscriptionStore";
-import {
-  ConfirmModal,
-  EditModal,
-  SuccessModal,
-} from "@/app/(nav)/settings/subscription/components";
 import Input from "../Form/Input/input";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { DomainFields, personalized_domain } from "@/app/(nav)/settings/add-on/data";
+import { ConfirmModal, EditModal, SuccessModal } from "@/app/(nav)/settings/add-on/components";
 
 const style = {
   position: "absolute",
