@@ -56,7 +56,7 @@ const StatisticsMessageCard: React.FC<StatisticsMessageCardProps> = ({
         />
         <div className="custom-flex-col text-text-primary dark:text-darkText-1 text-sm">
           <div className="flex items-center">
-            <p className="font-bold">{user?.name ?? "___ ___"}</p>
+            <p className="font-bold capitalize">{user?.name.toLowerCase() ?? "___ ___"}</p>
             <BadgeIcon color={mapTierToColor(user?.tier ?? 0)} />
           </div>
           {isOffers && (

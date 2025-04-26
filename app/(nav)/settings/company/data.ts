@@ -37,6 +37,7 @@ interface Directors {
 export interface CompanyDataApiResponse {
   data: {
     id: number;
+    status: string;
     company_name: string;
     email: string;
     company_logo: string;
@@ -89,6 +90,7 @@ export interface companyData {
   company_name: string;
   company_logo: string;
   dark_logo: string;
+  status: string;
   bio: string;
   is_verified: boolean;
   date_of_registration: string;
@@ -156,6 +158,7 @@ export const initialPageData: ProfileSettingsPageState = {
   ],
   companyData: {
     company_name: "",
+    status: "",
     email: "",
     company_id: 0,
     company_logo: "",
@@ -210,6 +213,7 @@ export const transformProfileApiResponse = (
     companyData: {
       company_name: res.company_name,
       email: res.email,
+      status: res.status,
       bio: res.bio,
       company_id: res.id,
       company_logo: res.company_logo,
@@ -368,6 +372,7 @@ export const transformFormCompanyData = (
     | string
     | File;
   data.cac_document = formData.get("cac_certificate") as string | File;
+  
 
   data.head_office_address = formData.get("head_office_address") as string;
   data.state = formData.get("state") as string;

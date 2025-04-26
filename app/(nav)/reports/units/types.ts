@@ -1,4 +1,5 @@
 import { formatToNaira } from "../../tasks/inspections/data";
+import { CURRENCY_SIGN } from "./data";
 
 export type UnitListResponse = {
   status: "success" | "error";
@@ -19,6 +20,7 @@ export type Units = {
   unit_id: number;
   property_name: string;
   unit_name: string;
+  currency: string;
   unit_description: string;
   status: string;
   annual_rent: string;
@@ -34,6 +36,7 @@ export type UnitListRequest = {
   period: string;
   total_package: string;
   annual_rent: string;
+  currency: string;
 };
 
 export type UnitsReportType = {
@@ -56,9 +59,17 @@ export const transformUnitListData = (
       unit_id: unit.unit_id || "__ __",
       unit_name: unit.unit_name || "__ __",
       status: unit.is_active || "__ __",
-      annual_rent: `₦${unit.annual_rent}` || "__ __",
-      total_package: `₦${unit.total_package}` || "__ __",
+      annual_rent:
+        `${CURRENCY_SIGN[unit.currency as keyof typeof CURRENCY_SIGN] || "₦"}${
+          unit.annual_rent
+        }` || "__ __",
+      total_package:
+        `${CURRENCY_SIGN[unit.currency as keyof typeof CURRENCY_SIGN] || "₦"}${
+          unit.total_package
+        }` || "__ __",
       period: unit.period || "__ __",
+      currency:
+        CURRENCY_SIGN[unit.currency as keyof typeof CURRENCY_SIGN] || "₦",
     })),
   };
 };

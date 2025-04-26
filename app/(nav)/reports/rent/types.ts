@@ -13,6 +13,7 @@ export type RentListResponse = {
 export type Rent = {
   unit_id: number;
   unit_name: string;
+  rent_currency: string;
   //property_name: string;
   tenant_name: string;
   rent_start_date: string;

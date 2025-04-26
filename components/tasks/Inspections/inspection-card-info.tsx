@@ -27,7 +27,7 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
   return (
     <div
       className={clsx(
-        "flex flex-wrap items-center gap-6 justify-between",
+        "flex items-center gap-6 justify-between",
         className
       )}
     >

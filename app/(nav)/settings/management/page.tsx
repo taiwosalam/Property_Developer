@@ -35,9 +35,10 @@ import useFetch from "@/hooks/useFetch";
 import ManagementCheckbox from "@/components/Documents/DocumentCheckbox/management-checkbox";
 
 const roleMapping: Record<string, string> = {
-  "staff configuration (branch manager)": "manager",
-  "staff configuration (account officer)": "account",
-  "staff configuration (staff)": "staff",
+  "admin configuration (company director)": "director",
+  "partner configuration (branch manager)": "manager",
+  "colleague configuration (account officer)": "account",
+  "staff configuration (other staff)": "staff",
   "Users Configuration (Landlord, Occupant & Tenants)": "user",
 };
 
@@ -58,8 +59,6 @@ const Management = () => {
     tenant_screening_level: 0,
     occupant_screening_level: 0,
   });
-
-  console.log(data);
 
   const formatPermission = (text: string) => {
     return text
@@ -87,7 +86,6 @@ const Management = () => {
 
   // Sync selectedPermissions with backend data when manaConfigData changes
   useEffect(() => {
-    console.log("manaConfigData", manaConfigData);
     if (manaConfigData?.data) {
       setSelectedPermissions((prev) => {
         const updatedPermissions = { ...prev };
@@ -152,42 +150,7 @@ const Management = () => {
   };
 
   // UPDATE RENT PENALTY
-  const handleUpdateRentPenalty = async (data: Record<string, any>) => {
-    console.log("Form data:", data); // Debug: Log form data
-
-    // Check if monthly_interest_rent exists
-    if (!data?.monthly_interest_rent) {
-      //toast.error("Please select a rent penalty percentage");
-      return;
-    }
-
-    const penaltyValue = parseFloat(
-      data.monthly_interest_rent.replace("%", "")
-    );
-    if (isNaN(penaltyValue) || penaltyValue <= 0) {
-      toast.error("Please select a valid rent penalty percentage");
-      return;
-    }
-
-    const payload = {
-      penalty_value: penaltyValue,
-    };
-
-    try {
-      setIsPenalty(true);
-      const res = await updateSettings(
-        objectToFormData(payload),
-        "rent_penalty_setting"
-      );
-      if (res) {
-        toast.success("Rent Penalty updated successfully");
-      }
-    } catch (err) {
-      toast.error("Unable to update Rent Penalty");
-    } finally {
-      setIsPenalty(false);
-    }
-  };
+ 
 
   // TENANT & OCCUPANT SCREENING LEVEL
   const handleUpdateScreeningLevel = async (data: Record<string, any>) => {
