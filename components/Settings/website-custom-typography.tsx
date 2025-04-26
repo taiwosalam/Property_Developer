@@ -27,20 +27,23 @@ const settings = [
     min: 12,
     max: 72,
     default: 16,
+    defaultWeight: "400",
   },
   {
     title: "H1",
     desc: "Specify the H1 tag font properties.",
     min: 32,
     max: 64,
-    default: 32,
+    default: 40,
+    defaultWeight: "700",
   },
   {
     title: "H2",
     desc: "Specify the H2 tag font properties.",
     min: 24,
     max: 48,
-    default: 28,
+    default: 30,
+    defaultWeight: "600",
   },
   {
     title: "H3",
@@ -48,27 +51,31 @@ const settings = [
     min: 19,
     max: 40,
     default: 24,
+    defaultWeight: "500",
   },
   {
     title: "H4",
     desc: "Specify the H4 tag font properties.",
     min: 16,
     max: 32,
-    default: 20,
+    default: 22,
+    defaultWeight: "500",
   },
   {
     title: "H5",
     desc: "Specify the H5 tag font properties.",
     min: 13,
     max: 24,
-    default: 16,
+    default: 20,
+    defaultWeight: "500",
   },
   {
     title: "H6",
     desc: "Specify the H6 tag font properties.",
     min: 11,
     max: 20,
-    default: 14,
+    default: 16,
+    defaultWeight: "400",
   },
 ];
 
@@ -94,9 +101,11 @@ const fontWeightsOptions = [
   { label: "ultra-bold 900 italic", value: "900italic" },
 ];
 
+const DEFAULT_FONT = "Lato";
+
 const WebsiteTypography = () => {
   const googleFonts = useGoogleFonts();
-  const [selectedFont, setSelectedFont] = useState<string | null>(null);
+  const [selectedFont, setSelectedFont] = useState<string | null>(DEFAULT_FONT);
   const [hasChanged, setHasChanged] = useState(false);
 
   const [typographySettings, setTypographySettings] = useState<{
@@ -159,7 +168,7 @@ const WebsiteTypography = () => {
 
   const handleUpdateWebsiteSettings = async () => {
     const payload = {
-      website_font: selectedFont,
+      website_font: selectedFont || DEFAULT_FONT,
       typography: typographySettings,
     };
     setLoading(true);
@@ -173,11 +182,22 @@ const WebsiteTypography = () => {
   };
 
   const resetTypographySection = () => {
-    setSelectedFont("");
-    setTypographySettings({});
+    setSelectedFont(DEFAULT_FONT);
+  
+    // Create default typography settings from the settings array
+    const defaultSettings = settings.reduce((acc, setting) => {
+      acc[setting.title] = {
+        fontSize: setting.default.toString(),
+        fontWeight: setting.defaultWeight
+      };
+      return acc;
+    }, {} as { [key: string]: { fontSize: string; fontWeight: string } });
+  
+    // Update typography settings with defaults
+    setTypographySettings(defaultSettings);
   };
 
-  console.log(googleFonts)
+  console.log(googleFonts);
 
   return (
     <div>
@@ -193,25 +213,23 @@ const WebsiteTypography = () => {
             placeholder="Select a font"
             onChange={(value) => handleFontSelect(value)}
             options={googleFonts}
-            value={selectedFont || "Lato"}
+            value={selectedFont || DEFAULT_FONT}
             inputContainerClassName="bg-neutral-2 w-full mt-2 lg:min-w-[300px]"
           />
 
-          
-            <div className="mb-4 mt-2 max-w-full">
-              <p
-                className="text-lg"
-                style={{
-                  fontFamily: selectedFont ?? "Lato",
-                  // fontSize: typographySettings[setting.title]?.fontSize
-                  //   ? typographySettings[setting.title].fontSize + "px"
-                  //   : "inherit",
-                }}
-              >
-                AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
-              </p>
-            </div>
-        
+          <div className="mb-4 mt-2 max-w-full">
+            <p
+              className="text-lg"
+              style={{
+                fontFamily: selectedFont ?? "Lato",
+                // fontSize: typographySettings[setting.title]?.fontSize
+                //   ? typographySettings[setting.title].fontSize + "px"
+                //   : "inherit",
+              }}
+            >
+              AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+            </p>
+          </div>
         </div>
 
         <SettingsSectionTitle
@@ -253,7 +271,8 @@ const WebsiteTypography = () => {
                         handleFontWeightSelect(setting.title, value)
                       }
                       value={
-                        typographySettings[setting.title]?.fontWeight || "500"
+                        typographySettings[setting.title]?.fontWeight ||
+                        setting.defaultWeight
                       }
                     />
 
@@ -287,19 +306,20 @@ const WebsiteTypography = () => {
 
                   {/* PREVIEW ONLY SHOWS WHEN CHANGED */}
                   {/* {hasChanged && ( */}
-                    <div className="mb-4 mt-2 max-w-[300px] overflow-auto custom-round-scrollbar">
-                      <p
-                        style={{
-                          fontWeight: numericWeight,
-                          fontStyle: isItalic ? "italic" : "normal",
-                          fontSize: typographySettings[setting.title]?.fontSize
-                            ? typographySettings[setting.title].fontSize + "px"
-                            : "inherit",
-                        }}
-                      >
-                        AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
-                      </p>
-                    </div>
+                  <div className="mb-4 mt-2 max-w-[300px] overflow-auto custom-round-scrollbar">
+                    <p
+                      style={{
+                        fontWeight: numericWeight || setting.defaultWeight,
+                        fontStyle: isItalic ? "italic" : "normal",
+                        fontSize: typographySettings[setting.title]?.fontSize
+                          ? typographySettings[setting.title].fontSize + "px"
+                          : `${setting.default}px`,
+                        fontFamily: selectedFont ?? DEFAULT_FONT,
+                      }}
+                    >
+                      AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz
+                    </p>
+                  </div>
                   {/* )} */}
                 </div>
               </div>

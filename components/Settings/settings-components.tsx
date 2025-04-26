@@ -59,7 +59,7 @@ export const SettingsVerifiedBadge = ({
   status: "verified" | "unverified" | "pending";
 }) => {
   const isVerified = status === "verified";
-  const isPending = status === "pending";
+  const isPending = status === "pending" || status === "unverified";
 
   const bgClass = isVerified
     ? "bg-status-success-1"

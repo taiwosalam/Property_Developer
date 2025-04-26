@@ -1,6 +1,6 @@
 import React from "react";
 
-// Imports  
+// Imports
 import { ModalTrigger } from "@/components/Modal/modal";
 import InspectionCardInfo from "./inspection-card-info";
 import {
@@ -11,17 +11,27 @@ import {
 import Button from "@/components/Form/Button/button";
 import { CancelIcon } from "@/public/icons/icons";
 import { Inspection } from "@/app/(nav)/tasks/inspections/type";
-import { formatToNaira, TInspectionDetails } from "@/app/(nav)/tasks/inspections/data";
+import {
+  formatToNaira,
+  TInspectionDetails,
+} from "@/app/(nav)/tasks/inspections/data";
 import { formatTime } from "@/app/(nav)/notifications/data";
 import { useRouter } from "next/navigation";
+import BadgeIcon, {
+  BadgeIconColors,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 
 interface InspectionDetailsModelProps {
-  data: TInspectionDetails
+  data: TInspectionDetails;
 }
 const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
-
   const router = useRouter();
-  
+
+  const getBadgeColor = (tier?: number): BadgeIconColors => {
+    if (!tier) return "blue";
+    return tierColorMap[tier as keyof typeof tierColorMap] || "";
+  };
   return (
     <div
       className="w-[600px] max-w-[80%] max-h-[90vh] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col pb-14 gap-6 overflow-x-hidden overflow-y-auto custom-round-scrollbar"
@@ -41,41 +51,61 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
           Inspection details
         </h2>
       </div>
-      <InspectionCardInfo className="px-6" 
+      <InspectionCardInfo
+        className="px-6"
         address={data?.address}
         unit_fee_period={data?.unit_fee_amount}
         total_price={data?.total_package}
         image={data?.images || []}
         title={data?.property_name}
-        yearly_price={data?.fee_amount}/>
+        yearly_price={data?.fee_amount}
+      />
 
       <div className="relative z-[1] custom-flex-col gap-4">
         <div className="w-full border-b border-dashed border-brand-7 opacity-50"></div>
         <div className="custom-flex-col gap-8 px-6">
           <div className="custom-flex-col gap-4">
             <InspectionCardTitle>other details</InspectionCardTitle>
-            <InspectionCardTitleDesc title="Booked by" desc={data?.booked_by} />
-            <InspectionCardTitleDesc title="Selected Date" desc={data?.inspection_date} />
-            <InspectionCardTitleDesc title="Selected Time" desc={data?.inspection_time} />
+            <InspectionCardTitleDesc
+              title="Booked by"
+              desc={`${data?.booked_by}`}
+            />
+            <InspectionCardTitleDesc
+              title="Selected Date"
+              desc={data?.inspection_date}
+            />
+            <InspectionCardTitleDesc
+              title="Selected Time"
+              desc={data?.inspection_time}
+            />
             <InspectionCardTitleDesc title="Phone" desc={data?.phone} />
-            <InspectionCardTitleDesc title="Branch" desc={data?.branch_name ?? ""} />
+            <InspectionCardTitleDesc
+              title="Branch"
+              desc={data?.branch_name ?? ""}
+            />
             <InspectionCardTitleDesc title="Property" desc={data?.property} />
             <InspectionCardTitleDesc
               title="Inspection Type"
-              desc={ data?.inspection_type === "physical_inspection" ? "Physical Inspection" : "Virtual Inspection" }
+              desc={
+                data?.inspection_type === "physical_inspection"
+                  ? "Physical Inspection"
+                  : "Virtual Inspection"
+              }
             />
             <div className="custom-flex-col gap-1">
               <InspectionCardTitle>client brief</InspectionCardTitle>
-              <InspectionCardDesc>
-                { data?.description}
-              </InspectionCardDesc>
+              <InspectionCardDesc>{data?.description}</InspectionCardDesc>
             </div>
           </div>
           <div className="flex gap-4 justify-end">
             <Button variant="sky_blue" size="xs_normal" className="py-2 px-6">
               Request Application
             </Button>
-            <Button size="xs_normal" className="py-2 px-6" onClick={() => router.push("/message")}>
+            <Button
+              size="xs_normal"
+              className="py-2 px-6"
+              onClick={() => router.push("/message")}
+            >
               Message
             </Button>
           </div>

@@ -2,6 +2,7 @@ import { StaticImageData } from "next/image";
 
 export interface InspectionDefaultExport {
   children: React.ReactNode;
+  tier?: number;
 }
 
 type Image = {

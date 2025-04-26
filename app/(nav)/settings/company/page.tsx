@@ -163,6 +163,8 @@ const Profile = () => {
     }
   };
 
+  console.log(companyData.cac_certificate)
+
   return (
     <>
       <SettingsSection title="profile & details">
@@ -212,7 +214,7 @@ const Profile = () => {
                   label="date of registration"
                   value={dayjs(companyData.date_of_registration)}
                   onChange={() => {}}
-                  disabled
+                  disabled={verifications.cac_status=== "verified"}
                 />
                 <Input
                   required
@@ -221,7 +223,7 @@ const Profile = () => {
                   placeholder="Write here"
                   inputClassName="rounded-[8px] setup-f bg-white"
                   value={companyData.cac_registration_number}
-                  disabled
+                  disabled={verifications.cac_status=== "verified"}
                 />
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                   <FileInput
@@ -229,7 +231,7 @@ const Profile = () => {
                     id="cac_certificate"
                     label="CAC document"
                     placeholder=""
-                    noUpload={true}
+                    noUpload={verifications.cac_status=== "verified"}
                     buttonName="Document"
                     fileType="pdf"
                     size={2}
@@ -239,7 +241,13 @@ const Profile = () => {
                     defaultValue={companyData.cac_certificate}
                   />
                   <div className="flex pt-2 sm:pt-7">
-                    <SettingsVerifiedBadge status={verifications.cac_status} />
+                    <SettingsVerifiedBadge
+                      status={
+                        verifications.cac_status === "unverified"
+                          ? "pending"
+                          : "verified"
+                      }
+                    />
                   </div>
                 </div>
                 <Select
@@ -337,7 +345,7 @@ const Profile = () => {
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2 w-full lg:w-auto">
                 <FileInput
                   required
-                  noUpload={true}
+                  noUpload={verifications?.utility_status === "verified"}
                   id="utility_document"
                   label="utility document"
                   placeholder=""
@@ -348,7 +356,11 @@ const Profile = () => {
                   hiddenInputClassName="setup-f required w-full sm:w-[250px]"
                   settingsPage={true}
                   defaultValue={companyData.utility_document}
-                  membership_status={verifications.utility_status}
+                  membership_status={
+                    verifications.utility_status === "unverified"
+                      ? "pending"
+                      : "verified"
+                  }
                   // onChange={handleUploadUtility}
                 />
                 {/* {companyData.utility_document && (
