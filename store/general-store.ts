@@ -16,6 +16,7 @@ import { VehicleRecordsType } from "@/app/(nav)/reports/vehicles-record/types";
 import { Occupant } from "@/components/Management/Rent And Unit/types";
 import { create } from "zustand";
 import { Transaction } from "./wallet-store";
+import { initDataProps } from "@/app/(nav)/management/rent-unit/data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -36,6 +37,8 @@ interface GlobalStoreState {
   isPastDate: boolean;
   tenantLoading: boolean;
   tenantError: Error | null;
+  currentUnit: any | null;
+  currentRentStats: any | null;
   // add more keys here as needed…
 }
 
@@ -72,6 +75,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   isPastDate: false,
   tenantLoading: false,
   tenantError: null,
+  currentUnit: null,
+  currentRentStats: null,
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {

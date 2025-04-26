@@ -46,6 +46,8 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import { useGlobalStore } from "@/store/general-store";
 
 const PostProceedContent = ({
   selectedUnitId,
@@ -70,9 +72,13 @@ const PostProceedContent = ({
     unitBalance,
     calculation,
     deduction,
-    setCalculation,
-    setDeduction,
   } = useOccupantStore();
+  const currentUnit = useGlobalStore((s) => s.currentUnit);
+  const currentRentStats = useGlobalStore((s) => s.currentRentStats);
+  const oustandingObj = currentRentStats?.oustandingObj || [];
+
+  const isUnit = page === "unit";
+  // console.log("currentRentStats", currentRentStats);
 
   // SELECTED UNIT DATA FETCH
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
@@ -127,7 +133,14 @@ const PostProceedContent = ({
   const newUnitTotal = calculation
     ? Number(unit_data.newTenantTotalPrice)
     : Number(unit_data.renewalTenantTotalPrice);
-  const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
+  const newUnitTotalFormatted = calculation
+    ? formatFee(unit_data.newTenantTotalPrice, unit_data.currency || "naira")
+    : formatFee(
+        unit_data.renewalTenantTotalPrice,
+        unit_data.currency || "naira"
+      );
+  // const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
+  const totalPayable = deduction ? newUnitTotal - bal : newUnitTotal;
   const prev_unit_bal = bal
     ? `${"₦"}${formatNumber(parseFloat(`${bal}`))}`
     : undefined;
@@ -138,19 +151,45 @@ const PostProceedContent = ({
   const balanceAmount = isExcess
     ? totalPayable - newUnitTotal
     : Math.abs(totalPayable);
-  const balanceLabel = isExcess ? "Excess Amount" : "Refund Amount";
+  const balanceLabel = isExcess ? "Client Excess" : "Refund Client";
   const showBalanceCard = totalPayable < 0 || isExcess;
 
   // CURRENT UNIT AMOUNT
   const currentUnitAmt = formatFee(newUnitTotal, unit_data.currency || "naira");
 
   // GET PROPERTY DATA
-  const rentalData = getRentalData(propertyData);
-  const propertySettingsData = getPropertySettingsData(propertyData);
-  const estateData = getEstateData(propertyData);
-  const estateSettingsDta = getEstateSettingsDta(propertyData);
+  const rentalData = getRentalData(isUnit ? currentUnit : propertyData);
+  const propertySettingsData = getPropertySettingsData(
+    isUnit ? currentUnit : propertyData
+  );
+  const estateData = getEstateData(isUnit ? currentUnit : propertyData);
+  const estateSettingsDta = getEstateSettingsDta(
+    isUnit ? currentUnit : propertyData
+  );
 
-  console.log("propertyData", propertyData);
+  const deductionsLabeCal = [
+    {
+      label: calculation ? "New Tenant Package" : "Renewal Total Package",
+      value: newUnitTotalFormatted,
+    },
+    ...oustandingObj,
+    {
+      label: deduction ? "Do Deduction" : "No Deduction",
+      value: formatFee(totalPayable, unit_data.currency || "naira"),
+    },
+  ];
+
+  const deductionsLabeRes = [
+    {
+      label: calculation ? "New Tenant Package" : "Renewal Total Package",
+      value: newUnitTotalFormatted,
+    },
+    ...oustandingObj,
+    {
+      label: deduction ? "Do Deduction" : "No Deduction",
+      value: formatFee(totalPayable, unit_data.currency || "naira"),
+    },
+  ];
 
   // FUNCTION TO SWITCH UNIT
   const handleSwitchUnit = async () => {
@@ -167,7 +206,7 @@ const PostProceedContent = ({
       const res = await switchUnit(id as string, objectToFormData(data));
       if (res) {
         setModalIsOpen(true);
-        toast.success("Record Added Successfully");
+        toast.success("Unit Switched Successfully");
         router.push("/management/rent-unit");
       }
     } catch (err) {
@@ -177,7 +216,12 @@ const PostProceedContent = ({
     }
   };
 
-  if (loading) return <PageCircleLoader />;
+  if (loading)
+    return (
+      <div className="flex flex-col gap-5">
+        <CardsLoading length={6} />;
+      </div>
+    );
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -200,9 +244,15 @@ const PostProceedContent = ({
           id={id as string}
         />
         <PreviousUnitBalance
+          page={page}
           isRental={isRental}
+          deduction={deduction}
+          calculation={calculation}
           items={balance as RentPreviousRecords[]}
           total={`${bal}`}
+          currentUnit={currentUnit}
+          startDate={startday}
+          dueDate={endDay}
         />
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
@@ -212,7 +262,7 @@ const PostProceedContent = ({
               currency={unit_data.currency}
               feeDetails={[
                 {
-                  name: isRental ? "Rent" : "Fee",
+                  name: isRental ? `${unit_data.fee_period} Rent` : "Fee",
                   amount: calculation
                     ? (unit_data.newTenantPrice as any)
                     : unit_data.renewalTenantPrice,
@@ -251,6 +301,20 @@ const PostProceedContent = ({
               total={newUnitTotal}
               id={unit_data?.id}
               calculation={calculation}
+              deduction={deduction}
+            />
+
+            <PreviousUnitBalance
+              currentUnit={currentUnit}
+              title="Calculations"
+              isRental={isRental}
+              workings
+              deduction={deduction}
+              calculation={calculation}
+              deductionsCal={deductionsLabeCal}
+              deductionsRes={deductionsLabeRes}
+              items={balance as RentPreviousRecords[]}
+              total={`${bal}`}
             />
 
             <NewUnitCost
@@ -261,13 +325,10 @@ const PostProceedContent = ({
                 {
                   name: "Previous Unit",
                   amount: prev_unit_bal as any,
-                  // amount: calculation ? (unit_data.newTenantPrice as any) : (unit_data.renewalTenantPrice),
                 },
                 {
                   name: "Current Unit",
                   amount: currentUnitAmt,
-                  // amount: unit_data.newTenantPrice as any,
-                  // amount: calculation ? (unit_data.service_charge) : (unit_data.renew_service_charge)
                 },
                 { name: "Other Charges", amount: unit_data.other_charge },
               ]}
@@ -278,7 +339,9 @@ const PostProceedContent = ({
             {showBalanceCard && (
               <NewUnitCost
                 title="Balance After Deduction"
+                isExcess
                 noEdit
+                deduction={deduction}
                 isRental={isRental}
                 feeDetails={[
                   {

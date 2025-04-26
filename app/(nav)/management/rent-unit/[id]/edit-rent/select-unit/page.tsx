@@ -60,16 +60,16 @@ const SelectUnitPage = () => {
 
   const handleChangeContent = () => setStep1Done(true);
 
-  const handleContinue = () => {
-    if (!selectedUnitId) {
-      toast.warning("Please select a unit");
-      return;
-    }
-    router.push(
-      // `/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
-      `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
-    );
-  };
+  // const handleContinue = () => {
+  //   if (!selectedUnitId) {
+  //     toast.warning("Please select a unit");
+  //     return;
+  //   }
+  //   router.push(
+  //     // `/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
+  //     `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
+  //   );
+  // };
 
   if (UnitsLoading)
     return (

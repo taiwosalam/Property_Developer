@@ -30,6 +30,7 @@ import { Dayjs } from "dayjs";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import { UnitDataObject } from "@/app/(nav)/management/rent-unit/data";
 import { getBalanceBreakdown } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
+import { useGlobalStore } from "@/store/general-store";
 
 export const RentDetails: React.FC<{
   isRental: boolean;
@@ -558,6 +559,7 @@ export const TransferTenants = ({
         same property with the option to calculate and deduct outstanding
         amounts from the new unit.
         <br />
+        <br />
         Alternatively move the same {isRental ? "tenants" : "occupants"} from
         their current {isRental && "rental"} property to another{" "}
         {isRental ? "rental" : "property"} with the option to pay either the
@@ -603,51 +605,169 @@ export const PreviousUnitBalance: React.FC<{
   items: RentPreviousRecords[];
   total?: string;
   calculation?: boolean;
+  workings?: boolean;
   deduction?: boolean;
   currency?: Currency;
   period?: RentPeriod;
-}> = ({ isRental, items, total, calculation, deduction, currency, period }) => {
+  title?: string;
+  currentUnit?: any;
+  startDate?: string;
+  dueDate?: string;
+  page?: "unit" | "property";
+  deductionsCal?: any;
+  deductionsRes?: any;
+}> = ({
+  isRental,
+  items,
+  total,
+  calculation,
+  deduction,
+  currency,
+  period,
+  workings,
+  title,
+  currentUnit,
+  startDate,
+  dueDate,
+  page,
+  deductionsCal,
+  deductionsRes,
+}) => {
+  const isUnit = page === "unit";
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const currentRentStats = useGlobalStore((s) => s.currentRentStats);
+
   const currencySymbol =
     currencySymbols[currency as keyof typeof currencySymbols] || "₦";
+  const prevUBreakdown = currentRentStats?.prevUBreakdown || [];
 
-  const sub_title = deduction
+  const record = items[0];
+  const balanceBreakdown = record
+    ? getBalanceBreakdown(record, period, currencySymbol)
+    : { duration: "-", breakdown: [] };
+
+  useEffect(() => {
+    const newBalanceBreakdown = record
+      ? getBalanceBreakdown(record, period, currencySymbol)
+      : { duration: "-", breakdown: [] };
+    // Only update if the value has changed
+    const currentStats = useGlobalStore.getState().currentRentStats;
+    if (JSON.stringify(currentStats) !== JSON.stringify(newBalanceBreakdown)) {
+      setGlobalStore("currentRentStats", newBalanceBreakdown);
+    }
+  }, [record, period, currencySymbol, setGlobalStore]);
+
+  const currentRentDetailItems = [
+    {
+      label: `${currentUnit.fee_period} Rent`,
+      value: currentUnit.newTenantPrice,
+    },
+    { label: "Start Date", value: startDate },
+    { label: "Due Date", value: dueDate },
+    ...prevUBreakdown,
+  ].filter((item) => {
+    // Exclude items where value is undefined, empty, or an invalid placeholder
+    if (item.value === undefined || item.value === "") return false;
+    if (typeof item.value === "string" && /^_.*,.*,_*$/.test(item.value))
+      return false;
+    return true;
+  });
+
+  const unitDetails = [
+    { label: "Start Date", value: startDate },
+    { label: "Due Date", value: dueDate },
+    {
+      label: `${currentUnit.fee_period} Rent`,
+      value: currentUnit.newTenantPrice,
+    },
+    { label: `Inspection Fee`, value: currentUnit.inspection_fee },
+    { label: `Legal Fee`, value: currentUnit.legal_fee },
+    { label: `Caution Fee`, value: currentUnit.caution_fee },
+    { label: `VAT Amount`, value: currentUnit.vat_amount },
+    { label: "Other Fees", value: currentUnit.other_charge },
+  ].filter((item) => {
+    // Exclude items where value is undefined, empty, or an invalid placeholder
+    if (item.value === undefined || item.value === "") return false;
+    if (typeof item.value === "string" && /^_.*,.*,_*$/.test(item.value))
+      return false;
+    return true;
+  });
+
+  const detailsArr = isUnit ? unitDetails : currentRentDetailItems;
+
+  // Only render the section if there are valid items
+  if (renewalRentDetailItems.length === 0) return null;
+
+
+  const sub_title = !deduction
     ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
     : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
 
-  const record = items[0];
-  const balanceBreakdown =
-    record && period
-      ? getBalanceBreakdown(record, period, currencySymbol)
-      : { duration: "-", breakdown: [] };
-
-      console.log("period", period  )
+  const Deductsub_title = calculation
+    ? "Calculate the total package of the new rent, including caution deposit, service charge, agency fee, legal fee, and other charges for the tenants transferring to the new unit."
+    : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
 
   return (
     <div className="space-y-1">
-      <RentSectionTitle>Previous Rent</RentSectionTitle>
-      <p className="text-xs"> {sub_title} </p>
-      <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
+      <RentSectionTitle>{title ?? "Current Rent"}</RentSectionTitle>
+      {workings && (
+        <>
+          <p className="text-sm">• {sub_title}</p>
+          <p className="text-sm">• {Deductsub_title}</p>
+        </>
+      )}
+      <RentSectionContainer
+        title={workings ? "Breakdown" : isRental ? "Fee" : "Apply Deduction"}
+      >
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4">
-            {getRenewalRentDetailItems(items).map((item, index) => (
-              <DetailItem
-                key={index}
-                label={item.label}
-                value={item.value as string}
-                style={{ width: "150px" }}
-              />
-            ))}
+            {!workings &&
+              detailsArr.map((item, index) => (
+                <DetailItem
+                  key={index}
+                  label={item.label}
+                  value={item.value as string}
+                  style={{ width: "150px" }}
+                />
+              ))}
             {/* PREVIOUS UNIT BREAKDOWN */}
-            {balanceBreakdown.breakdown.map((item, index) => (
-              <DetailItem
-                key={index}
-                label={item.label}
-                value={item.value as string}
-                style={{ width: "150px" }}
-              />
-            ))}
+            {workings && (
+              <>
+                {deductionsCal.map((item: any, index: number) => (
+                  <DetailItem
+                    key={index}
+                    label={item.label}
+                    value={item.value as string}
+                    style={{ width: "150px" }}
+                  />
+                ))}
+              </>
+            )}
           </div>
-          <div className="space-y-2">
+          {/*  CALCULATIONS & RESULT */}
+        </div>
+        {workings && (
+          <div className="my-4">
+            <span className="font-medium text-brand-10 text-base">
+              {title ?? "Current Rent"}
+            </span>
+            <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20 mb-4" />
+            <div className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                {deductionsRes.map((item: any, index: number) => (
+                  <DetailItem
+                    key={index}
+                    label={item.label}
+                    value={item.value as string}
+                    style={{ width: "150px" }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        {workings && (
+          <div className="space-y-2 mt-4">
             <p className="text-[#747474] dark:text-white text-base font-normal">
               Balance
             </p>
@@ -656,7 +776,7 @@ export const PreviousUnitBalance: React.FC<{
               {formatNumber(Number(total))}
             </p>
           </div>
-        </div>
+        )}
       </RentSectionContainer>
     </div>
   );
@@ -669,6 +789,7 @@ export const NewUnitCost: React.FC<{
   id?: string;
   calculation?: boolean;
   deduction?: boolean;
+  isExcess?: boolean;
   title?: string;
   noEdit?: boolean;
   currency?: Currency;
@@ -682,21 +803,27 @@ export const NewUnitCost: React.FC<{
   title,
   noEdit,
   currency,
+  isExcess,
 }) => {
   const feeTitle = isRental
     ? deduction
-      ? "Rent Details"
-      : "Rent Calculation"
+      ? "Breakdown"
+      : "Breakdown"
     : "Annual Fee";
   const finalTitle = calculation ? `${feeTitle}` : `${feeTitle}`;
   const sub_title = calculation
     ? "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the tenants that you are transferring to the new unit."
     : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
+
+  const Deductsub_title = !deduction
+    ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
+    : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
+
   return (
     <div className="space-y-1">
-      <RentSectionTitle>{title || "New Unit Cost"}</RentSectionTitle>
-      <p className="text-xs">{sub_title}</p>
-      {/* {!noEdit && <p className="text-xs">{sub_title}</p>} */}
+      <RentSectionTitle>{title || "New Rent "}</RentSectionTitle>
+      {/* <p className="text-xs">{sub_title}</p> */}
+      {isExcess && <p className="text-sm">{Deductsub_title}</p>}
       <FeeDetails
         noEdit={noEdit}
         title={finalTitle}

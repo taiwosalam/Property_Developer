@@ -149,92 +149,307 @@ const periodToDays = (period: RentPeriod): number => {
 };
 
 // Helper function to calculate duration and breakdown
+// export const getBalanceBreakdown = (
+//   record: any,
+//   period: RentPeriod,
+//   currencySymbol: string
+// ) => {
+//   if (!record.start_date || !record.due_date || !period) {
+//     return {
+//       duration: "-",
+//       breakdown: [
+//         { label: "Error", value: "Missing start date, due date, or period" },
+//       ],
+//     };
+//   }
+
+//   const startDate = dayjs(record.start_date);
+//   const dueDate = dayjs(record.due_date);
+//   const currentDate = dayjs();
+//   const endDate = dueDate.isAfter(currentDate) ? currentDate : dueDate;
+
+//   // Calculate duration in days
+//   const daysSpent = endDate.diff(startDate, "day");
+//   const durationText = `${daysSpent} day${daysSpent !== 1 ? "s" : ""}`;
+
+//   // Calculate overdue periods
+//   const overduePeriods = calculateOverduePeriods(
+//     dueDate.format("DD/MM/YYYY"),
+//     period
+//   );
+
+//   // Parse amount_paid (remove currency symbol if present)
+//   const amountPaid = parseFloat(
+//     record.amount_paid?.replace(currencySymbol, "") || "0"
+//   );
+
+//   // Calculate cost per period (assume amount_paid is the rent for the full period)
+//   const periodDays = periodToDays(period);
+//   const costPerDay = amountPaid / periodDays;
+
+//   // Calculate expected rent for days spent
+//   const totalExpectedRent = costPerDay * daysSpent;
+
+//   // Calculate outstanding balance
+//   const outstanding = calculateBalance(
+//     record.amount_paid,
+//     record.start_date,
+//     record.due_date
+//   );
+
+//   const breakdown = [
+//     {
+//       label: "Occupancy Period",
+//       value: `${startDate.format("MMM D, YYYY")} - ${endDate.format(
+//         "MMM D, YYYY"
+//       )}`,
+//     },
+//     {
+//       label: "You spent",
+//       value: durationText,
+//     },
+//     {
+//       label: `Cost per Day (${period})`,
+//       value: `${currencySymbol}${formatNumber(costPerDay.toFixed(2))}`,
+//     },
+//     {
+//       label: "We Deduct",
+//       value: `${currencySymbol}${formatNumber(totalExpectedRent.toFixed(2))}`,
+//     },
+//     {
+//       label: "You paid",
+//       value: record.amount_paid || `${currencySymbol}0`,
+//     },
+//     ...(overduePeriods > 0
+//       ? [
+//           {
+//             label: "Overdue Periods",
+//             value: `${overduePeriods} ${period}`,
+//           },
+//         ]
+//       : []),
+//     {
+//       label: "Your balance",
+//       value: `${currencySymbol}${formatNumber(Math.abs(outstanding))}`,
+//     },
+//   ];
+
+//   return { duration: durationText, breakdown };
+// };
+
 export const getBalanceBreakdown = (
   record: any,
-  period: RentPeriod,
+  period: RentPeriod | undefined,
   currencySymbol: string
 ) => {
-  if (!record.start_date || !record.due_date || !period) {
+  // Validate required fields
+  if (!record.start_date || !record.due_date) {
     return {
       duration: "-",
-      breakdown: [
-        { label: "Error", value: "Missing start date, due date, or period" },
-      ],
+      breakdown: [{ label: "Error", value: "Missing start date or due date" }],
     };
   }
 
   const startDate = dayjs(record.start_date);
   const dueDate = dayjs(record.due_date);
   const currentDate = dayjs();
-  const endDate = dueDate.isAfter(currentDate) ? currentDate : dueDate;
-
-  // Calculate duration in days
-  const daysSpent = endDate.diff(startDate, "day");
-  const durationText = `${daysSpent} day${daysSpent !== 1 ? "s" : ""}`;
-
-  // Calculate overdue periods
-  const overduePeriods = calculateOverduePeriods(
-    dueDate.format("DD/MM/YYYY"),
-    period
-  );
 
   // Parse amount_paid (remove currency symbol if present)
   const amountPaid = parseFloat(
     record.amount_paid?.replace(currencySymbol, "") || "0"
   );
 
-  // Calculate cost per period (assume amount_paid is the rent for the full period)
-  const periodDays = periodToDays(period);
-  const costPerDay = amountPaid / periodDays;
+  let daysSpent: number;
+  let durationText: string;
+  let costPerDay: number;
+  let totalExpectedRent: number; // Amount spent
+  let outstanding: number;
+  let oustandingObj: { label: string; value: string }[];
+  let breakdown: { label: string; value: string }[];
+  let prevUBreakdown: { label: string; value: string }[];
 
-  // Calculate expected rent for days spent
-  const totalExpectedRent = costPerDay * daysSpent;
+  if (period) {
+    // Case 1: Period is provided
+    const endDate = dueDate.isAfter(currentDate) ? currentDate : dueDate;
+    daysSpent = Math.max(0, endDate.diff(startDate, "day")); // Prevent negative days
+    durationText = `${daysSpent} day${daysSpent !== 1 ? "s" : ""}`;
+    const periodDays = periodToDays(period);
+    costPerDay = amountPaid / periodDays;
+    totalExpectedRent = costPerDay * daysSpent;
 
-  // Calculate outstanding balance
-  const outstanding = calculateBalance(
-    record.amount_paid,
-    record.start_date,
-    record.due_date
-  );
+    // Calculate overdue periods
+    const overduePeriods = calculateOverduePeriods(
+      dueDate.format("DD/MM/YYYY"),
+      period
+    );
 
-  const breakdown = [
-    {
-      label: "Occupancy Period",
-      value: `${startDate.format("MMM D, YYYY")} - ${endDate.format(
-        "MMM D, YYYY"
-      )}`,
-    },
-    {
-      label: "You spent",
-      value: durationText,
-    },
-    {
-      label: `Cost per Day (${period})`,
-      value: `${currencySymbol}${formatNumber(costPerDay.toFixed(2))}`,
-    },
-    {
-      label: "We Deduct",
-      value: `${currencySymbol}${formatNumber(totalExpectedRent.toFixed(2))}`,
-    },
-    {
-      label: "You paid",
-      value: record.amount_paid || `${currencySymbol}0`,
-    },
-    ...(overduePeriods > 0
-      ? [
-          {
-            label: "Overdue Periods",
-            value: `${overduePeriods} ${period}`,
-          },
-        ]
-      : []),
-    {
-      label: "Your balance",
+    // Calculate outstanding balance
+    outstanding = calculateBalance(
+      record.amount_paid,
+      record.start_date,
+      record.due_date
+    );
+
+    prevUBreakdown = [
+      {
+        label: "Occupancy Period",
+        value: currentDate.isBefore(startDate)
+          ? "Not started"
+          : `${startDate.format("MMM D, YYYY")} - ${endDate.format(
+              "MMM D, YYYY"
+            )}`,
+      },
+      {
+        label: "Rent Consumed",
+        value: `${currencySymbol}${formatNumber(totalExpectedRent.toFixed(2))}`,
+      },
+      {
+        label: "Outstanding Rent",
+        value: `${currencySymbol}${formatNumber(Math.abs(outstanding))}`,
+      },
+    ];
+
+    breakdown = [
+      {
+        label: "Occupancy Period",
+        value: currentDate.isBefore(startDate)
+          ? "Not started"
+          : `${startDate.format("MMM D, YYYY")} - ${endDate.format(
+              "MMM D, YYYY"
+            )}`,
+      },
+      {
+        label: "You spent",
+        value: durationText,
+      },
+      {
+        label: `Cost per Day (${period})`,
+        value: `${currencySymbol}${formatNumber(costPerDay.toFixed(2))}`,
+      },
+      {
+        label: "We Deduct",
+        value: `${currencySymbol}${formatNumber(totalExpectedRent.toFixed(2))}`,
+      },
+      {
+        label: "You paid",
+        value: record.amount_paid || `${currencySymbol}0`,
+      },
+      ...(overduePeriods > 0
+        ? [
+            {
+              label: "Overdue Periods",
+              value: `${overduePeriods} ${period}`,
+            },
+          ]
+        : []),
+      {
+        label: outstanding < 0 ? "Your refund" : "Your balance",
+        value: `${currencySymbol}${formatNumber(Math.abs(outstanding))}`,
+      },
+    ];
+
+    oustandingObj = [{
+      label: "Outstanding Rent",
       value: `${currencySymbol}${formatNumber(Math.abs(outstanding))}`,
-    },
-  ];
+    }];
+  } else {
+    // Case 2: Period is not provided
+    const totalDays = dueDate.diff(startDate, "day");
+    if (totalDays <= 0) {
+      return {
+        duration: "-",
+        prevUBreakdown: [{ label: "Error", value: "Invalid date range" }],
+        breakdown: [{ label: "Error", value: "Invalid date range" }],
+      };
+    }
 
-  return { duration: durationText, breakdown };
+    daysSpent = currentDate.isBefore(startDate)
+      ? 0
+      : Math.max(
+          0,
+          dueDate.isAfter(currentDate)
+            ? currentDate.diff(startDate, "day")
+            : dueDate.diff(startDate, "day")
+        );
+    const daysLeft = totalDays - daysSpent;
+    durationText = `${daysSpent} day${daysSpent !== 1 ? "s" : ""}`;
+    costPerDay = amountPaid / totalDays;
+    totalExpectedRent = costPerDay * daysSpent; // Amount spent
+    const amountLeft = amountPaid - totalExpectedRent; // Amount remaining
+
+    // Calculate outstanding balance (use calculateBalance or amountLeft)
+    outstanding =
+      calculateBalance(
+        record.amount_paid,
+        record.start_date,
+        record.due_date
+      ) || amountLeft; // Fallback to amountLeft
+
+    breakdown = [
+      {
+        label: "Occupancy Period",
+        value: currentDate.isBefore(startDate)
+          ? "Not started"
+          : `${startDate.format("MMM D, YYYY")} - ${dueDate.format(
+              "MMM D, YYYY"
+            )}`,
+      },
+      {
+        label: "Total Days",
+        value: `${totalDays} day${totalDays !== 1 ? "s" : ""}`,
+      },
+      {
+        label: "You spent",
+        value: durationText,
+      },
+      {
+        label: "Days Left",
+        value: `${daysLeft} day${daysLeft !== 1 ? "s" : ""}`,
+      },
+      {
+        label: "Cost per Day",
+        value: `${currencySymbol}${formatNumber(costPerDay.toFixed(2))}`,
+      },
+      {
+        label: "We Deduct",
+        value: `${currencySymbol}${formatNumber(totalExpectedRent.toFixed(2))}`,
+      },
+      {
+        label: "You paid",
+        value: record.amount_paid || `${currencySymbol}0`,
+      },
+      {
+        label: outstanding < 0 ? "Your refund" : "Your balance",
+        value: `${currencySymbol}${formatNumber(Math.abs(outstanding))}`,
+      },
+    ];
+
+    prevUBreakdown = [
+      {
+        label: "Occupancy Period",
+        value: currentDate.isBefore(startDate)
+          ? "Not started"
+          : `${startDate.format("MMM D, YYYY")} - ${dueDate.format(
+              "MMM D, YYYY"
+            )}`,
+      },
+      {
+        label: "Rent Consumed",
+        value: `${currencySymbol}${formatNumber(totalExpectedRent.toFixed(2))}`,
+      },
+      {
+        label: "Outstanding Rent",
+        value: `${currencySymbol}${formatNumber(Math.abs(outstanding))}`,
+      },
+    ];
+
+    oustandingObj = [{
+      label: "Outstanding Rent",
+      value: `${currencySymbol}${formatNumber(Math.abs(outstanding))}`,
+    }];
+  }
+
+  return { duration: durationText, breakdown, prevUBreakdown,oustandingObj };
 };
 
 // const periodToDays = (period: RentPeriod): number => {

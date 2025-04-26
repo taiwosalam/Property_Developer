@@ -47,6 +47,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { FeeDetail } from "@/components/Management/Rent And Unit/types";
+import { useGlobalStore } from "@/store/general-store";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
@@ -57,6 +58,7 @@ const EditRent = () => {
   //STORE TO SAVE SELECTED OCCUPANT/TENANT
   const { setOccupant, occupant, setUnitBalance, unitBalance } =
     useOccupantStore();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [startDate, setStartDate] = useState<string | null>(null);
   const [amt, setAmt] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
@@ -82,7 +84,7 @@ const EditRent = () => {
         ...x,
         ...transformedData,
       }));
-
+      setGlobalStore("currentUnit", transformedData);
       if (transformedData.occupant) {
         setOccupant(transformedData.occupant); // Store occupant data in Zustand
       }
@@ -90,7 +92,7 @@ const EditRent = () => {
         setUnitBalance(transformedData.previous_records); // Store balance data in Zustand
       }
     }
-  }, [apiData, setOccupant, setUnitBalance]);
+  }, [apiData, setOccupant, setUnitBalance, setGlobalStore]);
 
   const record = (unit_data?.previous_records as any)?.data?.[0];
   const start_date = record?.start_date
