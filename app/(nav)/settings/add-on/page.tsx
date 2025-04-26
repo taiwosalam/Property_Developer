@@ -59,13 +59,11 @@ const Subscriptions = () => {
     ),
   }));
 
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleOpenDrawer = () => {
     setIsDrawerOpen(true); // Function to open the drawer
   };
-
 
   return (
     <>
@@ -88,12 +86,11 @@ const Subscriptions = () => {
           Adds On Subscriptions
         </h2> */}
         <div className="custom-flex-col gap-8">
-        <SponsorUnit />
-          
-          
+          <SponsorUnit />
+
           <SMSUnit />
           <FeatureCompany />
-          {/* <SettingsSection title="Subscription History">
+          <SettingsSection title="Subscription History">
             <div className="custom-flex-col gap-8">
               <CustomTable
                 data={transformedSubscriptions}
@@ -101,8 +98,8 @@ const Subscriptions = () => {
                 {...table_style_props}
               />
             </div>
-          </SettingsSection> */}
-          {/* <PersonalizedDomain /> */}
+          </SettingsSection>
+          <PersonalizedDomain />
         </div>
       </div>
       <Drawer

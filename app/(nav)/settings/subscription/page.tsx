@@ -275,7 +275,7 @@ const Enrollment = () => {
         </div>
       </SettingsSection>
 
-      {/* <SettingsSection title="Subscription/Renewal History">
+      <SettingsSection title="Subscription/Renewal History">
         <div className="custom-flex-col gap-7">
           <SettingsSectionTitle desc="Track and manage your active and past enrollments with ease. Below is a detailed record of your current subscription plan, along with any previously paid fees for past enrollments." />
           <div className="flex justify-between items-center">
@@ -299,7 +299,7 @@ const Enrollment = () => {
             {...table_style_props}
           />
         </div>
-      </SettingsSection> */}
+      </SettingsSection>
     </>
   );
 };

@@ -65,14 +65,16 @@ const visibilityOptions = [
   },
 ];
 
+const DEFAULT_COLOR = "#0033C4";
+
 const WebsitePages = () => {
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
   }>({});
 
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(DEFAULT_COLOR);
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
-  const [customColor, setCustomColor] = useState("#ffffff");
+  const [customColor, setCustomColor] = useState(DEFAULT_COLOR);
   const [modalOpen, setModalOpen] = useState(false);
   const [userPlan, setUserPlan] = useState<string>("");
   const [propertyVisibility, setPropertyVisibility] = useState<{
@@ -118,8 +120,8 @@ const WebsitePages = () => {
 
   useEffect(() => {
     if (websiteSettings) {
-      setSelectedColor(websiteSettings.color_scheme ?? "#000000");
-      setCustomColor(websiteSettings.color_scheme ?? "#000000");
+      setSelectedColor(websiteSettings.color_scheme ?? DEFAULT_COLOR);
+      setCustomColor(websiteSettings.color_scheme ?? DEFAULT_COLOR);
 
       setCheckedStates({
         modules_listing: websiteSettings.modules_listing ?? true,
