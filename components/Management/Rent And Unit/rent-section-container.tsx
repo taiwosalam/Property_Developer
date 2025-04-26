@@ -98,7 +98,7 @@ export const FeeDetails: React.FC<{
                   ? "Total Package"
                   : owing
                   ? "Total Package"
-                  : "Total"}
+                  : "Total Package"}
               </p>
             )}
             {!noEdit && (
