@@ -77,6 +77,7 @@ export type TInspectionDetails = {
   branch_name: string;
   property: string;
   description: string;
+  tier: number;
 };
 
 function formatReadableDate(dateString: string): string {
@@ -98,6 +99,7 @@ export const transformInspectionDetails = (
 
   return {
     id: inspections?.id ?? 0,
+    tier: inspections?.tier,
     property_name: inspections?.unit
       ? transformUnitDetails(inspections?.unit)
       : "___ ____",

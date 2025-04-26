@@ -13,6 +13,7 @@ export const InspectionCardTitle: React.FC<InspectionDefaultExport> = ({
 
 export const InspectionCardDesc: React.FC<InspectionDefaultExport> = ({
   children,
+  tier,
 }) => (
   <p className="text-text-secondary dark:text-darkText-1 text-sm font-medium capitalize">
     {children}
@@ -24,6 +25,6 @@ export const InspectionCardTitleDesc: React.FC<
 > = ({ desc, title }) => (
   <div className="flex items-center justify-between">
     <InspectionCardTitle>{title}:</InspectionCardTitle>
-    <InspectionCardDesc>{desc}</InspectionCardDesc>
+    <InspectionCardDesc>{desc} </InspectionCardDesc>
   </div>
 );
