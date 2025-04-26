@@ -11,12 +11,6 @@ import {
 } from "@/components/Settings/settings-components";
 import { CounterButton } from "./SettingsEnrollment/settings-enrollment-components";
 import CustomTable from "../Table/table";
-import {
-  added_units,
-  SponsorDataTypes,
-  SponsorFields,
-  transformSponsorResponse,
-} from "@/app/(nav)/settings/subscription/data";
 import { CustomTableProps } from "../Table/types";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -27,6 +21,7 @@ import { SponsorListingsResponse } from "./types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CustomLoader from "../Loader/CustomLoader";
 import TableLoading from "../Loader/TableLoading";
+import { SponsorDataTypes, SponsorFields, transformSponsorResponse } from "@/app/(nav)/settings/add-on/data";
 
 const SponsorUnit = () => {
   const [count, setCount] = useState<number>(1);

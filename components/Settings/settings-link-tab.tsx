@@ -49,13 +49,15 @@ const SettingsLinkTab: React.FC<
         <ProfileIcon />
       ) : type === "management" ? (
         <ManagementIcon />
-      ) : type === "subscription" ? (
+      // ) : type === "subscription" ? (
+      //   <SubscriptionIcon />
+      ) : type === "add-on" ? (
         <SubscriptionIcon />
       ) : type === "services" ? (
         <ServicesIcon />
       ) : type === "security" ? (
         <SecurityIcon />
-      ) : type === "enrollment" ? (
+      ) : type === "subscription" ? (
         <EnrollmentIcon />
       ) : type === "appearance" ? (
         <AppearanceIcon />

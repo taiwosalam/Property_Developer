@@ -6,10 +6,10 @@ import SettingsEnrollmentCard from "@/components/Settings/SettingsEnrollment/set
 import Link from "next/link";
 import { SettingsSectionTitle } from "@/components/Settings/settings-components";
 import CustomTable from "@/components/Table/table";
-import { current_subscriptions, enrollment_subscriptions } from "../subscription/data";
 import { CustomTableProps } from "@/components/Table/types";
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
+import { enrollment_subscriptions } from "../add-on/data";
 
 const Enrollment = () => {
   const [showFeatures, setShowFeatures] = useState(false);
