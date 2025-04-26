@@ -46,6 +46,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 setSelectedTenantId={setSelectedTenantId}
                 setStart_date={setStart_date}
                 setDueDate={setDueDate}
+                currency={currency || "naira"}
               />
               <FeeBreakdown
                 id={id}

@@ -46,13 +46,14 @@ import { startRent } from "../start-rent/data";
 import { AddPartPayment } from "@/components/Management/Rent And Unit/Edit-Rent/Edit-rent-sections";
 import { editRent } from "../edit-rent/data";
 import { useOccupantStore } from "@/hooks/occupant-store";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   //STORE TO SAVE SELECTED OCCUPANT/TENANT
   const { setOccupant, occupant, setUnitBalance, unitBalance } =
-  useOccupantStore();
+    useOccupantStore();
   const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
   const isRental = propertyType === "rental";
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
@@ -75,6 +76,7 @@ const RenewRent = () => {
     error,
     refetch,
   } = useFetch<singleUnitApiResponse>(endpoint);
+  useRefetchOnEvent("refetchUnit", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
@@ -90,7 +92,7 @@ const RenewRent = () => {
         setUnitBalance(transformedData.previous_records); // Store balance data in Zustand
       }
     }
-  }, [apiData]);
+  }, [apiData, setUnit_data]);
 
   const propertyId = unit_data.propertyId;
   const record = (unit_data?.previous_records as any)?.data?.[0];
@@ -164,7 +166,9 @@ const RenewRent = () => {
       const success = await editRent(payload);
       if (success) {
         toast.success("Part payment added successfully");
-        window.dispatchEvent(new Event("refech-unit"));
+        window.dispatchEvent(new Event("refetchUnit"));
+        setStartDate(null);
+        setAmt("");
       }
     } catch (err) {
       toast.error("Failed to create part payment");
@@ -217,6 +221,7 @@ const RenewRent = () => {
             />
 
             <RenewalFee
+              noEdit
               currency={unit_data.currency as Currency}
               isRental={isRental}
               period={(unit_data.fee_period as RentPeriod) ?? "yearly"}
@@ -285,6 +290,7 @@ const RenewRent = () => {
               setDueDate={setDueDate}
               occupant={unit_data?.occupant}
               setSelectedCheckboxOptions={setSelectedCheckboxOptions}
+              isUpfrontPaymentChecked={isUpfrontPaymentChecked}
             />
 
             <AddPartPayment

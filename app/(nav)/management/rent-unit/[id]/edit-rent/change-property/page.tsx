@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LocationIcon, PlayIconButton } from "@/public/icons/icons";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import BackButton from "@/components/BackButton/back-button";
@@ -29,7 +29,7 @@ const DynamicReactPlayer = dynamic(() => import("react-player"), {
 const ChangePropertyPage: React.FC = () => {
   const searchParams = useSearchParams();
   const property_id = searchParams.get("p");
-  const propertyType = searchParams.get("type") as "rental" | "facility"; 
+  const propertyType = searchParams.get("type") as "rental" | "facility";
   // const isRental = propertyType === "rental";
 
   useEffect(() => {
@@ -61,11 +61,18 @@ const ChangePropertyPage: React.FC = () => {
     }
   }, [propertyData, setPropertyData]);
 
+  const filteredUnits = useMemo(
+    () =>
+      propertyData?.units.filter(
+        (u) => u.unitStatus === "vacant" || u.unitStatus === "relocate"
+      ) || [],
+    [propertyData?.units]
+  );
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
   if (!propertyData) return <div>No property data found</div>;
-
 
   if (step1Done) {
     return <PostProceedContent selectedUnitId={selectedUnitId as string} />;
@@ -127,11 +134,8 @@ const ChangePropertyPage: React.FC = () => {
 
       <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle>
       <section className="space-y-4">
-        {propertyData.units
-          .filter(
-            (u) => u.unitStatus === "vacant" || u.unitStatus === "relocate"
-          )
-          .map((u, index) => (
+        {filteredUnits.length > 0 ? (
+          filteredUnits.map((u, index) => (
             <PropertySwitchUnitItem
               key={index}
               id={u.unitId}
@@ -140,21 +144,7 @@ const ChangePropertyPage: React.FC = () => {
               isRental={isRental}
               {...u}
             />
-          )).length > 0 ? (
-          propertyData.units
-            .filter(
-              (u) => u.unitStatus === "vacant" || u.unitStatus === "relocate"
-            )
-            .map((u, index) => (
-              <PropertySwitchUnitItem
-                key={index}
-                id={u.unitId}
-                isSelected={selectedUnitId === u.unitId}
-                onSelect={handleUnitSelect}
-                isRental={isRental}
-                {...u}
-              />
-            ))
+          ))
         ) : (
           <div className="flex items-center w-full justify-center">
             You do not have any Vacant Unit

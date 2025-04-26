@@ -80,7 +80,6 @@ const StartRent = () => {
 
   useEffect(() => {
     if (apiData) {
-      console.log("API DATA", apiData);
       setUnit_data((x: any) => ({
         ...x,
         ...transformUnitData(apiData),

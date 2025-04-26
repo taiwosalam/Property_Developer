@@ -97,7 +97,7 @@ export const FeeDetails: React.FC<{
                 {deduction
                   ? "Total Package"
                   : owing
-                  ? "Current Total Package"
+                  ? "Total Package"
                   : "Total"}
               </p>
             )}

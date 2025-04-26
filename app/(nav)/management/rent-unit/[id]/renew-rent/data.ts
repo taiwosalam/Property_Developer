@@ -1,5 +1,9 @@
 import dayjs from "dayjs";
-import { RentPeriod } from "@/components/Management/Rent And Unit/data";
+import {
+  calculateBalance,
+  RentPeriod,
+} from "@/components/Management/Rent And Unit/data";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
 export const getPropertySettingsData = (unit_data: any) => [
   { label: "Agency Fee", value: `${unit_data?.agency_fee}%` || "____" },
@@ -106,4 +110,238 @@ export const formatOwingPeriod = (
     default:
       return `${periods} periods`;
   }
+};
+
+// Map RentPeriod to period length in days (for cost calculation)
+const periodToDays = (period: RentPeriod): number => {
+  switch (period) {
+    case "daily":
+      return 1;
+    case "weekly":
+      return 7;
+    case "monthly":
+      return 30.42; // Average days per month (365 / 12)
+    case "quarterly":
+      return 91.25; // Average days per quarter (365 / 4)
+    case "yearly":
+      return 365;
+    case "biennially":
+      return 365 * 2;
+    case "triennially":
+      return 365 * 3;
+    case "quadrennial":
+      return 365 * 4;
+    case "quinquennial":
+      return 365 * 5;
+    case "sexennial":
+      return 365 * 6;
+    case "septennial":
+      return 365 * 7;
+    case "octennial":
+      return 365 * 8;
+    case "nonennial":
+      return 365 * 9;
+    case "decennial":
+      return 365 * 10;
+    default:
+      return 30.42; // Fallback to monthly
+  }
+};
+
+// Helper function to calculate duration and breakdown
+export const getBalanceBreakdown = (
+  record: any,
+  period: RentPeriod,
+  currencySymbol: string
+) => {
+  if (!record.start_date || !record.due_date || !period) {
+    return {
+      duration: "-",
+      breakdown: [
+        { label: "Error", value: "Missing start date, due date, or period" },
+      ],
+    };
+  }
+
+  const startDate = dayjs(record.start_date);
+  const dueDate = dayjs(record.due_date);
+  const currentDate = dayjs();
+  const endDate = dueDate.isAfter(currentDate) ? currentDate : dueDate;
+
+  // Calculate duration in days
+  const daysSpent = endDate.diff(startDate, "day");
+  const durationText = `${daysSpent} day${daysSpent !== 1 ? "s" : ""}`;
+
+  // Calculate overdue periods
+  const overduePeriods = calculateOverduePeriods(
+    dueDate.format("DD/MM/YYYY"),
+    period
+  );
+
+  // Parse amount_paid (remove currency symbol if present)
+  const amountPaid = parseFloat(
+    record.amount_paid?.replace(currencySymbol, "") || "0"
+  );
+
+  // Calculate cost per period (assume amount_paid is the rent for the full period)
+  const periodDays = periodToDays(period);
+  const costPerDay = amountPaid / periodDays;
+
+  // Calculate expected rent for days spent
+  const totalExpectedRent = costPerDay * daysSpent;
+
+  // Calculate outstanding balance
+  const outstanding = calculateBalance(
+    record.amount_paid,
+    record.start_date,
+    record.due_date
+  );
+
+  const breakdown = [
+    {
+      label: "Occupancy Period",
+      value: `${startDate.format("MMM D, YYYY")} - ${endDate.format(
+        "MMM D, YYYY"
+      )}`,
+    },
+    {
+      label: "You spent",
+      value: durationText,
+    },
+    {
+      label: `Cost per Day (${period})`,
+      value: `${currencySymbol}${formatNumber(costPerDay.toFixed(2))}`,
+    },
+    {
+      label: "We Deduct",
+      value: `${currencySymbol}${formatNumber(totalExpectedRent.toFixed(2))}`,
+    },
+    {
+      label: "You paid",
+      value: record.amount_paid || `${currencySymbol}0`,
+    },
+    ...(overduePeriods > 0
+      ? [
+          {
+            label: "Overdue Periods",
+            value: `${overduePeriods} ${period}`,
+          },
+        ]
+      : []),
+    {
+      label: "Your balance",
+      value: `${currencySymbol}${formatNumber(Math.abs(outstanding))}`,
+    },
+  ];
+
+  return { duration: durationText, breakdown };
+};
+
+// const periodToDays = (period: RentPeriod): number => {
+//   switch (period) {
+//     case "daily":
+//       return 1;
+//     case "weekly":
+//       return 7;
+//     case "monthly":
+//       return 30.42; // Average days per month
+//     case "quarterly":
+//       return 91.25; // Average days per quarter
+//     case "yearly":
+//       return 365;
+//     case "biennially":
+//       return 365 * 2;
+//     case "triennially":
+//       return 365 * 3;
+//     case "quadrennial":
+//       return 365 * 4;
+//     case "quinquennial":
+//       return 365 * 5;
+//     case "sexennial":
+//       return 365 * 6;
+//     case "septennial":
+//       return 365 * 7;
+//     case "octennial":
+//       return 365 * 8;
+//     case "nonennial":
+//       return 365 * 9;
+//     case "decennial":
+//       return 365 * 10;
+//     default:
+//       return 30.42; // Fallback
+//   }
+// };
+
+// Breakdown for overdue periods and netOwing
+
+export const getOwingBreakdown = (
+  dueDate: string,
+  period: RentPeriod,
+  totalPackage: number,
+  outstandingBalance: number,
+  baseCost: number,
+  calculation: boolean,
+  deduction: boolean,
+  currencySymbol: string
+) => {
+  if (!dueDate || !period) {
+    return {
+      overdueBreakdown: [
+        { label: "Error", value: "Missing due date or period" },
+      ],
+      netOwingBreakdown: [{ label: "Error", value: "Missing required data" }],
+    };
+  }
+
+  const now = dayjs();
+  const due = dayjs(dueDate, "DD/MM/YYYY");
+  const overduePeriods = calculateOverduePeriods(dueDate, period);
+  const periodCost = totalPackage; // Cost per period (e.g., annual rent for yearly)
+  const owingAmount = overduePeriods * periodCost;
+
+  // Overdue breakdown
+  const overdueBreakdown = [
+    {
+      label: "Due Date",
+      value: due.format("MMM D, YYYY"),
+    },
+    {
+      label: "Overdue Periods",
+      value: overduePeriods > 0 ? `${overduePeriods} ${period}` : "None",
+    },
+    {
+      label: `Cost per ${period}`,
+      value: `${currencySymbol}${formatNumber(periodCost)}`,
+    },
+    {
+      label: "Owing Amount",
+      value:
+        owingAmount > 0
+          ? `${currencySymbol}${formatNumber(owingAmount)}`
+          : `${currencySymbol}0`,
+    },
+  ];
+
+  // Net owing breakdown
+  const netOwing = deduction ? outstandingBalance - baseCost : baseCost;
+  const netOwingBreakdown = [
+    {
+      label: "Previous Unit Balance",
+      value: `${currencySymbol}${formatNumber(Math.abs(outstandingBalance))}`,
+    },
+    {
+      label: calculation ? "New Tenant Cost" : "Renewal Tenant Cost",
+      value: `${currencySymbol}${formatNumber(baseCost)}`,
+    },
+    {
+      label: "Deduction Applied",
+      value: deduction ? "Yes" : "No",
+    },
+    {
+      label: netOwing >= 0 ? "Amount Owed" : "Refund Due",
+      value: `${currencySymbol}${formatNumber(Math.abs(netOwing))}`,
+    },
+  ];
+
+  return { overdueBreakdown, netOwingBreakdown };
 };

@@ -11,6 +11,7 @@ import {
   calculateBalance,
   getEstateData,
   getEstateSettingsDta,
+  RentPeriod,
 } from "@/components/Management/Rent And Unit/data";
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -48,8 +49,10 @@ import ServerError from "@/components/Error/ServerError";
 
 const PostProceedContent = ({
   selectedUnitId,
+  page,
 }: {
   selectedUnitId?: string;
+  page?: "unit" | "property";
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -180,7 +183,9 @@ const PostProceedContent = ({
 
   return (
     <div className="space-y-6 pb-[100px]">
-      <BackButton>Change Property Unit</BackButton>
+      <BackButton>
+        {page === "unit" ? "Change Unit" : "Change Property Unit"}
+      </BackButton>
       <section className="space-y-6">
         <EstateDetails
           title={`${isRental ? "Property" : "Estate"} Details`}
@@ -204,6 +209,7 @@ const PostProceedContent = ({
             <NewUnitCost
               isRental={isRental}
               noEdit
+              currency={unit_data.currency}
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
@@ -218,12 +224,33 @@ const PostProceedContent = ({
                     : unit_data.renew_service_charge,
                 },
                 {
+                  name: "Security Fee",
+                  amount: calculation ? unit_data.security_fee : "",
+                },
+                {
+                  name: "Agency Fee",
+                  amount: calculation ? unit_data.unitAgentFee : "",
+                },
+                {
+                  name: "Caution Fee",
+                  amount: calculation ? unit_data.caution_fee : "",
+                },
+                {
+                  name: "VAT Amount",
+                  amount: calculation
+                    ? unit_data.vat_amount
+                    : unit_data.renew_vat_amount,
+                },
+                {
                   name: "Other Charges",
-                  amount: unit_data?.other_charge,
+                  amount: calculation
+                    ? unit_data.other_charge
+                    : unit_data.renew_other_charge,
                 },
               ]}
               total={newUnitTotal}
               id={unit_data?.id}
+              calculation={calculation}
             />
 
             <NewUnitCost
