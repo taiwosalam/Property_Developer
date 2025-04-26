@@ -25,7 +25,7 @@ const settings = [
     title: "Body Font",
     desc: "Specify the body font properties.",
     min: 12,
-    max: 72,
+    max: 20,
     default: 16,
     defaultWeight: "400",
   },
