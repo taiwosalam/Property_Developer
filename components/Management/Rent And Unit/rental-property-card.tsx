@@ -192,7 +192,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
                 Tenant‘s Name
               </span>
               <div className="flex items-center gap-1">
-                <span className="font-medium text-brand-primary border-b border-brand-primary">
+                <span className="font-medium text-brand-primary">
                   {status === "relocate" ? "--- ---" : tenant_name}
                 </span>
                 {(badge_color && status !== "relocate") && <BadgeIcon color={badge_color} />}

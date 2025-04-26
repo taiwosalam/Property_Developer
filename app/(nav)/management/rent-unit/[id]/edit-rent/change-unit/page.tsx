@@ -225,6 +225,7 @@ const ChangeUnitpage = () => {
             {/* PREVIOUS UNIT BREAKDOWN */}
             <PreviousUnitBalance
               calculation={calculation}
+              period={unit_data.fee_period as RentPeriod}
               currency={unit_data.currency}
               deduction={deduction}
               isRental={isRental}
@@ -302,6 +303,10 @@ const ChangeUnitpage = () => {
               ]}
               total_package={baseCost}
               id={id as string}
+              dueDate={due_date}
+              outstandingBalance={outstandingBalance} 
+              calculation={calculation} 
+              deduction={deduction} 
             />
 
             {/* Outstanding Details */}
@@ -315,6 +320,9 @@ const ChangeUnitpage = () => {
                 id={id as string}
                 dueDate={due_date}
                 period={period}
+                outstandingBalance={outstandingBalance}
+                calculation={calculation}
+                deduction={deduction}
               />
             ) : (
               <RenewalFee
@@ -325,6 +333,12 @@ const ChangeUnitpage = () => {
                 id={id as string}
                 currency={unit_data.currency as Currency}
                 noEdit
+                dueDate={due_date}
+                period={period} 
+                outstandingBalance={outstandingBalance} 
+                calculation={calculation} 
+                deduction={deduction} 
+                showCalculation
               />
             )}
 

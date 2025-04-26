@@ -274,6 +274,7 @@ const EditRent = () => {
               isRental={isRental}
               propertyId={Number(unit_data.propertyId)}
               unitId={Number(unit_data.id)}
+              currency={unit_data.currency || "naira"}
             />
           </div>
         </div>

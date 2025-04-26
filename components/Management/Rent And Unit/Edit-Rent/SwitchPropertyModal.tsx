@@ -10,11 +10,13 @@ import FormModalPreset from "../../landlord-tenant-modal-preset";
 import useFetch from "@/hooks/useFetch";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 import { toast } from "sonner";
+import { Currency } from "@/utils/number-formatter";
 
 const SwitchPropertyModal: React.FC<{
   isRental: boolean;
   propertyId: number;
-}> = ({ isRental, propertyId }) => {
+  currency: Currency;
+}> = ({ isRental, propertyId, currency }) => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
@@ -29,8 +31,8 @@ const SwitchPropertyModal: React.FC<{
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/rental");
 
-  console.log("property", propertyData)
-  console.log("propertyId", propertyId)
+  console.log("property", propertyData);
+  console.log("currency", currency);
 
   // Property options without current tenant property
   const propertyOptions =
@@ -46,12 +48,26 @@ const SwitchPropertyModal: React.FC<{
       toast.warning("Please select a property");
       return;
     }
+    // Find the selected property's details
+    const selectedPropertyData = propertyData?.data.find(
+      (p) => String(p.id) === selectedProperty
+    );
+    if (!selectedPropertyData) {
+      toast.error("Selected property not found");
+      return;
+    }
+    // Check if the selected property's currency matches the provided currency
+    if (selectedPropertyData.currency !== currency) {
+      toast.warning(
+        `The selected property's currency (${selectedPropertyData.currency}) does not match the current unit's currency (${currency}). Please choose a property with a matching currency.`
+      );
+      return;
+    }
 
     setLoading(true);
     try {
       // Simulate async operation (e.g., API call or validation)
       await new Promise((resolve) => setTimeout(resolve, 500)); // Mock delay
-      // toast.success("Property selected successfully");
       router.push(
         `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${selectedProperty}`
       );
@@ -61,6 +77,7 @@ const SwitchPropertyModal: React.FC<{
       setLoading(false);
     }
   };
+
 
   if (modalView === "warning") {
     return (

@@ -409,56 +409,6 @@ export const calculateDueDate = (
   }
 };
 
-// export const sampleDocuments = [
-//   {
-//     id: "1",
-//     name: "Invoice 1",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     thumbnail: "/empty/SampleLandlord.jpeg",
-//     document_type: "invoice",
-//   },
-//   {
-//     id: "2",
-//     name: "Invoice 2",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     thumbnail: "/empty/SampleLandlord2.svg",
-//     document_type: "invoice",
-//   },
-//   {
-//     id: "3",
-//     name: "Receipt 1",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     thumbnail: "/empty/SampleLogo.jpeg",
-//     document_type: "receipt",
-//   },
-//   {
-//     id: "4",
-//     name: "Receipt 2",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     thumbnail: "/empty/SampleProperty.jpeg",
-//     document_type: "receipt",
-//   },
-
-//   {
-//     id: "5",
-//     name: "Classified MI6 Info",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     document_type: "other document",
-//   },
-//   {
-//     id: "6",
-//     name: "Highly Classified FBI Database",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     document_type: "other document",
-//   },
-// ];
-
 export const transformDocuments = (docs: any) => {
   return docs.flatMap((doc: any) => {
     const baseId = String(doc.id);
@@ -483,4 +433,26 @@ export const transformDocuments = (docs: any) => {
       };
     });
   });
+};
+
+export const isValidValue = (value: string | undefined | null): boolean => {
+  return (
+    value != null &&
+    typeof value === "string" &&
+    value.trim() !== "" &&
+    value !== "--- ---" &&
+    value !== "--" &&
+    value !== "---" &&
+    value !== "__, __, __" &&
+    value !== "__,__,__"
+  );
+};
+export const capitalizeEachWord = (str?: string): string => {
+  if (!str || !isValidValue(str)) return "";
+  return str
+    .toLowerCase()
+    .split(" ")
+    .filter((word) => word.length > 0)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
