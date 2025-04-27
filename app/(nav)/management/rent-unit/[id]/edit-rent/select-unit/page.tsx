@@ -16,6 +16,8 @@ import { toast } from "sonner";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import ServerError from "@/components/Error/ServerError";
+import BackButton from "@/components/BackButton/back-button";
+import PostProceedContent from "@/components/Management/Rent And Unit/Edit-Rent/PostProceedContent";
 
 const SelectUnitPage = () => {
   const searchParams = useSearchParams();
@@ -31,6 +33,7 @@ const SelectUnitPage = () => {
     useOccupantStore();
   const [checked1, setChecked1] = useState(calculation);
   const [checked2, setChecked2] = useState(deduction);
+  const [step1Done, setStep1Done] = useState(false);
 
   const {
     data: unitsData,
@@ -55,15 +58,18 @@ const SelectUnitPage = () => {
     setChecked2(deduction);
   }, [deduction]);
 
-  const handleContinue = () => {
-    if (!selectedUnitId) {
-      toast.warning("Please select a unit");
-      return;
-    }
-    router.push(
-      `/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
-    );
-  };
+  const handleChangeContent = () => setStep1Done(true);
+
+  // const handleContinue = () => {
+  //   if (!selectedUnitId) {
+  //     toast.warning("Please select a unit");
+  //     return;
+  //   }
+  //   router.push(
+  //     // `/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
+  //     `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
+  //   );
+  // };
 
   if (UnitsLoading)
     return (
@@ -73,12 +79,24 @@ const SelectUnitPage = () => {
     );
   if (unitsError) return <ServerError error={unitsError} />;
 
+  if (step1Done) {
+    return (
+      <PostProceedContent
+        selectedUnitId={selectedUnitId as string}
+        page="unit"
+      />
+    );
+  }
+
   return (
     <div>
-      <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle>
+      <BackButton>Change Tenant&apos;s Unit</BackButton>
+      {/* <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle> */}
       <div className="space-y-4">
         {unitOptions.length === 0 ? (
-          <p> No Unit Yet </p>
+          <div className="flex items-center mt-8 justify-center w-full">
+            <p className="text-center text-xl"> No Unit Available </p>
+          </div>
         ) : (
           unitOptions.map((u, index) => (
             <PropertySwitchUnitItem
@@ -94,7 +112,8 @@ const SelectUnitPage = () => {
       </div>
       <FixedFooter className="flex justify-end">
         <Button
-          onClick={handleContinue}
+          // onClick={handleContinue}
+          onClick={handleChangeContent}
           type="submit"
           className="py-2 px-6"
           size="base_medium"

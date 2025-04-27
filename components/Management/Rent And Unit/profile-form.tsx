@@ -18,6 +18,7 @@ import { empty } from "@/app/config";
 import { useGlobalStore } from "@/store/general-store";
 import { MatchedProfile } from "./matched-profile";
 import { getSingleTenantData } from "@/utils/getData";
+import { Currency } from "@/utils/number-formatter";
 
 export const ProfileForm: React.FC<{
   occupants: { name: string; id: string; picture?: string }[];
@@ -27,6 +28,7 @@ export const ProfileForm: React.FC<{
   setDueDate?: (date: Dayjs | null) => void;
   setSelectedCheckboxOptions?: any;
   period: RentPeriod;
+  currency?: Currency;
 }> = ({
   occupants,
   isRental,
@@ -35,6 +37,7 @@ export const ProfileForm: React.FC<{
   setDueDate,
   setSelectedCheckboxOptions,
   period,
+  currency,
 }) => {
   const [selectedId, setSelectedId] = useState<string>("");
   const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
@@ -156,9 +159,14 @@ export const ProfileForm: React.FC<{
         : isMobileUser
         ? true
         : prev.mobile_notification,
-      create_invoice: !isMobileUser ? true : prev.create_invoice,
+      create_invoice:
+        currency !== "naira" && isMobileUser
+          ? false
+          : !isMobileUser
+          ? false
+          : prev.create_invoice,
     }));
-  }, [isWebUser, isMobileUser]);
+  }, [isWebUser, isMobileUser, currency]);
 
   useEffect(() => {
     setSelectedCheckboxOptions(selectedOptions);
@@ -233,22 +241,7 @@ export const ProfileForm: React.FC<{
           className="opacity-50"
         />
       </div>
-      {/* <div className="flex items-center justify-end gap-4 flex-wrap">
-        {options.map((option) => {
-          const key = option.toLowerCase().replace(/\s+/g, "_");
-          return (
-            <Checkbox
-              sm
-              key={key}
-              defaultChecked={selectedOptions[key]}
-              onChange={handleCheckboxChange(key)}
-            >
-              {option}
-            </Checkbox>
-          );
-        })}
-      </div> */}
-      <div className="flex items-center justify-end gap-4 flex-wrap">
+      <div className="flex items-center justify-start gap-4 flex-wrap">
         {checkboxOptions.map(({ label, key }) => (
           <Checkbox
             sm
@@ -257,24 +250,32 @@ export const ProfileForm: React.FC<{
             onChange={handleCheckboxChange(key)}
             disabled={
               (key === "mobile_notification" && isWebUser) ||
-              (key === "create_invoice" && !isMobileUser)
+              (key === "create_invoice" &&
+                (!isMobileUser || (currency !== "naira" && isMobileUser)))
             }
           >
             {label}
           </Checkbox>
         ))}
       </div>
-      <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit ml-auto">
-        {selectedOptions["create_invoice"]
-          ? `Payment will be reflected once the ${
-              isRental ? "tenant" : "occupant"
-            } makes a payment towards the generated invoice.`
-          : `Confirms that you have received payment for the ${
-              isRental ? "rent" : "counting"
-            }. However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-              isRental ? "tenant" : "occupant"
-            } to make the payment.`}
-      </p>
+      {isWebUser ? (
+        <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+          {`Confirms that you have received payment for the 
+          ${isRental ? "rent" : "counting"}.`}
+        </p>
+      ) : (
+        <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+          {selectedOptions["create_invoice"]
+            ? `Payment will be reflected once the ${
+                isRental ? "tenant" : "occupant"
+              } makes a payment towards the generated invoice.`
+            : `Confirms that you have received payment for the ${
+                isRental ? "rent" : "counting"
+              }. ${currency === "naira" ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+                isRental ? "tenant" : "occupant"
+              } to make the payment.` : ''}`}
+        </p>
+      )}
     </div>
   );
 };

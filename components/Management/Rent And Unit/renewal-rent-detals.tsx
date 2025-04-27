@@ -32,6 +32,7 @@ import { useOccupantStore } from "@/hooks/occupant-store";
 import {
   calculateOverduePeriods,
   formatOwingPeriod,
+  getOwingBreakdown,
 } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
 
 export const RenewalRentDetails: React.FC<{
@@ -81,6 +82,11 @@ export const RenewalFee: React.FC<{
   isUpfrontPaymentChecked?: boolean;
   noEdit?: boolean;
   title?: string;
+  outstandingBalance?: number;
+  calculation?: boolean;
+  deduction?: boolean;
+  dueDate?: string;
+  showCalculation?: boolean;
 }> = ({
   isRental,
   feeDetails,
@@ -92,10 +98,29 @@ export const RenewalFee: React.FC<{
   setIsUpfrontPaymentChecked,
   noEdit,
   title,
+  dueDate,
+  outstandingBalance = 0,
+  calculation = false,
+  deduction = false,
+  showCalculation,
 }) => {
+  const currencySymbol =
+    currencySymbols[currency as keyof typeof currencySymbols] || "₦";
   // Check if toggle props are provided
   const hasToggleProps =
     isUpfrontPaymentChecked !== undefined && setIsUpfrontPaymentChecked;
+
+  // Get net owing breakdown (no overdue breakdown needed here)
+  const { netOwingBreakdown } = getOwingBreakdown(
+    dueDate || "", // dueDate not needed for RenewalFee
+    (period as RentPeriod) || "monthly",
+    total_package,
+    outstandingBalance,
+    total_package,
+    calculation,
+    deduction,
+    currencySymbol
+  );
 
   return (
     <div className="space-y-6">
@@ -125,15 +150,35 @@ export const RenewalFee: React.FC<{
       )}
 
       {(!hasToggleProps || isUpfrontPaymentChecked) && (
-        // Render FeeDetails if no toggle props or if toggle is checked
-        <FeeDetails
-          title={isRental ? "Breakdown" : "Annual Fee"}
-          feeDetails={feeDetails}
-          total_package={total_package}
-          id={id}
-          currency={currency}
-          noEdit={noEdit}
-        />
+        <>
+          <FeeDetails
+            title={isRental ? "Breakdown" : "Annual Fee"}
+            feeDetails={feeDetails}
+            total_package={total_package}
+            id={id}
+            currency={currency}
+            noEdit={noEdit}
+          />
+          {showCalculation && (
+            <div className="space-y-2">
+              <p className="text-[#747474] dark:text-white text-base font-normal">
+                Net Owing Calculation
+              </p>
+              <div className="space-y-2">
+                {netOwingBreakdown.map((item, index) => (
+                  <div key={index} className="flex items-start">
+                    <p className="text-[#747474] dark:text-white w-[150px] capitalize">
+                      {item.label}
+                    </p>
+                    <p className="text-black dark:text-darkText-2 capitalize">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -148,6 +193,9 @@ export const OwingFee: React.FC<{
   dueDate?: string;
   currency: Currency;
   isUpfrontPaymentChecked?: boolean;
+  outstandingBalance?: number;
+  calculation?: boolean;
+  deduction?: boolean;
 }> = ({
   isRental,
   feeDetails,
@@ -157,9 +205,14 @@ export const OwingFee: React.FC<{
   dueDate,
   currency,
   isUpfrontPaymentChecked,
+  outstandingBalance = 0,
+  calculation = false,
+  deduction = false,
 }) => {
   const [owingAmount, setOwingAmount] = useState<number>(0);
   const [overduePeriods, setOverduePeriods] = useState<number>(0);
+  const currencySymbol =
+    currencySymbols[currency as keyof typeof currencySymbols] || "₦";
   // Calculate owing amount when dueDate, period, or totalPackage changes
   useEffect(() => {
     if (dueDate && period && total_package) {
@@ -197,6 +250,18 @@ export const OwingFee: React.FC<{
     { name: "Rent Penalty", amount: "--- ---" },
   ];
 
+  // Get breakdowns
+  const { overdueBreakdown, netOwingBreakdown } = getOwingBreakdown(
+    dueDate || "",
+    period as RentPeriod,
+    total_package,
+    outstandingBalance,
+    total_package,
+    calculation,
+    deduction,
+    currencySymbol
+  );
+
   // Update total package cost to include owing amount
   const updatedTotalPackage = total_package + owingAmount;
   return (
@@ -211,6 +276,23 @@ export const OwingFee: React.FC<{
         total_package={updatedTotalPackage}
         id={id}
       />
+      <div className="space-y-2">
+        <p className="text-[#747474] dark:text-white text-base font-normal">
+          Net Owing Calculation
+        </p>
+        <div className="space-y-2">
+          {netOwingBreakdown.map((item, index) => (
+            <div key={index} className="flex items-start">
+              <p className="text-[#747474] dark:text-white w-[150px] capitalize">
+                {item.label}
+              </p>
+              <p className="text-black dark:text-darkText-2 capitalize">
+                {item.value}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -226,6 +308,7 @@ export const RenewalRent: React.FC<{
   setDueDate?: (date: Dayjs | null) => void;
   setSelectedCheckboxOptions?: (options: CheckBoxOptions) => void;
   occupant?: { userTag?: string };
+  isUpfrontPaymentChecked?: boolean;
 }> = ({
   isRental,
   rentPeriod,
@@ -237,6 +320,7 @@ export const RenewalRent: React.FC<{
   setDueDate,
   setSelectedCheckboxOptions,
   occupant,
+  isUpfrontPaymentChecked,
 }) => {
   const isWebUser = occupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = occupant?.userTag?.toLowerCase() === "mobile";
@@ -249,14 +333,6 @@ export const RenewalRent: React.FC<{
     | "SMS Alert"
     | "Email Alert"
     | "Rent Agreement";
-
-  // const checkboxOptions: CheckboxOption[] = [
-  //   "Create Invoice",
-  //   "Mobile Notification",
-  //   "SMS Alert",
-  //   "Email Alert",
-  //   "Rent Agreement",
-  // ];
 
   // Checkbox options
   const checkboxOptions = [
@@ -286,27 +362,6 @@ export const RenewalRent: React.FC<{
           option.key !== "mobile_notification"
       )
     : checkboxOptions;
-
-  // const [checkboxStates, setCheckboxStates] = useState<
-  //   Record<CheckboxOption, boolean>
-  // >({
-  //   "Create Invoice": true,
-  //   "Mobile Notification": true,
-  //   "SMS Alert": true,
-  //   "Email Alert": true,
-  //   "Rent Agreement": true,
-  // });
-
-  // // Update parent with checkbox changes
-  // useEffect(() => {
-  //   setSelectedCheckboxOptions?.({
-  //     create_invoice: checkboxStates["Create Invoice"],
-  //     mobile_notification: checkboxStates["Mobile Notification"],
-  //     sms_alert: checkboxStates["SMS Alert"],
-  //     email_alert: checkboxStates["Email Alert"],
-  //     rent_agreement: checkboxStates["Rent Agreement"],
-  //   });
-  // }, [checkboxStates, setSelectedCheckboxOptions]);
 
   // Update checkbox states based on userTag
   useEffect(() => {
@@ -409,48 +464,51 @@ export const RenewalRent: React.FC<{
           </>
         )}
       </div>
-      <div className="flex items-center justify-end gap-4 flex-wrap mb-4">
-        {visibleCheckboxOptions.map(({ label, key }) => (
-          <Checkbox
-            sm
-            key={key}
-            checked={checkboxStates[key]}
-            onChange={handleCheckboxChange(key)}
-            disabled={
-              (key === "mobile_notification" && isWebUser) ||
-              (key === "create_invoice" && !isMobileUser)
-            }
-          >
-            {label}
-          </Checkbox>
-        ))}
-      </div>
-      {!isWebUser && (
-        <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit ml-auto">
-          {start ? (
-            <>
-              {checkboxStates.create_invoice
-                ? `Payment will be reflected once the ${
-                    isRental ? "tenant" : "occupant"
-                  } makes a payment towards the generated invoice.`
-                : `Confirms that you have received payment for the Unit Change. However, if you intend to receive the payment, you can click 'create invoice' for ${
-                    isRental ? "tenant" : "occupant"
-                  } to make the payment.`}
-            </>
-          ) : (
-            <>
-              {checkboxStates.create_invoice
-                ? `${isRental ? "Rent" : "Fee"} will commence upon ${
-                    isRental ? "tenant" : "occupant"
-                  } making payment for the generated invoice.`
-                : `Confirms that you have received payment for the ${
-                    isRental ? "rent" : "fee"
-                  } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${
-                    isRental ? "tenant" : "occupant"
-                  } to make the payment.`}
-            </>
+      {isUpfrontPaymentChecked && (
+        <div className="flex items-center justify-start gap-4 flex-wrap mb-4">
+          {visibleCheckboxOptions.map(({ label, key }) => (
+            <Checkbox
+              sm
+              key={key}
+              checked={checkboxStates[key]}
+              onChange={handleCheckboxChange(key)}
+              disabled={
+                (key === "mobile_notification" && isWebUser) ||
+                (key === "create_invoice" && !isMobileUser)
+              }
+            >
+              {label}
+            </Checkbox>
+          ))}
+
+          {!isWebUser && (
+            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              {start ? (
+                <>
+                  {checkboxStates.create_invoice
+                    ? `Payment will be reflected once the ${
+                        isRental ? "tenant" : "occupant"
+                      } makes a payment towards the generated invoice.`
+                    : `Confirms that you have received payment for the Unit Change. However, if you intend to receive the payment, you can click 'create invoice' for ${
+                        isRental ? "tenant" : "occupant"
+                      } to make the payment.`}
+                </>
+              ) : (
+                <>
+                  {checkboxStates.create_invoice
+                    ? `${isRental ? "Rent" : "Fee"} will commence upon ${
+                        isRental ? "tenant" : "occupant"
+                      } making payment for the generated invoice.`
+                    : `Confirms that you have received payment for the ${
+                        isRental ? "rent" : "fee"
+                      } renewal. However, if you intend to receive the payment, you can click 'create invoice' for ${
+                        isRental ? "tenant" : "occupant"
+                      } to make the payment.`}
+                </>
+              )}
+            </p>
           )}
-        </p>
+        </div>
       )}
     </div>
   );

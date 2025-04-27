@@ -29,6 +29,7 @@ const DateInput: React.FC<DateInputProps> = ({
   const handleDateChange = (date: Dayjs | null) => {
     if (onChange) {
       onChange(date);
+      console.log("date: ", date);
     }
   };
 

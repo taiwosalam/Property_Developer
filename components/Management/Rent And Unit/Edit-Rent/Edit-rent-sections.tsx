@@ -7,6 +7,7 @@ import { EstateDetailItem as DetailItem } from "../detail-item";
 import {
   getRenewalRentDetailItems,
   renewalRentDetailItems,
+  RentPeriod,
   RentPreviousRecords,
 } from "../data";
 import { SectionSeparator } from "@/components/Section/section-components";
@@ -28,6 +29,8 @@ import SwitchPropertyModal from "@/components/Management/Rent And Unit/Edit-Rent
 import { Dayjs } from "dayjs";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import { UnitDataObject } from "@/app/(nav)/management/rent-unit/data";
+import { getBalanceBreakdown } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
+import { useGlobalStore } from "@/store/general-store";
 
 export const RentDetails: React.FC<{
   isRental: boolean;
@@ -136,7 +139,7 @@ export const EditCurrentRent: React.FC<{
     }
   };
 
-  // ================ CHECKBOX LOGICS ===========================//
+  // ================ CHECKBOX LOGICS START ===========================//
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, boolean>
   >({
@@ -159,6 +162,7 @@ export const EditCurrentRent: React.FC<{
     }));
   };
 
+  // Update selectedOptions when userTag changes
   useEffect(() => {
     setSelectedOptions((prev) => ({
       ...prev,
@@ -167,9 +171,14 @@ export const EditCurrentRent: React.FC<{
         : isMobileUser
         ? true
         : prev.mobile_notification,
-      create_invoice: !isMobileUser ? true : prev.create_invoice,
+      create_invoice:
+        currency !== "naira" && isMobileUser
+          ? false
+          : !isMobileUser
+          ? false
+          : prev.create_invoice,
     }));
-  }, [isWebUser, isMobileUser]);
+  }, [isWebUser, isMobileUser, currency]);
 
   useEffect(() => {
     if (setSelectedCheckboxOptions) {
@@ -183,6 +192,8 @@ export const EditCurrentRent: React.FC<{
     { label: "SMS Alert", key: "sms_alert" },
     { label: "Email Alert", key: "email_alert" },
   ];
+
+  // =============== CHECKBOX LOGICS ENDS ===========================//
 
   return (
     <div>
@@ -237,23 +248,35 @@ export const EditCurrentRent: React.FC<{
                 onChange={handleCheckboxChange(key)}
                 disabled={
                   (key === "mobile_notification" && isWebUser) ||
-                  (key === "create_invoice" && !isMobileUser)
+                  (key === "create_invoice" &&
+                    (!isMobileUser || (currency !== "naira" && isMobileUser)))
                 }
               >
                 {label}
               </Checkbox>
             ))}
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              {selectedOptions["create_invoice"]
-                ? `Payment will be reflected once the ${
-                    isRental ? "tenant" : "occupant"
-                  } makes a payment towards the generated invoice.`
-                : `Confirms that you have received payment for the ${
-                    isRental ? "rent" : "counting"
-                  }. However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                    isRental ? "tenant" : "occupant"
-                  } to make the payment.`}
-            </p>
+            {isWebUser ? (
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                {`Confirms that you have received payment for the 
+          ${isRental ? "rent" : "counting"}.`}
+              </p>
+            ) : (
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                {selectedOptions["create_invoice"]
+                  ? `Payment will be reflected once the ${
+                      isRental ? "tenant" : "occupant"
+                    } makes a payment towards the generated invoice.`
+                  : `Confirms that you have received payment for the ${
+                      isRental ? "rent" : "counting"
+                    }. ${
+                      currency === "naira"
+                        ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+                            isRental ? "tenant" : "occupant"
+                          } to make the payment.`
+                        : ""
+                    }`}
+              </p>
+            )}
           </div>
           <div className="flex items-center justify-end">
             {/* <ModalTrigger asChild> */}
@@ -263,7 +286,7 @@ export const EditCurrentRent: React.FC<{
               onClick={handleUpdate}
               disabled={loading}
             >
-              {loading ? "Please wait." : "Update"}
+              {loading ? "Please wait..." : "Update"}
             </Button>
             {/* </ModalTrigger> */}
             <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
@@ -366,6 +389,7 @@ export const AddPartPayment: React.FC<{
     }));
   };
 
+  // Update selectedOptions when userTag changes
   useEffect(() => {
     setSelectedOptions((prev) => ({
       ...prev,
@@ -374,9 +398,14 @@ export const AddPartPayment: React.FC<{
         : isMobileUser
         ? true
         : prev.mobile_notification,
-      create_invoice: !isMobileUser ? true : prev.create_invoice,
+      create_invoice:
+        currency !== "naira" && isMobileUser
+          ? false
+          : !isMobileUser
+          ? false
+          : prev.create_invoice,
     }));
-  }, [isWebUser, isMobileUser]);
+  }, [isWebUser, isMobileUser, currency]);
 
   useEffect(() => {
     if (setSelectedCheckboxOptions) {
@@ -446,7 +475,8 @@ export const AddPartPayment: React.FC<{
                   onChange={handleCheckboxChange(key)}
                   disabled={
                     (key === "mobile_notification" && isWebUser) ||
-                    (key === "create_invoice" && !isMobileUser)
+                    (key === "create_invoice" &&
+                      (!isMobileUser || (currency !== "naira" && isMobileUser)))
                   }
                 >
                   {label}
@@ -462,7 +492,7 @@ export const AddPartPayment: React.FC<{
                 type="button"
                 disabled={loading}
               >
-                {loading ? "Please wait." : "Update"}
+                {loading ? "Please wait..." : "Update"}
               </Button>
             )}
             {/* </ModalTrigger> */}
@@ -481,17 +511,28 @@ export const AddPartPayment: React.FC<{
               </ModalContent>
             </Modal>
           </div>
-          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-            {selectedOptions["create_invoice"]
-              ? `Payment will be reflected once the ${
-                  isRental ? "tenant" : "occupant"
-                } makes a payment towards the generated invoice.`
-              : `Confirms that you havwe received payment for the ${
-                  isRental ? "rent" : "counting"
-                }. However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                  isRental ? "tenant" : "occupant"
-                } to make the payment.`}
-          </p>
+          {isWebUser ? (
+            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              {`Confirms that you have received payment for the 
+          ${isRental ? "rent" : "counting"}.`}
+            </p>
+          ) : (
+            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              {selectedOptions["create_invoice"]
+                ? `Payment will be reflected once the ${
+                    isRental ? "tenant" : "occupant"
+                  } makes a payment towards the generated invoice.`
+                : `Confirms that you have received payment for the ${
+                    isRental ? "rent" : "counting"
+                  }. ${
+                    currency === "naira"
+                      ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+                          isRental ? "tenant" : "occupant"
+                        } to make the payment.`
+                      : ""
+                  }`}
+            </p>
+          )}
         </>
       )}
     </div>
@@ -502,10 +543,12 @@ export const TransferTenants = ({
   isRental,
   propertyId,
   unitId,
+  currency,
 }: {
   isRental: boolean;
   propertyId?: number;
   unitId?: number;
+  currency?: Currency;
 }) => {
   return (
     <RentSectionContainer
@@ -515,6 +558,7 @@ export const TransferTenants = ({
         Transfer {isRental ? "tenants" : "occupants"} to another unit within the
         same property with the option to calculate and deduct outstanding
         amounts from the new unit.
+        <br />
         <br />
         Alternatively move the same {isRental ? "tenants" : "occupants"} from
         their current {isRental && "rental"} property to another{" "}
@@ -533,6 +577,7 @@ export const TransferTenants = ({
             <SwitchPropertyModal
               isRental={isRental}
               propertyId={propertyId ?? 0}
+              currency={currency || "naira"}
             />
           </ModalContent>
         </Modal>
@@ -560,33 +605,169 @@ export const PreviousUnitBalance: React.FC<{
   items: RentPreviousRecords[];
   total?: string;
   calculation?: boolean;
+  workings?: boolean;
   deduction?: boolean;
   currency?: Currency;
-}> = ({ isRental, items, total, calculation, deduction, currency }) => {
+  period?: RentPeriod;
+  title?: string;
+  currentUnit?: any;
+  startDate?: string;
+  dueDate?: string;
+  page?: "unit" | "property";
+  deductionsCal?: any;
+  deductionsRes?: any;
+}> = ({
+  isRental,
+  items,
+  total,
+  calculation,
+  deduction,
+  currency,
+  period,
+  workings,
+  title,
+  currentUnit,
+  startDate,
+  dueDate,
+  page,
+  deductionsCal,
+  deductionsRes,
+}) => {
+  const isUnit = page === "unit";
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const currentRentStats = useGlobalStore((s) => s.currentRentStats);
+
   const currencySymbol =
     currencySymbols[currency as keyof typeof currencySymbols] || "₦";
+  const prevUBreakdown = currentRentStats?.prevUBreakdown || [];
 
-  const sub_title = deduction
+  const record = items[0];
+  const balanceBreakdown = record
+    ? getBalanceBreakdown(record, period, currencySymbol)
+    : { duration: "-", breakdown: [] };
+
+  useEffect(() => {
+    const newBalanceBreakdown = record
+      ? getBalanceBreakdown(record, period, currencySymbol)
+      : { duration: "-", breakdown: [] };
+    // Only update if the value has changed
+    const currentStats = useGlobalStore.getState().currentRentStats;
+    if (JSON.stringify(currentStats) !== JSON.stringify(newBalanceBreakdown)) {
+      setGlobalStore("currentRentStats", newBalanceBreakdown);
+    }
+  }, [record, period, currencySymbol, setGlobalStore]);
+
+  const currentRentDetailItems = [
+    {
+      label: `${currentUnit.fee_period} Rent`,
+      value: currentUnit.newTenantPrice,
+    },
+    { label: "Start Date", value: startDate },
+    { label: "Due Date", value: dueDate },
+    ...prevUBreakdown,
+  ].filter((item) => {
+    // Exclude items where value is undefined, empty, or an invalid placeholder
+    if (item.value === undefined || item.value === "") return false;
+    if (typeof item.value === "string" && /^_.*,.*,_*$/.test(item.value))
+      return false;
+    return true;
+  });
+
+  const unitDetails = [
+    { label: "Start Date", value: startDate },
+    { label: "Due Date", value: dueDate },
+    {
+      label: `${currentUnit.fee_period} Rent`,
+      value: currentUnit.newTenantPrice,
+    },
+    { label: `Inspection Fee`, value: currentUnit.inspection_fee },
+    { label: `Legal Fee`, value: currentUnit.legal_fee },
+    { label: `Caution Fee`, value: currentUnit.caution_fee },
+    { label: `VAT Amount`, value: currentUnit.vat_amount },
+    { label: "Other Fees", value: currentUnit.other_charge },
+  ].filter((item) => {
+    // Exclude items where value is undefined, empty, or an invalid placeholder
+    if (item.value === undefined || item.value === "") return false;
+    if (typeof item.value === "string" && /^_.*,.*,_*$/.test(item.value))
+      return false;
+    return true;
+  });
+
+  const detailsArr = isUnit ? unitDetails : currentRentDetailItems;
+
+  // Only render the section if there are valid items
+  if (renewalRentDetailItems.length === 0) return null;
+
+
+  const sub_title = !deduction
     ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
     : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
 
+  const Deductsub_title = calculation
+    ? "Calculate the total package of the new rent, including caution deposit, service charge, agency fee, legal fee, and other charges for the tenants transferring to the new unit."
+    : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
+
   return (
     <div className="space-y-1">
-      <RentSectionTitle>Previous Unit Balance</RentSectionTitle>
-      <p className="text-xs"> {sub_title} </p>
-      <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
+      <RentSectionTitle>{title ?? "Current Rent"}</RentSectionTitle>
+      {workings && (
+        <>
+          <p className="text-sm">• {sub_title}</p>
+          <p className="text-sm">• {Deductsub_title}</p>
+        </>
+      )}
+      <RentSectionContainer
+        title={workings ? "Breakdown" : isRental ? "Fee" : "Apply Deduction"}
+      >
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4">
-            {getRenewalRentDetailItems(items).map((item, index) => (
-              <DetailItem
-                key={index}
-                label={item.label}
-                value={item.value as string}
-                style={{ width: "150px" }}
-              />
-            ))}
+            {!workings &&
+              detailsArr.map((item, index) => (
+                <DetailItem
+                  key={index}
+                  label={item.label}
+                  value={item.value as string}
+                  style={{ width: "150px" }}
+                />
+              ))}
+            {/* PREVIOUS UNIT BREAKDOWN */}
+            {workings && (
+              <>
+                {deductionsCal.map((item: any, index: number) => (
+                  <DetailItem
+                    key={index}
+                    label={item.label}
+                    value={item.value as string}
+                    style={{ width: "150px" }}
+                  />
+                ))}
+              </>
+            )}
           </div>
-          <div className="space-y-2">
+          {/*  CALCULATIONS & RESULT */}
+        </div>
+        {workings && (
+          <div className="my-4">
+            <span className="font-medium text-brand-10 text-base">
+              {title ?? "Current Rent"}
+            </span>
+            <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20 mb-4" />
+            <div className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                {deductionsRes.map((item: any, index: number) => (
+                  <DetailItem
+                    key={index}
+                    label={item.label}
+                    value={item.value as string}
+                    style={{ width: "150px" }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        {workings && (
+          <div className="space-y-2 mt-4">
             <p className="text-[#747474] dark:text-white text-base font-normal">
               Balance
             </p>
@@ -595,7 +776,7 @@ export const PreviousUnitBalance: React.FC<{
               {formatNumber(Number(total))}
             </p>
           </div>
-        </div>
+        )}
       </RentSectionContainer>
     </div>
   );
@@ -608,6 +789,7 @@ export const NewUnitCost: React.FC<{
   id?: string;
   calculation?: boolean;
   deduction?: boolean;
+  isExcess?: boolean;
   title?: string;
   noEdit?: boolean;
   currency?: Currency;
@@ -621,21 +803,27 @@ export const NewUnitCost: React.FC<{
   title,
   noEdit,
   currency,
+  isExcess,
 }) => {
   const feeTitle = isRental
     ? deduction
-      ? "Rent Details"
-      : "Rent Calculation"
+      ? "Breakdown"
+      : "Breakdown"
     : "Annual Fee";
   const finalTitle = calculation ? `${feeTitle}` : `${feeTitle}`;
   const sub_title = calculation
     ? "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the tenants that you are transferring to the new unit."
     : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
+
+  const Deductsub_title = !deduction
+    ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
+    : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
+
   return (
     <div className="space-y-1">
-      <RentSectionTitle>{title || "New Unit Cost"}</RentSectionTitle>
-      <p className="text-xs">{title ? sub_title : ""}</p>
-      {/* {!noEdit && <p className="text-xs">{sub_title}</p>} */}
+      <RentSectionTitle>{title || "New Rent "}</RentSectionTitle>
+      {/* <p className="text-xs">{sub_title}</p> */}
+      {isExcess && <p className="text-sm">{Deductsub_title}</p>}
       <FeeDetails
         noEdit={noEdit}
         title={finalTitle}

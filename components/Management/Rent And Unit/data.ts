@@ -105,32 +105,6 @@ export const actions: Action[] = [
   },
 ];
 
-// This would typically come from an API or props
-// export const unitDetails: UnitDetails = {
-//   title: "Newly Built 5 Bedroom Duplex",
-//   location: "Street 23, All Avenue, Nigeria",
-//   categories: "Residential",
-//   unitNumber: "Harmony Cottage",
-//   unitPreference: "Newly Built",
-//   unitType: "Flat",
-//   unitSubType: "Twin Flat",
-//   state: "Oyo",
-//   localGovernment: "Ibadan North",
-//   accountOfficer: "Sunday Ogunwole",
-//   bedrooms: 8,
-//   bathrooms: 4,
-//   toilets: 4,
-//   newTenantPrice: 1950000,
-//   renewalTenantPrice: 1950000,
-//   images: [
-//     "/empty/SampleProperty.jpeg",
-//     "/empty/SampleProperty2.jpeg",
-//     "/empty/SampleProperty3.jpeg",
-//     "/empty/SampleProperty4.png",
-//     "/empty/SampleProperty5.jpg",
-//   ],
-// };
-
 export interface CheckBoxOptions {
   mobile_notification: boolean;
   email_alert: boolean;
@@ -148,30 +122,57 @@ export const defaultChecks: CheckBoxOptions = {
 };
 
 export const getEstateData = (estate_data: any) => {
+  if (!estate_data) {
+    return [
+      { label: "Property Title", value: "-- --" },
+      { label: "State", value: "-- --" },
+      { label: "Local Government", value: "-- --" },
+      { label: "Full Address", value: "-- --" },
+      { label: "Branch", value: "-- --" },
+      { label: "Account Officer", value: "-- --" },
+      { label: "Description", value: "-- --" },
+      { label: "Categories", value: "-- --" },
+      { label: "Unit ID", value: "-- --" },
+    ];
+  }
+
   return [
     { label: "Property Title", value: estate_data.property_title ?? "-- --" },
-    { label: "State", value: estate_data.property_state ?? "-- -- " },
+    { label: "State", value: estate_data.property_state ?? "-- --" },
     {
       label: "Local Government",
-      value: estate_data.localGovernment ?? "-- -- ",
+      value: estate_data.localGovernment ?? "-- --",
     },
     { label: "Full Address", value: estate_data.property_address ?? "-- --" },
     { label: "Branch", value: estate_data.branchName ?? "-- --" },
     { label: "Account Officer", value: estate_data.accountOfficer ?? "-- --" },
-    { label: "Description", value: estate_data.description ?? "-- -- " },
+    { label: "Description", value: estate_data.description ?? "-- --" },
     { label: "Categories", value: estate_data.categories ?? "-- --" },
     { label: "Unit ID", value: estate_data.unit_id ?? "-- --" },
   ];
 };
 
 export const getEstateSettingsDta = (estate_data: any) => {
+  if (!estate_data) {
+    return [
+      { label: "Management Fee", value: "-- --" },
+      { label: "Period", value: "-- --" },
+      { label: "Fee Penalty", value: "-- --" },
+      { label: "Group Chat", value: "-- --" },
+    ];
+  }
+
   return [
-    { label: "Management Fee", value: `${estate_data.management_fee}%` },
-    { label: "Period", value: estate_data.fee_period ?? "" },
-    { label: "Fee Penalty", value: estate_data.rent_penalty ?? "" },
-    { label: "Group Chat", value: estate_data.group_chat ?? "" },
+    {
+      label: "Management Fee",
+      value: estate_data.management_fee ? `${estate_data.management_fee}%` : "-- --",
+    },
+    { label: "Period", value: estate_data.fee_period ?? "-- --" },
+    { label: "Fee Penalty", value: estate_data.rent_penalty ?? "-- --" },
+    { label: "Group Chat", value: estate_data.group_chat ?? "-- --" },
   ];
 };
+
 
 export const estateData = [
   { label: "Property Title", value: "Golden Estate" },
@@ -271,13 +272,13 @@ export function getRenewalRentDetailItems(
         : null,
     },
     {
-      label: "Annual Rent",
+      label: "Rent",
       value: record.amount_paid || null,
     },
-    {
-      label: "Other Fees",
-      value: record.other_fees || "___",
-    },
+    // {
+    //   label: "Other Fees",
+    //   value: record.other_fees || "___",
+    // },
   ];
 }
 
@@ -409,56 +410,6 @@ export const calculateDueDate = (
   }
 };
 
-// export const sampleDocuments = [
-//   {
-//     id: "1",
-//     name: "Invoice 1",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     thumbnail: "/empty/SampleLandlord.jpeg",
-//     document_type: "invoice",
-//   },
-//   {
-//     id: "2",
-//     name: "Invoice 2",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     thumbnail: "/empty/SampleLandlord2.svg",
-//     document_type: "invoice",
-//   },
-//   {
-//     id: "3",
-//     name: "Receipt 1",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     thumbnail: "/empty/SampleLogo.jpeg",
-//     document_type: "receipt",
-//   },
-//   {
-//     id: "4",
-//     name: "Receipt 2",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     thumbnail: "/empty/SampleProperty.jpeg",
-//     document_type: "receipt",
-//   },
-
-//   {
-//     id: "5",
-//     name: "Classified MI6 Info",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     document_type: "other document",
-//   },
-//   {
-//     id: "6",
-//     name: "Highly Classified FBI Database",
-//     link: "https://example.com/sample-attachment.pdf",
-//     date: "2021-01-01",
-//     document_type: "other document",
-//   },
-// ];
-
 export const transformDocuments = (docs: any) => {
   return docs.flatMap((doc: any) => {
     const baseId = String(doc.id);
@@ -483,4 +434,26 @@ export const transformDocuments = (docs: any) => {
       };
     });
   });
+};
+
+export const isValidValue = (value: string | undefined | null): boolean => {
+  return (
+    value != null &&
+    typeof value === "string" &&
+    value.trim() !== "" &&
+    value !== "--- ---" &&
+    value !== "--" &&
+    value !== "---" &&
+    value !== "__, __, __" &&
+    value !== "__,__,__"
+  );
+};
+export const capitalizeEachWord = (str?: string): string => {
+  if (!str || !isValidValue(str)) return "";
+  return str
+    .toLowerCase()
+    .split(" ")
+    .filter((word) => word.length > 0)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
