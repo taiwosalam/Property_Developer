@@ -110,14 +110,15 @@ export const CalendarActivity: React.FC<CalendarEventProps> = ({
   desc,
   type,
   title,
+  originalType,
 }) => (
   <div className="flex gap-4">
     <div
       className="w-1"
-      style={{ backgroundColor: calendar_event_tags[type] }}
+      style={{ backgroundColor: calendar_event_tags[originalType || type] }}
     />
     <p className="p-1 text-text-primary text-sm font-normal">
-      <span className="capitalize font-bold">{type}</span> || {desc}
+      <span className="capitalize font-bold">{originalType || type}</span> || {desc}
     </p>
   </div>
 );

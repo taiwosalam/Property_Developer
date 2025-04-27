@@ -43,7 +43,7 @@ const settings = [
     min: 24,
     max: 48,
     default: 30,
-    defaultWeight: "600",
+    defaultWeight: "600", // Verify this is correct
   },
   {
     title: "H3",
@@ -171,6 +171,12 @@ const WebsiteTypography = () => {
       website_font: selectedFont || DEFAULT_FONT,
       typography: typographySettings,
     };
+    console.log('Typography Settings:', {
+      all: typographySettings,
+      h2Settings: typographySettings['H2'],
+      defaultH2: settings.find(s => s.title === 'H2')?.defaultWeight
+    });
+
     setLoading(true);
     try {
       await updateCompanyWebsiteTypography(payload);
