@@ -108,7 +108,7 @@ const Services = () => {
 
     setClickLock((prev) => ({ ...prev, [lockKey]: true }));
 
-    let hasToasted = false; 
+    let hasToasted = false;
     setSelectedServices((prev) => {
       const currentSelection = prev[section] || [];
       const isSelected = currentSelection.includes(serviceName);
@@ -139,7 +139,18 @@ const Services = () => {
 
   const handleSubmit = async (section: string) => {
     if (loading[section]) return;
-    const payload = { data: selectedServices[section] || [] };
+
+    // Add validation to ensure we have valid data
+    const servicesData = selectedServices[section];
+    if (!Array.isArray(servicesData)) {
+      toast.error(`Invalid services data for ${section}`);
+      return;
+    }
+
+    const payload = {
+      data: servicesData,
+    };
+
     const type = section
       .toLowerCase()
       .replace(/\s/g, "_")
@@ -150,11 +161,18 @@ const Services = () => {
 
     try {
       setLoading((prev) => ({ ...prev, [section]: true }));
+
+      // Validate payload before sending
+      if (!payload.data) {
+        payload.data = []; // Ensure we always send an array
+      }
+
       const res = await updateServicesSettings(objectToFormData(payload), type);
-      if (res && res.status === 200) {
+      if (res) {
         toast.success(`Services updated successfully`);
       }
     } catch (err) {
+      console.error("Services update error:", err);
       toast.error("Failed to update services");
     } finally {
       setLoading((prev) => ({ ...prev, [section]: false }));

@@ -1,4 +1,7 @@
 import type { Field } from "@/components/Table/types";
+import { CalendarEventsApiResponse } from "./types";
+import { CalendarEventProps } from "@/components/Calendar/types";
+import dayjs from "dayjs";
 export const calendarsrFilterOptionsWithDropdown = [
   {
     label: "Property",
@@ -22,3 +25,72 @@ export const CalendarTableFields: Field[] = [
   { id: "5", label: "branch", accessor: "branch" },
   { id: "6", label: "account officer", accessor: "account_officer" },
 ];
+
+// Add type guard to validate event types
+type CalendarEventType =
+  | "new rent"
+  | "inspections"
+  | "complaints"
+  | "due rent"
+  | "maintenance"
+  | "multiple event";
+
+const isValidEventType = (type: string): type is CalendarEventType => {
+  return [
+    "new rent",
+    "inspections",
+    "complaints",
+    "due rent",
+    "maintenance",
+    "multiple event",
+  ].includes(type);
+};
+
+export const transformCalendarEvents = (
+  events: CalendarEventsApiResponse
+): CalendarEventProps[] => {
+  return events.data.map((event) => {
+    const eventType = isValidEventType(event.type)
+      ? event.type
+      : "multiple event";
+
+    return {
+      date: new Date(event.date),
+      desc: event.description,
+      title: event.type,
+      type: eventType, // Now properly typed as CalendarEventType
+    };
+  });
+};
+
+export interface ICalendarEventsTable {
+  total_pages: number;
+  current_page: number;
+  table: {
+    date: string;
+    event: string;
+    creator: string;
+    property_name: string;
+    branch: string | null;
+    account_officer: string | null;
+  }[];
+}
+
+export const transformEventTable = (
+  event: CalendarEventsApiResponse
+): ICalendarEventsTable => {
+  return {
+    total_pages: event.pagination.total_pages,
+    current_page: event.pagination.current_page,
+    table: event.data.map((item) => ({
+      date: item?.date
+        ? dayjs(item.date).format("DD/MM/YYYY HH:mm A")
+        : "___ ___",
+      event: item.type,
+      creator: item.creator,
+      property_name: item.property,
+      branch: item.branch,
+      account_officer: item.accountOfficer,
+    })),
+  };
+};

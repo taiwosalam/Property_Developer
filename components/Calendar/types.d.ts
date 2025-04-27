@@ -29,6 +29,7 @@ export interface CalendarEventProps {
   desc: string;
   title: string;
   type: keyof typeof calendar_event_tags;
+  originalType?: keyof typeof calendar_event_tags;
 }
 // --------------------------------------------------
 
