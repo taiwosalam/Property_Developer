@@ -163,7 +163,7 @@ const Profile = () => {
     }
   };
 
-  console.log(companyData.cac_certificate)
+  console.log(companyData.cac_certificate);
 
   return (
     <>
@@ -214,7 +214,7 @@ const Profile = () => {
                   label="date of registration"
                   value={dayjs(companyData.date_of_registration)}
                   onChange={() => {}}
-                  disabled={verifications.cac_status=== "verified"}
+                  disabled={verifications.cac_status === "verified"}
                 />
                 <Input
                   required
@@ -223,7 +223,7 @@ const Profile = () => {
                   placeholder="Write here"
                   inputClassName="rounded-[8px] setup-f bg-white"
                   value={companyData.cac_registration_number}
-                  disabled={verifications.cac_status=== "verified"}
+                  disabled={verifications.cac_status === "verified"}
                 />
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                   <FileInput
@@ -231,7 +231,7 @@ const Profile = () => {
                     id="cac_certificate"
                     label="CAC document"
                     placeholder=""
-                    noUpload={verifications.cac_status=== "verified"}
+                    noUpload={verifications.cac_status === "verified"}
                     buttonName="Document"
                     fileType="pdf"
                     size={2}
@@ -254,6 +254,10 @@ const Profile = () => {
                   id="industry"
                   label="industry"
                   options={industryOptions}
+                  disabled={
+                    verifications.membership_status === "verified" ||
+                    verifications.membership_status === "approved"
+                  }
                   inputContainerClassName="bg-neutral-2 w-full"
                   defaultValue={companyData.industry || ""}
                 />
@@ -262,11 +266,19 @@ const Profile = () => {
                   label="membership number"
                   placeholder="write here"
                   className="w-full"
+                  disabled={
+                    verifications.membership_status === "verified" ||
+                    verifications.membership_status === "approved"
+                  }
                   defaultValue={companyData.membership_number || ""}
                 />
                 <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                   <FileInput
                     required
+                    noUpload={
+                      verifications.membership_status === "verified" ||
+                      verifications.membership_status === "approved"
+                    }
                     id="membership_certificate"
                     label="Membership document"
                     placeholder=""

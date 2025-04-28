@@ -24,7 +24,7 @@ const Signature = () => {
   const { data, loading, error } = useFetch<CompanySignaturesResponse>("/company-signatures");
 
   if (loading) return <p>Loading signature...</p>;
-  if (error) return <p>Error loading signature</p>;
+  //if (error) return <p>Error loading signature</p>;
   if (!data || data.signatures.length === 0) return null;
 
   return (

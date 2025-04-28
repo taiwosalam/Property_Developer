@@ -110,20 +110,21 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
     tenantIds.length ? `tenant/${tenantIds.join(",")}` : null
   );
 
-  console.log(tenantProfiles, "tenantProfiles");
+  console.log(tenantIds, "tenantProfiles");
 
   useEffect(() => {
     if (tenantProfiles) {
       // Update the tenants state with the fetched profiles
       const filteredTenants = tenantProfiles.data;
-      const profileTenants = {
-        id: filteredTenants?.id as number,
-        name: filteredTenants?.name as string,
-          // filteredTenants?.agent !== "Web"
-          //   ? filteredTenants?.name
-          //   : "No Tenant",
-      };
-      setTenants([profileTenants]);
+      if (filteredTenants?.agent === "Mobile") {
+        const profileTenants = {
+          id: filteredTenants?.id as number,
+          name: filteredTenants?.name,
+        };
+        setTenants([profileTenants]);
+      } else {
+        setTenants([{ id: null, name: "No Tenant" }]);
+      }
     }
   }, [tenantProfiles]);
 
@@ -255,10 +256,15 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
           inputContainerClassName="bg-neutral-2"
           value={selectedState}
           onChange={(selected: string) => {
-            if (!selected) {
+            if (!selected || selected === "No Tenant") {
               setTenantUser(null);
+              setSelectedTenant({ id: null, name: null });
+              return;
             }
-            const tenant = tenants?.find((tenant) => tenant.name === selected);
+            const tenant =
+              tenants && tenants.length > 0
+                ? tenants.find((item) => item.name === selected)
+                : null;
             if (tenant) {
               setSelectedTenant({ id: tenant.id, name: tenant.name });
             } else {

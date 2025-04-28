@@ -16,11 +16,11 @@ interface SocialLinks {
 }
 
 interface Verification {
-  cac_status: "verified" | "unverified";
+  cac_status: "verified" | "unverified" | "approved";
   cac_reason: string;
-  membership_status: "verified" | "unverified" | "pending";
+  membership_status: "verified" | "unverified" | "pending" | "approved";
   membership_reason: string;
-  utility_status: "verified" | "unverified";
+  utility_status: "verified" | "unverified" | "approved";
   utility_reason: string;
 }
 

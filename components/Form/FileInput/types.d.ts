@@ -13,5 +13,5 @@ export interface FileInputProps {
   settingsPage?: boolean;
   defaultValue?: string;
   noUpload?: boolean;
-  membership_status?: "verified" | "unverified" | "pending";
+  membership_status?: "verified" | "unverified" | "pending" | "approved";
 }

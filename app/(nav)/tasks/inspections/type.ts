@@ -1,5 +1,12 @@
 import { StaticImageData } from "next/image";
 
+export type PropertyListResponse = {
+  status: "success";
+  message: string;
+  data: Property[];
+};
+
+
 export type InspectionDataApiResponse = {
   total_inspections: number;
   total_months: number;
