@@ -165,14 +165,15 @@ export const getEstateSettingsDta = (estate_data: any) => {
   return [
     {
       label: "Management Fee",
-      value: estate_data.management_fee ? `${estate_data.management_fee}%` : "-- --",
+      value: estate_data.management_fee
+        ? `${estate_data.management_fee}%`
+        : "-- --",
     },
     { label: "Period", value: estate_data.fee_period ?? "-- --" },
     { label: "Fee Penalty", value: estate_data.rent_penalty ?? "-- --" },
     { label: "Group Chat", value: estate_data.group_chat ?? "-- --" },
   ];
 };
-
 
 export const estateData = [
   { label: "Property Title", value: "Golden Estate" },
@@ -297,25 +298,115 @@ function parseCurrency(amountStr: string): number {
   return isNaN(parsed) ? 0 : parsed;
 }
 
+// export function calculateBalance(
+//   amount_paid: string,
+//   start_date: string,
+//   due_date: string
+// ): number {
+//   const amount = parseCurrency(amount_paid);
+//   // Ensure the month name is capitalized for proper parsing
+//   const start = dayjs(capitalizeDateString(start_date));
+//   const due = dayjs(capitalizeDateString(due_date));
+
+//   const totalDays = due.diff(start, "day");
+//   const remainingDays = due.diff(dayjs(), "day");
+
+//   if (totalDays <= 0) return 0;
+
+//   // Ratio of remaining days over total days
+//   const ratio = remainingDays / totalDays;
+//   // return amount * ratio;
+//   return Math.round(amount * ratio);
+// }
+
 export function calculateBalance(
   amount_paid: string,
   start_date: string,
   due_date: string
 ): number {
   const amount = parseCurrency(amount_paid);
-  // Ensure the month name is capitalized for proper parsing
   const start = dayjs(capitalizeDateString(start_date));
   const due = dayjs(capitalizeDateString(due_date));
+  const today = dayjs();
 
   const totalDays = due.diff(start, "day");
-  const remainingDays = due.diff(dayjs(), "day");
-
   if (totalDays <= 0) return 0;
 
-  // Ratio of remaining days over total days
-  const ratio = remainingDays / totalDays;
-  // return amount * ratio;
-  return Math.round(amount * ratio);
+  // Clamp today's date between start and due
+  const effectiveEnd = today.isBefore(start)
+    ? start
+    : today.isAfter(due)
+    ? due
+    : today;
+
+  const daysSpent = effectiveEnd.diff(start, "day");
+
+  // Cost per day
+  const costPerDay = amount / totalDays;
+
+  // Rent consumed so far
+  const consumed = costPerDay * daysSpent;
+
+  // Balance left = amount paid - consumed rent
+  return Math.round(amount - consumed);
+}
+
+export function calculateOutstandingBalance(
+  rent: string, // newTenantTotalPrice for the last record
+  records: any[], // Array of records with start_date and due_date
+  renewalTenantTotalPrice?: any // Renewal total price for other records
+): number {
+  const newTenantPrice = parseCurrency(rent);
+
+  const renewalPrice = parseCurrency(renewalTenantTotalPrice || rent);
+  const today = dayjs();
+
+  // Filter valid records
+  const validRecords = records.filter((rec) => rec.start_date && rec.due_date);
+  if (!validRecords.length) return 0;
+
+  // Check if the earliest period is past
+  const earliestRecord = validRecords.reduce((min, rec) =>
+    dayjs(rec.start_date).isBefore(dayjs(min.start_date)) ? rec : min
+  );
+  const isEarliestPast = dayjs(earliestRecord.due_date).isBefore(today);
+
+  // Calculate total expected rent
+  let totalExpectedRent = 0;
+  if (isEarliestPast || validRecords.length === 1) {
+    totalExpectedRent = renewalPrice * validRecords.length;
+  } else {
+    totalExpectedRent = renewalPrice * (validRecords.length - 1) + newTenantPrice;
+  }
+
+  let totalDaysPaidFor = 0;
+  let totalDaysSpent = 0;
+
+  validRecords.forEach((record) => {
+    const start = dayjs(record.start_date);
+    const due = dayjs(record.due_date);
+
+    // Calculate total days in the period
+    const daysInPeriod = due.diff(start, "day");
+    if (daysInPeriod <= 0) return;
+
+    totalDaysPaidFor += daysInPeriod;
+
+    // Calculate days spent
+    const daysSpent = today.isBefore(start)
+      ? 0
+      : today.isBefore(due)
+      ? today.diff(start, "day")
+      : daysInPeriod;
+
+    totalDaysSpent += daysSpent;
+  });
+
+  // Calculate daily rate and consumed rent
+  const dailyRate = totalDaysPaidFor > 0 ? totalExpectedRent / totalDaysPaidFor : 0;
+  const consumedRent = dailyRate * totalDaysSpent;
+
+  return totalExpectedRent - consumedRent;
 }
 
 // Simple debounce function to prevent rapid calls to fetch

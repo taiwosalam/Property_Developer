@@ -92,7 +92,7 @@ const Wallet = () => {
           }
         )}
       >
-        {getTransactionIcon(t.source, t.type)}
+        {/* {getTransactionIcon(t.source, t.type)} */}
       </div>
     ),
   }));

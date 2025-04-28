@@ -42,6 +42,9 @@ import dayjs, { Dayjs } from "dayjs";
 import { useGlobalStore } from "@/store/general-store";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { Currency } from "@/utils/number-formatter";
+import { transformDocumentData } from "@/app/(nav)/documents/preview/data";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { AgreementPreview } from "@/components/Modal/tenant-document";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -60,6 +63,7 @@ const StartRent = () => {
   const [reqLoading, setReqLoading] = useState(false);
   // const [isPastDate, setIsPastDate] = useState(false);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const endpoint = `/unit/${id}/view`;
   const {
@@ -86,6 +90,8 @@ const StartRent = () => {
       }));
     }
   }, [apiData]);
+
+  console.log("property_document", unit_data.property_document);
 
   useEffect(() => {
     if (allTenantData) {
@@ -141,6 +147,48 @@ const StartRent = () => {
       toast.error(failedMsg);
     } finally {
       setReqLoading(false);
+    }
+  };
+
+  const handleDownloadAgreement = async () => {
+    if (!unit_data.property_document) {
+      toast.error("No agreement document available for this unit.");
+      return;
+    }
+
+    if (!selectedOccupant) {
+      toast.error("Please select a tenant before downloading the agreement.");
+      return;
+    }
+
+    try {
+      setPdfLoading(true);
+      // Map Occupant to TenantData
+      const tenantData = {
+        name: selectedOccupant.name || "Unknown Tenant",
+        address: selectedOccupant.address
+          ? `${selectedOccupant.address}, ${selectedOccupant.city}, ${selectedOccupant.lg}, ${selectedOccupant.state}`
+          : unit_data.address || "Unknown Address",
+        email: selectedOccupant.email || undefined,
+        phone: selectedOccupant.phone || undefined,
+      };
+
+      const transformedData = transformDocumentData(
+        { document: unit_data.property_document },
+        tenantData
+      );
+
+      // Navigate to DocumentPreview with transformed data
+      // router.push(`/documents/preview?download=true`, {
+      //   state: { documentData: transformedData, unitName: unit_data.unit_name },
+      // });
+    } catch (err) {
+      toast.error(
+        "Failed to prepare agreement for download. Please try again."
+      );
+      console.error(err);
+    } finally {
+      setPdfLoading(false);
     }
   };
 
@@ -210,9 +258,16 @@ const StartRent = () => {
         {isRental &&
           selectedOccupant?.userTag?.toLocaleLowerCase() === "web" &&
           !isPastDate && (
-            <Button size="base_medium" className="py-2 px-6">
-              Download Agreement
-            </Button>
+            <Modal>
+              <ModalTrigger asChild>
+                <Button size="base_medium" className="py-2 px-6">
+                  Download Agreement
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <AgreementPreview />
+              </ModalContent>
+            </Modal>
           )}
 
         <Button

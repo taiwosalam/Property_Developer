@@ -1,6 +1,7 @@
 import { empty } from "@/app/config";
 import { ClauseData, DocumentPreviewData, LawFirm, Party } from "./types";
 import { formatFee } from "../../management/rent-unit/data";
+import { TenantData } from "@/components/Management/Rent And Unit/types";
 
 export const landlord: Party = {
   name: "ADEBAYO OLUSOJI OKELARIN",
@@ -195,67 +196,257 @@ export const witnessLawFirm: WitnessLawFirm = {
   ],
 };
 
-// ============ API INTEGRATION FOR DOCUMENT PREVIEW ================
-export const transformDocumentData = (data: any): DocumentPreviewData => {
+// // ============ API INTEGRATION FOR DOCUMENT PREVIEW ================
+// export const transformDocumentData = (data: any): DocumentPreviewData => {
+//   const document = data.document;
+//   const property = document.property;
+//   const articles = data.articles || [];
+//   // const articles = document.articles || [];
+//   const templateDocument = document.document;
+//   const templateArticles = templateDocument.articles || [];
+
+//   // Currency from property
+//   const currency = property.currency || 'naira';
+
+//   // Landlord and tenant names (placeholders due to missing data)
+//   const landlordName = document.landlord_name || '--- ----';
+//   const tenantName = property.units[0]?.tenant_id ? '--- ---' : 'Unknown Tenant';
+
+//   // Property description
+//   const propertyDescription = `in respect of a ${property.units[0]?.unit_name || 'two (2) bedroom bungalow'} in a compound with a 4 flats of 3 bedroom situate at ${property.full_address}, ${property.city_area}, ${property.local_government}, ${property.state}`;
+
+//   // Attorney: lawyer's full name
+//   const attorney = templateDocument.lawyer_fullname;
+
+//   // LawFirm
+//   const lawFirm: DocumentPreviewData['lawFirm'] = {
+//     logoSrc: templateDocument.lawyer_signature, // Adjust if a logo exists
+//     contactDetails: [
+//       { text: templateDocument.lawyer_firm_name, className: 'text-[25px] font-bold' },
+//       { text: templateDocument.lawyer_office_address, className: 'text-[20px]' },
+//       { text: templateDocument.lawyer_email, className: 'text-[20px]' },
+//       { text: templateDocument.lawyer_phone_number, className: 'text-[20px]' },
+//     ],
+//     sealSrc: templateDocument.lawyer_legal_seal,
+//   };
+
+//   // WitnessLawFirm
+//   const witnessLawFirm: DocumentPreviewData['witnessLawFirm'] = {
+//     contactDetails: [
+//       { text: templateDocument.lawyer_fullname, className: 'uppercase text-[30px] font-bold' },
+//       { text: templateDocument.lawyer_firm_name, className: 'uppercase text-[30px] font-bold' },
+//       { text: templateDocument.lawyer_office_address, className: 'text-[16px] font-bold' },
+//       { text: templateDocument.lawyer_email, className: 'text-[16px] font-semibold underline italic' },
+//       { text: templateDocument.lawyer_phone_number, className: 'text-[16px] font-bold' },
+//     ],
+//   };
+
+//   // Attestation
+//   const date = document.created_date;
+//   const landlord: Party = {
+//     name: landlordName,
+//     address: property.full_address || 'Unknown Address',
+//   };
+//   const tenant: Party = {
+//     name: tenantName,
+//     address: property.full_address || 'Tenant Address',
+//   };
+
+//   // Format fee in content
+//   const formatContent = (content: string): string => {
+//     const feeMatch = content.match(/N([\d,.]+)/);
+//     if (feeMatch && feeMatch[1]) {
+//       const amount = feeMatch[1].replace(/,/g, '');
+//       const formattedFee = formatFee(amount, currency);
+//       if (formattedFee) {
+//         return content.replace(feeMatch[0], formattedFee);
+//       }
+//     }
+//     return content;
+//   };
+
+//   // Group articles by section
+//   const landlordArticles = articles
+//     .filter((article: any) => article.section === 'Landlord Consent')
+//     .map((article: any) => formatContent(article.content));
+//   const tenantArticles = articles
+//     .filter((article: any) => article.section === 'Tenant Consent')
+//     .map((article: any) => formatContent(article.content));
+//   const bothArticles = articles
+//     .filter((article: any) => article.section === 'Both Consent')
+//     .map((article: any) => formatContent(article.content));
+
+//   // Fallback to template articles if needed
+//   const allLandlordArticles = [
+//     ...landlordArticles,
+//     ...templateArticles
+//       .filter((article: any) => article.section === 'Landlord Consent')
+//       .map((article: any) => formatContent(article.content)),
+//   ];
+//   const allTenantArticles = [
+//     ...tenantArticles,
+//     ...templateArticles
+//       .filter((article: any) => article.section === 'Tenant Consent')
+//       .map((article: any) => formatContent(article.content)),
+//   ];
+//   const allBothArticles = [
+//     ...bothArticles,
+//     ...templateArticles
+//       .filter((article: any) => article.section === 'Both Consent')
+//       .map((article: any) => formatContent(article.content)),
+//   ];
+
+//   // Construct clauses following the template structure
+//   const clauses: ClauseData[] = [
+//     {
+//       title: 'whereas',
+//       content: `The legal title to the ${property.units[0]?.unit_name || 'Property'} and its appurtenances being at ${property.full_address}, ${property.city_area}, ${property.local_government}, ${property.state} inures in favor of and belongs to the Landlord.`,
+//       subClauses: [
+//         `The Tenant is desirous of renting the said premises for ${templateDocument.category} Purposes.`,
+//         'At the request of tenant, the Landlord has agreed to let the Premises for the above Purposes on the terms herein set-out.',
+//         'The Premises which is the subject matter of this Agreement is free from all encumbrances.',
+//       ],
+//     },
+//     {
+//       title: 'NOW THIS AGREEMENT WITNESSES AS FOLLOWS',
+//       subClauses: [
+//         `The Landlord hereby lets to the Tenant and the Tenant hereby accepts to let the <b>${property.units[0]?.unit_name || 'Property'}</b> and its appurtenances being <b>at ${property.full_address}, ${property.city_area}, ${property.local_government}, ${property.state}</b> paying the sum of <b>${formatFee(property.units[0]?.fee_amount || '0', currency) || 'Unknown Amount'}</b> only as Rent, the receipt of which the Landlord hereby acknowledges.`,
+//         `The tenancy hereby created is for a term of 2 (Two) years certain and definite, commencing from the <b>${document.created_date}</b> and shall terminate on the <b>${new Date(new Date(document.created_date).setFullYear(new Date(document.created_date).getFullYear() + 2)).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</b>`,
+//       ],
+//     },
+//     {
+//       title: 'THE LANDLORD HEREBY COVENANTS:',
+//       subClauses: allLandlordArticles,
+//     },
+//     {
+//       title: 'THE TENANT HEREBY COVENANTS:',
+//       subClauses: allTenantArticles,
+//     },
+//     {
+//       title: 'PROVIDED ALWAYS AND IT IS HEREBY AGREED AS FOLLOWS:',
+//       subClauses: allBothArticles,
+//     },
+//     {
+//       title: 'DISPUTE RESOLUTION MECHANISM:',
+//       subClauses: [
+//         'Any dispute or difference between the parties concerning the interpretation or validity of this agreement or the rights and liabilities if any of the parties shall in the first instance be referred to a sole arbitrator under the auspices of the Oyo State Multi-door Court house, under the applicable arbitration rules.',
+//         'The proceedings of the arbitral tribunal shall be conducted in English Language.',
+//         'The award of the arbitrator shall be final and binding upon the parties.',
+//       ],
+//     },
+//   ];
+
+//   return {
+//     parties: {
+//       landlord: landlordName,
+//       tenant: tenantName,
+//     },
+//     propertyDescription,
+//     attorney,
+//     lawFirm,
+//     witnessLawFirm,
+//     attestation: {
+//       date,
+//       landlord,
+//       tenant,
+//     },
+//     clauses,
+//   };
+// };
+
+export const transformDocumentData = (
+  data: any,
+  selectedTenant?: any
+): DocumentPreviewData => {
   const document = data.document;
   const property = document.property;
   const articles = data.articles || [];
-  // const articles = document.articles || [];
   const templateDocument = document.document;
   const templateArticles = templateDocument.articles || [];
 
   // Currency from property
-  const currency = property.currency || 'naira';
+  const currency = property.currency || "naira";
 
-  // Landlord and tenant names (placeholders due to missing data)
-  const landlordName = document.landlord_name || '--- ----';
-  const tenantName = property.units[0]?.tenant_id ? '--- ---' : 'Unknown Tenant';
+  // Landlord and tenant names
+  const landlordName =
+    document.landlord_name ||
+    document.property?.landlord?.name ||
+    "Binary Housing";
+  const tenantName =
+    selectedTenant?.name ||
+    (property.units[0]?.tenant_id ? "John Doe" : "Unknown Tenant");
 
   // Property description
-  const propertyDescription = `in respect of a ${property.units[0]?.unit_name || 'two (2) bedroom bungalow'} in a compound with a 4 flats of 3 bedroom situate at ${property.full_address}, ${property.city_area}, ${property.local_government}, ${property.state}`;
+  const propertyDescription = `in respect of a ${
+    property.units[0]?.unit_name || "two (2) bedroom bungalow"
+  } in a compound with a 4 flats of 3 bedroom situate at ${
+    property.full_address
+  }, ${property.city_area}, ${property.local_government}, ${property.state}`;
 
   // Attorney: lawyer's full name
   const attorney = templateDocument.lawyer_fullname;
 
   // LawFirm
-  const lawFirm: DocumentPreviewData['lawFirm'] = {
-    logoSrc: templateDocument.lawyer_signature, // Adjust if a logo exists
+  const lawFirm: DocumentPreviewData["lawFirm"] = {
+    logoSrc: templateDocument.lawyer_signature, 
     contactDetails: [
-      { text: templateDocument.lawyer_firm_name, className: 'text-[25px] font-bold' },
-      { text: templateDocument.lawyer_office_address, className: 'text-[20px]' },
-      { text: templateDocument.lawyer_email, className: 'text-[20px]' },
-      { text: templateDocument.lawyer_phone_number, className: 'text-[20px]' },
+      {
+        text: templateDocument.lawyer_firm_name,
+        className: "text-[25px] font-bold",
+      },
+      {
+        text: templateDocument.lawyer_office_address,
+        className: "text-[20px]",
+      },
+      { text: templateDocument.lawyer_email, className: "text-[20px]" },
+      { text: templateDocument.lawyer_phone_number, className: "text-[20px]" },
     ],
     sealSrc: templateDocument.lawyer_legal_seal,
   };
 
   // WitnessLawFirm
-  const witnessLawFirm: DocumentPreviewData['witnessLawFirm'] = {
+  const witnessLawFirm: DocumentPreviewData["witnessLawFirm"] = {
     contactDetails: [
-      { text: templateDocument.lawyer_fullname, className: 'uppercase text-[30px] font-bold' },
-      { text: templateDocument.lawyer_firm_name, className: 'uppercase text-[30px] font-bold' },
-      { text: templateDocument.lawyer_office_address, className: 'text-[16px] font-bold' },
-      { text: templateDocument.lawyer_email, className: 'text-[16px] font-semibold underline italic' },
-      { text: templateDocument.lawyer_phone_number, className: 'text-[16px] font-bold' },
+      {
+        text: templateDocument.lawyer_fullname,
+        className: "uppercase text-[30px] font-bold",
+      },
+      {
+        text: templateDocument.lawyer_firm_name,
+        className: "uppercase text-[30px] font-bold",
+      },
+      {
+        text: templateDocument.lawyer_office_address,
+        className: "text-[16px] font-bold",
+      },
+      {
+        text: templateDocument.lawyer_email,
+        className: "text-[16px] font-semibold underline italic",
+      },
+      {
+        text: templateDocument.lawyer_phone_number,
+        className: "text-[16px] font-bold",
+      },
     ],
   };
 
   // Attestation
   const date = document.created_date;
-  const landlord: Party = {
+  const landlord: DocumentPreviewData["attestation"]["landlord"] = {
     name: landlordName,
-    address: property.full_address || 'Unknown Address',
+    address: property.full_address || "Unknown Address",
   };
-  const tenant: Party = {
+  const tenant: DocumentPreviewData["attestation"]["tenant"] = {
     name: tenantName,
-    address: property.full_address || 'Tenant Address',
+    address:
+      selectedTenant?.address || property.full_address || "Tenant Address",
   };
 
   // Format fee in content
   const formatContent = (content: string): string => {
     const feeMatch = content.match(/N([\d,.]+)/);
     if (feeMatch && feeMatch[1]) {
-      const amount = feeMatch[1].replace(/,/g, '');
+      const amount = feeMatch[1].replace(/,/g, "");
       const formattedFee = formatFee(amount, currency);
       if (formattedFee) {
         return content.replace(feeMatch[0], formattedFee);
@@ -266,71 +457,96 @@ export const transformDocumentData = (data: any): DocumentPreviewData => {
 
   // Group articles by section
   const landlordArticles = articles
-    .filter((article: any) => article.section === 'Landlord Consent')
+    .filter((article: any) => article.section === "Landlord Consent")
     .map((article: any) => formatContent(article.content));
   const tenantArticles = articles
-    .filter((article: any) => article.section === 'Tenant Consent')
+    .filter((article: any) => article.section === "Tenant Consent")
     .map((article: any) => formatContent(article.content));
   const bothArticles = articles
-    .filter((article: any) => article.section === 'Both Consent')
+    .filter((article: any) => article.section === "Both Consent")
     .map((article: any) => formatContent(article.content));
 
   // Fallback to template articles if needed
   const allLandlordArticles = [
     ...landlordArticles,
     ...templateArticles
-      .filter((article: any) => article.section === 'Landlord Consent')
+      .filter((article: any) => article.section === "Landlord Consent")
       .map((article: any) => formatContent(article.content)),
   ];
   const allTenantArticles = [
     ...tenantArticles,
     ...templateArticles
-      .filter((article: any) => article.section === 'Tenant Consent')
+      .filter((article: any) => article.section === "Tenant Consent")
       .map((article: any) => formatContent(article.content)),
   ];
   const allBothArticles = [
     ...bothArticles,
     ...templateArticles
-      .filter((article: any) => article.section === 'Both Consent')
+      .filter((article: any) => article.section === "Both Consent")
       .map((article: any) => formatContent(article.content)),
   ];
 
   // Construct clauses following the template structure
   const clauses: ClauseData[] = [
     {
-      title: 'whereas',
-      content: `The legal title to the ${property.units[0]?.unit_name || 'Property'} and its appurtenances being at ${property.full_address}, ${property.city_area}, ${property.local_government}, ${property.state} inures in favor of and belongs to the Landlord.`,
+      title: "whereas",
+      content: `The legal title to the ${
+        property.units[0]?.unit_name || "Property"
+      } and its appurtenances being at ${property.full_address}, ${
+        property.city_area
+      }, ${property.local_government}, ${
+        property.state
+      } inures in favor of and belongs to the Landlord.`,
       subClauses: [
         `The Tenant is desirous of renting the said premises for ${templateDocument.category} Purposes.`,
-        'At the request of tenant, the Landlord has agreed to let the Premises for the above Purposes on the terms herein set-out.',
-        'The Premises which is the subject matter of this Agreement is free from all encumbrances.',
+        "At the request of tenant, the Landlord has agreed to let the Premises for the above Purposes on the terms herein set-out.",
+        "The Premises which is the subject matter of this Agreement is free from all encumbrances.",
       ],
     },
     {
-      title: 'NOW THIS AGREEMENT WITNESSES AS FOLLOWS',
+      title: "NOW THIS AGREEMENT WITNESSES AS FOLLOWS",
       subClauses: [
-        `The Landlord hereby lets to the Tenant and the Tenant hereby accepts to let the <b>${property.units[0]?.unit_name || 'Property'}</b> and its appurtenances being <b>at ${property.full_address}, ${property.city_area}, ${property.local_government}, ${property.state}</b> paying the sum of <b>${formatFee(property.units[0]?.fee_amount || '0', currency) || 'Unknown Amount'}</b> only as Rent, the receipt of which the Landlord hereby acknowledges.`,
-        `The tenancy hereby created is for a term of 2 (Two) years certain and definite, commencing from the <b>${document.created_date}</b> and shall terminate on the <b>${new Date(new Date(document.created_date).setFullYear(new Date(document.created_date).getFullYear() + 2)).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</b>`,
+        `The Landlord hereby lets to the Tenant and the Tenant hereby accepts to let the <b>${
+          property.units[0]?.unit_name || "Property"
+        }</b> and its appurtenances being <b>at ${property.full_address}, ${
+          property.city_area
+        }, ${property.local_government}, ${
+          property.state
+        }</b> paying the sum of <b>${
+          formatFee(property.units[0]?.fee_amount || "0", currency) ||
+          "Unknown Amount"
+        }</b> only as Rent, the receipt of which the Landlord hereby acknowledges.`,
+        `The tenancy hereby created is for a term of 2 (Two) years certain and definite, commencing from the <b>${
+          document.created_date
+        }</b> and shall terminate on the <b>${new Date(
+          new Date(document.created_date).setFullYear(
+            new Date(document.created_date).getFullYear() + 2
+          )
+        ).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}</b>`,
       ],
     },
     {
-      title: 'THE LANDLORD HEREBY COVENANTS:',
+      title: "THE LANDLORD HEREBY COVENANTS:",
       subClauses: allLandlordArticles,
     },
     {
-      title: 'THE TENANT HEREBY COVENANTS:',
+      title: "THE TENANT HEREBY COVENANTS:",
       subClauses: allTenantArticles,
     },
     {
-      title: 'PROVIDED ALWAYS AND IT IS HEREBY AGREED AS FOLLOWS:',
+      title: "PROVIDED ALWAYS AND IT IS HEREBY AGREED AS FOLLOWS:",
       subClauses: allBothArticles,
     },
     {
-      title: 'DISPUTE RESOLUTION MECHANISM:',
+      title: "DISPUTE RESOLUTION MECHANISM:",
       subClauses: [
-        'Any dispute or difference between the parties concerning the interpretation or validity of this agreement or the rights and liabilities if any of the parties shall in the first instance be referred to a sole arbitrator under the auspices of the Oyo State Multi-door Court house, under the applicable arbitration rules.',
-        'The proceedings of the arbitral tribunal shall be conducted in English Language.',
-        'The award of the arbitrator shall be final and binding upon the parties.',
+        "Any dispute or difference between the parties concerning the interpretation or validity of this agreement or the rights and liabilities if any of the parties shall in the first instance be referred to a sole arbitrator under the auspices of the Oyo State Multi-door Court house, under the applicable arbitration rules.",
+        "The proceedings of the arbitral tribunal shall be conducted in English Language.",
+        "The award of the arbitrator shall be final and binding upon the parties.",
       ],
     },
   ];

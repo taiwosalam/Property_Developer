@@ -43,6 +43,7 @@ const AddFundsModal = ({
     // Once payment is confirmed, you may reset to the menu or show a success message.
     // setActiveStep("send funds menu");
     setIsOpen(false);
+    window.dispatchEvent(new Event("refetch-wallet"));
   };
 
   // If the active step is "payment", render PaymentIframe only.
@@ -77,7 +78,7 @@ const AddFundsModal = ({
             branch
           />
         ) : (
-          <div>
+          <div className="custom-flex-col gap-4">
             {doc && (
               <PaymentMethod
                 title={selectedLegalOption?.title ?? ""}

@@ -44,7 +44,9 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
     <h1 className="custom-primary-color text-[32px] font-bold capitalize mt-2">
       {title}
     </h1>
-    <p className="text-text-label text-base font-normal dark:text-darkText-1">{children}</p>
+    <p className="text-text-label text-base font-normal dark:text-darkText-1">
+      {children}
+    </p>
   </div>
 );
 
@@ -172,6 +174,9 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({
         inputMode="numeric" // Ensure that the input is numeric
         onChange={onChange} // Handle input changes
         validate={/^[0-9]$/} // Regex to allow only numeric characters
+        type="password"
+        autoComplete="one-time-code"
+        autoCorrect="off"
         className="w-[35px] h-10 text-center custom-primary-color rounded-[4px] border border-solid custom-primary-outline bg-background-1"
         style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Inline style for border color
       />

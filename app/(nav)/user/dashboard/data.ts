@@ -201,13 +201,14 @@ export const recentTransactionTableFields: Field[] = [
 export const recentTransactions: Transaction[] = [
   {
     id: '1',
+    transaction_type: 'debit',
     source: 'PayPal',
     description: 'Payment for freelance work',
     amount: '150.00',
     status: 'Completed',
     date: '2025-01-20',
     time: '14:35',
-    type: 'credit',
+    type: 'debit',
   },
   {
     id: '2',
@@ -218,6 +219,7 @@ export const recentTransactions: Transaction[] = [
     date: '2025-01-19',
     time: '10:15',
     type: 'debit',
+    transaction_type: 'debit',
   },
   {
     id: '3',
@@ -227,7 +229,8 @@ export const recentTransactions: Transaction[] = [
     status: 'Completed',
     date: '2025-01-18',
     time: '16:50',
-    type: 'credit',
+    type: 'debit',
+    transaction_type: 'debit',
   },
   {
     id: '4',
@@ -238,6 +241,7 @@ export const recentTransactions: Transaction[] = [
     date: '2025-01-17',
     time: '09:00',
     type: 'debit',
+    transaction_type: 'debit',
   },
   {
     id: '5',
@@ -248,6 +252,7 @@ export const recentTransactions: Transaction[] = [
     date: '2025-01-16',
     time: '12:20',
     type: 'debit',
+    transaction_type: 'debit',
   },
   {
     id: '6',
@@ -258,6 +263,7 @@ export const recentTransactions: Transaction[] = [
     date: '2025-01-15',
     time: '08:45',
     type: 'DVA',
+    transaction_type: 'debit',
   },
   {
     id: '7',
@@ -267,16 +273,18 @@ export const recentTransactions: Transaction[] = [
     status: 'Completed',
     date: '2025-01-14',
     time: '15:30',
-    type: 'credit',
+    type: 'debit',
+    transaction_type: 'debit',
   },
   {
     id: '8',
-    source: 'Credit Card',
+    source: 'debit Card',
     description: 'Subscription Fee',
     amount: '29.99',
     status: 'Pending',
     date: '2025-01-13',
     time: '11:10',
+    transaction_type: 'debit',
     type: 'debit',
   },
   {
@@ -287,17 +295,19 @@ export const recentTransactions: Transaction[] = [
     status: 'Completed',
     date: '2025-01-12',
     time: '17:00',
-    type: 'credit',
+    type: 'debit',
+    transaction_type: 'debit',
   },
   {
     id: '10',
-    source: 'DVA',
+    source: 'debit',
     description: 'Veterans Allowance',
     amount: '750.00',
     status: 'Completed',
     date: '2025-01-11',
     time: '14:25',
-    type: 'DVA',
+    type: 'debit',
+    transaction_type: 'debit',
   },
 ];
 

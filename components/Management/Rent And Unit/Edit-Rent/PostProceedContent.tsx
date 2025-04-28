@@ -16,7 +16,11 @@ import {
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
-import { PreviousUnitBalance, NewUnitCost } from "./Edit-rent-sections";
+import {
+  PreviousUnitBalance,
+  NewUnitCost,
+  PayAble,
+} from "./Edit-rent-sections";
 import {
   RenewalRent as StartRent,
   PreviousRentRecords,
@@ -48,6 +52,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { useGlobalStore } from "@/store/general-store";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 
 const PostProceedContent = ({
   selectedUnitId,
@@ -76,6 +81,7 @@ const PostProceedContent = ({
   const currentUnit = useGlobalStore((s) => s.currentUnit);
   const currentRentStats = useGlobalStore((s) => s.currentRentStats);
   const oustandingObj = currentRentStats?.oustandingObj || [];
+  const outstanding = currentRentStats?.outstanding || 0;
 
   const isUnit = page === "unit";
   // console.log("currentRentStats", currentRentStats);
@@ -126,10 +132,12 @@ const PostProceedContent = ({
   const startday = balance?.[0]?.start_date;
   const endDay = balance?.[0]?.due_date;
   const amt = balance?.[0]?.amount_paid;
-
+  const rent = currentUnit.newTenantTotalPrice;
+  const renewalTenantPrice = parseCurrency(currentUnit.renewalTenantPrice);
   // Only calculate the balance if all values exist, otherwise default to 0
   const bal =
     startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
+
   const newUnitTotal = calculation
     ? Number(unit_data.newTenantTotalPrice)
     : Number(unit_data.renewalTenantTotalPrice);
@@ -140,14 +148,16 @@ const PostProceedContent = ({
         unit_data.currency || "naira"
       );
   // const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
-  const totalPayable = deduction ? newUnitTotal - bal : newUnitTotal;
+  // const totalPayable = deduction ? newUnitTotal - bal : newUnitTotal;
+  const totalPayable = deduction ? outstanding - newUnitTotal : newUnitTotal;
   const prev_unit_bal = bal
     ? `${"₦"}${formatNumber(parseFloat(`${bal}`))}`
     : undefined;
   const refundAmount = totalPayable < 0 ? Math.abs(totalPayable) : 0;
 
   // Calculate excess or refund amount for the third card
-  const isExcess = newUnitTotal < totalPayable;
+  // const isExcess = newUnitTotal < totalPayable;
+  const isExcess = totalPayable > 0;
   const balanceAmount = isExcess
     ? totalPayable - newUnitTotal
     : Math.abs(totalPayable);
@@ -167,12 +177,16 @@ const PostProceedContent = ({
     isUnit ? currentUnit : propertyData
   );
 
+  console.log("currentUnit", currentUnit);
+  console.log("outstanding", outstanding);
+  console.log("totalPayable", totalPayable);
+
   const deductionsLabeCal = [
     {
       label: calculation ? "New Tenant Package" : "Renewal Total Package",
       value: newUnitTotalFormatted,
     },
-    ...oustandingObj,
+    // ...oustandingObj,
     {
       label: deduction ? "Do Deduction" : "No Deduction",
       value: formatFee(totalPayable, unit_data.currency || "naira"),
@@ -314,28 +328,20 @@ const PostProceedContent = ({
               deductionsCal={deductionsLabeCal}
               deductionsRes={deductionsLabeRes}
               items={balance as RentPreviousRecords[]}
-              total={`${bal}`}
+              // total={`${bal}`}
+              total={`${totalPayable}`}
             />
 
-            <NewUnitCost
-              title="Payable Cost"
-              noEdit
+            <PayAble
               isRental={isRental}
-              feeDetails={[
-                {
-                  name: "Previous Unit",
-                  amount: prev_unit_bal as any,
-                },
-                {
-                  name: "Current Unit",
-                  amount: currentUnitAmt,
-                },
-                { name: "Other Charges", amount: unit_data.other_charge },
-              ]}
-              total={totalPayable < 0 ? 0 : totalPayable}
+              detail={{
+                label: balanceLabel,
+                amount: totalPayable,
+              }}
+              isExcess={isExcess}
               calculation={calculation}
             />
-
+            {/* 
             {showBalanceCard && (
               <NewUnitCost
                 title="Balance After Deduction"
@@ -352,7 +358,7 @@ const PostProceedContent = ({
                 total={balanceAmount}
                 calculation={calculation}
               />
-            )}
+            )} */}
 
             <StartRent
               isRental={isRental}

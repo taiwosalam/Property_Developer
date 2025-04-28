@@ -7,7 +7,15 @@ export interface WalletAnalyticsProps {
   trend: {
     percent: number;
     type: "up" | "down" | "none" | "equal";
-    from: "last month" | "last week" | "none";
+    from:
+      | "last month"
+      | "last week"
+      | "none"
+      | "previous day"
+      | "previous 3 months"
+      | "previous 30 days"
+      | "previous 7 days"
+      | "previous period";
   };
 
   className?: string;
@@ -22,7 +30,10 @@ export interface FundingCardProps {
   type: "paystack" | "flutterwave" | "bank transfer" | "sterling";
 }
 
-export type WalletSendFundsOptions = "send funds menu" | "recipient" | "payment";
+export type WalletSendFundsOptions =
+  | "send funds menu"
+  | "recipient"
+  | "payment";
 
 export type WalletWithdrawFundsOptions = "withdrawal" | "input pin";
 

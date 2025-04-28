@@ -62,8 +62,13 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   // console.log("transactions", recent_transactions);
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
-    wallet_id: branch_wallet !== null ? Number(branchData?.branch_wallet?.wallet_id) : undefined,
-    is_active: branch_wallet !== null && yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
+    wallet_id:
+      branch_wallet !== null
+        ? Number(branchData?.branch_wallet?.wallet_id)
+        : undefined,
+    is_active:
+      branch_wallet !== null &&
+      yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
   });
 
   // console.log("branch wallet", branchData)
@@ -119,43 +124,65 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     };
   });
 
+  const transformedWalletTableData =
+    transactions &&
+    transactions.map((t) => ({
+      ...t,
+      amount: (
+        <span
+          className={clsx({
+            "text-status-success-3":
+              t.transaction_type === "funding" ||
+              t.transaction_type === "transfer_in",
+            "text-status-error-primary":
+              t.transaction_type === "debit" ||
+              t.transaction_type === "transfer_out",
+          })}
+        >
+          {`${
+            t.transaction_type === "funding" ||
+            t.transaction_type === "transfer_in"
+              ? "+"
+              : t.transaction_type === "debit" ||
+                t.transaction_type === "transfer_out"
+              ? "-"
+              : ""
+          }${t.amount}`}
+        </span>
+      ),
+      icon: (
+        <div
+          className={clsx(
+            "flex items-center justify-center w-9 h-9 rounded-full",
+            {
+              "bg-status-error-1 text-status-error-primary":
+                t.transaction_type === "debit" ||
+                t.transaction_type === "transfer_out",
+              "bg-status-success-1 text-status-success-primary":
+                t.transaction_type === "funding" ||
+                t.transaction_type === "transfer_in",
+            }
+          )}
+        >
+          {getTransactionIcon(t.source as string, t.transaction_type)}
+        </div>
+      ),
+    }));
 
-  const transformedWalletTableData = transactions && transactions.map((t) => ({
-    ...t,
-    amount: (
-      <span
-        className={clsx({
-          "text-status-success-3": t.transaction_type === "credit" || t.transaction_type === "transfer_in",
-          "text-status-error-primary": t.transaction_type === "debit" || t.transaction_type === "transfer_out",
-        })}
-      >
-        {`${t.transaction_type === "credit" || t.transaction_type === "transfer_in" ? "+" : t.transaction_type === "debit" || t.transaction_type === "transfer_out" ? "-" : ""}${
-          t.amount
-        }`}
-      </span>
-    ),
-    icon: (
-      <div
-        className={clsx(
-          "flex items-center justify-center w-9 h-9 rounded-full",
-          {
-            "bg-status-error-1 text-status-error-primary": t.transaction_type === "debit" || t.transaction_type === "transfer_out",
-            "bg-status-success-1 text-status-success-primary":
-              t.transaction_type === "credit" || t.transaction_type === "transfer_in" || t.transaction_type === "DVA",
-          }
-        )}
-      >
-        {getTransactionIcon(t.source as string, t.transaction_type)}
-      </div>
-    ),
-  }));
-
-  const walletChartData = recent_transactions && recent_transactions.map((t) => ({
-    date: t.date,
-    totalfunds: t.amount,
-    credit: t.transaction_type === "credit" || t.transaction_type === "transfer_in" ? t.amount : 0,
-    debit: t.transaction_type === "debit" || t.transaction_type === "transfer_out" ? t.amount : 0,
-  }));
+  const walletChartData =
+    recent_transactions &&
+    recent_transactions.map((t) => ({
+      date: t.date,
+      totalfunds: t.amount,
+      credit:
+        t.transaction_type === "funding" || t.transaction_type === "transfer_in"
+          ? t.amount
+          : 0,
+      debit:
+        t.transaction_type === "debit" || t.transaction_type === "transfer_out"
+          ? t.amount
+          : 0,
+    }));
 
   // set branch data to store
   useEffect(() => {
@@ -298,7 +325,9 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             className="max-w-full flex items-center justify-between flex-wrap gap-2"
           >
             <h1 className="text-[14px] font-medium">Branch Wallet</h1>
-            <p className="text-xs text-text-label">ID: {branch_wallet?.wallet_id}</p>
+            <p className="text-xs text-text-label">
+              ID: {branch_wallet?.wallet_id}
+            </p>
           </Link>
           <BranchBalanceCard
             mainBalance={Number(branch_wallet?.balance_total)}
@@ -310,11 +339,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:items-start">
         <div className="overflow-x-auto flex lg:w-[68%] md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
           {updatedDashboardCardData.map((card, index) => (
-            <Link
-              href={card.link}
-              key={index}
-              prefetch={false}
-            >
+            <Link href={card.link} key={index} prefetch={false}>
               <Card
                 title={card.title}
                 icon={<card.icon />}
