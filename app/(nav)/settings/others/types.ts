@@ -43,7 +43,7 @@ type User = {
     title: string;
     state: string | null;
     lga: string | null;
-  }
+  };
   is_active: number;
   is_company_owner: number;
   tier_id: number;
@@ -184,9 +184,27 @@ interface SmtpSettings {
 }
 
 // Rent penalty settings
-interface RentPenaltySetting {
-  penalty_value: number; // e.g., 5
+// ...existing code...
+
+// Rent penalty settings
+export interface RentPenaltySetting {
+  daily: number;
+  weekly: number;
+  monthly: number;
+  quarterly: number;
+  yearly: number;
+  biennially: number;
+  triennially: number;
+  quadrennial: number;
+  quinquennial: number;
+  sexennial: number;
+  septennial: number;
+  octennial: number;
+  nonennial: number;
+  decennial: number;
 }
+
+// ...existing code...
 
 // Screening levels
 interface ScreeningLevels {
@@ -248,10 +266,9 @@ export interface ITenantResponse {
       agent: string;
       picture: string;
       email: string;
-    }
-  }
+    };
+  };
 }
-
 
 export type RestrictedTenant = {
   id: number;
@@ -274,4 +291,3 @@ export type RestrictedUserApiResponse = {
   message: string;
   data: RestrictedTenant[];
 };
-

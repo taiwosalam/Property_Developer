@@ -68,7 +68,15 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
             <InspectionCardTitle>other details</InspectionCardTitle>
             <InspectionCardTitleDesc
               title="Booked by"
-              desc={`${data?.booked_by}`}
+              desc={
+                <div className="flex items-center">
+                  <span>{data?.booked_by}</span>
+                  {data?.tier ||
+                    (data.tier === 0 && (
+                      <BadgeIcon color={getBadgeColor(data?.tier)} />
+                    ))}
+                </div>
+              }
             />
             <InspectionCardTitleDesc
               title="Selected Date"

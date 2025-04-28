@@ -56,6 +56,8 @@ const CalendarPage = () => {
     getAllEventsOnCalendar();
   }, []);
 
+  
+
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },

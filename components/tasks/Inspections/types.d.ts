@@ -51,6 +51,6 @@ export interface InspectionCardDetailProps {
 }
 
 export interface InspectionCardTitleDescProps {
-  desc: string;
+  desc: string | React.ReactNode;
   title: string;
 }

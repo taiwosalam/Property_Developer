@@ -1,6 +1,7 @@
 import api, { handleAxiosError } from "@/services/api";
 import { StaticImageData } from "next/image";
 import { toast } from "sonner";
+import { RentPenaltySettings } from "../management/types";
 
 export const updateUserProfile = async (data: FormData) => {
   try {
@@ -130,6 +131,24 @@ export const updateSettings = async (data: FormData, type: string) => {
     return false;
   }
 };
+
+export const updateRentPenaltySettings = async (settings: RentPenaltySettings) => {
+  try {
+    const payload = {
+      "_method": "PATCH",
+     "rent-penalty-settings": [settings],
+    }
+  
+    const response = await api.post(`/company/settings/rent_penalty_setting`, payload);
+    if (response.status === 200) {
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 
 
 

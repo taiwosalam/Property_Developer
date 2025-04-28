@@ -177,7 +177,6 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
               ? dayjs(formData.years_in_business)
               : null
           }
-          className="bg-neutral-2"
         />
         {/* <Select
           validationErrors={errorMsgs}

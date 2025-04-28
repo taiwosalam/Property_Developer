@@ -12,7 +12,11 @@ import {
   transformInspectionCard,
 } from "./data";
 import useFetch from "@/hooks/useFetch";
-import { InspectionDataApiResponse, InspectionPageType } from "./type";
+import {
+  InspectionDataApiResponse,
+  InspectionPageType,
+  PropertyListResponse,
+} from "./type";
 import { useEffect, useRef, useState } from "react";
 import NetworkError from "@/components/Error/NetworkError";
 import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
@@ -22,6 +26,7 @@ import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../../reports/data/utils";
+import ServerError from "@/components/Error/ServerError";
 
 const InspectionPage = () => {
   const [inspectionData, setInspectionData] =
@@ -39,6 +44,9 @@ const InspectionPage = () => {
     endDate: null,
   });
 
+  const [allProperties, setAllProperties] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
   const eleScrollIn = useRef<HTMLDivElement | null>(null);
 
   const isFilteredApplied = () => {
@@ -54,7 +62,7 @@ const InspectionPage = () => {
   const handleFilterApply = (filter: FilterResult) => {
     setAppliedFilters(filter);
     const { menuOptions, startDate, endDate } = filter;
-    const propertyIdArray = menuOptions["Property"] || []
+    const propertyIdArray = menuOptions["Property"] || [];
 
     const queryParams: InspectionRequestParams = {
       page: 1,
@@ -66,7 +74,7 @@ const InspectionPage = () => {
     if (endDate) {
       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
     }
-    if(propertyIdArray.length > 0){
+    if (propertyIdArray.length > 0) {
       queryParams.property_ids = propertyIdArray.join(",");
     }
 
@@ -96,11 +104,12 @@ const InspectionPage = () => {
   const {
     data: apiData,
     isNetworkError,
+    error,
     loading,
     silentLoading,
   } = useFetch<InspectionDataApiResponse>(`inspections`, config);
 
-  
+  const { data: propertyData } = useFetch<PropertyListResponse>(`property/all`);
 
   useEffect(() => {
     if (apiData) {
@@ -112,24 +121,39 @@ const InspectionPage = () => {
   const propertyFilterOptionMenu = [
     {
       label: "Property",
-      value:
-        inspectionData?.card
-          .map((item) => {
-            return item?.property_name
-              ? { label: item.property_name, value: item.property_id.toString() }
-              : null;
-          })
-          .filter(
-            (item): item is { label: string; value: string } => item !== null
-          ) || [],
+      value: allProperties,
     },
   ];
+
+  useEffect(() => {
+    if (propertyData) {
+      const uniqueProperties = new Set();
+      const properties = propertyData.data
+        .filter(item => item?.property_type === "rental") // Filter for rental properties only
+        .map((item) => {
+          if (item?.title && !uniqueProperties.has(item.title)) {
+            uniqueProperties.add(item.title);
+            return {
+              label: item.title,
+              value: item.id.toString(),
+            };
+          }
+          return null;
+        })
+        .filter((item): item is { label: string; value: string } => item !== null);
+  
+      setAllProperties(properties);
+    }
+  }, [propertyData]);
 
   if (isNetworkError) {
     return <NetworkError />;
   }
   if (loading) {
     return <CustomLoader layout="page" pageTitle="Inspection" />;
+  }
+  if(error){
+    <ServerError error={error}/>
   }
 
   return (
