@@ -567,3 +567,44 @@ button:disabled:not(.retain-opacity) {
     box-shadow: none !important;
   }
 }
+
+
+
+
+
+
+.agreement-preview-container {
+  @apply rounded-[20px] bg-white dark:bg-black p-6 max-h-[80vh] overflow-y-auto md:max-w-[80%] custom-round-scrollbar;
+}
+
+.agreement-preview-header {
+  @apply flex justify-between items-center mb-4;
+}
+
+.agreement-preview-title {
+  @apply text-xl font-bold text-gray-800 dark:text-gray-200;
+}
+
+.agreement-preview-close-button {
+  @apply py-2 px-4 font-semibold text-sm;
+}
+
+.agreement-preview-content {
+  @apply space-y-4;
+}
+
+.agreement-preview-first-page {
+  @apply border-4 border-black p-8;
+}
+
+.agreement-preview-section {
+  @apply flex flex-col gap-4;
+}
+
+.agreement-preview-footer {
+  @apply mt-4 flex justify-end;
+}
+
+.agreement-preview-download-button {
+  @apply py-2 px-8 font-bold text-sm lg:text-base;
+}
