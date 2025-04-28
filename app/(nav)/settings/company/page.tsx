@@ -47,6 +47,7 @@ import WebsitePages from "@/components/Settings/website-pages";
 import WebsiteTypography from "@/components/Settings/website-custom-typography";
 import Button from "@/components/Form/Button/button";
 import { StaticImageData } from "next/image";
+import clsx from "clsx";
 
 const Profile = () => {
   const company_id = usePersonalInfoStore((state) => state.company_id);
