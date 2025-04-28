@@ -1,6 +1,6 @@
 import { empty } from "@/app/config";
 import { ClauseData, DocumentPreviewData, LawFirm, Party } from "./types";
-import { formatFee } from "../../management/rent-unit/data";
+import { formatFee, Occupant } from "../../management/rent-unit/data";
 import { TenantData } from "@/components/Management/Rent And Unit/types";
 
 export const landlord: Party = {
@@ -356,7 +356,8 @@ export const witnessLawFirm: WitnessLawFirm = {
 
 export const transformDocumentData = (
   data: any,
-  selectedTenant?: any
+  selectedOccupant?: Occupant,
+  unitData?: any
 ): DocumentPreviewData => {
   const document = data.document;
   const property = document.property;
@@ -364,31 +365,35 @@ export const transformDocumentData = (
   const templateDocument = document.document;
   const templateArticles = templateDocument.articles || [];
 
-  // Currency from property
-  const currency = property.currency || "naira";
+  // Currency: prefer unitData.currency, then property.currency
+  const currency = unitData?.currency || property.currency || "naira";
 
   // Landlord and tenant names
   const landlordName =
     document.landlord_name ||
     document.property?.landlord?.name ||
-    "Binary Housing";
+    "-- --";
   const tenantName =
-    selectedTenant?.name ||
-    (property.units[0]?.tenant_id ? "John Doe" : "Unknown Tenant");
+    selectedOccupant?.name ||
+    (property.units[0]?.tenant_id ? "-- --" : "Unknown Tenant");
 
-  // Property description
+  // Property description: use unitData if available
   const propertyDescription = `in respect of a ${
-    property.units[0]?.unit_name || "two (2) bedroom bungalow"
+    unitData?.unit_name ||
+    property.units[0]?.unit_name ||
+    "two (2) bedroom bungalow"
   } in a compound with a 4 flats of 3 bedroom situate at ${
-    property.full_address
-  }, ${property.city_area}, ${property.local_government}, ${property.state}`;
+    unitData?.address || property.full_address
+  }, ${unitData?.city_area || property.city_area || ""}, ${
+    unitData?.local_government || property.local_government
+  }, ${unitData?.state || property.state}`;
 
   // Attorney: lawyer's full name
   const attorney = templateDocument.lawyer_fullname;
 
   // LawFirm
   const lawFirm: DocumentPreviewData["lawFirm"] = {
-    logoSrc: templateDocument.lawyer_signature, 
+    logoSrc: templateDocument.lawyer_signature,
     contactDetails: [
       {
         text: templateDocument.lawyer_firm_name,
@@ -434,12 +439,13 @@ export const transformDocumentData = (
   const date = document.created_date;
   const landlord: DocumentPreviewData["attestation"]["landlord"] = {
     name: landlordName,
-    address: property.full_address || "Unknown Address",
+    address: unitData?.address || property.full_address || "Unknown Address",
   };
   const tenant: DocumentPreviewData["attestation"]["tenant"] = {
     name: tenantName,
-    address:
-      selectedTenant?.address || property.full_address || "Tenant Address",
+    address: selectedOccupant?.address
+      ? `${selectedOccupant.address}, ${selectedOccupant.city}, ${selectedOccupant.lg}, ${selectedOccupant.state}`
+      : unitData?.address || property.full_address || "Tenant Address",
   };
 
   // Format fee in content
@@ -491,11 +497,13 @@ export const transformDocumentData = (
     {
       title: "whereas",
       content: `The legal title to the ${
-        property.units[0]?.unit_name || "Property"
-      } and its appurtenances being at ${property.full_address}, ${
-        property.city_area
-      }, ${property.local_government}, ${
-        property.state
+        unitData?.unit_name || property.units[0]?.unit_name || "Property"
+      } and its appurtenances being at ${
+        unitData?.address || property.full_address
+      }, ${unitData?.city_area || property.city_area || ""}, ${
+        unitData?.local_government || property.local_government
+      }, ${
+        unitData?.state || property.state
       } inures in favor of and belongs to the Landlord.`,
       subClauses: [
         `The Tenant is desirous of renting the said premises for ${templateDocument.category} Purposes.`,
@@ -507,12 +515,13 @@ export const transformDocumentData = (
       title: "NOW THIS AGREEMENT WITNESSES AS FOLLOWS",
       subClauses: [
         `The Landlord hereby lets to the Tenant and the Tenant hereby accepts to let the <b>${
-          property.units[0]?.unit_name || "Property"
-        }</b> and its appurtenances being <b>at ${property.full_address}, ${
-          property.city_area
-        }, ${property.local_government}, ${
-          property.state
-        }</b> paying the sum of <b>${
+          unitData?.unit_name || property.units[0]?.unit_name || "Property"
+        }</b> and its appurtenances being <b>at ${
+          unitData?.address || property.full_address
+        }, ${unitData?.city_area || property.city_area || ""}, ${
+          unitData?.local_government || property.local_government
+        }, ${unitData?.state || property.state}</b> paying the sum of <b>${
+          unitData?.newTenantPrice ||
           formatFee(property.units[0]?.fee_amount || "0", currency) ||
           "Unknown Amount"
         }</b> only as Rent, the receipt of which the Landlord hereby acknowledges.`,
