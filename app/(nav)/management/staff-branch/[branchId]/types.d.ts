@@ -25,7 +25,6 @@ export interface SingleBranchPageData {
   receipt_statistics: receipt_statistics | null;
 }
 
-
 interface receipt_statistics {
   total_receipt: string;
   total_paid_receipt: string;
@@ -48,7 +47,6 @@ interface SubWallet {
   last_week_balance: number;
 }
 
-
 export interface EditBranchFormData {
   id: string;
   isActive: 1 | 0;
@@ -60,13 +58,19 @@ export interface EditBranchFormData {
   wallet: "yes" | "no";
   description: string;
   picture: string | null;
-  hasMoney?: boolean; 
+  hasMoney?: boolean;
 }
 
-export interface Transactions{
+export interface Transactions {
   id: number;
   amount: string;
-  transaction_type: "credit" | "debit" | "DVA" | "transfer_in" | "transfer_out";
+  transaction_type:
+    | "debit"
+    | "transfer_in"
+    | "transfer_out"
+    | "withdrawal"
+    | "sponsor_listing"
+    | "funding";
   reference: string;
   description: string;
   status: string;
@@ -124,9 +128,9 @@ export type SingleBranchResponseType = {
         name: string;
       }[];
     };
-    sub_wallet: SubWallet | null,
-    recent_transactions: Transactions[],
-    transactions: Transactions[],
+    sub_wallet: SubWallet | null;
+    recent_transactions: Transactions[];
+    transactions: Transactions[];
     manager: {
       id: string;
       is_active: 1 | 0;

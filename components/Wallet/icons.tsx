@@ -1,4 +1,8 @@
-import { BlueBuildingIcon } from "@/public/icons/dashboard-cards/icons";
+import {
+  BlueBuildingIcon,
+  TopUpIcon,
+  WithrawalIcon,
+} from "@/public/icons/dashboard-cards/icons";
 
 const ArrowIncomingIcon = () => {
   return (
@@ -61,17 +65,26 @@ const WalletIncomingIcon = () => {
 
 export const getTransactionIcon = (
   source: string,
-  type: "credit" | "debit" | "DVA" | "transfer_in" | "transfer_out"
+  // type: "credit" | "debit" | "DVA" | "transfer_in" | "transfer_out"
+  type:
+    | "withdrawal"
+    | "sponsor_listing"
+    | "transfer_out"
+    | "transfer_in"
+    | "funding"
+    | "debit"
 ) => {
-  switch (source) {
+  switch (type) {
     case "funding":
       return <WalletIncomingIcon />;
     case "withdrawal":
-      return <BlueBuildingIcon />;
+      return <WithrawalIcon />;
     case "transfer_out":
       return <ArrowOutgoingIcon />;
     case "transfer_in":
       return <ArrowIncomingIcon />;
+    case "funding":
+      return <TopUpIcon />;
     default:
       return type === "debit" ? <ArrowOutgoingIcon /> : <ArrowIncomingIcon />;
   }

@@ -122,6 +122,7 @@ const SendFundsModal = () => {
           picture={recipient.picture}
           wallet_id={recipient.wallet_id}
           badge_color={recipient.badge_color}
+          noBackBtn
         />
       ),
     },

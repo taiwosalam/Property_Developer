@@ -5,6 +5,7 @@ import {
   type BadgeIconColors,
 } from "@/components/BadgeIcon/badge-icon";
 import type { Beneficiary } from "@/store/wallet-store";
+import { DateRange } from "react-day-picker";
 
 export const walletChartConfig = {
   totalfunds: {
@@ -86,7 +87,39 @@ export const determinePercentageDifference = (
   return Math.min(100, percentage);
 };
 
+// Compute totals based on selected time range
+export const computeTotals = (
+  transactions: any[],
+  range: DateRange | undefined
+) => {
+  if (!range?.from || !range?.to)
+    return { total_funds: 0, total_debit: 0, total_credit: 0 };
 
+  const filtered = transactions.filter((t) => {
+    const date = new Date(t.date);
+    return date >= range.from! && date <= range.to!;
+  });
+
+  const totals = filtered.reduce(
+    (acc, t) => {
+      const amount = Number(t.amount);
+      if (t.type === "credit") {
+        acc.total_credit += amount;
+        acc.total_funds += amount;
+      } else if (t.type === "debit") {
+        acc.total_debit += amount;
+        acc.total_funds -= amount;
+      }
+      return acc;
+    },
+    { total_funds: 0, total_debit: 0, total_credit: 0 }
+  );
+
+  return {
+    ...totals,
+    total_funds: Math.max(0, totals.total_funds),
+  };
+};
 
 export interface WalletDataResponse {
   stats: {
@@ -121,6 +154,13 @@ export interface WalletDataResponse {
     source: string;
     description: string;
     status: string;
+    transaction_type:
+      | "withdrawal"
+      | "sponsor_listing"
+      | "transfer_out"
+      | "transfer_in"
+      | "debit"
+      | "funding";
     date: string;
     time: string;
     type: "credit" | "debit" | "DVA";

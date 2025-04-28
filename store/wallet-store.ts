@@ -8,6 +8,7 @@ export interface Beneficiary {
   wallet_id: string;
   badge_color?: BadgeIconColors;
   branch?: boolean;
+  noBackBtn?: boolean;
 }
 
 export interface Transaction {
@@ -18,6 +19,13 @@ export interface Transaction {
   status: string;
   date: string;
   time: string;
+  transaction_type:
+    | "withdrawal"
+    | "sponsor_listing"
+    | "transfer_out"
+    | "transfer_in"
+    | "debit"
+    | "funding";
   type: "credit" | "debit" | "DVA";
 }
 
@@ -28,16 +36,16 @@ interface WalletStore {
   new_pin: string;
   confirm_pin: string;
   otp?: string;
-  amount: number,
-  desc: string,
-  pin: number,
+  amount: number;
+  desc: string;
+  pin: number;
   walletPinStatus: boolean;
   bank_details: {
     bank_code: string;
     account_number: string;
     account_name: string;
     bank_name: string;
-  }
+  };
   balance: {
     my_balance: string;
     caution_deposit: string;
@@ -45,7 +53,7 @@ interface WalletStore {
   };
   beneficiaries: Beneficiary[];
   recentTransactions: Transaction[];
- transactions: Transaction[];
+  transactions: Transaction[];
   stats: {
     current_day: {
       total_funds: string;
@@ -64,11 +72,11 @@ interface WalletStore {
     bank: string;
     customer_code: string;
   };
-  sub_wallet:{
+  sub_wallet: {
     status: string;
     wallet_id: number | undefined;
     is_active?: boolean;
-  }
+  };
   setWalletStore: <K extends keyof Omit<WalletStore, "setWalletStore">>(
     key: K,
     value: WalletStore[K]

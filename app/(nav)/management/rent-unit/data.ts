@@ -896,6 +896,7 @@ export const initData = {
     state: "",
     lg: "",
   },
+  property_document: {},
 };
 
 export interface initDataProps {
@@ -952,6 +953,7 @@ export interface initDataProps {
   property_state?: string;
   property_address?: string;
   previous_tenants?: any;
+  property_document?: any;
 }
 
 // ================ transform /unit/${id}/view =================
@@ -1016,6 +1018,7 @@ export const transformUnitData = (response: any) => {
     en_suit: data.en_suit,
     prepaid: data.prepaid,
     wardrobe: data.wardrobe,
+    property_document: data.property_document || undefined,
     occupant: occupant
       ? {
           id: occupant.id,

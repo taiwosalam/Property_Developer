@@ -10,8 +10,9 @@ interface WalletOnlineFundingCardProps {
   onPaymentInitiated?: (url: string, reference: string) => void;
 }
 
-
-const WalletOnlineFundingCard = ({ onPaymentInitiated }:WalletOnlineFundingCardProps) => {
+const WalletOnlineFundingCard = ({
+  onPaymentInitiated,
+}: WalletOnlineFundingCardProps) => {
   const [amount, setAmount] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -21,15 +22,14 @@ const WalletOnlineFundingCard = ({ onPaymentInitiated }:WalletOnlineFundingCardP
       const data = await fundWallet(amount);
       const newPaymentUrl = data?.payment_url?.url;
       const newReference = data?.reference;
-  
+
       if (newPaymentUrl && newReference) {
         onPaymentInitiated?.(newPaymentUrl, newReference); // ✅ Safe function call
       }
-      
+
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2">

@@ -54,6 +54,7 @@ export const FeeDetails: React.FC<{
   deduction?: boolean;
   owing?: boolean;
   currency?: Currency;
+  isExcess?: boolean;
 }> = ({
   title,
   feeDetails,
@@ -63,6 +64,7 @@ export const FeeDetails: React.FC<{
   deduction,
   owing,
   currency,
+  isExcess
 }) => {
   const CURRENCY =
     currencySymbols[currency as keyof typeof currencySymbols] ||
@@ -96,8 +98,8 @@ export const FeeDetails: React.FC<{
               <p className="text-[#747474] dark:text-white text-base font-normal">
                 {deduction
                   ? "Total Package"
-                  : owing
-                  ? "Total Package"
+                  : isExcess
+                  ? "Total"
                   : "Total Package"}
               </p>
             )}

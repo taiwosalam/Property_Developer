@@ -133,7 +133,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         <span
           className={clsx({
             "text-status-success-3":
-              t.transaction_type === "credit" ||
+              t.transaction_type === "funding" ||
               t.transaction_type === "transfer_in",
             "text-status-error-primary":
               t.transaction_type === "debit" ||
@@ -141,7 +141,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           })}
         >
           {`${
-            t.transaction_type === "credit" ||
+            t.transaction_type === "funding" ||
             t.transaction_type === "transfer_in"
               ? "+"
               : t.transaction_type === "debit" ||
@@ -160,9 +160,8 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
                 t.transaction_type === "debit" ||
                 t.transaction_type === "transfer_out",
               "bg-status-success-1 text-status-success-primary":
-                t.transaction_type === "credit" ||
-                t.transaction_type === "transfer_in" ||
-                t.transaction_type === "DVA",
+                t.transaction_type === "funding" ||
+                t.transaction_type === "transfer_in",
             }
           )}
         >
@@ -177,7 +176,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       date: t.date,
       totalfunds: t.amount,
       credit:
-        t.transaction_type === "credit" || t.transaction_type === "transfer_in"
+        t.transaction_type === "funding" || t.transaction_type === "transfer_in"
           ? t.amount
           : 0,
       debit:
