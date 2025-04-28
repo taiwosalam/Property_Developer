@@ -1006,7 +1006,7 @@ Once restricted, they will no longer have access to participate in the property'
                 <div className="rounded-t-xl">
                   <ModalContent>
                     <LandlordTenantModalPreset
-                      heading="Restrict User"
+                      heading="Access Control"
                       style={{ maxHeight: "80vh", overflow: "visible" }}
                     >
                       <RestrictUserForm

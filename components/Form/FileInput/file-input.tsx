@@ -149,124 +149,133 @@ const FileInput: React.FC<FileInputProps> = ({
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       {label && (
-        <Label id={id} required={required}>
+        <Label
+          labelclassName={clsx("!opacity-100", {
+            "!text-opacity-50 !opacity-50": noUpload,
+          })}
+          id={id}
+          required={required}
+        >
           {label}
         </Label>
       )}
-      <div
-        className={`relative ${settingsPage && "flex"}  ${clsx(
-          noUpload ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-        )}`}
-      >
-        <input
-          id={id}
-          name={id}
-          type="file"
-          disabled={noUpload}
-          // required={required}
-          className={clsx(
-            "absolute w-0 h-0 opacity-0 pointer-events-none",
-            hiddenInputClassName,
-            noUpload && "cursor-not-allowed"
-          )}
-          ref={fileInputRef}
-          onChange={handleFileChange}
-        />
+      <div className="flex gap-2 items-center">
         <div
-          role="button"
-          aria-label="upload"
-          onClick={handleClick}
-          className={clsx(
-            "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
-            textStyles,
-            fileName ? "bg-neutral-2" : "bg-none"
-          )}
+          className={`relative ${settingsPage && "flex"}  ${clsx(
+            noUpload ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+          )}`}
         >
-          {!settingsPage ? (
-            <span
-              className={clsx(
-                "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
-              )}
-            >
-              {fileName
-                ? fileName
-                : `Click ${isLgScreen ? "the side button" : "here"} to upload ${
-                    placeholder || "file"
-                  }`}
-            </span>
-          ) : (
-            <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-              {noUpload
-                ? "Click eye icon to view document"
-                : "Click to upload document"}
-            </span>
-          )}
+          <input
+            id={id}
+            name={id}
+            type="file"
+            disabled={noUpload}
+            // required={required}
+            className={clsx(
+              "absolute w-0 h-0 opacity-0 pointer-events-none",
+              hiddenInputClassName,
+              noUpload && "cursor-not-allowed"
+            )}
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
+          <div
+            role="button"
+            aria-label="upload"
+            onClick={handleClick}
+            className={clsx(
+              "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
+              textStyles,
+              fileName ? "bg-neutral-2" : "bg-none"
+            )}
+          >
+            {!settingsPage ? (
+              <span
+                className={clsx(
+                  "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                )}
+              >
+                {fileName
+                  ? fileName
+                  : `Click ${
+                      isLgScreen ? "the side button" : "here"
+                    } to upload ${placeholder || "file"}`}
+              </span>
+            ) : (
+              <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+                {noUpload
+                  ? "Click eye icon to view document"
+                  : "Click to upload document"}
+              </span>
+            )}
 
-          {fileName && (
-            <div className="flex items-center gap-2">
-              <button
+            {fileName && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="View File"
+                  onClick={(e) => {
+                    handleViewFile();
+                    e.stopPropagation();
+                  }}
+                >
+                  <EyeShowIcon />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Delete File"
+                  onClick={(e) => {
+                    setDefaultFile("");
+                    handleDeleteFile();
+                    e.stopPropagation();
+                  }}
+                >
+                  <DeleteIconX />
+                </button>
+              </div>
+            )}
+
+            {defaultFile && !fileURL && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="View File"
+                  onClick={(e) => {
+                    handleView();
+                    e.stopPropagation();
+                  }}
+                >
+                  <EyeShowIcon />
+                </button>
+              </div>
+            )}
+          </div>
+          {!settingsPage && (
+            <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
+              <Button
+                variant="change"
+                size="sm"
+                className="whitespace-nowrap text-ellipsis"
+                style={{ background: fileName ? "" : "none" }}
                 type="button"
-                aria-label="View File"
-                onClick={(e) => {
-                  handleViewFile();
-                  e.stopPropagation();
-                }}
+                onClick={handleClick}
               >
-                <EyeShowIcon />
-              </button>
-              <button
-                type="button"
-                aria-label="Delete File"
-                onClick={(e) => {
-                  setDefaultFile("");
-                  handleDeleteFile();
-                  e.stopPropagation();
-                }}
-              >
-                <DeleteIconX />
-              </button>
+                {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
+              </Button>
             </div>
           )}
 
-          {defaultFile && !fileURL && (
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                aria-label="View File"
-                onClick={(e) => {
-                  handleView();
-                  e.stopPropagation();
-                }}
-              >
-                <EyeShowIcon />
-              </button>
-            </div>
-          )}
-        </div>
-        {!settingsPage && (
-          <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
-            <Button
-              variant="change"
-              size="sm"
-              className="whitespace-nowrap text-ellipsis"
-              style={{ background: fileName ? "" : "none" }}
-              type="button"
-              onClick={handleClick}
-            >
-              {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
-            </Button>
-          </div>
-        )}
-        {(defaultFile) && membership_status && (
-          <div className="flex pt-2 sm:pt-7 ml-3">
-            <SettingsVerifiedBadge status={membership_status} />
-          </div>
-        )}
-        {/* {settingsPage && showVerifyBtn && (
+          {/* {settingsPage && showVerifyBtn && (
           <button className="text-xs w-1/2 sm:w-auto sm:mt-0 text-brand-9">
             Verify Document
           </button>
         )} */}
+        </div>
+        {defaultFile && membership_status && (
+          <div className="flex pt-2 sm:pt-7 ml-3">
+            <SettingsVerifiedBadge status={membership_status} />
+          </div>
+        )}
       </div>
     </div>
   );

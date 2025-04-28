@@ -64,7 +64,7 @@ export const SettingsVerifiedBadge = ({
   const bgClass = isVerified
     ? "bg-status-success-1"
     : isPending
-    ? "bg-[#EDE9FF]" // light purple background
+    ? "bg-[#C1C2C3]" // light purple background
     : "bg-[#FF8EE]";
 
   const borderClass = isVerified
