@@ -28,9 +28,13 @@ import SwitchUnitModal from "./SwitchUnitModal";
 import SwitchPropertyModal from "@/components/Management/Rent And Unit/Edit-Rent/SwitchPropertyModal";
 import { Dayjs } from "dayjs";
 import { useOccupantStore } from "@/hooks/occupant-store";
-import { UnitDataObject } from "@/app/(nav)/management/rent-unit/data";
+import {
+  formatFee,
+  UnitDataObject,
+} from "@/app/(nav)/management/rent-unit/data";
 import { getBalanceBreakdown } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
 import { useGlobalStore } from "@/store/general-store";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 
 export const RentDetails: React.FC<{
   isRental: boolean;
@@ -608,7 +612,6 @@ export const PreviousUnitBalance: React.FC<{
   workings?: boolean;
   deduction?: boolean;
   currency?: Currency;
-  period?: RentPeriod;
   title?: string;
   currentUnit?: any;
   startDate?: string;
@@ -623,7 +626,6 @@ export const PreviousUnitBalance: React.FC<{
   calculation,
   deduction,
   currency,
-  period,
   workings,
   title,
   currentUnit,
@@ -636,35 +638,72 @@ export const PreviousUnitBalance: React.FC<{
   const isUnit = page === "unit";
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const currentRentStats = useGlobalStore((s) => s.currentRentStats);
-
+  const period = currentUnit.fee_period;
   const currencySymbol =
     currencySymbols[currency as keyof typeof currencySymbols] || "₦";
   const prevUBreakdown = currentRentStats?.prevUBreakdown || [];
+  const breakdown = currentRentStats?.breakdown || [];
+
+  console.log("prevUBreakdown", prevUBreakdown);
+  console.log("currentUnit", currentUnit);
 
   const record = items[0];
-  const balanceBreakdown = record
-    ? getBalanceBreakdown(record, period, currencySymbol)
-    : { duration: "-", breakdown: [] };
+  const records = items;
+  const rent = currentUnit.newTenantTotalPrice;
+  const renewalTenantPrice = parseCurrency(currentUnit.renewalTenantPrice);
+  console.log("renewalTenantPrice parent", renewalTenantPrice);
 
   useEffect(() => {
     const newBalanceBreakdown = record
-      ? getBalanceBreakdown(record, period, currencySymbol)
+      ? getBalanceBreakdown(
+          rent,
+          record,
+          records,
+          period,
+          currencySymbol,
+          renewalTenantPrice
+        )
       : { duration: "-", breakdown: [] };
     // Only update if the value has changed
     const currentStats = useGlobalStore.getState().currentRentStats;
     if (JSON.stringify(currentStats) !== JSON.stringify(newBalanceBreakdown)) {
       setGlobalStore("currentRentStats", newBalanceBreakdown);
     }
-  }, [record, period, currencySymbol, setGlobalStore]);
+  }, [
+    record,
+    period,
+    currencySymbol,
+    rent,
+    renewalTenantPrice,
+    setGlobalStore,
+  ]);
+
+  // const balanceBreakdown = record
+  //   ? getBalanceBreakdown(record, period, currencySymbol)
+  //   : { duration: "-", breakdown: [] };
+
+  // useEffect(() => {
+  //   const newBalanceBreakdown = record
+  //     ? getBalanceBreakdown(rent, record, records, period, currencySymbol)
+  //     : { duration: "-", breakdown: [] };
+  //   // Only update if the value has changed
+  //   const currentStats = useGlobalStore.getState().currentRentStats;
+  //   if (JSON.stringify(currentStats) !== JSON.stringify(newBalanceBreakdown)) {
+  //     setGlobalStore("currentRentStats", newBalanceBreakdown);
+  //   }
+  // }, [record, period, currencySymbol, rent, setGlobalStore]);
 
   const currentRentDetailItems = [
     {
       label: `${currentUnit.fee_period} Rent`,
-      value: currentUnit.newTenantPrice,
+      value: formatFee(
+        currentUnit.newTenantTotalPrice,
+        currentUnit.currency || "naira"
+      ),
     },
     { label: "Start Date", value: startDate },
     { label: "Due Date", value: dueDate },
-    ...prevUBreakdown,
+    ...breakdown,
   ].filter((item) => {
     // Exclude items where value is undefined, empty, or an invalid placeholder
     if (item.value === undefined || item.value === "") return false;
@@ -698,6 +737,7 @@ export const PreviousUnitBalance: React.FC<{
   // Only render the section if there are valid items
   if (renewalRentDetailItems.length === 0) return null;
 
+  console.log("detailsArr", detailsArr)
 
   const sub_title = !deduction
     ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
@@ -717,10 +757,10 @@ export const PreviousUnitBalance: React.FC<{
         </>
       )}
       <RentSectionContainer
-        title={workings ? "Breakdown" : isRental ? "Fee" : "Apply Deduction"}
+        title={workings ? "Breakdown" : isRental ? "Breakdown" : "Apply Deduction"}
       >
         <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             {!workings &&
               detailsArr.map((item, index) => (
                 <DetailItem
@@ -746,7 +786,7 @@ export const PreviousUnitBalance: React.FC<{
           </div>
           {/*  CALCULATIONS & RESULT */}
         </div>
-        {workings && (
+        {/* {workings && (
           <div className="my-4">
             <span className="font-medium text-brand-10 text-base">
               {title ?? "Current Rent"}
@@ -765,7 +805,7 @@ export const PreviousUnitBalance: React.FC<{
               </div>
             </div>
           </div>
-        )}
+        )} */}
         {workings && (
           <div className="space-y-2 mt-4">
             <p className="text-[#747474] dark:text-white text-base font-normal">
@@ -773,7 +813,7 @@ export const PreviousUnitBalance: React.FC<{
             </p>
             <p className="text-lg lg:text-xl font-bold text-brand-9">
               {currencySymbol}
-              {formatNumber(Number(total))}
+              {formatNumber(Math.abs(Number(total)))}
             </p>
           </div>
         )}
@@ -811,28 +851,74 @@ export const NewUnitCost: React.FC<{
       : "Breakdown"
     : "Annual Fee";
   const finalTitle = calculation ? `${feeTitle}` : `${feeTitle}`;
-  const sub_title = calculation
-    ? "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges for the tenants that you are transferring to the new unit."
-    : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
-
-  const Deductsub_title = !deduction
+  const sub_title = !deduction
     ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
     : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
+
+  const Deductsub_title = calculation
+    ? "Calculate the total package of the new rent, including caution deposit, service charge, agency fee, legal fee, and other charges for the tenants transferring to the new unit."
+    : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before.";
 
   return (
     <div className="space-y-1">
       <RentSectionTitle>{title || "New Rent "}</RentSectionTitle>
-      {/* <p className="text-xs">{sub_title}</p> */}
+      <>
+        <p className="text-sm">• {sub_title}</p>
+        <p className="text-sm">• {Deductsub_title}</p>
+      </>
       {isExcess && <p className="text-sm">{Deductsub_title}</p>}
       <FeeDetails
         noEdit={noEdit}
         title={finalTitle}
         feeDetails={feeDetails}
+        isExcess={isExcess}
         currency={currency}
         total_package={total as number}
         deduction={deduction}
         id={id as string}
       />
+    </div>
+  );
+};
+
+type PayAbleProps = {
+  isRental: boolean;
+  detail: { label: string; amount: number };
+  calculation?: boolean;
+  deduction?: boolean;
+  isExcess?: boolean;
+  currency?: Currency;
+};
+
+export const PayAble: React.FC<PayAbleProps> = ({
+  isRental,
+  detail,
+  calculation,
+  deduction,
+  isExcess,
+  currency,
+}) => {
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
+
+  const feeTitle = isRental ? "Breakdown" : "Annual Fee";
+
+  const sub_title = !isExcess
+    ? "Based on the calculation and your selected option, the client has an excess balance to be paid to your company."
+    : "Based on the calculation and your selected option, your company owes the client a refund balance.";
+
+  return (
+    <div className="space-y-1">
+      <RentSectionTitle>Payment Status</RentSectionTitle>
+      <p className="text-sm">• {sub_title}</p>
+      <div className="mt-2">
+        <p className="text-md font-semibold mt-3 text-text-secondary">Total</p>
+        <p className="text-lg lg:text-xl text-brand-9 font-bold">
+          {CURRENCY}
+          {formatNumber(Math.abs(detail.amount))}
+        </p>
+      </div>
     </div>
   );
 };

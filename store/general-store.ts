@@ -17,6 +17,7 @@ import { Occupant } from "@/components/Management/Rent And Unit/types";
 import { create } from "zustand";
 import { Transaction } from "./wallet-store";
 import { initDataProps } from "@/app/(nav)/management/rent-unit/data";
+import { DateRange } from "react-day-picker";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -39,6 +40,12 @@ interface GlobalStoreState {
   tenantError: Error | null;
   currentUnit: any | null;
   currentRentStats: any | null;
+  timeRange: string; // e.g., "7d", "30d", "90d", "custom"
+  selectedDateRange: DateRange | undefined; // { from: Date, to: Date }
+  unitData: initDataProps | null;
+  setSelectedOccupant: (occupant: Occupant | null) => void;
+  setIsPastDate: (isPast: boolean) => void;
+  setUnitData: (data: initDataProps | null) => void;
   // add more keys here as needed…
 }
 
@@ -77,6 +84,12 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   tenantError: null,
   currentUnit: null,
   currentRentStats: null,
+  timeRange: "30d",
+  selectedDateRange: undefined,
+  unitData: null,
+  setSelectedOccupant: (occupant) => set({ selectedOccupant: occupant }),
+  setIsPastDate: (isPast) => set({ isPastDate: isPast }),
+  setUnitData: (data) => set({ unitData: data }),
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {

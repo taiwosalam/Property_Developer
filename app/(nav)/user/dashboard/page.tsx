@@ -69,7 +69,7 @@ const Dashboard = () => {
           }
         )}
       >
-        {getTransactionIcon(t.source, t.type)}
+        {/* {getTransactionIcon(t.source, t.transaction_type)} */}
       </div>
     ),
   }));

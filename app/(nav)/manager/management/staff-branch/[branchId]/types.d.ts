@@ -37,7 +37,6 @@ interface SubWallet {
   last_week_balance: number;
 }
 
-
 export interface EditBranchFormData {
   id: string;
   isActive: 1 | 0;
@@ -51,10 +50,16 @@ export interface EditBranchFormData {
   picture: string | null;
 }
 
-export interface Transactions{
+export interface Transactions {
   id: number;
   amount: string;
-  transaction_type: "credit" | "debit" | "DVA" | "transfer_in" | "transfer_out";
+  transaction_type:
+    | "debit"
+    | "transfer_in"
+    | "transfer_out"
+    | "withdrawal"
+    | "sponsor_listing"
+    | "funding";
   reference: string;
   description: string;
   status: string;
@@ -101,9 +106,9 @@ export type SingleBranchResponseType = {
         name: string;
       }[];
     };
-    sub_wallet: SubWallet | null,
-    recent_transactions: Transactions[],
-    transactions: Transactions[],
+    sub_wallet: SubWallet | null;
+    recent_transactions: Transactions[];
+    transactions: Transactions[];
     manager: {
       id: string;
       is_active: 1 | 0;

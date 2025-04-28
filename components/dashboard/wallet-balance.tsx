@@ -126,6 +126,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
           amount: t.amount,
           type: t.type,
           status: t.status,
+          transaction_type: t.transaction_type,
         };
       });
       setWalletStore("recentTransactions", recentTransactions);

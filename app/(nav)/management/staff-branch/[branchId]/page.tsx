@@ -86,7 +86,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
   });
 
-  console.log("branch data", branchData)
+  console.log("branch data", branchData);
 
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
@@ -148,7 +148,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         <span
           className={clsx({
             "text-status-success-3":
-              t.transaction_type === "credit" ||
+              t.transaction_type === "funding" ||
               t.transaction_type === "transfer_in",
             "text-status-error-primary":
               t.transaction_type === "debit" ||
@@ -156,7 +156,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           })}
         >
           {`${
-            t.transaction_type === "credit" ||
+            t.transaction_type === "funding" ||
             t.transaction_type === "transfer_in"
               ? "+"
               : t.transaction_type === "debit" ||
@@ -175,9 +175,8 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
                 t.transaction_type === "debit" ||
                 t.transaction_type === "transfer_out",
               "bg-status-success-1 text-status-success-primary":
-                t.transaction_type === "credit" ||
-                t.transaction_type === "transfer_in" ||
-                t.transaction_type === "DVA",
+                t.transaction_type === "funding" ||
+                t.transaction_type === "transfer_in",
             }
           )}
         >
@@ -192,7 +191,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       date: t.date,
       totalfunds: t.amount,
       credit:
-        t.transaction_type === "credit" || t.transaction_type === "transfer_in"
+        t.transaction_type === "funding" || t.transaction_type === "transfer_in"
           ? t.amount
           : 0,
       debit:
@@ -261,7 +260,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   if (isNetworkError) return <NetworkError />;
 
-  if (error) return <ServerError error={error} />
+  if (error) return <ServerError error={error} />;
   if (!branchData) return null;
 
   return (

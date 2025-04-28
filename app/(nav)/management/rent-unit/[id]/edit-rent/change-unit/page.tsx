@@ -225,7 +225,7 @@ const ChangeUnitpage = () => {
             {/* PREVIOUS UNIT BREAKDOWN */}
             <PreviousUnitBalance
               calculation={calculation}
-              period={unit_data.fee_period as RentPeriod}
+              // period={unit_data.fee_period as RentPeriod}
               currency={unit_data.currency}
               deduction={deduction}
               isRental={isRental}

@@ -14,6 +14,7 @@ import BeneficiaryList from "@/components/Wallet/beneficiary-list";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import {
+  computeTotals,
   determinePercentageDifference,
   determineTrend,
   walletChartConfig,
@@ -25,48 +26,104 @@ import FundsBeneficiary from "@/components/Wallet/SendFunds/funds-beneficiary";
 import SendFundBeneficiary from "@/components/Wallet/SendFunds/send-fund-beneficiary";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { getTransactionIcon } from "@/components/Wallet/icons";
+import { useState } from "react";
+import { DateRange } from "react-day-picker";
+import { useGlobalStore } from "@/store/general-store";
 
 const Wallet = () => {
   const walletId = useWalletStore((state) => state.walletId);
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
   );
-  const transactions = useWalletStore(
-    (state) => state.transactions
-  );
-
+  const transactions = useWalletStore((state) => state.transactions);
+  // Retrieve timeRange and selectedDateRange from global store
+  const timeRange = useGlobalStore((state) => state.timeRange);
+  const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
   const stats = useWalletStore((state) => state.stats);
   const beneficiaries = useWalletStore((state) => state.beneficiaries);
 
-  // console.log("stats", stats)
+  console.log("transactions", transactions);
+  // const fundsPercent = determinePercentageDifference(
+  //   stats.previous_month.total_funds,
+  //   stats.current_day.total_funds
+  // );
+  // const fundsUpDown = determineTrend(
+  //   stats.current_day.total_funds,
+  //   stats.previous_month.total_funds
+  // );
 
+  // // DEBIT
+  // const debitPercent = determinePercentageDifference(
+  //   stats.previous_month.total_debit,
+  //   stats.current_day.total_debit
+  // );
+  // const debitUpDown = determineTrend(
+  //   stats.current_day.total_debit,
+  //   stats.previous_month.total_debit
+  // );
+
+  // // CREDIT
+  // const creditPercent = determinePercentageDifference(
+  //   stats.previous_month.total_credit,
+  //   stats.current_day.total_credit
+  // );
+  // const creditUpDown = determineTrend(
+  //   stats.current_day.total_credit,
+  //   stats.previous_month.total_credit
+  // );
+
+  // Compute totals for the current period
+  const currentTotals = computeTotals(transactions, selectedDateRange);
+
+  // Compute totals for the previous period (same duration before the current range)
+  const previousRange = (() => {
+    if (!selectedDateRange?.from || !selectedDateRange?.to) {
+      return undefined;
+    }
+
+    const fromDate = new Date(selectedDateRange.from);
+    const toDate = new Date(selectedDateRange.to);
+    const rangeDays =
+      Math.ceil(
+        (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
+      ) + 1;
+
+    const previousFrom = new Date(fromDate);
+    previousFrom.setDate(fromDate.getDate() - rangeDays);
+    const previousTo = new Date(fromDate);
+    previousTo.setDate(fromDate.getDate() - 1);
+
+    return { from: previousFrom, to: previousTo };
+  })();
+
+  const previousTotals = computeTotals(transactions, previousRange);
+
+  // Percentage differences and trends
   const fundsPercent = determinePercentageDifference(
-    stats.previous_month.total_funds,
-    stats.current_day.total_funds
+    previousTotals.total_funds,
+    currentTotals.total_funds
   );
   const fundsUpDown = determineTrend(
-    stats.current_day.total_funds,
-    stats.previous_month.total_funds
+    currentTotals.total_funds,
+    previousTotals.total_funds
   );
 
-  // DEBIT
   const debitPercent = determinePercentageDifference(
-    stats.previous_month.total_debit,
-    stats.current_day.total_debit
+    previousTotals.total_debit,
+    currentTotals.total_debit
   );
   const debitUpDown = determineTrend(
-    stats.current_day.total_debit,
-    stats.previous_month.total_debit
+    currentTotals.total_debit,
+    previousTotals.total_debit
   );
 
-  // CREDIT
   const creditPercent = determinePercentageDifference(
-    stats.previous_month.total_credit,
-    stats.current_day.total_credit
+    previousTotals.total_credit,
+    currentTotals.total_credit
   );
   const creditUpDown = determineTrend(
-    stats.current_day.total_credit,
-    stats.previous_month.total_credit
+    currentTotals.total_credit,
+    previousTotals.total_credit
   );
 
   const transformedWalletTableData = recentTransactions.map((t) => ({
@@ -88,13 +145,18 @@ const Wallet = () => {
         className={clsx(
           "flex items-center justify-center w-9 h-9 rounded-full",
           {
-            "bg-status-error-1 text-status-error-primary": t.type === "debit",
+            "bg-status-error-1 text-status-error-primary":
+              t.transaction_type === "withdrawal" ||
+              t.transaction_type === "transfer_out" ||
+              t.type === "debit",
             "bg-status-success-1 text-status-success-primary":
-              t.type === "credit" || t.type === "DVA",
+              t.type === "credit" ||
+              t.type === "DVA" ||
+              t.transaction_type === "funding",
           }
         )}
       >
-        {getTransactionIcon(t.source, t.type)}
+        {getTransactionIcon(t.source, t.transaction_type)}
       </div>
     ),
   }));
@@ -112,34 +174,64 @@ const Wallet = () => {
         <h1 className="text-black dark:text-white text-2xl font-medium">
           Wallet
         </h1>
-        <ExclamationMark />
+        {/* <ExclamationMark /> */}
       </div>
       <div className="flex flex-col xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">
           <div className="flex flex-col lg:flex-row gap-6">
             <WalletAnalytics
               title="funds"
-              amount={Number(stats.current_day.total_funds)}
+              amount={currentTotals.total_funds}
               trend={{
-                from: "last month",
+                from: `previous ${
+                  timeRange === "90d"
+                    ? "3 months"
+                    : timeRange === "30d"
+                    ? "30 days"
+                    : timeRange === "7d"
+                    ? "7 days"
+                    : timeRange === "1d"
+                    ? "day"
+                    : "period"
+                }`,
                 type: fundsUpDown as "up" | "down" | "none",
                 percent: Number(fundsPercent),
               }}
             />
             <WalletAnalytics
               title="debit"
-              amount={Number(stats.current_day.total_debit)}
+              amount={currentTotals.total_debit}
               trend={{
-                from: "last month",
+                from: `previous ${
+                  timeRange === "90d"
+                    ? "3 months"
+                    : timeRange === "30d"
+                    ? "30 days"
+                    : timeRange === "7d"
+                    ? "7 days"
+                    : timeRange === "1d"
+                    ? "day"
+                    : "period"
+                }`,
                 type: debitUpDown as "up" | "down" | "none",
                 percent: Number(debitPercent),
               }}
             />
             <WalletAnalytics
               title="credit"
-              amount={Number(stats.current_day.total_credit)}
+              amount={currentTotals.total_credit}
               trend={{
-                from: "last month",
+                from: `previous ${
+                  timeRange === "90d"
+                    ? "3 months"
+                    : timeRange === "30d"
+                    ? "30 days"
+                    : timeRange === "7d"
+                    ? "7 days"
+                    : timeRange === "1d"
+                    ? "day"
+                    : "period"
+                }`,
                 type: creditUpDown as "up" | "down" | "none",
                 percent: Number(creditPercent),
               }}

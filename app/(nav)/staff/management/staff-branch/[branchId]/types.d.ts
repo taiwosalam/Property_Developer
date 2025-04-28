@@ -54,7 +54,7 @@ export interface EditBranchFormData {
 export interface Transactions{
   id: number;
   amount: string;
-  transaction_type: "credit" | "debit" | "DVA" | "transfer_in" | "transfer_out";
+  transaction_type: "debit" | "transfer_in" | "transfer_out" | "withdrawal" | "sponsor_listing" | "funding"
   reference: string;
   description: string;
   status: string;

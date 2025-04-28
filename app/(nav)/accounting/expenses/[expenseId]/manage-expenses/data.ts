@@ -66,8 +66,12 @@ export const formatHtmlDescription = (html: string): string =>
   html.replace(/<\/?[^>]+(>|$)/g, "").trim();
 
 // Parse a currency string (removing commas) to a number
-export const parseCurrency = (value: string): number =>
-  parseFloat(value.replace(/,/g, ""));
+export function parseCurrency(value: any): number {
+  if (!value) return 0;
+  const cleanValue = String(value).replace(/[₦$€£, ]/g, "");
+  const parsed = parseFloat(cleanValue);
+  return isNaN(parsed) ? 0 : parsed;
+}
 
 
 

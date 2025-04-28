@@ -156,7 +156,7 @@ const TransactionHistory = () => {
           }
         )}
       >
-        {getTransactionIcon(t.source, t.type)}
+        {getTransactionIcon(t.source, t.transaction_type)}
       </div>
     ),
     ref: index === state.transactions.length - 1 ? lastRowRef : null,
