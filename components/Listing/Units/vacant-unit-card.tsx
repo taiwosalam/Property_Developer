@@ -158,6 +158,7 @@ const VacantUnitCard = ({
                 <KeyValueList
                   data={keyValueData}
                   referenceObject={referenceObject}
+                  truncateLength={45} 
                 />
               </div>
             </div>

@@ -21,7 +21,9 @@ export interface CompanySignaturesResponse {
 }
 
 const Signature = () => {
-  const { data, loading, error } = useFetch<CompanySignaturesResponse>("/company-signatures");
+  const { data, loading, error } = useFetch<CompanySignaturesResponse>(
+    "/company-signatures"
+  );
 
   if (loading) return <p>Loading signature...</p>;
   //if (error) return <p>Error loading signature</p>;
@@ -32,7 +34,10 @@ const Signature = () => {
       <p>Authorized Signature</p>
       <div className="space-y- flex gap-4">
         {data.signatures.map((sig) => (
-          <div key={sig.id} className="custom-flex-col gap-2 text-text-quaternary dark:text-darkText-1 text-base font-medium">
+          <div
+            key={sig.id}
+            className="custom-flex-col gap-2 text-text-quaternary dark:text-darkText-1 text-base font-medium"
+          >
             <div className="flex">
               <Image
                 src={sig.signature}

@@ -85,7 +85,8 @@ const VehicleRecordModal: React.FC<
         });
         window.dispatchEvent(new Event("refetchVehicleRecord"));
         toast.success("Vehicle checked out successfully");
-        setActiveStep("success-action");
+        setIsOpen(false);
+        // setActiveStep("success-action");
       } else {
         toast.error("Failed to check out vehicle");
       }

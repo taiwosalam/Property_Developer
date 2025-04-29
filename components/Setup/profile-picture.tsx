@@ -68,7 +68,12 @@ const ProfilePicture = () => {
 
       <div className="flex gap-8 items-end">
         {/* Hidden inputs for form data */}
-        <input type="hidden" name="avatar" className="setu-f" value={selectedAvatar} />
+        <input
+          type="hidden"
+          name="avatar"
+          className="setu-f"
+          value={selectedAvatar}
+        />
         <input
           name="director_profile_picture"
           type="file"
@@ -110,23 +115,10 @@ const ProfilePicture = () => {
               </span>
             </button>
           )}
-          {/* {preview && preview !== CameraCircle && (
-            <div className="flex items-end">
-              <Button
-                type="button"
-                variant="change"
-                size="sm"
-                onClick={handleUploadClick}
-              >
-                Change Picture
-              </Button>
-            </div>
-          )} */}
         </div>
 
         {/* Avatar selection button */}
         <div className="custom-flex-col gap-3">
-          {/* <p className="text-black text-base font-medium">Choose Avatar</p> */}
           <Modal
             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >

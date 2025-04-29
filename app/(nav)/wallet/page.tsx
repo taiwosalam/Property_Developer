@@ -41,37 +41,6 @@ const Wallet = () => {
   const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
   const stats = useWalletStore((state) => state.stats);
   const beneficiaries = useWalletStore((state) => state.beneficiaries);
-
-  console.log("transactions", transactions);
-  // const fundsPercent = determinePercentageDifference(
-  //   stats.previous_month.total_funds,
-  //   stats.current_day.total_funds
-  // );
-  // const fundsUpDown = determineTrend(
-  //   stats.current_day.total_funds,
-  //   stats.previous_month.total_funds
-  // );
-
-  // // DEBIT
-  // const debitPercent = determinePercentageDifference(
-  //   stats.previous_month.total_debit,
-  //   stats.current_day.total_debit
-  // );
-  // const debitUpDown = determineTrend(
-  //   stats.current_day.total_debit,
-  //   stats.previous_month.total_debit
-  // );
-
-  // // CREDIT
-  // const creditPercent = determinePercentageDifference(
-  //   stats.previous_month.total_credit,
-  //   stats.current_day.total_credit
-  // );
-  // const creditUpDown = determineTrend(
-  //   stats.current_day.total_credit,
-  //   stats.previous_month.total_credit
-  // );
-
   // Compute totals for the current period
   const currentTotals = computeTotals(transactions, selectedDateRange);
 
