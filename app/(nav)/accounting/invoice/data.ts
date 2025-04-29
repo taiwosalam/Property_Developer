@@ -105,6 +105,14 @@ export const transformInvoiceData = (
       ? tierColorMap[invoice.client_tier as keyof typeof tierColorMap]
       : undefined,
     date: dayjs(invoice.invoice_date).format("MMM DD YYYY"),
+    is_auto: invoice.is_auto !== undefined ? convertToBoolean(invoice.is_auto) : false,
   }));
   return { statistics, invoices: transformedInvoices };
+};
+
+const convertToBoolean = (value: string | boolean): boolean => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  return value === "true";
 };

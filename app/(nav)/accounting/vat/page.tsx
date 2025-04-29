@@ -47,6 +47,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import TableLoading from "@/components/Loader/TableLoading";
 import { useGlobalStore } from "@/store/general-store";
+import ServerError from "@/components/Error/ServerError";
 
 const Vat = () => {
   const router = useRouter();
@@ -225,9 +226,7 @@ const Vat = () => {
   }));
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10">

@@ -216,6 +216,29 @@ const AccountingExpensesPage = () => {
     balance: item.balance ? item.balance : "--- ---",
   }));
 
+  // Function to get the display label for the time range
+  const getTimeRangeLabel = useCallback(() => {
+    switch (timeRange) {
+      case "90d":
+        return "Last 3 months";
+      case "30d":
+        return "Last 30 days";
+      case "7d":
+        return "Last 7 days";
+      case "1d":
+        return "Yesterday";
+      case "custom":
+        if (selectedDateRange?.from && selectedDateRange?.to) {
+          return `${dayjs(selectedDateRange.from).format(
+            "MMM D, YYYY"
+          )} - ${dayjs(selectedDateRange.to).format("MMM D, YYYY")}`;
+        }
+        return "Last 30 days";
+      default:
+        return "Last 30 days"; // Fallback for any unexpected value
+    }
+  }, [timeRange, selectedDateRange]);
+
   if (loading)
     return <CustomLoader layout="page" pageTitle="Expenses" view="table" />;
   if (isNetworkError) return <NetworkError />;
@@ -326,6 +349,7 @@ const AccountingExpensesPage = () => {
               }
               trendColor={stats.percentage_change_amount < 0 ? "red" : "green"}
               percentage={stats.percentage_change_amount}
+              timeRangeLabel={getTimeRangeLabel()}
             />
             <AccountStatsCard
               title="Part Payment"
@@ -336,6 +360,7 @@ const AccountingExpensesPage = () => {
               }
               trendColor={stats.percentage_change_deduct < 0 ? "red" : "green"}
               percentage={stats.percentage_change_deduct}
+              timeRangeLabel={getTimeRangeLabel()}
             />
             <AccountStatsCard
               title="Balance"
@@ -346,6 +371,7 @@ const AccountingExpensesPage = () => {
               }
               trendColor={stats.percentage_change_balance < 0 ? "red" : "green"}
               percentage={stats.percentage_change_balance}
+              timeRangeLabel={getTimeRangeLabel()}
             />
           </AutoResizingGrid>
         </div>

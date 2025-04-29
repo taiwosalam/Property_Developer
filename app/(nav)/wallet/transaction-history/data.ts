@@ -16,8 +16,13 @@ export const transactionHistoryFilterMenu: FilterOptionMenu[] = [
     label: "Type",
     radio: true,
     value: [
-      { label: "Credit", value: "credit" },
-      { label: "Debit", value: "debit" },
+      // { label: "Credit", value: "credit" },
+      // { label: "Debit", value: "debit" },
+      { label: "Withdrawal", value: "withdrawal" },
+      { label: "Sponsor Listing", value: "sponsor_listing" },
+      { label: "Transfer Out", value: "transfer_out" },
+      { label: "Transfer In", value: "transfer_in" },
+      { label: "Funding", value: "funding" },
     ],
   },
 ];

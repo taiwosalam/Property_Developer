@@ -191,7 +191,7 @@ export const transformSingleVehicleRecordApiResponse = (
       },
     },
     checkInsOutData: {
-      check_ins: response.data.check_ins.data.map((checkIn) => ({
+      check_ins: [...response.data.check_ins.data].reverse().map((checkIn) => ({
         check_in_time: checkIn.check_in_time,
         check_out_time: checkIn.check_out_time,
         created_at: checkIn.created_at,

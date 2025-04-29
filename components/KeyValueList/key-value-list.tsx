@@ -1,7 +1,4 @@
-// Types
 import { KeyValueListProps } from "./types";
-
-// Imports
 import clsx from "clsx";
 
 export const KeyValueList = <T extends object>({
@@ -10,8 +7,17 @@ export const KeyValueList = <T extends object>({
   chunkSize = 3,
   referenceObject,
   direction = "row",
+  truncateLength, // Add truncateLength prop
 }: KeyValueListProps<T>) => {
-  const keys = Object.keys(referenceObject) as Array<keyof T>; // Ensure keys are from the referenceObject
+  const keys = Object.keys(referenceObject) as Array<keyof T>;
+
+  // Helper function to truncate text
+  const truncateText = (text: string, length?: number): string => {
+    if (length === undefined || text.length <= length) {
+      return text;
+    }
+    return text.slice(0, length) + "...";
+  };
 
   const chunkArray = (arr: Array<keyof T>, size: number) =>
     arr.reduce(
@@ -19,7 +25,7 @@ export const KeyValueList = <T extends object>({
       [] as Array<Array<keyof T>>
     );
 
-  const chunkedKeys = chunkArray(keys, chunkSize); // Split keys into chunks
+  const chunkedKeys = chunkArray(keys, chunkSize);
 
   return (
     <>
@@ -48,9 +54,9 @@ export const KeyValueList = <T extends object>({
                     className="text-black dark:text-darkText-2"
                     style={styles?.[key]?.value}
                   >
-                    {/* Safely render the value or placeholder */}
+                    {/* Apply truncation to the value */}
                     {data && data[key] !== undefined
-                      ? String(data[key])
+                      ? truncateText(String(data[key]), truncateLength)
                       : "---"}
                   </p>
                 </div>
@@ -76,9 +82,9 @@ export const KeyValueList = <T extends object>({
                     className="text-black dark:text-darkText-2"
                     style={styles?.[key]?.value}
                   >
-                    {/* Safely render the value or placeholder */}
+                    {/* Apply truncation to the value */}
                     {data && data[key] !== undefined
-                      ? String(data[key])
+                      ? truncateText(String(data[key]), truncateLength)
                       : "---"}
                   </p>
                 ))}

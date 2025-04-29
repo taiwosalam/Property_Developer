@@ -14,6 +14,8 @@ import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
 
 export interface VehicleDataProps {
   id: number;
@@ -75,6 +77,7 @@ type PersonalFieldProps = BaseFieldProps & {
 export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   props
 ) => {
+  const { isMobile, isTablet, isDesktop } = useWindowWidth();
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const { editMode, showSubmitButton, loading, formstep, setFormstep } = props;
   const [activeAvatar, setActiveAvatar] = useState(
@@ -114,9 +117,10 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   return (
     <div className="relative">
       <div
-        className={
-          formstep === 2 ? "pointer-events-none opacity-0" : "space-y-5"
-        }
+        className={avatarModalOpen ? "hidden z-0" : "space-y-5 z-10"}
+        // className={
+        //   formstep === 2 ? "pointer-events-none opacity-0" : "space-y-5"
+        // }
       >
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Input
@@ -251,7 +255,11 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
               <ModalContent>
                 <LandlordTenantModalPreset
                   heading="Choose Avatar"
-                  style={{ maxWidth: "700px" }}
+                  style={{
+                    maxWidth:
+                      isTablet || isMobile ? "90%" : isDesktop ? "60%" : "70%",
+                    zIndex: "1",
+                  }}
                 >
                   <Avatars onClick={handleAvatarSelection} />
                 </LandlordTenantModalPreset>
@@ -268,13 +276,15 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             )}
           </div>
           {showSubmitButton && (
-            <Button
-              type="submit"
-              size="16_bold"
-              className="ml-auto rounded-lg py-2 px-8"
-            >
-              {loading ? "Loading..." : editMode ? "Update" : "Create"}
-            </Button>
+            <div className="flex w-full bg-red-500 items-center justify-end">
+              <Button
+                type="submit"
+                size="16_bold"
+                className="mr-auto rounded-lg py-2 px-8"
+              >
+                {loading ? "Loading..." : editMode ? "Update" : "Create"}
+              </Button>
+            </div>
           )}
         </div>
       </div>
@@ -294,101 +304,107 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
   });
 
   return (
-    <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
-      <Input
-        required
-        label="Plate Number"
-        id="plate_number"
-        inputClassName="rounded-lg"
-        defaultValue={editMode ? props.data.plate_number : undefined}
-      />
-      <Select
-        required
-        label="State"
-        id="vehicle_state"
-        options={getAllStates()}
-        inputContainerClassName="bg-neutral-2"
-        defaultValue={editMode ? props.data.state : undefined}
-      />
-      <Select
-        required
-        label="Vehicle Type"
-        id="vehicle_type"
-        options={Object.keys(vehicleData)}
-        value={vehicleRecord.type}
-        onChange={(option) =>
-          setVehicleRecord((prev) => ({
-            ...prev,
-            type: option,
-            brand: "",
-            color: "",
-            year: "",
-          }))
-        }
-      />
-      <Select
-        required
-        label="Vehicle Brand Name"
-        id="vehicle_brand"
-        options={
-          vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.brands ||
-          []
-        }
-        value={vehicleRecord.brand}
-        onChange={(option) =>
-          setVehicleRecord((prev) => ({
-            ...prev,
-            brand: option,
-          }))
-        }
-      />
-      <Select
-        label="Color"
-        id="color"
-        options={
-          vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.colors ||
-          []
-        }
-        value={vehicleRecord.color}
-        onChange={(option) =>
-          setVehicleRecord((prev) => ({ ...prev, color: option }))
-        }
-      />
-      <Select
-        label="Manufacture Year"
-        id="manufacture_year"
-        options={
-          vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.years ||
-          []
-        }
-        value={vehicleRecord.year}
-        onChange={(option) =>
-          setVehicleRecord((prev) => ({ ...prev, year: option }))
-        }
-      />
-      <Input
-        label="Model"
-        id="model"
-        inputClassName="rounded-lg"
-        defaultValue={editMode ? props.data.model : undefined}
-      />
-      <Select
-        label="Visitor Category"
-        id="visitor_category"
-        options={visitorCategories}
-        inputContainerClassName="bg-neutral-2"
-        defaultValue={editMode ? props.data.visitor_category : undefined}
-      />
-      {showSubmitButton && (
-        <Button
-          type="submit"
-          size="16_bold"
-          disabled={props.loading}
-          className="ml-auto rounded-lg py-2 px-8 self-end justify-self-start md:col-span-2 lg:col-span-1 lg:col-start-3"
-        >
-          {props.loading ? "Loading..." : editMode ? "Update" : "Create"}
-        </Button>
-      )}
+    <div>
+      <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 mb-10">
+        <Input
+          required
+          label="Plate Number"
+          id="plate_number"
+          inputClassName="rounded-lg"
+          defaultValue={editMode ? props.data.plate_number : undefined}
+        />
+        <Select
+          required
+          label="State"
+          id="vehicle_state"
+          options={getAllStates()}
+          inputContainerClassName="bg-neutral-2"
+          defaultValue={editMode ? props.data.state : undefined}
+        />
+        <Select
+          required
+          label="Vehicle Type"
+          id="vehicle_type"
+          options={Object.keys(vehicleData)}
+          value={vehicleRecord.type}
+          onChange={(option) =>
+            setVehicleRecord((prev) => ({
+              ...prev,
+              type: option,
+              brand: "",
+              color: "",
+              year: "",
+            }))
+          }
+        />
+        <Select
+          required
+          label="Vehicle Brand Name"
+          id="vehicle_brand"
+          options={
+            vehicleData[vehicleRecord.type as keyof typeof vehicleData]
+              ?.brands || []
+          }
+          value={vehicleRecord.brand}
+          onChange={(option) =>
+            setVehicleRecord((prev) => ({
+              ...prev,
+              brand: option,
+            }))
+          }
+        />
+        <Select
+          label="Color"
+          id="color"
+          options={
+            vehicleData[vehicleRecord.type as keyof typeof vehicleData]
+              ?.colors || []
+          }
+          value={vehicleRecord.color}
+          onChange={(option) =>
+            setVehicleRecord((prev) => ({ ...prev, color: option }))
+          }
+        />
+        <Select
+          label="Manufacture Year"
+          id="manufacture_year"
+          options={
+            vehicleData[vehicleRecord.type as keyof typeof vehicleData]
+              ?.years || []
+          }
+          value={vehicleRecord.year}
+          onChange={(option) =>
+            setVehicleRecord((prev) => ({ ...prev, year: option }))
+          }
+        />
+        <Input
+          label="Model"
+          id="model"
+          inputClassName="rounded-lg"
+          defaultValue={editMode ? props.data.model : undefined}
+        />
+        <Select
+          label="Visitor Category"
+          id="visitor_category"
+          options={visitorCategories}
+          inputContainerClassName="bg-neutral-2"
+          defaultValue={editMode ? props.data.visitor_category : undefined}
+        />
+        {showSubmitButton && (
+          <FixedFooter>
+            <div className="flex w-full items-center justify-end">
+              <Button
+                type="submit"
+                size="16_bold"
+                disabled={props.loading}
+                className="rounded-lg py-2 px-8"
+              >
+                {props.loading ? "Loading..." : editMode ? "Update" : "Create"}
+              </Button>
+            </div>
+          </FixedFooter>
+        )}
+      </div>
     </div>
   );
 };
