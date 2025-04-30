@@ -19,21 +19,29 @@ import { CalendarEventsApiResponse } from "@/app/(nav)/tasks/calendars/types";
 import useFetch from "@/hooks/useFetch";
 import { transformCalendarEvents } from "@/app/(nav)/tasks/calendars/data";
 import { CalendarEventProps } from "../Calendar/types";
+import { useRouter } from "next/navigation";
 
 const DashboarddCalendar = () => {
   const [activeDate, setActiveDate] = useState(new Date());
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
-  const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>([]);
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>(
+    []
+  );
 
-  const { data: calendarEventApiResponse, loading, error } = useFetch<CalendarEventsApiResponse>("/company/calender");
+  const router = useRouter();
 
-   useEffect(() => {
-      if(calendarEventApiResponse){
-        const events = transformCalendarEvents(calendarEventApiResponse);
-        setCalendarEvents(events);
-      }
-  
-    }, [calendarEventApiResponse]);
+  const {
+    data: calendarEventApiResponse,
+    loading,
+    error,
+  } = useFetch<CalendarEventsApiResponse>("/company/calender");
+
+  useEffect(() => {
+    if (calendarEventApiResponse) {
+      const events = transformCalendarEvents(calendarEventApiResponse);
+      setCalendarEvents(events);
+    }
+  }, [calendarEventApiResponse]);
 
   // Initialize the Calendar instance with month and year
   const data = new Calendar({
@@ -41,6 +49,12 @@ const DashboarddCalendar = () => {
     year: getYear(currentDate),
     events: calendarEvents,
   });
+
+  const handleDayClick = (day: any) => {
+    setActiveDate(day.date);
+
+    router.push(`/tasks/calendars`, { scroll: true });
+  };
 
   const { calendarDays, month, year } = data;
 
@@ -77,7 +91,7 @@ const DashboarddCalendar = () => {
           {calendarDays.map((day, index) => (
             <CalendarDay
               key={index}
-              onClick={() => setActiveDate(day.date)}
+              onClick={() => handleDayClick(day)}
               isActive={isSameDay(day.date, activeDate)}
               {...day}
             />

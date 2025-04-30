@@ -52,9 +52,9 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
   const [properties, setProperties] = useState<IPropertyWithId[] | null>(null);
   const [tenants, setTenants] = useState<ITenantsWithId[] | null>(null);
 
-  const { data: propertyListResponse } =
+  const { data: propertyListResponse, loading: propertyLoading } =
     useFetch<IPropertyApi>("/property/list");
-  const { data: tenantListResponse } = useFetch<ITenantsApi>("all-tenants");
+  const { data: tenantListResponse, loading: tenantLoading } = useFetch<ITenantsApi>("all-tenants");
 
   useEffect(() => {
     if (propertyListResponse) {
@@ -103,7 +103,6 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
   const { data: propertyWithId } = useFetch<any>(
     selectedProperty ? `property/${selectedProperty.title}/view` : null
   );
-  const [propertyTenants, setPropertyTenants] = useState<ITenantResponse[]>([]);
 
   // Add new fetch hook for tenant profiles
   const { data: tenantProfiles } = useFetch<any>(
@@ -220,7 +219,8 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
           }
           id="property"
           label="Select Property"
-          placeholder="Select options"
+          placeholder={ propertyLoading ? "Loading..." : "Select options" }
+          disabled={propertyLoading}
           inputContainerClassName="bg-neutral-2"
           value={selectedState}
           onChange={(selected: string) => {
@@ -252,7 +252,8 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
           }
           id="tenants_name"
           label="Tenants Name"
-          placeholder="Select options"
+          placeholder={ tenantLoading ? "Loading..." : "Select options" }
+          disabled={tenantLoading}
           inputContainerClassName="bg-neutral-2"
           value={selectedState}
           onChange={(selected: string) => {
