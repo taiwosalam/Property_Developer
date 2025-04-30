@@ -121,7 +121,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 <span className="font-medium text-brand-primary border-b border-black dark:border-darkText-2">
                   {status === "relocate" ? "--- ---" : tenant_name}
                 </span>
-                {badge_color && status !== "relocate" && (
+                {(badge_color && status !== "relocate") && (
                   <BadgeIcon color={badge_color} />
                 )}
               </Link>

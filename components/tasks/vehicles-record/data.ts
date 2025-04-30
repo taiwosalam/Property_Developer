@@ -35,18 +35,17 @@ import { PersonalDataProps } from "./form-sections";
 //   }
 // };
 
-
 export const createVehicleRecord = async (data: any) => {
- try{
-  const res = await api.post("/vehicle-records", data);
-  if (res.status === 200 || res.status === 201) {
-    return true
+  try {
+    const res = await api.post("/vehicle-records", data);
+    if (res.status === 200 || res.status === 201) {
+      return true;
+    }
+  } catch (err) {
+    handleAxiosError(err);
+    return false;
   }
- } catch(err){
-  handleAxiosError(err)
-  return false
- } 
-}
+};
 export const updateVehicleDetails = async (data: any, id: number) => {
   try {
     const response = await api.post(`/vehicle-records/${id}`, data);
@@ -119,8 +118,9 @@ export const transformTenant = (
     address: tenant?.address || "",
     phone_number: tenant?.phone || "",
     avatar: tenant?.picture || "",
-  }
+  };
 };
+
 export const vehicleData = {
   Cars: {
     brands: [
@@ -427,4 +427,12 @@ export const vehicleData = {
       "Other Years",
     ],
   },
+};
+
+// Helper function to truncate text
+export const truncateText = (text: string, length?: number): string => {
+  if (length === undefined || text.length <= length) {
+    return text;
+  }
+  return text.slice(0, length) + "...";
 };

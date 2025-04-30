@@ -225,7 +225,7 @@ const RentAndUnit = () => {
 
   if (loading)
     return (
-      <CustomLoader layout="page" statsCardCount={3} pageTitle="Rent & Units" />
+      <CustomLoader layout="page" statsCardCount={3} pageTitle="Rent & Management" />
     );
 
   if (isNetworkError) return <NetworkError />;
