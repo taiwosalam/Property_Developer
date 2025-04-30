@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 import NetworkError from "@/components/Error/NetworkError";
 import { getTransactionIcon } from "@/components/Wallet/icons";
 import { useGlobalStore } from "@/store/general-store";
+import ServerError from "@/components/Error/ServerError";
 
 const TransactionHistory = () => {
   const [state, setState] = useState(initialPageData);
@@ -188,9 +189,7 @@ const TransactionHistory = () => {
   };
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-8">

@@ -2,8 +2,14 @@ import api, { handleAxiosError } from "@/services/api";
 import { formatHtmlDescription } from "../disbursement/data";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
-import { Expense, ExpensesApiResponse, ExpenseStats, StaffListResponse, TransformedExpensesData } from "./types.";
-
+import {
+  Expense,
+  ExpensesApiResponse,
+  ExpenseStats,
+  StaffListResponse,
+  TransformedExpensesData,
+} from "./types.";
+import { parseCurrency } from "./[expenseId]/manage-expenses/data";
 
 export interface ExpensesRequestParams {
   // page?: number;
@@ -16,7 +22,6 @@ export interface ExpensesRequestParams {
   property_ids?: string[];
   created_by?: string[];
 }
-
 
 export const accountingExpensesOptionsWithDropdown = [
   {
@@ -72,7 +77,6 @@ export const expenseTableData = () => {
   }));
 };
 
-
 export const transformExpensesData = (
   apiResponse: ExpensesApiResponse
 ): TransformedExpensesData => {
@@ -93,44 +97,50 @@ export const transformExpensesData = (
       : undefined,
   }));
 
-
   const stats: ExpenseStats = {
     total_amount: Number(apiResponse.data.statistic.total_amount),
     total_deduct: Number(apiResponse.data.statistic.total_deduct),
     total_balance: Number(apiResponse.data.statistic.total_balance),
-    percentage_change_amount: apiResponse.data.statistic.percentage_change_amount,
-    percentage_change_deduct: apiResponse.data.statistic.percentage_change_deduct,
-    percentage_change_balance: apiResponse.data.statistic.percentage_change_balance,
+    percentage_change_amount:
+      apiResponse.data.statistic.percentage_change_amount,
+    percentage_change_deduct:
+      apiResponse.data.statistic.percentage_change_deduct,
+    percentage_change_balance:
+      apiResponse.data.statistic.percentage_change_balance,
   };
 
   return { expenses, stats };
 };
 
-
 export const transformStaffs = (
   response: StaffListResponse
 ): { value: string; label: string }[] => {
   return response.data
-    .filter((staff) =>
-      staff.staff_role.toLowerCase().includes("officer")
-    )
+    .filter((staff) => staff.staff_role.toLowerCase().includes("officer"))
     .map((staff) => ({
       value: `${staff.id}`,
       label: staff.user.name,
     }));
 };
 
-
-
-
 export const createExpense = async (data: any) => {
   try {
-    const res = await api.post(`/expenses`, data)
+    const res = await api.post(`/expenses`, data);
     if (res.status === 201) {
-      return true
+      return true;
     }
   } catch (error) {
-    handleAxiosError(error)
-    return false
+    handleAxiosError(error);
+    return false;
   }
-}
+};
+
+// Helper function to count digits in the balance
+export const getDigitCount = (balance: number | string): number => {
+  // Convert balance to string and remove non-digit characters (e.g., commas, decimals)
+  const balanceStr = typeof balance === "number" ? balance.toString() : balance;
+  // Remove any non-digit characters (e.g., commas from formatted numbers)
+  // const digitsOnly = balanceStr.replace(/[^0-9]/g, "");
+  const digitsOnly = parseCurrency(balanceStr).toString();
+  return digitsOnly.length;
+};

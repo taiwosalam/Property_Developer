@@ -43,6 +43,7 @@ import ServerError from "@/components/Error/ServerError";
 import UpdateVehicleWithEmail from "@/components/Modal/update-vehicle-record";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import { NotepadTextDashed } from "lucide-react";
+import { empty } from "@/app/config";
 
 interface TransformedData {
   userData: UserData | null;
@@ -261,7 +262,7 @@ const RecordPage = () => {
         >
           <div className="flex flex-col xl:flex-row gap-5">
             <Picture
-              src={avatar || DefaultLandlordAvatar}
+              src={avatar || empty}
               alt="profile picture"
               size={120}
               rounded
@@ -470,28 +471,38 @@ const RecordPage = () => {
         onPageChange={handlePageChange}
       />
       <FixedFooter className="flex items-center justify-end">
-        <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
+        {hasPendingRecord ? (
           <Button
-            onClick={handleCreateNewRecordClick}
-            size="sm_normal"
+            size="base_medium"
             className="py-2 px-8"
+            onClick={() => router.back()}
           >
-            Create New Record
+            Ok
           </Button>
-          <ModalContent>
-            <CheckInOutForm
-              onSubmit={handleCheckIn}
-              loading={checking}
-              useCase="vehicle"
-              type="check-in"
-              pictureSrc={pictureSrc}
-              userName={full_name}
-              id={userId}
-              category={category}
-              registrationDate={registrationDate}
-            />
-          </ModalContent>
-        </Modal>
+        ) : (
+          <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
+            <Button
+              onClick={handleCreateNewRecordClick}
+              size="sm_normal"
+              className="py-2 px-8"
+            >
+              Create New Record
+            </Button>
+            <ModalContent>
+              <CheckInOutForm
+                onSubmit={handleCheckIn}
+                loading={checking}
+                useCase="vehicle"
+                type="check-in"
+                pictureSrc={pictureSrc}
+                userName={full_name}
+                id={userId}
+                category={category}
+                registrationDate={registrationDate}
+              />
+            </ModalContent>
+          </Modal>
+        )}
       </FixedFooter>
     </div>
   );

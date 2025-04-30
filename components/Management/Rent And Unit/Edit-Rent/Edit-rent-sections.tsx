@@ -904,7 +904,7 @@ export const PayAble: React.FC<PayAbleProps> = ({
 
   const feeTitle = isRental ? "Breakdown" : "Annual Fee";
 
-  const sub_title = !isExcess
+  const sub_title = isExcess
     ? "Based on the calculation and your selected option, the client has an excess balance to be paid to your company."
     : "Based on the calculation and your selected option, your company owes the client a refund balance.";
 

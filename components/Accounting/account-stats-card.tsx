@@ -9,6 +9,7 @@ import {
   TrendingDownIcon,
 } from "./icons";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
+import { getDigitCount } from "@/app/(nav)/accounting/expenses/data";
 
 type TrendDirection = "up" | "down";
 type TrendColor = "red" | "green";
@@ -32,6 +33,7 @@ interface AccountStatsCardProps {
   balance: number | string;
   className?: string;
   forBranch?: boolean;
+  timeRangeLabel?: string;
 }
 
 const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
@@ -43,7 +45,16 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
   balance,
   className,
   forBranch,
+  timeRangeLabel,
 }) => {
+  // Determine font size based on digit count
+  const digitCount = getDigitCount(balance);
+  const fontSizeClass = clsx({
+    "text-[24px] xl:text-[28px]": digitCount < 10, // Default for < 8 digits
+    "text-[20px] xl:text-[24px]": digitCount >= 10 && digitCount <= 12, // 8–9 digits
+    "text-[16px] xl:text-[20px]": digitCount >= 13, // 10+ digits
+  });
+
   const getVariantStyles = (): VariantStyle => {
     switch (variant) {
       case "blueIncoming":
@@ -98,7 +109,12 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
           {/* <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
             {`${currencySymbols.naira}${formatNumber(balance)}`}
           </p> */}
-          <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
+          <p
+            className={clsx(
+              "font-bold text-[#202224] dark:text-white",
+              fontSizeClass // Apply dynamic font size
+            )}
+          >
             {typeof balance === "string"
               ? `${currencySymbols.naira}${balance}`
               : `${currencySymbols.naira}${formatNumber(balance)}`}
@@ -137,7 +153,8 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
           >
             {percentage}%
           </span>{" "}
-          {trendDirection === "up" ? "Up" : "Down"} from last month
+          {trendDirection === "up" ? "Up" : "Down"} from{" "}
+          {timeRangeLabel || "Last month"}{" "}
         </p>
       </div>
     </div>

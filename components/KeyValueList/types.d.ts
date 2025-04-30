@@ -1,6 +1,7 @@
 export interface KeyValueListProps<T> {
   referenceObject: T;
   data: Partial<T>;
+  truncateLength?: number;
   chunkSize?: number;
   styles?: Partial<
     Record<
