@@ -31,7 +31,7 @@ const VehicleRecordModal: React.FC<
   showOpenRecordsButton = true,
 }) => {
   const [loading, setLoading] = useState(false);
-  const { setIsOpen } = useModal()
+  const { setIsOpen } = useModal();
 
   const checkIn = {
     id: latest_check_in?.id,
@@ -262,7 +262,7 @@ const VehicleRecordModal: React.FC<
             </Button>
           )}
 
-          {status === "no_record" && (
+          {(status === "no_record" || status === "completed") && (
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
