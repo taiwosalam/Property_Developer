@@ -908,13 +908,23 @@ export const PayAble: React.FC<PayAbleProps> = ({
     currencySymbols["naira"];
 
   const feeTitle = isRental ? "Breakdown" : "Annual Fee";
+  // Subtitles
+  const subtitles = {
+    zero: "Based on the calculation and your selected option, there is no outstanding balance. Neither your company nor the client owes any refund or payment.",
+    refund:
+      "Based on the calculation and your selected option, the client has an excess balance to be paid to your company.",
+    excess:
+      "Based on the calculation and your selected option, your company owes the client a refund balance.",
+  };
 
+  // Determine subtitle based on totalPayable and isExcess
   const subtitle =
     detail.amount === 0
-      ? "Based on the calculation and your selected option, there is no outstanding balance. Neither your company nor the client owes any refund or payment."
+      ? subtitles.zero
       : isExcess
-      ? "Based on the calculation and your selected option, the client has an excess balance to be paid to your company."
-      : "Based on the calculation and your selected option, your company owes the client a refund balance.";
+      ? subtitles.excess
+      : subtitles.refund;
+      
   return (
     <div className="space-y-1">
       <RentSectionTitle>Payment Status</RentSectionTitle>
