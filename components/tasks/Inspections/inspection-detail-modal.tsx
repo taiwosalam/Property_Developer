@@ -71,10 +71,9 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
               desc={
                 <div className="flex items-center">
                   <span>{data?.booked_by}</span>
-                  {data?.tier ||
-                    (data.tier === 0 && (
-                      <BadgeIcon color={getBadgeColor(data?.tier)} />
-                    ))}
+                  {data?.tier && (
+                    <BadgeIcon color={getBadgeColor(data?.tier)} />
+                  )}
                 </div>
               }
             />

@@ -33,6 +33,7 @@ import RentPenalty from "@/components/Management/rent-penalty";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import useFetch from "@/hooks/useFetch";
 import ManagementCheckbox from "@/components/Documents/DocumentCheckbox/management-checkbox";
+import { ApiResponseUserPlan } from "../others/types";
 
 const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
@@ -59,6 +60,21 @@ const Management = () => {
     tenant_screening_level: 0,
     occupant_screening_level: 0,
   });
+  const [userPlan, setUserPlan] = useState<string>("");
+
+  const { data: planData } = useFetch<ApiResponseUserPlan>(
+    "/property-manager-subscription/active"
+  );
+
+  useEffect(() => {
+    if (planData) {
+      const premiumPlan =
+        planData?.data?.plan?.plan_name.toLowerCase() ?? "free";
+      setUserPlan(premiumPlan);
+    }
+  }, [planData]);
+
+  console.log("userPlan", userPlan);
 
   const formatPermission = (text: string) => {
     return text
@@ -114,14 +130,22 @@ const Management = () => {
   }, [data]);
 
   const handleCheckboxClick = (title: string, permission: string) => {
+    // Check if this is a user role configuration and user doesn't have professional plan
+    if (roleMapping[title] === "user" && userPlan !== "professional") {
+      toast.warning(
+        "Only Professional plan users can modify user configurations"
+      );
+      return;
+    }
+
     const formattedPermission = formatPermission(permission);
     setSelectedPermissions((prev) => {
       const currentPermissions = prev[title] || [];
       const updatedPermissions = currentPermissions.includes(
         formattedPermission
       )
-        ? currentPermissions.filter((p) => p !== formattedPermission) // Remove if already selected
-        : [...currentPermissions, formattedPermission]; // Add if not selected
+        ? currentPermissions.filter((p) => p !== formattedPermission)
+        : [...currentPermissions, formattedPermission];
 
       return { ...prev, [title]: updatedPermissions };
     });
@@ -150,7 +174,6 @@ const Management = () => {
   };
 
   // UPDATE RENT PENALTY
- 
 
   // TENANT & OCCUPANT SCREENING LEVEL
   const handleUpdateScreeningLevel = async (data: Record<string, any>) => {
@@ -198,6 +221,7 @@ const Management = () => {
                           false;
 
                         return (
+                          // In the render section where ManagementCheckbox is used
                           <ManagementCheckbox
                             key={idx}
                             darkText
