@@ -8,6 +8,7 @@ import { LocationIcon } from "@/public/icons/icons";
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { secondaryFont } from "@/utils/fonts";
+import { truncateText } from "@/components/tasks/vehicles-record/data";
 
 const StaffProfilePortfolioItem: React.FC<StaffProfilePortfolioItemProps> = ({
   user,
@@ -15,17 +16,21 @@ const StaffProfilePortfolioItem: React.FC<StaffProfilePortfolioItemProps> = ({
   property,
 }) => {
   return (
-    <div className="flex-shrink-0 p-[18px] rounded-lg bg-white dark:bg-[#020617] min-w-[150px] flex items-center gap-2">
-      <Picture src={image} alt="preview" size={60} className="rounded-[4px]" />
-      <div className="custom-flex-col gap-1">
+    <div className="flex-shrink-0 p-[18px] rounded-lg bg-white dark:bg-[#020617] min-w-[400px] flex items-center gap-4">
+      <Picture src={image} alt="preview" size={60} className="rounded-[4px] custom-secondary-bg" />
+      <div className="custom-flex-col gap-2">
         {property ? (
           <>
-            <p className="text-gray-700 dark:text-darkText-1 text-base font-medium capitalize">
-              {property.name}
-            </p>
-            <div className="flex gap-1 items-center text-text-disabled">
-              <LocationIcon />
-              <p className="text-sm font-medium">{property.location}</p>
+            <div className="custom-flex-col text-black dark:text-white">
+              <p className="text-gray-700 dark:text-darkText-1 text-base font-medium capitalize">
+                {truncateText(property.name, 30)}
+              </p>
+              <div className="flex gap-1 items-center text-text-disabled">
+                <LocationIcon />
+                <p className="text-sm font-medium">
+                  {truncateText(property.location, 30)}
+                </p>
+              </div>
             </div>
           </>
         ) : user ? (
@@ -33,9 +38,7 @@ const StaffProfilePortfolioItem: React.FC<StaffProfilePortfolioItemProps> = ({
             <div className="custom-flex-col text-black dark:text-white">
               <div className="flex items-center gap-2">
                 <p className="text-base font-bold capitalize">{user.name} </p>
-                {user?.badge_color && (
-                  <BadgeIcon color={user.badge_color} />
-                )}
+                {user?.badge_color && <BadgeIcon color={user.badge_color} />}
               </div>
               <p className={`text-sm font-normal ${secondaryFont.className}`}>
                 {user.email}

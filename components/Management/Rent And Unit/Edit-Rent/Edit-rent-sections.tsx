@@ -723,7 +723,10 @@ export const PreviousUnitBalance: React.FC<{
     { label: `Legal Fee`, value: currentUnit.legal_fee },
     { label: `Caution Fee`, value: currentUnit.caution_fee },
     { label: `VAT Amount`, value: currentUnit.vat_amount },
-    { label: "Other Fees", value: currentUnit.other_charge },
+    { label: "Service Charge", value: currentUnit.service_charge },
+    { label: "Agency Fee", value: currentUnit.unitAgentFee },
+    { label: "Other Fee", value: currentUnit.other_charge },
+    { label: "Total Package", value: currentUnit.newTenantPrice },
   ].filter((item) => {
     // Exclude items where value is undefined, empty, or an invalid placeholder
     if (item.value === undefined || item.value === "") return false;
@@ -737,7 +740,7 @@ export const PreviousUnitBalance: React.FC<{
   // Only render the section if there are valid items
   if (renewalRentDetailItems.length === 0) return null;
 
-  console.log("detailsArr", detailsArr)
+  console.log("detailsArr", detailsArr);
 
   const sub_title = !deduction
     ? "Do not deduct the current outstanding rent balance from the cost of the new unit that the tenants are moving into."
@@ -757,7 +760,9 @@ export const PreviousUnitBalance: React.FC<{
         </>
       )}
       <RentSectionContainer
-        title={workings ? "Breakdown" : isRental ? "Breakdown" : "Apply Deduction"}
+        title={
+          workings ? "Breakdown" : isRental ? "Breakdown" : "Apply Deduction"
+        }
       >
         <div className="space-y-6">
           <div className="grid md:grid-cols-3 gap-4">
@@ -903,15 +908,27 @@ export const PayAble: React.FC<PayAbleProps> = ({
     currencySymbols["naira"];
 
   const feeTitle = isRental ? "Breakdown" : "Annual Fee";
+  // Subtitles
+  const subtitles = {
+    zero: "Based on the calculation and your selected option, there is no outstanding balance. Neither your company nor the client owes any refund or payment.",
+    refund:
+      "Based on the calculation and your selected option, the client has an excess balance to be paid to your company.",
+    excess:
+      "Based on the calculation and your selected option, your company owes the client a refund balance.",
+  };
 
-  const sub_title = isExcess
-    ? "Based on the calculation and your selected option, the client has an excess balance to be paid to your company."
-    : "Based on the calculation and your selected option, your company owes the client a refund balance.";
-
+  // Determine subtitle based on totalPayable and isExcess
+  const subtitle =
+    detail.amount === 0
+      ? subtitles.zero
+      : isExcess
+      ? subtitles.excess
+      : subtitles.refund;
+      
   return (
     <div className="space-y-1">
       <RentSectionTitle>Payment Status</RentSectionTitle>
-      <p className="text-sm">• {sub_title}</p>
+      <p className="text-sm">• {subtitle}</p>
       <div className="mt-2">
         <p className="text-md font-semibold mt-3 text-text-secondary">Total</p>
         <p className="text-lg lg:text-xl text-brand-9 font-bold">

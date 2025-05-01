@@ -461,7 +461,9 @@ const VehiclesRecordPage = () => {
               }}
             >
               <ModalContent>
-                <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
+                <VehicleRecordModal
+                  {...(selectedRecord as VehicleRecord)}
+                />
               </ModalContent>
             </Modal>
           </>

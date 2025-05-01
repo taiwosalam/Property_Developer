@@ -92,7 +92,7 @@ export const updatePropertyRequest = async (id: string, data: any) => {
     min_budget: data.min_budget?.toString() || "",
     max_budget: data.max_budget?.toString() || "",
     valid_till: data.valid_till || "",
-    _method: 'patch'
+    _method: "patch",
   };
 
   console.log("formattedData", formattedData);
@@ -108,23 +108,24 @@ export const updatePropertyRequest = async (id: string, data: any) => {
   }
 };
 
-
 // Helper function to transform API data into ThreadCardProps
 export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
   // console.log("data", data)
   return data.map((thread, index) => ({
     id: index,
-    name: thread.user ? `${thread.user.professional_title} ${thread.user.name}` : "--- ---",
+    name: thread.user
+      ? `${thread.user.professional_title} ${thread.user.name}`
+      : "--- ---",
     picture_url:
       thread.post && thread.post.media && thread.post.media.length > 0
         ? thread.post.media[0].path
-        : "--- ---",
+        : empty,
     role: thread.user ? thread.user.role : "--- ---",
     time: thread.post ? thread.post.created_at : "--- ---",
     title: thread.post ? thread.post.title : "--- ---",
     desc: thread.post ? thread.post.content : "--- ---",
     comments: thread.post ? thread.post.comments_count : "--- ---",
-    user_pics: thread.user ? thread.user.picture : "--- ---",
+    user_pics: thread.user ? thread.user.picture : empty,
     likes: thread.post ? thread.post.likes_up : "--- ---",
     dislikes: thread.post ? thread.post.likes_down : "--- ---",
     slug: thread.post ? thread.post.slug : "--- ---",
@@ -133,19 +134,15 @@ export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
   }));
 };
 
-
 export const deletePropertyRequest = async (id: string) => {
   try {
-    await api.delete(
-      `/agent-community/property-requests/${id}`
-    );
+    await api.delete(`/agent-community/property-requests/${id}`);
     return true;
   } catch (error) {
     console.error("Error deleting property request:", error);
     return false;
   }
 };
-
 
 // export const threadData = [
 //   {

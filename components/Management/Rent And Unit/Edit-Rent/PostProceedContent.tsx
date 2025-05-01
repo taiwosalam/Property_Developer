@@ -147,8 +147,6 @@ const PostProceedContent = ({
         unit_data.renewalTenantTotalPrice,
         unit_data.currency || "naira"
       );
-  // const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
-  // const totalPayable = deduction ? newUnitTotal - bal : newUnitTotal;
   const totalPayable = deduction ? outstanding - newUnitTotal : newUnitTotal;
   const prev_unit_bal = bal
     ? `${"₦"}${formatNumber(parseFloat(`${bal}`))}`
@@ -156,11 +154,7 @@ const PostProceedContent = ({
   const refundAmount = totalPayable < 0 ? Math.abs(totalPayable) : 0;
 
   // Calculate excess or refund amount for the third card
-  // const isExcess = newUnitTotal < totalPayable;
-  const isExcess = totalPayable > 0;
-  const balanceAmount = isExcess
-    ? totalPayable - newUnitTotal
-    : Math.abs(totalPayable);
+  const isExcess = totalPayable < 0;
   const balanceLabel = isExcess ? "Client Excess" : "Refund Client";
   const showBalanceCard = totalPayable < 0 || isExcess;
 
