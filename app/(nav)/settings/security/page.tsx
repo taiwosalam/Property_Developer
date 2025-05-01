@@ -135,8 +135,6 @@ const Security = () => {
     }
   }, [data]);
 
-  console.log(pageData?.profile_picture)
-
   const setUpdateState = (fieldName: keyof FormState, value: any) => {
     setFormState((prev) => ({ ...prev, [fieldName]: value }));
   };
