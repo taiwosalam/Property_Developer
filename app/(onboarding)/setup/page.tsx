@@ -90,18 +90,13 @@ const Setup = () => {
       ? updateCompany(company_id!, payload)
       : createCompany(payload);
 
-    console.log("payload", payload);
+    // console.log("payload", payload);
     // const status = await createCompany(payload);
     const status = await action;
     if (status) {
       await setRole("director");
       await setAuthState("role", "director");
-      if (isEditMode) {
-        router.replace("/dashboard");
-      } else {
-        router.replace("/auth/sign-in");
-      }
-      // router.replace("/auth/sign-in");
+      router.replace("/auth/sign-in");
     }
     setRequestLoading(false);
   };
