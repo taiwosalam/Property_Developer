@@ -19,6 +19,7 @@ type Director = {
   phone_number: string;
   about_director: string | null;
   profile_picture: string | null;
+  is_verified: boolean;
   full_name: string;
   alt_email: string | null;
   deleted_at: string | null;

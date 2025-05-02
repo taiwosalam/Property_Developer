@@ -7,9 +7,10 @@ export const settings_link_tabs = [
   "management",
   "services",
   "appearance",
+  "subscription",
   "add-on",
   // "enrollment",
-  "subscription",
+
   "security",
   // "preference",
   "others",

@@ -19,9 +19,10 @@ import { toast } from "sonner";
 
 interface NameVerificationProps {
   fullName: string;
+  setFullName: (value: string) => void
 }
 
-export const NameVerification = ({ fullName }: NameVerificationProps) => {
+export const NameVerification = ({ fullName, setFullName }: NameVerificationProps) => {
   const [step, setStep] = useState(1); // Step state to control modal content
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null); // Track selected verification
 
@@ -178,6 +179,7 @@ export const NameVerification = ({ fullName }: NameVerificationProps) => {
             setInputField={setInputField}
             method={selectedMethod ?? undefined}
             responseMethod={methodRes}
+            setFullName={setFullName}
           />
         );
       default:
@@ -273,27 +275,6 @@ export const VerificationMethod = ({
     responseMethods.some((rm) => rm.method === vm.method)
   );
 
-  // Update the handleProceedToOTP function
-  const handleProceedToOTP = async (methodData: { method: string }) => {
-    if (!responseMethod?.data?.session_id) return;
-
-    setIsProceeding(true);
-    try {
-      const result = await verifyBVNWithOtp({
-        method: methodData.method,
-        x_session_id: responseMethod.data.session_id,
-      });
-
-      if (result) {
-        onMethodSelect(methodData.method);
-      }
-    } catch (error) {
-      console.error("Error proceeding with OTP:", error);
-    } finally {
-      setIsProceeding(false);
-    }
-  };
-
   return (
     <WalletModalPreset
       title="Verify your BVN"
@@ -384,6 +365,7 @@ interface InputPinDialogProps {
   inputField: string;
   setInputField: (value: string) => void;
   responseMethod: BvnLookupResponse | null;
+  setFullName: (value: string) => void;
 }
 
 export const InputPinDialog = ({
@@ -393,9 +375,12 @@ export const InputPinDialog = ({
   method,
   setInputField,
   responseMethod,
+  setFullName,
 }: InputPinDialogProps) => {
   const [code, setCode] = useState("");
   const [loading, setIsLoading] = useState(false);
+
+  const[monoResponse, setMonoResponse] = useState("");
 
   const formatContactInfo = () => {
     if (!contactInfo) return "";
@@ -414,7 +399,7 @@ export const InputPinDialog = ({
     try {
       setIsLoading(true);
       const data = await bvnInfoDetails(code, sessionId);
-      console.log(data?.status);
+      console.log(data?.data);
       if (data?.status === false) {
         setCode("");
       }
@@ -479,6 +464,8 @@ export const InputPinDialog = ({
           : { phone_number: contactInfo }),
       });
 
+      console.log(result);
+
       if (result) {
         toast.success("Code resent successfully");
       }
@@ -506,7 +493,7 @@ export const InputPinDialog = ({
           </p>
           <p className="text-gray-500">for confirmation</p>
           <div className="py-12">
-            <AuthPinField onChange={setCode} />
+            <AuthPinField onChange={setCode} length={6}/>
           </div>
 
           <Button
@@ -515,49 +502,6 @@ export const InputPinDialog = ({
           >
             Change options
           </Button>
-
-          {/* <div className="flex flex-col justify-center items-center py-6">
-            <div className="flex gap-3 justify-center items-center mt-10">
-              <Input
-                id="first"
-                className="w-12 rounded-2xl"
-                inputClassName="rounded-[.7rem] text-[1.3rem] text-center text-blue-700 font-bold"
-                min={1}
-                max={1}
-                type="number"
-              />
-              <Input
-                id="second"
-                className="w-12 rounded-2xl"
-                inputClassName="rounded-[.7rem] text-[1.3rem] text-center text-blue-700 font-bold"
-                min={1}
-                max={1}
-                type="number"
-              />
-              <Input
-                id="third"
-                className="w-12 rounded-2xl"
-                inputClassName="rounded-[.7rem] text-[1.3rem] text-center text-blue-700 font-bold"
-                min={1}
-                max={1}
-                type="number"
-              />
-              <Input
-                id="fourth"
-                className="w-12 rounded-2xl"
-                inputClassName="rounded-[.7rem] text-[1.3rem] text-center text-blue-700 font-bold"
-                min={1}
-                max={1}
-                type="number"
-              />
-            </div>
-            <Button
-              className="bg-transparent mt-2 flex justify-center items-center font-semibold text-center py-4 text-lg text-blue-700 hover:bg-transparent"
-              onClick={onChangeOption}
-            >
-              Change options
-            </Button>
-          </div> */}
         </div>
         <div className="mt-6">
           <div className="flex items-center gap-2">
@@ -628,7 +572,7 @@ export const AlternateMethod = ({
   //const [error, setError] = useState<string | null>(null);
   const [method, setMethod] = useState("");
 
-  console.log(responseMethod);
+  console.log(selectMethod);
 
   useEffect(() => {
     if (responseMethod && selectMethod) {
@@ -647,7 +591,10 @@ export const AlternateMethod = ({
   console.log(selectMethod);
 
   const handleOnChange = (value: string) => {
-    setInputField(value);
+    const numbersOnly = value.replace(/[^0-9]/g, "");
+    if (numbersOnly.length <= 11) {
+      setInputField(numbersOnly);
+    }
     // Clear any previous errors
   };
 
@@ -703,7 +650,7 @@ export const AlternateMethod = ({
 
       if (result) {
         setStep(4);
-        setInputField("")
+        setInputField("");
         //onMethodSelect("InputPinDialog");
       }
     } catch (error) {
@@ -724,7 +671,11 @@ export const AlternateMethod = ({
   return (
     <WalletModalPreset
       title={`${
-        selectMethod === "Email" ? "Email Verification" : "Phone Verification"
+        selectMethod === "Email"
+          ? "Email Verification"
+          : selectMethod === "Alternative Number"
+          ? "Alternate Number"
+          : "Phone Verification"
       }`}
       className="!rounded-[2rem] pb-6 w-[500px] max-h-[90%]"
       headerClassName="py-6 text-xl"
@@ -755,8 +706,9 @@ export const AlternateMethod = ({
               To verify your identity, please complete the email address above.
             </p>
           ) : (
+            selectMethod === "Alternative Number" ? "" :
             <p className="max-w-[20rem] text-gray-500 text-center">
-              To verify your identity, please complete the phone number above.s
+              To verify your identity, please complete the phone number above
             </p>
           )}
           <div className="flex flex-col justify-center items-center w-full">
@@ -778,7 +730,7 @@ export const AlternateMethod = ({
                   placeholder="Input phone number"
                   inputClassName="py-4 "
                   className="w-[80%] text-lg py-2"
-                  type="number"
+                  type="text"
                   max={11}
                   value={inputField}
                   onChange={handleOnChange}

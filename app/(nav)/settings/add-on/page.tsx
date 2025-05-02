@@ -90,7 +90,7 @@ const Subscriptions = () => {
 
           <SMSUnit />
           <FeatureCompany />
-          <SettingsSection title="Subscription History">
+          {/* <SettingsSection title="Subscription History">
             <div className="custom-flex-col gap-8">
               <CustomTable
                 data={transformedSubscriptions}
@@ -98,7 +98,7 @@ const Subscriptions = () => {
                 {...table_style_props}
               />
             </div>
-          </SettingsSection>
+          </SettingsSection> */}
           <PersonalizedDomain />
         </div>
       </div>

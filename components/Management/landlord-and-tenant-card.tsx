@@ -15,6 +15,7 @@ export interface UserCardProps {
   other_info?: string | null;
   className?: string;
   note?: boolean;
+  is_verified?: boolean
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -26,7 +27,8 @@ const UserCard: React.FC<UserCardProps> = ({
   badge_color,
   other_info,
   className,
-  note
+  note,
+  is_verified,
 }) => {
  
   return (
@@ -46,7 +48,7 @@ const UserCard: React.FC<UserCardProps> = ({
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
           <span className="text-ellipsis line-clamp-1 break-all">{name}</span>
-          {badge_color && user_tag !== "web" && (
+          {(is_verified && badge_color)  && user_tag !== "web" && (
             <BadgeIcon color={badge_color} />
           )}
         </p>

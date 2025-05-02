@@ -59,8 +59,19 @@ const NotificationBadge = ({
   count: number | string;
   color: string;
 }) => {
+  if (typeof count === "string" && count.includes("+")) {
+    return (
+      <span
+        className={`absolute top-0 right-0 bg-${color}-500 text-white text-[10px] rounded-full px-1`}
+      >
+        {count}
+      </span>
+    );
+  }
   const numericCount = typeof count === "string" ? parseInt(count, 10) : count;
-  if (numericCount <= 0) return null;
+
+  if (!numericCount || numericCount <= 0) return null;
+
   return (
     <span
       className={`absolute top-0 right-0 bg-${color}-500 text-white text-[10px] rounded-full px-1`}
@@ -114,6 +125,7 @@ const Header = () => {
 
   /* NOTIFICATION LOGIC*/
   const [notificationIds, setNotificationIds] = useState<string[]>([]);
+  const [notificationCounts, setNotificationCount] = useState(0);
   const {
     data: apiData,
     silentLoading,
@@ -127,6 +139,13 @@ const Header = () => {
         ? apiData?.data?.map((item) => item.id)
         : [];
       setNotificationIds(ids);
+
+      const unreadCount = apiData?.data.filter(
+        (notification) => !notification.read_at
+      ).length;
+      setNotificationCount(unreadCount);
+
+      saveLocalStorage("notificationCount", unreadCount);
     }
   }, [apiData]);
 
@@ -135,8 +154,14 @@ const Header = () => {
 
     try {
       const res = await clearAllNotification(notificationIds);
-      if (res && pathname === "/notifications") {
-        saveLocalStorage("notificationCount", 0);
+
+      if (res) {
+        setNotificationCount(0);
+
+        if (pathname === "/notifications") {
+          saveLocalStorage("notificationCount", 0);
+        }
+        //refetchNotifications()
       }
     } catch (error) {
       console.error(error);
@@ -406,7 +431,7 @@ const Header = () => {
               >
                 <BellIcon />
                 <NotificationBadge
-                  count={roundUptoNine(notificationCount)}
+                  count={roundUptoNine(notificationCounts)}
                   color="green"
                 />
               </Link>
