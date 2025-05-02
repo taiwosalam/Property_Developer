@@ -27,4 +27,5 @@ export interface SelectProps {
   requiredNoStar?: boolean;
   disabled?: boolean;
   error?: string | null;
+  renderValue?: (value: string) => string;
 }

@@ -74,8 +74,6 @@ const Management = () => {
     }
   }, [planData]);
 
-  console.log("userPlan", userPlan);
-
   const formatPermission = (text: string) => {
     return text
       .toLowerCase()

@@ -62,10 +62,10 @@ const NotificationBadge = ({
   if (typeof count === "string" && count.includes("+")) {
     return (
       <span
-        className={`absolute top-0 right-0 bg-${color}-500 text-white text-[10px] rounded-full px-1`}
-      >
-        {count}
-      </span>
+      className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
+    >
+      {count}
+    </span>
     );
   }
   const numericCount = typeof count === "string" ? parseInt(count, 10) : count;
@@ -74,7 +74,8 @@ const NotificationBadge = ({
 
   return (
     <span
-      className={`absolute top-0 right-0 bg-${color}-500 text-white text-[10px] rounded-full px-1`}
+     
+      className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
     >
       {numericCount > 9 ? "9+" : numericCount}
     </span>
