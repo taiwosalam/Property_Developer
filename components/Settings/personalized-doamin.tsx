@@ -53,17 +53,20 @@ const PersonalizedDomain = () => {
     tableHeadClassName: "h-[45px]",
   };
 
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("1");
-  const [totalAmount, setTotalAmount] = useState<number>(2000); // Base price per month
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
+  const [totalAmount, setTotalAmount] = useState<number>(0);
 
-  // Calculate total amount when period changes
   useEffect(() => {
-    const period = PERIOD_OPTIONS.find(
-      (p) => p.value.toString() === selectedPeriod
-    );
+    if (!selectedPeriod) {
+      setTotalAmount(0);
+      return;
+    }
+
+    const periodValue = parseInt(selectedPeriod.split(" ")[0]); // Extract number from "2 months"
+    const period = PERIOD_OPTIONS.find((p) => p.value === periodValue);
 
     if (period) {
-      const baseAmount = 2000 * period.value; // 2000 is the base price per month
+      const baseAmount = 2000 * period.value;
       const discount = period.discount || 0;
       const discountedAmount = baseAmount - baseAmount * discount;
       setTotalAmount(discountedAmount);
@@ -182,30 +185,22 @@ const PersonalizedDomain = () => {
             </div>
             <div className="custom-flex-col gap-8">
               <div className="flex gap-2 items-center">
-                {/* <Input
-                  id="domain_name"
-                  label="domain name"
-                  placeholder="yourdomainname.com"
-                  className="w-[277px]"
-                />
-                <Button
-                  variant="change"
-                  size="xs_normal"
-                  className="py-2 px-3 mt-8"
-                >
-                  Add Domain
-                </Button> */}
-
                 <div>
                   <div className="flex gap-3 items-center pb-8 mt-7">
                     <Select
                       id="period"
+                      className="w-[300px]"
                       options={PERIOD_OPTIONS.map((option) => ({
-                        value: option.value.toString(),
+                        value: `${option.value} ${
+                          option.value === 1 ? "month" : "months"
+                        }`,
                         label: `${option.label}${
-                          option.discount ? ` (-${(option.discount * 100).toFixed(1)}%)` : ""
+                          option.discount
+                            ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                            : ""
                         }`,
                       }))}
+                      placeholder="Select subscription period..."
                       label="Period (₦2,000/month)"
                       value={selectedPeriod}
                       onChange={(value) => setSelectedPeriod(value)}

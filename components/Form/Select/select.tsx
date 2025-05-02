@@ -32,6 +32,7 @@ const Select: React.FC<SelectProps> = ({
   disabled,
   error,
   desc,
+  renderValue
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);

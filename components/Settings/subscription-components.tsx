@@ -23,7 +23,7 @@ export const SMSUnit = () => {
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
 
   const handleIncrement = () => {
     setCount((prevCount) => prevCount + 1);
@@ -151,28 +151,30 @@ export const PERIOD_OPTIONS: PeriodOption[] = [
 ];
 
 const DISPLAY_OPTIONS: DisplayOption[] = [
-  { value: "all", label: "All Display", amount: 20000 },
-  { value: "home", label: "Home Page", amount: 8000 },
-  { value: "build", label: "Build For", amount: 2000 },
-  { value: "property_manager", label: "Property Manager", amount: 2000 },
-  { value: "hospitality", label: "Hospitality Manager", amount: 2000 },
-  { value: "developer", label: "Property Developer", amount: 2000 },
-  { value: "about", label: "About Us", amount: 2000 },
-  { value: "professional", label: "Professional Plan", amount: 2000 },
-  { value: "mobile", label: "Mobile App", amount: 8000 },
+  { value: "all display", label: "All Display", amount: 20000 },
+  { value: "home page", label: "Home Page", amount: 8000 },
+  { value: "build for", label: "Build For", amount: 2000 },
+  { value: "property manager", label: "Property Manager", amount: 2000 },
+  { value: "hospitality manager", label: "Hospitality Manager", amount: 2000 },
+  { value: "property developer", label: "Property Developer", amount: 2000 },
+  { value: "about us", label: "About Us", amount: 2000 },
+  { value: "professional plan", label: "Professional Plan", amount: 2000 },
+  { value: "mobile app", label: "Mobile App", amount: 8000 },
 ];
 
 export const FeatureCompany = () => {
-  const [count, setCount] = useState<number>(1);
-
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("1");
-  const [selectedPage, setSelectedPage] = useState<string>("all");
-  const [totalAmount, setTotalAmount] = useState<number>(20000);
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
+  const [selectedPage, setSelectedPage] = useState<string>("");
+  const [totalAmount, setTotalAmount] = useState<number>(0);
 
   useEffect(() => {
-    const period = PERIOD_OPTIONS.find(
-      (p) => p.value.toString() === selectedPeriod
-    );
+    if (!selectedPeriod || !selectedPage) {
+      setTotalAmount(0);
+      return;
+    }
+
+    const periodValue = parseInt(selectedPeriod.split(" ")[0]); // Extract number from "2 months"
+    const period = PERIOD_OPTIONS.find((p) => p.value === periodValue);
     const page = DISPLAY_OPTIONS.find((p) => p.value === selectedPage);
 
     if (period && page) {
@@ -182,14 +184,6 @@ export const FeatureCompany = () => {
       setTotalAmount(discountedAmount);
     }
   }, [selectedPeriod, selectedPage]);
-
-  const handleIncrement = () => {
-    setCount((prevCount) => (prevCount < 12 ? prevCount + 1 : prevCount));
-  };
-
-  const handleDecrement = () => {
-    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
-  };
 
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
@@ -203,31 +197,66 @@ export const FeatureCompany = () => {
           <div className="flex gap-6 items-center pb-8">
             <Select
               id="pages"
+              className="w-[300px]"
               options={DISPLAY_OPTIONS.map((option) => ({
                 value: option.value,
                 label: `${option.label} - ₦${option.amount.toLocaleString()}`,
               }))}
+              placeholder="Choose a display page..."
               label="Displaying Page"
               value={selectedPage}
               onChange={(value) => setSelectedPage(value)}
+              renderValue={(selected) => {
+                const option = DISPLAY_OPTIONS.find(
+                  (opt) => opt.value === selected
+                );
+                return option
+                  ? `${option.label} - ₦${option.amount.toLocaleString()}`
+                  : "";
+              }}
             />
             <Select
+              className="w-[300px]"
               id="period"
               options={PERIOD_OPTIONS.map((option) => ({
-                value: option.value.toString(),
+                value: `${option.value} ${
+                  option.value === 1 ? "month" : "months"
+                }`,
                 label: `${option.label}${
-                  option.discount ? ` (-${(option.discount * 100).toFixed(1)}%)` : ""
+                  option.discount
+                    ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                    : ""
                 }`,
               }))}
+              placeholder="Select subscription period..."
               label="Period"
               value={selectedPeriod}
               onChange={(value) => setSelectedPeriod(value)}
+              renderValue={(selected) => {
+                if (!selected) return "";
+                const periodValue = parseInt(selected.split(" ")[0]);
+                const option = PERIOD_OPTIONS.find(
+                  (opt) => opt.value === periodValue
+                );
+                return option
+                  ? `${option.label}${
+                      option.discount
+                        ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                        : ""
+                    }`
+                  : "";
+              }}
             />
+
             <Input
               id="amount"
+              className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 hover:border-none active:border-none hover:border-none"
               label="Amount"
-              value={`₦${totalAmount.toLocaleString()}`}
+              value={
+                totalAmount > 0 ? `₦${totalAmount.toLocaleString()}` : "₦0"
+              }
               readOnly
+              style={{ outline: "none" }}
             />
             <div className="flex mt-7">
               <Modal>

@@ -324,7 +324,7 @@ export const transformSponsorResponse = (
   response: SponsorListingsResponse
 ): SponsorDataTypes => {
   return {
-    sponsor_value: formatToNGN(response.data?.value) || "0",
+    sponsor_value: response.data?.value || "0",
     sponsor_listings: response.data.listings.data.map(
       (listing: SponsoredListing) => ({
         unit_id: listing.unit_id.toString(),
