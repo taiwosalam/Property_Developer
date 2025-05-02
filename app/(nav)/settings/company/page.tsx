@@ -164,7 +164,7 @@ const Profile = () => {
     }
   };
 
-  console.log(companyData.cac_certificate);
+  
 
   return (
     <>

@@ -59,6 +59,8 @@ import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-m
 import Avatars from "@/components/Avatars/avatars";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Image from "next/image";
+import DateInput from "@/components/Form/DateInput/date-input";
+import dayjs from "dayjs";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
@@ -115,7 +117,7 @@ const Security = () => {
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
   ]);
- 
+
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
   const [formState, setFormState] = useState<FormState>({
@@ -165,17 +167,6 @@ const Security = () => {
     payload.append("phone_number", (formData.get("phone") as string) || "");
     payload.append("alt_email", (formData.get("alt_email") as string) || "");
 
-    // const payload = {
-    //   full_name: data.get("full_name"),
-    //   title: data.get("title"),
-    //   professional_title: data.get("professional_title"),
-    //   profile_picture: data.get("picture"),
-    //   avatar:  data.get("avatar"),
-    //   years_in_business: data.get("years_in_business"),
-    //   about_director: data.get("about_director"),
-    //   phone_number: data.get("phone"),
-    //   alt_email: data.get("alt_email"),
-    // };
     if (avatar) {
       // If avatar is selected, use it
 
@@ -333,7 +324,7 @@ const Security = () => {
                         </Button>
                       </ModalTrigger>
                       <ModalContent>
-                        <NameVerification fullName={fullName} />
+                        <NameVerification fullName={fullName} setFullName={setFullName}/>
                       </ModalContent>
                     </Modal>
                   </div>
@@ -347,13 +338,20 @@ const Security = () => {
                     defaultValue={pageData?.director_email}
                   />
 
-                  <Select
+                  <DateInput
                     id="years_in_business"
-                    label="years of experience"
-                    placeholder="Write here"
-                    options={yearsOptions}
-                    hiddenInputClassName="setup-f"
-                    defaultValue={pageData?.director_experience}
+                    label=" Years of Experience (Since)"
+                    // onChange={(value) =>
+                    //   onFormChange?.(
+                    //     "years_in_business",
+                    //     value ? value.toString() : ""
+                    //   )
+                    // }
+                    value={
+                      pageData?.director_experience
+                        ? dayjs(pageData.director_experience)
+                        : null
+                    }
                   />
 
                   <PhoneNumberInput

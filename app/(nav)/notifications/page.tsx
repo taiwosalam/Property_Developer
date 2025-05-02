@@ -14,6 +14,7 @@ import {
 } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import ServerError from "@/components/Error/ServerError";
+import { toast } from "sonner";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<TNotificationData | null>(
@@ -28,6 +29,8 @@ const Notifications = () => {
     refetch,
   } = useFetch<NotificationApiResponse>(`/notifications`);
   useRefetchOnEvent("refetchNotifications", () => refetch({ silent: true }));
+
+  console.log(notifications?.notifications.length, "From the abyss");
 
   useEffect(() => {
     if (apiData) {
@@ -47,10 +50,10 @@ const Notifications = () => {
       setIsClearingNotifications(true);
       const res = await deleteAllNotification(notificationIds);
       if (res) {
-        window.dispatchEvent(new Event("refetchProfile"));
+        toast.success("Notifications Cleared");
       }
     } catch (error) {
-      console.error(error);
+      //console.error(error);
     } finally {
       setIsClearingNotifications(false);
     }
@@ -66,18 +69,20 @@ const Notifications = () => {
       <div className="space-y-3 sticky top-0 bg-neutral-2 dark:bg-[#000000] z-[1]">
         <div className="flex items-center justify-between gap-4 text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium">
           <h1>Notifications</h1>
-          <button
-            type="button"
-            onClick={handleDeleteNotifications}
-            disabled={isClearingNotifications}
-            className={`text-base ml-3 ${
-              isClearingNotifications
-                ? "text-slate-400 dark:text-slate-300"
-                : ""
-            }`}
-          >
-            {isClearingNotifications ? "Please wait..." : "Clear all"}
-          </button>
+          {apiData && apiData?.data.length > 0 && (
+            <button
+              type="button"
+              onClick={handleDeleteNotifications}
+              disabled={isClearingNotifications}
+              className={`text-base ml-3 ${
+                isClearingNotifications
+                  ? "text-slate-400 dark:text-slate-300"
+                  : ""
+              }`}
+            >
+              {isClearingNotifications ? "Please wait..." : "Clear all"}
+            </button>
+          )}
         </div>
         <SectionSeparator />
       </div>
@@ -86,7 +91,6 @@ const Notifications = () => {
           <p>You currently have no new notification at this time</p>
         )}
         {notifications &&
-          !silentLoading &&
           notifications.notifications.length > 0 &&
           notifications.notifications.map((notification, index) => (
             <Notification key={index} notification={notification} />

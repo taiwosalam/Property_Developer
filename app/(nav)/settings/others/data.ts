@@ -223,6 +223,7 @@ export type DirectorCardProps = {
     phone_number: string;
     professional_title: string;
     tier_id: number;
+    is_verified: boolean;
     //avatar: string;
   }[];
 };
@@ -235,6 +236,7 @@ export function transfromToDirectorCards(
     card: apiData?.directors.map((item) => {
       return {
         id: item?.id,
+        is_verified: item?.is_verified,
         picture: item?.profile_picture ?? item?.user?.profile?.picture,
         //avatar: item?.user?.profile?.picture ?? "/empty/avatar.png",
         full_name: item?.user?.profile?.title

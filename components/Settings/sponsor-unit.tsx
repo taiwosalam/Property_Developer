@@ -23,6 +23,7 @@ import CustomLoader from "../Loader/CustomLoader";
 import TableLoading from "../Loader/TableLoading";
 import { SponsorDataTypes, SponsorFields, transformSponsorResponse } from "@/app/(nav)/settings/add-on/data";
 
+const SPONSOR_COST = "2,000"
 const SponsorUnit = () => {
   const [count, setCount] = useState<number>(1);
   const [availableSponsors, setAvailableSponsors] = useState<number>(0);
@@ -37,16 +38,28 @@ const SponsorUnit = () => {
   });
 
   const handleIncrement = () => {
-    setCount((prevCount) => (prevCount < 12 ? prevCount + 1 : prevCount));
+    setCount((prevCount) => prevCount + 1);
   };
 
   const handleDecrement = () => {
-    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
+    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : 1));
+  };
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (isNaN(value)) {
+      setCount(1);
+    } else {
+      setCount(value < 1 ? 1 : value);
+    }
   };
 
   const { data, error, loading, refetch } =
     useFetch<SponsorListingsResponse>("/sponsor/listings");
   useRefetchOnEvent("refetchRentSponsors", () => refetch({ silent: true }));
+
+  console.log(data);
+
 
   useEffect(() => {
     if (data) {
@@ -54,6 +67,7 @@ const SponsorUnit = () => {
       setPageData(transformed);
     }
   }, [data]);
+
 
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
@@ -77,7 +91,7 @@ const SponsorUnit = () => {
             </div>
             <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
               Sponsor Cost{" "}
-              <span className="text-xs font-normal">(₦100/per unit)</span>
+              <span className="text-xs font-normal">{`₦${(SPONSOR_COST)}/ per unit`}</span>
             </p>
             <div className="flex gap-4 flex-col md:flex-row">
               <div className="flex gap-2 items-end justify-end">
@@ -85,7 +99,9 @@ const SponsorUnit = () => {
                   <input
                     type="number"
                     value={count}
-                    onChange={(e) => setCount(Number(e.target.value))}
+                    min={1}
+                    
+                    onChange={handleInputChange}
                     className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
                   />
                   <div className="btn flex flex-col items-end justify-end">
@@ -110,7 +126,7 @@ const SponsorUnit = () => {
                         size="xs_normal"
                         className="py-2 px-3"
                       >
-                        Subscribe
+                        Buy Sponsor Unit
                       </Button>
                     </ModalTrigger>
                     <ModalContent>
@@ -123,8 +139,8 @@ const SponsorUnit = () => {
           </div>
           <div className="custom-flex-col gap-4">
             <div className="flex justify-between">
-              <h2 className="text-text-primary dark:text-white text-xl font-medium">
-                Recent Sponsors
+              <h2 className="text-text-primary dark:text-white text-lg font-medium">
+                Sponsors History
               </h2>
               <Link
                 href="/settings/subscription/sponsors"
@@ -143,7 +159,7 @@ const SponsorUnit = () => {
             />
           </div>
         </div>
-        <SettingsUpdateButton />
+        {/* <SettingsUpdateButton /> */}
       </div>
     </SettingsSection>
   );

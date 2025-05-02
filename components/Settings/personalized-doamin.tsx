@@ -15,8 +15,19 @@ import useSubscriptionStore from "@/store/subscriptionStore";
 import Input from "../Form/Input/input";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { DomainFields, personalized_domain } from "@/app/(nav)/settings/add-on/data";
-import { ConfirmModal, EditModal, SuccessModal } from "@/app/(nav)/settings/add-on/components";
+import {
+  DomainFields,
+  personalized_domain,
+} from "@/app/(nav)/settings/add-on/data";
+import {
+  ConfirmModal,
+  EditModal,
+  SuccessModal,
+} from "@/app/(nav)/settings/add-on/components";
+import Button from "@/components/Form/Button/button";
+import Select from "../Form/Select/select";
+import { Modal as Modal1, ModalContent, ModalTrigger } from "../Modal/modal";
+import SponsorModal from "./Modals/sponsor-modal";
 
 const style = {
   position: "absolute",
@@ -57,6 +68,7 @@ const PersonalizedDomain = () => {
     setAnchorEl(null);
     setSelectedItemId(null);
   };
+  const [count, setCount] = useState(0);
 
   const transformedPersonalizedDomain = personalized_domain.data.map(
     (data) => ({
@@ -78,7 +90,10 @@ const PersonalizedDomain = () => {
           <SettingsSectionTitle desc="A personalized domain is used for forwarding one URL to another, especially if your company has a website and you want this current landing page to have the same URL as your company website. You can create a sub-domain under your website for this landing page or purchase your preferred domain name and redirect this domain to it." />
           <div className="custom-flex-col gap-10">
             <div className="custom-flex-col gap-4">
-              <SettingsSectionTitle title="Domain" />
+              <SettingsSectionTitle
+                title="Add Domain"
+                desc="Cool! You're about to make domain name! make this site accessible using your own for that to work, you'll need to create a new CNAME record pointing to wp-ultimo-v2.local on your DNS manager. After you finish that step, come back to this screen and click the button below."
+              />
               <CustomTable
                 fields={personalized_domain.fields}
                 data={transformedPersonalizedDomain}
@@ -148,26 +163,56 @@ const PersonalizedDomain = () => {
               </Modal>
             </div>
             <div className="custom-flex-col gap-8">
-              <SettingsSectionTitle
-                title="Add Domain"
-                desc="Cool! You're about to make domain name! make this site accessible using your own for that to work, you'll need to create a new CNAME record pointing to wp-ultimo-v2.local on your DNS manager. After you finish that step, come back to this screen and click the button below."
-              />
-              <div className="flex">
-                <Input
+              <div className="flex gap-2 items-center">
+                {/* <Input
                   id="domain_name"
                   label="domain name"
                   placeholder="yourdomainname.com"
                   className="w-[277px]"
                 />
+                <Button
+                  variant="change"
+                  size="xs_normal"
+                  className="py-2 px-3 mt-8"
+                >
+                  Add Domain
+                </Button> */}
+
+                <div>
+                  <div className="flex gap-3 items-center pb-8 mt-7">
+                    <Select
+                      id="pages"
+                      options={["Home", "About"]}
+                      label="Period (2,000/month)"
+                    />
+
+                    <div className="flex mt-7">
+                      <Modal1>
+                        <ModalTrigger>
+                          <Button
+                            variant="change"
+                            size="xs_normal"
+                            className="py-2 px-3"
+                          >
+                            Activate
+                          </Button>
+                        </ModalTrigger>
+                        <ModalContent>
+                          <SponsorModal count={count} />
+                        </ModalContent>
+                      </Modal1>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <SettingsUpdateButton text="add domain" type="add domain" />
+        {/* <SettingsUpdateButton text="add domain" type="add domain" /> */}
         <div className="custom-flex-col gap-4">
           <div className="flex justify-between">
-            <h2 className="text-text-primary dark:text-white text-xl font-medium">
-              Recent Sponsors
+            <h2 className="text-text-primary dark:text-white text-lg font-medium">
+              Enrollment History
             </h2>
             <Link
               href="/settings/subscription/sponsors"
@@ -179,11 +224,7 @@ const PersonalizedDomain = () => {
               <ChevronRight color="#5A5D61" size={16} />
             </Link>
           </div>
-          <CustomTable
-            data={[]}
-            fields={DomainFields}
-            {...table_style_props}
-          />
+          <CustomTable data={[]} fields={DomainFields} {...table_style_props} />
         </div>
       </div>
     </SettingsSection>

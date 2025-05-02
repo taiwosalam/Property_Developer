@@ -171,17 +171,11 @@ const WebsiteTypography = () => {
       website_font: selectedFont || DEFAULT_FONT,
       typography: typographySettings,
     };
-    console.log('Typography Settings:', {
-      all: typographySettings,
-      h2Settings: typographySettings['H2'],
-      defaultH2: settings.find(s => s.title === 'H2')?.defaultWeight
-    });
 
     setLoading(true);
     try {
       await updateCompanyWebsiteTypography(payload);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -189,21 +183,19 @@ const WebsiteTypography = () => {
 
   const resetTypographySection = () => {
     setSelectedFont(DEFAULT_FONT);
-  
+
     // Create default typography settings from the settings array
     const defaultSettings = settings.reduce((acc, setting) => {
       acc[setting.title] = {
         fontSize: setting.default.toString(),
-        fontWeight: setting.defaultWeight
+        fontWeight: setting.defaultWeight,
       };
       return acc;
     }, {} as { [key: string]: { fontSize: string; fontWeight: string } });
-  
+
     // Update typography settings with defaults
     setTypographySettings(defaultSettings);
   };
-
-  console.log(googleFonts);
 
   return (
     <div>

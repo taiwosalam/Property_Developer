@@ -856,6 +856,7 @@ const Others = () => {
                         badge_color={
                           getBadgeColor(director.tier_id) || undefined
                         }
+                        is_verified={director?.is_verified}
                       />
                     </ModalTrigger>
 

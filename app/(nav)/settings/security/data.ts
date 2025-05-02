@@ -19,7 +19,7 @@ export const updateUserProfile = async (data: FormData) => {
 export const updateDirectorProfile = async (data: FormData) => {
   try {
     data.append("_method", "PATCH");
-    const response = await api.post("/directors/update", data);
+    const response = await api.post("/directors/6", data);
     if (response.status === 200) {
       return response;
     }
@@ -139,7 +139,7 @@ export const updateRentPenaltySettings = async (
   try {
     const payload = {
       _method: "PATCH",
-      "rent-penalty-settings": [settings],
+      ...settings,
     };
 
     const response = await api.post(
@@ -235,7 +235,7 @@ export const verifyBVNWithOtp = async ({
 
     if (res.status === 200 || res.status === 201) {
       toast.success(res?.data?.message || "OTP successfully sent");
-
+      console.log(res);
       return res;
     }
   } catch (error: any) {
