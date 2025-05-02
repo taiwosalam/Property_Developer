@@ -81,10 +81,10 @@ const Setup = () => {
     // Create a new payload object to avoid mutating the original data
     const payload = {
       ...data,
-      ...(isEditMode ? { _method: "PATCH" } : {}),
+      ...(isEditMode ? { _method: "PATCH", status: "pending" } : {}),
     };
     if (isEditMode && !company_id) {
-      return toast.warning("Company Id is missing")
+      return toast.warning("Company Id is missing");
     }
     const action = isEditMode
       ? updateCompany(company_id!, payload)
@@ -96,7 +96,12 @@ const Setup = () => {
     if (status) {
       await setRole("director");
       await setAuthState("role", "director");
-      router.replace("/auth/sign-in");
+      if (isEditMode) {
+        router.replace("/dashboard");
+      } else {
+        router.replace("/auth/sign-in");
+      }
+      // router.replace("/auth/sign-in");
     }
     setRequestLoading(false);
   };

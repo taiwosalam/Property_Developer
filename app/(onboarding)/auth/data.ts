@@ -257,10 +257,9 @@ export const login = async (formData: Record<string, any>) => {
       formData
     );
     useAuthStore.getState().reset();
+    console.log("Login response", data)
     const token = data.access_token;
     const email = data.data.details?.email || formData.email;
-    const msgCount = data.data.details.unread_messages_count;
-    const notificationCount = data.data.details.unread_notifications_count;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
     const managerId = data.data.details.id;
@@ -300,8 +299,6 @@ export const login = async (formData: Record<string, any>) => {
 
     // save user id to localstorage for msg
     saveLocalStorage("user_id", details?.user_id || managerId);
-    saveLocalStorage("msgCount", msgCount);
-    saveLocalStorage("notificationCount", notificationCount);
 
     //💀⚡ SECURE USER - DO NOT TOUCH 💀⚡
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)

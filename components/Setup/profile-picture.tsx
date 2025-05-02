@@ -13,6 +13,7 @@ import CameraCircle from "@/public/icons/camera-circle.svg";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import Avatars from "../Avatars/avatars";
+import Picture from "../Picture/picture";
 
 const ProfilePicture = () => {
   const {
@@ -66,7 +67,7 @@ const ProfilePicture = () => {
         size of 2MB. Or choose an avatar.
       </SectionHeading>
 
-      <div className="flex gap-8 items-end">
+      <div className="flex gap-5 items-end">
         {/* Hidden inputs for form data */}
         <input
           type="hidden"
@@ -86,34 +87,59 @@ const ProfilePicture = () => {
         {/* File upload side */}
         <div className="flex gap-2">
           {preview && preview !== CameraCircle ? (
-            <div className="w-[100px] h-[100px] relative">
+            <div className="w-[60px] h-[60px] relative rounded-full">
               <Image
                 src={preview}
                 alt="Profile Picture"
                 fill
                 style={{ objectFit: "cover" }}
-                className="rounded-lg w-[100px] h-[100px]"
+                className="w-[60px] h-[60px] rounded-full"
               />
               <button
                 type="button"
                 onClick={handleDelete}
-                className="absolute top-[-15px] right-[-25px] z-10"
+                className="absolute top-0 right-0 z-10"
                 aria-label="Delete"
               >
-                <DeleteIconOrange />
+                <DeleteIconOrange size={20} />
               </button>
             </div>
           ) : (
-            <button
-              type="button"
-              onClick={handleUploadClick}
-              className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
-            >
-              <UploadImageIcon />
-              <span className="text-text-secondary text-xs font-normal">
-                Upload Profile Picture
-              </span>
-            </button>
+            <label htmlFor="picture" className="!w-fit cursor-pointer relative">
+              <Picture src={preview} alt="Camera" size={60} rounded />
+              {preview && preview !== CameraCircle && (
+                <div
+                  role="button"
+                  aria-label="remove image"
+                  className="absolute top-0 right-0"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    clearImageSelection();
+                  }}
+                >
+                  <DeleteIconOrange size={20} />
+                </div>
+              )}
+              <input
+                type="file"
+                id="picture"
+                name="picture"
+                accept="image/*"
+                className="hidden pointer-events-none"
+                onChange={handleImageChange}
+                ref={inputFileRef}
+              />
+            </label>
+            // <button
+            //   type="button"
+            //   onClick={handleUploadClick}
+            //   className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
+            // >
+            //   <UploadImageIcon />
+            //   <span className="text-text-secondary text-xs font-normal">
+            //     Upload Profile Picture
+            //   </span>
+            // </button>
           )}
         </div>
 
