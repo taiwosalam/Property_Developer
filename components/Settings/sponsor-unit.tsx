@@ -23,7 +23,7 @@ import CustomLoader from "../Loader/CustomLoader";
 import TableLoading from "../Loader/TableLoading";
 import { SponsorDataTypes, SponsorFields, transformSponsorResponse } from "@/app/(nav)/settings/add-on/data";
 
-const SPONSOR_COST = "2,000"
+const SPONSOR_COST = 2000;
 const SponsorUnit = () => {
   const [count, setCount] = useState<number>(1);
   const [availableSponsors, setAvailableSponsors] = useState<number>(0);
@@ -91,7 +91,7 @@ const SponsorUnit = () => {
             </div>
             <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
               Sponsor Cost{" "}
-              <span className="text-xs font-normal">{`₦${(SPONSOR_COST)}/ per unit`}</span>
+              <span className="text-xs font-normal">{`₦${(SPONSOR_COST.toLocaleString())}/ per unit`}</span>
             </p>
             <div className="flex gap-4 flex-col md:flex-row">
               <div className="flex gap-2 items-end justify-end">
@@ -130,7 +130,7 @@ const SponsorUnit = () => {
                       </Button>
                     </ModalTrigger>
                     <ModalContent>
-                      <SponsorModal count={count} />
+                      <SponsorModal count={count} cost={SPONSOR_COST}/>
                     </ModalContent>
                   </Modal>
                 </div>

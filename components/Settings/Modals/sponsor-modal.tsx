@@ -13,9 +13,9 @@ import React from "react";
 import { toast } from "sonner";
 
 const SPONSOR_COST = 2000;
-const SponsorModal = ({ count }: { count: number }) => {
+const SponsorModal = ({ count, cost }: { count: number, cost?: number }) => {
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
-  const amount = count * SPONSOR_COST;
+  const amount = count * (cost ?? SPONSOR_COST);
   const [reqLoading, setReqLoading] = React.useState(false);
   const { setIsOpen } = useModal();
   const { isMobile } = useWindowWidth();

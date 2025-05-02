@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SettingsSection from "./settings-section";
 import {
   SettingsSectionTitle,
@@ -28,6 +28,7 @@ import Button from "@/components/Form/Button/button";
 import Select from "../Form/Select/select";
 import { Modal as Modal1, ModalContent, ModalTrigger } from "../Modal/modal";
 import SponsorModal from "./Modals/sponsor-modal";
+import { PERIOD_OPTIONS } from "./subscription-components";
 
 const style = {
   position: "absolute",
@@ -51,6 +52,23 @@ const PersonalizedDomain = () => {
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
+
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("1");
+  const [totalAmount, setTotalAmount] = useState<number>(2000); // Base price per month
+
+  // Calculate total amount when period changes
+  useEffect(() => {
+    const period = PERIOD_OPTIONS.find(
+      (p) => p.value.toString() === selectedPeriod
+    );
+
+    if (period) {
+      const baseAmount = 2000 * period.value; // 2000 is the base price per month
+      const discount = period.discount || 0;
+      const discountedAmount = baseAmount - baseAmount * discount;
+      setTotalAmount(discountedAmount);
+    }
+  }, [selectedPeriod]);
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -181,9 +199,16 @@ const PersonalizedDomain = () => {
                 <div>
                   <div className="flex gap-3 items-center pb-8 mt-7">
                     <Select
-                      id="pages"
-                      options={["Home", "About"]}
-                      label="Period (2,000/month)"
+                      id="period"
+                      options={PERIOD_OPTIONS.map((option) => ({
+                        value: option.value.toString(),
+                        label: `${option.label}${
+                          option.discount ? ` (-${(option.discount * 100).toFixed(1)}%)` : ""
+                        }`,
+                      }))}
+                      label="Period (₦2,000/month)"
+                      value={selectedPeriod}
+                      onChange={(value) => setSelectedPeriod(value)}
                     />
 
                     <div className="flex mt-7">
@@ -198,7 +223,10 @@ const PersonalizedDomain = () => {
                           </Button>
                         </ModalTrigger>
                         <ModalContent>
-                          <SponsorModal count={count} />
+                          <SponsorModal
+                            count={parseInt(selectedPeriod)}
+                            cost={totalAmount / parseInt(selectedPeriod)}
+                          />
                         </ModalContent>
                       </Modal1>
                     </div>
