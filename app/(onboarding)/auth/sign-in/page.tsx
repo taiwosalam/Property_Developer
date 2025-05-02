@@ -31,7 +31,6 @@ const SignIn = () => {
 
     const logo = company_logo || empty;
 
-
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (formData: Record<string, any>) => {

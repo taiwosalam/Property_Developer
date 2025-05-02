@@ -7,6 +7,10 @@ export async function middleware(req: NextRequest) {
   //const authToken = req.cookies.get("authToken")?.value;
   const company_status = req.cookies.get("company_status")?.value;
 
+
+  console.log("role", role)
+  console.log("company_status", company_status)
+
   // if(!authToken){
   //   return NextResponse.redirect(new URL("/auth/sign-in", req.url))
   // }
