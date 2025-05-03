@@ -16,10 +16,13 @@ export const updateUserProfile = async (data: FormData) => {
   }
 };
 
-export const updateDirectorProfile = async (data: FormData) => {
+export const updateDirectorProfile = async (
+  data: FormData,
+  directorId: number | null
+) => {
   try {
     data.append("_method", "PATCH");
-    const response = await api.post("/directors/6", data);
+    const response = await api.post(`/directors/${directorId}`, data);
     if (response.status === 200) {
       return response;
     }
@@ -195,6 +198,7 @@ export const bvnInfoDetails = async (otp: string, id: string) => {
   try {
     const res = await api.post(`/bank/bvn/info`, payload);
     if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("fetch-profile"));
       return {
         status: true,
         data: res,
@@ -267,6 +271,7 @@ export const transformProfileData = (data: any): InitialDataTypes => {
     email: data.data.user.email,
     fullname: data.data.user.name || "",
     personal_title: data.data.profile.title ?? "",
+    is_bvn_verified: data?.data?.profile?.bvn ? true : false,
     professional_title: data.data.director.professional_title ?? "",
     phone: data.data.director.phone || "",
     about_director: data.data.director.about_director || "",
@@ -285,6 +290,7 @@ export interface InitialDataTypes {
   about_director: string;
   director_email: string;
   director_experience: string;
+  is_bvn_verified: boolean;
 }
 
 export const initialData: InitialDataTypes = {
@@ -297,6 +303,7 @@ export const initialData: InitialDataTypes = {
   director_email: "",
   director_experience: "",
   professional_title: "",
+  is_bvn_verified: false,
 };
 
 export function base64ToBlob(base64Data: string): Blob {
