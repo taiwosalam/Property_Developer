@@ -409,6 +409,7 @@ const Tenants = () => {
                         email={t.email}
                         phone_number={t.phone_number}
                         note={t.note}
+                        is_flagged={t.flagged}
                       />
                     </Link>
                   ))
