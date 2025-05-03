@@ -521,6 +521,7 @@ const Others = () => {
     return staffTierColorMap[tier as keyof typeof staffTierColorMap] || "blue";
   };
 
+
   useEffect(() => {
     if (apiData) {
       const transCard = transfromToDirectorCards(apiData);

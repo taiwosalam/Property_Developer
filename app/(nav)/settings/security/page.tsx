@@ -69,7 +69,6 @@ const Security = () => {
 
   const directorId = usePersonalInfoStore((state) => state.director_id);
 
-  console.log(directorId);
   const {
     preview,
     inputFileRef,
@@ -185,7 +184,7 @@ const Security = () => {
     if (avatar) {
       // If avatar is selected, use it
 
-      payload.append("picture", avatar);
+      payload.append("avatar", avatar);
     } else if (formData.get("picture")) {
       // If a file was uploaded, use that
       payload.append("profile_picture", formData.get("picture") as Blob);
@@ -198,8 +197,9 @@ const Security = () => {
       }
       const res = await updateDirectorProfile(payload, directorId);
       if (res && "status" in res && res.status === 200) {
-        // console.log(res);
+        //
         toast.success("Profile updated successfully");
+        setAvatar("");
         setNext(true);
         window.dispatchEvent(new Event("fetch-profile"));
       }
@@ -346,7 +346,7 @@ const Security = () => {
                     >
                       <ModalTrigger>
                         <Button
-                          //disabled={pageData?.is_bvn_verified}
+                          disabled={pageData?.is_bvn_verified}
                           className="bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white absolute top-9 right-2 py-2 h-9"
                         >
                           {pageData?.is_bvn_verified ? "Verified" : "Verify"}

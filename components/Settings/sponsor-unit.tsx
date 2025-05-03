@@ -146,9 +146,9 @@ const SponsorUnit = () => {
                 href="/settings/subscription/sponsors"
                 className="flex items-center gap-1"
               >
-                <span className="text-text-label dark:text-darkText-1">
+                <Link href={"/reports/adds-on-sponsor"} className="text-text-label dark:text-darkText-1">
                   See all
-                </span>
+                </Link>
                 <ChevronRight color="#5A5D61" size={16} />
               </Link>
             </div>
