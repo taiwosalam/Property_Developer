@@ -236,7 +236,7 @@ export function transfromToDirectorCards(
     card: apiData?.directors.map((item) => {
       return {
         id: item?.id,
-        is_verified: item?.is_verified,
+        is_verified: item?.user?.profile.bvn ? true : false,
         picture: item?.profile_picture ?? item?.user?.profile?.picture,
         //avatar: item?.user?.profile?.picture ?? "/empty/avatar.png",
         full_name: item?.user?.profile?.title

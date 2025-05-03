@@ -178,18 +178,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
               : null
           }
         />
-        {/* <Select
-          validationErrors={errorMsgs}
-          options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
-          id="years_in_business"
-          label="Years of Experience"
-          placeholder="Select options"
-          inputContainerClassName="bg-neutral-2"
-          value={formData?.years_in_business || ""}
-          onChange={(value) => onFormChange?.("years_in_business", value)} 
-          //value={selectedState}
-          //onChange={(value) => handleAddressChange("selectedState", value)}
-        />*/}
+       
         <PhoneNumberInput
           id="phone_number"
           label="phone number"
@@ -199,24 +188,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-        {/* <div className="flex flex-col gap-4 md:gap-5 md:justify-between">
-          <Input
-            id="password"
-            type="password"
-            label="Create password"
-            placeholder="Create password"
-            validationErrors={errorMsgs}
-            required
-          />
-          <Input
-            id="password_confirmation"
-            type="password"
-            label="Confirm password"
-            placeholder="Confirm password"
-            validationErrors={errorMsgs}
-            required
-          />
-        </div> */}
+       
         <div className="md:col-span-3 w-full">
           <TextArea
             id="about_director"

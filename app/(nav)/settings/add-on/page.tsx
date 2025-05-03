@@ -67,38 +67,13 @@ const Subscriptions = () => {
 
   return (
     <>
-      {/* <SettingsSection title="Current Subscription/Ads-on">
-        <div className="custom-flex-col gap-7">
-          <SettingsSectionTitle desc="Current Subscription and Ads-on Plan are business model where you pay a recurring fee at regular intervals either monthly or annually to access a dashboard modules, data, information and menu. Here's a breakdown of your current subscriptions." />
-          <CustomTable
-            data={transformedSubscriptions}
-            fields={current_subscriptions.fields}
-            {...table_style_props}
-          />
-        </div>
-      </SettingsSection> */}
-      {/* <div
-        className="border-dashed border-brand-9 opacity-50 w-full !px-0"
-        style={{ paddingLeft: 0, paddingRight: 0 }}
-      ></div> */}
       <div className="custom-flex-col gap-[18px]">
-        {/* <h2 className="text-primary-navy dark:text-white text-base font-medium">
-          Adds On Subscriptions
-        </h2> */}
         <div className="custom-flex-col gap-8">
           <SponsorUnit />
 
           <SMSUnit />
           <FeatureCompany />
-          {/* <SettingsSection title="Subscription History">
-            <div className="custom-flex-col gap-8">
-              <CustomTable
-                data={transformedSubscriptions}
-                fields={current_subscriptions.fields}
-                {...table_style_props}
-              />
-            </div>
-          </SettingsSection> */}
+
           <PersonalizedDomain />
         </div>
       </div>

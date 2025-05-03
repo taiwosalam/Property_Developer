@@ -85,6 +85,12 @@ export const nav_items: NavItemsProps = [
       { label: "visitors request", href: "/visitors" },
       { label: "undo / trash", href: "/undo" },
       { label: "vehicles record", href: "/vehicles-record" },
+      { label: "subscription history", href: "/subscription-history" },
+      { label: "adds-on sponsor", href: "/adds-on-sponsor" },
+      { label: "adds-on sms", href: "/adds-on-sms" },
+      { label: "adds-on feature", href: "/adds-on-feature" },
+      { label: "adds-on domain", href: "/adds-on-domain" },
+
     ],
   },
   { type: "empty_wallet", label: "wallet", href: "/wallet" },

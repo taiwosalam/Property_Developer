@@ -72,10 +72,10 @@ const SettingsSmtp = () => {
 
     return (
         <div>
-            <SettingsSection title="SMTP Settings">
+            <SettingsSection title="Email Configuration">
                 <div className="custom-flex-col gap-8">
                     <SettingsSectionTitle
-                        title="Set up email alias"
+                        title="Set up email SMTP"
                         desc="Choose how you intend to utilize your SMTP: for private and business correspondence, updates, notifications, mobile messages, transactional messages, marketing communications, or other purposes. This feature enables you to utilize your own domain email address to send messages to your users."
                     />
                     <AuthForm onFormSubmit={handleAddSMTP}>

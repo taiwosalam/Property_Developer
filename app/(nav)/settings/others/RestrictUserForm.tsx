@@ -1,25 +1,15 @@
 "use client";
-import { ChangeEvent, SelectHTMLAttributes, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "@/components/Form/Select/select";
-// import { getAllStates, getLocalGovernments } from "@/utils/states";
-import { tenantTypes, genderTypes, titles } from "@/data";
-// import Input from "@/components/Form/Input/input";
-// import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import Button from "@/components/Form/Button/button";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "@/components/Auth/auth-components";
 import type { ValidationErrors } from "@/utils/types";
-// import Picture from "@/components/Picture/picture";
-// import Avatars from "@/components/Avatars/avatars";
-// import TextArea from "@/components/Form/TextArea/textarea";
-// import { DirectorCard } from "@/components/Settings/settings-components";
 import UserCard from "@/components/Management/landlord-and-tenant-card";
 import useFetch from "@/hooks/useFetch";
 import { IPropertyApi, ITenantResponse, ITenantsApi } from "./types";
-import { number } from "zod";
 import { restrictUserFromGroupChat, showSelectedTenant } from "./data";
-import { AxiosResponse } from "axios";
 import { property } from "lodash";
 import { toast } from "sonner";
 
@@ -28,8 +18,6 @@ interface RestrictUserFormProps {
   setRestrictedTenantId?: (prevState: number) => void;
   setIsUserRestricted?: (prevState: boolean) => void;
 }
-
-type Address = "selectedState" | "selectedLGA" | "selectedCity";
 
 interface ITenantsWithId {
   id: number | null;
@@ -45,16 +33,13 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
   setRestrictedTenantId,
   setIsUserRestricted,
 }) => {
-  const { preview, setPreview, inputFileRef, handleImageChange } =
-    useImageUploader({
-      placeholder: CameraCircle,
-    });
   const [properties, setProperties] = useState<IPropertyWithId[] | null>(null);
   const [tenants, setTenants] = useState<ITenantsWithId[] | null>(null);
 
   const { data: propertyListResponse, loading: propertyLoading } =
     useFetch<IPropertyApi>("/property/list");
-  const { data: tenantListResponse, loading: tenantLoading } = useFetch<ITenantsApi>("all-tenants");
+  const { data: tenantListResponse, loading: tenantLoading } =
+    useFetch<ITenantsApi>("all-tenants");
 
   useEffect(() => {
     if (propertyListResponse) {
@@ -208,6 +193,7 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
       )}
       <div className="flex items-center justify-center gap-8 w-full z-[10000]">
         <Select
+          className="w-[280px]"
           validationErrors={errorMsgs}
           options={
             properties && property.length > 0
@@ -219,7 +205,7 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
           }
           id="property"
           label="Select Property"
-          placeholder={ propertyLoading ? "Loading..." : "Select options" }
+          placeholder={propertyLoading ? "Loading..." : "Select options"}
           disabled={propertyLoading}
           inputContainerClassName="bg-neutral-2"
           value={selectedState}
@@ -241,6 +227,7 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
           }}
         />
         <Select
+          className="w-[280px]"
           validationErrors={errorMsgs}
           options={
             tenants && tenants.length > 0
@@ -252,7 +239,7 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
           }
           id="tenants_name"
           label="Tenants Name"
-          placeholder={ tenantLoading ? "Loading..." : "Select options" }
+          placeholder={tenantLoading ? "Loading..." : "Select options"}
           disabled={tenantLoading}
           inputContainerClassName="bg-neutral-2"
           value={selectedState}

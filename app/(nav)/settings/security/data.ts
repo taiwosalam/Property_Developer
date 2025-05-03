@@ -255,6 +255,7 @@ export const updateSMSSettings = async (data: FormData) => {
     data.append("_method", "PATCH");
     const response = await api.post(`/company/settings/sms_name`, data);
     if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetch-settings"));
       return response;
     }
   } catch (error) {

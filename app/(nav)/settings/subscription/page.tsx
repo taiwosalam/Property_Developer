@@ -286,7 +286,7 @@ const Enrollment = () => {
             </div>
             <div className="flex gap-2 items-center">
               <Link 
-                href="/settings/enrollment/history"
+                href="/reports/subscription-history"
                 className="text-text-label dark:text-white font-medium">
                 See All 
               </Link>

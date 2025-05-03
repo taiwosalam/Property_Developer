@@ -44,6 +44,7 @@ type User = {
     title: string;
     state: string | null;
     lga: string | null;
+    bvn: string | null;
   };
   is_active: number;
   is_company_owner: number;
