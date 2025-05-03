@@ -10,6 +10,7 @@ interface TenantCardProps {
   picture_url: string;
   badge_color?: BadgeIconColors;
   note?: boolean;
+  flagged?: boolean;
 }
 
 export const defaultTenantPageData: TenantPageData = {
@@ -89,7 +90,12 @@ export interface TenantApiResponse {
       user_tier: 1 | 2 | 3 | 4 | 5;
       note: {
         note: string | null;
-      }
+      };
+      flag: {
+        is_flagged: boolean;
+        flagged_by: string;
+        reason: string;
+      };
     }[];
   };
   mobile_tenant_count: number;
@@ -130,7 +136,10 @@ export const transformTenantApiResponse = (
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
       note: tenant.note.note !== null && tenant.note.note !== "",
-      badge_color: tenant.user_tier ? tierColorMap[tenant.user_tier] : undefined,
+      flagged: tenant.flag.is_flagged,
+      badge_color: tenant.user_tier
+        ? tierColorMap[tenant.user_tier]
+        : undefined,
     })),
   };
 };
@@ -145,8 +154,6 @@ export interface TenantRequestParams {
   agent?: string;
   branch_ids?: string;
 }
-
-
 
 export const tenantRejectOptions = [
   "Consistent Late Rent Payments: Frequent failure to pay rent on time, causing disruptions to the payment schedule.",
@@ -167,5 +174,5 @@ export const tenantRejectOptions = [
   "Neglecting Property Cleanliness: Maintaining the property in an unclean or hazardous condition.",
   "Use of Property for Commercial Purposes Without Approval: Operating a business from the unit without appropriate approval.",
   "Repeated Complaints from Other Occupants or Neighbors: Ongoing or multiple complaints reported by others.",
-  "Providing False Information During Application or Lease Renewal: Submission of inaccurate or misleading details during application or renewal."
-]
+  "Providing False Information During Application or Lease Renewal: Submission of inaccurate or misleading details during application or renewal.",
+];
