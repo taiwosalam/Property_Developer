@@ -61,10 +61,15 @@ import CameraCircle from "@/public/icons/camera-circle.svg";
 import Image from "next/image";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs from "dayjs";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
+
+  const directorId = usePersonalInfoStore((state) => state.director_id);
+
+  console.log(directorId);
   const {
     preview,
     inputFileRef,
@@ -79,6 +84,8 @@ const Security = () => {
   });
   const [pageData, setPageData] = useState<InitialDataTypes>(initialData);
   const [avatar, setAvatar] = useState("");
+  const [picture, setPicture] = useState(pageData?.profile_picture || "");
+  const [closeVerificationModal, setCloseVerificationModal] = useState(false);
 
   const [fullName, setFullName] = useState<string>(pageData?.fullname || "");
 
@@ -86,13 +93,14 @@ const Security = () => {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     originalHandleImageChange(e);
-    setAvatar("");
+    setPicture("");
   };
 
   const handleAvatarSelection = (avatarUrl: string) => {
     clearImageSelection(); // Clear any selected image
     setAvatar(avatarUrl);
     if (avatarUrl) {
+      setPicture("");
       setIsOpen(false);
       setPageData((prev) => ({
         ...prev,
@@ -125,9 +133,9 @@ const Security = () => {
     title: title || "",
   });
 
-  const { data, loading, error } = useFetch("/user/profile");
+  const { data, loading, error, refetch } = useFetch("/user/profile");
+  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
 
-  // console.log("data", pageData)
   useEffect(() => {
     if (data) {
       setPageData((x) => ({
@@ -136,6 +144,13 @@ const Security = () => {
       }));
     }
   }, [data]);
+
+  useEffect(() => {
+    if (pageData?.profile_picture) {
+      //setAvatar(pageData?.profile_picture);
+      setPicture(pageData?.profile_picture);
+    }
+  }, [pageData?.profile_picture]);
 
   const setUpdateState = (fieldName: keyof FormState, value: any) => {
     setFormState((prev) => ({ ...prev, [fieldName]: value }));
@@ -170,7 +185,7 @@ const Security = () => {
     if (avatar) {
       // If avatar is selected, use it
 
-      payload.append("avatar_url", avatar);
+      payload.append("picture", avatar);
     } else if (formData.get("picture")) {
       // If a file was uploaded, use that
       payload.append("profile_picture", formData.get("picture") as Blob);
@@ -178,7 +193,10 @@ const Security = () => {
 
     try {
       setReqLoading(true);
-      const res = await updateDirectorProfile(payload);
+      if (!directorId) {
+        toast.error("No director ID");
+      }
+      const res = await updateDirectorProfile(payload, directorId);
       if (res && "status" in res && res.status === 200) {
         // console.log(res);
         toast.success("Profile updated successfully");
@@ -214,13 +232,13 @@ const Security = () => {
                 <div className="flex items-center gap-4">
                   <label htmlFor="picture" className="cursor-pointer relative">
                     <Picture
-                      src={preview || avatar || pageData?.profile_picture}
+                      src={picture || preview}
                       alt="Camera"
                       size={70}
                       rounded
                       className="bg-[rgba(42,42,42,0.63)]"
                     />
-                    {preview && preview !== CameraCircle && (
+                    {preview && picture && preview !== CameraCircle && (
                       <div
                         role="button"
                         aria-label="remove image"
@@ -310,21 +328,36 @@ const Security = () => {
                   />
                   <div className="relative">
                     <Input
+                      disabled={pageData?.is_bvn_verified}
+                      inputClassName="capitalize"
                       id="full_name"
                       name="full_name"
                       label="full name"
                       placeholder="Write Here"
-                      value={fullName}
+                      readOnly={pageData?.is_bvn_verified}
+                      value={fullName ? fullName.toLowerCase() : ""}
                       onChange={onChangeFullName}
                     />
-                    <Modal>
+                    <Modal
+                      state={{
+                        setIsOpen: setCloseVerificationModal,
+                        isOpen: closeVerificationModal,
+                      }}
+                    >
                       <ModalTrigger>
-                        <Button className="bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white absolute top-9 right-2 py-2 h-9">
-                          Verify
+                        <Button
+                          //disabled={pageData?.is_bvn_verified}
+                          className="bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white absolute top-9 right-2 py-2 h-9"
+                        >
+                          {pageData?.is_bvn_verified ? "Verified" : "Verify"}
                         </Button>
                       </ModalTrigger>
                       <ModalContent>
-                        <NameVerification fullName={fullName} setFullName={setFullName}/>
+                        <NameVerification
+                          fullName={fullName}
+                          setFullName={setFullName}
+                          setCloseVerification={setCloseVerificationModal}
+                        />
                       </ModalContent>
                     </Modal>
                   </div>

@@ -499,6 +499,8 @@ export interface ProfileResponse {
     };
     director?: {
       personal_title: string | null;
+      id: number;
+      picture: string;
     };
     profile: {
       picture: string | null;

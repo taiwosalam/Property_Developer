@@ -20,9 +20,10 @@ import { toast } from "sonner";
 interface NameVerificationProps {
   fullName: string;
   setFullName: (value: string) => void
+  setCloseVerification: (value: boolean) => void;
 }
 
-export const NameVerification = ({ fullName, setFullName }: NameVerificationProps) => {
+export const NameVerification = ({ fullName, setFullName, setCloseVerification }: NameVerificationProps) => {
   const [step, setStep] = useState(1); // Step state to control modal content
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null); // Track selected verification
 
@@ -180,6 +181,7 @@ export const NameVerification = ({ fullName, setFullName }: NameVerificationProp
             method={selectedMethod ?? undefined}
             responseMethod={methodRes}
             setFullName={setFullName}
+            setCloseVerification={setCloseVerification}
           />
         );
       default:
@@ -366,6 +368,7 @@ interface InputPinDialogProps {
   setInputField: (value: string) => void;
   responseMethod: BvnLookupResponse | null;
   setFullName: (value: string) => void;
+  setCloseVerification: (value: boolean) => void;
 }
 
 export const InputPinDialog = ({
@@ -376,6 +379,7 @@ export const InputPinDialog = ({
   setInputField,
   responseMethod,
   setFullName,
+  setCloseVerification
 }: InputPinDialogProps) => {
   const [code, setCode] = useState("");
   const [loading, setIsLoading] = useState(false);
@@ -399,6 +403,9 @@ export const InputPinDialog = ({
     try {
       setIsLoading(true);
       const data = await bvnInfoDetails(code, sessionId);
+      if(data?.status){
+        setCloseVerification(false);
+      }
       console.log(data?.data);
       if (data?.status === false) {
         setCode("");
@@ -489,7 +496,7 @@ export const InputPinDialog = ({
             {method === "email" ? "email" : "phone number"}
           </p>
           <p className="text-gray-500">
-            (<span className="text-blue-400">{formatContactInfo()}</span>)
+            {/* (<span className="text-blue-400">{formatContactInfo()}</span>) */}
           </p>
           <p className="text-gray-500">for confirmation</p>
           <div className="py-12">
