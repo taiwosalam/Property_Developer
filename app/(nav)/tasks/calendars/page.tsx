@@ -7,30 +7,65 @@ import {
   calendarsrFilterOptionsWithDropdown,
   getAllEventsOnCalendar,
   CalendarTableFields,
+  ICalendarEventsTable,
+  transformEventTable,
+  transformCalendarEvents,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CalendarComponent from "@/components/Calendar/calendar";
+import useFetch from "@/hooks/useFetch";
+import { CalendarEventsApiResponse } from "./types";
+import { AxiosRequestConfig } from "axios";
+import { LandlordRequestParams } from "../../management/landlord/data";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import { CalendarEventProps } from "@/components/Calendar/types";
+
 
 const CalendarPage = () => {
   const [fetchedTabelData, setFetchedTableData] = useState([]);
+  const [eventTable, setEventTable] = useState<ICalendarEventsTable | null>(
+    null
+  );
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>([]);
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as LandlordRequestParams,
+  });
+  const {
+    data: calendarEventApiResponse,
+    loading,
+    error,
+    isNetworkError,
+  } = useFetch<CalendarEventsApiResponse>("/company/calender", config);
 
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: (index + 1).toString(),
-      date: `28/01/2024 (0${index + 1}:30 pm)`,
-      event: `EVENT ${index + 1}`,
-      creator: `CREATOR ${index + 1}`,
-      property_name: `PROPERTY ${index + 1}`,
-      branch: `BRANCH ${index + 1}`,
-      account_officer: `OFFICER ${index + 1}`,
-    }));
-  };
+  useEffect(() => {
+    if (calendarEventApiResponse) {
+      const eventsTable = transformEventTable(calendarEventApiResponse);
+      setEventTable(eventsTable);
 
-  const tableData = generateTableData(10);
+      const events = transformCalendarEvents(calendarEventApiResponse);
+      setCalendarEvents(events);
+    }
+  }, [calendarEventApiResponse, config]);
 
   useEffect(() => {
     getAllEventsOnCalendar();
   }, []);
+
+  
+  const handlePageChange = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+  };
+
+  if(loading) return <CardsLoading />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
@@ -49,7 +84,7 @@ const CalendarPage = () => {
           filterOptionsMenu={calendarsrFilterOptionsWithDropdown}
           hasGridListToggle={false}
         />
-        <CalendarComponent />
+        <CalendarComponent events={calendarEvents}/>
       </div>
       <div className="page-title-container">
         <PageTitle title="up coming events" />
@@ -59,13 +94,17 @@ const CalendarPage = () => {
       </div>
       <CustomTable
         fields={CalendarTableFields}
-        data={tableData}
+        data={eventTable?.table || []}
         tableHeadClassName="h-[45px]"
         tableBodyCellSx={{
-          textTransform: "uppercase",
+          textTransform: "capitalize",
         }}
       />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <Pagination
+        totalPages={eventTable?.total_pages || 0}
+        currentPage={eventTable?.current_page || 0}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

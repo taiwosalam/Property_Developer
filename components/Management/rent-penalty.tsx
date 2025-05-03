@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SettingsSection from "@/components/Settings/settings-section";
 import { AuthForm } from "@/components/Auth/auth-components";
 import Select from "@/components/Form/Select/select";
@@ -11,9 +11,15 @@ import {
   RentPeriod,
 } from "@/app/(nav)/settings/management/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { updateSettings } from "@/app/(nav)/settings/security/data";
+import {
+  updateRentPenaltySettings,
+  updateSettings,
+} from "@/app/(nav)/settings/security/data";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { RentPenaltySettings } from "@/app/(nav)/settings/management/types";
+import useFetch from "@/hooks/useFetch";
+import { CompanySettingsResponse } from "@/app/(nav)/settings/others/types";
 
 // Form data type using mapped type
 type RentPenaltyForm = {
@@ -40,31 +46,6 @@ const RentPenalty: React.FC<RentPenaltyProps> = ({
   const [formData, setFormData] = useState<RentPenaltyForm>(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const handleUpdateRentPenalty = async (data: Record<string, any>) => {
-    console.log("handleUpdateRentPenalty called with data:", data);
-    // if (!data || Object.keys(data).length === 0) {
-    //   console.error("No data received in handleUpdateRentPenalty");
-    //   toast.error("No form data provided");
-    //   setIsLoading(false);
-    //   return;
-    // }
-    try {
-      setIsLoading(true);
-      const formDataPayload = objectToFormData(data);
-      console.log("FormData created:", Array.from(formDataPayload.entries()));
-      const res = await updateSettings(formDataPayload, "rent_penalty_setting");
-      console.log("updateSettings response:", res);
-      if (res) {
-        toast.success("Rent Penalty updated successfully");
-      }
-    } catch (err) {
-      console.error("Error in handleUpdateRentPenalty:", err);
-      toast.error("Unable to update Rent Penalty");
-    } finally {
-      setIsLoading(false);
-    }
-  };
   // Handle select change
   const handleChange = (period: RentPeriod, value: string) => {
     setFormData((prev) => ({
@@ -73,29 +54,89 @@ const RentPenalty: React.FC<RentPenaltyProps> = ({
     }));
   };
 
-  const handleSubmit = async () => {
-    console.log("Form submitted, formData:", formData);
-    console.log("formData keys:", Object.keys(formData));
-    console.log("formData values:", Object.values(formData));
-    if (!formData || Object.keys(formData).length === 0) {
-      console.error("formData is empty or undefined");
-      toast.error("Form data is empty");
-      return;
+  const { data: rentPenalty } =
+    useFetch<CompanySettingsResponse>("/company/settings/");
+
+  useEffect(() => {
+    if (rentPenalty?.data?.rent_penalty_setting) {
+      const penaltySettings = rentPenalty.data.rent_penalty_setting;
+      // Convert numbers to percentage strings
+      const formattedSettings = RENT_PERIODS.reduce<RentPenaltyForm>(
+        (acc, period) => {
+          acc[period.value] = `${penaltySettings[period.value]}%`;
+          return acc;
+        },
+        {} as RentPenaltyForm
+      );
+
+      setFormData(formattedSettings);
     }
-    await handleUpdateRentPenalty(formData);
+  }, [rentPenalty]);
+
+  // ...existing code...
+
+  // Add these utility functions at the top of the file
+  const convertPercentToNumber = (value: string): number => {
+    return Number(value?.replace("%", "")) || 0;
+  };
+
+  const createPenaltySettings = (
+    formData: RentPenaltyForm
+  ): RentPenaltySettings => {
+    const periods: (keyof RentPenaltySettings)[] = [
+      "daily",
+      "weekly",
+      "monthly",
+      "quarterly",
+      "yearly",
+      "biennially",
+      "triennially",
+      "quadrennial",
+      "quinquennial",
+      "sexennial",
+      "septennial",
+      "octennial",
+      "nonennial",
+      "decennial",
+    ];
+
+    return periods.reduce(
+      (settings, period) => ({
+        ...settings,
+        [period]: convertPercentToNumber(formData[period]),
+      }),
+      {} as RentPenaltySettings
+    );
+  };
+
+  const handleUpdateRentPenalty = async () => {
+    try {
+      setIsLoading(true);
+      const penaltySettings = createPenaltySettings(formData);
+
+      const res = await updateRentPenaltySettings(penaltySettings);
+      if (res) {
+        toast.success("Rent Penalty updated successfully");
+      }
+    } catch (err) {
+      toast.error("Unable to update Rent Penalty");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <SettingsSection title="Rent Penalty Settings">
       <div className="flex flex-col gap-8">
         <p className="text-sm font-normal text-text-disabled dark:text-darkText-2">
-          The tenant is required to make full rent payment on or before the
-          expiration of the current rent period. If the tenant is interested in
-          renewing the rent but makes payment after the due date, there will be
-          a monthly interest charged on the substantive rent until both the rent
-          and the accrued interest are fully paid.
+          The tenant or occupant is required to complete full rent payment on or
+          before the expiration of the rental period. If the tenant or occupant
+          wishes to renew but makes payment after the due date, a selected
+          percentage interest based on the rental period will be applied to
+          the outstanding rent. This interest will continue to accrue until both
+          the rent and the accumulated charges are fully paid.
         </p>
-        <AuthForm onFormSubmit={handleSubmit}>
+        <AuthForm onFormSubmit={handleUpdateRentPenalty}>
           <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 mb-6">
             {RENT_PERIODS.map((period) => (
               <Select
@@ -104,7 +145,7 @@ const RentPenalty: React.FC<RentPenaltyProps> = ({
                 label={`${period.label} Interest Charge`}
                 desc={period.desc}
                 options={period.options}
-                value={formData[period.value]}
+                value={formData[period.value] || PERCENTAGE_OPTIONS[0]}
                 onChange={(value) =>
                   handleChange(period.value, value as string)
                 }

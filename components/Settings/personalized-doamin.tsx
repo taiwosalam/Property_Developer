@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SettingsSection from "./settings-section";
 import {
   SettingsSectionTitle,
@@ -15,8 +15,20 @@ import useSubscriptionStore from "@/store/subscriptionStore";
 import Input from "../Form/Input/input";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { DomainFields, personalized_domain } from "@/app/(nav)/settings/add-on/data";
-import { ConfirmModal, EditModal, SuccessModal } from "@/app/(nav)/settings/add-on/components";
+import {
+  DomainFields,
+  personalized_domain,
+} from "@/app/(nav)/settings/add-on/data";
+import {
+  ConfirmModal,
+  EditModal,
+  SuccessModal,
+} from "@/app/(nav)/settings/add-on/components";
+import Button from "@/components/Form/Button/button";
+import Select from "../Form/Select/select";
+import { Modal as Modal1, ModalContent, ModalTrigger } from "../Modal/modal";
+import SponsorModal from "./Modals/sponsor-modal";
+import { PERIOD_OPTIONS } from "./subscription-components";
 
 const style = {
   position: "absolute",
@@ -41,6 +53,26 @@ const PersonalizedDomain = () => {
     tableHeadClassName: "h-[45px]",
   };
 
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+
+  useEffect(() => {
+    if (!selectedPeriod) {
+      setTotalAmount(0);
+      return;
+    }
+
+    const periodValue = parseInt(selectedPeriod.split(" ")[0]); // Extract number from "2 months"
+    const period = PERIOD_OPTIONS.find((p) => p.value === periodValue);
+
+    if (period) {
+      const baseAmount = 2000 * period.value;
+      const discount = period.discount || 0;
+      const discountedAmount = baseAmount - baseAmount * discount;
+      setTotalAmount(discountedAmount);
+    }
+  }, [selectedPeriod]);
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -57,6 +89,7 @@ const PersonalizedDomain = () => {
     setAnchorEl(null);
     setSelectedItemId(null);
   };
+  const [count, setCount] = useState(0);
 
   const transformedPersonalizedDomain = personalized_domain.data.map(
     (data) => ({
@@ -78,7 +111,10 @@ const PersonalizedDomain = () => {
           <SettingsSectionTitle desc="A personalized domain is used for forwarding one URL to another, especially if your company has a website and you want this current landing page to have the same URL as your company website. You can create a sub-domain under your website for this landing page or purchase your preferred domain name and redirect this domain to it." />
           <div className="custom-flex-col gap-10">
             <div className="custom-flex-col gap-4">
-              <SettingsSectionTitle title="Domain" />
+              <SettingsSectionTitle
+                title="Add Domain"
+                desc="Cool! You're about to make domain name! make this site accessible using your own for that to work, you'll need to create a new CNAME record pointing to wp-ultimo-v2.local on your DNS manager. After you finish that step, come back to this screen and click the button below."
+              />
               <CustomTable
                 fields={personalized_domain.fields}
                 data={transformedPersonalizedDomain}
@@ -148,26 +184,58 @@ const PersonalizedDomain = () => {
               </Modal>
             </div>
             <div className="custom-flex-col gap-8">
-              <SettingsSectionTitle
-                title="Add Domain"
-                desc="Cool! You're about to make domain name! make this site accessible using your own for that to work, you'll need to create a new CNAME record pointing to wp-ultimo-v2.local on your DNS manager. After you finish that step, come back to this screen and click the button below."
-              />
-              <div className="flex">
-                <Input
-                  id="domain_name"
-                  label="domain name"
-                  placeholder="yourdomainname.com"
-                  className="w-[277px]"
-                />
+              <div className="flex gap-2 items-center">
+                <div>
+                  <div className="flex gap-3 items-center pb-8 mt-7">
+                    <Select
+                      id="period"
+                      className="w-[300px]"
+                      options={PERIOD_OPTIONS.map((option) => ({
+                        value: `${option.value} ${
+                          option.value === 1 ? "month" : "months"
+                        }`,
+                        label: `${option.label}${
+                          option.discount
+                            ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                            : ""
+                        }`,
+                      }))}
+                      placeholder="Select subscription period..."
+                      label="Period (₦2,000/month)"
+                      value={selectedPeriod}
+                      onChange={(value) => setSelectedPeriod(value)}
+                    />
+
+                    <div className="flex mt-7">
+                      <Modal1>
+                        <ModalTrigger>
+                          <Button
+                            variant="change"
+                            size="xs_normal"
+                            className="py-2 px-3"
+                          >
+                            Activate
+                          </Button>
+                        </ModalTrigger>
+                        <ModalContent>
+                          <SponsorModal
+                            count={parseInt(selectedPeriod)}
+                            cost={totalAmount / parseInt(selectedPeriod)}
+                          />
+                        </ModalContent>
+                      </Modal1>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <SettingsUpdateButton text="add domain" type="add domain" />
+        {/* <SettingsUpdateButton text="add domain" type="add domain" /> */}
         <div className="custom-flex-col gap-4">
           <div className="flex justify-between">
-            <h2 className="text-text-primary dark:text-white text-xl font-medium">
-              Recent Sponsors
+            <h2 className="text-text-primary dark:text-white text-lg font-medium">
+              Enrollment History
             </h2>
             <Link
               href="/settings/subscription/sponsors"
@@ -179,11 +247,7 @@ const PersonalizedDomain = () => {
               <ChevronRight color="#5A5D61" size={16} />
             </Link>
           </div>
-          <CustomTable
-            data={[]}
-            fields={DomainFields}
-            {...table_style_props}
-          />
+          <CustomTable data={[]} fields={DomainFields} {...table_style_props} />
         </div>
       </div>
     </SettingsSection>

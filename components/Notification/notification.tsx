@@ -85,10 +85,10 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
                       notification?.sender_name !== "System" &&
                       notification.sender_name}
                   </p>
-                  {notification.sender_name &&
+                  {/* {notification.sender_name &&
                     notification?.sender_name !== "System" && (
-                      <Picture src={VerifiedIcon} alt="verified" size={14} />
-                    )}
+                      // <Picture src={VerifiedIcon} alt="verified" size={14} />
+                    )} */}
                 </div>
                 {/*<p className="text-text-tertiary text-sm font-medium">
                   You just got 4 new messages sent by @username

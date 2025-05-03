@@ -59,13 +59,11 @@ const Subscriptions = () => {
     ),
   }));
 
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleOpenDrawer = () => {
     setIsDrawerOpen(true); // Function to open the drawer
   };
-
 
   return (
     <>
@@ -88,9 +86,8 @@ const Subscriptions = () => {
           Adds On Subscriptions
         </h2> */}
         <div className="custom-flex-col gap-8">
-        <SponsorUnit />
-          
-          
+          <SponsorUnit />
+
           <SMSUnit />
           <FeatureCompany />
           {/* <SettingsSection title="Subscription History">
@@ -102,7 +99,7 @@ const Subscriptions = () => {
               />
             </div>
           </SettingsSection> */}
-          {/* <PersonalizedDomain /> */}
+          <PersonalizedDomain />
         </div>
       </div>
       <Drawer

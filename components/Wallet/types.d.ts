@@ -43,6 +43,7 @@ export interface WalletModalPresetProps {
   style?: CSSProperties;
   children: React.ReactNode;
   headerClassName?: string;
+  className?: string;
 }
 
 export interface WalletFundsCardsHeadingProps {

@@ -31,14 +31,6 @@ const ServerError = ({ error }: { error: any }) => {
     <div className="flex flex-col gap-[15px] mt-12 px-20">
       <div className="flex flex-col gap-3 w-full items-center justify-center text-brand-9 mb-4">
         <ServerErrorIcon />
-        {/* <Modal>
-          <ModalTrigger>
-            <Button className="px-8 py2"> Request Call Back </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <NavRequestCallback />
-          </ModalContent>
-        </Modal> */}
       </div>
 
       <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">

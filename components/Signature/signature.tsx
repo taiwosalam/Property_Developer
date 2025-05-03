@@ -26,7 +26,7 @@ const Signature = () => {
   );
 
   if (loading) return <p>Loading signature...</p>;
-  if (error) return <p>Error loading signature</p>;
+  //if (error) return <p>Error loading signature</p>;
   if (!data || data.signatures.length === 0) return null;
 
   return (

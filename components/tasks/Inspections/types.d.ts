@@ -2,6 +2,7 @@ import { StaticImageData } from "next/image";
 
 export interface InspectionDefaultExport {
   children: React.ReactNode;
+  tier?: number;
 }
 
 type Image = {
@@ -50,6 +51,6 @@ export interface InspectionCardDetailProps {
 }
 
 export interface InspectionCardTitleDescProps {
-  desc: string;
+  desc: string | React.ReactNode;
   title: string;
 }

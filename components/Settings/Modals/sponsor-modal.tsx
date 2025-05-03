@@ -12,9 +12,10 @@ import { formatNumber } from "@/utils/number-formatter";
 import React from "react";
 import { toast } from "sonner";
 
-const SponsorModal = ({ count }: { count: number }) => {
+const SPONSOR_COST = 2000;
+const SponsorModal = ({ count, cost }: { count: number, cost?: number }) => {
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
-  const amount = count * 100;
+  const amount = count * (cost ?? SPONSOR_COST);
   const [reqLoading, setReqLoading] = React.useState(false);
   const { setIsOpen } = useModal();
   const { isMobile } = useWindowWidth();

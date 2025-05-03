@@ -59,11 +59,22 @@ const NotificationBadge = ({
   count: number | string;
   color: string;
 }) => {
+  if (typeof count === "string" && count.includes("+")) {
+    return (
+      <span
+        className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
+      >
+        {count}
+      </span>
+    );
+  }
   const numericCount = typeof count === "string" ? parseInt(count, 10) : count;
-  if (numericCount <= 0) return null;
+
+  if (!numericCount || numericCount <= 0) return null;
+
   return (
     <span
-      className={`absolute top-0 right-0 bg-${color}-500 text-white text-[10px] rounded-full px-1`}
+      className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
     >
       {numericCount > 9 ? "9+" : numericCount}
     </span>
@@ -114,6 +125,7 @@ const Header = () => {
 
   /* NOTIFICATION LOGIC*/
   const [notificationIds, setNotificationIds] = useState<string[]>([]);
+  const [notificationCounts, setNotificationCount] = useState(0);
   const {
     data: apiData,
     silentLoading,
@@ -127,6 +139,13 @@ const Header = () => {
         ? apiData?.data?.map((item) => item.id)
         : [];
       setNotificationIds(ids);
+
+      const unreadCount = apiData?.data.filter(
+        (notification) => !notification.read_at
+      ).length;
+      setNotificationCount(unreadCount);
+
+      saveLocalStorage("notificationCount", unreadCount);
     }
   }, [apiData]);
 
@@ -135,12 +154,16 @@ const Header = () => {
 
     try {
       const res = await clearAllNotification(notificationIds);
-      if (res && pathname === "/notifications") {
-        saveLocalStorage("notificationCount", 0);
+
+      if (res) {
+        setNotificationCount(0);
+
+        if (pathname === "/notifications") {
+          saveLocalStorage("notificationCount", 0);
+        }
+        //refetchNotifications()
       }
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -164,12 +187,13 @@ const Header = () => {
 
   useEffect(() => {
     if (data?.data) {
-      const { user, company, profile, requestDemos } = data.data;
+      const { user, company, profile, requestDemos, director } = data.data;
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo(
         "name",
         `${profile?.title ? profile.title + " " : ""}${user.name}`
       );
+      setPersonalInfo("director_id", director?.id ? director?.id : null);
       setPersonalInfo("full_name", user.name);
       setPersonalInfo("user_email", user.email);
       setPersonalInfo("user_online_status", user.user_online_status);
@@ -179,7 +203,7 @@ const Header = () => {
       );
       setPersonalInfo("unread_messages_count", user.unread_messages_count);
       setPersonalInfo("title", profile?.title as string);
-      setPersonalInfo("profile_picture", profile.picture);
+      setPersonalInfo("profile_picture", director?.picture || profile.picture);
       if (company) {
         setPersonalInfo("company_id", company.company_id);
         setPersonalInfo("company_logo", company.company_logo);
@@ -406,7 +430,7 @@ const Header = () => {
               >
                 <BellIcon />
                 <NotificationBadge
-                  count={roundUptoNine(notificationCount)}
+                  count={roundUptoNine(notificationCounts)}
                   color="green"
                 />
               </Link>
@@ -439,8 +463,8 @@ const Header = () => {
               <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
                 {getGreeting()},
               </p>
-              <p className="text-xs md:text-base font-medium dark:text-white">
-                {truncateName(name, 50)}
+              <p className="text-xs md:text-base font-medium dark:text-white capitalize">
+                {truncateName(name ? name?.toLowerCase() : "", 50)}
               </p>
             </div>
           </div>

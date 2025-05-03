@@ -31,6 +31,7 @@ const OtherAgreement = () => {
     loading: unitsLoading,
   } = useFetch<UnitsApiResponse>(`/unit/${selectedProperty}/all`);
 
+  console.log("propertyData", propertyData?.data);
   const propertyOptions =
     propertyData?.data.map((p) => ({
       value: p.id,

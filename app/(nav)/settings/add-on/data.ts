@@ -7,7 +7,6 @@ import type { SubscriptionTableType } from "./types";
 import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
 
-
 export const enrollment_subscriptions: SubscriptionTableType = {
   fields: [
     {
@@ -40,11 +39,11 @@ export const enrollment_subscriptions: SubscriptionTableType = {
       label: "Due Date",
       accessor: "due_date",
     },
-    {
-      id: "6",
-      label: "Status",
-      accessor: "status",
-    },
+    // {
+    //   id: "6",
+    //   label: "Status",
+    //   accessor: "status",
+    // },
   ],
   data: Array(5)
     .fill(null)
@@ -178,59 +177,59 @@ interface SponsorDataObjectTypes {
 export const SponsorFields = [
   {
     id: "0",
-    label: "Unit ID",
+    label: "Purchase ID",
     accessor: "unit_id",
   },
   {
     id: "1",
-    label: "Property Name",
-    accessor: "property_name",
+    label: "Purchase Date",
+    accessor: "date",
   },
   {
     id: "2",
-    label: "Unit Name",
+    label: "Total Unit",
     accessor: "unit_name",
   },
   {
     id: "5",
-    label: "Status",
-    accessor: "status",
-  },
-  {
-    id: "6",
-    label: "Total Package",
+    label: "Price",
     accessor: "annual_rent",
   },
-  {
-    id: "3",
-    label: "Date",
-    accessor: "date",
-  },
+  // {
+  //   id: "6",
+  //   label: "Total Package",
+  //   accessor: "annual_rent",
+  // },
+  // {
+  //   id: "3",
+  //   label: "Date",
+  //   accessor: "date",
+  // },
 ];
 export const DomainFields = [
   {
     id: "0",
-    label: "Domain",
+    label: "Purchase ID",
     accessor: "domain",
   },
   {
     id: "1",
-    label: "Activation Date",
+    label: "Duration",
     accessor: "activation_date",
   },
   {
     id: "2",
-    label: "Start Date",
+    label: "Amount",
     accessor: "start_date",
   },
   {
     id: "4",
-    label: "Due Date",
+    label: "Purchase Date",
     accessor: "due_date",
   },
   {
     id: "5",
-    label: "Status",
+    label: "Expire Date",
     accessor: "status",
   },
 ];
@@ -238,32 +237,37 @@ export const DomainFields = [
 export const FeatureFields = [
   {
     id: "0",
-    label: "Feature ID",
+    label: "Payment ID",
     accessor: "feature_id",
   },
   {
     id: "1",
-    label: "Duration",
+    label: "Purchase Date",
     accessor: "duration",
   },
   {
     id: "2",
-    label: "Price",
+    label: "Display Page",
     accessor: "price",
   },
   {
     id: "3",
-    label: "Start Date",
+    label: "Amount Paid",
     accessor: "start_date",
   },
   {
     id: "4",
-    label: "Due Date",
+    label: "Period",
     accessor: "due_date",
   },
   {
     id: "5",
-    label: "Status",
+    label: "Start Date",
+    accessor: "status",
+  },
+  {
+    id: "5",
+    label: "Expire date",
     accessor: "status",
   },
 ];
@@ -275,7 +279,7 @@ export const SMSFields = [
   },
   {
     id: "1",
-    label: "Quantity",
+    label: "Quantity / Units",
     accessor: "quantity",
   },
   {
@@ -283,11 +287,11 @@ export const SMSFields = [
     label: "Price",
     accessor: "price",
   },
-  {
-    id: "3",
-    label: "Status",
-    accessor: "status",
-  },
+  // {
+  //   id: "3",
+  //   label: "Status",
+  //   accessor: "status",
+  // },
   {
     id: "4",
     label: "Purchase Date",
@@ -300,11 +304,27 @@ export const SMSFields = [
   // },
 ];
 
+function formatToNGN(value: string) {
+  const numericValue = typeof value === "string"
+    ? Number(value.replace(/,/g, ""))
+    : value;
+
+  if (isNaN(numericValue)) return "Invalid value";
+
+  return numericValue.toLocaleString("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+
 export const transformSponsorResponse = (
   response: SponsorListingsResponse
 ): SponsorDataTypes => {
   return {
-    sponsor_value: Number(response.data.value),
+    sponsor_value: response.data?.value || "0",
     sponsor_listings: response.data.listings.data.map(
       (listing: SponsoredListing) => ({
         unit_id: listing.unit_id.toString(),

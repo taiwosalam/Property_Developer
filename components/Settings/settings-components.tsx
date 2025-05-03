@@ -56,15 +56,15 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 export const SettingsVerifiedBadge = ({
   status,
 }: {
-  status: "verified" | "unverified" | "pending";
+  status: "verified" | "unverified" | "pending" | "approved";
 }) => {
-  const isVerified = status === "verified";
-  const isPending = status === "pending";
+  const isVerified = status === "verified" || status === "approved";
+  const isPending = status === "pending" || status === "unverified";
 
   const bgClass = isVerified
     ? "bg-status-success-1"
     : isPending
-    ? "bg-[#EDE9FF]" // light purple background
+    ? "bg-[#C1C2C3]" // light purple background
     : "bg-[#FF8EE]";
 
   const borderClass = isVerified
@@ -88,7 +88,7 @@ export const SettingsVerifiedBadge = ({
       <p
         className={`capitalize text-[10px] font-normal ${textClass} ${secondaryFont.className}`}
       >
-        {status}
+        {status === "approved" ? "verified" : status}
       </p>
       <BadgeIcon color={iconColor} />
     </div>

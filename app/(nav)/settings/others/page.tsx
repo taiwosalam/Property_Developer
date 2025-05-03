@@ -85,6 +85,7 @@ import { useRouter } from "next/navigation";
 import { logout } from "@/app/(onboarding)/auth/data";
 import {
   BadgeIconColors,
+  staffTierColorMap,
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
 import { title } from "process";
@@ -515,9 +516,9 @@ const Others = () => {
 
   useRefetchOnEvent("addNewDirector", () => refetch({ silent: true }));
 
-  const getBadgeColor = (tier?: number): BadgeIconColors => {
-    if (!tier) return "blue";
-    return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
+  const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
+    if (!tier || tier === 0) return undefined;
+    return staffTierColorMap[tier as keyof typeof staffTierColorMap] || "blue";
   };
 
   useEffect(() => {
@@ -809,24 +810,7 @@ const Others = () => {
 
   return (
     <>
-      {/* COMPANY TYPE SETTINGS */}
-      <SettingsSection title="Company Default Module">
-        <div className="custom-flex-col gap-3">
-          {companyTypes.map((type) => (
-            <SettingsOthersType
-              key={type.id}
-              id={type.id}
-              title={type.title}
-              desc={type.desc}
-              icon={type.icon}
-              onClick={() => handleCompanyModuleChange(type.id.toString())}
-              selectedGroup={selectedGroup}
-              setSelectedGroup={setSelectedGroup}
-              groupName={type.id.toString()}
-            />
-          ))}
-        </div>
-
+      <SettingsSection title="Director and Access Control">
         {/* COMPANY DIRECTORS */}
         <div className="custom-flex-col gap-6 mt-4">
           <SettingsSectionTitle
@@ -869,7 +853,10 @@ const Others = () => {
                         phone_number={director.phone_number}
                         picture_url={director.picture}
                         user_tag={director.professional_title}
-                        badge_color={getBadgeColor(director.tier_id)}
+                        badge_color={
+                          getBadgeColor(director.tier_id) || undefined
+                        }
+                        is_verified={director?.is_verified}
                       />
                     </ModalTrigger>
 
@@ -951,43 +938,9 @@ const Others = () => {
             </AutoResizingGrid>
           </div>
         </div>
-        <div className="flex justify-end mt-2">
-          {/* 
-            Enable this when other company module
-            is available 
-          <SettingsUpdateButton
-            
-            action={handleCompanyModuleUpdate}
-            loading={updatingModule}
-          /> */}
-          <Button disabled className="bg-opacity-70 mt-16">
-            Update
-          </Button>
-        </div>
-      </SettingsSection>
-
-      {/* MESSAGES & REVIEW SETTINGS */}
-      <SettingsSection title="Messages & Review Settings">
-        <div className="custom-flex-col gap-3">
-          {messageReviewSettings.map((setting, index) => (
-            <SettingsOthersType
-              key={index}
-              title={setting.title}
-              desc={setting.desc}
-              icon={setting.icon}
-              name={setting.name}
-              state={{
-                isChecked: messageReviewSettingsState[setting.name],
-                setIsChecked: (value) =>
-                  handleSetIsCheckedMessageReview(setting.name, value),
-              }}
-              onChange={handleMessageReviewCheckbox}
-            />
-          ))}
-        </div>
 
         {/* RESTRICTED USERS */}
-        <div className="custom-flex-col flex-wrap gap-6 mt-4">
+        <div className="custom-flex-col flex-wrap gap-6 mt-12 mb-6">
           <SettingsSectionTitle
             title="Access Control"
             desc="Select the property and the tenant(s) or occupant(s) you wish to restrict from the group chat.
@@ -1053,7 +1006,10 @@ Once restricted, they will no longer have access to participate in the property'
                 </div>
                 <div className="rounded-t-xl">
                   <ModalContent>
-                    <LandlordTenantModalPreset heading="Restrict User" style={{ maxHeight: "80vh", overflow: "visible" }}>
+                    <LandlordTenantModalPreset
+                      heading="Access Control"
+                      style={{ maxHeight: "80vh", overflow: "visible" }}
+                    >
                       <RestrictUserForm
                         submitAction={() => {}}
                         setIsUserRestricted={setIsUserRestricted}
@@ -1065,6 +1021,61 @@ Once restricted, they will no longer have access to participate in the property'
             </AutoResizingGrid>
           </div>
         </div>
+      </SettingsSection>
+
+      {/* COMPANY TYPE SETTINGS */}
+      <SettingsSection title="Company Default Module">
+        <div className="custom-flex-col gap-3">
+          {companyTypes.map((type) => (
+            <SettingsOthersType
+              key={type.id}
+              id={type.id}
+              title={type.title}
+              desc={type.desc}
+              icon={type.icon}
+              onClick={() => handleCompanyModuleChange(type.id.toString())}
+              selectedGroup={selectedGroup}
+              setSelectedGroup={setSelectedGroup}
+              groupName={type.id.toString()}
+            />
+          ))}
+        </div>
+
+        <div className="flex justify-end mt-2">
+          {/* 
+            Enable this when other company module
+            is available 
+          <SettingsUpdateButton
+            
+            action={handleCompanyModuleUpdate}
+            loading={updatingModule}
+          /> */}
+          <Button disabled className="bg-opacity-70 mt-4">
+            Update
+          </Button>
+        </div>
+      </SettingsSection>
+
+      {/* MESSAGES & REVIEW SETTINGS */}
+      <SettingsSection title="Messages & Review Settings">
+        <div className="custom-flex-col gap-3">
+          {messageReviewSettings.map((setting, index) => (
+            <SettingsOthersType
+              key={index}
+              title={setting.title}
+              desc={setting.desc}
+              icon={setting.icon}
+              name={setting.name}
+              state={{
+                isChecked: messageReviewSettingsState[setting.name],
+                setIsChecked: (value) =>
+                  handleSetIsCheckedMessageReview(setting.name, value),
+              }}
+              onChange={handleMessageReviewCheckbox}
+            />
+          ))}
+        </div>
+
         <div className="flex justify-end mt-2">
           {/* <Button onClick={updateMessageReviewSettings} disabled={processingMessageReview}>
             {processingMessageReview? "Updating..." : "Update"}

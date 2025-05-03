@@ -52,15 +52,62 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
-import NameVerification from "@/components/Settings/name-verification";
+import { NameVerification } from "@/components/Settings/name-verification";
+import { Avatar } from "@/components/ui/avatar";
+import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import Avatars from "@/components/Avatars/avatars";
+import CameraCircle from "@/public/icons/camera-circle.svg";
+import Image from "next/image";
+import DateInput from "@/components/Form/DateInput/date-input";
+import dayjs from "dayjs";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
-  const { preview, inputFileRef, handleImageChange } = useImageUploader();
+
+  const directorId = usePersonalInfoStore((state) => state.director_id);
+
+  console.log(directorId);
+  const {
+    preview,
+    inputFileRef,
+    handleImageChange: originalHandleImageChange,
+    clearSelection: clearImageSelection,
+  } = useImageUploader({
+    placeholder: CameraCircle,
+    maxSize: {
+      unit: "MB",
+      value: 2,
+    },
+  });
   const [pageData, setPageData] = useState<InitialDataTypes>(initialData);
+  const [avatar, setAvatar] = useState("");
+  const [picture, setPicture] = useState(pageData?.profile_picture || "");
+  const [closeVerificationModal, setCloseVerificationModal] = useState(false);
 
   const [fullName, setFullName] = useState<string>(pageData?.fullname || "");
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    originalHandleImageChange(e);
+    setPicture("");
+  };
+
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection(); // Clear any selected image
+    setAvatar(avatarUrl);
+    if (avatarUrl) {
+      setPicture("");
+      setIsOpen(false);
+      setPageData((prev) => ({
+        ...prev,
+        profile_picture: "", // Clear the profile picture
+      }));
+    }
+  };
 
   useEffect(() => {
     setFullName(pageData?.fullname || "");
@@ -78,9 +125,7 @@ const Security = () => {
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
   ]);
-  const profile_picture = usePersonalInfoStore(
-    (state) => state.profile_picture
-  );
+
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
   const [formState, setFormState] = useState<FormState>({
@@ -88,9 +133,9 @@ const Security = () => {
     title: title || "",
   });
 
-  const { data, loading, error } = useFetch("/user/profile");
+  const { data, loading, error, refetch } = useFetch("/user/profile");
+  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
 
-  // console.log("data", pageData)
   useEffect(() => {
     if (data) {
       setPageData((x) => ({
@@ -100,29 +145,58 @@ const Security = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (pageData?.profile_picture) {
+      //setAvatar(pageData?.profile_picture);
+      setPicture(pageData?.profile_picture);
+    }
+  }, [pageData?.profile_picture]);
+
   const setUpdateState = (fieldName: keyof FormState, value: any) => {
     setFormState((prev) => ({ ...prev, [fieldName]: value }));
   };
 
   const changeImage = () => {
     inputFileRef?.current?.click();
+    setAvatar("");
   };
 
-  const handleUpdateProfile = async (data: FormData) => {
-    const payload = {
-      full_name: data.get("full_name"),
-      title: data.get("title"),
-      professional_title: data.get("professional_title"),
-      profile_picture: data.get("picture"),
-      years_in_business: data.get("years_in_business"),
-      about_director: data.get("about_director"),
-      phone_number: data.get("phone"),
-      alt_email: data.get("alt_email"),
-    };
+  const handleUpdateProfile = async (formData: FormData) => {
+    const payload = new FormData();
+
+    // Append all form fields
+    payload.append("full_name", (formData.get("full_name") as string) || "");
+    payload.append("title", (formData.get("title") as string) || "");
+    payload.append(
+      "professional_title",
+      (formData.get("professional_title") as string) || ""
+    );
+    payload.append(
+      "years_in_business",
+      (formData.get("years_in_business") as string) || ""
+    );
+    payload.append(
+      "about_director",
+      (formData.get("about_director") as string) || ""
+    );
+    payload.append("phone_number", (formData.get("phone") as string) || "");
+    payload.append("alt_email", (formData.get("alt_email") as string) || "");
+
+    if (avatar) {
+      // If avatar is selected, use it
+
+      payload.append("picture", avatar);
+    } else if (formData.get("picture")) {
+      // If a file was uploaded, use that
+      payload.append("profile_picture", formData.get("picture") as Blob);
+    }
 
     try {
       setReqLoading(true);
-      const res = await updateDirectorProfile(objectToFormData(payload));
+      if (!directorId) {
+        toast.error("No director ID");
+      }
+      const res = await updateDirectorProfile(payload, directorId);
       if (res && "status" in res && res.status === 200) {
         // console.log(res);
         toast.success("Profile updated successfully");
@@ -151,12 +225,89 @@ const Security = () => {
                 desc="The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB."
               />
               <div className="custom-flex-col gap-[18px]">
-                <ProfileUpload
-                  preview={preview || pageData?.profile_picture || ""}
-                  onChange={handleImageChange}
-                  inputFileRef={inputFileRef}
-                  onClick={changeImage}
-                />
+                <p className="text-black dark:text-darkText-1 text-base font-medium">
+                  <span className="text-status-error-primary">*</span> Upload
+                  picture or select an avatar.
+                </p>
+                <div className="flex items-center gap-4">
+                  <label htmlFor="picture" className="cursor-pointer relative">
+                    <Picture
+                      src={picture || preview}
+                      alt="Camera"
+                      size={70}
+                      rounded
+                      className="bg-[rgba(42,42,42,0.63)]"
+                    />
+                    {preview && picture && preview !== CameraCircle && (
+                      <div
+                        role="button"
+                        aria-label="remove image"
+                        className="absolute top-0 right-0"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          clearImageSelection();
+                        }}
+                      >
+                        <DeleteIconOrange size={20} />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="picture"
+                      name="picture"
+                      accept="image/*"
+                      className="hidden pointer-events-none"
+                      onChange={handleImageChange}
+                      ref={inputFileRef}
+                    />
+                  </label>
+                  <Modal state={{ isOpen, setIsOpen }}>
+                    <ModalTrigger>
+                      <button
+                        type="button"
+                        className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
+                        aria-label="choose avatar"
+                      >
+                        {avatar ? (
+                          <>
+                            <input
+                              hidden
+                              value={avatar}
+                              name="avatar"
+                              id="avatar"
+                            />
+                            <Image
+                              src={avatar}
+                              width={70}
+                              height={70}
+                              alt="selected avatar"
+                              className="object-cover object-center w-[70px] h-[70px] rounded-full bg-brand-9"
+                            />
+                            <div
+                              role="button"
+                              aria-label="remove avatar"
+                              className="absolute top-0 right-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAvatar("");
+                              }}
+                            >
+                              <DeleteIconOrange size={20} />
+                            </div>
+                          </>
+                        ) : (
+                          <PersonIcon />
+                        )}
+                      </button>
+                    </ModalTrigger>
+
+                    <ModalContent className="relative">
+                      <LandlordTenantModalPreset heading="Choose Avatar">
+                        <Avatars onClick={handleAvatarSelection} />
+                      </LandlordTenantModalPreset>
+                    </ModalContent>
+                  </Modal>
+                </div>
                 <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <Select
                     id="title"
@@ -177,21 +328,36 @@ const Security = () => {
                   />
                   <div className="relative">
                     <Input
+                      disabled={pageData?.is_bvn_verified}
+                      inputClassName="capitalize"
                       id="full_name"
                       name="full_name"
                       label="full name"
                       placeholder="Write Here"
-                      value={fullName}
+                      readOnly={pageData?.is_bvn_verified}
+                      value={fullName ? fullName.toLowerCase() : ""}
                       onChange={onChangeFullName}
                     />
-                    <Modal>
+                    <Modal
+                      state={{
+                        setIsOpen: setCloseVerificationModal,
+                        isOpen: closeVerificationModal,
+                      }}
+                    >
                       <ModalTrigger>
-                        <Button className="bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white absolute top-9 right-2 py-2 h-9">
-                          Verify
+                        <Button
+                          //disabled={pageData?.is_bvn_verified}
+                          className="bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white absolute top-9 right-2 py-2 h-9"
+                        >
+                          {pageData?.is_bvn_verified ? "Verified" : "Verify"}
                         </Button>
                       </ModalTrigger>
                       <ModalContent>
-                        <NameVerification fullName={fullName} />
+                        <NameVerification
+                          fullName={fullName}
+                          setFullName={setFullName}
+                          setCloseVerification={setCloseVerificationModal}
+                        />
                       </ModalContent>
                     </Modal>
                   </div>
@@ -205,13 +371,20 @@ const Security = () => {
                     defaultValue={pageData?.director_email}
                   />
 
-                  <Select
+                  <DateInput
                     id="years_in_business"
-                    label="years of experience"
-                    placeholder="Write here"
-                    options={yearsOptions}
-                    hiddenInputClassName="setup-f"
-                    defaultValue={pageData?.director_experience}
+                    label=" Years of Experience (Since)"
+                    // onChange={(value) =>
+                    //   onFormChange?.(
+                    //     "years_in_business",
+                    //     value ? value.toString() : ""
+                    //   )
+                    // }
+                    value={
+                      pageData?.director_experience
+                        ? dayjs(pageData.director_experience)
+                        : null
+                    }
                   />
 
                   <PhoneNumberInput

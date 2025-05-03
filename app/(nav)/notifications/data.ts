@@ -88,7 +88,7 @@ export const clearAllNotification = async (ids: string[]) => {
       },
     });
     if (res.status === 200 || res.status === 201) {
-      //window.dispatchEvent(new Event("refetchNotifications"));
+      window.dispatchEvent(new Event("refetchNotifications"));
       //toast.success("Notifications Cleared");
       return true;
     }
@@ -110,7 +110,6 @@ export const deleteAllNotification = async (ids: string[]) => {
     });
     if (res.status === 200 || res.status === 201) {
       window.dispatchEvent(new Event("refetchNotifications"));
-      toast.success("Notifications Cleared");
       return true;
     }
   } catch (error) {
