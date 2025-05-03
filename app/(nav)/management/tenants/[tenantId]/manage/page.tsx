@@ -40,7 +40,10 @@ import { UnitStatusColors } from "@/components/Management/Properties/property-pr
 import dayjs from "dayjs";
 import { transformCardData } from "../../../landlord/data";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
-import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import {
+  FlagBadge,
+  NoteBlinkingIcon,
+} from "@/public/icons/dashboard-cards/icons";
 import { SectionContainer } from "@/components/Section/section-components";
 import ServerError from "@/components/Error/ServerError";
 
@@ -64,7 +67,10 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   if (!tenant) return null;
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
-  const otherData = getObjectProperties({ obj: tenant, exceptions: ["notes", "flag"] });
+  const otherData = getObjectProperties({
+    obj: tenant,
+    exceptions: ["notes", "flag"],
+  });
 
   console.log("tenant", tenant);
   return (
@@ -113,6 +119,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                   {tenant.note && (
                     <div className="flex items-center">
                       <NoteBlinkingIcon size={20} className="blink-color" />
+                    </div>
+                  )}
+                  {tenant.user_tag !== "web" && tenant.is_flagged && (
+                    <div className="flex text-red-500 items-center">
+                      <FlagBadge size={20} />
                     </div>
                   )}
                 </div>

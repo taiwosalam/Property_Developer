@@ -2,7 +2,10 @@ import UserTag from "@/components/Tags/user-tag";
 import Image from "next/image";
 import BadgeIcon, { BadgeIconColors } from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
-import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import {
+  FlagBadge,
+  NoteBlinkingIcon,
+} from "@/public/icons/dashboard-cards/icons";
 
 export interface UserCardProps {
   picture_url?: string | null;
@@ -15,6 +18,7 @@ export interface UserCardProps {
   other_info?: string | null;
   className?: string;
   note?: boolean;
+  is_flagged?: boolean;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -26,9 +30,10 @@ const UserCard: React.FC<UserCardProps> = ({
   badge_color,
   other_info,
   className,
-  note
+  note,
+  is_flagged,
 }) => {
- 
+  const flagged = Boolean(is_flagged);
   return (
     <div
       className={`h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 justify-center items-center ${className}`}
@@ -45,7 +50,7 @@ const UserCard: React.FC<UserCardProps> = ({
       </div>
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
-          <span className="text-ellipsis line-clamp-1 break-all">{name}</span>
+          <span className="text-ellipsis line-clamp-1 break-all">{name} </span>
           {badge_color && user_tag !== "web" && (
             <BadgeIcon color={badge_color} />
           )}
@@ -59,6 +64,11 @@ const UserCard: React.FC<UserCardProps> = ({
             {note && (
               <div className="flex items-center">
                 <NoteBlinkingIcon size={20} className="blink-color" />
+              </div>
+            )}
+            {(user_tag === "mobile" && flagged ) && (
+              <div className="flex text-red-500 items-center">
+                <FlagBadge size={20} />
               </div>
             )}
           </div>
