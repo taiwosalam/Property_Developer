@@ -90,6 +90,7 @@ export const nav_items: NavItemsProps = [
       { label: "adds-on sms", href: "/adds-on-sms" },
       { label: "adds-on feature", href: "/adds-on-feature" },
       { label: "adds-on domain", href: "/adds-on-domain" },
+      { label: "calendar event", href: "/calendar-event" },
 
     ],
   },

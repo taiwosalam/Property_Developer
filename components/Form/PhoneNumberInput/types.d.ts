@@ -11,4 +11,5 @@ export interface PhoneNumberProps {
   onChange?: (data: string) => void;
   inputClassName?: string;
   inputContainerClassName?: string;
+  disabled?: boolean;
 }

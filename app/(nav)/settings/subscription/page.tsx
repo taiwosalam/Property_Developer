@@ -30,7 +30,9 @@ const Enrollment = () => {
     tableHeadClassName: "h-[45px]",
   };
 
-   const transformedSubscriptions = enrollment_subscriptions.data.map((data) => ({
+  const transformedSubscriptions = enrollment_subscriptions.data
+    .slice(0, 6)
+    .map((data) => ({
       ...data,
       status: (
         <p
@@ -57,8 +59,6 @@ const Enrollment = () => {
     let discount = "";
     let totalPrice: number | string = 0;
     let isLifeTimePlan = false;
-
-     
 
     // Adjust quantity based on the selected plan
     if (planType === "premium" && quantity > 6) {
@@ -276,7 +276,7 @@ const Enrollment = () => {
       </SettingsSection>
 
       <SettingsSection title="Subscription/Renewal History">
-        <div className="custom-flex-col gap-7">
+        <div className="custom-flex-col gap-7 scroll-m-8" id="table">
           <SettingsSectionTitle desc="Track and manage your active and past enrollments with ease. Below is a detailed record of your current subscription plan, along with any previously paid fees for past enrollments." />
           <div className="flex justify-between items-center">
             <div>
@@ -285,12 +285,13 @@ const Enrollment = () => {
               </h2>
             </div>
             <div className="flex gap-2 items-center">
-              <Link 
+              <Link
                 href="/reports/subscription-history"
-                className="text-text-label dark:text-white font-medium">
-                See All 
+                className="text-text-label dark:text-white font-medium"
+              >
+                See All
               </Link>
-              <ChevronRight className="text-sm font-medium"/>
+              <ChevronRight className="text-sm font-medium" />
             </div>
           </div>
           <CustomTable

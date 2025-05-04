@@ -36,6 +36,7 @@ export type TNotificationData = {
   notifications: {
     id: string;
     type: string;
+    action_text: string;
     subject: string;
     message: string;
     time: string;
@@ -65,13 +66,14 @@ export const transformNotificationData = (
   return {
     notifications: data.data.map((notification) => ({
       id: notification.id,
+      action_text: notification?.data?.action_text || "",
       type: extractNotificationType(notification.type),
-      subject: notification.data.subject,
-      message: notification.data.message,
-      time: formatDateTime(notification.created_at),
+      subject: notification.data.subject || "",
+      message: notification.data.message || "",
+      time: notification.created_at ? formatDateTime(notification.created_at) : "",
       from_id: notification.from_id,
-      sender_name: notification.sender_name,
-      sender_picture: notification?.sender_picture,
+      sender_name: notification.sender_name || "",
+      sender_picture: notification?.sender_picture ?? "",
     })),
   };
 };

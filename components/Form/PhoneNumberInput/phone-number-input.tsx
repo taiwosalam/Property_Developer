@@ -22,6 +22,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   onChange,
   inputClassName,
   inputContainerClassName,
+  disabled
 }) => {
   const [phoneValue, setPhoneValue] = useState(defaultValue);
 
@@ -45,6 +46,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
         </Label>
       )}
       <PhoneInput
+        disabled={disabled}
         country="ng" // Default country code (Nigeria)
         value={phoneValue}
         onChange={handleChange}

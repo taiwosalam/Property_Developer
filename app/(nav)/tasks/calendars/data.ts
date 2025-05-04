@@ -19,11 +19,12 @@ export const getAllEventsOnCalendar = async () => {};
 
 export const CalendarTableFields: Field[] = [
   { id: "1", label: "Date & Time", accessor: "date" },
-  { id: "2", label: "Event", accessor: "event" },
-  { id: "3", label: "creator", accessor: "creator" },
-  { id: "4", label: "property name", accessor: "property_name" },
   { id: "5", label: "branch", accessor: "branch" },
-  { id: "6", label: "account officer", accessor: "account_officer" },
+  { id: "4", label: "property name", accessor: "property_name" },
+  { id: "3", label: "creator", accessor: "creator" },
+  { id: "2", label: "Event", accessor: "event" },
+
+  // { id: "6", label: "account officer", accessor: "account_officer" },
 ];
 
 // Add type guard to validate event types
@@ -86,11 +87,11 @@ export const transformEventTable = (
       date: item?.date
         ? dayjs(item.date).format("DD/MM/YYYY HH:mm A")
         : "___ ___",
-      event: item.type,
-      creator: item.creator,
-      property_name: item.property,
-      branch: item.branch,
-      account_officer: item.accountOfficer,
+      event: item?.description || "___ ___",
+      creator: item.creator || "___ ___",
+      property_name: item.property || "___ ___",
+      branch: item.branch || "___ ___",
+      account_officer: item.accountOfficer || "___ ___",
     })),
   };
 };

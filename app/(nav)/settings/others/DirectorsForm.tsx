@@ -180,6 +180,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
        
         <PhoneNumberInput
+          disabled={formData?.phone_number ? true : false}
           id="phone_number"
           label="phone number"
           inputClassName="!bg-neutral-2"

@@ -21,14 +21,17 @@ import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { CalendarEventProps } from "@/components/Calendar/types";
-
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 const CalendarPage = () => {
   const [fetchedTabelData, setFetchedTableData] = useState([]);
   const [eventTable, setEventTable] = useState<ICalendarEventsTable | null>(
     null
   );
-  const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>([]);
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>(
+    []
+  );
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: 1,
@@ -56,14 +59,13 @@ const CalendarPage = () => {
     getAllEventsOnCalendar();
   }, []);
 
-  
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
   };
 
-  if(loading) return <CardsLoading />;
+  if (loading) return <CardsLoading />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -71,7 +73,6 @@ const CalendarPage = () => {
     <div className="space-y-9">
       <div className="custom-flex-col gap-8">
         <FilterBar
-          azFilter
           pageTitle="Calendar"
           aboutPageModalData={{
             title: "Calendar",
@@ -84,27 +85,36 @@ const CalendarPage = () => {
           filterOptionsMenu={calendarsrFilterOptionsWithDropdown}
           hasGridListToggle={false}
         />
-        <CalendarComponent events={calendarEvents}/>
+        <CalendarComponent events={calendarEvents} />
       </div>
       <div className="page-title-container">
         <PageTitle title="up coming events" />
-        <p className="text-text-label dark:text-darkText-1 text-sm md:text-base font-medium">
-          25TH - 28TH JAN 2024
-        </p>
+        <Link
+          href={"/reports/calendar-event"}
+          className="text-text-label dark:text-darkText-1 text-sm md:text-base font-medium flex gap-2 items-center"
+        >
+          See all{" "}
+          <span>
+            {" "}
+            <ChevronRight />{" "}
+          </span>
+        </Link>
       </div>
-      <CustomTable
-        fields={CalendarTableFields}
-        data={eventTable?.table || []}
-        tableHeadClassName="h-[45px]"
-        tableBodyCellSx={{
-          textTransform: "capitalize",
-        }}
-      />
-      <Pagination
+      <div className="scroll-m-8" id="event">
+        <CustomTable
+          fields={CalendarTableFields}
+          data={eventTable?.table.slice(0, 10) || []}
+          tableHeadClassName="h-[45px]"
+          tableBodyCellSx={{
+            textTransform: "capitalize",
+          }}
+        />
+      </div>
+      {/* <Pagination
         totalPages={eventTable?.total_pages || 0}
         currentPage={eventTable?.current_page || 0}
         onPageChange={handlePageChange}
-      />
+      /> */}
     </div>
   );
 };

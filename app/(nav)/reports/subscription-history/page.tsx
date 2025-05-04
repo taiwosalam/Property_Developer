@@ -39,9 +39,9 @@ const SubscriptionRecord = () => {
   return (
     <div className="space-y-9">
       <FilterBar
-        azFilter
         exports
         isDateTrue
+        backUrl={`/settings/subscription/#table`}
         pageTitle="Subscription History"
         aboutPageModalData={{
           title: "Subscription History",
@@ -51,7 +51,7 @@ const SubscriptionRecord = () => {
         searchInputPlaceholder="Search for audit trail"
         handleFilterApply={() => {}}
         //={() => {}}
-        onSort={() => {}}
+
         handleSearch={() => {}}
         //filterOptionsMenu={() => {}}
         hasGridListToggle={false}
