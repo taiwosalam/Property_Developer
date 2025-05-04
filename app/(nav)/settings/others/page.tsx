@@ -332,7 +332,11 @@ const Others = () => {
       const response = await updateResetSettings(payload);
       // reset the settings options when request is made
       setResetOptions([]);
-      if (response && resetOptions.includes("resetAll")) {
+      if (
+        response &&
+        (resetOptions.includes("resetAll") ||
+          resetOptions.includes("appearance"))
+      ) {
         localStorage.removeItem("authToken");
         sessionStorage.clear();
         await logout();
@@ -449,6 +453,8 @@ const Others = () => {
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
 
+  console.log(apiData);
+
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
@@ -520,7 +526,6 @@ const Others = () => {
     if (!tier || tier === 0) return undefined;
     return staffTierColorMap[tier as keyof typeof staffTierColorMap] || "blue";
   };
-
 
   useEffect(() => {
     if (apiData) {

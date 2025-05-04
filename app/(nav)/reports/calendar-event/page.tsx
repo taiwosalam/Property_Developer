@@ -29,29 +29,29 @@ import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
-import { FeatureFields, SponsorFields } from "../../settings/add-on/data";
+import { DomainFields, SponsorFields } from "../../settings/add-on/data";
 
-const AddsOnFeatureRecord = () => {
+const CalendarEventRecord = () => {
   return (
     <div className="space-y-9">
       <FilterBar
         azFilter
         exports
         isDateTrue
-        backUrl={"/settings/add-on/#feature"}
-        pageTitle="Adds-On Feature"
+        backUrl={"/tasks/calendars/#event"}
+        pageTitle="Calendar Events"
         aboutPageModalData={{
-          title: "Adds-On Feature",
-          description: "This page contains a list of listing sponsor history",
+          title: "Calendar Events",
+          description: "This page contains all calendar events",
         }}
-        searchInputPlaceholder="Search for audit trail"
+        searchInputPlaceholder="Search for calendar events"
         handleFilterApply={() => {}}
         //={() => {}}
         onSort={() => {}}
         handleSearch={() => {}}
         //filterOptionsMenu={() => {}}
         hasGridListToggle={false}
-        exportHref="/reports/adds-on-feature/export"
+        exportHref="/reports/calendar-event/export"
         // xlsxData={pageData.map((activity) => ({
         //   ...activity,
         //   location: address?.formattedAddress
@@ -62,7 +62,7 @@ const AddsOnFeatureRecord = () => {
       />
       <section>
         <CustomTable
-          fields={FeatureFields}
+          fields={DomainFields}
           data={[]}
           tableHeadClassName="h-[45px]"
         />
@@ -71,4 +71,4 @@ const AddsOnFeatureRecord = () => {
   );
 };
 
-export default AddsOnFeatureRecord;
+export default CalendarEventRecord;

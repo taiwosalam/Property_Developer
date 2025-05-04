@@ -106,7 +106,7 @@ const PersonalizedDomain = () => {
 
   return (
     <SettingsSection title="Personalized Domain">
-      <div className="custom-flex-col gap-8">
+      <div className="custom-flex-col gap-8 scroll-m-8">
         <div className="custom-flex-col gap-6">
           <SettingsSectionTitle desc="A personalized domain is used for forwarding one URL to another, especially if your company has a website and you want this current landing page to have the same URL as your company website. You can create a sub-domain under your website for this landing page or purchase your preferred domain name and redirect this domain to it." />
           <div className="custom-flex-col gap-10">
@@ -232,7 +232,7 @@ const PersonalizedDomain = () => {
           </div>
         </div>
         {/* <SettingsUpdateButton text="add domain" type="add domain" /> */}
-        <div className="custom-flex-col gap-4">
+        <div className="custom-flex-col gap-4 scroll-m-8" id="domain">
           <div className="flex justify-between">
             <h2 className="text-text-primary dark:text-white text-lg font-medium">
               Enrollment History

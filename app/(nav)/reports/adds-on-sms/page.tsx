@@ -38,6 +38,7 @@ const AddsOnSMSRecord = () => {
         azFilter
         exports
         isDateTrue
+        backUrl={"/settings/add-on/#sms"}
         pageTitle="Adds-On SMS"
         aboutPageModalData={{
           title: "Adds-On SMS",

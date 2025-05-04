@@ -8,4 +8,5 @@ export interface PageTitleProps {
     readingLink?: string;
   };
   noExclamationMark?: boolean;
+  backUrl?: string;
 }

@@ -100,7 +100,7 @@ export const SMSUnit = () => {
         {/* <SettingsUpdateButton text="purchase unit" type="purchase unit" /> */}
 
         <div className="custom-flex-col gap-4">
-          <div className="flex justify-between">
+          <div className="flex justify-between scroll-m-8" id="sms">
             <h2 className="text-text-primary text-lg dark:text-white font-medium">
               SMS Transaction History
             </h2>
@@ -281,7 +281,7 @@ export const FeatureCompany = () => {
         </div>
         {/* <SettingsUpdateButton text="feature now" type="feature" /> */}
 
-        <div className="custom-flex-col gap-4">
+        <div className="custom-flex-col gap-4 scroll-m-8" id="feature">
           <div className="flex justify-between">
             <h2 className="text-text-primary dark:text-white text-lg font-medium">
               Enrollment History

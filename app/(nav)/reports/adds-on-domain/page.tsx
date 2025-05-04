@@ -38,6 +38,7 @@ const AddsOnDomainRecord = () => {
         azFilter
         exports
         isDateTrue
+        backUrl={"/settings/add-on/#domain"}
         pageTitle="Adds-On Domain"
         aboutPageModalData={{
           title: "Adds-On Domain",

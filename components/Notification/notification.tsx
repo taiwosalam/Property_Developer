@@ -31,6 +31,7 @@ interface NotificationProps {
     from_id: number | null;
     sender_name: string;
     sender_picture: string;
+    action_text: string;
   };
 }
 const Notification: React.FC<NotificationProps> = ({ notification }) => {
@@ -82,8 +83,9 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
                 <div className="flex items-center gap-2">
                   <p className="text-text-secondary text-sm font-medium capitalize">
                     {notification.sender_name &&
-                      notification?.sender_name !== "System" &&
-                      notification.sender_name}
+                    notification.sender_name !== "System"
+                      ? notification.action_text
+                      : null}
                   </p>
                   {/* {notification.sender_name &&
                     notification?.sender_name !== "System" && (
@@ -93,14 +95,13 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
                 {/*<p className="text-text-tertiary text-sm font-medium">
                   You just got 4 new messages sent by @username
                 </p> */}
-                {notification?.message}
+                <p className="capitalize"> {notification?.message}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
       <SectionSeparator />
-      
     </div>
   );
 };

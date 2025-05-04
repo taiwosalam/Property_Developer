@@ -30,7 +30,7 @@ const Notifications = () => {
   } = useFetch<NotificationApiResponse>(`/notifications`);
   useRefetchOnEvent("refetchNotifications", () => refetch({ silent: true }));
 
-  console.log(notifications?.notifications.length, "From the abyss");
+  console.log(apiData);
 
   useEffect(() => {
     if (apiData) {

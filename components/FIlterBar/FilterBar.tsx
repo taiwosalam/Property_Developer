@@ -69,6 +69,7 @@ interface FilterBarProps extends FilterModalProps {
   restOfContentRef?: React.RefObject<HTMLDivElement>;
   xlsxData?: any;
   fileLabel?: string;
+  backUrl?: string;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({
@@ -103,6 +104,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
   printRef,
   xlsxData,
   fileLabel,
+  backUrl
+
 }) => {
   return (
     <div className="page-title-container w-full">
@@ -114,6 +117,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             title={pageTitle}
             aboutPageModalData={aboutPageModalData}
             noExclamationMark={noExclamationMark}
+            backUrl={backUrl}
           />
         )
       )}

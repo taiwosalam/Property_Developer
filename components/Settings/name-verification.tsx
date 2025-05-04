@@ -101,7 +101,7 @@ export const NameVerification = ({ fullName, setFullName, setCloseVerification }
               <div className="p-[18px] rounded-2xl bg-neutral-2">
                 <div className="flex gap-3">
                   <div className="flex items-center gap-1">
-                    <p className="font-bold text-lg text-black">{fullName}</p>
+                    <p className="font-bold text-lg text-black capitalize">{fullName}</p>
                     <BadgeIcon color={"gray"} />
                   </div>
                 </div>

@@ -38,6 +38,7 @@ const AddsOnSponsorRecord = () => {
         azFilter
         exports
         isDateTrue
+        backUrl={"/settings/add-on/#listing"}
         pageTitle="Adds-On Sponsor"
         aboutPageModalData={{
           title: "Adds-On Sponsor",
