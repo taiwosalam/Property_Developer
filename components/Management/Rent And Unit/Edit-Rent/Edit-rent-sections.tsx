@@ -35,6 +35,7 @@ import {
 import { getBalanceBreakdown } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
 import { useGlobalStore } from "@/store/general-store";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
+import { parseAmount } from "./data";
 
 export const RentDetails: React.FC<{
   isRental: boolean;
@@ -234,7 +235,6 @@ export const EditCurrentRent: React.FC<{
             />
             <Input
               id="amount_paid"
-              placeholder="300,000"
               label="Renewal Fee"
               inputClassName="bg-white"
               value={formatNumber(total)}
@@ -319,12 +319,14 @@ export const AddPartPayment: React.FC<{
   isRental?: boolean;
   loading?: boolean;
   noBtn?: boolean;
+  isCompletePayment?: boolean;
   setAmt?: (amount: string) => void;
   setStart_Date?: (date: string | null) => void;
   currency?: Currency;
   setIsUpfrontPaymentChecked?: (checked: boolean) => void;
   isUpfrontPaymentChecked?: boolean;
   setSelectedCheckboxOptions?: (options: Record<string, boolean>) => void;
+  prevAmt?: string;
 }> = ({
   action,
   isRental,
@@ -336,6 +338,8 @@ export const AddPartPayment: React.FC<{
   setIsUpfrontPaymentChecked,
   isUpfrontPaymentChecked,
   setSelectedCheckboxOptions,
+  isCompletePayment,
+  prevAmt,
 }) => {
   const { occupant } = useOccupantStore();
 
@@ -428,23 +432,28 @@ export const AddPartPayment: React.FC<{
     <div>
       <div className="flex gap-1 flex-col">
         <div className="flex gap-2">
-          <RentSectionTitle>Part Payment</RentSectionTitle>
-          <Checkbox
-            // disabled={isUpfrontPaymentChecked}
-            radio
-            checked={!isUpfrontPaymentChecked}
-            onChange={() =>
-              setIsUpfrontPaymentChecked && setIsUpfrontPaymentChecked(false)
-            }
-          />
+          <RentSectionTitle>
+            {isCompletePayment ? "Finish Payment" : "Part Payment"}
+          </RentSectionTitle>
+          {!isCompletePayment && (
+            <Checkbox
+              // disabled={isUpfrontPaymentChecked}
+              radio
+              checked={!isUpfrontPaymentChecked}
+              onChange={() =>
+                setIsUpfrontPaymentChecked && setIsUpfrontPaymentChecked(false)
+              }
+            />
+          )}
         </div>
         <p>
-          Select this option if the client wishes to make a partial advance
-          payment of the total amount.
+          {isCompletePayment
+            ? "Click Update to settle the remaining balance following the initial partial payment."
+            : "Select this option if the client wishes to make a partial advance payment of the total amount."}
         </p>
       </div>
       <SectionSeparator className="mt-4 mb-6" />
-      {!isUpfrontPaymentChecked && (
+      {(!isUpfrontPaymentChecked || isCompletePayment) && (
         <>
           <div className="grid md:grid-cols-2 gap-4 mb-6">
             <Input
@@ -452,9 +461,11 @@ export const AddPartPayment: React.FC<{
               placeholder=""
               label="Amount"
               formatNumber
+              readOnly={isCompletePayment}
               onChange={handleAmount}
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
+              defaultValue={prevAmt ?? ""}
             />
             <DateInput
               id="date"
@@ -924,7 +935,7 @@ export const PayAble: React.FC<PayAbleProps> = ({
       : isExcess
       ? subtitles.excess
       : subtitles.refund;
-      
+
   return (
     <div className="space-y-1">
       <RentSectionTitle>Payment Status</RentSectionTitle>
@@ -935,6 +946,55 @@ export const PayAble: React.FC<PayAbleProps> = ({
           {CURRENCY}
           {formatNumber(Math.abs(detail.amount))}
         </p>
+      </div>
+    </div>
+  );
+};
+
+export const CompletePartPayment: React.FC<{
+  total: number;
+  feeDetails: FeeDetail[];
+  setIsCompletePayment?: (checked: boolean) => void;
+}> = ({ total, feeDetails, setIsCompletePayment }) => {
+  const CURRENCY = currencySymbols["naira"];
+  // Filter out fee details with invalid amounts
+  const validFeeDetails = feeDetails.filter((fee) => {
+    const parsedAmount = parseAmount(fee.amount);
+    return parsedAmount > 0;
+  });
+
+  return (
+    <div className="space-y-1">
+      <RentSectionTitle>Complete Part Payment</RentSectionTitle>
+      <div className="mt-4 bg-white p-4 rounded-md">
+        <div className="grid grid-cols-2">
+          {validFeeDetails.map((fee, index) => (
+            <DetailItem
+              key={index}
+              style={{ width: "120px" }}
+              label={fee.name}
+              value={`${fee?.amount}`}
+            />
+          ))}
+        </div>
+
+        {/* <p className="text-md font-semibold mt-3 text-text-secondary">Total</p>
+        <p className="text-lg lg:text-xl text-brand-9 font-bold">
+          {total
+            ? `${CURRENCY}${formatNumber(parseFloat(total.toString()))}`
+            : `${CURRENCY}0`}
+        </p> */}
+
+        <div className="flex items-end justify-end w-full mt-2">
+          <Button
+            onClick={() => setIsCompletePayment && setIsCompletePayment(true)}
+            type="submit"
+            className="py-2 px-6"
+            size="base_medium"
+          >
+            Pay Balance
+          </Button>
+        </div>
       </div>
     </div>
   );

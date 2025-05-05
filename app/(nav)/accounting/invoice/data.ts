@@ -63,6 +63,7 @@ export const invoiceTableFields: Field[] = [
     },
   },
   { id: "5", label: "Total Amount", accessor: "total_amount" },
+  { id: "5", label: "Status", accessor: "status" },
   { id: "6", label: "Date", accessor: "date" },
   { id: "7", accessor: "action" },
 ];

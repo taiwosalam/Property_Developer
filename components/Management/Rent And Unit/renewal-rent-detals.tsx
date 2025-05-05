@@ -159,7 +159,7 @@ export const RenewalFee: React.FC<{
             currency={currency}
             noEdit={noEdit}
           />
-          {showCalculation && (
+          {/* {showCalculation && (
             <div className="space-y-2">
               <p className="text-[#747474] dark:text-white text-base font-normal">
                 Net Owing Calculation
@@ -177,13 +177,14 @@ export const RenewalFee: React.FC<{
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>
   );
 };
 
+// =============== OWING FEE COMPONENT ===============
 export const OwingFee: React.FC<{
   isRental: boolean;
   feeDetails: FeeDetail[];
@@ -194,6 +195,7 @@ export const OwingFee: React.FC<{
   currency: Currency;
   isUpfrontPaymentChecked?: boolean;
   outstandingBalance?: number;
+  noCalculation?: boolean;
   calculation?: boolean;
   deduction?: boolean;
 }> = ({
@@ -208,6 +210,7 @@ export const OwingFee: React.FC<{
   outstandingBalance = 0,
   calculation = false,
   deduction = false,
+  noCalculation,
 }) => {
   const [owingAmount, setOwingAmount] = useState<number>(0);
   const [overduePeriods, setOverduePeriods] = useState<number>(0);
@@ -276,27 +279,30 @@ export const OwingFee: React.FC<{
         total_package={updatedTotalPackage}
         id={id}
       />
-      <div className="space-y-2">
-        <p className="text-[#747474] dark:text-white text-base font-normal">
-          Net Owing Calculation
-        </p>
+      {!noCalculation && (
         <div className="space-y-2">
-          {netOwingBreakdown.map((item, index) => (
-            <div key={index} className="flex items-start">
-              <p className="text-[#747474] dark:text-white w-[150px] capitalize">
-                {item.label}
-              </p>
-              <p className="text-black dark:text-darkText-2 capitalize">
-                {item.value}
-              </p>
-            </div>
-          ))}
+          <p className="text-[#747474] dark:text-white text-base font-normal">
+            Net Owing Calculation
+          </p>
+          <div className="space-y-2">
+            {netOwingBreakdown.map((item, index) => (
+              <div key={index} className="flex items-start">
+                <p className="text-[#747474] dark:text-white w-[150px] capitalize">
+                  {item.label}
+                </p>
+                <p className="text-black dark:text-darkText-2 capitalize">
+                  {item.value}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
 
+// ================== RENEWAL RENT COMPONENT ===============
 export const RenewalRent: React.FC<{
   isRental: boolean;
   rentPeriod: RentPeriod;

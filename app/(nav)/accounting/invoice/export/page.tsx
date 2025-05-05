@@ -21,6 +21,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
+import dayjs from "dayjs";
 
 const ExportInvoice = () => {
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
@@ -67,21 +68,12 @@ const ExportInvoice = () => {
         <BackButton as="p">Back</BackButton>
         <div ref={printRef}>
           <ExportPageHeader />
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex mt-4">
-            <KeyValueList
-              data={{}}
-              chunkSize={1}
-              direction="column"
-              referenceObject={{
-                "Summary ID": "",
-                "Start Date": "",
-                "End Date": "",
-              }}
-            />
-          </div>
           <div className="custom-flex-col gap-6">
             <h1 className="text-black my-4 dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
-              Invoice Summary
+              Invoice Summary -{" "}
+              <span className="px-2">{`(${dayjs().format(
+                "Do MMMM YYYY"
+              )})`}</span>
             </h1>
             <AutoResizingGrid gap={24} minWidth={350}>
               <AccountStatsCard

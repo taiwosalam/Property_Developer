@@ -38,12 +38,13 @@ const Signature = () => {
             key={sig.id}
             className="custom-flex-col gap-2 text-text-quaternary dark:text-darkText-1 text-base font-medium"
           >
-            <div className="flex">
+            <div className="flex h-[50px] w-[50px]">
               <Image
                 src={sig.signature}
                 alt="signature"
-                height={60}
-                width={150} // Adjust width as needed
+                height={200}
+                width={200} 
+                className="h-full w-full object-contain"
               />
             </div>
             <p className="py-3 mt-2">

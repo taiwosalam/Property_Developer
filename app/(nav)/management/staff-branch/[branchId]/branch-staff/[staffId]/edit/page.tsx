@@ -30,6 +30,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import { deleteStaff } from "./data";
 import { useRouter } from "next/navigation";
 import ServerError from "@/components/Error/ServerError";
+import SettingsBank from "@/components/Settings/settings-bank";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();

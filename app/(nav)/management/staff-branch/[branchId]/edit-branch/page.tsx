@@ -20,6 +20,7 @@ import type { SingleBranchResponseType } from "../types";
 import { transformSingleBranchAPIResponseToEditBranchFormDetails } from "../data";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import SettingsBank from "@/components/Settings/settings-bank";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -33,9 +34,9 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
   useRefetchOnEvent("refectch-branch", () => refetch({ silent: true }));
 
   const branchData = data
-  ? transformSingleBranchAPIResponseToEditBranchFormDetails(data)
-  : null;
-  
+    ? transformSingleBranchAPIResponseToEditBranchFormDetails(data)
+    : null;
+
   if (loading) return <PageCircleLoader />;
 
   if (error) return <div>{error}</div>;
@@ -86,6 +87,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
           somedata={branchData}
           setUpdateRequestLoading={setUpdateRequestLoading}
         />
+        <SettingsBank branch />
       </div>
       <FixedFooter className="flex justify-between items-center flex-wrap">
         <Modal>
@@ -100,7 +102,10 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <DeleteBranchModal branchId={branchId} hasMoney={branchData?.hasMoney} />
+            <DeleteBranchModal
+              branchId={branchId}
+              hasMoney={branchData?.hasMoney}
+            />
           </ModalContent>
         </Modal>
         <Button

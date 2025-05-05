@@ -17,6 +17,7 @@ export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
     details: data.details || "",
     total_amount: Number(data.total_amount) || "",
     invoice_date: data.invoice_date || "",
+    is_auto: data.is_auto === "true" || data.is_auto === true,
   };
 };
 
@@ -36,4 +37,5 @@ export const defaultInvoiceData: InvoicePageData = {
   details: "",
   total_amount: "",
   invoice_date: "",
+  is_auto: false,
 };

@@ -1,7 +1,6 @@
 import api, { handleAxiosError } from "@/services/api";
 import dayjs, { Dayjs } from "dayjs";
 
-
 // Raw API response interfaces
 export interface ManageExpenseApiResponse {
   status: string;
@@ -60,7 +59,6 @@ export interface ManageExpensePageData {
   deductions: DeductedPayment[];
 }
 
-
 // Remove HTML tags from a string
 export const formatHtmlDescription = (html: string): string =>
   html.replace(/<\/?[^>]+(>|$)/g, "").trim();
@@ -72,8 +70,6 @@ export function parseCurrency(value: any): number {
   const parsed = parseFloat(cleanValue);
   return isNaN(parsed) ? 0 : parsed;
 }
-
-
 
 export const transformManageExpenseData = (
   apiResponse: ManageExpenseApiResponse
@@ -103,15 +99,14 @@ export const transformManageExpenseData = (
     },
     deductions: data.deducted_payments
       ? data.deducted_payments.map((ded) => ({
-        date: dayjs(ded.date) as Dayjs,
-        amount: ded.amount,
-        // date: dayjs(ded.date).format("MMM DD YYYY"),
-        // amount: parseFloat(ded.amount.replace(/,/g, "")),
-      }))
+          date: dayjs(ded.date) as Dayjs,
+          amount: ded.amount,
+          // date: dayjs(ded.date).format("MMM DD YYYY"),
+          // amount: parseFloat(ded.amount.replace(/,/g, "")),
+        }))
       : [],
   };
 };
-
 
 // /expenses/1/deduct
 export const deductPayment = async (data: any, id: number) => {
@@ -121,10 +116,10 @@ export const deductPayment = async (data: any, id: number) => {
       return true;
     }
   } catch (error) {
-    handleAxiosError(error)
+    handleAxiosError(error);
     return false;
   }
-}
+};
 
 // /expenses/1/payments
 export const addPayment = async (data: any, id: number) => {
@@ -134,7 +129,19 @@ export const addPayment = async (data: any, id: number) => {
       return true;
     }
   } catch (error) {
-    handleAxiosError(error)
+    handleAxiosError(error);
     return false;
   }
-}
+};
+
+export const deleteExpense = async (id: number) => {
+  try {
+    const res = await api.delete(`/expenses/${id}`);
+    if (res.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};

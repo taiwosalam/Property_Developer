@@ -23,6 +23,8 @@ interface SignatureModalProps {
 // Extend the existing props interface to include onEnd
 interface ExtendedSignatureCanvasProps extends ReactSignatureCanvasProps {
   onEnd?: () => void;
+  penColor?: string;
+  ref: React.RefObject<SignaturePad>;
 }
 
 const SignatureModal: React.FC<SignatureModalProps> = ({
@@ -134,9 +136,13 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
     }
   };
 
+  // Explicitly type the SignaturePad component to use the extended props
+  const TypedSignaturePad =
+    (SignaturePad as unknown) as React.ComponentType<ExtendedSignatureCanvasProps>;
+
   return activeStep === 1 ? (
     <LandlordTenantModalPreset
-      style={{ width: "100%", height: "70vh" }}
+      style={{ width: "100%", height: "fit" }}
       heading="Draw your signature"
     >
       <div className="flex flex-col justify-between h-full">
@@ -144,9 +150,10 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
           Use your mouse, trackpad, touchscreen, or pen to sign directly in the
           designated area.
         </p>
-        <SignaturePad
+        <TypedSignaturePad
           ref={sigPadRef}
           canvasProps={{ className: "w-full h-[38vh] light-shadow" }}
+          penColor="blue"
           // onEnd={handleEnd}
         />
         <div className="w-full flex justify-between mt-5">

@@ -8,25 +8,33 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import BackButton from "@/components/BackButton/back-button";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ManageExpenseApiResponse, ManageExpensePageData, transformManageExpenseData } from "../manage-expenses/data";
+import {
+  ManageExpenseApiResponse,
+  ManageExpensePageData,
+  transformManageExpenseData,
+} from "../manage-expenses/data";
 import { Dayjs } from "dayjs";
 import useFetch from "@/hooks/useFetch";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { format } from "date-fns";
 import ExportPageFooter from "@/components/reports/export-page-footer";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
 
 const PreviewExpenses = () => {
-  const { expenseId } = useParams()
+  const { expenseId } = useParams();
   const exportRef = useRef<HTMLDivElement>(null);
   const [pageData, setPageData] = useState<ManageExpensePageData | null>(null);
-  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(pageData?.payments || []);
-  const [deductions, setDeductions] = useState<{ date: Dayjs; amount: number }[]>(pageData?.deductions || []);
-  const {
-    data,
-    error,
-    loading,
-    refetch
-  } = useFetch<ManageExpenseApiResponse>(`/expenses/${expenseId}`);
+  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
+    pageData?.payments || []
+  );
+  const [deductions, setDeductions] = useState<
+    { date: Dayjs; amount: number }[]
+  >(pageData?.deductions || []);
+  const { data, error, loading, refetch, isNetworkError } = useFetch<ManageExpenseApiResponse>(
+    `/expenses/${expenseId}`
+  );
 
   useEffect(() => {
     if (data) {
@@ -47,6 +55,14 @@ const PreviewExpenses = () => {
     }
   }, [pageData]);
 
+  if (loading)
+    return (
+      <div className="custom-flex-col gap-2">
+        <CardsLoading length={5} />
+      </div>
+    );
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10 pb-28">
@@ -58,19 +74,19 @@ const PreviewExpenses = () => {
             <KeyValueList
               data={{
                 "Expenses id": pageData?.expenseDetails.paymentId,
-                "account officer": pageData?.expenseDetails.customerName,
+                // "account officer": pageData?.expenseDetails.customerName,
                 "property name": pageData?.expenseDetails.propertyName,
                 date: pageData?.expenseDetails.date,
                 "unit names": pageData?.expenseDetails.unitId,
               }}
-              chunkSize={2}
+              chunkSize={1}
               direction="column"
               referenceObject={{
                 "Expenses id": "",
-                "Customer name": "",
+                // "Customer name": "",
                 "property name": "",
                 date: "",
-                "account officer": "",
+                // "account officer": "",
                 "unit names": "",
               }}
             />
