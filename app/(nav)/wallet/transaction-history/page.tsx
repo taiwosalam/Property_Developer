@@ -162,6 +162,7 @@ const TransactionHistory = () => {
     ),
     ref: index === state.transactions.length - 1 ? lastRowRef : null,
   }));
+ 
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
@@ -193,7 +194,6 @@ const TransactionHistory = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <BackButton>Transaction History</BackButton>
       <FilterBar
         pageTitle="Transaction History"
         hasGridListToggle={false}
@@ -206,6 +206,7 @@ const TransactionHistory = () => {
         appliedFilters={appliedFilters}
         fileLabel={"Wallet Transactions"}
         xlsxData={filteredTransactions}
+        backUrl="/wallet"
       />
 
       {loading ? (

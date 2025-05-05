@@ -57,7 +57,7 @@ const Withdrawal: React.FC<
   });
   const securityText = branch
     ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system."
-    : "Each withdrawal incurs a fee of 1.5% of the withdrawal amount. We collaborate with a trusted third-party provider to facilitate wallet withdrawals to any pre-registered Nigerian bank account.";
+    : "Each withdrawal incurs a fee of the withdrawal amount. We collaborate with a trusted third-party provider to facilitate wallet withdrawals to any pre-registered Nigerian bank account.";
 
   const {
     data: bankData,
@@ -168,7 +168,7 @@ const Withdrawal: React.FC<
               id="amount"
               label="amount"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-              value={amount.toLocaleString()}
+              value={amount ? amount.toLocaleString() : ''}
               max={10000000}
               style={{ backgroundColor: isDarkMode ? "black" : "white" }}
               required
