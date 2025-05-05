@@ -78,7 +78,7 @@ const Exportexpense = () => {
       <div ref={exportRef} className="space-y-9">
         <div className="custom-flex-col gap-[18px]">
           <ExportPageHeader />
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
+          {/* <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex">
             <KeyValueList
               data={{}}
               chunkSize={1}
@@ -89,7 +89,7 @@ const Exportexpense = () => {
                 "End Date": "",
               }}
             />
-          </div>
+          </div> */}
         </div>
         <div className="custom-flex-col gap-6">
           <h1 className="text-black dark:text-white text-2xl font-medium text-center">

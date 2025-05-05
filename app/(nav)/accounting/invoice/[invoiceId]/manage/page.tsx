@@ -60,7 +60,7 @@ const ManageInvoice = () => {
               "property name": pageData.property_name,
               "unit name": pageData.unit_name,
               date: pageData.invoice_date,
-              "account officer": pageData.account_officer,
+              status: "--- ---",
               "unit id": pageData.unit_id,
             }}
             chunkSize={2}
@@ -70,7 +70,8 @@ const ManageInvoice = () => {
               "unit name": "",
               "property name": "",
               date: "",
-              "account officer": "",
+              // "account officer": "",
+              status: "",
               "unit id": "",
             }}
           />
@@ -137,20 +138,43 @@ const ManageInvoice = () => {
         </AccountingTitleSection>
       </div>
       <FixedFooter className="flex items-center justify-between gap-4">
-        <Modal>
-          <ModalTrigger asChild>
-            <Button variant="light_red" size="base_bold" className="py-2 px-8">
-              delete invoice
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <DeleteInvoiceModal />
-          </ModalContent>
-        </Modal>
+        {!pageData.is_auto && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button
+                variant="light_red"
+                size="base_bold"
+                className="py-2 px-8"
+              >
+                delete invoice
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <DeleteInvoiceModal />
+            </ModalContent>
+          </Modal>
+        )}
 
-        <Button size="base_bold" className="py-2 px-8">
-          save
-        </Button>
+        <div className="flex items-center gap-2 items-end justify-end">
+          {pageData.is_auto ? (
+            <Button size="base_bold" className="py-2 px-8">
+              Back
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="light_green"
+                size="base_bold"
+                className="py-2 px-8"
+              >
+                Paid
+              </Button>
+              <Button size="base_bold" className="py-2 px-8">
+                save
+              </Button>
+            </>
+          )}
+        </div>
       </FixedFooter>
     </div>
   );

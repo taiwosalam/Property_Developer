@@ -9,30 +9,40 @@ import BackButton from "@/components/BackButton/back-button";
 import { useParams, useRouter } from "next/navigation";
 import Signature from "@/components/Signature/signature";
 import ExportPageFooter from "@/components/reports/export-page-footer";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InvoicePageData, InvoiceResponse } from "../manage/types";
 import useFetch from "@/hooks/useFetch";
 import { defaultInvoiceData, transformInvoiceData } from "../manage/data";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { formatNumber } from "@/utils/number-formatter";
-import { BankAPIResponse, BankPageData, transformBank } from "@/app/(nav)/settings/data";
+import {
+  BankAPIResponse,
+  BankPageData,
+  transformBank,
+} from "@/app/(nav)/settings/data";
 import { useCompanyBankDetails } from "@/hooks/useCompanyBankDetails";
 
 const PreviewExpenses = () => {
   const router = useRouter();
   const { invoiceId } = useParams();
   const [pageData, setPageData] = useState<InvoicePageData>(defaultInvoiceData);
-  const { companyBankDetails, error: bankError, loading: bankLoading } = useCompanyBankDetails();
+  const {
+    companyBankDetails,
+    error: bankError,
+    loading: bankLoading,
+  } = useCompanyBankDetails();
   const { data, error, loading, isNetworkError } = useFetch<InvoiceResponse>(
     `/invoice/${invoiceId}`
   );
-console.log("bank ", companyBankDetails)
+  console.log("bank ", companyBankDetails);
   useEffect(() => {
     if (data) {
       setPageData(transformInvoiceData(data.data));
     }
   }, [data]);
+
+  const printRef = useRef<HTMLDivElement>(null);
 
   if (loading) return <PageCircleLoader />;
   if (error) return <div>Error loading invoice data.</div>;
@@ -42,94 +52,102 @@ console.log("bank ", companyBankDetails)
     <div className="custom-flex-col gap-10 pb-28">
       <div className="custom-flex-col gap-[18px]">
         <BackButton as="p">Back</BackButton>
-        <ExportPageHeader />
-        <h1 className="text-center my-7 font-medium text-2xl">Invoice</h1>
-        <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
-          <KeyValueList
-            data={{
-              "invoice id": pageData.invoice_id,
-              "property name": pageData.property_name,
-              "Client name": pageData.client_name,
-              date: pageData.invoice_date,
-              "account officer": pageData.account_officer,
-              "unit id": pageData.unit_id,
-            }}
-            chunkSize={2}
-            direction="column"
-            referenceObject={{
-              "invoice id": "",
-              "Client name": "",
-              "property name": "",
-              date: "",
-              "account officer": "",
-              "unit id": "",
-            }}
-          />
+        <div ref={printRef}>
+          <ExportPageHeader />
+          <h1 className="text-center my-7 font-medium text-2xl">Invoice</h1>
+          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+            <KeyValueList
+              data={{
+                "invoice id": pageData.invoice_id,
+                "property name": pageData.property_name,
+                "Client name": pageData.client_name,
+                date: pageData.invoice_date,
+                "account officer": pageData.account_officer,
+                "unit id": pageData.unit_id,
+                "invoice type": "--- ---",
+                status: "--- ---",
+              }}
+              chunkSize={2}
+              direction="column"
+              referenceObject={{
+                "invoice id": "",
+                "Client name": "",
+                "property name": "",
+                date: "",
+                "account officer": "",
+                "unit id": "",
+                "invoice type": "",
+                status: "",
+              }}
+            />
+          </div>
+          <AccountingTitleSection title="Details">
+            <p className="font-normal text-[14px] text-[#6C6D6D] capitalize">
+              {pageData.details} Payment for {pageData.unit_name}
+            </p>
+            <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
+              <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+                <KeyValueList
+                  data={{
+                    "Annual fee": formatNumber(pageData.annual_fee),
+                    "non refundable agency fee": formatNumber(
+                      pageData.agency_fee
+                    ),
+                    "service charge": formatNumber(pageData.service_charge),
+                    "refundable caution fee": formatNumber(
+                      pageData.caution_fee
+                    ),
+                    "non refundable legal fee": "",
+                  }}
+                  chunkSize={2}
+                  direction="column"
+                  referenceObject={{
+                    "Annual fee": "",
+                    "non refundable agency fee": "",
+                    "service charge": "",
+                    "non refundable legal fee": "",
+                    "refundable caution fee": "",
+                  }}
+                />
+              </div>
+              <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
+              <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
+                <p className="text-[#747474]">total package</p>
+                <p className="text-brand-primary text-xl font-bold">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  })
+                    .format(Number(pageData.total_package))
+                    .split(".")}
+                </p>
+              </div>
+            </div>
+          </AccountingTitleSection>
+          <AccountingTitleSection title="Account Details">
+            <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
+              <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+                <KeyValueList
+                  data={{
+                    "account name": companyBankDetails.account_name,
+                    "account number": companyBankDetails.account_number,
+                    "bank name": companyBankDetails.bank_name,
+                  }}
+                  chunkSize={1}
+                  direction="column"
+                  referenceObject={{
+                    "account number": "",
+                    "account name": "",
+                    "bank name": "",
+                  }}
+                />
+              </div>
+            </div>
+            <Signature />
+          </AccountingTitleSection>
         </div>
-        <AccountingTitleSection title="Details">
-          <p className="font-normal text-[14px] text-[#6C6D6D] capitalize">
-            { pageData.details } Payment for { pageData.unit_name }
-          </p>
-          <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
-            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
-              <KeyValueList
-                data={{
-                  "Annual fee": formatNumber(pageData.annual_fee),
-                  "non refundable agency fee": formatNumber(
-                    pageData.agency_fee
-                  ),
-                  "service charge": formatNumber(pageData.service_charge),
-                  "refundable caution fee": formatNumber(pageData.caution_fee),
-                  "non refundable legal fee": "",
-                }}
-                chunkSize={2}
-                direction="column"
-                referenceObject={{
-                  "Annual fee": "",
-                  "non refundable agency fee": "",
-                  "service charge": "",
-                  "non refundable legal fee": "",
-                  "refundable caution fee": "",
-                }}
-              />
-            </div>
-            <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
-            <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
-              <p className="text-[#747474]">total package</p>
-              <p className="text-brand-primary text-xl font-bold">
-                {new Intl.NumberFormat("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                })
-                  .format(Number(pageData.total_package))
-                  .split(".")}
-              </p>
-            </div>
-          </div>
-        </AccountingTitleSection>
-        <AccountingTitleSection title="Account Details">
-          <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
-            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
-              <KeyValueList
-                data={{
-                  "account name": companyBankDetails.account_name,
-                  "account number": companyBankDetails.account_number,
-                  "bank name": companyBankDetails.bank_name
-                }}
-                chunkSize={1}
-                direction="column"
-                referenceObject={{
-                  "account number": "",
-                  "account name": "",
-                  "bank name": "",
-                }}
-              />
-            </div>
-          </div>
-          <Signature />
-        </AccountingTitleSection>
+        <ExportPageFooter printRef={printRef} />
       </div>
-      <ExportPageFooter />
     </div>
   );
 };

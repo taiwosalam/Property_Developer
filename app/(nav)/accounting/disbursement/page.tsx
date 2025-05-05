@@ -163,7 +163,7 @@ const Disbursement = () => {
       </div>
       <div className="custom-flex-col gap-4">
         <FilterBar
-          azFilter
+          // azFilter
           searchInputPlaceholder="Search for disbursement"
           handleFilterApply={handleFilterApply}
           isDateTrue
@@ -192,7 +192,7 @@ const Disbursement = () => {
                 ]
               : []),
           ]}
-          onSort={handleSort}
+          // onSort={handleSort}
           handleSearch={handleSearch}
           appliedFilters={appliedFilters}
         />
@@ -207,8 +207,9 @@ const Disbursement = () => {
                 title="You do not have any disbursements yet"
                 body={
                   <p>
-                    Create a new disbursement by clicking on the &apos;+ new
-                    disbursement&apos; button.
+                    Create a new disbursement by clicking on the &apos; new
+                    disbursement&apos; button. It keeps a record of all amounts
+                    given or sent to the property owner.
                   </p>
                 }
               />

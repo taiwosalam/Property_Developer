@@ -132,9 +132,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
             style={tableHeadStyle}
           >
             <TableRow>
-              {fields.map((field) => (
+              {fields.map((field, fieldIndex) => (
                 <TableCell
-                  key={field.id}
+                  key={`${field.id}-${fieldIndex}`}
                   sx={{
                     fontFamily: "unset",
                     textAlign: "left",
@@ -164,8 +164,8 @@ const CustomTable: React.FC<CustomTableProps> = ({
           )} */}
           {data.map((x, index) => (
             <TableRow
-              // key={getUniqueKey(x)}
-              key={index}
+              key={getUniqueKey(x)}
+              // key={`${field.id}-${Date.now()}`}
               ref={x.ref}
               onClick={handleSelect ? (e) => handleSelect(x, e) : undefined}
               className="cursor-pointer"
@@ -178,9 +178,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 },
               }}
             >
-              {fields.map((field) => (
+              {fields.map((field, fieldIndex) => (
                 <TableCell
-                  key={field.id}
+                  key={`${getUniqueKey(x)}-${field.id}-${fieldIndex}`}
                   sx={{
                     fontFamily: "unset",
                     paddingTop: "8px",

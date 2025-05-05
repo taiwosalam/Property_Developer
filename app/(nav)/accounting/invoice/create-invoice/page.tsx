@@ -97,18 +97,18 @@ const CreateInvoicePage = () => {
             <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
               Add Payment
             </h3>
-            <Checkbox
+            {/* <Checkbox
               radio
               checked={isAddPaymentChecked}
               onChange={() => setIsAddPaymentChecked(true)}
-            />
+            /> */}
           </div>
           <p>
             Choose to create a manual payment for a specific bill or set it to
             auto-payment for a designated period.
           </p>
         </div>
-        {isAddPaymentChecked && (
+        {/* {isAddPaymentChecked && ( */}
           <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <Input
@@ -139,10 +139,10 @@ const CreateInvoicePage = () => {
               </Button>
             </div>
           </div>
-        )}
+        {/* )} */}
       </div>
 
-      <div className="space-y-6">
+      {/* <div className="space-y-6">
         <div className="flex gap-1 flex-col">
           <div className="flex gap-2">
             <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
@@ -161,7 +161,7 @@ const CreateInvoicePage = () => {
           </p>
         </div>
         {!isAddPaymentChecked && <Breakdown />}
-      </div>
+      </div> */}
 
       {payments.length > 0 && (
         <div className="space-y-6">

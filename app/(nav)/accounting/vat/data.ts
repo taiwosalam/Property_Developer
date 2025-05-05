@@ -1,4 +1,6 @@
 import type { Field } from "@/components/Table/types";
+import { formatNumber } from "@/utils/number-formatter";
+import { formatFee } from "../../management/rent-unit/data";
 
 export const accountingVatOptionsWithDropdown = [
   {
@@ -137,7 +139,7 @@ export const transformVATAPIResponse = (
       name: vat.client_name,
       picture: vat.client_picture,
       payment_reason: vat.description,
-      total_vat: `₦${parseFloat(vat.amount)}`,
+      total_vat: `${formatFee(Number(vat.amount), "naira")}`,
       date: vat.date,
     })),
   };

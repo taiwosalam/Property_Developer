@@ -48,6 +48,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import TableLoading from "@/components/Loader/TableLoading";
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const Vat = () => {
   const router = useRouter();
@@ -224,7 +225,8 @@ const Vat = () => {
       </p>
     ),
   }));
-
+  
+  if (loading) return <CustomLoader pageTitle="V.A.T" view="table" layout="page" />
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -233,7 +235,7 @@ const Vat = () => {
       <div className="custom-flex-col gap-6">
         <div className="flex gap-1 items-center">
           <h1 className="text-black dark:text-white text-2xl font-medium">
-            Vat
+            V.A.T
           </h1>
           {/* <ExclamationMark /> */}
         </div>

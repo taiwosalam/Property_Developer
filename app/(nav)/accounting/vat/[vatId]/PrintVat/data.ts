@@ -97,7 +97,7 @@ export const transformVatData = (
   // Key-value data for KeyValueList
   const keyValueData = {
     "VAT ID": data.id.toString(),
-    "Payer name": data.payer_name,
+    "Payer name": data.payer_name || "--- ---",
     "Payment status": data.payment_status,
     "date and time": dayjs(data.date).format("MMM D, YYYY, h:mm A"),
     description: data.details,

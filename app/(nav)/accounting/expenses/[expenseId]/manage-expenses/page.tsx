@@ -6,7 +6,7 @@ import Button from "@/components/Form/Button/button";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { DeleteIconX } from "@/public/icons/icons";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteExpenseModal from "@/components/Accounting/expenses/delete-expense-modal";
@@ -22,7 +22,14 @@ import dayjs, { Dayjs } from "dayjs";
 import { format } from "date-fns";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import useFetch from "@/hooks/useFetch";
-import { addPayment, deductPayment, ManageExpenseApiResponse, ManageExpensePageData, transformManageExpenseData } from "./data";
+import {
+  addPayment,
+  deductPayment,
+  deleteExpense,
+  ManageExpenseApiResponse,
+  ManageExpensePageData,
+  transformManageExpenseData,
+} from "./data";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -30,20 +37,21 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 const ManageExpenses = () => {
   const router = useRouter();
-  const { expenseId } = useParams()
-  const [reqLoading, setReqLoading] = useState(false)
+  // const { setIsOpen } = useModal()
+  const { expenseId } = useParams();
+  const [reqLoading, setReqLoading] = useState(false);
   const CURRENCY_SYMBOL = currencySymbols.naira;
   const [pageData, setPageData] = useState<ManageExpensePageData | null>(null);
-  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(pageData?.payments || []);
-  const [deductions, setDeductions] = useState<{ date: Dayjs; amount: number }[]>(pageData?.deductions || []);
-  const {
-    data,
-    error,
-    loading,
-    refetch
-  } = useFetch<ManageExpenseApiResponse>(`/expenses/${expenseId}`);
+  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
+    pageData?.payments || []
+  );
+  const [deductions, setDeductions] = useState<
+    { date: Dayjs; amount: number }[]
+  >(pageData?.deductions || []);
+  const { data, error, loading, refetch } = useFetch<ManageExpenseApiResponse>(
+    `/expenses/${expenseId}`
+  );
   useRefetchOnEvent("fetch-expenses", () => refetch({ silent: true }));
-
 
   useEffect(() => {
     if (data) {
@@ -82,20 +90,23 @@ const ManageExpenses = () => {
 
       const payload = {
         amount: parsedAmount,
-        payment_title: paymentTitle
-      }
+        payment_title: paymentTitle,
+      };
       console.log(paymentTitle, paymentAmount);
       try {
-        setReqLoading(true)
-        const res = await addPayment(objectToFormData(payload), Number(expenseId))
+        setReqLoading(true);
+        const res = await addPayment(
+          objectToFormData(payload),
+          Number(expenseId)
+        );
         if (res) {
           toast.success("Payment Added successfully");
-          window.dispatchEvent(new Event("fetch-expenses"))
+          window.dispatchEvent(new Event("fetch-expenses"));
         }
       } catch (error) {
-        toast.error("Failed to add payment. Please try again!")
+        toast.error("Failed to add payment. Please try again!");
       } finally {
-        setReqLoading(false)
+        setReqLoading(false);
       }
     }
   };
@@ -126,26 +137,47 @@ const ManageExpenses = () => {
 
       const payload = {
         amount: parsedAmount,
-        date: dayjs(deductionDate).format("YYYY-MM-DD")
-      }
+        date: dayjs(deductionDate).format("YYYY-MM-DD"),
+      };
       // console.log("deduction", payload)
       try {
-        setReqLoading(true)
-        const res = await deductPayment(objectToFormData(payload), Number(expenseId))
+        setReqLoading(true);
+        const res = await deductPayment(
+          objectToFormData(payload),
+          Number(expenseId)
+        );
         if (res) {
           toast.success("Deducted successfully");
-          window.dispatchEvent(new Event("fetch-expenses"))
+          window.dispatchEvent(new Event("fetch-expenses"));
         }
       } catch (error) {
-        toast.error("Failed to deduct payment. Please try again!")
+        toast.error("Failed to deduct payment. Please try again!");
       } finally {
-        setReqLoading(false)
+        setReqLoading(false);
       }
     }
   };
 
   const handleDeleteDeduction = (index: number) => {
     setDeductions(deductions.filter((_, i) => i !== index));
+  };
+
+  const handleDeleteExpense = async () => {
+    const paymentId = pageData?.expenseDetails?.paymentId || expenseId;
+    if (!paymentId) return toast.warning("Cannot Find Expense ID");
+    // setDeductions(deductions.filter((_, i) => i !== index));
+    try {
+      setReqLoading(true);
+      const res = await deleteExpense(Number(paymentId));
+      if (res) {
+        toast.success("Expense deleted successfully");
+        router.push("/accounting/expenses");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setReqLoading(false);
+    }
   };
 
   const totalDeductions = deductions.reduce(
@@ -171,7 +203,7 @@ const ManageExpenses = () => {
               "account officer": pageData?.expenseDetails.customerName,
               "property name": pageData?.expenseDetails.propertyName,
               date: pageData?.expenseDetails.date,
-              "unit names": pageData?.expenseDetails.unitId,
+              "unit ID": pageData?.expenseDetails.unitId,
             }}
             chunkSize={2}
             direction="column"
@@ -179,9 +211,9 @@ const ManageExpenses = () => {
               "payment id": "",
               date: "",
               "property name": "",
-              "landlord": "",
+              landlord: "",
               "account officer": "",
-              "unit names": "",
+              "unit ID": "",
             }}
           />
         </div>
@@ -368,17 +400,24 @@ const ManageExpenses = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <DeleteExpenseModal />
+            <DeleteExpenseModal
+              action={handleDeleteExpense}
+              loading={loading}
+            />
           </ModalContent>
         </Modal>
         <div className="flex justify-end">
           <Modal>
-            <ModalTrigger asChild>
-              <Button size="base_bold" className="py-2 px-8">
-                save
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
+            {/* <ModalTrigger asChild> */}
+            <Button
+              onClick={() => router.push("/accounting/expenses")}
+              size="base_bold"
+              className="py-2 px-8"
+            >
+              save
+            </Button>
+            {/* </ModalTrigger> */}
+            {/* <ModalContent>
               <ModalPreset className="w-full" type="success">
                 <div className="flex flex-col gap-8">
                   <p className="text-[14px] text-text-secondary dark:text-darkText-2">
@@ -393,7 +432,7 @@ const ManageExpenses = () => {
                   </Button>
                 </div>
               </ModalPreset>
-            </ModalContent>
+            </ModalContent> */}
           </Modal>
         </div>
       </FixedFooter>

@@ -93,7 +93,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   serviceCharge,
   currency,
 }) => {
-  const CURRENCY = currencySymbols[currency as keyof typeof currencySymbols] || currencySymbols["naira"];
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
   return (
     <div className="flex items-center justify-between flex-wrap space-y-1">
       <div>
@@ -148,6 +150,9 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
 
+  const NOT_OCCUPIED =
+    status.toLowerCase() === "relocate" || status.toLowerCase() === "vacant";
+
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">
       <div className="h-[200px] relative">
@@ -174,12 +179,15 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               <StatusDots status={status} propertyType={propertyType} />
             </div>
           </div>
-          <p className="text-sm font-normal truncate">{unit_name + " " + unit_type}</p>
+          <p className="text-sm font-normal truncate">
+            {unit_name + " " + unit_type}
+          </p>
 
           {/* Hover information */}
           <div
-            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
+            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${
+              isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
           >
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
@@ -193,14 +201,16 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               </span>
               <div className="flex items-center gap-1">
                 <span className="font-medium text-brand-primary">
-                  {status === "relocate" ? "--- ---" : tenant_name}
+                  {NOT_OCCUPIED ? "--- ---" : tenant_name}
                 </span>
-                {(badge_color && status !== "relocate") && <BadgeIcon color={badge_color} />}
+                {badge_color && !NOT_OCCUPIED && (
+                  <BadgeIcon color={badge_color} />
+                )}
               </div>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
-                Expiry Date 
+                Expiry Date
               </span>
               <p className="text-brand-primary font-medium"> {expiry_date} </p>
             </div>
@@ -265,7 +275,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
             <ActionButton
               unit_id={unitId}
               key={i}
-              propertyType={propertyType} 
+              propertyType={propertyType}
               {...action}
               route={
                 typeof action.route === "function"

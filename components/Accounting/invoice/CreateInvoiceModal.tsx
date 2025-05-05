@@ -26,9 +26,9 @@ const CreateInvoiceModal = () => {
   return (
     <LandlordTenantModalPreset
       heading="Create Invoice"
-      style={{ maxWidth: "600px", height: "400px" }}
+      style={{ maxWidth: "600px", height: "400px", overflow: "visible" }}
     >
-      <div className="space-y-5 max-w-[300px] mx-auto mt-5">
+      <div className="space-y-5 max-w-[300px] mx-auto mt-5 z-[1000]">
         <Select
           id="property"
           label={`Choose Property`}

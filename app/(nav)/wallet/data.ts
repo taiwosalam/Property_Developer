@@ -88,36 +88,91 @@ export const determinePercentageDifference = (
 };
 
 // Compute totals based on selected time range
+// export const computeTotals = (
+//   transactions: any[],
+//   range: DateRange | undefined
+// ) => {
+//   if (!range?.from || !range?.to)
+//     return { total_funds: 0, total_debit: 0, total_credit: 0 };
+
+//   const filtered = transactions.filter((t) => {
+//     const date = new Date(t.date);
+//     return date >= range.from! && date <= range.to!;
+//   });
+
+//   const totals = filtered.reduce(
+//     (acc, t) => {
+//       const amount = Number(t.amount);
+//       if (t.type === "credit") {
+//         acc.total_credit += amount;
+//         acc.total_funds += amount;
+//       } else if (t.type === "debit") {
+//         acc.total_debit += amount;
+//         acc.total_funds -= amount;
+//       }
+//       return acc;
+//     },
+//     { total_funds: 0, total_debit: 0, total_credit: 0 }
+//   );
+
+//   return {
+//     ...totals,
+//     total_funds: Math.max(0, totals.total_funds),
+//   };
+// };
+
+// Compute totals based on selected time range
 export const computeTotals = (
   transactions: any[],
   range: DateRange | undefined
 ) => {
-  if (!range?.from || !range?.to)
+  if (!range?.from || !range?.to) {
     return { total_funds: 0, total_debit: 0, total_credit: 0 };
+  }
 
   const filtered = transactions.filter((t) => {
     const date = new Date(t.date);
     return date >= range.from! && date <= range.to!;
   });
 
+  // Log filtered transactions for debugging
+  console.log("Filtered transactions:", filtered);
+
   const totals = filtered.reduce(
     (acc, t) => {
       const amount = Number(t.amount);
-      if (t.type === "credit") {
+      // Determine if the transaction is a credit based on type or transaction_type
+      const isCredit =
+        t.type === "credit" ||
+        t.type === "DVA" ||
+        t.transaction_type === "funding" ||
+        t.transaction_type === "transfer_in";
+
+      if (isCredit) {
         acc.total_credit += amount;
-        acc.total_funds += amount;
-      } else if (t.type === "debit") {
+      } else if (
+        t.type === "debit" ||
+        t.transaction_type === "withdrawal" ||
+        t.transaction_type === "sponsor_listing" ||
+        t.transaction_type === "transfer_out"
+      ) {
         acc.total_debit += amount;
-        acc.total_funds -= amount;
       }
+
       return acc;
     },
     { total_funds: 0, total_debit: 0, total_credit: 0 }
   );
 
+  // Calculate total_funds as the sum of total_credit and total_debit
+  totals.total_funds = totals.total_credit + totals.total_debit;
+
+  // Log computed totals for debugging
+  console.log("Computed totals:", totals);
+
   return {
     ...totals,
-    total_funds: Math.max(0, totals.total_funds),
+    total_funds: Math.max(0, totals.total_funds), // Ensure non-negative
   };
 };
 

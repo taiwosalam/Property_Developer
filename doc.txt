@@ -54,1141 +54,305 @@ check management/vehicles-record filter for reference
 
 
 
-
-
-
-// ================ transform /unit/${id}/view =================
-// export const transformUnitData = (response: any) => {
-//   const data = response.data;
-//   const occupant = response?.data?.occupant;
-//   const previous_records = response.data.previous_records;
-//   // const previous_tenants = response.data.previous_tenants;
-//   console.log("data to trans", data);
-//   return {
-//     title: data.property.title,
-//     unit_id: data.id,
-//     description: data.property.description,
-//     unit_name: `${data.unit_name} ${data.unit_type}`,
-//     address: data.property.full_address,
-//     unitNumber: "",
-//     images: data.images.map((image: any) => image.path),
-//     categories: data.property.category,
-//     unitPreference: data.unit_preference,
-//     unitType: data.unit_type,
-//     unitSubType: data.unit_sub_type,
-//     state: data.property.state,
-//     localGovernment: data.property.local_government,
-//     accountOfficer: data.property.account_officer.name,
-//     bedrooms: data.bedroom,
-//     bathrooms: data.bathroom,
-//     landlord_name: data.landlord.name,
-//     toilets: data.toilet,
-//     tenant_name: data.user.name,
-//     unit_features: data.facilities,
-//     newTenantTotalPrice: data.total_package,
-//     currency: data.property.currency,
-//     newTenantPrice: data.fee_amount
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.fee_amount))}`
-//       : undefined,
-//     inspectionFee: data.inspection_fee
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.inspection_fee))}`
-//       : undefined,
-//     legalFee: data.legal_fee
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.legal_fee))}`
-//       : undefined,
-//     vat_amount: data.user.vat_amount
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.user.vat_amount))}`
-//       : "",
-//     renew_vat_amount: data.user.renew_vat_amount
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.user.renew_vat_amount))}`
-//       : "--- ---",
-//     renewalTenantTotalPrice: data.renew_total_package,
-//     renew_fee_period: data.renew_fee_period,
-//     renewalTenantPrice: data.renew_fee_amount
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.renew_fee_amount))}`
-//       : undefined,
-//     renew_service_charge: data.renew_service_charge
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.renew_service_charge))}`
-//       : undefined,
-//     renew_other_charge: data.renew_other_charge
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.renew_other_charge))}`
-//       : undefined,
-//     management_fee: data.management_fee
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.management_fee))}`
-//       : undefined,
-//     en_suit: data.en_suit,
-//     prepaid: data.prepaid,
-//     wardrobe: data.wardrobe,
-//     fee_period: data.fee_period,
-//     branchName: data.property.branch.branch_name,
-//     agency_fee: data.user.property.agency_fee,
-//     group_chat: convertToYesNo(Number(data.property.group_chat)),
-//     rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
-//     caution_deposit: data.user.property.caution_deposit,
-//     // PROPERTY VALUES
-//     property_title: data.property.title,
-//     whoToCharge: data.user.property.who_to_charge_new_tenant,
-//     whoToChargeRenew: data.user.property.who_to_charge_renew_tenant,
-//     property_state: data.property.state,
-//     property_address: `${data.property.full_address}, ${data.property.city_area} ${data.property.local_government}, ${data.property.state}`,
-//     caution_fee: data.caution_fee
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.caution_fee))}`
-//       : undefined,
-//     location: "",
-//     fee_amount: data.fee_amount,
-//     propertyId: data.property.id,
-//     total_package: data.total_package,
-//     // caution_fee: data.caution_fee,
-//     security_fee: data.security_fee
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.security_fee))}`
-//       : undefined,
-//     other_charge: data.other_charge
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.other_charge))}`
-//       : undefined,
-//     unitAgentFee: data.agency_fee
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.agency_fee))}`
-//       : undefined,
-//     service_charge: data.service_charge
-//       ? `${
-//           currencySymbols[
-//             data?.property?.currency as keyof typeof currencySymbols
-//           ] || "₦"
-//         }${formatNumber(parseFloat(data.service_charge))}`
-//       : undefined,
-//     occupant: occupant
-//       ? {
-//           id: occupant.id,
-//           name: occupant.name,
-//           email: occupant.email,
-//           userTag: occupant.userTag,
-//           avatar: occupant.avatar || empty,
-//           gender: occupant.gender,
-//           birthday: occupant.birthday,
-//           religion: occupant.religion,
-//           phone: occupant.phone,
-//           maritalStatus: occupant.maritalStatus,
-//           address: occupant.address,
-//           city: occupant.city,
-//           state: occupant.state,
-//           lg: occupant.lg,
-//           badgeColor:
-//             occupant.user_tier || occupant.tier
-//               ? tierColorMap[
-//                   (occupant?.user_tier ||
-//                     occupant.tier) as keyof typeof tierColorMap
-//                 ]
-//               : undefined,
-//         }
-//       : undefined,
-//     previous_records: previous_records ? previous_records : undefined,
-//     previous_tenants: data.previous_tenants ? data.previous_tenants : undefined,
-//   };
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
+
+// import Link from "next/link";
+
+// // Images
+// import { ChevronRight } from "lucide-react";
+// import { ExclamationMark } from "@/public/icons/icons";
+
+// // Imports
+// import clsx from "clsx";
+// import { DashboardChart } from "@/components/dashboard/chart";
+// import WalletAnalytics from "@/components/Wallet/wallet-analytics";
+// import BeneficiaryList from "@/components/Wallet/beneficiary-list";
+// import WalletBalanceCard from "@/components/dashboard/wallet-balance";
+// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+// import {
+//   computeTotals,
+//   determinePercentageDifference,
+//   determineTrend,
+//   walletChartConfig,
+//   walletTableFields,
+// } from "./data";
+// import CustomTable from "@/components/Table/table";
+// import { useWalletStore } from "@/store/wallet-store";
+// import FundsBeneficiary from "@/components/Wallet/SendFunds/funds-beneficiary";
+// import SendFundBeneficiary from "@/components/Wallet/SendFunds/send-fund-beneficiary";
+// import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+// import { getTransactionIcon } from "@/components/Wallet/icons";
 // import { useState } from "react";
-// import { OccupantProfileProps, Occupant } from "./types";
-// import { MatchedProfile } from "./matched-profile";
-// import { FeeBreakdown } from "./fee-breakdown";
-// import { ProfileForm } from "./profile-form";
-// import { RentSectionTitle } from "./rent-section-container";
-// import { Skeleton } from "@mui/material";
-// import { RentPeriod } from "./data";
+// import { DateRange } from "react-day-picker";
 // import { useGlobalStore } from "@/store/general-store";
 
-// export const OccupantProfile: React.FC<OccupantProfileProps> = ({
-//   isRental,
-//   occupants,
-//   feeDetails,
-//   total_package,
-//   id,
-//   loading,
-//   setSelectedTenantId,
-//   setSelectedCheckboxOptions,
-//   period,
-//   setStart_date,
-//   setIsPastDate,
-//   setDueDate,
-// }) => {
-//   const selectedOccupant = useGlobalStore((state) => state.selectedOccupant); 
-//   // const [selectedOccupant, setSelectedOccupant] = useState<Occupant | null>(
-//   //   null
-//   // );
-//   const handleOccupantSelect = (occupant: Occupant | null) => {
-//     setSelectedOccupant(occupant);
-//   };
-//   const [occupantLoading, setOccupantLoading] = useState(false);
-//   const [occupantError, setOccupantError] = useState<Error | null>(null);
-
-//   return (
-//     <>
-//       {loading ? (
-//         <OccupantProfileLoading />
-//       ) : (
-//         <div className="pt-6 space-y-4">
-//           <RentSectionTitle>
-//             {isRental ? "Tenant" : "Occupant"} Profile
-//           </RentSectionTitle>
-//           <div className="lg:flex lg:gap-10">
-//             {/* Left Column */}
-//             <div className="lg:w-3/5 space-y-5">
-//               <div className="h-[2px] bg-[#C0C2C8] opacity-20" />
-//               <ProfileForm
-//                 period={period as RentPeriod}
-//                 setSelectedCheckboxOptions={setSelectedCheckboxOptions}
-//                 isRental={isRental}
-//                 selectedOccupant={selectedOccupant}
-//                 occupants={occupants}
-//                 onOccupantSelect={handleOccupantSelect}
-//                 onLoadingChange={setOccupantLoading}
-//                 onError={setOccupantError}
-//                 occupantLoading={occupantLoading}
-//                 occupantError={occupantError}
-//                 setSelectedTenantId={setSelectedTenantId}
-//                 setStart_date={setStart_date}
-//                 setIsPastDate={setIsPastDate} 
-//                 setDueDate={setDueDate}
-//               />
-//               <FeeBreakdown
-//                 id={id}
-//                 total_package={total_package}
-//                 feeDetails={feeDetails}
-//                 isRental={isRental}
-//               />
-//             </div>
-
-//             {/* Right Column */}
-//             <div className="mt-5 lg:mt-0 lg:flex-1 hidden lg:block">
-//               <MatchedProfile
-//                 occupant={selectedOccupant}
-//                 isLoading={occupantLoading}
-//                 error={occupantError}
-//                 title="Matched Profile"
-//               />
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </>
+// const Wallet = () => {
+//   const walletId = useWalletStore((state) => state.walletId);
+//   const recentTransactions = useWalletStore(
+//     (state) => state.recentTransactions
 //   );
-// };
+//   const transactions = useWalletStore((state) => state.transactions);
+//   // Retrieve timeRange and selectedDateRange from global store
+//   const timeRange = useGlobalStore((state) => state.timeRange);
+//   const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
+//   const stats = useWalletStore((state) => state.stats);
+//   const beneficiaries = useWalletStore((state) => state.beneficiaries);
+//   // Compute totals for the current period
+//   const currentTotals = computeTotals(transactions, selectedDateRange);
 
-// const OccupantProfileLoading = () => {
-//   return (
-//     <Skeleton
-//       width={"100%"}
-//       height={200}
-//       animation="wave"
-//       sx={{
-//         transform: "none",
-//       }}
-//     />
-//   );
-// };
+//   console.log("transactions", transactions)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// "use client";
-
-// import Select from "@/components/Form/Select/select";
-// import { useState, useEffect } from "react";
-// import { Occupant, TenantResponse } from "./types";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import Button from "@/components/Form/Button/button";
-// import AddOccupantWithId from "./add-occupant-with-id-modal";
-// import DateInput from "@/components/Form/DateInput/date-input";
-// import Checkbox from "@/components/Form/Checkbox/checkbox";
-// import { MatchedProfile } from "./matched-profile";
-// import { calculateDueDate, transformTenantData, type RentPeriod } from "./data";
-// import { RentSectionTitle } from "./rent-section-container";
-// import { Dayjs } from "dayjs";
-// import useFetch from "@/hooks/useFetch";
-// import dayjs from "dayjs";
-// import SelectWithImage from "@/components/Form/Select/select-with-image";
-// import { empty } from "@/app/config";
-// import { useGlobalStore } from "@/store/general-store";
-
-// export const ProfileForm: React.FC<{
-//   occupants: { name: string; id: string; picture?: string }[];
-//   isRental: boolean;
-//   selectedOccupant: Occupant | null;
-//   onOccupantSelect: (occupant: Occupant | null) => void;
-//   onLoadingChange: (isLoading: boolean) => void;
-//   onError: (error: Error | null) => void;
-//   occupantLoading: boolean;
-//   occupantError: Error | null;
-//   setSelectedTenantId?: any;
-//   setStart_date?: any;
-//   setDueDate?: (date: Dayjs | null) => void; // Add setDueDate
-//   setSelectedCheckboxOptions?: any;
-//   period: RentPeriod;
-//   setIsPastDate?: (isPast: boolean) => void;
-// }> = ({
-//   occupants,
-//   isRental,
-//   selectedOccupant,
-//   onOccupantSelect,
-//   onError,
-//   onLoadingChange,
-//   occupantLoading,
-//   occupantError,
-//   setSelectedTenantId,
-//   setStart_date,
-//   setDueDate,
-//   setSelectedCheckboxOptions,
-//   period,
-//   setIsPastDate,
-// }) => {
-//   const { setGlobalInfoStore } = useGlobalStore();
-//   const [selectedId, setSelectedId] = useState<string>("");
-//   const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
-
-//   const [startDate, setStartDate] = useState<Dayjs | null>(null);
-//   const [dueDate, setDueDateLocal] = useState<Dayjs | null>(null);
-//   const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
-
-//   useEffect(() => {
-//     if (period) {
-//       setRentPeriod(period);
+//   // Compute totals for the previous period (same duration before the current range)
+//   const previousRange = (() => {
+//     if (!selectedDateRange?.from || !selectedDateRange?.to) {
+//       return undefined;
 //     }
-//   }, [period]);
 
-//   // Handle select id from dropdown
-//   const handleSelectId = (id: string) => {
-//     setSelectedId(id);
-//     setSelectedTenantId(id);
-//     setIsModalIdSelected(false);
-//   };
+//     const fromDate = new Date(selectedDateRange.from);
+//     const toDate = new Date(selectedDateRange.to);
+//     const rangeDays =
+//       Math.ceil(
+//         (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
+//       ) + 1;
 
-//   // Callback function to receive the ID from AddOccupantWithId
-//   const handleTenantIdFromModal = (tenantId: string) => {
-//     setSelectedId(tenantId);
-//     setSelectedTenantId(tenantId);
-//     setIsModalIdSelected(true);
-//   };
+//     const previousFrom = new Date(fromDate);
+//     previousFrom.setDate(fromDate.getDate() - rangeDays);
+//     const previousTo = new Date(fromDate);
+//     previousTo.setDate(fromDate.getDate() - 1);
 
-//   // useEffect(() => {
-//   //   if (!selectedId) {
-//   //     onOccupantSelect(null);
-//   //     onError(null);
-//   //     return;
-//   //   }
-//   // }, [selectedId, onOccupantSelect, onError]);
+//     return { from: previousFrom, to: previousTo };
+//   })();
 
-//   const { data, loading, error } = useFetch<TenantResponse>(
-//     `/tenant/${selectedId}`
+//   const previousTotals = computeTotals(transactions, previousRange);
+
+//   // Percentage differences and trends
+//   const fundsPercent = determinePercentageDifference(
+//     previousTotals.total_funds,
+//     currentTotals.total_funds
+//   );
+//   const fundsUpDown = determineTrend(
+//     currentTotals.total_funds,
+//     previousTotals.total_funds
 //   );
 
-//   // useEffect(() => {
-//   //   if (data) {
-//   //     const transformedData = transformTenantData(data);
-//   //     onOccupantSelect(transformedData);
-//   //   }
-//   // }, [data]);
+//   const debitPercent = determinePercentageDifference(
+//     previousTotals.total_debit,
+//     currentTotals.total_debit
+//   );
+//   const debitUpDown = determineTrend(
+//     currentTotals.total_debit,
+//     previousTotals.total_debit
+//   );
 
-//   useEffect(() => {
-//     if (data) {
-//       const transformedData = transformTenantData(data);
-//       setGlobalInfoStore("selectedOccupant", transformedData); // Store selected occupant
-//     } else {
-//       setGlobalInfoStore("selectedOccupant", null); // Clear occupant if no data
-//     }
-//   }, [data, setGlobalInfoStore]);
+//   const creditPercent = determinePercentageDifference(
+//     previousTotals.total_credit,
+//     currentTotals.total_credit
+//   );
+//   const creditUpDown = determineTrend(
+//     currentTotals.total_credit,
+//     previousTotals.total_credit
+//   );
 
-//   // Calculate due date and update isPastDate when start date changes
-//   useEffect(() => {
-//     if (!startDate) {
-//       setDueDateLocal(null);
-//       setDueDate?.(null);
-//       setIsPastDate?.(false);
-//       setGlobalInfoStore("isPastDate", false); // Clear isPastDate
-//       return;
-//     }
-//     const formattedStartDate = startDate.format("YYYY-MM-DD");
-//     setStart_date(formattedStartDate);
-//     const calculatedDueDate = calculateDueDate(startDate, rentPeriod);
-//     setDueDateLocal(calculatedDueDate);
-//     setDueDate?.(calculatedDueDate);
-//     const isPast = startDate.isBefore(dayjs(), "day");
-//     setIsPastDate?.(isPast);
-//     setGlobalInfoStore("isPastDate", isPast);
-//   }, [
-//     startDate,
-//     rentPeriod,
-//     setStart_date,
-//     setDueDate,
-//     setIsPastDate,
-//     setGlobalInfoStore,
-//   ]);
-
-//   const [selectedOptions, setSelectedOptions] = useState<
-//     Record<string, boolean>
-//   >({
-//     create_invoice: true,
-//     mobile_notification: true,
-//     sms_alert: true,
-//     email_alert: true,
-//   });
-
-//   const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
-//     setSelectedOptions((prev) => ({
-//       ...prev,
-//       [optionKey]: checked,
-//     }));
-//   };
-
-//   useEffect(() => {
-//     if (setSelectedCheckboxOptions) {
-//       setSelectedCheckboxOptions(selectedOptions);
-//     }
-//   }, [selectedOptions, setSelectedCheckboxOptions]);
-
-//   const options = [
-//     "Create Invoice",
-//     "Mobile Notification",
-//     "SMS Alert",
-//     "Email Alert",
-//   ];
-
-//   // Determine the value to set for the Select component
-//   const selectValue = isModalIdSelected ? "" : selectedId;
-
-//   return (
-//     <div className="space-y-6">
-//       <div className="space-y-4">
-//         <div className="flex flex-col md:flex-row md:items-end gap-x-[35px] gap-y-4">
-//           <SelectWithImage
-//             id={`available_${isRental ? "tenant" : "occupant"}`}
-//             label={`Choose Available ${isRental ? "Tenant" : "Occupant"}`}
-//             options={occupants.map((occupant) => ({
-//               label: occupant.name,
-//               value: occupant.id,
-//               icon: occupant.picture || empty,
-//             }))}
-//             className="md:flex-1 md:max-w-[300px]"
-//             onChange={(value) => handleSelectId(value)}
-//           />
-//           <Modal>
-//             <ModalTrigger asChild>
-//               <Button size="16_bold" className="py-2 px-6">
-//                 Choose With ID
-//               </Button>
-//             </ModalTrigger>
-//             <ModalContent>
-//               <AddOccupantWithId onTenantIdSelect={handleTenantIdFromModal} />
-//             </ModalContent>
-//           </Modal>
-//         </div>
-//         <div className="block lg:hidden">
-//           <MatchedProfile
-//             occupant={selectedOccupant}
-//             isLoading={loading}
-//             error={occupantError}
-//             title="Matched Profile"
-//           />
-//         </div>
-//       </div>
-//       <RentSectionTitle>
-//         Start {isRental ? "Rent" : "Counting"}
-//       </RentSectionTitle>
-//       <div className="h-[1px] bg-[#C0C2C8] mb-4" />
-//       <div className="grid grid-cols-2 gap-4">
-//         <DateInput
-//           id="start date"
-//           label="Start Date"
-//           value={startDate}
-//           onChange={setStartDate}
-//           lastYear={true}
-//         />
-//         <DateInput
-//           id="due date"
-//           label="Due Date"
-//           disabled
-//           value={dueDate}
-//           className="opacity-50"
-//         />
-//       </div>
-//       <div className="flex items-center justify-end gap-4 flex-wrap">
-//         {options.map((option) => {
-//           const key = option.toLowerCase().replace(/\s+/g, "_");
-//           return (
-//             <Checkbox
-//               sm
-//               key={key}
-//               defaultChecked={selectedOptions[key]}
-//               onChange={handleCheckboxChange(key)}
-//             >
-//               {option}
-//             </Checkbox>
-//           );
+//   const transformedWalletTableData = recentTransactions.map((t) => ({
+//     ...t,
+//     amount: (
+//       <span
+//         className={clsx({
+//           "text-status-success-3": t.type === "credit",
+//           "text-status-error-primary": t.type === "debit",
 //         })}
+//       >
+//         {`${t.type === "credit" ? "+" : t.type === "debit" ? "-" : ""}${
+//           t.amount
+//         }`}
+//       </span>
+//     ),
+//     icon: (
+//       <div
+//         className={clsx(
+//           "flex items-center justify-center w-9 h-9 rounded-full",
+//           {
+//             "bg-status-error-1 text-status-error-primary":
+//               t.transaction_type === "withdrawal" ||
+//               t.transaction_type === "transfer_out" ||
+//               t.type === "debit",
+//             "bg-status-success-1 text-status-success-primary":
+//               t.type === "credit" ||
+//               t.type === "DVA" ||
+//               t.transaction_type === "funding",
+//           }
+//         )}
+//       >
+//         {getTransactionIcon(t.source, t.transaction_type)}
 //       </div>
-//     </div>
-//   );
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import Image from "next/image";
-// import { useContext, useEffect, useState } from "react";
-// // Import
-// import { SectionHeading } from "../Section/section-components";
-// import Button from "../Form/Button/button";
-// import { DeleteIconOrange, PersonIcon, UploadImageIcon } from "@/public/icons/icons";
-// import { FlowProgressContext } from "../FlowProgress/flow-progress";
-// import { useImageUploader } from "@/hooks/useImageUploader";
-// import CameraCircle from "@/public/icons/camera-circle.svg";
-// import Picture from "../Picture/picture";
-// import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
-// import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
-// import Avatars from "../Avatars/avatars";
-
-// const ProfilePicture = () => {
-//   const { handleInputChange } = useContext(FlowProgressContext);
-
-//   const {
-//     preview,
-//     handleImageChange: originalHandleImageChange,
-//     inputFileRef,
-//     clearSelection: clearImageSelection,
-//     setPreview,
-//   } = useImageUploader({
-//     placeholder: CameraCircle,
-//     maxSize: {
-//       unit: "MB",
-//       value: 2,
-//     },
-//   });
-
-//   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
-//   const [selectedAvatar, setSelectedAvatar] = useState("");
-
-//   const handleAvatarSelection = (avatarUrl: string) => {
-//     clearImageSelection();
-//     setSelectedAvatar(avatarUrl);
-//     setAvatarModalOpen(false);
-//   };
-
-//   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     setSelectedAvatar("");
-//     originalHandleImageChange(e);
-//   };
-
-//   // const { preview, inputFileRef, handleImageChange, clearSelection } =
-//   //   useImageUploader({
-//   //     maxSize: { unit: "MB", value: 2 },
-//   //   });
-
-//   const handleButtonClick = () => {
-//     if (inputFileRef.current) {
-//       inputFileRef.current.click();
-//     }
-//   };
-
-//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     handleImageChange(e);
-//     handleInputChange();
-//   };
-
-//   const handleDeleteImage = () => {
-//     clearImageSelection();
-//     handleInputChange();
-//   };
-
-//   return (
-//     <div className="custom-flex-col gap-5">
-//       <SectionHeading required title="profile picture">
-//         The profile photo size should be 100 x 100 pixels with a maximum file
-//         size of 2MB.
-//       </SectionHeading>
-
-//       <div className="flex gap-4 items-center">
-//         <input type="hidden" name="avatar" value={selectedAvatar} />
-//         <div className="flex gap-2">
-//           <input
-//             name="director_profile_picture"
-//             type="file"
-//             accept="image/*"
-//             ref={inputFileRef}
-//             onChange={handleFileChange}
-//             className="hidden setup-f required"
-//           />
-//           {preview && preview !== CameraCircle ? (
-//             <div className="w-[100px] h-[100px] relative">
-//               <button
-//                 type="button"
-//                 onClick={handleDeleteImage}
-//                 className="absolute top-[-15px] right-[-25px] z-10"
-//                 aria-label="Delete"
-//               >
-//                 <DeleteIconOrange />
-//               </button>
-//               <Image
-//                 src={preview}
-//                 alt="Profile Picture"
-//                 fill
-//                 style={{ objectFit: "cover" }}
-//                 className="rounded-lg w-[100px] h-[100px]"
-//               />
-//             </div>
-//           ) : (
-//             <button
-//               type="button"
-//               onClick={handleButtonClick}
-//               className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
-//             >
-//               <UploadImageIcon />
-//               <span className="text-text-secondary text-xs font-normal">
-//                 Upload Profile Picture
-//               </span>
-//             </button>
-//           )}
-//           {preview && (
-//             <div className="flex items-end">
-//               <Button
-//                 type="button"
-//                 variant="change"
-//                 size="sm"
-//                 onClick={handleButtonClick}
-//               >
-//                 Change Picture
-//               </Button>
-//             </div>
-//           )}
-//         </div>
-
-//         <label htmlFor="picture" className="!w-fit cursor-pointer relative">
-//           <Picture src={preview} alt="Camera" size={90} rounded />
-//           {preview && preview !== CameraCircle && (
-//             <div
-//               role="button"
-//               aria-label="remove image"
-//               className="absolute top-0 right-0"
-//               onClick={(e) => {
-//                 e.preventDefault();
-//                 clearImageSelection();
-//               }}
-//             >
-//               <DeleteIconOrange size={20} />
-//             </div>
-//           )}
-//           <input
-//             type="file"
-//             id="picture"
-//             name="picture"
-//             accept="image/*"
-//             className="hidden pointer-events-none"
-//             onChange={handleImageChange}
-//             ref={inputFileRef}
-//           />
-//         </label>
-//         <div className="custom-flex-col gap-3">
-//           <p className="text-black text-base font-medium">Choose Avatar</p>
-//           <Modal
-//             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
-//           >
-//             <ModalTrigger
-//               className="bg-[rgba(42,42,42,0.63)] !w-[60px] h-[60px] rounded-full flex items-center justify-center text-white relative"
-//               aria-label="choose avatar"
-//             >
-//               {selectedAvatar ? (
-//                 <>
-//                   <Image
-//                     src={selectedAvatar}
-//                     alt="selected avatar"
-//                     width={60}
-//                     height={60}
-//                     className="object-cover object-center w-[60px] h-[60px] rounded-full bg-brand-9"
-//                   />
-//                   <div
-//                     role="button"
-//                     aria-label="remove avatar"
-//                     className="absolute top-0 right-0"
-//                     onClick={(e) => {
-//                       e.stopPropagation();
-//                       setSelectedAvatar("");
-//                     }}
-//                   >
-//                     <DeleteIconOrange size={20} />
-//                   </div>
-//                 </>
-//               ) : (
-//                 <PersonIcon size={18} />
-//               )}
-//             </ModalTrigger>
-//             <ModalContent>
-//               <LandlordTenantModalPreset
-//                 heading="Choose Avatar"
-//                 style={{ maxWidth: "700px" }}
-//               >
-//                 <Avatars onClick={handleAvatarSelection} />
-//               </LandlordTenantModalPreset>
-//             </ModalContent>
-//           </Modal>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProfilePicture;
-
-
-
-
-
-
-
-
-
-// "use client";
-// import {
-//   estateSettingsDta,
-//   estateData,
-//   propertySettingsData,
-//   DUMMY_OCCUPANT,
-//   rentalData,
-//   initialPreviousRecords,
-//   RentPreviousRecords,
-//   calculateBalance,
-//   RentPeriod,
-// } from "@/components/Management/Rent And Unit/data";
-// import {
-//   RenewalRent as StartRent,
-//   PreviousRentRecords,
-//   OwingFee,
-// } from "@/components/Management/Rent And Unit/renewal-rent-detals";
-// import {
-//   PreviousUnitBalance,
-//   NewUnitCost,
-// } from "@/components/Management/Rent And Unit/Edit-Rent/Edit-rent-sections";
-// import { MatchedProfile } from "@/components/Management/Rent And Unit/matched-profile";
-// import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
-// import Button from "@/components/Form/Button/button";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import { useRouter, useSearchParams } from "next/navigation";
-// import ModalPreset from "@/components/Modal/modal-preset";
-// import BackButton from "@/components/BackButton/back-button";
-// import FixedFooter from "@/components/FixedFooter/fixed-footer";
-// import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
-// import { useOccupantStore } from "@/hooks/occupant-store";
-// import {
-//   initData,
-//   initDataProps,
-//   singleUnitApiResponse,
-//   transformUnitData,
-// } from "../../../data";
-// import { useEffect, useState } from "react";
-// import useFetch from "@/hooks/useFetch";
-// import {
-//   Currency,
-//   currencySymbols,
-//   formatNumber,
-// } from "@/utils/number-formatter";
-// import dayjs from "dayjs";
-// import {
-//   getEstateData,
-//   getEstateSettingsData,
-//   getPropertySettingsData,
-//   getRentalData,
-//   switchUnit,
-// } from "../data";
-// import { toast } from "sonner";
-
-// const ChangeUnitpage = () => {
-//   const searchParams = useSearchParams();
-//   const id = searchParams.get("p");
-//   const selectedUnitId = searchParams.get("u");
-//   const propertyType = searchParams.get("type") as "rental" | "facility";
-//   const isRental = propertyType === "rental";
-//   const router = useRouter();
-//   const [reqLoading, setReqLoading] = useState(false);
-//   const [startDate, setStartDate] = useState<string | null>(null);
-//   const [modalIsOpen, setModalIsOpen] = useState(false);
-
-//   const {
-//     occupant,
-//     propertyData,
-//     records,
-//     unitBalance,
-//     calculation,
-//     deduction,
-//     setCalculation,
-//     setDeduction,
-//   } = useOccupantStore();
-//   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-//   const endpoint = `/unit/${id}/view`;
-
-//   const {
-//     data: apiData,
-//     loading,
-//     silentLoading,
-//     isNetworkError,
-//     error,
-//     refetch,
-//   } = useFetch<singleUnitApiResponse>(endpoint);
-
-//   useEffect(() => {
-//     if (apiData) {
-//       const transformedData = transformUnitData(apiData);
-//       setUnit_data((x: any) => ({
-//         ...x,
-//         ...transformedData,
-//       }));
-//     }
-//   }, [apiData]);
-
-//   const currencySymbol =
-//     currencySymbols[unit_data.currency as keyof typeof currencySymbols] || "₦";
-
-//   if (!unitBalance) {
-//     toast.warning("Back to Rent Unit for security reasons");
-//     router.back();
-//     return;
-//   }
-
-//   const balance = unitBalance?.data?.map((record: any, index: any) => ({
-//     ...record,
-//     amount_paid: `${currencySymbol}${formatNumber(record.amount_paid) || 0}`,
-//     start_date: record?.start_date
-//       ? dayjs(record?.start_date).format("MMM D, YYYY").toLowerCase()
-//       : null,
-//     due_date: record?.due_date
-//       ? dayjs(record?.due_date).format("MMM D, YYYY").toLowerCase()
-//       : null,
-//     payment_date: record?.payment_date
-//       ? dayjs(record?.payment_date).format("MMM D, YYYY").toLowerCase()
-//       : null,
+//     ),
 //   }));
 
-//   const propertySettingsData = getPropertySettingsData(unit_data);
-//   const rentalData = getRentalData(unit_data);
-//   const estateData = getEstateData(unit_data);
-//   const estateSettingsDta = getEstateSettingsData(unit_data);
-
-//   console.log("Balance", balance);
-//   const startday = balance?.[0]?.start_date;
-//   const endDay = balance?.[0]?.due_date;
-//   const amt = balance?.[0]?.amount_paid;
-//   // Only calculate the balance if all values exist, otherwise default to 0
-//   const bal =
-//     startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
-//   const newUnitTotal = calculation
-//     ? Number(unit_data.newTenantTotalPrice)
-//     : Number(unit_data.renewalTenantTotalPrice);
-//   const totalPayable = !deduction ? newUnitTotal - bal : newUnitTotal;
-//   const previousBalance =
-//     startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
-//   const netOwing = deduction ? newUnitTotal - previousBalance : newUnitTotal;
-
-//   const due_date = balance?.[0]?.due_date
-//     ? dayjs(balance[0].due_date).format("DD/MM/YYYY")
-//     : "__,__,__";
-
-//   const prev_unit_bal = bal
-//     ? `${currencySymbol}${formatNumber(parseFloat(`${bal}`))}`
-//     : undefined;
-
-//   // Format net owing amount for display
-//   const formattedNetOwing = netOwing
-//     ? `${currencySymbol}${formatNumber(Math.abs(netOwing))}`
-//     : `${currencySymbol}0`;
-
-//   // Determine owing/refunded status
-//   const owingLabel = netOwing >= 0 ? "Amount Owed" : "Refund Due";
-
-//   // console.log("bal", bal);
-//   // console.log("due date", due_date)
-//   // console.log("due date", unit_data.fee_period)
-
-//   //FUNCTION TO SWITH UNIT
-//   const handleSwitchUnit = async () => {
-//     const id = balance[0].id;
-//     const data = {
-//       new_unit_id: selectedUnitId,
-//       calculation: calculation ? 1 : 0,
-//       deduction: deduction ? 1 : 0,
-//       payment_date: startDate,
-//     };
-
-//     // console.log("payload", data)
-//     try {
-//       setReqLoading(true);
-//       const res = await switchUnit(id as string, data);
-//       if (res) {
-//         setModalIsOpen(true);
-//         toast.success("Record Added Successfully");
-//         // router.push("/management/rent-unit");
-//       }
-//     } catch (err) {
-//       toast.error("Failed to switch Unit, please try again");
-//     } finally {
-//       setReqLoading(false);
-//     }
-//   };
+//   const walletChartData = transactions.map((t) => ({
+//     date: t.date,
+//     totalfunds: t.amount,
+//     credit: t.type === "credit" ? t.amount : 0,
+//     debit: t.type === "debit" ? t.amount : 0,
+//   }));
 
 //   return (
-//     <div className="space-y-6 pb-[100px]">
-//       <BackButton>Change Unit</BackButton>
-//       <section className="space-y-6">
-//         <EstateDetails
-//           title={`${isRental ? "Unit" : "Facility"} Details`}
-//           estateData={isRental ? rentalData : estateData}
-//         />
-//         <EstateSettings
-//           title={`${isRental ? "Property" : "Facility"} Settings`}
-//           estateSettingsDta={
-//             isRental ? propertySettingsData : estateSettingsDta
-//           }
-//           id={id as string}
-//           {...(isRental ? { gridThree: true } : {})}
-//         />
-
-//         <PreviousUnitBalance
-//           calculation={calculation}
-//           currency={unit_data.currency}
-//           deduction={deduction}
-//           isRental={isRental}
-//           items={balance as RentPreviousRecords[]}
-//           total={`${bal}`}
-//         />
-
-//         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
-//           <div className="lg:w-3/5 space-y-8">
-//             <NewUnitCost
-//               noEdit
-//               isRental={isRental}
-//               feeDetails={[
-//                 {
-//                   name: isRental ? "Rent" : "Fee",
-//                   amount: calculation
-//                     ? unit_data.newTenantPrice
-//                     : // : isRental
-//                       // ? unit_data.renewalTenantPrice
-//                       unit_data.renewalTenantPrice,
-//                 },
-//                 {
-//                   name: "Service Charge",
-//                   amount: calculation
-//                     ? unit_data.service_charge
-//                     : // : isRental
-//                       // ? unit_data.renew_service_charge
-//                       unit_data.service_charge,
-//                 },
-//                 {
-//                   name: "VAT Amount",
-//                   amount: calculation
-//                     ? unit_data.vat_amount
-//                     : unit_data.renew_vat_amount,
-//                 },
-//                 { name: "Other Charges", amount: unit_data.other_charge },
-//               ]}
-//               // total={newUnitTotal}
-//               total={Number(unit_data.newTenantTotalPrice)}
-//               calculation={calculation}
-//               currency={unit_data.currency}
+//     <div className="custom-flex-col gap-10">
+//       <div className="flex items-center gap-1">
+//         <h1 className="text-black dark:text-white text-2xl font-medium">
+//           Wallet
+//         </h1>
+//         {/* <ExclamationMark /> */}
+//       </div>
+//       <div className="flex flex-col xl:flex-row gap-8">
+//         <div className="custom-flex-col gap-10 flex-1">
+//           <div className="flex flex-col lg:flex-row gap-6">
+//             <WalletAnalytics
+//               title="funds"
+//               amount={currentTotals.total_funds}
+//               trend={{
+//                 from: `previous ${
+//                   timeRange === "90d"
+//                     ? "3 months"
+//                     : timeRange === "30d"
+//                     ? "30 days"
+//                     : timeRange === "7d"
+//                     ? "7 days"
+//                     : timeRange === "1d"
+//                     ? "day"
+//                     : "period"
+//                 }`,
+//                 type: fundsUpDown as "up" | "down" | "none",
+//                 percent: Number(fundsPercent),
+//               }}
 //             />
-
-//             {/* <OwingFee
-//               currency={unit_data.currency as Currency}
-//               isRental={isRental}
-//               dueDate={due_date}
-//               period={unit_data.fee_period as RentPeriod}
-//               isUpfrontPaymentChecked
-//               feeDetails={[
-//                 {
-//                   name: isRental ? "Renewal Total Package" : "Total Fee",
-//                   amount: prev_unit_bal,
-//                 },
-//               ]}
-//               total_package={bal}
-//               id={id as string}
-//             /> */}
-
-//             {/* Owing/Refund Amount */}
-//             <OwingFee
-//               currency={unit_data.currency as Currency}
-//               isRental={isRental}
-//               dueDate={due_date}
-//               period={unit_data.fee_period as RentPeriod}
-//               isUpfrontPaymentChecked={true} // Always show owing/refunded amount
-//               feeDetails={[
-//                 {
-//                   name: "Previous Rent",
-//                   amount: previousBalance
-//                     ? `${currencySymbol}${formatNumber(previousBalance)}`
-//                     : `${currencySymbol}0`,
-//                 },
-//                 {
-//                   name: owingLabel,
-//                   amount: formattedNetOwing,
-//                 },
-//               ]}
-//               total_package={newUnitTotal}
-//               id={id as string}
+//             <WalletAnalytics
+//               title="debit"
+//               amount={currentTotals.total_debit}
+//               trend={{
+//                 from: `previous ${
+//                   timeRange === "90d"
+//                     ? "3 months"
+//                     : timeRange === "30d"
+//                     ? "30 days"
+//                     : timeRange === "7d"
+//                     ? "7 days"
+//                     : timeRange === "1d"
+//                     ? "day"
+//                     : "period"
+//                 }`,
+//                 type: debitUpDown as "up" | "down" | "none",
+//                 percent: Number(debitPercent),
+//               }}
 //             />
-
-//             <NewUnitCost
-//               title="Payable Cost"
-//               noEdit
-//               isRental={isRental}
-//               feeDetails={[
-//                 {
-//                   name: "Previous Unit",
-//                   amount: prev_unit_bal as any,
-//                 },
-//                 {
-//                   name: "Current Unit",
-//                   amount: unit_data.newTenantPrice as any,
-//                 },
-//                 { name: "Other Charges", amount: unit_data.other_charge },
-//               ]}
-//               // total={totalPayable} //initial
-//               total={netOwing}
-//               calculation={calculation}
-//               deduction={deduction}
-//               currency={unit_data.currency}
-//             />
-//             <StartRent
-//               isRental={isRental}
-//               rentPeriod="yearly"
-//               title={`Start ${isRental ? "Rent" : "Fee"}`}
-//               start
-//               setStart_Date={setStartDate}
+//             <WalletAnalytics
+//               title="credit"
+//               amount={currentTotals.total_credit}
+//               trend={{
+//                 from: `previous ${
+//                   timeRange === "90d"
+//                     ? "3 months"
+//                     : timeRange === "30d"
+//                     ? "30 days"
+//                     : timeRange === "7d"
+//                     ? "7 days"
+//                     : timeRange === "1d"
+//                     ? "day"
+//                     : "period"
+//                 }`,
+//                 type: creditUpDown as "up" | "down" | "none",
+//                 percent: Number(creditPercent),
+//               }}
 //             />
 //           </div>
-//           <div className="lg:flex-1 lg:!mt-[52px]">
-//             <MatchedProfile occupant={occupant} title="User Profile" />
+//           <DashboardChart
+//             chartTitle="Analysis"
+//             visibleRange
+//             chartConfig={walletChartConfig}
+//             chartData={walletChartData}
+//           />
+//         </div>
+//         <div className="custom-flex-col gap-5 w-full xl:w-[315px]">
+//           <div className="flex items-center justify-between text-neutral-800 font-medium">
+//             <p className="text-sm dark:text-darkText-1">Wallet ID</p>
+//             <p className="text-xs dark:text-darkText-1">{walletId}</p>
+//           </div>
+//           <WalletBalanceCard noHeader />
+//           <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary h-[339px] overflow-hidden">
+//             <div className="flex items-center justify-between text-base font-medium">
+//               <p className="text-black dark:text-white">Beneficiary</p>
+//               <Modal>
+//                 <ModalTrigger className="flex items-center gap-1">
+//                   <span className="text-text-label dark:text-darkText-1">
+//                     See all
+//                   </span>
+//                   <ChevronRight color="#5A5D61" size={16} />
+//                 </ModalTrigger>
+//                 <ModalContent>
+//                   <BeneficiaryList />
+//                 </ModalContent>
+//               </Modal>
+//             </div>
+//             <div className="custom-flex-col gap-2 h-full overflow-y-scroll custom-round-scrollbar">
+//               {beneficiaries.length > 0 ? (
+//                 beneficiaries.map((beneficiary, idx) => (
+//                   <Modal key={idx}>
+//                     <ModalTrigger>
+//                       <FundsBeneficiary {...beneficiary} />
+//                     </ModalTrigger>
+//                     <ModalContent>
+//                       <WalletModalPreset
+//                         title={`Send Funds to ${beneficiary.name}`}
+//                       >
+//                         <SendFundBeneficiary {...beneficiary} />
+//                       </WalletModalPreset>
+//                     </ModalContent>
+//                   </Modal>
+//                 ))
+//               ) : (
+//                 <p className="text-text-label text-center text-sm dark:text-darkText-1">
+//                   No beneficiary yet.
+//                 </p>
+//               )}
+//             </div>
 //           </div>
 //         </div>
-//         <PreviousRentRecords
-//           isRental={isRental}
-//           unit_id={id as string}
-//           previous_records={unitBalance as any}
-//           noRefetch={true}
+//       </div>
+//       <div className="custom-flex-col gap-10">
+//         <div className="flex justify-between">
+//           <h2 className="text-text-primary dark:text-white text-xl font-medium">
+//             Recent Transaction
+//           </h2>
+//           <Link
+//             href="/wallet/transaction-history"
+//             className="flex items-center gap-1"
+//           >
+//             <span className="text-text-label dark:text-darkText-1">
+//               See all
+//             </span>
+//             <ChevronRight color="#5A5D61" size={16} />
+//           </Link>
+//         </div>
+//         <CustomTable
+//           fields={walletTableFields}
+//           className="max-h-[unset]"
+//           data={transformedWalletTableData}
+//           tableBodyCellSx={{
+//             paddingTop: "12px",
+//             paddingBottom: "12px",
+//             fontSize: "16px",
+//             whiteSpace: "nowrap",
+//           }}
+//           tableHeadCellSx={{
+//             paddingTop: "14px",
+//             paddingBottom: "14px",
+//             fontSize: "16px",
+//           }}
 //         />
-//       </section>
-
-//       <FixedFooter className="flex items-center justify-end">
-//         {/* <ModalTrigger asChild> */}
-//         <Button
-//           size="base_medium"
-//           className="py-2 px-6"
-//           disabled={reqLoading}
-//           onClick={handleSwitchUnit}
-//         >
-//           {reqLoading ? "Please wait..." : "Proceed"}
-//         </Button>
-//         <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
-//           <ModalContent>
-//             <ModalPreset type="success" className="w-full">
-//               <div className="flex flex-col gap-8">
-//                 <p className="text-text-tertiary text-sm">
-//                   Record Added Successfully
-//                 </p>
-//                 <Button
-//                   onClick={() => {
-//                     router.push("/management/rent-unit");
-//                   }}
-//                 >
-//                   OK
-//                 </Button>
-//               </div>
-//             </ModalPreset>
-//           </ModalContent>
-//           {/* </ModalTrigger> */}
-//         </Modal>
-//       </FixedFooter>
+//       </div>
 //     </div>
 //   );
 // };
 
-// export default ChangeUnitpage;
+// export default Wallet;
+
+// Wallet.tsx
