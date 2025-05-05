@@ -6,6 +6,7 @@ import { useRef, useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { toast } from "sonner";
 
 const NavSwitchUserSwitch = () => {
   const isDarkMode = useDarkMode();
@@ -23,7 +24,14 @@ const NavSwitchUserSwitch = () => {
   };
 
   const handleModuleSwitch = (val: string) => {
+    // Capitalize the first letter
+    const capitalizedVal = val.charAt(0).toUpperCase() + val.slice(1);
+
     // setActive(val);
+    if (val !== "property manager") {
+      toast.warning(`${capitalizedVal} coming soon`);
+      return;
+    }
     setIsOpen(false);
   };
 

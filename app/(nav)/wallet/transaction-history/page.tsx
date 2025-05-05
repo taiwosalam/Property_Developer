@@ -68,7 +68,10 @@ const TransactionHistory = () => {
   } = useFetch<AllTransactionsResponse>("transactions", config);
 
   // Compute stats for filtered transactions
-  const currentTotals = computeStatsTotals(state.transactions, selectedDateRange);
+  const currentTotals = computeStatsTotals(
+    state.transactions,
+    selectedDateRange
+  );
 
   // Compute totals for the previous period
   const previousRange = (() => {
@@ -360,7 +363,6 @@ const TransactionHistory = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <BackButton>Transaction History</BackButton>
       <div className="flex justify-between items-center">
         <FilterBar
           pageTitle="Transaction History"
@@ -374,6 +376,7 @@ const TransactionHistory = () => {
           appliedFilters={appliedFilters}
           fileLabel={"Wallet Transactions"}
           xlsxData={filteredTransactions}
+          backUrl="/wallet"
         />
         <DateRangeSelector />
       </div>

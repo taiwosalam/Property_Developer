@@ -167,8 +167,6 @@ const Wallet = () => {
         : 0,
   }));
 
-  console.log(currentTotals)
-
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex items-center gap-1">

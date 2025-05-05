@@ -100,7 +100,7 @@ const companyTypes = [
   },
   {
     id: 2,
-    title: "Facility Manager",
+    title: "Hospitality Manager",
     desc: "The company specializes in managing short-stay apartments, holiday homes, and hotels, catering to occupants for brief durations.",
     icon: <UserEditIcon />,
     groupName: "facility_manager",
