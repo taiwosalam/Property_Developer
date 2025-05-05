@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 // Types
@@ -18,17 +18,43 @@ import ReviewCard from "@/components/Review/review-card";
 import { message_card_data } from "@/components/Message/data";
 import FilterButton from "@/components/FilterButton/filter-button";
 import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
+import useFetch from "@/hooks/useFetch";
+import ServerError from "@/components/Error/ServerError";
+import { IReviewCard, ReviewResponse, transformReviewCard } from "./data";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
   const { id } = useParams();
+  const [reviews, setReviews] = useState<IReviewCard | null>(null);
 
   const { isCustom } = useWindowWidth(900);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  const { company_id } = usePersonalInfoStore();
+
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const {
+    data: reviewData,
+    loading,
+    error,
+  } = useFetch<ReviewResponse>(
+    company_id ? `/reviews/company/${company_id}` : null
+  );
+
+  useEffect(() => {
+    if (reviewData) {
+      const transData = transformReviewCard(reviewData);
+      setReviews(transData);
+    }
+  }, [reviewData]);
+
+  if (error) {
+    <ServerError error={error} />;
+  }
 
   return (
     <>
@@ -74,13 +100,15 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
               </Button> */}
             </div>
             <div className="custom-flex-col relative z-[1] pb-4">
-              {message_card_data.map((message, idx) => (
-                <ReviewCard
-                  key={idx}
-                  {...{ ...message, replies: message.messages || 0 }}
-                  highlight={message.id === id}
-                />
-              ))}
+              {reviews &&
+                reviews?.reviews.length > 0 &&
+                reviews?.reviews.map((review, idx) => (
+                  <ReviewCard
+                    key={idx}
+                    {...review}
+                    highlight={review.id.toString() === (id as string)}
+                  />
+                ))}
             </div>
           </div>
         </div>

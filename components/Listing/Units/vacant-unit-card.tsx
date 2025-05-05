@@ -36,6 +36,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useFetch from "@/hooks/useFetch";
 import { useGlobalStore } from "@/store/general-store";
 
+
 const VacantUnitCard = ({
   status,
   unit_data,
@@ -158,7 +159,7 @@ const VacantUnitCard = ({
                 <KeyValueList
                   data={keyValueData}
                   referenceObject={referenceObject}
-                  truncateLength={45} 
+                  truncateLength={35} 
                 />
               </div>
             </div>

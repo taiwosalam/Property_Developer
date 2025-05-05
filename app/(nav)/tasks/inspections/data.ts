@@ -54,7 +54,7 @@ export const teamChatOptions = [
   { label: "Australia Branch", value: "australia" },
 ];
 
-export const formatToNaira = (amount: string): string => {
+export const formatToNaira = (amount: string | number): string => {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
     currency: "NGN",
