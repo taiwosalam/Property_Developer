@@ -150,7 +150,7 @@ const UnitSponsorPopover = ({
             <div className="flex items-center text-base gap-2">
               <div className="p-2 rounded-[4px] bg-support-2">
                 <p className="text-brand-disabled font-bold">
-                  {availableSponsors}
+                  {availableSponsors.toLocaleString()}
                 </p>
               </div>
               <p className="text-black dark:text-white font-normal">

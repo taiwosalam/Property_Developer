@@ -148,16 +148,23 @@ const Units = () => {
     data: sponsors,
     loading: loadingSponsors,
     error: sponsorsErr,
-    refetch:refetchSponsorVal
+    refetch: refetchSponsorVal,
   } = useFetch<SponsorValueResponse>("/sponsor/value");
-  useRefetchOnEvent("refetchRentSponsors", () => refetchSponsorVal({ silent: true }));
+
+  useRefetchOnEvent("refetchRentSponsors", () =>
+    refetchSponsorVal({ silent: true })
+  );
   const setSponsorValue = useGlobalStore((s) => s.setGlobalInfoStore);
   const getSponsorValue = useGlobalStore((s) => s.getGlobalInfoStore);
   const availableSponsors = getSponsorValue("sponsorValue");
+
   useEffect(() => {
     if (!loading && sponsors?.data?.value) {
-      const parsed = parseFloat(sponsors.data.value);
-      setSponsorValue("sponsorValue", parsed);
+      const parsed = Number(sponsors.data.value.replace(/,/g, ""));
+
+      if (!isNaN(parsed)) {
+        setSponsorValue("sponsorValue", parsed);
+      }
     }
   }, [loading, sponsors, setSponsorValue]);
 
