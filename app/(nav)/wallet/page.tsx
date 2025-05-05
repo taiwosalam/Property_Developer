@@ -1,12 +1,8 @@
 "use client";
 
 import Link from "next/link";
-
-// Images
 import { ChevronRight } from "lucide-react";
 import { ExclamationMark } from "@/public/icons/icons";
-
-// Imports
 import clsx from "clsx";
 import { DashboardChart } from "@/components/dashboard/chart";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
@@ -26,9 +22,8 @@ import FundsBeneficiary from "@/components/Wallet/SendFunds/funds-beneficiary";
 import SendFundBeneficiary from "@/components/Wallet/SendFunds/send-fund-beneficiary";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { getTransactionIcon } from "@/components/Wallet/icons";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
 import { useGlobalStore } from "@/store/general-store";
+import type { DateRange } from "react-day-picker";
 
 const Wallet = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -36,11 +31,16 @@ const Wallet = () => {
     (state) => state.recentTransactions
   );
   const transactions = useWalletStore((state) => state.transactions);
+  const beneficiaries = useWalletStore((state) => state.beneficiaries);
+
   // Retrieve timeRange and selectedDateRange from global store
   const timeRange = useGlobalStore((state) => state.timeRange);
   const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
-  const stats = useWalletStore((state) => state.stats);
-  const beneficiaries = useWalletStore((state) => state.beneficiaries);
+
+  // Log transactions and date range for debugging
+  console.log("Transactions:", transactions);
+  console.log("Selected Date Range:", selectedDateRange);
+
   // Compute totals for the current period
   const currentTotals = computeTotals(transactions, selectedDateRange);
 
@@ -100,13 +100,19 @@ const Wallet = () => {
     amount: (
       <span
         className={clsx({
-          "text-status-success-3": t.type === "credit",
-          "text-status-error-primary": t.type === "debit",
+          "text-status-success-3":
+            t.type === "credit" || t.transaction_type === "funding",
+          "text-status-error-primary":
+            t.type === "debit" || t.transaction_type === "withdrawal",
         })}
       >
-        {`${t.type === "credit" ? "+" : t.type === "debit" ? "-" : ""}${
-          t.amount
-        }`}
+        {`${
+          t.type === "credit" || t.transaction_type === "funding"
+            ? "+"
+            : t.type === "debit" || t.transaction_type === "withdrawal"
+            ? "-"
+            : ""
+        }${t.amount}`}
       </span>
     ),
     icon: (
@@ -117,24 +123,48 @@ const Wallet = () => {
             "bg-status-error-1 text-status-error-primary":
               t.transaction_type === "withdrawal" ||
               t.transaction_type === "transfer_out" ||
+              t.transaction_type === "sponsor_listing" ||
               t.type === "debit",
             "bg-status-success-1 text-status-success-primary":
               t.type === "credit" ||
               t.type === "DVA" ||
-              t.transaction_type === "funding",
+              t.transaction_type === "funding" ||
+              t.transaction_type === "transfer_in",
           }
         )}
       >
-        {getTransactionIcon(t.source, t.transaction_type)}
+        {getTransactionIcon(t.source, t.transaction_type || t.type)}
       </div>
     ),
   }));
 
   const walletChartData = transactions.map((t) => ({
     date: t.date,
-    totalfunds: t.amount,
-    credit: t.type === "credit" ? t.amount : 0,
-    debit: t.type === "debit" ? t.amount : 0,
+    totalfunds:
+      (t.type === "credit" ||
+      t.transaction_type === "funding" ||
+      t.transaction_type === "transfer_in"
+        ? Number(t.amount)
+        : 0) +
+      (t.type === "debit" ||
+      t.transaction_type === "withdrawal" ||
+      t.transaction_type === "sponsor_listing" ||
+      t.transaction_type === "transfer_out"
+        ? Number(t.amount)
+        : 0),
+    credit:
+      t.type === "credit" ||
+      t.transaction_type === "funding" ||
+      t.transaction_type === "transfer_in"
+        ? Number(t.amount)
+        : 0,
+    debit:
+      t.type === "debit" ||
+      t.transaction_type === "withdrawal" ||
+      t.transaction_type === "sponsor_listing" ||
+      t.transaction_type === "transfer_out"
+        ? Number(t.amount)
+        : 0,
   }));
 
   console.log(currentTotals)
@@ -145,7 +175,7 @@ const Wallet = () => {
         <h1 className="text-black dark:text-white text-2xl font-medium">
           Wallet
         </h1>
-        {/* <ExclamationMark /> */}
+        <ExclamationMark />
       </div>
       <div className="flex flex-col xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">

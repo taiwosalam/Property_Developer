@@ -117,6 +117,10 @@ export const ProfileForm: React.FC<{
       setDueDateLocal(null);
       setDueDate?.(null);
       setGlobalInfoStore("isPastDate", false); // Update store
+      setSelectedOptions((prev) => ({
+        ...prev,
+        create_invoice: true, // Reset to true when no start date
+      }));
       return;
     }
     const formattedStartDate = startDate.format("YYYY-MM-DD");
@@ -126,6 +130,11 @@ export const ProfileForm: React.FC<{
     setDueDate?.(calculatedDueDate);
     const isPast = startDate.isBefore(dayjs(), "day");
     setGlobalInfoStore("isPastDate", isPast); // Update store
+    // Force create_invoice to false for past dates
+    setSelectedOptions((prev) => ({
+      ...prev,
+      create_invoice: isPast ? false : prev.create_invoice,
+    }));
   }, [startDate, rentPeriod, setStart_date, setDueDate, setGlobalInfoStore]);
 
   const [selectedOptions, setSelectedOptions] = useState<
@@ -185,6 +194,9 @@ export const ProfileForm: React.FC<{
     { label: "SMS Alert", key: "sms_alert" },
     { label: "Email Alert", key: "email_alert" },
   ];
+
+  // Non-naira currency message
+  const nonNaira = currency !== "naira";
 
   return (
     <div className="space-y-6">
@@ -251,30 +263,69 @@ export const ProfileForm: React.FC<{
             disabled={
               (key === "mobile_notification" && isWebUser) ||
               (key === "create_invoice" &&
-                (!isMobileUser || (currency !== "naira" && isMobileUser)))
+                (!isMobileUser ||
+                  (currency !== "naira" && isMobileUser) ||
+                  startDate?.isBefore(dayjs(), "day")))
             }
           >
             {label}
           </Checkbox>
         ))}
       </div>
-      {isWebUser ? (
-        <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-          {`Confirms that you have received payment for the 
+      {startDate?.isBefore(dayjs(), "day") ? (
+        <div className="custom-flex-col gap-1">
+          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+            You have selected a past date for the occupant, which indicates that
+            you are recording an outstanding rent balance for the client, not
+            initiating a new rent payment.
+          </p>
+          {nonNaira && (
+            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              Your property was listed in a currency other than Naira. As a
+              result, automatic payments and wallet transactions are not
+              supported. You will need to handle all payments manually.
+            </p>
+          )}
+        </div>
+      ) : isWebUser ? (
+        <div className="custom-flex-col gap-1">
+          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+            {`Confirms that you have received payment for the 
           ${isRental ? "rent" : "counting"}.`}
-        </p>
+          </p>
+          {nonNaira && (
+            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              Your property was listed in a currency other than Naira. As a
+              result, automatic payments and wallet transactions are not
+              supported. You will need to handle all payments manually.
+            </p>
+          )}
+        </div>
       ) : (
-        <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-          {selectedOptions["create_invoice"]
-            ? `Payment will be reflected once the ${
-                isRental ? "tenant" : "occupant"
-              } makes a payment towards the generated invoice.`
-            : `Confirms that you have received payment for the ${
-                isRental ? "rent" : "counting"
-              }. ${currency === "naira" ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                isRental ? "tenant" : "occupant"
-              } to make the payment.` : ''}`}
-        </p>
+        <div className="custom-flex-col gap-1">
+          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+            {selectedOptions["create_invoice"]
+              ? `Payment will be reflected once the ${
+                  isRental ? "tenant" : "occupant"
+                } makes a payment towards the generated invoice.`
+              : `Confirms that you have received payment for the ${
+                  isRental ? "rent" : "counting"
+                }. ${
+                  currency === "naira"
+                    ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+                        isRental ? "tenant" : "occupant"
+                      } to make the payment.`
+                    : ""
+                }`}
+          </p>
+          {nonNaira && (
+            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              Your property was listed in a currency other than Naira. As a
+              result, automatic payments and wallet transactions are not
+              supported. You will need to handle all payments manually.
+            </p>
+          )}
+        </div>
       )}
     </div>
   );

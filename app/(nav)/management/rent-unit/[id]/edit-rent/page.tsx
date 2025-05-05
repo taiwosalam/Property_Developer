@@ -17,6 +17,7 @@ import {
   AddPartPayment,
   EditCurrentRent,
   TransferTenants,
+  CompletePartPayment,
 } from "@/components/Management/Rent And Unit/Edit-Rent/Edit-rent-sections";
 import {
   RenewalFee,
@@ -24,6 +25,7 @@ import {
 } from "@/components/Management/Rent And Unit/renewal-rent-detals";
 import { MatchedProfile } from "@/components/Management/Rent And Unit/matched-profile";
 import {
+  formatFee,
   initData,
   initDataProps,
   singleUnitApiResponse,
@@ -63,6 +65,7 @@ const EditRent = () => {
   const [amt, setAmt] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
   const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
+  const [isCompletePayment, setIsCompletePayment] = useState(false);
 
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const endpoint = `/unit/${id}/view`;
@@ -107,6 +110,8 @@ const EditRent = () => {
   const estateData = getEstateData(unit_data);
   const propertySettingsData = getPropertySettingsData(unit_data);
   const estateSettingsDta = getEstateSettingsData(unit_data);
+
+  const PART_PAYMENT_AMOUNT = 0;
 
   // ADD UPFRONT RENT
   const handleUpfrontRent = async () => {
@@ -240,31 +245,68 @@ const EditRent = () => {
               id={propertyId as string}
             />
 
-            <EditCurrentRent
-              currency={unit_data.currency || "naira"}
-              isRental={isRental}
-              total={
-                isRental
-                  ? unit_data.renewalTenantTotalPrice
-                  : unit_data.newTenantTotalPrice
-              }
-              setStart_Date={setStartDate}
-              action={handleUpfrontRent}
-              loading={reqLoading}
-              setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
-              isUpfrontPaymentChecked={isUpfrontPaymentChecked}
-            />
+            {PART_PAYMENT_AMOUNT <= 0 && (
+              <>
+                <EditCurrentRent
+                  currency={unit_data.currency || "naira"}
+                  isRental={isRental}
+                  total={
+                    isRental
+                      ? unit_data.renewalTenantTotalPrice
+                      : unit_data.newTenantTotalPrice
+                  }
+                  setStart_Date={setStartDate}
+                  action={handleUpfrontRent}
+                  loading={reqLoading}
+                  setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+                  isUpfrontPaymentChecked={isUpfrontPaymentChecked}
+                />
 
-            <AddPartPayment
-              isRental={isRental}
-              currency={unit_data.currency || "naira"}
-              setStart_Date={setStartDate}
-              action={handlePartPayment}
-              loading={reqLoading}
-              setAmt={setAmt}
-              setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
-              isUpfrontPaymentChecked={isUpfrontPaymentChecked}
-            />
+                <AddPartPayment
+                  isRental={isRental}
+                  currency={unit_data.currency || "naira"}
+                  setStart_Date={setStartDate}
+                  action={handlePartPayment}
+                  loading={reqLoading}
+                  setAmt={setAmt}
+                  setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+                  isUpfrontPaymentChecked={isUpfrontPaymentChecked}
+                />
+              </>
+            )}
+
+            {PART_PAYMENT_AMOUNT > 0 && (
+              <CompletePartPayment
+                feeDetails={[
+                  {
+                    name: "Part Payment",
+                    amount: formatFee(PART_PAYMENT_AMOUNT, "naira"),
+                  },
+                  {
+                    name: "Balance",
+                    amount: formatFee(3000, "naira"),
+                  },
+                ]}
+                total={PART_PAYMENT_AMOUNT}
+                setIsCompletePayment={setIsCompletePayment}
+              />
+            )}
+
+            {isCompletePayment && (
+              <AddPartPayment
+                isRental={isRental}
+                currency={unit_data.currency || "naira"}
+                setStart_Date={setStartDate}
+                action={handlePartPayment}
+                loading={reqLoading}
+                setAmt={setAmt}
+                isCompletePayment={isCompletePayment}
+                prevAmt={PART_PAYMENT_AMOUNT.toString()}
+                setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+                isUpfrontPaymentChecked={true}
+              />
+            )}
+
           </div>
           <div className="lg:flex-1 lg:!mt-[52px] space-y-8">
             <MatchedProfile

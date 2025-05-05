@@ -20,7 +20,10 @@ import { currencySymbols } from "@/utils/number-formatter";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import useFetch from "@/hooks/useFetch";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
-import { transformUnitOptions, UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
+import {
+  transformUnitOptions,
+  UnitsApiResponse,
+} from "@/components/Management/Rent And Unit/Edit-Rent/data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { toast } from "sonner";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
@@ -38,9 +41,9 @@ const paymentModes = [
 
 const CreateDisbursement = () => {
   const router = useRouter();
-  const companyId = usePersonalInfoStore((state) => state.company_id) || '';
-  const [selectedPropertyId, setSelectedPropertyId] = useState('')
-  const [reqLoading, setReqLoading] = useState(false)
+  const companyId = usePersonalInfoStore((state) => state.company_id) || "";
+  const [selectedPropertyId, setSelectedPropertyId] = useState("");
+  const [reqLoading, setReqLoading] = useState(false);
 
   const {
     data: propertyOptionData,
@@ -63,12 +66,11 @@ const CreateDisbursement = () => {
 
   const UnitsOptions =
     unitsData?.data
-      .filter(unit => unit.is_active === 'vacant')
-      .map(unit => ({
+      .filter((unit) => unit.is_active === "vacant")
+      .map((unit) => ({
         value: unit.id.toString(),
         label: unit.unit_name,
       })) ?? [];
-
 
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false);
@@ -77,21 +79,34 @@ const CreateDisbursement = () => {
   };
 
   // Two separate arrays for each payment type
-  const [payments, setPayments] = useState<{ title: string; amount: number }[]>([]);
-  const [unitPayments, setUnitPayments] = useState<{ title: string; amount: number }[]>([]);
+  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
+    []
+  );
+  const [unitPayments, setUnitPayments] = useState<
+    { title: string; amount: number }[]
+  >([]);
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
 
   // Use the appropriate array based on isAddPaymentChecked
   const handleAddPaymentClick = () => {
+    if (!paymentTitle || !paymentAmount) {
+      return toast.warning("Please fill both payment title and payment amount");
+    }
     if (paymentTitle && paymentAmount) {
       // Remove commas and parse the amount as a float
       const parsedAmount = parseFloat(paymentAmount.replace(/,/g, ""));
       if (!isNaN(parsedAmount)) {
         if (isAddPaymentChecked) {
-          setPayments([...payments, { title: paymentTitle, amount: parsedAmount }]);
+          setPayments([
+            ...payments,
+            { title: paymentTitle, amount: parsedAmount },
+          ]);
         } else {
-          setUnitPayments([...unitPayments, { title: paymentTitle, amount: parsedAmount }]);
+          setUnitPayments([
+            ...unitPayments,
+            { title: paymentTitle, amount: parsedAmount },
+          ]);
         }
         setPaymentTitle("");
         setPaymentAmount("");
@@ -124,21 +139,20 @@ const CreateDisbursement = () => {
       description: data.description,
       disburse_mode: data.disbursement_mode?.toLowerCase(), // 'bank transfer', 'wallet', 'cash deposit', 'bank deposit', 'other mode'
       disbursement: isAddPaymentChecked ? payments : unitPayments,
-    }
+    };
     try {
-      // console.log("payload", payload)
-      setReqLoading(true)
-      const res = await createDisbursement(objectToFormData(payload))
+      setReqLoading(true);
+      const res = await createDisbursement(objectToFormData(payload));
       if (res) {
-        toast.success("Disbursement Created Successfully")
+        toast.success("Disbursement Created Successfully");
         router.back();
       }
     } catch (error) {
-      toast.error('Failed to create disbursement. Please try again!')
+      toast.error("Failed to create disbursement. Please try again!");
     } finally {
-      setReqLoading(false)
+      setReqLoading(false);
     }
-  }
+  };
 
   return (
     <section className="space-y-7 pb-20">
@@ -155,10 +169,10 @@ const CreateDisbursement = () => {
               disabled={propertiesLoading}
               placeholder={
                 propertiesLoading
-                  ? 'Loading properties...'
+                  ? "Loading properties..."
                   : propertiesError
-                    ? 'Error loading properties'
-                    : 'Select property'
+                  ? "Error loading properties"
+                  : "Select property"
               }
               error={propertiesError}
             />
@@ -191,7 +205,10 @@ const CreateDisbursement = () => {
                 onChange={() => setIsAddPaymentChecked(true)}
               />
             </div>
-            <p>Select this option if you are recording a disbursement for the entire property, and assign a payment title based on the event.</p>
+            <p>
+              Select this option if you are recording a disbursement for the
+              entire property, and assign a payment title based on the event.
+            </p>
           </div>
           {isAddPaymentChecked && (
             <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
@@ -210,7 +227,7 @@ const CreateDisbursement = () => {
                   className="w-full"
                   CURRENCY_SYMBOL={"₦"}
                   formatNumber
-                  value={paymentAmount}
+                  defaultValue={paymentAmount}
                   onChange={(value) => setPaymentAmount(value as string)}
                 />
               </div>
@@ -240,7 +257,10 @@ const CreateDisbursement = () => {
                 onChange={() => setIsAddPaymentChecked(false)}
               />
             </div>
-            <p>Select this option if you are disbursing payment for a specific unit or multiple units within the same property.</p>
+            <p>
+              Select this option if you are disbursing payment for a specific
+              unit or multiple units within the same property.
+            </p>
           </div>
           {!isAddPaymentChecked && (
             <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
@@ -251,14 +271,21 @@ const CreateDisbursement = () => {
                   options={UnitsOptions}
                   placeholder={
                     loadingUnits
-                      ? 'Loading units...'
+                      ? "Loading units..."
                       : unitError
-                        ? 'Error loading units'
-                        : 'Select unit'
+                      ? "Error loading units"
+                      : "Select unit"
                   }
                   error={propertiesError}
                   value={paymentTitle}
-                  onChange={(v) => setPaymentTitle(v)}
+                  onChange={(v) => {
+                    const selectedOption = UnitsOptions.find(
+                      (option) => option.value === v
+                    );
+                    // setUnitId(v);
+                    setPaymentTitle(selectedOption ? selectedOption.label : "");
+                  }}
+                  // onChange={(v) => setPaymentTitle(v)}
                 />
                 <Input
                   id="amount"
@@ -336,15 +363,15 @@ const CreateDisbursement = () => {
         )}
 
         <FixedFooter className="flex items-center justify-end gap-4">
-          <Button type="button" className="py-2 px-8" size="base_medium" variant="sky_blue">
-            Cancel
-          </Button>
           <Button
-            onClick={handleCreateDisbursement as any}
-            type="submit"
+            type="button"
             className="py-2 px-8"
             size="base_medium"
+            variant="sky_blue"
           >
+            Cancel
+          </Button>
+          <Button type="submit" className="py-2 px-8" size="base_medium">
             {reqLoading ? "Please wait..." : "Create"}
           </Button>
         </FixedFooter>

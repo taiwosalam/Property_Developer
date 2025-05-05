@@ -18,6 +18,7 @@ import { create } from "zustand";
 import { Transaction } from "./wallet-store";
 import { initDataProps } from "@/app/(nav)/management/rent-unit/data";
 import { DateRange } from "react-day-picker";
+import { WalletStats } from "@/app/(nav)/wallet/data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -46,6 +47,12 @@ interface GlobalStoreState {
   setSelectedOccupant: (occupant: Occupant | null) => void;
   setIsPastDate: (isPast: boolean) => void;
   setUnitData: (data: initDataProps | null) => void;
+
+  wallet_stats?: WalletStats;
+  wallet_date_range?: {
+    timeRange: string;
+    selectedDateRange: DateRange | undefined;
+  };
   // add more keys here as needed…
 }
 

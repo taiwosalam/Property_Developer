@@ -23,7 +23,7 @@ import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 import Button from "../Form/Button/button";
 import { useCompanyBankDetails } from "@/hooks/useCompanyBankDetails";
 
-const SettingsBank = () => {
+const SettingsBank = ({ branch }: { branch?: boolean }) => {
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -137,12 +137,16 @@ const SettingsBank = () => {
     setShowCard(false);
   };
 
+  const subTitle = branch
+    ? "To streamline payments from branch, please add the most suitable branch account that should appear on invoices."
+    : "A bank account for wallet withdrawal is the account linked to your wallet, allowing you to transfer funds from your digital wallet directly to your bank.";
+
   return (
-    <SettingsSection title="Bank Details">
+    <SettingsSection title={branch ? "Branch Bank Details" : "Bank Details"}>
       <div className="custom-flex-col gap-8">
         <SettingsSectionTitle
-          title="Bank Account For Withdrawal"
-          desc="A bank account for wallet withdrawal is the account linked to your wallet, allowing you to transfer funds from your digital wallet directly to your bank."
+          title={branch ? "Bank Account For Invoice" : "Bank Account For Withdrawal"} 
+          desc={subTitle}
         />
         {(bankNotAvailable || openEdit) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-end">
@@ -237,7 +241,7 @@ const SettingsBank = () => {
             type="otp"
             // text={edit ? "Edit" : "Update"}
             loading={reqLoading}
-            action={handleAddBank}
+            action={branch ? async () => {} : handleAddBank}
             next={next}
           />
         )}

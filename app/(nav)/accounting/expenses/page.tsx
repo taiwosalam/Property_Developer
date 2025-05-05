@@ -352,7 +352,7 @@ const AccountingExpensesPage = () => {
               timeRangeLabel={getTimeRangeLabel()}
             />
             <AccountStatsCard
-              title="Part Payment"
+              title="Deduction"
               balance={Number(stats.total_deduct)}
               variant="blueIncoming"
               trendDirection={
@@ -388,8 +388,16 @@ const AccountingExpensesPage = () => {
               title="You do not have any expenses yet!"
               body={
                 <p>
-                  Create an expense by clicking on the &rqous;Create New
-                  Expense&rqous; button.
+                  Create an expense by clicking on the &apos;Create New
+                  Expense&apos; button. 
+                  <br />
+                  <br />
+                  It keeps a record of all expenses made
+                  on a particular unit or property.
+                  <br />
+                  <br />
+                  To learn more about this page, click on your profile and visit
+                  the Assistance & Support section.
                 </p>
               }
             />

@@ -32,6 +32,9 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
 import { AnyAaaaRecord } from "dns";
 import { toast, Toaster } from "sonner";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
 
 const paymentModes = [
   "Bank Transfer",
@@ -54,7 +57,7 @@ const ManageDisbursement = () => {
     []
   );
 
-  const { data, error, loading, refetch } = useFetch<DisburseApiResponse>(
+  const { data, error, loading, refetch, isNetworkError } = useFetch<DisburseApiResponse>(
     `/disburses/${disbursementId}`
   );
   useRefetchOnEvent("fetch-disburses", () => refetch({ silent: true }));
@@ -153,6 +156,7 @@ const ManageDisbursement = () => {
       }
     }
   };
+
   const handleDeleteDeduction = (index: number) => {
     setDeductions(deductions.filter((_, i) => i !== index));
   };
@@ -168,6 +172,17 @@ const ManageDisbursement = () => {
     setPaymentTitle(e.target.value);
     setUnitId(e.target.value)
   }
+
+
+  if (loading)
+    return (
+      <div className="custom-flex-col gap-2">
+        <CardsLoading length={5} />
+      </div>
+    );
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">

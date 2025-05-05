@@ -954,6 +954,7 @@ export interface initDataProps {
   property_address?: string;
   previous_tenants?: any;
   property_document?: any;
+   [key: string]: any; 
 }
 
 // ================ transform /unit/${id}/view =================

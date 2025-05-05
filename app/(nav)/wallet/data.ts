@@ -6,6 +6,7 @@ import {
 } from "@/components/BadgeIcon/badge-icon";
 import type { Beneficiary } from "@/store/wallet-store";
 import { DateRange } from "react-day-picker";
+import { parseCurrency } from "../accounting/expenses/[expenseId]/manage-expenses/data";
 
 export const walletChartConfig = {
   totalfunds: {
@@ -92,28 +93,99 @@ export const computeTotals = (
   transactions: any[],
   range: DateRange | undefined
 ) => {
-  if (!range?.from || !range?.to)
+  if (!range?.from || !range?.to) {
     return { total_funds: 0, total_debit: 0, total_credit: 0 };
+  }
 
   const filtered = transactions.filter((t) => {
     const date = new Date(t.date);
     return date >= range.from! && date <= range.to!;
   });
 
+  // Log filtered transactions for debugging
+  console.log("Filtered transactions:", filtered);
+
   const totals = filtered.reduce(
     (acc, t) => {
       const amount = Number(t.amount);
-      if (t.type === "credit") {
+      // Determine if the transaction is a credit based on type or transaction_type
+      const isCredit =
+        t.type === "credit" ||
+        t.type === "DVA" ||
+        t.transaction_type === "funding" ||
+        t.transaction_type === "transfer_in";
+
+      if (isCredit) {
         acc.total_credit += amount;
-        acc.total_funds += amount;
-      } else if (t.type === "debit") {
+      } else if (
+        t.type === "debit" ||
+        t.transaction_type === "withdrawal" ||
+        t.transaction_type === "sponsor_listing" ||
+        t.transaction_type === "transfer_out"
+      ) {
         acc.total_debit += amount;
-        acc.total_funds -= amount;
       }
+
       return acc;
     },
     { total_funds: 0, total_debit: 0, total_credit: 0 }
   );
+
+  // Calculate total_funds as the sum of total_credit and total_debit
+  totals.total_funds = totals.total_credit + totals.total_debit;
+
+  // Log computed totals for debugging
+  console.log("Computed totals:", totals);
+
+  return {
+    ...totals,
+    total_funds: Math.max(0, totals.total_funds), // Ensure non-negative
+  };
+};
+
+export const computeStatsTotals = (
+  transactions: any[],
+  range: DateRange | undefined
+) => {
+  if (!range?.from || !range?.to) {
+    return { total_funds: 0, total_debit: 0, total_credit: 0 };
+  }
+
+  const filtered = transactions.filter((t) => {
+    const date = new Date(t.date);
+    return date >= range.from! && date <= range.to!;
+  });
+
+  console.log("Filtered transactions:", filtered); // For debugging
+
+  const totals = filtered.reduce(
+    (acc, t) => {
+      const amount = parseCurrency(t.amount);
+      const isCredit =
+        t.type === "credit" ||
+        t.type === "DVA" ||
+        t.transaction_type === "funding" ||
+        t.transaction_type === "transfer_in";
+
+      if (isCredit) {
+        acc.total_credit += amount;
+      } else if (
+        t.type === "debit" ||
+        t.transaction_type === "withdrawal" ||
+        t.transaction_type === "sponsor_listing" ||
+        t.transaction_type === "transfer_out"
+      ) {
+        acc.total_debit += amount;
+      }
+
+      return acc;
+    },
+    { total_funds: 0, total_debit: 0, total_credit: 0 }
+  );
+
+  totals.total_funds = totals.total_credit + totals.total_debit;
+
+  console.log("Computed totals:", totals); // For debugging
 
   return {
     ...totals,
@@ -194,3 +266,48 @@ export const transformBeneficiaries = (
     };
   });
 };
+
+export interface WalletStats {
+  total_funds: number;
+  total_debit: number;
+  total_credit: number;
+  funds_trend: {
+    from:
+      | "last month"
+      | "last week"
+      | "none"
+      | "previous day"
+      | "previous 3 months"
+      | "previous 30 days"
+      | "previous 7 days"
+      | "previous period";
+    type: "up" | "down" | "none" | "equal";
+    percent: number;
+  };
+  debit_trend: {
+    from:
+      | "last month"
+      | "last week"
+      | "none"
+      | "previous day"
+      | "previous 3 months"
+      | "previous 30 days"
+      | "previous 7 days"
+      | "previous period";
+    type: "up" | "down" | "none" | "equal";
+    percent: number;
+  };
+  credit_trend: {
+    from:
+      | "last month"
+      | "last week"
+      | "none"
+      | "previous day"
+      | "previous 3 months"
+      | "previous 30 days"
+      | "previous 7 days"
+      | "previous period";
+    type: "up" | "down" | "none" | "equal";
+    percent: number;
+  };
+}
