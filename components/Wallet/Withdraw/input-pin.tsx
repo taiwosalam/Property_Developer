@@ -68,6 +68,7 @@ const InputPin = ({ branch: branchState } : { branch?: boolean; }) => {
         </p>
         <div className="flex gap-6 justify-center">
           <PinField
+            type="password"
             length={4}
             ref={pinFieldRef}
             validate={/^[0-9]$/}

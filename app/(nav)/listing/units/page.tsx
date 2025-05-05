@@ -127,6 +127,8 @@ const Units = () => {
     refetch,
   } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
 
+  console.log(apiData);
+
   // console.log("apiData", apiData)
   useEffect(() => {
     if (apiData) {
@@ -207,14 +209,14 @@ const Units = () => {
         />
         <ManagementStatistcsCard
           title="Published Units"
-          newData={pageData.published_vacant}
-          total={pageData.month_published_vacant}
+          newData={pageData.month_published_vacant}
+          total={pageData.published_vacant}
           colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Unpublished Units"
-          newData={pageData.unpublished_vacant}
-          total={pageData.month_unpublished_vacant}
+          newData={pageData.month_unpublished_vacant}
+          total={pageData.unpublished_vacant}
           colorScheme={3}
         />
         <ManagementStatistcsCard

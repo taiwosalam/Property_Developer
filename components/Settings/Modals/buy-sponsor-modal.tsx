@@ -31,9 +31,11 @@ const BuySponsorModal = () => {
       company_id: companyId,
       value: count,
     };
+
     try {
       setReqLoading(true);
       const res = await BuySponsor(objectToFormData(payload));
+
       if (res) {
         toast.success("Sponsor bought successfully!");
         window.dispatchEvent(new Event("refetchRentSponsors"));

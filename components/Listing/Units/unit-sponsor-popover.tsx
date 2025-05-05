@@ -66,7 +66,7 @@ const UnitSponsorPopover = ({
 
   const handleOpen = ()=> {
     close();
-    console.log("cliecked")
+    console.log("clicked")
     // setBuyModal(true)
   }
 

@@ -13,7 +13,7 @@ import api, { handleAxiosError } from "@/services/api";
 export const BuySponsor = async (data: FormData) => {
   try {
     const res = await api.post("/sponsor/buy", data);
-    if (res.status === 200) {
+    if (res.status === 200 || res.status === 201) {
       return true;
     }
   } catch (error) {

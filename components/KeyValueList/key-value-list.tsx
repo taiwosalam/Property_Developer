@@ -51,7 +51,7 @@ export const KeyValueList = <T extends object>({
                     {String(key).split("_").join(" ")}
                   </p>
                   <p
-                    className="text-black dark:text-darkText-2"
+                    className="text-black dark:text-darkText-2 line-clamp-1"
                     style={styles?.[key]?.value}
                   >
                     {/* Apply truncation to the value */}
