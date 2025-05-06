@@ -21,10 +21,19 @@ import { SponsorListingsResponse } from "./types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CustomLoader from "../Loader/CustomLoader";
 import TableLoading from "../Loader/TableLoading";
-import { SponsorDataTypes, SponsorFields, transformSponsorResponse } from "@/app/(nav)/settings/add-on/data";
+import {
+  SponsorDataTypes,
+  SponsorFields,
+  transformSponsorResponse,
+} from "@/app/(nav)/settings/add-on/data";
+import { BuySponsor } from "../Listing/data";
+import { toast } from "sonner";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const SPONSOR_COST = 2000;
 const SponsorUnit = () => {
+  const { company_id } = usePersonalInfoStore();
   const [count, setCount] = useState<number>(1);
   const [availableSponsors, setAvailableSponsors] = useState<number>(0);
   const [pageData, setPageData] = useState<SponsorDataTypes>({
@@ -36,6 +45,11 @@ const SponsorUnit = () => {
       total: 0,
     },
   });
+  const [totalAmount, setTotalAmount] = useState(SPONSOR_COST);
+
+  useEffect(() => {
+    setTotalAmount(count * SPONSOR_COST);
+  }, [count]);
 
   const handleIncrement = () => {
     setCount((prevCount) => prevCount + 1);
@@ -44,7 +58,7 @@ const SponsorUnit = () => {
   const handleDecrement = () => {
     setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : 1));
   };
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (isNaN(value)) {
@@ -60,7 +74,6 @@ const SponsorUnit = () => {
 
   console.log(data);
 
-
   useEffect(() => {
     if (data) {
       const transformed = transformSponsorResponse(data);
@@ -68,6 +81,25 @@ const SponsorUnit = () => {
     }
   }, [data]);
 
+  const handleProceed = async () => {
+    const payload = {
+      amount: totalAmount,
+      company_id,
+      value: count,
+    };
+    try {
+      if(!company_id) return;
+      
+      const res = await BuySponsor(objectToFormData(payload));
+      if (res) {
+        toast.success("Sponsor bought successfully!");
+        window.dispatchEvent(new Event("refetchRentSponsors"));
+        return true;
+      }
+    } catch (error) {
+      toast.error("Failed to buy sponsor!");
+    }
+  };
 
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
@@ -91,7 +123,7 @@ const SponsorUnit = () => {
             </div>
             <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
               Sponsor Cost{" "}
-              <span className="text-xs font-normal">{`₦${(SPONSOR_COST.toLocaleString())}/ per unit`}</span>
+              <span className="text-xs font-normal">{`₦${SPONSOR_COST.toLocaleString()}/ per unit`}</span>
             </p>
             <div className="flex gap-4 flex-col md:flex-row">
               <div className="flex gap-2 items-end justify-end">
@@ -100,7 +132,6 @@ const SponsorUnit = () => {
                     type="number"
                     value={count}
                     min={1}
-                    
                     onChange={handleInputChange}
                     className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
                   />
@@ -130,7 +161,11 @@ const SponsorUnit = () => {
                       </Button>
                     </ModalTrigger>
                     <ModalContent>
-                      <SponsorModal count={count} cost={SPONSOR_COST}/>
+                      <SponsorModal
+                        count={count}
+                        cost={SPONSOR_COST}
+                        onSubmit={handleProceed}
+                      />
                     </ModalContent>
                   </Modal>
                 </div>
@@ -146,7 +181,10 @@ const SponsorUnit = () => {
                 href="/settings/subscription/sponsors"
                 className="flex items-center gap-1"
               >
-                <Link href={"/reports/adds-on-sponsor"} className="text-text-label dark:text-darkText-1">
+                <Link
+                  href={"/reports/adds-on-sponsor"}
+                  className="text-text-label dark:text-darkText-1"
+                >
                   See all
                 </Link>
                 <ChevronRight color="#5A5D61" size={16} />
