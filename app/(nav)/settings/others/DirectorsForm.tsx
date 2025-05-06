@@ -157,7 +157,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           required
         />
         <Input
-          id="email"
+          id="alt_email"
           label="email"
           type="email"
           value={formData?.email || ""}

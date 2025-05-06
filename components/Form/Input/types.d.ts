@@ -43,4 +43,7 @@ export interface InputProps {
   minLength?: number;
   onKeyDown?: (e: React.KeyboardEvent<HTMLFormElement>) => void;
   restrictedWordsOptions?: RestrictedWordsOptions;
+  prefix?: string | React.ReactNode;
+  startAdornment?: string | React.ReactNode;
+  endAdornment?: string | React.ReactNode;
 }

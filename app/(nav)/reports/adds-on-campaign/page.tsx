@@ -29,28 +29,33 @@ import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
-import { DomainFields, SponsorFields } from "../../settings/add-on/data";
+import {
+  CampaignFields,
+  FeatureFields,
+  SponsorFields,
+} from "../../settings/add-on/data";
 
-const AddsOnDomainRecord = () => {
+const AddsOnCampaignRecord = () => {
   return (
     <div className="space-y-9">
       <FilterBar
         azFilter
         exports
         isDateTrue
-        backUrl={"/settings/add-on/#domain"}
-        pageTitle="Adds-On Domain"
+        backUrl={"/settings/add-on/#campaign"}
+        pageTitle="Adds-On Campaign"
         aboutPageModalData={{
-          title: "Adds-On Domain",
+          title: "Adds-On Feature",
           description: "This page contains a list of listing sponsor history",
         }}
         searchInputPlaceholder="Search for audit trail"
         handleFilterApply={() => {}}
         //={() => {}}
+
         handleSearch={() => {}}
         //filterOptionsMenu={() => {}}
         hasGridListToggle={false}
-        exportHref="/reports/adds-on-domain/export"
+        exportHref="/reports/adds-on-feature/export"
         // xlsxData={pageData.map((activity) => ({
         //   ...activity,
         //   location: address?.formattedAddress
@@ -61,7 +66,7 @@ const AddsOnDomainRecord = () => {
       />
       <section>
         <CustomTable
-          fields={DomainFields}
+          fields={CampaignFields}
           data={[]}
           tableHeadClassName="h-[45px]"
         />
@@ -70,4 +75,4 @@ const AddsOnDomainRecord = () => {
   );
 };
 
-export default AddsOnDomainRecord;
+export default AddsOnCampaignRecord;

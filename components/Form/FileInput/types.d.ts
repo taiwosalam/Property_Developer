@@ -13,5 +13,9 @@ export interface FileInputProps {
   settingsPage?: boolean;
   defaultValue?: string;
   noUpload?: boolean;
+  isSvg?: boolean
   membership_status?: "verified" | "unverified" | "pending" | "approved";
+  endAdornment?: string | React.ReactNode;
+  onChange?: (file: File | null) => void;
+ 
 }

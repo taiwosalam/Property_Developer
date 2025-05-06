@@ -453,7 +453,7 @@ const Others = () => {
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
 
-  console.log(apiData);
+  
 
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
@@ -714,7 +714,7 @@ const Others = () => {
   const handleRestoreUser = async () => {
     if (!selectedRestrictedUser) return;
 
-    console.log("Restricted user!!!");
+    
     const payload = {
       user_id: selectedRestrictedUser?.id,
       is_active: true,
@@ -741,7 +741,7 @@ const Others = () => {
       "title",
       "professional_title",
       "full_name",
-      "email",
+      "alt_email",
       "years_in_business",
       "about_director",
       "phone_number",
@@ -813,6 +813,8 @@ const Others = () => {
     }));
   };
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
+
+  
 
   return (
     <>
