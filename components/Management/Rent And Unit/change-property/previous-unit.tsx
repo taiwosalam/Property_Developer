@@ -34,6 +34,7 @@ export const ProceedPreviousUnitBalance: React.FC<{
     unitBalance,
     unitData,
     startDate,
+    dueDate,
     propertyType,
   } = useOccupantStore();
   const { currentRentStats, currentUnit } = useGlobalStore();
@@ -102,13 +103,19 @@ export const ProceedPreviousUnitBalance: React.FC<{
     breakdown,
     unitData?.currency
   );
-  const unitDetails = getUnitDetails(unitData, unitData?.currency);
+  const unitDetails = getUnitDetails(
+    unitData,
+    unitData?.currency,
+    startDate,
+    dueDate
+  );
+  // const unitDetails = getUnitDetails(unitData, unitData?.currency);
   const detailsArr = isUnit ? unitDetails : currentRentDetailItems;
 
   // Return null if unitData is not available
   if (!unitData) return null;
   // If no valid items, return null
-  if (detailsArr.length === 0 && !workings) return null;
+  if (detailsArr.length === 0) return null;
 
   return (
     <div className="space-y-1">

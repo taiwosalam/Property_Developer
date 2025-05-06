@@ -144,7 +144,7 @@ const StartRent = () => {
       const res = await startRent(payload);
       if (res) {
         toast.success(successMsg);
-        router.back();
+        router.push('/management/rent-unit');
       }
     } catch (err) {
       toast.error(failedMsg);

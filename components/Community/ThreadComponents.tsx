@@ -11,7 +11,6 @@ import { useState } from "react";
 import ReactPlayer from "react-player";
 import { toast } from "sonner";
 
-
 // ============= THREAD HEADER ======================
 export const ThreadHeader = ({
   user_pics,
@@ -51,8 +50,6 @@ export const ThreadHeader = ({
     </div>
   );
 };
-
-
 
 // =============== THREAD BODY ======================
 export const ThreadBody = ({
@@ -109,53 +106,49 @@ export const ThreadFooter = ({
   dislikes,
   slug,
   shareLink,
+  setIsLikeDislikeLoading,
 }: {
   comments: string;
   likes: string;
   dislikes: string;
   slug: string;
   shareLink: string;
+  setIsLikeDislikeLoading?: (value: boolean) => void;
 }) => {
-  const [likeCount, setLikeCount] = useState(likes ? parseInt(likes) : 0);
-  const [dislikeCount, setDislikeCount] = useState(
-    dislikes ? parseInt(dislikes) : 0
-  );
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLike = async () => {
     if (isLoading || userAction === "like") return;
     setIsLoading(true);
+    setIsLikeDislikeLoading?.(true);
 
     try {
       await toggleLike(slug, 1);
-      if (userAction === "dislike") {
-        setDislikeCount((prev) => prev - 1);
-      }
-      setLikeCount((prev) => prev + 1);
       setUserAction("like");
+      window.dispatchEvent(new Event("refetchThreads"));
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
       setIsLoading(false);
+      setIsLikeDislikeLoading?.(false);
     }
   };
 
   const handleDislike = async () => {
     if (isLoading || userAction === "dislike") return;
     setIsLoading(true);
+    setIsLikeDislikeLoading?.(true);
 
     try {
       await toggleLike(slug, -1);
-      if (userAction === "like") {
-        setLikeCount((prev) => prev - 1);
-      }
-      setDislikeCount((prev) => prev + 1);
       setUserAction("dislike");
+      window.dispatchEvent(new Event("refetchThreads"));
     } catch (error) {
       console.error("Error toggling dislike:", error);
     } finally {
       setIsLoading(false);
+      setIsLikeDislikeLoading?.(false);
     }
   };
 
@@ -190,7 +183,7 @@ export const ThreadFooter = ({
           disabled={isLoading}
         >
           <ThumbsUp />
-          <p>{likeCount}</p>
+          <p>{likes}</p>
         </button>
         <button
           className={`flex items-center gap-1 ${
@@ -200,7 +193,7 @@ export const ThreadFooter = ({
           disabled={isLoading}
         >
           <ThumbsDown />
-          <p>{dislikeCount}</p>
+          <p>{dislikes}</p>
         </button>
       </div>
 
@@ -218,6 +211,3 @@ export const ThreadFooter = ({
     </div>
   );
 };
-
-
-
