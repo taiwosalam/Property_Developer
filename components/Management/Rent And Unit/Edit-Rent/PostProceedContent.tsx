@@ -6,21 +6,14 @@ import {
   estateData,
   propertySettingsData,
   rentalData,
-  DUMMY_OCCUPANT,
   RentPreviousRecords,
   calculateBalance,
   getEstateData,
   getEstateSettingsDta,
-  RentPeriod,
 } from "@/components/Management/Rent And Unit/data";
 import Button from "@/components/Form/Button/button";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent } from "@/components/Modal/modal";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
-import {
-  PreviousUnitBalance,
-  NewUnitCost,
-  PayAble,
-} from "./Edit-rent-sections";
 import {
   RenewalRent as StartRent,
   PreviousRentRecords,
@@ -39,7 +32,7 @@ import {
   singleUnitApiResponse,
   transformUnitData,
 } from "@/app/(nav)/management/rent-unit/data";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useFetch from "@/hooks/useFetch";
 import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
@@ -47,12 +40,14 @@ import { toast } from "sonner";
 import { getPropertySettingsData, getRentalData } from "./data";
 import { switchUnit } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { useGlobalStore } from "@/store/general-store";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
+import { ChangePropertyNewUnitCost } from "../change-property/new-unit-cost";
+import { ProceedPreviousUnitBalance } from "../change-property/previous-unit";
+import { ProceedPayAble } from "../change-property/payable";
 
 const PostProceedContent = ({
   selectedUnitId,
@@ -63,13 +58,6 @@ const PostProceedContent = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const propertyType = searchParams.get("type") as "rental" | "facility";
-  const id = searchParams.get("p");
-  const isRental = propertyType === "rental";
-  const [reqLoading, setReqLoading] = useState(false);
-  const [startDate, setStartDate] = useState<string | null>(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
   const {
     occupant,
     propertyData,
@@ -77,36 +65,66 @@ const PostProceedContent = ({
     unitBalance,
     calculation,
     deduction,
+    unitData,
+    setSelectedUnitId,
+    setPage,
+    setPropertyType,
+    setPropertyId,
+    setUnitData,
+    setReqLoading,
+    setStartDate,
+    setModalIsOpen,
+    reqLoading,
+    startDate,
+    modalIsOpen,
   } = useOccupantStore();
+
+  const propertyType = searchParams.get("type") as "rental" | "facility";
+  const propertyId = searchParams.get("p");
+  const isRental = propertyType === "rental";
   const currentUnit = useGlobalStore((s) => s.currentUnit);
   const currentRentStats = useGlobalStore((s) => s.currentRentStats);
   const oustandingObj = currentRentStats?.oustandingObj || [];
   const outstanding = currentRentStats?.outstanding || 0;
-
   const isUnit = page === "unit";
-  // console.log("currentRentStats", currentRentStats);
 
-  // SELECTED UNIT DATA FETCH
-  const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  // Set initial data in store
+  useEffect(() => {
+    setSelectedUnitId(selectedUnitId || null);
+    setPage(page || null);
+    setPropertyType(propertyType);
+    setPropertyId(propertyId);
+    setUnitData(initData); // Initialize unitData
+  }, [
+    selectedUnitId,
+    page,
+    propertyType,
+    propertyId,
+    setSelectedUnitId,
+    setPage,
+    setPropertyType,
+    setPropertyId,
+    setUnitData,
+  ]);
+
+  // Fetch unit data and update store
   const endpoint = `/unit/${selectedUnitId}/view`;
   const {
     data: apiData,
     loading,
-    silentLoading,
     isNetworkError,
     error,
-    refetch,
   } = useFetch<singleUnitApiResponse>(endpoint);
 
   useEffect(() => {
     if (apiData) {
       const transformedData = transformUnitData(apiData);
-      setUnit_data((x: any) => ({
-        ...x,
+      setUnitData({
+        ...initData,
         ...transformedData,
-      }));
+      });
     }
-  }, [apiData]);
+  }, [apiData, setUnitData]);
 
   if (!unitBalance) {
     toast.warning("Back to Rent & Unit for security reasons");
@@ -114,8 +132,19 @@ const PostProceedContent = ({
     return null;
   }
 
+  if (loading || !unitData) {
+    return (
+      <div className="custom-flex-col gap-2">
+        <CardsLoading length={6} />
+      </div>
+    );
+  }
+
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
   const balance =
-    unitBalance?.data?.map((record: any, index: any) => ({
+    unitBalance?.data?.map((record: any) => ({
       ...record,
       amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
       start_date: record.start_date
@@ -132,36 +161,35 @@ const PostProceedContent = ({
   const startday = balance?.[0]?.start_date;
   const endDay = balance?.[0]?.due_date;
   const amt = balance?.[0]?.amount_paid;
-  const rent = currentUnit.newTenantTotalPrice;
-  const renewalTenantPrice = parseCurrency(currentUnit.renewalTenantPrice);
-  // Only calculate the balance if all values exist, otherwise default to 0
+  const rent = currentUnit?.newTenantTotalPrice;
+  const renewalTenantPrice = parseCurrency(currentUnit?.renewalTenantPrice);
   const bal =
     startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
 
   const newUnitTotal = calculation
-    ? Number(unit_data.newTenantTotalPrice)
-    : Number(unit_data.renewalTenantTotalPrice);
+    ? Number(unitData?.newTenantTotalPrice || 0)
+    : Number(unitData?.renewalTenantTotalPrice || 0);
   const newUnitTotalFormatted = calculation
-    ? formatFee(unit_data.newTenantTotalPrice, unit_data.currency || "naira")
+    ? formatFee(
+        unitData?.newTenantTotalPrice || 0,
+        unitData?.currency || "naira"
+      )
     : formatFee(
-        unit_data.renewalTenantTotalPrice,
-        unit_data.currency || "naira"
+        unitData?.renewalTenantTotalPrice || 0,
+        unitData?.currency || "naira"
       );
   const totalPayable = deduction ? outstanding - newUnitTotal : newUnitTotal;
   const prev_unit_bal = bal
-    ? `${"₦"}${formatNumber(parseFloat(`${bal}`))}`
+    ? `₦${formatNumber(parseFloat(`${bal}`))}`
     : undefined;
   const refundAmount = totalPayable < 0 ? Math.abs(totalPayable) : 0;
 
-  // Calculate excess or refund amount for the third card
   const isExcess = totalPayable < 0;
   const balanceLabel = isExcess ? "Client Excess" : "Refund Client";
   const showBalanceCard = totalPayable < 0 || isExcess;
 
-  // CURRENT UNIT AMOUNT
-  const currentUnitAmt = formatFee(newUnitTotal, unit_data.currency || "naira");
+  const currentUnitAmt = formatFee(newUnitTotal, unitData?.currency || "naira");
 
-  // GET PROPERTY DATA
   const rentalData = getRentalData(isUnit ? currentUnit : propertyData);
   const propertySettingsData = getPropertySettingsData(
     isUnit ? currentUnit : propertyData
@@ -171,35 +199,6 @@ const PostProceedContent = ({
     isUnit ? currentUnit : propertyData
   );
 
-  console.log("currentUnit", currentUnit);
-  console.log("outstanding", outstanding);
-  console.log("totalPayable", totalPayable);
-
-  const deductionsLabeCal = [
-    {
-      label: calculation ? "New Tenant Package" : "Renewal Total Package",
-      value: newUnitTotalFormatted,
-    },
-    // ...oustandingObj,
-    {
-      label: deduction ? "Do Deduction" : "No Deduction",
-      value: formatFee(totalPayable, unit_data.currency || "naira"),
-    },
-  ];
-
-  const deductionsLabeRes = [
-    {
-      label: calculation ? "New Tenant Package" : "Renewal Total Package",
-      value: newUnitTotalFormatted,
-    },
-    ...oustandingObj,
-    {
-      label: deduction ? "Do Deduction" : "No Deduction",
-      value: formatFee(totalPayable, unit_data.currency || "naira"),
-    },
-  ];
-
-  // FUNCTION TO SWITCH UNIT
   const handleSwitchUnit = async () => {
     const id = balance[0].id;
     const data = {
@@ -208,7 +207,6 @@ const PostProceedContent = ({
       deduction: deduction ? 1 : 0,
       payment_date: startDate,
     };
-    console.log("payload", data);
     try {
       setReqLoading(true);
       const res = await switchUnit(id as string, objectToFormData(data));
@@ -223,15 +221,6 @@ const PostProceedContent = ({
       setReqLoading(false);
     }
   };
-
-  if (loading)
-    return (
-      <div className="flex flex-col gap-5">
-        <CardsLoading length={6} />;
-      </div>
-    );
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -249,117 +238,21 @@ const PostProceedContent = ({
             isRental ? propertySettingsData : estateSettingsDta
           }
           {...(isRental ? { gridThree: true } : {})}
-          id={id as string}
+          id={propertyId as string}
         />
-        <PreviousUnitBalance
-          page={page}
-          isRental={isRental}
-          deduction={deduction}
-          calculation={calculation}
-          items={balance as RentPreviousRecords[]}
-          total={`${bal}`}
-          currentUnit={currentUnit}
-          startDate={startday}
-          dueDate={endDay}
-        />
+        <ProceedPreviousUnitBalance />
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
-            <NewUnitCost
-              isRental={isRental}
-              noEdit
-              currency={unit_data.currency}
-              feeDetails={[
-                {
-                  name: isRental ? `${unit_data.fee_period} Rent` : "Fee",
-                  amount: calculation
-                    ? (unit_data.newTenantPrice as any)
-                    : unit_data.renewalTenantPrice,
-                },
-                {
-                  name: "Service Charge",
-                  amount: calculation
-                    ? unit_data.service_charge
-                    : unit_data.renew_service_charge,
-                },
-                {
-                  name: "Security Fee",
-                  amount: calculation ? unit_data.security_fee : "",
-                },
-                {
-                  name: "Agency Fee",
-                  amount: calculation ? unit_data.unitAgentFee : "",
-                },
-                {
-                  name: "Caution Fee",
-                  amount: calculation ? unit_data.caution_fee : "",
-                },
-                {
-                  name: "VAT Amount",
-                  amount: calculation
-                    ? unit_data.vat_amount
-                    : unit_data.renew_vat_amount,
-                },
-                {
-                  name: "Other Charges",
-                  amount: calculation
-                    ? unit_data.other_charge
-                    : unit_data.renew_other_charge,
-                },
-              ]}
-              total={newUnitTotal}
-              id={unit_data?.id}
-              calculation={calculation}
-              deduction={deduction}
-            />
+            <ChangePropertyNewUnitCost id={unitData?.id} />
 
-            <PreviousUnitBalance
-              currentUnit={currentUnit}
-              title="Calculations"
-              isRental={isRental}
-              workings
-              deduction={deduction}
-              calculation={calculation}
-              deductionsCal={deductionsLabeCal}
-              deductionsRes={deductionsLabeRes}
-              items={balance as RentPreviousRecords[]}
-              // total={`${bal}`}
-              total={`${totalPayable}`}
-            />
-
-            <PayAble
-              isRental={isRental}
-              detail={{
-                label: balanceLabel,
-                amount: totalPayable,
-              }}
-              isExcess={isExcess}
-              calculation={calculation}
-            />
-            {/* 
-            {showBalanceCard && (
-              <NewUnitCost
-                title="Balance After Deduction"
-                isExcess
-                noEdit
-                deduction={deduction}
-                isRental={isRental}
-                feeDetails={[
-                  {
-                    name: balanceLabel,
-                    amount: `₦${formatNumber(balanceAmount)}`,
-                  },
-                ]}
-                total={balanceAmount}
-                calculation={calculation}
-              />
-            )} */}
-
+            <ProceedPreviousUnitBalance title="Calculations" workings />
+            <ProceedPayAble />
             <StartRent
               isRental={isRental}
               rentPeriod="yearly"
               title={`Start ${isRental ? "Rent" : "Counting"}`}
               start
-              setStart_Date={setStartDate}
+              setStart_Date={(date) => setStartDate(date)}
             />
           </div>
           <div className="lg:flex-1 lg:!mt-[52px]">
@@ -373,9 +266,7 @@ const PostProceedContent = ({
           noRefetch={true}
         />
       </section>
-
       <FixedFooter className="flex items-center justify-end">
-        {/* <ModalTrigger asChild> */}
         <Button
           size="base_medium"
           className="py-2 px-6"
@@ -384,8 +275,14 @@ const PostProceedContent = ({
         >
           {reqLoading ? "Please wait..." : "Proceed"}
         </Button>
-        {/* </ModalTrigger> */}
-        <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
+        <Modal
+          state={{
+            isOpen: modalIsOpen,
+            setIsOpen: setModalIsOpen as React.Dispatch<
+              React.SetStateAction<boolean>
+            >,
+          }}
+        >
           <ModalContent>
             <ModalPreset type="success" className="w-full">
               <div className="flex flex-col gap-8">
