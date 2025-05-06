@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import SettingsSection from "./settings-section";
 import {
   SettingsSectionTitle,
@@ -10,20 +10,61 @@ import { ChevronRight } from "lucide-react";
 import CustomTable from "../Table/table";
 import { CustomTableProps } from "../Table/types";
 import Link from "next/link";
-import { FeatureFields, SMSFields } from "@/app/(nav)/settings/add-on/data";
+import {
+  buySMS,
+  FeatureFields,
+  requestCompanyFeature,
+  SMSFields,
+} from "@/app/(nav)/settings/add-on/data";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SponsorModal from "./Modals/sponsor-modal";
 import Button from "@/components/Form/Button/button";
 import Select from "../Form/Select/select";
 import DateInput from "../Form/DateInput/date-input";
+import { toast } from "sonner";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import {
+  BrandHistoryResponse,
+  EnrollmentHistoryTable,
+  SMSTable,
+  SmsTransactionResponse,
+  transformEnrollmentHistory,
+  transSMSTransactionTable,
+} from "./sponsor_data";
 
 const SMS_COST = 4;
 
 export const SMSUnit = () => {
+  const { company_id } = usePersonalInfoStore();
+  const [count, setCount] = useState(1);
+  const [totalAmount, setTotalAmount] = useState(SMS_COST);
+  const [smsTransactionData, setSMSTransactionData] = useState<SMSTable | null>(
+    null
+  );
+
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
-  const [count, setCount] = useState(1);
+
+  const { data: smsData, refetch } = useFetch<any>(`/sms/value`);
+  const { data: smsTransactions } =
+    useFetch<SmsTransactionResponse>(`sms/transactions`);
+
+  useRefetchOnEvent("buySMS", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (smsTransactions) {
+      const transformData = transSMSTransactionTable(smsTransactions);
+      setSMSTransactionData(transformData);
+    }
+  }, [smsTransactions]);
+
+  // Update totalAmount whenever count changes
+  useEffect(() => {
+    setTotalAmount(count * SMS_COST);
+  }, [count]);
 
   const handleIncrement = () => {
     setCount((prevCount) => prevCount + 1);
@@ -33,14 +74,33 @@ export const SMSUnit = () => {
     setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : 1));
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (isNaN(value)) {
+    if (isNaN(value) || value < 1) {
       setCount(1);
     } else {
-      setCount(value < 1 ? 1 : value);
+      setCount(value);
     }
   };
+
+  const handleBuySMS = async () => {
+    const payload = {
+      value: count,
+      amount: totalAmount,
+      company_id,
+    };
+    try {
+      const res = await buySMS(payload);
+      if (res) {
+        toast.success("SMS bought successfully");
+        return true;
+      }
+    } catch (error) {
+      toast.error("Failed to buy SMS. Please try again.");
+      console.error("Buy SMS error:", error);
+    }
+  };
+
   return (
     <SettingsSection title="SMS unit">
       <div className="custom-flex-col gap-6">
@@ -48,7 +108,10 @@ export const SMSUnit = () => {
         <div className="flex">
           <div className="w-[164px] py-2 px-3 rounded-[4px] bg-neutral-2 text-center">
             <p className="text-brand-9 text-xs font-normal">
-              SMS Unit Balance: <span className="font-medium">400</span>
+              SMS Unit Balance:{" "}
+              <span className="font-medium">
+                {smsData ? smsData?.data?.value : 0}
+              </span>
             </p>
           </div>
         </div>
@@ -91,7 +154,11 @@ export const SMSUnit = () => {
                   </Button>
                 </ModalTrigger>
                 <ModalContent>
-                  <SponsorModal count={count} cost={SMS_COST} />
+                  <SponsorModal
+                    count={count}
+                    cost={SMS_COST}
+                    onSubmit={handleBuySMS}
+                  />
                 </ModalContent>
               </Modal>
             </div>
@@ -117,7 +184,12 @@ export const SMSUnit = () => {
               <ChevronRight color="#5A5D61" size={16} />
             </Link>
           </div>
-          <CustomTable data={[]} fields={SMSFields} {...table_style_props} />
+
+          <CustomTable
+            data={smsTransactionData ? smsTransactionData?.data : []}
+            fields={SMSFields}
+            {...table_style_props}
+          />
         </div>
       </div>
     </SettingsSection>
@@ -166,9 +238,24 @@ const DISPLAY_OPTIONS: DisplayOption[] = [
 ];
 
 export const FeatureCompany = () => {
+  const { company_id } = usePersonalInfoStore();
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [selectedPage, setSelectedPage] = useState<string>("");
   const [totalAmount, setTotalAmount] = useState<number>(0);
+
+  const [featureTable, setFeatureTable] =
+    useState<EnrollmentHistoryTable | null>(null);
+
+  const { data: enrollmentData, refetch } = useFetch<BrandHistoryResponse>(
+    `brands/${company_id}`
+  );
+
+  useEffect(() => {
+    if (enrollmentData) {
+      const transformEnrollment = transformEnrollmentHistory(enrollmentData);
+      setFeatureTable(transformEnrollment);
+    }
+  }, [enrollmentData]);
 
   useEffect(() => {
     if (!selectedPeriod || !selectedPage) {
@@ -187,6 +274,28 @@ export const FeatureCompany = () => {
       setTotalAmount(discountedAmount);
     }
   }, [selectedPeriod, selectedPage]);
+
+  const handleRequestFeature = async () => {
+    if (!company_id) return;
+    const periodString = selectedPeriod.split("")[0];
+
+    const payload = {
+      period: Number(periodString),
+      amount: totalAmount,
+      company_id,
+      page: [selectedPage],
+    };
+
+    console.log(payload);
+
+    try {
+      const response = await requestCompanyFeature(payload, company_id);
+      if (response) {
+        toast.success("Company feature requested successfully");
+        return true;
+      }
+    } catch (error) {}
+  };
 
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
@@ -276,6 +385,7 @@ export const FeatureCompany = () => {
                   <SponsorModal
                     count={parseInt(selectedPeriod)}
                     cost={totalAmount / parseInt(selectedPeriod)}
+                    onSubmit={handleRequestFeature}
                   />
                 </ModalContent>
               </Modal>
@@ -303,7 +413,7 @@ export const FeatureCompany = () => {
             </Link>
           </div>
           <CustomTable
-            data={[]}
+            data={featureTable ? featureTable?.data : []}
             fields={FeatureFields}
             {...table_style_props}
           />

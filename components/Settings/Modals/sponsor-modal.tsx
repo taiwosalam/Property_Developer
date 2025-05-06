@@ -12,30 +12,28 @@ import { formatNumber } from "@/utils/number-formatter";
 import React from "react";
 import { toast } from "sonner";
 
+interface ISponsorModalProps {
+  count: number;
+  cost?: number;
+  onSubmit?: () => Promise<boolean | undefined>;
+}
 const SPONSOR_COST = 2000;
-const SponsorModal = ({ count, cost }: { count: number, cost?: number }) => {
-  const companyId = usePersonalInfoStore((state) => state.company_id) || "";
+const SponsorModal = ({ count, cost, onSubmit }: ISponsorModalProps) => {
   const amount = count * (cost ?? SPONSOR_COST);
   const [reqLoading, setReqLoading] = React.useState(false);
   const { setIsOpen } = useModal();
   const { isMobile } = useWindowWidth();
 
-  const handleProceed = async () => {
-    const payload = {
-      amount: amount,
-      company_id: companyId,
-      value: count,
-    };
+  const handleSubmit = async () => {
     try {
       setReqLoading(true);
-      const res = await BuySponsor(objectToFormData(payload));
-      if (res) {
-        toast.success("Sponsor bought successfully!");
-        window.dispatchEvent(new Event("refetchRentSponsors"));
-        setIsOpen(false);
+      if (onSubmit) {
+        const res = await onSubmit();
+        if (res) {
+          setIsOpen(false);
+        }
       }
     } catch (error) {
-      toast.error("Failed to buy sponsor!");
     } finally {
       setReqLoading(false);
     }
@@ -67,7 +65,7 @@ const SponsorModal = ({ count, cost }: { count: number, cost?: number }) => {
             size="base_medium"
             className="px-8 py-2"
             variant="default"
-            onClick={handleProceed}
+            onClick={handleSubmit}
           >
             {reqLoading ? "Please wait..." : "Proceed"}
           </Button>

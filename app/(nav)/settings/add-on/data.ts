@@ -6,6 +6,7 @@ import {
 import type { SubscriptionTableType } from "./types";
 import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
+import api, { handleAxiosError } from "@/services/api";
 
 export const enrollment_subscriptions: SubscriptionTableType = {
   fields: [
@@ -238,22 +239,22 @@ export const FeatureFields = [
   {
     id: "0",
     label: "Payment ID",
-    accessor: "feature_id",
+    accessor: "purchase_id",
   },
   {
     id: "1",
     label: "Purchase Date",
-    accessor: "duration",
+    accessor: "payment_date",
   },
   {
     id: "2",
     label: "Display Page",
-    accessor: "price",
+    accessor: "display_pages",
   },
   {
     id: "3",
     label: "Amount Paid",
-    accessor: "start_date",
+    accessor: "amount_paid",
   },
   {
     id: "4",
@@ -263,12 +264,12 @@ export const FeatureFields = [
   {
     id: "5",
     label: "Start Date",
-    accessor: "status",
+    accessor: "start_date",
   },
   {
     id: "5",
     label: "Expire date",
-    accessor: "status",
+    accessor: "expired_date",
   },
 ];
 export const CampaignFields = [
@@ -317,12 +318,12 @@ export const SMSFields = [
   {
     id: "0",
     label: "Purchase ID",
-    accessor: "purchase_id",
+    accessor: "id",
   },
   {
     id: "1",
     label: "Quantity / Units",
-    accessor: "quantity",
+    accessor: "units",
   },
   {
     id: "2",
@@ -337,7 +338,7 @@ export const SMSFields = [
   {
     id: "4",
     label: "Purchase Date",
-    accessor: "purchase_date",
+    accessor: "date",
   },
   // {
   //   id: "5",
@@ -347,9 +348,8 @@ export const SMSFields = [
 ];
 
 function formatToNGN(value: string) {
-  const numericValue = typeof value === "string"
-    ? Number(value.replace(/,/g, ""))
-    : value;
+  const numericValue =
+    typeof value === "string" ? Number(value.replace(/,/g, "")) : value;
 
   if (isNaN(numericValue)) return "Invalid value";
 
@@ -357,10 +357,9 @@ function formatToNGN(value: string) {
     style: "currency",
     currency: "NGN",
     minimumFractionDigits: 2,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
   });
 }
-
 
 export const transformSponsorResponse = (
   response: SponsorListingsResponse
@@ -442,4 +441,41 @@ export const added_units: SubscriptionTableType = {
       date: "12/02/2024",
     },
   ],
+};
+
+export const buySMS = async (payload: any) => {
+  try {
+    const data = await api.post(`/sms/buy`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (data.status === 200 || data.status === 201) {
+      window.dispatchEvent(new Event("buySMS"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const requestCompanyFeature = async (
+  payload: any,
+  companyId: string
+) => {
+  try {
+    const data = await api.post(`brands/${companyId}`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (data.status === 200 || data.status === 201) {
+      window.dispatchEvent(new Event("companyFeature"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
 };
