@@ -110,17 +110,17 @@ export const updatePropertyRequest = async (id: string, data: any) => {
 
 // Helper function to transform API data into ThreadCardProps
 export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
-  // console.log("data", data)
+  console.log("data", data);
   return data.map((thread, index) => ({
     id: index,
     name: thread.user
-      ? `${thread.user.professional_title} ${thread.user.name}`
+      ? `${thread.user.title ?? ""} ${thread.user.name}`
       : "--- ---",
     picture_url:
       thread.post && thread.post.media && thread.post.media.length > 0
         ? thread.post.media[0].path
         : empty,
-    role: thread.user ? thread.user.role : "--- ---",
+    role: thread.user ? thread.user.professional_title : "--- ---",
     time: thread.post ? thread.post.created_at : "--- ---",
     title: thread.post ? thread.post.title : "--- ---",
     desc: thread.post ? thread.post.content : "--- ---",

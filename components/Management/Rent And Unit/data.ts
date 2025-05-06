@@ -298,26 +298,6 @@ function parseCurrency(amountStr: string): number {
   return isNaN(parsed) ? 0 : parsed;
 }
 
-// export function calculateBalance(
-//   amount_paid: string,
-//   start_date: string,
-//   due_date: string
-// ): number {
-//   const amount = parseCurrency(amount_paid);
-//   // Ensure the month name is capitalized for proper parsing
-//   const start = dayjs(capitalizeDateString(start_date));
-//   const due = dayjs(capitalizeDateString(due_date));
-
-//   const totalDays = due.diff(start, "day");
-//   const remainingDays = due.diff(dayjs(), "day");
-
-//   if (totalDays <= 0) return 0;
-
-//   // Ratio of remaining days over total days
-//   const ratio = remainingDays / totalDays;
-//   // return amount * ratio;
-//   return Math.round(amount * ratio);
-// }
 
 export function calculateBalance(
   amount_paid: string,

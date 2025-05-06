@@ -26,7 +26,7 @@ import ThreadSkeleton from "@/components/Community/threadskeleton";
 import ThreadCard from "@/components/Community/ThreadCard";
 import { transformToThreadCardProps } from "./data";
 import ServerError from "@/components/Error/ServerError";
-
+import { ThreadSkeletonLoader } from "./components";
 
 interface ThreadApiResponse {
   data: any[];
@@ -255,11 +255,7 @@ const AgentCommunityPage = () => {
       ) : (
         <AutoResizingGrid minWidth={300}>
           {silentLoading ? (
-            <>
-              <ThreadSkeleton />
-              <ThreadSkeleton />
-              <ThreadSkeleton />
-            </>
+            <ThreadSkeletonLoader length={3} />
           ) : threads.length === 0 ? (
             <section>
               <EmptyList
