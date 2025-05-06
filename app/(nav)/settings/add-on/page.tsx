@@ -32,6 +32,7 @@ import {
   SMSUnit,
 } from "@/components/Settings/subscription-components";
 import PersonalizedDomain from "@/components/Settings/personalized-doamin";
+import { Campaign } from "@/components/Settings/settings-campaign";
 
 const style = {
   position: "absolute",
@@ -73,6 +74,7 @@ const Subscriptions = () => {
 
           <SMSUnit />
           <FeatureCompany />
+          <Campaign />
 
           <PersonalizedDomain />
         </div>

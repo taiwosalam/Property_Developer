@@ -17,7 +17,7 @@ const FileInput: React.FC<FileInputProps> = ({
   hiddenInputClassName,
   textStyles,
   required,
-  placeholder,
+  placeholder = "Click to upload document",
   buttonName,
   fileType,
   size,
@@ -26,6 +26,8 @@ const FileInput: React.FC<FileInputProps> = ({
   defaultValue,
   noUpload,
   membership_status,
+  endAdornment,
+  isSvg
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
@@ -75,6 +77,13 @@ const FileInput: React.FC<FileInputProps> = ({
     if (!newFile) {
       //restorePreviousFile();
       return;
+    }
+    if(isSvg){
+      if (newFile.type !== "image/svg+xml") {
+        toast.warning("Only SVG files are supported.");
+        restorePreviousFile();
+        return;
+      }
     }
     if (!fileType) {
       if (!newFile.type.startsWith("image/")) {
@@ -159,9 +168,9 @@ const FileInput: React.FC<FileInputProps> = ({
           {label}
         </Label>
       )}
-      <div className="flex gap-2 items-center">
+      <div className="relative flex gap-2 items-center w-full">
         <div
-          className={`relative ${settingsPage && "flex"}  ${clsx(
+          className={`relative w-full ${settingsPage && "flex"}  ${clsx(
             noUpload ? "cursor-not-allowed opacity-50" : "cursor-pointer"
           )}`}
         >
@@ -183,11 +192,11 @@ const FileInput: React.FC<FileInputProps> = ({
             role="button"
             aria-label="upload"
             onClick={handleClick}
-            className={clsx(
+            className={`relative  ${clsx(
               "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
               textStyles,
               fileName ? "bg-neutral-2" : "bg-none"
-            )}
+            )}`}
           >
             {!settingsPage ? (
               <span
@@ -205,7 +214,7 @@ const FileInput: React.FC<FileInputProps> = ({
               <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
                 {noUpload
                   ? "Click eye icon to view document"
-                  : "Click to upload document"}
+                  : placeholder}
               </span>
             )}
 
@@ -247,6 +256,12 @@ const FileInput: React.FC<FileInputProps> = ({
                 >
                   <EyeShowIcon />
                 </button>
+              </div>
+            )}
+
+            {endAdornment && !fileName && (
+              <div className="absolute right-3 flex items-center z-10">
+                {endAdornment}
               </div>
             )}
           </div>

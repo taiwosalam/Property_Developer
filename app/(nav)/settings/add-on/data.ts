@@ -271,6 +271,48 @@ export const FeatureFields = [
     accessor: "status",
   },
 ];
+export const CampaignFields = [
+  {
+    id: "0",
+    label: "Payment ID",
+    accessor: "feature_id",
+  },
+  {
+    id: "1",
+    label: "Campaign Type",
+    accessor: "duration",
+  },
+  {
+    id: "1",
+    label: "Campaign Name",
+    accessor: "duration",
+  },
+  {
+    id: "2",
+    label: "Link",
+    accessor: "price",
+  },
+  {
+    id: "3",
+    label: "Uploaded",
+    accessor: "start_date",
+  },
+  {
+    id: "4",
+    label: "Period",
+    accessor: "due_date",
+  },
+  {
+    id: "5",
+    label: "Amount",
+    accessor: "status",
+  },
+  {
+    id: "5",
+    label: "Expire date",
+    accessor: "status",
+  },
+];
 export const SMSFields = [
   {
     id: "0",

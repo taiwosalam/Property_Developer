@@ -108,7 +108,10 @@ export const SMSUnit = () => {
               href="/settings/subscription/sponsors"
               className="flex items-center gap-1"
             >
-              <Link href={"/reports/adds-on-sms"} className="text-text-label dark:text-darkText-1">
+              <Link
+                href={"/reports/adds-on-sms"}
+                className="text-text-label dark:text-darkText-1"
+              >
                 See all
               </Link>
               <ChevronRight color="#5A5D61" size={16} />
@@ -290,7 +293,10 @@ export const FeatureCompany = () => {
               href="/settings/subscription/sponsors"
               className="flex items-center gap-1"
             >
-              <Link href={"/reports/adds-on-feature"} className="text-text-label dark:text-darkText-1">
+              <Link
+                href={"/reports/adds-on-feature"}
+                className="text-text-label dark:text-darkText-1"
+              >
                 See all
               </Link>
               <ChevronRight color="#5A5D61" size={16} />
