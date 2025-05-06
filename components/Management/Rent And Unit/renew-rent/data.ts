@@ -15,6 +15,7 @@ interface FeeDetailsParams {
   owingAmount: number;
   overduePeriods: number;
   unitData: UnitData;
+  penaltyAmount: number;
 }
 
 export const getOwingFeeDetails = ({
@@ -23,6 +24,7 @@ export const getOwingFeeDetails = ({
   owingAmount,
   overduePeriods,
   unitData,
+  penaltyAmount,
 }: FeeDetailsParams): FeeDetail[] => {
   const formatCurrency = (amount: number): string =>
     `${currencySymbols[currency] || "₦"}${formatNumber(amount)}`;
@@ -47,6 +49,6 @@ export const getOwingFeeDetails = ({
       name: "Owing Amount",
       amount: owingAmount ? formatCurrency(owingAmount) : "",
     },
-    { name: "Rent Penalty", amount: "--- ---" }, // TODO: Fix the amount later
+    { name: "Rent Penalty", amount: formatCurrency(penaltyAmount) || "" }, // TODO: Fix the amount later
   ];
 };

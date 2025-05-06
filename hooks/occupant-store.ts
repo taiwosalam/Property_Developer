@@ -16,6 +16,7 @@ interface OccupantState {
   deduction: boolean;
   reqLoading: boolean;
   startDate: string | null;
+  dueDate: string | null;
   modalIsOpen: boolean;
   setSelectedUnitId: (unitId: string | null) => void;
   setPage: (page: string | null) => void;
@@ -31,6 +32,7 @@ interface OccupantState {
   setDeduction: (value: boolean) => void;
   setReqLoading: (loading: boolean) => void;
   setStartDate: (date: string | null) => void;
+  setDueDate: (date: string | null) => void;
   setModalIsOpen: (isOpen: boolean) => void;
 }
 
@@ -49,6 +51,7 @@ export const useOccupantStore = create<OccupantState>((set) => ({
   deduction: false,
   reqLoading: false,
   startDate: null,
+  dueDate: null,
   modalIsOpen: false,
   setSelectedUnitId: (unitId) => set({ selectedUnitId: unitId }),
   setPage: (page) => set({ page }),
@@ -64,5 +67,6 @@ export const useOccupantStore = create<OccupantState>((set) => ({
   setDeduction: (value) => set({ deduction: value }),
   setReqLoading: (loading) => set({ reqLoading: loading }),
   setStartDate: (date) => set({ startDate: date }),
+  setDueDate: (date) => set({ dueDate: date }),
   setModalIsOpen: (isOpen) => set({ modalIsOpen: isOpen }),
 }));

@@ -24,6 +24,7 @@ const SwitchPropertyModal: React.FC<{
   const [modalView, setModalView] = useState<"warning" | "form">("warning");
   const [selectedProperty, setPropertySelected] = useState("");
   const [loading, setLoading] = useState(false);
+  const isRentalProperty = propertyType === "rental";
 
   const {
     data: propertyData,
@@ -31,31 +32,59 @@ const SwitchPropertyModal: React.FC<{
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/rental");
 
-  console.log("property", propertyData);
-  console.log("currency", currency);
+  const {
+    data: facilityData,
+    error: facilityError,
+    loading: facilityLoading,
+  } = useFetch<PropertyListResponse>("/property/facility");
 
   // Property options without current tenant property
   const propertyOptions =
     propertyData?.data
       .filter((p) => p.id !== propertyId)
       .map((p) => ({
-        value: String(p.id), // Convert to string for select compatibility
+        value: String(p.id),
         label: p.title,
       })) || [];
+
+  // Facility options without current tenant facility
+  const facilityOptions =
+    facilityData?.data
+      .filter((p) => p.id !== propertyId)
+      .map((p) => ({
+        value: String(p.id),
+        label: p.title,
+      })) || [];
+
+  const PROPERTY_OPTIONS = isRentalProperty ? propertyOptions : facilityOptions;
+  const PROPERTY_ERROR = isRentalProperty ? propertyError : facilityError;
+  const PROPERTY_LOADING = isRentalProperty ? propertyLoading : facilityLoading;
+  const LOADING_TEXT = isRentalProperty
+    ? "Loading properties..."
+    : "Loading facilities...";
+  const ERROR_TEXT = isRentalProperty
+    ? "Error loading properties"
+    : "Error loading facilities";
+  const SELECT_TITLE = isRentalProperty ? "Select Property" : "Select Facility";
 
   const handleContinue = async () => {
     if (!selectedProperty) {
       toast.warning("Please select a property");
       return;
     }
+    // Choose the correct data source based on propertyType
+    const dataSource = isRentalProperty
+      ? propertyData?.data
+      : facilityData?.data;
     // Find the selected property's details
-    const selectedPropertyData = propertyData?.data.find(
+    const selectedPropertyData = dataSource?.find(
       (p) => String(p.id) === selectedProperty
     );
     if (!selectedPropertyData) {
       toast.error("Selected property not found");
       return;
     }
+
     // Check if the selected property's currency matches the provided currency
     if (selectedPropertyData.currency !== currency) {
       toast.warning(
@@ -77,7 +106,6 @@ const SwitchPropertyModal: React.FC<{
       setLoading(false);
     }
   };
-
 
   if (modalView === "warning") {
     return (
@@ -112,17 +140,17 @@ const SwitchPropertyModal: React.FC<{
           <Select
             id="property-select"
             label={`Choose ${isRental ? "Property" : "Facility"}`}
-            options={propertyOptions}
+            options={PROPERTY_OPTIONS}
             onChange={setPropertySelected}
             placeholder={
-              propertyLoading
-                ? "Loading properties..."
-                : propertyError
-                ? "Error loading properties"
-                : "Select property"
+              PROPERTY_LOADING
+                ? LOADING_TEXT
+                : PROPERTY_ERROR
+                ? ERROR_TEXT
+                : SELECT_TITLE
             }
-            error={propertyError}
-            disabled={propertyLoading || loading}
+            error={PROPERTY_ERROR}
+            disabled={PROPERTY_LOADING || loading}
           />
           <div className="w-full flex items-center justify-center">
             <Button

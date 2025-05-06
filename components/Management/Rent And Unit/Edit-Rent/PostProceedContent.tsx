@@ -10,6 +10,7 @@ import {
   calculateBalance,
   getEstateData,
   getEstateSettingsDta,
+  getPropertyEstateData,
 } from "@/components/Management/Rent And Unit/data";
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent } from "@/components/Modal/modal";
@@ -48,6 +49,7 @@ import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manag
 import { ChangePropertyNewUnitCost } from "../change-property/new-unit-cost";
 import { ProceedPreviousUnitBalance } from "../change-property/previous-unit";
 import { ProceedPayAble } from "../change-property/payable";
+import { extractBalanceDates } from "../change-property/data";
 
 const PostProceedContent = ({
   selectedUnitId,
@@ -73,9 +75,11 @@ const PostProceedContent = ({
     setUnitData,
     setReqLoading,
     setStartDate,
+    setDueDate,
     setModalIsOpen,
     reqLoading,
     startDate,
+    dueDate,
     modalIsOpen,
   } = useOccupantStore();
 
@@ -126,22 +130,26 @@ const PostProceedContent = ({
     }
   }, [apiData, setUnitData]);
 
-  if (!unitBalance) {
-    toast.warning("Back to Rent & Unit for security reasons");
-    router.back();
-    return null;
-  }
+  // Extract and save startDate and dueDate
+  useEffect(() => {
+    if (unitData && (unitBalance?.data || startDate)) {
+      const { start_date, due_date } = extractBalanceDates(
+        unitBalance?.data || [],
+        unitData.fee_period || "yearly",
+        startDate
+      );
 
-  if (loading || !unitData) {
-    return (
-      <div className="custom-flex-col gap-2">
-        <CardsLoading length={6} />
-      </div>
-    );
-  }
+      console.log("Extracted dates:", { start_date, due_date });
 
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+      // Save to store if different
+      if (start_date && startDate !== start_date) {
+        setStartDate(start_date);
+      }
+      if (due_date && dueDate !== due_date) {
+        setDueDate(due_date);
+      }
+    }
+  }, [unitBalance, unitData, startDate, setStartDate, setDueDate]);
 
   const balance =
     unitBalance?.data?.map((record: any) => ({
@@ -194,7 +202,11 @@ const PostProceedContent = ({
   const propertySettingsData = getPropertySettingsData(
     isUnit ? currentUnit : propertyData
   );
-  const estateData = getEstateData(isUnit ? currentUnit : propertyData);
+  const PropertyPageEstateData = getPropertyEstateData(propertyData);
+  const UnitPageEstateData = getEstateData(currentUnit);
+  const estateData = isUnit ? UnitPageEstateData : PropertyPageEstateData;
+  // const estateData = getEstateData(isUnit ? currentUnit : propertyData);
+  
   const estateSettingsDta = getEstateSettingsDta(
     isUnit ? currentUnit : propertyData
   );
@@ -222,6 +234,23 @@ const PostProceedContent = ({
     }
   };
 
+  if (!unitBalance) {
+    toast.warning("Back to Rent & Unit for security reasons");
+    router.back();
+    return null;
+  }
+
+  if (loading || !unitData) {
+    return (
+      <div className="custom-flex-col gap-2">
+        <CardsLoading length={6} />
+      </div>
+    );
+  }
+
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>
@@ -240,6 +269,7 @@ const PostProceedContent = ({
           {...(isRental ? { gridThree: true } : {})}
           id={propertyId as string}
         />
+
         <ProceedPreviousUnitBalance />
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">

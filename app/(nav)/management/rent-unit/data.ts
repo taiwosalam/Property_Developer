@@ -3,6 +3,7 @@ import {
   BadgeIconColors,
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
+import { RentPeriod } from "@/components/Management/Rent And Unit/data";
 import { propertyCategories } from "@/data";
 import {
   Currency,
@@ -954,7 +955,7 @@ export interface initDataProps {
   property_address?: string;
   previous_tenants?: any;
   property_document?: any;
-   [key: string]: any; 
+  [key: string]: any;
 }
 
 // ================ transform /unit/${id}/view =================
@@ -1000,6 +1001,7 @@ export const transformUnitData = (response: any) => {
     unit_features: data.facilities,
     newTenantTotalPrice: data.total_package,
     currency: data.property.currency,
+    fee_amount: data.fee_amount,
     renewalTenantTotalPrice: data.renew_total_package,
     renew_fee_period: data.renew_fee_period,
     fee_period: data.fee_period,
@@ -1007,6 +1009,7 @@ export const transformUnitData = (response: any) => {
     agency_fee: data.user.property.agency_fee,
     group_chat: convertToYesNo(Number(data.property.group_chat)),
     rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
+    chargePenalty: data.property.rent_penalty,
     caution_deposit: data.user.property.caution_deposit,
     // PROPERTY VALUES
     property_title: data.property.title,
@@ -1020,6 +1023,7 @@ export const transformUnitData = (response: any) => {
     prepaid: data.prepaid,
     wardrobe: data.wardrobe,
     property_document: data.property_document || undefined,
+    rent_penalty_setting: data.rent_penalty_setting || undefined,
     occupant: occupant
       ? {
           id: occupant.id,
@@ -1101,4 +1105,68 @@ export const formatFee = (
   const currencySymbol =
     currencySymbols[currency as keyof typeof currencySymbols] || "₦";
   return `${currencySymbol}${formatNumber(parsedAmount)}`;
+};
+
+interface RentPenaltySettings {
+  daily?: number;
+  weekly?: number;
+  monthly?: number;
+  quarterly?: number;
+  yearly?: number;
+  biennially?: number;
+  triennially?: number;
+  quadrennial?: number;
+  quinquennial?: number;
+  sexennial?: number;
+  septennial?: number;
+  octennial?: number;
+  nonennial?: number;
+  decennial?: number;
+}
+
+export const calculateRentPenalty = (
+  chargePenalty: boolean,
+  rentPenaltySettings: RentPenaltySettings | undefined,
+  rentAmount: number | undefined,
+  feePeriod: RentPeriod | undefined,
+  overduePeriods: number
+): number => {
+  // Return 0 if conditions are not met
+  if (
+    !chargePenalty ||
+    !rentPenaltySettings ||
+    !rentAmount ||
+    !feePeriod ||
+    overduePeriods <= 0
+  ) {
+    console.log("Penalty not applicable:", {
+      chargePenalty,
+      rentPenaltySettings,
+      rentAmount,
+      feePeriod,
+      overduePeriods,
+    });
+    return 0;
+  }
+
+  // Get the penalty percentage for the fee period
+  const penaltyPercentage = rentPenaltySettings[feePeriod] ?? 0;
+  if (penaltyPercentage <= 0) {
+    console.log("No penalty percentage for period:", feePeriod);
+    return 0;
+  }
+
+  // Calculate penalty per period
+  const penaltyPerPeriod = rentAmount * (penaltyPercentage / 100);
+
+  // Total penalty = penalty per period * overdue periods
+  const totalPenalty = penaltyPerPeriod * overduePeriods;
+
+  console.log("Penalty calculation:", {
+    penaltyPerPeriod,
+    overduePeriods,
+    totalPenalty,
+  });
+
+  return totalPenalty;
 };

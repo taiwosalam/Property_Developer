@@ -854,41 +854,39 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               hiddenInputClassName="property-form-input"
               defaultValue={editMode ? propertySettings?.VAT : "yes"}
             />
+            {/* NOTE: I ADDED CURRENCY TO FACILITY PROPERTY CREATE FORM  */}
+            <Select
+              options={Object.entries(currencySymbols).map(([key, symbol]) => ({
+                value: key.toLowerCase(),
+                label: `${symbol} ${
+                  key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
+                }`,
+              }))}
+              id="currency"
+              label="Currency"
+              isSearchable={false}
+              inputContainerClassName="bg-white"
+              resetKey={resetKey}
+              requiredNoStar
+              hiddenInputClassName="property-form-input"
+              defaultValue={
+                editMode && propertySettings?.currency
+                  ? {
+                      value: propertySettings.currency,
+                      label: `${currencySymbols[propertySettings.currency]} ${
+                        propertySettings.currency.charAt(0).toUpperCase() +
+                        propertySettings.currency.slice(1).toLowerCase()
+                      }`,
+                    }
+                  : {
+                      value: "naira",
+                      label: `${currencySymbols.naira} Naira`,
+                    }
+              }
+            />
+
             {formType === "rental" && (
               <>
-                <Select
-                  options={Object.entries(currencySymbols).map(
-                    ([key, symbol]) => ({
-                      value: key.toLowerCase(),
-                      label: `${symbol} ${
-                        key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
-                      }`,
-                    })
-                  )}
-                  id="currency"
-                  label="Currency"
-                  isSearchable={false}
-                  inputContainerClassName="bg-white"
-                  resetKey={resetKey}
-                  requiredNoStar
-                  hiddenInputClassName="property-form-input"
-                  defaultValue={
-                    editMode && propertySettings?.currency
-                      ? {
-                          value: propertySettings.currency,
-                          label: `${
-                            currencySymbols[propertySettings.currency]
-                          } ${
-                            propertySettings.currency.charAt(0).toUpperCase() +
-                            propertySettings.currency.slice(1).toLowerCase()
-                          }`,
-                        }
-                      : {
-                          value: "naira",
-                          label: `${currencySymbols.naira} Naira`,
-                        }
-                  }
-                />
                 <div className="flex flex-col gap-2">
                   <label> Coordinates </label>
                   <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
