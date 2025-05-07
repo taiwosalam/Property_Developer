@@ -44,6 +44,8 @@ const ManageInvoice = () => {
     }
   }, [data]);
 
+  const IS_PAID = pageData.status.toLowerCase() === "paid";
+
   if (loading) return <PageCircleLoader />;
   if (error) return <ServerError error={error} />;
   if (isNetworkError) return <NetworkError />;
@@ -60,7 +62,7 @@ const ManageInvoice = () => {
               "property name": pageData.property_name,
               "unit name": pageData.unit_name,
               date: pageData.invoice_date,
-              status: "--- ---",
+              status: pageData.status,
               "unit id": pageData.unit_id,
             }}
             chunkSize={2}
@@ -70,7 +72,6 @@ const ManageInvoice = () => {
               "unit name": "",
               "property name": "",
               date: "",
-              // "account officer": "",
               status: "",
               "unit id": "",
             }}
@@ -92,8 +93,8 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 inputClassName="bg-white"
                 formatNumber
+                disabled={IS_PAID}
                 defaultValue={safeFormatNumber(pageData.annual_fee as number)}
-                // defaultValue={`${formatNumber(pageData.annual_fee)}`}
               />
               <Input
                 id="service-charge"
@@ -104,6 +105,7 @@ const ManageInvoice = () => {
                 defaultValue={safeFormatNumber(
                   pageData.service_charge as number
                 )}
+                disabled={IS_PAID}
               />
               <Input
                 id="refundable-caution-fee"
@@ -111,6 +113,7 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 inputClassName="bg-white"
                 formatNumber
+                disabled={IS_PAID}
                 defaultValue={safeFormatNumber(pageData.caution_fee as number)}
               />
               <Input
@@ -119,6 +122,7 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 inputClassName="bg-white"
                 formatNumber
+                disabled={IS_PAID}
                 defaultValue={safeFormatNumber(pageData.agency_fee as number)}
               />
               <Input
@@ -127,6 +131,7 @@ const ManageInvoice = () => {
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 inputClassName="bg-white"
                 formatNumber
+                disabled={IS_PAID}
                 // defaultValue={formatNumber(pageData.) as string}
               />
             </div>
@@ -138,7 +143,7 @@ const ManageInvoice = () => {
         </AccountingTitleSection>
       </div>
       <FixedFooter className="flex items-center justify-between gap-4">
-        {!pageData.is_auto && (
+        {!IS_PAID && (
           <Modal>
             <ModalTrigger asChild>
               <Button
@@ -155,22 +160,24 @@ const ManageInvoice = () => {
           </Modal>
         )}
 
-        <div className="flex items-center gap-2 items-end justify-end">
+        <div className="flex items-center gap-2 ml-auto">
           {pageData.is_auto ? (
             <Button size="base_bold" className="py-2 px-8">
               Back
             </Button>
           ) : (
             <>
-              <Button
-                variant="light_green"
-                size="base_bold"
-                className="py-2 px-8"
-              >
-                Paid
-              </Button>
-              <Button size="base_bold" className="py-2 px-8">
-                save
+              {!IS_PAID && (
+                <Button
+                  variant="light_green"
+                  size="base_bold"
+                  className="py-2 px-8"
+                >
+                  Paid
+                </Button>
+              )}
+              <Button size="base_bold" className="py-2 px-8 self-end">
+                Save
               </Button>
             </>
           )}

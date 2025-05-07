@@ -78,8 +78,7 @@ const PreviewThreadArticle = ({
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">
-          <span className="text-text-secondary">Comments</span>
-          {/* <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">{post?.comments_count}</p> */}
+          <span className="text-text-secondary font-semibold text-md">Comments</span>
         </div>
 
         <div className="flex gap-2">
@@ -105,7 +104,7 @@ const PreviewThreadArticle = ({
           </button>
 
           <div className="flex items-center">
-            <div className="images flex z-30">
+            <div className="images flex z-30 rounded-full  h-[30px] w-[30px] -mr-2">
               {comments.slice(0, 3).map((comment, index) => (
                 <Image
                   key={index}
@@ -113,11 +112,11 @@ const PreviewThreadArticle = ({
                   alt={`commenter ${index + 1}`}
                   width={300}
                   height={300}
-                  className="-mr-2 h-[30px] w-[30px] object-cover rounded-full"
+                  className="-mr-2 h-full w-full object-cover rounded-full bg-brand-9"
                 />
               ))}
             </div>
-            <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
+            <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
               +{post?.comments_count}
             </div>
           </div>

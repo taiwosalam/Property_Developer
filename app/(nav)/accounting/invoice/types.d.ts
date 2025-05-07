@@ -1,3 +1,5 @@
+import { Currency } from "@/utils/number-formatter";
+
 export interface Invoice {
   id: number;
   invoice_id: string;
@@ -8,6 +10,9 @@ export interface Invoice {
   invoice_date: string;
   client_tier: number;
   is_auto?: boolean;
+  status: string;
+  payment_reason?: string;
+  currency?: Currency;
   badge_color?: "red" | "green" | "black" | "blue" | "yellow" | "gray" | "purple";
 }
 
@@ -64,4 +69,5 @@ export interface InvoiceRequestParams {
   property_ids?: string[];
   account_officer?: string[];
   created_by?: string[];
+  status: string;
 }

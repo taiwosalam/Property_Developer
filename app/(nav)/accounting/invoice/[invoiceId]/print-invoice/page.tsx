@@ -22,6 +22,7 @@ import {
   transformBank,
 } from "@/app/(nav)/settings/data";
 import { useCompanyBankDetails } from "@/hooks/useCompanyBankDetails";
+import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 
 const PreviewExpenses = () => {
   const router = useRouter();
@@ -35,7 +36,7 @@ const PreviewExpenses = () => {
   const { data, error, loading, isNetworkError } = useFetch<InvoiceResponse>(
     `/invoice/${invoiceId}`
   );
-  console.log("bank ", companyBankDetails);
+  
   useEffect(() => {
     if (data) {
       setPageData(transformInvoiceData(data.data));
@@ -47,6 +48,8 @@ const PreviewExpenses = () => {
   if (loading) return <PageCircleLoader />;
   if (error) return <div>Error loading invoice data.</div>;
   if (isNetworkError) return <NetworkError />;
+
+  const CURRENCY = "naira"; //TODO: change to real currency from endpount
 
   return (
     <div className="custom-flex-col gap-10 pb-28">
@@ -89,13 +92,18 @@ const PreviewExpenses = () => {
               <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
                 <KeyValueList
                   data={{
-                    "Annual fee": formatNumber(pageData.annual_fee),
-                    "non refundable agency fee": formatNumber(
-                      pageData.agency_fee
+                    "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
+                    "non refundable agency fee": formatFee(
+                      pageData.agency_fee,
+                      CURRENCY
                     ),
-                    "service charge": formatNumber(pageData.service_charge),
-                    "refundable caution fee": formatNumber(
-                      pageData.caution_fee
+                    "service charge": formatFee(
+                      pageData.service_charge,
+                      CURRENCY
+                    ),
+                    "refundable caution fee": formatFee(
+                      pageData.caution_fee,
+                      CURRENCY
                     ),
                     "non refundable legal fee": "",
                   }}

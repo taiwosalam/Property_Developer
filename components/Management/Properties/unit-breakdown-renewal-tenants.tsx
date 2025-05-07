@@ -14,11 +14,13 @@ import { useUnitForm } from "./unit-form-context";
 const UnitBreakdownRenewalTenant = () => {
   const { formResetKey, unitData } = useUnitForm();
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
+  const propertyType = useAddUnitStore((state) => state.propertyType);
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
   const agencyFeePercentage = parseFloat(
     String(propertySettings?.agency_fee || "0")
   );
+  const IS_RENTAL = propertyType === "rental";
   const [otherChargesInput, setOtherChargesInput] = useState(
     !!parseFloat(unitData?.renew_other_charge || "0")
   );
@@ -82,7 +84,8 @@ const UnitBreakdownRenewalTenant = () => {
   useEffect(() => {
     const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
     const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
-    const rentTenPercent = (rentAmountValue * agencyFeePercentage) / 100;
+    // const rentTenPercent = (rentAmountValue * agencyFeePercentage) / 100;
+    const rentTenPercent = rentAmountValue * 0.1;
     const calculatedVAT = shouldCalculateVAT ? rentTenPercent * 0.075 : 0;
 
     setFormValues((prevValues) => ({
@@ -115,7 +118,7 @@ const UnitBreakdownRenewalTenant = () => {
   return (
     <div>
       <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-        Unit Fee Breakdown - Renewal Tenants
+        Unit Fee Breakdown - {IS_RENTAL ? " Renewal Tenants" : " Renewal Occupants"}
       </h4>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">

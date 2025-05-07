@@ -1,11 +1,5 @@
 "use client";
-import {
-  estateSettingsDta,
-  estateData,
-  propertySettingsData,
-  DUMMY_OCCUPANT,
-  rentalData,
-} from "@/components/Management/Rent And Unit/data";
+
 import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
 import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
@@ -306,7 +300,6 @@ const EditRent = () => {
                 isUpfrontPaymentChecked={true}
               />
             )}
-
           </div>
           <div className="lg:flex-1 lg:!mt-[52px] space-y-8">
             <MatchedProfile

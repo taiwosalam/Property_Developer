@@ -1,1214 +1,140 @@
-
-
-LAYOUT ROUTES
-- all / routes are for director role
-- all /manager routes are for manager role
-- all /accountant route are for account role
-
-
-FILTER MODAL
-- A component for filtering 
-- it accept these props
-
---- filterOptionsMenu > an array object of filter options
-export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
-  {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
-  {
-    radio: true,
-    label: "Status",
-    value: [
-      { label: "all", value: "all", isChecked: true }, use isChecked to check any value by default
-      { label: "Pending", value: "Pending" },
-      { label: "Ongoing", value: "Ongoing" },
-      { label: "Completed", value: "Completed" },
-    ],
-  },
-];
-
-
----FilterOptions > an object for filter option without menu
-check management/vehicles-record filter for reference
-    filterOptions={{
-          radio: true, --- to change the checkbox to radio option
-          value: [
-            { label: "All", value: "all" },
-            { label: "Rental", value: "rental" },
-            { label: "Facility", value: "facility" },
-          ],
-        }}
-
-
-
-
-
-
-
-
-
-
-
-// "use client";
-
-// import Link from "next/link";
-
-// // Images
-// import { ChevronRight } from "lucide-react";
-// import { ExclamationMark } from "@/public/icons/icons";
-
-// // Imports
-// import clsx from "clsx";
-// import { DashboardChart } from "@/components/dashboard/chart";
-// import WalletAnalytics from "@/components/Wallet/wallet-analytics";
-// import BeneficiaryList from "@/components/Wallet/beneficiary-list";
-// import WalletBalanceCard from "@/components/dashboard/wallet-balance";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import {
-//   computeTotals,
-//   determinePercentageDifference,
-//   determineTrend,
-//   walletChartConfig,
-//   walletTableFields,
-// } from "./data";
-// import CustomTable from "@/components/Table/table";
-// import { useWalletStore } from "@/store/wallet-store";
-// import FundsBeneficiary from "@/components/Wallet/SendFunds/funds-beneficiary";
-// import SendFundBeneficiary from "@/components/Wallet/SendFunds/send-fund-beneficiary";
-// import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
-// import { getTransactionIcon } from "@/components/Wallet/icons";
-// import { useState } from "react";
-// import { DateRange } from "react-day-picker";
-// import { useGlobalStore } from "@/store/general-store";
-
-// const Wallet = () => {
-//   const walletId = useWalletStore((state) => state.walletId);
-//   const recentTransactions = useWalletStore(
-//     (state) => state.recentTransactions
-//   );
-//   const transactions = useWalletStore((state) => state.transactions);
-//   // Retrieve timeRange and selectedDateRange from global store
-//   const timeRange = useGlobalStore((state) => state.timeRange);
-//   const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
-//   const stats = useWalletStore((state) => state.stats);
-//   const beneficiaries = useWalletStore((state) => state.beneficiaries);
-//   // Compute totals for the current period
-//   const currentTotals = computeTotals(transactions, selectedDateRange);
-
-//   console.log("transactions", transactions)
-
-//   // Compute totals for the previous period (same duration before the current range)
-//   const previousRange = (() => {
-//     if (!selectedDateRange?.from || !selectedDateRange?.to) {
-//       return undefined;
-//     }
-
-//     const fromDate = new Date(selectedDateRange.from);
-//     const toDate = new Date(selectedDateRange.to);
-//     const rangeDays =
-//       Math.ceil(
-//         (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
-//       ) + 1;
-
-//     const previousFrom = new Date(fromDate);
-//     previousFrom.setDate(fromDate.getDate() - rangeDays);
-//     const previousTo = new Date(fromDate);
-//     previousTo.setDate(fromDate.getDate() - 1);
-
-//     return { from: previousFrom, to: previousTo };
-//   })();
-
-//   const previousTotals = computeTotals(transactions, previousRange);
-
-//   // Percentage differences and trends
-//   const fundsPercent = determinePercentageDifference(
-//     previousTotals.total_funds,
-//     currentTotals.total_funds
-//   );
-//   const fundsUpDown = determineTrend(
-//     currentTotals.total_funds,
-//     previousTotals.total_funds
-//   );
-
-//   const debitPercent = determinePercentageDifference(
-//     previousTotals.total_debit,
-//     currentTotals.total_debit
-//   );
-//   const debitUpDown = determineTrend(
-//     currentTotals.total_debit,
-//     previousTotals.total_debit
-//   );
-
-//   const creditPercent = determinePercentageDifference(
-//     previousTotals.total_credit,
-//     currentTotals.total_credit
-//   );
-//   const creditUpDown = determineTrend(
-//     currentTotals.total_credit,
-//     previousTotals.total_credit
-//   );
-
-//   const transformedWalletTableData = recentTransactions.map((t) => ({
-//     ...t,
-//     amount: (
-//       <span
-//         className={clsx({
-//           "text-status-success-3": t.type === "credit",
-//           "text-status-error-primary": t.type === "debit",
-//         })}
-//       >
-//         {`${t.type === "credit" ? "+" : t.type === "debit" ? "-" : ""}${
-//           t.amount
-//         }`}
-//       </span>
-//     ),
-//     icon: (
-//       <div
-//         className={clsx(
-//           "flex items-center justify-center w-9 h-9 rounded-full",
-//           {
-//             "bg-status-error-1 text-status-error-primary":
-//               t.transaction_type === "withdrawal" ||
-//               t.transaction_type === "transfer_out" ||
-//               t.type === "debit",
-//             "bg-status-success-1 text-status-success-primary":
-//               t.type === "credit" ||
-//               t.type === "DVA" ||
-//               t.transaction_type === "funding",
-//           }
-//         )}
-//       >
-//         {getTransactionIcon(t.source, t.transaction_type)}
-//       </div>
-//     ),
-//   }));
-
-//   const walletChartData = transactions.map((t) => ({
-//     date: t.date,
-//     totalfunds: t.amount,
-//     credit: t.type === "credit" ? t.amount : 0,
-//     debit: t.type === "debit" ? t.amount : 0,
-//   }));
-
-//   return (
-//     <div className="custom-flex-col gap-10">
-//       <div className="flex items-center gap-1">
-//         <h1 className="text-black dark:text-white text-2xl font-medium">
-//           Wallet
-//         </h1>
-//         {/* <ExclamationMark /> */}
-//       </div>
-//       <div className="flex flex-col xl:flex-row gap-8">
-//         <div className="custom-flex-col gap-10 flex-1">
-//           <div className="flex flex-col lg:flex-row gap-6">
-//             <WalletAnalytics
-//               title="funds"
-//               amount={currentTotals.total_funds}
-//               trend={{
-//                 from: `previous ${
-//                   timeRange === "90d"
-//                     ? "3 months"
-//                     : timeRange === "30d"
-//                     ? "30 days"
-//                     : timeRange === "7d"
-//                     ? "7 days"
-//                     : timeRange === "1d"
-//                     ? "day"
-//                     : "period"
-//                 }`,
-//                 type: fundsUpDown as "up" | "down" | "none",
-//                 percent: Number(fundsPercent),
-//               }}
-//             />
-//             <WalletAnalytics
-//               title="debit"
-//               amount={currentTotals.total_debit}
-//               trend={{
-//                 from: `previous ${
-//                   timeRange === "90d"
-//                     ? "3 months"
-//                     : timeRange === "30d"
-//                     ? "30 days"
-//                     : timeRange === "7d"
-//                     ? "7 days"
-//                     : timeRange === "1d"
-//                     ? "day"
-//                     : "period"
-//                 }`,
-//                 type: debitUpDown as "up" | "down" | "none",
-//                 percent: Number(debitPercent),
-//               }}
-//             />
-//             <WalletAnalytics
-//               title="credit"
-//               amount={currentTotals.total_credit}
-//               trend={{
-//                 from: `previous ${
-//                   timeRange === "90d"
-//                     ? "3 months"
-//                     : timeRange === "30d"
-//                     ? "30 days"
-//                     : timeRange === "7d"
-//                     ? "7 days"
-//                     : timeRange === "1d"
-//                     ? "day"
-//                     : "period"
-//                 }`,
-//                 type: creditUpDown as "up" | "down" | "none",
-//                 percent: Number(creditPercent),
-//               }}
-//             />
-//           </div>
-//           <DashboardChart
-//             chartTitle="Analysis"
-//             visibleRange
-//             chartConfig={walletChartConfig}
-//             chartData={walletChartData}
-//           />
-//         </div>
-//         <div className="custom-flex-col gap-5 w-full xl:w-[315px]">
-//           <div className="flex items-center justify-between text-neutral-800 font-medium">
-//             <p className="text-sm dark:text-darkText-1">Wallet ID</p>
-//             <p className="text-xs dark:text-darkText-1">{walletId}</p>
-//           </div>
-//           <WalletBalanceCard noHeader />
-//           <div className="custom-flex-col gap-4 p-4 rounded-lg bg-white dark:bg-darkText-primary h-[339px] overflow-hidden">
-//             <div className="flex items-center justify-between text-base font-medium">
-//               <p className="text-black dark:text-white">Beneficiary</p>
-//               <Modal>
-//                 <ModalTrigger className="flex items-center gap-1">
-//                   <span className="text-text-label dark:text-darkText-1">
-//                     See all
-//                   </span>
-//                   <ChevronRight color="#5A5D61" size={16} />
-//                 </ModalTrigger>
-//                 <ModalContent>
-//                   <BeneficiaryList />
-//                 </ModalContent>
-//               </Modal>
-//             </div>
-//             <div className="custom-flex-col gap-2 h-full overflow-y-scroll custom-round-scrollbar">
-//               {beneficiaries.length > 0 ? (
-//                 beneficiaries.map((beneficiary, idx) => (
-//                   <Modal key={idx}>
-//                     <ModalTrigger>
-//                       <FundsBeneficiary {...beneficiary} />
-//                     </ModalTrigger>
-//                     <ModalContent>
-//                       <WalletModalPreset
-//                         title={`Send Funds to ${beneficiary.name}`}
-//                       >
-//                         <SendFundBeneficiary {...beneficiary} />
-//                       </WalletModalPreset>
-//                     </ModalContent>
-//                   </Modal>
-//                 ))
-//               ) : (
-//                 <p className="text-text-label text-center text-sm dark:text-darkText-1">
-//                   No beneficiary yet.
-//                 </p>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//       <div className="custom-flex-col gap-10">
-//         <div className="flex justify-between">
-//           <h2 className="text-text-primary dark:text-white text-xl font-medium">
-//             Recent Transaction
-//           </h2>
-//           <Link
-//             href="/wallet/transaction-history"
-//             className="flex items-center gap-1"
-//           >
-//             <span className="text-text-label dark:text-darkText-1">
-//               See all
-//             </span>
-//             <ChevronRight color="#5A5D61" size={16} />
-//           </Link>
-//         </div>
-//         <CustomTable
-//           fields={walletTableFields}
-//           className="max-h-[unset]"
-//           data={transformedWalletTableData}
-//           tableBodyCellSx={{
-//             paddingTop: "12px",
-//             paddingBottom: "12px",
-//             fontSize: "16px",
-//             whiteSpace: "nowrap",
-//           }}
-//           tableHeadCellSx={{
-//             paddingTop: "14px",
-//             paddingBottom: "14px",
-//             fontSize: "16px",
-//           }}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Wallet;
-
-// Wallet.tsx
-
-
-
-
-
-// "use client";
-// // Imports
-// import clsx from "clsx";
-// import Signature from "@/components/Signature/signature";
-// import WalletAnalytics from "@/components/Wallet/wallet-analytics";
-// import ExportPageHeader from "@/components/reports/export-page-header";
-// import CustomTable from "@/components/Table/table";
-// import { walletTableFields } from "../../data";
-// import BackButton from "@/components/BackButton/back-button";
-// import ExportPageFooter from "@/components/reports/export-page-footer";
-
-// const ExportWallet = () => {
-//   return (
-//     <div className="custom-flex-col gap-10 pb-[100px]">
-//       <BackButton>Back</BackButton>
-//       <ExportPageHeader />
-//       <div className="custom-flex-col gap-6">
-//         <div className="flex justify-center">
-//           <div className="custom-flex-col text-center gap-1">
-//             <h1 className="text-black text-2xl font-medium dark:text-white">
-//               Summary
-//             </h1>
-//             <p className="text-text-label text-xl font-normal">
-//               21st JAN -16th March
-//             </p>
-//           </div>
-//         </div>
-//         <div className="flex flex-col lg:flex-row gap-6">
-//           <WalletAnalytics
-//             title="funds"
-//             amount={6505689}
-//             trend={{
-//               from: "last month",
-//               type: "up",
-//               percent: 53,
-//             }}
-//           />
-//           <WalletAnalytics
-//             title="debit"
-//             amount={6505689}
-//             trend={{
-//               from: "last week",
-//               type: "down",
-//               percent: 4.3,
-//             }}
-//           />
-//           <WalletAnalytics
-//             title="credit"
-//             amount={6505689}
-//             trend={{
-//               from: "last month",
-//               type: "up",
-//               percent: 53,
-//             }}
-//           />
-//         </div>
-//       </div>
-//       <CustomTable
-//         fields={walletTableFields}
-//         data={[]}
-//         tableBodyCellSx={{
-//           paddingTop: "12px",
-//           paddingBottom: "12px",
-//           fontSize: "16px",
-//         }}
-//         tableHeadCellSx={{
-//           paddingTop: "14px",
-//           paddingBottom: "14px",
-//           fontSize: "16px",
-//         }}
-//       />
-//       <Signature />
-//       <ExportPageFooter />
-//     </div>
-//   );
-// };
-
-// export default ExportWallet;
-
-
-
-
-
-
-
-
-
-
-
-// "use client";
-
-// // Imports
-// import { useState, useEffect, useRef, useCallback } from "react";
-// import clsx from "clsx";
-// import BackButton from "@/components/BackButton/back-button";
-// import FilterBar from "@/components/FIlterBar/FilterBar";
-// import CustomTable from "@/components/Table/table";
-// import { walletTableFields } from "../data";
-// import {
-//   initialPageData,
-//   transactionHistoryFilterMenu,
-//   transformAllTransactionsResponse,
-// } from "./data";
-// import TableLoading from "@/components/Loader/TableLoading";
-// import useFetch from "@/hooks/useFetch";
-// import type { AllTransactionsResponse, TransactionQueryParams } from "./types";
-// import type { FilterResult } from "@/components/Management/Landlord/types";
-// import { AxiosRequestConfig } from "axios";
-// import dayjs from "dayjs";
-// import NetworkError from "@/components/Error/NetworkError";
-// import { getTransactionIcon } from "@/components/Wallet/icons";
-// import { useGlobalStore } from "@/store/general-store";
-// import ServerError from "@/components/Error/ServerError";
-// import WalletAnalytics from "@/components/Wallet/wallet-analytics";
-
-// const TransactionHistory = () => {
-//   const [state, setState] = useState(initialPageData);
-//   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-//   const filteredTransactions = useGlobalStore((s) => s.wallet_transactions);
-//   const [config, setConfig] = useState<AxiosRequestConfig>({
-//     params: {
-//       page: 1,
-//     } as TransactionQueryParams,
-//   });
-//   const observer = useRef<IntersectionObserver | null>(null);
-
-//   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
-//     options: [],
-//     menuOptions: {},
-//     startDate: null,
-//     endDate: null,
-//   });
-
-//   const isFilterApplied = () => {
-//     const { options, menuOptions, startDate, endDate } = appliedFilters;
-//     return (
-//       options.length > 0 ||
-//       Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
-//       startDate !== null ||
-//       endDate !== null
-//     );
-//   };
-
-//   const {
-//     data: apiData,
-//     loading,
-//     silentLoading,
-//     error,
-//     isNetworkError,
-//   } = useFetch<AllTransactionsResponse>("transactions", config);
-
-//   const fetchNextPage = useCallback(() => {
-//     if (state.hasMore && !silentLoading) {
-//       setConfig((prev) => ({
-//         params: {
-//           ...prev.params,
-//           page: state.current_page + 1,
-//         } as TransactionQueryParams,
-//       }));
-//     }
-//   }, [state.hasMore, silentLoading, state.current_page]);
-
-//   const lastRowRef = useCallback(
-//     (node: HTMLElement | null) => {
-//       // if (loading || silentLoading) return;
-//       if (observer.current) observer.current.disconnect();
-//       observer.current = new IntersectionObserver((entries) => {
-//         if (entries[0].isIntersecting && state.hasMore) {
-//           fetchNextPage();
-//         }
-//       });
-//       if (node) observer.current.observe(node);
-//     },
-//     [fetchNextPage, state.hasMore]
-//   );
-
-//   useEffect(() => {
-//     if (apiData) {
-//       setState((prevState) => {
-//         const newTransactions = transformAllTransactionsResponse(apiData);
-
-//         const combinedTransactions = [
-//           ...prevState.transactions,
-//           ...newTransactions.transactions,
-//         ];
-
-//         // Filter out duplicates based on transaction ID
-//         const uniqueTransactions = combinedTransactions.filter(
-//           (transaction, index, self) =>
-//             index === self.findIndex((t) => t.id === transaction.id)
-//         );
-
-//         // Save unique transactions to global store
-//         const currentTransactions =
-//           useGlobalStore.getState()?.wallet_transactions;
-//         if (
-//           JSON.stringify(currentTransactions) !==
-//           JSON.stringify(uniqueTransactions)
-//         ) {
-//           setGlobalStore("wallet_transactions", uniqueTransactions);
-//         }
-
-//         // Check if page number is 1 to decide whether to overwrite or append
-//         if (newTransactions.current_page === 1) {
-//           // Overwrite transactions for the first page (e.g., after applying filters)
-//           return {
-//             ...prevState,
-//             ...newTransactions,
-//             transactions: uniqueTransactions,
-//           };
-//         } else {
-//           // Append transactions for subsequent pages (e.g., scrolling)
-//           return {
-//             ...prevState,
-//             transactions: uniqueTransactions,
-//             current_page: newTransactions.current_page,
-//             total_pages: newTransactions.total_pages,
-//             hasMore: newTransactions.hasMore,
-//           };
-//         }
-//       });
-//     }
-//   }, [apiData]);
-
-//   const transformedWalletTableData = state.transactions.map((t, index) => ({
-//     ...t,
-//     amount: (
-//       <span
-//         className={clsx({
-//           "text-status-success-3": t.type === "credit",
-//           "text-status-error-primary": t.type === "debit",
-//         })}
-//       >
-//         {`${t.type === "credit" ? "+" : t.type === "debit" ? "-" : ""}${
-//           t.amount
-//         }`}
-//       </span>
-//     ),
-//     icon: (
-//       <div
-//         className={clsx(
-//           "flex items-center justify-center w-9 h-9 rounded-full",
-//           {
-//             "bg-status-error-1 text-status-error-primary": t.type === "debit",
-//             "bg-status-success-1 text-status-success-primary":
-//               t.type === "credit" || t.type === "DVA",
-//           }
-//         )}
-//       >
-//         {getTransactionIcon(t.source, t.transaction_type)}
-//       </div>
-//     ),
-//     ref: index === state.transactions.length - 1 ? lastRowRef : null,
-//   }));
-
-//   const handleFilterApply = (filters: FilterResult) => {
-//     setAppliedFilters(filters);
-//     const { menuOptions, startDate, endDate } = filters;
-//     const queryParams: TransactionQueryParams = {
-//       page: 1,
-//     };
-//     const status = menuOptions["Status"]?.[0];
-//     const type = menuOptions["Type"]?.[0];
-//     if (startDate) {
-//       queryParams.from = dayjs(startDate).format("YYYY-MM-DD");
-//     }
-//     if (endDate) {
-//       queryParams.to = dayjs(endDate).format("YYYY-MM-DD");
-//     }
-//     if (status) {
-//       queryParams.status = status;
-//     }
-//     if (type) {
-//       queryParams.type = type;
-//     }
-//     setConfig({
-//       params: queryParams,
-//     });
-//   };
-
-//   if (isNetworkError) return <NetworkError />;
-//   if (error) return <ServerError error={error} />;
-
-//   return (
-//     <div className="custom-flex-col gap-8">
-//       <BackButton>Transaction History</BackButton>
-//       <FilterBar
-//         pageTitle="Transaction History"
-//         hasGridListToggle={false}
-//         handleFilterApply={handleFilterApply}
-//         hiddenSearchInput
-//         exports
-//         isDateTrue
-//         exportHref="/wallet/audit-trail/export"
-//         filterOptionsMenu={transactionHistoryFilterMenu}
-//         appliedFilters={appliedFilters}
-//         fileLabel={"Wallet Transactions"}
-//         xlsxData={filteredTransactions}
-//       />
-
-//       <div className="flex flex-col xl:flex-row gap-8">
-//         <div className="custom-flex-col gap-10 flex-1">
-//           <div className="flex flex-col lg:flex-row gap-6">
-//             <WalletAnalytics
-//               title="funds"
-//               amount={currentTotals.total_funds}
-//               trend={{
-//                 from: `previous ${
-//                   timeRange === "90d"
-//                     ? "3 months"
-//                     : timeRange === "30d"
-//                     ? "30 days"
-//                     : timeRange === "7d"
-//                     ? "7 days"
-//                     : timeRange === "1d"
-//                     ? "day"
-//                     : "period"
-//                 }`,
-//                 type: fundsUpDown as "up" | "down" | "none",
-//                 percent: Number(fundsPercent),
-//               }}
-//             />
-//             <WalletAnalytics
-//               title="debit"
-//               amount={currentTotals.total_debit}
-//               trend={{
-//                 from: `previous ${
-//                   timeRange === "90d"
-//                     ? "3 months"
-//                     : timeRange === "30d"
-//                     ? "30 days"
-//                     : timeRange === "7d"
-//                     ? "7 days"
-//                     : timeRange === "1d"
-//                     ? "day"
-//                     : "period"
-//                 }`,
-//                 type: debitUpDown as "up" | "down" | "none",
-//                 percent: Number(debitPercent),
-//               }}
-//             />
-//             <WalletAnalytics
-//               title="credit"
-//               amount={currentTotals.total_credit}
-//               trend={{
-//                 from: `previous ${
-//                   timeRange === "90d"
-//                     ? "3 months"
-//                     : timeRange === "30d"
-//                     ? "30 days"
-//                     : timeRange === "7d"
-//                     ? "7 days"
-//                     : timeRange === "1d"
-//                     ? "day"
-//                     : "period"
-//                 }`,
-//                 type: creditUpDown as "up" | "down" | "none",
-//                 percent: Number(creditPercent),
-//               }}
-//             />
-//           </div>
-//         </div>
-//       </div>
-
-//       {loading ? (
-//         <TableLoading />
-//       ) : (
-//         <section>
-//           <CustomTable
-//             fields={walletTableFields}
-//             data={transformedWalletTableData}
-//             tableBodyCellSx={{
-//               paddingTop: "12px",
-//               paddingBottom: "12px",
-//               fontSize: "16px",
-//               whiteSpace: "nowrap",
-//             }}
-//             tableHeadCellSx={{
-//               paddingTop: "14px",
-//               paddingBottom: "14px",
-//               fontSize: "16px",
-//             }}
-//           />
-//           {silentLoading && (
-//             <div className="flex items-center justify-center py-4">
-//               <div className="loader" />
-//             </div>
-//           )}
-//         </section>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default TransactionHistory;
-
-
-
-
-
-
-
-
-
-
-
-
-========================POST PROCEED ModalContent// "use client";
-
-// import EstateSettings from "@/components/Management/Rent And Unit/estate-settings";
-// import {
-//   estateSettingsDta,
-//   estateData,
-//   propertySettingsData,
-//   rentalData,
-//   DUMMY_OCCUPANT,
-//   RentPreviousRecords,
-//   calculateBalance,
-//   getEstateData,
-//   getEstateSettingsDta,
-//   RentPeriod,
-// } from "@/components/Management/Rent And Unit/data";
-// import Button from "@/components/Form/Button/button";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
-// import {
-//   PreviousUnitBalance,
-//   NewUnitCost,
-//   PayAble,
-// } from "./Edit-rent-sections";
-// import {
-//   RenewalRent as StartRent,
-//   PreviousRentRecords,
-// } from "../renewal-rent-detals";
-// import { MatchedProfile } from "../matched-profile";
-// import { useRouter } from "next/navigation";
-// import ModalPreset from "@/components/Modal/modal-preset";
-// import BackButton from "@/components/BackButton/back-button";
-// import FixedFooter from "@/components/FixedFooter/fixed-footer";
-// import { useSearchParams } from "next/navigation";
-// import { useOccupantStore } from "@/hooks/occupant-store";
-// import {
-//   formatFee,
-//   initData,
-//   initDataProps,
-//   singleUnitApiResponse,
-//   transformUnitData,
-// } from "@/app/(nav)/management/rent-unit/data";
-// import { useEffect, useState } from "react";
-// import useFetch from "@/hooks/useFetch";
-// import dayjs from "dayjs";
-// import { formatNumber } from "@/utils/number-formatter";
-// import { toast } from "sonner";
-// import { getPropertySettingsData, getRentalData } from "./data";
-// import { switchUnit } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/data";
-// import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-// import PageCircleLoader from "@/components/Loader/PageCircleLoader";
-// import NetworkError from "@/components/Error/NetworkError";
-// import ServerError from "@/components/Error/ServerError";
-// import CardsLoading from "@/components/Loader/CardsLoading";
-// import { useGlobalStore } from "@/store/general-store";
-// import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
-// import { ChangePropertyNewUnitCost } from "../change-property/new-unit-cost";
-// import { usePostProceedStore } from "@/store/post-proceed-store";
-// import { ProceedPreviousUnitBalance } from "../change-property/previous-unit";
-
-// const PostProceedContent = ({
-//   selectedUnitId,
-//   page,
-// }: {
-//   selectedUnitId?: string;
-//   page?: "unit" | "property";
-// }) => {
-//   const router = useRouter();
-//   const searchParams = useSearchParams();
-//   const propertyType = searchParams.get("type") as "rental" | "facility";
-//   const id = searchParams.get("p");
-//   const propertyId = searchParams.get("p");
-//   const isRental = propertyType === "rental";
-//   const [reqLoading, setReqLoading] = useState(false);
-//   const [startDate, setStartDate] = useState<string | null>(null);
-//   const [modalIsOpen, setModalIsOpen] = useState(false);
-//   const {
-//     occupant,
-//     propertyData,
-//     records,
-//     unitBalance,
-//     calculation,
-//     deduction,
-//     setSelectedUnitId,
-//     setPage,
-//     setPropertyType,
-//     setPropertyId,
-//     setUnitData,
-//     unitData,
-//   } = useOccupantStore();
-
-//   const currentUnit = useGlobalStore((s) => s.currentUnit);
-//   const currentRentStats = useGlobalStore((s) => s.currentRentStats);
-//   const oustandingObj = currentRentStats?.oustandingObj || [];
-//   const outstanding = currentRentStats?.outstanding || 0;
-//   const isUnit = page === "unit";
-
-//   // Set initial data in store
-//   useEffect(() => {
-//     setSelectedUnitId(selectedUnitId || null);
-//     setPage(page || null);
-//     setPropertyType(propertyType);
-//     setPropertyId(propertyId);
-//     setUnitData(initData); // Initialize unitData
-//   }, [
-//     selectedUnitId,
-//     page,
-//     propertyType,
-//     propertyId,
-//     setSelectedUnitId,
-//     setPage,
-//     setPropertyType,
-//   ]);
-
-//   // console.log("currentRentStats", currentRentStats);
-
-//   // SELECTED UNIT DATA FETCH
-//   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-//   const endpoint = `/unit/${selectedUnitId}/view`;
-//   const {
-//     data: apiData,
-//     loading,
-//     silentLoading,
-//     isNetworkError,
-//     error,
-//     refetch,
-//   } = useFetch<singleUnitApiResponse>(endpoint);
-
-//   useEffect(() => {
-//     if (apiData) {
-//       const transformedData = transformUnitData(apiData);
-//       setUnitData({
-//         ...unitData,
-//         ...transformedData,
-//       });
-//     }
-//   }, [apiData, unitData]);
-
-//   if (!unitBalance) {
-//     toast.warning("Back to Rent & Unit for security reasons");
-//     router.back();
-//     return null;
-//   }
-
-//   const balance =
-//     unitBalance?.data?.map((record: any, index: any) => ({
-//       ...record,
-//       amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
-//       start_date: record.start_date
-//         ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
-//         : null,
-//       due_date: record.due_date
-//         ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
-//         : null,
-//       payment_date: record.payment_date
-//         ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
-//         : null,
-//     })) || [];
-
-//   const startday = balance?.[0]?.start_date;
-//   const endDay = balance?.[0]?.due_date;
-//   const amt = balance?.[0]?.amount_paid;
-//   const rent = currentUnit.newTenantTotalPrice;
-//   const renewalTenantPrice = parseCurrency(currentUnit.renewalTenantPrice);
-//   // Only calculate the balance if all values exist, otherwise default to 0
-//   const bal =
-//     startday && endDay && amt ? calculateBalance(amt, startday, endDay) : 0;
-
-//   const newUnitTotal = calculation
-//     ? Number(unit_data.newTenantTotalPrice)
-//     : Number(unit_data.renewalTenantTotalPrice);
-//   const newUnitTotalFormatted = calculation
-//     ? formatFee(unit_data.newTenantTotalPrice, unit_data.currency || "naira")
-//     : formatFee(
-//         unit_data.renewalTenantTotalPrice,
-//         unit_data.currency || "naira"
-//       );
-//   const totalPayable = deduction ? outstanding - newUnitTotal : newUnitTotal;
-//   const prev_unit_bal = bal
-//     ? `${"₦"}${formatNumber(parseFloat(`${bal}`))}`
-//     : undefined;
-//   const refundAmount = totalPayable < 0 ? Math.abs(totalPayable) : 0;
-
-//   // Calculate excess or refund amount for the third card
-//   const isExcess = totalPayable < 0;
-//   const balanceLabel = isExcess ? "Client Excess" : "Refund Client";
-//   const showBalanceCard = totalPayable < 0 || isExcess;
-
-//   // CURRENT UNIT AMOUNT
-//   const currentUnitAmt = formatFee(newUnitTotal, unit_data.currency || "naira");
-
-//   // GET PROPERTY DATA
-//   const rentalData = getRentalData(isUnit ? currentUnit : propertyData);
-//   const propertySettingsData = getPropertySettingsData(
-//     isUnit ? currentUnit : propertyData
-//   );
-//   const estateData = getEstateData(isUnit ? currentUnit : propertyData);
-//   const estateSettingsDta = getEstateSettingsDta(
-//     isUnit ? currentUnit : propertyData
-//   );
-
-//   console.log("currentUnit", currentUnit);
-//   console.log("outstanding", outstanding);
-//   console.log("totalPayable", totalPayable);
-
-//   const deductionsLabeCal = [
-//     {
-//       label: calculation ? "New Tenant Package" : "Renewal Total Package",
-//       value: newUnitTotalFormatted,
-//     },
-//     // ...oustandingObj,
-//     {
-//       label: deduction ? "Do Deduction" : "No Deduction",
-//       value: formatFee(totalPayable, unit_data.currency || "naira"),
-//     },
-//   ];
-
-//   const deductionsLabeRes = [
-//     {
-//       label: calculation ? "New Tenant Package" : "Renewal Total Package",
-//       value: newUnitTotalFormatted,
-//     },
-//     ...oustandingObj,
-//     {
-//       label: deduction ? "Do Deduction" : "No Deduction",
-//       value: formatFee(totalPayable, unit_data.currency || "naira"),
-//     },
-//   ];
-
-//   // FUNCTION TO SWITCH UNIT
-//   const handleSwitchUnit = async () => {
-//     const id = balance[0].id;
-//     const data = {
-//       new_unit_id: selectedUnitId,
-//       calculation: calculation ? 1 : 0,
-//       deduction: deduction ? 1 : 0,
-//       payment_date: startDate,
-//     };
-//     console.log("payload", data);
-//     try {
-//       setReqLoading(true);
-//       const res = await switchUnit(id as string, objectToFormData(data));
-//       if (res) {
-//         setModalIsOpen(true);
-//         toast.success("Unit Switched Successfully");
-//         router.push("/management/rent-unit");
-//       }
-//     } catch (err) {
-//       toast.error("Failed to switch Unit, please try again");
-//     } finally {
-//       setReqLoading(false);
-//     }
-//   };
-
-//   if (loading)
-//     return (
-//       <div className="flex flex-col gap-5">
-//         <CardsLoading length={6} />;
-//       </div>
-//     );
-//   if (isNetworkError) return <NetworkError />;
-//   if (error) return <ServerError error={error} />;
-
-//   return (
-//     <div className="space-y-6 pb-[100px]">
-//       <BackButton>
-//         {page === "unit" ? "Change Unit" : "Change Property Unit"}
-//       </BackButton>
-//       <section className="space-y-6">
-//         <EstateDetails
-//           title={`${isRental ? "Property" : "Estate"} Details`}
-//           estateData={isRental ? rentalData : estateData}
-//         />
-//         <EstateSettings
-//           title={`${isRental ? "Property" : "Estate"} Settings`}
-//           estateSettingsDta={
-//             isRental ? propertySettingsData : estateSettingsDta
-//           }
-//           {...(isRental ? { gridThree: true } : {})}
-//           id={id as string}
-//         />
-
-//         {/* <ProceedPreviousUnitBalance /> */}
-//         {/* <PreviousUnitBalance
-//           page={page}
-//           isRental={isRental}
-//           deduction={deduction}
-//           calculation={calculation}
-//           items={balance as RentPreviousRecords[]}
-//           total={`${bal}`}
-//           currentUnit={currentUnit}
-//           startDate={startday}
-//           dueDate={endDay}
-//         /> */}
-//         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
-//           <div className="lg:w-3/5 space-y-8">
-//             <ChangePropertyNewUnitCost noEdit />
-//             {/* <NewUnitCost
-//               isRental={isRental}
-//               noEdit
-//               currency={unit_data.currency}
-//               feeDetails={[
-//                 {
-//                   name: isRental ? `${unit_data.fee_period} Rent` : "Fee",
-//                   amount: calculation
-//                     ? (unit_data.newTenantPrice as any)
-//                     : unit_data.renewalTenantPrice,
-//                 },
-//                 {
-//                   name: "Service Charge",
-//                   amount: calculation
-//                     ? unit_data.service_charge
-//                     : unit_data.renew_service_charge,
-//                 },
-//                 {
-//                   name: "Security Fee",
-//                   amount: calculation ? unit_data.security_fee : "",
-//                 },
-//                 {
-//                   name: "Agency Fee",
-//                   amount: calculation ? unit_data.unitAgentFee : "",
-//                 },
-//                 {
-//                   name: "Caution Fee",
-//                   amount: calculation ? unit_data.caution_fee : "",
-//                 },
-//                 {
-//                   name: "VAT Amount",
-//                   amount: calculation
-//                     ? unit_data.vat_amount
-//                     : unit_data.renew_vat_amount,
-//                 },
-//                 {
-//                   name: "Other Charges",
-//                   amount: calculation
-//                     ? unit_data.other_charge
-//                     : unit_data.renew_other_charge,
-//                 },
-//               ]}
-//               total={newUnitTotal}
-//               id={unit_data?.id}
-//               calculation={calculation}
-//               deduction={deduction}
-//             /> */}
-
-//             <PreviousUnitBalance
-//               currentUnit={currentUnit}
-//               title="Calculations"
-//               isRental={isRental}
-//               workings
-//               deduction={deduction}
-//               calculation={calculation}
-//               deductionsCal={deductionsLabeCal}
-//               deductionsRes={deductionsLabeRes}
-//               items={balance as RentPreviousRecords[]}
-//               // total={`${bal}`}
-//               total={`${totalPayable}`}
-//             />
-
-//             <PayAble
-//               isRental={isRental}
-//               detail={{
-//                 label: balanceLabel,
-//                 amount: totalPayable,
-//               }}
-//               isExcess={isExcess}
-//               calculation={calculation}
-//             />
-//             {/*
-//             {showBalanceCard && (
-//               <NewUnitCost
-//                 title="Balance After Deduction"
-//                 isExcess
-//                 noEdit
-//                 deduction={deduction}
-//                 isRental={isRental}
-//                 feeDetails={[
-//                   {
-//                     name: balanceLabel,
-//                     amount: `₦${formatNumber(balanceAmount)}`,
-//                   },
-//                 ]}
-//                 total={balanceAmount}
-//                 calculation={calculation}
-//               />
-//             )} */}
-
-//             <StartRent
-//               isRental={isRental}
-//               rentPeriod="yearly"
-//               title={`Start ${isRental ? "Rent" : "Counting"}`}
-//               start
-//               setStart_Date={setStartDate}
-//             />
-//           </div>
-//           <div className="lg:flex-1 lg:!mt-[52px]">
-//             <MatchedProfile occupant={occupant} title="User Profile" />
-//           </div>
-//         </div>
-//         <PreviousRentRecords
-//           previous_records={unitBalance && (unitBalance as any)}
-//           isRental={isRental}
-//           unit_id={selectedUnitId}
-//           noRefetch={true}
-//         />
-//       </section>
-
-//       <FixedFooter className="flex items-center justify-end">
-//         {/* <ModalTrigger asChild> */}
-//         <Button
-//           size="base_medium"
-//           className="py-2 px-6"
-//           disabled={reqLoading}
-//           onClick={handleSwitchUnit}
-//         >
-//           {reqLoading ? "Please wait..." : "Proceed"}
-//         </Button>
-//         {/* </ModalTrigger> */}
-//         <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
-//           <ModalContent>
-//             <ModalPreset type="success" className="w-full">
-//               <div className="flex flex-col gap-8">
-//                 <p className="text-text-tertiary text-sm">
-//                   Record Added Successfully
-//                 </p>
-//                 <Button
-//                   onClick={() => {
-//                     router.push("/management/rent-unit");
-//                   }}
-//                 >
-//                   OK
-//                 </Button>
-//               </div>
-//             </ModalPreset>
-//           </ModalContent>
-//         </Modal>
-//       </FixedFooter>
-//     </div>
-//   );
-// };
-
-// export default PostProceedContent;
-
-// components/PostProceedContent.tsx
-// components/PostProceedContent.tsx
+ {/* NOTE: BACKEND CAN'T ACCEPT MULTIPLE AMOUNT AND TITLE FOR INVOICE */}
+      <div className="space-y-6">
+        <div className="flex gap-1 flex-col">
+          <div className="flex gap-2">
+            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+              Add Payment
+            </h3>
+            {/* <Checkbox
+              radio
+              checked={isAddPaymentChecked}
+              onChange={() => setIsAddPaymentChecked(true)}
+            /> */}
+          </div>
+          <p>
+            Choose to create a manual payment for a specific bill or set it to
+            auto-payment for a designated period.
+          </p>
+        </div>
+        {/* {isAddPaymentChecked && ( */}
+        <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Input
+              type="text"
+              id="payment_title"
+              label="Payment Title"
+              value={paymentTitle}
+              onChange={(value) => setPaymentTitle(value as string)}
+            />
+            <Input
+              type="text"
+              id="amount"
+              label="Amount"
+              className="w-full"
+              CURRENCY_SYMBOL={"₦"}
+              formatNumber
+              value={paymentAmount}
+              onChange={(value) => setPaymentAmount(value as string)}
+            />
+          </div>
+          <div className="flex items-center justify-end">
+            <Button
+              size="base_medium"
+              className="py-2 px-8"
+              onClick={handleAddPaymentClick}
+            >
+              Add
+            </Button>
+          </div>
+        </div>
+        {/* )} */}
+      </div>
+
+
+      {/* <div className="space-y-6">
+        <div className="flex gap-1 flex-col">
+          <div className="flex gap-2">
+            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+              Generated Rent Breakdown
+            </h3>
+            <Checkbox
+              disabled={isSelectDisabled}
+              radio
+              checked={!isAddPaymentChecked}
+              onChange={() => setIsAddPaymentChecked(false)}
+            />
+          </div>
+          <p>
+            Select to create a pending payment for tenants/occupants to pay
+            their renewal fees.
+          </p>
+        </div>
+        {!isAddPaymentChecked && <Breakdown />}
+      </div> */}
+
+      {payments.length > 0 && (
+        <div className="space-y-6">
+          <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+            Payment Added
+          </h3>
+
+          <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
+            <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
+              {payments.map((payment, index) => (
+                <div key={index} className="flex flex-col gap-4">
+                  <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
+                    {payment.title}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                      {new Intl.NumberFormat("en-NG", {
+                        style: "currency",
+                        currency: "NGN",
+                      }).format(payment.amount)}
+                    </p>
+                    <Modal>
+                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                        <DeleteIconX />
+                      </ModalTrigger>
+                      <ModalContent>
+                        <DeleteItemWarningModal
+                          item={payment.title}
+                          amount={payment.amount}
+                          handleDelete={() => handleDeletePayment(index)}
+                          useCase="invoices"
+                        />
+                      </ModalContent>
+                    </Modal>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <SectionSeparator />
+            <div className="flex flex-col gap-4">
+              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                Total Added Payment
+              </p>
+              <p className="font-bold text-xl text-brand-9">
+                {new Intl.NumberFormat("en-NG", {
+                  style: "currency",
+                  currency: "NGN",
+                }).format(totalAmount)}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* <div className="space-y-4 text-[#3F4247] text-sm dark:text-darkText-1">
+        <div className="flex gap-4">
+          {["Notification", "SMS Alert", "Email Alert"].map((option) => (
+            <Checkbox sm key={option} defaultChecked>
+              {option}
+            </Checkbox>
+          ))}
+        </div>
+        <p>
+          Payment will be reflected on the receipt page once the selected client
+          makes a payment for this generated invoice
+        </p>
+      </div> */}

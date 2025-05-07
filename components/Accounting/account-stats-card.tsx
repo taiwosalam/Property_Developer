@@ -34,6 +34,7 @@ interface AccountStatsCardProps {
   className?: string;
   forBranch?: boolean;
   timeRangeLabel?: string;
+  otherCurrency?: string;
 }
 
 const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
@@ -46,6 +47,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
   className,
   forBranch,
   timeRangeLabel,
+  otherCurrency,
 }) => {
   // Determine font size based on digit count
   const digitCount = getDigitCount(balance);
@@ -119,6 +121,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
               ? `${currencySymbols.naira}${balance}`
               : `${currencySymbols.naira}${formatNumber(balance)}`}
           </p>
+          <p className="text-black font-semibold text-md"> { otherCurrency ?? "" }  </p>
         </div>
         <div
           className={clsx("absolute flex items-center justify-center", {

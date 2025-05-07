@@ -19,9 +19,6 @@ export const ContributorDetails = ({
   updatedDate?: string;
 }) => {
   if (loading) return <LoadingContributorUser />;
-
-  console.log("contributors", contributors)
-
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
       <h2 className="text-black font-semibold text-lg dark:text-white">

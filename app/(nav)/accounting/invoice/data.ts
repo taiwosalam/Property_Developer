@@ -8,6 +8,7 @@ import {
 import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import { formatFee } from "../../management/rent-unit/data";
 
 export const accountingInvoiceOptionsWithDropdown = [
   {
@@ -98,15 +99,18 @@ export const transformInvoiceData = (
   // console.log("rece inveoice", invoices)
   const transformedInvoices = invoices.map((invoice) => ({
     ...invoice,
+    status: formatStatus(invoice.status),
     client_name: invoice.client_name,
-    payment_reason: invoice.reason,
+    payment_reason: invoice.reason ?? "",
     picture: invoice.client_picture,
-    total_amount: `₦${formatNumber(invoice.total_amount)}`,
+    total_amount:
+      formatFee(invoice.total_amount, invoice.currency || "naira") ?? "",
     badge_color: invoice.client_tier
       ? tierColorMap[invoice.client_tier as keyof typeof tierColorMap]
       : undefined,
     date: dayjs(invoice.invoice_date).format("MMM DD YYYY"),
-    is_auto: invoice.is_auto !== undefined ? convertToBoolean(invoice.is_auto) : false,
+    is_auto:
+      invoice.is_auto !== undefined ? convertToBoolean(invoice.is_auto) : false,
   }));
   return { statistics, invoices: transformedInvoices };
 };
@@ -116,4 +120,34 @@ const convertToBoolean = (value: string | boolean): boolean => {
     return value;
   }
   return value === "true";
+};
+
+export const formatStatus = (status: string): string => {
+  if (!status) return status; // Return unchanged if empty or falsy
+  return status
+    .split("_") // Split on underscores
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize first letter, lowercase rest
+    .join(" "); // Join with spaces
+};
+
+// Helper to determine otherCurrency based on invoices
+export const getOtherCurrency = (
+  invoices: InvoiceListResponse["data"]["invoices"]
+) => {
+  const currencies = new Set(
+    invoices
+      .map((invoice) => invoice.currency)
+      .filter(
+        (currency): currency is "dollar" | "pound" =>
+          !!currency && currency !== "naira"
+      )
+  );
+
+  const hasDollar = currencies.has("dollar");
+  const hasPound = currencies.has("pound");
+
+  if (hasDollar && hasPound) return "$£"; // Both present
+  if (hasDollar) return "$"; // Only dollar
+  if (hasPound) return "£"; // Only pound
+  return ""; // Neither present
 };

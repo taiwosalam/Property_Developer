@@ -57,6 +57,7 @@ export const getNewUnitFeeDetails = (
 // Helper function to get deductions arrays
 export const getDeductionsArrays = (
   calculation: boolean,
+  deduction: boolean,
   newUnitTotalFormatted: string,
   totalPayable: number,
   oustandingObj: any[] = [],
@@ -70,7 +71,7 @@ export const getDeductionsArrays = (
         newUnitTotalFormatted || formatFee(0, unitData?.currency || currency),
     },
     {
-      label: calculation ? "Do Deduction" : "No Deduction",
+      label: deduction ? "Do Deduction" : "No Deduction",
       value: formatFee(totalPayable, unitData?.currency || currency),
     },
   ];
