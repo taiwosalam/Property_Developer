@@ -23,6 +23,7 @@ import {
 } from "@/app/(nav)/settings/data";
 import { useCompanyBankDetails } from "@/hooks/useCompanyBankDetails";
 import { formatFee } from "@/app/(nav)/management/rent-unit/data";
+import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
 
 const PreviewExpenses = () => {
   const router = useRouter();
@@ -36,7 +37,7 @@ const PreviewExpenses = () => {
   const { data, error, loading, isNetworkError } = useFetch<InvoiceResponse>(
     `/invoice/${invoiceId}`
   );
-  
+
   useEffect(() => {
     if (data) {
       setPageData(transformInvoiceData(data.data));
@@ -50,6 +51,50 @@ const PreviewExpenses = () => {
   if (isNetworkError) return <NetworkError />;
 
   const CURRENCY = "naira"; //TODO: change to real currency from endpount
+  const IS_PAID = pageData.status.toLowerCase() === "paid";
+  const UNIT_ID = pageData.unit_id;
+  const UnitKeyValData = {
+    "invoice id": pageData.invoice_id,
+    "property name": pageData.property_name,
+    "Client name": pageData.client_name,
+    date: pageData.invoice_date,
+    "account officer": pageData.account_officer,
+    "unit id": pageData.unit_id,
+    "invoice type": "--- ---",
+    status: "--- ---",
+  };
+
+  const NoUnitKeyValData = {
+    "invoice id": pageData.invoice_id,
+    "property name": pageData.property_name,
+    "client name": pageData.client_name,
+    date: pageData.invoice_date,
+    status: pageData.status,
+    "Auto Generate": pageData.auto_generate,
+  };
+
+  const UnitRefObj = {
+    "invoice id": "",
+    "Client name": "",
+    "property name": "",
+    date: "",
+    "account officer": "",
+    "unit id": "",
+    "invoice type": "",
+    status: "",
+  };
+
+  const NoUnitRefObj = {
+    "invoice id": "",
+    "property name": "",
+    "client name": "",
+    "Auto Generate": "",
+    date: "",
+    status: "",
+  };
+
+  const KEY_VALUE_DATA = UNIT_ID ? UnitKeyValData : NoUnitKeyValData;
+  const KEY_VALUE_REF_OBJ = UNIT_ID ? UnitRefObj : NoUnitRefObj;
 
   return (
     <div className="custom-flex-col gap-10 pb-28">
@@ -60,76 +105,59 @@ const PreviewExpenses = () => {
           <h1 className="text-center my-7 font-medium text-2xl">Invoice</h1>
           <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
-              data={{
-                "invoice id": pageData.invoice_id,
-                "property name": pageData.property_name,
-                "Client name": pageData.client_name,
-                date: pageData.invoice_date,
-                "account officer": pageData.account_officer,
-                "unit id": pageData.unit_id,
-                "invoice type": "--- ---",
-                status: "--- ---",
-              }}
+              data={KEY_VALUE_DATA}
               chunkSize={2}
               direction="column"
-              referenceObject={{
-                "invoice id": "",
-                "Client name": "",
-                "property name": "",
-                date: "",
-                "account officer": "",
-                "unit id": "",
-                "invoice type": "",
-                status: "",
-              }}
+              referenceObject={KEY_VALUE_REF_OBJ}
             />
           </div>
           <AccountingTitleSection title="Details">
-            <p className="font-normal text-[14px] text-[#6C6D6D] capitalize">
-              {pageData.details} Payment for {pageData.unit_name}
-            </p>
-            <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
-              <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
-                <KeyValueList
-                  data={{
-                    "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
-                    "non refundable agency fee": formatFee(
-                      pageData.agency_fee,
-                      CURRENCY
-                    ),
-                    "service charge": formatFee(
-                      pageData.service_charge,
-                      CURRENCY
-                    ),
-                    "refundable caution fee": formatFee(
-                      pageData.caution_fee,
-                      CURRENCY
-                    ),
-                    "non refundable legal fee": "",
-                  }}
-                  chunkSize={2}
-                  direction="column"
-                  referenceObject={{
-                    "Annual fee": "",
-                    "non refundable agency fee": "",
-                    "service charge": "",
-                    "non refundable legal fee": "",
-                    "refundable caution fee": "",
-                  }}
-                />
-              </div>
-              <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
-              <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
-                <p className="text-[#747474]">total package</p>
-                <p className="text-brand-primary text-xl font-bold">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  })
-                    .format(Number(pageData.total_package))
-                    .split(".")}
+            {UNIT_ID ? (
+              <>
+                <p className="font-normal text-[14px] text-[#6C6D6D] capitalize">
+                  {pageData.details} Payment for {pageData.unit_name}
                 </p>
-              </div>
+                <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
+                  <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+                    <KeyValueList
+                      data={{
+                        "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
+                        "non refundable agency fee": formatFee(
+                          pageData.agency_fee,
+                          CURRENCY
+                        ),
+                        "service charge": formatFee(
+                          pageData.service_charge,
+                          CURRENCY
+                        ),
+                        "refundable caution fee": formatFee(
+                          pageData.caution_fee,
+                          CURRENCY
+                        ),
+                        "non refundable legal fee": "",
+                      }}
+                      chunkSize={2}
+                      direction="column"
+                      referenceObject={{
+                        "Annual fee": "",
+                        "non refundable agency fee": "",
+                        "service charge": "",
+                        "non refundable legal fee": "",
+                        "refundable caution fee": "",
+                      }}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <Breakdown data={pageData} />
+            )}
+            <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
+            <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
+              <p className="text-[#747474]">total package</p>
+              <p className="text-brand-primary text-xl font-bold">
+                {formatFee(Number(pageData.total_package), CURRENCY)}
+              </p>
             </div>
           </AccountingTitleSection>
           <AccountingTitleSection title="Account Details">
