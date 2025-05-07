@@ -17,6 +17,7 @@ export interface InvoiceData {
   total_amount: string;
   invoice_date: string;
   is_auto: boolean | string;
+  status: string;
 }
 
 export interface InvoiceResponse {
@@ -44,4 +45,5 @@ export interface InvoicePageData {
   total_amount: string | number;
   invoice_date: string;
   is_auto: boolean;
+  status: string;
 }

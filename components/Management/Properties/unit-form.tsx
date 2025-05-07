@@ -125,7 +125,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     "negotiation",
   ];
 
-
   const handleSubmit = async (formData: Record<string, any>) => {
     if (!propertyId) return;
     if (propertyType !== "facility" && state.images.length === 0) {
@@ -319,7 +318,10 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
               <UnitBreakdownRenewalTenant />
             </>
           ) : (
-            <UnitBreakdownFacility />
+            <>
+              <UnitBreakdownFacility />
+              <UnitBreakdownRenewalTenant />
+            </>
           )}
           {!props.empty ? (
             <EditUnitActions />

@@ -2,6 +2,7 @@ import { InvoiceData, InvoicePageData } from "./types";
 
 export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
   return {
+    status: data.status || "",
     invoice_id: data.invoice_id || "",
     property_name: data.property_name || "",
     client_name: data.client_name || "",
@@ -23,6 +24,7 @@ export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
 
 export const defaultInvoiceData: InvoicePageData = {
   invoice_id: "",
+  status: "",
   property_name: "",
   client_name: "",
   account_officer: "",

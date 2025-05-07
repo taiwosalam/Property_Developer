@@ -60,17 +60,6 @@ const SelectUnitPage = () => {
 
   const handleChangeContent = () => setStep1Done(true);
 
-  // const handleContinue = () => {
-  //   if (!selectedUnitId) {
-  //     toast.warning("Please select a unit");
-  //     return;
-  //   }
-  //   router.push(
-  //     // `/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
-  //     `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${property_id}&u=${selectedUnitId}`
-  //   );
-  // };
-
   if (UnitsLoading)
     return (
       <div className="flex flex-col gap-5">
@@ -90,7 +79,9 @@ const SelectUnitPage = () => {
 
   return (
     <div>
-      <BackButton>Change Tenant&apos;s Unit</BackButton>
+      <BackButton>
+        {isRental ? "Change Tenant's Unit" : "Change Occupant's Unit"}
+      </BackButton>
       {/* <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle> */}
       <div className="space-y-4">
         {unitOptions.length === 0 ? (

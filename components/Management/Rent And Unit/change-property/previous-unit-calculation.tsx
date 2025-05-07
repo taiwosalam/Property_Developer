@@ -57,6 +57,7 @@ export const ProceedPreviousUnitBalance: React.FC<{
   // Generate deductions arrays
   const { deductionsCal, deductionsRes } = getDeductionsArrays(
     calculation,
+    deduction,
     newUnitTotalFormatted,
     totalPayable,
     currentRentStats?.oustandingObj || [],

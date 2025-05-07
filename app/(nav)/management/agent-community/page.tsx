@@ -99,7 +99,6 @@ const AgentCommunityPage = () => {
   };
 
   const handleSearch = async (query: string) => {
-    // console.log("searching...")
     setConfig({
       params: { ...config.params, search: query },
     });
@@ -255,7 +254,8 @@ const AgentCommunityPage = () => {
         )
       ) : (
         <AutoResizingGrid minWidth={300}>
-          {silentLoading && !isLikeDislikeLoading ? (
+          {/* {silentLoading && !isLikeDislikeLoading ? ( */}
+          {config.params.search || isFilterApplied() ? (
             <ThreadSkeletonLoader length={10} />
           ) : threads.length === 0 ? (
             <section>
