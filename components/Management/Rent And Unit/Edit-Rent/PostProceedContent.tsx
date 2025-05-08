@@ -33,7 +33,7 @@ import {
   singleUnitApiResponse,
   transformUnitData,
 } from "@/app/(nav)/management/rent-unit/data";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
@@ -50,6 +50,7 @@ import { ChangePropertyNewUnitCost } from "../change-property/new-unit-cost";
 import { ProceedPreviousUnitBalance } from "../change-property/previous-unit";
 import { ProceedPayAble } from "../change-property/payable";
 import { extractBalanceDates } from "../change-property/data";
+import { AgreementPreview } from "@/components/Modal/tenant-document";
 
 const PostProceedContent = ({
   selectedUnitId,
@@ -90,6 +91,8 @@ const PostProceedContent = ({
   const currentRentStats = useGlobalStore((s) => s.currentRentStats);
   const oustandingObj = currentRentStats?.oustandingObj || [];
   const outstanding = currentRentStats?.outstanding || 0;
+  const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
   const isUnit = page === "unit";
 
   // Set initial data in store
@@ -206,19 +209,68 @@ const PostProceedContent = ({
   const UnitPageEstateData = getEstateData(currentUnit);
   const estateData = isUnit ? UnitPageEstateData : PropertyPageEstateData;
   // const estateData = getEstateData(isUnit ? currentUnit : propertyData);
-  
+
   const estateSettingsDta = getEstateSettingsDta(
     isUnit ? currentUnit : propertyData
   );
 
+  // const handleSwitchUnit = async () => {
+  //   const id = balance[0].id;
+  //   const data = {
+  //     new_unit_id: selectedUnitId,
+  //     calculation: calculation ? 1 : 0,
+  //     deduction: deduction ? 1 : 0,
+  //     payment_date: startDate,
+  //   };
+  //   try {
+  //     setReqLoading(true);
+  //     const res = await switchUnit(id as string, objectToFormData(data));
+  //     if (res) {
+  //       setModalIsOpen(true);
+  //       toast.success("Unit Switched Successfully");
+  //       router.push("/management/rent-unit");
+  //     }
+  //   } catch (err) {
+  //     toast.error("Failed to switch Unit, please try again");
+  //   } finally {
+  //     setReqLoading(false);
+  //   }
+  // };
+
   const handleSwitchUnit = async () => {
+    if (!selectedUnitId || !balance[0]?.id) {
+      toast.error(
+        "Missing required information: Unit or record ID not selected."
+      );
+      return;
+    }
+
+    if (!startDate) {
+      toast.warning("Start date not selected.");
+      return;
+    }
+
+    // Open modal for all tenants
+    setIsAgreementModalOpen(true);
+  };
+
+  const submitSwitchUnit = async (doc_file: File) => {
     const id = balance[0].id;
     const data = {
       new_unit_id: selectedUnitId,
       calculation: calculation ? 1 : 0,
       deduction: deduction ? 1 : 0,
       payment_date: startDate,
+      has_document: 1,
+      doc_file, // Always include doc_file
     };
+
+    console.log(
+      "Final PDF size before API:",
+      doc_file.size / (1024 * 1024),
+      "MB"
+    );
+
     try {
       setReqLoading(true);
       const res = await switchUnit(id as string, objectToFormData(data));
@@ -231,6 +283,16 @@ const PostProceedContent = ({
       toast.error("Failed to switch Unit, please try again");
     } finally {
       setReqLoading(false);
+      setIsAgreementModalOpen(false);
+    }
+  };
+
+  const handleAgreementContinue = async (doc_file: File) => {
+    setPdfLoading(true);
+    try {
+      await submitSwitchUnit(doc_file);
+    } finally {
+      setPdfLoading(false);
     }
   };
 
@@ -331,6 +393,23 @@ const PostProceedContent = ({
           </ModalContent>
         </Modal>
       </FixedFooter>
+
+      {isAgreementModalOpen && (
+        <Modal
+          state={{
+            isOpen: isAgreementModalOpen,
+            setIsOpen: setIsAgreementModalOpen,
+          }}
+        >
+          <ModalContent>
+            <AgreementPreview
+              onClose={() => setIsAgreementModalOpen(false)}
+              onContinue={handleAgreementContinue}
+              isWebTenant={false}
+            />
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 };

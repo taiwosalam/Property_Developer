@@ -121,7 +121,7 @@ export const ProceedPreviousUnitBalance: React.FC<{
   return (
     <div className="space-y-1">
       <RentSectionTitle>{title ?? "Previous Unit Balance"}</RentSectionTitle>
-      {workings && <TenantCalculationSwitch />}
+      {workings && <TenantCalculationSwitch switches={["deduction"]} />}
       <RentSectionContainer
         title={
           workings ? "Breakdown" : isRental ? "Breakdown" : "Apply Deduction"

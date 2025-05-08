@@ -3,9 +3,11 @@ import { useGlobalStore } from "@/store/general-store";
 import { transformDocumentData } from "@/app/(nav)/documents/preview/data";
 import { DocumentPreviewData } from "@/app/(nav)/documents/preview/types";
 import { toast } from "sonner";
+import { useOccupantStore } from "./occupant-store";
 
 export const useAgreementData = () => {
   const { selectedOccupant, unitData } = useGlobalStore();
+  const { occupant } = useOccupantStore();
   const [documentData, setDocumentData] = useState<DocumentPreviewData | null>(
     null
   );
@@ -18,27 +20,31 @@ export const useAgreementData = () => {
       setIsLoading(true);
       setError(null);
 
-      if (!selectedOccupant) {
+      if (!selectedOccupant || !occupant) {
         setError("No tenant selected.");
         setIsLoading(false);
         return;
       }
 
       if (!unitData?.property_document) {
-        setError("Missing document information.");
+        setError("The Property does not have a document.");
         setIsLoading(false);
         return;
       }
 
       if (!unitData.property_document?.property) {
-        setError("Invalid document structure: missing property data.");
+        setError(
+          "No Document in the Property Yet. Please add Document before continuing"
+        );
         setIsLoading(false);
         return;
       }
 
+      const selectedTenant = occupant || selectedOccupant;
       try {
         const transformed = transformDocumentData(
           { document: unitData.property_document },
+          // selectedOccupant,
           selectedOccupant,
           unitData
         );
@@ -53,7 +59,7 @@ export const useAgreementData = () => {
     };
 
     fetchData();
-  }, [selectedOccupant, unitData]);
+  }, [selectedOccupant, unitData, occupant]);
 
   return { documentData, unitName, isLoading, error };
 };

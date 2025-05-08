@@ -158,6 +158,9 @@ export const transformSingleBranchAPIResponseToEditBranchFormDetails = (
     picture: branch.picture,
     wallet: branch.is_active === 1 ? "yes" : "no",
     hasMoney: branchHasMoney,
+    bank_name: branch.bank_name,
+    account_number: branch.account_number,
+    account_name: branch.account_name,
     // wallet: "no",
   };
 };

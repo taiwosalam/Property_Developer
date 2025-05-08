@@ -78,7 +78,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     ),
     debit: (
       <p className={item.debit ? "text-status-error-2" : ""}>
-        {item.debit ? item.debit : "--- ---"}
+        {item.debit ? `-${item.debit}` : "--- ---"}
       </p>
     ),
   }));

@@ -1,3 +1,4 @@
+"use client"
 import { useState, useCallback } from "react";
 import useExport from "@/hooks/useExport";
 
@@ -11,7 +12,7 @@ export const useAgreementExport = ({
   restOfContentRef,
 }: UseAgreementExportProps) => {
   const [isDownloading, setIsDownloading] = useState(false);
-  const { handleDownload: exportDownload } = useExport(
+  const { handleDownload: exportDownload, generatePdfFile } = useExport(
     firstPageRef,
     restOfContentRef
   );
@@ -20,10 +21,10 @@ export const useAgreementExport = ({
     async (unitName: string) => {
       setIsDownloading(true);
       try {
-        // Ensure DOM is updated before export
         await new Promise((resolve) =>
           requestAnimationFrame(() => setTimeout(resolve, 0))
         );
+        // await exportDownload(unitName);
         await exportDownload();
       } catch (err) {
         console.error("Download failed:", err);
@@ -34,5 +35,24 @@ export const useAgreementExport = ({
     [exportDownload]
   );
 
-  return { handleDownload, isDownloading };
+  const generatePdf = useCallback(
+    async (fileName: string): Promise<File> => {
+      setIsDownloading(true);
+      try {
+        await new Promise((resolve) =>
+          requestAnimationFrame(() => setTimeout(resolve, 0))
+        );
+        const pdfFile = await generatePdfFile(fileName);
+        return pdfFile;
+      } catch (err) {
+        console.error("PDF generation failed:", err);
+        throw err;
+      } finally {
+        setIsDownloading(false);
+      }
+    },
+    [generatePdfFile]
+  );
+
+  return { handleDownload, generatePdfFile: generatePdf, isDownloading };
 };

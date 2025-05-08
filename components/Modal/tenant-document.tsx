@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
@@ -17,30 +17,90 @@ import {
   witnessTenant,
   witness,
 } from "@/app/(nav)/documents/preview/data";
-import { DocumentPreviewData } from "@/app/(nav)/documents/preview/types";
 import Button from "../Form/Button/button";
 import { useAgreementData } from "@/hooks/useAgreementData";
 import { useAgreementExport } from "@/hooks/useAgreementExport";
+import { compressImage } from "@/utils/compress-image";
+import PageCircleLoader from "../Loader/PageCircleLoader";
+import { useModal } from "./modal";
 
 interface AgreementPreviewProps {
-  onClose?: () => void; // Optional callback for closing modal
+  onClose?: () => void;
+  onContinue?: (file: File) => void;
+  isWebTenant?: boolean;
 }
 
-export const AgreementPreview = ({ onClose }: AgreementPreviewProps) => {
+export const AgreementPreview = ({
+  onClose,
+  onContinue,
+  isWebTenant,
+}: AgreementPreviewProps) => {
   const router = useRouter();
+  const { setIsOpen } = useModal();
   const firstPageRef = useRef<HTMLDivElement>(null);
   const restOfContentRef = useRef<HTMLDivElement>(null);
+  const [compressedData, setCompressedData] = useState<any>(null);
 
-  // Fetch and transform agreement data
   const { documentData, unitName, isLoading, error } = useAgreementData();
+  const { handleDownload, generatePdfFile, isDownloading } = useAgreementExport(
+    {
+      firstPageRef,
+      restOfContentRef,
+    }
+  );
 
-  // Handle export functionality
-  const { handleDownload, isDownloading } = useAgreementExport({
-    firstPageRef,
-    restOfContentRef,
-  });
+  useEffect(() => {
+    const compressImages = async () => {
+      if (!documentData) return;
 
-  // Handle errors
+      const compressIfValid = async (url: string | undefined) =>
+        url && url !== "" ? await compressImage(url) : url;
+
+      const compressedLawFirm = {
+        ...documentData.lawFirm,
+        logoSrc: await compressIfValid(documentData.lawFirm.logoSrc),
+        sealSrc: await compressIfValid(documentData.lawFirm.sealSrc),
+      };
+
+      // const compressedWitnessLandlord = {
+      //   ...witnessLandlord,
+      //   signatureSrc: await compressIfValid(witnessLandlord.signatureSrc),
+      // };
+
+      // const compressedWitnessTenant = {
+      //   ...witnessTenant,
+      //   signatureSrc: await compressIfValid(witnessTenant.signatureSrc),
+      // };
+
+      // const compressedWitness = {
+      //   ...witness,
+      //   signatureSrc: await compressIfValid(witness.signatureSrc),
+      // };
+
+      setCompressedData({
+        ...documentData,
+        lawFirm: compressedLawFirm,
+        // witnessLandlord: compressedWitnessLandlord,
+        // witnessTenant: compressedWitnessTenant,
+        witness,
+      });
+    };
+
+    compressImages();
+  }, [documentData]);
+
+  const handleContinue = async () => {
+    if (!unitName || !onContinue) return;
+    try {
+      const pdfFile = await generatePdfFile(`agreement_${unitName}`);
+      onContinue(pdfFile);
+      if (pdfFile) setIsOpen(false);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      toast.error("Failed to generate agreement PDF.");
+    }
+  };
+
   if (error) {
     toast.error(error);
     if (onClose) {
@@ -51,13 +111,8 @@ export const AgreementPreview = ({ onClose }: AgreementPreviewProps) => {
     return null;
   }
 
-  // Show loading state
-  if (isLoading || !documentData) {
-    return (
-      <div className="text-center text-gray-600 dark:text-gray-400 py-4">
-        Loading agreement...
-      </div>
-    );
+  if (isLoading || !documentData || !compressedData) {
+    return <PageCircleLoader />;
   }
 
   const {
@@ -68,13 +123,12 @@ export const AgreementPreview = ({ onClose }: AgreementPreviewProps) => {
     attestation,
     witnessLawFirm,
     clauses,
-  } = documentData;
+  } = compressedData;
 
   return (
     <div className="agreement-preview-container">
       <div className="agreement-preview-header">
-        {/* <h2 className="agreement-preview-title">Tenancy Agreement Preview</h2> */}
-        {onClose && (
+        {/* {onClose && (
           <Button
             type="button"
             onClick={onClose}
@@ -85,7 +139,7 @@ export const AgreementPreview = ({ onClose }: AgreementPreviewProps) => {
           >
             Close
           </Button>
-        )}
+        )} */}
       </div>
       <div className="agreement-preview-content">
         <div ref={firstPageRef} className="agreement-preview-first-page">
@@ -107,11 +161,11 @@ export const AgreementPreview = ({ onClose }: AgreementPreviewProps) => {
             landlord={witnessLandlord}
             tenant={witnessTenant}
             witness={witness}
-            lawFirm={witnessLawFirm}
+            lawFirm={lawFirm}
           />
         </div>
       </div>
-      <div className="agreement-preview-footer">
+      <div className="agreement-preview-footer flex gap-4">
         <Button
           type="button"
           onClick={() => handleDownload(unitName)}
@@ -123,6 +177,17 @@ export const AgreementPreview = ({ onClose }: AgreementPreviewProps) => {
         >
           {isDownloading ? "Downloading..." : "Download"}
         </Button>
+        {onContinue && (
+          <Button
+            type="button"
+            onClick={handleContinue}
+            className="px-8 py-2"
+            disabled={isDownloading}
+            aria-label="Continue with agreement"
+          >
+            {isDownloading ? "Please wait..." : "Start Rent"}
+          </Button>
+        )}
       </div>
     </div>
   );

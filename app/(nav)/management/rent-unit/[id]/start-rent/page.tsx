@@ -35,16 +35,15 @@ import {
   transformUnitsTenants,
 } from "./data";
 import { toast } from "sonner";
-import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import ServerError from "@/components/Error/ServerError";
 import { empty } from "@/app/config";
 import dayjs, { Dayjs } from "dayjs";
 import { useGlobalStore } from "@/store/general-store";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { Currency } from "@/utils/number-formatter";
-import { transformDocumentData } from "@/app/(nav)/documents/preview/data";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { AgreementPreview } from "@/components/Modal/tenant-document";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -62,9 +61,9 @@ const StartRent = () => {
   const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
     useState<CheckBoxOptions>(defaultChecks);
   const [reqLoading, setReqLoading] = useState(false);
-  // const [isPastDate, setIsPastDate] = useState(false);
-  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [dueDate, setDueDate] = useState<Dayjs | null>(null);
 
   const endpoint = `/unit/${id}/view`;
   const {
@@ -85,16 +84,14 @@ const StartRent = () => {
 
   useEffect(() => {
     if (apiData) {
-      const transformedData = transformUnitData(apiData)
+      const transformedData = transformUnitData(apiData);
       setUnit_data((x: any) => ({
         ...x,
         ...transformUnitData(apiData),
       }));
-      setGlobalStore("unitData", transformedData as any)
+      setGlobalStore("unitData", transformedData as any);
     }
   }, [apiData, setGlobalStore]);
-
-  console.log("property_document", unit_data.property_document);
 
   useEffect(() => {
     if (allTenantData) {
@@ -113,23 +110,59 @@ const StartRent = () => {
       return;
     }
 
+    if (!startDate) {
+      toast.warning("Start date not selected.");
+      return;
+    }
+
     if (!selectedCheckboxOptions) {
       toast.error("Notification preferences not set.");
       return;
     }
 
-    // Validate dueDate
     if (dueDate && dueDate.isBefore(dayjs(), "day")) {
       toast.warning("End date cannot be in the past.");
       return;
     }
+
+    const IS_WEB_TENANT =
+      selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
+
+    // if (!IS_WEB_TENANT) {
+    //   // Open modal for non-web tenants
+    //   setIsAgreementModalOpen(true);
+    //   return;
+    // }
+
+    // For web tenants, proceed without PDF
+    // await submitRent(null);
+    setIsAgreementModalOpen(true);
+    return;
+  };
+
+  const submitRent = async (doc_file: File | null) => {
     const successMsg = isRental
-      ? "Rent Started Succesfully"
+      ? "Rent Started Successfully"
       : "Occupant Moved In Successfully";
     const failedMsg = isRental
       ? "Failed to start Rent, Try Again!"
       : "Failed to Move Occupant In, Try Again!";
-    const payload = {
+
+    // const WebpayloadObj = {
+    //   unit_id: unit_data.unit_id,
+    //   tenant_id: selectedTenantId,
+    //   start_date: startDate,
+    //   payment_type: "full",
+    //   rent_type: "new",
+    //   mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
+    //   email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
+    //   has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+    //   sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
+    //   is_mobile_user: 0,
+    //   has_document: 0,
+    // };
+
+    const MobilepayloadObj = {
       unit_id: unit_data.unit_id,
       tenant_id: selectedTenantId,
       start_date: startDate,
@@ -138,18 +171,39 @@ const StartRent = () => {
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
       has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+      sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
+      is_mobile_user: 1,
+      has_document: 1,
+      doc_file: doc_file,
     };
+
+    // const payloadObj = IS_WEB_TENANT ? WebpayloadObj : MobilepayloadObj;
+    const payloadObj = MobilepayloadObj;
+    const payload = objectToFormData(payloadObj);
+    console.log("DOc file", doc_file);
+    console.log("payload", payload);
+
     try {
       setReqLoading(true);
       const res = await startRent(payload);
       if (res) {
         toast.success(successMsg);
-        router.push('/management/rent-unit');
+        router.push("/management/rent-unit");
       }
     } catch (err) {
       toast.error(failedMsg);
     } finally {
       setReqLoading(false);
+      setIsAgreementModalOpen(false);
+    }
+  };
+
+  const handleAgreementContinue = async (doc_file: File) => {
+    setPdfLoading(true);
+    try {
+      await submitRent(doc_file);
+    } finally {
+      setPdfLoading(false);
     }
   };
 
@@ -162,8 +216,8 @@ const StartRent = () => {
   const propertySettingsData = getPropertySettingsData(unit_data);
   const estateData = getEstateData(unit_data);
   const estateSettingsDta = getEstateSettingsData(unit_data);
-
-  console.log("unit data", unit_data);
+  const IS_WEB_TENANT =
+    selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -216,36 +270,53 @@ const StartRent = () => {
         />
       </section>
       <FixedFooter className={`flex justify-end gap-4`}>
-        {isRental &&
-          selectedOccupant?.userTag?.toLocaleLowerCase() === "web" &&
-          !isPastDate && (
-            <Modal>
-              <ModalTrigger asChild>
-                <Button size="base_medium" className="py-2 px-6">
-                 Agreement
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <AgreementPreview />
-              </ModalContent>
-            </Modal>
-          )}
+        {isRental && IS_WEB_TENANT && !isPastDate && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button size="base_medium" className="py-2 px-6">
+                Agreement
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <AgreementPreview isWebTenant={IS_WEB_TENANT} />
+            </ModalContent>
+          </Modal>
+        )}
 
         <Button
           size="base_medium"
           className="py-2 px-6"
-          disabled={reqLoading}
+          disabled={reqLoading || pdfLoading}
           onClick={handleStartRent}
         >
-          {reqLoading
+          {reqLoading || pdfLoading
             ? "Please wait..."
             : isPastDate
             ? "Save Rent"
+            : !IS_WEB_TENANT
+            ? "Proceed"
             : isRental
             ? "Start Rent"
             : "Move In"}
         </Button>
       </FixedFooter>
+
+      {isAgreementModalOpen && (
+        <Modal
+          state={{  
+            isOpen: isAgreementModalOpen,
+            setIsOpen: setIsAgreementModalOpen,
+          }}
+        >
+          <ModalContent>
+            <AgreementPreview
+              onClose={() => setIsAgreementModalOpen(false)}
+              onContinue={handleAgreementContinue}
+              isWebTenant={IS_WEB_TENANT}
+            />
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 };

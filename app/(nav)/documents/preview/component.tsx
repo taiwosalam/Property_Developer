@@ -202,10 +202,10 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
       </div>
 
       <div className="preparedby w-full flex flex-col items-center justify-center">
-        <div className="lawyersignature w-10 h-10">
+        <div className="lawyersignature w-20 h-20">
           <Image
             alt="lawyer signature"
-            src={empty}
+            src={lawFirm.sealSrc || empty}
             width={100}
             height={100}
             className="w-full h-full object-contain"
