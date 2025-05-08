@@ -9,6 +9,7 @@ import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import api, { handleAxiosError } from "@/services/api";
 import dayjs from "dayjs";
+import { formatFee } from "../../../rent-unit/data";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -263,8 +264,8 @@ export const transformIndividualLandlordAPIResponse = ({
         payment_id: s.payment_id,
         details: s.details,
         unit_name: s.unit_name,
-        credit: amount > 0 ? `₦${amount.toLocaleString()}` : null,
-        debit: amount < 0 ? `₦${(-amount).toLocaleString()}` : null,
+        credit: amount > 0 ? formatFee(amount, s.currency || "naira") || "" : null,
+        debit: amount < 0 ? formatFee(amount, s.currency || "naira") || "" : null,
         date: s.date ? dayjs(s.date).format("DD/MM/YYYY") : "--- ---",
         badge_color: s.payer_tier
           ? tierColorMap[s.payer_tier as keyof typeof tierColorMap]

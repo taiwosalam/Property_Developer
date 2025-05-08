@@ -21,6 +21,10 @@ import { transformSingleBranchAPIResponseToEditBranchFormDetails } from "../data
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import SettingsBank from "@/components/Settings/settings-bank";
+import { toast } from "sonner";
+import ServerError from "@/components/Error/ServerError";
+import { updateBranch } from "./data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -37,9 +41,40 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
     ? transformSingleBranchAPIResponseToEditBranchFormDetails(data)
     : null;
 
+  // Function to update branch bank details
+  const updateBranchBankDetails = async (details: {
+    bank_name: string;
+    account_name: string;
+    account_number: string;
+    bank_code: string;
+  }) => {
+    const branchID = branchData?.id;
+    if (!branchID) return toast.error("Cannot Find Branch ID");
+    const payload = {
+      bank_name: details.bank_name,
+      account_name: details.account_name,
+      account_number: details.account_number,
+      bank_code: details.bank_code,
+    };
+    try {
+      setUpdateRequestLoading(true);
+      const status = await updateBranch(
+        objectToFormData(payload),
+        branchData.id
+      );
+      if (status) {
+        window.dispatchEvent(new Event("refectch-branch"));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdateRequestLoading(false);
+    }
+  };
+
   if (loading) return <PageCircleLoader />;
 
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10">
@@ -87,7 +122,13 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
           somedata={branchData}
           setUpdateRequestLoading={setUpdateRequestLoading}
         />
-        <SettingsBank branch />
+        <SettingsBank
+          branch
+          branch_account_name={branchData?.account_name}
+          branch_account_number={branchData?.account_number}
+          branch_bank_name={branchData?.bank_name}
+          action={updateBranchBankDetails}
+        />
       </div>
       <FixedFooter className="flex justify-between items-center flex-wrap">
         <Modal>

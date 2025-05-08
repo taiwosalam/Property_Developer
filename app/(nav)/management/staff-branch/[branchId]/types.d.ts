@@ -59,6 +59,9 @@ export interface EditBranchFormData {
   description: string;
   picture: string | null;
   hasMoney?: boolean;
+  account_name?: string;
+  account_number?: string;
+  bank_name?: string;
 }
 
 export interface Transactions {
@@ -96,6 +99,9 @@ export type SingleBranchResponseType = {
       // branch_wallet: string; //to be added later
       branch_desc: string;
       landlords_count: number;
+      account_name: string;
+      account_number: string;
+      bank_name: string;
       current_month_landlords_count: number;
       tenants_count: number;
       current_month_tenants_count: number;

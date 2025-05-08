@@ -60,8 +60,8 @@ const EditRent = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
   const [isCompletePayment, setIsCompletePayment] = useState(false);
-
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  const { setSelectedOccupant, setUnitData } = useGlobalStore()
   const endpoint = `/unit/${id}/view`;
 
   const {
@@ -82,7 +82,9 @@ const EditRent = () => {
         ...transformedData,
       }));
       setGlobalStore("currentUnit", transformedData);
+      setUnitData(transformedData as any);
       if (transformedData.occupant) {
+        setSelectedOccupant(transformedData.occupant);
         setOccupant(transformedData.occupant); // Store occupant data in Zustand
       }
       if (transformedData.previous_records) {
@@ -100,12 +102,21 @@ const EditRent = () => {
     : "__,__,__";
   const propertyId = unit_data.propertyId;
 
+  // GETTING DATA FOR EACH SECTION
   const rentalData = getRentalData(unit_data);
   const estateData = getEstateData(unit_data);
   const propertySettingsData = getPropertySettingsData(unit_data);
   const estateSettingsDta = getEstateSettingsData(unit_data);
 
-  const PART_PAYMENT_AMOUNT = 0;
+  // PENDING INVOICE REPRESENTS PART PAYMENT TENANT MADE
+  const PENDING_INVOICE = unit_data?.pending_invoice;
+  const PENDING_INVOICE_PAID_AMOUNT = Number(PENDING_INVOICE?.amount_paid) || 0;
+  const PENDING_INVOICE_BALANCE_DUE = Number(PENDING_INVOICE?.balance_due) || 0;
+  const PART_PAYMENT_AMOUNT = PENDING_INVOICE_PAID_AMOUNT;
+  // UNIT CURRENCY WITH NAIRA FALLBACK
+  const CURRENCY = unit_data.currency || "naira";
+
+  console.log("pending_invoice", unit_data.pending_invoice);
 
   // ADD UPFRONT RENT
   const handleUpfrontRent = async () => {
@@ -141,6 +152,11 @@ const EditRent = () => {
       toast.error("No unit balance available");
       return;
     }
+
+    if (!startDate) {
+      return toast.warning("Please select a payment date");
+    }
+
     const payload = {
       unit_id: id,
       amount: parseFloat(amt),
@@ -163,6 +179,7 @@ const EditRent = () => {
     }
   };
 
+  // LOADING & ERROR HANDLING
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -242,7 +259,7 @@ const EditRent = () => {
             {PART_PAYMENT_AMOUNT <= 0 && (
               <>
                 <EditCurrentRent
-                  currency={unit_data.currency || "naira"}
+                  currency={CURRENCY}
                   isRental={isRental}
                   total={
                     isRental
@@ -258,7 +275,7 @@ const EditRent = () => {
 
                 <AddPartPayment
                   isRental={isRental}
-                  currency={unit_data.currency || "naira"}
+                  currency={CURRENCY}
                   setStart_Date={setStartDate}
                   action={handlePartPayment}
                   loading={reqLoading}
@@ -274,13 +291,14 @@ const EditRent = () => {
                 feeDetails={[
                   {
                     name: "Part Payment",
-                    amount: formatFee(PART_PAYMENT_AMOUNT, "naira"),
+                    amount: formatFee(PART_PAYMENT_AMOUNT, CURRENCY),
                   },
                   {
                     name: "Balance",
-                    amount: formatFee(3000, "naira"),
+                    amount: formatFee(PENDING_INVOICE_BALANCE_DUE, CURRENCY),
                   },
                 ]}
+                currency={CURRENCY}
                 total={PART_PAYMENT_AMOUNT}
                 setIsCompletePayment={setIsCompletePayment}
               />
@@ -289,13 +307,13 @@ const EditRent = () => {
             {isCompletePayment && (
               <AddPartPayment
                 isRental={isRental}
-                currency={unit_data.currency || "naira"}
+                currency={CURRENCY}
                 setStart_Date={setStartDate}
                 action={handlePartPayment}
                 loading={reqLoading}
                 setAmt={setAmt}
                 isCompletePayment={isCompletePayment}
-                prevAmt={PART_PAYMENT_AMOUNT.toString()}
+                prevAmt={PENDING_INVOICE_BALANCE_DUE.toString()}
                 setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
                 isUpfrontPaymentChecked={true}
               />
@@ -311,7 +329,7 @@ const EditRent = () => {
               isRental={isRental}
               propertyId={Number(unit_data.propertyId)}
               unitId={Number(unit_data.id)}
-              currency={unit_data.currency || "naira"}
+              currency={CURRENCY}
             />
           </div>
         </div>
@@ -319,7 +337,7 @@ const EditRent = () => {
           isRental={isRental}
           previous_records={unit_data.previous_records as any}
           unit_id={id as string}
-          currency={unit_data.currency || "naira"}
+          currency={CURRENCY}
         />
       </section>
 

@@ -93,7 +93,8 @@ const DocumentPreview: React.FC = () => {
             landlord={witnessLandlord}
             tenant={witnessTenant}
             witness={witness}
-            lawFirm={witnessLawFirm}
+            // lawFirm={witnessLawFirm}
+            lawFirm={lawFirm}
           />
         </div>
       </div>
