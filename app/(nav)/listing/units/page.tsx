@@ -127,7 +127,7 @@ const Units = () => {
     refetch,
   } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
 
-  console.log(apiData);
+
 
   // console.log("apiData", apiData)
   useEffect(() => {

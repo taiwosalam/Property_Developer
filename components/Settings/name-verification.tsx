@@ -19,11 +19,15 @@ import { toast } from "sonner";
 
 interface NameVerificationProps {
   fullName: string;
-  setFullName: (value: string) => void
+  setFullName: (value: string) => void;
   setCloseVerification: (value: boolean) => void;
 }
 
-export const NameVerification = ({ fullName, setFullName, setCloseVerification }: NameVerificationProps) => {
+export const NameVerification = ({
+  fullName,
+  setFullName,
+  setCloseVerification,
+}: NameVerificationProps) => {
   const [step, setStep] = useState(1); // Step state to control modal content
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null); // Track selected verification
 
@@ -101,7 +105,9 @@ export const NameVerification = ({ fullName, setFullName, setCloseVerification }
               <div className="p-[18px] rounded-2xl bg-neutral-2">
                 <div className="flex gap-3">
                   <div className="flex items-center gap-1">
-                    <p className="font-bold text-lg text-black capitalize">{fullName}</p>
+                    <p className="font-bold text-lg text-black capitalize">
+                      {fullName}
+                    </p>
                     <BadgeIcon color={"gray"} />
                   </div>
                 </div>
@@ -379,12 +385,12 @@ export const InputPinDialog = ({
   setInputField,
   responseMethod,
   setFullName,
-  setCloseVerification
+  setCloseVerification,
 }: InputPinDialogProps) => {
   const [code, setCode] = useState("");
   const [loading, setIsLoading] = useState(false);
 
-  const[monoResponse, setMonoResponse] = useState("");
+  const [monoResponse, setMonoResponse] = useState("");
 
   const formatContactInfo = () => {
     if (!contactInfo) return "";
@@ -403,7 +409,7 @@ export const InputPinDialog = ({
     try {
       setIsLoading(true);
       const data = await bvnInfoDetails(code, sessionId);
-      if(data?.status){
+      if (data?.status) {
         setCloseVerification(false);
       }
       console.log(data?.data);
@@ -500,7 +506,7 @@ export const InputPinDialog = ({
           </p>
           <p className="text-gray-500">for confirmation</p>
           <div className="py-12">
-            <AuthPinField onChange={setCode} length={6}/>
+            <AuthPinField onChange={setCode} length={6} />
           </div>
 
           <Button
@@ -712,8 +718,12 @@ export const AlternateMethod = ({
             <p className="max-w-[20rem] text-gray-500 text-center">
               To verify your identity, please complete the email address above.
             </p>
+          ) : selectMethod === "Alternative Number" ? (
+            <p className="max-w-[20rem] text-gray-500 text-center">
+              Please enter any other phone number linked to any of your bank
+              accounts.
+            </p>
           ) : (
-            selectMethod === "Alternative Number" ? "" :
             <p className="max-w-[20rem] text-gray-500 text-center">
               To verify your identity, please complete the phone number above
             </p>

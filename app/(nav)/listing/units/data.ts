@@ -11,9 +11,9 @@ export const listingUnitFilter: FilterOptionMenu[] = [
     radio: true,
     label: "Status",
     value: [
-      { label: "Published", value: "true" },
-      { label: "Unpublished", value: "false" },
-      { label: "Under Moderation", value: "pending" },
+      { label: "Published", value: "published" },
+      { label: "Unpublished", value: "unpublished" },
+      { label: "Under Moderation", value: "moderation" },
       { label: "Rejected", value: "rejected" },
     ],
   },
