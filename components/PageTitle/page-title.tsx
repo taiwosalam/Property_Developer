@@ -6,19 +6,23 @@ import { PageTitleProps } from "./types";
 import AboutPage from "../AboutPage/about-page";
 import { ArrowLeft, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const PageTitle: React.FC<PageTitleProps> = ({
   title,
   aboutPageModalData,
   noExclamationMark,
-  backUrl,
+  onBack = true,
 }) => {
+  const router = useRouter();
   return (
     <div className="flex items-center gap-1">
       <div className="flex gap-3 items-center">
-        { backUrl && <Link href={backUrl}>
-          <ArrowLeft />
-        </Link>}
+        {onBack && (
+          <div onClick={() => router.back()} className="cursor-pointer">
+            <ArrowLeft />
+          </div>
+        )}
         <h1 className="text-xl font-medium text-[#101828] dark:text-darkText-1 capitalize">
           {title}
         </h1>

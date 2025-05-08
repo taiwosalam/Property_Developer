@@ -14,7 +14,7 @@ export const profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
-    label: "See Reviews",
+    label: "Company Reviews",
     link: {
       href: "/reviews",
     },
@@ -50,7 +50,6 @@ export const profile_actions: (
   },
 ];
 
-
 export const manager_profile_actions: (
   | {
       label: string;
@@ -71,7 +70,6 @@ export const manager_profile_actions: (
     modal: <NavRequestCallback />,
   },
 ];
-
 
 export const account_profile_actions: (
   | {
@@ -94,7 +92,6 @@ export const account_profile_actions: (
   },
 ];
 
-
 export const staff_profile_actions: (
   | {
       label: string;
@@ -115,7 +112,6 @@ export const staff_profile_actions: (
     modal: <NavRequestCallback />,
   },
 ];
-
 
 export const user_profile_actions: (
   | {

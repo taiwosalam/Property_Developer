@@ -38,7 +38,7 @@ const CalendarEventRecord = () => {
         azFilter
         exports
         isDateTrue
-        backUrl={"/tasks/calendars/#event"}
+        onBack
         pageTitle="Calendar Events"
         aboutPageModalData={{
           title: "Calendar Events",

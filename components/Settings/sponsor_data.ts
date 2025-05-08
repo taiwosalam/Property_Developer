@@ -1,4 +1,11 @@
+import { formatToNaira } from "@/app/(nav)/tasks/inspections/data";
 import dayjs from "dayjs";
+
+import duration from "dayjs/plugin/duration";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(duration);
+dayjs.extend(utc);
 
 export interface SmsTransaction {
   id: number;
@@ -42,7 +49,7 @@ export const transSMSTransactionTable = (
       id: item?.id ?? 0,
       purchase_id: item?.reference_id ?? "___ ___",
       units: item?.unit ?? 0,
-      price: item?.amount ?? "___ ___",
+      price: `₦${Number(item?.amount).toLocaleString()}` || "___ ___",
       date: item?.created_at
         ? dayjs(item?.created_at).format("DD/MM/YYYY HH:MM A")
         : "___ ___",
@@ -103,6 +110,22 @@ export interface EnrollmentHistoryTable {
   }[];
 }
 
+export const getMonthDifference = (
+  startDate: string,
+  endDate: string
+): string => {
+  // Parse the dates using dayjs
+  const start = dayjs(startDate);
+  const end = dayjs(endDate);
+
+  // Calculate difference in months using dayjs built-in diff method
+  // This handles edge cases better than manual calculation
+  const totalMonths = end.diff(start, "month");
+
+  // Format the result
+  return totalMonths === 1 ? "1 month" : `${totalMonths} months`;
+};
+
 export const transformEnrollmentHistory = (
   data: BrandHistoryResponse
 ): EnrollmentHistoryTable => {
@@ -115,8 +138,11 @@ export const transformEnrollmentHistory = (
         ? dayjs(item?.payment_date).format("DD/MM/YYYY HH:MM A")
         : "___ ___",
       display_pages: item?.page.length > 0 ? item?.page.join(",") : "",
-      amount_paid: `₦${item?.amount.toLocaleString()}`,
-      period: item?.updated_at ?? "___ ___",
+      amount_paid: `₦${Number(item?.amount).toLocaleString()}`,
+      period:
+        item?.payment_date && item?.expire_date
+          ? getMonthDifference(item.payment_date, item.expire_date)
+          : "___ ___",
       start_date: item?.created_at
         ? dayjs(item?.created_at).format("DD/MM/YYYY HH:MM A")
         : "___ ___",
@@ -125,4 +151,71 @@ export const transformEnrollmentHistory = (
         : "",
     })),
   };
+};
+
+export interface CampaignHistoryResponse {
+  message: string;
+  status: boolean;
+  data: {
+    current_page: number;
+    data: CampaignHistory[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: PaginationLink[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+  };
+}
+
+export interface CampaignHistory {
+  id: number;
+  name: string;
+  type: string;
+  link: string;
+  attachment: string;
+  period: string;
+  amount: string;
+  expire_date: string; // Format: YYYY-MM-DD
+  company_id: number;
+  created_at: string; // Format: ISO 8601 timestamp
+  updated_at: string; // Format: ISO 8601 timestamp
+}
+
+export interface PaginationLink {
+  url: string | null;
+  label: string;
+  active: boolean;
+}
+
+export interface ICampaignTable {
+  payment_id: number;
+  campaign_type: string;
+  campaign_name: string;
+  link: string;
+  uploaded: string;
+  period: string;
+  amount: string;
+  expired_date: string;
+}
+
+export const transformCampaignData = (
+  data: CampaignHistoryResponse
+): ICampaignTable[] => {
+  const { data: campaignData } = data.data;
+  return campaignData.map((item) => ({
+    payment_id: item?.id,
+    campaign_type: item?.type || "___ ___",
+    campaign_name: item?.name || "___ ___",
+    link: item?.link || "___ ___",
+    uploaded: item?.attachment || "___ ___",
+    period: item?.period || "___ ___",
+    amount: item.amount ? formatToNaira(item.amount) : "___ ____",
+    expired_date: item?.expire_date,
+  }));
 };

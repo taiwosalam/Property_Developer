@@ -1,3 +1,5 @@
+import { ReviewResponseApi } from "./[id]/types";
+
 export type ReviewResponse = {
   status: "success";
   data: Review[];
@@ -63,3 +65,26 @@ export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
     }),
   };
 };
+
+export interface ISingleReview {
+  id: number;
+  profile_picture: string;
+  full_name: string;
+  tier_id: number;
+  description: string;
+  likes: number;
+  dislikes: number;
+}
+export const transformSingleReview = (data: ReviewResponseApi): ISingleReview => {
+  const { data: review } = data;
+  return {
+    id: review.id,
+    profile_picture: review.user?.profile_picture_url,
+    full_name: review.user.name,
+    tier_id: review.user.tier_id,
+    description: review.review,
+    likes: review.reactions.likes,
+    dislikes: review.reactions.dislikes
+  }
+
+}

@@ -20,8 +20,11 @@ import { FeatureFields, SponsorFields } from "@/app/(nav)/settings/add-on/data";
 dayjs.extend(advancedFormat);
 
 const ExportAddsOnFeature = () => {
+  const [fullContent, setFullContent] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
-  
+
+  const filteredFeatureHistory = useGlobalStore((s) => s.feature_history);
+
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
@@ -36,17 +39,17 @@ const ExportAddsOnFeature = () => {
           </h1>
         </div>
         <CustomTable
-          //className={`${fullContent && "max-h-none"}`}
+          className={`${fullContent && "max-h-none"}`}
           fields={FeatureFields}
-          data={[]}
+          data={filteredFeatureHistory?.data || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
       </div>
       <ExportPageFooter
         printRef={exportRef}
-        //setFullContent={setFullContent}
-        //fullContent={fullContent}
+        setFullContent={setFullContent}
+        fullContent={fullContent}
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import {
   CampaignFields,
   FeatureFields,
+  postCampaign,
 } from "@/app/(nav)/settings/add-on/data";
 import CustomTable from "../Table/table";
 import { SettingsSectionTitle } from "./settings-components";
@@ -18,6 +19,16 @@ import { useEffect, useState } from "react";
 import FileInput from "../Form/FileInput/file-input";
 import { PERIOD_OPTIONS } from "./subscription-components";
 import FileUploadInput from "./fileInput";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { toast } from "sonner";
+import { base64ToBlob } from "@/app/(nav)/settings/security/data";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import {
+  CampaignHistoryResponse,
+  ICampaignTable,
+  transformCampaignData,
+} from "./sponsor_data";
 
 const campaignType = [
   {
@@ -38,12 +49,29 @@ const headline = `Promote your brand, idea, or business by showcasing a banner w
 
 To ensure optimal display quality and platform compatibility, only SVG file format is accepted for banner uploads. Please provide your banner in the following recommended dimensions: Mobile: 1080 x 1920 pixels, Tablet: 1536 x 2048 pixels and Web: 1920 x 1080 pixels.`;
 export const Campaign = () => {
+  const { company_id } = usePersonalInfoStore();
   const [selectedPeriod, setSelectedPeriod] = useState("");
   const [selectedPage, setSelectedPage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
   const [campaignName, setCampaignName] = useState("");
   const [campaignValue, setCampaignValue] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+  const [campaignTable, setCampaignTable] = useState<ICampaignTable[] | null>(
+    null
+  );
+
+  const { data: campaignData, refetch } = useFetch<CampaignHistoryResponse>(
+    company_id ? `campaigns/${company_id}` : null
+  );
+  useRefetchOnEvent("companyCampaign", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (campaignData) {
+      const transData = transformCampaignData(campaignData);
+      setCampaignTable(transData);
+    }
+  }, [campaignData]);
 
   const isFormIncomplete =
     !campaignName ||
@@ -72,6 +100,45 @@ export const Campaign = () => {
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
+
+  const handlePostCampaign = async () => {
+    if (!company_id) return;
+
+    const monthString = selectedPeriod.split(" ")[0];
+
+    try {
+      const formData = new FormData();
+
+      formData.append("period", String(Number(monthString)));
+      formData.append("amount", String(totalAmount));
+      //formData.append("company_id", company_id);
+      formData.append("link", `https://${campaignValue}`);
+      formData.append("name", campaignName);
+      formData.append("type", selectedPage);
+
+      if (uploadedFile) {
+        if (uploadedFile.type !== "image/svg+xml") {
+          toast.error("Only SVG files are allowed");
+          return;
+        }
+
+        if (uploadedFile.size > 1024 * 1024) {
+          toast.error("File size must be less than 1MB");
+          return;
+        }
+
+        formData.append("attachment", uploadedFile);
+      }
+
+      const res = await postCampaign(formData, company_id);
+      if (res) {
+        toast.success("Campaign sent successfully");
+        return true;
+      }
+    } catch (error) {}
+  };
+
+  console.log(uploadedFile);
 
   return (
     <>
@@ -201,6 +268,7 @@ export const Campaign = () => {
               <SponsorModal
                 count={parseInt(selectedPeriod)}
                 cost={totalAmount / parseInt(selectedPeriod)}
+                onSubmit={handlePostCampaign}
               />
             </ModalContent>
           </Modal>
@@ -224,7 +292,11 @@ export const Campaign = () => {
           </Link>
         </div>
 
-        <CustomTable data={[]} fields={CampaignFields} {...table_style_props} />
+        <CustomTable
+          data={campaignTable ? campaignTable?.slice(0, 7) : []}
+          fields={CampaignFields}
+          {...table_style_props}
+        />
       </SettingsSection>
     </>
   );

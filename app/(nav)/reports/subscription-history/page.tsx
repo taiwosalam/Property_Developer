@@ -41,7 +41,7 @@ const SubscriptionRecord = () => {
       <FilterBar
         exports
         isDateTrue
-        backUrl={`/settings/subscription/#table`}
+        onBack
         pageTitle="Subscription History"
         aboutPageModalData={{
           title: "Subscription History",

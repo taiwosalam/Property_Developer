@@ -22,6 +22,11 @@ import useFetch from "@/hooks/useFetch";
 import ServerError from "@/components/Error/ServerError";
 import { IReviewCard, ReviewResponse, transformReviewCard } from "./data";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import {
+  NegativeIcon,
+  NeutralIcon,
+  PositiveIcon,
+} from "@/components/Message/review-icons";
 
 const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
   const { id } = useParams();
@@ -62,14 +67,30 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
         <div className="flex flex-1 p-4 pr-0">
           <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
             <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
-              <div className="flex-1 relative">
-                <Input
-                  id="search"
-                  className="w-full"
-                  placeholder="Search for messages"
-                  leftIcon={"/icons/search-icon.svg"}
-                  inputClassName="pr-[52px] border-transparent"
-                />
+              <div className="relative w-full">
+                <div className="flex flex-col-reverse md:flex-row gap-4 md:justify-between md:items-center w-full">
+                  <div className="flex gap-2 items-center">
+                    <div className="p-2 flex items-center gap-2 cursor-pointer">
+                      <PositiveIcon size={28} />
+                      <p className="text-lg text-[#01BA4C]">10</p>
+                    </div>
+                    <div className="p-2 flex gap-2 items-center rounded-md border cursor-pointer">
+                      <NeutralIcon size={29} />
+                      <p className="text-lg text-[#FFBB53]">10</p>
+                    </div>
+                    <div className="p-2 flex gap-2 items-center cursor-pointer">
+                      <NegativeIcon size={28} />
+                      <p className="text-lg text-[#E9212E]">10</p>
+                    </div>
+                  </div>
+                  <Input
+                    id="search"
+                    className="w-full"
+                    placeholder="Search for reviews"
+                    leftIcon={"/icons/search-icon.svg"}
+                    inputClassName="pr-[52px] border-transparent"
+                  />
+                </div>
                 <div className="absolute top-2/4 right-0 -translate-y-2/4">
                   <FilterButton
                     noTitle

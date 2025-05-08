@@ -376,7 +376,7 @@ const TransactionHistory = () => {
           appliedFilters={appliedFilters}
           fileLabel={"Wallet Transactions"}
           xlsxData={filteredTransactions}
-          backUrl="/wallet"
+          onBack
         />
         <DateRangeSelector />
       </div>
