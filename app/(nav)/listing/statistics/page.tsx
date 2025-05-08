@@ -30,6 +30,9 @@ import useFetch from "@/hooks/useFetch";
 import { ListingStatisticResponse } from "./type";
 import DashboardLoading from "@/components/Loader/DashboardLoading";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { useGlobalStore } from "@/store/general-store";
+import dayjs from "dayjs";
+import { StatisticsChart } from "@/components/dashboard/statistics-chart";
 
 const Statistics = () => {
   const [activeStatIndex, setActiveStatIndex] = useState(0);
@@ -38,11 +41,34 @@ const Statistics = () => {
     null
   );
 
+  const timeRange = useGlobalStore((state) => state.timeRange);
+  const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
+
+  const getApiUrl = () => {
+    let url = `unit/statistic`;
+    const params = new URLSearchParams();
+
+    if (
+      timeRange === "custom" &&
+      selectedDateRange?.from &&
+      selectedDateRange?.to
+    ) {
+      params.append("date_filter", "custom");
+      params.append("from", dayjs(selectedDateRange.from).format("YYYY-MM-DD"));
+      params.append("to", dayjs(selectedDateRange.to).format("YYYY-MM-DD"));
+    } else {
+      params.append("date_filter", timeRange || "last_30_days");
+    }
+
+    return `${url}?${params.toString()}`;
+  };
+
   const {
     data: apiData,
     loading,
+    silentLoading,
     error,
-  } = useFetch<ListingStatisticResponse>(`unit/statistic`);
+  } = useFetch<ListingStatisticResponse>(getApiUrl());
 
   useEffect(() => {
     if (apiData) {
@@ -76,7 +102,7 @@ const Statistics = () => {
       bookmarks: item.total_bookmarks,
     })) || [];
 
-  if (loading) {
+  if (loading || silentLoading) {
     return <DashboardLoading />;
   }
 
@@ -123,7 +149,7 @@ const Statistics = () => {
       </div>
       <div className="flex flex-col xl:flex-row gap-10">
         <div className="flex-1">
-          <DashboardChart
+          <StatisticsChart
             visibleRange
             chartTitle="Performance"
             chartConfig={listingsStatisticsChartConfig}

@@ -100,7 +100,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   tenantError: null,
   currentUnit: null,
   currentRentStats: null,
-  timeRange: "30d",
+  timeRange: "last_30_days",
   selectedDateRange: undefined,
   unitData: null,
   setSelectedOccupant: (occupant) => set({ selectedOccupant: occupant }),
