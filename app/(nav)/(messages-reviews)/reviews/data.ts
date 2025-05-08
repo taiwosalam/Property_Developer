@@ -1,3 +1,4 @@
+import api, { handleAxiosError } from "@/services/api";
 import { ReviewResponseApi } from "./[id]/types";
 
 export type ReviewResponse = {
@@ -67,24 +68,48 @@ export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
 };
 
 export interface ISingleReview {
-  id: number;
-  profile_picture: string;
-  full_name: string;
-  tier_id: number;
-  description: string;
-  likes: number;
-  dislikes: number;
+  main: {
+    id: number;
+    pfp: string;
+    fullname: string;
+    tier_id: number;
+    desc: string;
+    likes: number;
+    dislikes: number;
+  };
+  replies: {
+    comments: any[];
+  };
 }
-export const transformSingleReview = (data: ReviewResponseApi): ISingleReview => {
+export const transformSingleReview = (
+  data: ReviewResponseApi
+): ISingleReview => {
   const { data: review } = data;
   return {
-    id: review.id,
-    profile_picture: review.user?.profile_picture_url,
-    full_name: review.user.name,
-    tier_id: review.user.tier_id,
-    description: review.review,
-    likes: review.reactions.likes,
-    dislikes: review.reactions.dislikes
-  }
+    main: {
+      id: review.id,
+      pfp: review.user?.profile_picture_url,
+      fullname: review.user.name,
+      tier_id: review.user.tier_id,
+      desc: review.review,
+      likes: review.reactions.likes,
+      dislikes: review.reactions.dislikes,
+    },
+    replies: {
+      comments: review?.reply_comments,
+    },
+  };
+};
 
-}
+export const postReaction = async (reviewId: string | number, url: string) => {
+  try {
+    const response = await api.post(`reviews/${reviewId}/${url}`);
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("companyReviews"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 interface PersonalInfoStoreState {
+  userId: number | null;
   user_id: string | null;
   name: string | null;
   user_online_status: 'online' | 'offline' | null;
@@ -42,6 +43,7 @@ interface PersonalInfoStoreState {
 export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   // Personal Info
   user_id: null,
+  userId: null,
   user_online_status: null,
   unread_messages_count: null,
   unread_notifications_count: null,

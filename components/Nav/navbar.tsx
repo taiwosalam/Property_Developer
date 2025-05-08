@@ -188,7 +188,9 @@ const Header = () => {
   useEffect(() => {
     if (data?.data) {
       const { user, company, profile, requestDemos, director } = data.data;
+
       setPersonalInfo("user_id", user.userid);
+      setPersonalInfo("userId", user.id);
       setPersonalInfo(
         "name",
         `${profile?.title ? profile.title + " " : ""}${user.name}`
