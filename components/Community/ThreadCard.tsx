@@ -20,6 +20,7 @@ const ThreadCard = ({
   slug,
   shareLink,
   video,
+  setIsLikeDislikeLoading,
 }: ThreadCardProps) => {
   const link = `/management/agent-community/${
     myArticle ? "my-articles" : "threads"
@@ -46,6 +47,7 @@ const ThreadCard = ({
         dislikes={dislikes}
         slug={slug}
         shareLink={link}
+        setIsLikeDislikeLoading={setIsLikeDislikeLoading} 
       />
     </div>
   );

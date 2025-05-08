@@ -44,6 +44,7 @@ interface ThreadApiResponse {
 const AgentCommunityPage = () => {
   const router = useRouter();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [isLikeDislikeLoading, setIsLikeDislikeLoading] = useState(false);
 
   const initialState: ThreadApiResponse = {
     data: [],
@@ -98,7 +99,6 @@ const AgentCommunityPage = () => {
   };
 
   const handleSearch = async (query: string) => {
-    // console.log("searching...")
     setConfig({
       params: { ...config.params, search: query },
     });
@@ -254,8 +254,9 @@ const AgentCommunityPage = () => {
         )
       ) : (
         <AutoResizingGrid minWidth={300}>
-          {silentLoading ? (
-            <ThreadSkeletonLoader length={3} />
+          {/* {silentLoading && !isLikeDislikeLoading ? ( */}
+          {config.params.search || isFilterApplied() ? (
+            <ThreadSkeletonLoader length={10} />
           ) : threads.length === 0 ? (
             <section>
               <EmptyList
@@ -272,7 +273,11 @@ const AgentCommunityPage = () => {
             </section>
           ) : (
             threads.map((thread, index) => (
-              <ThreadCard key={index} {...thread} />
+              <ThreadCard
+                key={index}
+                {...thread}
+                setIsLikeDislikeLoading={setIsLikeDislikeLoading}
+              />
             ))
           )}
         </AutoResizingGrid>

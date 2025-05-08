@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { empty } from "@/app/config";
 import { useEffect, useState } from "react";
@@ -35,10 +35,11 @@ interface CommentHandlers {
 }
 
 // Props for the Comment component
-type CommentProps = CommentData & CommentHandlers & {
-  showInput?: boolean;
-  setShowInput?: (show: boolean) => void;
-}
+type CommentProps = CommentData &
+  CommentHandlers & {
+    showInput?: boolean;
+    setShowInput?: (show: boolean) => void;
+  };
 
 const Comment: React.FC<CommentProps> = ({
   id,
@@ -82,12 +83,12 @@ const Comment: React.FC<CommentProps> = ({
 
     try {
       const formData = new FormData(e.target as HTMLFormElement);
-      formData.append('parentId', parentId?.toString() || id.toString());
+      formData.append("parentId", parentId?.toString() || id.toString());
 
       await handleSubmit?.(e);
       setShowInput(false);
     } catch (error) {
-      console.error('Failed to submit:', error);
+      console.error("Failed to submit:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -98,7 +99,6 @@ const Comment: React.FC<CommentProps> = ({
     setIsLoading(true);
 
     try {
-
       if (hasDisliked) {
         // If previously disliked, remove the dislike first
         setHasDisliked(false);
@@ -127,7 +127,7 @@ const Comment: React.FC<CommentProps> = ({
         }); // Sync adding like with the server
       }
     } catch (error) {
-      console.error('Error toggling like:', error);
+      console.error("Error toggling like:", error);
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +136,7 @@ const Comment: React.FC<CommentProps> = ({
   const handleCommentDislike = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    
+
     try {
       if (hasLiked) {
         // If previously liked, remove the like first
@@ -162,7 +162,7 @@ const Comment: React.FC<CommentProps> = ({
         });
       }
     } catch (error) {
-      console.error('Error toggling dislike:', error);
+      console.error("Error toggling dislike:", error);
     } finally {
       setIsLoading(false);
     }
@@ -177,7 +177,7 @@ const Comment: React.FC<CommentProps> = ({
               src={profile_picture || empty}
               alt="user-real-info-from-props"
               fill
-              className="object-cover"
+              className="object-cover bg-brand-9"
             />
           </div>
           <p className="text-text-primary dark:text-white text-sm font-medium flex items-center">
@@ -232,14 +232,6 @@ const Comment: React.FC<CommentProps> = ({
           className="mt-6 mb-2 flex items-center justify-between gap-3"
         >
           <input type="hidden" name="parentId" value={parentId || id} />
-          {/* <Input
-            id={`${id}`}
-            name="reply"
-            placeholder="Type your reply here"
-            className="w-full"
-            inputClassName="border-none bg-neutral-3"
-            disabled={isSubmitting}
-          /> */}
           <CommentTextArea
             placeholder="Type your reply here"
             id={`${id}`}

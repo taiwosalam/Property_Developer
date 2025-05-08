@@ -16,22 +16,52 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { DeleteIconX } from "@/public/icons/icons";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import {
+  SinglePropertyResponse,
+  transformSinglePropertyData,
+} from "@/app/(nav)/management/properties/[id]/data";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import { createInvoice, parseFormattedNumber, PropertyTenantResponse } from "./data";
+import SelectWithImage from "@/components/Form/Select/select-with-image";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { toast } from "sonner";
 
 const CreateInvoicePage = () => {
   const searchParams = useSearchParams();
   const propertyId = searchParams.get("p");
+  const router = useRouter();
+  const [reqLoading, setReqLoading] = useState(false);
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false);
   const handleGenerateInvoiceCheckboxChange = (checked: boolean) => {
     setIsSelectDisabled(checked);
   };
+  const [selectedTenant, setSelectedTenant] = useState("");
 
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
     []
   );
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
+
+  const {
+    data: TenantsData,
+    loading: TenantLoading,
+    error: TenantsError,
+  } = useFetch<PropertyTenantResponse>(`all-tenants/${propertyId}`);
+
+  const TENANT_OPTIONS =
+    TenantsData?.data.map((t) => ({
+      value: t.id,
+      label: t.name,
+      icon: t.picture,
+    })) || [];
+
   const handleAddPaymentClick = () => {
     if (paymentTitle && paymentAmount) {
       // Remove commas and parse the amount as a float
@@ -46,6 +76,7 @@ const CreateInvoicePage = () => {
       }
     }
   };
+
   const totalAmount = payments.reduce(
     (total, payment) => total + payment.amount,
     0
@@ -54,189 +85,135 @@ const CreateInvoicePage = () => {
     setPayments(payments.filter((_, i) => i !== index));
   };
 
+  const { data, loading, error, isNetworkError } =
+    useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
+  const propertyData = data ? transformSinglePropertyData(data) : null;
+
+  if (loading) {
+    return (
+      <div className="custom-flex-col gap-2">
+        <CardsLoading length={5} />
+      </div>
+    );
+  }
+
+  const AUTO_OPTIONS = [
+    { value: "once", label: "Once" },
+    { value: "weekly", label: "Weekly" },
+    { value: "monthly", label: "Monthly" },
+    // { value: "yearly", label: "Yearly" },
+  ];
+
+  const handleCreateInvoice = async (data: any) => {
+    const payload = {
+      property_id: propertyData?.id,
+      tenant_id: data.tenant_name ?? "",
+      amount: parseFormattedNumber(data.amount),
+      description: data.description,
+      auto_generate: data.auto_generate ?? "",
+      is_auto: isSelectDisabled ? "true" : "false",
+    };
+
+    try {
+      setReqLoading(true);
+      const res = await createInvoice(objectToFormData(payload));
+      if (res) {
+        toast.success("Invoice Created Successfully");
+        router.push(`/accounting/invoice`);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
   return (
     <section className="space-y-7 pb-20">
       <BackButton>Create New Invoice</BackButton>
       {/* <ExportPageHeader /> */}
-      <div className="flex flex-col gap-4">
-        <Details />
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Select
-            id="tenant_name"
-            options={["Tenant 1", "Tenant 2"]}
-            label="Tenant/Occupant"
-            disabled={isSelectDisabled}
+      <AuthForm
+        onFormSubmit={handleCreateInvoice}
+        className="custom-flex-col gap-4"
+      >
+        <div className="flex flex-col gap-4">
+          <Details
+            property_id={propertyData?.id}
+            property_name={propertyData?.property_name}
+            account_officer={propertyData?.account_officer}
           />
-          <Checkbox
-            className="self-end items-start text-left"
-            checked={isSelectDisabled}
-            onChange={handleGenerateInvoiceCheckboxChange}
-          >
-            Click to generate invoive for all tenants and occupants of this
-            property (mobile users)
-          </Checkbox>
-          <Select
-            id="auto_generate"
-            options={["Once", "Weekly", "Monthly"]}
-            label="Auto Generate"
-            placeholder="Select Options"
-            disabled={!isSelectDisabled}
-          />
-        </div>
-        <TextArea
-          id="description"
-          label="Description"
-          required
-          className="lg:max-w-[50%]"
-        />
-      </div>
-
-      <div className="space-y-6">
-        <div className="flex gap-1 flex-col">
-          <div className="flex gap-2">
-            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
-              Add Payment
-            </h3>
-            {/* <Checkbox
-              radio
-              checked={isAddPaymentChecked}
-              onChange={() => setIsAddPaymentChecked(true)}
-            /> */}
-          </div>
-          <p>
-            Choose to create a manual payment for a specific bill or set it to
-            auto-payment for a designated period.
-          </p>
-        </div>
-        {/* {isAddPaymentChecked && ( */}
-          <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Input
-                type="text"
-                id="payment_title"
-                label="Payment Title"
-                value={paymentTitle}
-                onChange={(value) => setPaymentTitle(value as string)}
-              />
-              <Input
-                type="text"
-                id="amount"
-                label="Amount"
-                className="w-full"
-                CURRENCY_SYMBOL={"₦"}
-                formatNumber
-                value={paymentAmount}
-                onChange={(value) => setPaymentAmount(value as string)}
-              />
-            </div>
-            <div className="flex items-center justify-end">
-              <Button
-                size="base_medium"
-                className="py-2 px-8"
-                onClick={handleAddPaymentClick}
-              >
-                Add
-              </Button>
-            </div>
-          </div>
-        {/* )} */}
-      </div>
-
-      {/* <div className="space-y-6">
-        <div className="flex gap-1 flex-col">
-          <div className="flex gap-2">
-            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
-              Generated Rent Breakdown
-            </h3>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <SelectWithImage
+              id="tenant_name"
+              options={TENANT_OPTIONS}
+              label="Tenant/Occupant"
+              disabled={isSelectDisabled || TenantLoading}
+              placeholder={
+                TenantLoading
+                  ? "Loading Tenants"
+                  : TenantsError
+                  ? "Error Loading Tenants"
+                  : TENANT_OPTIONS.length === 0
+                  ? "No Tenants Found"
+                  : "Select Tenant"
+              }
+              onChange={setSelectedTenant}
+            />
             <Checkbox
-              disabled={isSelectDisabled}
-              radio
-              checked={!isAddPaymentChecked}
-              onChange={() => setIsAddPaymentChecked(false)}
+              className="self-end items-start text-left"
+              checked={isSelectDisabled}
+              onChange={handleGenerateInvoiceCheckboxChange}
+            >
+              Click to generate invoive for all tenants and occupants of this
+              property (mobile users)
+            </Checkbox>
+            <Select
+              id="auto_generate"
+              options={AUTO_OPTIONS}
+              label="Auto Generate"
+              placeholder="Select Options"
+              disabled={!isSelectDisabled}
             />
           </div>
-          <p>
-            Select to create a pending payment for tenants/occupants to pay
-            their renewal fees.
-          </p>
-        </div>
-        {!isAddPaymentChecked && <Breakdown />}
-      </div> */}
-
-      {payments.length > 0 && (
-        <div className="space-y-6">
-          <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
-            Payment Added
-          </h3>
-
-          <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
-            <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-              {payments.map((payment, index) => (
-                <div key={index} className="flex flex-col gap-4">
-                  <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
-                    {payment.title}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                      {new Intl.NumberFormat("en-NG", {
-                        style: "currency",
-                        currency: "NGN",
-                      }).format(payment.amount)}
-                    </p>
-                    <Modal>
-                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
-                        <DeleteIconX />
-                      </ModalTrigger>
-                      <ModalContent>
-                        <DeleteItemWarningModal
-                          item={payment.title}
-                          amount={payment.amount}
-                          handleDelete={() => handleDeletePayment(index)}
-                          useCase="invoices"
-                        />
-                      </ModalContent>
-                    </Modal>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <SectionSeparator />
-            <div className="flex flex-col gap-4">
-              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Added Payment
-              </p>
-              <p className="font-bold text-xl text-brand-9">
-                {new Intl.NumberFormat("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                }).format(totalAmount)}
-              </p>
-            </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Input
+              type="text"
+              id="amount"
+              label="Amount"
+              className="w-full"
+              CURRENCY_SYMBOL={"₦"}
+              formatNumber
+              value={paymentAmount}
+              onChange={setPaymentAmount}
+              // onChange={(value) => setPaymentAmount(value as string)}
+            />
           </div>
-        </div>
-      )}
 
-      {/* <div className="space-y-4 text-[#3F4247] text-sm dark:text-darkText-1">
-        <div className="flex gap-4">
-          {["Notification", "SMS Alert", "Email Alert"].map((option) => (
-            <Checkbox sm key={option} defaultChecked>
-              {option}
-            </Checkbox>
-          ))}
+          <TextArea
+            id="description"
+            label="Description"
+            required
+            className="lg:max-w-[50%]"
+          />
         </div>
-        <p>
-          Payment will be reflected on the receipt page once the selected client
-          makes a payment for this generated invoice
-        </p>
-      </div> */}
-      <FixedFooter className="flex items-center justify-end gap-4">
-        {/* <Button className="py-2 px-8" size="base_medium" variant="sky_blue">
+
+        <FixedFooter className="flex items-center justify-end gap-4">
+          {/* <Button className="py-2 px-8" size="base_medium" variant="sky_blue">
           Cancel
-        </Button> */}
-        <Button type="submit" className="py-2 px-8" size="base_medium">
-          Create
-        </Button>
-      </FixedFooter>
+          </Button> */}
+          <Button
+            disabled={reqLoading}
+            type="submit"
+            className="py-2 px-8"
+            size="base_medium"
+          >
+            {reqLoading ? "Please wait..." : "Create"}
+          </Button>
+        </FixedFooter>
+      </AuthForm>
     </section>
   );
 };

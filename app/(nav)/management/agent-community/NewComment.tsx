@@ -56,7 +56,7 @@ const NewComment = ({ commentCount, slug }: Props) => {
   
   return (
     <div className="mt-6">
-      <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium mb-4">
+      <p className="text-text-secondary dark:text-darkText-2 text-md font-semibold mb-4">
         {commentCount === 0 ? "Be the first to comment" : "Add a comment"}
       </p>
       <form

@@ -1,3 +1,5 @@
+import { Currency } from "@/utils/number-formatter";
+
 export interface InvoiceData {
   id: number;
   invoice_id: string;
@@ -17,6 +19,9 @@ export interface InvoiceData {
   total_amount: string;
   invoice_date: string;
   is_auto: boolean | string;
+  status: string;
+  currency: Currency;
+  auto_generate?: string;
 }
 
 export interface InvoiceResponse {
@@ -44,4 +49,7 @@ export interface InvoicePageData {
   total_amount: string | number;
   invoice_date: string;
   is_auto: boolean;
+  status: string;
+  currency?: Currency;
+  auto_generate?: string;
 }

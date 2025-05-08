@@ -122,6 +122,7 @@ export const defaultChecks: CheckBoxOptions = {
 };
 
 export const getEstateData = (estate_data: any) => {
+  console.log("estate_data passed down", estate_data);
   if (!estate_data) {
     return [
       { label: "Property Title", value: "-- --" },
@@ -151,6 +152,40 @@ export const getEstateData = (estate_data: any) => {
     { label: "Unit ID", value: estate_data.unit_id ?? "-- --" },
   ];
 };
+
+
+export const getPropertyEstateData = (estate_data: any) => {
+  console.log("estate_data passed down", estate_data);
+  if (!estate_data) {
+    return [
+      { label: "Property Title", value: "-- --" },
+      { label: "State", value: "-- --" },
+      { label: "Local Government", value: "-- --" },
+      { label: "Full Address", value: "-- --" },
+      { label: "Branch", value: "-- --" },
+      { label: "Account Officer", value: "-- --" },
+      { label: "Description", value: "-- --" },
+      { label: "Categories", value: "-- --" },
+      { label: "Unit ID", value: "-- --" },
+    ];
+  }
+
+  return [
+    { label: "Property Title", value: estate_data.property_name ?? "-- --" },
+    { label: "State", value: estate_data.state ?? "-- --" },
+    {
+      label: "Local Government",
+      value: estate_data.local_government ?? "-- --",
+    },
+    { label: "Full Address", value: estate_data.address ?? "-- --" },
+    { label: "Branch", value: estate_data.branch ?? "-- --" },
+    { label: "Account Officer", value: estate_data.account_officer ?? "-- --" },
+    { label: "Description", value: estate_data.description ?? "-- --" },
+    { label: "Categories", value: estate_data.category ?? "-- --" },
+    { label: "Unit ID", value: estate_data.id ?? "-- --" },
+  ];
+};
+
 
 export const getEstateSettingsDta = (estate_data: any) => {
   if (!estate_data) {

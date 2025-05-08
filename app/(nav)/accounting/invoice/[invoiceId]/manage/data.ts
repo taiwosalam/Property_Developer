@@ -1,7 +1,10 @@
+import api, { handleAxiosError } from "@/services/api";
 import { InvoiceData, InvoicePageData } from "./types";
 
 export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
+  console.log("data", data);
   return {
+    status: data.status || "",
     invoice_id: data.invoice_id || "",
     property_name: data.property_name || "",
     client_name: data.client_name || "",
@@ -18,11 +21,15 @@ export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
     total_amount: Number(data.total_amount) || "",
     invoice_date: data.invoice_date || "",
     is_auto: data.is_auto === "true" || data.is_auto === true,
+    currency: data.currency || "naira",
+    auto_generate: data.auto_generate || "",
   };
 };
 
 export const defaultInvoiceData: InvoicePageData = {
   invoice_id: "",
+  currency: "naira",
+  status: "",
   property_name: "",
   client_name: "",
   account_officer: "",
@@ -38,4 +45,28 @@ export const defaultInvoiceData: InvoicePageData = {
   total_amount: "",
   invoice_date: "",
   is_auto: false,
+};
+
+export const updateInvoiceStatus = async (id: number, data: any) => {
+  try {
+    const res = await api.post(`/invoice/${id}`, data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error, "Failed to Update Invoice Status");
+    return false;
+  }
+};
+
+export const deleteInvoice = async (id: number) => {
+  try {
+    const res = await api.delete(`/invoice/${id}`);
+    if (res.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error, "Failed to Delete Invoice");
+    return false;
+  }
 };

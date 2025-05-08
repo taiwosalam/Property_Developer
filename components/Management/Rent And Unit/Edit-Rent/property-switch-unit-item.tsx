@@ -159,7 +159,7 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
       </div>
 
       {/* Divider and Switches */}
-      {isSelected && isRental && (
+      {/* {isSelected && isRental && (
         <>
           <SectionSeparator className="my-4 h-[2px]" />
           <div className="space-y-6 text-text-secondary dark:text-darkText-1 text-sm font-medium">
@@ -195,7 +195,7 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
             </div>
           </div>
         </>
-      )}
+      )} */}
     </div>
   );
 };
