@@ -14,12 +14,17 @@ import clsx from "clsx";
 import { empty } from "@/app/config";
 import Picture from "../Picture/picture";
 import { SectionSeparator } from "../Section/section-components";
-import { IReviewCard } from "@/app/(nav)/(messages-reviews)/reviews/data";
+import {
+  IReviewCard,
+  postReaction,
+} from "@/app/(nav)/(messages-reviews)/reviews/data";
 import BadgeIcon, {
   BadgeIconColors,
   tierColorMap,
 } from "../BadgeIcon/badge-icon";
 import { ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import { toast } from "sonner";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 interface ReviewCardProp {
   id: number;
@@ -34,9 +39,23 @@ interface ReviewCardProp {
   highlight: boolean;
 }
 const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
+  const { userId } = usePersonalInfoStore();
+  
   const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
     if (!tier || tier === 0) return undefined;
     return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
+  };
+
+  const handlePostReaction = async (type: string) => {
+    if (!props.id) return;
+    try {
+      const res = await postReaction(props.id, type);
+      if (res) {
+        toast.success(`Post ${type}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -81,11 +100,25 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
             <div className="flex gap-4">
               <p className="text-text-primary">View all replies</p>
               <div className="flex gap-[10px]">
-                <button className="flex gap-1">
+                <button
+                  className="flex gap-1"
+                  onClick={(e) => {
+                    handlePostReaction("like");
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
                   <ThumbsUp />
                   <p className="text-text-disabled">{props.up_vote}</p>
                 </button>
-                <button className="flex gap-1">
+                <button
+                  className="flex gap-1"
+                  onClick={(e) => {
+                    handlePostReaction("dislike");
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
                   <ThumbsDown />
                   <p className="text-text-disabled">{props.down_vote}</p>
                 </button>

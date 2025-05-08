@@ -481,6 +481,7 @@ export const getGreeting = () => {
 export interface ProfileResponse {
   data: {
     user: {
+      id: number;
       userid: string;
       name: string | null;
       user_online_status: "online" | "offline" | null;

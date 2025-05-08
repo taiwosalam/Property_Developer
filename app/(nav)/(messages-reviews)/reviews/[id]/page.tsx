@@ -47,10 +47,10 @@ const ReviewChat = () => {
         </div>
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white custom-flex-col">
-        <Review main />
-        {message_card_data.map((item, index) => {
+        <Review {...review?.main} main />
+        {/* {message_card_data.map((item, index) => {
           return <Review {...item} key={index}/>;
-        })}
+        })} */}
 
       </div>
     </>

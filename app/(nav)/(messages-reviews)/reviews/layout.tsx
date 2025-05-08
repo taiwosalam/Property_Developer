@@ -27,6 +27,9 @@ import {
   NeutralIcon,
   PositiveIcon,
 } from "@/components/Message/review-icons";
+import NoReviews from "../messages/no-reviews";
+import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
   const { id } = useParams();
@@ -46,9 +49,12 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
     data: reviewData,
     loading,
     error,
+    silentLoading,
+    refetch,
   } = useFetch<ReviewResponse>(
     company_id ? `/reviews/company/${company_id}` : null
   );
+  useRefetchOnEvent("companyReviews", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (reviewData) {
@@ -121,15 +127,17 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
               </Button> */}
             </div>
             <div className="custom-flex-col relative z-[1] pb-4">
-              {reviews &&
-                reviews?.reviews.length > 0 &&
+              {reviews && reviews?.reviews.length > 0 ? (
                 reviews?.reviews.map((review, idx) => (
                   <ReviewCard
                     key={idx}
                     {...review}
                     highlight={review.id.toString() === (id as string)}
                   />
-                ))}
+                ))
+              ) : (
+                <NoReviews />
+              )}
             </div>
           </div>
         </div>
