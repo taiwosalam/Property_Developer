@@ -12,9 +12,13 @@ import { getTotalPayable } from "./data";
 export const ProceedPayAble: React.FC = () => {
   const { calculation, deduction, unitData, propertyType } = useOccupantStore();
   const { currentRentStats } = useGlobalStore();
+  const outstanding = currentRentStats?.outstanding || 0;
 
-  // Return null if unitData is not available
   if (!unitData) return null;
+  const newUnitTotal = calculation
+    ? Number(unitData.newTenantTotalPrice || 0)
+    : Number(unitData.renewalTenantTotalPrice || 0);
+  // Return null if unitData is not available
 
   const isRental = propertyType === "rental";
   const currency = unitData?.currency || "naira";
@@ -46,13 +50,24 @@ export const ProceedPayAble: React.FC = () => {
       "Based on the calculation and your selected option, your company owes the client a refund balance.",
   };
 
-  // Determine subtitle based on totalPayable and isExcess
-  const subtitle =
-    detail.amount === 0
+  console.log("outstanding", outstanding);
+  console.log("newUnitTotal", newUnitTotal);
+
+  const subtitle = deduction
+    ? totalPayable === 0
       ? subtitles.zero
-      : isExcess
-      ? subtitles.excess
-      : subtitles.refund;
+      : totalPayable > 0
+      ? subtitles.refund
+      : subtitles.excess
+    : subtitles.zero;
+
+  // // Determine subtitle based on totalPayable and isExcess
+  // const subtitle =
+  //   detail.amount === 0
+  //     ? subtitles.zero
+  //     : isExcess
+  //     ? subtitles.excess
+  //     : subtitles.refund;
 
   return (
     <div className="space-y-1">

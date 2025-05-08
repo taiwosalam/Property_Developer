@@ -145,7 +145,8 @@ export interface WitnessSignatureDateProps {
   landlord: WitnessParty;
   tenant: WitnessParty;
   witness: Witness;
-  lawFirm: WitnessLawFirm;
+  lawFirm: LawFirm;
+  lawOfficeData?: LawFirm;
 }
 
 export interface WitnessLawFirm {
@@ -370,9 +371,7 @@ export const transformDocumentData = (
 
   // Landlord and tenant names
   const landlordName =
-    document.landlord_name ||
-    document.property?.landlord?.name ||
-    "-- --";
+    document.landlord_name || document.property?.landlord?.name || "-- --";
   const tenantName =
     selectedOccupant?.name ||
     (property.units[0]?.tenant_id ? "-- --" : "Unknown Tenant");

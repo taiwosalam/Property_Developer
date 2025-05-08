@@ -1,6 +1,7 @@
 import type { AttachedDocumentCard } from "@/components/Management/landlord-tenant-info-components";
 import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 import { UnitItemProps } from "@/components/Management/Properties/unit-item";
+import { Currency } from "@/utils/number-formatter";
 
 interface ContactAddress {
   address: string;
@@ -93,6 +94,7 @@ export interface Statement {
   details: string;
   start_date: string;
   end_date: string;
+  currency: Currency;
 }
 
 export interface TenantData {

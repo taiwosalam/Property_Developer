@@ -24,6 +24,7 @@ import {
 import { useCompanyBankDetails } from "@/hooks/useCompanyBankDetails";
 import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
+import ServerError from "@/components/Error/ServerError";
 
 const PreviewExpenses = () => {
   const router = useRouter();
@@ -46,9 +47,7 @@ const PreviewExpenses = () => {
 
   const printRef = useRef<HTMLDivElement>(null);
 
-  if (loading) return <PageCircleLoader />;
-  if (error) return <div>Error loading invoice data.</div>;
-  if (isNetworkError) return <NetworkError />;
+  const BANK_DETAILS = pageData.branchBankDetails;
 
   const CURRENCY = "naira"; //TODO: change to real currency from endpount
   const IS_PAID = pageData.status.toLowerCase() === "paid";
@@ -60,8 +59,8 @@ const PreviewExpenses = () => {
     date: pageData.invoice_date,
     "account officer": pageData.account_officer,
     "unit id": pageData.unit_id,
-    "invoice type": "--- ---",
-    status: "--- ---",
+    "invoice type": pageData.invoice_type,
+    status: pageData.status,
   };
 
   const NoUnitKeyValData = {
@@ -95,6 +94,10 @@ const PreviewExpenses = () => {
 
   const KEY_VALUE_DATA = UNIT_ID ? UnitKeyValData : NoUnitKeyValData;
   const KEY_VALUE_REF_OBJ = UNIT_ID ? UnitRefObj : NoUnitRefObj;
+
+  if (loading) return <PageCircleLoader />;
+  if (error) return <ServerError error={error} />;
+  if (isNetworkError) return <NetworkError />;
 
   return (
     <div className="custom-flex-col gap-10 pb-28">
@@ -165,9 +168,14 @@ const PreviewExpenses = () => {
               <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
                 <KeyValueList
                   data={{
-                    "account name": companyBankDetails.account_name,
-                    "account number": companyBankDetails.account_number,
-                    "bank name": companyBankDetails.bank_name,
+                    "account name":
+                      BANK_DETAILS?.account_name ||
+                      companyBankDetails.account_name,
+                    "account number":
+                      BANK_DETAILS?.account_number ||
+                      companyBankDetails.account_number,
+                    "bank name":
+                      BANK_DETAILS?.bank_name || companyBankDetails.bank_name,
                   }}
                   chunkSize={1}
                   direction="column"

@@ -22,6 +22,10 @@ export interface InvoiceData {
   status: string;
   currency: Currency;
   auto_generate?: string;
+  type?: string;
+  bank_name?: string;
+  account_number?: string;
+  account_name?: string;
 }
 
 export interface InvoiceResponse {
@@ -52,4 +56,13 @@ export interface InvoicePageData {
   status: string;
   currency?: Currency;
   auto_generate?: string;
+  invoice_type?: string;
+  branchBankDetails?: BranchBankDetailsObj;
+}
+
+
+export interface BranchBankDetailsObj {
+  bank_name: string;
+  account_number: string;
+  account_name: string;
 }

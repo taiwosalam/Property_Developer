@@ -13,6 +13,7 @@ import { UnitItemProps } from "@/components/Management/Properties/unit-item";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
+import { formatFee } from "../../../rent-unit/data";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -137,7 +138,7 @@ export const transformIndividualTenantAPIResponse = ({
       ...stmt,
       "S/N": (index + 1).toString(),
       amount_paid: stmt?.amount_paid
-        ? `₦${formatNumber(parseFloat(stmt.amount_paid))}`
+        ? `${formatFee(stmt.amount_paid, stmt.currency || "naira")}`
         : "--- ---",
       payment_date: stmt?.payment_date
         ? moment(stmt.payment_date, "YYYY-MM-DD").format("DD/MM/YYYY")

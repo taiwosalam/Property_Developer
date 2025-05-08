@@ -461,7 +461,7 @@ export const AddPartPayment: React.FC<{
               placeholder=""
               label="Amount"
               formatNumber
-              readOnly={isCompletePayment}
+              // readOnly={isCompletePayment}
               onChange={handleAmount}
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
@@ -954,9 +954,10 @@ export const PayAble: React.FC<PayAbleProps> = ({
 export const CompletePartPayment: React.FC<{
   total: number;
   feeDetails: FeeDetail[];
+  currency?: Currency;
   setIsCompletePayment?: (checked: boolean) => void;
-}> = ({ total, feeDetails, setIsCompletePayment }) => {
-  const CURRENCY = currencySymbols["naira"];
+}> = ({ total, feeDetails, setIsCompletePayment, currency }) => {
+const CURRENCY = currencySymbols[currency as keyof typeof currencySymbols];
   // Filter out fee details with invalid amounts
   const validFeeDetails = feeDetails.filter((fee) => {
     const parsedAmount = parseAmount(fee.amount);
@@ -977,14 +978,6 @@ export const CompletePartPayment: React.FC<{
             />
           ))}
         </div>
-
-        {/* <p className="text-md font-semibold mt-3 text-text-secondary">Total</p>
-        <p className="text-lg lg:text-xl text-brand-9 font-bold">
-          {total
-            ? `${CURRENCY}${formatNumber(parseFloat(total.toString()))}`
-            : `${CURRENCY}0`}
-        </p> */}
-
         <div className="flex items-end justify-end w-full mt-2">
           <Button
             onClick={() => setIsCompletePayment && setIsCompletePayment(true)}

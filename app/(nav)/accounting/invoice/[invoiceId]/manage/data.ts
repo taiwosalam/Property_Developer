@@ -23,6 +23,12 @@ export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
     is_auto: data.is_auto === "true" || data.is_auto === true,
     currency: data.currency || "naira",
     auto_generate: data.auto_generate || "",
+    invoice_type: data.type || "",
+    branchBankDetails: {
+      bank_name: data.bank_name || "",
+      account_number: data.account_number || "",
+      account_name: data.account_name || "",
+    },
   };
 };
 

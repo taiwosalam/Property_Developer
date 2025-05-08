@@ -41,7 +41,6 @@ const EditBranchForm = ({
     placeholder: CameraCircle,
   });
 
-  console.log("some data", somedata)
 
   const [successModalOpen, setSuccessModalOpen] = useState(false);
 

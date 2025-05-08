@@ -138,3 +138,513 @@
           makes a payment for this generated invoice
         </p>
       </div> */}
+
+
+
+
+
+
+      // StartRent.tsx
+import { useRef } from "react";
+import { AgreementPreview } from "@/components/Modal/tenant-document";
+
+const StartRent = () => {
+  const agreementRef = useRef<HTMLDivElement>(null);
+  // ... other state and hooks ...
+
+  const handleStartRent = async () => {
+    // ... validation logic ...
+
+    let doc_file: File | null = null;
+    if (!IS_WEB_TENANT) {
+      try {
+        setPdfLoading(true);
+        if (agreementRef.current) {
+          const canvas = await html2canvas(agreementRef.current, { scale: 2 });
+          const pdf = new jsPDF();
+          const imageWidthInPoints = pdf.internal.pageSize.getWidth() - 20;
+          const imageHeightInPoints = (canvas.height / canvas.width) * imageWidthInPoints;
+          pdf.addImage(
+            canvas.toDataURL("image/png"),
+            "PNG",
+            10,
+            10,
+            imageWidthInPoints,
+            imageHeightInPoints
+          );
+          const pdfBlob = pdf.output("blob");
+          doc_file = new File([pdfBlob], `agreement_${unit_data.unit_id}.pdf`, {
+            type: "application/pdf",
+          });
+        } else {
+          toast.error("Failed to generate agreement PDF.");
+          return;
+        }
+      } catch (err) {
+        console.error("PDF generation error:", err);
+        toast.error("Failed to generate agreement PDF.");
+        return;
+      } finally {
+        setPdfLoading(false);
+      }
+    }
+
+    // ... FormData and API call ...
+  };
+
+  return (
+    <div className="space-y-6 pb-[100px]">
+      {/* Hidden AgreementPreview */}
+      <div style={{ display: "none" }} ref={agreementRef}>
+        <AgreementPreview renderUI={false} />
+      </div>
+      {/* ... rest of the component ... */}
+    </div>
+  );
+};
+
+
+
+
+
+
+
+  const handleStartRent = async () => {
+    if (!unit_data?.unit_id || !selectedTenantId) {
+      toast.error(
+        `Missing required information: Unit or ${
+          isRental ? "Tenant" : "Occupant"
+        } not selected.`
+      );
+      return;
+    }
+
+    if (!selectedCheckboxOptions) {
+      toast.error("Notification preferences not set.");
+      return;
+    }
+
+    // Validate dueDate
+    if (dueDate && dueDate.isBefore(dayjs(), "day")) {
+      toast.warning("End date cannot be in the past.");
+      return;
+    }
+    const successMsg = isRental
+      ? "Rent Started Succesfully"
+      : "Occupant Moved In Successfully";
+    const failedMsg = isRental
+      ? "Failed to start Rent, Try Again!"
+      : "Failed to Move Occupant In, Try Again!";
+
+    const IS_WEB_TENANT =
+      selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
+
+    let doc_file: File | null = null;
+    if (!IS_WEB_TENANT) {
+      try {
+        setPdfLoading(true);
+        // Debug: Log documentData to inspect its structure
+        console.log("documentData:", documentData);
+        const agreementData: AgreementData = {
+          documentData,
+          unitName,
+          isLoading: agreementLoading,
+          error: agreementError,
+        };
+        const pdfBlob = await generateAgreementPDF(agreementData);
+        if (pdfBlob) {
+          doc_file = new File([pdfBlob], `agreement_${unit_data.unit_id}.pdf`, {
+            type: "application/pdf",
+          });
+        } else {
+          toast.error(
+            "Failed to generate agreement PDF due to missing or invalid data."
+          );
+          return;
+        }
+      } catch (err) {
+        console.error("PDF generation error:", err);
+        toast.error("Failed to generate agreement PDF.");
+        return;
+      } finally {
+        setPdfLoading(false);
+      }
+    }
+    console.log("doc_file", doc_file);
+    // const payload = {
+    //   unit_id: unit_data.unit_id,
+    //   tenant_id: selectedTenantId,
+    //   start_date: startDate,
+    //   payment_type: "full",
+    //   rent_type: "new",
+    //   mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
+    //   email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
+    //   has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+    // };
+    // try {
+    //   setReqLoading(true);
+    //   const res = await startRent(payload);
+    //   if (res) {
+    //     toast.success(successMsg);
+    //     router.push("/management/rent-unit");
+    //   }
+    // } catch (err) {
+    //   toast.error(failedMsg);
+    // } finally {
+    //   setReqLoading(false);
+    // }
+  };
+
+
+
+
+      {/* HIDDEN DOCUMENT FOR MOBILE TENANT/OCCUPANTS */}
+      <div style={{ display: "none", width: "800px" }} ref={agreementRef}>
+        <AgreementPreview renderUI={false} />
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+      let doc_file: File | null = null;
+      if (!IS_WEB_TENANT) {
+        try {
+          setPdfLoading(true);
+          // Debug: Log documentData to inspect its structure
+          console.log("documentData:", documentData);
+          const agreementData: AgreementData = {
+            documentData,
+            unitName,
+            isLoading: agreementLoading,
+            error: agreementError,
+          };
+          const pdfBlob = await generateAgreementPDF(agreementData);
+          if (pdfBlob) {
+            doc_file = new File([pdfBlob], `agreement_${unit_data.unit_id}.pdf`, {
+              type: "application/pdf",
+            });
+          } else {
+            toast.error("Failed to generate agreement PDF due to missing or invalid data.");
+            return;
+          }
+        } catch (err) {
+          console.error("PDF generation error:", err);
+          toast.error("Failed to generate agreement PDF.");
+          return;
+        } finally {
+          setPdfLoading(false);
+        }
+      }
+    console.log("doc_file", doc_file);
+
+
+
+
+
+
+
+
+
+
+
+
+
+      "use client";
+
+import React, { useRef } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import {
+  Parties,
+  PropertyDescription,
+  AttorneyInfo,
+  LawFirmInfo,
+  Attestation,
+  ClauseList,
+  WitnessSignatureDate,
+} from "@/app/(nav)/documents/preview/component";
+import {
+  witnessLandlord,
+  witnessTenant,
+  witness,
+} from "@/app/(nav)/documents/preview/data";
+import { DocumentPreviewData } from "@/app/(nav)/documents/preview/types";
+import Button from "../Form/Button/button";
+import { useAgreementData } from "@/hooks/useAgreementData";
+import { useAgreementExport } from "@/hooks/useAgreementExport";
+
+interface AgreementPreviewProps {
+  onClose?: () => void; // Optional callback for closing modal
+  renderUI?: boolean; // Prop to toggle UI elements
+}
+
+export const AgreementPreview = ({
+  onClose,
+  renderUI = true,
+}: AgreementPreviewProps) => {
+  const router = useRouter();
+  const firstPageRef = useRef<HTMLDivElement>(null);
+  const restOfContentRef = useRef<HTMLDivElement>(null);
+
+  // Fetch and transform agreement data
+  const { documentData, unitName, isLoading, error } = useAgreementData();
+
+  // Handle export functionality (used in modal UI)
+  const { handleDownload, isDownloading } = useAgreementExport({
+    firstPageRef,
+    restOfContentRef,
+  });
+
+  // Handle errors
+  if (error) {
+    toast.error(error);
+    if (onClose) {
+      onClose();
+    } else {
+      router.back();
+    }
+    return null;
+  }
+
+  // Show loading state
+  if (isLoading || !documentData) {
+    return (
+      <div className="text-center text-gray-600 dark:text-gray-400 py-4">
+        Loading agreement...
+      </div>
+    );
+  }
+
+  const {
+    parties,
+    propertyDescription,
+    attorney,
+    lawFirm,
+    attestation,
+    witnessLawFirm,
+    clauses,
+  } = documentData;
+
+  const content = (
+    <div className="agreement-preview-content">
+      <div ref={firstPageRef} className="agreement-preview-first-page">
+        <Parties landlord={parties.landlord} tenant={parties.tenant} />
+        <div className="agreement-preview-section">
+          <PropertyDescription description={propertyDescription} />
+          <AttorneyInfo attorney={attorney} />
+        </div>
+        <LawFirmInfo lawFirm={lawFirm} />
+      </div>
+      <div ref={restOfContentRef}>
+        <Attestation
+          date={attestation.date}
+          landlord={attestation.landlord}
+          tenant={attestation.tenant}
+        />
+        <ClauseList clauses={clauses} />
+        <WitnessSignatureDate
+          landlord={witnessLandlord}
+          tenant={witnessTenant}
+          witness={witness}
+          lawFirm={witnessLawFirm}
+        />
+      </div>
+    </div>
+  );
+
+  if (!renderUI) {
+    return content;
+  }
+
+  return (
+    <div className="agreement-preview-container">
+      <div className="agreement-preview-header">
+        {onClose && (
+          <Button
+            type="button"
+            onClick={onClose}
+            size="custom"
+            className="agreement-preview-close-button"
+            variant="sky_blue"
+            aria-label="Close modal"
+          >
+            Close
+          </Button>
+        )}
+      </div>
+      {content}
+      <div className="agreement-preview-footer">
+        <Button
+          type="button"
+          onClick={() => handleDownload(unitName)}
+          size="custom"
+          className="agreement-preview-download-button"
+          variant="sky_blue"
+          disabled={isDownloading}
+          aria-label="Download agreement"
+        >
+          {isDownloading ? "Downloading..." : "Download"}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useRef } from "react";
+// import { toast } from "sonner";
+// import { useRouter } from "next/navigation";
+// import {
+//   Parties,
+//   PropertyDescription,
+//   AttorneyInfo,
+//   LawFirmInfo,
+//   Attestation,
+//   ClauseList,
+//   WitnessSignatureDate,
+// } from "@/app/(nav)/documents/preview/component";
+// import {
+//   witnessLandlord,
+//   witnessTenant,
+//   witness,
+// } from "@/app/(nav)/documents/preview/data";
+// import { DocumentPreviewData } from "@/app/(nav)/documents/preview/types";
+// import Button from "../Form/Button/button";
+// import { useAgreementData } from "@/hooks/useAgreementData";
+// import { useAgreementExport } from "@/hooks/useAgreementExport";
+
+// interface AgreementPreviewProps {
+//   onClose?: () => void; // Optional callback for closing modal
+// }
+
+// export const AgreementPreview = ({ onClose }: AgreementPreviewProps) => {
+//   const router = useRouter();
+//   const firstPageRef = useRef<HTMLDivElement>(null);
+//   const restOfContentRef = useRef<HTMLDivElement>(null);
+
+//   // Fetch and transform agreement data
+//   const { documentData, unitName, isLoading, error } = useAgreementData();
+
+//   // Handle export functionality
+//   const { handleDownload, isDownloading } = useAgreementExport({
+//     firstPageRef,
+//     restOfContentRef,
+//   });
+
+//   // Handle errors
+//   if (error) {
+//     toast.error(error);
+//     if (onClose) {
+//       onClose();
+//     } else {
+//       router.back();
+//     }
+//     return null;
+//   }
+
+//   // Show loading state
+//   if (isLoading || !documentData) {
+//     return (
+//       <div className="text-center text-gray-600 dark:text-gray-400 py-4">
+//         Loading agreement...
+//       </div>
+//     );
+//   }
+
+//   const {
+//     parties,
+//     propertyDescription,
+//     attorney,
+//     lawFirm,
+//     attestation,
+//     witnessLawFirm,
+//     clauses,
+//   } = documentData;
+
+//   return (
+//     <div className="agreement-preview-container">
+//       <div className="agreement-preview-header">
+//         {onClose && (
+//           <Button
+//             type="button"
+//             onClick={onClose}
+//             size="custom"
+//             className="agreement-preview-close-button"
+//             variant="sky_blue"
+//             aria-label="Close modal"
+//           >
+//             Close
+//           </Button>
+//         )}
+//       </div>
+//       <div className="agreement-preview-content">
+//         <div ref={firstPageRef} className="agreement-preview-first-page">
+//           <Parties landlord={parties.landlord} tenant={parties.tenant} />
+//           <div className="agreement-preview-section">
+//             <PropertyDescription description={propertyDescription} />
+//             <AttorneyInfo attorney={attorney} />
+//           </div>
+//           <LawFirmInfo lawFirm={lawFirm} />
+//         </div>
+//         <div ref={restOfContentRef}>
+//           <Attestation
+//             date={attestation.date}
+//             landlord={attestation.landlord}
+//             tenant={attestation.tenant}
+//           />
+//           <ClauseList clauses={clauses} />
+//           <WitnessSignatureDate
+//             landlord={witnessLandlord}
+//             tenant={witnessTenant}
+//             witness={witness}
+//             lawFirm={witnessLawFirm}
+//           />
+//         </div>
+//       </div>
+//       <div className="agreement-preview-footer">
+//         <Button
+//           type="button"
+//           onClick={() => handleDownload(unitName)}
+//           size="custom"
+//           className="agreement-preview-download-button"
+//           variant="sky_blue"
+//           disabled={isDownloading}
+//           aria-label="Download agreement"
+//         >
+//           {isDownloading ? "Downloading..." : "Download"}
+//         </Button>
+//       </div>
+//     </div>
+//   );
+// };
