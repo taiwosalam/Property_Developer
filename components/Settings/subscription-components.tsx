@@ -187,7 +187,9 @@ export const SMSUnit = () => {
           </div>
 
           <CustomTable
-            data={smsTransactionData ? smsTransactionData?.data.slice(0, 3) : []}
+            data={
+              smsTransactionData ? smsTransactionData?.data.slice(0, 3) : []
+            }
             fields={SMSFields}
             {...table_style_props}
           />
@@ -250,7 +252,7 @@ export const FeatureCompany = () => {
   const { data: enrollmentData, refetch } = useFetch<BrandHistoryResponse>(
     `brands/${company_id}`
   );
-  useRefetchOnEvent("companyFeature", () => refetch({ silent: true}))
+  useRefetchOnEvent("companyFeature", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (enrollmentData) {
@@ -285,7 +287,7 @@ export const FeatureCompany = () => {
       period: Number(periodString),
       amount: totalAmount,
       company_id,
-      page: [selectedPage],
+      page: selectedPage,
     };
 
     try {
@@ -362,7 +364,7 @@ export const FeatureCompany = () => {
 
             <Input
               id="amount"
-              className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 hover:border-none active:border-none hover:border-none"
+              className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 hover:border-none active:border-none"
               label="Amount"
               value={
                 totalAmount > 0 ? `₦${totalAmount.toLocaleString()}` : "₦0"
@@ -413,7 +415,7 @@ export const FeatureCompany = () => {
             </Link>
           </div>
           <CustomTable
-            data={featureTable ? featureTable?.data : []}
+            data={featureTable ? featureTable?.data.slice(0, 3) : []}
             fields={FeatureFields}
             {...table_style_props}
           />

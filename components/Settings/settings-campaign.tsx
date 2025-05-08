@@ -138,8 +138,6 @@ export const Campaign = () => {
     } catch (error) {}
   };
 
-  console.log(uploadedFile);
-
   return (
     <>
       <SettingsSection title="Campaign">
@@ -293,7 +291,7 @@ export const Campaign = () => {
         </div>
 
         <CustomTable
-          data={campaignTable ? campaignTable?.slice(0, 7) : []}
+          data={campaignTable ? campaignTable?.slice(0, 3) : []}
           fields={CampaignFields}
           {...table_style_props}
         />

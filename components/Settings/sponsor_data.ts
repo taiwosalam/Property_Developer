@@ -67,7 +67,7 @@ export interface BrandHistoryItem {
   id: number;
   company_id: number;
   type: string;
-  page: string[]; // e.g. ["all pages"]
+  page: string; // e.g. ["all pages"]
   payment: string;
   payment_date: string; // ISO format
   amount: string;
@@ -137,7 +137,7 @@ export const transformEnrollmentHistory = (
       payment_date: item?.payment_date
         ? dayjs(item?.payment_date).format("DD/MM/YYYY HH:MM A")
         : "___ ___",
-      display_pages: item?.page.length > 0 ? item?.page.join(",") : "",
+      display_pages: item?.page || "",
       amount_paid: `₦${Number(item?.amount).toLocaleString()}`,
       period:
         item?.payment_date && item?.expire_date
@@ -212,10 +212,18 @@ export const transformCampaignData = (
     payment_id: item?.id,
     campaign_type: item?.type || "___ ___",
     campaign_name: item?.name || "___ ___",
-    link: item?.link || "___ ___",
-    uploaded: item?.attachment || "___ ___",
-    period: item?.period || "___ ___",
+    link: item?.link?.toLowerCase() || "___ ___",
+    uploaded: item?.attachment?.toLowerCase() || "___ ___",
+    period: item?.period
+      ? `${
+          Number(item?.period) > 1
+            ? Number(item?.period).toFixed() + " months"
+            : Number(item?.period).toFixed() + " month"
+        }`
+      : "___ ___",
     amount: item.amount ? formatToNaira(item.amount) : "___ ____",
-    expired_date: item?.expire_date,
+    expired_date: item?.expire_date
+      ? dayjs(item?.expire_date).format("DD/MM/YYYY HH:MM A")
+      : "___ ___",
   }));
 };
