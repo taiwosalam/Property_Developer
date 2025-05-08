@@ -35,6 +35,8 @@ export const initialState: UnitPageState = {
   month_unpublished_vacant: 0,
   month_pending_unit: 0,
   pending_unit: 0,
+  moderation_vacant: 3,
+  month_moderation_vacant: 0,
   unit: [],
   current_page: 1,
   last_page: 1,
@@ -49,6 +51,8 @@ export interface UnitPageState {
   month_unpublished_vacant: number;
   month_pending_unit: number;
   pending_unit: number;
+  moderation_vacant: number,
+  month_moderation_vacant: number,
   unit: RentalPropertyCardProps[];
   current_page: number;
   last_page: number;
@@ -80,6 +84,8 @@ export interface UnitApiResponse {
     month_unpublished_vacant: number;
     month_pending_unit: number;
     pending_unit: number;
+    moderation_vacant: number,
+    month_moderation_vacant: number,
     unit: {
       current_page: number;
       last_page: number;
@@ -106,8 +112,6 @@ export const transformRentUnitApiResponse = (
   const isUnitApiResponse = (response: any): response is UnitApiResponse => {
     return "total_vacant" in response.data;
   };
-
-  // console.log("response", response);
 
   const unitData = isUnitApiResponse(response)
     ? response.data.unit

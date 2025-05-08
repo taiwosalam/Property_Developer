@@ -221,8 +221,8 @@ const Units = () => {
         />
         <ManagementStatistcsCard
           title="Under Moderation"
-          newData={pageData.month_pending_unit}
-          total={pageData.pending_unit}
+          newData={pageData.month_moderation_vacant}
+          total={pageData.moderation_vacant}
           className="w-[240px]"
           colorScheme={4}
         />
