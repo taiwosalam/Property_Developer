@@ -15,13 +15,16 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useGlobalStore } from "@/store/general-store";
-import { SponsorFields } from "@/app/(nav)/settings/add-on/data";
+import { SMSFields, SponsorFields } from "@/app/(nav)/settings/add-on/data";
 
 dayjs.extend(advancedFormat);
 
 const ExportAddsOnSMS = () => {
+  const [fullContent, setFullContent] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
-  
+
+  const filteredSMSTransaction = useGlobalStore((s) => s.sms_transaction);
+
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
@@ -36,18 +39,14 @@ const ExportAddsOnSMS = () => {
           </h1>
         </div>
         <CustomTable
-          //className={`${fullContent && "max-h-none"}`}
-          fields={SponsorFields}
-          data={[]}
+          className={`${fullContent && "max-h-none"}`}
+          fields={SMSFields}
+          data={filteredSMSTransaction?.data || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
       </div>
-      <ExportPageFooter
-        printRef={exportRef}
-        //setFullContent={setFullContent}
-        //fullContent={fullContent}
-      />
+      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} />
     </div>
   );
 };

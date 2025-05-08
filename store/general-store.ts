@@ -19,6 +19,7 @@ import { Transaction } from "./wallet-store";
 import { initDataProps } from "@/app/(nav)/management/rent-unit/data";
 import { DateRange } from "react-day-picker";
 import { WalletStats } from "@/app/(nav)/wallet/data";
+import { EnrollmentHistoryTable, ICampaignTable, SMSTable } from "@/components/Settings/sponsor_data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -28,6 +29,11 @@ interface GlobalStoreState {
   units?: UnitListRequest[];
   vehicle_records?: VehicleRecordsType[];
   rents?: Rent[];
+
+  sms_transaction?: SMSTable;
+  feature_history?: EnrollmentHistoryTable;
+  campaign_history?: ICampaignTable[] 
+
   activities?: ActivityDataReport[];
   user_activities?: ActivityDataReport[];
   accounting_invoices?: Invoice[];
@@ -79,6 +85,9 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   activities: [],
   vehicle_records: [],
   rent: [],
+
+  campaign_history: [],
+
   user_activities: [],
   accounting_invoices: [],
   accounting_vat: [],

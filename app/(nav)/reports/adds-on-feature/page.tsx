@@ -30,40 +30,116 @@ import { useRouter } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
 import { FeatureFields, SponsorFields } from "../../settings/add-on/data";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import {
+  BrandHistoryResponse,
+  EnrollmentHistoryTable,
+  transformEnrollmentHistory,
+} from "@/components/Settings/sponsor_data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const AddsOnFeatureRecord = () => {
+  const { company_id } = usePersonalInfoStore();
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: { page: 1, search: "" } as ReportsRequestParams,
+  });
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const filteredTransactions = useGlobalStore((s) => s.feature_history);
+
+  const [featureTable, setFeatureTable] =
+    useState<EnrollmentHistoryTable | null>(null);
+
+  const {
+    data: enrollmentData,
+    refetch,
+    loading,
+    isNetworkError,
+    error,
+  } = useFetch<BrandHistoryResponse>(`brands/${Number(company_id)}`, config);
+  useRefetchOnEvent("buySMS", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (enrollmentData) {
+      const transformEnrollment = transformEnrollmentHistory(enrollmentData);
+      setFeatureTable(transformEnrollment);
+    }
+  }, [enrollmentData]);
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const branch = menuOptions["Branch"] || [];
+      const property = menuOptions["Property"] || [];
+
+      const queryParams: ReportsRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
+      if (branch.length > 0) queryParams.branch_id = branch.join(",");
+      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    if (!loading && enrollmentData) {
+      const transformedData = transformEnrollmentHistory(enrollmentData);
+      const enrollmentHistory = transformedData;
+      const currentLandlords = useGlobalStore.getState().sms_transaction;
+      if (
+        JSON.stringify(currentLandlords) !== JSON.stringify(enrollmentHistory)
+      ) {
+        setGlobalStore("feature_history", enrollmentHistory);
+      }
+    }
+  }, [enrollmentData, loading, setGlobalStore]);
+
+  if (loading) return <CustomLoader layout="page" pageTitle="Add-On Feature Listing" view="table" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
   return (
     <div className="space-y-9">
       <FilterBar
         azFilter
         exports
         isDateTrue
-        backUrl={"/settings/add-on/#feature"}
+        onBack
         pageTitle="Adds-On Feature"
         aboutPageModalData={{
           title: "Adds-On Feature",
           description: "This page contains a list of listing sponsor history",
         }}
         searchInputPlaceholder="Search for audit trail"
-        handleFilterApply={() => {}}
+        handleFilterApply={handleAppliedFilter}
         //={() => {}}
         onSort={() => {}}
         handleSearch={() => {}}
         //filterOptionsMenu={() => {}}
         hasGridListToggle={false}
         exportHref="/reports/adds-on-feature/export"
-        // xlsxData={pageData.map((activity) => ({
-        //   ...activity,
-        //   location: address?.formattedAddress
-        //     ? address.formattedAddress
-        //     : "___ ___",
-        // }))}
-        // fileLabel={"Activity Reports"}
+        xlsxData={filteredTransactions?.data.map((activity) => ({
+          ...activity,
+        }))}
+        fileLabel={"Feature Reports"}
       />
       <section>
         <CustomTable
           fields={FeatureFields}
-          data={[]}
+          data={featureTable ? featureTable?.data.slice(0, 7) : []}
           tableHeadClassName="h-[45px]"
         />
       </section>

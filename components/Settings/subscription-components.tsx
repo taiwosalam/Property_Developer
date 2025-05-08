@@ -49,10 +49,11 @@ export const SMSUnit = () => {
   };
 
   const { data: smsData, refetch } = useFetch<any>(`/sms/value`);
-  const { data: smsTransactions } =
+  const { data: smsTransactions, refetch: refetchTable } =
     useFetch<SmsTransactionResponse>(`sms/transactions`);
 
   useRefetchOnEvent("buySMS", () => refetch({ silent: true }));
+  useRefetchOnEvent("buySMS", () => refetchTable({ silent: true }));
 
   useEffect(() => {
     if (smsTransactions) {
@@ -186,7 +187,7 @@ export const SMSUnit = () => {
           </div>
 
           <CustomTable
-            data={smsTransactionData ? smsTransactionData?.data : []}
+            data={smsTransactionData ? smsTransactionData?.data.slice(0, 3) : []}
             fields={SMSFields}
             {...table_style_props}
           />
@@ -249,6 +250,7 @@ export const FeatureCompany = () => {
   const { data: enrollmentData, refetch } = useFetch<BrandHistoryResponse>(
     `brands/${company_id}`
   );
+  useRefetchOnEvent("companyFeature", () => refetch({ silent: true}))
 
   useEffect(() => {
     if (enrollmentData) {
@@ -285,8 +287,6 @@ export const FeatureCompany = () => {
       company_id,
       page: [selectedPage],
     };
-
-    console.log(payload);
 
     try {
       const response = await requestCompanyFeature(payload, company_id);

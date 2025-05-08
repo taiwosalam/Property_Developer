@@ -72,8 +72,6 @@ const SponsorUnit = () => {
     useFetch<SponsorListingsResponse>("/sponsor/listings");
   useRefetchOnEvent("refetchRentSponsors", () => refetch({ silent: true }));
 
-  console.log(data);
-
   useEffect(() => {
     if (data) {
       const transformed = transformSponsorResponse(data);
@@ -88,8 +86,8 @@ const SponsorUnit = () => {
       value: count,
     };
     try {
-      if(!company_id) return;
-      
+      if (!company_id) return;
+
       const res = await BuySponsor(objectToFormData(payload));
       if (res) {
         toast.success("Sponsor bought successfully!");

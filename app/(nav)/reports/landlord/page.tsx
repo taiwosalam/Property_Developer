@@ -51,10 +51,6 @@ const LandlordsReport = () => {
   const { data: property } = useFetch<any>(`property/all`);
 
   useEffect(() => {
-    console.log("Source page - filteredLandlords:", filteredLandlords);
-  }, [filteredLandlords]);
-
-  useEffect(() => {
     if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
@@ -125,9 +121,6 @@ const LandlordsReport = () => {
     config
   );
 
-  useEffect(() => {
-    console.log("Fetch config:", config);
-  }, [config]);
 
   useEffect(() => {
     if (!loading && data) {
@@ -142,8 +135,6 @@ const LandlordsReport = () => {
         console.log("Store after update:", useGlobalStore.getState().landlords);
       }
     }
-    if (error) console.error("Fetch error:", error);
-    if (isNetworkError) console.error("Network error");
   }, [data, loading, setGlobalStore]);
 
   const handleExport = () => {

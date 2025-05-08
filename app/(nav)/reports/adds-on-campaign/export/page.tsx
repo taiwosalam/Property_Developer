@@ -15,13 +15,20 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useGlobalStore } from "@/store/general-store";
-import { CampaignFields, FeatureFields, SponsorFields } from "@/app/(nav)/settings/add-on/data";
+import {
+  CampaignFields,
+  FeatureFields,
+  SponsorFields,
+} from "@/app/(nav)/settings/add-on/data";
 
 dayjs.extend(advancedFormat);
 
 const ExportAddsOnFeature = () => {
+  const [fullContent, setFullContent] = useState(false);
   const exportRef = useRef<HTMLDivElement>(null);
-  
+
+  const filteredCampaignHistory = useGlobalStore((s) => s.campaign_history);
+
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
@@ -36,17 +43,17 @@ const ExportAddsOnFeature = () => {
           </h1>
         </div>
         <CustomTable
-          //className={`${fullContent && "max-h-none"}`}
+          className={`${fullContent && "max-h-none"}`}
           fields={CampaignFields}
-          data={[]}
+          data={filteredCampaignHistory || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
       </div>
       <ExportPageFooter
         printRef={exportRef}
-        //setFullContent={setFullContent}
-        //fullContent={fullContent}
+        setFullContent={setFullContent}
+        fullContent={fullContent}
       />
     </div>
   );

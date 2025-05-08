@@ -259,7 +259,7 @@ export const FeatureFields = [
   {
     id: "4",
     label: "Period",
-    accessor: "due_date",
+    accessor: "period",
   },
   {
     id: "5",
@@ -276,42 +276,42 @@ export const CampaignFields = [
   {
     id: "0",
     label: "Payment ID",
-    accessor: "feature_id",
+    accessor: "payment_id",
   },
   {
     id: "1",
     label: "Campaign Type",
-    accessor: "duration",
+    accessor: "campaign_type",
   },
   {
     id: "1",
     label: "Campaign Name",
-    accessor: "duration",
+    accessor: "campaign_name",
   },
   {
     id: "2",
     label: "Link",
-    accessor: "price",
+    accessor: "link",
   },
   {
     id: "3",
     label: "Uploaded",
-    accessor: "start_date",
+    accessor: "uploaded",
   },
   {
     id: "4",
     label: "Period",
-    accessor: "due_date",
+    accessor: "period",
   },
   {
     id: "5",
     label: "Amount",
-    accessor: "status",
+    accessor: "amount",
   },
   {
     id: "5",
     label: "Expire date",
-    accessor: "status",
+    accessor: "expired_date",
   },
 ];
 export const SMSFields = [
@@ -479,3 +479,19 @@ export const requestCompanyFeature = async (
     return false;
   }
 };
+
+export const postCampaign = async (payload: FormData, companyId: string) => {
+  try {
+    const data = await api.post(`campaigns/${companyId}`, payload);
+
+    if (data.status === 200 || data.status === 201) {
+      window.dispatchEvent(new Event("companyCampaign"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+
