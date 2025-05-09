@@ -5,7 +5,7 @@ import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import EstateDetails from "@/components/Management/Rent And Unit/estate-details";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   RentDetails,
   AddPartPayment,
@@ -32,6 +32,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import dayjs from "dayjs";
 import {
+  addPartPayment,
   editRent,
   getEstateData,
   getEstateSettingsData,
@@ -44,15 +45,17 @@ import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { FeeDetail } from "@/components/Management/Rent And Unit/types";
 import { useGlobalStore } from "@/store/general-store";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const router = useRouter();
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
 
   //STORE TO SAVE SELECTED OCCUPANT/TENANT
-  const { setOccupant, occupant, setUnitBalance, unitBalance } =
+  const { setOccupant, occupant, penaltyAmount, setUnitBalance, unitBalance } =
     useOccupantStore();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [startDate, setStartDate] = useState<string | null>(null);
@@ -61,7 +64,7 @@ const EditRent = () => {
   const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
   const [isCompletePayment, setIsCompletePayment] = useState(false);
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
-  const { setSelectedOccupant, setUnitData } = useGlobalStore()
+  const { setSelectedOccupant, setUnitData } = useGlobalStore();
   const endpoint = `/unit/${id}/view`;
 
   const {
@@ -116,8 +119,6 @@ const EditRent = () => {
   // UNIT CURRENCY WITH NAIRA FALLBACK
   const CURRENCY = unit_data.currency || "naira";
 
-  console.log("pending_invoice", unit_data.pending_invoice);
-
   // ADD UPFRONT RENT
   const handleUpfrontRent = async () => {
     if (!unitBalance || unitBalance.length === 0) {
@@ -159,18 +160,33 @@ const EditRent = () => {
 
     const payload = {
       unit_id: id,
-      amount: parseFloat(amt),
+      amount: parseCurrency(amt),
       rent_id: unitBalance.data[0].id,
       payment_date: startDate,
       tenant_id: unit_data.occupant.id,
       type: "part_payment",
+      has_penalty: penaltyAmount > 0 ? 1 : 0,
+      penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
     };
     try {
       setReqLoading(true);
-      const success = await editRent(payload);
-      if (success) {
-        toast.success("Part payment added successfully");
+      // const success = await editRent(payload);
+      // if (success) {
+      //   toast.success("Part payment added successfully");
+      //   window.dispatchEvent(new Event("refech-unit"));
+      // }
+      const res = await addPartPayment(payload);
+      if (res) {
+        toast.success(res.message || "Part payment added successfully");
         window.dispatchEvent(new Event("refech-unit"));
+
+        // Check pay_status and handle accordingly
+        if (res.pay_status === "part") {
+          setAmt("");
+          setStartDate(null);
+        } else if (res.pay_status === "full") {
+          router.push("/management/rent-unit");
+        }
       }
     } catch (err) {
       toast.error("Failed to create part payment");
