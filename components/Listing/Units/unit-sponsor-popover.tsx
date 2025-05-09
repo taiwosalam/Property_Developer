@@ -27,6 +27,7 @@ interface UnitSponsorPopoverProps {
   status?: string;
   annualRent?: number | string;
   is_sponsored?: boolean;
+  sponsored_count: number;
 }
 
 const UnitSponsorPopover = ({
@@ -38,6 +39,7 @@ const UnitSponsorPopover = ({
   status,
   annualRent,
   is_sponsored = true,
+  sponsored_count
 }: UnitSponsorPopoverProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [buyModal, setBuyModal] = useState(false);
@@ -64,14 +66,14 @@ const UnitSponsorPopover = ({
     if (showPopover) setShowPopover(false);
   }, [showPopover]);
 
-  const handleOpen = ()=> {
+  const handleOpen = () => {
     close();
-    console.log("clicked")
+    console.log("clicked");
     // setBuyModal(true)
-  }
+  };
 
   const proceed = async () => {
-    if (is_sponsored) return; // Prevent proceeding if already sponsored
+    //if (is_sponsored) return; // Prevent proceeding if already sponsored
 
     const numericRent = parseCurrencyToNumber(annualRent as string);
     const payload = {
@@ -141,22 +143,22 @@ const UnitSponsorPopover = ({
             {!is_sponsored && availableSponsors < 1 && (
               <p className="text-[#A4A7B0] dark:text-darkText-1 text-sm font-normal">
                 To promote your listing and have it appear first to potential
-                tenants and occupants, click on &apos;Buy Sponsor&apos; to subscribe and
-                sponsor your unit.
+                tenants and occupants, click on &apos;Buy Sponsor&apos; to
+                subscribe and sponsor your unit.
               </p>
             )}
           </div>
           {/* {!is_sponsored && ( */}
-            <div className="flex items-center text-base gap-2">
-              <div className="p-2 rounded-[4px] bg-support-2">
-                <p className="text-brand-disabled font-bold">
-                  {availableSponsors.toLocaleString()}
-                </p>
-              </div>
-              <p className="text-black dark:text-white font-normal">
-                Available sponsor units
+          <div className="flex items-center text-base gap-2">
+            <div className="p-2 rounded-[4px] bg-support-2">
+              <p className="text-brand-disabled font-bold">
+                {availableSponsors.toLocaleString()}
               </p>
             </div>
+            <p className="text-black dark:text-white font-normal">
+              Available sponsor units
+            </p>
+          </div>
           {/* // )} */}
           <div className="flex justify-end gap-3">
             <Button
@@ -167,19 +169,27 @@ const UnitSponsorPopover = ({
             >
               Cancel
             </Button>
-            {!is_sponsored && availableSponsors > 0 ? (
+            {availableSponsors > 0 ? (
               <Button
-                onClick={proceed}
+                onClick={(e) => {
+                  proceed();
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
                 size="sm_medium"
                 className="py-2 px-8"
                 disabled={reqLoading}
               >
-                { reqLoading ? "Please wait" : "Proceed" }
+                {reqLoading ? "Please wait" : "Proceed"}
               </Button>
             ) : !is_sponsored ? (
               <Modal state={{ isOpen: buyModal, setIsOpen: setBuyModal }}>
                 <ModalTrigger asChild>
-                  <Button onClick={handleOpen} size="sm_medium" className="py-2 px-8">
+                  <Button
+                    onClick={handleOpen}
+                    size="sm_medium"
+                    className="py-2 px-8"
+                  >
                     Proceed
                   </Button>
                 </ModalTrigger>
@@ -202,11 +212,14 @@ const UnitSponsorPopover = ({
       </div>
       {/* Visible sponsor button */}
       <button
-        className="flex gap-2 capitalize text-start"
+        className="flex gap-2 text-start"
         onClick={() => setShowPopover((prev) => !prev)}
       >
         <SponsorIcon />
-        <p>Sponsor</p>
+        {
+          sponsored_count > 0 ? <p>Sponsored</p> : <p>Sponsor</p>
+        }
+       {sponsored_count > 1 && <span>x{sponsored_count}</span>}
       </button>
       {/* Modal for success message */}
       <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>

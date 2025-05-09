@@ -130,6 +130,7 @@ const VacantUnitCard = ({
     address: unit_data.address,
     unit_type: unit_data.unit_type,
     account_officer: "",
+    //sponsored_count: unit_data.s
   };
 
   const color =
@@ -219,6 +220,7 @@ const VacantUnitCard = ({
             unit_status
           ) && (
             <UnitSponsorPopover
+              sponsored_count={unit_data.sponsored_count}
               unitId={unit_data.unitId}
               unitName={keyValueData.unit_name}
               propertyName={unit_data.property_title}

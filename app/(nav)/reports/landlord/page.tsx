@@ -35,7 +35,6 @@ const LandlordsReport = () => {
     landlords: [],
   });
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-  const filteredLandlords = useGlobalStore((s) => s.landlords);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -125,8 +124,7 @@ const LandlordsReport = () => {
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformLandlordsData(data);
-      console.log("API data:", data);
-      console.log("Transformed data:", transformedData);
+      
       const newLandlords = transformedData.landlords;
       const currentLandlords = useGlobalStore.getState().landlords;
       if (JSON.stringify(currentLandlords) !== JSON.stringify(newLandlords)) {
@@ -136,12 +134,6 @@ const LandlordsReport = () => {
       }
     }
   }, [data, loading, setGlobalStore]);
-
-  const handleExport = () => {
-    if (!data || loading) return;
-    setGlobalStore("landlords", pageData.landlords);
-    router.push("/reports/landlords/export");
-  };
 
   if (loading) return <CustomLoader layout="page" pageTitle="Landlord/Landlady" view="table" />;
   if (isNetworkError) return <NetworkError />;
