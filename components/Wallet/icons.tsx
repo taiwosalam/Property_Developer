@@ -86,6 +86,6 @@ export const getTransactionIcon = (
     case "funding":
       return <TopUpIcon />;
     default:
-      return type === "debit" ? <ArrowOutgoingIcon /> : <ArrowIncomingIcon />;
+      return type === "debit" ? <ArrowOutgoingIcon /> : <ArrowOutgoingIcon />;
   }
 };

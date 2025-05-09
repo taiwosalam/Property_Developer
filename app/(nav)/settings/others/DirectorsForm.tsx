@@ -48,7 +48,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
   onFormChange,
   isEditing,
   initialImage,
-  setIsCloseUpdate
+  setIsCloseUpdate,
 }) => {
   const {
     preview: imagePreview,
@@ -88,7 +88,6 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
       clearImageSelection();
     }
   }, [avatar]);
-
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -178,7 +177,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
               : null
           }
         />
-       
+
         <PhoneNumberInput
           disabled={formData?.phone_number ? true : false}
           id="phone_number"
@@ -189,7 +188,6 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-       
         <div className="md:col-span-3 w-full">
           <TextArea
             id="about_director"
@@ -289,7 +287,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
             <Button
               onClick={handleDeleteDirector}
               size="base_medium"
-              className={`py-2 px-8 ml-auto text-white bg-opacity-90 font-semibold ${
+              className={`py-2 px-8 ml-auto font-semibold ${
                 isDeleting ? "opacity-70" : "opacity-100"
               }`}
               variant="red"
@@ -297,10 +295,22 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
             >
               {isDeleting ? "Please wait..." : "Delete"}
             </Button>
+
+            <Button
+              //onClick={handleDeleteDirector}
+              size="base_medium"
+              className={`py-2 px-8 ml-auto font-semibold ${
+                isDeleting ? "opacity-70" : "opacity-100"
+              }`}
+              variant="light_red"
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Please wait..." : "Lock"}
+            </Button>
             <Button
               type="submit"
               size="base_medium"
-              className={`py-2 px-8 ml-auto ${
+              className={`py-2 px-8 ml-auto font-bold ${
                 isProcessing ? "opacity-70" : "opacity-100"
               }`}
               disabled={isProcessing}

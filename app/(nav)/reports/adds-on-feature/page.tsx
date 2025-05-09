@@ -26,7 +26,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import ServerError from "@/components/Error/ServerError";
 import useAddressFromCoords from "@/hooks/useGeoCoding";
 import { useGlobalStore } from "@/store/general-store";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
 import { FeatureFields, SponsorFields } from "../../settings/add-on/data";
@@ -107,6 +107,9 @@ const AddsOnFeatureRecord = () => {
     }
   }, [enrollmentData, loading, setGlobalStore]);
 
+   const searchParams = useSearchParams();
+  const search = searchParams.get("b");
+
   if (loading) return <CustomLoader layout="page" pageTitle="Add-On Feature Listing" view="table" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -114,10 +117,9 @@ const AddsOnFeatureRecord = () => {
   return (
     <div className="space-y-9">
       <FilterBar
-        azFilter
         exports
         isDateTrue
-        onBack
+        onBack={search ? true : false}
         pageTitle="Adds-On Feature"
         aboutPageModalData={{
           title: "Adds-On Feature",

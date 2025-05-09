@@ -26,19 +26,56 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import ServerError from "@/components/Error/ServerError";
 import useAddressFromCoords from "@/hooks/useGeoCoding";
 import { useGlobalStore } from "@/store/general-store";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
 import { DomainFields, SponsorFields } from "../../settings/add-on/data";
+import {
+  CalendarTableFields,
+  ICalendarEventsTable,
+  transformEventTable,
+} from "../../tasks/calendars/data";
+import { CalendarEventsApiResponse } from "../../tasks/calendars/types";
+import { LandlordRequestParams } from "../../management/landlord/data";
 
 const CalendarEventRecord = () => {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("b");
+
+  const [eventTable, setEventTable] = useState<ICalendarEventsTable | null>(
+    null
+  );
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as LandlordRequestParams,
+  });
+
+  const {
+    data: calendarEventApiResponse,
+    loading,
+    error,
+    isNetworkError,
+  } = useFetch<CalendarEventsApiResponse>("/company/calender", config);
+
+  useEffect(() => {
+    if (calendarEventApiResponse) {
+      const eventsTable = transformEventTable(calendarEventApiResponse);
+      setEventTable(eventsTable);
+    }
+  }, [calendarEventApiResponse, config]);
+
+  if (loading) return <CustomLoader layout="page" pageTitle="Calendar Event" view="table" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
   return (
     <div className="space-y-9">
       <FilterBar
-        azFilter
         exports
         isDateTrue
-        onBack
+        onBack={search ? true : false}
         pageTitle="Calendar Events"
         aboutPageModalData={{
           title: "Calendar Events",
@@ -52,20 +89,43 @@ const CalendarEventRecord = () => {
         //filterOptionsMenu={() => {}}
         hasGridListToggle={false}
         exportHref="/reports/calendar-event/export"
-        // xlsxData={pageData.map((activity) => ({
-        //   ...activity,
-        //   location: address?.formattedAddress
-        //     ? address.formattedAddress
-        //     : "___ ___",
-        // }))}
-        // fileLabel={"Activity Reports"}
+        xlsxData={eventTable?.table.map((activity) => ({
+          ...activity,
+        }))}
+        fileLabel={"Calendar Event Reports"}
       />
       <section>
-        <CustomTable
-          fields={DomainFields}
-          data={[]}
-          tableHeadClassName="h-[45px]"
-        />
+        {eventTable && eventTable?.table.length === 0 && !loading ? (
+          !!config.params.search ? (
+            <SearchError />
+          ) : (
+            <EmptyList
+              noButton
+              title="No Calendar Event Available Yet"
+              body={
+                <p>
+                  At the moment, there are no landlord or landlady profiles
+                  available for export. Once profile records are added to the
+                  system, they will appear here and be available for download or
+                  export.
+                  <br />
+                  <br />
+                  <p>
+                    This section will automatically populate with all available
+                    data as soon as new landlord or landlady profiles are
+                    created or imported into the platform.
+                  </p>
+                </p>
+              }
+            />
+          )
+        ) : (
+          <CustomTable
+            fields={CalendarTableFields}
+            data={eventTable?.table || []}
+            tableHeadClassName="h-[45px]"
+          />
+        )}
       </section>
     </div>
   );

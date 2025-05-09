@@ -177,7 +177,7 @@ export const SMSUnit = () => {
               className="flex items-center gap-1"
             >
               <Link
-                href={"/reports/adds-on-sms"}
+                href={"/reports/adds-on-sms?b=true"}
                 className="text-text-label dark:text-darkText-1"
               >
                 See all
@@ -406,7 +406,7 @@ export const FeatureCompany = () => {
               className="flex items-center gap-1"
             >
               <Link
-                href={"/reports/adds-on-feature"}
+                href={"/reports/adds-on-feature?b=true"}
                 className="text-text-label dark:text-darkText-1"
               >
                 See all

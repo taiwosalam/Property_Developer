@@ -16,9 +16,15 @@ interface ISponsorModalProps {
   count: number;
   cost?: number;
   onSubmit?: () => Promise<boolean | undefined>;
+  message?: boolean;
 }
 const SPONSOR_COST = 2000;
-const SponsorModal = ({ count, cost, onSubmit }: ISponsorModalProps) => {
+const SponsorModal = ({
+  count,
+  cost,
+  onSubmit,
+  message,
+}: ISponsorModalProps) => {
   const amount = count * (cost ?? SPONSOR_COST);
   const [reqLoading, setReqLoading] = React.useState(false);
   const { setIsOpen } = useModal();
@@ -51,10 +57,23 @@ const SponsorModal = ({ count, cost, onSubmit }: ISponsorModalProps) => {
             wallet with{" "}
             <strong className="text-brand-9">₦{formatNumber(amount)}.</strong>
           </p>
-          <p>
-            By confirming, you authorize this charge and acknowledge that the
-            amount will be deducted from your wallet balance.
-          </p>
+          {message ? (
+            <p>
+              Selecting this plan will activate access to its features for your
+              company. Please note that once selected, you cannot downgrade your
+              account. <br /> <br /> Subscriptions are billed similarly to rent.
+              If your plan expires before payment is made, all users in your
+              company will lose access to all features. However, your data will
+              be securely stored and maintained until you renew your
+              subscription. <br /> <br /> Access will only be restored after all
+              outstanding subscription payments have been fully settled.
+            </p>
+          ) : (
+            <p>
+              By confirming, you authorize this charge and acknowledge that the
+              amount will be deducted from your wallet balance.
+            </p>
+          )}
 
           <p>Do you wish to proceed?</p>
         </div>

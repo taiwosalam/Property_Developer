@@ -3,6 +3,7 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
 import { Modal } from "@/components/Modal/modal";
 import { ModalContent } from "@/components/Modal/modal";
+import SponsorModal from "../Modals/sponsor-modal";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -143,7 +144,9 @@ export const BillingTypeButton: React.FC<{
       className={`flex flex-col items-center justify-center px-6 ${
         billingType === type
           ? "border rounded-md transition-all duration-300 ease-in-out " +
-            (isFree ? "border-text-disabled dark:border-[#3C3D37]" : "border-brand-9 bg-white dark:bg-darkText-primary")
+            (isFree
+              ? "border-text-disabled dark:border-[#3C3D37]"
+              : "border-brand-9 bg-white dark:bg-darkText-primary")
           : ""
       }`}
     >
@@ -208,7 +211,11 @@ export const QuantityCounter: React.FC<{
 
   return (
     <div className="counter flex items-center justify-center w-full gap-2">
-      <div className={`flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md ${isFree ? "border-text-disabled dark:border-[#3C3D37]" : ""}`}>
+      <div
+        className={`flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md ${
+          isFree ? "border-text-disabled dark:border-[#3C3D37]" : ""
+        }`}
+      >
         <p
           className={`count pl-1 text-[#000] dark:text-white text-[14px] font-medium tracking-[0px] ${
             isFree ? "opacity-50 cursor-not-allowed" : ""
@@ -220,7 +227,7 @@ export const QuantityCounter: React.FC<{
           <CounterButton
             onClick={incrementQuantity}
             disabled={isFree}
-            icon="/icons/plus.svg"  
+            icon="/icons/plus.svg"
             alt="plus"
           />
           <CounterButton
@@ -307,16 +314,20 @@ export const SelectPlanButton: React.FC<{ isFree?: boolean }> = ({
       }`}
     >
       <Modal>
-        <ModalTrigger asChild>
+        <ModalTrigger asChild className="w-full text-white">
           <button
-            className={`text-center text-[14px] font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
             disabled={isFree}
           >
             Select Plan
           </button>
         </ModalTrigger>
         <ModalContent>
-          <AddFundsModal />
+          <SponsorModal
+            count={10}
+            cost={100}
+            message={true}
+          />
         </ModalContent>
       </Modal>
     </div>

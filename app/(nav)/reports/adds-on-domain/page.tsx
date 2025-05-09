@@ -26,19 +26,22 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import ServerError from "@/components/Error/ServerError";
 import useAddressFromCoords from "@/hooks/useGeoCoding";
 import { useGlobalStore } from "@/store/general-store";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
 import { DomainFields, SponsorFields } from "../../settings/add-on/data";
 
 const AddsOnDomainRecord = () => {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("b");
+  
   return (
     <div className="space-y-9">
       <FilterBar
         azFilter
         exports
         isDateTrue
-        onBack
+        onBack={search ? true : false}
         pageTitle="Adds-On Domain"
         aboutPageModalData={{
           title: "Adds-On Domain",

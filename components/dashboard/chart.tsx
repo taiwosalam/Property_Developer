@@ -58,7 +58,9 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
   // Use Zustand store for timeRange and selectedDateRange
   const timeRange = useGlobalStore((state) => state.timeRange);
   const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
-  const setGlobalInfoStore = useGlobalStore((state) => state.setGlobalInfoStore);
+  const setGlobalInfoStore = useGlobalStore(
+    (state) => state.setGlobalInfoStore
+  );
 
   const calculateDateRange = (days: number): DateRange => {
     const now = new Date();
@@ -66,6 +68,12 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     fromDate.setDate(now.getDate() - days);
     return { from: fromDate, to: now };
   };
+
+  React.useEffect(() => {
+    if (!timeRange) {
+      setGlobalInfoStore("timeRange", "30d");
+    }
+  }, [timeRange, setGlobalInfoStore]);
 
   React.useEffect(() => {
     if (!selectedDateRange) {
@@ -83,10 +91,50 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
 
   const handleSelectChange = (value: string) => {
     setGlobalInfoStore("timeRange", value);
+
     if (value !== "custom") {
-      const days =
-        value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
+      let days: number;
+      switch (value) {
+        case "90d":
+          days = 90;
+          break;
+        case "30d":
+          days = 30;
+          break;
+        case "7d":
+          days = 7;
+          break;
+        case "1d":
+          days = 1;
+          break;
+        default:
+          days = 30; // Fallback
+      }
       setGlobalInfoStore("selectedDateRange", calculateDateRange(days));
+    }
+
+    // if (value !== "custom") {
+    //   const days =
+    //     value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
+    //   setGlobalInfoStore("selectedDateRange", calculateDateRange(days));
+    // }
+  };
+
+  // Get display text for current timeRange
+  const getTimeRangeDisplayText = () => {
+    switch (timeRange) {
+      case "90d":
+        return "Last 3 months";
+      case "30d":
+        return "Last 30 days";
+      case "7d":
+        return "Last 7 days";
+      case "1d":
+        return "Yesterday";
+      case "custom":
+        return "Custom";
+      default:
+        return "Last 30 days";
     }
   };
 
@@ -162,10 +210,10 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
               )}
               <Select value={timeRange} onValueChange={handleSelectChange}>
                 <SelectTrigger
-                  className="md:w-full px-4 lg:w-[120p rounded-lg sm:ml-auto dark:text-whie dark:bg-[#020617]"
+                  className="md:w-full px-4 lg:w-[120p rounded-lg sm:ml-auto dark:text-white dark:bg-[#020617]"
                   aria-label="Select a value"
                 >
-                  <SelectValue placeholder="Last 3 months" />
+                  <SelectValue>{getTimeRangeDisplayText()}</SelectValue>
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="90d" className="rounded-lg">

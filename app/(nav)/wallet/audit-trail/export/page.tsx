@@ -70,11 +70,11 @@ const ExportWallet = () => {
         <div className="flex justify-between items-center">
           <div className="custom-flex-col gap-1 text-center items-center justify-center w-full">
             <h1 className="text-black text-2xl font-medium dark:text-white">
-              Summary
+              Summary (<span>{dateRangeText}</span>)
             </h1>
-            <p className="text-text-label text-xl font-normal">
+            {/* <p className="text-text-label text-xl font-normal">
               {dateRangeText}
-            </p>
+            </p> */}
           </div>
         </div>
         <div className="flex flex-col lg:flex-row gap-6">

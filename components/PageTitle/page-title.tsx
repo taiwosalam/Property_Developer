@@ -4,15 +4,15 @@ import { ExclamationMark } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { PageTitleProps } from "./types";
 import AboutPage from "../AboutPage/about-page";
-import { ArrowLeft, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ChevronLeft } from "@/public/icons/icons";
 
 const PageTitle: React.FC<PageTitleProps> = ({
   title,
   aboutPageModalData,
   noExclamationMark,
-  onBack = true,
+  onBack
 }) => {
   const router = useRouter();
   return (
@@ -20,7 +20,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
       <div className="flex gap-3 items-center">
         {onBack && (
           <div onClick={() => router.back()} className="cursor-pointer">
-            <ArrowLeft />
+            <ChevronLeft />
           </div>
         )}
         <h1 className="text-xl font-medium text-[#101828] dark:text-darkText-1 capitalize">

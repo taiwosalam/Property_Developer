@@ -358,6 +358,25 @@ const TransactionHistory = () => {
     });
   };
 
+   // Get display text for current timeRange
+   const getTimeRangeDisplayText = () => {
+    switch (timeRange) {
+      case "90d":
+        return "Last 3 months";
+      case "30d":
+        return "Last 30 days";
+      case "7d":
+        return "Last 7 days";
+      case "1d":
+        return "Yesterday";
+      case "custom":
+        return "Custom";
+      default:
+        return "Last 30 days";
+    }
+  };
+
+
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -378,7 +397,7 @@ const TransactionHistory = () => {
           xlsxData={filteredTransactions}
           onBack
         />
-        <DateRangeSelector />
+        {/* <DateRangeSelector /> */}
       </div>
       <div className="flex flex-col xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">

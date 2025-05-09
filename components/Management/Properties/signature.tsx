@@ -58,7 +58,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
     const trimmedCanvas = sigPadRef.current?.getTrimmedCanvas();
     if (trimmedCanvas) {
       const imageBase64 = trimmedCanvas.toDataURL("image/png");
-      console.log("Base64 image:", imageBase64);
+      
 
       // Save the base64 string in state
       setSignatureImageBase64(imageBase64);
@@ -79,7 +79,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
       const imageFile = new File([imageBlob], "signature.png", {
         type: "image/png",
       });
-      // console.log("Image file:", imageFile);
+      // 
 
       // Save the image file in state
       setSignatureImageFile(imageFile);
@@ -154,7 +154,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
           ref={sigPadRef}
           canvasProps={{ className: "w-full h-[38vh] light-shadow" }}
           penColor="blue"
-          // onEnd={handleEnd}
+          //onEnd={handleEnd}
         />
         <div className="w-full flex justify-between mt-5">
           <div className="flex gap-2 items-center">
