@@ -242,7 +242,7 @@ const PersonalizedDomain = () => {
               className="flex items-center gap-1"
             >
               <Link
-                href={"/reports/adds-on-domain"}
+                href={"/reports/adds-on-domain?b=true"}
                 className="text-text-label dark:text-darkText-1"
               >
                 See all

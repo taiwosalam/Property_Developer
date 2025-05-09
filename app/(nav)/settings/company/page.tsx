@@ -164,8 +164,6 @@ const Profile = () => {
     }
   };
 
-  
-
   return (
     <>
       <SettingsSection title="profile & details">
@@ -228,6 +226,7 @@ const Profile = () => {
                 />
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full">
                   <FileInput
+                    className="w-[350px]"
                     required
                     id="cac_certificate"
                     label="CAC document"
@@ -280,6 +279,7 @@ const Profile = () => {
                       verifications.membership_status === "verified" ||
                       verifications.membership_status === "approved"
                     }
+                    className="w-[450px]"
                     id="membership_certificate"
                     label="Membership document"
                     placeholder=""
@@ -358,6 +358,7 @@ const Profile = () => {
               <div className="flex flex-col sm:flex-row items-start sm:items-end gap-2 w-full lg:w-auto">
                 <FileInput
                   required
+                  className="w-[450px]"
                   noUpload={verifications?.utility_status === "verified"}
                   id="utility_document"
                   label="utility document"

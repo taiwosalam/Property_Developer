@@ -54,7 +54,7 @@ export const Campaign = () => {
   const [selectedPage, setSelectedPage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
   const [campaignName, setCampaignName] = useState("");
-  const [campaignValue, setCampaignValue] = useState("");
+  const [campaignValue, setCampaignValue] = useState("https://");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const [campaignTable, setCampaignTable] = useState<ICampaignTable[] | null>(
@@ -164,7 +164,6 @@ export const Campaign = () => {
               label="campaign link"
               value={campaignValue}
               onChange={(val) => setCampaignValue(val)}
-              prefix="https://"
             />
 
             <FileUploadInput
@@ -281,7 +280,7 @@ export const Campaign = () => {
             className="flex items-center gap-1"
           >
             <Link
-              href={"/reports/adds-on-campaign"}
+              href={"/reports/adds-on-campaign?b=true"}
               className="text-text-label dark:text-darkText-1"
             >
               See all

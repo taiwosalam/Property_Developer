@@ -103,7 +103,7 @@ const CalendarPage = () => {
       <div className="scroll-m-8" id="event">
         <CustomTable
           fields={CalendarTableFields}
-          data={eventTable?.table.slice(0, 10) || []}
+          data={eventTable?.table.slice(0, 3) || []}
           tableHeadClassName="h-[45px]"
           tableBodyCellSx={{
             textTransform: "capitalize",

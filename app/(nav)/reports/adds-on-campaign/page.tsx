@@ -26,7 +26,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import ServerError from "@/components/Error/ServerError";
 import useAddressFromCoords from "@/hooks/useGeoCoding";
 import { useGlobalStore } from "@/store/general-store";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
 import {
@@ -117,6 +117,9 @@ const AddsOnCampaignRecord = () => {
     }
   }, [campaignData, loading, setGlobalStore]);
 
+  const searchParams = useSearchParams();
+  const search = searchParams.get("b");
+
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Add-On Campaign" view="table" />
@@ -129,7 +132,7 @@ const AddsOnCampaignRecord = () => {
       <FilterBar
         exports
         isDateTrue
-        onBack
+        onBack={search ? true : false}
         pageTitle="Adds-On Campaign"
         aboutPageModalData={{
           title: "Adds-On Campaign",

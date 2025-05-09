@@ -152,6 +152,7 @@ const SettingsSignature = () => {
       )
     );
   };
+  
 
   const handleSignatureChange = (index: number) => (dataURL: string) => {
     setInputFields((prevState) =>

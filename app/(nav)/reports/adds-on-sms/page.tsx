@@ -26,7 +26,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import ServerError from "@/components/Error/ServerError";
 import useAddressFromCoords from "@/hooks/useGeoCoding";
 import { useGlobalStore } from "@/store/general-store";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
 import { SMSFields, SponsorFields } from "../../settings/add-on/data";
@@ -114,6 +114,9 @@ const AddsOnSMSRecord = () => {
       }
     }
   }, [smsTransactions, loading, setGlobalStore]);
+  const searchParams = useSearchParams();
+  const search = searchParams.get("b");
+  
 
     if (loading) return <CustomLoader layout="page" pageTitle="Landlord/Landlady" view="table" />;
     if (isNetworkError) return <NetworkError />;
@@ -122,10 +125,10 @@ const AddsOnSMSRecord = () => {
   return (
     <div className="space-y-9">
       <FilterBar
-        azFilter
+       
         exports
         isDateTrue
-        onBack
+        onBack={search ? true : false}
         pageTitle="Adds-On SMS"
         aboutPageModalData={{
           title: "Adds-On SMS",

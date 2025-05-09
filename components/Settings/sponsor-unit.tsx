@@ -113,8 +113,8 @@ const SponsorUnit = () => {
           <div className="flex flex-col gap-4">
             <div className="flex">
               <div className="w-[164px] py-2 px-3 rounded-[4px] bg-neutral-2 text-center">
-                <p className="text-brand-9 text-xs font-normal">
-                  Available Sponsors:{" "}
+                <p className="text-brand-9 text-xs font-normal capitalize">
+                  Available sponsor units:{" "}
                   <span className="font-medium"> {sponsor_value} </span>
                 </p>
               </div>
@@ -180,7 +180,7 @@ const SponsorUnit = () => {
                 className="flex items-center gap-1"
               >
                 <Link
-                  href={"/reports/adds-on-sponsor"}
+                  href={"/reports/adds-on-sponsor?b=true"}
                   className="text-text-label dark:text-darkText-1"
                 >
                   See all
@@ -189,7 +189,7 @@ const SponsorUnit = () => {
               </Link>
             </div>
             <CustomTable
-              data={sponsor_listings}
+              data={sponsor_listings ? sponsor_listings.slice(0, 3) : []}
               fields={SponsorFields}
               {...table_style_props}
             />

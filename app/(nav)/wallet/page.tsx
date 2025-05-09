@@ -95,6 +95,8 @@ const Wallet = () => {
     previousTotals.total_credit
   );
 
+  console.log(recentTransactions);
+
   const transformedWalletTableData = recentTransactions.map((t) => ({
     ...t,
     amount: (
@@ -173,7 +175,6 @@ const Wallet = () => {
         <h1 className="text-black dark:text-white text-2xl font-medium">
           Wallet
         </h1>
-        <ExclamationMark />
       </div>
       <div className="flex flex-col xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">
