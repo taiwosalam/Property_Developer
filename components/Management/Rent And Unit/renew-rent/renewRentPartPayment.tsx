@@ -25,6 +25,7 @@ export const RenewRentAddPartPayment: React.FC<{
   isUpfrontPaymentChecked?: boolean;
   setSelectedCheckboxOptions?: (options: Record<string, boolean>) => void;
   prevAmt?: string;
+  disabled?: boolean;
 }> = ({
   action,
   isRental,
@@ -38,6 +39,7 @@ export const RenewRentAddPartPayment: React.FC<{
   setSelectedCheckboxOptions,
   isCompletePayment,
   prevAmt,
+  disabled,
 }) => {
   const { occupant } = useOccupantStore();
 
@@ -166,7 +168,7 @@ export const RenewRentAddPartPayment: React.FC<{
               placeholder=""
               label="Amount"
               formatNumber
-              // readOnly={isCompletePayment}
+              readOnly={disabled}
               onChange={handleAmount}
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
