@@ -1,3 +1,5 @@
+import { formatFee } from "@/app/(nav)/management/rent-unit/data";
+import { Currency } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 
 export const printVatTableFields = [
@@ -42,6 +44,7 @@ interface VatPreviewData {
   amount: string;
   payment_status: PaymentStatus;
   date: string;
+  currency?: Currency;
 }
 
 export interface VatPreviewResponse {
@@ -87,12 +90,12 @@ export const transformVatData = (
 
   const { data } = response;
   // Format monetary values with currency symbol
-  const formatCurrency = (value: string) => {
-    return `₦${parseFloat(value).toLocaleString("en-NG", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
-  };
+  // const formatCurrency = (value: string) => {
+  //   return `₦${parseFloat(value).toLocaleString("en-NG", {
+  //     minimumFractionDigits: 2,
+  //     maximumFractionDigits: 2,
+  //   })}`;
+  // };
 
   // Key-value data for KeyValueList
   const keyValueData = {
@@ -109,9 +112,10 @@ export const transformVatData = (
       id: data.id.toString(),
       payment_date: dayjs(data.date).format("MM/DD/YYYY"),
       details: data.details,
-      total_package: formatCurrency(data.total_package),
-      agency_fee: formatCurrency(data.agency_fee),
-      vat_amount: formatCurrency(data.amount),
+      total_package:
+        formatFee(data.total_package, data.currency || "naira") || "",
+      agency_fee: formatFee(data.agency_fee, data.currency || "naira") || "",
+      vat_amount: formatFee(data.amount, data.currency || "naira") || "",
     },
   ];
 

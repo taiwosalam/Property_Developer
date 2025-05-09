@@ -24,6 +24,8 @@ export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
     currency: data.currency || "naira",
     auto_generate: data.auto_generate || "",
     invoice_type: data.type || "",
+    tenant_owed: Number(data.tenant_owed) || 0,
+    company_owed: Number(data.company_owed) || 0,
     branchBankDetails: {
       bank_name: data.bank_name || "",
       account_number: data.account_number || "",

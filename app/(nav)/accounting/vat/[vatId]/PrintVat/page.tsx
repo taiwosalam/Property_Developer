@@ -64,7 +64,7 @@ const PrintVatPage = () => {
         <div ref={printRef}>
           <ExportPageHeader />
           <h1 className="text-center my-7 font-medium text-2xl">VAT</h1>
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+          <div className="rounded-lg mb-4 bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={keyValueData}
               chunkSize={2}
@@ -78,21 +78,23 @@ const PrintVatPage = () => {
               }}
             />
           </div>
-          <AccountingTitleSection title="Payment Details">
-            <div className="h-[2px] w-full max-w-[670px] bg-[#C0C2C8]" />
-            <CustomTable
-              className={`${fullContent && "max-h-none"}`}
-              fields={printVatTableFields}
-              data={tableData}
-              tableHeadStyle={{ height: "76px" }}
-              tableHeadCellSx={{ fontSize: "1rem" }}
-              tableBodyCellSx={{
-                fontSize: "1rem",
-                paddingTop: "16px",
-                paddingBottom: "16px",
-              }}
-            />
-          </AccountingTitleSection>
+          <div className="mt-5">
+            <AccountingTitleSection title="Payment Details">
+              <div className="h-[2px] w-full max-w-[670px] bg-[#C0C2C8]" />
+              <CustomTable
+                className={`${fullContent && "max-h-none"}`}
+                fields={printVatTableFields}
+                data={tableData}
+                tableHeadStyle={{ height: "76px" }}
+                tableHeadCellSx={{ fontSize: "1rem" }}
+                tableBodyCellSx={{
+                  fontSize: "1rem",
+                  paddingTop: "16px",
+                  paddingBottom: "16px",
+                }}
+              />
+            </AccountingTitleSection>
+          </div>
           <Signature />
         </div>
       </div>

@@ -1,6 +1,7 @@
 import type { Field } from "@/components/Table/types";
-import { formatNumber } from "@/utils/number-formatter";
+import { Currency, formatNumber } from "@/utils/number-formatter";
 import { formatFee } from "../../management/rent-unit/data";
+import { BadgeIconColors, tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const accountingVatOptionsWithDropdown = [
   {
@@ -65,6 +66,8 @@ export interface Vat {
   payment_reason: string;
   total_vat: string;
   date: string;
+  badge_color?: BadgeIconColors;
+  currency?: Currency;
 }
 
 export interface VATPageState {
@@ -101,7 +104,9 @@ export interface VatRaw {
   client_name: string;
   client_picture: string;
   description: string;
+  currency: Currency;
   amount: string;
+  tier: string | number;
   date: string;
 }
 
@@ -139,8 +144,36 @@ export const transformVATAPIResponse = (
       name: vat.client_name,
       picture: vat.client_picture,
       payment_reason: vat.description,
-      total_vat: `${formatFee(Number(vat.amount), "naira")}`,
+      total_vat: `${formatFee(Number(vat.amount), vat.currency || "naira")}`,
       date: vat.date,
+      badge_color: vat.tier
+        ? tierColorMap[vat.tier as keyof typeof tierColorMap]
+        : undefined,
     })),
   };
+};
+
+
+
+
+// Helper to determine otherCurrency based on vats
+export const getOtherCurrencyFromVats = (
+  vats: { currency: string | null }[]
+): string => {
+  const currencies = new Set(
+    vats
+      .map((vat) => vat.currency)
+      .filter(
+        (currency): currency is "dollar" | "pound" =>
+          !!currency && currency !== "naira"
+      )
+  );
+
+  const hasDollar = currencies.has("dollar");
+  const hasPound = currencies.has("pound");
+
+  if (hasDollar && hasPound) return "$£";
+  if (hasDollar) return "$";
+  if (hasPound) return "£";
+  return "";
 };

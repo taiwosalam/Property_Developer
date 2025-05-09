@@ -374,6 +374,12 @@ export const AddPartPayment: React.FC<{
     }
   };
 
+  useEffect(() => {
+    if (prevAmt && setAmt) {
+      setAmt(prevAmt);
+    }
+  }, [prevAmt, setAmt]);
+
   // ================ CHECKBOX LOGICS ===========================//
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, boolean>
@@ -957,12 +963,21 @@ export const CompletePartPayment: React.FC<{
   currency?: Currency;
   setIsCompletePayment?: (checked: boolean) => void;
 }> = ({ total, feeDetails, setIsCompletePayment, currency }) => {
-const CURRENCY = currencySymbols[currency as keyof typeof currencySymbols];
+  const [toggled, setToggled] = useState(false);
+  const CURRENCY = currencySymbols[currency as keyof typeof currencySymbols];
   // Filter out fee details with invalid amounts
   const validFeeDetails = feeDetails.filter((fee) => {
     const parsedAmount = parseAmount(fee.amount);
     return parsedAmount > 0;
   });
+
+  const handleClick = () => {
+    const newValue = !toggled;
+    setToggled(newValue);
+    if (setIsCompletePayment) {
+      setIsCompletePayment(newValue);
+    }
+  };
 
   return (
     <div className="space-y-1">
@@ -980,12 +995,13 @@ const CURRENCY = currencySymbols[currency as keyof typeof currencySymbols];
         </div>
         <div className="flex items-end justify-end w-full mt-2">
           <Button
-            onClick={() => setIsCompletePayment && setIsCompletePayment(true)}
+            // onClick={() => setIsCompletePayment && setIsCompletePayment(true)}
+            onClick={handleClick}
             type="submit"
             className="py-2 px-6"
             size="base_medium"
           >
-            Pay Balance
+            {toggled ? "Cancel" : "Pay Balance"}
           </Button>
         </div>
       </div>
