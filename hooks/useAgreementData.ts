@@ -20,8 +20,8 @@ export const useAgreementData = () => {
       setIsLoading(true);
       setError(null);
 
-      if (!selectedOccupant || !occupant) {
-        setError("No tenant selected.");
+      if (!selectedOccupant && !occupant) {
+        setError("No Tenant/Occupant Found");
         setIsLoading(false);
         return;
       }
@@ -45,7 +45,7 @@ export const useAgreementData = () => {
         const transformed = transformDocumentData(
           { document: unitData.property_document },
           // selectedOccupant,
-          selectedOccupant,
+          selectedTenant || undefined,
           unitData
         );
         setDocumentData(transformed);

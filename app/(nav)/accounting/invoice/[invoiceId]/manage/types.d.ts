@@ -26,6 +26,8 @@ export interface InvoiceData {
   bank_name?: string;
   account_number?: string;
   account_name?: string;
+  company_owed?: string;
+  tenant_owed?: string;
 }
 
 export interface InvoiceResponse {
@@ -58,6 +60,8 @@ export interface InvoicePageData {
   auto_generate?: string;
   invoice_type?: string;
   branchBankDetails?: BranchBankDetailsObj;
+  company_owed?: number;
+  tenant_owed?: number;
 }
 
 

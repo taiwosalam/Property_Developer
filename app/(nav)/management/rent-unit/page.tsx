@@ -231,8 +231,6 @@ const RentAndUnit = () => {
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
-  console.log("dataasas", pageData)
-
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>

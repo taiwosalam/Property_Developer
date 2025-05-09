@@ -1,3 +1,4 @@
+
 import { KeyValueListProps } from "./types";
 import clsx from "clsx";
 
@@ -7,7 +8,7 @@ export const KeyValueList = <T extends object>({
   chunkSize = 3,
   referenceObject,
   direction = "row",
-  truncateLength, // Add truncateLength prop
+  truncateLength,
 }: KeyValueListProps<T>) => {
   const keys = Object.keys(referenceObject) as Array<keyof T>;
 
@@ -19,13 +20,26 @@ export const KeyValueList = <T extends object>({
     return text.slice(0, length) + "...";
   };
 
+  // Helper function to check if a value is valid
+  const isValidValue = (value: any): boolean => {
+    return value !== undefined && value !== null && value !== "";
+  };
+
+  // Filter keys to only include those with valid values
+  const validKeys = keys.filter((key) => isValidValue(data[key]));
+
   const chunkArray = (arr: Array<keyof T>, size: number) =>
     arr.reduce(
       (acc, _, i) => (i % size === 0 ? [...acc, arr.slice(i, i + size)] : acc),
       [] as Array<Array<keyof T>>
     );
 
-  const chunkedKeys = chunkArray(keys, chunkSize);
+  const chunkedKeys = chunkArray(validKeys, chunkSize);
+
+  // If no valid keys, return null or an empty fragment
+  if (validKeys.length === 0) {
+    return null;
+  }
 
   return (
     <>
@@ -48,16 +62,13 @@ export const KeyValueList = <T extends object>({
                     className="text-[#747474] dark:text-darkText-1 whitespace-nowrap"
                     style={styles?.[key]?.label}
                   >
-                    {String(key).split("_").join(" ")}
+                    {String(key).split("*").join(" ")}
                   </p>
                   <p
                     className="text-black dark:text-darkText-2 line-clamp-1"
                     style={styles?.[key]?.value}
                   >
-                    {/* Apply truncation to the value */}
-                    {data && data[key] !== undefined
-                      ? truncateText(String(data[key]), truncateLength)
-                      : "---"}
+                    {truncateText(String(data[key]), truncateLength)}
                   </p>
                 </div>
               ))}
@@ -71,7 +82,7 @@ export const KeyValueList = <T extends object>({
                     className="text-[#747474] dark:text-darkText-1 whitespace-nowrap"
                     style={styles?.[key]?.label}
                   >
-                    {String(key).split("_").join(" ")}
+                    {String(key).split("*").join(" ")}
                   </p>
                 ))}
               </div>
@@ -82,10 +93,7 @@ export const KeyValueList = <T extends object>({
                     className="text-black dark:text-darkText-2"
                     style={styles?.[key]?.value}
                   >
-                    {/* Apply truncation to the value */}
-                    {data && data[key] !== undefined
-                      ? truncateText(String(data[key]), truncateLength)
-                      : "---"}
+                    {truncateText(String(data[key]), truncateLength)}
                   </p>
                 ))}
               </div>
