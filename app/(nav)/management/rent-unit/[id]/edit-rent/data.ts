@@ -112,3 +112,17 @@ export const editRent = async (data: any) => {
     return false;
   }
 };
+
+
+export const addPartPayment = async (data: any) => {
+  try {
+    const res = await api.post(`/tenant-rent/edit`, data);
+    if (res.status === 201) {
+      return res.data; 
+    }
+    return null;
+  } catch (error) {
+    handleAxiosError(error);
+    return null;
+  }
+};

@@ -8,7 +8,7 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import { getEstateSettingsData, startRent } from "../start-rent/data";
-import { editRent, getEstateData } from "../edit-rent/data";
+import { addPartPayment, editRent, getEstateData } from "../edit-rent/data";
 import {
   formatFee,
   initData,
@@ -52,6 +52,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import { AgreementPreview } from "@/components/Modal/tenant-document";
 import { RenewRentAddPartPayment } from "@/components/Management/Rent And Unit/renew-rent/renewRentPartPayment";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
@@ -106,7 +107,6 @@ const RenewRent = () => {
     }
   }, [apiData, setOccupant, setUnitBalance]);
 
-  console.log("penaltyAmount", penaltyAmount);
   // Derived data
   const propertyId = unitData.propertyId;
   const previousRecord = (unitData?.previous_records as any)?.data?.[0];
@@ -130,6 +130,7 @@ const RenewRent = () => {
   // UNIT CURRENCY WITH NAIRA FALLBACK
   const currency = unitData.currency as Currency;
 
+  console.log("PART_PAYMENT_AMOUNT", PART_PAYMENT_AMOUNT)
   // Handlers
   const handleRenewRent = async () => {
     if (!unitData?.unit_id || !unitData?.occupant?.id) {
@@ -257,12 +258,13 @@ const RenewRent = () => {
     }
     const hasPenalty = penaltyAmount > 0;
     const amountToPay = hasPenalty
-      ? parseFloat(amt) + penaltyAmount
-      : parseFloat(amt);
+      ? parseCurrency(amt) + penaltyAmount
+      : parseCurrency(amt);
 
     const payload = {
       unit_id: id,
       amount: amountToPay,
+      // amount: parseCurrency(amt),
       rent_id: unitBalance.data[0].id,
       payment_date: dayjs(startDate).format("YYYY-MM-DD"),
       tenant_id: unitData.occupant.id,
@@ -271,14 +273,30 @@ const RenewRent = () => {
       // penalty_amount: penaltyAmount,
       type: "part_payment",
     };
+
+    console.log("payload", payload);
     try {
       setReqLoading(true);
-      const success = await editRent(payload);
-      if (success) {
-        toast.success("Part payment added successfully");
+      // const success = await editRent(payload);
+      // if (success) {
+      //   toast.success("Part payment added successfully");
+      //   window.dispatchEvent(new Event("refetchUnit"));
+      //   setStartDate(null);
+      //   setAmt("");
+      // }
+
+      const res = await addPartPayment(payload);
+      if (res) {
+        toast.success(res.message || "Part payment added successfully");
         window.dispatchEvent(new Event("refetchUnit"));
-        setStartDate(null);
-        setAmt("");
+
+        // Check pay_status and handle accordingly
+        if (res.pay_status === "part") {
+          setAmt("");
+          setStartDate(null);
+        } else if (res.pay_status === "full") {
+          router.push("/management/rent-unit");
+        }
       }
     } catch (err) {
       toast.error("Failed to create part payment");
@@ -350,6 +368,10 @@ const RenewRent = () => {
                       amount: formatFee(PART_PAYMENT_AMOUNT, currency),
                     },
                     {
+                      name: "Penalty Amount",
+                      amount: formatFee(penaltyAmount, currency),
+                    },
+                    {
                       name: "Balance",
                       amount: formatFee(PENDING_INVOICE_BALANCE_DUE, currency),
                     },
@@ -389,6 +411,7 @@ const RenewRent = () => {
                   loading={reqLoading}
                   setAmt={setAmt}
                   action={handlePartPayment}
+                  disabled={PART_PAYMENT_AMOUNT > 0}
                   isCompletePayment={isCompletePayment}
                   prevAmt={PENDING_INVOICE_BALANCE_DUE.toString()}
                   setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}

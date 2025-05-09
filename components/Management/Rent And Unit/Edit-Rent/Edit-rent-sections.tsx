@@ -374,6 +374,13 @@ export const AddPartPayment: React.FC<{
     }
   };
 
+  // Sync local startDate with parent startDate when it changes
+  useEffect(() => {
+    if (!startDate && setStart_Date) {
+      setStartDate(null);
+    }
+  }, [setStart_Date]);
+
   useEffect(() => {
     if (prevAmt && setAmt) {
       setAmt(prevAmt);
