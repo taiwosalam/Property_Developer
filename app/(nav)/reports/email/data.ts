@@ -1,4 +1,5 @@
 import type { Field } from "@/components/Table/types";
+import dayjs from "dayjs";
 
 export const reportsEmailFilterOptionsWithDropdown = [
   {
@@ -35,3 +36,65 @@ export const emailTablefields: Field[] = [
   },
   { id: "8", label: "Time", accessor: "time" },
 ];
+
+export interface IEmail {
+  id: number;
+  user_id: number;
+  client_name: string;
+  subject: string;
+  body: string;
+  status: string;
+  date: string;
+  time: string;
+  recipient: string;
+  sender: string;
+}
+export interface IEmailReportResponse {
+  status: string;
+  message: string;
+  data: {
+    emails: IEmail[];
+    pagination: {
+      total: number;
+      per_page: number;
+      current_page: number;
+      last_page: number;
+    };
+  };
+}
+
+export interface EmailPageData {
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  };
+  emails: {
+    user_id: number;
+    branch: string;
+    client_name: string;
+    date: string;
+    time: string;
+  }[];
+}
+
+export const transformEmailReport = (
+  data: IEmailReportResponse
+): EmailPageData => {
+  return {
+    pagination: {
+      total: data.data.pagination.total || 0,
+      current_page: data.data.pagination.current_page || 0,
+      last_page: data.data.pagination.last_page || 0,
+    },
+    emails: data?.data?.emails?.map((email) => ({
+      user_id: email?.user_id,
+      branch: email?.subject || "___ ___",
+      client_name: email?.client_name || "",
+      date: email?.date || "___ ___",
+      time: email?.time
+        ? dayjs(email.time, "HH:mm").format("hh:mm A")
+        : "___ ___",
+    })),
+  };
+};

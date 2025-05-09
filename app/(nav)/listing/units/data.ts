@@ -134,6 +134,7 @@ export const transformRentUnitApiResponse = (
         tenant_name: "No Tenant", //TODO
         expiry_date: "No Expiry", //TODO
         rent: u?.fee_amount || "0",
+        sponsored_count: u.sponsored_count || 0,
         caution_deposit: u?.caution_fee || "0",
         service_charge: u?.service_charge || "0",
         images: u.images.map((image) => image.path),

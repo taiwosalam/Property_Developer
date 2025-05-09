@@ -183,6 +183,7 @@ export interface UnitDataObject {
   en_suit: number;
   prepaid: number;
   wardrobe: number;
+  sponsored_count: number;
   pet_allowed: number;
   total_area_sqm: string;
   number_of: string;

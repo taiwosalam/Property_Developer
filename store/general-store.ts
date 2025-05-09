@@ -20,6 +20,7 @@ import { initDataProps } from "@/app/(nav)/management/rent-unit/data";
 import { DateRange } from "react-day-picker";
 import { WalletStats } from "@/app/(nav)/wallet/data";
 import { EnrollmentHistoryTable, ICampaignTable, SMSTable } from "@/components/Settings/sponsor_data";
+import { EmailPageData } from "@/app/(nav)/reports/email/data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -29,6 +30,7 @@ interface GlobalStoreState {
   units?: UnitListRequest[];
   vehicle_records?: VehicleRecordsType[];
   rents?: Rent[];
+  emails?: EmailPageData;
 
   sms_transaction?: SMSTable;
   feature_history?: EnrollmentHistoryTable;
