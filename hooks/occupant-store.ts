@@ -34,9 +34,13 @@ interface OccupantState {
   setStartDate: (date: string | null) => void;
   setDueDate: (date: string | null) => void;
   setModalIsOpen: (isOpen: boolean) => void;
+  penaltyAmount: number;
+  setPenaltyAmount: (penalty: number) => void;
 }
 
 export const useOccupantStore = create<OccupantState>((set) => ({
+  penaltyAmount: 0,
+  setPenaltyAmount: (penaltyAmount) => set({ penaltyAmount }),
   occupant: null,
   propertyType: null,
   unit: null,

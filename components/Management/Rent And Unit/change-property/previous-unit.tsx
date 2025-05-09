@@ -104,6 +104,8 @@ export const ProceedPreviousUnitBalance: React.FC<{
     breakdown,
     unitData?.currency
   );
+
+  console.log("startDate", startDate)
   const unitDetails = getUnitDetails(
     unitData,
     unitData?.currency,
@@ -122,11 +124,7 @@ export const ProceedPreviousUnitBalance: React.FC<{
     <div className="space-y-1">
       <RentSectionTitle>{title ?? "Previous Unit Balance"}</RentSectionTitle>
       {workings && <TenantCalculationSwitch switches={["deduction"]} />}
-      <RentSectionContainer
-        title={
-          workings ? "Breakdown" : isRental ? "Breakdown" : "Apply Deduction"
-        }
-      >
+      <RentSectionContainer title={"Breakdown"}>
         <div className="space-y-6">
           <div className="grid md:grid-cols-3 gap-4">
             {!workings &&

@@ -31,6 +31,7 @@ import {
   VATFilterParams,
   VATAPIResponse,
   transformVATAPIResponse,
+  getOtherCurrencyFromVats,
 } from "./data";
 import { useRouter } from "next/navigation";
 import CustomTable from "@/components/Table/table";
@@ -49,6 +50,8 @@ import TableLoading from "@/components/Loader/TableLoading";
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { getOtherCurrency } from "../invoice/data";
 
 const Vat = () => {
   const router = useRouter();
@@ -215,6 +218,12 @@ const Vat = () => {
 
   const transformedTableData = vats.map((item) => ({
     ...item,
+    name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{item.name}</span>
+        {item.badge_color && <BadgeIcon color={item.badge_color} />}
+      </p>
+    ),
     total_vat: (
       <p
         className={
@@ -225,8 +234,11 @@ const Vat = () => {
       </p>
     ),
   }));
-  
-  if (loading) return <CustomLoader pageTitle="V.A.T" view="table" layout="page" />
+
+  const otherCurrency = getOtherCurrencyFromVats(apiData?.data.vats || []);
+
+  if (loading)
+    return <CustomLoader pageTitle="V.A.T" view="table" layout="page" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -326,10 +338,11 @@ const Vat = () => {
               balance={total_vat_created}
               percentage={percentage_change_total}
               variant="blueIncoming"
+              otherCurrency={otherCurrency}
               trendDirection={percentage_change_total < 0 ? "down" : "up"}
               trendColor={percentage_change_total < 0 ? "red" : "green"}
             />
-            <AccountStatsCard
+            {/* <AccountStatsCard
               title="Total Paid Vat"
               balance={total_paid_vat}
               variant="greenIncoming"
@@ -344,7 +357,7 @@ const Vat = () => {
               trendDirection={percentage_change_pending < 0 ? "down" : "up"}
               trendColor={percentage_change_pending < 0 ? "red" : "green"}
               percentage={percentage_change_pending}
-            />
+            /> */}
           </AutoResizingGrid>
         </div>
       </div>

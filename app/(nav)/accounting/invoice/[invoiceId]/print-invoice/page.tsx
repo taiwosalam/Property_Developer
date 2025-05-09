@@ -49,9 +49,10 @@ const PreviewExpenses = () => {
 
   const BANK_DETAILS = pageData.branchBankDetails;
 
-  const CURRENCY = "naira"; //TODO: change to real currency from endpount
+  const CURRENCY = pageData.currency || "naira"; //TODO: change to real currency from endpount
   const IS_PAID = pageData.status.toLowerCase() === "paid";
   const UNIT_ID = pageData.unit_id;
+
   const UnitKeyValData = {
     "invoice id": pageData.invoice_id,
     "property name": pageData.property_name,
@@ -138,6 +139,8 @@ const PreviewExpenses = () => {
                           CURRENCY
                         ),
                         "non refundable legal fee": "",
+                        "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
+                        "Company Owe": formatFee(pageData.company_owed, CURRENCY),
                       }}
                       chunkSize={2}
                       direction="column"
@@ -147,6 +150,8 @@ const PreviewExpenses = () => {
                         "service charge": "",
                         "non refundable legal fee": "",
                         "refundable caution fee": "",
+                        "Tenant Owe": "",
+                        "Company Owe": "",
                       }}
                     />
                   </div>

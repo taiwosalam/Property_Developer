@@ -133,6 +133,8 @@ const PostProceedContent = ({
     }
   }, [apiData, setUnitData]);
 
+  console.log("Init start", unitBalance?.data )
+
   // Extract and save startDate and dueDate
   useEffect(() => {
     if (unitData && (unitBalance?.data || startDate)) {
@@ -142,7 +144,7 @@ const PostProceedContent = ({
         startDate
       );
 
-      console.log("Extracted dates:", { start_date, due_date });
+      console.log("Extracted date:", { start_date, due_date });
 
       // Save to store if different
       if (start_date && startDate !== start_date) {
@@ -239,7 +241,7 @@ const PostProceedContent = ({
 
   const handleSwitchUnit = async () => {
     if (!selectedUnitId || !balance[0]?.id) {
-      toast.error(
+      toast.warning(
         "Missing required information: Unit or record ID not selected."
       );
       return;

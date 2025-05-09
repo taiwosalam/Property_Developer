@@ -2,31 +2,27 @@ import { useState, useEffect, useMemo } from "react";
 import { RentSectionTitle } from "../rent-section-container";
 import { FeeDetails } from "../rent-section-container";
 import { FeeDetail } from "../types";
-import { currencySymbols   } from "@/utils/number-formatter";
+import { currencySymbols } from "@/utils/number-formatter";
 import { useRenewRentContext } from "@/utils/renew-rent-context";
-import {
-  calculateOverduePeriods,
-} from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
+import { calculateOverduePeriods } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
 import { getOwingFeeDetails } from "./data";
 import { calculateRentPenalty } from "@/app/(nav)/management/rent-unit/data";
+import { useOccupantStore } from "@/hooks/occupant-store";
 
-const OwingFee = () => {
+const OwingFee = ({ show=false }: { show?: boolean }) => {
   const { isRental, unitData, currency, due_date, isUpfrontPaymentChecked } =
     useRenewRentContext();
+  // Zustand store
+  const { penaltyAmount, setPenaltyAmount } = useOccupantStore();
   const [owingAmount, setOwingAmount] = useState<number>(0);
-  const [penaltyAmount, setPenaltyAmount] = useState<number>(0);
+  // const [penaltyAmount, setPenaltyAmount] = useState<number>(0);
   const [overduePeriods, setOverduePeriods] = useState<number>(0);
 
   // const chargePenalty = unitData.chargePenalty;
-  const chargePenalty = true; //TODO: UNCOMMENT THE TOP 
+  const chargePenalty = true; //TODO: UNCOMMENT THE TOP
   const rent_penalty_setting = unitData.rent_penalty_setting;
   const feePeriod = unitData.fee_period;
   const rentAmount = Number(unitData.fee_amount);
-
-  console.log("unitData here", chargePenalty);
-  console.log("rent_penalty_setting here", rent_penalty_setting);
-  console.log("feePeriod", feePeriod);
-  console.log("rentAmount", rentAmount);
 
   useEffect(() => {
     if (due_date && unitData.fee_period && unitData.renewalTenantTotalPrice) {
@@ -53,7 +49,7 @@ const OwingFee = () => {
     unitData.renewalTenantTotalPrice,
     chargePenalty,
     rent_penalty_setting,
-    setPenaltyAmount
+    setPenaltyAmount,
   ]);
 
   const feeDetails = useMemo(
@@ -69,7 +65,11 @@ const OwingFee = () => {
     [isRental, currency, owingAmount, overduePeriods, unitData]
   );
 
-  if (owingAmount <= 0 || !isUpfrontPaymentChecked) {
+  // if (owingAmount <= 0 || !isUpfrontPaymentChecked) {
+  //   return null;
+  // }
+
+  if (!show || owingAmount <= 0) {
     return null;
   }
 
@@ -82,7 +82,9 @@ const OwingFee = () => {
         currency={currency}
         title={isRental ? "Breakdown" : "Breakdown"}
         feeDetails={feeDetails}
-        total_package={Number(unitData.renewalTenantTotalPrice) + owingAmount}
+        total_package={
+          Number(unitData.renewalTenantTotalPrice) + owingAmount + penaltyAmount
+        }
         id={unitData.propertyId as string}
       />
     </div>
