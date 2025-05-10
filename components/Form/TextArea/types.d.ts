@@ -14,4 +14,5 @@ export interface TextAreaProps {
   minChar?: number;
   ai?: boolean;
   restrictedWords?: string[];
+  readOnly?: boolean;
 }

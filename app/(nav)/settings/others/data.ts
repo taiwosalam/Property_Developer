@@ -47,8 +47,26 @@ export const updateDirector = async (
 };
 
 export const deleteDirector = async (id: string): Promise<boolean> => {
+
   try {
     const response = await api.delete(`/directors/${id}`);
+
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("addNewDirector"));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+
+export const lockDirector = async (id: string): Promise<boolean> => {
+
+  try {
+    const response = await api.post(`/directors/${id}/lock`);
 
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("addNewDirector"));
@@ -217,6 +235,7 @@ export type DirectorCardProps = {
     lga: string;
     name: string;
     title: string;
+    is_active: number;
     picture: string | null;
     full_name: string;
     email: string;
@@ -243,6 +262,7 @@ export function transfromToDirectorCards(
           ? `${item?.user?.profile?.title} ${item.full_name}`
           : item.full_name,
         email: item?.user?.email,
+        is_active: item?.user?.is_active,
         name: item?.full_name,
         tier_id: item?.user?.tier_id,
         phone_number: item?.phone_number || "___ ___",

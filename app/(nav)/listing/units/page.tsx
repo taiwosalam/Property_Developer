@@ -32,6 +32,7 @@ import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/
 import CardsLoading from "@/components/Loader/CardsLoading";
 import Pagination from "@/components/Pagination/pagination";
 import { useGlobalStore } from "@/store/general-store";
+import ServerError from "@/components/Error/ServerError";
 
 const Units = () => {
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
@@ -194,10 +195,8 @@ const Units = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if(error) return <ServerError error={error}/>
+  
   return (
     <div className="custom-flex-col gap-9">
       <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
@@ -303,7 +302,7 @@ const Units = () => {
           )
         ) : (
           <div className="custom-flex-col gap-4">
-            {silentLoading ? (
+            {loading ? (
               <CardsLoading />
             ) : (
               pageData.unit.map((item, idx) => (

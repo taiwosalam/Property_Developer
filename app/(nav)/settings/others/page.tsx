@@ -453,6 +453,8 @@ const Others = () => {
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
 
+  console.log(apiData);
+
   
 
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
@@ -855,6 +857,7 @@ const Others = () => {
                   >
                     <ModalTrigger>
                       <UserCard
+                        is_active={director.is_active}
                         key={director.id}
                         name={director.full_name}
                         email={director.email}
@@ -900,6 +903,7 @@ const Others = () => {
                             isEditing={true}
                             initialImage={director.picture || ""}
                             setIsCloseUpdate={setIsCloseOnUpdate}
+                            is_active={director?.is_active}
                           />
                         ) : (
                           <Avatars

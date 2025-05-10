@@ -292,6 +292,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   minChar,
   ai,
   restrictedWords = [],
+  readOnly
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
@@ -431,6 +432,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         {mounted && (
           <Fragment>
             <DynamicReactQuill
+              readOnly={readOnly}
               forwardedRef={quillRef}
               value={editorValue}
               onChange={handleChange}
