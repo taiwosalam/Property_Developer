@@ -25,7 +25,7 @@ const AddPropertyModal = () => {
       content: <AddPropertyOptionsView setModalView={setView} />,
     },
     "add-property-with-id": {
-      heading: "Add Property with ID",
+      heading: "Request Property with ID",
       content: <AddPropertyWithId />,
     },
   };

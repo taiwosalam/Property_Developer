@@ -203,7 +203,7 @@ export const transformIndividualLandlordAPIResponse = ({
         property_type: properties.property_type, // Override for properties_managed
         total_unit_pictures: 2,
         hasVideo: true,
-        currency: "naira", // Hardcoded as per original component usage
+        currency: properties.currency, 
         mobile_tenants: 0,
         web_tenants: 0,
         owing_units: 0,

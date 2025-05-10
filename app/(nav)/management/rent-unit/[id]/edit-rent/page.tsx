@@ -118,6 +118,11 @@ const EditRent = () => {
   const PART_PAYMENT_AMOUNT = PENDING_INVOICE_PAID_AMOUNT;
   // UNIT CURRENCY WITH NAIRA FALLBACK
   const CURRENCY = unit_data.currency || "naira";
+  const has_part_payment = PENDING_INVOICE_PAID_AMOUNT > 0;
+
+  console.log("PENDING_INVOICE_PAID_AMOUNT", PENDING_INVOICE_PAID_AMOUNT)
+  console.log("has_part_payment", has_part_payment)
+  
 
   // ADD UPFRONT RENT
   const handleUpfrontRent = async () => {
@@ -346,6 +351,7 @@ const EditRent = () => {
               propertyId={Number(unit_data.propertyId)}
               unitId={Number(unit_data.id)}
               currency={CURRENCY}
+              has_part_payment={has_part_payment}
             />
           </div>
         </div>

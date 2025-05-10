@@ -18,10 +18,14 @@ const CreateInvoiceModal = () => {
   } = useFetch<PropertyListResponse>("/property/all");
 
   const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+    propertyData?.data
+      .filter((p) => p.has_unit)
+      .map((p) => ({
+        value: `${p.id}`,
+        label: p.title,
+      })) || [];
+
+    console.log("propertyData", propertyData)
 
   return (
     <LandlordTenantModalPreset

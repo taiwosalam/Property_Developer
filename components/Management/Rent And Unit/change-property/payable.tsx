@@ -14,11 +14,8 @@ export const ProceedPayAble: React.FC = () => {
   const { currentRentStats } = useGlobalStore();
   const outstanding = currentRentStats?.outstanding || 0;
 
-  if (!unitData) return null;
-  const newUnitTotal = calculation
-    ? Number(unitData.newTenantTotalPrice || 0)
-    : Number(unitData.renewalTenantTotalPrice || 0);
   // Return null if unitData is not available
+  if (!unitData) return null;
 
   const isRental = propertyType === "rental";
   const currency = unitData?.currency || "naira";
@@ -41,6 +38,11 @@ export const ProceedPayAble: React.FC = () => {
     amount: totalPayable,
   };
 
+  // Determine payment status
+  const tenantOwes = detail.amount > 0; // Tenant owes company
+  const companyOwes = deduction && detail.amount < 0; // Company owes tenant
+  const noOneOwes = detail.amount === 0; // Neither owes
+
   // Subtitles
   const subtitles = {
     zero: "Based on the calculation and your selected option, there is no outstanding balance. Neither your company nor the client owes any refund or payment.",
@@ -50,16 +52,11 @@ export const ProceedPayAble: React.FC = () => {
       "Based on the calculation and your selected option, your company owes the client a refund balance.",
   };
 
-  console.log("outstanding", outstanding);
-  console.log("newUnitTotal", newUnitTotal);
-
-  const subtitle = deduction
-    ? totalPayable === 0
-      ? subtitles.zero
-      : totalPayable > 0
-      ? subtitles.refund
-      : subtitles.excess
-    : subtitles.zero;
+  const subtitle = noOneOwes
+    ? subtitles.zero
+    : tenantOwes
+    ? subtitles.refund
+    : subtitles.excess;
 
   // // Determine subtitle based on totalPayable and isExcess
   // const subtitle =
