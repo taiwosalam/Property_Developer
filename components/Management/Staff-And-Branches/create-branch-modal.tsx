@@ -110,7 +110,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
 
   return (
     <LandlordTenantModalPreset
-      heading={formStep === 2 ? "Choose Avatar" : "Create New Branch"}
+      heading={formStep === 2 ? "Choose Sample" : "Create New Branch"}
       star={formStep === 1}
       back={formStep === 2 ? { handleBack: () => setFormStep(1) } : undefined}
     >
@@ -194,8 +194,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
           <div className="flex justify-between items-end gap-4 flex-wrap">
             <div className="custom-flex-col gap-3">
               <p className="text-black text-base font-medium">
-                <span className="text-status-error-primary">*</span>Upload
-                picture or select an avatar.
+                <span className="text-status-error-primary">*</span>Upload picture or select Sample
               </p>
               <div className="flex items-end gap-3">
                 <label htmlFor="picture" className="cursor-pointer relative">
