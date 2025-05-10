@@ -16,7 +16,11 @@ import useFetch from "@/hooks/useFetch";
 import { useEffect } from "react";
 import { useState } from "react";
 import { toggleLike } from "../../data";
-import { LikeDislikeButtons, Loader, ThreadArticleSkeleton } from "../../../components";
+import {
+  LikeDislikeButtons,
+  Loader,
+  ThreadArticleSkeleton,
+} from "../../../components";
 import { toast } from "sonner";
 import NewComment from "../../../NewComment";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -25,7 +29,7 @@ import { CommunitySlider } from "@/components/Community/CommunitySlider";
 import DOMPurify from "dompurify";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
-
+import { transformApiData } from "../../../threads/[threadId]/preview/data";
 
 interface ArticleResponse {
   post: any;
@@ -56,18 +60,20 @@ const ThreadPreview = () => {
     loading,
     silentLoading,
     isNetworkError,
-    refetch: refetchComments
+    refetch: refetchComments,
   } = useFetch<ArticleResponse>(`/agent_community/${slug}`);
 
   useRefetchOnEvent("refetchComments", () => refetchComments({ silent: true }));
 
   useEffect(() => {
     if (data) {
-      setPost(data.post.post);
-      setCompanySummary(data.post.company_summary);
-      setContributors(data.post.contributor);
-      setComments(data.post.comments);
-      setReadyBy(data.post.readByData);
+      console.log("data", data);
+      const transformedData = transformApiData(data as any);
+      setPost(transformedData.post);
+      setCompanySummary(transformedData.companySummary);
+      setContributors(transformedData.contributors);
+      setComments(transformedData.comments);
+      setReadyBy(data?.post?.readByData ?? []);
     }
   }, [data]);
 
@@ -122,11 +128,7 @@ const ThreadPreview = () => {
               </div>
             )}
           </div>
-          <ThreadArticle
-            post={post}
-            slug={slug}
-            comments={comments}
-          />
+          <ThreadArticle post={post} slug={slug} comments={comments} />
           <CommunityComments
             slug={slug}
             comments={comments}
@@ -134,13 +136,8 @@ const ThreadPreview = () => {
           />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <Summary
-            post={post}
-            loading={loading}
-          />
-          <ReadyByCard
-            data={readyBy}
-          />
+          <Summary post={post} loading={loading} />
+          <ReadyByCard data={readyBy} />
         </div>
       </div>
     </div>
@@ -149,46 +146,57 @@ const ThreadPreview = () => {
 
 export default ThreadPreview;
 
-
-const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comments: CommentData[] }): JSX.Element => {
-  const [likeCount, setLikeCount] = useState(post?.likes_up ? parseInt(post?.likes_up) : 0);
-  const [dislikeCount, setDislikeCount] = useState(post?.likes_down ? parseInt(post?.likes_down) : 0);
-  const [userAction, setUserAction] = useState<'like' | 'dislike' | null>(null);
+const ThreadArticle = ({
+  post,
+  slug,
+  comments,
+}: {
+  post: any;
+  slug: string;
+  comments: CommentData[];
+}): JSX.Element => {
+  const [likeCount, setLikeCount] = useState(
+    post?.likes_up ? parseInt(post?.likes_up) : 0
+  );
+  const [dislikeCount, setDislikeCount] = useState(
+    post?.likes_down ? parseInt(post?.likes_down) : 0
+  );
+  const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLike = async () => {
-    if (isLoading || userAction === 'like') return;
+    if (isLoading || userAction === "like") return;
     setIsLoading(true);
 
     try {
       await toggleLike(slug, 1);
-      if (userAction === 'dislike') {
-        setDislikeCount(prev => prev - 1);
+      if (userAction === "dislike") {
+        setDislikeCount((prev) => prev - 1);
       }
-      setLikeCount(prev => prev + 1);
-      setUserAction('like');
+      setLikeCount((prev) => prev + 1);
+      setUserAction("like");
     } catch (error) {
-      toast.error('Error toggling like');
-      console.error('Error toggling like:', error);
+      toast.error("Error toggling like");
+      console.error("Error toggling like:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDislike = async () => {
-    if (isLoading || userAction === 'dislike') return;
+    if (isLoading || userAction === "dislike") return;
     setIsLoading(true);
 
     try {
       await toggleLike(slug, -1);
-      if (userAction === 'like') {
-        setLikeCount(prev => prev - 1);
+      if (userAction === "like") {
+        setLikeCount((prev) => prev - 1);
       }
-      setDislikeCount(prev => prev + 1);
-      setUserAction('dislike');
+      setDislikeCount((prev) => prev + 1);
+      setUserAction("dislike");
     } catch (error) {
-      toast.error('Error toggling dislike');
-      console.error('Error toggling dislike:', error);
+      toast.error("Error toggling dislike");
+      console.error("Error toggling dislike:", error);
     } finally {
       setIsLoading(false);
     }
@@ -198,7 +206,7 @@ const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comm
     return <ThreadArticleSkeleton />;
   }
 
-  const sanitizedHTML = DOMPurify.sanitize(post?.content || "")
+  const sanitizedHTML = DOMPurify.sanitize(post?.content || "");
 
   return (
     <div className="mt-4">
@@ -208,10 +216,9 @@ const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comm
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">
-          <span className="text-text-secondary">Comments</span>
-          {/* <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">
-              {post?.comments_count}
-            </p> */}
+          <span className="text-text-secondary font-semibold text-md">
+            Comments
+          </span>
         </div>
 
         <div className="flex gap-2">
@@ -238,16 +245,17 @@ const ThreadArticle = ({ post, slug, comments }: { post: any, slug: string, comm
                 />
               ))}
             </div>
-            <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              +{post?.comments_count}
-            </div>
+            {post?.comments_count > 0 && (
+              <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
+                +{post?.comments_count}
+              </div>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 };
-
 
 const Summary = ({ post, loading }: { post: any; loading: boolean }) => {
   if (loading) {
@@ -260,9 +268,9 @@ const Summary = ({ post, loading }: { post: any; loading: boolean }) => {
     { label: "Total Comments", value: post?.comments_count },
     {
       label: "Target Audience",
-      value: post?.target_audience ?
-        JSON.parse(post.target_audience).join(', ') :
-        ''
+      value: post?.target_audience
+        ? JSON.parse(post.target_audience).join(", ")
+        : "",
     },
   ];
   return (
@@ -287,14 +295,16 @@ const Summary = ({ post, loading }: { post: any; loading: boolean }) => {
   );
 };
 
-
 const SummarySkeleton = () => {
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg animate-pulse">
       <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-4" />
       <div className="flex flex-col gap-2">
         {[1, 2, 3, 4, 5].map((item) => (
-          <div key={item} className="flex gap-4 justify-between w-full items-start">
+          <div
+            key={item}
+            className="flex gap-4 justify-between w-full items-start"
+          >
             <div className="h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded" />
             <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded" />
           </div>
