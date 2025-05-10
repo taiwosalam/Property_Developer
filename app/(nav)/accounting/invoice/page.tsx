@@ -53,6 +53,7 @@ import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
 import useStaffRoles from "@/hooks/getStaffs";
 import { parseHTML } from "@/utils/parse-html";
+import clsx from "clsx";
 
 const AccountingInvoicePage = () => {
   const isDarkMode = useDarkMode();
@@ -268,6 +269,17 @@ const AccountingInvoicePage = () => {
         <span> {parseHTML(i.payment_reason)}</span>
       </p>
     ),
+    status: (
+      <span
+        className={clsx({
+          "text-status-success-3": i.status.toLowerCase() === "paid",
+          "text-orange-normal": i.status.toLowerCase() === "pending",
+          "text-status-error-primary": i.status.toLowerCase() === "partially paid",
+        })}
+      >
+        {i.status}
+      </span>
+    ),
   }));
 
   const statusOptions = [
@@ -279,8 +291,6 @@ const AccountingInvoicePage = () => {
 
   const otherCurrency = getOtherCurrency(invoices);
   const IS_PAID = inoiceStatus.toLowerCase() === "paid";
-
-  // console.log("stats", invoices)
 
   return (
     <section className="space-y-8">
@@ -426,7 +436,7 @@ const AccountingInvoicePage = () => {
                 statistics.percentage_change_pending < 0 ? "red" : "green"
               }
               variant="yellowCard"
-              percentage={Number(statistics.total_pending_receipt)}
+              percentage={statistics.percentage_change_pending}
               timeRangeLabel={getTimeRangeLabel()}
             />
           </AutoResizingGrid>

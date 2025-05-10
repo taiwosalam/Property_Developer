@@ -68,7 +68,8 @@ const ManageDisbursement = () => {
       setPageData(transformed);
       setPayments(
         transformed.disbursement.map((d) => ({
-          title: `Unit ${d.unit_id ?? "-- --"}`,
+          // title: `Unit ${d.unit_id ?? "-- --"}`,
+          title: d.title || "--- ---",
           amount: d.amount,
         }))
       );
@@ -107,7 +108,7 @@ const ManageDisbursement = () => {
 
       const payload = {
         amount: parsedAmount,
-        unit_id: paymentTitle,
+        title: paymentTitle,
       }
 
       // console.log("payload", payload)
@@ -196,7 +197,7 @@ const ManageDisbursement = () => {
               "landlord / landlady name": pageData?.landlord ?? "--- ---",
               "property name": pageData?.property_name ?? "--- ---",
               date: pageData?.date ?? "__,__,__",
-              "unit name": pageData?.unit_names ?? "--- ---",
+              // "unit name": pageData?.unit_names ?? "--- ---",
               "disbursement mode": pageData?.disbursement_mode ?? "--- ---",
             }}
             chunkSize={2}
@@ -206,7 +207,7 @@ const ManageDisbursement = () => {
               "landlord / landlady name": "",
               "property name": "",
               date: "",
-              "unit name": "",
+              // "unit name": "",
               "disbursement mode": "",
             }}
           />
@@ -234,7 +235,7 @@ const ManageDisbursement = () => {
           <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
               <Select
-                id="unit"
+                id="title"
                 label="Unit name"
                 required
                 placeholder="Select Options"
@@ -319,7 +320,7 @@ const ManageDisbursement = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <DeleteDisbursementModal />
+            <DeleteDisbursementModal disbursementId={Number(disbursementId)} />
           </ModalContent>
         </Modal>
         <div className="flex gap-6">

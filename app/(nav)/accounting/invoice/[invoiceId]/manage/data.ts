@@ -2,7 +2,6 @@ import api, { handleAxiosError } from "@/services/api";
 import { InvoiceData, InvoicePageData } from "./types";
 
 export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
-  console.log("data", data);
   return {
     status: data.status || "",
     invoice_id: data.invoice_id || "",
@@ -70,7 +69,7 @@ export const updateInvoiceStatus = async (id: number, data: any) => {
 export const deleteInvoice = async (id: number) => {
   try {
     const res = await api.delete(`/invoice/${id}`);
-    if (res.status === 200) {
+    if (res.status === 201) {
       return true;
     }
   } catch (error) {

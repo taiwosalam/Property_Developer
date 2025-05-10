@@ -32,11 +32,11 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useRouter } from "next/navigation";
 
 const paymentModes = [
-  "Bank Transfer",
-  "Cash Deposit",
-  "Cash Payment",
-  "Wallet",
-  "Other Mode of Payment",
+  { label: "Bank Transfer", value: "bank transfer" },
+  { label: "Cash Deposit", value: "cash deposit" },
+  { label: "Cash Payment", value: "cash payment" },
+  { label: "Wallet", value: "wallet" },
+  { label: "Other Mode of Payment", value: "other mode" },
 ];
 
 const CreateDisbursement = () => {
@@ -68,7 +68,8 @@ const CreateDisbursement = () => {
     unitsData?.data
       .filter((unit) => unit.is_active === "vacant")
       .map((unit) => ({
-        value: unit.id.toString(),
+        // value: unit.id.toString(),
+        value: unit.unit_name,
         label: unit.unit_name,
       })) ?? [];
 
@@ -227,7 +228,8 @@ const CreateDisbursement = () => {
                   className="w-full"
                   CURRENCY_SYMBOL={"₦"}
                   formatNumber
-                  defaultValue={paymentAmount}
+                  value={paymentAmount}
+                  // defaultValue={paymentAmount}
                   onChange={(value) => setPaymentAmount(value as string)}
                 />
               </div>

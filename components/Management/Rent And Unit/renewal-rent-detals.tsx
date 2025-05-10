@@ -555,7 +555,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   noRefetch = false,
   currency,
 }) => {
-  // console.log(unit_id);
+  console.log("previous_records", previous_records);
   // Initialize records state from props
   const [records, setRecords] = useState<any[]>(previous_records?.data || []);
   const { setRecords: setOccupantRecords } = useOccupantStore();
@@ -659,6 +659,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   const tableData = records.map((record, index) => ({
     ...record,
     amount_paid: `${CURRENCY} ${formatNumber(record.amount_paid) || 0}`,
+    rent_amount: `${CURRENCY} ${formatNumber(record.rent_amount) || 0}`,
     start_date: record.start_date
       ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
       : null,

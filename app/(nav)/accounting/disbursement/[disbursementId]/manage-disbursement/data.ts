@@ -27,7 +27,8 @@ export interface Data {
 
 export interface Disbursement {
   amount: number;
-  unit_id: number;
+  // unit_id: number;
+  title?: string;
 }
 
 export interface ManageDisbursementPageData {
@@ -66,7 +67,8 @@ export const transformUnitOptions = (data: UnitsApiResponse): UnitOptionTypes[] 
   return data.data
       .filter(unit => unit.is_active === 'vacant')
       .map(unit => ({
-          value: unit.id.toString(),
+          // value: unit.id.toString(),
+          value: unit.unit_name,
           label: unit.unit_name,
       }));
 };
