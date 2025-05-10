@@ -109,6 +109,7 @@ const Vat = () => {
         search: search,
         account_officer: appliedFilters.menuOptions["Account Officer"] || [],
         property_ids: appliedFilters.menuOptions["Property"] || [],
+        date_filter: "custom",
       } as VATFilterParams,
     };
   }, [appliedFilters, search, selectedDateRange]); // Add selectedDateRange as dependency

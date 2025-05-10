@@ -36,6 +36,7 @@ import { getBalanceBreakdown } from "@/app/(nav)/management/rent-unit/[id]/renew
 import { useGlobalStore } from "@/store/general-store";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 import { parseAmount } from "./data";
+import { toast } from "sonner";
 
 export const RentDetails: React.FC<{
   isRental: boolean;
@@ -572,12 +573,32 @@ export const TransferTenants = ({
   propertyId,
   unitId,
   currency,
+  has_part_payment,
 }: {
   isRental: boolean;
   propertyId?: number;
   unitId?: number;
   currency?: Currency;
+  has_part_payment?: boolean;
 }) => {
+  const [openPropertyModal, setOpenPropertyModal] = useState(false);
+  const [openUnitModal, setOpenUnitModal] = useState(false);
+
+  const handleOpenPropertyModal = () => {
+    if (has_part_payment)
+      return toast.warning(
+        "There's pending part payment. Finish the payment to start the rent"
+      );
+    setOpenPropertyModal(true);
+  };
+
+  const handleOpenUnitModal = () => {
+    if (has_part_payment)
+      return toast.warning(
+        "There's pending part payment. Finish the payment to start the rent"
+      );
+    setOpenUnitModal(true);
+  };
   return (
     <RentSectionContainer
       title={`Transfer ${isRental ? "Tenants" : "Occupants"}`}
@@ -595,12 +616,19 @@ export const TransferTenants = ({
         calculate and deduct any outstanding payments.
       </p>
       <div className="flex items-center gap-2 justify-end">
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="submit" className="py-2 px-6" size="base_medium">
-              Switch {isRental ? "Property" : "Facility"}
-            </Button>
-          </ModalTrigger>
+        <Modal
+          state={{ isOpen: openPropertyModal, setIsOpen: setOpenPropertyModal }}
+        >
+          {/* <ModalTrigger asChild> */}
+          <Button
+            type="submit"
+            className="py-2 px-6"
+            size="base_medium"
+            onClick={handleOpenPropertyModal}
+          >
+            Switch {isRental ? "Property" : "Facility"}
+          </Button>
+          {/* </ModalTrigger> */}
           <ModalContent>
             <SwitchPropertyModal
               isRental={isRental}
@@ -609,12 +637,17 @@ export const TransferTenants = ({
             />
           </ModalContent>
         </Modal>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="submit" className="py-2 px-6" size="base_medium">
-              Switch Unit
-            </Button>
-          </ModalTrigger>
+        <Modal state={{ isOpen: openUnitModal, setIsOpen: setOpenUnitModal }}>
+          {/* <ModalTrigger asChild> */}
+          <Button
+            onClick={handleOpenUnitModal}
+            type="submit"
+            className="py-2 px-6"
+            size="base_medium"
+          >
+            Switch Unit
+          </Button>
+          {/* </ModalTrigger> */}
           <ModalContent>
             <SwitchUnitModal
               isRental={isRental}

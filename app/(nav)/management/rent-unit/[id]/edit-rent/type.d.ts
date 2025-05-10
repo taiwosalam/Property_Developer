@@ -2,6 +2,7 @@ export interface Property {
     id: number;
     video_link: string;
     title: string;
+    has_unit?: boolean;
     state: string;
     local_government: string;
     city_area: string;

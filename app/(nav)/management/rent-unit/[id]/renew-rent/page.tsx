@@ -130,7 +130,6 @@ const RenewRent = () => {
   // UNIT CURRENCY WITH NAIRA FALLBACK
   const currency = unitData.currency as Currency;
 
-  console.log("PART_PAYMENT_AMOUNT", PART_PAYMENT_AMOUNT)
   // Handlers
   const handleRenewRent = async () => {
     if (!unitData?.unit_id || !unitData?.occupant?.id) {

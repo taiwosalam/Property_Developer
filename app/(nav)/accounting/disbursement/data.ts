@@ -2,7 +2,6 @@ import api, { handleAxiosError } from "@/services/api";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 
-
 export interface DisbursementRequestParams {
   // page?: number;
   search?: string;
@@ -14,8 +13,6 @@ export interface DisbursementRequestParams {
   property_ids?: string[];
   created_by?: string[];
 }
-
-
 
 export const accountingDisbursementOptionsWithDropdown = [
   {
@@ -57,7 +54,6 @@ const generateDisbursementTableData = (num: number) => {
 };
 
 export const disbursementTableData = generateDisbursementTableData(15);
-
 
 // Interfaces for the raw API response
 export interface DisburseItem {
@@ -116,26 +112,35 @@ export const transformDisburseData = (
     picture: item.picture,
     landlord: item.landlord,
     payment_id: item.pay_id,
-    amount: item.total_amount ? `${'₦'}${formatNumber(
-      parseFloat(item.total_amount)
-    )}` : "___",
+    amount: item.total_amount
+      ? `${"₦"}${formatNumber(parseFloat(item.total_amount))}`
+      : "___",
     description: formatHtmlDescription(item.description),
     // description: item.description,
     mode: item.disburse_mode,
   }));
 };
 
-
-
-
 export const createDisbursement = async (data: any) => {
   try {
-    const res = await api.post('/disburses', data);
+    const res = await api.post("/disburses", data);
     if (res.status === 201) {
-      return true
+      return true;
     }
   } catch (error) {
-    handleAxiosError(error)
-    return false
+    handleAxiosError(error);
+    return false;
   }
-}
+};
+
+export const deleteDisbursement = async (id: number) => {
+  try {
+    const res = await api.delete(`/disburses/${id}`);
+    if (res.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};

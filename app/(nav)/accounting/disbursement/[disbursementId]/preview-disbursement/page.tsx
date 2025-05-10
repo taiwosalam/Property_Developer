@@ -48,7 +48,7 @@ const PreviewDisbursement = () => {
       setPageData(transformed);
       setPayments(
         transformed.disbursement.map((d) => ({
-          title: `Unit ${d.unit_id ?? "-- --"}`,
+          title: d.title || '--- ---',
           amount: d.amount,
         }))
       );
@@ -78,7 +78,7 @@ const PreviewDisbursement = () => {
                 "landlord / landlady name": pageData?.landlord ?? "--- ---",
                 "property name": pageData?.property_name ?? "--- ---",
                 date: pageData?.date ?? "__,__,__",
-                "unit name": pageData?.unit_names ?? "--- ---",
+                // "unit name": pageData?.unit_names ?? "--- ---",
                 "disbursement mode": pageData?.disbursement_mode ?? "--- ---",
               }}
               chunkSize={2}
@@ -88,7 +88,7 @@ const PreviewDisbursement = () => {
                 "landlord / landlady name": "",
                 "property name": "",
                 date: "",
-                "unit name": "",
+                // "unit name": "",
                 "disbursement mode": "",
               }}
             />

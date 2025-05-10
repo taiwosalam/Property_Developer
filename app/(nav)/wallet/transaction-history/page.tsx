@@ -266,8 +266,6 @@ const TransactionHistory = () => {
   );
 
   useEffect(() => {
-    console.log("API data:", apiData);
-    console.log("State transactions:", state.transactions);
     if (apiData) {
       setState((prevState) => {
         const newTransactions = transformAllTransactionsResponse(apiData);
