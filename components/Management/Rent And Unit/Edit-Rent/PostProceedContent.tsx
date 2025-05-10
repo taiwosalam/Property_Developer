@@ -133,7 +133,6 @@ const PostProceedContent = ({
     }
   }, [apiData, setUnitData]);
 
-  console.log("Init start", unitBalance?.data )
 
   // Extract and save startDate and dueDate
   useEffect(() => {
