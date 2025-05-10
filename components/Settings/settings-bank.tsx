@@ -485,6 +485,12 @@ const SettingsBank = ({
     setShowCard(false);
   };
 
+  const bankOptions =
+    bankList?.data.map((bank) => ({
+      value: bank.bank_code,
+      label: bank.bank_name,
+    })) || [];
+
   const subTitle = branch
     ? "To streamline payments from branch, please add the most suitable branch account that should appear on invoices."
     : "A bank account for wallet withdrawal is the account linked to your wallet, allowing you to transfer funds from your digital wallet directly to your bank.";
@@ -504,12 +510,7 @@ const SettingsBank = ({
               id="bank_name"
               label="bank name"
               inputContainerClassName="w-full bg-neutral-2"
-              options={
-                bankList?.data.map((bank) => ({
-                  value: bank.bank_code,
-                  label: bank.bank_name,
-                })) || []
-              }
+              options={bankOptions}
               placeholder={
                 bankListLoading
                   ? "Loading bank list..."
