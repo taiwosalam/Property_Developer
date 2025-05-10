@@ -27,6 +27,7 @@ import PopupImageModal from "../PopupSlider/PopupSlider";
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   status,
   type = "staff",
+  data
 }) => {
   const [isOpened, setIsOpened] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
