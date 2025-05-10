@@ -19,6 +19,7 @@ export const transformApiData = (apiData: ThreadResponse | null) => {
       contributors: null,
       comments: [],
       targetAudience: [],
+      readByData: [],
     };
   }
 
@@ -43,5 +44,6 @@ export const transformApiData = (apiData: ThreadResponse | null) => {
     contributors: data.contributor ?? null,
     comments: data.comments ?? [],
     targetAudience,
+    readByData: data?.post?.readByData ?? [],
   };
 };

@@ -20,6 +20,7 @@ const ThreadCard = ({
   slug,
   shareLink,
   video,
+  published,
   setIsLikeDislikeLoading,
 }: ThreadCardProps) => {
   const link = `/management/agent-community/${
@@ -33,6 +34,8 @@ const ThreadCard = ({
           name={name}
           role={role}
           time={time}
+          published={published}
+          myArticle={myArticle}
         />
         <ThreadBody
           title={title}

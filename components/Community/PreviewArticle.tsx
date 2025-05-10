@@ -46,7 +46,6 @@ const PreviewThreadArticle = ({
   };
 
   const handleDislike = async () => {
-    console.log("dislike clicked");
     if (isLoading || userAction === "dislike") return;
     setIsLoading(true);
 
@@ -78,7 +77,9 @@ const PreviewThreadArticle = ({
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">
-          <span className="text-text-secondary font-semibold text-md">Comments</span>
+          <span className="text-text-secondary font-semibold text-md">
+            Comments
+          </span>
         </div>
 
         <div className="flex gap-2">
@@ -116,9 +117,11 @@ const PreviewThreadArticle = ({
                 />
               ))}
             </div>
-            <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              +{post?.comments_count}
-            </div>
+            {post?.comments_count > 0 && (
+              <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
+                +{post?.comments_count}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -17,11 +17,15 @@ export const ThreadHeader = ({
   name,
   role,
   time,
+  published,
+  myArticle,
 }: {
   user_pics: string;
   name: string;
   role: string;
   time: string;
+  published?: boolean;
+  myArticle?: boolean;
 }) => {
   return (
     <div className="flex items-center justify-between w-full">
@@ -32,7 +36,7 @@ export const ThreadHeader = ({
           priority
           width={500}
           height={500}
-          className="w-10 h-10 object-cover rounded-full"
+          className="w-10 h-10 object-cover rounded-full bg-brand-9"
         />
         <div className="flex flex-col flex-1 min-w-0">
           <div className="flex gap-2 items-center">
@@ -44,8 +48,19 @@ export const ThreadHeader = ({
           <p className="text-brand-9 text-sm"> {role || "--- ---"} </p>
         </div>
       </div>
-      <div className="time w-[30%]">
+      <div className="time w-[30%] flex gap-1 items-center justify-end flex-col">
         <p className="text-xs text-[#6083ED]"> {time || "--- ---"} </p>
+        {myArticle && (
+          <div
+            className={`flex items-center gap-1 rounded-md text-center w-fit px-3 ${
+              published ? "bg-status-success-primary" : "bg-orange-normal"
+            }`}
+          >
+            <span className="text-xs text-white text-center">
+              {published ? "Active" : "Inactive"}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

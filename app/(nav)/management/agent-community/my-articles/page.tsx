@@ -22,6 +22,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ThreadSkeleton from "@/components/Community/threadskeleton";
 import ThreadCard from "@/components/Community/ThreadCard";
 import ServerError from "@/components/Error/ServerError";
+import { ThreadSkeletonLoader } from "../components";
 
 interface ThreadApiResponse {
   data: any[];
@@ -228,15 +229,17 @@ const MyArticlePage = () => {
           )
         ) : (
           <AutoResizingGrid minWidth={300}>
-            {silentLoading ? (
-              <>
-                <ThreadSkeleton />
-                <ThreadSkeleton />
-                <ThreadSkeleton />
-              </>
+            {/* {silentLoading ? ( */}
+            {config.params.search || isFilterApplied() ? (
+              <ThreadSkeletonLoader length={10} />
             ) : threads && threads.length > 0 ? (
               threads.map((thread, index) => (
-                <ThreadCard key={index} {...thread} />
+                <ThreadCard
+                  key={index}
+                  {...thread}
+                  published={thread.published}
+                  myArticle
+                />
               ))
             ) : null}
           </AutoResizingGrid>
