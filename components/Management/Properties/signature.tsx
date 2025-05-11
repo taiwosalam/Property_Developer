@@ -1,13 +1,14 @@
-import React, { useRef, useState } from "react";
+
+// Fix for SignatureModal component
+
+import React, { useRef, useState, useEffect } from "react";
 import SignaturePad, {
   ReactSignatureCanvasProps,
 } from "react-signature-canvas";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
 import { RedoSigArrow, UndoSigArrow } from "@/public/icons/icons";
-import ReactSignatureCanvas from "react-signature-canvas";
 import useStep from "@/hooks/useStep";
-import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants";
 import UploadSignature from "./signature-component";
 import Button from "@/components/Form/Button/button";
 
@@ -16,11 +17,10 @@ interface SignatureModalProps {
     imageBase64: string,
     index: number,
     imageFile?: File
-  ) => void; // updated to pass index
-  index: number; // pass index from parent
+  ) => void;
+  index: number;
 }
 
-// Extend the existing props interface to include onEnd
 interface ExtendedSignatureCanvasProps extends ReactSignatureCanvasProps {
   onEnd?: () => void;
   penColor?: string;
@@ -41,6 +41,14 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
   );
   const { activeStep, changeStep } = useStep(2);
 
+  // Store the real index that was passed in from props
+  const [realIndex] = useState(index);
+
+  // Log the index when component mounts to verify it's correct
+  useEffect(() => {
+    console.log(`SignatureModal mounted with index: ${index}`);
+  }, [index]);
+
   // Disable undo/redo button state
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -58,7 +66,6 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
     const trimmedCanvas = sigPadRef.current?.getTrimmedCanvas();
     if (trimmedCanvas) {
       const imageBase64 = trimmedCanvas.toDataURL("image/png");
-      
 
       // Save the base64 string in state
       setSignatureImageBase64(imageBase64);
@@ -79,13 +86,13 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
       const imageFile = new File([imageBlob], "signature.png", {
         type: "image/png",
       });
-      // 
 
       // Save the image file in state
       setSignatureImageFile(imageFile);
 
-      // Pass both the base64 string and the file along with the index to the parent
-      onCreateSignature(imageBase64, index, imageFile);
+      // Always use the realIndex that we stored when component mounted
+      console.log(`SignatureModal: Saving signature for index ${realIndex}`);
+      onCreateSignature(imageBase64, realIndex, imageFile);
 
       setIsOpen(false);
     }
@@ -106,13 +113,8 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
 
   // Handle redo action
   const handleRedo = () => {
-    // This part can be tricky because `SignaturePad` doesn't provide redo functionality directly.
-    // I'd need to save and restore the `redoStack` similarly to the `undo` stack.
     if (sigPadRef.current) {
-      // For now, I am going to add the redo functionality by tracking the signature data.
-      // This requires a more complex approach that involves storing the undo stack and redo stack separately.
-
-      setCanUndo(true); // improve this by implementing a redo mechanism if needed
+      setCanUndo(true);
     }
   };
 
@@ -130,7 +132,11 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
         const imageBase64 = reader.result as string;
         setSignatureImageBase64(imageBase64);
         setSignatureImageFile(file);
-        onCreateSignature(imageBase64, index, file);
+        
+        // Always use the realIndex that we stored when component mounted
+        console.log(`SignatureModal: Uploading signature for index ${realIndex}`);
+        onCreateSignature(imageBase64, realIndex, file);
+        
         setIsOpen(false);
       };
     }
@@ -138,7 +144,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
 
   // Explicitly type the SignaturePad component to use the extended props
   const TypedSignaturePad =
-    (SignaturePad as unknown) as React.ComponentType<ExtendedSignatureCanvasProps>;
+    SignaturePad as unknown as React.ComponentType<ExtendedSignatureCanvasProps>;
 
   return activeStep === 1 ? (
     <LandlordTenantModalPreset
@@ -148,13 +154,12 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
       <div className="flex flex-col justify-between h-full">
         <p className="text-sm font-normal mb-2">
           Use your mouse, trackpad, touchscreen, or pen to sign directly in the
-          designated area.
+          designated area.
         </p>
         <TypedSignaturePad
           ref={sigPadRef}
           canvasProps={{ className: "w-full h-[38vh] light-shadow" }}
           penColor="blue"
-          //onEnd={handleEnd}
         />
         <div className="w-full flex justify-between mt-5">
           <div className="flex gap-2 items-center">
