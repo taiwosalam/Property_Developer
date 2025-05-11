@@ -138,7 +138,7 @@ export const updatePropertyRequest = async (id: string, data: any) => {
 };
 
 // Helper function to transform API data into ThreadCardProps
-export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
+export const  transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
   console.log("data", data);
   return data.map((thread, index) => ({
     id: index,
@@ -160,6 +160,7 @@ export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
     slug: thread.post ? thread.post.slug : "--- ---",
     shareLink: thread.post ? thread.post.share_link : "--- ---",
     video: thread.post ? thread.post.video_link : "--- ---",
+    published: thread.post.published, 
   }));
 };
 
