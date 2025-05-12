@@ -178,7 +178,6 @@ const PropertyRequest = () => {
 
   useEffect(() => {
     if (apiData) {
-      console.log("api data", apiData);
       setState((prevState) => ({
         ...prevState,
         data: apiData.data,

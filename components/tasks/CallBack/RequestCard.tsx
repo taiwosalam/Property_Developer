@@ -232,7 +232,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             </button>
 
             <Link
-              href={`/management/agent-request/${
+              href={`/management/agent-request/${ 
                 props.user ? "my-properties-request/" : ""
               }${requestId}/preview`}
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
