@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { usePropertyRequestStore } from "@/store/createPropertyStore";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { createPropertyRequest } from "../data";
+import BackButton from "@/components/BackButton/back-button";
+import Button from "@/components/Form/Button/button";
 
 const CreateMyPropertyRequest = () => {
   const router = useRouter();
@@ -43,20 +45,8 @@ const CreateMyPropertyRequest = () => {
     <>
       <AuthForm onFormSubmit={handleCreateClick} returnType="form-data">
         <div className="wra mb-16">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-1 mb-1">
-              <button
-                type="button"
-                aria-label="Go Back"
-                onClick={() => router.back()}
-                className="p-2"
-              >
-                <ChevronLeft />
-              </button>
-              <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-                Create Property Request
-              </h1>
-            </div>
+          <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+            <BackButton>Create Property Request</BackButton>
           </div>
 
           <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
@@ -69,13 +59,14 @@ const CreateMyPropertyRequest = () => {
           </div>
         </div>
         <FixedFooter className="flex gap-6 justify-end">
-          <button
+          <Button
             type="submit"
+            size="base_medium"
             disabled={isCreating}
-            className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
+            className="py-2 px-8"
           >
             {isCreating ? "Creating..." : "Create"}
-          </button>
+          </Button>
         </FixedFooter>
       </AuthForm>
     </>

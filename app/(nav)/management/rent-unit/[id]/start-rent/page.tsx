@@ -128,6 +128,14 @@ const StartRent = () => {
     const IS_WEB_TENANT =
       selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
 
+    const IS_FACILITY = propertyType === "facility";
+
+    if (!IS_FACILITY) {
+      // Open modal for non-facility tenants
+      setIsAgreementModalOpen(true);
+      return;
+    }
+
     // if (!IS_WEB_TENANT) {
     //   // Open modal for non-web tenants
     //   setIsAgreementModalOpen(true);
@@ -135,8 +143,8 @@ const StartRent = () => {
     // }
 
     // For web tenants, proceed without PDF
-    // await submitRent(null);
-    setIsAgreementModalOpen(true);
+    await submitRent(null);
+    // setIsAgreementModalOpen(true);
     return;
   };
 
@@ -148,21 +156,21 @@ const StartRent = () => {
       ? "Failed to start Rent, Try Again!"
       : "Failed to Move Occupant In, Try Again!";
 
-    // const WebpayloadObj = {
-    //   unit_id: unit_data.unit_id,
-    //   tenant_id: selectedTenantId,
-    //   start_date: startDate,
-    //   payment_type: "full",
-    //   rent_type: "new",
-    //   mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
-    //   email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
-    //   has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
-    //   sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
-    //   is_mobile_user: 0,
-    //   has_document: 0,
-    // };
+    const FacilityObj = {
+      unit_id: unit_data.unit_id,
+      tenant_id: selectedTenantId,
+      start_date: startDate,
+      payment_type: "full",
+      rent_type: "new",
+      mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
+      email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
+      has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+      sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
+      is_mobile_user: 0,
+      has_document: 0,
+    };
 
-    const MobilepayloadObj = {
+    const RentalObj = {
       unit_id: unit_data.unit_id,
       tenant_id: selectedTenantId,
       start_date: startDate,
@@ -177,8 +185,11 @@ const StartRent = () => {
       doc_file: doc_file,
     };
 
-    // const payloadObj = IS_WEB_TENANT ? WebpayloadObj : MobilepayloadObj;
-    const payloadObj = MobilepayloadObj;
+    const IS_FACILITY = propertyType === "facility";
+
+    // const payloadObj = IS_WEB_TENANT ? FacilityObj : RentalObj;
+    const payloadObj = IS_FACILITY ? FacilityObj : RentalObj;
+    // const payloadObj = MobilepayloadObj;
     const payload = objectToFormData(payloadObj);
     console.log("DOc file", doc_file);
     console.log("payload", payload);
@@ -303,7 +314,7 @@ const StartRent = () => {
 
       {isAgreementModalOpen && (
         <Modal
-          state={{  
+          state={{
             isOpen: isAgreementModalOpen,
             setIsOpen: setIsAgreementModalOpen,
           }}

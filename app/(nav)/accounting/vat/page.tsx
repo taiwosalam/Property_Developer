@@ -52,6 +52,9 @@ import ServerError from "@/components/Error/ServerError";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { getOtherCurrency } from "../invoice/data";
+import TableMenu from "@/components/Table/table-menu";
+import { MenuItem } from "@mui/material";
+import Link from "next/link";
 
 const Vat = () => {
   const router = useRouter();
@@ -59,6 +62,8 @@ const Vat = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
 
   const [pageData, setPageData] = useState<VATPageState>(initialVATPageState);
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -143,6 +148,11 @@ const Vat = () => {
         setGlobalStore("accounting_vat", newVat);
       }
       setPageData({ ...transformedVat, vats: newVat });
+      setGlobalStore("accounting_vat_data", {
+        ...transformedVat,
+        vats: newVat,
+      });
+      // accounting_vat_data({ ...transformedVat, vats: newVat });
       // setPageData((x) => ({
       //   ...x,
       //   ...transformVATAPIResponse(apiData),
@@ -237,6 +247,49 @@ const Vat = () => {
   }));
 
   const otherCurrency = getOtherCurrencyFromVats(apiData?.data.vats || []);
+
+  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setSelectedItemId(String(item.id));
+    setAnchorEl(e.currentTarget);
+    // console.log("item", item);
+    // setInvoiceStatus(item.status);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItemId(null);
+    // setInvoiceStatus("");
+  };
+
+  // Function to get the display label for the time range
+  const getTimeRangeLabel = useCallback(() => {
+    switch (timeRange) {
+      case "90d":
+        return "Last 3 months";
+      case "30d":
+        return "Last 30 days";
+      case "7d":
+        return "Last 7 days";
+      case "1d":
+        return "Yesterday";
+      case "custom":
+        if (selectedDateRange?.from && selectedDateRange?.to) {
+          return `${dayjs(selectedDateRange.from).format(
+            "MMM D, YYYY"
+          )} - ${dayjs(selectedDateRange.to).format("MMM D, YYYY")}`;
+        }
+        return "Last 30 days";
+      default:
+        return "Last 30 days";
+    }
+  }, [timeRange, selectedDateRange]);
+
+  // Store timeRangeLabel in global store whenever it changes
+  useEffect(() => {
+    const timeRangeLabel = getTimeRangeLabel();
+    setGlobalStore("vatTimeRangeLabel", timeRangeLabel);
+  }, [getTimeRangeLabel, setGlobalStore]);
 
   if (loading)
     return <CustomLoader pageTitle="V.A.T" view="table" layout="page" />;
@@ -335,11 +388,12 @@ const Vat = () => {
           </div>
           <AutoResizingGrid gap={24} minWidth={300}>
             <AccountStatsCard
-              title="Total Vat Created"
+              title="Total Vat Paid"
               balance={total_vat_created}
               percentage={percentage_change_total}
               variant="blueIncoming"
               otherCurrency={otherCurrency}
+              timeRangeLabel={getTimeRangeLabel()}
               trendDirection={percentage_change_total < 0 ? "down" : "up"}
               trendColor={percentage_change_total < 0 ? "red" : "green"}
             />
@@ -390,18 +444,37 @@ const Vat = () => {
       ) : silentLoading ? (
         <TableLoading />
       ) : (
-        <CustomTable
-          fields={vatTableFields}
-          data={transformedTableData}
-          tableHeadStyle={{ height: "76px" }}
-          tableHeadCellSx={{ fontSize: "1rem" }}
-          tableBodyCellSx={{
-            fontSize: "1rem",
-            paddingTop: "12px",
-            paddingBottom: "12px",
-          }}
-          handleSelect={handleRowClick}
-        />
+        <>
+          <CustomTable
+            fields={vatTableFields}
+            data={transformedTableData}
+            tableHeadStyle={{ height: "76px" }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "12px",
+              paddingBottom: "12px",
+            }}
+            // handleSelect={handleRowClick}
+            onActionClick={(item, e) => {
+              handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+            }}
+          />
+          <TableMenu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleMenuClose} disableRipple>
+              <Link
+                href={`/accounting/vat/${selectedItemId}/PrintVat`}
+                className="w-full text-left"
+              >
+                Preview
+              </Link>
+            </MenuItem>
+          </TableMenu>
+        </>
       )}
     </div>
   );

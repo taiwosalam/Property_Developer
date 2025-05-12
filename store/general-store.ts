@@ -40,6 +40,7 @@ interface GlobalStoreState {
   user_activities?: ActivityDataReport[];
   accounting_invoices?: Invoice[];
   accounting_vat?: Vat[];
+  accounting_vat_data?: any | null;
   accounting_expenses?: Expense[];
   accounting_disbursements?: TransformedDisburseItem[];
   wallet_transactions?: Transaction[];
@@ -49,6 +50,7 @@ interface GlobalStoreState {
   tenantError: Error | null;
   currentUnit: any | null;
   currentRentStats: any | null;
+  vatTimeRangeLabel?: string;
   timeRange: string; // e.g., "7d", "30d", "90d", "custom"
   selectedDateRange: DateRange | undefined; // { from: Date, to: Date }
   unitData: initDataProps | null;
@@ -87,16 +89,16 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   activities: [],
   vehicle_records: [],
   rent: [],
-
   campaign_history: [],
-
   user_activities: [],
   accounting_invoices: [],
   accounting_vat: [],
+  vatTimeRangeLabel: "Last 3 months", 
   accounting_expenses: [],
   accounting_disbursements: [],
   wallet_transactions: [],
   selectedOccupant: null,
+  accounting_vat_data: null,
   isPastDate: false,
   tenantLoading: false,
   tenantError: null,

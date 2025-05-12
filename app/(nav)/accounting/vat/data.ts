@@ -31,6 +31,7 @@ export const vatTableFields: Field[] = [
   },
   { id: "5", label: "VAT Amount", accessor: "total_vat" },
   { id: "6", label: "Date", accessor: "date" },
+  { id: "7", accessor: "action" },
 ];
 
 const generateTableData = (numItems: number) => {

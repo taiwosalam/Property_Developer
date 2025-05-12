@@ -80,7 +80,7 @@ const PrintVatPage = () => {
           </div>
           <div className="mt-5">
             <AccountingTitleSection title="Payment Details">
-              <div className="h-[2px] w-full max-w-[670px] bg-[#C0C2C8]" />
+              {/* <div className="h-[2px] w-full max-w-[670px] bg-[#C0C2C8]" /> */}
               <CustomTable
                 className={`${fullContent && "max-h-none"}`}
                 fields={printVatTableFields}

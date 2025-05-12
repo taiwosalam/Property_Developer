@@ -74,7 +74,7 @@ const PreviewDisbursement = () => {
           <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{
-                "disbursement id": pageData?.date ?? "--- ---",
+                "disbursement id": pageData?.disbursementId ?? "--- ---",
                 "landlord / landlady name": pageData?.landlord ?? "--- ---",
                 "property name": pageData?.property_name ?? "--- ---",
                 date: pageData?.date ?? "__,__,__",

@@ -12,6 +12,7 @@ import BackButton from "@/components/BackButton/back-button";
 import {
   VATAPIResponse,
   VATPageState,
+  getOtherCurrencyFromVats,
   initialVATPageState,
   transformVATAPIResponse,
   vatTableData,
@@ -23,6 +24,7 @@ import useFetch from "@/hooks/useFetch";
 import { variants } from "@/utils/slider";
 import NetworkError from "@/components/Error/NetworkError";
 import { useGlobalStore } from "@/store/general-store";
+import dayjs from "dayjs";
 
 const ExportVat = () => {
   const [fullContent, setFullContent] = useState(false);
@@ -45,6 +47,8 @@ const ExportVat = () => {
     error,
   } = useFetch<VATAPIResponse>("/vat/list");
   const filteredAccountingVat = useGlobalStore((s) => s.accounting_vat);
+  const filteredData = useGlobalStore((s) => s.accounting_vat_data);
+  const vatTimeRangeLabel = useGlobalStore((s) => s.vatTimeRangeLabel) || "Last 3 months";
 
   useEffect(() => {
     if (apiData) {
@@ -70,13 +74,15 @@ const ExportVat = () => {
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
+  const otherCurrency = getOtherCurrencyFromVats(apiData?.data.vats || []);
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
         <BackButton as="p">Back</BackButton>
         <div ref={printRef}>
           <ExportPageHeader />
-          <div className="rounded-lg my-4 bg-white dark:bg-darkText-primary p-8 flex">
+          {/* <div className="rounded-lg my-4 bg-white dark:bg-darkText-primary p-8 flex">
             <KeyValueList
               data={{
                 "summary id": "-- --",
@@ -91,21 +97,26 @@ const ExportVat = () => {
                 "end date": "",
               }}
             />
-          </div>
+          </div> */}
           <div className="custom-flex-col gap-6">
-            <h1 className="text-black dark:text-white text-2xl font-medium text-center">
-              VAT Summary
+            <h1 className="text-black my-4 dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
+              VAT Summary -{" "}
+              <span className="px-2">{`(${dayjs().format(
+                "Do MMMM YYYY"
+              )})`}</span>
             </h1>
             <AutoResizingGrid gap={24} minWidth={300}>
               <AccountStatsCard
-                title="Total Vat Created"
-                balance={total_vat_created}
-                percentage={percentage_change_total}
+                title="Total Vat Paid"
+                balance={filteredData.total_vat_created || 0}
+                percentage={filteredData.percentage_change_total || 0}
                 variant="blueIncoming"
-                trendDirection={percentage_change_total < 0 ? "down" : "up"}
-                trendColor={percentage_change_total < 0 ? "red" : "green"}
+                otherCurrency={otherCurrency}
+                timeRangeLabel={vatTimeRangeLabel}
+                trendDirection={filteredData.percentage_change_total < 0 ? "down" : "up"}
+                trendColor={filteredData.percentage_change_total < 0 ? "red" : "green"}
               />
-              <AccountStatsCard
+              {/* <AccountStatsCard
                 title="Total Paid Vat"
                 balance={total_paid_vat}
                 variant="greenIncoming"
@@ -120,7 +131,7 @@ const ExportVat = () => {
                 trendDirection={percentage_change_pending < 0 ? "down" : "up"}
                 trendColor={percentage_change_pending < 0 ? "red" : "green"}
                 percentage={percentage_change_pending}
-              />
+              /> */}
             </AutoResizingGrid>
             <CustomTable
               className={`${fullContent && "max-h-none"}`}
