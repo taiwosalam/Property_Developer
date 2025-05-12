@@ -94,8 +94,6 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
     tenantIds.length ? `tenant/${tenantIds.join(",")}` : null
   );
 
-  console.log(tenantIds, "tenantProfiles");
-
   useEffect(() => {
     if (tenantProfiles) {
       // Update the tenants state with the fetched profiles
@@ -137,7 +135,7 @@ const RestrictUserForm: React.FC<RestrictUserFormProps> = ({
       };
       getTenant();
     }
-  }, [selectedTenant]);
+  }, [propertyWithId, selectedTenant]);
 
   useEffect(() => {
     if (selectedProperty) {

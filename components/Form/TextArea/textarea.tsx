@@ -421,6 +421,8 @@ const TextArea: React.FC<TextAreaProps> = ({
     };
   }, [typingTimeout]);
 
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       {label && (
@@ -432,6 +434,7 @@ const TextArea: React.FC<TextAreaProps> = ({
         {mounted && (
           <Fragment>
             <DynamicReactQuill
+
               readOnly={readOnly}
               forwardedRef={quillRef}
               value={editorValue}
@@ -450,6 +453,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               }}
             />
             <input
+              ref={inputRef}
               type="hidden"
               name={id}
               id={id}
@@ -514,6 +518,7 @@ const TextArea: React.FC<TextAreaProps> = ({
                 <RedoIcon />
               </button>
               <AIPopOver
+                
                 editorValue={editorValue as string}
                 setEditorValue={setEditorValue}
                 showAiCreator={showAiCreator}

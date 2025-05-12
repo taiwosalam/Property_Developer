@@ -191,7 +191,7 @@ const Applications = () => {
         />
 
         <section>
-          {pageData?.applications?.length === 0 && !loading ? (
+          {/* {pageData?.applications?.length === 0 && !loading ? (
             !!config.params.search || hasActiveFilters(appliedFilters) ? (
               <SearchError />
             ) : (
@@ -221,7 +221,7 @@ const Applications = () => {
               gap={32}
               containerClassName="w-full"
             >
-              {pageData && pageData?.applications?.length > 0 ? (
+              {/* {pageData && pageData?.applications?.length > 0 ? (
                 pageData?.applications.map((item) => (
                   <ApplicationCard
                     key={item.id}
@@ -232,12 +232,16 @@ const Applications = () => {
                 ))
               ) : (
                 <p>No Application Data</p>
-              )}
-              {/* <ApplicationCard status="flagged" type="staff" />
-              <ApplicationCard status="unflagged" type="guest" />
-              <ApplicationCard status="unflagged" type="staff" /> */}
+              )} 
+             
             </AutoResizingGrid>
-          )}
+          )}*/}
+
+          <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
+            <ApplicationCard status="flagged" type="staff" />
+            <ApplicationCard status="unflagged" type="guest" />
+            <ApplicationCard status="unflagged" type="staff" />
+          </AutoResizingGrid>
         </section>
       </div>
     </div>

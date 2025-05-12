@@ -1,8 +1,18 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(
-  process.env.NEXT_PUBLIC_GEMINI_API_KEY as string
-);
+import { GoogleGenAI } from "@google/genai";
+
+import { groq } from "@ai-sdk/groq";
+
+import { createGroq } from "@ai-sdk/groq";
+import { streamText, generateText } from "ai";
+
+const cg = createGroq({
+  // custom settings
+  apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY as string,
+});
+
+const groqModel = cg("llama-3.3-70b-versatile");
 
 /**
  * Generates content based on the provided feature and user input.
@@ -14,11 +24,9 @@ const genAI = new GoogleGenerativeAI(
 export async function generateTextContent(
   aiFeature: string,
   userInput: string
-): Promise<string> {
+): Promise<string | undefined> {
   try {
     // Initialize the generative model
-    // const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
     let prompt = "";
 
@@ -43,15 +51,23 @@ export async function generateTextContent(
       `;
     }
 
-    // Generate content using the model
-    const result = await model.generateContent(prompt);
+    const { textStream } = await streamText({
+      model: groqModel,
+      prompt,
+    });
 
-    // Parse the response text
-    const responseText = await result.response.text();
+    let concatText = ""
 
-    return responseText;
+    console.log(textStream);
+
+    for await (const text of textStream){
+      concatText += text;
+      process.stdout.write(text);
+    }
+
+    return concatText;
   } catch (error) {
     console.error("Error generating content:", error);
-    throw new Error("Failed to generate content. Please try again.");
+    throw new Error("Failed to generate content. Please try again." + error);
   }
 }

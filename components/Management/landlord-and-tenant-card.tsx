@@ -85,7 +85,7 @@ const UserCard: React.FC<UserCardProps> = ({
         <p className="font-semibold text-xs text-[#8D8D8D] dark:text-darkText-2 text-ellipsis line-clamp-1">
           {phone_number}
         </p>
-        {is_active !== 1 && (
+        {is_active === 0 && (
           <div className="text-red-500 text-xs mt-1">
             <Lock size={14}/>
           </div>

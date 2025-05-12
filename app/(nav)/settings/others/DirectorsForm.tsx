@@ -135,8 +135,6 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
     }
   };
 
-  console.log(is_active);
-
   return (
     <AuthForm
       returnType="form-data"

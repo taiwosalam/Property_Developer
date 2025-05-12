@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Ref, useCallback, useEffect, useRef, useState } from "react";
 
 // Icons and Images
 import Cancel from "@/public/icons/cancel.svg";
@@ -9,15 +9,16 @@ import { AiIcon, SponsorIcon } from "@/public/icons/icons";
 // Utilities
 import gsap from "gsap";
 import { trackOutsideClick } from "@/utils/track-outside-click";
-import useTextGenerator, { formatAIResponse } from "@/hooks/useAIContentGenerator";
+import useTextGenerator, {
+  formatAIResponse,
+} from "@/hooks/useAIContentGenerator";
 import { toast } from "sonner";
-
 
 const AIPopOver = ({
   editorValue,
   setEditorValue,
   showAiCreator,
-  setShowAiCreator, 
+  setShowAiCreator,
 }: {
   editorValue: string;
   setEditorValue: any;
@@ -58,21 +59,32 @@ const AIPopOver = ({
     }
   }, [showAiCreator, closePopover]);
 
-  const handleShowPopOver = ()=> {
-    if (editorValue && editorValue.length < 30){
-      toast.error("Please enter more than 30 characters to get AI suggestions.")
+  const handleShowPopOver = () => {
+    if (editorValue && editorValue.length < 30) {
+      toast.error(
+        "Please enter more than 30 characters to get AI suggestions."
+      );
     } else {
       setShowAiCreator((prev: any) => !prev);
     }
-  }
+  };
 
   const { content, loading, generateText } = useTextGenerator();
 
   const ai_features = [
-    { label: "Elaborate Content", task: "Expand the input text with detailed explanations." },
-    { label: "List and Explain", task: "Create a list of points from the input and explain them." },
+    {
+      label: "Elaborate Content",
+      task: "Expand the input text with detailed explanations.",
+    },
+    {
+      label: "List and Explain",
+      task: "Create a list of points from the input and explain them.",
+    },
     { label: "Rewrite and Expand", task: "Rewrite and expand the input text." },
-    { label: "Explain in Paragraph", task: "Explain the content in a clear paragraph." },
+    {
+      label: "Explain in Paragraph",
+      task: "Explain the content in a clear paragraph.",
+    },
   ];
 
   const handleGenerate = async (label: string) => {
@@ -80,19 +92,14 @@ const AIPopOver = ({
       const feature = ai_features.find((feature) => feature.label === label);
       if (!feature) return;
 
-      console.log("Feature Selected: ", feature)
       await generateText(feature.task, editorValue || ""); // Trigger the generation
-    } catch (error) {
-      console.error("Error generating content:", error);
-    }
+    } catch (error) {}
   };
 
   // Watch for content updates and set editorValue with formatted content
   useEffect(() => {
     if (content) {
-      console.log("Formatted content", content)
       setEditorValue(content); // Update editorValue only when contentGenerated changes
-      
     }
   }, [setEditorValue, content]);
 
@@ -105,16 +112,19 @@ const AIPopOver = ({
           className="absolute bottom-full left-2/4 -translate-x-2/4 custom-flex-col w-[154px]"
         >
           <div className="p-3 w-full rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3c3d37] custom-flex-col shadow-lg">
-            <h2 className="text-text-label text-xs font-semibold dark:text-white">AI Content Creator</h2>
+            <h2 className="text-text-label text-xs font-semibold dark:text-white">
+              AI Content Creator
+            </h2>
             {ai_features.map((feature: any, index: any) => (
               <button
                 key={index}
                 type="button"
                 // style={{backgroundColor: "var(--secondary-color)"}}
-                className={`!w-full !flex !text-start !items-center !py-2 !font-[300] !text-[10px] !px-1 !text-white mt-2 rounded-md ${editorValue
-                  ? "!bg-brand-9 !text-[#3F4247] hover:bg-blue-600"
-                  : "!bg-brand-9 !text-[#3F4247] !cursor-not-allowed"
-                  }`}
+                className={`!w-full !flex !text-start !items-center !py-2 !font-[300] !text-[10px] !px-1 !text-white mt-2 rounded-md ${
+                  editorValue
+                    ? "!bg-brand-9 !text-[#3F4247] hover:bg-blue-600"
+                    : "!bg-brand-9 !text-[#3F4247] !cursor-not-allowed"
+                }`}
                 onClick={() => handleGenerate(feature.label)}
                 disabled={!editorValue || loading}
               >
