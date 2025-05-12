@@ -25,11 +25,16 @@ import {
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import CardsLoading from "@/components/Loader/CardsLoading";
-import { createInvoice, parseFormattedNumber, PropertyTenantResponse } from "./data";
+import {
+  createInvoice,
+  parseFormattedNumber,
+  PropertyTenantResponse,
+} from "./data";
 import SelectWithImage from "@/components/Form/Select/select-with-image";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
+import { currencySymbols } from "@/utils/number-formatter";
 
 const CreateInvoicePage = () => {
   const searchParams = useSearchParams();
@@ -89,6 +94,8 @@ const CreateInvoicePage = () => {
     useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
   const propertyData = data ? transformSinglePropertyData(data) : null;
 
+  console.log("propertyData", propertyData);
+
   if (loading) {
     return (
       <div className="custom-flex-col gap-2">
@@ -130,6 +137,10 @@ const CreateInvoicePage = () => {
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
+
+  const CURRENCY =
+    currencySymbols[propertyData?.currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
 
   return (
     <section className="space-y-7 pb-20">
@@ -184,7 +195,7 @@ const CreateInvoicePage = () => {
               id="amount"
               label="Amount"
               className="w-full"
-              CURRENCY_SYMBOL={"₦"}
+              CURRENCY_SYMBOL={CURRENCY}
               formatNumber
               value={paymentAmount}
               onChange={setPaymentAmount}
@@ -210,7 +221,7 @@ const CreateInvoicePage = () => {
             className="py-2 px-8"
             size="base_medium"
           >
-            {reqLoading ? "Please wait..." : "Create"}
+            {reqLoading ? "Please wait..." : "Create Invoice"}
           </Button>
         </FixedFooter>
       </AuthForm>

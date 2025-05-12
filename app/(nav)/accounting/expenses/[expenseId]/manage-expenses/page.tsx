@@ -270,9 +270,9 @@ const ManageExpenses = () => {
                       }).format(payment.amount)}
                     </p>
                     <Modal>
-                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                      {/* <ModalTrigger aria-label={`Delete ${payment.title}`}>
                         <DeleteIconX />
-                      </ModalTrigger>
+                      </ModalTrigger> */}
                       <ModalContent>
                         <DeleteItemWarningModal
                           item={payment.title}
@@ -349,9 +349,9 @@ const ManageExpenses = () => {
                         }).format(deduction.amount)}
                       </p>
                       <Modal>
-                        <ModalTrigger aria-label={`Delete ${deduction.date}`}>
+                        {/* <ModalTrigger aria-label={`Delete ${deduction.date}`}>
                           <DeleteIconX />
-                        </ModalTrigger>
+                        </ModalTrigger> */}
                         <ModalContent>
                           <DeleteItemWarningModal
                             item={deduction.date.toDate().toLocaleDateString()}
