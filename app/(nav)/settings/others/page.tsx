@@ -453,7 +453,7 @@ const Others = () => {
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
 
-  console.log(apiData);
+  
 
   
 

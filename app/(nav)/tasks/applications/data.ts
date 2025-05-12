@@ -175,7 +175,7 @@ export const transformApplicationData = (
       images: [],
       full_name: item?.user?.name,
       tier_id: item?.user?.tier_id,
-      user_id: "79288782",
+      user_id: item?.user?.encodedId,
       user_type: "staff",
       email: item?.user?.email,
       property_name: "2 Bedroom Detached",
