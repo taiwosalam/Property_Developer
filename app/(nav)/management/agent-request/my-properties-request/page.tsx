@@ -224,7 +224,11 @@ const MyPropertiesRequestPage = () => {
             <PropertyrequestSkeletonLoader length={10} />
           ) : (
             propertyRequestCardsData.map((cardProps, index) => (
-              <PropertyRequestCard key={cardProps.requestId} {...cardProps} />
+              <PropertyRequestCard
+                key={cardProps.requestId}
+                {...cardProps}
+                user
+              />
             ))
           )}
         </AutoResizingGrid>
