@@ -80,7 +80,7 @@ export const ThreadBody = ({
 }) => {
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-black text-5 dark:text-white leading-5 truncate font-bold mt-4">
+      <h2 className="text-black text-5 dark:text-white leading-5 truncate capitalize font-bold mt-4">
         {title}
       </h2>
       <div

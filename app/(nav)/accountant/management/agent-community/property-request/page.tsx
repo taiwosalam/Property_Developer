@@ -64,7 +64,7 @@ const transformToPropertyRequestCardProps = (
   return {
     cardType: "agent-community",
     cardViewDetails: [
-      { label: "Target Audience", accessor: "targetAudience" },
+      // { label: "Target Audience", accessor: "targetAudience" },
       { label: "Local Government", accessor: "lga" },
       { label: "Property Type", accessor: "propertyType" },
       { label: "Category", accessor: "category" },

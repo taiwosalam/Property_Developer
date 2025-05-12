@@ -80,7 +80,7 @@ export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {
   cardType: "agent-community";
   userTitle: string;
   propertyTitle: string;
-  targetAudience: string[];
+  // targetAudience: string[];
   state: string;
   lga: string;
   propertyType: string;
@@ -92,6 +92,7 @@ export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {
   description: string;
   phoneNumber: string;
   user?: boolean;
+  status?: "active" | "inactive";
   cardViewDetails: {
     label: string;
     accessor: keyof AgentCommunityRequestCardProps;
