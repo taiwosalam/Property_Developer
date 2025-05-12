@@ -158,7 +158,6 @@ const SecondSection = ({
         value={address.lga}
         required
       />
-      {/* <StateAndLocalGovt /> */}
     </div>
   );
 };

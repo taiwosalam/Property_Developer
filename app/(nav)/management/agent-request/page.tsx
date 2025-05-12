@@ -26,6 +26,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { PropertyRequestParams } from "../agent-community/type";
 import { RequestCardSkeleton } from "../agent-community/components";
 import ServerError from "@/components/Error/ServerError";
+import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 
 interface PropertyRequestApiData {
   data: PropertyRequestDataType[];
@@ -51,7 +52,7 @@ const transformToPropertyRequestCardProps = (
       { label: "Category", accessor: "category" },
       { label: "Min Budget", accessor: "minBudget" },
       { label: "Max Budget", accessor: "maxBudget" },
-      { label: "Target Audience", accessor: "targetAudience" },
+      // { label: "Target Audience", accessor: "targetAudience" },
     ],
     ...data,
   };
@@ -171,10 +172,7 @@ const PropertyRequest = () => {
     refetch,
     silentLoading,
     isNetworkError,
-  } = useFetch<PropertyRequestApiData>(
-    `/agent-community/property-requests/all`,
-    config
-  );
+  } = useFetch<PropertyRequestApiData>(`/agent_requests/all`, config);
 
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
@@ -191,7 +189,7 @@ const PropertyRequest = () => {
 
   const propertyRequestData = getPropertyRequests(data);
 
-  console.log("propertyRequestData", data)
+  console.log("propertyRequestData", data);
 
   if (loading)
     return (
@@ -274,11 +272,7 @@ const PropertyRequest = () => {
       ) : (
         <AutoResizingGrid gap={28} minWidth={400}>
           {silentLoading ? (
-            <>
-              <RequestCardSkeleton />
-              <RequestCardSkeleton />
-              <RequestCardSkeleton />
-            </>
+             <PropertyrequestSkeletonLoader length={10} />
           ) : (
             propertyRequestData.map((details, index) => (
               <PropertyRequestCard

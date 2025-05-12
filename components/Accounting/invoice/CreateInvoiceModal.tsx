@@ -7,6 +7,7 @@ import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-m
 import useFetch from "@/hooks/useFetch";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const CreateInvoiceModal = () => {
   const router = useRouter();
@@ -25,7 +26,12 @@ const CreateInvoiceModal = () => {
         label: p.title,
       })) || [];
 
-    console.log("propertyData", propertyData)
+  const handleProceed = () => {
+    if (!selectedProperty) return toast.warning("Please select a property");
+    router.push(`/accounting/invoice/create-invoice?p=${selectedProperty}`);
+  };
+
+  console.log("propertyData", propertyData);
 
   return (
     <LandlordTenantModalPreset
@@ -49,15 +55,11 @@ const CreateInvoiceModal = () => {
         />
         <div className="w-full flex items-center justify-center">
           <Button
-            onClick={() => {
-              router.push(
-                `/accounting/invoice/create-invoice?p=${selectedProperty}`
-              );
-            }}
+            onClick={handleProceed}
             className="py-2 px-8"
             size="base_medium"
           >
-            Add
+            Create Invoice
           </Button>
         </div>
       </div>

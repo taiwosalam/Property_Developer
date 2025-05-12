@@ -77,7 +77,7 @@ const PreviewExpenses = () => {
                 // "account officer": pageData?.expenseDetails.customerName,
                 "property name": pageData?.expenseDetails.propertyName,
                 date: pageData?.expenseDetails.date,
-                "unit names": pageData?.expenseDetails.unitId,
+                "unit ID": pageData?.expenseDetails.unitId,
               }}
               chunkSize={1}
               direction="column"
@@ -87,7 +87,7 @@ const PreviewExpenses = () => {
                 "property name": "",
                 date: "",
                 // "account officer": "",
-                "unit names": "",
+                "unit ID": "",
               }}
             />
           </div>

@@ -108,13 +108,14 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           </div>
         </div>
         {/* I noticed that the property request card has no status */}
-        {cardType !== "property" && cardType !== "agent-community" && (
+        {/* {cardType !== "property" && cardType !== "agent-community" && ( */}
+        {cardType !== "property" && (
           <p
             className={clsx(
               "p-2 font-normal text-xs border capitalize ml-auto w-[85px] text-center",
-              props.status === "completed"
+              props.status === "completed" || props.status === "active"
                 ? "bg-status-success-1 border-status-success-1 text-status-success-2"
-                : props.status === "pending"
+                : props.status === "pending" || props.status === "inactive"
                 ? "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
                 : props.status === "in-progress"
                 ? "bg-[rgba(140,98,255,0.19)] border-[rgba(140,98,255,0.19)] text-[#9747FF]"
@@ -169,10 +170,10 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 <div
                   key={index}
                   className={clsx(
-                    "col-span-1",
-                    index === 0 && "sm:col-span-2",
-                    index === 1 && "sm:col-span-1",
-                    index < 2 && "row-span-1"
+                    "col-span-1"
+                    // index === 0 && "sm:col-span-2",
+                    // index === 1 && "sm:col-span-1",
+                    // index < 2 && "row-span-1"
                   )}
                 >
                   <UserDetailItems

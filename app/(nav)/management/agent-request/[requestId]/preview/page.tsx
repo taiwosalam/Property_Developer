@@ -39,7 +39,7 @@ const PreviewPage = () => {
     error,
     refetch: refetchComments,
   } = useFetch<PropertyRequestResponse>(
-    `/agent-community/property-requests/${requestId}`
+    `/agent_requests/${requestId}`
   );
   useRefetchOnEvent("refetchComments", () => refetchComments({ silent: true }));
 
