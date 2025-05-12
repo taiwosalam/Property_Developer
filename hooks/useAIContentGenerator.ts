@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface UseTextGeneratorResponse {
   content: string | null;
@@ -14,7 +15,7 @@ const useTextGenerator = () => {
   });
 
   const generateText = async (aiFeature: string, userInput: string) => {
-    setResponse({ content: null, error: null, loading: true });
+    setResponse({ content: "", error: null, loading: true });
 
     try {
       const res = await fetch("/api/ai_content", {
@@ -27,12 +28,41 @@ const useTextGenerator = () => {
         throw new Error("Failed to generate content.");
       }
 
-      const { content } = await res.json();
-      // setResponse({ content, error: null, loading: false });
-      const formattedContent = formatAIResponse(content, aiFeature);
+      if (!res.body) {
+        throw new Error("Response body is not readable.");
+      }
 
-      setResponse({ content: formattedContent, error: null, loading: false });
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedContent = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        accumulatedContent += chunk;
+
+        // Format and update the content incrementally
+        const formattedContent = formatAIResponse(
+          accumulatedContent,
+          aiFeature
+        );
+        setResponse((prev) => ({
+          ...prev,
+          content: formattedContent,
+          loading: true,
+        }));
+      }
+
+      // Final update after streaming is complete
+      setResponse({
+        content: formatAIResponse(accumulatedContent, aiFeature),
+        error: null,
+        loading: false,
+      });
     } catch (error: any) {
+      toast.error("Error generating content")
       console.error("Error generating content:", error);
       setResponse({ content: null, error: error.message, loading: false });
     }
@@ -43,8 +73,10 @@ const useTextGenerator = () => {
 
 export default useTextGenerator;
 
-
-export function formatAIResponse(response: string | null, featureLabel: string): string {
+export function formatAIResponse(
+  response: string | null,
+  featureLabel: string
+): string {
   if (!response) {
     return ""; // Handle null or undefined response.
   }
@@ -82,4 +114,3 @@ export function formatAIResponse(response: string | null, featureLabel: string):
       return formattedResponse.trim(); // Default cleanup.
   }
 }
-

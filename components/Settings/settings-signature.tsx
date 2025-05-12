@@ -46,6 +46,7 @@ const SettingsSignature = () => {
   const [state, setState] = useState<SignaturePageData[]>([]);
   const [signaturePad, setSignaturePad] = useState<SignaturePad | null>(null); // SignaturePad state
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [currentEditIndex, setCurrentEditIndex] = useState(0);
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
   const {
     data: apiData,
@@ -135,24 +136,90 @@ const SettingsSignature = () => {
     // console.log("Input Fields after removing:", updatedFields);
   };
 
+  // const handleCreateSignature = (
+  //   imageBase64: string,
+  //   index: number,
+  //   imageFile?: File
+  // ) => {
+  //   console.log("index: ", index);
+  //   setInputFields((prevState) =>
+  //     prevState.map((field, idx) =>
+  //       idx === index
+  //         ? {
+  //             ...field,
+  //             signature: imageBase64,
+  //             signatureFile: imageFile || field.signatureFile,
+  //           }
+  //         : field
+  //     )
+  //   );
+  // };
+
+  // Update your handleCreateSignature function to include more logging
+  // Then replace your handleCreateSignature function with this:
   const handleCreateSignature = (
     imageBase64: string,
     index: number,
     imageFile?: File
   ) => {
-    setInputFields((prevState) =>
-      prevState.map((field, idx) =>
-        idx === index
-          ? {
-              ...field,
-              signature: imageBase64,
-              signatureFile: imageFile || field.signatureFile,
-            }
-          : field
-      )
-    );
+    // Double check our index is valid
+    if (index < 0 || index >= inputFields.length) {
+      console.error(
+        `Invalid index: ${index}. inputFields length is ${inputFields.length}`
+      );
+      return;
+    }
+
+    console.log(`Starting to update signature at index: ${index}`);
+    console.log(`Current inputFields length: ${inputFields.length}`);
+
+    // Get the ID of the field we're updating for consistency check
+    const targetFieldId = inputFields[index]?.id;
+    console.log(`Target field ID: ${targetFieldId} at index ${index}`);
+
+    setInputFields((prevState) => {
+      // Create a complete deep copy of the state to avoid any reference issues
+      const updatedFields = JSON.parse(JSON.stringify(prevState));
+
+      // Verify we have the field
+      if (!updatedFields[index]) {
+        console.error(`Field at index ${index} doesn't exist!`);
+        return prevState;
+      }
+
+      // Verify the ID matches what we expect
+      if (updatedFields[index].id !== targetFieldId) {
+        console.error(
+          `Field ID mismatch! Expected ${targetFieldId} but found ${updatedFields[index].id}`
+        );
+
+        // Find the correct field by ID instead
+        const correctIndex = updatedFields.findIndex(
+          (field: { id: number; }) => field.id === targetFieldId
+        );
+        if (correctIndex >= 0) {
+          console.log(`Found correct field at index ${correctIndex} instead`);
+          index = correctIndex;
+        } else {
+          console.error(`Could not find field with ID ${targetFieldId}`);
+          return prevState;
+        }
+      }
+
+      // Update the field at the verified index
+      updatedFields[index] = {
+        ...updatedFields[index],
+        signature: imageBase64,
+        signatureFile: imageFile || updatedFields[index].signatureFile,
+      };
+
+      console.log(
+        `Updated field ID ${updatedFields[index].id} at index ${index}`
+      );
+
+      return updatedFields;
+    });
   };
-  
 
   const handleSignatureChange = (index: number) => (dataURL: string) => {
     setInputFields((prevState) =>
@@ -208,6 +275,9 @@ const SettingsSignature = () => {
     }
   };
 
+  console.log(inputFields);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <SettingsSection title="Authorized Signature">
       <AuthForm onFormSubmit={hanleCreateSignature} returnType="form-data">
@@ -219,11 +289,40 @@ const SettingsSignature = () => {
             />
             <div className="custom-flex-col gap-[18px]">
               <div className="flex flex-col gap-5">
-                {inputFields.map((field, index) => (
-                  <React.Fragment key={field.id}>
-                    <div className="flex rounded-lg items-center overflow-hidden gap-2 cursor-pointer">
-                      {typeof field.signature !== "string" ? (
-                        <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer">
+                {inputFields.map((field, index) => {
+                  return (
+                    <React.Fragment key={index}>
+                      <div className="flex rounded-lg items-center overflow-hidden gap-2 cursor-pointer">
+                        {typeof field.signature !== "string" ? (
+                          <div className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer">
+                            <Picture
+                              size={100}
+                              className="max-w-[100px] max-h-[120px]"
+                              fit="contain"
+                              src={field.signature}
+                              alt="official signature"
+                            />
+                            <div
+                              style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
+                              className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
+                            >
+                              <Picture
+                                src={ImageBlue}
+                                alt="image icon"
+                                size={20}
+                              />
+                              <p
+                                className="text-brand-9 text-xs font-normal"
+                                onClick={() => {
+                                  setCurrentEditIndex(index);
+                                  setOpenModal(true);
+                                }}
+                              >
+                                Add Signature
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
                           <Picture
                             size={100}
                             className="max-w-[100px] max-h-[120px]"
@@ -231,91 +330,99 @@ const SettingsSignature = () => {
                             src={field.signature}
                             alt="official signature"
                           />
-                          <div
-                            style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
-                            className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
-                          >
-                            <Picture
-                              src={ImageBlue}
-                              alt="image icon"
-                              size={20}
-                            />
-                            <p
-                              className="text-brand-9 text-xs font-normal"
+                        )}
+                        <Modal
+                          state={{
+                            isOpen: isModalOpen && currentEditIndex === index,
+                            setIsOpen: (open) => {
+                              if (!open) {
+                                setIsModalOpen(false);
+                              } else {
+                                setCurrentEditIndex(index);
+                                setIsModalOpen(true);
+                              }
+                            },
+                          }}
+                        >
+                          <ModalTrigger asChild>
+                            <button
+                              className="self-end bg-brand-9 text-white text-xs font-normal py-2 px-3 rounded-md"
                               onClick={() => {
-                                setOpenModal(true);
+                                setCurrentEditIndex(index);
+                                console.log(
+                                  `Setting current edit index to: ${index}`
+                                );
+                                setIsModalOpen(true);
                               }}
                             >
-                              Add Signature
-                            </p>
-                          </div>
-                        </div>
-                      ) : (
-                        <Picture
-                          size={100}
-                          className="max-w-[100px] max-h-[120px]"
-                          fit="contain"
-                          src={field.signature}
-                          alt="official signature"
-                        />
-                      )}
-                      <Modal
-                        state={{ isOpen: openModal, setIsOpen: setOpenModal }}
-                      >
-                        <ModalTrigger asChild>
-                          <button className="self-end bg-brand-9 text-white text-xs font-normal py-2 px-3 rounded-md">
-                            {typeof field.signature === "string"
-                              ? "Change signature"
-                              : "Add signature"}
-                          </button>
-                        </ModalTrigger>
-                        <ModalContent>
-                          <SignatureModal
-                            onCreateSignature={handleCreateSignature}
-                            index={index}
+                              {typeof field.signature === "string"
+                                ? "Change signature"
+                                : "Add signature"}
+                            </button>
+                          </ModalTrigger>
+                          <ModalContent>
+                            <SignatureModal
+                              onCreateSignature={(
+                                imageBase64,
+                                receivedIndex,
+                                imageFile
+                              ) => {
+                                console.log(
+                                  `Modal callback with index param: ${receivedIndex}, currentEditIndex: ${currentEditIndex}`
+                                );
+                                // Always use the current edit index
+                                handleCreateSignature(
+                                  imageBase64,
+                                  currentEditIndex,
+                                  imageFile
+                                );
+                                setIsModalOpen(false);
+                              }}
+                              index={index} // Pass the current loop index directly
+                            />
+                          </ModalContent>
+                        </Modal>
+                      </div>
+                      <div className="flex flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
+                        <div className="flex-1">
+                          <Select
+                            id={`personal_title_qualification_${index}`}
+                            options={titles}
+                            defaultValue={state[index]?.title}
+                            label="personal title / qualification"
+                            inputContainerClassName="w-full bg-neutral-2"
                           />
-                        </ModalContent>
-                      </Modal>
-                    </div>
-                    <div className="flex flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
-                      <div className="flex-1">
-                        <Select
-                          id={`personal_title_qualification_${index}`}
-                          options={titles}
-                          defaultValue={state[index]?.title}
-                          label="personal title / qualification"
-                          inputContainerClassName="w-full bg-neutral-2"
-                        />
+                        </div>
+                        <div className="flex-1">
+                          <Input
+                            id={`fullname_${index}`}
+                            label="full name"
+                            placeholder="Write Here"
+                            className="w-full"
+                            defaultValue={state[index]?.name}
+                          />
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-3 items-end">
+                          <Select
+                            id={`real_estate_title_${index}`}
+                            options={industryOptions}
+                            defaultValue={state[index]?.professional_title}
+                            label="real estate title"
+                            inputContainerClassName="w-full bg-neutral-2"
+                          />
+                          {index !== 0 && (
+                            <button
+                              className="bg-brand-9 min-w-[50px] text-white text-xs font-normal py-2 px-3 rounded-lg max-h-[40px]"
+                              onClick={() => removeInputField(field.id)}
+                            >
+                              Remove
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <Input
-                          id={`fullname_${index}`}
-                          label="full name"
-                          placeholder="Write Here"
-                          className="w-full"
-                          defaultValue={state[index]?.name}
-                        />
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-3 items-end">
-                        <Select
-                          id={`real_estate_title_${index}`}
-                          options={industryOptions}
-                          defaultValue={state[index]?.professional_title}
-                          label="real estate title"
-                          inputContainerClassName="w-full bg-neutral-2"
-                        />
-                        {index !== 0 && (
-                          <button
-                            className="bg-brand-9 min-w-[50px] text-white text-xs font-normal py-2 px-3 rounded-lg max-h-[40px]"
-                            onClick={() => removeInputField(field.id)}
-                          >
-                            Remove
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </React.Fragment>
-                ))}
+                    </React.Fragment>
+                  );
+                })}
                 <div className="flex items-end">
                   <button
                     className="text-xs font-normal py-2 px-3 w-full sm:w-auto text-brand-9 bg-white"

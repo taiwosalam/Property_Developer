@@ -118,7 +118,7 @@ export const SMSUnit = () => {
         </div>
         <div className="custom-flex-col gap-4">
           <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
-            SMS Credit <span className="text-xs font-normal">(₦4/unit)</span>
+            SMS Credit <span className="text-xs font-normal">(₦7/unit)</span>
           </p>
           <div className="flex gap-3">
             <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">

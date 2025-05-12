@@ -81,8 +81,8 @@ export const transformEventTable = (
   event: CalendarEventsApiResponse
 ): ICalendarEventsTable => {
   return {
-    total_pages: event.pagination.total_pages,
-    current_page: event.pagination.current_page,
+    total_pages: event?.pagination?.total_pages || 0,
+    current_page: event?.pagination?.current_page || 0,
     table: event.data.map((item) => ({
       date: item?.date
         ? dayjs(item.date).format("DD/MM/YYYY HH:mm A")

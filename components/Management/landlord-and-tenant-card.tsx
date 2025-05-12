@@ -6,6 +6,7 @@ import {
   FlagBadge,
   NoteBlinkingIcon,
 } from "@/public/icons/dashboard-cards/icons";
+import { Lock } from "lucide-react";
 
 export interface UserCardProps {
   picture_url?: string | null;
@@ -19,7 +20,8 @@ export interface UserCardProps {
   className?: string;
   note?: boolean;
   is_flagged?: boolean;
-  is_verified?: boolean
+  is_verified?: boolean;
+  is_active?: number;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -34,6 +36,7 @@ const UserCard: React.FC<UserCardProps> = ({
   note,
   is_flagged,
   is_verified,
+  is_active,
 }) => {
   const flagged = Boolean(is_flagged);
   return (
@@ -53,7 +56,7 @@ const UserCard: React.FC<UserCardProps> = ({
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
           <span className="text-ellipsis line-clamp-1 break-all">{name} </span>
-          {(is_verified && badge_color)  && user_tag !== "web" && (
+          {is_verified && badge_color && user_tag !== "web" && (
             <BadgeIcon color={badge_color} />
           )}
         </p>
@@ -68,7 +71,7 @@ const UserCard: React.FC<UserCardProps> = ({
                 <NoteBlinkingIcon size={20} className="blink-color" />
               </div>
             )}
-            {(user_tag === "mobile" && flagged ) && (
+            {user_tag === "mobile" && flagged && (
               <div className="flex text-red-500 items-center">
                 <FlagBadge size={20} />
               </div>
@@ -82,6 +85,11 @@ const UserCard: React.FC<UserCardProps> = ({
         <p className="font-semibold text-xs text-[#8D8D8D] dark:text-darkText-2 text-ellipsis line-clamp-1">
           {phone_number}
         </p>
+        {is_active === 0 && (
+          <div className="text-red-500 text-xs mt-1">
+            <Lock size={14}/>
+          </div>
+        )}
         {other_info && (
           <p className="w-40 font-medium text-xs text-black dark:text-darkText-1 mt-2 text-ellipsis line-clamp-1">
             {other_info}

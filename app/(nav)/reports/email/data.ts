@@ -89,7 +89,7 @@ export const transformEmailReport = (
     },
     emails: data?.data?.emails?.map((email) => ({
       user_id: email?.user_id,
-      branch: email?.subject || "___ ___",
+      branch: "___ ___",
       client_name: email?.client_name || "",
       date: email?.date || "___ ___",
       time: email?.time
