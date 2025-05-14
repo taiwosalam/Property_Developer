@@ -7,7 +7,7 @@ import {
 } from "./settings-components";
 import Input from "@/components/Form/Input/input";
 import Select from "../Form/Select/select";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react"; // Added Loader2 for spinner
 import FundingCard from "../Wallet/AddFunds/funding-card";
 import Picture from "../Picture/picture";
 import DangerIcon from "@/public/icons/danger.svg";
@@ -23,7 +23,7 @@ import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 import { useCompanyBankDetails } from "@/hooks/useCompanyBankDetails";
 import Button from "../Form/Button/button";
 
-interface SettingsBankProps {
+interface CompanyBankSettingsProps {
   action?: (details: {
     bank_name: string;
     account_name: string;
@@ -32,12 +32,7 @@ interface SettingsBankProps {
   }) => void;
 }
 
-interface BankOption {
-  value: string;
-  label: string;
-}
-
-const SettingsBank: React.FC<SettingsBankProps> = ({
+const CompanyBankSettings: React.FC<CompanyBankSettingsProps> = ({
   action,
 }) => {
   const [reqLoading, setReqLoading] = useState(false);
@@ -52,9 +47,6 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
   const [accountNumber, setAccountNumber] = useState("");
   const [accountName, setAccountName] = useState("");
   const [showCard, setShowCard] = useState(false);
-  const [defaultBankOption, setDefaultBankOption] = useState<
-    BankOption | undefined
-  >(undefined);
 
   const {
     companyBankDetails,
@@ -84,28 +76,18 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
   const walletId = data?.balance.wallet_id;
 
   useEffect(() => {
-    if (companyBankDetails && bankList?.data) {
+    if (companyBankDetails) {
       setBankName(bank_name || "");
+      setBankCode(bank_code || "");
       setAccountNumber(account_number || "");
       setAccountName(account_name || "");
       setShowCard(!!bank_name);
       setEdit(!!bank_name);
-      if (bank_name) {
-        const selectedBank = bankList.data.find(
-          (bank) => bank.bank_name === bank_name
-        );
-        if (selectedBank) {
-          setBankCode(selectedBank.bank_code);
-          setDefaultBankOption({
-            value: selectedBank.bank_code,
-            label: selectedBank.bank_name,
-          });
-        }
-      } else {
+      if (!bank_name) {
         setOpenEdit(true); // Show input fields when no company bank details
       }
     }
-  }, [bank_name, account_name, account_number, bank_code, bankList?.data]);
+  }, [bank_name, account_name, account_number, bank_code]);
 
   const handleAccountNumberChange = async (value: string) => {
     const numericValue = value.replace(/\D/g, "");
@@ -174,7 +156,7 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
     setShowCard(false);
   };
 
-  const bankOptions: BankOption[] =
+  const bankOptions =
     bankList?.data.map((bank) => ({
       value: bank.bank_code,
       label: bank.bank_name,
@@ -204,7 +186,7 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
                   ? "Error loading bank list"
                   : "Select bank"
               }
-              defaultValue={defaultBankOption} // Pass the full option object
+              value={bankCode}
               error={bankListError}
               onChange={handleBankChange}
             />
@@ -243,7 +225,7 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
                 type="sterling"
                 title={accountNumber || "___"}
                 desc={accountName || "___"}
-                cta={bankName || "___"}
+                cta={bankName || "___"} // Ensure bankName (label) is used
                 notRounded
                 logo={logo}
               />
@@ -286,4 +268,4 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
   );
 };
 
-export default SettingsBank;
+export default CompanyBankSettings;
