@@ -75,9 +75,7 @@ const Withdrawal: React.FC<
     }
   }, [bankData]);
 
-  
-
-  // 
+  //
 
   useEffect(() => {
     setWalletStore("amount", amount);
@@ -101,8 +99,12 @@ const Withdrawal: React.FC<
     if (newAmount > 10000000) {
       setError("Maximum withdrawal limit is ₦10,000,000.");
       setAmount(10000000); // Set to max allowed
-      const expected = calculateExpectedAmount(10000000);
-      setExpectedAmount(expected);
+      if (!branch) {
+        const expected = calculateExpectedAmount(10000000);
+        setExpectedAmount(expected);
+      } else {
+        setExpectedAmount(10000000); // No calculation for branch
+      }
       return;
     }
 
@@ -113,11 +115,15 @@ const Withdrawal: React.FC<
       setExpectedAmount(0);
     } else {
       setError(null);
-      const expected = calculateExpectedAmount(newAmount);
-      setExpectedAmount(expected);
+      if (!branch) {
+        const expected = calculateExpectedAmount(newAmount);
+        setExpectedAmount(expected);
+      } else {
+        setExpectedAmount(newAmount); // Use input amount directly for branch
+      }
     }
   };
-  
+
   const handleContinue = () => {
     if (amount > 0 && description.length > 0) {
       changeStep("input pin");
@@ -168,7 +174,7 @@ const Withdrawal: React.FC<
               id="amount"
               label="amount"
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-              value={amount ? amount.toLocaleString() : ''}
+              value={amount ? amount.toLocaleString() : ""}
               max={10000000}
               style={{ backgroundColor: isDarkMode ? "black" : "white" }}
               required
@@ -180,7 +186,7 @@ const Withdrawal: React.FC<
             {!branch && error && (
               <p className="text-red-600 text-sm mt-1">{error}</p>
             )}
-            {amount > 1000 && (
+            {(amount > 1000 && !branch) && (
               <div>
                 <Input
                   readOnly

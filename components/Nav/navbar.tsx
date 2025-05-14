@@ -176,16 +176,16 @@ const Header = () => {
     }
   }, [companyData, setPersonalInfo]);
 
-  // useEffect(() => {
-  //   if (appearance && !hasMounted.current) {
-  //     const { colorMode, navbar, fonts, dashboardColor } = appearance;
-  //     saveLocalStorage("navbar", navbar);
-  //     setColor(dashboardColor);
-  //     applyFont(fonts);
-  //     setTheme(colorMode);
-  //     hasMounted.current = true;
-  //   }
-  // }, [appearance, setColor, setTheme]);
+  useEffect(() => {
+    if (appearance && !hasMounted.current) {
+      const { colorMode, navbar, fonts, dashboardColor } = appearance;
+      saveLocalStorage("navbar", navbar);
+      setColor(dashboardColor);
+      applyFont(fonts);
+      setTheme(colorMode);
+      hasMounted.current = true;
+    }
+  }, [appearance, setColor, setTheme]);
 
   useEffect(() => {
     if (data?.data) {
@@ -238,16 +238,16 @@ const Header = () => {
     }
   }, [data, setPersonalInfo]);
 
-  // const toggleTheme = () => {
-  //   if (!hasMounted.current) return;
-  //   const primaryColor = getLocalStorage("primary-color");
-  //   if (primaryColor === "#000000") {
-  //     toast.error("Cannot use dark mode on the selected primary color");
-  //     setTheme("light");
-  //     return;
-  //   }
-  //   setTheme(theme === "dark" ? "light" : "dark");
-  // };
+  const toggleTheme = () => {
+    if (!hasMounted.current) return;
+    const primaryColor = getLocalStorage("primary-color");
+    if (primaryColor === "#000000") {
+      toast.error("Cannot use dark mode on the selected primary color");
+      setTheme("light");
+      return;
+    }
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   // useEffect(() => {
   //   if (!hasMounted.current && appearance) {
@@ -286,85 +286,85 @@ const Header = () => {
   // Initialize theme on mount
  
  
-  useEffect(() => {
-    if (!hasMounted.current) {
-      const savedTheme = getLocalStorage("theme");
-      if (savedTheme) {
-        setTheme(savedTheme);
-      } else if (appearance?.colorMode) {
-        setTheme(appearance.colorMode);
-        saveLocalStorage("theme", appearance.colorMode);
-      } else {
-        setTheme("light"); // Default fallback
-        saveLocalStorage("theme", "light");
-      }
-      hasMounted.current = true;
+  // useEffect(() => {
+  //   if (!hasMounted.current) {
+  //     const savedTheme = getLocalStorage("theme");
+  //     if (savedTheme) {
+  //       setTheme(savedTheme);
+  //     } else if (appearance?.colorMode) {
+  //       setTheme(appearance.colorMode);
+  //       saveLocalStorage("theme", appearance.colorMode);
+  //     } else {
+  //       setTheme("light"); // Default fallback
+  //       saveLocalStorage("theme", "light");
+  //     }
+  //     hasMounted.current = true;
 
-      // Update additional_details.appearance to sync with Appearance component
-      if (appearance) {
-        const additionalDetails = getLocalStorage("additional_details");
-        const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-        if (details.appearance) {
-          details.appearance.colorMode =
-            savedTheme || appearance.colorMode || "light";
-          saveLocalStorage("additional_details", JSON.stringify(details));
-        }
-      }
-    }
-  }, [appearance]); // Only depend on appearance
+  //     // Update additional_details.appearance to sync with Appearance component
+  //     if (appearance) {
+  //       const additionalDetails = getLocalStorage("additional_details");
+  //       const details = additionalDetails ? JSON.parse(additionalDetails) : {};
+  //       if (details.appearance) {
+  //         details.appearance.colorMode =
+  //           savedTheme || appearance.colorMode || "light";
+  //         saveLocalStorage("additional_details", JSON.stringify(details));
+  //       }
+  //     }
+  //   }
+  // }, [appearance]); // Only depend on appearance
 
-  // Sync appearance.colorMode with theme changes from Appearance component
-  useEffect(() => {
-    if (
-      hasMounted.current &&
-      appearance?.colorMode &&
-      !isManualToggle.current
-    ) {
-      const savedTheme = getLocalStorage("theme");
-      if (savedTheme !== appearance.colorMode) {
-        setTheme(appearance.colorMode);
-        saveLocalStorage("theme", appearance.colorMode);
-      }
-    }
-  }, [appearance?.colorMode]);
+  // // Sync appearance.colorMode with theme changes from Appearance component
+  // useEffect(() => {
+  //   if (
+  //     hasMounted.current &&
+  //     appearance?.colorMode &&
+  //     !isManualToggle.current
+  //   ) {
+  //     const savedTheme = getLocalStorage("theme");
+  //     if (savedTheme !== appearance.colorMode) {
+  //       setTheme(appearance.colorMode);
+  //       saveLocalStorage("theme", appearance.colorMode);
+  //     }
+  //   }
+  // }, [appearance?.colorMode]);
 
-  // Debounced toggleTheme to prevent rapid calls
-  const toggleTheme = debounce(() => {
-    if (!hasMounted.current) return;
+  // // Debounced toggleTheme to prevent rapid calls
+  // const toggleTheme = debounce(() => {
+  //   if (!hasMounted.current) return;
 
-    isManualToggle.current = true; // Mark as manual toggle
-    const primaryColor = getLocalStorage("primary-color");
-    if (primaryColor === "#000000") {
-      toast.error("Cannot use dark mode on the selected primary color");
-      setTheme("light");
-      saveLocalStorage("theme", "light");
+  //   isManualToggle.current = true; // Mark as manual toggle
+  //   const primaryColor = getLocalStorage("primary-color");
+  //   if (primaryColor === "#000000") {
+  //     toast.error("Cannot use dark mode on the selected primary color");
+  //     setTheme("light");
+  //     saveLocalStorage("theme", "light");
 
-      // Update additional_details.appearance
-      const additionalDetails = getLocalStorage("additional_details");
-      const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-      if (details.appearance) {
-        details.appearance.colorMode = "light";
-        saveLocalStorage("additional_details", JSON.stringify(details));
-      }
-    } else {
-      const newTheme = theme === "dark" ? "light" : "dark";
-      setTheme(newTheme);
-      saveLocalStorage("theme", newTheme);
+  //     // Update additional_details.appearance
+  //     const additionalDetails = getLocalStorage("additional_details");
+  //     const details = additionalDetails ? JSON.parse(additionalDetails) : {};
+  //     if (details.appearance) {
+  //       details.appearance.colorMode = "light";
+  //       saveLocalStorage("additional_details", JSON.stringify(details));
+  //     }
+  //   } else {
+  //     const newTheme = theme === "dark" ? "light" : "dark";
+  //     setTheme(newTheme);
+  //     saveLocalStorage("theme", newTheme);
 
-      // Update additional_details.appearance
-      const additionalDetails = getLocalStorage("additional_details");
-      const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-      if (details.appearance) {
-        details.appearance.colorMode = newTheme;
-        saveLocalStorage("additional_details", JSON.stringify(details));
-      }
-    }
+  //     // Update additional_details.appearance
+  //     const additionalDetails = getLocalStorage("additional_details");
+  //     const details = additionalDetails ? JSON.parse(additionalDetails) : {};
+  //     if (details.appearance) {
+  //       details.appearance.colorMode = newTheme;
+  //       saveLocalStorage("additional_details", JSON.stringify(details));
+  //     }
+  //   }
 
-    // Reset manual toggle flag after a delay to allow appearance sync
-    setTimeout(() => {
-      isManualToggle.current = false;
-    }, 500);
-  }, 300);
+  //   // Reset manual toggle flag after a delay to allow appearance sync
+  //   setTimeout(() => {
+  //     isManualToggle.current = false;
+  //   }, 500);
+  // }, 300);
 
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";

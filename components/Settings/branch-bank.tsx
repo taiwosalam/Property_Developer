@@ -17,13 +17,12 @@ import useFetch from "@/hooks/useFetch";
 import "nigerian-bank-icons/index.css";
 import useBankLogo from "@/app/(nav)/bank";
 import { toast } from "sonner";
-import { useWalletStore } from "@/store/wallet-store";
-import { sendWalletSecurityOTp } from "@/app/(nav)/settings/company/data";
-import { WalletDataResponse } from "@/app/(nav)/wallet/data";
-import { useCompanyBankDetails } from "@/hooks/useCompanyBankDetails";
 import Button from "../Form/Button/button";
 
-interface SettingsBankProps {
+interface BranchBankSettingsProps {
+  branch_bank_name?: string;
+  branch_account_name?: string;
+  branch_account_number?: string;
   action?: (details: {
     bank_name: string;
     account_name: string;
@@ -37,39 +36,27 @@ interface BankOption {
   label: string;
 }
 
-const SettingsBank: React.FC<SettingsBankProps> = ({
+const BranchBankSettings: React.FC<BranchBankSettingsProps> = ({
+  branch_bank_name,
+  branch_account_name,
+  branch_account_number,
   action,
 }) => {
   const [reqLoading, setReqLoading] = useState(false);
-  const [next, setNext] = useState(false);
   const [edit, setEdit] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const [isVerified, setIsVerified] = useState(false);
   const [lookupLoading, setLookupLoading] = useState(false);
-  const [bankName, setBankName] = useState("");
+  const [bankName, setBankName] = useState(branch_bank_name || "");
   const [bankCode, setBankCode] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [accountName, setAccountName] = useState("");
-  const [showCard, setShowCard] = useState(false);
+  const [accountNumber, setAccountNumber] = useState(
+    branch_account_number || ""
+  );
+  const [accountName, setAccountName] = useState(branch_account_name || "");
+  const [showCard, setShowCard] = useState(!!branch_bank_name);
   const [defaultBankOption, setDefaultBankOption] = useState<
     BankOption | undefined
   >(undefined);
-
-  const {
-    companyBankDetails,
-    error: bankError,
-    loading: bankLoading,
-  } = useCompanyBankDetails();
-
-  const { bank_name, account_name, account_number, bank_code } =
-    companyBankDetails || {};
-
-  const bankNotAvailable =
-    bank_name === "" &&
-    account_name === "" &&
-    account_number === "" &&
-    bank_code === "";
 
   const {
     data: bankList,
@@ -79,33 +66,33 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
     data: { bank_name: string; bank_code: string }[];
   }>("bank/bank-list");
 
-  const { data, error, refetch } =
-    useFetch<WalletDataResponse>("/wallets/dashboard");
-  const walletId = data?.balance.wallet_id;
-
   useEffect(() => {
-    if (companyBankDetails && bankList?.data) {
-      setBankName(bank_name || "");
-      setAccountNumber(account_number || "");
-      setAccountName(account_name || "");
-      setShowCard(!!bank_name);
-      setEdit(!!bank_name);
-      if (bank_name) {
-        const selectedBank = bankList.data.find(
-          (bank) => bank.bank_name === bank_name
-        );
-        if (selectedBank) {
-          setBankCode(selectedBank.bank_code);
-          setDefaultBankOption({
-            value: selectedBank.bank_code,
-            label: selectedBank.bank_name,
-          });
-        }
-      } else {
-        setOpenEdit(true); // Show input fields when no company bank details
+    setBankName(branch_bank_name || "");
+    setAccountNumber(branch_account_number || "");
+    setAccountName(branch_account_name || "");
+    setShowCard(!!branch_bank_name);
+    setEdit(!!branch_bank_name);
+    if (branch_bank_name && bankList?.data) {
+      const selectedBank = bankList.data.find(
+        (bank) => bank.bank_name === branch_bank_name
+      );
+      if (selectedBank) {
+        setBankCode(selectedBank.bank_code);
+        setDefaultBankOption({
+          value: selectedBank.bank_code,
+          label: selectedBank.bank_name,
+        });
       }
     }
-  }, [bank_name, account_name, account_number, bank_code, bankList?.data]);
+    if (!branch_bank_name) {
+      setOpenEdit(true); // Show input fields when no branch bank details
+    }
+  }, [
+    branch_bank_name,
+    branch_account_name,
+    branch_account_number,
+    bankList?.data,
+  ]);
 
   const handleAccountNumberChange = async (value: string) => {
     const numericValue = value.replace(/\D/g, "");
@@ -138,31 +125,33 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
   const slug = bankName?.toLowerCase().replace(/\s+/g, "-");
   const logo = useBankLogo({ slug }) || "/icons/default-bank.svg";
 
-  const handleAddBank = async () => {
+  const handleUpdateBranchBank = async () => {
     if (!bankCode || !accountNumber || !accountName || !bankName) {
       toast.warning("Please fill in all bank details");
       return;
     }
+    if (!isVerified) {
+      toast.warning("Please verify the account number");
+      return;
+    }
     const payload = {
-      bank_code: bankCode,
+      bank_name: bankName,
       account_name: accountName,
       account_number: accountNumber,
-      bank_name: bankName,
+      bank_code: bankCode,
     };
 
     try {
       setReqLoading(true);
-      setWalletStore("bank_details", payload);
-      const walletid = {
-        wallet_id: walletId as string,
-      };
-      const res = await sendWalletSecurityOTp(walletid);
-      if (res) {
-        toast.success("Check Email For OTP");
-        setNext(true);
+      if (action) {
+        await action(payload);
+        toast.success("Branch bank details updated successfully");
+        setEdit(true);
+        setOpenEdit(false);
+        setShowCard(true);
       }
     } catch (err) {
-      toast.error("Failed to add bank details");
+      toast.error("Failed to update branch bank details");
     } finally {
       setReqLoading(false);
     }
@@ -181,16 +170,16 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
     })) || [];
 
   const subTitle =
-    "A bank account for wallet withdrawal is the account linked to your wallet, allowing you to transfer funds from your digital wallet directly to your bank.";
+    "To streamline payments from branch, please add the most suitable branch account that should appear on invoices.";
 
   return (
-    <SettingsSection title="Bank Details">
+    <SettingsSection title="Branch Bank Details">
       <div className="custom-flex-col gap-8">
         <SettingsSectionTitle
-          title="Bank Account For Withdrawal"
+          title="Bank Account For Invoice"
           desc={subTitle}
         />
-        {(bankNotAvailable || openEdit) && (
+        {(openEdit || !showCard) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-end">
             <Select
               id="bank_name"
@@ -250,7 +239,7 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
             </div>
           )}
           <div className="custom-flex-col max-w-[436px] gap-4">
-            {(showCard || !bankNotAvailable) && (
+            {showCard && (
               <div className="flex items-center gap-2">
                 <Picture src={DangerIcon} alt="danger" size={24} />
                 <p className="text-text-label text-xs font-normal">
@@ -275,10 +264,9 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
         {!edit && (
           <SettingsUpdateButton
             type="otp"
-            text="Update"
+            text={!showCard ? "Add" : "Update"}
             loading={reqLoading}
-            action={handleAddBank}
-            next={next}
+            action={handleUpdateBranchBank}
           />
         )}
       </div>
@@ -286,4 +274,4 @@ const SettingsBank: React.FC<SettingsBankProps> = ({
   );
 };
 
-export default SettingsBank;
+export default BranchBankSettings;
