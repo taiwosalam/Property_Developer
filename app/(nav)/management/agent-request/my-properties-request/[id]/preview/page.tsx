@@ -36,7 +36,7 @@ const PreviewPage = () => {
   const [slug, setSlug] = useState("");
   const { data, loading, isNetworkError, error, refetch } =
     useFetch<PropertyRequestResponse>(
-      `/agent-community/property-requests/${id}`
+      `/agent_requests/${id}`
     );
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
 
@@ -48,7 +48,7 @@ const PreviewPage = () => {
       setComments(data.data.comments);
     }
   }, [data]);
-
+ 
   // console.log(propertyRequest);
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;

@@ -1,5 +1,6 @@
 import api from "@/services/api";
 import { useAuthStore } from "@/store/authStore";
+import { getLocalStorage } from "@/utils/local-storage";
 
 interface UserResponse {
   data: {
@@ -25,4 +26,26 @@ export const getUserStatus = async () => {
       return "redirect to setup";
     }
   } catch (error) {}
+};
+
+
+
+
+
+
+export const getParsedAdditionalDetails = () => {
+  const additionalDetails = getLocalStorage("additional_details");
+  if (!additionalDetails) return {};
+
+  if (typeof additionalDetails === "string") {
+    try {
+      return JSON.parse(additionalDetails);
+    } catch (e) {
+      console.error("Failed to parse additional_details:", e, { additionalDetails });
+      return {};
+    }
+  } else if (typeof additionalDetails === "object") {
+    return additionalDetails; // Already an object, no need to parse
+  }
+  return {};
 };
