@@ -33,18 +33,7 @@ export const getPropertyRequests = (
   return (
     data.map((request: any) => ({
       requestId: request.propertyRequest.id,
-<<<<<<< HEAD
-      userName: request.user?.name || "--- ---",
-      user: {
-        role: request.user?.role || "--- ---",
-        title: request.propertyRequest.title || "--- ---",
-        tier: request.user.tier || "--- ---",
-        professional_title: request.user.professional_title || "--- ---",
-      },
-
-=======
       userName: `${request?.user?.title || ""} ${request.user?.name || "--- ---"}`,
->>>>>>> 7df14c734f4c4fa24f092958a924f2623a0d31b4
       requestDate: formatDate(request.propertyRequest.created_at) || "--- ---",
       pictureSrc: request.user?.picture || empty,
       state: request.propertyRequest.state || "--- ---",
@@ -75,12 +64,6 @@ export interface PropertyRequestDataType {
   requestId: string;
   state: string;
   lga: string;
-  user?: {
-    professional_title: string;
-    tier: string;
-    role: string;
-    title: string;
-  };
   propertyType: string;
   description: string;
   phoneNumber: string;
@@ -104,86 +87,6 @@ export const getPropertyRequestData = async () => {
   }
 };
 
-<<<<<<< HEAD
-// export const PropertyRequestData: PropertyRequestDataType[] = [
-//   {
-//     requestId: "1234567890",
-//     userName: "Salam AIshat",
-//     requestDate: "01/01/2024",
-//     pictureSrc: "/empty/SampleLandlord.jpeg",
-//     state: "Lagos",
-//     lga: "Mushin",
-//     propertyType: "Apartment",
-//     category: "For Rent",
-//     subType: "Block of Flats",
-//     minBudget: "₦75,000,000",
-//     maxBudget: "₦200,000,000",
-//     requestType: "Web",
-//     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-//     phoneNumber: "08012345678",
-//     propertyTitle: "Property Title",
-//     userTitle: "Property Title",
-//     targetAudience: [],
-//   },
-//   {
-//     requestId: "1344567901",
-//     userName: "Joe Wanu",
-//     requestDate: "01/01/2024",
-//     pictureSrc: "/empty/SampleLandlord.jpeg",
-//     state: "Lagos",
-//     lga: "Mushin",
-//     subType: "Bungalow",
-//     propertyType: "Duplex",
-//     category: "For Sale",
-//     requestType: "Mobile",
-//     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-//     phoneNumber: "08012345678",
-//     minBudget: "₦75,000,000",
-//     maxBudget: "₦200,000,000",
-//     propertyTitle: "Property Title",
-//     userTitle: "Property Title",
-//     targetAudience: [],
-//   },
-//   {
-//     requestId: "1344567901",
-//     userName: "Joe Wanu",
-//     requestDate: "01/01/2024",
-//     pictureSrc: "/empty/SampleLandlord.jpeg",
-//     state: "Lagos",
-//     lga: "Mushin",
-//     subType: "Bungalow",
-//     propertyType: "Duplex",
-//     category: "For Sale",
-//     requestType: "Mobile",
-//     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-//     phoneNumber: "08012345678",
-//     minBudget: "₦75,000,000",
-//     maxBudget: "₦200,000,000",
-//     propertyTitle: "Property Title",
-//     userTitle: "Property Title",
-//     targetAudience: [],
-//   },
-//   {
-//     requestId: "1344567901",
-//     userName: "Joe Wanu",
-//     requestDate: "01/01/2024",
-//     pictureSrc: "/empty/SampleLandlord.jpeg",
-//     state: "Lagos",
-//     lga: "Mushin",
-//     subType: "Bungalow",
-//     propertyType: "Duplex",
-//     category: "For Sale",
-//     requestType: "Mobile",
-//     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-//     phoneNumber: "08012345678",
-//     minBudget: "₦75,000,000",
-//     maxBudget: "₦200,000,000",
-//     propertyTitle: "Property Title",
-//     userTitle: "Property Title",
-//     targetAudience: [],
-//   },
-// ];
-=======
 export const PropertyRequestData: PropertyRequestDataType[] = [
   {
     expiredDate: "01/01/2024",
@@ -266,4 +169,3 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     expiredDate: "01/01/2024",
   },
 ];
->>>>>>> 7df14c734f4c4fa24f092958a924f2623a0d31b4

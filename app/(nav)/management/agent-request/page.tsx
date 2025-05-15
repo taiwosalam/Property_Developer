@@ -47,17 +47,10 @@ const transformToPropertyRequestCardProps = (
   return {
     cardType: "agent-community",
     cardViewDetails: [
-<<<<<<< HEAD
-      { label: "Location (State)", accessor: "state" },
-      { label: "Local Government", accessor: "lga" },
-      { label: "Category", accessor: "category" },
-      { label: "Property Type", accessor: "propertyType" },
-=======
       { label: "Location(state)", accessor: "state" },
       { label: "Local Government", accessor: "lga" },
       { label: "Property Type", accessor: "propertyType" },
       { label: "Expired Date", accessor: "expiredDate" },
->>>>>>> 7df14c734f4c4fa24f092958a924f2623a0d31b4
       { label: "Min Budget", accessor: "minBudget" },
       { label: "Max Budget", accessor: "maxBudget" },
     ],

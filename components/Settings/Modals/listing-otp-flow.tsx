@@ -30,7 +30,7 @@ const ListingFlow = () => {
     return activeStep === 1 ? (
         showProceedModal ? (
             <ProceedModal changeStep={changeStep} />
-        ) : (
+        ) : (   
             <ConfirmModal changeStep={changeStep} />
         )
     ) : activeStep === 2 ? (
