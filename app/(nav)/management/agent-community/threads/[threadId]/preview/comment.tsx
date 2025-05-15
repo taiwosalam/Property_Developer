@@ -22,7 +22,7 @@ import {
   togglePropertyRequestLikeComments,
 } from "../../../my-articles/data";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon, Loader2 } from "lucide-react";
 
 export interface CommentProps {
   id: string | number;
@@ -34,6 +34,7 @@ export interface CommentProps {
   dislikes: number;
   replies?: CommentProps[];
   slug?: string;
+  user_liked?: boolean;
 }
 
 const Comment: React.FC<CommentProps> = ({
@@ -46,36 +47,31 @@ const Comment: React.FC<CommentProps> = ({
   image,
   tier_id,
   slug,
+  user_liked,
 }) => {
   const [showInput, setShowInput] = useState(false);
   const [content, setContent] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [slugPost, setSlugPost] = useState("");
   const [isLike, setIsLike] = useState(false);
-  const [reactionType, setReactionType] = useState("")
+  const [reactionType, setReactionType] = useState("");
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleReplyClick = () => {
     setShowInput((prev) => !prev);
   };
 
-  const slugger = "tipsy-skales";
+  const handleToggleCollapse = () => {
+    setIsCollapsed((prev) => !prev);
+  };
 
   const handlePostReplyComment = async () => {
     if (!slug) {
-      toast.error("No error");
       return;
     }
 
     try {
       setIsSending(true);
-      const response = await sendMyPropertyRequestCommentReply(
-        slug,
-        content,
-        id
-      );
-      if (response) {
-        toast.success("Nested comment shit");
-      }
+      await sendMyPropertyRequestCommentReply(slug, content, id);
     } catch (error) {
       console.log(error);
     } finally {
@@ -84,12 +80,11 @@ const Comment: React.FC<CommentProps> = ({
   };
 
   const handleToggleLike = async (type: string) => {
-    
     try {
       setIsLike(true);
       const res = await togglePropertyRequestLikeComments(id as string, type);
       if (res) {
-       setReactionType(type)
+        setReactionType(type);
       }
     } catch (error) {
       console.log(error);
@@ -137,7 +132,10 @@ const Comment: React.FC<CommentProps> = ({
         </button>
         <button onClick={() => handleToggleLike("1")} disabled={isLike}>
           <p className="flex items-center gap-1">
-            <LikeIcon fill="#E15B0F" stroke="#E15B0F" />
+            <LikeIcon
+              fill={`${user_liked ? "#E15B0F" : ""} `}
+              stroke={`${user_liked ? "#E15B0F" : "#000"} `}
+            />
             <span className="text-xs font-normal text-[#010A23]">{likes}</span>
           </p>
         </button>
@@ -176,16 +174,37 @@ const Comment: React.FC<CommentProps> = ({
         </div>
       )}
 
-      {replies && (
+      {replies && replies.length > 0 && (
         <>
-          <p className="ml-10 my-2 text-neutral-4 text-[10px] font-medium">
-            Replies
-          </p>
-          <div className="relative ml-10 pl-5 border-l border-neutral-300">
-            {replies.map((r) => (
-              <Comment key={r.id} {...r} />
-            ))}
+          <div className="flex items-center justify-between ml-10 my-2">
+            <p className="text-neutral-4 text-[10px] font-medium">
+              {replies.length} {replies.length === 1 ? "Reply" : "Replies"}
+            </p>
+            <button
+              onClick={handleToggleCollapse}
+              className="text-text-quaternary dark:text-darkText-1 flex items-center gap-1"
+              aria-label={isCollapsed ? "Expand replies" : "Collapse replies"}
+            >
+              {isCollapsed ? (
+                <>
+                  <ChevronDownIcon className="w-4 h-4" />
+                  <span className="text-[10px] font-normal">Show</span>
+                </>
+              ) : (
+                <>
+                  <ChevronUpIcon className="w-4 h-4" />
+                  <span className="text-[10px] font-normal">Hide</span>
+                </>
+              )}
+            </button>
           </div>
+          {!isCollapsed && (
+            <div className="relative ml-10 pl-5 border-l border-neutral-300">
+              {replies.map((r) => (
+                <Comment key={r.id} {...r} slug={slug} />
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>

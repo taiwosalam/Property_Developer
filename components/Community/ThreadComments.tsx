@@ -5,14 +5,15 @@ import Comment from "@/app/(nav)/management/agent-community/threads/[threadId]/p
 
 interface ThreadCommentProps {
   comments?: CommentProps[];
-  slug?: string;
 }
-const ThreadComments = ({ comments, slug }: ThreadCommentProps) => {
+const ThreadComments = ({ comments }: ThreadCommentProps) => {
+
+  console.log(comments)
   return (
     <div className="mt-4">
       {comments && comments.length > 0 ? (
         comments.map((comment, index) => (
-          <Comment key={comment.id} {...comment} slug={slug} />
+          <Comment key={comment.id} {...comment} />
         ))
       ) : (
         <div>There is no comment yet</div>
