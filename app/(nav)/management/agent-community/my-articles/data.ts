@@ -162,12 +162,97 @@ export const sendMyPropertyRequestComment = async (
   content: string
 ) => {
   try {
+    const response = await api.post(`/agent_requests/${slug}/comment`, {
+      content,
+    });
+    if (response.status === 200 || response.status === 201) {
+      //window.dispatchEvent(new Event("refetchComments"));
+      return true;
+    }
+    // return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error("Error sending comment:");
+    }
+    // console.error("Error sending comment:", error);
+    return false;
+    // throw error;
+  }
+};
+export const sendMyPropertyRequestCommentReply = async (
+  slug: string,
+  content: string,
+  parentId: number | string
+) => {
+  try {
     const response = await api.post(
-      `/agent-community/property-requests/${slug}/comment`,
+      `/agent_requests/${slug}/comment/${parentId}/reply`,
       { content }
     );
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchComments"));
+      return true;
+    }
     // return response.data;
-    return true;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error("Error sending comment:");
+    }
+    // console.error("Error sending comment:", error);
+    return false;
+    // throw error;
+  }
+};
+export const togglePropertyRequestLike = async (
+  slug: string,
+  modeType: string
+) => {
+  const payload = {
+    type: modeType,
+  };
+  try {
+    const response = await api.post(
+      `/agent_requests/${slug}/toggle-like`,
+      payload
+    );
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchComments"));
+      return true;
+    }
+    // return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error("Error sending comment:");
+    }
+    // console.error("Error sending comment:", error);
+    return false;
+    // throw error;
+  }
+};
+
+export const togglePropertyRequestLikeComments = async (
+  commentId: string,
+  type: string
+) => {
+  const payload = {
+    type: type,
+  };
+  try {
+    const response = await api.post(
+      `/agent_requests/comment/${commentId}/toggle-like`,
+      payload
+    );
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchComments"));
+      return true;
+    }
+    // return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
       toast.error(error.response?.data.message);

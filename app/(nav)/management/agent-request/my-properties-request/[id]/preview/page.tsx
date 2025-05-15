@@ -22,6 +22,7 @@ import { transformPropertyRequestResponse } from "../../../[requestId]/preview/d
 import BackButton from "@/components/BackButton/back-button";
 import { formatNumber } from "@/utils/number-formatter";
 import { MoreDetailsCard, SummaryCard, ThreadArticle } from "./components";
+import { CommentProps } from "@/app/(nav)/accountant/management/agent-community/type";
 
 const PreviewPage = () => {
   const router = useRouter();
@@ -32,10 +33,12 @@ const PreviewPage = () => {
   const [readBy, setReadBy] = useState<any>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [comments, setComments] = useState<any>([]);
+  const [commentThread, setCommentThread] = useState<CommentProps[] | null>(null)
 
   const { data, loading, error, isNetworkError, refetch } =
     useFetch<PropertyRequestResponse>(`/agent_requests/${id}`);
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
+
 
   useEffect(() => {
     if (data) {
@@ -43,8 +46,11 @@ const PreviewPage = () => {
       setAgentRequest(transformedData.agentRequest);
       setContributor(transformedData.contributor);
       setReadBy(transformedData.readByData);
+      setCommentThread(transformedData.comments);
     }
   }, [data]);
+
+  console.log(commentThread)
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -68,8 +74,8 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ThreadArticle propertyRequest={agentRequest} />
-          <ThreadComments />
+          <ThreadArticle propertyRequest={agentRequest} readByData={readBy}/>
+          <ThreadComments comments={commentThread || []} slug={agentRequest?.slug}/>
           <PropertyRequestComments
             id={id as string}
             slug={agentRequest?.slug ?? ""}

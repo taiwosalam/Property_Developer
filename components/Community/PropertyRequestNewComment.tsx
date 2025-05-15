@@ -47,7 +47,6 @@ const NewComment = ({ commentCount, id, slug }: Props) => {
       const status = await sendMyPropertyRequestComment(slug, message);
       if (status) {
         window.dispatchEvent(new Event("refetchComments"));
-        console.log("event triggered for comment");
       }
       (e.target as HTMLFormElement).reset();
     } catch (error) {

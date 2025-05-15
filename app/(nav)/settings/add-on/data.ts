@@ -117,7 +117,7 @@ export const personalized_domain: SubscriptionTableType = {
     {
       id: "0",
       label: "URL",
-      accessor: "url",
+      accessor: "domain",
     },
     {
       id: "1",
@@ -126,19 +126,15 @@ export const personalized_domain: SubscriptionTableType = {
     },
     {
       id: "2",
-      label: "HTTP",
-      accessor: "http",
+      label: "SSL",
+      accessor: "ssl",
     },
     {
       id: "3",
-      label: "Start Date",
+      label: "Added Date",
       accessor: "start_date",
     },
-    {
-      id: "4",
-      label: "Due Date",
-      accessor: "due_date",
-    },
+   
     {
       id: "5",
       // accessor: "more",
