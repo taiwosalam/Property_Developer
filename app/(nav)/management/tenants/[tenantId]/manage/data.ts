@@ -14,6 +14,7 @@ import { UnitStatusColors } from "@/components/Management/Properties/property-pr
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 import { formatFee } from "../../../rent-unit/data";
+import { empty } from "@/app/config";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -69,10 +70,10 @@ export interface IndividualTenantAPIResponse {
     gender: string;
     tenant_type: string;
     flag: {
-      is_flagged: 1 | 0,
-      flagged_by: number | string,
-      reason: string,
-    },
+      is_flagged: 1 | 0;
+      flagged_by: number | string;
+      reason: string;
+    };
     user_id: string;
     state: string;
     local_government: string;
@@ -130,7 +131,7 @@ export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
   const lastUpdated = data?.note?.last_updated_at
-    ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
+    ? dayjs(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
 
   const formattedStatement =
@@ -141,14 +142,13 @@ export const transformIndividualTenantAPIResponse = ({
         ? `${formatFee(stmt.amount_paid, stmt.currency || "naira")}`
         : "--- ---",
       payment_date: stmt?.payment_date
-        ? moment(stmt.payment_date, "YYYY-MM-DD").format("DD/MM/YYYY")
+        ? // ? moment(stmt.payment_date, "YYYY-MM-DD").format("DD/MM/YYYY")
+          dayjs(stmt.payment_date).format("DD/MM/YYYY")
         : "",
       start_date: stmt?.start_date
-        ? moment(stmt.start_date).format("DD/MM/YYYY")
+        ? dayjs(stmt.start_date).format("DD/MM/YYYY")
         : "",
-      end_date: stmt?.end_date
-        ? moment(stmt.end_date).format("DD/MM/YYYY")
-        : "",
+      end_date: stmt?.end_date ? dayjs(stmt.end_date).format("DD/MM/YYYY") : "",
     })) || [];
 
   const transformRentToUnitItemProps = (
@@ -181,39 +181,41 @@ export const transformIndividualTenantAPIResponse = ({
 
   return {
     id: data?.id || "",
-    picture: data?.picture || "",
-    name: data?.name || "",
-    user_id: data?.user_id || "",
-    email: data?.email || "",
+    picture: data?.picture || empty,
+    name: data?.name || "--- ---",
+    user_id: data?.user_id || "--- ---",
+    email: data?.email || "--- ---",
     user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
     badge_color: data?.user_tier ? tierColorMap[data.user_tier] : undefined,
-    phone_number: data?.phone || "",
+    phone_number: data?.phone || "--- ---",
     tenant_type: data?.tenant_type || "",
-    gender: data?.gender || "",
-    birthdate: dayjs(data.birthday).format("MMM D YYYY") || "",
-    religion: data.religion || "",
-    marital_status: data.marital_status || "",
+    gender: data?.gender || "--- ---",
+    birthdate: data.birthday
+      ? dayjs(data.birthday).format("MMM DD YYYY")
+      : "--- ---",
+    religion: data.religion || "--- ---",
+    marital_status: data.marital_status || "--- ---",
     is_flagged: data.flag.is_flagged === 1,
     flag: data.flag,
     contact_address: {
-      address: data?.address || "",
-      city: data?.city || "",
-      state: data?.state || "",
-      local_govt: data?.local_government || "",
+      address: data?.address || "--- ---",
+      city: data?.city || "--- ---",
+      state: data?.state || "--- ---",
+      local_govt: data?.local_government || "--- ---",
     },
     next_of_kin: data?.next_of_kin || {},
     others: {
-      occupation: data?.Others?.occupation || "",
+      occupation: data?.Others?.occupation || "--- ---",
       ...(data?.Others?.occupation?.toLowerCase() === "employed" && {
-        employment_type: data?.Others?.job_type || "",
+        employment_type: data?.Others?.job_type || "--- ---",
       }),
-      family_type: data?.Others?.family_type || "",
-      tenant_type: data?.tenant_type || "",
+      family_type: data?.Others?.family_type || "--- ---",
+      tenant_type: data?.tenant_type || "--- ---",
     },
     bank_details: data?.bank_details || [],
     notes: {
       last_updated: lastUpdated,
-      write_up: data?.note?.note || "",
+      write_up: data?.note?.note || "--- ---",
     },
     note: !!data?.note?.note,
     guarantor_1: data?.guarantor?.[0] || {},
