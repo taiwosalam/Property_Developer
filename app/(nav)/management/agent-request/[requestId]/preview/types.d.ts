@@ -94,6 +94,7 @@ export interface CommentData {
   createdAt: string;
   likes?: number;
   dislikes?: number;
+  user_liked: boolean;
   replies?: CommentData[];
 }
 
@@ -121,7 +122,9 @@ export interface CommentProps {
   text: string;
   likes: number;
   dislikes: number;
+  user_liked: boolean;
   replies?: CommentProps[];
+  slug: string;
 }
 
 export interface TransformedPropertyRequestData {

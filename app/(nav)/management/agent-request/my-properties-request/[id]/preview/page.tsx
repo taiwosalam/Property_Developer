@@ -50,7 +50,7 @@ const PreviewPage = () => {
     }
   }, [data]);
 
-  console.log(commentThread)
+  console.log(data)
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -75,7 +75,7 @@ const PreviewPage = () => {
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <ThreadArticle propertyRequest={agentRequest} readByData={readBy}/>
-          <ThreadComments comments={commentThread || []} slug={agentRequest?.slug}/>
+          <ThreadComments comments={commentThread || []} />
           <PropertyRequestComments
             id={id as string}
             slug={agentRequest?.slug ?? ""}
