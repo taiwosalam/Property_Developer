@@ -7,12 +7,39 @@ import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
 import { formatNumber } from "@/utils/number-formatter";
 import { formatDateRange } from "../../../data";
+import { togglePropertyRequestLike } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { toast } from "sonner";
+import { useState } from "react";
 
+interface ThreadArticleProps {
+  propertyRequest: any;
+  readByData: {
+    name: string;
+    profile_picture: string;
+    email_verified: boolean;
+    viewed_at: string;
+  }[];
+}
 export const ThreadArticle = ({
   propertyRequest,
-}: {
-  propertyRequest: any;
-}) => {
+  readByData,
+}: ThreadArticleProps) => {
+  const [isLike, setIsLike] = useState(false);
+
+  const handleToggleLike = async (type: string) => {
+    try {
+      setIsLike(true);
+      const res = await togglePropertyRequestLike(propertyRequest.slug, type);
+      if (res) {
+        toast.success("Post liked");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLike(false);
+    }
+  };
+
   return (
     <div className="">
       <div
@@ -29,43 +56,42 @@ export const ThreadArticle = ({
         </div>
 
         <div className="flex gap-2">
-          <button className="flex items-center gap-1">
+          <button
+            disabled={isLike}
+            className="flex items-center gap-1"
+            onClick={() => handleToggleLike("1")}
+          >
             <ThumbsUp />
             <p>{propertyRequest?.likesUp}</p>
           </button>
-          <button className="flex items-center gap-1">
+          <button
+            disabled={isLike}
+            className="flex items-center gap-1"
+            onClick={() => handleToggleLike("-1")}
+          >
             <ThumbsDown />
             <p>{propertyRequest?.likesDown}</p>
           </button>
 
-          <div className="flex">
-            <div className="images flex z-30">
-              <Image
-                src={user1}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-              <Image
-                src={user2}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-              <Image
-                src={user3}
-                alt="blog"
-                width={23}
-                height={23}
-                className="-mr-2"
-              />
-            </div>
-            <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              {propertyRequest?.likesUp}
-            </div>
-          </div>
+          {readByData &&
+            readByData.length > 0 &&
+            readByData.map((reader) => (
+              <div className="flex" key={reader.viewed_at}>
+                <div className="images flex z-30">
+                  <Image
+                    key={reader.viewed_at}
+                    src={user1}
+                    alt="blog"
+                    width={30}
+                    height={30}
+                    className="-mr-2"
+                  />
+                </div>
+                <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
+                  {readByData?.length}
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </div>

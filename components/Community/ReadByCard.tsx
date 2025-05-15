@@ -1,6 +1,9 @@
 import { readyByData } from "@/app/(nav)/management/agent-community/data";
 import Image from "next/image";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import BadgeIcon, {
+  BadgeIconColors,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 import user2 from "@/public/empty/user2.svg";
 import { empty } from "@/app/config";
 import { TextSkeleton } from "@/app/(nav)/management/agent-community/components";
@@ -13,6 +16,12 @@ const ReadyByCard = ({ data }: { data: any }) => {
   }, [data]);
 
   const isArray = Array.isArray(data);
+
+  const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
+    if (!tier || tier === 0) return undefined;
+    return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
+  };
+
   return (
     <div className="bg-[#EFF6FF] dark:bg-darkText-primary rounded-lg p-4">
       <h4 className="text-black dark:text-white font-semibold text-sm">
@@ -31,10 +40,15 @@ const ReadyByCard = ({ data }: { data: any }) => {
                     className="w-full h-full object-cover rounded-full bg-brand-9"
                   />
                 </div>
-                <p className="text-black dark:text-white text-md font-semibold">
+                <p
+                  className="text-black dark:text-white text-md font-semibold capitalize
+                "
+                >
                   {item.name || <TextSkeleton />}
                 </p>
-                {item.email_verified && <BadgeIcon color="blue" />}
+                {item.email_verified && (
+                  <BadgeIcon color={getBadgeColor(item?.tier_id) || "blue"} />
+                )}
                 {/* <BadgeIcon color="blue" /> */}
               </div>
               <p className="text-black dark:text-white text-sm">

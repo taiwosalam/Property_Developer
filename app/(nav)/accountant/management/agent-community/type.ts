@@ -22,6 +22,7 @@ export interface CommentProps {
   text: string;
   likes: number;
   dislikes: number;
+  slug?: string;
   replies?: CommentProps[];
 }
 

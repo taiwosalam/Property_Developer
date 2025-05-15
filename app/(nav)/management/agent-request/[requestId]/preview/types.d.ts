@@ -1,3 +1,5 @@
+import { companyData } from "@/app/(nav)/settings/company/data";
+
 export interface PropertyRequest {
   id: number;
   slug: string;
@@ -85,12 +87,14 @@ export interface CompanySummary {
 
 export interface CommentData {
   id: string | number;
-  profilePicture: string;
+  profile_picture: string;
   name: string;
-  comment: string;
+  tier: string;
+  text: string;
   createdAt: string;
   likes?: number;
   dislikes?: number;
+  user_liked: boolean;
   replies?: CommentData[];
 }
 
@@ -110,6 +114,19 @@ export interface PropertyRequestResponse {
   };
 }
 
+export interface CommentProps {
+  id: string | number;
+  name: string;
+  image?: string | null;
+  tier_id?: number;
+  text: string;
+  likes: number;
+  dislikes: number;
+  user_liked: boolean;
+  replies?: CommentProps[];
+  slug: string;
+}
+
 export interface TransformedPropertyRequestData {
   agentRequest: PropertyRequest;
   contributor: Contributor;
@@ -120,5 +137,5 @@ export interface TransformedPropertyRequestData {
     email_verified: boolean;
     viewed_at: string;
   }[];
-  comments: CommentData[];
+  comments: CommentProps[];
 }

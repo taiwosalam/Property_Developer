@@ -7,40 +7,103 @@ import {
   DislikeIcon,
   SendMessageIcon,
 } from "@/public/icons/icons";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import BadgeIcon, {
+  BadgeIconColors,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 import Input from "@/components/Form/Input/input";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
+import api from "@/services/api";
+import {
+  sendMyPropertyRequestCommentReply,
+  togglePropertyRequestLike,
+  togglePropertyRequestLikeComments,
+} from "../../../my-articles/data";
+import { toast } from "sonner";
+import { ChevronDownIcon, ChevronUpIcon, Loader2 } from "lucide-react";
 
 export interface CommentProps {
   id: string | number;
   name: string;
+  image?: string | null;
+  tier_id?: number;
   text: string;
   likes: number;
   dislikes: number;
   replies?: CommentProps[];
+  slug?: string;
+  user_liked?: boolean;
 }
 
 const Comment: React.FC<CommentProps> = ({
+  id,
   name,
   text,
   likes,
   dislikes,
   replies,
+  image,
+  tier_id,
+  slug,
+  user_liked,
 }) => {
   const [showInput, setShowInput] = useState(false);
+  const [content, setContent] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [isLike, setIsLike] = useState(false);
+  const [reactionType, setReactionType] = useState("");
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const handleReplyClick = () => {
     setShowInput((prev) => !prev);
   };
-  
+
+  const handleToggleCollapse = () => {
+    setIsCollapsed((prev) => !prev);
+  };
+
+  const handlePostReplyComment = async () => {
+    if (!slug) {
+      return;
+    }
+
+    try {
+      setIsSending(true);
+      await sendMyPropertyRequestCommentReply(slug, content, id);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleToggleLike = async (type: string) => {
+    try {
+      setIsLike(true);
+      const res = await togglePropertyRequestLikeComments(id as string, type);
+      if (res) {
+        setReactionType(type);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLike(false);
+    }
+  };
+
+  const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
+    if (!tier || tier === 0) return undefined;
+    return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
+  };
+
   return (
     <div>
       <div className="flex items-center gap-1">
         <div className="flex-shrink-0 relative w-9 h-9 rounded-full bg-neutral-2 overflow-hidden">
           <Image
-            src={user1 || empty}
+            src={image || empty}
             alt="user-real-info-from-props"
             fill
             className="object-cover"
@@ -48,8 +111,10 @@ const Comment: React.FC<CommentProps> = ({
         </div>
         <div className="space-y-1">
           <p className="text-text-primary dark:text-white text-sm font-medium flex items-center">
-            <span className="text-ellipsis line-clamp-1">{name}</span>
-            <BadgeIcon color="yellow" />
+            <span className="text-ellipsis line-clamp-1 capitalize">
+              {name}
+            </span>
+            <BadgeIcon color={getBadgeColor(tier_id) || "blue"} />
           </p>
           <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium">
             {text}
@@ -65,45 +130,81 @@ const Comment: React.FC<CommentProps> = ({
           <ReplyIcon />
           <span className="text-[10px] font-normal">Reply</span>
         </button>
-        <p className="flex items-center gap-1">
-          <LikeIcon fill="#E15B0F" stroke="#E15B0F" />
-          <span className="text-xs font-normal text-[#010A23]">{likes}</span>
-        </p>
-        <p className="flex items-center gap-1 text-text-disabled">
-          <DislikeIcon />
-          <span className="text-xs font-normal">{dislikes}</span>
-        </p>
+        <button onClick={() => handleToggleLike("1")} disabled={isLike}>
+          <p className="flex items-center gap-1">
+            <LikeIcon
+              fill={`${user_liked ? "#E15B0F" : ""} `}
+              stroke={`${user_liked ? "#E15B0F" : "#000"} `}
+            />
+            <span className="text-xs font-normal text-[#010A23]">{likes}</span>
+          </p>
+        </button>
+        <button onClick={() => handleToggleLike("-1")} disabled={isLike}>
+          <p className="flex items-center gap-1 text-text-disabled">
+            <DislikeIcon />
+            <span className="text-xs font-normal">{dislikes}</span>
+          </p>
+        </button>
       </div>
       {showInput && (
         <div className="mt-6 mb-4 flex items-center justify-between gap-3">
           <Input
+            value={content}
+            onChange={(value: string) => setContent(value)}
             id="message"
             placeholder="Type your message here"
             className="w-full"
             inputClassName="border-none bg-neutral-3"
           />
           <button
+            onClick={handlePostReplyComment}
             type="button"
             className="bg-brand-9 p-2 rounded grid place-items-center"
             aria-label="send message"
+            disabled={isSending}
           >
             <span className="text-white">
-              <SendMessageIcon />
+              {isSending ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <SendMessageIcon />
+              )}
             </span>
           </button>
         </div>
       )}
 
-      {replies && (
+      {replies && replies.length > 0 && (
         <>
-          <p className="ml-10 my-2 text-neutral-4 text-[10px] font-medium">
-            Replies
-          </p>
-          <div className="relative ml-10 pl-5 border-l border-neutral-300">
-            {replies.map((r) => (
-              <Comment key={r.id} {...r} />
-            ))}
+          <div className="flex items-center justify-between ml-10 my-2">
+            <p className="text-neutral-4 text-[10px] font-medium">
+              {replies.length} {replies.length === 1 ? "Reply" : "Replies"}
+            </p>
+            <button
+              onClick={handleToggleCollapse}
+              className="text-text-quaternary dark:text-darkText-1 flex items-center gap-1"
+              aria-label={isCollapsed ? "Expand replies" : "Collapse replies"}
+            >
+              {isCollapsed ? (
+                <>
+                  <ChevronDownIcon className="w-4 h-4" />
+                  <span className="text-[10px] font-normal">Show</span>
+                </>
+              ) : (
+                <>
+                  <ChevronUpIcon className="w-4 h-4" />
+                  <span className="text-[10px] font-normal">Hide</span>
+                </>
+              )}
+            </button>
           </div>
+          {!isCollapsed && (
+            <div className="relative ml-10 pl-5 border-l border-neutral-300">
+              {replies.map((r) => (
+                <Comment key={r.id} {...r} slug={slug} />
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>
