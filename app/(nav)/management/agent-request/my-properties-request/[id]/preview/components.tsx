@@ -72,26 +72,27 @@ export const ThreadArticle = ({
             <ThumbsDown />
             <p>{propertyRequest?.likesDown}</p>
           </button>
-
-          {readByData &&
-            readByData.length > 0 &&
-            readByData.map((reader) => (
-              <div className="flex" key={reader.viewed_at}>
-                <div className="images flex z-30">
-                  <Image
-                    key={reader.viewed_at}
-                    src={user1}
-                    alt="blog"
-                    width={30}
-                    height={30}
-                    className="-mr-2"
-                  />
+          <div>
+            {readByData &&
+              readByData.length > 0 &&
+              readByData.map((reader) => (
+                <div className="flex" key={reader.viewed_at}>
+                  <div className="images flex z-30 w-[30px] h-[30px] rounded-full -mr-2">
+                    <Image
+                      key={reader.viewed_at}
+                      src={reader.profile_picture ?? user1}
+                      alt="blog"
+                      width={30}
+                      height={30}
+                      className="-mr-2 bg-brand-9 w-full h-full rounded-full object-cover"
+                    />
+                  </div>
                 </div>
-                <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-                  {readByData?.length}
-                </div>
-              </div>
-            ))}
+              ))}
+          </div>
+          <div className="mt-1 rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
+            {readByData?.length}
+          </div>
         </div>
       </div>
     </div>

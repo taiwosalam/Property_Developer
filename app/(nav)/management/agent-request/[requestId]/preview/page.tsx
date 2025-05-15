@@ -14,9 +14,16 @@ import ThreadArticle from "@/components/AgentRequest/threadArticle";
 import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
 import ContributorDetails from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
-import { CompanySummary as CompnaySummaryPropTypes, Contributor, PropertyRequest, PropertyRequestResponse } from "./types";
+import {
+  CommentProps,
+  CompanySummary as CompnaySummaryPropTypes,
+  Contributor,
+  PropertyRequest,
+  PropertyRequestResponse,
+} from "./types";
 import { transformPropertyRequestResponse } from "./data";
 import BackButton from "@/components/BackButton/back-button";
+import ThreadComments from "@/components/Community/ThreadComments";
 const PreviewPage = () => {
   const router = useRouter();
   const { requestId } = useParams();
@@ -27,7 +34,12 @@ const PreviewPage = () => {
   const [readBy, setReadBy] = useState<any>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [comments, setComments] = useState<any>([]);
-  const [companySummary, setCompanySummary] = useState<CompnaySummaryPropTypes | []>([]);
+  const [companySummary, setCompanySummary] = useState<
+    CompnaySummaryPropTypes | []
+  >([]);
+  const [commentThread, setCommentThread] = useState<CommentProps[] | null>(
+    null
+  );
 
   const { data, loading, error, isNetworkError, refetch } =
     useFetch<PropertyRequestResponse>(`/agent_requests/${requestId}`);
@@ -39,8 +51,11 @@ const PreviewPage = () => {
       setAgentRequest(transformedData.agentRequest);
       setContributor(transformedData.contributor);
       setReadBy(transformedData.readByData);
+      setCommentThread(transformedData.comments);
     }
   }, [data]);
+
+  console.log(data);
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -64,21 +79,21 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <MoreDetailsCard
-            propertyRequest={agentRequest}
-            user={contributor}
-          />
+          <MoreDetailsCard propertyRequest={agentRequest} user={contributor} />
           <ThreadArticle
             propertyRequest={agentRequest}
             comments={comments}
+            readByData={readBy}
             // slug={agentRequest?.slug ?? ""}
           />
           <PropertyRequestComments
             id={requestId as string}
             slug={agentRequest?.slug ?? ""}
-            comments={comments}
+            comments={commentThread || []}
             setComments={setComments}
           />
+          <ThreadComments comments={commentThread || []} />
+          
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen overflow-x-hidden lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <ContributorDetails

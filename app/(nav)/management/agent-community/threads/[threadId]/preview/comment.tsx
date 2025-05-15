@@ -54,7 +54,7 @@ const Comment: React.FC<CommentProps> = ({
   const [isSending, setIsSending] = useState(false);
   const [isLike, setIsLike] = useState(false);
   const [reactionType, setReactionType] = useState("");
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const handleReplyClick = () => {
     setShowInput((prev) => !prev);
@@ -176,11 +176,16 @@ const Comment: React.FC<CommentProps> = ({
 
       {replies && replies.length > 0 && (
         <>
-          <div className="flex items-center justify-between ml-10 my-2">
-            <p className="text-neutral-4 text-[10px] font-medium">
-              {replies.length} {replies.length === 1 ? "Reply" : "Replies"}
-            </p>
-            <button
+          <div
+            className="flex items-center justify-between ml-10 my-2"
+            onClick={handleToggleCollapse}
+          >
+            <button className="text-neutral-4 text-[10px] font-medium">
+              {isCollapsed
+                ? `View replies - (${replies.length})`
+                : "Hide replies"}
+            </button>
+            {/* <button
               onClick={handleToggleCollapse}
               className="text-text-quaternary dark:text-darkText-1 flex items-center gap-1"
               aria-label={isCollapsed ? "Expand replies" : "Collapse replies"}
@@ -196,7 +201,7 @@ const Comment: React.FC<CommentProps> = ({
                   <span className="text-[10px] font-normal">Hide</span>
                 </>
               )}
-            </button>
+            </button> */}
           </div>
           {!isCollapsed && (
             <div className="relative ml-10 pl-5 border-l border-neutral-300">

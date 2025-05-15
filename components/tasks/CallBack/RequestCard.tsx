@@ -33,6 +33,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     pictureSrc,
     cardViewDetails,
     requestId,
+    
   } = props;
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -91,7 +92,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           <div className="space-y-1">
             <div className="flex items-center gap-0.5">
               <span className="text-base font-medium">{userName}</span>
-              {/* <BadgeIcon color="blue" /> */}
+              <BadgeIcon color="blue" />
             </div>
             {cardType !== "agent-community" ? (
               <div className="flex items-center gap-1">
@@ -112,7 +113,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         {cardType !== "property" && (
           <p
             className={clsx(
-              "p-2 font-normal text-xs border capitalize ml-auto w-[85px] text-center",
+              "p-2 font-normal text-xs capitalize ml-auto w-[85px] text-center",
               props.status === "completed" || props.status === "active"
                 ? "bg-status-success-1 border-status-success-1 text-status-success-2"
                 : props.status === "pending" || props.status === "inactive"

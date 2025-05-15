@@ -8,25 +8,25 @@ const MoreDetailsCard = ({
   propertyRequest: any;
   user: any;
 }) => {
-    console.log("propertyRequest", propertyRequest)
+    
   const propertyMoreDetails = [
-    { label: "Location:", value: propertyRequest?.target_audience?.join(", ") },
-    { label: "Category:", value: propertyRequest?.property_category },
-    { label: "Property Type:", value: propertyRequest?.property_type },
-    { label: "Sub Type:", value: propertyRequest?.sub_type },
+    { label: "Location:", value: propertyRequest?.state },
+    { label: "Category:", value: propertyRequest?.propertyCategory },
+    { label: "Property Type:", value: propertyRequest?.propertyType },
+    { label: "Sub Type:", value: propertyRequest?.subType },
     {
       label: "Min Budget:",
-      value: `₦${formatNumber(propertyRequest?.min_budget)}`,
+      value: `₦${formatNumber(propertyRequest?.minBudget)}`,
     },
     {
       label: "Max Budget:",
-      value: `₦${formatNumber(propertyRequest?.max_budget)}`,
+      value: `₦${formatNumber(propertyRequest?.maxBudget)}`,
     },
     {
       label: "Date Range:",
       value: formatDateRange(
-        propertyRequest?.start_date,
-        propertyRequest?.end_date
+        propertyRequest?.startDate,
+        propertyRequest?.endDate
       ),
     },
   ];

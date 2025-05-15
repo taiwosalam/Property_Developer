@@ -48,6 +48,7 @@ export interface PropertyRequestCardProps extends RequestCardBaseProps {
   cardType: "property";
   state: string;
   lga: string;
+  professional_title: string;
   propertyType: string;
   category: string;
   minBudget: string;
@@ -80,6 +81,13 @@ export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {
   cardType: "agent-community";
   userTitle: string;
   propertyTitle: string;
+
+  user?: {
+    professional_title: string;
+    tier: string;
+    role: string;
+    title: string;
+  };
   // targetAudience: string[];
   state: string;
   lga: string;
