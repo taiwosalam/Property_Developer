@@ -1,6 +1,7 @@
 import { empty } from "@/app/config";
 import api from "@/services/api";
 import { formatNumber } from "@/utils/number-formatter";
+import dayjs from "dayjs";
 
 export const formatDateRange = (startDate: string, endDate: string) => {
   const formatDate = (dateString: string) => {
@@ -32,7 +33,7 @@ export const getPropertyRequests = (
   return (
     data.map((request: any) => ({
       requestId: request.propertyRequest.id,
-      userName: request.user?.name || "--- ---",
+      userName: `${request?.user?.title || ""} ${request.user?.name || "--- ---"}`,
       requestDate: formatDate(request.propertyRequest.created_at) || "--- ---",
       pictureSrc: request.user?.picture || empty,
       state: request.propertyRequest.state || "--- ---",
@@ -48,8 +49,9 @@ export const getPropertyRequests = (
       description: request.propertyRequest.description || "--- ---",
       phoneNumber: request.user?.phone || "--- ---",
       propertyTitle: request.propertyRequest.title || "--- ---",
-      userTitle: request.user?.title || "--- ---",
+      userTitle: request.user?.professional_title || "",
       targetAudience: request.propertyRequest.target_audience,
+      expiredDate: dayjs(request.propertyRequest.end_date).format("MMM DD YYYY") || "__,__,__",
     })) || []
   );
 };
@@ -57,6 +59,7 @@ export const getPropertyRequests = (
 export interface PropertyRequestDataType {
   userName: string;
   requestDate: string;
+  expiredDate: string;
   pictureSrc: string;
   requestId: string;
   state: string;
@@ -86,6 +89,7 @@ export const getPropertyRequestData = async () => {
 
 export const PropertyRequestData: PropertyRequestDataType[] = [
   {
+    expiredDate: "01/01/2024",
     requestId: "1234567890",
     userName: "Salam AIshat",
     requestDate: "01/01/2024",
@@ -122,6 +126,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     propertyTitle: "Property Title",
     userTitle: "Property Title",
     targetAudience: [],
+    expiredDate: "01/01/2024",
   },
   {
     requestId: "1344567901",
@@ -141,6 +146,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     propertyTitle: "Property Title",
     userTitle: "Property Title",
     targetAudience: [],
+    expiredDate: "01/01/2024",
   },
   {
     requestId: "1344567901",
@@ -160,5 +166,6 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     propertyTitle: "Property Title",
     userTitle: "Property Title",
     targetAudience: [],
+    expiredDate: "01/01/2024",
   },
 ];

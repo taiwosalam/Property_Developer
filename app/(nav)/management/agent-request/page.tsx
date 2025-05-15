@@ -47,9 +47,10 @@ const transformToPropertyRequestCardProps = (
   return {
     cardType: "agent-community",
     cardViewDetails: [
+      { label: "Location(state)", accessor: "state" },
       { label: "Local Government", accessor: "lga" },
       { label: "Property Type", accessor: "propertyType" },
-      { label: "Category", accessor: "category" },
+      { label: "Expired Date", accessor: "expiredDate" },
       { label: "Min Budget", accessor: "minBudget" },
       { label: "Max Budget", accessor: "maxBudget" },
       // { label: "Target Audience", accessor: "targetAudience" },
@@ -185,6 +186,8 @@ const PropertyRequest = () => {
       }));
     }
   }, [apiData]);
+
+  console.log("apiData", apiData);
 
   const propertyRequestData = getPropertyRequests(data);
 
