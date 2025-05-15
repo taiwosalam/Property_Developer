@@ -15,8 +15,17 @@ interface Contributor {
 
 const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
   console.log("contributors here", contributors);
-  const { name, picture, title, role, phone_number, phone, email, bio, professional_title } =
-    contributors || {};
+  const {
+    name,
+    picture,
+    title,
+    role,
+    phone_number,
+    phone,
+    email,
+    bio,
+    professional_title,
+  } = contributors || {};
   return (
     <div className="flex flex-col mt-6 gap-4">
       <div className="flex flex-col md:flex-row gap-4">
@@ -34,8 +43,10 @@ const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
             {`${title || ""} ${name || "--- ---"}`}
           </p>
           <div className="flex flex-col lg:flex-col gap-2">
-            <p className="text-brand-9 text-sm">{professional_title || ""}</p>
-            <p className="text-white bg-[#003DAD] px-2 py-1 text-xs w-fit rounded-lg">
+            <p className="text-brand-9 text-sm capitalize">
+              {professional_title || ""}
+            </p>
+            <p className="text-white bg-[#003DAD] px-2 py-1 text-xs w-fit rounded-lg capitalize">
               {role || ""}
             </p>
           </div>

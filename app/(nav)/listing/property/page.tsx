@@ -93,6 +93,8 @@ const Property = () => {
     refetch,
   } = useFetch<PropertyApiResponse | any>(endpoint, config);
 
+  console.log(apiData);
+
   useEffect(() => {
     if (apiData) {
       setPageData((x) => ({ ...x, ...transformDraftUnitData(apiData) }));

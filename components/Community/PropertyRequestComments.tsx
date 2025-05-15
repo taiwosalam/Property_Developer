@@ -14,11 +14,12 @@ import {
 } from "@/app/(nav)/management/agent-community/my-articles/data";
 import PropertyRequestNewComment from "./PropertyRequestNewComment";
 import CommunityComments from "./CommunityComments";
+import { CommentProps } from "@/app/(nav)/management/agent-community/type";
 
 interface ThreadCommentProps {
   id: string;
   slug: string;
-  comments: CommentData[] & {
+  comments: CommentProps[] | CommentData[] & {
     likes?: string | number;
     dislikes?: string | number;
   };

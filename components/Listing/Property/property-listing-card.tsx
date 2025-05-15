@@ -27,6 +27,9 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import Link from "next/link";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import ListingFlow from "@/components/Settings/Modals/listing-otp-flow";
+import { useRouter } from "next/navigation";
+import { deleteProperty } from "@/app/(nav)/management/properties/[id]/edit-property/data";
+import { toast } from "sonner";
 
 const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   data,
@@ -38,15 +41,36 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
     className: "py-2 px-8",
   };
 
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const color = property_listing_status[status];
 
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const [isOpened, setIsOpened] = useState(false);
 
-  const hanldeOpen = ()=> {
-    console.log("open modal")
-    setIsOpen(true)
-  }
+  const hanldeOpen = () => {
+    console.log("open modal");
+    setIsOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!data.id) {
+      return;
+    }
+    setIsDeleting(true);
+    try {
+      const success = await deleteProperty(data.id);
+      if (success) {
+        toast.success("Property deleted");
+        window.dispatchEvent(new Event("refetchPropertyDraft"));
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div
@@ -83,10 +107,13 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               />
               <PopupImageModal
                 isOpen={isOpened}
-                images={data.images && data.images.map((image: any) => ({
-                  src: image,
-                  isVideo: false,
-                }))}
+                images={
+                  data.images &&
+                  data.images.map((image: any) => ({
+                    src: image,
+                    isVideo: false,
+                  }))
+                }
                 onClose={() => setIsOpened(false)}
                 currentIndex={0}
               />
@@ -121,19 +148,21 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
             <div className="custom-flex-col flex-1">
               {status === "draft" ? (
                 <PropertyListingParagraph>
-                  Property creation is not yet complete.
+                  <p className="text-red-500">
+                    Property creation is not yet complete.
+                  </p>
                 </PropertyListingParagraph>
-                // ) : status === "awaiting" || status === "unpublished" ? (
-                //   <PropertyListingParagraph>
-                //     Created By : Ajadi David -- Moniya Branch
-                //   </PropertyListingParagraph>
-                // ) : status === "moderation" ? (
-                //   <PropertyListingRed>
-                //     Please review the property settings and replace the picture,
-                //     as it appears to have been mistakenly used for another
-                //     property.
-                //   </PropertyListingRed>
-              ) : status === "request" ? (
+              ) : // ) : status === "awaiting" || status === "unpublished" ? (
+              //   <PropertyListingParagraph>
+              //     Created By : Ajadi David -- Moniya Branch
+              //   </PropertyListingParagraph>
+              // ) : status === "moderation" ? (
+              //   <PropertyListingRed>
+              //     Please review the property settings and replace the picture,
+              //     as it appears to have been mistakenly used for another
+              //     property.
+              //   </PropertyListingRed>
+              status === "request" ? (
                 <PropertyListingTitleDesc
                   title="Taiwo Salam & Co. Properties Ltd"
                   desc="Requests permission to add and manage this property in their portfolio."
@@ -142,26 +171,35 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
             </div>
             <div className="flex gap-3 items-center">
               {status === "draft" ? (
-                <Button
-                  {...button_props}
-                  href={`/management/properties/${data.id}/edit-property`}>continue</Button>
-                // ) : status === "unpublished" ? (
-                //   <>
-                //     <Button variant="border" {...button_props}>
-                //       manage
-                //     </Button>
-                //     <Button {...button_props}>publish</Button>
-                //   </>
-                // ) : status === "moderation" ? (
-                //   <Button variant="border" {...button_props}>
-                //     manage
-                //   </Button>
-              ) : status === "request" ? (
                 <>
                   <Button
+                    variant="light_red"
                     {...button_props}
-                    onClick={hanldeOpen}
+                    onClick={handleDelete}
                   >
+                    {isDeleting ? "please wait" : "delete"}
+                  </Button>
+                  <Button
+                    {...button_props}
+                    href={`/management/properties/${data.id}/edit-property`}
+                  >
+                    continue
+                  </Button>
+                </>
+              ) : // ) : status === "unpublished" ? (
+              //   <>
+              //     <Button variant="border" {...button_props}>
+              //       manage
+              //     </Button>
+              //     <Button {...button_props}>publish</Button>
+              //   </>
+              // ) : status === "moderation" ? (
+              //   <Button variant="border" {...button_props}>
+              //     manage
+              //   </Button>
+              status === "request" ? (
+                <>
+                  <Button {...button_props} onClick={hanldeOpen}>
                     action
                   </Button>
                   <Modal state={{ isOpen, setIsOpen }}>
@@ -169,7 +207,13 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                       <ListingFlow />
                     </ModalContent>
                   </Modal>
-                  <Button variant="border" {...button_props}>
+                  <Button
+                    variant="border"
+                    {...button_props}
+                    onClick={() =>
+                      router.push(`/management/properties/${data.id}`)
+                    }
+                  >
                     preview
                   </Button>
                 </>

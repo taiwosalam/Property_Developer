@@ -33,12 +33,13 @@ const PreviewPage = () => {
   const [readBy, setReadBy] = useState<any>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [comments, setComments] = useState<any>([]);
-  const [commentThread, setCommentThread] = useState<CommentProps[] | null>(null)
+  const [commentThread, setCommentThread] = useState<CommentProps[] | null>(
+    null
+  );
 
   const { data, loading, error, isNetworkError, refetch } =
     useFetch<PropertyRequestResponse>(`/agent_requests/${id}`);
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
-
 
   useEffect(() => {
     if (data) {
@@ -50,7 +51,7 @@ const PreviewPage = () => {
     }
   }, [data]);
 
-  console.log(data)
+  console.log(data);
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -74,14 +75,14 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ThreadArticle propertyRequest={agentRequest} readByData={readBy}/>
-          <ThreadComments comments={commentThread || []} />
+          <ThreadArticle propertyRequest={agentRequest} readByData={readBy} />
           <PropertyRequestComments
             id={id as string}
             slug={agentRequest?.slug ?? ""}
-            comments={comments}
+            comments={commentThread || []}
             setComments={setComments}
           />
+          <ThreadComments comments={commentThread || []} />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <SummaryCard agentRequest={agentRequest} />

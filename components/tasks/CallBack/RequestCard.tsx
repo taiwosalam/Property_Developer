@@ -34,6 +34,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     pictureSrc,
     cardViewDetails,
     requestId,
+    
   } = props;
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -115,7 +116,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         {cardType !== "property" && props.user && (
           <p
             className={clsx(
-              "p-2 font-normal text-xs border capitalize ml-auto w-[85px] text-center",
+              "p-2 font-normal text-xs capitalize ml-auto w-[85px] text-center",
               props.status === "completed" || props.status === "active"
                 ? "bg-status-success-1 border-status-success-1 text-status-success-2"
                 : props.status === "pending" || props.status === "inactive"

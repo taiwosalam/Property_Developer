@@ -53,7 +53,6 @@ const transformToPropertyRequestCardProps = (
       { label: "Expired Date", accessor: "expiredDate" },
       { label: "Min Budget", accessor: "minBudget" },
       { label: "Max Budget", accessor: "maxBudget" },
-      // { label: "Target Audience", accessor: "targetAudience" },
     ],
     ...data,
   };
@@ -163,7 +162,7 @@ const PropertyRequest = () => {
       params: queryParams,
     });
 
-    console.log({ menuOptions, startDate, endDate, options });
+    //console.log({ menuOptions, startDate, endDate, options });
   };
 
   const {
@@ -174,6 +173,7 @@ const PropertyRequest = () => {
     silentLoading,
     isNetworkError,
   } = useFetch<PropertyRequestApiData>(`/agent_requests/all`, config);
+
 
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
@@ -274,7 +274,7 @@ const PropertyRequest = () => {
       ) : (
         <AutoResizingGrid gap={28} minWidth={400}>
           {silentLoading ? (
-             <PropertyrequestSkeletonLoader length={10} />
+            <PropertyrequestSkeletonLoader length={10} />
           ) : (
             propertyRequestData.map((details, index) => (
               <PropertyRequestCard
