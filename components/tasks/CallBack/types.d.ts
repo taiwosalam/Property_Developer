@@ -10,6 +10,7 @@ export interface RequestCardBaseProps {
   pictureSrc: string;
   userName: string;
   requestId: string;
+  user?: string;
 }
 
 export interface CallRequestCardProps extends RequestCardBaseProps {
@@ -83,6 +84,7 @@ export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {
   // targetAudience: string[];
   state: string;
   lga: string;
+  expiredDate?: string;
   propertyType: string;
   category: string;
   minBudget: string;

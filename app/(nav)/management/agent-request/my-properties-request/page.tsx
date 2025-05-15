@@ -49,6 +49,8 @@ interface ApiUser {
   name: string;
   phone: string;
   picture: string;
+  professional_title: string;
+  title: string;
   profile_title: string;
   tier: string;
   company_is_verified: string | null;

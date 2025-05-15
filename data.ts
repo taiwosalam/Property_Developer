@@ -96,10 +96,12 @@ export const propertyCategories = {
 export const unitTypes = {
   residential: ["apartment", "block of flat", "house", "land"],
   "mixed use": ["apartment", "block of flat", "house", "land"],
-  commercial: ["land", "industrial", "factory", "commercial"],
+  // commercial: ["land", "industrial", "factory", "commercial"],
+  commercial: ["land", "industrial/commercial", "factory"],
   estate: ["apartment", "flat", "house", "land"],
   // facility: ["land", "industry & factory"],
-  facility: ["land", "industrial", "factory", "commercial"],
+  // facility: ["land", "industrial", "factory", "commercial"],
+  facility: ["land", "industrial/commercial", "factory"],
 };
 
 export type Categories = keyof typeof unitTypes;
