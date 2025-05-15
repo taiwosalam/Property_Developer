@@ -13,6 +13,7 @@ import PropertyRequestModal from "../property-requests/property-request-modal";
 import DepositRequestModal from "../deposit-requests/deposit-request-modal";
 import Link from "next/link";
 import { empty } from "@/app/config";
+import { truncateText } from "../vehicles-record/data";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -91,8 +92,10 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           <Picture size={50} src={pictureSrc || empty} rounded />
           <div className="space-y-1">
             <div className="flex items-center gap-0.5">
-              <span className="text-base font-medium">{userName}</span>
-              <BadgeIcon color="blue" />
+              <span className="text-base font-medium">
+                {truncateText(userName, 30)}
+              </span>
+              {/* <BadgeIcon color="blue" /> */}
             </div>
             {cardType !== "agent-community" ? (
               <div className="flex items-center gap-1">
@@ -110,7 +113,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         </div>
         {/* I noticed that the property request card has no status */}
         {/* {cardType !== "property" && cardType !== "agent-community" && ( */}
-        {cardType !== "property" && (
+        {cardType !== "property" && props.user && (
           <p
             className={clsx(
               "p-2 font-normal text-xs capitalize ml-auto w-[85px] text-center",
@@ -142,7 +145,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             : cardType === "property"
             ? "Property Request"
             : cardType === "agent-community"
-            ? `${props.propertyTitle}`
+            ? `${truncateText(props.propertyTitle, 30)}`
             : cardType === "deposit"
             ? "Caution Deposit Request"
             : ""}
@@ -224,16 +227,18 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         )}
         {cardType === "agent-community" ? (
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              aria-label="Message"
-              className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
-            >
-              Messsage
-            </button>
+            {!props.user && (
+              <button
+                type="button"
+                aria-label="Message"
+                className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
+              >
+                Messsage
+              </button>
+            )}
 
             <Link
-              href={`/management/agent-request/${ 
+              href={`/management/agent-request/${
                 props.user ? "my-properties-request/" : ""
               }${requestId}/preview`}
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"

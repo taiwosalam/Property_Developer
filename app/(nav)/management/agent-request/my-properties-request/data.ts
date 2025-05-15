@@ -85,26 +85,39 @@ export const createPropertyRequest = async (
 // DONE WITH CREATEPROPERTYREQUEST
 
 // Transform raw API data directly into card props
-export const transformToCardProps = (data: any[]): PropertyRequestDataType[] =>
-  data.map((request: any) => ({
-    requestId: request.id,
-    userName: request.user?.name || "--- ---",
-    requestDate: dayjs(request.created_at).format("MMM DD YYYY") || "__,__,__",
-    pictureSrc: request.user?.profile?.picture || empty,
-    state: request.state || "--- ---",
-    lga: request.lga || "--- ---",
-    propertyType: request.property_type || "--- ---",
-    category: request.property_category || "--- ---",
-    subType: request.sub_type || "--- ---",
-    minBudget: `₦${formatNumber(request.min_budget)}` || "--- ---",
-    maxBudget: `₦${formatNumber(request.max_budget)}` || "--- ---",
-    requestType: "Web",
-    description: request.description || "--- ---",
-    phoneNumber: request.user?.phone || "--- ---",
-    propertyTitle: request.title || "--- ---",
-    userTitle: request.user?.title || "--- ---",
-    targetAudience: request.target_audience || [],
-  })) || [];
+export const transformToCardProps = (
+  data: any[]
+): PropertyRequestDataType[] => {
+  const transformed =
+    data.map((request: any) => {
+      const cardProps = {
+        requestId: request.id,
+        userName: `${request?.user?.title || ""} ${
+          request.user?.name || "--- ---"
+        }`,
+        requestDate:
+          dayjs(request.created_at).format("MMM DD YYYY") || "__,__,__",
+        pictureSrc: request.user?.profile?.picture || empty,
+        state: request.state || "--- ---",
+        lga: request.lga || "--- ---",
+        propertyType: request.property_type || "--- ---",
+        category: request.property_category || "--- ---",
+        subType: request.sub_type || "--- ---",
+        minBudget: `₦${formatNumber(request.min_budget)}` || "--- ---",
+        maxBudget: `₦${formatNumber(request.max_budget)}` || "--- ---",
+        requestType: "Web",
+        description: request.description || "--- ---",
+        phoneNumber: request.user?.phone || "--- ---",
+        propertyTitle: request.title || "--- ---",
+        userTitle: request.user?.professional_title || "--- ---",
+        targetAudience: request.target_audience || [],
+        expiredDate:
+          dayjs(request.end_date).format("MMM DD YYYY") || "__,__,__",
+      };
+      return cardProps;
+    }) || [];
+  return transformed;
+};
 
 export interface ApiPropertyRequest {
   id: number;
@@ -133,6 +146,8 @@ export interface ApiUser {
   phone: string;
   picture: string;
   profile_title: string;
+  title: string;
+  professional_title: string;
   tier: string;
   company_is_verified: string | null;
   company_status: string | null;
@@ -143,13 +158,15 @@ export interface ApiDataItem {
   user: ApiUser;
 }
 
-export const transformToAgentCommunityCardProps = (
+export const transformToAgentCommunityCardProps: (
+  apiData: ApiDataItem[]
+) => AgentCommunityRequestCardProps[] = (
   apiData: ApiDataItem[]
 ): AgentCommunityRequestCardProps[] => {
   return apiData.map(({ propertyRequest, user }) => ({
     cardType: "agent-community",
-    userName: user.name,
-    userTitle: user.profile_title,
+    userName: `${user?.title || ""} ${user?.name || "--- ---"}`,
+    userTitle: user.professional_title,
     pictureSrc: user.picture,
     // requestId: propertyRequest.slug,
     requestId: propertyRequest.id.toString(),
@@ -164,14 +181,15 @@ export const transformToAgentCommunityCardProps = (
     category: propertyRequest.property_category,
     minBudget: `₦${formatNumber(parseFloat(propertyRequest.min_budget))}`,
     maxBudget: `₦${formatNumber(parseFloat(propertyRequest.max_budget))}`,
+    expiredDate: dayjs(propertyRequest.end_date).format("MMM DD YYYY"),
     // targetAudience: propertyRequest.professional_title,
     cardViewDetails: [
+      { label: "Location(state)", accessor: "state" },
+      { label: "Local Government", accessor: "lga" },
       { label: "Property Type", accessor: "propertyType" },
-      { label: "Category", accessor: "category" },
+      { label: "Expired Date", accessor: "expiredDate" },
       { label: "Min Budget", accessor: "minBudget" },
       { label: "Max Budget", accessor: "maxBudget" },
-      { label: "State", accessor: "state" },
-      { label: "Local Government", accessor: "lga" },
     ],
     published: propertyRequest.published === 1,
     description: propertyRequest.description,
