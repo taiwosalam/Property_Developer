@@ -28,6 +28,10 @@ import { toast } from "sonner";
 import Button from "../Form/Button/button";
 import Link from "next/link";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import SponsorModal from "./Modals/sponsor-modal";
+import { CompanySettingDomain } from "./CompanySettingDomain";
+import { CompanySettingsDomainTable } from "./company-domain-table";
 
 const SettingsWebsiteDomain = () => {
   const [customDomain, setCustomDomain] = useState("");
@@ -37,6 +41,9 @@ const SettingsWebsiteDomain = () => {
   const [userPlan, setUserPlan] = useState("");
   const [isCheckingDomain, setCheckingDomain] = useState(false);
   //const [isOwner, setIsOwner] = useState<boolean | string>(false);
+  const [domainDetails, setDomainDetails] = useState<any[]>([]);
+
+  const [isDomainModal, setIsDomainModal] = useState(false);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
     "/property-manager-subscription/active"
@@ -56,12 +63,11 @@ const SettingsWebsiteDomain = () => {
 
   const { data: companySettings, refetch } =
     useFetch<CompanySettingsResponse>("/company/settings");
-    useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
+  useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
 
-    const isOwner =
-      customDomain &&
-      (`${customDomain}.ourlisting.ng` === companySettings?.data?.domain);
-
+  const isOwner =
+    customDomain &&
+    `${customDomain}.ourlisting.ng` === companySettings?.data?.domain;
 
   useEffect(() => {
     if (companySettings) {
@@ -71,6 +77,15 @@ const SettingsWebsiteDomain = () => {
         : "";
       const updatedTemplate =
         companySettings?.data?.website_settings?.web_template;
+
+      const customDomain = {
+        domain: companySettings?.data?.custom_domain ?? "___ ___",
+        ssl: companySettings?.data?.custom_domain_ssl_status ?? "____ ____",
+        status: companySettings?.data?.custom_domain_status,
+      };
+
+      setDomainDetails([customDomain]);
+
       setCustomDomain(domain);
       setSelectedTemplate(updatedTemplate || "");
     }
@@ -197,9 +212,9 @@ const SettingsWebsiteDomain = () => {
           market your properties listings portfolio to the world."
         />
         <p className="text-text-secondary dark:text-darkText-1 text-md mt-4">
-          Customize website domain name
+          Website domain name
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 mb-4 mt-2 items-start sm:items-center w-full">
+        <div className="flex flex-col sm:flex-row gap-8 mb-4 mt-2 items-start sm:items-center w-full">
           <Input
             id="custom_domain"
             label=""
@@ -226,6 +241,34 @@ const SettingsWebsiteDomain = () => {
               {getStatusText()}
             </div>
           )}
+
+          {domainDetails &&
+            domainDetails.length > 0 &&
+            !domainDetails[0].domain && (
+              <Modal
+                state={{
+                  isOpen: isDomainModal,
+                  setIsOpen: setIsDomainModal,
+                }}
+              >
+                <ModalTrigger>
+                  <Button
+                    variant="change"
+                    size="xs_normal"
+                    className="py-2 px-3"
+                  >
+                    Add Custom Domain
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <CompanySettingDomain setIsOpen={setIsDomainModal} />
+                </ModalContent>
+              </Modal>
+            )}
+        </div>
+
+        <div>
+          <CompanySettingsDomainTable data={domainDetails} />
         </div>
 
         {/* { <div className="rssFeed flex flex-col gap-1 mb-4">

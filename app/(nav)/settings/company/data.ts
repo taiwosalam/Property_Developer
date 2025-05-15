@@ -487,3 +487,22 @@ export const checkWebsiteDomain = async (domainName: string) => {
     return false;
   }
 }
+
+export const addCustomDomain = async (companyId: string, domainName: string) => {
+  const payload = {
+    custom_domain: domainName
+  }
+  try{
+    const data = await api.post(`company/add-custom-domain/${companyId}`, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if(data.status === 200 || data.status === 201){
+      return true;
+    }
+  }catch(error){
+    handleAxiosError(error);
+    return false;
+  }
+}

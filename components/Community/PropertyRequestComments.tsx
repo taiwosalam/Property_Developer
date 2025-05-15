@@ -13,6 +13,7 @@ import {
   togglePropertyRequestCommentLike,
 } from "@/app/(nav)/management/agent-community/my-articles/data";
 import PropertyRequestNewComment from "./PropertyRequestNewComment";
+import CommunityComments from "./CommunityComments";
 
 interface ThreadCommentProps {
   id: string;
@@ -30,6 +31,7 @@ const PropertyRequestComments = ({
   slug,
   comments,
   edit,
+  setComments
 }: ThreadCommentProps) => {
   // console.log("comments", comments);
   const [likeCount, setLikeCount] = useState(() => {
@@ -115,7 +117,7 @@ const PropertyRequestComments = ({
         const status = await sendMyPropertyRequestComment(slug, message);
         if (status) {
           window.dispatchEvent(new Event("refetchComments"));
-          console.log("event triggered for commentx");
+          console.log("event triggered for comments");
         }
       }
     } catch (error) {
@@ -138,19 +140,23 @@ const PropertyRequestComments = ({
         />
       )}
       <div className="mt-4">
-        {comments?.map((comment) => (
+        {/* <CommunityComments 
+          slug={slug}
+          comments={comments}
+          setComments={setComments}/> */}
+        {/* {comments?.map((comment) => (
           <Comment
             key={comment.id}
             {...comment}
             handleLike={(commentId: string | number) =>
-              handleLike(id, commentId)
+              handleLike(id, commentId2)
             }
             handleDislike={(commentId: string | number) =>
               handleDislike(id, commentId)
             }
             handleSubmit={handleSubmit}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { empty } from "@/app/config";
 import api from "@/services/api";
-import { PropertyRequestResponse, TransformedPropertyRequestData } from "./types";
+import { CommentProps, PropertyRequestResponse, TransformedPropertyRequestData } from "./types";
 import dayjs from "dayjs";
+
 
 export const calculateYearsInIndustry = (dateString: string) => {
   if (!dateString) return null;
@@ -198,6 +199,15 @@ export const transformPropertyRequestResponse = (
       services: company_summary.services || [],
     },
     readByData: readByData || [],
-    comments: comments || [],
+    comments: comments.map((comment) => ({
+      id: comment.id,
+      name: comment.name,
+      image: comment.profile_picture,
+      tier_id: comment.tier ? Number(comment.tier) : 0,
+      text: comment.text,
+      likes: comment.likes ?? 0,
+      dislikes: comment.dislikes ?? 0,
+      replies: comment.replies as CommentProps[] || [],
+    })),
   };
 };

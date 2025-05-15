@@ -225,6 +225,9 @@ interface CompanySettingsData {
   sms_name: string; // e.g., ""
   smtp_settings: SmtpSettings;
   domain: string | null; // e.g., null
+  custom_domain: string | null;
+  custom_domain_status: string | null;
+  custom_domain_ssl_status: string | null;
   rent_penalty_setting: RentPenaltySetting;
   zoom_moderation: boolean;
   subscription_due_rent_notification: boolean;
