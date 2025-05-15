@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import ServerError from "@/components/Error/ServerError";
 import { updateBranch } from "./data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import BranchBankSettings from "@/components/Settings/branch-bank";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -122,8 +123,14 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
           somedata={branchData}
           setUpdateRequestLoading={setUpdateRequestLoading}
         />
-        <SettingsBank
+        {/* <SettingsBank
           branch
+          branch_account_name={branchData?.account_name}
+          branch_account_number={branchData?.account_number}
+          branch_bank_name={branchData?.bank_name}
+          action={updateBranchBankDetails}
+        /> */}
+        <BranchBankSettings
           branch_account_name={branchData?.account_name}
           branch_account_number={branchData?.account_number}
           branch_bank_name={branchData?.bank_name}
