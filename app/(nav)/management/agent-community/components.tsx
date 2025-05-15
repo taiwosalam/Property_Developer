@@ -28,6 +28,7 @@ interface Props {
   handleDislike: () => void;
   userAction?: "like" | "dislike" | null;
   isLoading: boolean;
+  user_liked?: boolean;
   commentCount: number;
   slug: string;
 }
@@ -199,14 +200,17 @@ export const LikeDislikeButtons = ({
   handleDislike,
   userAction,
   isLoading,
+  user_liked,
 }: Props) => (
   <div className="flex gap-2">
     <button
       className={`flex items-center gap-1 ${
-        userAction === "like" ? "text-blue-500" : ""
+        user_liked || userAction === "like" ? "text-blue-600" : ""
       }`}
       onClick={handleLike}
-      disabled={isLoading}
+      disabled={isLoading || user_liked}
+      aria-label="Like"
+      aria-pressed={user_liked || userAction === "like"}
     >
       <ThumbsUp />
       <p>{likeCount}</p>

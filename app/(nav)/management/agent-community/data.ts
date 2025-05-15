@@ -161,6 +161,7 @@ export const  transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
     shareLink: thread.post ? thread.post.share_link : "--- ---",
     video: thread.post ? thread.post.video_link : "--- ---",
     published: thread.post.published, 
+    user_liked: thread.post.user_liked, 
   }));
 };
 

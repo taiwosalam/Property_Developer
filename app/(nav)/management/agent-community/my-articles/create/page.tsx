@@ -144,7 +144,7 @@ const SecondSection = ({
       <Select
         options={stateOptions}
         id="state"
-        label="state"
+        label="Target Audience"
         value={address.state}
         onChange={(value) => handleAddressChange("state", value)}
         required

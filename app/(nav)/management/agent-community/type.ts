@@ -16,6 +16,7 @@ export type ThreadCardProps = {
   shareLink: string;
   setIsLikeDislikeLoading?: (value: boolean) => void; 
   published?: boolean;
+  user_liked?: boolean;
 };
 
 export interface CommentProps {

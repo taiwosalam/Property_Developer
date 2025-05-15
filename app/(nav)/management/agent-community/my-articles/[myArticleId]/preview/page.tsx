@@ -30,6 +30,9 @@ import DOMPurify from "dompurify";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import { transformApiData } from "../../../threads/[threadId]/preview/data";
+import { ThreadProvider } from "@/utils/my-article-context";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { Summary, ThreadArticle } from "../components";
 
 interface ArticleResponse {
   post: any;
@@ -77,239 +80,73 @@ const ThreadPreview = () => {
     }
   }, [data]);
 
-  // console.log("data", data);
 
-  if (loading)
-    return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-      </div>
-    );
-
+  if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
-
   if (error) return <ServerError error={error} />;
+
   return (
-    <div>
-      <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-        <div className="flex items-center gap-1 mb-1">
-          <button
-            type="button"
-            aria-label="Go Back"
-            onClick={() => router.back()}
-            className="p-2"
-          >
-            <ChevronLeft />
-          </button>
-          {loading ? <Loader className="h-7 w-48" /> : <h1>{post?.title}</h1>}
-        </div>
-        <Button
-          href={`/management/agent-community/my-articles/${slug}/manage`}
-          size="sm"
-          className="py-2 px-3"
-        >
-          Manage Article
-        </Button>
-      </div>
-      <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
-        <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <div className="slider h-[250px] md:h-[300px] lg:h-[350px] w-full relative px-[20px] md:px-[35px]">
-            {loading ? (
-              <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-            ) : post?.media?.length > 0 ? (
-              <CommunitySlider
-                images={post?.media}
-                video_link={post?.video_link}
-                thread
-              />
-            ) : (
-              <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500 dark:text-gray-400">No image</p>
-              </div>
-            )}
+    <ThreadProvider
+      post={post}
+      comments={comments}
+      slug={slug}
+      loading={loading}
+      setComments={setComments}
+      refetchComments={refetchComments}
+    >
+      <div>
+        <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+          <div className="flex items-center gap-1 mb-1">
+            <button
+              type="button"
+              aria-label="Go Back"
+              onClick={() => router.back()}
+              className="p-2"
+            >
+              <ChevronLeft />
+            </button>
+            {loading ? <Loader className="h-7 w-48" /> : <h1>{post?.title}</h1>}
           </div>
-          <ThreadArticle post={post} slug={slug} comments={comments} />
-          <CommunityComments
-            slug={slug}
-            comments={comments}
-            setComments={setComments}
-          />
+          <Button
+            href={`/management/agent-community/my-articles/${slug}/manage`}
+            size="sm"
+            className="py-2 px-3"
+          >
+            Manage Article
+          </Button>
         </div>
-        <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <Summary post={post} loading={loading} />
-          <ReadyByCard data={readyBy} />
+        <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
+          <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+            <div className="slider h-[250px] md:h-[300px] lg:h-[350px] w-full relative px-[20px] md:px-[35px]">
+              {loading ? (
+                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+              ) : post?.media?.length > 0 ? (
+                <CommunitySlider
+                  images={post?.media}
+                  video_link={post?.video_link}
+                  thread
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                  <p className="text-gray-500 dark:text-gray-400">No image</p>
+                </div>
+              )}
+            </div>
+            <ThreadArticle  />
+            <CommunityComments
+              slug={slug}
+              comments={comments}
+              setComments={setComments}
+            />
+          </div>
+          <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+            <Summary />
+            <ReadyByCard data={readyBy} />
+          </div>
         </div>
       </div>
-    </div>
+    </ThreadProvider>
   );
 };
 
 export default ThreadPreview;
-
-const ThreadArticle = ({
-  post,
-  slug,
-  comments,
-}: {
-  post: any;
-  slug: string;
-  comments: CommentData[];
-}): JSX.Element => {
-  const [likeCount, setLikeCount] = useState(
-    post?.likes_up ? parseInt(post?.likes_up) : 0
-  );
-  const [dislikeCount, setDislikeCount] = useState(
-    post?.likes_down ? parseInt(post?.likes_down) : 0
-  );
-  const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleLike = async () => {
-    if (isLoading || userAction === "like") return;
-    setIsLoading(true);
-
-    try {
-      await toggleLike(slug, 1);
-      if (userAction === "dislike") {
-        setDislikeCount((prev) => prev - 1);
-      }
-      setLikeCount((prev) => prev + 1);
-      setUserAction("like");
-    } catch (error) {
-      toast.error("Error toggling like");
-      console.error("Error toggling like:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDislike = async () => {
-    if (isLoading || userAction === "dislike") return;
-    setIsLoading(true);
-
-    try {
-      await toggleLike(slug, -1);
-      if (userAction === "like") {
-        setLikeCount((prev) => prev - 1);
-      }
-      setDislikeCount((prev) => prev + 1);
-      setUserAction("dislike");
-    } catch (error) {
-      toast.error("Error toggling dislike");
-      console.error("Error toggling dislike:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (!post) {
-    return <ThreadArticleSkeleton />;
-  }
-
-  const sanitizedHTML = DOMPurify.sanitize(post?.content || "");
-
-  return (
-    <div className="mt-4">
-      <div
-        className="text-sm text-darkText-secondary mt-2"
-        dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
-      />
-      <div className="flex justify-between mt-6">
-        <div className="flex items-center gap-2">
-          <span className="text-text-secondary font-semibold text-md">
-            Comments
-          </span>
-        </div>
-
-        <div className="flex gap-2">
-          <LikeDislikeButtons
-            commentCount={post?.comments_count}
-            slug={slug}
-            likeCount={likeCount}
-            dislikeCount={dislikeCount}
-            handleLike={handleLike}
-            handleDislike={handleDislike}
-            userAction={userAction}
-            isLoading={isLoading}
-          />
-          <div className="flex items-center">
-            <div className="images flex z-30">
-              {comments.slice(0, 3).map((comment, index) => (
-                <Image
-                  key={index}
-                  src={comment.profile_picture}
-                  alt={`commenter ${index + 1}`}
-                  width={300}
-                  height={300}
-                  className="-mr-2 h-[30px] w-[30px] object-cover rounded-full"
-                />
-              ))}
-            </div>
-            {post?.comments_count > 0 && (
-              <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-                +{post?.comments_count}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Summary = ({ post, loading }: { post: any; loading: boolean }) => {
-  if (loading) {
-    return <SummarySkeleton />;
-  }
-  const MyArticleSummaryData = [
-    { label: "Posted Date", value: post?.created_at },
-    { label: "Last Updated", value: post?.updated_at },
-    { label: "Total Seen", value: post?.views_count },
-    { label: "Total Comments", value: post?.comments_count },
-    {
-      label: "Target Audience",
-      value: post?.target_audience
-        ? JSON.parse(post.target_audience).join(", ")
-        : "",
-    },
-  ];
-  return (
-    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
-      <h2 className="text-black font-semibold text-lg dark:text-white">
-        Summary
-      </h2>
-      <div className="flex flex-col mt-4 gap-2">
-        {MyArticleSummaryData.map((item, index) => (
-          <div
-            className="flex gap-4 justify-between w-full items-start"
-            key={index}
-          >
-            <p className="text-[#747474] text-sm w-1/2">{item.label}</p>
-            <p className="dark:text-white text-black text-sm flex items-start w-1/2">
-              {item.value}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-const SummarySkeleton = () => {
-  return (
-    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg animate-pulse">
-      <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-4" />
-      <div className="flex flex-col gap-2">
-        {[1, 2, 3, 4, 5].map((item) => (
-          <div
-            key={item}
-            className="flex gap-4 justify-between w-full items-start"
-          >
-            <div className="h-4 w-1/3 bg-gray-200 dark:bg-gray-700 rounded" />
-            <div className="h-4 w-1/2 bg-gray-200 dark:bg-gray-700 rounded" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
