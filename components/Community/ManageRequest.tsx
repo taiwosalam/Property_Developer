@@ -18,6 +18,7 @@ import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
 import { comments } from "@/app/(nav)/accountant/management/agent-community/data";
 import AgentRequestLoader from "../Loader/agent-reuest";
+import { RESTRICTED_ARTICLES_WORDS } from "@/app/(nav)/management/agent-community/my-articles/data";
 
 const SkeletonBox = ({ className }: { className: string }) => (
   <div
@@ -79,9 +80,9 @@ export const PropertyRequestFirstSection = ({
         id="content"
         label=""
         placeholder={desc ? desc : placeholderText}
-        className="w-full mt-4 min-h-[300px]"
+        className="w-full mt-4 min-h-[200px]"
         value={data?.content || data?.description || ""}
-        restrictedWords={["mubarak", "oyo", "mad"]}
+        restrictedWords={RESTRICTED_ARTICLES_WORDS}
         // minChar={200}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
       />

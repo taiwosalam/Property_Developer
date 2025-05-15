@@ -122,12 +122,14 @@ export const ThreadFooter = ({
   slug,
   shareLink,
   setIsLikeDislikeLoading,
+  user_liked
 }: {
   comments: string;
   likes: string;
   dislikes: string;
   slug: string;
   shareLink: string;
+  user_liked?: boolean;
   setIsLikeDislikeLoading?: (value: boolean) => void;
 }) => {
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
@@ -192,10 +194,10 @@ export const ThreadFooter = ({
       <div className="like-dislike flex gap-2">
         <button
           className={`flex items-center gap-1 ${
-            userAction === "like" ? "text-blue-500" : ""
+              user_liked || userAction === "like" ? "text-blue-500" : ""
           }`}
           onClick={handleLike}
-          disabled={isLoading}
+          disabled={isLoading || user_liked}
         >
           <ThumbsUp />
           <p>{likes}</p>
