@@ -34,7 +34,7 @@ import { DomainFields, SponsorFields } from "../../settings/add-on/data";
 const AddsOnDomainRecord = () => {
   const searchParams = useSearchParams();
   const search = searchParams.get("b");
-  
+
   return (
     <div className="space-y-9">
       <FilterBar
@@ -60,15 +60,38 @@ const AddsOnDomainRecord = () => {
         //     ? address.formattedAddress
         //     : "___ ___",
         // }))}
-        // fileLabel={"Activity Reports"}
+        // fileLabel={
+        // "Activity Reports"}
       />
       <section>
-        <CustomTable
-          fields={DomainFields}
-          data={[]}
-          tableHeadClassName="h-[45px]"
-        />
+        {[].length === 0 ? (
+          <EmptyList
+            noButton
+            title="No Property Data Available Yet"
+            body={
+              <p>
+                Currently, there is no property data available for export. Once
+                data is added to the system, they will be displayed here and
+                ready for download or export.
+                <br />
+                <br />
+                <p>
+                  This section will automatically update to show all available
+                  property records as they are created or imported into the
+                  platform.
+                </p>
+              </p>
+            }
+          />
+        ) : (
+          <CustomTable
+            fields={DomainFields}
+            data={[]}
+            tableHeadClassName="h-[45px]"
+          />
+        )}
       </section>
+     
     </div>
   );
 };

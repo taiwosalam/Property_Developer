@@ -864,9 +864,7 @@ const Others = () => {
                         phone_number={director.phone_number}
                         picture_url={director.picture}
                         user_tag={director.professional_title}
-                        badge_color={
-                          getBadgeColor(director.tier_id) || undefined
-                        }
+                        badge_color={ director.tier_id === 2 ? "gray" : undefined }
                         is_verified={director?.is_verified}
                       />
                     </ModalTrigger>

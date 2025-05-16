@@ -54,13 +54,19 @@ const UserCard: React.FC<UserCardProps> = ({
         />
       </div>
       <div className="flex-1 flex flex-col items-start">
-        <p className="flex items-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
+        <p className="flex items-center justify-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
           <span className="text-ellipsis line-clamp-1 break-all">{name} </span>
           {/* {is_verified && badge_color && user_tag !== "web" && (
             <BadgeIcon color={badge_color} />
           )} */}
           {badge_color && user_tag !== "web" && (
             <BadgeIcon color={badge_color} />
+          )}
+
+          {is_active === 0 && (
+            <div className="text-red-500 text-xs pl-2">
+              <FlagBadge size={18} />
+            </div>
           )}
         </p>
         <p className="font-normal text-black dark:text-darkText-1 text-xs mb-1 text-ellipsis line-clamp-1 break-all">
@@ -88,11 +94,7 @@ const UserCard: React.FC<UserCardProps> = ({
         <p className="font-semibold text-xs text-[#8D8D8D] dark:text-darkText-2 text-ellipsis line-clamp-1">
           {phone_number}
         </p>
-        {is_active === 0 && (
-          <div className="text-red-500 text-xs mt-1">
-            <Lock size={14}/>
-          </div>
-        )}
+
         {other_info && (
           <p className="w-40 font-medium text-xs text-black dark:text-darkText-1 mt-2 text-ellipsis line-clamp-1">
             {other_info}

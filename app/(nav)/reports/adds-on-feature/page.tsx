@@ -107,10 +107,17 @@ const AddsOnFeatureRecord = () => {
     }
   }, [enrollmentData, loading, setGlobalStore]);
 
-   const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const search = searchParams.get("b");
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Add-On Feature Listing" view="table" />;
+  if (loading)
+    return (
+      <CustomLoader
+        layout="page"
+        pageTitle="Add-On Feature Listing"
+        view="table"
+      />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -139,11 +146,36 @@ const AddsOnFeatureRecord = () => {
         fileLabel={"Feature Reports"}
       />
       <section>
-        <CustomTable
-          fields={FeatureFields}
-          data={featureTable ? featureTable?.data.slice(0, 7) : []}
-          tableHeadClassName="h-[45px]"
-        />
+        {featureTable && featureTable.data.length === 0 && !loading ? (
+          !!config.params.search ? (
+            <SearchError />
+          ) : (
+            <EmptyList
+              noButton
+              title="No Property Data Available Yet"
+              body={
+                <p>
+                  Currently, there is no property data available for export.
+                  Once data is added to the system, they will be displayed here
+                  and ready for download or export.
+                  <br />
+                  <br />
+                  <p>
+                    This section will automatically update to show all available
+                    property records as they are created or imported into the
+                    platform.
+                  </p>
+                </p>
+              }
+            />
+          )
+        ) : (
+          <CustomTable
+            fields={FeatureFields}
+            data={featureTable ? featureTable?.data.slice(0, 7) : []}
+            tableHeadClassName="h-[45px]"
+          />
+        )}
       </section>
     </div>
   );

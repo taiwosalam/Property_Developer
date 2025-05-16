@@ -1,4 +1,4 @@
-import { ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import { DislikeIcon, LikeIcon, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import Image from "next/image";
 import React, { useState } from "react";
 import { CommentData } from "../tasks/announcements/comment";
@@ -55,7 +55,10 @@ const ThreadArticle = ({
             className="flex items-center gap-1"
             onClick={() => handleToggleLike("1")}
           >
-            <ThumbsUp />
+            <LikeIcon
+              fill={`${propertyRequest?.user_liked ? "#E15B0F" : ""} `}
+              stroke={`${propertyRequest?.user_liked ? "#E15B0F" : "#000"} `}
+            />
             <p>{propertyRequest?.likesUp}</p>
           </button>
           <button
@@ -63,7 +66,10 @@ const ThreadArticle = ({
             className="flex items-center gap-1"
             onClick={() => handleToggleLike("-1")}
           >
-            <ThumbsDown />
+            <DislikeIcon
+              fill={`${propertyRequest?.user_disliked ? "#E15B0F" : "none"} `}
+              stroke={`${propertyRequest?.user_disliked ? "#E15B0F" : "#000"} `}
+            />
             <p>{propertyRequest?.likesDown}</p>
           </button>
 

@@ -131,6 +131,7 @@ const transformComment = (
   text: comment.text,
   likes: comment.likes ?? 0,
   user_liked: comment.user_liked,
+  user_disliked: comment.user_disliked,
   dislikes: comment.dislikes ?? 0,
   replies: comment.replies?.map((reply) => transformComment(reply, slug)) ?? [],
   slug, // Include slug for all comments
@@ -147,6 +148,8 @@ export const transformPropertyRequestResponse = (
       id: AgentRequest.id,
       slug: AgentRequest.slug,
       title: AgentRequest.title,
+      user_disliked: AgentRequest.user_disliked,
+      user_liked: AgentRequest.user_liked,
       description: AgentRequest.description,
       propertyCategory: AgentRequest.property_category,
       propertyType: AgentRequest.property_type,
