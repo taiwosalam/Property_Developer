@@ -241,7 +241,7 @@ const Vat = () => {
           item.total_vat ? "text-status-success-3 dark:text-white" : ""
         }
       >
-        {item.total_vat ? item.total_vat : "--- ---"}
+        {item.total_vat}
       </p>
     ),
   }));

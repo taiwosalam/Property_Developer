@@ -86,8 +86,6 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
   });
 
-  console.log("branch data", branchData);
-
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
     let link = "";

@@ -49,9 +49,7 @@ export const transformStaffListResponse = (
         position: s.staff_role,
         phone_number: s.phone,
         gender: "",
-        badge_color: s.tier
-          ? staffTierColorMap[s.tier as keyof typeof staffTierColorMap ]
-          : undefined,
+        badge_color: s.tier === 2 ? "gray" : undefined,
       })) || [],
   };
 };

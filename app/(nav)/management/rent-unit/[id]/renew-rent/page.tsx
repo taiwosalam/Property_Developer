@@ -122,6 +122,8 @@ const RenewRent = () => {
   const estateData = getEstateData(unitData);
   const estateSettingsDta = getEstateSettingsData(unitData);
 
+  console.log("passed apiData", apiData)
+
   // PENDING INVOICE REPRESENTS PART PAYMENT TENANT MADE
   const PENDING_INVOICE = unitData?.pending_invoice;
   const PENDING_INVOICE_PAID_AMOUNT = Number(PENDING_INVOICE?.amount_paid) || 0;
