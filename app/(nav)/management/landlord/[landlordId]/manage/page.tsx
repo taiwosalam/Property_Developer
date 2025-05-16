@@ -61,6 +61,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   if (!landlordData) return null;
   const groupedDocuments = groupDocumentsByType(landlordData?.documents);
 
+  const CAN_DELETE =
+    landlordData && landlordData.properties_managed?.length === 0;
+
   // console.log("landlordData?.statement", landlordData?.statement);
 
   const transformedTableData = landlordData?.statement?.map((item) => ({
@@ -157,7 +160,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <EditMobileUser page="landlord" id={landlordId} />
+                    <EditMobileUser
+                      CAN_DELETE={CAN_DELETE}
+                      page="landlord"
+                      id={landlordId}
+                    />
                   </ModalContent>
                 </Modal>
 

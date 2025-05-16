@@ -59,7 +59,8 @@ const CreateTenancyAggrement = () => {
       const res = await createPropertyDocument(objectToFormData(payload));
       if (res) {
         toast.success("Draft saved successfully");
-        setNext(true);
+        router.push("/documents")
+        // setNext(true);
       }
     } catch (err) {
       toast.error("An error occurred while saving the draft");

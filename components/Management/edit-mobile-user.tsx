@@ -17,11 +17,13 @@ const EditMobileUser = ({
   id,
   is_flagged,
   flag_reason,
+  CAN_DELETE,
 }: {
   page: "landlord" | "tenant";
   id: number | string;
   is_flagged?: boolean;
   flag_reason?: string;
+  CAN_DELETE?: boolean;
 }) => {
   const router = useRouter();
   const isLandlord = page === "landlord";
@@ -86,6 +88,14 @@ const EditMobileUser = ({
   };
 
   const handleDelete = async () => {
+    const deleteWarningMsg = isLandlord
+      ? "You cannot delete landlord with active rent"
+      : "You cannot delete tenant with active rent";
+    if (!CAN_DELETE) {
+      toast.warning(deleteWarningMsg);
+      setIsOpen(false);
+      return;
+    }
     try {
       const action = isLandlord
         ? deleteLanlord(id as number)

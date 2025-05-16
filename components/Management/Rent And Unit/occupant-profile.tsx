@@ -23,6 +23,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   setIsPastDate,
   setDueDate,
   currency,
+  disableInput,
 }) => {
   const { selectedOccupant, tenantLoading, tenantError } = useGlobalStore();
   return (
@@ -47,6 +48,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 setStart_date={setStart_date}
                 setDueDate={setDueDate}
                 currency={currency || "naira"}
+                disableInput={disableInput}
               />
               <FeeBreakdown
                 id={id}

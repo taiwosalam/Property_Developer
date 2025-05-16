@@ -66,10 +66,23 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   if (error) return <ServerError error={error} />;
   if (!tenant) return null;
 
+  const CAN_DELETE = tenant && tenant.current_rent?.length === 0;
+
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
+  // const otherData = getObjectProperties({
+  //   obj: tenant,
+  //   exceptions: ["notes", "flag", "guarantor_1", "guarantor_2"],
+  // });
+
+  // Conditionally set exceptions based on user_tag
+  const exceptions = ["notes", "flag"];
+  if (tenant.user_tag === "web") {
+    exceptions.push("guarantor_1", "guarantor_2");
+  }
+
   const otherData = getObjectProperties({
     obj: tenant,
-    exceptions: ["notes", "flag"],
+    exceptions,
   });
 
   console.log("tenant", tenant);
@@ -155,6 +168,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                       is_flagged={tenant?.is_flagged}
                       flag_reason={tenant?.flag?.reason || ""}
                       page="tenant"
+                      CAN_DELETE={CAN_DELETE}
                       id={Number(tenantId)}
                     />
                   </ModalContent>

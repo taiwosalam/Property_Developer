@@ -1,7 +1,10 @@
 import type { Field } from "@/components/Table/types";
 import { Currency, formatNumber } from "@/utils/number-formatter";
 import { formatFee } from "../../management/rent-unit/data";
-import { BadgeIconColors, tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import {
+  BadgeIconColors,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 
 export const accountingVatOptionsWithDropdown = [
   {
@@ -127,6 +130,35 @@ export interface VATAPIResponse {
   };
 }
 
+// export const transformVATAPIResponse = (
+//   response: VATAPIResponse
+// ): VATPageState => {
+//   const { statistics, vats } = response.data;
+
+//   return {
+//     total_vat_created: parseFloat(statistics.total_vat_created),
+//     total_paid_vat: parseFloat(statistics.total_paid_vat),
+//     total_pending_vat: statistics.total_pending_vat,
+//     percentage_change_total: statistics.percentage_change_total,
+//     percentage_change_paid: statistics.percentage_change_paid,
+//     percentage_change_pending: statistics.percentage_change_pending,
+//     vats: vats.map((vat) => ({
+//       id: vat.id,
+//       vat_id: vat.vat_id,
+//       name: vat.client_name,
+//       picture: vat.client_picture,
+//       payment_reason: vat.description,
+//       total_vat: `${formatFee(Number(vat.amount), vat.currency || "naira")}` || "0.00",
+//       date: vat.date,
+//       badge_color: vat.tier
+//         ? tierColorMap[vat.tier as keyof typeof tierColorMap]
+//         : undefined,
+//     })),
+//   };
+// };
+
+// Helper to determine otherCurrency based on vats
+
 export const transformVATAPIResponse = (
   response: VATAPIResponse
 ): VATPageState => {
@@ -139,25 +171,32 @@ export const transformVATAPIResponse = (
     percentage_change_total: statistics.percentage_change_total,
     percentage_change_paid: statistics.percentage_change_paid,
     percentage_change_pending: statistics.percentage_change_pending,
-    vats: vats.map((vat) => ({
-      id: vat.id,
-      vat_id: vat.vat_id,
-      name: vat.client_name,
-      picture: vat.client_picture,
-      payment_reason: vat.description,
-      total_vat: `${formatFee(Number(vat.amount), vat.currency || "naira")}`,
-      date: vat.date,
-      badge_color: vat.tier
-        ? tierColorMap[vat.tier as keyof typeof tierColorMap]
-        : undefined,
-    })),
+    vats: vats.map((vat) => {
+      const formattedAmount = formatFee(
+        Number(vat.amount),
+        vat.currency || "naira"
+      );
+      if (!formattedAmount) {
+        console.warn(
+          `Invalid vat.amount for vat_id ${vat.vat_id}: ${vat.amount}`
+        );
+      }
+      return {
+        id: vat.id,
+        vat_id: vat.vat_id,
+        name: vat.client_name,
+        picture: vat.client_picture,
+        payment_reason: vat.description,
+        total_vat: formattedAmount || "₦0.00",
+        date: vat.date,
+        badge_color: vat.tier
+          ? tierColorMap[vat.tier as keyof typeof tierColorMap]
+          : undefined,
+      };
+    }),
   };
 };
 
-
-
-
-// Helper to determine otherCurrency based on vats
 export const getOtherCurrencyFromVats = (
   vats: { currency: string | null }[]
 ): string => {
