@@ -175,7 +175,7 @@ export const AgreementPreview = ({
           disabled={isDownloading}
           aria-label="Download agreement"
         >
-          {isDownloading ? "Downloading..." : "Download"}
+          {isDownloading ? "Please wait..." : "Download"}
         </Button>
         {onContinue && (
           <Button

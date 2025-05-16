@@ -98,6 +98,7 @@ export interface OccupantProfileProps {
   setIsPastDate?: ((isPast: boolean) => void) | undefined
   setSelectedCheckboxOptions?: (options: CheckBoxOptions) => void;
   setDueDate?: (date: Dayjs | null) => void;
+  disableInput?: boolean; 
 }
 
 

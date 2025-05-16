@@ -134,6 +134,9 @@ const PreviousRentRecords = () => {
         amount_paid: `${
           currencySymbols[currency as keyof typeof currencySymbols] || "₦"
         } ${formatNumber(record.amount_paid) || 0}`,
+        rent_amount: `${
+          currencySymbols[currency as keyof typeof currencySymbols] || "₦"
+        } ${formatNumber(record.rent_amount) || 0}`,
         start_date: record.start_date
           ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
           : null,

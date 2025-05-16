@@ -65,7 +65,21 @@ const CalendarPage = () => {
     });
   };
 
-  if (loading) return <CardsLoading />;
+  if (loading) {
+    return (
+      <div className="grid md:grid-cols-2 grid-cols-1 gap-2">
+        <div className="flex">
+          <CardsLoading length={2} />
+        </div>
+        <div className="flex">
+          <CardsLoading length={2} />
+        </div>
+      </div>
+    );
+  }
+  {
+    /* <CardsLoading />; */
+  }
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 

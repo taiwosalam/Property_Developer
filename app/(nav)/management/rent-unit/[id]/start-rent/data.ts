@@ -65,7 +65,7 @@ export const getEstateData = (unit_data: any) => [
 export const getEstateSettingsData = (unit_data: any) => [
   { label: "Management Fee", value: unit_data?.management_fee ?? "--- ---" },
   { label: "Period", value: unit_data?.fee_period ?? "--- ---" },
-  { label: "Fee Penalty", value: unit_data?.rent_penalty ?? "--- ---" },
+  { label: "Fee Penalty", value: unit_data?.fee_penalty ?? "--- ---" },
   { label: "Group Chat", value: unit_data?.group_chat ?? "--- ---" },
 ];
 

@@ -23,7 +23,8 @@ const OtherAgreement = () => {
     data: propertyData,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>("/property/all");
+  } = useFetch<PropertyListResponse>("/property/rental");
+  // } = useFetch<PropertyListResponse>("/property/all");
 
   const {
     data: unitsData,

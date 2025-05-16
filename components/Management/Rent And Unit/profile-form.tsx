@@ -29,6 +29,7 @@ export const ProfileForm: React.FC<{
   setSelectedCheckboxOptions?: any;
   period: RentPeriod;
   currency?: Currency;
+  disableInput?: boolean;
 }> = ({
   occupants,
   isRental,
@@ -38,6 +39,7 @@ export const ProfileForm: React.FC<{
   setSelectedCheckboxOptions,
   period,
   currency,
+  disableInput,
 }) => {
   const [selectedId, setSelectedId] = useState<string>("");
   const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
@@ -212,6 +214,7 @@ export const ProfileForm: React.FC<{
             }))}
             className="md:flex-1 md:max-w-[300px]"
             onChange={(value) => handleSelectId(value)}
+            disabled={disableInput}
           />
           <Modal>
             <ModalTrigger asChild>
@@ -244,6 +247,7 @@ export const ProfileForm: React.FC<{
           value={startDate}
           onChange={setStartDate}
           lastYear={true}
+          disabled={disableInput} 
         />
         <DateInput
           id="due date"
@@ -320,9 +324,7 @@ export const ProfileForm: React.FC<{
           </p>
           {nonNaira && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              Your property was listed in a currency other than Naira. As a
-              result, automatic payments and wallet transactions are not
-              supported. You will need to handle all payments manually.
+              Your property was listed in a currency other than Naira. You will need to handle all payments manually.
             </p>
           )}
         </div>

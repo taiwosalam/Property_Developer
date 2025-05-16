@@ -19,7 +19,10 @@ import api, { handleAxiosError } from "@/services/api";
 import { properties } from "@/app/(nav)/user/management/landlord/data";
 import { empty } from "@/app/config";
 import { link } from "fs";
-import { staffTierColorMap, tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import {
+  staffTierColorMap,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 import dayjs from "dayjs";
 
 export const sendVerifyStaffOTP = async () => {
@@ -369,7 +372,7 @@ export const transformStaffAPIResponse = (
       about_staff: res.data.about_staff,
       experience: res.data.years_experience,
       status: yesNoToActiveInactive(res.data.status),
-      badge_color: res.data.tier_id && "gray",
+      badge_color: res.data.tier_id === 2 ? "gray" : undefined,
       online: res.data.online_status === "online",
       // badge_color: res.data.tier_id
       //   ? staffTierColorMap[res.data.tier_id as keyof typeof staffTierColorMap]
@@ -391,8 +394,8 @@ export const transformStaffAPIResponse = (
           location: a.location,
           date: a.date,
           time: dayjs(a.time, "HH:mm:ss").isValid()
-          ? dayjs(a.time, "HH:mm:ss").format("hh:mm a")
-          : "-- -- --", 
+            ? dayjs(a.time, "HH:mm:ss").format("hh:mm a")
+            : "-- -- --",
         };
       }) || [],
     chats: [],
@@ -436,14 +439,13 @@ export const transformStaffAPIResponse = (
   };
 };
 
-
 const getLastPathSegment = (url: string): string => {
   try {
     if (!url || typeof url !== "string") return "";
     const parsedUrl = new URL(url);
-    const pathname = parsedUrl.pathname; 
+    const pathname = parsedUrl.pathname;
     const segments = pathname.split("/").filter((segment) => segment);
-    
+
     // Return the last segment or an empty string if there are no segments
     return segments.length > 0 ? segments[segments.length - 1] : "";
   } catch (error) {

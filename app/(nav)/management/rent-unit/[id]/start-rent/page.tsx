@@ -64,6 +64,7 @@ const StartRent = () => {
   const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
+  const [disableInput, setDisableInput] = useState(false);
 
   const endpoint = `/unit/${id}/view`;
   const {
@@ -164,7 +165,8 @@ const StartRent = () => {
       rent_type: "new",
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
-      has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+      // has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0, //LOTUS BACKEND ASKED FOR REVERSE
+      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 0,
       has_document: 0,
@@ -178,7 +180,8 @@ const StartRent = () => {
       rent_type: "new",
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
-      has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+      // has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0, //INITIAL - LOTUS NOW BACKEND ASKED FOR REVERSE
+      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 1,
       has_document: 1,
@@ -218,6 +221,10 @@ const StartRent = () => {
     }
   };
 
+  useEffect(() => {
+    setDisableInput(reqLoading || pdfLoading);
+  }, [reqLoading, pdfLoading]);
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -229,6 +236,8 @@ const StartRent = () => {
   const estateSettingsDta = getEstateSettingsData(unit_data);
   const IS_WEB_TENANT =
     selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
+
+  console.log("unit_data here s", unit_data);
 
   return (
     <div className="space-y-6 pb-[100px]">
@@ -278,10 +287,12 @@ const StartRent = () => {
           loading={loading}
           id={propertyId as string}
           setDueDate={setDueDate}
+          disableInput={disableInput}
         />
       </section>
       <FixedFooter className={`flex justify-end gap-4`}>
-        {isRental && IS_WEB_TENANT && !isPastDate && (
+        {/* {isRental && IS_WEB_TENANT && !isPastDate && ( */}
+        {/* {isRental && !isPastDate && (
           <Modal>
             <ModalTrigger asChild>
               <Button size="base_medium" className="py-2 px-6">
@@ -292,7 +303,7 @@ const StartRent = () => {
               <AgreementPreview isWebTenant={IS_WEB_TENANT} />
             </ModalContent>
           </Modal>
-        )}
+        )} */}
 
         <Button
           size="base_medium"
@@ -307,7 +318,7 @@ const StartRent = () => {
             : !IS_WEB_TENANT
             ? "Proceed"
             : isRental
-            ? "Start Rent"
+            ? "Proceed"
             : "Move In"}
         </Button>
       </FixedFooter>
