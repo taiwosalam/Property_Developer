@@ -9,6 +9,8 @@ export interface PropertyRequest {
   propertyType: string;
   propertySubType: string | null;
   state: string;
+  user_liked: boolean,
+  user_disliked: boolean;
   lga: string;
   agent: string;
   minBudget: string;
@@ -95,6 +97,7 @@ export interface CommentData {
   likes?: number;
   dislikes?: number;
   user_liked: boolean;
+  user_disliked: boolean;
   replies?: CommentData[];
 }
 
@@ -123,6 +126,7 @@ export interface CommentProps {
   likes: number;
   dislikes: number;
   user_liked: boolean;
+  user_disliked: boolean;
   replies?: CommentProps[];
   slug: string;
 }

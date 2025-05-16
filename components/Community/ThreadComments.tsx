@@ -7,8 +7,6 @@ interface ThreadCommentProps {
   comments?: CommentProps[];
 }
 const ThreadComments = ({ comments }: ThreadCommentProps) => {
-
-  console.log(comments)
   return (
     <div className="mt-4">
       {comments && comments.length > 0 ? (

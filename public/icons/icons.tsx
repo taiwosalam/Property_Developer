@@ -1433,23 +1433,23 @@ export const LikeIcon = ({ fill = "none", stroke = "#A4A7B0" }) => {
   );
 };
 
-export const DislikeIcon = () => {
+export const DislikeIcon = ({ fill = "none", stroke = "#A4A7B0" }) => {
   return (
     <svg
       width="16"
       height="16"
       viewBox="0 0 16 16"
-      fill="none"
+      fill={fill}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
         d="M11.0119 3.76758L8.94519 2.16758C8.67852 1.90091 8.07852 1.76758 7.67852 1.76758H5.14519C4.34519 1.76758 3.47852 2.36758 3.27852 3.16758L1.67852 8.03424C1.34519 8.96758 1.94519 9.76758 2.94519 9.76758H5.61185C6.01185 9.76758 6.34519 10.1009 6.27852 10.5676L5.94519 12.7009C5.81185 13.3009 6.21185 13.9676 6.81185 14.1676C7.34519 14.3676 8.01185 14.1009 8.27852 13.7009L11.0119 9.63424"
-        stroke="#000"
+        stroke={stroke}
         strokeMiterlimit="10"
       />
       <path
         d="M14.4115 3.76667V10.3C14.4115 11.2333 14.0115 11.5667 13.0781 11.5667H12.4115C11.4781 11.5667 11.0781 11.2333 11.0781 10.3V3.76667C11.0781 2.83333 11.4781 2.5 12.4115 2.5H13.0781C14.0115 2.5 14.4115 2.83333 14.4115 3.76667Z"
-        stroke="#000"
+        stroke={stroke}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -2600,13 +2600,13 @@ export const SidebarIcon = () => {
   );
 };
 
-export const ThumbsUp = () => {
+export const ThumbsUp = ({ fill = "none", stroke = "currentColor" }) => {
   return (
     <svg
       width="16"
       height="16"
       viewBox="0 0 16 16"
-      fill="none"
+      fill={fill}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -2616,7 +2616,7 @@ export const ThumbsUp = () => {
       />
       <path
         d="M1.58594 12.2331V5.69977C1.58594 4.76644 1.98594 4.43311 2.91927 4.43311H3.58594C4.51927 4.43311 4.91927 4.76644 4.91927 5.69977V12.2331C4.91927 13.1664 4.51927 13.4998 3.58594 13.4998H2.91927C1.98594 13.4998 1.58594 13.1664 1.58594 12.2331Z"
-        stroke="currentColor"
+        stroke={stroke}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -2624,23 +2624,23 @@ export const ThumbsUp = () => {
   );
 };
 
-export const ThumbsDown = () => {
+export const ThumbsDown = ({ fill = "none", stroke = "currentColor" }) => {
   return (
     <svg
       width="16"
       height="16"
       viewBox="0 0 16 16"
-      fill="none"
+      fill={fill}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
         d="M11.0119 3.7666L8.94519 2.1666C8.67852 1.89993 8.07852 1.7666 7.67852 1.7666H5.14519C4.34519 1.7666 3.47852 2.3666 3.27852 3.1666L1.67852 8.03327C1.34519 8.9666 1.94519 9.7666 2.94519 9.7666H5.61185C6.01185 9.7666 6.34519 10.0999 6.27852 10.5666L5.94519 12.6999C5.81185 13.2999 6.21185 13.9666 6.81185 14.1666C7.34519 14.3666 8.01185 14.0999 8.27852 13.6999L11.0119 9.63327"
-        stroke="currentColor"
+        stroke={stroke}
         strokeMiterlimit="10"
       />
       <path
         d="M14.4115 3.76667V10.3C14.4115 11.2333 14.0115 11.5667 13.0781 11.5667H12.4115C11.4781 11.5667 11.0781 11.2333 11.0781 10.3V3.76667C11.0781 2.83333 11.4781 2.5 12.4115 2.5H13.0781C14.0115 2.5 14.4115 2.83333 14.4115 3.76667Z"
-        stroke="currentColor"
+        stroke={stroke}
         strokeLinecap="round"
         strokeLinejoin="round"
       />

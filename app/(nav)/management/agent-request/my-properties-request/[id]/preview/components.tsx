@@ -1,6 +1,11 @@
 "use client";
 
-import { ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import {
+  DislikeIcon,
+  LikeIcon,
+  ThumbsDown,
+  ThumbsUp,
+} from "@/public/icons/icons";
 import Image from "next/image";
 import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
@@ -10,6 +15,7 @@ import { formatDateRange } from "../../../data";
 import { togglePropertyRequestLike } from "@/app/(nav)/management/agent-community/my-articles/data";
 import { toast } from "sonner";
 import { useState } from "react";
+import { empty } from "@/app/config";
 
 interface ThreadArticleProps {
   propertyRequest: any;
@@ -26,13 +32,12 @@ export const ThreadArticle = ({
 }: ThreadArticleProps) => {
   const [isLike, setIsLike] = useState(false);
 
+  console.log(propertyRequest);
+
   const handleToggleLike = async (type: string) => {
     try {
       setIsLike(true);
-      const res = await togglePropertyRequestLike(propertyRequest.slug, type);
-      if (res) {
-        toast.success("Post liked");
-      }
+      await togglePropertyRequestLike(propertyRequest.slug, type);
     } catch (error) {
       console.log(error);
     } finally {
@@ -61,7 +66,11 @@ export const ThreadArticle = ({
             className="flex items-center gap-1"
             onClick={() => handleToggleLike("1")}
           >
-            <ThumbsUp />
+            <LikeIcon
+              fill={`${propertyRequest?.user_liked ? "#E15B0F" : ""} `}
+              stroke={`${propertyRequest?.user_liked ? "#E15B0F" : "#000"} `}
+            />
+
             <p>{propertyRequest?.likesUp}</p>
           </button>
           <button
@@ -69,29 +78,35 @@ export const ThreadArticle = ({
             className="flex items-center gap-1"
             onClick={() => handleToggleLike("-1")}
           >
-            <ThumbsDown />
+            <DislikeIcon
+              fill={`${propertyRequest?.user_disliked ? "#E15B0F" : "none"} `}
+              stroke={`${propertyRequest?.user_disliked ? "#E15B0F" : "#000"} `}
+            />
+
             <p>{propertyRequest?.likesDown}</p>
           </button>
           <div>
-            {readByData &&
-              readByData.length > 0 &&
-              readByData.map((reader) => (
-                <div className="flex" key={reader.viewed_at}>
-                  <div className="images flex z-30 w-[30px] h-[30px] rounded-full -mr-2">
-                    <Image
-                      key={reader.viewed_at}
-                      src={reader.profile_picture ?? user1}
-                      alt="blog"
-                      width={30}
-                      height={30}
-                      className="-mr-2 bg-brand-9 w-full h-full rounded-full object-cover"
-                    />
+            <div className="flex items-center">
+              {readByData &&
+                readByData.length > 0 &&
+                readByData.map((reader) => (
+                  <div className="flex" key={reader.viewed_at}>
+                    <div className="images flex z-30 w-[30px] h-[30px] rounded-full -mr-2">
+                      <Image
+                        key={reader.viewed_at}
+                        src={reader.profile_picture ?? empty}
+                        alt="blog"
+                        width={30}
+                        height={30}
+                        className="-mr-2 bg-brand-9 w-full h-full rounded-full object-cover"
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
-          </div>
-          <div className="mt-1 rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-            {readByData?.length}
+                ))}
+              <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
+                {readByData?.length}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -35,6 +35,7 @@ export interface CommentProps {
   replies?: CommentProps[];
   slug?: string;
   user_liked?: boolean;
+  user_disliked?: boolean;
 }
 
 const Comment: React.FC<CommentProps> = ({
@@ -48,6 +49,7 @@ const Comment: React.FC<CommentProps> = ({
   tier_id,
   slug,
   user_liked,
+  user_disliked,
 }) => {
   const [showInput, setShowInput] = useState(false);
   const [content, setContent] = useState("");
@@ -114,7 +116,7 @@ const Comment: React.FC<CommentProps> = ({
             <span className="text-ellipsis line-clamp-1 capitalize">
               {name}
             </span>
-            <BadgeIcon color={getBadgeColor(tier_id) || "blue"} />
+            {/* <BadgeIcon color={getBadgeColor(tier_id) || "blue"} /> */}
           </p>
           <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium">
             {text}
@@ -141,7 +143,10 @@ const Comment: React.FC<CommentProps> = ({
         </button>
         <button onClick={() => handleToggleLike("-1")} disabled={isLike}>
           <p className="flex items-center gap-1 text-text-disabled">
-            <DislikeIcon />
+            <DislikeIcon
+              fill={`${user_disliked ? "#E15B0F" : "none"} `}
+              stroke={`${user_disliked ? "#E15B0F" : "#000"} `}
+            />
             <span className="text-xs font-normal">{dislikes}</span>
           </p>
         </button>
