@@ -23,6 +23,7 @@ const ThreadCard = ({
   published,
   setIsLikeDislikeLoading,
   user_liked,
+  badge_color
 }: ThreadCardProps) => {
   const link = `/management/agent-community/${
     myArticle ? "my-articles" : "threads"
@@ -37,6 +38,7 @@ const ThreadCard = ({
           time={time}
           published={published}
           myArticle={myArticle}
+          badge_color={badge_color || "gray"}
         />
         <ThreadBody
           title={title}

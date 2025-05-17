@@ -15,11 +15,13 @@ import { toast } from "sonner";
 import { handleAxiosError } from "@/services/api";
 import Select from "@/components/Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { useGlobalStore } from "@/store/general-store";
 
 const CreateArticle = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const { getGlobalInfoStore } = useGlobalStore();
 
   const handleSubmit = async (formData: FormData) => {
     // Check the lenght of the content char
@@ -104,7 +106,7 @@ const CreateArticle = () => {
           <FixedFooter className="flex gap-6 justify-end">
             <button
               type="submit"
-              disabled={isCreating}
+              disabled={isCreating || !getGlobalInfoStore("canSubmit")}
               className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
             >
               {isCreating ? "Creating..." : "Create"}

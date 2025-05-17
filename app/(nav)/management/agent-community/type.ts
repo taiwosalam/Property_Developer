@@ -1,3 +1,5 @@
+import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
+
 export type ThreadCardProps = {
   picture_url: string;
   user_pics: string;
@@ -17,6 +19,7 @@ export type ThreadCardProps = {
   setIsLikeDislikeLoading?: (value: boolean) => void; 
   published?: boolean;
   user_liked?: boolean;
+  badge_color?: BadgeIconColors;
 };
 
 export interface CommentProps {
