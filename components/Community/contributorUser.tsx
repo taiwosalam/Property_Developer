@@ -1,5 +1,6 @@
 import { empty } from "@/app/config";
 import Image from "next/image";
+import TruncatedText from "../TruncatedText/truncated-text";
 
 interface Contributor {
   name?: string;
@@ -55,7 +56,12 @@ const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
         </div>
       </div>
       <div className="desc text-sm">
-        <div dangerouslySetInnerHTML={{ __html: bio || "" }} />
+        <TruncatedText as="div" lines={6}>
+          <div
+            className="text-text-quaternary dark:text-darkText-2 text-sm font-normal"
+            dangerouslySetInnerHTML={{ __html: bio || "" }}
+          />
+        </TruncatedText>
       </div>
       <div className="btn flex items-center justify-center w-full">
         <button className="w-1/2 text-sm bg-secondary border border-brand-9 text-brand-9 px-4 py-1 rounded-md">

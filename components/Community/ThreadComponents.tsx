@@ -10,6 +10,7 @@ import Image from "next/image";
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { toast } from "sonner";
+import BadgeIcon, { BadgeIconColors } from "../BadgeIcon/badge-icon";
 
 // ============= THREAD HEADER ======================
 export const ThreadHeader = ({
@@ -19,6 +20,7 @@ export const ThreadHeader = ({
   time,
   published,
   myArticle,
+  badge_color,
 }: {
   user_pics: string;
   name: string;
@@ -26,6 +28,7 @@ export const ThreadHeader = ({
   time: string;
   published?: boolean;
   myArticle?: boolean;
+  badge_color: BadgeIconColors;
 }) => {
   return (
     <div className="flex items-center justify-between w-full">
@@ -41,8 +44,8 @@ export const ThreadHeader = ({
         <div className="flex flex-col flex-1 min-w-0">
           <div className="flex gap-2 items-center">
             <div className="flex items-center gap-1 max-w-[100%]">
-              <p className="dark:text-white truncate">{name || "--- ---"}</p>
-              {/* <BadgeIcon color="gray" /> */}
+              <p className="dark:text-white truncate capitalize">{name || "--- ---"}</p>
+              <BadgeIcon color={badge_color}/>
             </div>
           </div>
           <p className="text-brand-9 text-sm"> {role || "--- ---"} </p>

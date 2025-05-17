@@ -256,6 +256,7 @@ import AIPopOver from "./text-area-popover";
 import useTextGenerator from "@/hooks/useAIContentGenerator";
 import Typewriter from "typewriter-effect";
 import { useMemo } from "react";
+import { useGlobalStore } from "@/store/general-store";
 
 // Dynamically import ReactQuill with SSR option set to false
 const DynamicReactQuill = dynamic(
@@ -292,7 +293,7 @@ const TextArea: React.FC<TextAreaProps> = ({
   minChar,
   ai,
   restrictedWords = [],
-  readOnly
+  readOnly,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
@@ -305,6 +306,19 @@ const TextArea: React.FC<TextAreaProps> = ({
   const [showAiCreator, setShowAiCreator] = useState(false);
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ top: 0, left: 0 });
+  const [canSubmit, setCanSubmit] = useState(true); // Local canSubmit state
+  const { setGlobalInfoStore } = useGlobalStore();
+
+  // Reset canSubmit on mount to ensure clean state
+  useEffect(() => {
+    setCanSubmit(true);
+    setGlobalInfoStore("canSubmit", true);
+    return () => {
+      // Optional: Cleanup on unmount if needed
+      setCanSubmit(true);
+      setGlobalInfoStore("canSubmit", true);
+    };
+  }, []);
 
   const lowerCaseRestrictedWords = useMemo(
     () => restrictedWords.map((w) => w.toLowerCase()),
@@ -330,6 +344,9 @@ const TextArea: React.FC<TextAreaProps> = ({
       lowerCaseRestrictedWords.includes(word)
     );
 
+    const hasRestricted = matchedWords.length > 0;
+    setCanSubmit(!hasRestricted); // Update local state
+    setGlobalInfoStore("canSubmit", !hasRestricted);
 
     if (matchedWords.length > 0) {
       const uniqueMatches = [...new Set(matchedWords)];
@@ -421,7 +438,7 @@ const TextArea: React.FC<TextAreaProps> = ({
     };
   }, [typingTimeout]);
 
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -430,11 +447,20 @@ const TextArea: React.FC<TextAreaProps> = ({
           {label}
         </Label>
       )}
+
+      {errorMessage && (
+        <div
+          style={{ color: "red", marginTop: "8px", fontSize: "14px" }}
+          className="text-red-500 mt-2 text-sm"
+        >
+          {errorMessage}
+        </div>
+      )}
+
       <div className="flex flex-col dark:border dark:border-darkText-1 dark:rounded-lg relative">
         {mounted && (
           <Fragment>
             <DynamicReactQuill
-
               readOnly={readOnly}
               forwardedRef={quillRef}
               value={editorValue}
@@ -518,7 +544,6 @@ const TextArea: React.FC<TextAreaProps> = ({
                 <RedoIcon />
               </button>
               <AIPopOver
-                
                 editorValue={editorValue as string}
                 setEditorValue={setEditorValue}
                 showAiCreator={showAiCreator}
@@ -528,14 +553,6 @@ const TextArea: React.FC<TextAreaProps> = ({
           </Fragment>
         )}
       </div>
-      {errorMessage && (
-        <div
-          style={{ color: "red", marginTop: "8px", fontSize: "14px" }}
-          className="text-red-500 mt-2 text-sm"
-        >
-          {errorMessage}
-        </div>
-      )}
     </div>
   );
 };
