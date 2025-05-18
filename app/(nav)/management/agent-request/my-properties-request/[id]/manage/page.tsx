@@ -34,10 +34,10 @@ const ManageMyPropertyRequest = () => {
 
   const { data, loading, error, isNetworkError } = useFetch<{
     data: {
-      PropertyRequest: any;
+      AgentRequest: any;
       comments: any;
     };
-  }>(`/agent-community/property-requests/${id}`);
+  }>(`/agent_requests/${id}`);
 
   const [propertyRequests, setPropertyRequests] = useState<any>([]);
   const [comments, setComments] = useState<any>([]);
@@ -49,12 +49,14 @@ const ManageMyPropertyRequest = () => {
 
   useEffect(() => {
     // console.log('data', data?.data);
-    if (data?.data?.PropertyRequest) {
-      setPropertyRequests(data.data.PropertyRequest);
+    if (data?.data?.AgentRequest) {
+      setPropertyRequests(data.data.AgentRequest);
       setComments(data.data.comments);
-      setSlug(data.data.PropertyRequest.slug);
+      setSlug(data.data.AgentRequest.slug);
     }
   }, [data]);
+
+  console.log(propertyRequests);
 
   const handleDelete = async () => {
     try {
@@ -63,6 +65,7 @@ const ManageMyPropertyRequest = () => {
       if (response) {
         setShowSuccessModal(true);
         toast.success("Property request deleted successfully");
+        router.push("management/agent-request/my-properties-request");
       } else {
         toast.error("Failed to delete property request");
       }
@@ -76,7 +79,7 @@ const ManageMyPropertyRequest = () => {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-    router.push("/management/agent-community/my-properties-request");
+    router.push("/management/agent-request/my-properties-request");
   };
 
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
@@ -92,7 +95,7 @@ const ManageMyPropertyRequest = () => {
         await updatePropertyRequest(id as string, updatedData);
         toast.success("Property request updated successfully");
         router.push(
-          `/management/agent-community/my-properties-request/${id}/preview`
+          `/management/agent-request/my-properties-request/${id}/preview`
         );
       } catch (error) {
         toast.error("Failed to update property request");
@@ -104,7 +107,7 @@ const ManageMyPropertyRequest = () => {
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />; 
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="wra mb-16">

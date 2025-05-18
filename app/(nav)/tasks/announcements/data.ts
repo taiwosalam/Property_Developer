@@ -1,3 +1,5 @@
+import api, { handleAxiosError } from "@/services/api";
+
 export const announcementrFilterOptionsWithDropdown = [
   {
     label: "Property",
@@ -11,4 +13,15 @@ export const announcementrFilterOptionsWithDropdown = [
 
 export const getAllAnnouncements = async () => {};
 
-export const createAnnouncement = async (data: FormData) => {};
+export const createAnnouncement = async (formData: FormData) => {
+  try {
+    const res = await api.post(`/announcements`, formData);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchAnnouncement"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false
+  }
+};

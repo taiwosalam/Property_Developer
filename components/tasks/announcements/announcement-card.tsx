@@ -1,6 +1,6 @@
 "use client";
 import { empty } from "@/app/config";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import {
   BlueEyeShowIcon,
   LikeIcon,
@@ -21,7 +21,7 @@ interface AnnouncementCardProps {
   newViews: number;
   likes?: number;
   dislikes: number;
-  imageUrls: string[];
+  imageUrls: string[] | StaticImageData[];
   mediaCount: number;
   announcementId: string;
   viewOnly?: boolean;

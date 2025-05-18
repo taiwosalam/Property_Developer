@@ -84,6 +84,7 @@ const PropertyRequestUnitType = ({ data }: { data?: any }) => {
         options={propertyCategories["rental property"]}
         value={selectedCategory}
         onChange={handleCategoryChange}
+        defaultValue={data?.property_category ?? ""}
       />
       <Select
         required

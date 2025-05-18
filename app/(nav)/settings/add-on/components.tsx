@@ -131,7 +131,7 @@ export const EditModal = () => {
                 <div className="flex justify-end gap-2">
                   <Button
                     className="px-16 w-28 bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white mt-5 py-2 h-9"
-                    onClick={handleAddCustomDomain}
+                    onClick={() => {}}
                     disabled={loading}
                   >
                     {loading ? "Please wait..." : "Update"}

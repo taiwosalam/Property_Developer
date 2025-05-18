@@ -76,7 +76,7 @@ const Subscriptions = () => {
           <FeatureCompany />
           <Campaign />
 
-          <PersonalizedDomain />
+          {/* <PersonalizedDomain /> */}
         </div>
       </div>
       <Drawer
