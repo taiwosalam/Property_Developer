@@ -137,7 +137,7 @@ const UnitStatisticDetails = ({ id }: { id: string }) => {
                 </button>
               </div>
             </div>
-            <div className="custom-flex-col gap-5">
+            <div className="custom-flex-col gap-5 max-h-[290px] overflow-y-scroll custom-round-scrollbar pr-4">
               {activeUsers.length > 0 ? (
                 activeUsers.map((user) => (
                   <StatisticsMessageCard
