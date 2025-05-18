@@ -57,6 +57,7 @@ interface GlobalStoreState {
   setSelectedOccupant: (occupant: Occupant | null) => void;
   setIsPastDate: (isPast: boolean) => void;
   setUnitData: (data: initDataProps | null) => void;
+  canSubmit: boolean;
 
   wallet_stats?: WalletStats;
   wallet_date_range?: {
@@ -110,6 +111,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setSelectedOccupant: (occupant) => set({ selectedOccupant: occupant }),
   setIsPastDate: (isPast) => set({ isPastDate: isPast }),
   setUnitData: (data) => set({ unitData: data }),
+  canSubmit: true,
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {

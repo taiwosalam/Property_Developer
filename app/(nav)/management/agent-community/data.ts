@@ -5,6 +5,7 @@ import api from "@/services/api";
 // import { transformFormData } from "./my-properties-request/data";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const calculateYearsInIndustry = (dateString: string) => {
   if (!dateString) return null;
@@ -155,8 +156,9 @@ export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
     slug: thread.post ? thread.post.slug : "--- ---",
     shareLink: thread.post ? thread.post.share_link : "--- ---",
     video: thread.post ? thread.post.video_link : "--- ---",
-    published: thread.post.published,
-    user_liked: thread.post.user_liked,
+    published: thread.post.published, 
+    user_liked: thread.post.user_liked, 
+    badge_color: thread.user.tier ? tierColorMap[thread.user.tier as keyof typeof tierColorMap] : undefined,
   }));
 };
 

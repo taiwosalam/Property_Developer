@@ -19,6 +19,7 @@ import { DateRange } from "react-day-picker";
 import { comments } from "@/app/(nav)/accountant/management/agent-community/data";
 import AgentRequestLoader from "../Loader/agent-reuest";
 import { RESTRICTED_ARTICLES_WORDS } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { useGlobalStore } from "@/store/general-store";
 
 const SkeletonBox = ({ className }: { className: string }) => (
   <div
@@ -40,6 +41,7 @@ export const PropertyRequestFirstSection = ({
   loading?: boolean;
 }) => {
   const [inputValue, setInputValue] = useState(data?.title ?? "");
+  const { getGlobalInfoStore } = useGlobalStore();
 
   useEffect(() => {
     if (data?.title) {

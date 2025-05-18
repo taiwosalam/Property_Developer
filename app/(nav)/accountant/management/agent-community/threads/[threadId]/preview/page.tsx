@@ -39,7 +39,7 @@ const ThreadPreview = () => {
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
-  const [targetAudience, setTargetAudience] = useState<string[]>([]);
+  const [targetAudience, setTargetAudience] = useState<string>("");
   const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
 
   useRefetchOnEvent("refetchComments", ()=> refetchComments({silent:true}));
@@ -51,13 +51,13 @@ const ThreadPreview = () => {
       setCompanySummary(data.post.company_summary);
       setContributors(data.post.contributor);
       setComments(data.post.comments);
-      
+      setTargetAudience(`${data.post.state}, ${data.post.lga}`);
       // Parse target_audience if it's a string
-      const audience = typeof data.post.post.target_audience === 'string' 
-        ? JSON.parse(data.post.post.target_audience) 
-        : data.post.post.target_audience;
+      // const audience = typeof data.post.post.target_audience === 'string' 
+      //   ? JSON.parse(data.post.post.target_audience) 
+      //   : data.post.post.target_audience;
 
-      setTargetAudience(Array.isArray(audience) ? audience : []); // Ensure it's an array
+      // setTargetAudience(Array.isArray(audience) ? audience : []); // Ensure it's an array
     }
   }, [data, targetAudience]);
 

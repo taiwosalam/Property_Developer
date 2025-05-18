@@ -28,7 +28,7 @@ const ThreadPreview = () => {
   const [companySummary, setCompanySummary] = useState<any>(null);
   const [contributors, setContributors] = useState<any>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
-  const [targetAudience, setTargetAudience] = useState<string[]>([]);
+  const [targetAudience, setTargetAudience] = useState<string>("");
   const {
     data,
     error,

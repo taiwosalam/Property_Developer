@@ -14,7 +14,7 @@ export const ContributorDetails = ({
   loading?: boolean;
   post?: any;
   contributors?: any;
-  targetAudience?: string[];
+  targetAudience?: string;
   postedDate?: string;
   updatedDate?: string;
 }) => {
@@ -39,13 +39,14 @@ export const ContributorDetails = ({
         </div>
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Target Audience </p>
-          <p className="dark:text-white text-black text-sm">
+          <p className="dark:text-white text-black text-sm"> {targetAudience} </p>
+          {/* <p className="dark:text-white text-black text-sm">
             {typeof targetAudience === "string"
               ? targetAudience
               : targetAudience && targetAudience.length > 0
               ? targetAudience.join(", ")
               : "--- ---"}
-          </p>
+          </p> */}
         </div>
       </div>
       <ContributorUser contributors={contributors} />

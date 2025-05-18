@@ -57,7 +57,9 @@ const ManageMyArticle = () => {
     const response = await deleteMyArticle(slug);
     if (response) {
       toast.success("Article deleted successfully");
-      setShowSuccessModal(true);
+      // setShowSuccessModal(true);
+      toast.success("Article deleted successfully")
+      router.push("/management/agent-community/my-articles");
     } else {
       toast.error("Failed to delete article");
     }
@@ -159,12 +161,12 @@ const ManageMyArticle = () => {
               />
             </ModalContent>
           </Modal>
-          {showSuccessModal && (
+          {/* {showSuccessModal && (
             <DeleteArticleModalSuccess
               open={showSuccessModal}
               handleClose={handleCloseSuccessModal}
             />
-          )}
+          )} */}
           <Button
             type="submit"
             size="base_medium"
