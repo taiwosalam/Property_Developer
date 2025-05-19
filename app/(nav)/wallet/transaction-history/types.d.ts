@@ -2,9 +2,18 @@ import type { Transaction } from "@/store/wallet-store";
 
 export interface AllTransactionsResponse {
   data: {
+    stats: {
+      total_funds: string;
+      total_debit: string;
+      total_credit: string;
+      total_withdrawal: string;
+    };
     current_page: number;
     last_page: number;
-    data: Transaction[];
+    transactions: {
+      current_page: number;
+      data: Transaction[]
+    };
   };
 }
 

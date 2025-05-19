@@ -11,9 +11,8 @@ import { useEffect } from "react";
 import dayjs from "dayjs";
 
 const ReadyByCard = ({ data }: { data: any }) => {
-  useEffect(() => {
-    // console.log("data", data);
-  }, [data]);
+  
+  console.log(data);
 
   const isArray = Array.isArray(data);
 
@@ -46,8 +45,8 @@ const ReadyByCard = ({ data }: { data: any }) => {
                 >
                   {item.name || <TextSkeleton />}
                 </p>
-                {item.email_verified && (
-                  <BadgeIcon color={getBadgeColor(item?.tier_id) || "blue"} />
+                {item.tier_id && item.tier_id > 2 && (
+                  <BadgeIcon color={"gray"} />
                 )}
                 {/* <BadgeIcon color="blue" /> */}
               </div>

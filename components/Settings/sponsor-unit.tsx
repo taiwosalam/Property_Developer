@@ -24,6 +24,7 @@ import TableLoading from "../Loader/TableLoading";
 import {
   SponsorDataTypes,
   SponsorFields,
+  SponsorUnitTable,
   transformSponsorResponse,
 } from "@/app/(nav)/settings/add-on/data";
 import { BuySponsor } from "../Listing/data";
@@ -36,15 +37,7 @@ const SponsorUnit = () => {
   const { company_id } = usePersonalInfoStore();
   const [count, setCount] = useState<number>(1);
   const [availableSponsors, setAvailableSponsors] = useState<number>(0);
-  const [pageData, setPageData] = useState<SponsorDataTypes>({
-    sponsor_value: 0,
-    sponsor_listings: [],
-    pagination: {
-      current_page: 1,
-      total_pages: 1,
-      total: 0,
-    },
-  });
+  const [pageData, setPageData] = useState<SponsorUnitTable | null>(null);
   const [totalAmount, setTotalAmount] = useState(SPONSOR_COST);
 
   useEffect(() => {
@@ -103,7 +96,6 @@ const SponsorUnit = () => {
     tableHeadClassName: "h-[45px]",
   };
 
-  const { sponsor_value, sponsor_listings } = pageData;
   if (loading) return <TableLoading />;
   return (
     <SettingsSection title="listing Sponsor">
@@ -115,7 +107,10 @@ const SponsorUnit = () => {
               <div className="w-[164px] py-2 px-3 rounded-[4px] bg-neutral-2 text-center">
                 <p className="text-brand-9 text-xs font-normal capitalize">
                   Available sponsor units:{" "}
-                  <span className="font-medium"> {sponsor_value} </span>
+                  <span className="font-medium">
+                    {" "}
+                    {pageData?.sponsor_value ?? 0}{" "}
+                  </span>
                 </p>
               </div>
             </div>
@@ -189,7 +184,7 @@ const SponsorUnit = () => {
               </Link>
             </div>
             <CustomTable
-              data={sponsor_listings ? sponsor_listings.slice(0, 3) : []}
+              data={pageData ? pageData?.sponsor_listings.slice(0, 3) : []}
               fields={SponsorFields}
               {...table_style_props}
             />

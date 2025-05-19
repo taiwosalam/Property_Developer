@@ -132,13 +132,14 @@ export const CompanySettingsDomainTable = ({ data }: DomainTable) => {
               </Box>
             </Modal>
             <Modal
+              
               open={openEditModal}
               onClose={closeEdit}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
               <Box sx={style}>
-                <EditModal />
+                <EditModal data={data}/>
               </Box>
             </Modal>
           </div>

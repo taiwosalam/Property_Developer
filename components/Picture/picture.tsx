@@ -60,14 +60,14 @@ const Picture: React.FC<PictureProps> = ({
           ...style,
         }}
       />
-      {/* {status && ( */}
+       {status && ( 
       <div
         className={`absolute right-[5%] bottom-[5%] rounded-full ${
           status ? "bg-status-success-primary" : "bg-yellow-500"
         } border border-solid border-white`}
         style={{ width: status_wh, height: status_wh }}
       />
-      {/* )} */}
+       )} 
     </div>
   );
 };

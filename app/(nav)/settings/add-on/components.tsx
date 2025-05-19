@@ -19,6 +19,25 @@ export const ConfirmModal = () => {
     openSuccess();
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+  const { company_id } = usePersonalInfoStore();
+
+  const handleAddCustomDomain = async () => {
+    if (!company_id) return;
+    try {
+      setIsLoading(true);
+      const res = await addCustomDomain(company_id, null);
+      if (res) {
+        window.dispatchEvent(new Event("refetchProfile"));
+        handleSuccess();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <ModalPreset type="warning">
       <p className="text-text-disabled text-sm font-normal">
@@ -26,8 +45,13 @@ export const ConfirmModal = () => {
         permanent and will remove the record completely.
       </p>
       <div className="flex flex-col items-center gap-4">
-        <Button type="button" className="py-2 px-8" onClick={handleSuccess}>
-          proceed
+        <Button
+          type="button"
+          className="py-2 px-8"
+          onClick={handleAddCustomDomain}
+          disabled={isLoading}
+        >
+          {isLoading ? "Please wait..." : "Proceed"}
         </Button>
         <button
           onClick={closeWarning}
@@ -61,7 +85,15 @@ export const SuccessModal = () => {
   );
 };
 
-export const EditModal = () => {
+interface DomainTable {
+  data?: {
+    status: boolean;
+    ssl: string;
+    domain: string;
+  }[];
+}
+
+export const EditModal = ({ data }: DomainTable) => {
   const {
     openSuccessModal,
     openSuccess,
@@ -78,7 +110,9 @@ export const EditModal = () => {
   const { isMobile } = useWindowWidth();
   const { company_id } = usePersonalInfoStore();
 
-  const [domainName, setDomainName] = useState("https://");
+  const [domainName, setDomainName] = useState(
+   data && data.length > 0 ? data[0]?.domain : "https://"
+  );
   const [loading, setIsLoading] = useState(false);
 
   const handleAddCustomDomain = async () => {
@@ -87,8 +121,9 @@ export const EditModal = () => {
       setIsLoading(true);
       const res = await addCustomDomain(company_id, domainName);
       if (res) {
-        toast.success("Domain add successfully");
-        //setIsOpen(false);
+        toast.success("Domain updated successfully");
+        window.dispatchEvent(new Event("refetchProfile"));
+        closeEdit();
       }
     } catch (error) {
       console.log(error);
@@ -131,7 +166,7 @@ export const EditModal = () => {
                 <div className="flex justify-end gap-2">
                   <Button
                     className="px-16 w-28 bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white mt-5 py-2 h-9"
-                    onClick={() => {}}
+                    onClick={handleAddCustomDomain}
                     disabled={loading}
                   >
                     {loading ? "Please wait..." : "Update"}
