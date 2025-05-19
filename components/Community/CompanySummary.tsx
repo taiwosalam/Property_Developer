@@ -1,11 +1,7 @@
 import {
-  FbIcon,
-  InstagramIcon,
   Mail,
   MapIcon,
   PhoneIcon,
-  SocialWebIcon,
-  TwitterIcon,
   WebsiteIcon,
 } from "@/public/icons/icons";
 import Image from "next/image";
@@ -13,10 +9,9 @@ import {
   CompanySummarySkeleton,
   formatCompanySummary,
 } from "@/app/(nav)/management/agent-community/components";
-import { empty } from "@/app/config";
-import { calculateYearsInIndustry } from "@/app/(nav)/management/agent-community/data";
 import { CompanySummaryTypes } from "./types";
 import Link from "next/link";
+import { empty } from "@/app/config";
 
 const CompanySummary = ({
   loading,
@@ -56,7 +51,7 @@ const CompanySummary = ({
       <div className="mt-4 flex flex-col items-center">
         <div className="h-[70px] w-[260px] rounded-lg border border-brand-9 p-2">
           <Image
-            src={logo}
+            src={logo || empty}
             alt="Company Logo"
             width={500}
             height={500}

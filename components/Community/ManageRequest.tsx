@@ -85,7 +85,6 @@ export const PropertyRequestFirstSection = ({
         className="w-full mt-4 min-h-[200px]"
         value={data?.content || data?.description || ""}
         restrictedWords={RESTRICTED_ARTICLES_WORDS}
-        // minChar={200}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
       />
     </div>

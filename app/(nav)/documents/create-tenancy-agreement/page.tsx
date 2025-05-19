@@ -59,8 +59,8 @@ const CreateTenancyAggrement = () => {
       const res = await createPropertyDocument(objectToFormData(payload));
       if (res) {
         toast.success("Draft saved successfully");
+        setNext(true);
         router.push("/documents")
-        // setNext(true);
       }
     } catch (err) {
       toast.error("An error occurred while saving the draft");
@@ -147,8 +147,8 @@ const CreateTenancyAggrement = () => {
           onOptionsChange={handleOptionsChange}
         />
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-        <Modal>
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
+        {/* <Modal>
           <ModalTrigger asChild>
             <Button variant="light_red" size="base_bold" className="py-2 px-6">
               delete account
@@ -157,8 +157,8 @@ const CreateTenancyAggrement = () => {
           <ModalContent>
             <DeleteDocumentModal />
           </ModalContent>
-        </Modal>
-        <div className="flex gap-6">
+        </Modal> */}
+        <div className="flex gap-6 ml-0">
           <Button
             variant="sky_blue"
             size="base_bold"
@@ -177,6 +177,7 @@ const CreateTenancyAggrement = () => {
             onClick={handleSaveDraft}
             size="base_bold"
             className="py-2 px-6"
+            disabled={reqLoading}
           >
             { reqLoading ? "Please wait..." : "Save as draft" }
           </Button>

@@ -20,6 +20,7 @@ const CreateMyPropertyRequest = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { getGlobalInfoStore } = useGlobalStore();
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
 
   const { getGlobalInfoStore } = useGlobalStore();
