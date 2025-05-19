@@ -17,13 +17,15 @@ const TenancyAgreement = () => {
     data: propertyData,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>("/property/rental"); 
+  } = useFetch<PropertyListResponse>("/property/rental");
   // } = useFetch<PropertyListResponse>("/property/all");
   const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: p.id,
-      label: p.title,
-    })) || [];
+    propertyData?.data
+      .filter((p) => p.has_document === false)
+      .map((p) => ({
+        value: p.id,
+        label: p.title,
+      })) || [];
 
   const handleProceed = () => {
     if (!selectedProperty) return toast.warning("Please select a property");
@@ -56,7 +58,7 @@ const TenancyAgreement = () => {
           onClick={handleProceed}
         >
           Add
-        </Button>   
+        </Button>
       </div>
     </>
   );

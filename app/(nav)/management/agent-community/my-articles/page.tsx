@@ -23,6 +23,7 @@ import ThreadSkeleton from "@/components/Community/threadskeleton";
 import ThreadCard from "@/components/Community/ThreadCard";
 import ServerError from "@/components/Error/ServerError";
 import { ThreadSkeletonLoader } from "../components";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 interface ThreadApiResponse {
   data: any[];
@@ -162,13 +163,7 @@ const MyArticlePage = () => {
 
   const threads = transformToThreadCardProps(data);
 
-  if (loading)
-    return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-      </div>
-    );
-
+  if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -218,6 +213,7 @@ const MyArticlePage = () => {
           ) : (
             <EmptyList
               buttonText="+ create article"
+              buttonLink="/management/agent-community/my-articles/create"
               title="You have not created any articles yet"
               body={
                 <p>

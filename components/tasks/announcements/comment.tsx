@@ -370,8 +370,9 @@ const Comment: React.FC<CommentProps> = ({
   const showInput = propShowInput ?? localShowInput;
   const setShowInput = propSetShowInput ?? setLocalShowInput;
 
-  const badgeColor = tier
-    ? tierColorMap[tier as keyof typeof tierColorMap]
+  const badgeColor = tier && tier > 1
+    ? // ? tierColorMap[tier as keyof typeof tierColorMap]
+      "gray"
     : undefined;
 
   // Handle reply button click
@@ -460,7 +461,7 @@ const Comment: React.FC<CommentProps> = ({
           />
         </div>
         <p className="flex items-center text-sm font-medium text-text-primary dark:text-white">
-          <span className="line-clamp-1">{name}</span>
+          <span className="line-clamp-1 capitalize">{name}</span>
           {badgeColor && <BadgeIcon color={badgeColor} />}
         </p>
       </div>

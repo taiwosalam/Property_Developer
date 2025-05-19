@@ -32,12 +32,13 @@ const OtherAgreement = () => {
     loading: unitsLoading,
   } = useFetch<UnitsApiResponse>(`/unit/${selectedProperty}/all`);
 
-  console.log("propertyData", propertyData?.data);
   const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: p.id,
-      label: p.title,
-    })) || [];
+    propertyData?.data
+      .filter((p) => p.has_document === false)
+      .map((p) => ({
+        value: p.id,
+        label: p.title,
+      })) || [];
 
   const unitOptions =
     unitsData?.data.map((u) => ({

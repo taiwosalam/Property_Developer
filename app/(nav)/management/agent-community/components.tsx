@@ -2,10 +2,13 @@ import Input from "@/components/Form/Input/input";
 import {
   FbIcon,
   InstagramIcon,
+  LinkedInIcon,
   SendMessageIcon,
   SocialWebIcon,
   ThumbsUp,
+  TikTokIcon,
   TwitterIcon,
+  YouTubeIcon,
 } from "@/public/icons/icons";
 import { ThumbsDown } from "@/public/icons/icons";
 import { CommentData } from "@/components/tasks/announcements/comment";
@@ -276,6 +279,8 @@ export const formatCompanySummary = (
     total_unit,
   } = companySummary;
 
+  console.log("here summary", companySummary);
+
   // Format services (handle both array and object cases)
   const availableServices = Array.isArray(services)
     ? services
@@ -320,17 +325,17 @@ export const formatCompanySummary = (
     {
       platform: "linkedin",
       link: social_handles?.linkedin || "",
-      icon: <SocialWebIcon />,
+      icon: <LinkedInIcon />,
     },
     {
       platform: "tiktok",
       link: social_handles?.tiktok || "",
-      icon: <SocialWebIcon />,
+      icon: <TikTokIcon />,
     },
     {
       platform: "youtube",
       link: social_handles?.youtube || "",
-      icon: <SocialWebIcon />,
+      icon: <YouTubeIcon />,
     },
   ].filter(
     (item): item is { platform: string; link: string; icon: JSX.Element } =>
@@ -350,8 +355,8 @@ export const formatCompanySummary = (
       value:
         calculateYearsInIndustry(details?.date_of_registration) ?? "--- ---",
     },
-    { label: "Total Branch", value: total_branch || 0 },
-    { label: "Total Staff", value: total_staff || 0 },
+    { label: "Total Branch", value: details?.total_branches || 0 },
+    { label: "Total Staff", value: details?.total_staff || 0 },
     {
       label: "Property for sale",
       value: details?.property_for_sale || 0,
@@ -364,19 +369,23 @@ export const formatCompanySummary = (
       label: "Hospitality Property",
       value: details?.hospitality_property || 0,
     },
-    { label: "Total Unit Managing", value: total_unit || 0 },
-    { label: "Total Reviews", value: total_review || 0 },
+    { label: "Total Unit Managing", value: details.total_unit_managing || 0 },
+    { label: "Total Reviews", value: details.total_review || 0 },
     {
       label: "Completed Transaction",
       value: details?.completed_transaction || 0,
     },
   ];
 
+  const address =
+    `${addresses?.head_office_address}, ${addresses.local_government}, ${addresses.state}` ||
+    "--- ---";
+
   return {
     logo: company_logo || empty,
     name: name || "--- ---",
     services: availableServices,
-    address: addresses?.head_office_address || "--- ---",
+    address: address,
     email: email || "--- ---",
     phoneNumber: formatPhoneNumbers(contact_details?.phone_numbers),
     website: social_handles?.website || null,
