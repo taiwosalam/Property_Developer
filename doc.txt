@@ -108,138 +108,242 @@
 
 
 
-
 // "use client";
+// import {
+//   useEffect,
+//   useState,
+//   useContext,
+//   useRef,
+//   RefObject,
+//   Fragment,
+// } from "react";
+// import dynamic from "next/dynamic";
+// import type { TextAreaProps } from "./types";
+// import clsx from "clsx";
+// import Label from "../Label/label";
+// import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+// import ReactQuill, { type ReactQuillProps } from "react-quill";
+// import "react-quill/dist/quill.snow.css";
+// import { UndoIcon, RedoIcon, } from "@/public/icons/icons";
+// import AIPopOver from "./text-area-popover";
+// import useTextGenerator from "@/hooks/useAIContentGenerator";
+// import Typewriter from 'typewriter-effect';
 
-// import "keen-slider/keen-slider.min.css";
-// import { ChevronLeft, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
-// import { useRouter, useParams } from "next/navigation";
-// import Button from "@/components/Form/Button/button";
-// import { ContributorDetails } from "@/components/Community/Contributor";
-// import CompanySummary from "@/components/Community/CompanySummary";
-// import useFetch from "@/hooks/useFetch";
-// import { useState, useEffect, useMemo } from "react";
-// import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
-// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-// import MoreDetailsCard from "@/components/AgentRequest/moreDetails";
-// import ThreadArticle from "@/components/AgentRequest/threadArticle";
-// import PageCircleLoader from "@/components/Loader/PageCircleLoader";
-// import { transformPropertyRequestResponse } from "./data";
-// import NetworkError from "@/components/Error/NetworkError";
-// import ServerError from "@/components/Error/ServerError";
+// // Dynamically import ReactQuill with SSR option set to false
+// const DynamicReactQuill = dynamic(
+//   async () => {
+//     const { default: RQ } = await import("react-quill");
+//     const Component = ({
+//       forwardedRef,
+//       ...props
+//     }: { forwardedRef: RefObject<ReactQuill> } & ReactQuillProps) => (
+//       <RQ ref={forwardedRef} {...props} />
+//     );
 
-// interface PropertyRequestResponse {
-//   data: {
-//     PropertyRequest: any;
-//     contributor: any;
-//     readByData: any;
-//     comments: any;
-//     company_summary: any;
+//     Component.displayName = "ReactQuillComponent";
+//     return Component;
+//   },
+//   {
+//     ssr: false,
+//   }
+// );
+
+// const TextArea: React.FC<TextAreaProps> = ({
+//   id,
+//   hiddenInputClassName,
+//   label,
+//   value,
+//   required,
+//   className,
+//   defaultValue,
+//   placeholder,
+//   inputSpaceClassName,
+//   onChange,
+//   resetKey,
+//   requiredNoStar,
+//   minChar,
+//   ai,
+// }) => {
+//   const { handleInputChange } = useContext(FlowProgressContext);
+//   const [mounted, setMounted] = useState(false);
+//   const quillRef = useRef<ReactQuill>(null);
+//   const [editorValue, setEditorValue] = useState(defaultValue);
+//   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+//   const [showPopover, setShowPopover] = useState(false);
+//   const [showAiCreator, setShowAiCreator] = useState(false);
+//   const [suggestions, setSuggestions] = useState("")
+//   const [apiContentValue, setApiContentValue] = useState("");
+//   const [showSuggestion, setShowSuggestion] = useState(false);
+//   const [cursorPosition, setCursorPosition] = useState({ top: 0, left: 0 });
+//   const { content: apiContent, error: apiError, generateText, loading } = useTextGenerator();
+
+//   const updateCursorPosition = () => {
+//     const editor = quillRef.current?.getEditor();
+//     if (editor) {
+//       const range = editor.getSelection();
+//       if (range) {
+//         const bounds = editor.getBounds(range.index);
+//         if (bounds) {
+//           setCursorPosition({ top: bounds.top, left: bounds.left });
+//         }
+//       }
+//     }
 //   };
-// }
 
-// const PreviewPage = () => {
-//   const router = useRouter();
-//   const { requestId } = useParams();
-//   // const [propertyRequest, setPropertyRequest] = useState<any>(null);
-//   const [user, setUser] = useState<any>(null);
-//   const [readByData, setReadByData] = useState<any>(null);
-//   // const [companySummary, setCompanySummary] = useState<any>(null);
-//   // const [comments, setComments] = useState<any>(null);
-//   // const [comments, setComments] = useState<any>(null);
-//   const [slug, setSlug] = useState<string>("");
-//   const {
-//     data,
-//     loading,
-//     error,
-//     isNetworkError,
-//     refetch: refetchComments,
-//   } = useFetch<PropertyRequestResponse>(`/agent_-requests/${requestId}`);
-//   useRefetchOnEvent("refetchComments", () => refetchComments({ silent: true }));
+//   const handleChange = (content: string) => {
+//     setEditorValue(content);
+//     updateCursorPosition();
+//     if (onChange) onChange(content);
 
-//   // useEffect(() => {
-//   //   if (data) {
-//   //     setPropertyRequest(data.data.PropertyRequest);
-//   //     setSlug(data.data.PropertyRequest.slug);
-//   //     setUser(data.data.contributor);
-//   //     setReadByData(data.data.readByData);
-//   //     setComments(data.data.comments);
-//   //     setCompanySummary(data.data.company_summary);
-//   //   }
-//   // }, [data]);
+//     if (typingTimeout) clearTimeout(typingTimeout);
 
-//   const transformedData = useMemo(
-//     () => transformPropertyRequestResponse(data),
-//     [data]
-//   );
+//     const newTimeout = setTimeout(() => {
+//       if (content && content.length >= 20) {
+//         setShowSuggestion(true);
+//       } else {
+//         setShowSuggestion(false);
+//       }
+//     }, 1000);
 
-//   const { propertyRequest, contributor, companySummary, comments } = transformedData;
+//     setTypingTimeout(newTimeout);
+//   };
 
-//   console.log("data here - ", data);
+//   // Handle undo and redo
+//   const handleUndo = () => {
+//     const editor = quillRef.current?.getEditor();
+//     if (editor) {
+//       editor.history.undo();
+//     }
+//   };
 
-//   if (loading) return <PageCircleLoader />;
-//   if (isNetworkError) return <NetworkError />;
-//   if (error) return <ServerError error={error} />;
-//   if (!transformedData) return <div className="text-center text-text-secondary">No data available</div>;
+//   const handleRedo = () => {
+//     const editor = quillRef.current?.getEditor();
+//     if (editor) {
+//       editor.history.redo();
+//     }
+//   };
+
+//   useEffect(() => {
+//     setMounted(true);
+//   }, []);
+
+//   // For Flow Progress
+//   useEffect(() => {
+//     handleInputChange && handleInputChange();
+//   }, [handleInputChange, editorValue]);
+
+//   useEffect(() => {
+//     setEditorValue(value || defaultValue);
+//   }, [value, defaultValue, resetKey]);
 
 //   return (
-//     <div>
-//       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-//         <div className="flex items-center gap-1 mb-1">
-//           <button
-//             type="button"
-//             aria-label="Go Back"
-//             onClick={() => router.back()}
-//             className="p-2"
-//           >
-//             <ChevronLeft />
-//           </button>
-//           <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-//             {propertyRequest?.title}
-//           </h1>
-//         </div>
-//         <Button
-//           href={`/management/agent-request/my-properties-request/create`}
-//           size="sm"
-//           className="py-2 px-3"
-//         >
-//           Create Property Request
-//         </Button>
-//       </div>
-//       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
-//         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-//           <MoreDetailsCard propertyRequest={propertyRequest} user={user} />
-//           <ThreadArticle
-//             propertyRequest={propertyRequest}
-//             comments={data?.data.comments}
-//           />
-//           <PropertyRequestComments
-//             id={requestId as string}
-//             slug={slug}
-//             comments={data?.data.comments}
-//             // setComments={setComments}
-//           />
-//         </div>
-//         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-//           <ContributorDetails
-//             title="Requester Details"
-//             contributors={user}
-//             post={propertyRequest}
-//             // targetAudience={propertyRequest?.target_audience?.join(", ")}
-//             postedDate={propertyRequest?.createdAt}
-//             updatedDate={propertyRequest?.updatedAt}
-//           />
-//           <CompanySummary companySummary={companySummary} />
-//         </div>
+//     <div className={clsx("custom-flex-col gap-2", className)}>
+//       {label && (
+//         <Label id={id} required={required}>
+//           {label}
+//         </Label>
+//       )}
+//       <div className="flex flex-col dark:border dark:border-darkText-1 dark:rounded-lg relative">
+//         {mounted && (
+//           <Fragment>
+//             <DynamicReactQuill
+//               forwardedRef={quillRef}
+//               value={editorValue}
+//               onChange={handleChange}
+//               placeholder={placeholder}
+//               className={clsx("quill-editor", inputSpaceClassName)}
+//               modules={{
+//                 toolbar: {
+//                   container: `#toolbar-${id}`,
+//                 },
+//                 history: {
+//                   delay: 2000,
+//                   maxStack: 500,
+//                   userOnly: true,
+//                 },
+//               }}
+//             />
+//             <input
+//               type="hidden"
+//               name={id}
+//               id={id}
+//               value={editorValue || ""}
+//               required={required || requiredNoStar}
+//               className={clsx("react-quill-hidden-input", hiddenInputClassName)}
+//             />
+
+//             <div
+//               id={`toolbar-${id}`}
+//               className="quill-toolbar bg-[#F3F6F9] dark:bg-darkText-primary dark:text-black max-w-full"
+//             >
+//               <select className="ql-header" defaultValue="">
+//                 <option value="">Paragraph</option>
+//                 <option value="1">Header 1</option>
+//                 <option value="2">Header 2</option>
+//               </select>
+//               <button type="button" className="ql-bold">
+//                 Bold
+//               </button>
+//               <button type="button" className="ql-italic">
+//                 Italic
+//               </button>
+//               <button type="button" className="ql-underline">
+//                 Underline
+//               </button>
+//               <button type="button" className="ql-list" value="ordered">
+//                 Ordered List
+//               </button>
+//               <button type="button" className="ql-list" value="bullet">
+//                 Bullet List
+//               </button>
+//               <button type="button" className="ql-align" value="">
+//                 Align Left
+//               </button>
+//               <button type="button" className="ql-align" value="center">
+//                 Align Center
+//               </button>
+//               <button type="button" className="ql-align" value="right">
+//                 Align Right
+//               </button>
+//               <button type="button" className="ql-link">
+//                 Link
+//               </button>
+//               <button type="button" className="ql-blockquote">
+//                 Blockquote
+//               </button>
+//               <button
+//                 type="button"
+//                 className="hover:text-[#06c] text-black dark:text-neutral-4"
+//                 onClick={handleUndo}
+//                 aria-label="Undo"
+//               >
+//                 <UndoIcon />
+//               </button>
+//               <button
+//                 type="button"
+//                 className="hover:text-[#06c] text-black dark:text-neutral-4"
+//                 onClick={handleRedo}
+//                 aria-label="Redo"
+//               >
+//                 <RedoIcon />
+//               </button>
+//               <AIPopOver
+//                 editorValue={editorValue as string}
+//                 setEditorValue={setEditorValue}
+//                 showAiCreator={showAiCreator}
+//                 setShowAiCreator={setShowAiCreator}
+//                 // apiContentValue={apiContentValue}
+//                 // setApiContentValue={setApiContentValue}
+//               />
+//             </div>
+//           </Fragment>
+//         )}
 //       </div>
 //     </div>
 //   );
 // };
 
-// export default PreviewPage;
-
-
-
+// export default TextArea;
 
 
 
