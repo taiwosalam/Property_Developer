@@ -7,6 +7,7 @@ import { ThreadArticleSkeleton } from "@/app/(nav)/management/agent-community/co
 import DOMPurify from "dompurify";
 import { ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import Image from "next/image";
+import { empty } from "@/app/config";
 
 const PreviewThreadArticle = ({
   post,
@@ -109,7 +110,7 @@ const PreviewThreadArticle = ({
               {comments.slice(0, 3).map((comment, index) => (
                 <Image
                   key={index}
-                  src={comment.profile_picture}
+                  src={comment.profile_picture || empty}
                   alt={`commenter ${index + 1}`}
                   width={300}
                   height={300}

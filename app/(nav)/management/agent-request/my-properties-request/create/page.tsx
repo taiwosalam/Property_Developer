@@ -14,11 +14,13 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { createPropertyRequest } from "../data";
 import BackButton from "@/components/BackButton/back-button";
 import Button from "@/components/Form/Button/button";
+import { useGlobalStore } from "@/store/general-store";
 
 const CreateMyPropertyRequest = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { getGlobalInfoStore } = useGlobalStore();
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
 
   const handleCreateClick = async (data: Record<string, any>) => {
@@ -62,7 +64,7 @@ const CreateMyPropertyRequest = () => {
           <Button
             type="submit"
             size="base_medium"
-            disabled={isCreating}
+            disabled={isCreating || !getGlobalInfoStore("canSubmit")}
             className="py-2 px-8"
           >
             {isCreating ? "Creating..." : "Create"}

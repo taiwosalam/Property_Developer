@@ -15,7 +15,6 @@ interface Contributor {
 }
 
 const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
-  console.log("contributors here", contributors);
   const {
     name,
     picture,
@@ -40,7 +39,7 @@ const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
           />
         </div>
         <div className="userDetails flex flex-col gap-1">
-          <p className="dark:text-white text-black text-[20px] font-bold">
+          <p className="dark:text-white text-black text-[20px] font-bold capitalize">
             {`${title || ""} ${name || "--- ---"}`}
           </p>
           <div className="flex flex-col lg:flex-col gap-2">

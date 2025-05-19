@@ -158,7 +158,8 @@ export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
     video: thread.post ? thread.post.video_link : "--- ---",
     published: thread.post.published, 
     user_liked: thread.post.user_liked, 
-    badge_color: thread.user.tier ? tierColorMap[thread.user.tier as keyof typeof tierColorMap] : undefined,
+    badge_color: thread.user.tier > 1 ? "gray" : undefined,
+    // badge_color: thread.user.tier ? tierColorMap[thread.user.tier as keyof typeof tierColorMap] : undefined,
   }));
 };
 

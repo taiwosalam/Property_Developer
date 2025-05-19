@@ -32,6 +32,7 @@ export interface Property {
     fee_period: string | null;
     created_at: string;
     updated_at: string;
+    has_document: boolean;
   }
   
   export interface PropertyListResponse {

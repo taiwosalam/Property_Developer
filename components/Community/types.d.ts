@@ -23,6 +23,10 @@ export interface Details {
   membership_number: string;
   property_for_rent: number;
   property_for_sale: number;
+  total_branches: number;
+  total_staff: number;
+  total_unit_managing: number;
+  total_review: number;
 }
 
 export interface Services {

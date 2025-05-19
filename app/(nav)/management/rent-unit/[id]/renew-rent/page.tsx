@@ -122,7 +122,7 @@ const RenewRent = () => {
   const estateData = getEstateData(unitData);
   const estateSettingsDta = getEstateSettingsData(unitData);
 
-  console.log("passed apiData", apiData)
+  console.log("passed apiData", apiData);
 
   // PENDING INVOICE REPRESENTS PART PAYMENT TENANT MADE
   const PENDING_INVOICE = unitData?.pending_invoice;
@@ -133,6 +133,75 @@ const RenewRent = () => {
   const currency = unitData.currency as Currency;
 
   // Handlers
+  // const handleRenewRent = async () => {
+  //   if (!unitData?.unit_id || !unitData?.occupant?.id) {
+  //     toast.warning(
+  //       "Missing required information: unit or occupant not found."
+  //     );
+  //     return;
+  //   }
+  //   if (!selectedCheckboxOptions) {
+  //     toast.warning("Notification preferences not set.");
+  //     return;
+  //   }
+  //   if (!startDate) {
+  //     toast.warning("Start date is required.");
+  //     return;
+  //   }
+  //   if (dueDate && dueDate.isBefore(dayjs(startDate), "day")) {
+  //     toast.warning("Due date cannot be before the start date.");
+  //     return;
+  //   }
+
+  //   // If rent_agreement is true, open the agreement preview modal
+  //   if (selectedCheckboxOptions.rent_agreement) {
+  //     setIsAgreementModalOpen(true);
+  //     return;
+  //   }
+
+  //   // If rent_agreement is false, proceed directly
+  //   await submitRent(null);
+  // };
+
+  // const submitRent = async (doc_file: File | null) => {
+  //   const successMsg = isRental
+  //     ? "Rent Renewed Successfully"
+  //     : "Fee Renewed Successfully";
+  //   const failedMsg = isRental ? "Failed to renew rent" : "Failed to renew fee";
+
+  //   const payloadObj = {
+  //     unit_id: unitData.unit_id,
+  //     tenant_id: unitData.occupant.id,
+  //     start_date: dayjs(startDate).format("MM/DD/YYYY"),
+  //     payment_type: "full",
+  //     rent_type: "renew",
+  //     mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
+  //     email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
+  //     has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+  //     sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
+  //     has_penalty: penaltyAmount > 0 ? 1 : 0,
+  //     penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
+  //     has_document: doc_file ? 1 : 0,
+  //     ...(doc_file && { doc_file }),
+  //   };
+
+  //   const payload = objectToFormData(payloadObj);
+
+  //   try {
+  //     setReqLoading(true);
+  //     const res = await startRent(payload);
+  //     if (res) {
+  //       toast.success(successMsg);
+  //       router.push("/management/rent-unit");
+  //     }
+  //   } catch (err) {
+  //     toast.error(failedMsg);
+  //   } finally {
+  //     setReqLoading(false);
+  //     setIsAgreementModalOpen(false);
+  //   }
+  // };
+
   const handleRenewRent = async () => {
     if (!unitData?.unit_id || !unitData?.occupant?.id) {
       toast.warning(
@@ -153,13 +222,13 @@ const RenewRent = () => {
       return;
     }
 
-    // If rent_agreement is true, open the agreement preview modal
-    if (selectedCheckboxOptions.rent_agreement) {
+    // For rentals, if rent_agreement is true, open the agreement preview modal
+    if (isRental && selectedCheckboxOptions.rent_agreement) {
       setIsAgreementModalOpen(true);
       return;
     }
 
-    // If rent_agreement is false, proceed directly
+    // For facilities or if no agreement is required, proceed directly
     await submitRent(null);
   };
 
@@ -169,7 +238,7 @@ const RenewRent = () => {
       : "Fee Renewed Successfully";
     const failedMsg = isRental ? "Failed to renew rent" : "Failed to renew fee";
 
-    const payloadObj = {
+    const payloadObj: any = {
       unit_id: unitData.unit_id,
       tenant_id: unitData.occupant.id,
       start_date: dayjs(startDate).format("MM/DD/YYYY"),
@@ -181,9 +250,15 @@ const RenewRent = () => {
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       has_penalty: penaltyAmount > 0 ? 1 : 0,
       penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
-      has_document: doc_file ? 1 : 0,
-      ...(doc_file && { doc_file }),
     };
+
+    // Only include has_document and doc_file for rentals
+    if (isRental) {
+      payloadObj.has_document = doc_file ? 1 : 0;
+      if (doc_file) {
+        payloadObj.doc_file = doc_file;
+      }
+    }
 
     const payload = objectToFormData(payloadObj);
 
@@ -211,47 +286,7 @@ const RenewRent = () => {
     }
   };
 
-  // const handleRenewRent = async () => {
-  //   if (!unitData?.unit_id || !unitData?.occupant?.id) {
-  //     toast.error("Missing required information: unit or occupant not found.");
-  //     return;
-  //   }
-  //   if (!selectedCheckboxOptions) {
-  //     toast.error("Notification preferences not set.");
-  //     return;
-  //   }
-  //   if (!startDate) {
-  //     toast.error("Start date is required.");
-  //     return;
-  //   }
-  //   if (dueDate && dueDate.isBefore(dayjs(startDate), "day")) {
-  //     toast.warning("Due date cannot be before the start date.");
-  //     return;
-  //   }
-  //   const payload = {
-  //     unit_id: unitData.unit_id,
-  //     tenant_id: unitData.occupant.id,
-  //     start_date: startDate,
-  //     payment_type: "full",
-  //     rent_type: "renew",
-  //     mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
-  //     email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
-  //     has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
-  //     // has_penalty
-  //   };
-  //   try {
-  //     setReqLoading(true);
-  //     const res = await startRent(payload);
-  //     if (res) {
-  //       toast.success("Rent Renewed Successfully");
-  //     }
-  //   } catch (err) {
-  //     toast.error("Failed to renew rent");
-  //   } finally {
-  //     setReqLoading(false);
-  //   }
-  // };
-
+  // Part Payment Handler
   const handlePartPayment = async () => {
     if (!unitBalance || unitBalance.length === 0) {
       toast.error("No unit balance available");

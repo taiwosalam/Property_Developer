@@ -33,6 +33,7 @@ import { Article, ArticleResponse, transformMyArticleResponse } from "./data";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import BackButton from "@/components/BackButton/back-button";
 import { ManageArticleSecondSection, SecondSectionLoader } from "./components";
+import { useGlobalStore } from "@/store/general-store";
 
 const desc =
   "#Commercial and retail real estate fundamentals are expected to remain strong due to the scarcity of new construction deliveries, prompting compelling opportunities for investors amid high interest rates and inflation in the market, writes CHINEDUM UWAEGBULAM. Despite economic headwinds and challenges with obtaining building permits, experts predict that the demand for housing will remain strong, and the market will see a steady increase in property values this year. There are also opportunities available for high-quality properties that meet the needs of investors and tenants, while low mortgage rates and government incentives will likely contribute to this optimistic outlook as inflation may remain a concern in 2024, affecting both home prices and mortgage rates.";
@@ -48,6 +49,7 @@ const ManageMyArticle = () => {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [retainMedia, setRetainMedia] = useState<string[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const { getGlobalInfoStore } = useGlobalStore();
 
   const { data, error, loading, silentLoading, isNetworkError, refetch } =
     useFetch<ArticleResponse>(`/agent_community/${slug}`);
@@ -160,7 +162,7 @@ const ManageMyArticle = () => {
                 handleDelete={() => handleDeleteMyArticle({ slug })}
               />
             </ModalContent>
-          </Modal>
+        </Modal>
           {/* {showSuccessModal && (
             <DeleteArticleModalSuccess
               open={showSuccessModal}
@@ -171,7 +173,7 @@ const ManageMyArticle = () => {
             type="submit"
             size="base_medium"
             className="py-2 px-8"
-            disabled={isUpdating}
+            disabled={isUpdating || !getGlobalInfoStore("canSubmit")}
           >
             {isUpdating ? "Updating..." : "Update"}
           </Button>
