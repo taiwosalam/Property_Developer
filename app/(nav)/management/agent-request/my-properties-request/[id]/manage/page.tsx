@@ -27,10 +27,13 @@ import {
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
 
 const ManageMyPropertyRequest = () => {
   const router = useRouter();
   const { id } = useParams();
+
+  const { getGlobalInfoStore } = useGlobalStore();
 
   const { data, loading, error, isNetworkError } = useFetch<{
     data: {
@@ -46,6 +49,7 @@ const ManageMyPropertyRequest = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [slug, setSlug] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     // console.log('data', data?.data);
@@ -56,20 +60,18 @@ const ManageMyPropertyRequest = () => {
     }
   }, [data]);
 
-  console.log(propertyRequests);
-
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
       const response = await deletePropertyRequest(id as string);
       if (response) {
-        setShowSuccessModal(true);
+        //setShowSuccessModal(true);
         toast.success("Property request deleted successfully");
-        router.push("management/agent-request/my-properties-request");
+        router.push("/management/agent-request/my-properties-request");
+        setIsOpen(false);
       } else {
         toast.error("Failed to delete property request");
       }
-      router.push("/management/agent-community/my-properties-request");
     } catch (error) {
       toast.error("Failed to delete property request");
     } finally {
@@ -148,7 +150,12 @@ const ManageMyPropertyRequest = () => {
           </div>
         </div>
         <FixedFooter className="flex gap-6 justify-end">
-          <Modal>
+          <Modal
+            state={{
+              isOpen,
+              setIsOpen,
+            }}
+          >
             <ModalTrigger asChild>
               <Button
                 size="sm_medium"
@@ -159,7 +166,10 @@ const ManageMyPropertyRequest = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <DeletePropertyRequestModal handleDelete={handleDelete} />
+              <DeletePropertyRequestModal
+                handleDelete={handleDelete}
+                isDeleting={isDeleting}
+              />
             </ModalContent>
           </Modal>
           {showSuccessModal && (
@@ -169,6 +179,7 @@ const ManageMyPropertyRequest = () => {
             />
           )}
           <button
+            disabled={isUpdating || !getGlobalInfoStore("canSubmit")}
             type="submit"
             className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
           >

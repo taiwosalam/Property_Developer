@@ -40,18 +40,18 @@ const AllSponsorUnits = () => {
     useFetch<SponsorListingsResponse>("/sponsor/listings", config);
   useRefetchOnEvent("refetchRentSponsors", () => refetch({ silent: true }));
 
-  useEffect(() => {
-    if (data) {
-      const transformed = transformSponsorResponse(data);
-      setPageData((prevData) => ({
-        ...transformed,
-        sponsor_listings:
-          transformed.pagination.current_page === 1
-            ? transformed.sponsor_listings
-            : [...prevData.sponsor_listings, ...transformed.sponsor_listings],
-      }));
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     const transformed = transformSponsorResponse(data);
+  //     setPageData((prevData) => ({
+  //       ...transformed,
+  //       sponsor_listings:
+  //         transformed.pagination.current_page === 1
+  //           ? transformed.sponsor_listings
+  //           : [...prevData.sponsor_listings, ...transformed.sponsor_listings],
+  //     }));
+  //   }
+  // }, [data]);
 
   // --- Infinite Scroll Logic ---
   const observer = useRef<IntersectionObserver | null>(null);

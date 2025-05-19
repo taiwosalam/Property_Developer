@@ -372,7 +372,6 @@ export const transformFormCompanyData = (
     | string
     | File;
   data.cac_document = formData.get("cac_certificate") as string | File;
-  
 
   data.head_office_address = formData.get("head_office_address") as string;
   data.state = formData.get("state") as string;
@@ -471,38 +470,45 @@ export const cleanStringtoArray = (phone_number: any) => {
 
 export const checkWebsiteDomain = async (domainName: string) => {
   const payload = {
-    domain: domainName
-  }
-  try{
-    const data = await api.post('check-domain', payload, {
+    domain: domainName,
+  };
+  try {
+    const data = await api.post("check-domain", payload, {
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     });
-    if(data.status === 200 || data.status === 201){
-      return data
+    if (data.status === 200 || data.status === 201) {
+      return data;
     }
-  }catch(error){
+  } catch (error) {
     handleAxiosError(error);
     return false;
   }
-}
+};
 
-export const addCustomDomain = async (companyId: string, domainName: string) => {
+export const addCustomDomain = async (
+  companyId: string,
+  domainName: string | null
+) => {
   const payload = {
-    custom_domain: domainName
-  }
-  try{
-    const data = await api.post(`company/add-custom-domain/${companyId}`, payload, {
-      headers: {
-        'Content-Type': 'application/json'
+    custom_domain: domainName,
+  };
+  try {
+    const data = await api.post(
+      `company/add-custom-domain/${companyId}`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    });
-    if(data.status === 200 || data.status === 201){
+    );
+    if (data.status === 200 || data.status === 201) {
       return true;
     }
-  }catch(error){
+  } catch (error) {
     handleAxiosError(error);
     return false;
   }
-}
+};

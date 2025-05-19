@@ -21,7 +21,11 @@ dayjs.extend(advancedFormat);
 
 const ExportAddsOnSponsor = () => {
   const exportRef = useRef<HTMLDivElement>(null);
-  
+
+  const [fullContent, setFullContent] = useState(false);
+
+  const filteredSponsorHistory = useGlobalStore((s) => s.sponsored_listing);
+
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
@@ -36,17 +40,17 @@ const ExportAddsOnSponsor = () => {
           </h1>
         </div>
         <CustomTable
-          //className={`${fullContent && "max-h-none"}`}
+          className={`${fullContent && "max-h-none"}`}
           fields={SponsorFields}
-          data={[]}
+          data={filteredSponsorHistory || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
       </div>
       <ExportPageFooter
         printRef={exportRef}
-        //setFullContent={setFullContent}
-        //fullContent={fullContent}
+        setFullContent={setFullContent}
+        fullContent={fullContent}
       />
     </div>
   );

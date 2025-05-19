@@ -27,7 +27,7 @@ export const CompanySettingDomain = ({
       setIsLoading(true);
       const res = await addCustomDomain(company_id, domainName);
       if (res) {
-        toast.success("Domain add successfully");
+        toast.success("Domain added successfully");
         setIsOpen(false);
       }
     } catch (error) {

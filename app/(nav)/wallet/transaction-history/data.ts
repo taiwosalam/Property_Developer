@@ -42,7 +42,7 @@ export const transformAllTransactionsResponse = (
     current_page: data.current_page,
     total_pages: data.last_page,
     hasMore: data.current_page < data.last_page,
-    transactions: data.data.map((t) => {
+    transactions: data.transactions.data.map((t) => {
       // Parse the date and time strings into a Date object (assuming UTC from server)
       const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC
       const serverDateTime = new Date(dateTimeString);

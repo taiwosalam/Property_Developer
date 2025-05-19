@@ -134,7 +134,7 @@ export const personalized_domain: SubscriptionTableType = {
       label: "Added Date",
       accessor: "start_date",
     },
-   
+
     {
       id: "5",
       // accessor: "more",
@@ -175,7 +175,7 @@ export const SponsorFields = [
   {
     id: "0",
     label: "Purchase ID",
-    accessor: "unit_id",
+    accessor: "transaction_id",
   },
   {
     id: "1",
@@ -185,12 +185,12 @@ export const SponsorFields = [
   {
     id: "2",
     label: "Total Unit",
-    accessor: "unit_name",
+    accessor: "units",
   },
   {
-    id: "5",
+    id: "3",
     label: "Price",
-    accessor: "annual_rent",
+    accessor: "amount",
   },
   // {
   //   id: "6",
@@ -357,29 +357,55 @@ function formatToNGN(value: string) {
   });
 }
 
+export interface SponsorUnitTable {
+  sponsor_value: string;
+  sponsor_listings: {
+    transaction_id: number;
+    date: string;
+    units: number;
+    amount: string;
+  }[];
+}
+
 export const transformSponsorResponse = (
   response: SponsorListingsResponse
-): SponsorDataTypes => {
+): SponsorUnitTable => {
   return {
-    sponsor_value: response.data?.value || "0",
+    sponsor_value: formatToNGN(response.data?.value || "0"),
     sponsor_listings: response.data.listings.data.map(
       (listing: SponsoredListing) => ({
-        unit_id: listing.unit_id.toString(),
-        property_name: listing.property_name,
-        unit_name: listing.unit_name,
-        unit_description: listing.unit_description,
-        status: listing.status,
-        annual_rent: `₦${formatNumber(Number(listing.annual_rent))}`,
+        transaction_id: listing.id,
         date: dayjs(listing.created_at).format("MMM DD YYYY"),
+        units: listing.units,
+        amount: formatToNGN(listing.amount),
       })
     ),
-    pagination: {
-      current_page: response.data.listings.current_page,
-      total_pages: response.data.listings.last_page,
-      total: response.data.listings.total,
-    },
   };
 };
+
+// export const transformSponsorResponse = (
+//   response: SponsorListingsResponse
+// ): SponsorDataTypes => {
+//   return {
+//     sponsor_value: response.data?.value || "0",
+//     sponsor_listings: response.data.listings.data.map(
+//       (listing: SponsoredListing) => ({
+//         unit_id: listing.id,
+//         property_name: listing.property_name,
+//         unit_name: listing.unit_name,
+//         unit_description: listing.unit_description,
+//         status: listing.status,
+//         annual_rent: `₦${formatNumber(Number(listing.annual_rent))}`,
+//         date: dayjs(listing.created_at).format("MMM DD YYYY"),
+//       })
+//     ),
+//     pagination: {
+//       current_page: response.data.listings.current_page,
+//       total_pages: response.data.listings.last_page,
+//       total: response.data.listings.total,
+//     },
+//   };
+// };
 
 export const SponsorData = [
   {
@@ -489,5 +515,3 @@ export const postCampaign = async (payload: FormData, companyId: string) => {
     return false;
   }
 };
-
-

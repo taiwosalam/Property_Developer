@@ -299,14 +299,18 @@ export interface Listings {
 export interface SponsoredListing {
   id: number;
   company_id: number;
-  unit_id: number;
-  property_name: string;
-  unit_name: string;
-  unit_description: string;
-  status: string;
-  annual_rent: string;
+  transaction_id: number;
+  amount: string;
+  units: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface ISponsoredListing {
+  transaction_id: number;
+  date: string;
+  units: number;
+  amount: string;
 }
 
 export interface PaginationLink {

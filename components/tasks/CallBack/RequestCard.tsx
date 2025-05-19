@@ -92,7 +92,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           <Picture size={50} src={pictureSrc || empty} rounded />
           <div className="space-y-1">
             <div className="flex items-center gap-0.5">
-              <span className="text-base font-medium">
+              <span className="text-base font-medium capitalize">
                 {truncateText(userName, 30)}
               </span>
               {/* <BadgeIcon color="blue" /> */}
@@ -244,6 +244,14 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
             >
               Preview
+            </Link>
+            <Link
+              href={`/management/agent-request/${
+                props.user ? "my-properties-request/" : ""
+              }${requestId}/manage`}
+              className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
+            >
+              Manage
             </Link>
           </div>
         ) : (

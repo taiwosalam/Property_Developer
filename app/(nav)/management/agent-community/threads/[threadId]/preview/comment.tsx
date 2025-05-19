@@ -58,6 +58,8 @@ const Comment: React.FC<CommentProps> = ({
   const [reactionType, setReactionType] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(true);
 
+  console.log(tier_id)
+
   const handleReplyClick = () => {
     setShowInput((prev) => !prev);
   };
@@ -116,7 +118,7 @@ const Comment: React.FC<CommentProps> = ({
             <span className="text-ellipsis line-clamp-1 capitalize">
               {name}
             </span>
-            {/* <BadgeIcon color={getBadgeColor(tier_id) || "blue"} /> */}
+            { tier_id && tier_id > 1 && <BadgeIcon color={"gray"} /> }
           </p>
           <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium">
             {text}
