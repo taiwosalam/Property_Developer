@@ -55,7 +55,7 @@ const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
         </div>
       </div>
       <div className="desc text-sm">
-        <TruncatedText as="div" lines={6}>
+        <TruncatedText as="div" lines={3}>
           <div
             className="text-text-quaternary dark:text-darkText-2 text-sm font-normal"
             dangerouslySetInnerHTML={{ __html: bio || "" }}

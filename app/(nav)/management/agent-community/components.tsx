@@ -211,7 +211,7 @@ export const LikeDislikeButtons = ({
         user_liked || userAction === "like" ? "text-blue-600" : ""
       }`}
       onClick={handleLike}
-      disabled={isLoading || user_liked}
+      // disabled={isLoading || user_liked}
       aria-label="Like"
       aria-pressed={user_liked || userAction === "like"}
     >
@@ -261,6 +261,139 @@ interface FormattedCompanySummary {
   stats: Array<{ label: string; value: string | number }>;
 }
 
+// export const formatCompanySummary = (
+//   companySummary: CompanySummaryTypes
+// ): FormattedCompanySummary => {
+//   const {
+//     addresses,
+//     company_logo,
+//     contact_details,
+//     details,
+//     email,
+//     name,
+//     services,
+//     social_handles,
+//     total_branch,
+//     total_review,
+//     total_staff,
+//     total_unit,
+//   } = companySummary;
+
+//   console.log("here summary", companySummary);
+
+//   // Format services (handle both array and object cases)
+//   const availableServices = Array.isArray(services)
+//     ? services
+//         .map((service) =>
+//           typeof service === "string" ? service : service.name || ""
+//         )
+//         .filter(Boolean)
+//     : Object.entries(services || {})
+//         .filter(
+//           ([key, value]) =>
+//             [
+//               "architect",
+//               "civil_engineer",
+//               "estate_surveyor_valuer",
+//               "hospitality",
+//               "land_surveyor",
+//               "legal_practitioner",
+//               "quantity_surveyor",
+//               "realtor",
+//               "town_planner",
+//             ].includes(key) && value !== null
+//         )
+//         .map(([key]) => key.replace(/_/g, " "));
+
+//   // Format social handles (only include valid links)
+//   const socialHandles: Array<{
+//     platform: string;
+//     link: string;
+//     icon: React.ReactNode;
+//   }> = [
+//     {
+//       platform: "facebook",
+//       link: social_handles?.facebook || "",
+//       icon: <FbIcon />,
+//     },
+//     { platform: "x", link: social_handles?.x || "", icon: <TwitterIcon /> },
+//     {
+//       platform: "instagram",
+//       link: social_handles?.instagram || "",
+//       icon: <InstagramIcon />,
+//     },
+//     {
+//       platform: "linkedin",
+//       link: social_handles?.linkedin || "",
+//       icon: <LinkedInIcon />,
+//     },
+//     {
+//       platform: "tiktok",
+//       link: social_handles?.tiktok || "",
+//       icon: <TikTokIcon />,
+//     },
+//     {
+//       platform: "youtube",
+//       link: social_handles?.youtube || "",
+//       icon: <YouTubeIcon />,
+//     },
+//   ].filter(
+//     (item): item is { platform: string; link: string; icon: JSX.Element } =>
+//       item.link != null && item.link.trim() !== ""
+//   );
+
+//   // Format stats
+//   const companyStats = [
+//     {
+//       label: "Joined ourproperty.ng",
+//       value: details?.joined_date
+//         ? dayjs(details.joined_date).format("MMM YYYY")
+//         : "--- ---",
+//     },
+//     {
+//       label: "Years in Industry",
+//       value:
+//         calculateYearsInIndustry(details?.date_of_registration) ?? "--- ---",
+//     },
+//     { label: "Total Branch", value: details?.total_branches || 0 },
+//     { label: "Total Staff", value: details?.total_staff || 0 },
+//     {
+//       label: "Property for sale",
+//       value: details?.property_for_sale || 0,
+//     },
+//     {
+//       label: "Property for Rent",
+//       value: details?.property_for_rent || 0,
+//     },
+//     {
+//       label: "Hospitality Property",
+//       value: details?.hospitality_property || 0,
+//     },
+//     { label: "Total Unit Managing", value: details.total_unit_managing || 0 },
+//     { label: "Total Reviews", value: details.total_review || 0 },
+//     {
+//       label: "Completed Transaction",
+//       value: details?.completed_transaction || 0,
+//     },
+//   ];
+
+//   const address =
+//     `${addresses?.head_office_address}, ${addresses.local_government}, ${addresses.state}` ||
+//     "--- ---";
+
+//   return {
+//     logo: company_logo || empty,
+//     name: name || "--- ---",
+//     services: availableServices,
+//     address: address,
+//     email: email || "--- ---",
+//     phoneNumber: formatPhoneNumbers(contact_details?.phone_numbers),
+//     website: social_handles?.website || null,
+//     socialHandles,
+//     stats: companyStats,
+//   };
+// };
+
 export const formatCompanySummary = (
   companySummary: CompanySummaryTypes
 ): FormattedCompanySummary => {
@@ -273,37 +406,28 @@ export const formatCompanySummary = (
     name,
     services,
     social_handles,
-    total_branch,
-    total_review,
-    total_staff,
-    total_unit,
   } = companySummary;
 
-  console.log("here summary", companySummary);
-
-  // Format services (handle both array and object cases)
-  const availableServices = Array.isArray(services)
-    ? services
-        .map((service) =>
-          typeof service === "string" ? service : service.name || ""
-        )
-        .filter(Boolean)
-    : Object.entries(services || {})
-        .filter(
-          ([key, value]) =>
-            [
-              "architect",
-              "civil_engineer",
-              "estate_surveyor_valuer",
-              "hospitality",
-              "land_surveyor",
-              "legal_practitioner",
-              "quantity_surveyor",
-              "realtor",
-              "town_planner",
-            ].includes(key) && value !== null
-        )
-        .map(([key]) => key.replace(/_/g, " "));
+  // Format services: Flatten all service arrays into a single array
+  const availableServices = Object.entries(services || {})
+    .filter(
+      ([key, value]) =>
+        [
+          "architect",
+          "civil_engineer",
+          "estate_surveyor_valuer",
+          "hospitality",
+          "land_surveyor",
+          "legal_practitioner",
+          "quantity_surveyor",
+          "realtor",
+          "town_planner",
+        ].includes(key) &&
+        Array.isArray(value) &&
+        value.length > 0
+    )
+    .flatMap(([_, value]) => value) // Flatten the arrays of services
+    .filter(Boolean); // Remove any falsy values
 
   // Format social handles (only include valid links)
   const socialHandles: Array<{

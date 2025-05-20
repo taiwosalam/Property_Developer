@@ -9,10 +9,14 @@ export interface Invoice {
   total_amount: string;
   invoice_date: string;
   client_tier: number;
+  amount_paid: number;
+  balance_due: number;
   is_auto?: boolean;
   status: string;
   payment_reason?: string;
+  picture?: string;
   currency?: Currency;
+  date: string;
   badge_color?: "red" | "green" | "black" | "blue" | "yellow" | "gray" | "purple";
 }
 
@@ -23,6 +27,9 @@ export interface InvoiceStatistics {
   percentage_change_total: number;
   percentage_change_paid: number;
   percentage_change_pending: number;
+  total_receipt_num: number;
+  total_paid_receipt_num: number;
+  total_pending_receipt_num: number;
 }
 
 export interface TransformedInvoiceData {

@@ -93,7 +93,9 @@ const AIPopOver = ({
       if (!feature) return;
 
       await generateText(feature.task, editorValue || ""); // Trigger the generation
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error generating text:", error);
+    }
   };
 
   // Watch for content updates and set editorValue with formatted content

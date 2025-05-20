@@ -197,23 +197,55 @@ export const transformVATAPIResponse = (
   };
 };
 
+// export const getOtherCurrencyFromVats = (
+//   vats: { currency: string | null }[]
+// ): string => {
+//   const currencies = new Set(
+//     vats
+//       .map((vat) => vat.currency)
+//       .filter(
+//         (currency): currency is "dollar" | "pound" =>
+//           !!currency && currency !== "naira"
+//       )
+//   );
+
+//   const hasDollar = currencies.has("dollar");
+//   const hasPound = currencies.has("pound");
+
+//   if (hasDollar && hasPound) return "$£";
+//   if (hasDollar) return "$";
+//   if (hasPound) return "£";
+//   return "";
+// };
+
 export const getOtherCurrencyFromVats = (
-  vats: { currency: string | null }[]
+  vats: { currency: string | null; amount: string }[]
 ): string => {
-  const currencies = new Set(
-    vats
-      .map((vat) => vat.currency)
-      .filter(
-        (currency): currency is "dollar" | "pound" =>
-          !!currency && currency !== "naira"
-      )
-  );
+  let totalDollar = 0;
+  let totalPound = 0;
 
-  const hasDollar = currencies.has("dollar");
-  const hasPound = currencies.has("pound");
+  vats.forEach((vat) => {
+    const amount = parseFloat(vat.amount) || 0;
+    if (vat.currency === "dollar") {
+      totalDollar += amount;
+    } else if (vat.currency === "pound") {
+      totalPound += amount;
+    }
+  });
 
-  if (hasDollar && hasPound) return "$£";
-  if (hasDollar) return "$";
-  if (hasPound) return "£";
-  return "";
+  const formatCurrency = (amount: number, symbol: string) =>
+    `${symbol}${amount.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}`;
+
+  const parts = [];
+  if (totalDollar > 0) {
+    parts.push(formatCurrency(totalDollar, "$"));
+  }
+  if (totalPound > 0) {
+    parts.push(formatCurrency(totalPound, "£"));
+  }
+
+  return parts.join(" | ");
 };

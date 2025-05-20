@@ -397,22 +397,7 @@ const Vat = () => {
               trendDirection={percentage_change_total < 0 ? "down" : "up"}
               trendColor={percentage_change_total < 0 ? "red" : "green"}
             />
-            {/* <AccountStatsCard
-              title="Total Paid Vat"
-              balance={total_paid_vat}
-              variant="greenIncoming"
-              trendDirection={percentage_change_paid < 0 ? "down" : "up"}
-              trendColor={percentage_change_paid < 0 ? "red" : "green"}
-              percentage={percentage_change_paid}
-            />
-            <AccountStatsCard
-              title="Total Pending Vat"
-              balance={total_pending_vat}
-              variant="yellowCard"
-              trendDirection={percentage_change_pending < 0 ? "down" : "up"}
-              trendColor={percentage_change_pending < 0 ? "red" : "green"}
-              percentage={percentage_change_pending}
-            /> */}
+           
           </AutoResizingGrid>
         </div>
       </div>
