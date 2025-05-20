@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { formatFee } from "../../management/rent-unit/data";
+import { DateRange } from "react-day-picker";
 
 export const accountingInvoiceOptionsWithDropdown = [
   {
@@ -92,28 +93,45 @@ const generateTableData = (numItems: number) => {
 
 export const invoiceTableData = generateTableData(10);
 
-export const transformInvoiceData = (
-  response: InvoiceListResponse
-): TransformedInvoiceData => {
-  const { statistics, invoices } = response.data;
-  // console.log("rece inveoice", invoices)
-  const transformedInvoices = invoices.map((invoice) => ({
-    ...invoice,
-    status: formatStatus(invoice.status),
-    client_name: invoice.client_name,
-    payment_reason: invoice.reason ?? "",
-    picture: invoice.client_picture,
-    total_amount:
-      formatFee(invoice.total_amount, invoice.currency || "naira") ?? "",
-    badge_color: invoice.client_tier
-      ? tierColorMap[invoice.client_tier as keyof typeof tierColorMap]
-      : undefined,
-    date: dayjs(invoice.invoice_date).format("MMM DD YYYY"),
-    is_auto:
-      invoice.is_auto !== undefined ? convertToBoolean(invoice.is_auto) : false,
-  }));
-  return { statistics, invoices: transformedInvoices };
+// Helper to clean amount strings by removing currency symbols and commas
+const cleanAmount = (amount: string | number | null | undefined): number => {
+  if (amount == null) {
+    console.log(`Null or undefined amount detected`);
+    return 0;
+  }
+  const strAmount = String(amount);
+  // Remove currency symbols (£, ₦, $, commas, and whitespace)
+  const cleaned = strAmount.replace(/[£₦$,\s]/g, "");
+  const parsed = Number(cleaned);
+  if (isNaN(parsed)) {
+    console.log(`Failed to parse amount: ${strAmount} -> ${cleaned}`);
+    return 0;
+  }
+  return parsed;
 };
+
+// export const transformInvoiceData = (
+//   response: InvoiceListResponse
+// ): TransformedInvoiceData => {
+//   const { statistics, invoices } = response.data;
+//   // console.log("rece inveoice", invoices)
+//   const transformedInvoices = invoices.map((invoice) => ({
+//     ...invoice,
+//     status: formatStatus(invoice.status),
+//     client_name: invoice.client_name,
+//     payment_reason: invoice.reason ?? "",
+//     picture: invoice.client_picture,
+//     total_amount:
+//       formatFee(invoice.total_amount, invoice.currency || "naira") ?? "",
+//     badge_color: invoice.client_tier
+//       ? tierColorMap[invoice.client_tier as keyof typeof tierColorMap]
+//       : undefined,
+//     date: dayjs(invoice.invoice_date).format("MMM DD YYYY"),
+//     is_auto:
+//       invoice.is_auto !== undefined ? convertToBoolean(invoice.is_auto) : false,
+//   }));
+//   return { statistics, invoices: transformedInvoices };
+// };
 
 const convertToBoolean = (value: string | boolean): boolean => {
   if (typeof value === "boolean") {
@@ -131,23 +149,203 @@ export const formatStatus = (status: string): string => {
 };
 
 // Helper to determine otherCurrency based on invoices
-export const getOtherCurrency = (
+// export const getOtherCurrency = (
+//   invoices: InvoiceListResponse["data"]["invoices"]
+// ) => {
+//   const currencies = new Set(
+//     invoices
+//       .map((invoice) => invoice.currency)
+//       .filter(
+//         (currency): currency is "dollar" | "pound" =>
+//           !!currency && currency !== "naira"
+//       )
+//   );
+
+//   const hasDollar = currencies.has("dollar");
+//   const hasPound = currencies.has("pound");
+
+//   if (hasDollar && hasPound) return "$£"; // Both present
+//   if (hasDollar) return "$"; // Only dollar
+//   if (hasPound) return "£"; // Only pound
+//   return ""; // Neither present
+// };
+
+// Filter invoices by date range and currency
+const filterInvoices = (
+  invoices: InvoiceListResponse["data"]["invoices"],
+  dateRange: DateRange | undefined,
+  currencyFilter: string | null
+): InvoiceListResponse["data"]["invoices"] => {
+  if (!dateRange?.from || !dateRange?.to) {
+    return currencyFilter
+      ? invoices.filter(
+          (invoice) => invoice.currency?.toLowerCase() === currencyFilter
+        )
+      : invoices;
+  }
+
+  return invoices.filter((invoice) => {
+    const invoiceDate = dayjs(invoice.invoice_date);
+    const fromDate = dayjs(dateRange.from).startOf("day");
+    const toDate = dayjs(dateRange.to).endOf("day");
+    const isValidDate = invoiceDate.isValid();
+    const isInRange =
+      isValidDate &&
+      (invoiceDate.isAfter(fromDate) || invoiceDate.isSame(fromDate)) &&
+      (invoiceDate.isBefore(toDate) || invoiceDate.isSame(toDate));
+    const matchesCurrency = currencyFilter
+      ? invoice.currency?.toLowerCase() === currencyFilter
+      : true;
+    return isInRange && matchesCurrency;
+  });
+};
+
+// Calculate naira statistics
+const calculateStatistics = (
   invoices: InvoiceListResponse["data"]["invoices"]
-) => {
-  const currencies = new Set(
-    invoices
-      .map((invoice) => invoice.currency)
-      .filter(
-        (currency): currency is "dollar" | "pound" =>
-          !!currency && currency !== "naira"
-      )
-  );
+): InvoiceStatistics => {
+  const initialStats: InvoiceStatistics = {
+    total_receipt_num: 0,
+    total_paid_receipt_num: 0,
+    total_pending_receipt_num: 0,
+    total_receipt: "₦0.00",
+    total_paid_receipt: "₦0.00",
+    total_pending_receipt: "₦0.00",
+    percentage_change_total: 0,
+    percentage_change_paid: 0,
+    percentage_change_pending: 0,
+  };
 
-  const hasDollar = currencies.has("dollar");
-  const hasPound = currencies.has("pound");
+  const stats = invoices.reduce((acc, invoice) => {
+    const totalAmount = cleanAmount(invoice.total_amount);
+    const amountPaid = cleanAmount(invoice.amount_paid);
+    const balanceDue = cleanAmount(invoice.balance_due);
 
-  if (hasDollar && hasPound) return "$£"; // Both present
-  if (hasDollar) return "$"; // Only dollar
-  if (hasPound) return "£"; // Only pound
-  return ""; // Neither present
+    acc.total_receipt_num += totalAmount;
+    acc.total_paid_receipt_num += amountPaid;
+    acc.total_pending_receipt_num += balanceDue;
+    return acc;
+  }, initialStats);
+
+  // Format totals
+  stats.total_receipt = formatFee(stats.total_receipt_num, "naira") ?? "₦0.00";
+  stats.total_paid_receipt =
+    formatFee(stats.total_paid_receipt_num, "naira") ?? "₦0.00";
+  stats.total_pending_receipt =
+    formatFee(stats.total_pending_receipt_num, "naira") ?? "₦0.00";
+
+  // Calculate percentages
+  stats.percentage_change_paid =
+    stats.total_receipt_num > 0
+      ? Number(
+          Math.min(
+            (stats.total_paid_receipt_num / stats.total_receipt_num) * 100,
+            100
+          ).toFixed(2)
+        )
+      : 0;
+  stats.percentage_change_pending =
+    stats.total_receipt_num > 0
+      ? Number(
+          Math.min(
+            (stats.total_pending_receipt_num / stats.total_receipt_num) * 100,
+            100
+          ).toFixed(2)
+        )
+      : 0;
+  stats.percentage_change_total = 0;
+
+  return stats;
+};
+
+// Transform individual invoices for table display
+const transformSingleInvoice = (
+  invoice: InvoiceListResponse["data"]["invoices"][number]
+): TransformedInvoiceData["invoices"][number] => {
+  const isValidDate = dayjs(invoice.invoice_date, "YYYY-MM-DD", true).isValid();
+  const formattedDate = isValidDate
+    ? dayjs(invoice.invoice_date).format("MMM DD YYYY")
+    : "Invalid Date";
+
+  return {
+    ...invoice,
+    status: formatStatus(invoice.status),
+    client_name: invoice.client_name,
+    payment_reason: invoice.reason ?? "",
+    picture: invoice.client_picture ?? undefined,
+    total_amount:
+      formatFee(invoice.total_amount, invoice.currency || "naira") ?? "",
+    badge_color: invoice.client_tier
+      ? tierColorMap[invoice.client_tier as keyof typeof tierColorMap]
+      : undefined,
+    date: formattedDate,
+    is_auto:
+      invoice.is_auto !== undefined ? convertToBoolean(invoice.is_auto) : false,
+  };
+};
+
+export const transformInvoiceData = (
+  response: InvoiceListResponse,
+  dateRange?: DateRange
+): TransformedInvoiceData => {
+  const { invoices } = response.data;
+
+  // Filter naira invoices for statistics
+  const filteredInvoices = filterInvoices(invoices, dateRange, "naira");
+
+  // Calculate statistics
+  const statistics = calculateStatistics(filteredInvoices);
+
+  // Transform all invoices for table
+  const transformedInvoices = invoices.map(transformSingleInvoice);
+
+  return { statistics, invoices: transformedInvoices };
+};
+
+// Calculate currency totals for a specific field
+const calculateCurrencyTotals = (
+  invoices: InvoiceListResponse["data"]["invoices"],
+  field: "total_amount" | "amount_paid" | "balance_due"
+): Record<string, number> => {
+  return invoices.reduce((acc, invoice) => {
+    const currency = invoice.currency?.toLowerCase();
+    if (currency !== "pound" && currency !== "dollar") {
+      return acc;
+    }
+    const amountRaw = invoice[field];
+    const amount = cleanAmount(amountRaw);
+
+    if (!acc[currency]) {
+      acc[currency] = 0;
+    }
+    acc[currency] += amount;
+    return acc;
+  }, {} as Record<string, number>);
+};
+
+// Format currency totals into a string
+const formatCurrencyTotals = (totals: Record<string, number>): string => {
+  return Object.entries(totals)
+    .filter(([, total]) => total !== 0)
+    .map(([currency, total]) => formatFee(total, currency))
+    .join(" | ");
+};
+
+export const getOtherCurrency = (
+  invoices: InvoiceListResponse["data"]["invoices"],
+  dateRange?: DateRange,
+  field: "total_amount" | "amount_paid" | "balance_due" = "total_amount"
+): string => {
+  if (invoices.length === 0) {
+    return "";
+  }
+
+  // Filter invoices by date range
+  const filteredInvoices = filterInvoices(invoices, dateRange, null);
+
+  // Calculate totals for pound and dollar
+  const currencyTotals = calculateCurrencyTotals(filteredInvoices, field);
+
+  // Format result
+  return formatCurrencyTotals(currencyTotals);
 };

@@ -45,7 +45,7 @@ export const transformApiData = (apiData: ThreadResponse | null) => {
     companySummary: data.company_summary ?? null,
     contributors: data.contributor ?? null,
     comments: data.comments ?? [],
-    targetAudience: `${data.post.state}, ${data.post.lga}`,
+    targetAudience: `${data.post.state ?? ""}, ${data.post.lga ?? ""}`,
     readByData: data?.post?.readByData ?? [],
   };
 };

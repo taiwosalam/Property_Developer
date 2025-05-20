@@ -5,7 +5,12 @@ import { CommentData } from "../tasks/announcements/comment";
 import { toggleLike } from "@/app/(nav)/management/agent-community/my-articles/data";
 import { ThreadArticleSkeleton } from "@/app/(nav)/management/agent-community/components";
 import DOMPurify from "dompurify";
-import { ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import {
+  DislikeIcon,
+  LikeIcon,
+  ThumbsDown,
+  ThumbsUp,
+} from "@/public/icons/icons";
 import Image from "next/image";
 import { empty } from "@/app/config";
 
@@ -18,47 +23,17 @@ const PreviewThreadArticle = ({
   slug: string;
   comments: CommentData[];
 }): JSX.Element => {
-  const [likeCount, setLikeCount] = useState(
-    post?.likes_up ? parseInt(post?.likes_up) : 0
-  );
-  const [dislikeCount, setDislikeCount] = useState(
-    post?.likes_down ? parseInt(post?.likes_down) : 0
-  );
-  const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLike = async () => {
-    // console.log('like clicked');
-    if (isLoading || userAction === "like") return;
-    setIsLoading(true);
-
+  const handleToggleLike = async (type: number) => {
     try {
-      await toggleLike(slug, 1);
-      if (userAction === "dislike") {
-        setDislikeCount((prev) => prev - 1);
+      setIsLoading(true);
+      const res = await toggleLike(slug, type);
+      if (res) {
+        window.dispatchEvent(new Event("refetchComments"));
       }
-      setLikeCount((prev) => prev + 1);
-      setUserAction("like");
     } catch (error) {
       console.error("Error toggling like:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDislike = async () => {
-    if (isLoading || userAction === "dislike") return;
-    setIsLoading(true);
-
-    try {
-      await toggleLike(slug, -1);
-      if (userAction === "like") {
-        setLikeCount((prev) => prev - 1);
-      }
-      setDislikeCount((prev) => prev + 1);
-      setUserAction("dislike");
-    } catch (error) {
-      console.error("Error toggling dislike:", error);
     } finally {
       setIsLoading(false);
     }
@@ -85,24 +60,26 @@ const PreviewThreadArticle = ({
 
         <div className="flex gap-2">
           <button
-            className={`flex items-center gap-1 ${
-              userAction === "like" ? "text-blue-500" : ""
-            }`}
+            className="flex items-center gap-1"
             disabled={isLoading}
-            onClick={handleLike}
+            onClick={() => handleToggleLike(1)}
           >
-            <ThumbsUp />
-            <p>{likeCount}</p>
+            <LikeIcon
+              fill={`${post.user_liked ? "#E15B0F" : ""} `}
+              stroke={`${post.user_liked ? "#E15B0F" : "#000"} `}
+            />
+            <p>{post.likes_up}</p>
           </button>
           <button
-            className={`flex items-center gap-1 ${
-              userAction === "dislike" ? "text-red-500" : ""
-            }`}
-            onClick={handleDislike}
+            className="flex items-center gap-1"
             disabled={isLoading}
+            onClick={() => handleToggleLike(-1)}
           >
-            <ThumbsDown />
-            <p>{dislikeCount}</p>
+            <DislikeIcon
+              fill={`${post.user_disliked ? "#E15B0F" : "none"} `}
+              stroke={`${post.user_disliked ? "#E15B0F" : "#000"} `}
+            />
+            <p>{post.likes_down}</p>
           </button>
 
           <div className="flex items-center">

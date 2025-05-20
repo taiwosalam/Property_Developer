@@ -2,6 +2,8 @@ import { toggleLike } from "@/app/(nav)/management/agent-community/my-articles/d
 import { empty } from "@/app/config";
 import {
   CommentIcon,
+  DislikeIcon,
+  LikeIcon,
   ShareIcon,
   ThumbsDown,
   ThumbsUp,
@@ -44,8 +46,10 @@ export const ThreadHeader = ({
         <div className="flex flex-col flex-1 min-w-0">
           <div className="flex gap-2 items-center">
             <div className="flex items-center gap-1 max-w-[100%]">
-              <p className="dark:text-white truncate capitalize">{name || "--- ---"}</p>
-              <BadgeIcon color={badge_color}/>
+              <p className="dark:text-white truncate capitalize">
+                {name || "--- ---"}
+              </p>
+              <BadgeIcon color={badge_color} />
             </div>
           </div>
           <p className="text-brand-9 text-sm"> {role || "--- ---"} </p>
@@ -125,7 +129,8 @@ export const ThreadFooter = ({
   slug,
   shareLink,
   setIsLikeDislikeLoading,
-  user_liked
+  user_liked,
+  user_disliked,
 }: {
   comments: string;
   likes: string;
@@ -133,39 +138,22 @@ export const ThreadFooter = ({
   slug: string;
   shareLink: string;
   user_liked?: boolean;
+  user_disliked?: boolean;
   setIsLikeDislikeLoading?: (value: boolean) => void;
 }) => {
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLike = async () => {
-    if (isLoading || userAction === "like") return;
-    setIsLoading(true);
-    setIsLikeDislikeLoading?.(true);
-
+  const handleToggleLike = async (type: number) => {
     try {
-      await toggleLike(slug, 1);
-      setUserAction("like");
-      window.dispatchEvent(new Event("refetchThreads"));
+      setIsLoading(true);
+      setIsLikeDislikeLoading?.(true);
+      const res = await toggleLike(slug, type);
+      if (res) {
+        window.dispatchEvent(new Event("refetchThreads"));
+      }
     } catch (error) {
       console.error("Error toggling like:", error);
-    } finally {
-      setIsLoading(false);
-      setIsLikeDislikeLoading?.(false);
-    }
-  };
-
-  const handleDislike = async () => {
-    if (isLoading || userAction === "dislike") return;
-    setIsLoading(true);
-    setIsLikeDislikeLoading?.(true);
-
-    try {
-      await toggleLike(slug, -1);
-      setUserAction("dislike");
-      window.dispatchEvent(new Event("refetchThreads"));
-    } catch (error) {
-      console.error("Error toggling dislike:", error);
     } finally {
       setIsLoading(false);
       setIsLikeDislikeLoading?.(false);
@@ -196,23 +184,25 @@ export const ThreadFooter = ({
     <div className="flex items-center justify-between mt-2">
       <div className="like-dislike flex gap-2">
         <button
-          className={`flex items-center gap-1 ${
-              user_liked || userAction === "like" ? "text-blue-500" : ""
-          }`}
-          onClick={handleLike}
-          disabled={isLoading || user_liked}
+          className="flex items-center gap-1"
+          disabled={isLoading}
+          onClick={() => handleToggleLike(1)}
         >
-          <ThumbsUp />
+          <LikeIcon
+            fill={`${user_liked ? "#E15B0F" : ""} `}
+            stroke={`${user_liked ? "#E15B0F" : "#000"} `}
+          />
           <p>{likes}</p>
         </button>
         <button
-          className={`flex items-center gap-1 ${
-            userAction === "dislike" ? "text-red-500" : ""
-          }`}
-          onClick={handleDislike}
+          className="flex items-center gap-1"
           disabled={isLoading}
+          onClick={() => handleToggleLike(-1)}
         >
-          <ThumbsDown />
+          <DislikeIcon
+            fill={`${user_disliked ? "#E15B0F" : "none"} `}
+            stroke={`${user_disliked ? "#E15B0F" : "#000"} `}
+          />
           <p>{dislikes}</p>
         </button>
       </div>
