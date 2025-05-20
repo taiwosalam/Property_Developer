@@ -97,6 +97,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     propertySettings?.coordinate || ""
   );
 
+
+  const CautionDepositOptions = [
+    { label: "Keep with Landlord", value: "Landlord" },
+    { label: "Keep it with Manager", value: "Company" },
+    { label: "Escrow it", value: "Admin" },
+    { label: "None", value: "Null" },
+  ]
+
   const {
     state: selectedState,
     lga,
@@ -748,12 +756,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   }
                 />
                 <Select
-                  options={[
-                    "Keep with Landlord",
-                    "Keep with Manager",
-                    "Escrow it",
-                    "None",
-                  ]}
+                  options={CautionDepositOptions}
                   isSearchable={false}
                   id="caution_deposit"
                   label="Caution Deposit"

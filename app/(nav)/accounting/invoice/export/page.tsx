@@ -15,12 +15,7 @@ import Signature from "@/components/Signature/signature";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 import { useEffect, useRef, useState } from "react";
 import { InvoiceListResponse, TransformedInvoiceData } from "../types";
-import useFetch from "@/hooks/useFetch";
-import CustomLoader from "@/components/Loader/CustomLoader";
-import NetworkError from "@/components/Error/NetworkError";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { useGlobalStore } from "@/store/general-store";
-import ServerError from "@/components/Error/ServerError";
 import dayjs from "dayjs";
 
 const ExportInvoice = () => {
@@ -29,38 +24,23 @@ const ExportInvoice = () => {
   );
   const [fullContent, setFullContent] = useState(false);
 
-  const { data, error, loading, isNetworkError, silentLoading } =
-    useFetch<InvoiceListResponse>("/invoice/list");
+  const { accounting_invoices, accounting_statistics, otherCurrencies } =
+    useGlobalStore((s) => ({
+      accounting_invoices: s.accounting_invoices,
+      accounting_statistics: s.accounting_statistics,
+      otherCurrencies: s.otherCurrencies,
+    }));
 
   const filteredAccountingInvoices = useGlobalStore(
     (s) => s.accounting_invoices
   );
+  const filteredAccountingStatistics = useGlobalStore(
+    (s) => s.accounting_statistics
+  );
 
-  useEffect(() => {
-    if (data) {
-      const transformed = transformInvoiceData(data);
-      setInvoiceData(transformed);
-    }
-  }, [data]);
-
-  const printRef = useRef<HTMLDivElement>(null);
-
-  if (loading)
-    return <CustomLoader layout="page" view="table" pageTitle="Invoices" />;
-  if (error) return <ServerError error={error} />;
-  if (!invoiceData) return <div>No invoice data available.</div>;
-  if (isNetworkError) return <NetworkError />;
-
-  const { statistics, invoices } = invoiceData;
-  const transformedInvoiceTableData = invoices.map((i) => ({
-    ...i,
-    client_name: (
-      <p className="flex items-center whitespace-nowrap">
-        <span>{i.client_name}</span>
-        {i.badge_color && <BadgeIcon color={i.badge_color} />}
-      </p>
-    ),
-  }));
+  const printRef = useRef<HTMLDivElement>(null)
+  if (!filteredAccountingStatistics)
+    return <div>No invoice data available.</div>;
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
@@ -78,27 +58,60 @@ const ExportInvoice = () => {
             <AutoResizingGrid gap={24} minWidth={350}>
               <AccountStatsCard
                 title="Total Invoice Created"
-                balance={statistics.total_receipt}
-                trendDirection="up"
-                trendColor="green"
+                balance={accounting_statistics.total_receipt}
+                trendDirection={
+                  accounting_statistics.percentage_change_total < 0
+                    ? "down"
+                    : "up"
+                }
+                trendColor={
+                  accounting_statistics.percentage_change_total < 0
+                    ? "red"
+                    : "green"
+                }
                 variant="blueIncoming"
-                percentage={statistics.percentage_change_total}
+                noSymbol
+                percentage={accounting_statistics.percentage_change_total}
+                otherCurrency={otherCurrencies?.total}
+                // timeRangeLabel={getTimeRangeLabel()}
               />
               <AccountStatsCard
                 title="Total Paid Invoice"
-                balance={statistics.total_receipt}
-                trendDirection="down"
-                trendColor="red"
+                balance={accounting_statistics.total_paid_receipt}
+                trendDirection={
+                  accounting_statistics.percentage_change_paid < 0
+                    ? "down"
+                    : "up"
+                }
+                trendColor={
+                  accounting_statistics.percentage_change_paid < 0
+                    ? "red"
+                    : "green"
+                }
                 variant="greenIncoming"
-                percentage={statistics.percentage_change_paid}
+                noSymbol
+                percentage={accounting_statistics.percentage_change_paid}
+                otherCurrency={otherCurrencies?.paid}
+                // timeRangeLabel={getTimeRangeLabel()}
               />
               <AccountStatsCard
                 title="Total Pending Invoice"
-                balance={statistics.total_pending_receipt}
-                trendDirection="down"
-                trendColor="red"
+                balance={accounting_statistics.total_pending_receipt}
+                trendDirection={
+                  accounting_statistics.percentage_change_pending < 0
+                    ? "down"
+                    : "up"
+                }
+                trendColor={
+                  accounting_statistics.percentage_change_pending < 0
+                    ? "red"
+                    : "green"
+                }
                 variant="yellowCard"
-                percentage={Number(statistics.total_pending_receipt)}
+                noSymbol
+                percentage={accounting_statistics.percentage_change_pending}
+                otherCurrency={otherCurrencies?.pending}
+                // timeRangeLabel={getTimeRangeLabel()}
               />
             </AutoResizingGrid>
             <CustomTable

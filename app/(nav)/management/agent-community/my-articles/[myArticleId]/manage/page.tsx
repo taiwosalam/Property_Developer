@@ -60,7 +60,7 @@ const ManageMyArticle = () => {
     if (response) {
       toast.success("Article deleted successfully");
       // setShowSuccessModal(true);
-      toast.success("Article deleted successfully")
+      toast.success("Article deleted successfully");
       router.push("/management/agent-community/my-articles");
     } else {
       toast.error("Failed to delete article");
@@ -159,10 +159,11 @@ const ManageMyArticle = () => {
             </ModalTrigger>
             <ModalContent>
               <DeleteArticleModal
+                loading={isDeleting}
                 handleDelete={() => handleDeleteMyArticle({ slug })}
               />
             </ModalContent>
-        </Modal>
+          </Modal>
           {/* {showSuccessModal && (
             <DeleteArticleModalSuccess
               open={showSuccessModal}
@@ -184,4 +185,3 @@ const ManageMyArticle = () => {
 };
 
 export default ManageMyArticle;
-

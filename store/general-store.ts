@@ -1,4 +1,3 @@
-// store/globalStore.ts
 import { TransformedDisburseItem } from "@/app/(nav)/accounting/disbursement/data";
 import { Expense } from "@/app/(nav)/accounting/expenses/types.";
 import { Invoice } from "@/app/(nav)/accounting/invoice/types";
@@ -39,6 +38,13 @@ interface GlobalStoreState {
   activities?: ActivityDataReport[];
   user_activities?: ActivityDataReport[];
   accounting_invoices?: Invoice[];
+  accounting_statistics?: any;
+  otherCurrencies?: {
+    total: string;
+    paid: string;
+    pending: string;
+  };
+
   accounting_vat?: Vat[];
   accounting_vat_data?: any | null;
   accounting_expenses?: Expense[];
@@ -52,6 +58,7 @@ interface GlobalStoreState {
   currentRentStats: any | null;
   vatTimeRangeLabel?: string;
   timeRange: string; // e.g., "7d", "30d", "90d", "custom"
+  timeRangeLabel: string;
   selectedDateRange: DateRange | undefined; // { from: Date, to: Date }
   unitData: initDataProps | null;
   setSelectedOccupant: (occupant: Occupant | null) => void;
@@ -93,8 +100,10 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   campaign_history: [],
   user_activities: [],
   accounting_invoices: [],
+  accounting_statistics: null,
   accounting_vat: [],
   vatTimeRangeLabel: "Last 3 months", 
+  timeRangeLabel: "",
   accounting_expenses: [],
   accounting_disbursements: [],
   wallet_transactions: [],
@@ -105,7 +114,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   tenantError: null,
   currentUnit: null,
   currentRentStats: null,
-  timeRange: "last_30_days",
+  // timeRange: "last_30_days",
+  timeRange: "90d",
   selectedDateRange: undefined,
   unitData: null,
   setSelectedOccupant: (occupant) => set({ selectedOccupant: occupant }),

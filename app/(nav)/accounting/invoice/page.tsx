@@ -57,10 +57,22 @@ import clsx from "clsx";
 
 const AccountingInvoicePage = () => {
   const isDarkMode = useDarkMode();
-  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    DateRange | undefined
-  >();
+  const {
+    setGlobalInfoStore,
+    otherCurrencies,
+    timeRange,
+    selectedDateRange,
+    timeRangeLabel,
+  } = useGlobalStore((s) => ({
+    setGlobalInfoStore: s.setGlobalInfoStore,
+    otherCurrencies: s.otherCurrencies,
+    timeRange: s.timeRange,
+    selectedDateRange: s.selectedDateRange,
+    timeRangeLabel: s.timeRangeLabel,
+  }));
+  // const [selectedDateRange, setSelectedDateRange] = useState<
+  //   DateRange | undefined
+  // >();
   const [currentPage, setCurrentPage] = useState(1);
   const [inoiceStatus, setInvoiceStatus] = useState("");
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
@@ -153,10 +165,6 @@ const AccountingInvoicePage = () => {
     setSearch(query);
   };
 
-  const handleSort = (order: "asc" | "desc") => {
-    setSort(order);
-  };
-
   const { data, error, loading, isNetworkError, silentLoading } =
     useFetch<InvoiceListResponse>("/invoice/list", config);
 
@@ -164,13 +172,83 @@ const AccountingInvoicePage = () => {
     if (data) {
       const transformed = transformInvoiceData(data);
       const newInvoices = transformed.invoices;
+      const newStats = transformed.statistics;
       const currentInvoices = useGlobalStore.getState()?.accounting_invoices;
+      const currentStats = useGlobalStore.getState()?.accounting_statistics;
       if (JSON.stringify(currentInvoices) !== JSON.stringify(newInvoices)) {
-        setGlobalStore("accounting_invoices", newInvoices);
+        setGlobalInfoStore("accounting_invoices", newInvoices);
+      }
+      if (JSON.stringify(currentStats) !== JSON.stringify(newStats)) {
+        setGlobalInfoStore("accounting_statistics", newStats);
       }
       setInvoiceData({ ...transformed, invoices: newInvoices });
     }
-  }, [data, setGlobalStore]);
+  }, [data, setGlobalInfoStore]);
+
+  // Effect to update otherCurrencies
+  useEffect(() => {
+    if (invoiceData?.invoices) {
+      const otherCurrencyTotal = getOtherCurrency(
+        invoiceData.invoices,
+        selectedDateRange,
+        "total_amount"
+      );
+      const otherCurrencyPaid = getOtherCurrency(
+        invoiceData.invoices,
+        selectedDateRange,
+        "amount_paid"
+      );
+      const otherCurrencyPending = getOtherCurrency(
+        invoiceData.invoices,
+        selectedDateRange,
+        "balance_due"
+      );
+
+      const newOtherCurrencies = {
+        total: otherCurrencyTotal,
+        paid: otherCurrencyPaid,
+        pending: otherCurrencyPending,
+      };
+
+      const currentOtherCurrencies = useGlobalStore.getState()?.otherCurrencies;
+
+      if (
+        JSON.stringify(currentOtherCurrencies) !==
+        JSON.stringify(newOtherCurrencies)
+      ) {
+        setGlobalInfoStore("otherCurrencies", newOtherCurrencies);
+      }
+    }
+  }, [invoiceData, selectedDateRange, setGlobalInfoStore]);
+
+  // Effect to update timeRangeLabel
+  useEffect(() => {
+    const newTimeRangeLabel = (() => {
+      switch (timeRange) {
+        case "90d":
+          return "Last 3 months";
+        case "30d":
+          return "Last 30 days";
+        case "7d":
+          return "Last 7 days";
+        case "1d":
+          return "Yesterday";
+        case "custom":
+          if (selectedDateRange?.from && selectedDateRange?.to) {
+            return `${dayjs(selectedDateRange.from).format(
+              "MMM D, YYYY"
+            )} - ${dayjs(selectedDateRange.to).format("MMM D, YYYY")}`;
+          }
+          return "Last 30 days";
+        default:
+          return "Last 30 days";
+      }
+    })();
+
+    if (newTimeRangeLabel !== timeRangeLabel) {
+      setGlobalInfoStore("timeRangeLabel", newTimeRangeLabel);
+    }
+  }, [timeRange, selectedDateRange, timeRangeLabel, setGlobalInfoStore]);
 
   const [state, setState] = useState<{ selectedState: string }>({
     selectedState: "",
@@ -180,13 +258,20 @@ const AccountingInvoicePage = () => {
     setState((state) => ({ ...state, selectedState }));
   };
 
-  const [timeRange, setTimeRange] = useState("90d");
+  // const [timeRange, setTimeRange] = useState("90d");
+
+  // const handleDateChange = (range: DateRange | undefined) => {
+  //   setSelectedDateRange(range);
+  //   // If the user selects a custom range, set the timeRange to "custom"
+  //   if (range?.from && range?.to) {
+  //     setTimeRange("custom");
+  //   }
+  // };
 
   const handleDateChange = (range: DateRange | undefined) => {
-    setSelectedDateRange(range);
-    // If the user selects a custom range, set the timeRange to "custom"
+    setGlobalInfoStore("selectedDateRange", range);
     if (range?.from && range?.to) {
-      setTimeRange("custom");
+      setGlobalInfoStore("timeRange", "custom");
     }
   };
 
@@ -198,13 +283,22 @@ const AccountingInvoicePage = () => {
   };
 
   const handleSelectChange = (value: string) => {
-    setTimeRange(value);
+    setGlobalInfoStore("timeRange", value);
     if (value !== "custom") {
       const days =
         value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
-      setSelectedDateRange(calculateDateRange(days));
+      setGlobalInfoStore("selectedDateRange", calculateDateRange(days));
     }
   };
+
+  // const handleSelectChange = (value: string) => {
+  //   setTimeRange(value);
+  //   if (value !== "custom") {
+  //     const days =
+  //       value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
+  //     setSelectedDateRange(calculateDateRange(days));
+  //   }
+  // };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
@@ -225,7 +319,6 @@ const AccountingInvoicePage = () => {
     setInvoiceStatus(statusString);
   };
 
-  
   const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedItemId(null);
@@ -300,7 +393,23 @@ const AccountingInvoicePage = () => {
     { label: "Unpaid", value: "pending" },
   ];
 
-  const otherCurrency = getOtherCurrency(invoices);
+  // const otherCurrency = getOtherCurrency(invoices);
+  // Calculate otherCurrency for each card
+  const otherCurrencyTotal = getOtherCurrency(
+    invoices,
+    selectedDateRange,
+    "total_amount"
+  );
+  const otherCurrencyPaid = getOtherCurrency(
+    invoices,
+    selectedDateRange,
+    "amount_paid"
+  );
+  const otherCurrencyPending = getOtherCurrency(
+    invoices,
+    selectedDateRange,
+    "balance_due"
+  );
   const IS_PAID = inoiceStatus?.toLowerCase() === "paid";
   // const IS_PAID = false;
 
@@ -415,13 +524,15 @@ const AccountingInvoicePage = () => {
               trendDirection={
                 statistics.percentage_change_total < 0 ? "down" : "up"
               }
-              otherCurrency={otherCurrency}
+              // otherCurrency={otherCurrency}
+              otherCurrency={otherCurrencyTotal}
               trendColor={
                 statistics.percentage_change_total < 0 ? "red" : "green"
               }
               variant="blueIncoming"
               percentage={statistics.percentage_change_total}
               timeRangeLabel={getTimeRangeLabel()}
+              noSymbol
             />
             <AccountStatsCard
               title="Total Paid Invoice"
@@ -429,18 +540,19 @@ const AccountingInvoicePage = () => {
               trendDirection={
                 statistics.percentage_change_paid < 0 ? "down" : "up"
               }
-              otherCurrency={otherCurrency}
+              otherCurrency={otherCurrencyPaid}
               trendColor={
                 statistics.percentage_change_paid < 0 ? "red" : "green"
               }
               variant="greenIncoming"
               percentage={statistics.percentage_change_paid}
               timeRangeLabel={getTimeRangeLabel()}
+              noSymbol
             />
             <AccountStatsCard
               title="Total Pending Invoice"
               balance={statistics.total_pending_receipt}
-              otherCurrency={otherCurrency}
+              otherCurrency={otherCurrencyPending}
               trendDirection={
                 statistics.percentage_change_pending < 0 ? "down" : "up"
               }
@@ -450,6 +562,7 @@ const AccountingInvoicePage = () => {
               variant="yellowCard"
               percentage={statistics.percentage_change_pending}
               timeRangeLabel={getTimeRangeLabel()}
+              noSymbol
             />
           </AutoResizingGrid>
         </div>

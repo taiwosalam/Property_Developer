@@ -48,7 +48,8 @@ export const DeleteInventoryModal: React.FC<{
 
 export const DeleteArticleModal: React.FC<{
   handleDelete: () => void;
-}> = ({ handleDelete }) => {
+  loading?: boolean;
+}> = ({ handleDelete, loading }) => {
   return (
     <>
       <div className="p-5 custom-flex-col gap-4 rounded-2xl bg-white dark:bg-black overflow-hidden max-w-[486px]">
@@ -60,8 +61,13 @@ export const DeleteArticleModal: React.FC<{
           note that only articles without any comments can be deleted.
         </p>
         <div className="flex items-end justify-end gap-2 w-full">
-          <Button size="sm_medium" className="px-8 py-2" onClick={handleDelete}>
-            Yes
+          <Button
+            disabled={loading}
+            size="sm_medium"
+            className="px-8 py-2"
+            onClick={handleDelete}
+          >
+            { loading ? "Deleting..." : "Yes" }
           </Button>
           <ModalTrigger
             close
