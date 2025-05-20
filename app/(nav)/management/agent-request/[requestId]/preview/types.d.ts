@@ -24,6 +24,9 @@ export interface PropertyRequest {
   commentsCount: number;
   viewsCount: number;
   shareLink: string;
+  created_at: string;
+  updated_at: string;
+  companyBio: string | null;
 }
 
 export interface Contributor {
@@ -42,6 +45,7 @@ export interface Contributor {
 export interface CompanySummary {
   companyLogo: string | null;
   name: string | null;
+  companyBio: string | null;
   email: string | null;
   companyIsVerified: boolean | null;
   companyStatus: string | null;

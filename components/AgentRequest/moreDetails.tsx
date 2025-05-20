@@ -8,7 +8,6 @@ const MoreDetailsCard = ({
   propertyRequest: any;
   user: any;
 }) => {
-    
   const propertyMoreDetails = [
     { label: "Location:", value: propertyRequest?.state },
     { label: "Category:", value: propertyRequest?.propertyCategory },
@@ -38,10 +37,16 @@ const MoreDetailsCard = ({
             key={index}
             className="flex gap-4 items-start justify-between w-full"
           >
-            <p className="text-[#747474] text-sm">{item.label || "--- ---"}</p>
-            <p className="dark:text-white text-black text-sm">
-              {item.value || "--- ---"}
-            </p>
+            {item?.value && (
+              <p className="text-[#747474] text-sm">
+                {item.label || "--- ---"}
+              </p>
+            )}
+            {item?.value && (
+              <p className="dark:text-white text-black text-sm capitalize">
+                {item.value || "--- ---"}
+              </p>
+            )}
           </div>
         ))}
       </div>

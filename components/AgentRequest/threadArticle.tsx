@@ -39,7 +39,7 @@ const ThreadArticle = ({
     <div className="">
       <div
         dangerouslySetInnerHTML={{ __html: propertyRequest?.description }}
-        className="text-sm text-darkText-secondary mt-6"
+        className="text-sm text-darkText-secondary mt-6 first-letter:uppercase"
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">

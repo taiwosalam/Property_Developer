@@ -14,6 +14,8 @@ import DepositRequestModal from "../deposit-requests/deposit-request-modal";
 import Link from "next/link";
 import { empty } from "@/app/config";
 import { truncateText } from "../vehicles-record/data";
+import { useRouter } from "next/navigation";
+
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -34,10 +36,10 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     pictureSrc,
     cardViewDetails,
     requestId,
-    
   } = props;
 
   const [modalOpen, setModalOpen] = useState(false);
+  const router = useRouter();
 
   const handleViewDetails = () => {
     setModalOpen(true);
@@ -87,7 +89,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="px-[18px] flex items-center justify-between flex-wrap gap-2">
+      <div className="px-[18px] flex items-center justify-between flex-wrap gap-2 capitalize">
         <div className="flex gap-2">
           <Picture size={50} src={pictureSrc || empty} rounded />
           <div className="space-y-1">
@@ -137,7 +139,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           "py-2 px-[18px] flex items-center justify-between text-base font-medium custom-secondary-bg text-text-secondary dark:text-white"
         )}
       >
-        <p>
+        <p className="capitalize">
           {cardType === "callback"
             ? "Request For Call Back"
             : cardType === "visitor"
@@ -229,6 +231,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           <div className="flex items-center gap-2">
             {!props.user && (
               <button
+                onClick={() => router.push(`/messages`)}
                 type="button"
                 aria-label="Message"
                 className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"

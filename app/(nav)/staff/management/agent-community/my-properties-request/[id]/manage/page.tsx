@@ -46,7 +46,7 @@ const ManageMyPropertyRequest = () => {
   const [slug, setSlug] = useState<string>("");
 
   useEffect(() => {
-    // console.log('data', data?.data);
+    // 
     if (data?.data?.PropertyRequest) {
       setPropertyRequests(data.data.PropertyRequest);
       setComments(data.data.comments);
