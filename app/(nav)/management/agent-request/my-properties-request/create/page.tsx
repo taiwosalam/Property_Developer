@@ -23,8 +23,6 @@ const CreateMyPropertyRequest = () => {
   const { getGlobalInfoStore } = useGlobalStore();
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
 
-  const { getGlobalInfoStore } = useGlobalStore();
-
   const handleCreateClick = async (data: Record<string, any>) => {
     setIsCreating(true);
     try {
