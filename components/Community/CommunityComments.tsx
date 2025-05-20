@@ -10,6 +10,7 @@ import {
   sendMyArticleReply,
   toggleCommentLike,
 } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { WeekNumberFormatter } from "react-day-picker";
 
 interface ThreadCommentProps {
   slug: string;
@@ -39,18 +40,20 @@ const CommunityComments = ({ slug, comments, edit }: ThreadCommentProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // console.log('like clicked', commentId);
-  const handleLike = async (commentId: string | number) => {
-    if (isLoading || userAction === "like") return;
-    setIsLoading(true);
-
+  const handleToggleLike = async (commentId: string | number, type: number) => {
+    // if (isLoading || userAction === "like") return;
+    
     try {
-      await toggleCommentLike(String(commentId), 1);
-      if (userAction === "dislike") {
-        setDislikeCount((prev) => prev - 1);
+      setIsLoading(true);
+      const res = await toggleCommentLike(String(commentId), 1);
+      // if (userAction === "dislike") {
+      //   setDislikeCount((prev) => prev - 1);
+      // }
+      // setLikeCount((prev) => prev + 1);
+      // setUserAction("like");
+      if (res) {
+        window.dispatchEvent(new Event("refetchComments"));
       }
-      setLikeCount((prev) => prev + 1);
-      setUserAction("like");
-      window.dispatchEvent(new Event("refetchComments"));
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
@@ -126,8 +129,9 @@ const CommunityComments = ({ slug, comments, edit }: ThreadCommentProps) => {
           <Comment
             key={comment.id}
             {...comment}
-            handleLike={handleLike}
-            handleDislike={handleDislike}
+            // toggleLike={handleToggleLike}
+            // handleLike={handleLike}
+            // handleDislike={handleDislike}
             handleSubmit={handleSubmit}
           />
         ))}
