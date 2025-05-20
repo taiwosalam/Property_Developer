@@ -41,7 +41,6 @@ export const PropertyRequestFirstSection = ({
   loading?: boolean;
 }) => {
   const [inputValue, setInputValue] = useState(data?.title ?? "");
-  const { getGlobalInfoStore } = useGlobalStore();
 
   useEffect(() => {
     if (data?.title) {

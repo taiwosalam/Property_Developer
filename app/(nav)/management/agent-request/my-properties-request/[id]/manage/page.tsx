@@ -27,17 +27,20 @@ import {
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
 
 const ManageMyPropertyRequest = () => {
   const router = useRouter();
   const { id } = useParams();
 
+  const { getGlobalInfoStore } = useGlobalStore();
+
   const { data, loading, error, isNetworkError } = useFetch<{
     data: {
-      PropertyRequest: any;
+      AgentRequest: any;
       comments: any;
     };
-  }>(`/agent-community/property-requests/${id}`);
+  }>(`/agent_requests/${id}`);
 
   const [propertyRequests, setPropertyRequests] = useState<any>([]);
   const [comments, setComments] = useState<any>([]);
@@ -46,13 +49,14 @@ const ManageMyPropertyRequest = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [slug, setSlug] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     // console.log('data', data?.data);
-    if (data?.data?.PropertyRequest) {
-      setPropertyRequests(data.data.PropertyRequest);
+    if (data?.data?.AgentRequest) {
+      setPropertyRequests(data.data.AgentRequest);
       setComments(data.data.comments);
-      setSlug(data.data.PropertyRequest.slug);
+      setSlug(data.data.AgentRequest.slug);
     }
   }, [data]);
 
@@ -61,12 +65,13 @@ const ManageMyPropertyRequest = () => {
       setIsDeleting(true);
       const response = await deletePropertyRequest(id as string);
       if (response) {
-        setShowSuccessModal(true);
+        //setShowSuccessModal(true);
         toast.success("Property request deleted successfully");
+        router.push("/management/agent-request/my-properties-request");
+        setIsOpen(false);
       } else {
         toast.error("Failed to delete property request");
       }
-      router.push("/management/agent-community/my-properties-request");
     } catch (error) {
       toast.error("Failed to delete property request");
     } finally {
@@ -76,7 +81,7 @@ const ManageMyPropertyRequest = () => {
 
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
-    router.push("/management/agent-community/my-properties-request");
+    router.push("/management/agent-request/my-properties-request");
   };
 
   const { minBudget, maxBudget, resetBudgets } = usePropertyRequestStore();
@@ -92,7 +97,7 @@ const ManageMyPropertyRequest = () => {
         await updatePropertyRequest(id as string, updatedData);
         toast.success("Property request updated successfully");
         router.push(
-          `/management/agent-community/my-properties-request/${id}/preview`
+          `/management/agent-request/my-properties-request/${id}/preview`
         );
       } catch (error) {
         toast.error("Failed to update property request");
@@ -104,7 +109,7 @@ const ManageMyPropertyRequest = () => {
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />; 
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="wra mb-16">
@@ -145,7 +150,12 @@ const ManageMyPropertyRequest = () => {
           </div>
         </div>
         <FixedFooter className="flex gap-6 justify-end">
-          <Modal>
+          <Modal
+            state={{
+              isOpen,
+              setIsOpen,
+            }}
+          >
             <ModalTrigger asChild>
               <Button
                 size="sm_medium"
@@ -156,7 +166,10 @@ const ManageMyPropertyRequest = () => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <DeletePropertyRequestModal handleDelete={handleDelete} />
+              <DeletePropertyRequestModal
+                handleDelete={handleDelete}
+                isDeleting={isDeleting}
+              />
             </ModalContent>
           </Modal>
           {showSuccessModal && (
@@ -166,6 +179,7 @@ const ManageMyPropertyRequest = () => {
             />
           )}
           <button
+            disabled={isUpdating || !getGlobalInfoStore("canSubmit")}
             type="submit"
             className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
           >

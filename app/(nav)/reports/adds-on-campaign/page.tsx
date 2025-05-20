@@ -158,7 +158,7 @@ const AddsOnCampaignRecord = () => {
             ) : (
               <EmptyList
                 noButton
-                title="No Property Data Available Yet"
+                title="No Campaign Data Available Yet"
                 body={
                   <p>
                     Currently, there is no property data available for export.

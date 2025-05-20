@@ -52,6 +52,7 @@ import {
 } from "@/app/(nav)/notifications/data";
 import { usePathname } from "next/navigation";
 import { debounce } from "@/utils/debounce";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 
 const NotificationBadge = ({
   count,
@@ -284,8 +285,7 @@ const Header = () => {
   // };
 
   // Initialize theme on mount
- 
- 
+
   // useEffect(() => {
   //   if (!hasMounted.current) {
   //     const savedTheme = getLocalStorage("theme");
@@ -365,6 +365,8 @@ const Header = () => {
   //     isManualToggle.current = false;
   //   }, 500);
   // }, 300);
+
+  const isOnline = useOnlineStatus();
 
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
@@ -575,7 +577,7 @@ const Header = () => {
             <Picture
               src={profile_picture || empty}
               alt="profile picture"
-              status={user_online_status === "online"}
+              status={isOnline}
               size={isMobile ? 50 : 60}
               rounded
               containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"

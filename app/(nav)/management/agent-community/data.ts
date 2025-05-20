@@ -119,18 +119,14 @@ export const updatePropertyRequest = async (id: string, data: any) => {
         ? data.target_audience
         : [data.target_audience]
       : [],
-    min_budget: data.min_budget?.toString() || "",
-    max_budget: data.max_budget?.toString() || "",
+    min_budget: Number(data.min_budget) || "",
+    max_budget: Number(data.max_budget) || "",
     valid_till: data.valid_till || "",
     _method: "patch",
   };
 
-  console.log("formattedData", formattedData);
   try {
-    const response = await api.post(
-      `/agent-community/property-requests/${id}`,
-      formattedData
-    );
+    const response = await api.post(`/agent_requests/${id}`, formattedData);
     return response.data;
   } catch (error) {
     console.error("Error updating property request:", error);
@@ -139,7 +135,7 @@ export const updatePropertyRequest = async (id: string, data: any) => {
 };
 
 // Helper function to transform API data into ThreadCardProps
-export const  transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
+export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
   return data.map((thread, index) => ({
     id: index,
     name: thread.user
@@ -169,7 +165,7 @@ export const  transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
 
 export const deletePropertyRequest = async (id: string) => {
   try {
-    await api.delete(`/agent-community/property-requests/${id}`);
+    await api.delete(`/agent_requests/${id}`);
     return true;
   } catch (error) {
     console.error("Error deleting property request:", error);

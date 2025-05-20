@@ -65,6 +65,8 @@ const SettingsWebsiteDomain = () => {
     useFetch<CompanySettingsResponse>("/company/settings");
   useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
 
+  console.log(companySettings);
+
   const isOwner =
     customDomain &&
     `${customDomain}.ourlisting.ng` === companySettings?.data?.domain;
@@ -267,9 +269,13 @@ const SettingsWebsiteDomain = () => {
             )}
         </div>
 
-        <div>
-          <CompanySettingsDomainTable data={domainDetails} />
-        </div>
+        {domainDetails &&
+          domainDetails.length > 0 &&
+          domainDetails[0].domain && (
+            <div>
+              <CompanySettingsDomainTable data={domainDetails} />
+            </div>
+          )}
 
         {/* { <div className="rssFeed flex flex-col gap-1 mb-4">
           <h4 className="text-text-secondary dark:text-darkText-1 text-md font-normal">

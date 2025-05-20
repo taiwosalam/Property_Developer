@@ -11,11 +11,32 @@ import {
 } from "./data";
 import { Announcement } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import template1 from "@/public/templates/template1.png";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import ServerError from "@/components/Error/ServerError";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
-  // console.log(announcements);
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    error,
+    refetch,
+  } = useFetch<{ announcements: Announcement[] }>(`/announcements`);
+  useRefetchOnEvent("dispatchAnnouncement", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (apiData) {
+      setAnnouncements(apiData?.announcements);
+    }
+  }, [apiData]);
+
+  if (loading) <CardsLoading />;
+  if (error) <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
@@ -57,6 +78,7 @@ const AnnouncementPage = () => {
       />
       <AutoResizingGrid minWidth={315} gap={32}>
         {announcements.map((announcement, index) => {
+          const image_urls = [announcement.image];
           const formattedDate = new Date(
             announcement.created_at
           ).toLocaleDateString("en-US", {
@@ -69,13 +91,14 @@ const AnnouncementPage = () => {
               title={announcement.title}
               date={formattedDate}
               key={index}
-              description={announcement.body}
+              description={announcement.description}
               id={announcement.company_id}
               views={0}
               newViews={0}
               dislikes={0}
-              imageUrls={announcement.image_urls}
-              mediaCount={announcement.image_urls.length}
+              imageUrls={[template1]}
+              //mediaCount={announcement.image_urls.length}
+              mediaCount={image_urls.flat().length}
               announcementId={announcement.id}
             />
           );

@@ -66,7 +66,7 @@ const PreviewPage = () => {
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
         <BackButton>{agentRequest?.title || "--- ---"}</BackButton>
         <Button
-          href={`/management/agent-community/my-properties-request/${id}/manage`}
+          href={`/management/agent-request/my-properties-request/${id}/manage`}
           size="sm"
           className="py-2 px-8"
         >

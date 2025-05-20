@@ -153,7 +153,8 @@ const ManageMyPropertyRequest = () => {
           </ModalTrigger>
           <ModalContent>
             <DeletePropertyRequestModal 
-              handleDelete={handleDelete} 
+              handleDelete={handleDelete}
+              isDeleting={isDeleting} 
             />
           </ModalContent>
         </Modal>

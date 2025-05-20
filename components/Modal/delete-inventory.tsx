@@ -85,7 +85,8 @@ export const DeleteArticleModal: React.FC<{
 
 export const DeletePropertyRequestModal: React.FC<{
   handleDelete: () => void;
-}> = ({ handleDelete }) => {
+  isDeleting?: boolean;
+}> = ({ handleDelete, isDeleting }) => {
   return (
     <>
       <div className="p-5 custom-flex-col gap-4 rounded-2xl bg-white dark:bg-black overflow-hidden max-w-[486px]">
@@ -98,8 +99,13 @@ export const DeletePropertyRequestModal: React.FC<{
           deleted.
         </p>
         <div className="flex items-end justify-end gap-2 w-full">
-          <Button size="sm_medium" className="px-8 py-2" onClick={handleDelete}>
-            Yes
+          <Button
+            size="sm_medium"
+            className="px-8 py-2"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Please wait..." : "Yes"}
           </Button>
           <ModalTrigger
             close
