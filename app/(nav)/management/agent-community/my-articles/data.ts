@@ -56,12 +56,14 @@ export const updateMyArticle = async (formData: FormData, slug: string) => {
   }
 };
 
-export const toggleLike = async (slug: string, type: 1 | -1) => {
+export const toggleLike = async (slug: string, type: number) => {
   try {
     const response = await api.post(`/agent_community/${slug}/toggle-like`, {
       type,
     });
-    return response.status === 200 || response.status === 201;
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
   } catch (error) {
     console.error("Error toggling like:", error);
     return false;
@@ -207,6 +209,7 @@ export const sendMyPropertyRequestCommentReply = async (
     // throw error;
   }
 };
+
 export const togglePropertyRequestLike = async (
   slug: string,
   modeType: string
@@ -265,13 +268,15 @@ export const togglePropertyRequestLikeComments = async (
   }
 };
 
-export const toggleCommentLike = async (commentId: string, type: 1 | -1) => {
+export const toggleCommentLike = async (commentId: string, type: number) => {
   try {
     const response = await api.post(
       `/agent_community/agent_comment/${commentId}/toggle-like`,
       { type }
     );
-    return response.status === 200 || response.status === 201;
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
   } catch (error) {
     console.error("Error toggling comment like:", error);
     return false;

@@ -9,6 +9,7 @@ import { useThreadContext } from "@/utils/my-article-context";
 import { SummarySkeleton } from "@/components/Loader/SummarySkeleton";
 import { toggleLike } from "../data";
 import { LikeDislikeButtons, ThreadArticleSkeleton } from "../../components";
+import { DislikeIcon, LikeIcon } from "@/public/icons/icons";
 
 export const ThreadArticle = (): JSX.Element => {
   const { post, slug, comments } = useThreadContext();
@@ -17,49 +18,63 @@ export const ThreadArticle = (): JSX.Element => {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLike = useCallback(async () => {
-    if (isLoading || userAction === "like" || post?.user_liked) return;
-
-    const previousAction = userAction;
-
-    // Optimistic UI: Update action state
-    setIsLoading(true);
-    setUserAction("like");
-
+  const handleToggleLike = async (type: number) => {
     try {
-      await toggleLike(slug, 1);
-      window.dispatchEvent(new Event("refetchComments"));
+      setIsLoading(true);
+      const res = await toggleLike(slug, type);
+      if (res) {
+        window.dispatchEvent(new Event("refetchComments"));
+      }
     } catch (error) {
-      // Rollback action state on error
-      setUserAction(previousAction);
-      toast.error("Error toggling like");
       console.error("Error toggling like:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, userAction, post?.user_liked, slug]);
+  };
 
-  const handleDislike = useCallback(async () => {
-    if (isLoading || userAction === "dislike") return;
+  // const handleLike = useCallback(async () => {
+  //   if (isLoading || userAction === "like" || post?.user_liked) return;
 
-    const previousAction = userAction;
+  //   const previousAction = userAction;
 
-    // Optimistic UI: Update action state
-    setIsLoading(true);
-    setUserAction("dislike");
+  //   // Optimistic UI: Update action state
+  //   setIsLoading(true);
+  //   setUserAction("like");
 
-    try {
-      await toggleLike(slug, -1);
-      window.dispatchEvent(new Event("refetchComments"));
-    } catch (error) {
-      // Rollback action state on error
-      setUserAction(previousAction);
-      toast.error("Error toggling dislike");
-      console.error("Error toggling dislike:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [isLoading, userAction, slug]);
+  //   try {
+  //     await toggleLike(slug, 1);
+  //     window.dispatchEvent(new Event("refetchComments"));
+  //   } catch (error) {
+  //     // Rollback action state on error
+  //     setUserAction(previousAction);
+  //     toast.error("Error toggling like");
+  //     console.error("Error toggling like:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [isLoading, userAction, post?.user_liked, slug]);
+
+  // const handleDislike = useCallback(async () => {
+  //   if (isLoading || userAction === "dislike") return;
+
+  //   const previousAction = userAction;
+
+  //   // Optimistic UI: Update action state
+  //   setIsLoading(true);
+  //   setUserAction("dislike");
+
+  //   try {
+  //     await toggleLike(slug, -1);
+  //     window.dispatchEvent(new Event("refetchComments"));
+  //   } catch (error) {
+  //     // Rollback action state on error
+  //     setUserAction(previousAction);
+  //     toast.error("Error toggling dislike");
+  //     console.error("Error toggling dislike:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [isLoading, userAction, slug]);
 
   if (!post) return <ThreadArticleSkeleton />;
   const sanitizedHTML = DOMPurify.sanitize(post?.content || "");
@@ -78,7 +93,31 @@ export const ThreadArticle = (): JSX.Element => {
         </div>
 
         <div className="flex gap-2">
-          <LikeDislikeButtons
+          <div className="like-dislike flex gap-2">
+            <button
+              className="flex items-center gap-1"
+              disabled={isLoading}
+              onClick={() => handleToggleLike(1)}
+            >
+              <LikeIcon
+                fill={`${post.user_liked ? "#E15B0F" : ""} `}
+                stroke={`${post.user_liked ? "#E15B0F" : "#000"} `}
+              />
+              <p>{post?.likes_up}</p>
+            </button>
+            <button
+              className="flex items-center gap-1"
+              disabled={isLoading}
+              onClick={() => handleToggleLike(-1)}
+            >
+              <DislikeIcon
+                fill={`${post.user_disliked ? "#E15B0F" : "none"} `}
+                stroke={`${post.user_disliked ? "#E15B0F" : "#000"} `}
+              />
+              <p>{post?.likes_down}</p>
+            </button>
+          </div>
+          {/* <LikeDislikeButtons
             commentCount={post?.comments_count}
             slug={slug}
             likeCount={parseInt(post?.likes_up || "0")}
@@ -88,7 +127,7 @@ export const ThreadArticle = (): JSX.Element => {
             userAction={userAction}
             isLoading={isLoading}
             user_liked={post?.user_liked}
-          />
+          /> */}
           <div className="flex items-center">
             <div className="images flex z-30">
               {comments.slice(0, 3).map((comment, index) => (

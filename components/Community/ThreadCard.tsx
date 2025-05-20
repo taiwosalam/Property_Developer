@@ -23,6 +23,7 @@ const ThreadCard = ({
   published,
   setIsLikeDislikeLoading,
   user_liked,
+  user_disliked,
   badge_color
 }: ThreadCardProps) => {
   const link = `/management/agent-community/${
@@ -55,6 +56,7 @@ const ThreadCard = ({
         shareLink={link}
         setIsLikeDislikeLoading={setIsLikeDislikeLoading} 
         user_liked={user_liked}
+        user_disliked={user_disliked}
       />
     </div>
   );

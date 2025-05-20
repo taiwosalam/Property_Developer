@@ -300,6 +300,8 @@
 import Image from "next/image";
 import { useState, useCallback } from "react";
 import {
+  DislikeIcon,
+  LikeIcon,
   ReplyIcon,
   SendMessageIcon,
   ThumbsDown,
@@ -310,6 +312,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { empty } from "@/app/config";
 import { CommentTextArea } from "@/app/(nav)/management/agent-community/NewComment";
+import { toggleCommentLike } from "@/app/(nav)/management/agent-community/my-articles/data";
 
 // Base comment data structure
 export interface CommentData {
@@ -326,8 +329,9 @@ export interface CommentData {
 
 // Handler functions interface
 interface CommentHandlers {
-  handleLike: (id: string | number) => void;
-  handleDislike: (id: string | number) => void;
+  toggleLike?: (id: string | number, type: number) => void;
+  handleLike?: (id: string | number, type: number) => void;
+  handleDislike?: (id: string | number) => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
@@ -337,6 +341,7 @@ type CommentProps = CommentData &
     showInput?: boolean;
     tier?: number;
     user_liked?: boolean;
+    user_disliked?: boolean;
     setShowInput?: (show: boolean) => void;
   };
 
@@ -352,9 +357,11 @@ const Comment: React.FC<CommentProps> = ({
   commentsCount,
   parentId,
   user_liked = false,
+  user_disliked = false,
   handleSubmit,
   showInput: propShowInput,
   setShowInput: propSetShowInput,
+  toggleLike,
   handleLike,
   handleDislike,
 }) => {
@@ -370,10 +377,11 @@ const Comment: React.FC<CommentProps> = ({
   const showInput = propShowInput ?? localShowInput;
   const setShowInput = propSetShowInput ?? setLocalShowInput;
 
-  const badgeColor = tier && tier > 1
-    ? // ? tierColorMap[tier as keyof typeof tierColorMap]
-      "gray"
-    : undefined;
+  const badgeColor =
+    tier && tier > 1
+      ? // ? tierColorMap[tier as keyof typeof tierColorMap]
+        "gray"
+      : undefined;
 
   // Handle reply button click
   const handleReplyClick = useCallback(() => {
@@ -403,50 +411,64 @@ const Comment: React.FC<CommentProps> = ({
   );
 
   // Handle like with optimistic UI
-  const handleCommentLike = useCallback(async () => {
-    if (isLoading || user_liked || userAction === "like") return;
+  // const handleCommentLike = useCallback(async () => {
+  //   if (isLoading || user_liked || userAction === "like") return;
 
-    const previousAction = userAction;
+  //   const previousAction = userAction;
 
-    // Optimistic UI: Update action state and disable buttons
-    setIsLoading(true);
-    setUserAction("like");
+  //   // Optimistic UI: Update action state and disable buttons
+  //   setIsLoading(true);
+  //   setUserAction("like");
 
+  //   try {
+  //     handleLike(parentId || id);
+  //     window.dispatchEvent(new Event("refetchComments"));
+  //   } catch (error) {
+  //     // Rollback action state on error
+  //     setUserAction(previousAction);
+  //     console.error("Error toggling like:", error);
+  //     toast.error("Failed to like comment");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [id, parentId, isLoading, userAction, user_liked, handleLike]);
+
+  // // Handle dislike with optimistic UI
+  // const handleCommentDislike = useCallback(async () => {
+  //   if (isLoading || userAction === "dislike") return;
+
+  //   const previousAction = userAction;
+
+  //   // Optimistic UI: Update action state and disable buttons
+  //   // setUserAction("dislike");
+
+  //   try {
+  //     setIsLoading(true);
+  //     toggleLike(parentId || id, -1);
+  //     window.dispatchEvent(new Event("refetchComments"));
+  //   } catch (error) {
+  //     // Rollback action state on error
+  //     setUserAction(previousAction);
+  //     console.error("Error toggling dislike:", error);
+  //     toast.error("Failed to dislike comment");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [id, parentId, isLoading, userAction, handleDislike]);
+
+  const handleToggleLike = async (type: number) => {
     try {
-      handleLike(parentId || id);
-      window.dispatchEvent(new Event("refetchComments"));
+      setIsLoading(true);
+      const res = await toggleCommentLike(String(parentId || id), type);
+      if (res) {
+        window.dispatchEvent(new Event("refetchComments"));
+      }
     } catch (error) {
-      // Rollback action state on error
-      setUserAction(previousAction);
       console.error("Error toggling like:", error);
-      toast.error("Failed to like comment");
     } finally {
       setIsLoading(false);
     }
-  }, [id, parentId, isLoading, userAction, user_liked, handleLike]);
-
-  // Handle dislike with optimistic UI
-  const handleCommentDislike = useCallback(async () => {
-    if (isLoading || userAction === "dislike") return;
-
-    const previousAction = userAction;
-
-    // Optimistic UI: Update action state and disable buttons
-    setIsLoading(true);
-    setUserAction("dislike");
-
-    try {
-      handleDislike(parentId || id);
-      window.dispatchEvent(new Event("refetchComments"));
-    } catch (error) {
-      // Rollback action state on error
-      setUserAction(previousAction);
-      console.error("Error toggling dislike:", error);
-      toast.error("Failed to dislike comment");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [id, parentId, isLoading, userAction, handleDislike]);
+  }; 
 
   return (
     <div data-comment-id={id} className="space-y-2">
@@ -490,26 +512,26 @@ const Comment: React.FC<CommentProps> = ({
         </button>
         <button
           type="button"
-          onClick={handleCommentLike}
-          disabled={isLoading || user_liked}
-          className={`flex items-center gap-1 ${
-            user_liked || userAction === "like"
-              ? "text-blue-500"
-              : "text-gray-500"
-          } disabled:cursor-not-allowed disabled:opacity-50`}
+          className="flex items-center gap-1"
+          disabled={isLoading}
+          onClick={() => handleToggleLike(1)}
         >
-          <ThumbsUp />
+          <LikeIcon
+            fill={`${user_liked ? "#E15B0F" : ""} `}
+            stroke={`${user_liked ? "#E15B0F" : "#000"} `}
+          />
           <span className="text-xs font-normal">{likes}</span>
         </button>
         <button
           type="button"
-          onClick={handleCommentDislike}
+          className="flex items-center gap-1"
           disabled={isLoading}
-          className={`flex items-center gap-1 ${
-            userAction === "dislike" ? "text-red-500" : "text-gray-500"
-          } disabled:cursor-not-allowed disabled:opacity-50`}
+          onClick={() => handleToggleLike(-1)}
         >
-          <ThumbsDown />
+          <DislikeIcon
+            fill={`${user_disliked ? "#E15B0F" : "none"} `}
+            stroke={`${user_disliked ? "#E15B0F" : "#000"} `}
+          />
           <span className="text-xs font-normal">{dislikes}</span>
         </button>
       </div>
@@ -556,8 +578,8 @@ const Comment: React.FC<CommentProps> = ({
                 <Comment
                   key={reply.id}
                   {...reply}
-                  handleLike={handleLike}
-                  handleDislike={handleDislike}
+                  // handleLike={handleLike}
+                  // handleDislike={handleDislike}
                   handleSubmit={handleSubmit}
                   parentId={reply.id}
                 />

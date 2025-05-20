@@ -19,6 +19,7 @@ export type ThreadCardProps = {
   setIsLikeDislikeLoading?: (value: boolean) => void; 
   published?: boolean;
   user_liked?: boolean;
+  user_disliked?: boolean;
   badge_color?: BadgeIconColors;
 };
 
