@@ -1,6 +1,31 @@
 import { type Color } from "@/types/global";
 import React from "react";
 
+export const ChatAIIcon = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 4C8.229 4 6.343 4 5.172 5.172C4.001 6.344 4 8.229 4 12V18C4 18.943 4 19.414 4.293 19.707C4.586 20 5.057 20 6 20H12C15.771 20 17.657 20 18.828 18.828C19.999 17.656 20 15.771 20 12"
+        stroke="black"
+        stroke-width="2"
+      />
+      <path
+        d="M9 10H15M9 14H12M19 8V2M16 5H22"
+        stroke="black"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
+
 export const LinkedInIcon = () => {
   return (
     <svg
