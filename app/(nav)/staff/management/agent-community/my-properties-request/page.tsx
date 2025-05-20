@@ -188,7 +188,7 @@ const MyPropertiesRequestPage = () => {
       params: queryParams,
     });
     
-    console.log({ menuOptions, startDate, endDate, options })
+    
   };
 
   const {
@@ -206,7 +206,7 @@ const MyPropertiesRequestPage = () => {
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
-    // console.log("apiData", apiData);
+    // 
     if (apiData) {
       setState((prevState) => ({
         ...prevState,
@@ -220,7 +220,7 @@ const MyPropertiesRequestPage = () => {
           },
       }));
     }
-    // console.log("apiData meta -", apiData?.meta);
+    // 
   }, [apiData]);
 
   const propertyRequestData: PropertyRequestDataType[] =

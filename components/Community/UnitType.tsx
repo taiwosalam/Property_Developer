@@ -101,7 +101,7 @@ const PropertyRequestUnitType = ({ data }: { data?: any }) => {
         id="property_sub_type"
         label="Property Sub Type"
         inputContainerClassName="bg-white"
-        value={selectedSubtype}
+        value={data?.sub_type || selectedSubtype}
         onChange={handleSubtypeChange}
       />
     </>

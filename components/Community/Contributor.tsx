@@ -18,6 +18,9 @@ export const ContributorDetails = ({
   postedDate?: string;
   updatedDate?: string;
 }) => {
+  console.log("post", post);
+  console.log("contributors", contributors);
+
   if (loading) return <LoadingContributorUser />;
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
@@ -39,7 +42,10 @@ export const ContributorDetails = ({
         </div>
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Target Audience </p>
-          <p className="dark:text-white text-black text-sm"> {targetAudience} </p>
+          <p className="dark:text-white text-black text-sm">
+            {" "}
+            {`${post?.state}, ${post?.lga}`}{" "}
+          </p>
           {/* <p className="dark:text-white text-black text-sm">
             {typeof targetAudience === "string"
               ? targetAudience
@@ -49,7 +55,7 @@ export const ContributorDetails = ({
           </p> */}
         </div>
       </div>
-      <ContributorUser contributors={contributors} />
+      <ContributorUser contributors={contributors} bio={post?.companyBio}/>
     </div>
   );
 };

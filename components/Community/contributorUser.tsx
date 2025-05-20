@@ -1,6 +1,7 @@
 import { empty } from "@/app/config";
 import Image from "next/image";
 import TruncatedText from "../TruncatedText/truncated-text";
+import { useRouter } from "next/navigation";
 
 interface Contributor {
   name?: string;
@@ -14,7 +15,13 @@ interface Contributor {
   bio?: string;
 }
 
-const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
+const ContributorUser = ({
+  contributors,
+  bio,
+}: {
+  contributors: Contributor;
+  bio?: string;
+}) => {
   const {
     name,
     picture,
@@ -23,9 +30,10 @@ const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
     phone_number,
     phone,
     email,
-    bio,
     professional_title,
   } = contributors || {};
+
+  const router = useRouter();
   return (
     <div className="flex flex-col mt-6 gap-4">
       <div className="flex flex-col md:flex-row gap-4">
@@ -63,7 +71,10 @@ const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
         </TruncatedText>
       </div>
       <div className="btn flex items-center justify-center w-full">
-        <button className="w-1/2 text-sm bg-secondary border border-brand-9 text-brand-9 px-4 py-1 rounded-md">
+        <button
+          className="w-1/2 text-sm bg-secondary border border-brand-9 text-brand-9 px-4 py-1 rounded-md"
+          onClick={() => router.push("/messages")}
+        >
           Message
         </button>
       </div>

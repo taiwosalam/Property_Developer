@@ -41,17 +41,24 @@ export const PropertyRequestFirstSection = ({
   loading?: boolean;
 }) => {
   const [inputValue, setInputValue] = useState(data?.title ?? "");
+  const [error, setError] = useState<string | null>(null);
+  const MAX_LENGTH = 40;
 
   useEffect(() => {
     if (data?.title) {
-      setInputValue(data.title);
+      setInputValue(data.title.slice(0, MAX_LENGTH));
     }
   }, [data?.title]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    const newValue = e.target.value;
+    if (newValue.length <= MAX_LENGTH) {
+      setInputValue(newValue);
+      setError(null);
+    } else {
+      setError(`Title cannot exceed ${MAX_LENGTH} characters`);
+    }
   };
-
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
@@ -72,10 +79,12 @@ export const PropertyRequestFirstSection = ({
           type="text"
           id="title"
           name="title"
+          maxLength={MAX_LENGTH}
           className="bg-white border border-solid border-[#C1C2C366] rounded-md dark:bg-darkText-primary dark:text-darkText-1 py-2 px-3 w-full text-text-secondary"
           value={inputValue}
           onChange={onChange}
         />
+        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
       </div>
       <TextArea
         id="content"
@@ -115,16 +124,29 @@ export const PropertyRequestSecondSection = ({
 
   // Handle minimum budget change
   const handleMinChange = (value: string) => {
-    // Remove any non-numeric characters except decimal point
+    if (!value) {
+      setMinBudget(null);
+      return;
+    }
+    // Remove all commas and non-numeric characters except decimal
     const cleanValue = value.replace(/[^\d.]/g, "");
-    const numValue = parseFloat(cleanValue) || null;
-    setMinBudget(numValue);
+    // Convert to number, handle invalid input
+    const numValue = Number(cleanValue);
+    if (!isNaN(numValue)) {
+      setMinBudget(numValue);
+    }
   };
+
+  // 
 
   // Handle maximum budget change
   const handleMaxChange = (value: string) => {
+    if (!value) {
+      setMaxBudget(null);
+      return;
+    }
     const cleanValue = value.replace(/[^\d.]/g, "");
-    const numValue = parseFloat(cleanValue) || null;
+    const numValue = parseFloat(cleanValue);
     setMaxBudget(numValue);
   };
 
@@ -162,37 +184,41 @@ export const PropertyRequestSecondSection = ({
         <h3 className="text-black dark:text-white font-semibold mb-2">
           Client Budget
         </h3>
+
         <Input
           required
-          id="min_budget"
+          id=""
           placeholder=""
           label="Minimum Budget"
           formatNumber
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           inputClassName="bg-white"
-          onChange={handleMinChange}
-          defaultValue={
-            minBudget !== null ? minBudget.toString() : data?.min_budget || ""
-          }
-          // value={
-          //   minBudget !== null ? minBudget.toString() : data?.min_budget || ""
-          // }
+          onChange={(value: string) => handleMinChange(value)}
+          value={minBudget ? minBudget.toLocaleString() : ""}
         />
+        <input
+          id="min_budget"
+          type="hidden"
+          name="min_budget"
+          defaultValue={minBudget ? minBudget.toString() : ""}
+        />
+
         <Input
           required
-          id="max_budget"
+          id=""
           placeholder=""
           label="Maximum Budget"
-          formatNumber
+          //formatNumber
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           inputClassName="bg-white"
-          onChange={handleMaxChange}
-          defaultValue={
-            maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""
-          }
-          // value={
-          //   maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""
-          // }
+          onChange={(value: string) => handleMaxChange(value)}
+          value={maxBudget ? maxBudget.toLocaleString() : ""}
+        />
+        <input
+          id="max_budget"
+          type="hidden"
+          name="max_budget"
+          defaultValue={maxBudget ? maxBudget.toString() : ""}
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -203,7 +229,7 @@ export const PropertyRequestSecondSection = ({
           options={stateOptions}
           id="state"
           label="state"
-          value={address.state}
+          value={data?.state || address.state}
           onChange={(value) => handleAddressChange("state", value)}
           required
         />
@@ -213,7 +239,7 @@ export const PropertyRequestSecondSection = ({
           id="lga"
           label="local government"
           onChange={(value) => handleAddressChange("lga", value)}
-          value={address.lga}
+          value={data?.lga || address.lga}
           required
         />
         {/* <StateAndLocalGovt data={data} /> */}
@@ -247,7 +273,7 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
 
   useEffect(() => {
-    // console.log("Original target_audience:", data?.target_audience);
+    //
 
     const initialSelectedStates = (() => {
       if (typeof data?.target_audience === "string") {
@@ -269,7 +295,7 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
       return [];
     })();
 
-    // console.log("Processed initialSelectedStates:", initialSelectedStates);
+    //
     setSelectedStates(initialSelectedStates);
   }, [data?.target_audience]);
 

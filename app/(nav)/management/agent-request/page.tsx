@@ -162,7 +162,7 @@ const PropertyRequest = () => {
       params: queryParams,
     });
 
-    //console.log({ menuOptions, startDate, endDate, options });
+    //
   };
 
   const {
@@ -187,11 +187,11 @@ const PropertyRequest = () => {
     }
   }, [apiData]);
 
-  console.log("apiData", apiData);
+  
 
   const propertyRequestData = getPropertyRequests(data);
 
-  console.log("propertyRequestData", data);
+  
 
   if (loading)
     return (
