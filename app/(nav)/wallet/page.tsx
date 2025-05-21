@@ -24,6 +24,7 @@ import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { getTransactionIcon } from "@/components/Wallet/icons";
 import { useGlobalStore } from "@/store/general-store";
 import type { DateRange } from "react-day-picker";
+import { transformWalletChartData } from "../dashboard/data";
 
 const Wallet = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -95,7 +96,6 @@ const Wallet = () => {
     previousTotals.total_credit
   );
 
-  console.log(recentTransactions);
 
   const transformedWalletTableData = recentTransactions.map((t) => ({
     ...t,
@@ -140,35 +140,8 @@ const Wallet = () => {
     ),
   }));
 
-  const walletChartData = transactions.map((t) => ({
-    date: t.date,
-    totalfunds:
-      (t.type === "credit" ||
-      t.transaction_type === "funding" ||
-      t.transaction_type === "transfer_in"
-        ? Number(t.amount)
-        : 0) +
-      (t.type === "debit" ||
-      t.transaction_type === "withdrawal" ||
-      t.transaction_type === "sponsor_listing" ||
-      t.transaction_type === "transfer_out"
-        ? Number(t.amount)
-        : 0),
-    credit:
-      t.type === "credit" ||
-      t.transaction_type === "funding" ||
-      t.transaction_type === "transfer_in"
-        ? Number(t.amount)
-        : 0,
-    debit:
-      t.type === "debit" ||
-      t.transaction_type === "withdrawal" ||
-      t.transaction_type === "sponsor_listing" ||
-      t.transaction_type === "transfer_out"
-        ? Number(t.amount)
-        : 0,
-  }));
-
+  const walletChartData = transformWalletChartData(transactions);
+  
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex items-center gap-1">

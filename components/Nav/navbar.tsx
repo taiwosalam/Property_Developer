@@ -53,6 +53,7 @@ import {
 import { usePathname } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { saveCompanyStatusToCookie } from "@/utils/saveRole";
 
 const NotificationBadge = ({
   count,
@@ -191,7 +192,7 @@ const Header = () => {
   useEffect(() => {
     if (data?.data) {
       const { user, company, profile, requestDemos, director } = data.data;
-
+      console.log("company", company);
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo("userId", user.id);
       setPersonalInfo(
@@ -215,6 +216,7 @@ const Header = () => {
         setPersonalInfo("company_name", company.company_name);
         setPersonalInfo("company_state", company.state);
         setPersonalInfo("company_status", company.company_status);
+        saveCompanyStatusToCookie(company.company_status); //INCASE LOGIN RESPONSE RETURNS INCORRECT COMPANY STATUS
         setPersonalInfo("reject_reason", company.reject_reason);
         setPersonalInfo("company_local_government", company.local_government);
         setPersonalInfo(

@@ -83,6 +83,7 @@ export interface Transactions {
   source?: string;
   date: string;
   time: string;
+  type: string;
 }
 
 export type SingleBranchResponseType = {

@@ -91,7 +91,7 @@ export const getDashboardCardData = (data: Record<string, any>) => [
     title: "Expired",
     bg: getBackgroundColor("expired"),
     icon: ExpiredIcon,
-    value: data.data.inquiry_count,
+    value: data.data.expired_unit,
     subValue: data.data.month_expired_unit,
     link: "/management/expired-units",
   },
@@ -279,6 +279,37 @@ export const dashboardCardData = [
     link: "/listing/units",
   },
 ];
+
+export const transformWalletChartData = (transactions:any) => {
+  return transactions.map((t:any) => ({
+    date: t.date,
+    totalfunds:
+      (t.type === "credit" ||
+      t.transaction_type === "funding" ||
+      t.transaction_type === "transfer_in"
+        ? Number(t.amount)
+        : 0) +
+      (t.type === "debit" ||
+      t.transaction_type === "withdrawal" ||
+      t.transaction_type === "sponsor_listing" ||
+      t.transaction_type === "transfer_out"
+        ? Number(t.amount)
+        : 0),
+    credit:
+      t.type === "credit" ||
+      t.transaction_type === "funding" ||
+      t.transaction_type === "transfer_in"
+        ? Number(t.amount)
+        : 0,
+    debit:
+      t.type === "debit" ||
+      t.transaction_type === "withdrawal" ||
+      t.transaction_type === "sponsor_listing" ||
+      t.transaction_type === "transfer_out"
+        ? Number(t.amount)
+        : 0,
+  }));
+};
 
 export const walletBalanceCardData = {
   mainBalance: 1000,

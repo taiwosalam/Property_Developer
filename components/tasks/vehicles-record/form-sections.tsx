@@ -180,13 +180,23 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             inputClassName="rounded-lg"
             defaultValue={editMode ? props.data.address : undefined}
           />
-          <PhoneNumberInput
-            required
-            id="phone"
-            label="Phone Number"
-            inputContainerClassName="bg-neutral-2"
-            defaultValue={editMode ? props.data.phone_number : undefined}
-          />
+
+          {editMode ? (
+            <Input
+              label="Phone Number"
+              id="phone"
+              inputClassName="rounded-lg"
+              defaultValue={props.data.phone_number}
+              readOnly
+            />
+          ) : (
+            <PhoneNumberInput
+              required
+              id="phone"
+              label="Phone Number"
+              inputContainerClassName="bg-neutral-2"
+            />
+          )}
         </div>
         <div className="flex gap-4 justify-between items-end flex-wrap">
           <div className="flex items-end gap-3">

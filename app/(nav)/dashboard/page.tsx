@@ -12,6 +12,7 @@ import {
   initialDashboardStats,
   getRecentMessages,
   dummyTasks,
+  transformWalletChartData,
 } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -61,19 +62,13 @@ const Dashboard = () => {
   );
   const transactions = useWalletStore((state) => state.transactions);
 
-  // Compute performance chart data from transactions
-  const dashboardPerformanceChartData = transactions.map((t) => ({
-    date: t.date,
-    totalfunds: t.amount,
-    credit: t.type === "credit" ? t.amount : 0,
-    debit: t.type === "debit" ? t.amount : 0,
-  }));
-
+  const walletChartData = transformWalletChartData(transactions);
   // Dashboard Stats
   const { data, loading, error, refetch, isNetworkError } =
     useFetch<DashboardDataResponse>("/dashboard/data");
   const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
-  const [performanceChart, setPerformanceChart] = useState<DashboardDataResponse | null>(null)
+  const [performanceChart, setPerformanceChart] =
+    useState<DashboardDataResponse | null>(null);
   useEffect(() => {
     if (data) {
       setDashboardStats(getDashboardCardData(data));
@@ -81,13 +76,12 @@ const Dashboard = () => {
     }
   }, [data]);
 
-  const bookmarkChartData =data?.data?.chart_data.map((item) => ({
-    date: item?.date,
-    views: item?.total_views,
-    bookmarks: item?.total_bookmarks
-  })) || [];
-
-
+  const bookmarkChartData =
+    data?.data?.chart_data.map((item) => ({
+      date: item?.date,
+      views: item?.total_views,
+      bookmarks: item?.total_bookmarks,
+    })) || [];
 
   // Recent messages
   const {
@@ -129,7 +123,6 @@ const Dashboard = () => {
     }
   }, [Apiinvoices]);
 
-  
   // Handle invoiceData nullability
   const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
   const transformedRecentInvoiceTableData = invoiceList.map((i) => ({
@@ -142,7 +135,7 @@ const Dashboard = () => {
     ),
   }));
 
-  if (isNetworkError) return <NetworkError />
+  if (isNetworkError) return <NetworkError />;
   // ================== CONDITIONAL RENDERING ================== //
   if (!company_status) {
     return <DashboardLoading />;
@@ -183,7 +176,8 @@ const Dashboard = () => {
                   chartTitle="Wallet Analysis"
                   visibleRange
                   chartConfig={dashboardPerformanceChartConfig}
-                  chartData={dashboardPerformanceChartData}
+                  // chartData={dashboardPerformanceChartData}
+                  chartData={walletChartData}
                 />
               </div>
               <div className="w-full h-fit">

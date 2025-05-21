@@ -30,28 +30,56 @@ const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<CheckboxOption[]>([]);
 
-  console.log("id", id)
-
   // Set up options from API data
+  // useEffect(() => {
+  //   if (data) {
+  //     const options = transformDocumenArticleResponse(data);
+  //     setCheckboxOptions(options);
+
+  //     // Initialize selected options based on defaultOptions if available
+  //     if (defaultOptions && defaultOptions.length > 0) {
+  //       // Find matching options from API data and default options
+  //       const initialSelected = options.filter((option) =>
+  //         defaultOptions.some((defaultOpt) => defaultOpt.value === option.value)
+  //       );
+  //       setSelectedOptions(initialSelected);
+
+  //       if (onOptionsChange) {
+  //         onOptionsChange(initialSelected);
+  //       }
+  //     }
+  //   }
+  // }, [data, defaultOptions]);
+
   useEffect(() => {
     if (data) {
       const options = transformDocumenArticleResponse(data);
-      setCheckboxOptions(options);
+      // Only update checkboxOptions if different
+      setCheckboxOptions((prev) => {
+        const isSame =
+          prev.length === options.length &&
+          prev.every((opt, i) => opt.value === options[i]?.value);
+        return isSame ? prev : options;
+      });
 
-      // Initialize selected options based on defaultOptions if available
-      if (defaultOptions && defaultOptions.length > 0) {
-        // Find matching options from API data and default options
+      // Initialize selected options based on defaultOptions
+      if (defaultOptions.length > 0) {
         const initialSelected = options.filter((option) =>
           defaultOptions.some((defaultOpt) => defaultOpt.value === option.value)
         );
-        setSelectedOptions(initialSelected);
-
-        if (onOptionsChange) {
-          onOptionsChange(initialSelected);
-        }
+        setSelectedOptions((prev) => {
+          const isSame =
+            prev.length === initialSelected.length &&
+            prev.every((opt, i) => opt.value === initialSelected[i]?.value);
+          if (!isSame) {
+            if (onOptionsChange) onOptionsChange(initialSelected);
+            return initialSelected;
+          }
+          return prev;
+        });
       }
     }
-  }, [data, defaultOptions]);
+  }, [data, defaultOptions, onOptionsChange]);
 
   // Toggle the selected option when a DocumentCheckbox is clicked
   const handleOptionToggle = (option: CheckboxOption) => {
@@ -74,7 +102,6 @@ const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
     return selectedOptions.some((item) => item.value === option.value);
   };
 
-  
   if (isNetworkError) return <NetworkError />;
   if (error) return <div>{error}</div>;
   if (loading) return <CheckBoxLoader />;

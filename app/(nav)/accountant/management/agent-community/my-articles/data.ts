@@ -90,7 +90,6 @@ export const deleteMyArticle = async (slug: string) => {
 };
 
 export const updateMyArticlesNot = async (id: number, formData: any) => {
- console.log("id", id);
   try {
     let formDataObject: any = {};
     

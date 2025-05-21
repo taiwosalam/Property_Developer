@@ -25,6 +25,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { createPropertyDocument } from "../data";
 import { property } from "lodash";
+import CardsLoading from "@/components/Loader/CardsLoading";
 
 const CreateTenancyAggrement = () => {
   const router = useRouter();
@@ -55,12 +56,12 @@ const CreateTenancyAggrement = () => {
     if (!payload.articles.length)
       return toast.warning("Please select at least one option to save draft");
     try {
-      setReqLoading(true)
+      setReqLoading(true);
       const res = await createPropertyDocument(objectToFormData(payload));
       if (res) {
         toast.success("Draft saved successfully");
+        // router.push("/documents");
         setNext(true);
-        router.push("/documents")
       }
     } catch (err) {
       toast.error("An error occurred while saving the draft");
@@ -70,7 +71,14 @@ const CreateTenancyAggrement = () => {
   };
 
   // console.log("here bro", propertyData);
-
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-4">
+        <BackButton>Create Tenancy Agreement</BackButton>
+        <CardsLoading length={2} />
+      </div>
+    );
+  }
   if (isNetworkError) return <NetworkError />;
   if (error) return <div>{error}</div>;
   return (
@@ -87,7 +95,10 @@ const CreateTenancyAggrement = () => {
               data={{
                 "property name": propertyData?.property_name || "--- ---",
                 "property address": propertyData?.address || "--- ---",
-                "agency fee": propertyData?.agency_fee != null ? `${propertyData.agency_fee}%` : "--- ---",
+                "agency fee":
+                  propertyData?.agency_fee != null
+                    ? `${propertyData.agency_fee}%`
+                    : "--- ---",
                 "property type": propertyData?.propertyType || "--- ---",
               }}
               chunkSize={2}
@@ -147,7 +158,15 @@ const CreateTenancyAggrement = () => {
           onOptionsChange={handleOptionsChange}
         />
       </div>
-      <FixedFooter className="flex flex-wrap gap-6 items-center justify-end">
+      <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
+        <Button
+          href={"/documents"}
+          className="py-2 px-6"
+          variant="sky_blue"
+          size="base_medium"
+        >
+          Back
+        </Button>
         {/* <Modal>
           <ModalTrigger asChild>
             <Button variant="light_red" size="base_bold" className="py-2 px-6">
@@ -164,14 +183,14 @@ const CreateTenancyAggrement = () => {
             size="base_bold"
             onClick={() => {
               if (next) {
-                router.push(`/documents/preview/?d=${documentId}`);
+                router.push(`/documents/preview/?d=${documentId}&b=manage`);
               } else {
                 toast.warning("Please save as draft before previewing");
               }
             }}
             className="py-2 px-6"
           >
-            print & preview
+            preview
           </Button>
           <Button
             onClick={handleSaveDraft}
@@ -179,7 +198,7 @@ const CreateTenancyAggrement = () => {
             className="py-2 px-6"
             disabled={reqLoading}
           >
-            { reqLoading ? "Please wait..." : "Save as draft" }
+            {reqLoading ? "Please wait..." : "Save as draft"}
           </Button>
         </div>
       </FixedFooter>

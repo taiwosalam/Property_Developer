@@ -244,10 +244,10 @@ export const ProfileForm: React.FC<{
         <DateInput
           id="start date"
           label="Start Date"
-          value={startDate}
+          value={startDate || dayjs().startOf("day")}
           onChange={setStartDate}
           lastYear={true}
-          disabled={disableInput} 
+          disabled={disableInput}
         />
         <DateInput
           id="due date"
@@ -324,7 +324,8 @@ export const ProfileForm: React.FC<{
           </p>
           {nonNaira && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              Your property was listed in a currency other than Naira. You will need to handle all payments manually.
+              Your property was listed in a currency other than Naira. You will
+              need to handle all payments manually.
             </p>
           )}
         </div>
