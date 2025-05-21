@@ -212,7 +212,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Expiry Date
               </span>
-              <p className="text-brand-primary font-medium"> {expiry_date} </p>
+              <p className="text-brand-primary font-medium"> {NOT_OCCUPIED ? "--- ---" : expiry_date} </p>
             </div>
           </div>
         </div>

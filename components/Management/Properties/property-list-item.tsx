@@ -50,8 +50,9 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const isRental = property_type === "rental";
-  const symbol =
-    isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  // const symbol =
+  //   isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  const symbol = currency ? currencySymbols[currency] : currencySymbols.naira;
   return (
     <div
       className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
