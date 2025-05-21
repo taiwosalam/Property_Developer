@@ -32,6 +32,16 @@ import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 
+export const formatSponsorValue = (value: string | undefined): string => {
+  if (!value) return "0";
+  // Remove decimals and format number
+  const number = parseFloat(value.replace(/,/g, ""));
+  return number.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+};
+
 const SPONSOR_COST = 2000;
 const SponsorUnit = () => {
   const { company_id } = usePersonalInfoStore();
@@ -109,7 +119,7 @@ const SponsorUnit = () => {
                   Available sponsor units:{" "}
                   <span className="font-medium">
                     {" "}
-                    {pageData?.sponsor_value ?? 0}{" "}
+                    {formatSponsorValue(pageData?.sponsor_value)}{" "}
                   </span>
                 </p>
               </div>
@@ -165,30 +175,33 @@ const SponsorUnit = () => {
               </div>
             </div>
           </div>
-          <div className="custom-flex-col gap-4 scroll-m-8" id="listing">
-            <div className="flex justify-between">
-              <h2 className="text-text-primary dark:text-white text-lg font-medium">
-                Sponsors History
-              </h2>
-              <Link
-                href="/settings/subscription/sponsors"
-                className="flex items-center gap-1"
-              >
+          {pageData && pageData.sponsor_listings.length > 0 && (
+            <div className="custom-flex-col gap-4 scroll-m-8" id="listing">
+              <div className="flex justify-between">
+                <h2 className="text-text-primary dark:text-white text-lg font-medium">
+                  Sponsors History
+                </h2>
                 <Link
-                  href={"/reports/adds-on-sponsor?b=true"}
-                  className="text-text-label dark:text-darkText-1"
+                  href="/settings/subscription/sponsors"
+                  className="flex items-center gap-1"
                 >
-                  See all
+                  <Link
+                    href={"/reports/adds-on-sponsor?b=true"}
+                    className="text-text-label dark:text-darkText-1"
+                  >
+                    See all
+                  </Link>
+                  <ChevronRight color="#5A5D61" size={16} />
                 </Link>
-                <ChevronRight color="#5A5D61" size={16} />
-              </Link>
+              </div>
+
+              <CustomTable
+                data={pageData ? pageData?.sponsor_listings.slice(0, 3) : []}
+                fields={SponsorFields}
+                {...table_style_props}
+              />
             </div>
-            <CustomTable
-              data={pageData ? pageData?.sponsor_listings.slice(0, 3) : []}
-              fields={SponsorFields}
-              {...table_style_props}
-            />
-          </div>
+          )}
         </div>
         {/* <SettingsUpdateButton /> */}
       </div>

@@ -276,30 +276,32 @@ const Enrollment = () => {
       </SettingsSection>
 
       <SettingsSection title="Subscription/Renewal History">
-        <div className="custom-flex-col gap-7 scroll-m-8" id="table">
-          <SettingsSectionTitle desc="Track and manage your active and past enrollments with ease. Below is a detailed record of your current subscription plan, along with any previously paid fees for past enrollments." />
-          <div className="flex justify-between items-center">
-            <div>
-              <h2 className="text-black dark:text-white text-lg font-medium">
-                Subscription Overview
-              </h2>
+        {transformedSubscriptions && transformedSubscriptions.length > 0 && (
+          <div className="custom-flex-col gap-7 scroll-m-8" id="table">
+            <SettingsSectionTitle desc="Track and manage your active and past enrollments with ease. Below is a detailed record of your current subscription plan, along with any previously paid fees for past enrollments." />
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-black dark:text-white text-lg font-medium">
+                  Subscription Overview
+                </h2>
+              </div>
+              <div className="flex gap-2 items-center">
+                <Link
+                  href="/reports/subscription-history?b=true"
+                  className="text-text-label dark:text-white font-medium"
+                >
+                  See All
+                </Link>
+                <ChevronRight className="text-sm font-medium" />
+              </div>
             </div>
-            <div className="flex gap-2 items-center">
-              <Link
-                href="/reports/subscription-history?b=true"
-                className="text-text-label dark:text-white font-medium"
-              >
-                See All
-              </Link>
-              <ChevronRight className="text-sm font-medium" />
-            </div>
+            <CustomTable
+              data={transformedSubscriptions}
+              fields={enrollment_subscriptions.fields}
+              {...table_style_props}
+            />
           </div>
-          <CustomTable
-            data={transformedSubscriptions}
-            fields={enrollment_subscriptions.fields}
-            {...table_style_props}
-          />
-        </div>
+        )}
       </SettingsSection>
     </>
   );

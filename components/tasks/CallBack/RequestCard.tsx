@@ -16,7 +16,6 @@ import { empty } from "@/app/config";
 import { truncateText } from "../vehicles-record/data";
 import { useRouter } from "next/navigation";
 
-
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
     <p className="font-medium text-[16px] text-text-tertiary dark:text-white">
@@ -243,18 +242,23 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             <Link
               href={`/management/agent-request/${
                 props.user ? "my-properties-request/" : ""
+              }${requestId}/manage`}
+              className={`mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1 ${
+                props.user
+                  ? "bg-transparent !text-brand-9 border border-brand-9"
+                  : ""
+              }`}
+            >
+              Manage
+            </Link>
+
+            <Link
+              href={`/management/agent-request/${
+                props.user ? "my-properties-request/" : ""
               }${requestId}/preview`}
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
             >
               Preview
-            </Link>
-            <Link
-              href={`/management/agent-request/${
-                props.user ? "my-properties-request/" : ""
-              }${requestId}/manage`}
-              className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
-            >
-              Manage
             </Link>
           </div>
         ) : (

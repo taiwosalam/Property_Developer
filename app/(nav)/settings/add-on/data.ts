@@ -132,7 +132,7 @@ export const personalized_domain: SubscriptionTableType = {
     {
       id: "3",
       label: "Added Date",
-      accessor: "start_date",
+      accessor: "updated_at",
     },
 
     {
@@ -371,7 +371,7 @@ export const transformSponsorResponse = (
   response: SponsorListingsResponse
 ): SponsorUnitTable => {
   return {
-    sponsor_value: formatToNGN(response.data?.value || "0"),
+    sponsor_value: response.data?.value || "0",
     sponsor_listings: response.data.listings.data.map(
       (listing: SponsoredListing) => ({
         transaction_id: listing.id,

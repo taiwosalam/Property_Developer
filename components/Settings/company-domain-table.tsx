@@ -82,6 +82,8 @@ export const CompanySettingsDomainTable = ({ data }: DomainTable) => {
               onActionClick={(item, e) => {
                 handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
               }}
+              className="lowercase"
+              
             />
             <TableMenu
               anchorEl={anchorEl}

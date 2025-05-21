@@ -505,6 +505,7 @@ export const addCustomDomain = async (
       }
     );
     if (data.status === 200 || data.status === 201) {
+      window.dispatchEvent(new Event("refetchProfile"));
       return true;
     }
   } catch (error) {

@@ -210,7 +210,7 @@ const Comment: React.FC<CommentProps> = ({
               )}
             </button> */}
           </div>
-          {!isCollapsed && (
+          {!isCollapsed || replies.length > 0 && (
             <div className="relative ml-10 pl-5 border-l border-neutral-300">
               {replies.map((r) => (
                 <Comment key={r.id} {...r} slug={slug} />

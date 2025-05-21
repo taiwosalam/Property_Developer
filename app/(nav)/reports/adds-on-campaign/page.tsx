@@ -151,26 +151,20 @@ const AddsOnCampaignRecord = () => {
         }))}
         fileLabel={"Campaign Reports"}
       />
-        <section>
-          {campaignTable && campaignTable.length === 0 && !loading ? (
-            !!config.params.search ? (
-              <SearchError />
-            ) : (
-              <EmptyList
-                noButton
-                title="No Campaign Data Available Yet"
-                body={
-                  <p>
-                    Currently, there is no property data available for export.
-                    Once data is added to the system, they will be displayed here
-                    and ready for download or export.
-                    <br />
-                    <br />
-                    <p>
-                      This section will automatically update to show all available
-                    property records as they are created or imported into the
-                    platform.
-                  </p>
+      <section>
+        {campaignTable && campaignTable.length === 0 && !loading ? (
+          !!config.params.search ? (
+            <SearchError />
+          ) : (
+            <EmptyList
+              noButton
+              title="No Previous Add-On Record Found"
+              body={
+                <p>
+                  You currently do not have any previous records for this
+                  add-on. Once you activate or subscribe to this add-on, all
+                  related history and usage details will be displayed here for
+                  your reference.
                 </p>
               }
             />
