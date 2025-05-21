@@ -74,7 +74,7 @@ export const PropertyRequestFirstSection = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
-        <label htmlFor="title"> Title </label>
+        <label htmlFor="title"> Title <span className="text-slate-400">(Optional)</span></label>
         <input
           type="text"
           id="title"
@@ -137,7 +137,7 @@ export const PropertyRequestSecondSection = ({
     }
   };
 
-  // 
+  //
 
   // Handle maximum budget change
   const handleMaxChange = (value: string) => {

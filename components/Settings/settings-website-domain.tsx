@@ -32,6 +32,7 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SponsorModal from "./Modals/sponsor-modal";
 import { CompanySettingDomain } from "./CompanySettingDomain";
 import { CompanySettingsDomainTable } from "./company-domain-table";
+import dayjs from "dayjs";
 
 const SettingsWebsiteDomain = () => {
   const [customDomain, setCustomDomain] = useState("");
@@ -41,7 +42,7 @@ const SettingsWebsiteDomain = () => {
   const [userPlan, setUserPlan] = useState("");
   const [isCheckingDomain, setCheckingDomain] = useState(false);
   //const [isOwner, setIsOwner] = useState<boolean | string>(false);
-  const [domainDetails, setDomainDetails] = useState<any[]>([]);
+  const [domainDetails, setDomainDetails] = useState<any[] | null>(null);
 
   const [isDomainModal, setIsDomainModal] = useState(false);
 
@@ -81,9 +82,12 @@ const SettingsWebsiteDomain = () => {
         companySettings?.data?.website_settings?.web_template;
 
       const customDomain = {
-        domain: companySettings?.data?.custom_domain ?? "___ ___",
+        domain: companySettings?.data?.custom_domain?.toLowerCase() ?? null,
         ssl: companySettings?.data?.custom_domain_ssl_status ?? "____ ____",
         status: companySettings?.data?.custom_domain_status,
+        updated_at: companySettings?.data?.updated_at
+          ? dayjs(companySettings?.data?.updated_at).format("DD-MM-YYYY")
+          : "___ ___",
       };
 
       setDomainDetails([customDomain]);
@@ -205,6 +209,8 @@ const SettingsWebsiteDomain = () => {
     }
   };
 
+  console.log(domainDetails);
+
   return (
     <div>
       <SettingsSection title="website domain & template">
@@ -269,13 +275,11 @@ const SettingsWebsiteDomain = () => {
             )}
         </div>
 
-        {domainDetails &&
-          domainDetails.length > 0 &&
-          domainDetails[0].domain && (
-            <div>
-              <CompanySettingsDomainTable data={domainDetails} />
-            </div>
-          )}
+        {domainDetails && domainDetails[0].domain !== null && (
+          <div>
+            <CompanySettingsDomainTable data={domainDetails} />
+          </div>
+        )}
 
         {/* { <div className="rssFeed flex flex-col gap-1 mb-4">
           <h4 className="text-text-secondary dark:text-darkText-1 text-md font-normal">

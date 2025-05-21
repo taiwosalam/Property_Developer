@@ -12,6 +12,11 @@ interface CompanySettingDomainProps {
   setIsOpen: (prevState: boolean) => void;
 }
 
+const isValidDomain = (domain: string): boolean => {
+  const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+  return pattern.test(domain);
+};
+
 export const CompanySettingDomain = ({
   setIsOpen,
 }: CompanySettingDomainProps) => {
@@ -20,9 +25,23 @@ export const CompanySettingDomain = ({
 
   const [domainName, setDomainName] = useState("https://");
   const [loading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAddCustomDomain = async () => {
     if (!company_id) return;
+
+    if (!domainName) {
+      toast.error("Please enter a domain name");
+      return;
+    }
+
+    if (!isValidDomain(domainName)) {
+      toast.error("Please enter a valid domain name");
+      setError(
+        "Invalid domain format. Example: example.com or https://example.com"
+      );
+      return;
+    }
     try {
       setIsLoading(true);
       const res = await addCustomDomain(company_id, domainName);
@@ -48,9 +67,9 @@ export const CompanySettingDomain = ({
           <div className="bg-neutral-2 rounded-2xl flex flex-col gap-2 mt-4 px-6 py-4">
             <p className="pb-2 text-slate-500">
               Custom Domain allows you to use your own domain name instead of
-              the system&apos;s auto-generated subdomain. You can purchase any domain
-              of your choice and connect it directly to your company dashboard
-              for a more professional and personalized experience.
+              the system&apos;s auto-generated subdomain. You can purchase any
+              domain of your choice and connect it directly to your company
+              dashboard for a more professional and personalized experience.
             </p>
             <div className="space-y-3">
               <Input

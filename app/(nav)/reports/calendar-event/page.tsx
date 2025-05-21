@@ -66,7 +66,10 @@ const CalendarEventRecord = () => {
     }
   }, [calendarEventApiResponse, config]);
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Calendar Event" view="table" />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Calendar Event" view="table" />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -101,20 +104,14 @@ const CalendarEventRecord = () => {
           ) : (
             <EmptyList
               noButton
-              title="No Calendar Event Available Yet"
+              title="  No Events Available Yet"
               body={
                 <p>
-                  At the moment, there are no landlord or landlady profiles
-                  available for export. Once profile records are added to the
-                  system, they will appear here and be available for download or
-                  export.
-                  <br />
-                  <br />
-                  <p>
-                    This section will automatically populate with all available
-                    data as soon as new landlord or landlady profiles are
-                    created or imported into the platform.
-                  </p>
+                  You don&apos;t have any event records at the moment. The
+                  calendar helps you stay organized by managing your schedule,
+                  setting reminders, and tracking all your activities
+                  efficiently. Once events are added, they will appear here
+                  automatically.
                 </p>
               }
             />

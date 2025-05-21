@@ -241,59 +241,68 @@ export const Campaign = () => {
                   : "";
               }}
             />
-            <Input
-              id="amount"
-              className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 active:border-none hover:border-none"
-              label="Amount"
-              value={`₦${totalAmount.toLocaleString()}`}
-              readOnly
-              style={{ outline: "none" }}
-            />
-          </AutoResizingGrid>
-          <Modal>
-            <ModalTrigger>
-              <Button
-                variant="change"
-                size="xs_normal"
-                className="py-2 px-3 mt-8 w-0"
-                disabled={isFormIncomplete}
-              >
-                Activate
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <SponsorModal
-                count={parseInt(selectedPeriod)}
-                cost={totalAmount / parseInt(selectedPeriod)}
-                onSubmit={handlePostCampaign}
+            <div className="w-full relative">
+              <Input
+                id="amount"
+                className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 active:border-none hover:border-none"
+                label="Amount"
+                value={`₦${totalAmount.toLocaleString()}`}
+                readOnly
+                style={{ outline: "none" }}
               />
-            </ModalContent>
-          </Modal>
+
+              <div className="absolute top-2 bottom-0 right-2">
+                <Modal>
+                  <ModalTrigger>
+                    <Button
+                      variant="change"
+                      size="xs_normal"
+                      className="py-2 px-3 mt-8 bg-brand-9 text-white"
+                      disabled={isFormIncomplete}
+                    >
+                      Activate
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <SponsorModal
+                      count={parseInt(selectedPeriod)}
+                      cost={totalAmount / parseInt(selectedPeriod)}
+                      onSubmit={handlePostCampaign}
+                    />
+                  </ModalContent>
+                </Modal>
+              </div>
+            </div>
+          </AutoResizingGrid>
         </div>
 
-        <div className="flex justify-between mb-4">
-          <h2 className="text-text-primary dark:text-white text-lg font-medium">
-            Campaign History
-          </h2>
-          <Link
-            href="/settings/subscription/sponsors"
-            className="flex items-center gap-1"
-          >
-            <Link
-              href={"/reports/adds-on-campaign?b=true"}
-              className="text-text-label dark:text-darkText-1"
-            >
-              See all
-            </Link>
-            <ChevronRight color="#5A5D61" size={16} />
-          </Link>
-        </div>
+        {campaignTable && campaignTable.length > 0 && (
+          <div>
+            <div className="flex justify-between mb-4">
+              <h2 className="text-text-primary dark:text-white text-lg font-medium">
+                Campaign History
+              </h2>
+              <Link
+                href="/settings/subscription/sponsors"
+                className="flex items-center gap-1"
+              >
+                <Link
+                  href={"/reports/adds-on-campaign?b=true"}
+                  className="text-text-label dark:text-darkText-1"
+                >
+                  See all
+                </Link>
+                <ChevronRight color="#5A5D61" size={16} />
+              </Link>
+            </div>
 
-        <CustomTable
-          data={campaignTable ? campaignTable?.slice(0, 3) : []}
-          fields={CampaignFields}
-          {...table_style_props}
-        />
+            <CustomTable
+              data={campaignTable ? campaignTable?.slice(0, 3) : []}
+              fields={CampaignFields}
+              {...table_style_props}
+            />
+          </div>
+        )}
       </SettingsSection>
     </>
   );
