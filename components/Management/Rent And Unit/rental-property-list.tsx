@@ -34,6 +34,9 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   const CURRENCY =
     currencySymbols[currency as keyof typeof currencySymbols] ||
     currencySymbols["naira"];
+    
+  const NOT_OCCUPIED =
+    status.toLowerCase() === "relocate" || status.toLowerCase() === "vacant";
 
   return (
     <div
@@ -115,13 +118,13 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
             </p>
             <div className="text-black dark:text-darkText-2">
               <Link
-                href={`/management/tenants/${tenant_id}/manage`}
+                href={(tenant_id && !NOT_OCCUPIED) ? `/management/tenants/${tenant_id}/manage` : '#'}
                 className="flex items-center gap-1"
               >
                 <span className="font-medium text-brand-primary border-b border-black dark:border-darkText-2">
-                  {status === "relocate" ? "--- ---" : tenant_name}
+                  {NOT_OCCUPIED ? "--- ---" : tenant_name}
                 </span>
-                {(badge_color && status !== "relocate") && (
+                {badge_color && !NOT_OCCUPIED && (
                   <BadgeIcon color={badge_color} />
                 )}
               </Link>

@@ -56,8 +56,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   default_image,
 }) => {
   const isRental = property_type === "rental";
-  const symbol =
-    isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  // const symbol =
+  //   isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  const symbol = currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
   const [isModalActive, setIsModalActive] = useState(false);
 
@@ -192,11 +193,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </p>
             </div>
             <div>
-              <p className="text-label font-normal">{ isRental ? "Mobile Tenants" : "Mobile Occupants" }</p>
+              <p className="text-label font-normal">
+                {isRental ? "Mobile Tenants" : "Mobile Occupants"}
+              </p>
               <p className="text-brand-9 font-bold">{mobile_tenants}</p>
             </div>
             <div>
-              <p className="text-label font-normal">{ isRental ? "Web Tenants" : "Web Occupants" }</p>
+              <p className="text-label font-normal">
+                {isRental ? "Web Tenants" : "Web Occupants"}
+              </p>
               <p className="text-brand-9 font-bold">{web_tenants}</p>
             </div>
             <div>
