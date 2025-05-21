@@ -274,7 +274,7 @@ const VehiclesRecordPage = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Record"
-            newData={total}
+            newData={totalStats}
             total={total_this_month}
             colorScheme={1}
           />
@@ -289,12 +289,6 @@ const VehiclesRecordPage = () => {
             newData={check_outs_this_month}
             total={check_outs}
             colorScheme={3}
-          />
-          <ManagementStatistcsCard
-            title="Pending"
-            newData={check_ins_this_month}
-            total={check_ins}
-            colorScheme={4}
           />
         </div>
         <Modal>

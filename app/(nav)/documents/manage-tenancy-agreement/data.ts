@@ -1,3 +1,6 @@
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
+
 export interface DocumentArticle {
   title: string;
   content: string;
@@ -59,4 +62,16 @@ export const transformDocumentArticleResponse = (
     section: article.section,
     summary: article.summary,
   }));
+};
+
+export const deleteDocument = async (documentId: number) => {
+  try {
+    const res = await api.delete(`/property-document/${documentId}`);
+    if (res.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error)
+    return false;
+  }
 };

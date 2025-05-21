@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 
 // Imports
 import Button from "@/components/Form/Button/button";
@@ -34,19 +34,21 @@ const ManageTenancyAgreement = () => {
   const { data, loading, error, isNetworkError } =
     useFetch<ManageDocumentsAPIResponse>(`/property-document/${documentId}`);
 
-  const propertyID = data?.document?.property_id;  
+  const propertyID = data?.document?.property_id;
 
   const {
     data: propData,
     loading: propertyLoading,
     error: propertyError,
     isNetworkError: propertyNetworkError,
-  } = useFetch<SinglePropertyResponse>(
-    `property/${propertyID}/view`
-  );
+  } = useFetch<SinglePropertyResponse>(`property/${propertyID}/view`);
 
   const propertyData = propData ? transformSinglePropertyData(propData) : null;
-  const defaultOptions = data ? transformDocumentArticleResponse(data) : [];
+  // const defaultOptions = data ? transformDocumentArticleResponse(data) : [];
+  const defaultOptions = useMemo(
+    () => (data ? transformDocumentArticleResponse(data) : []),
+    [data]
+  );
   const documentIdValue = data?.document?.document?.id;
 
   // if (!documentIdValue || Number.isNaN(Number(documentIdValue))) {
@@ -57,8 +59,8 @@ const ManageTenancyAgreement = () => {
         <CardsLoading length={2} />
       </div>
     );
-    // return <PageCircleLoader />;
   }
+  
   if (isNetworkError) return <NetworkError />;
   if (error) return <div> {error} </div>;
 
@@ -148,11 +150,11 @@ const ManageTenancyAgreement = () => {
         <Modal>
           <ModalTrigger asChild>
             <Button variant="light_red" size="base_bold" className="py-2 px-4">
-              delete agreement
+              delete document
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <DeleteDocumentModal />
+            <DeleteDocumentModal documentId={Number(documentId)} />
           </ModalContent>
         </Modal>
         <div className="flex gap-4">

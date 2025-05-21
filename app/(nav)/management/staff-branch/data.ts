@@ -137,7 +137,7 @@ export const transformBranchApiResponse = (
       property_count: branch.properties_count || 0,
       unit_count: branch.units_count || 0,
       manager_picture: branch.manager?.picture || null,
-      badgeColor: branch?.manager?.tier && "gray"
+      badgeColor: branch.manager?.tier && branch.manager.tier > 2 ? "gray" : undefined,
       // badgeColor: branch?.manager?.tier
       //   ? staffTierColorMap[branch?.manager?.tier as keyof typeof staffTierColorMap]
       //   : undefined,

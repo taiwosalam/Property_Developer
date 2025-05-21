@@ -35,8 +35,9 @@ export const branchIdChartData = [
 ];
 
 export const transformSingleBranchAPIResponse = (
-  response: SingleBranchResponseType
-): SingleBranchPageData => {
+  // response: SingleBranchResponseType
+  response: any
+): any => {
   const {
     data: {
       branch,
@@ -81,7 +82,7 @@ export const transformSingleBranchAPIResponse = (
     listings: { total: branch.listing, new_this_month: branch.listing_month },
     branch_wallet: sub_wallet !== null ? { ...sub_wallet } : null,
     receipt_statistics: branch.receipt_statistic,
-    staffs: branch.staffs.slice(0, 5).map((s) => {
+    staffs: branch.staffs.slice(0, 5).map((s:any) => {
       return {
         avatarSrc: s.picture,
         name: `${s.title ? s.title + " " : ""}${s.name}`,
@@ -96,7 +97,7 @@ export const transformSingleBranchAPIResponse = (
     }),
     transactions:
       recentTransactions !== null
-        ? recentTransactions.map((t) => {
+        ? recentTransactions.map((t:any) => {
             return {
               id: t.id,
               amount:
@@ -120,7 +121,7 @@ export const transformSingleBranchAPIResponse = (
         : [],
     recent_transactions:
       recentTransactions !== null
-        ? recentTransactions.map((t) => {
+        ? recentTransactions.map((t:any) => {
             return {
               id: t.id,
               amount: t.amount,

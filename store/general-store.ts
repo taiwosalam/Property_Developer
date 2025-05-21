@@ -25,6 +25,7 @@ import {
 } from "@/components/Settings/sponsor_data";
 import { EmailPageData } from "@/app/(nav)/reports/email/data";
 import { ISponsoredListing, SponsoredListing } from "@/components/Settings/types";
+import { Transactions } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -71,6 +72,8 @@ interface GlobalStoreState {
   setIsPastDate: (isPast: boolean) => void;
   setUnitData: (data: initDataProps | null) => void;
   canSubmit: boolean;
+
+  branchWalletTransactions: Transactions[] | null;
 
   wallet_stats?: WalletStats;
   wallet_date_range?: {
@@ -129,6 +132,10 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setIsPastDate: (isPast) => set({ isPastDate: isPast }),
   setUnitData: (data) => set({ unitData: data }),
   canSubmit: true,
+
+  branchWalletTransactions: null,
+
+  
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {

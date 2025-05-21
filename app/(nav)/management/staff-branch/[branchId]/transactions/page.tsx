@@ -1,117 +1,7 @@
-// import { KeyValueListProps } from "./types";
-// import clsx from "clsx";
-
-// export const KeyValueList = <T extends object>({
-//   styles,
-//   data = {},
-//   chunkSize = 3,
-//   referenceObject,
-//   direction = "row",
-//   truncateLength, // Add truncateLength prop
-// }: KeyValueListProps<T>) => {
-//   const keys = Object.keys(referenceObject) as Array<keyof T>;
-
-//   // Helper function to truncate text
-//   const truncateText = (text: string, length?: number): string => {
-//     if (length === undefined || text.length <= length) {
-//       return text;
-//     }
-//     return text.slice(0, length) + "...";
-//   };
-
-//   const chunkArray = (arr: Array<keyof T>, size: number) =>
-//     arr.reduce(
-//       (acc, _, i) => (i % size === 0 ? [...acc, arr.slice(i, i + size)] : acc),
-//       [] as Array<Array<keyof T>>
-//     );
-
-//   const chunkedKeys = chunkArray(keys, chunkSize);
-
-//   return (
-//     <>
-//       {chunkedKeys.map((chunk, chunkIndex) => (
-//         <div
-//           key={chunkIndex}
-//           className={clsx("flex-1 text-base font-medium capitalize", {
-//             "flex gap-10": direction === "row",
-//             "custom-flex-col gap-6": direction === "column",
-//           })}
-//         >
-//           {direction === "column" ? (
-//             <>
-//               {chunk.map((key) => (
-//                 <div
-//                   key={`${chunkIndex}-${String(key)}`}
-//                   className="custom-flex-col gap-2"
-//                 >
-//                   <p
-//                     className="text-[#747474] dark:text-darkText-1 whitespace-nowrap"
-//                     style={styles?.[key]?.label}
-//                   >
-//                     {String(key).split("_").join(" ")}
-//                   </p>
-//                   <p
-//                     className="text-black dark:text-darkText-2 line-clamp-1"
-//                     style={styles?.[key]?.value}
-//                   >
-//                     {/* Apply truncation to the value */}
-//                     {data && data[key] !== undefined
-//                       ? truncateText(String(data[key]), truncateLength)
-//                       : "---"}
-//                   </p>
-//                 </div>
-//               ))}
-//             </>
-//           ) : (
-//             <>
-//               <div className="custom-flex-col gap-4">
-//                 {chunk.map((key) => (
-//                   <p
-//                     key={`${chunkIndex}-${String(key)}`}
-//                     className="text-[#747474] dark:text-darkText-1 whitespace-nowrap"
-//                     style={styles?.[key]?.label}
-//                   >
-//                     {String(key).split("_").join(" ")}
-//                   </p>
-//                 ))}
-//               </div>
-//               <div className="custom-flex-col gap-4">
-//                 {chunk.map((key) => (
-//                   <p
-//                     key={`${chunkIndex}-${String(key)}`}
-//                     className="text-black dark:text-darkText-2"
-//                     style={styles?.[key]?.value}
-//                   >
-//                     {/* Apply truncation to the value */}
-//                     {data && data[key] !== undefined
-//                       ? truncateText(String(data[key]), truncateLength)
-//                       : "---"}
-//                   </p>
-//                 ))}
-//               </div>
-//             </>
-//           )}
-//         </div>
-//       ))}
-//     </>
-//   );
-// };
-
-// export default KeyValueList;
-
-
-
-
-
-
-
-
-
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import clsx from "clsx";
-import BackButton from "@/components/BackButton/back-button";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CustomTable from "@/components/Table/table";
 import {
@@ -119,15 +9,14 @@ import {
   computeStatsTotals,
   determinePercentageDifference,
   determineTrend,
-} from "../data";
-import {
-  initialPageData,
-  transactionHistoryFilterMenu,
-  transformAllTransactionsResponse,
-} from "./data";
+} from "@/app/(nav)/wallet/data";
+import { transactionHistoryFilterMenu } from "@/app/(nav)/wallet/transaction-history/data";
 import TableLoading from "@/components/Loader/TableLoading";
 import useFetch from "@/hooks/useFetch";
-import type { AllTransactionsResponse, TransactionQueryParams } from "./types";
+import type {
+  AllBranchTransactionsResponse,
+  TransactionQueryParams,
+} from "./types";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
@@ -136,25 +25,31 @@ import { getTransactionIcon } from "@/components/Wallet/icons";
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
 import WalletAnalytics from "@/components/Wallet/wallet-analytics";
-import { DateRangeSelector } from "./components";
-import { useSearchParams } from "next/navigation";
+import { DateRangeSelector } from "@/app/(nav)/wallet/transaction-history/components";
+import {
+  transformAllTransactionsResponse,
+  transformWalletChartData,
+  initialPageData,
+} from "./dat";
 
-const TransactionHistory = () => {
-  const [state, setState] = useState(initialPageData);
+const BranchTransactionsPage = ({
+  params,
+}: {
+  params: { branchId: string };
+}) => {
+  const { branchId } = params;
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-  const branchWalletTransactions = useGlobalStore(
-    (s) => s.branchWalletTransactions
-  );
   const timeRange = useGlobalStore((s) => s.timeRange);
   const selectedDateRange = useGlobalStore((s) => s.selectedDateRange);
   const filteredTransactions = useGlobalStore((s) => s.wallet_transactions);
+
+  const [state, setState] = useState(initialPageData);
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: 1,
     } as TransactionQueryParams,
   });
   const observer = useRef<IntersectionObserver | null>(null);
-  const isBranch = Number(useSearchParams().get("branch")) > 0;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -179,19 +74,50 @@ const TransactionHistory = () => {
     silentLoading,
     error,
     isNetworkError,
-  } = useFetch<AllTransactionsResponse>("transactions", config);
+  } = useFetch<AllBranchTransactionsResponse>(
+    `branch/${branchId}/transactions`,
+    config
+  );
 
-  const TRANSACTIONS = isBranch ? branchWalletTransactions : state.transactions;
+  // Transform API data and update state
+  useEffect(() => {
+    if (apiData) {
+      const newTransactions = transformAllTransactionsResponse(apiData);
+      const combinedTransactions = [
+        ...state.transactions,
+        ...newTransactions.transactions,
+      ];
+      const uniqueTransactions = combinedTransactions.filter(
+        (transaction, index, self) =>
+          index === self.findIndex((t) => t.id === transaction.id)
+      );
+
+      // Update global store with JSON.stringify comparison
+      const currentTransactions =
+        useGlobalStore.getState()?.wallet_transactions;
+      if (
+        JSON.stringify(currentTransactions) !==
+        JSON.stringify(uniqueTransactions)
+      ) {
+        console.log("Updating wallet_transactions:", uniqueTransactions);
+        setGlobalStore("wallet_transactions", uniqueTransactions);
+      }
+
+      setState((prevState) => ({
+        ...prevState,
+        transactions: uniqueTransactions,
+        current_page: newTransactions.current_page,
+        total_pages: newTransactions.total_pages,
+        hasMore: newTransactions.hasMore,
+      }));
+    }
+  }, [apiData, setGlobalStore]);
 
   // Compute stats for filtered transactions
   const currentTotals = computeStatsTotals(
-    TRANSACTIONS || [],
+    state.transactions,
     selectedDateRange
   );
-  // const currentTotals = computeStatsTotals(
-  //   state.transactions,
-  //   selectedDateRange
-  // );
 
   // Compute totals for the previous period
   const previousRange = (() => {
@@ -210,8 +136,7 @@ const TransactionHistory = () => {
     previousTo.setDate(fromDate.getDate() - 1);
     return { from: previousFrom, to: previousTo };
   })();
-  // const previousTotals = computeStatsTotals(state.transactions, previousRange);
-  const previousTotals = computeStatsTotals(TRANSACTIONS || [], previousRange);
+  const previousTotals = computeStatsTotals(state.transactions, previousRange);
 
   // Percentage differences and trends
   const fundsPercent = determinePercentageDifference(
@@ -331,43 +256,8 @@ const TransactionHistory = () => {
     [fetchNextPage, state.hasMore]
   );
 
-  useEffect(() => {
-    if (apiData) {
-      setState((prevState) => {
-        const newTransactions = transformAllTransactionsResponse(apiData);
-        const combinedTransactions = [
-          ...prevState.transactions,
-          ...newTransactions.transactions,
-        ];
-        const uniqueTransactions = combinedTransactions.filter(
-          (transaction, index, self) =>
-            index === self.findIndex((t) => t.id === transaction.id)
-        );
-
-        // Save unique transactions to global store
-        setGlobalStore("wallet_transactions", uniqueTransactions);
-
-        if (newTransactions.current_page === 1) {
-          return {
-            ...prevState,
-            ...newTransactions,
-            transactions: uniqueTransactions,
-          };
-        } else {
-          return {
-            ...prevState,
-            transactions: uniqueTransactions,
-            current_page: newTransactions.current_page,
-            total_pages: newTransactions.total_pages,
-            hasMore: newTransactions.hasMore,
-          };
-        }
-      });
-    }
-  }, [apiData, setGlobalStore]);
-
-  // const transformedWalletTableData = state.transactions.map((t, index) => ({
-  const transformedWalletTableData = (TRANSACTIONS || []).map((t, index) => ({
+  // Transform transactions for table display
+  const transformedWalletTableData = state.transactions.map((t, index) => ({
     ...t,
     amount: (
       <span
@@ -388,7 +278,7 @@ const TransactionHistory = () => {
           {
             "bg-status-error-1 text-status-error-primary": t.type === "debit",
             "bg-status-success-1 text-status-success-primary":
-              t.type === "credit" || t.type === "DVA",
+              t.type === "credit",
           }
         )}
       >
@@ -423,24 +313,6 @@ const TransactionHistory = () => {
     });
   };
 
-  // Get display text for current timeRange
-  const getTimeRangeDisplayText = () => {
-    switch (timeRange) {
-      case "90d":
-        return "Last 3 months";
-      case "30d":
-        return "Last 30 days";
-      case "7d":
-        return "Last 7 days";
-      case "1d":
-        return "Yesterday";
-      case "custom":
-        return "Custom";
-      default:
-        return "Last 30 days";
-    }
-  };
-
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -448,20 +320,21 @@ const TransactionHistory = () => {
     <div className="custom-flex-col gap-8">
       <div className="flex justify-between items-center">
         <FilterBar
-          pageTitle="Transaction History"
+          pageTitle="Branch Transaction History"
           hasGridListToggle={false}
           handleFilterApply={handleFilterApply}
           hiddenSearchInput
           exports
           isDateTrue
           exportHref="/wallet/audit-trail/export"
+          //   exportHref={`/management/staff-branch/${branchId}/transactions/export`}
           filterOptionsMenu={transactionHistoryFilterMenu}
           appliedFilters={appliedFilters}
-          fileLabel={"Wallet Transactions"}
+          fileLabel={"Branch Wallet Transactions"}
           xlsxData={filteredTransactions}
           onBack
         />
-        {/* <DateRangeSelector /> */}
+        <DateRangeSelector />
       </div>
       <div className="flex flex-col xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">
@@ -470,17 +343,16 @@ const TransactionHistory = () => {
               title="funds"
               amount={currentTotals.total_funds}
               trend={{
-                from: `previous ${
+                from:
                   timeRange === "90d"
-                    ? "3 months"
+                    ? "previous 3 months"
                     : timeRange === "30d"
-                    ? "30 days"
+                    ? "previous 30 days"
                     : timeRange === "7d"
-                    ? "7 days"
+                    ? "previous 7 days"
                     : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
+                    ? "previous day"
+                    : "previous period",
                 type: fundsUpDown as "up" | "down" | "none",
                 percent: Number(fundsPercent),
               }}
@@ -489,17 +361,16 @@ const TransactionHistory = () => {
               title="debit"
               amount={currentTotals.total_debit}
               trend={{
-                from: `previous ${
+                from:
                   timeRange === "90d"
-                    ? "3 months"
+                    ? "previous 3 months"
                     : timeRange === "30d"
-                    ? "30 days"
+                    ? "previous 30 days"
                     : timeRange === "7d"
-                    ? "7 days"
+                    ? "previous 7 days"
                     : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
+                    ? "previous day"
+                    : "previous period",
                 type: debitUpDown as "up" | "down" | "none",
                 percent: Number(debitPercent),
               }}
@@ -508,17 +379,16 @@ const TransactionHistory = () => {
               title="credit"
               amount={currentTotals.total_credit}
               trend={{
-                from: `previous ${
+                from:
                   timeRange === "90d"
-                    ? "3 months"
+                    ? "previous 3 months"
                     : timeRange === "30d"
-                    ? "30 days"
+                    ? "previous 30 days"
                     : timeRange === "7d"
-                    ? "7 days"
+                    ? "previous 7 days"
                     : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
+                    ? "previous day"
+                    : "previous period",
                 type: creditUpDown as "up" | "down" | "none",
                 percent: Number(creditPercent),
               }}
@@ -556,4 +426,4 @@ const TransactionHistory = () => {
   );
 };
 
-export default TransactionHistory;
+export default BranchTransactionsPage;
