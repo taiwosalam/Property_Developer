@@ -20,7 +20,7 @@ const CompanySummary = ({
   loading?: boolean;
   companySummary: CompanySummaryTypes;
 }) => {
-  console.log("companySummary", companySummary);
+  
   if (loading) {
     return <CompanySummarySkeleton />;
   }

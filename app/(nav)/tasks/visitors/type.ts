@@ -1,11 +1,15 @@
 type VisitorRequestsResponse = {
   status: "success";
   total: number;
-  month_total: number;
-  month_pending: number;
   total_pending: number;
-  month_completed: number;
+  total_checked_in: number;
   total_completed: number;
+  total_cancelled: number;
+  this_month_total: number;
+  this_month_checked_in: number;
+  this_month_pending: number;
+  this_month_completed: number;
+  this_month_cancelled: number;
   data: VisitorRequest[];
   pagination: {
     current_page: number;

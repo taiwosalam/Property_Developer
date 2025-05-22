@@ -55,7 +55,7 @@ export const ContributorDetails = ({
           </p> */}
         </div>
       </div>
-      <ContributorUser contributors={contributors} bio={post?.companyBio}/>
+      <ContributorUser contributors={contributors} bio={contributors?.bio}/>
     </div>
   );
 };

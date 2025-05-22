@@ -127,14 +127,19 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 ? "bg-status-success-1 border-status-success-1 text-status-success-2"
                 : props.status === "pending" || props.status === "inactive"
                 ? "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
-                : props.status === "in-progress" || props.status === "checked_in"
+                : props.status === "in-progress" ||
+                  props.status === "checked_in"
                 ? "bg-[rgba(140,98,255,0.19)] border-[rgba(140,98,255,0.19)] text-[#9747FF]"
-                : props.status === "decline"
+                : props.status === "decline" || props.status === "cancelled"
                 ? "bg-[rgba(233,33,46,0.10)] border-[rgba(233,33,46,0.10)] text-status-error-primary"
                 : ""
             )}
           >
-            {props.status === "checked_in" ? "In Progress" : props.status}  
+            {props.status === "checked_in"
+              ? "In Progress"
+              : props.status === "cancelled"
+              ? "Declined"
+              : props.status}
           </p>
         )}
       </div>
@@ -244,7 +249,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               </button>
             )}
 
-            <Link
+            {/* <Link
               href={`/management/agent-request/${
                 props.user ? "my-properties-request/" : ""
               }${requestId}/manage`}
@@ -255,7 +260,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               }`}
             >
               Manage
-            </Link>
+            </Link> */}
 
             <Link
               href={`/management/agent-request/${

@@ -43,43 +43,49 @@ export interface Contributor {
 }
 
 export interface CompanySummary {
-  companyLogo: string | null;
-  name: string | null;
-  companyBio: string | null;
-  email: string | null;
-  companyIsVerified: boolean | null;
-  companyStatus: string | null;
-  joinOurproperty: string;
-  totalBranch: number;
-  totalStaff: number;
-  totalProperty: number;
-  totalUnit: number;
-  totalReview: number;
-  contactDetails: {
-    phoneNumbers: string[];
+  company_logo: string;
+  name: string;
+  company_bio: string;
+  email: string;
+  company_is_verified: boolean;
+  company_status: string;
+  join_ourproperty: string;
+  total_branches: number;
+  total_staff: number;
+  total_property: number;
+  total_unit: number;
+  total_review: number;
+  contact_details: {
+    phone_numbers: string[];
   };
   addresses: {
-    headOfficeAddress: string | null;
-    state: string | null;
-    localGovernment: string | null;
-    city: string | null;
-    utilityDocument: string | null;
+    head_office_address: string;
+    state: string;
+    local_government: string;
+    city: string;
+    utility_document: string;
   };
   details: {
-    joinedDate: string | null;
-    dateOfRegistration: string | null;
-    cacRegistrationNumber: string | null;
-    cacCertificate: string | null;
-    industry: string | null;
-    membershipNumber: string | null;
-    membershipCertificate: string | null;
-    companyTypeId: string | null;
-    propertyForSale: number;
-    propertyForRent: number;
-    hospitalityProperty: number;
-    completedTransaction: number;
+    joined_date: string;
+    date_of_registration: string;
+    cacRegistrationNumber: string;
+    cacCertificate: string;
+    industry: string;
+    membershipNumber: string;
+    membershipCertificate: string;
+    company_type_id: number;
+    property_for_sale: number;
+    property_for_rent: number;
+    hospitality_property: number;
+    completed_transaction: number;
+    total_review: number;
+    total_branches: number;
+    total_staff: number;
+    total_unit_managing: number;
+    completed_transaction: number;
+
   };
-  socialHandles: {
+  social_handles: {
     facebook: string | null;
     x: string | null;
     youtube: string | null;

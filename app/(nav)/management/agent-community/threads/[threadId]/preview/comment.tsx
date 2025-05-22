@@ -58,7 +58,7 @@ const Comment: React.FC<CommentProps> = ({
   const [reactionType, setReactionType] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  console.log(tier_id)
+  console.log(tier_id);
 
   const handleReplyClick = () => {
     setShowInput((prev) => !prev);
@@ -68,14 +68,19 @@ const Comment: React.FC<CommentProps> = ({
     setIsCollapsed((prev) => !prev);
   };
 
-  const handlePostReplyComment = async () => {
-    if (!slug) {
+  const handlePostReplyComment = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event?.preventDefault();
+    if (!slug || !content.trim()) {
       return;
     }
 
     try {
       setIsSending(true);
       await sendMyPropertyRequestCommentReply(slug, content, id);
+      setContent("");
+      setShowInput(false);
     } catch (error) {
       console.log(error);
     } finally {
@@ -102,6 +107,13 @@ const Comment: React.FC<CommentProps> = ({
     return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === "Enter" && !event.shiftKey && !isSending) {
+      event.preventDefault();
+      handlePostReplyComment(event);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center gap-1">
@@ -118,7 +130,7 @@ const Comment: React.FC<CommentProps> = ({
             <span className="text-ellipsis line-clamp-1 capitalize">
               {name}
             </span>
-            { tier_id && tier_id > 1 && <BadgeIcon color={"gray"} /> }
+            {tier_id && tier_id > 1 && <BadgeIcon color={"gray"} />}
           </p>
           <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium">
             {text}
@@ -154,31 +166,33 @@ const Comment: React.FC<CommentProps> = ({
         </button>
       </div>
       {showInput && (
-        <div className="mt-6 mb-4 flex items-center justify-between gap-3">
-          <Input
-            value={content}
-            onChange={(value: string) => setContent(value)}
-            id="message"
-            placeholder="Type your message here"
-            className="w-full"
-            inputClassName="border-none bg-neutral-3"
-          />
-          <button
-            onClick={handlePostReplyComment}
-            type="button"
-            className="bg-brand-9 p-2 rounded grid place-items-center"
-            aria-label="send message"
-            disabled={isSending}
-          >
-            <span className="text-white">
-              {isSending ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <SendMessageIcon />
-              )}
-            </span>
-          </button>
-        </div>
+        <form onSubmit={handlePostReplyComment}>
+          <div className="mt-6 mb-4 flex items-center justify-between gap-3">
+            <Input
+              value={content}
+              onChange={(value: string) => setContent(value)}
+              id="message"
+              placeholder="Type your message here"
+              className="w-full"
+              inputClassName="border-none bg-neutral-3"
+              onKeyDown={handleKeyDown}
+            />
+            <button
+              type="submit"
+              className="bg-brand-9 p-2 rounded grid place-items-center"
+              aria-label="send message"
+              disabled={isSending}
+            >
+              <span className="text-white">
+                {isSending ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <SendMessageIcon />
+                )}
+              </span>
+            </button>
+          </div>
+        </form>
       )}
 
       {replies && replies.length > 0 && (
@@ -210,13 +224,14 @@ const Comment: React.FC<CommentProps> = ({
               )}
             </button> */}
           </div>
-          {!isCollapsed || replies.length > 0 && (
-            <div className="relative ml-10 pl-5 border-l border-neutral-300">
-              {replies.map((r) => (
-                <Comment key={r.id} {...r} slug={slug} />
-              ))}
-            </div>
-          )}
+          {!isCollapsed ||
+            (replies.length > 0 && (
+              <div className="relative ml-10 pl-5 border-l border-neutral-300">
+                {replies.map((r) => (
+                  <Comment key={r.id} {...r} slug={slug} />
+                ))}
+              </div>
+            ))}
         </>
       )}
     </div>
