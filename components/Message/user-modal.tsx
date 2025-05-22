@@ -15,6 +15,8 @@ import { positionMap } from "@/app/(nav)/(messages-reviews)/messages/data";
 import MessageUserCardSkeleton from "../Skeleton/message-user-card-skeleton";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import { getLocalStorage } from "@/utils/local-storage";
+import { useGlobalStore } from "@/store/general-store";
+import clsx from "clsx";
 
 const SelectChatUsersModal = ({
   usersData,
@@ -35,6 +37,7 @@ const SelectChatUsersModal = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+  const { setGlobalInfoStore, getGlobalInfoStore } = useGlobalStore();
   const [filteredUsers, setFilteredUsers] = useState<UsersProps[]>(
     usersData || []
   );
@@ -84,9 +87,35 @@ const SelectChatUsersModal = ({
     }
   }, [searchTerm, usersData, loggedInUserId]);
 
-  const handleUserClicked = (id: string) => {
-    router.push("/messages/" + id);
-    setIsOpen(false);
+  // const handleUserClicked = (id: string) => {
+  //   router.push("/messages/" + id);
+  //   setIsOpen(false);
+  // };
+
+  const handleUserClicked = (user: UsersProps) => {
+    try {
+      const currentMessageUserData = getGlobalInfoStore("messageUserData");
+      const newMessageUserData = {
+        branch_id: Number(user.branch_id) || 0,
+        id: Number(user.id),
+        imageUrl: user.imageUrl || "",
+        name: user.name,
+        position: user.position || "",
+      };
+
+      // Compare using JSON.stringify
+      if (
+        JSON.stringify(currentMessageUserData) !==
+        JSON.stringify(newMessageUserData)
+      ) {
+        setGlobalInfoStore("messageUserData", newMessageUserData);
+      }
+
+      router.push(`/messages/${user.id}`);
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Failed to navigate to messages");
+    }
   };
 
   return (
@@ -146,14 +175,23 @@ const SelectChatUsersModal = ({
         </div>
       </div>
 
-      {/* User List */}
       {loading ? (
         [...Array(5)].map((_, index) => <MessageUserCardSkeleton key={index} />)
       ) : filteredUsers?.length > 0 ? (
         filteredUsers?.map((user) => (
           <div
-            className="hover:cursor-pointer"
-            onClick={() => handleUserClicked(user.id)}
+            role="button"
+            tabIndex={0}
+            onClick={() => handleUserClicked(user)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleUserClicked(user);
+              }
+            }}
+            className={clsx(
+              "cursor-pointer transition-colors duration-200 hover:bg-neutral-1 dark:hover:bg-[#2A2B27]"
+            )}
             key={user.id}
           >
             <MessageUserCard

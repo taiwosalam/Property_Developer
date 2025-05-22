@@ -33,9 +33,9 @@ const AICustomPromptModal: React.FC<AICustomPromptModalProps> = ({
       return;
     }
 
-    if (prompt && prompt.length < 30) {
+    if (prompt && prompt.length < 20) {
       toast.warning(
-        "Please enter more than 30 characters in the editor to use AI features."
+        "Please enter more than 20 characters in the editor to use AI features."
       );
       return;
     }
@@ -69,12 +69,12 @@ const AICustomPromptModal: React.FC<AICustomPromptModalProps> = ({
           </button>
         </ModalTrigger>
         <ModalContent>
-          <LandlordTenantModalPreset heading="AI content creator">
+          <LandlordTenantModalPreset heading="AI content generator">
             <textarea
               value={prompt}
               rows={10}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Enter your AI prompt (e.g., 'Summarize this content in 100 words' or 'Generate a professional email based on this text')"
+              placeholder="Ask anything..."
               className="w-full p-3 border rounded-lg text-black dark:text-white bg-white dark:bg-darkText-1 border-gray-300 dark:border-darkText-1 focus:outline-none focus:ring-2 focus:ring-brand-9"
             />
             <div className="mt-4 flex justify-end">

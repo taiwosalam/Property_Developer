@@ -89,7 +89,7 @@ interface GlobalStoreState {
     id: number;
     imageUrl: string;
     name: string;
-    position: string;
+    position: string; 
   } | null;
   // add more keys here as needed…
 }

@@ -62,11 +62,13 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const tenant = apiData ? transformIndividualTenantAPIResponse(apiData) : null;
   const cardData = tenant ? transformCardData(tenant) : null;
 
+  console.log("tenant apiData", apiData)
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <ServerError error={error} />;
   if (!tenant) return null;
 
   const CAN_DELETE = tenant && tenant.current_rent?.length === 0;
+  const IS_MOBILE = tenant?.user_tag === "mobile";
 
   const groupedDocuments = groupDocumentsByType(tenant?.documents);
   // const otherData = getObjectProperties({
@@ -125,6 +127,13 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 >
                   {tenant.email}
                 </p>
+                {!IS_MOBILE && (
+                  <p
+                    className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}
+                  >
+                    {tenant?.phone_number}
+                  </p>
+                )}
               </div>
               <div className="custom-flex-col gap-2">
                 <div className="flex items-center gap-2">
@@ -140,9 +149,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     </div>
                   )}
                 </div>
-                <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                  ID: {tenant.id}
-                </p>
+                {IS_MOBILE && (
+                  <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
+                    ID: {tenant.id}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -220,7 +231,8 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           </div>
         </LandlordTenantInfoBox>
 
-        {tenant?.user_tag === "mobile" && (
+        {/* {tenant?.user_tag === "mobile" && ( */}
+        {IS_MOBILE && (
           <LandlordTenantInfo
             info={{
               gender: tenant.gender,
@@ -231,6 +243,8 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             }}
           />
         )}
+
+        {/* // )} */}
 
         {Object.keys(otherData).map((key, idx) => (
           <LandlordTenantInfo key={idx} heading={key} info={otherData[key]} />

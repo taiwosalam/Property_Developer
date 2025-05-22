@@ -48,6 +48,7 @@ interface AttachedDocument extends AttachedDocumentCard {
 export interface CurrentRent {
   id: number;
   unit_id: number;
+  currency: Currency;
   unit_name: string;
   unit_type: string;
   unit_sub_type: string;
@@ -72,6 +73,7 @@ export interface PreviousRent {
   unit_name: string;
   unit_type: string;
   unit_sub_type: string;
+  currency: Currency;
   unit_preference: string;
   rent_amount: string;
   service_charge?: string | null;

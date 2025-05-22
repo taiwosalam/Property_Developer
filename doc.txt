@@ -101,6 +101,368 @@
 
 
 
+// import Link from "next/link";
+
+// // Images
+// import VerifiedIcon from "@/public/icons/verified.svg";
+
+// // Types
+// import type { MessageCardProps } from "./types";
+
+// // Imports
+// import clsx from "clsx";
+// import { empty } from "@/app/config";
+// import Picture from "../Picture/picture";
+// import { SectionSeparator } from "../Section/section-components";
+// import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
+// import { useGlobalStore } from "@/store/general-store";
+// import { useRouter } from "next/navigation";
+
+// const MessageCard: React.FC<MessageCardProps> = ({
+//   id,
+//   pfp = empty,
+//   desc,
+//   time,
+//   fullname,
+//   verified,
+//   highlight,
+//   messages = 0,
+//   onClick,
+//   content_type,
+// }) => {
+//   const router = useRouter();
+//   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+//   const IconComponent = getIconByContentType(content_type as string);
+
+//   const handleClick = () => {
+//     // Set messageUserData in the store
+//     setGlobalStore("messageUserData", {
+//       id: Number(id),
+//       branch_id: 1,
+//       position: "",
+//       name: fullname,
+//       imageUrl: pfp,
+//     });
+
+//     // Call the provided onClick if it exists
+//     if (onClick) {
+//       onClick();
+//     }
+
+//     // Navigate to the message route
+//     router.push(`/messages/${id}`);
+//   };
+
+//   const Children = () => (
+//     <>
+//       <div></div>
+//       <div className="flex items-center gap-4">
+//         <div className="flex items-center gap-2 flex-1">
+//           <Picture
+//             src={pfp || empty}
+//             alt="profile picture"
+//             size={60}
+//             rounded
+//             status={false}
+//             containerClassName="custom-secondary-bg rounded-full"
+//           />
+//           <div className="custom-flex-col gap-1 flex-1">
+//             <div className="flex items-center gap-[10px]">
+//               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+//                 {fullname}
+//               </p>
+//               {verified && (
+//                 // <Picture src={VerifiedIcon} alt="verified" size={16} />
+//               )}
+//             </div>
+//             {content_type === "text" ? (
+//               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
+//                 {desc}
+//               </p>
+//             ) : (
+//               <div className="flex gap-1 text-sm items-center text-brand-9">
+//                 {IconComponent && <IconComponent />}
+//                 {content_type}
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//         <div className="flex flex-col gap-2 justify-center items-center font-normal">
+//           <p className="text-text-disabled text-xs whitespace-nowrap">{time}</p>
+//           {!!messages && (
+//             <div className="w-4 h-4 pt-[1px] rounded-full flex items-center justify-center bg-highlight">
+//               <p className="text-white dark:text-black text-[10px] leading-[10px]">
+//                 {messages}
+//               </p>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//       <SectionSeparator />
+//     </>
+//   );
+
+//   return (
+//     <div
+//       role="button"
+//       tabIndex={0}
+//       onClick={handleClick}
+//       onKeyDown={(e) => {
+//         if (e.key === "Enter" || e.key === " ") {
+//           e.preventDefault();
+//           handleClick();
+//         }
+//       }}
+//       className={clsx(
+//         "custom-flex-col gap-4 cursor-pointer transition-colors duration-200",
+//         {
+//           "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+//           "hover:bg-neutral-1 dark:hover:bg-[#2A2B27]": !highlight, // Hover effect
+//         }
+//       )}
+//     >
+//       <Children />
+//     </div>
+//   );
+//   // return onClick ? (
+//   //   <button
+//   //     type="button"
+//   //     onClick={onClick}
+//   //     className={clsx("custom-flex-col gap-4", {
+//   //       "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+//   //     })}
+//   //   >
+//   //     <Children />
+//   //   </button>
+//   // ) : (
+//   //   <Link
+//   //     href={`/messages/${id}`}
+//   //     className={clsx("custom-flex-col gap-4", {
+//   //       "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+//   //     })}
+//   //   >
+//   //     <Children />
+//   //   </Link>
+//   // );
+// };
+
+// export default MessageCard;
+
+
+
+
+
+// const Chat = () => {
+//   const router = useRouter();
+//   const { data, setChatData } = useChatStore();
+//   const usersData = useChatStore((state) => state?.data?.users);
+//   const { id } = useParams<{ id: string }>();
+//   const user_id = useAuthStore((state) => state.user_id);
+//   const users = usersData?.users || [];
+//   const messageUserData = useGlobalStore((s) => s.messageUserData);
+//   const setGlobalInfoStore = useGlobalStore((s) => s.setGlobalInfoStore);
+//   const userId = Number(id);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const store_messages = useChatStore((state) => state?.data?.conversations);
+//   const [conversations, setConversations] = useState<any[]>([]);
+//   const users_Id = getLocalStorage("user_id");
+//   const [isPusherFailed, setIsPusherFailed] = useState(false);
+
+//   // Memoize the callback to prevent re-subscribing on every render.
+//   const handleNewMessage = useCallback(
+//     (newMessage: Message) => {
+//       console.log("Adding new message:", newMessage);
+//       const updatedConversations = [...(store_messages || []), newMessage].sort(
+//         (a, b) => a.id - b.id
+//       );
+//       setChatData("conversations", updatedConversations);
+//     },
+//     [store_messages, setChatData]
+//   );
+
+//   // Fetch messages from API
+//   const fetchMessages = useCallback(async () => {
+//     try {
+//       const response = await api.get(`/messages/conversations/user/${id}`);
+//       console.log("API response:", response.data);
+//       if (response.data.status === "success") {
+//         const mappedMessages: Message[] = response.data.messages.map(
+//           (msg: any) => ({
+//             id: msg.id,
+//             text: msg.content ?? null,
+//             senderId: msg.sender_id,
+//             timestamp: `${msg.date} ${msg.timestamp}`,
+//             content_type: msg.content_type,
+//           })
+//         );
+//         console.log("Mapped messages:", mappedMessages);
+//         setChatData("conversations", mappedMessages);
+//       }
+//     } catch (error: any) {
+//       console.error("API error:", error.response?.data || error.message);
+//     }
+//   }, [id, setChatData]);
+
+//   // Clear conversations and fetch messages when id changes
+//   useEffect(() => {
+//     setIsLoading(true);
+//     setConversations([]);
+//     setChatData("conversations", []);
+//     if (id) {
+//       fetchMessages();
+//     } else {
+//       setIsLoading(false);
+//     }
+//   }, [id, setChatData, fetchMessages]);
+
+//   // Initiate Pusher listener with error handling
+//   useConversationListener(id, handleNewMessage, (error: any) => {
+//     console.error("Pusher connection failed:", error);
+//     setIsPusherFailed(true); // Set failure state to trigger polling
+//   });
+
+//   // Polling logic when Pusher fails
+//   useEffect(() => {
+//     let pollingInterval: NodeJS.Timeout | null = null;
+
+//     if (isPusherFailed) {
+//       console.log("Switching to polling every 30 seconds...");
+//       pollingInterval = setInterval(() => {
+//         fetchMessages();
+//       }, 30000);
+//     }
+
+//     // Cleanup polling on unmount or when Pusher reconnects (optional)
+//     return () => {
+//       if (pollingInterval) {
+//         console.log("Stopping polling...");
+//         clearInterval(pollingInterval);
+//       }
+//     };
+//   }, [isPusherFailed, fetchMessages]);
+
+//   // Initial fetch and cleanup
+//   useEffect(() => {
+//     setConversations([]);
+//     setChatData("conversations", []);
+//     if (id) fetchMessages();
+//   }, [id, setChatData, fetchMessages]);
+
+//   // useEffect(() => {
+//   //   // Clear existing conversations
+//   //   setConversations([]);
+//   //   setChatData("conversations", []);
+//   //   const fetchMessages = async () => {
+//   //     try {
+//   //       const response = await api.get(`/messages/conversations/user/${id}`);
+//   //       console.log("API response:", response.data);
+//   //       if (response.data.status === "success") {
+//   //         const mappedMessages: Message[] = response.data.messages.map(
+//   //           (msg: any) => ({
+//   //             id: msg.id,
+//   //             text: msg.content ?? null,
+//   //             senderId: msg.sender_id,
+//   //             timestamp: `${msg.date} ${msg.timestamp}`,
+//   //             content_type: msg.content_type,
+//   //           })
+//   //         );
+//   //         console.log("Mapped messages:", mappedMessages);
+//   //         setChatData("conversations", mappedMessages);
+//   //       }
+//   //     } catch (error: any) {
+//   //       console.error("API error:", error.response?.data || error.message);
+//   //     }
+//   //   };
+//   //   if (id) fetchMessages();
+//   // }, [id, setChatData]);
+
+//   useEffect(() => {
+//     console.log("Store messages updated:", store_messages);
+//     if (store_messages && store_messages.length > 0) {
+//       const groupedMessages = groupMessagesByDay(store_messages);
+//       console.log("Grouped messages:", groupedMessages);
+//       setConversations(groupedMessages);
+//     }
+//   }, [store_messages]);
+
+//   useEffect(() => {
+//     if (usersData) {
+//       setIsLoading(false);
+//     }
+//   }, [usersData]);
+
+//   if (isLoading) {
+//     return <ChatSkeleton />;
+//   }
+
+
+//   // // If user not found, redirect to messages page.
+//   const findUser = users.find((user: UsersProps) => Number(user.id) === userId);
+
+//   const user = messageUserData || findUser;
+
+//   console.log("user data", user);
+//   if (!user) {
+//     router.replace("/messages");
+//     return null;
+//   }
+
+//   return (
+//     <>
+//       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
+//         <div className="flex items-center gap-3">
+//           <button onClick={() => router.push("/messages")}>
+//             <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
+//           </button>
+//           <Link
+//             href={`/management/staff-branch/${user.branch_id}/branch-staff/${user?.staff_id}`}
+//             className="flex items-center gap-4 text-left"
+//           >
+//             <Picture
+//               src={user?.imageUrl || empty}
+//               alt="profile picture"
+//               containerClassName="custom-secondary-bg rounded-full"
+//               size={32}
+//               rounded
+//               status={false}
+//             />
+//             <div className="custom-flex-col">
+//               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+//                 {user?.name}
+//               </p>
+//               <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
+//                 Tap here for contact info
+//               </p>
+//             </div>
+//           </Link>
+//         </div>
+//       </div>
+//       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
+//         {conversations.length > 0 &&
+//           conversations.map((group, index) => (
+//             <Messages
+//               key={index}
+//               day={group.day}
+//               messages={group.messages}
+//               userId={user_id as string}
+//             />
+//           ))}
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Chat;
+
+
+
+
+
+
+
+
+
+
 
 
 // "use client";

@@ -32,7 +32,6 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const IconComponent = getIconByContentType(content_type as string);
 
   const handleClick = () => {
-    // Set messageUserData in the store
     setGlobalStore("messageUserData", {
       id: Number(id),
       branch_id: 1,
@@ -41,12 +40,10 @@ const MessageCard: React.FC<MessageCardProps> = ({
       imageUrl: pfp,
     });
 
-    // Call the provided onClick if it exists
     if (onClick) {
       onClick();
     }
 
-    // Navigate to the message route
     router.push(`/messages/${id}`);
   };
 
@@ -56,7 +53,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
           <Picture
-            src={pfp}
+            src={pfp || empty || "/images/default-profile.png"}
             alt="profile picture"
             size={60}
             rounded
@@ -69,7 +66,11 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 {fullname}
               </p>
               {verified && (
-                <Picture src={VerifiedIcon} alt="verified" size={16} />
+                <Picture
+                  src="/icons/verified.svg"
+                  alt="verified"
+                  size={16}
+                />
               )}
             </div>
             {content_type === "text" ? (
@@ -114,33 +115,13 @@ const MessageCard: React.FC<MessageCardProps> = ({
         "custom-flex-col gap-4 cursor-pointer transition-colors duration-200",
         {
           "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-          "hover:bg-neutral-1 dark:hover:bg-[#2A2B27]": !highlight, // Hover effect
+          "hover:bg-neutral-1 dark:hover:bg-[#2A2B27]": !highlight,
         }
       )}
     >
       <Children />
     </div>
   );
-  // return onClick ? (
-  //   <button
-  //     type="button"
-  //     onClick={onClick}
-  //     className={clsx("custom-flex-col gap-4", {
-  //       "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-  //     })}
-  //   >
-  //     <Children />
-  //   </button>
-  // ) : (
-  //   <Link
-  //     href={`/messages/${id}`}
-  //     className={clsx("custom-flex-col gap-4", {
-  //       "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-  //     })}
-  //   >
-  //     <Children />
-  //   </Link>
-  // );
 };
 
 export default MessageCard;

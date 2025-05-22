@@ -63,7 +63,10 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       const newMessageUserData = landlordData?.messageUserData;
       const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
 
-      if (JSON.stringify(currentMessageUserData) !== JSON.stringify(newMessageUserData)) {
+      if (
+        JSON.stringify(currentMessageUserData) !==
+        JSON.stringify(newMessageUserData)
+      ) {
         setGlobalStore("messageUserData", newMessageUserData);
       }
     }
@@ -79,6 +82,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
 
   const CAN_DELETE =
     landlordData && landlordData.properties_managed?.length === 0;
+  const IS_MOBILE = landlordData?.user_tag === "mobile";
 
   const transformedTableData = landlordData?.statement?.map((item) => ({
     ...item,
@@ -101,7 +105,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   }));
 
   const goToMessage = () => {
-    if (!landlordData.user_id) return toast.warning("Landlord User ID not Found!")
+    if (!landlordData.user_id)
+      return toast.warning("Landlord User ID not Found!");
     router.push(`/messages/${landlordData?.user_id}`);
   };
 
@@ -147,6 +152,13 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 >
                   {landlordData?.email}
                 </p>
+                {!IS_MOBILE && (
+                  <p
+                    className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}
+                  >
+                    {landlordData?.phone_number}
+                  </p>
+                )}
               </div>
               <div className="custom-flex-col gap-2">
                 <div className="flex gap-2 items-center">
@@ -155,9 +167,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     <NoteBlinkingIcon size={20} className="blink-color" />
                   )}
                 </div>
-                <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                  ID: {landlordData?.id}
-                </p>
+                {IS_MOBILE && (
+                  <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
+                    ID: {landlordData?.id}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -239,7 +253,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           </div>
         </LandlordTenantInfoBox>
 
-        {landlordData?.user_tag === "mobile" ? (
+        {/* {landlordData?.user_tag === "mobile" ? ( */}
+
+        {IS_MOBILE && (
           <LandlordTenantInfo
             info={{
               gender: landlordData.gender,
@@ -249,17 +265,19 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               marital_status: landlordData.marital_status,
             }}
           />
-        ) : (
-          <LandlordTenantInfo
-            heading="Contact Address"
-            info={{
-              address: landlordData.contact_address.address,
-              city: landlordData.contact_address.city,
-              state: landlordData.contact_address.state,
-              "L.G": landlordData.contact_address.local_govt,
-            }}
-          />
         )}
+
+        {/* // ) : ( */}
+        <LandlordTenantInfo
+          heading="Contact Address"
+          info={{
+            address: landlordData.contact_address.address,
+            city: landlordData.contact_address.city,
+            state: landlordData.contact_address.state,
+            "L.G": landlordData.contact_address.local_govt,
+          }}
+        />
+        {/* // )} */}
 
         <LandlordTenantInfo
           heading="bank details"
@@ -296,6 +314,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 }),
               family_type: landlordData.others.family_type,
               landlord_type: landlordData.owner_type,
+              ...(!IS_MOBILE && {
+                gender: landlordData.gender,
+              }),
               // xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
             }}
           />
