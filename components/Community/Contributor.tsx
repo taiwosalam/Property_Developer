@@ -43,16 +43,8 @@ export const ContributorDetails = ({
         <div className="flex gap-4">
           <p className="text-[#747474] text-sm"> Target Audience </p>
           <p className="dark:text-white text-black text-sm">
-            {" "}
-            {`${post?.state}, ${post?.lga}`}{" "}
+            {targetAudience}
           </p>
-          {/* <p className="dark:text-white text-black text-sm">
-            {typeof targetAudience === "string"
-              ? targetAudience
-              : targetAudience && targetAudience.length > 0
-              ? targetAudience.join(", ")
-              : "--- ---"}
-          </p> */}
         </div>
       </div>
       <ContributorUser contributors={contributors} bio={post?.companyBio}/>

@@ -21,6 +21,7 @@ export type ThreadCardProps = {
   user_liked?: boolean;
   user_disliked?: boolean;
   badge_color?: BadgeIconColors;
+  isVerified?: boolean;
 };
 
 export interface CommentProps {

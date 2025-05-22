@@ -23,6 +23,7 @@ export const ThreadHeader = ({
   published,
   myArticle,
   badge_color,
+  isVerified,
 }: {
   user_pics: string;
   name: string;
@@ -30,7 +31,8 @@ export const ThreadHeader = ({
   time: string;
   published?: boolean;
   myArticle?: boolean;
-  badge_color: BadgeIconColors;
+  badge_color?: BadgeIconColors;
+  isVerified?: boolean;
 }) => {
   return (
     <div className="flex items-center justify-between w-full">
@@ -49,7 +51,7 @@ export const ThreadHeader = ({
               <p className="dark:text-white truncate capitalize">
                 {name || "--- ---"}
               </p>
-              <BadgeIcon color={badge_color} />
+              {isVerified && <BadgeIcon color={"gray"} />}
             </div>
           </div>
           <p className="text-brand-9 text-sm"> {role || "--- ---"} </p>
