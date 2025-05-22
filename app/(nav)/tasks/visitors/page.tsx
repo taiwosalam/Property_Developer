@@ -55,7 +55,7 @@ const transformToVisitorRequestCardProps = (
     check_out_time: "",
     check_in_date: "",
     check_out_date: "",
-   
+
     ...data,
   };
 };
@@ -137,6 +137,7 @@ const BookVisitorsPage = () => {
     setConfig((prev) => ({
       params: { ...prev.params, page },
     }));
+    console.log("Task Page changer");
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -212,8 +213,12 @@ const BookVisitorsPage = () => {
         ]}
         hasGridListToggle={false}
       />
-      {loading ? (
-        <CardsLoading />
+      {loading || silentLoading ? (
+        <CustomLoader
+          layout="page"
+          pageTitle="Visitation Request"
+          statsCardCount={3}
+        />
       ) : !pageData?.visitors.length ? (
         // Show empty state when no visitors exist
         <EmptyList

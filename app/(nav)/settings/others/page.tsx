@@ -448,14 +448,10 @@ const Others = () => {
 
   const {
     data: apiData,
-    loading,
-    isNetworkError,
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
 
-  
-
-  
+  console.log(apiData)
 
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
@@ -640,6 +636,7 @@ const Others = () => {
           )}
           formData={formData}
           onFormChange={handleFormChange}
+          is_active={1}
         />
       ),
     },
@@ -816,6 +813,7 @@ const Others = () => {
   };
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
 
+  
   
 
   return (
