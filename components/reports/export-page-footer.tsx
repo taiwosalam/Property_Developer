@@ -1,7 +1,7 @@
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import Button from "@/components/Form/Button/button";
 import useExport from "@/hooks/useExport";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface ExportPageFooterProps {
@@ -10,6 +10,7 @@ interface ExportPageFooterProps {
   restOfContentRef?: React.RefObject<HTMLDivElement>;
   setFullContent?: (content: boolean) => void;
   fullContent?: boolean;
+  customBackRoute?: string;
 }
 
 const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
@@ -18,12 +19,17 @@ const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
   fullContent,
   firstPageRef,
   restOfContentRef,
+  customBackRoute,
 }) => {
   const { handlePrint, handleDownload } = useExport(
     firstPageRef,
     restOfContentRef,
     printRef
   );
+  const searchParams = useSearchParams();
+  const backParam = searchParams.get("b");
+  const documentId = searchParams.get("d") ?? "";
+
   const [readyToExport, setReadyToExport] = useState<
     "print" | "download" | null
   >(null);
@@ -57,12 +63,28 @@ const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
     setLoading(null);
   };
 
+  const handleBack = () => {
+    if (customBackRoute) {
+      router.push(customBackRoute);
+      return;
+    }
+
+    if (backParam === "manage") {
+      const backRoute = `/documents/manage-tenancy-agreement?d=${documentId}`;
+      router.push(backRoute);
+    } else {
+      console.log("Using router.back()");
+      router.back();
+    }
+  };
+
   return (
     <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
       <div className="flex">
         <Button
           type="button"
-          onClick={() => router.back()}
+          // onClick={() => router.back()}
+          onClick={handleBack}
           size="custom"
           className="py-2 px-8 font-bold text-sm lg:text-base"
           variant="sky_blue"
@@ -77,7 +99,7 @@ const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
           size="custom"
           className="py-2 px-8 font-bold text-sm lg:text-base"
           variant="sky_blue"
-          disabled={loading !== null} 
+          disabled={loading !== null}
         >
           {loading === "download" ? "Please wait..." : "Download"}
         </Button>

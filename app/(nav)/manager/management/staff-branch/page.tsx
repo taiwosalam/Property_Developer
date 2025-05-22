@@ -40,7 +40,6 @@ const BranchStaffPage = () => {
   const { company: loggedUserCompany, branch: loggedUserBranch } =
     loggedInUserDetails;
   const branchId = loggedUserBranch.branch_id;
-  console.log("id", branchId)
   const router = useRouter();
   const companyVerified = usePersonalInfoStore((state) => state.is_verified);
   const storedView = useView();

@@ -19,7 +19,7 @@ export const transformDocumentsResponse = (
     return 0;
   }).map((doc) => ({
     ...doc,
-    title: doc.title.toLowerCase() === "tenancy agreement" ? `${doc.title} (Free)` : doc.title,
+    title: doc.title.toLowerCase() === "tenancy agreement" ? `${doc.title}` : doc.title,
   }));
 };
 

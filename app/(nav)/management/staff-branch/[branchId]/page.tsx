@@ -6,15 +6,7 @@ import Link from "next/link";
 import Card from "@/components/dashboard/card";
 import Button from "@/components/Form/Button/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   dashboardCardData,
-  walletBalanceCardData,
 } from "@/app/(nav)/dashboard/data";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
@@ -22,18 +14,12 @@ import { LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import {
   branchIdChartConfig,
-  branchIdChartData,
-  determineRedOrGreen,
-  determineUpOrDown,
-  getPercentage,
 } from "./data";
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
-import { DatePickerWithRange } from "@/components/dashboard/date-picker";
 import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
 import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import BranchPropertiesSection from "@/components/Management/Staff-And-Branches/Branch/branch-properties-section";
 import { DateRange } from "react-day-picker";
 import BackButton from "@/components/BackButton/back-button";
 import useFetch from "@/hooks/useFetch";
@@ -49,13 +35,16 @@ import CustomTable from "@/components/Table/table";
 import { walletTableFields } from "@/app/(nav)/wallet/data";
 import clsx from "clsx";
 import { getTransactionIcon } from "@/components/Wallet/icons";
-import useStaffRoles from "@/hooks/getStaffs";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
   const { branch, setBranch } = useBranchStore();
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
+  const { setGlobalInfoStore } = useGlobalStore((s) => ({
+    setGlobalInfoStore: s.setGlobalInfoStore,
+  }));
 
   const { data, error, loading, isNetworkError, refetch } =
     useFetch<SingleBranchResponseType>(`branch/${branchId}`);
@@ -72,9 +61,6 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     return yesNo === "Yes" ? true : false;
   };
 
-  // console.log("rec t")
-
-  // console.log("receipt_statistics", receipt_statistics);
   setWalletStore("sub_wallet", {
     status: branch_wallet !== null ? "active" : "inactive",
     wallet_id:
@@ -140,7 +126,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const transformedWalletTableData =
     transactions &&
-    transactions.map((t) => ({
+    transactions.map((t:any) => ({
       ...t,
       amount: (
         <span
@@ -185,7 +171,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const walletChartData =
     recent_transactions &&
-    recent_transactions.map((t) => ({
+    recent_transactions.map((t:any) => ({
       date: t.date,
       totalfunds: t.amount,
       credit:
@@ -197,6 +183,19 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           ? t.amount
           : 0,
     }));
+
+  // SAVE BRANCH WALLET TRANSACTIONS TO STORE
+  useEffect(() => {
+    if (transactions) {
+      const currentTransactions =
+        useGlobalStore.getState()?.branchWalletTransactions;
+      if (
+        JSON.stringify(currentTransactions) !== JSON.stringify(transactions)
+      ) {
+        setGlobalInfoStore("branchWalletTransactions", transactions);
+      }
+    }
+  }, [transactions, setGlobalInfoStore]);
 
   // set branch data to store
   useEffect(() => {
@@ -217,7 +216,6 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     }
   });
 
-  const [timeRange, setTimeRange] = useState("30d");
   const calculateDateRange = (days: number) => {
     const now = new Date();
     const fromDate = new Date();
@@ -235,24 +233,6 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
       setSelectedDateRange(initialRange);
     }
   }, [selectedDateRange]);
-
-  const handleDateChange = (range: DateRange | undefined) => {
-    setSelectedDateRange(range);
-    if (range?.from && range?.to) {
-      setTimeRange("custom");
-    }
-  };
-
-  const handleSelectChange = (value: string) => {
-    setTimeRange(value);
-    if (value !== "custom") {
-      const days =
-        value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
-      setSelectedDateRange(calculateDateRange(days));
-    }
-  };
-
-  // console.log("branch data", branchData);
 
   if (loading) return <CustomLoader layout="dasboard" />;
 
@@ -401,7 +381,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             Recent Transaction
           </h2>
           <Link
-            href="/wallet/transaction-history"
+            href={`/management/staff-branch/${branchId}/transactions`}
             className="flex items-center gap-1"
           >
             <span className="text-text-label dark:text-darkText-1">

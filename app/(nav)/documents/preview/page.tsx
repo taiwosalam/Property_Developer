@@ -35,6 +35,7 @@ import NetworkError from "@/components/Error/NetworkError";
 const DocumentPreview: React.FC = () => {
   const printRef = useRef(null);
   const documentId = useSearchParams().get("d") ?? "";
+  const backParam = useSearchParams().get("b") ?? "";
   const firstPageRef = useRef<HTMLDivElement>(null);
   const restOfContentRef = useRef<HTMLDivElement>(null);
   const [documentData, setDocumentData] = useState<DocumentPreviewData | null>(
@@ -102,6 +103,11 @@ const DocumentPreview: React.FC = () => {
       <ExportPageFooter
         firstPageRef={firstPageRef}
         restOfContentRef={restOfContentRef}
+        customBackRoute={
+          backParam === "manage"
+            ? `/documents/manage-tenancy-agreement?d=${documentId}`
+            : undefined
+        }
       />
     </>
   );

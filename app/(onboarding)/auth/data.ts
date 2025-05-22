@@ -257,7 +257,7 @@ export const login = async (formData: Record<string, any>) => {
       formData
     );
     useAuthStore.getState().reset();
-    console.log("Login response", data)
+    // console.log("Login response", data)
     const token = data.access_token;
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
