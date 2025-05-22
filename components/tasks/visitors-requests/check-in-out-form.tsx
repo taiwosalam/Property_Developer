@@ -7,7 +7,7 @@ import Button from "@/components/Form/Button/button";
 import TextArea from "@/components/Form/TextArea/textarea";
 import ModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import { empty } from "@/app/config";
-import { useState } from "react";
+import React, { useState } from "react";
 import { CounterButton } from "@/components/Wallet/AddFunds/payment-method";
 
 interface BaseProps {
@@ -65,6 +65,7 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
 
   return (
     <ModalPreset
+    
       heading={
         type === "decline"
           ? `Decline ${useCase === "visitor" ? "Visitor" : "Vehicle"}`

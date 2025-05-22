@@ -33,12 +33,27 @@ export interface VisitorRequestCardProps extends RequestCardBaseProps {
   cardType: "visitor";
   status: "completed" | "pending" | "in-progress" | "decline";
   visitorName: string;
+  purpose: string;
+  id: number;
+  tier_id: number;
   visitorPhoneNumber: string;
   secretQuestion: string;
   secretAnswer: string;
   purpose: string;
   propertyName: string;
   branch: string;
+  checked_status: string;
+  checked_in_by: string | null;
+  checked_out_by: string | null;
+  check_out_companion: string;
+  check_in_companion: string;
+  check_in_inventory: string;
+  check_out_inventory: string;
+  check_in_date: string | null;
+  check_out_date: string | null;
+  check_in_time: string | null;
+  check_out_time: string | null;
+
   cardViewDetails: {
     label: string;
     accessor: keyof VisitorRequestCardProps;

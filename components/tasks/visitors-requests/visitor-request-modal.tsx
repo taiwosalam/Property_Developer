@@ -1,26 +1,32 @@
 import { ModalTrigger } from "@/components/Modal/modal";
 import Picture from "@/components/Picture/picture";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import BadgeIcon, {
+  BadgeIconColors,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 import { VisitorRequestModalProps } from "./types";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import Button from "@/components/Form/Button/button";
 import { useState } from "react";
 import CheckInOutForm from "./check-in-out-form";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
+import {
+  handleCheckIn,
+  handleCheckOut,
+  ICheckInPayload,
+} from "@/app/(nav)/tasks/visitors/data";
+import { toast } from "sonner";
 
 // import ModalPreset from "@/components/Modal/modal-preset";
 
-const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
-  status,
-  pictureSrc,
-  id,
-  userName,
-  visitorName,
-  visitorPhoneNumber,
-  requestDate,
-  secretQuestion,
-  secretAnswer,
-}) => {
+const getCurrentDateTime = () => {
+  const now = new Date();
+  const date = now.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+  const time = now.toTimeString().split(" ")[0]; // Format: HH:MM:SS
+  return { date, time };
+};
+
+const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({ props }) => {
   const [activeStep, setActiveStep] = useState<
     "default" | "check-in" | "check-out" | "decline" | "success-action"
   >("default");
@@ -28,22 +34,116 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
     setActiveStep("default");
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const handleOnSubmitCheckIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    if (!props.requestId) return;
+
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const { date, time } = getCurrentDateTime();
+    const data: ICheckInPayload = {
+      inventory: formData.get("inventory") as string,
+      companion: formData.get("companion") as string,
+      check_in_date: date,
+      check_in_time: time,
+    };
+    try {
+      setLoading(true);
+      const res = await handleCheckIn(props.requestId, data);
+      if (res) {
+        toast.success("Check in successful");
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOnSubmitCheckOut = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    if (!props?.requestId) {
+      return;
+    }
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const { date, time } = getCurrentDateTime();
+
+    const data: ICheckInPayload = {
+      inventory: formData.get("inventory") as string,
+      companion: formData.get("companion") as string,
+      check_out_date: date,
+      check_out_time: time,
+    };
+    try {
+      setLoading(true);
+      const res = await handleCheckOut(props?.requestId, data);
+      if (res) {
+        toast.success("Check out successful");
+        setActiveStep("success-action");
+        window.dispatchEvent(new Event("refetchVisitors"));
+      }
+    } catch (error) {
+      toast.error("Check out failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOnSubmitDecline = async (e: React.FormEvent<HTMLFormElement>) => {
+    if (!props?.requestId) {
+      return;
+    }
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const { date, time } = getCurrentDateTime();
+
+    const data: ICheckInPayload = {
+      inventory: formData.get("inventory") as string,
+      companion: formData.get("companion") as string,
+      check_out_date: date,
+      check_out_time: time,
+    };
+    try {
+      setLoading(true);
+      const res = await handleCheckIn(props?.requestId, data);
+      if (res) {
+        toast.success("Request declined successfully");
+        setActiveStep("success-action");
+        window.dispatchEvent(new Event("refetchVisitors"));
+      }
+    } catch (error) {
+      toast.error("Failed to decline request");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
+    if (!tier || tier === 0) return undefined;
+    return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
+  };
+
   if (activeStep === "default") {
     return (
       <ModalPreset title="Visitation Details">
         <div className="flex flex-col md:flex-row items-center justify-between gap-2 font-medium">
           <div className="flex items-center gap-2">
-            <Picture size={50} src={pictureSrc} rounded />
+            <Picture size={50} src={props?.pictureSrc} rounded />
             <div className="text-base text-text-primary dark:text-white space-y-1">
               <p className="flex">
-                <span>{userName}</span>
-                <BadgeIcon color="blue" />
+                <span>{props?.userName}</span>
+                {props?.tier_id && (
+                  <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
+                )}
               </p>
               <p>
                 <span className="text-text-tertiary dark:text-darkText-1">
                   ID:
                 </span>{" "}
-                {id}
+                {props?.id}
               </p>
             </div>
           </div>
@@ -53,7 +153,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 Name of Visitor
               </p>
               <p className="text-text-primary dark:text-darkText-2">
-                {visitorName}
+                {props?.visitorName}
               </p>
             </div>
             <div className="flex items-start gap-4">
@@ -61,7 +161,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 Request Date
               </p>
               <p className="text-text-primary dark:text-darkText-2">
-                {requestDate}
+                {props?.requestDate}
               </p>
             </div>
             <div className="flex items-start gap-4">
@@ -69,7 +169,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 Visitor&apos;s Phone
               </p>
               <p className="text-text-primary dark:text-darkText-2">
-                {visitorPhoneNumber}
+                {props?.visitorPhoneNumber}
               </p>
             </div>
           </div>
@@ -81,7 +181,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               Secret Question
             </p>
             <p className="text-text-primary text-sm text-right dark:text-darkText-2">
-              {secretQuestion}
+              {props?.secretQuestion}
             </p>
           </div>
           <div className="flex items-start justify-between gap-1.5">
@@ -89,7 +189,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               Answer
             </p>
             <p className="text-text-primary text-sm text-right dark:text-darkText-2">
-              {secretAnswer}
+              {props?.secretAnswer}
             </p>
           </div>
           <div className="flex flex-col gap-1">
@@ -97,9 +197,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               Description:
             </p>
             <p className="text-text-primary dark:text-darkText-2">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-              eget dictum sem, ut molestie eros. Morbi in dolor augue. Sed
-              aliquet ipsum fringilla sapien facilisis consectetur.
+              {props?.purpose}
             </p>
           </div>
         </div>
@@ -113,7 +211,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 By
               </p>
               <p className="text-text-primary dark:text-darkText-2 font-medium">
-                {status === "pending" ? "---" : "David Aladiye"}
+                {props?.checked_in_by || "____ ____"}
               </p>
             </div>
             <div className="flex gap-4">
@@ -121,7 +219,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 Companion
               </p>
               <p className="text-text-primary dark:text-darkText-2 font-medium">
-                {status === "pending" ? "---" : "5 People"}
+                {props?.check_in_companion || "___ ___"}
               </p>
             </div>
             <div className="flex gap-4">
@@ -129,27 +227,28 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 Date - Time
               </p>
               <p className="text-text-primary dark:text-darkText-2 font-medium">
-                {status === "pending" ? "---" : "12/12/12 - 12:00 PM"}
+                {`${props?.check_in_date || "___ ___"} - ${
+                  props?.check_in_time || "___ ___"
+                }`}
               </p>
             </div>
           </div>
           <p className="text-text-label dark:text-white font-normal mb-1">
             Inventory
           </p>
-          {status === "pending" ? (
+          {props.status === "pending" ? (
             "---"
           ) : (
             <TruncatedText lines={2}>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Voluptatem cum dolorum ex, dolore deleniti veniam eum quam cumque,
-              fugiat asperiores temporibus neque recusandae sunt qui modi unde.
-              Optio, ratione repellendus.
+              <div
+                dangerouslySetInnerHTML={{ __html: props?.check_in_inventory }}
+              />
             </TruncatedText>
           )}
         </div>
 
         {/* Buttons */}
-        {status === "pending" ? (
+        {props.checked_status === "pending" ? (
           <div className="mt-8 flex items-center justify-center gap-4 md:gap-[70px]">
             <Button
               variant="light_red"
@@ -167,7 +266,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               Check In
             </Button>
           </div>
-        ) : status === "in-progress" ? (
+        ) : props.checked_status === "checked_in" ? (
           <div className="mt-8 flex items-center justify-center gap-[70px]">
             <ModalTrigger asChild close>
               <Button
@@ -197,7 +296,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                   By
                 </p>
                 <p className="text-text-primary dark:text-darkText-2 font-medium">
-                  David Aladiye
+                  {props?.checked_out_by || "___ ___"}
                 </p>
               </div>
               <div className="flex items-start gap-4">
@@ -205,7 +304,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                   Companion
                 </p>
                 <p className="text-text-primary dark:text-darkText-2 font-medium">
-                  5 People
+                  {props?.check_out_companion || "___ ___"}
                 </p>
               </div>
               <div className="flex items-start gap-4">
@@ -213,7 +312,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                   Date - Time
                 </p>
                 <p className="text-text-primary dark:text-darkText-2 font-medium">
-                  12/12/12 - 12:00 PM
+                  {`${props?.check_out_date} - ${props?.check_out_time}`}
                 </p>
               </div>
             </div>
@@ -221,32 +320,37 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               Inventory
             </p>
             <TruncatedText lines={2}>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              Voluptatem cum dolorum ex, dolore deleniti veniam eum quam cumque,
-              fugiat asperiores temporibus neque recusandae sunt qui modi unde.
-              Optio, ratione repellendus.
+              <div
+                dangerouslySetInnerHTML={{ __html: props?.check_out_inventory }}
+              />
             </TruncatedText>
           </div>
         )}
       </ModalPreset>
     );
   }
+
   if (
     activeStep === "check-in" ||
     activeStep === "check-out" ||
     activeStep === "decline"
   ) {
+    const handlers = {
+      "check-in": handleOnSubmitCheckIn,
+      "check-out": handleOnSubmitCheckOut,
+      decline: handleOnSubmitDecline,
+    };
     return (
       <CheckInOutForm
-        loading={false}
-        onSubmit={() => { }}
+        loading={loading}
+        onSubmit={handlers[activeStep]}
         type={activeStep}
         useCase="visitor"
         handleBack={handleBack}
-        pictureSrc={pictureSrc}
-        userName={userName}
-        id={id}
-        requestDate={requestDate}
+        pictureSrc={props?.pictureSrc}
+        userName={props?.userName}
+        id={props?.id}
+        requestDate={props?.requestDate}
       />
     );
   }
