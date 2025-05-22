@@ -18,10 +18,10 @@ const Visitors = () => {
   const [selectedRecord, setSelectedRecord] =
     useState<VisitorRequestModalProps | null>(null);
 
-  const handleTableItemClick = (record: DataItem) => {
-    setSelectedRecord(record as VisitorRequestModalProps);
-    setModalOpen(true);
-  };
+  // const handleTableItemClick = (record: DataItem) => {
+  //   setSelectedRecord(record as VisitorRequestModalProps);
+  //   setModalOpen(true);
+  // };
 
   return (
     <div className="space-y-9">
@@ -65,9 +65,9 @@ const Visitors = () => {
         fields={visitorsRequestTableFields}
         data={VisitorsRequestTableData}
         tableHeadClassName="h-[45px]"
-        handleSelect={handleTableItemClick}
+        //handleSelect={handleTableItemClick}
       />
-      <Modal
+      {/* <Modal
         state={{
           isOpen: modalOpen,
           setIsOpen: setModalOpen,
@@ -86,7 +86,7 @@ const Visitors = () => {
             secretAnswer="Blue"
           />
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

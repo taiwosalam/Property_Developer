@@ -15,6 +15,7 @@ import Link from "next/link";
 import { empty } from "@/app/config";
 import { truncateText } from "../vehicles-record/data";
 import { useRouter } from "next/navigation";
+import { getBadgeColor } from "@/lib/utils";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -96,7 +97,9 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               <span className="text-base font-medium capitalize">
                 {truncateText(userName, 30)}
               </span>
-              {/* <BadgeIcon color="blue" /> */}
+              {cardType === "visitor" && (
+                <BadgeIcon color={getBadgeColor(props.tier_id) || "gray"} />
+              )}
             </div>
             {cardType !== "agent-community" ? (
               <div className="flex items-center gap-1">
@@ -292,17 +295,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               resolvedDateTime={props.resolvedDateTime}
             />
           ) : cardType === "visitor" ? (
-            <VisitorRequestModal
-              status={props.status}
-              pictureSrc={pictureSrc}
-              id={requestId}
-              userName={userName}
-              visitorName={props.visitorName}
-              visitorPhoneNumber={props.visitorPhoneNumber}
-              secretQuestion={props.secretQuestion}
-              requestDate={requestDate}
-              secretAnswer={props.secretAnswer}
-            />
+            <VisitorRequestModal props={props} />
           ) : cardType === "property" ? (
             <PropertyRequestModal
               state={props.state}

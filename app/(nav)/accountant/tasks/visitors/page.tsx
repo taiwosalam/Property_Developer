@@ -15,7 +15,7 @@ const transformToVisitorRequestCardProps = (
   data: VisitorRequestDataDataType
 ): VisitorRequestCardProps => {
   return {
-    cardType: "visitor",
+     cardType: "visitor",
     cardViewDetails: [
       { label: "Name of Visitor", accessor: "visitorName" },
       { label: "Visotor Phone no", accessor: "visitorPhoneNumber" },
@@ -24,6 +24,19 @@ const transformToVisitorRequestCardProps = (
       { label: "Property Name", accessor: "propertyName" },
       { label: "Branch", accessor: "branch" },
     ],
+    id: Number(data.requestId),
+    tier_id: 0,
+    checked_status: "pending",
+    checked_in_by: "",
+    checked_out_by: "",
+    check_out_companion: "",
+    check_in_companion: "",
+    check_in_inventory: "",
+    check_out_inventory: "",
+    check_in_time: "",
+    check_out_time: "",
+    check_in_date: "",
+    check_out_date: "",
     ...data,
   };
 };

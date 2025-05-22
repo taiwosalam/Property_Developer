@@ -193,6 +193,7 @@ export interface LandlordRequestParams {
   end_date?: string;
   agent?: string;
   branch_ids?: string;
+  property_ids?: string;
 }
 
 export const transformMobileUseData = (res: any): UserCardProps => {
