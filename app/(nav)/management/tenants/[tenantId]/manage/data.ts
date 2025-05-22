@@ -161,13 +161,19 @@ export const transformIndividualTenantAPIResponse = ({
     unitStatus: rent?.unit_status as keyof typeof UnitStatusColors,
     unitName: rent?.unit_name || "",
     rent: rent?.rent_amount
-      ? `₦${formatNumber(parseFloat(rent.rent_amount))}`
+      ? `${formatFee(parseFloat(rent.rent_amount), rent.currency || "naira")}`
       : "--- ---",
     serviceCharge: rent?.service_charge
-      ? `₦${formatNumber(parseFloat(rent.service_charge))}`
+      ? `${formatFee(
+          parseFloat(rent.service_charge),
+          rent.currency || "naira"
+        )}`
       : "--- ---",
     cautionDeposit: rent?.caution_deposit
-      ? `₦${formatNumber(parseFloat(rent.caution_deposit))}`
+      ? `${formatFee(
+          parseFloat(rent.caution_deposit),
+          rent.currency || "naira"
+        )}`
       : "--- ---",
     tenantName: data?.name || "",
     tenantBadgeColor: data?.tier_id ? tierColorMap[data.tier_id] : undefined,
@@ -179,6 +185,7 @@ export const transformIndividualTenantAPIResponse = ({
   const formattedPreviousRent =
     data?.previous_rent?.map(transformRentToUnitItemProps) || [];
 
+  const IS_MOBILE = data?.agent?.toLowerCase() === "mobile";
   return {
     id: data?.id || "",
     picture: data?.picture || empty,
@@ -211,6 +218,9 @@ export const transformIndividualTenantAPIResponse = ({
       }),
       family_type: data?.Others?.family_type || "--- ---",
       tenant_type: data?.tenant_type || "--- ---",
+      ...(!IS_MOBILE && {
+        gender: data?.gender || "--- ---",
+      }),
     },
     bank_details: data?.bank_details || [],
     notes: {

@@ -159,7 +159,8 @@ export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
     published: thread.post.published, 
     user_liked: thread.post.user_liked, 
     user_disliked: thread.post.user_disliked, 
-    badge_color: thread.user.tier > 1 ? "gray" : undefined,
+    isVerified: Number(thread.user.tier) > 1,
+    badge_color: Number(thread.user.tier) > 1 ? "gray" : undefined,
     // badge_color: thread.user.tier ? tierColorMap[thread.user.tier as keyof typeof tierColorMap] : undefined,
   }));
 };

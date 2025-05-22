@@ -150,7 +150,7 @@ const AIPopOver = ({
       {/* Trigger Button */}
       <button
         type="button"
-        className="flex gap-2 capitalize text-start text-black dark:text-white"
+        className="flex gap-2 capitalize hover:text-brand-9 text-start text-[#000000] dark:text-white"
         onClick={handleShowPopOver}
       >
         <AiIcon />

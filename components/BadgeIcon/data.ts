@@ -1,31 +1,77 @@
+// export const transformDocumentsResponse = (
+//   response: DocumentsAPIResponse
+// ): CheckboxOption[] => {
+//   // Transform the API response
+//   const transformedDocs = response.document.map((doc) => ({
+//     title: doc.type,
+//     id: doc.document_id,
+//     summary: "",
+//     section: "",
+//     value: doc.type.toLowerCase().replace(/\s+/g, "_"),
+//     amount: doc.amount ?? 0, // Default to 0 if amount is missing
+//     description: doc.category, // Assuming category is a suitable description
+//   }));
+
+//   // Ensure "Tenancy Agreement" is first and prepend "(Free)" to its title
+//   return transformedDocs.sort((a, b) => {
+//     if (a.title.toLowerCase() === "tenancy agreement") return -1;
+//     if (b.title.toLowerCase() === "tenancy agreement") return 1;
+//     return 0;
+//   }).map((doc) => ({
+//     ...doc,
+//     title: doc.title.toLowerCase() === "tenancy agreement" ? `${doc.title}` : doc.title,
+//   }));
+// };
+
 export const transformDocumentsResponse = (
-  response: DocumentsAPIResponse
+  response: DocumentsAPIResponse,
+  selectedAgreementType: string
 ): CheckboxOption[] => {
-  // Transform the API response
-  const transformedDocs = response.document.map((doc) => ({
-    title: doc.type,
-    id: doc.document_id,
-    summary: "",
-    section: "",
-    value: doc.type.toLowerCase().replace(/\s+/g, "_"),
-    amount: doc.amount ?? 0, // Default to 0 if amount is missing
-    description: doc.category, // Assuming category is a suitable description
-  }));
+  // Map AGREEMENT_OPTIONS value to API document type
+  const agreementTypeMap: { [key: string]: string } = {
+    tenancy_agreement: "Tenancy Agreement",
+    quit_notice: "Quit notice",
+    warning_reminder: "Warning/Reminder",
+    court_process: "Court Process",
+    possession: "Possession",
+    other_legal: "Other Document",
+  };
+
+  const selectedType =
+    agreementTypeMap[selectedAgreementType] || selectedAgreementType;
+
+  // Filter and transform the API response
+  const transformedDocs = response.document
+    .filter((doc) => doc.type === selectedType) 
+    .map((doc) => ({
+      title: doc.type,
+      id: doc.document_id,
+      summary: doc.articles[0]?.summary || "", 
+      section: doc.articles[0]?.section || "", 
+      value: doc.document_id.toString(),
+      amount: doc.amount ?? 0,
+      description: doc.category, 
+    }));
 
   // Ensure "Tenancy Agreement" is first and prepend "(Free)" to its title
-  return transformedDocs.sort((a, b) => {
-    if (a.title.toLowerCase() === "tenancy agreement") return -1;
-    if (b.title.toLowerCase() === "tenancy agreement") return 1;
-    return 0;
-  }).map((doc) => ({
-    ...doc,
-    title: doc.title.toLowerCase() === "tenancy agreement" ? `${doc.title}` : doc.title,
-  }));
+  return transformedDocs
+    .sort((a, b) => {
+      if (a.title.toLowerCase() === "tenancy agreement") return -1;
+      if (b.title.toLowerCase() === "tenancy agreement") return 1;
+      return 0;
+    })
+    .map((doc) => ({
+      ...doc,
+      title:
+        doc.title.toLowerCase() === "tenancy agreement"
+          ? `${doc.title}`
+          : doc.title,
+    }));
 };
 
 export const checkboxOptions = [
   {
-    title: "Tenancy Agreement (Free)",
+    title: "Tenancy Agreement",
     value: "tenancy_agreement",
     amount: 0,
     description:
