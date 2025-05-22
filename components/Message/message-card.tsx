@@ -12,6 +12,8 @@ import { empty } from "@/app/config";
 import Picture from "../Picture/picture";
 import { SectionSeparator } from "../Section/section-components";
 import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
+import { useGlobalStore } from "@/store/general-store";
+import { useRouter } from "next/navigation";
 
 const MessageCard: React.FC<MessageCardProps> = ({
   id,
@@ -25,7 +27,29 @@ const MessageCard: React.FC<MessageCardProps> = ({
   onClick,
   content_type,
 }) => {
+  const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const IconComponent = getIconByContentType(content_type as string);
+
+  const handleClick = () => {
+    // Set messageUserData in the store
+    setGlobalStore("messageUserData", {
+      id: Number(id),
+      branch_id: 1,
+      position: "",
+      name: fullname,
+      imageUrl: pfp,
+    });
+
+    // Call the provided onClick if it exists
+    if (onClick) {
+      onClick();
+    }
+
+    // Navigate to the message route
+    router.push(`/messages/${id}`);
+  };
+
   const Children = () => (
     <>
       <div></div>
@@ -57,9 +81,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 {IconComponent && <IconComponent />}
                 {content_type}
               </div>
-            )
-            }
-
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center font-normal">
@@ -77,26 +99,48 @@ const MessageCard: React.FC<MessageCardProps> = ({
     </>
   );
 
-  return onClick ? (
-    <button
-      type="button"
-      onClick={onClick}
-      className={clsx("custom-flex-col gap-4", {
-        "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-      })}
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      className={clsx(
+        "custom-flex-col gap-4 cursor-pointer transition-colors duration-200",
+        {
+          "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+          "hover:bg-neutral-1 dark:hover:bg-[#2A2B27]": !highlight, // Hover effect
+        }
+      )}
     >
       <Children />
-    </button>
-  ) : (
-    <Link
-      href={`/messages/${id}`}
-      className={clsx("custom-flex-col gap-4", {
-        "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-      })}
-    >
-      <Children />
-    </Link>
+    </div>
   );
+  // return onClick ? (
+  //   <button
+  //     type="button"
+  //     onClick={onClick}
+  //     className={clsx("custom-flex-col gap-4", {
+  //       "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+  //     })}
+  //   >
+  //     <Children />
+  //   </button>
+  // ) : (
+  //   <Link
+  //     href={`/messages/${id}`}
+  //     className={clsx("custom-flex-col gap-4", {
+  //       "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+  //     })}
+  //   >
+  //     <Children />
+  //   </Link>
+  // );
 };
 
 export default MessageCard;

@@ -24,7 +24,10 @@ import {
   SMSTable,
 } from "@/components/Settings/sponsor_data";
 import { EmailPageData } from "@/app/(nav)/reports/email/data";
-import { ISponsoredListing, SponsoredListing } from "@/components/Settings/types";
+import {
+  ISponsoredListing,
+  SponsoredListing,
+} from "@/components/Settings/types";
 import { Transactions } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 
 interface GlobalStoreState {
@@ -80,6 +83,14 @@ interface GlobalStoreState {
     timeRange: string;
     selectedDateRange: DateRange | undefined;
   };
+
+  messageUserData: {
+    branch_id: number;
+    id: number;
+    imageUrl: string;
+    name: string;
+    position: string;
+  } | null;
   // add more keys here as needed…
 }
 
@@ -112,7 +123,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   accounting_invoices: [],
   accounting_statistics: null,
   accounting_vat: [],
-  vatTimeRangeLabel: "Last 3 months", 
+  vatTimeRangeLabel: "Last 3 months",
   timeRangeLabel: "",
   accounting_expenses: [],
   accounting_disbursements: [],
@@ -135,8 +146,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
 
   branchWalletTransactions: null,
 
+  messageUserData: null,
   
-
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {
     set({ [key]: value } as Pick<GlobalStoreState, typeof key>);

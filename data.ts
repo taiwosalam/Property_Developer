@@ -49737,7 +49737,7 @@ export const adminRoutes = [
   "/tasks/move-out",
   "/tasks/inspections",
   "/tasks/calendars",
-  "/tasks/inquiries",
+  "/tasks/inquires",
   "/tasks/visitors",
   "/tasks/property-request",
   "/listing/units",
@@ -49778,6 +49778,7 @@ export const adminRoutes = [
 // "/dashboard", "/auth/sign-up", "/auth/forgot-password"
 export const userRoutes = [
   "/notifications",
+  "/messages",
   "/user/dashboard",
   "/auth/forgot-password",
   "/user/management/landlord",
@@ -49836,6 +49837,7 @@ export const userRoutes = [
   "/agent-community",
 ];
 export const staffRoutes = [
+  "/messages",
   "/auth/forgot-password",
   "/staff/dashboard",
   "/staff/management/landlord",
@@ -49895,6 +49897,7 @@ export const staffRoutes = [
   "/agent-community",
 ];
 export const accountRoutes = [
+  "/messages",
   "/accountant/dashboard",
   "/auth/forgot-password",
   "/accountant/dashboard",
@@ -49955,6 +49958,7 @@ export const accountRoutes = [
   "/agent-community",
 ];
 export const managerRoutes = [
+  "/messages",
   "/manager/dashboard",
   "/auth/forgot-password",
   "/manager/management/landlord",
