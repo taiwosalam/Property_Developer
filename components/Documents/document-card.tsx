@@ -11,6 +11,7 @@ const DocumentCard = ({
   property_id,
   total_unit,
   created_date,
+  last_updated,
 }: Document) => {
   return (
     <div
@@ -41,6 +42,7 @@ const DocumentCard = ({
                 "date created": created_date,
                 "No of units": `${total_unit}`,
                 "document type": document_type,
+                "last updated": last_updated,
               }}
               chunkSize={2}
               direction="column"
@@ -50,6 +52,7 @@ const DocumentCard = ({
                 "date created": "",
                 "No of units": "",
                 "document type": "",
+                "last updated": "",
               }}
             />
           </div>

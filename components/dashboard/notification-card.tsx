@@ -20,6 +20,8 @@ import {
   EmptyMessageIcon,
   EmptyStaffIcon,
 } from "@/public/icons/icons";
+import { useGlobalStore } from "@/store/general-store";
+import { useRouter } from "next/navigation";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -28,6 +30,28 @@ const NotificationCard: React.FC<notificationCardProps> = ({
   className,
   seeAllLink,
 }) => {
+  const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
+  const handleUserClicked = (user: any) => {
+    try {
+      const newMessageUserData = {
+        branch_id: Number(user.branch_id) || 0,
+        id: Number(user.id),
+        imageUrl: user.imageUrl || "",
+        name: user.name,
+        position: user.position || "",
+        staff_id: user.staff_id || user.id,
+      };
+
+      // Update global store with new user data
+      setGlobalStore("messageUserData", newMessageUserData);
+      router.push(`/messages/${user.id}`);
+    } catch (error) {
+      console.error("Failed to navigate to messages:", error);
+    }
+  };
+
   const getEmptyState = () => {
     if (sectionHeader === "Recent Messages") {
       return {
@@ -169,10 +193,25 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 </div>
               </Link>
               {sectionHeader === "Staffs" ? (
-                <Link href={`/messages/${notification.user_id}`}>
-                  <p className="text-[10px] text-text-disabled">Message</p>
-                </Link>
+                <button
+                  onClick={() =>
+                    handleUserClicked({
+                      id: notification.user_id,
+                      branch_id: branchId,
+                      imageUrl: notification.avatarSrc,
+                      name: notification.name,
+                      position: notification.position,
+                      staff_id: notification.staff_ID,
+                    })
+                  }
+                  className="text-[10px] text-text-disabled hover:text-brand-9"
+                >
+                  Message
+                </button>
               ) : (
+                // <Link href={`/messages/${notification.user_id}`}>
+                //   <p className="text-[10px] text-text-disabled">Message</p>
+                // </Link>
                 <div className="custom-flex-col items-center">
                   <p className="text-[10px] text-text-disabled">
                     {notification.time}

@@ -57,6 +57,7 @@ export interface Document {
   property_id: number;
   total_unit: number;
   created_date: string;
+  last_updated: string;
 }
 
 export interface DocumentsPageAPIResponse {

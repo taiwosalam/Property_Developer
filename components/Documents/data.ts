@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import {
   ArticlePayload,
   CheckboxOption,
@@ -41,5 +42,6 @@ export const transformDocuments = (
     property_id: doc.property_id,
     total_unit: doc.total_unit,
     created_date: doc.created_date,
+    last_updated: dayjs(doc.last_updated).format("DD-MM-YYYY"),
   }));
 };
