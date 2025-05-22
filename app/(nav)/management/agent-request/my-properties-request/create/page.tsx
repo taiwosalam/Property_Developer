@@ -16,6 +16,9 @@ import BackButton from "@/components/BackButton/back-button";
 import Button from "@/components/Form/Button/button";
 import { useGlobalStore } from "@/store/general-store";
 
+const placeholderText =
+  "Please provide details about the type of property you're looking for. Kindly note that you are fully responsible for all content you post. Only real estate-related posts and genuine property requests are allowed. Irrelevant or unrelated content may be removed.";
+
 const CreateMyPropertyRequest = () => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
@@ -53,7 +56,7 @@ const CreateMyPropertyRequest = () => {
 
           <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
             <div className="first flex flex-col w-full lg:w-[60%]">
-              <PropertyRequestFirstSection placeholderText="Please be aware that you are responsible for all posts. Post Real Estate, Property request only." />
+              <PropertyRequestFirstSection placeholderText={placeholderText} />
             </div>
             <div className="second flex flex-col w-full lg:w-[40%]">
               <PropertyRequestSecondSection />

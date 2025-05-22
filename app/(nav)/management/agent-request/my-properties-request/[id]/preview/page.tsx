@@ -64,7 +64,11 @@ const PreviewPage = () => {
   return (
     <div>
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-        <BackButton>{agentRequest?.title || "--- ---"}</BackButton>
+        <BackButton>
+          {agentRequest && agentRequest?.title?.length > 0
+            ? agentRequest?.title
+            : ""}
+        </BackButton>
         <Button
           href={`/management/agent-request/my-properties-request/${id}/manage`}
           size="sm"

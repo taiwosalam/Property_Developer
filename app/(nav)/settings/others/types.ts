@@ -233,6 +233,7 @@ interface CompanySettingsData {
   subscription_due_rent_notification: boolean;
   general_notification: boolean;
   sms_notification: boolean;
+  updated_at: string;
   email_notification: boolean;
   screening_levels: ScreeningLevels;
 }

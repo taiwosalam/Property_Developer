@@ -33,8 +33,10 @@ import {
   transformEnrollmentHistory,
   transSMSTransactionTable,
 } from "./sponsor_data";
+import { formatSponsorValue } from "./sponsor-unit";
+import AutoResizingGrid from "../AutoResizingGrid/AutoResizingGrid";
 
-const SMS_COST = 4;
+const SMS_COST = 6;
 
 export const SMSUnit = () => {
   const { company_id } = usePersonalInfoStore();
@@ -111,14 +113,15 @@ export const SMSUnit = () => {
             <p className="text-brand-9 text-xs font-normal">
               SMS Unit Balance:{" "}
               <span className="font-medium">
-                {smsData ? smsData?.data?.value : 0}
+                {smsData && formatSponsorValue(smsData?.data.value)}
               </span>
             </p>
           </div>
         </div>
         <div className="custom-flex-col gap-4">
           <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
-            SMS Credit <span className="text-xs font-normal">(₦7/unit)</span>
+            SMS Credit{" "}
+            <span className="text-xs font-normal">{`(${SMS_COST}/unit)`}</span>
           </p>
           <div className="flex gap-3">
             <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
@@ -167,33 +170,35 @@ export const SMSUnit = () => {
         </div>
         {/* <SettingsUpdateButton text="purchase unit" type="purchase unit" /> */}
 
-        <div className="custom-flex-col gap-4">
-          <div className="flex justify-between scroll-m-8" id="sms">
-            <h2 className="text-text-primary text-lg dark:text-white font-medium">
-              SMS Transaction History
-            </h2>
-            <Link
-              href="/settings/subscription/sponsors"
-              className="flex items-center gap-1"
-            >
+        {smsTransactionData && smsTransactionData?.data?.length > 0 && (
+          <div className="custom-flex-col gap-4">
+            <div className="flex justify-between scroll-m-8" id="sms">
+              <h2 className="text-text-primary text-lg dark:text-white font-medium">
+                SMS Transaction History
+              </h2>
               <Link
-                href={"/reports/adds-on-sms?b=true"}
-                className="text-text-label dark:text-darkText-1"
+                href="/settings/subscription/sponsors"
+                className="flex items-center gap-1"
               >
-                See all
+                <Link
+                  href={"/reports/adds-on-sms?b=true"}
+                  className="text-text-label dark:text-darkText-1"
+                >
+                  See all
+                </Link>
+                <ChevronRight color="#5A5D61" size={16} />
               </Link>
-              <ChevronRight color="#5A5D61" size={16} />
-            </Link>
-          </div>
+            </div>
 
-          <CustomTable
-            data={
-              smsTransactionData ? smsTransactionData?.data.slice(0, 3) : []
-            }
-            fields={SMSFields}
-            {...table_style_props}
-          />
-        </div>
+            <CustomTable
+              data={
+                smsTransactionData ? smsTransactionData?.data.slice(0, 3) : []
+              }
+              fields={SMSFields}
+              {...table_style_props}
+            />
+          </div>
+        )}
       </div>
     </SettingsSection>
   );
@@ -279,6 +284,8 @@ export const FeatureCompany = () => {
     }
   }, [selectedPeriod, selectedPage]);
 
+  const isFormInComplete = !selectedPage || !selectedPeriod;
+
   const handleRequestFeature = async () => {
     if (!company_id) return;
     const periodString = selectedPeriod.split("")[0];
@@ -307,11 +314,11 @@ export const FeatureCompany = () => {
     <SettingsSection title="Feature Your Company">
       <div className="custom-flex-col gap-6">
         <SettingsSectionTitle desc="Promote your company by showcasing your company logo prominently on the initial screen of the user app, the landing page, and the homepage of the general website. This enhances visibility, allowing potential customers to easily recognize your brand and company. Clicking on your logo directs site visitors to your company page, providing them with more information about your brand and offerings." />
-        <div className="flex gap-3 items-center">
-          <div className="flex gap-6 items-center pb-8">
+        <div className="mt-10">
+          <AutoResizingGrid minWidth={400}>
             <Select
               id="pages"
-              className="w-[300px]"
+              className="w-full"
               options={DISPLAY_OPTIONS.map((option) => ({
                 value: option.value,
                 label: `${option.label} - ₦${option.amount.toLocaleString()}`,
@@ -330,7 +337,7 @@ export const FeatureCompany = () => {
               }}
             />
             <Select
-              className="w-[300px]"
+              className="w-full"
               id="period"
               options={PERIOD_OPTIONS.map((option) => ({
                 value: `${option.value} ${
@@ -362,64 +369,69 @@ export const FeatureCompany = () => {
               }}
             />
 
-            <Input
-              id="amount"
-              className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 hover:border-none active:border-none"
-              label="Amount"
-              value={
-                totalAmount > 0 ? `₦${totalAmount.toLocaleString()}` : "₦0"
-              }
-              readOnly
-              style={{ outline: "none" }}
-            />
-            <div className="flex mt-7">
-              <Modal>
-                <ModalTrigger>
-                  <Button
-                    variant="change"
-                    size="xs_normal"
-                    className="py-2 px-3"
-                  >
-                    Activate
-                  </Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <SponsorModal
-                    count={parseInt(selectedPeriod)}
-                    cost={totalAmount / parseInt(selectedPeriod)}
-                    onSubmit={handleRequestFeature}
-                  />
-                </ModalContent>
-              </Modal>
+            <div className="relative">
+              <Input
+                id="amount"
+                className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 hover:border-none active:border-none"
+                label="Amount"
+                value={
+                  totalAmount > 0 ? `₦${totalAmount.toLocaleString()}` : "₦0"
+                }
+                readOnly
+                style={{ outline: "none" }}
+              />
+              <div className="absolute top-2 bottom-0 right-2">
+                <Modal>
+                  <ModalTrigger>
+                    <Button
+                      variant="change"
+                      size="xs_normal"
+                      className="py-2 px-3 mt-8 bg-brand-9 text-white"
+                      disabled={isFormInComplete}
+                    >
+                      Activate
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <SponsorModal
+                      count={parseInt(selectedPeriod)}
+                      cost={totalAmount / parseInt(selectedPeriod)}
+                      onSubmit={handleRequestFeature}
+                    />
+                  </ModalContent>
+                </Modal>
+              </div>
             </div>
-          </div>
+          </AutoResizingGrid>
         </div>
         {/* <SettingsUpdateButton text="feature now" type="feature" /> */}
 
-        <div className="custom-flex-col gap-4 scroll-m-8" id="feature">
-          <div className="flex justify-between">
-            <h2 className="text-text-primary dark:text-white text-lg font-medium">
-              Enrollment History
-            </h2>
-            <Link
-              href="/settings/subscription/sponsors"
-              className="flex items-center gap-1"
-            >
+        {featureTable && featureTable.data?.length > 0 && (
+          <div className="custom-flex-col gap-4 scroll-m-8" id="feature">
+            <div className="flex justify-between">
+              <h2 className="text-text-primary dark:text-white text-lg font-medium">
+                Enrollment History
+              </h2>
               <Link
-                href={"/reports/adds-on-feature?b=true"}
-                className="text-text-label dark:text-darkText-1"
+                href="/settings/subscription/sponsors"
+                className="flex items-center gap-1"
               >
-                See all
+                <Link
+                  href={"/reports/adds-on-feature?b=true"}
+                  className="text-text-label dark:text-darkText-1"
+                >
+                  See all
+                </Link>
+                <ChevronRight color="#5A5D61" size={16} />
               </Link>
-              <ChevronRight color="#5A5D61" size={16} />
-            </Link>
+            </div>
+            <CustomTable
+              data={featureTable ? featureTable?.data.slice(0, 3) : []}
+              fields={FeatureFields}
+              {...table_style_props}
+            />
           </div>
-          <CustomTable
-            data={featureTable ? featureTable?.data.slice(0, 3) : []}
-            fields={FeatureFields}
-            {...table_style_props}
-          />
-        </div>
+        )}
       </div>
     </SettingsSection>
   );

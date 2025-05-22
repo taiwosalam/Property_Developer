@@ -22,7 +22,13 @@ interface Contributor {
   id: number;
 }
 
-const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
+const ContributorUser = ({
+  contributors,
+  bio,
+}: {
+  contributors: Contributor;
+  bio?: string;
+}) => {
   const {
     name,
     picture,
@@ -31,7 +37,6 @@ const ContributorUser = ({ contributors }: { contributors: Contributor }) => {
     phone_number,
     phone,
     email,
-    bio,
     professional_title,
     tier,
     id,

@@ -67,19 +67,15 @@ const AddsOnDomainRecord = () => {
         {[].length === 0 ? (
           <EmptyList
             noButton
-            title="No Property Data Available Yet"
+            title="No Previous Add-On Record Found"
             body={
               <p>
-                Currently, there is no property data available for export. Once
-                data is added to the system, they will be displayed here and
-                ready for download or export.
+                You currently do not have any previous records for this add-on.
+                Once you activate or subscribe to this add-on, all related
+                history and usage details will be displayed here for your
+                reference.
                 <br />
                 <br />
-                <p>
-                  This section will automatically update to show all available
-                  property records as they are created or imported into the
-                  platform.
-                </p>
               </p>
             }
           />
@@ -91,7 +87,6 @@ const AddsOnDomainRecord = () => {
           />
         )}
       </section>
-     
     </div>
   );
 };

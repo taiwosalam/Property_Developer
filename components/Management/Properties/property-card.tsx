@@ -101,28 +101,34 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
-      <ImageSlider
-        default_image={default_image}
-        images={images}
-        showImageIndexOnHover
-        className="h-[200px] rounded-t-2xl"
-      >
-        <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
-          {total_unit_pictures && (
-            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
-              <CameraIcon />
-              <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
-                +{total_unit_pictures}
-              </p>
-            </div>
-          )}
-          {hasVideo && (
-            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
-              <VideoIcon />
-            </div>
-          )}
-        </div>
-      </ImageSlider>
+      <div className="relative">
+        <ImageSlider
+          default_image={default_image}
+          images={images}
+          showImageIndexOnHover
+          className="h-[200px] rounded-t-2xl"
+        >
+          <div className="absolute z-50 right-2 top-3">
+            <PropertyTag propertyType={property_type} sm/>
+          </div>
+          <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
+            {total_unit_pictures && (
+              <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+                <CameraIcon />
+                <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
+                  +{total_unit_pictures}
+                </p>
+              </div>
+            )}
+
+            {hasVideo && (
+              <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
+                <VideoIcon />
+              </div>
+            )}
+          </div>
+        </ImageSlider>
+      </div>
 
       <div
         className="relative rounded-b-2xl p-4"
@@ -146,8 +152,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             {address}
           </span>
         </p>
-        <div className="flex flex-wrap justify-between items-end mt-1">
-          <PropertyTag propertyType={property_type} sm />
+        <div className="flex flex-wrap justify-end items-end mt-1">
+         
           <div className="text-right">
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${symbol}${formatNumber(
               total_returns

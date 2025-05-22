@@ -52,7 +52,7 @@ const ManageMyPropertyRequest = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // console.log('data', data?.data);
+    // 
     if (data?.data?.AgentRequest) {
       setPropertyRequests(data.data.AgentRequest);
       setComments(data.data.comments);

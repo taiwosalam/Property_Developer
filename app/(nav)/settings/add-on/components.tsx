@@ -93,6 +93,11 @@ interface DomainTable {
   }[];
 }
 
+const isValidDomain = (domain: string): boolean => {
+  const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+  return pattern.test(domain);
+};
+
 export const EditModal = ({ data }: DomainTable) => {
   const {
     openSuccessModal,
@@ -111,12 +116,26 @@ export const EditModal = ({ data }: DomainTable) => {
   const { company_id } = usePersonalInfoStore();
 
   const [domainName, setDomainName] = useState(
-   data && data.length > 0 ? data[0]?.domain : "https://"
+    data && data.length > 0 ? data[0]?.domain : "https://"
   );
   const [loading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAddCustomDomain = async () => {
     if (!company_id) return;
+
+    if (!domainName) {
+      toast.error("Please enter a domain name");
+      return;
+    }
+
+    if (!isValidDomain(domainName)) {
+      toast.error("Please enter a valid domain name");
+      setError(
+        "Invalid domain format. Example: example.com or https://example.com"
+      );
+      return;
+    }
     try {
       setIsLoading(true);
       const res = await addCustomDomain(company_id, domainName);

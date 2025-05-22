@@ -18,6 +18,9 @@ export const ContributorDetails = ({
   postedDate?: string;
   updatedDate?: string;
 }) => {
+  console.log("post", post);
+  console.log("contributors", contributors);
+
   if (loading) return <LoadingContributorUser />;
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
@@ -44,7 +47,7 @@ export const ContributorDetails = ({
           </p>
         </div>
       </div>
-      <ContributorUser contributors={contributors} />
+      <ContributorUser contributors={contributors} bio={post?.companyBio}/>
     </div>
   );
 };

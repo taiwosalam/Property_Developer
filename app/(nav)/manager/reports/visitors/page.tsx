@@ -19,7 +19,7 @@ const Visitors = () => {
     useState<VisitorRequestModalProps | null>(null);
 
   const handleTableItemClick = (record: DataItem) => {
-    setSelectedRecord(record as VisitorRequestModalProps);
+    setSelectedRecord(record as unknown as VisitorRequestModalProps);
     setModalOpen(true);
   };
 
@@ -67,7 +67,7 @@ const Visitors = () => {
         tableHeadClassName="h-[45px]"
         handleSelect={handleTableItemClick}
       />
-      <Modal
+      {/* <Modal
         state={{
           isOpen: modalOpen,
           setIsOpen: setModalOpen,
@@ -75,9 +75,6 @@ const Visitors = () => {
       >
         <ModalContent>
           <VisitorRequestModal
-            id="12"
-            pictureSrc="/empty/SampleLandlord.jpeg"
-            status="completed"
             userName="Ajayi David"
             visitorName="Ajayi David"
             visitorPhoneNumber="09022312133"
@@ -86,7 +83,7 @@ const Visitors = () => {
             secretAnswer="Blue"
           />
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

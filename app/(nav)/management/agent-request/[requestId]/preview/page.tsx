@@ -45,6 +45,10 @@ const PreviewPage = () => {
     useFetch<PropertyRequestResponse>(`/agent_requests/${requestId}`);
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
 
+  
+
+  
+
   useEffect(() => {
     if (data) {
       const transformedData = transformPropertyRequestResponse(data);
@@ -55,7 +59,7 @@ const PreviewPage = () => {
     }
   }, [data]);
 
-  console.log(data);
+  
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -93,7 +97,6 @@ const PreviewPage = () => {
             setComments={setComments}
           />
           <ThreadComments comments={commentThread || []} />
-          
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen overflow-x-hidden lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <ContributorDetails
