@@ -313,15 +313,12 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     </div>
                   )}
                   {message ? (
-                    <button
-                      type="button"
-                      className={clsx({
-                        "animate-spin h-5 w-5 border-b-2 border-blue-500 rounded-full mr-2":
-                          reqLoading,
-                      })}
-                      onClick={handleSendMsg}
-                    >
-                      <Picture src={SendIcon} alt="text message" size={24} />
+                    <button type="button" onClick={handleSendMsg}>
+                      {reqLoading ? (
+                        <div className="animate-spin h-5 w-5 border-2 border-brand-9 rounded-full" />
+                      ) : (
+                        <Picture src={SendIcon} alt="text message" size={24} />
+                      )}
                     </button>
                   ) : (
                     <>

@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import api, { handleAxiosError } from "@/services/api";
 import dayjs from "dayjs";
 import { formatFee } from "../../../rent-unit/data";
+import { empty } from "@/app/config";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -272,6 +273,13 @@ export const transformIndividualLandlordAPIResponse = ({
           : null,
       };
     }),
+    messageUserData: {
+      id: Number(data.user_id),
+      name: data.name,
+      position: "landlord",
+      imageUrl: data.picture ?? empty,
+      branch_id: 1, //TEST 
+    }
   };
 };
 
