@@ -298,7 +298,8 @@ export const login = async (formData: Record<string, any>) => {
     // setPersonalInfo("company_status", company.company_status);
 
     // save user id to localstorage for msg
-    saveLocalStorage("user_id", details?.user_id || managerId);
+    saveLocalStorage("user_id", managerId);
+    // saveLocalStorage("user_id", details?.user_id || managerId);
 
     //💀⚡ SECURE USER - DO NOT TOUCH 💀⚡
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)

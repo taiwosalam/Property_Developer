@@ -41,10 +41,15 @@ import Link from "next/link";
 import { SectionContainer } from "@/components/Section/section-components";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { useGlobalStore } from "@/store/general-store";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
   const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
   const { data, error, loading, isNetworkError, refetch } =
     useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
   useRefetchOnEvent("refetchlandlord", () => refetch({ silent: true }));
@@ -52,6 +57,17 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const landlordData = data
     ? transformIndividualLandlordAPIResponse(data)
     : null;
+
+  useEffect(() => {
+    if (landlordData) {
+      const newMessageUserData = landlordData?.messageUserData;
+      const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
+
+      if (JSON.stringify(currentMessageUserData) !== JSON.stringify(newMessageUserData)) {
+        setGlobalStore("messageUserData", newMessageUserData);
+      }
+    }
+  }, [setGlobalStore, landlordData]);
 
   const userData = landlordData ? transformCardData(landlordData) : null;
 
@@ -63,8 +79,6 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
 
   const CAN_DELETE =
     landlordData && landlordData.properties_managed?.length === 0;
-
-  // console.log("landlordData?.statement", landlordData?.statement);
 
   const transformedTableData = landlordData?.statement?.map((item) => ({
     ...item,
@@ -85,6 +99,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       </p>
     ),
   }));
+
+  const goToMessage = () => {
+    if (!landlordData.user_id) return toast.warning("Landlord User ID not Found!")
+    router.push(`/messages/${landlordData?.user_id}`);
+  };
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
@@ -146,7 +165,12 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           <div className="w-fit mx-auto flex flex-wrap gap-4">
             {landlordData?.user_tag === "mobile" ? (
               <>
-                <Button size="base_medium" className="py-2 px-8">
+                <Button
+                  // href={`/messages/${landlordData.user_id}`}
+                  onClick={goToMessage}
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
                   message
                 </Button>
                 <Modal>

@@ -8,14 +8,13 @@ import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { empty } from "@/app/config";
 import { UsersProps } from "../types";
-import useGetConversation from "@/hooks/getConversation";
 import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { useAuthStore } from "@/store/authStore";
 import { getLocalStorage } from "@/utils/local-storage";
 import Link from "next/link";
-import useGetConversationWithPusher from "@/hooks/useGetPusherMsg";
 import useConversationListener from "@/hooks/useConversationListen";
 import api from "@/services/api";
+import { useGlobalStore } from "@/store/general-store";
 
 interface Message {
   id: number;
@@ -32,18 +31,14 @@ const Chat = () => {
   const { id } = useParams<{ id: string }>();
   const user_id = useAuthStore((state) => state.user_id);
   const users = usersData?.users || [];
+  const messageUserData = useGlobalStore((s) => s.messageUserData);
+  const setGlobalInfoStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const userId = Number(id);
   const [isLoading, setIsLoading] = useState(true);
   const store_messages = useChatStore((state) => state?.data?.conversations);
   const [conversations, setConversations] = useState<any[]>([]);
   const users_Id = getLocalStorage("user_id");
-
-  // Initiate fetching messages (this hook handles SSE.)
-  // useGetConversation(`${id}`);
-  // Initiate fetching messages with Pusher
-  // useGetConversationWithPusher(id);
-
-  // Clear local conversation & store state when conversation id changes.
+  const [isPusherFailed, setIsPusherFailed] = useState(false);
 
   // Clear local conversation & store state when conversation id changes.
   useEffect(() => {
@@ -64,33 +59,90 @@ const Chat = () => {
     [store_messages, setChatData]
   );
 
-  // Initiate fetching messages with Pusher
-  useConversationListener(id, handleNewMessage);
+  // Fetch messages from API
+  const fetchMessages = useCallback(async () => {
+    try {
+      const response = await api.get(`/messages/conversations/user/${id}`);
+      console.log("API response:", response.data);
+      if (response.data.status === "success") {
+        const mappedMessages: Message[] = response.data.messages.map(
+          (msg: any) => ({
+            id: msg.id,
+            text: msg.content ?? null,
+            senderId: msg.sender_id,
+            timestamp: `${msg.date} ${msg.timestamp}`,
+            content_type: msg.content_type,
+          })
+        );
+        console.log("Mapped messages:", mappedMessages);
+        setChatData("conversations", mappedMessages);
+      }
+    } catch (error: any) {
+      console.error("API error:", error.response?.data || error.message);
+    }
+  }, [id, setChatData]);
 
+
+  // Initiate Pusher listener with error handling
+  useConversationListener(id, handleNewMessage, (error: any) => {
+    console.error("Pusher connection failed:", error);
+    setIsPusherFailed(true); // Set failure state to trigger polling
+  });
+
+  // Polling logic when Pusher fails
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await api.get(`/messages/conversations/user/${id}`);
-        console.log("API response:", response.data);
-        if (response.data.status === "success") {
-          const mappedMessages: Message[] = response.data.messages.map(
-            (msg: any) => ({
-              id: msg.id,
-              text: msg.content ?? null,
-              senderId: msg.sender_id,
-              timestamp: `${msg.date} ${msg.timestamp}`,
-              content_type: msg.content_type,
-            })
-          );
-          console.log("Mapped messages:", mappedMessages);
-          setChatData("conversations", mappedMessages);
-        }
-      } catch (error: any) {
-        console.error("API error:", error.response?.data || error.message);
+    let pollingInterval: NodeJS.Timeout | null = null;
+
+    if (isPusherFailed) {
+      console.log("Switching to polling every 5 seconds...");
+      pollingInterval = setInterval(() => {
+        fetchMessages();
+      }, 5000);
+    }
+
+    // Cleanup polling on unmount or when Pusher reconnects (optional)
+    return () => {
+      if (pollingInterval) {
+        console.log("Stopping polling...");
+        clearInterval(pollingInterval);
       }
     };
+  }, [isPusherFailed, fetchMessages]);
+
+  // Initial fetch and cleanup
+  useEffect(() => {
+    setConversations([]);
+    setChatData("conversations", []);
     if (id) fetchMessages();
-  }, [id, setChatData]);
+  }, [id, setChatData, fetchMessages]);
+
+  // useEffect(() => {
+  //   // Clear existing conversations
+  //   setConversations([]);
+  //   setChatData("conversations", []);
+  //   const fetchMessages = async () => {
+  //     try {
+  //       const response = await api.get(`/messages/conversations/user/${id}`);
+  //       console.log("API response:", response.data);
+  //       if (response.data.status === "success") {
+  //         const mappedMessages: Message[] = response.data.messages.map(
+  //           (msg: any) => ({
+  //             id: msg.id,
+  //             text: msg.content ?? null,
+  //             senderId: msg.sender_id,
+  //             timestamp: `${msg.date} ${msg.timestamp}`,
+  //             content_type: msg.content_type,
+  //           })
+  //         );
+  //         console.log("Mapped messages:", mappedMessages);
+  //         setChatData("conversations", mappedMessages);
+  //       }
+  //     } catch (error: any) {
+  //       console.error("API error:", error.response?.data || error.message);
+  //     }
+  //   };
+  //   if (id) fetchMessages();
+  // }, [id, setChatData]);
 
   useEffect(() => {
     console.log("Store messages updated:", store_messages);
@@ -101,14 +153,7 @@ const Chat = () => {
     }
   }, [store_messages]);
 
-  // When store_messages updates, group messages by day and update local state.
-  // useEffect(() => {
-  //   if (store_messages) {
-  //     const groupedMessages = groupMessagesByDay(store_messages);
-  //     setConversations(groupedMessages);
-  //   }
-  // }, [store_messages]);
-
+  
   useEffect(() => {
     if (usersData) {
       setIsLoading(false);
@@ -122,13 +167,16 @@ const Chat = () => {
   //
 
   // // If user not found, redirect to messages page.
-  const user = users.find((user: UsersProps) => Number(user.id) === userId);
+  const findUser = users.find((user: UsersProps) => Number(user.id) === userId);
+
+  const user = messageUserData || findUser;
+
+  console.log("user data", user);
   if (!user) {
     router.replace("/messages");
     return null;
   }
 
-  // /management/staff-branch/1/branch-staff/7
   return (
     <>
       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">

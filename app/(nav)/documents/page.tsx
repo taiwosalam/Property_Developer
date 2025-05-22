@@ -9,7 +9,6 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import CreateTenancyAggrementModal, {
   DrawerComponent,
 } from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
-import { DocumentssFilterOptionsWithDropdown } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";

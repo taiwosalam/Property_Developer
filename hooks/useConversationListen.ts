@@ -1,4 +1,3 @@
-// hooks/useConversationListener.ts
 import { useEffect, useRef } from "react";
 import { initializeEcho } from "@/lib/echo";
 import { getLocalStorage } from "@/utils/local-storage";
@@ -13,7 +12,8 @@ interface Message {
 
 export default function useConversationListener(
   participantId: string,
-  onMessage: (message: Message) => void
+  onMessage: (message: Message) => void,
+  onError?: (error: any) => void // Add optional error callback
 ) {
   const echoRef = useRef<any>(null);
 
@@ -38,6 +38,7 @@ export default function useConversationListener(
     const echo = initializeEcho();
     if (!echo) {
       console.error("Failed to initialize Echo for subscription");
+      onError?.("Failed to initialize Echo");
       return;
     }
 
@@ -46,72 +47,89 @@ export default function useConversationListener(
     const channel = echo.private(channelName);
 
     // Main event
-    channel.listen(".new_message", (event: { 
-      id: number;
-      content: string;
-      sender_id: number;
-      date: string;
-      timestamp: string;
-      content_type: string;
-    }) => {
-      console.log("🔔 New message received on", channelName, ":", event);
-      const newMessage: Message = {
-        id: event.id,
-        text: event.content ?? null,
-        senderId: event.sender_id,
-        timestamp: `${event.date} ${event.timestamp}`,
-        content_type: event.content_type,
-      };
-      onMessage(newMessage);
-    });
+    channel.listen(
+      ".new_message",
+      (event: {
+        id: number;
+        content: string;
+        sender_id: number;
+        date: string;
+        timestamp: string;
+        content_type: string;
+      }) => {
+        console.log("🔔 New message received on", channelName, ":", event);
+        const newMessage: Message = {
+          id: event.id,
+          text: event.content ?? null,
+          senderId: event.sender_id,
+          timestamp: `${event.date} ${event.timestamp}`,
+          content_type: event.content_type,
+        };
+        onMessage(newMessage);
+      }
+    );
 
     // Debug alternative event
-    channel.listen(".messages.new", (event: { 
-      id: number;
-      content: string;
-      sender_id: number;
-      date: string;
-      timestamp: string;
-      content_type: string;
-    }) => {
-      console.log("🔔 Alternative event received on", channelName, ":", event);
-      const newMessage: Message = {
-        id: event.id,
-        text: event.content ?? null,
-        senderId: event.sender_id,
-        timestamp: `${event.date} ${event.timestamp}`,
-        content_type: event.content_type,
-      };
-      onMessage(newMessage);
-    });
+    channel.listen(
+      ".messages.new",
+      (event: {
+        id: number;
+        content: string;
+        sender_id: number;
+        date: string;
+        timestamp: string;
+        content_type: string;
+      }) => {
+        console.log(
+          "🔔 Alternative event received on",
+          channelName,
+          ":",
+          event
+        );
+        const newMessage: Message = {
+          id: event.id,
+          text: event.content ?? null,
+          senderId: event.sender_id,
+          timestamp: `${event.date} ${event.timestamp}`,
+          content_type: event.content_type,
+        };
+        onMessage(newMessage);
+      }
+    );
 
     // Debug alternative channel
     const altChannel = echo.private(altChannelName);
-    altChannel.listen(".new_message", (event: { 
-      id: number;
-      content: string;
-      sender_id: number;
-      date: string;
-      timestamp: string;
-      content_type: string;
-    }) => {
-      console.log("🔔 New message received on", altChannelName, ":", event);
-      const newMessage: Message = {
-        id: event.id,
-        text: event.content ?? null,
-        senderId: event.sender_id,
-        timestamp: `${event.date} ${event.timestamp}`,
-        content_type: event.content_type,
-      };
-      onMessage(newMessage);
-    });
+    altChannel.listen(
+      ".new_message",
+      (event: {
+        id: number;
+        content: string;
+        sender_id: number;
+        date: string;
+        timestamp: string;
+        content_type: string;
+      }) => {
+        console.log("🔔 New message received on", altChannelName, ":", event);
+        const newMessage: Message = {
+          id: event.id,
+          text: event.content ?? null,
+          senderId: event.sender_id,
+          timestamp: `${event.date} ${event.timestamp}`,
+          content_type: event.content_type,
+        };
+        onMessage(newMessage);
+      }
+    );
 
+    // Error handling for both channels
     channel.error((error: any) => {
       console.error("Pusher subscription error:", error);
+      onError?.(error);
     });
 
     altChannel.error((error: any) => {
       console.error("Pusher subscription error (alt channel):", error);
+      onError?.(error);
     });
 
     // Log binding status
@@ -127,5 +145,5 @@ export default function useConversationListener(
         echoRef.current = null;
       }
     };
-  }, [participantId]);
+  }, [participantId, onMessage, onError]);
 }

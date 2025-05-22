@@ -151,8 +151,16 @@ export type LandlordPageData = {
     date: string;
     badge_color: BadgeIconColors | null;
   }>;
+  messageUserData: messageUserDataTypes;
 };
 
+interface messageUserDataTypes {
+  branch_id: number;
+  id: number;
+  imageUrl: string;
+  name: string;
+  position: string;
+}
 export type LandlordHelpInfo = {
   id: number;
   count: number;
