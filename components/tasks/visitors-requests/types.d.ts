@@ -1,6 +1,6 @@
 export interface VisitorRequestModalProps {
   props: {
-    status: "completed" | "pending" | "in-progress" | "decline";
+    status: "completed" | "pending" | "in-progress" | "decline" | "checked_in";
     pictureSrc: string;
     id: number;
     tier_id?: number;
@@ -25,4 +25,5 @@ export interface VisitorRequestModalProps {
     check_in_time: string | null;
     check_out_time: string | null;
   };
+  closeModal?: () => void;
 }

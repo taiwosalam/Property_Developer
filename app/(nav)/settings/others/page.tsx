@@ -448,14 +448,10 @@ const Others = () => {
 
   const {
     data: apiData,
-    loading,
-    isNetworkError,
     refetch,
   } = useFetch<ApiResponseDirector>(`/directors`);
 
-  
-
-  
+  console.log(apiData)
 
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
@@ -640,6 +636,7 @@ const Others = () => {
           )}
           formData={formData}
           onFormChange={handleFormChange}
+          is_active={1}
         />
       ),
     },
@@ -816,6 +813,8 @@ const Others = () => {
   };
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
 
+  const director_id = usePersonalInfoStore((state) => state.director_id)
+  
   
 
   return (
@@ -830,6 +829,9 @@ const Others = () => {
           <div className="">
             <AutoResizingGrid minWidth={284} gap={16}>
               {cardView?.card?.map((director) => {
+
+                if(director.id === director_id) return null;
+
                 const directorId = director.id.toString();
                 const formData = formStateById[directorId];
                 const activeStep = activeStepById[directorId] || "options";

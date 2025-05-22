@@ -81,6 +81,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     } else return "nothing";
   };
 
+  //console.log(props.status);
+
   return (
     <div
       className="bg-white dark:bg-darkText-primary rounded-[8px] py-[18px] space-y-[21px]"
@@ -117,7 +119,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         </div>
         {/* I noticed that the property request card has no status */}
         {/* {cardType !== "property" && cardType !== "agent-community" && ( */}
-        {cardType !== "property" && props.user && (
+        {cardType !== "property" && (
           <p
             className={clsx(
               "p-2 font-normal text-xs capitalize ml-auto w-[85px] text-center",
@@ -125,14 +127,14 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 ? "bg-status-success-1 border-status-success-1 text-status-success-2"
                 : props.status === "pending" || props.status === "inactive"
                 ? "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
-                : props.status === "in-progress"
+                : props.status === "in-progress" || props.status === "checked_in"
                 ? "bg-[rgba(140,98,255,0.19)] border-[rgba(140,98,255,0.19)] text-[#9747FF]"
                 : props.status === "decline"
                 ? "bg-[rgba(233,33,46,0.10)] border-[rgba(233,33,46,0.10)] text-status-error-primary"
                 : ""
             )}
           >
-            {props.status}
+            {props.status === "checked_in" ? "In Progress" : props.status}  
           </p>
         )}
       </div>
@@ -295,7 +297,12 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               resolvedDateTime={props.resolvedDateTime}
             />
           ) : cardType === "visitor" ? (
-            <VisitorRequestModal props={props} />
+            <VisitorRequestModal
+              props={props}
+              closeModal={() => {
+                setModalOpen(false);
+              }}
+            />
           ) : cardType === "property" ? (
             <PropertyRequestModal
               state={props.state}

@@ -26,7 +26,10 @@ const getCurrentDateTime = () => {
   return { date, time };
 };
 
-const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({ props }) => {
+const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
+  props,
+  closeModal,
+}) => {
   const [activeStep, setActiveStep] = useState<
     "default" | "check-in" | "check-out" | "decline" | "success-action"
   >("default");
@@ -54,6 +57,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({ props }) => {
       const res = await handleCheckIn(props.requestId, data);
       if (res) {
         toast.success("Check in successful");
+        closeModal?.();
       }
     } catch (error) {
     } finally {
@@ -84,6 +88,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({ props }) => {
         toast.success("Check out successful");
         setActiveStep("success-action");
         window.dispatchEvent(new Event("refetchVisitors"));
+        closeModal?.();
       }
     } catch (error) {
       toast.error("Check out failed");
@@ -113,6 +118,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({ props }) => {
         toast.success("Request declined successfully");
         setActiveStep("success-action");
         window.dispatchEvent(new Event("refetchVisitors"));
+        closeModal?.();
       }
     } catch (error) {
       toast.error("Failed to decline request");
