@@ -7,7 +7,7 @@ export interface PictureProps {
   size?: number;
   width?: number;
   height?: number;
-
+  showStatus?: boolean;
   status?: boolean;
   rounded?: boolean;
   className?: string;

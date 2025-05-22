@@ -174,7 +174,6 @@ const PropertyRequest = () => {
     isNetworkError,
   } = useFetch<PropertyRequestApiData>(`/agent_requests/all`, config);
 
-
   useRefetchOnEvent("refetchPropertyRequests", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -187,11 +186,7 @@ const PropertyRequest = () => {
     }
   }, [apiData]);
 
-  
-
   const propertyRequestData = getPropertyRequests(data);
-
-  
 
   if (loading)
     return (

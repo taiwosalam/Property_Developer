@@ -16,11 +16,13 @@ import ContributorDetails from "@/components/Community/Contributor";
 import CompanySummary from "@/components/Community/CompanySummary";
 import {
   CommentProps,
-  CompanySummary as CompnaySummaryPropTypes,
+  CompanySummary as TCompanySummary,
   Contributor,
   PropertyRequest,
   PropertyRequestResponse,
 } from "./types";
+
+import { CompanySummaryTypes } from "@/components/Community/types";
 import { transformPropertyRequestResponse } from "./data";
 import BackButton from "@/components/BackButton/back-button";
 import ThreadComments from "@/components/Community/ThreadComments";
@@ -34,9 +36,9 @@ const PreviewPage = () => {
   const [readBy, setReadBy] = useState<any>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [comments, setComments] = useState<any>([]);
-  const [companySummary, setCompanySummary] = useState<
-    CompnaySummaryPropTypes | []
-  >([]);
+  const [companySummary, setCompanySummary] = useState<TCompanySummary | null>(
+    null
+  );
   const [commentThread, setCommentThread] = useState<CommentProps[] | null>(
     null
   );
@@ -45,9 +47,9 @@ const PreviewPage = () => {
     useFetch<PropertyRequestResponse>(`/agent_requests/${requestId}`);
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
 
-  
+  console.log(data);
 
-  
+  console.log(companySummary);
 
   useEffect(() => {
     if (data) {
@@ -56,10 +58,9 @@ const PreviewPage = () => {
       setContributor(transformedData.contributor);
       setReadBy(transformedData.readByData);
       setCommentThread(transformedData.comments);
+      setCompanySummary(transformedData.companySummary);
     }
   }, [data]);
-
-  
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -105,7 +106,7 @@ const PreviewPage = () => {
             post={agentRequest}
             postedDate={agentRequest?.createdAt ?? ""}
           />
-          {/* <CompanySummary companySummary={companySummary} /> */}
+          {companySummary && <CompanySummary companySummary={companySummary} />}
         </div>
       </div>
     </div>

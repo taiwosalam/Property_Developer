@@ -132,11 +132,11 @@ export const transformVisitorRequestData = (
 ): VisitorPageData => {
   return {
     total: data?.total || 0,
-    month_total: data?.month_total || 0,
+    month_total: data?.this_month_total || 0,
     total_pending: data?.total_pending || 0,
-    month_pending: data?.month_pending || 0,
+    month_pending: data?.this_month_pending || 0,
     total_completed: data?.total_completed || 0,
-    month_completed: data?.month_completed || 0,
+    month_completed: data?.this_month_completed || 0,
     visitors: data?.data?.map((visitor) => {
       return {
         id: visitor.id,
@@ -188,6 +188,38 @@ export interface ICheckInPayload {
   check_out_time?: string;
 }
 
+export interface IDeclinePayload {
+  reason: string;
+  decline_date?: string;
+  decline_time?: string;
+}
+
+export const handleDecline = async (id: string, data: IDeclinePayload) => {
+  const payload = {
+    check_in_inventory: data.reason,
+    date: data.decline_date,
+    time: data.decline_time,
+  };
+
+  try {
+    const response = await api.put(`visitor-requests/${id}/cancel`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchVisitors"));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Check-in failed:", error);
+    handleAxiosError(error);
+    throw error; // Re-throw to handle in component
+  }
+};
+
 export const handleCheckIn = async (id: string, data: ICheckInPayload) => {
   const payload = {
     check_in_inventory: data.inventory,
@@ -204,7 +236,7 @@ export const handleCheckIn = async (id: string, data: ICheckInPayload) => {
     });
 
     if (response.status === 200 || response.status === 201) {
-       window.dispatchEvent(new Event("refetchVisitors"));
+      window.dispatchEvent(new Event("refetchVisitors"));
       return true;
     }
     return false;
@@ -235,7 +267,7 @@ export const handleCheckOut = async (id: string, data: ICheckInPayload) => {
     );
 
     if (response.status === 200 || response.status === 201) {
-       window.dispatchEvent(new Event("refetchVisitors"));
+      window.dispatchEvent(new Event("refetchVisitors"));
       return true;
     }
     return false;

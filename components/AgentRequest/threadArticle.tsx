@@ -5,6 +5,7 @@ import { CommentData } from "../tasks/announcements/comment";
 import { togglePropertyRequestLike } from "@/app/(nav)/management/agent-community/my-articles/data";
 import { toast } from "sonner";
 import user1 from "@/public/empty/user1.svg";
+import { empty } from "@/app/config";
 
 interface ThreadArticleProps {
   propertyRequest: any;
@@ -82,7 +83,7 @@ const ThreadArticle = ({
                     <div className="images flex z-30 w-[30px] h-[30px] rounded-full -mr-3">
                       <Image
                         key={reader.viewed_at}
-                        src={reader.profile_picture ?? user1}
+                        src={reader.profile_picture ?? empty}
                         alt="blog"
                         width={30}
                         height={30}
