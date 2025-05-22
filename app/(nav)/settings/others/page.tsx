@@ -813,6 +813,7 @@ const Others = () => {
   };
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
 
+  const director_id = usePersonalInfoStore((state) => state.director_id)
   
   
 
@@ -828,6 +829,9 @@ const Others = () => {
           <div className="">
             <AutoResizingGrid minWidth={284} gap={16}>
               {cardView?.card?.map((director) => {
+
+                if(director.id === director_id) return null;
+
                 const directorId = director.id.toString();
                 const formData = formStateById[directorId];
                 const activeStep = activeStepById[directorId] || "options";
