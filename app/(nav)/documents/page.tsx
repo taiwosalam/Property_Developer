@@ -29,6 +29,8 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+import OtherAgreementDocument from "@/components/Documents/other-agreement";
 
 const Documents = () => {
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -45,6 +47,8 @@ const Documents = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
+  const { openDocumentModal, selectedDocumentOption, setGlobalInfoStore } =
+    useGlobalStore();
 
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -146,6 +150,21 @@ const Documents = () => {
           </ModalTrigger>
           <ModalContent>
             <CreateTenancyAggrementModal />
+          </ModalContent>
+        </Modal>
+        <Modal
+          state={{
+            isOpen: openDocumentModal,
+            setIsOpen: (isOpen) =>
+              setGlobalInfoStore("openDocumentModal", Boolean(isOpen)),
+          }}
+        >
+          <ModalContent>
+            {selectedDocumentOption ? (
+              <OtherAgreementDocument selectedOption={selectedDocumentOption} />
+            ) : (
+              <div>No document selected</div>
+            )}
           </ModalContent>
         </Modal>
         <DrawerComponent />

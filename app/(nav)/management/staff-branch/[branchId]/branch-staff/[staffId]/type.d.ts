@@ -1,3 +1,4 @@
+import { messageUserDataTypes } from "@/app/(nav)/management/landlord/types";
 import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 import { StaffProfilePortfolioProps } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/types";
 
@@ -127,4 +128,5 @@ export interface StaffPageTypes {
     landlords: any[];
     tenants: any[];
   };
+  messageUserData: messageUserDataTypes;
 }

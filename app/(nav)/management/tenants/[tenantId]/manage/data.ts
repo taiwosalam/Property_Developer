@@ -257,6 +257,13 @@ export const transformIndividualTenantAPIResponse = ({
     current_rent: formattedCurrentRent,
     previous_rent: formattedPreviousRent,
     statement: formattedStatement,
+    messageUserData: {
+      id: Number(data.id),
+      name: data?.name || "",
+      position: "tenant",
+      imageUrl: data.picture ?? empty,
+      branch_id: 1, //TEST 
+    }
   };
 };
 

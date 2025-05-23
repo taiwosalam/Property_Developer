@@ -45,3 +45,14 @@ export const transformDocuments = (
     last_updated: dayjs(doc.last_updated).format("DD-MM-YYYY"),
   }));
 };
+
+const formatPhoneNumbers = (
+  phoneNumber: string | string[] | null | undefined
+): string => {
+  if (!phoneNumber) return ""; 
+  if (Array.isArray(phoneNumber)) {
+    // Filter out null/undefined and join valid numbers with commas
+    return phoneNumber.filter((num) => num != null).join(", ");
+  }
+  return phoneNumber; // Return as-is if it's a string
+};

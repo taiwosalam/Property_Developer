@@ -2,6 +2,7 @@ import type { AttachedDocumentCard } from "@/components/Management/landlord-tena
 import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 import { UnitItemProps } from "@/components/Management/Properties/unit-item";
 import { Currency } from "@/utils/number-formatter";
+import { messageUserDataTypes } from "../landlord/types";
 
 interface ContactAddress {
   address: string;
@@ -136,4 +137,5 @@ export interface TenantData {
   previous_rent?: UnitItemProps[];
   statement?: Statement[];
   note?: boolean;
+  messageUserData?: messageUserDataTypes;
 }

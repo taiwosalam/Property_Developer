@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 // Images
 import { ChevronRight } from "lucide-react";
@@ -43,20 +43,25 @@ import useAddressFromCoords from "@/hooks/useGeoCoding";
 import DOMPurify from "dompurify";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+import { toast } from "sonner";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
+  const router = useRouter();
   const { branch, setBranch } = useBranchStore();
   const [lat, setLat] = useState<number>(0);
   const [lng, setLng] = useState<number>(0);
   const [pageData, setPageData] = useState<StaffPageTypes>(initialPageData);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
   const {
     address,
     loading: addressLoading,
     error: addressError,
   } = useAddressFromCoords(lat, lng);
 
-  const { staff, activities, chats, portfolio } = pageData;
+  const { staff, activities, chats, portfolio, messageUserData } = pageData;
 
   const {
     data: apiData,
@@ -76,6 +81,25 @@ const StaffProfile = () => {
   }, [apiData]);
 
   const portfolioData = getPortfolioData(portfolio);
+
+  useEffect(() => {
+    if (pageData) {
+      const newMessageUserData = messageUserData;
+      const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
+
+      if (
+        JSON.stringify(currentMessageUserData) !==
+        JSON.stringify(newMessageUserData)
+      ) {
+        setGlobalStore("messageUserData", newMessageUserData);
+      }
+    }
+  }, [setGlobalStore, pageData]);
+
+  const goToMessage = () => {
+    if (!staff.user_id) return toast.warning("Staff User ID not Found!");
+    router.push(`/messages/${staff?.user_id}`);
+  };
 
   // console.log("portfolioData", portfolio);
 
@@ -158,7 +182,8 @@ const StaffProfile = () => {
                     edit
                   </Button>
                   <Button
-                    href={`/messages/${staff.user_id}`}
+                    // href={`/messages/${staff.user_id}`}
+                    onClick={goToMessage}
                     size="base_medium"
                     className="py-2 px-8"
                   >

@@ -46,6 +46,9 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { SectionContainer } from "@/components/Section/section-components";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -58,11 +61,24 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
     refetch,
   } = useFetch<IndividualTenantAPIResponse>(`tenant/${tenantId}`);
   useRefetchOnEvent("refetchtenant", () => refetch({ silent: true }));
-
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const tenant = apiData ? transformIndividualTenantAPIResponse(apiData) : null;
   const cardData = tenant ? transformCardData(tenant) : null;
 
-  console.log("tenant apiData", apiData)
+  useEffect(() => {
+    if (tenant) {
+      const newMessageUserData = tenant?.messageUserData;
+      const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
+
+      if (
+        JSON.stringify(currentMessageUserData) !==
+        JSON.stringify(newMessageUserData)
+      ) {
+        setGlobalStore("messageUserData", newMessageUserData || null);
+      }
+    }
+  }, [setGlobalStore, tenant]);
+
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <ServerError error={error} />;
   if (!tenant) return null;
@@ -77,7 +93,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   // });
 
   // Conditionally set exceptions based on user_tag
-  const exceptions = ["notes", "flag"];
+  const exceptions = ["notes", "flag","messageUserData"];
   if (tenant.user_tag === "web") {
     exceptions.push("guarantor_1", "guarantor_2");
   }
@@ -87,7 +103,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
     exceptions,
   });
 
-  console.log("tenant", tenant);
+  const goToMessage = () => {
+    if (!tenant.id) return toast.warning("Tenant User ID not Found!");
+    router.push(`/messages/${tenant?.id}`);
+  };
+
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -161,7 +181,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           <div className="w-fit mx-auto flex flex-wrap gap-4">
             {tenant?.user_tag === "mobile" ? (
               <>
-                <Button size="base_medium" className="py-2 px-8">
+                <Button
+                  onClick={goToMessage}
+                  size="base_medium"
+                  className="py-2 px-8"
+                >
                   message
                 </Button>
                 <Modal>

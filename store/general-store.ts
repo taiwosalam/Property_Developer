@@ -29,6 +29,10 @@ import {
   SponsoredListing,
 } from "@/components/Settings/types";
 import { Transactions } from "@/app/(nav)/management/staff-branch/[branchId]/types";
+import { OtherAgreementDocumentOption } from "@/components/Documents/other-agreement";
+import {
+  ProfileSettingsPageState,
+} from "@/app/(nav)/settings/company/data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -91,6 +95,11 @@ interface GlobalStoreState {
     name: string;
     position: string; 
   } | null;
+
+  openDocumentModal: boolean;
+  selectedDocumentOption: OtherAgreementDocumentOption | null;
+  
+  profileSettingsData: ProfileSettingsPageState | null; 
   // add more keys here as needed…
 }
 
@@ -147,7 +156,10 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   branchWalletTransactions: null,
 
   messageUserData: null,
-  
+  openDocumentModal: false,
+  selectedDocumentOption: null,
+
+  profileSettingsData: null,
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {
     set({ [key]: value } as Pick<GlobalStoreState, typeof key>);

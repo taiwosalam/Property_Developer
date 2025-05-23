@@ -102,6 +102,13 @@ export const initialPageData: StaffPageTypes = {
     landlords: [],
     tenants: [],
   },
+  messageUserData: {
+    id: 0,
+    name: "",
+    position: "",
+    imageUrl: empty,
+    branch_id: 0,
+  },
 };
 
 export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
@@ -436,6 +443,13 @@ export const transformStaffAPIResponse = (
           };
         }) || [],
     },
+    messageUserData: {
+      id: Number(res.data.user_id),
+      name: res.data.name,
+      position: "staff",
+      imageUrl: res.data.picture ?? empty,
+      branch_id: 1, //TEST 
+    }
   };
 };
 
