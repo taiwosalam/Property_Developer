@@ -16,6 +16,9 @@ import {
   OTHER_DOCUMENTS_OPTIONS,
 } from "@/app/(nav)/documents/data";
 import { toast } from "sonner";
+import { Modal, ModalContent, useModal } from "../Modal/modal";
+import { OtherAgreementDocumentOption } from "../Documents/other-agreement";
+import { useGlobalStore } from "@/store/general-store";
 
 interface ICreateAgreement {
   defaultOption?: string;
@@ -25,8 +28,13 @@ const CreateTenancyAggrementModal = ({
   defaultOption = "",
 }: ICreateAgreement) => {
   const [step, setStep] = useState<number>(0);
+  const { setGlobalInfoStore } = useGlobalStore();
+  const { setIsOpen } = useModal()
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
+  const [openDocumentModal, setOpenDocumentModal] = useState<boolean>(false);
+  const [selectedDocumentOption, setSelectedDocumentOption] =
+    useState<OtherAgreementDocumentOption | null>(null);
   const [selectedAgreementOption, setSelectedAgreementOption] =
     useState(defaultOption);
   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
@@ -58,28 +66,56 @@ const CreateTenancyAggrementModal = ({
         defaultOption === "other_document"
       ) {
         setSelectedAgreementOption(defaultOption);
-        setStep(1); 
+        setStep(1);
       } else {
         toast.warning("Coming soon");
-        setSelectedAgreementOption(""); 
+        setSelectedAgreementOption("");
       }
     }
   }, [defaultOption]);
 
-  // HANDLE CHECKBOX CHANGE
+  // // HANDLE CHECKBOX CHANGE
+  // const handleCheckboxChange = (value: string | number) => {
+  //   const selectedOption = checkboxOptions.find(
+  //     (option) => option.id === value
+  //   );
+  //   if (selectedOption) {
+  //     setSelectedOptionId(value.toString());
+  //     setSelectedLegalOption({
+  //       title: selectedOption.title,
+  //       description: selectedOption.description,
+  //       amount: selectedOption.amount ?? 0,
+  //       id: selectedOption.id ?? 0,
+  //     });
+  //     setStep(2); // Move to agreement step
+  //   }
+  // };
+
   const handleCheckboxChange = (value: string | number) => {
-    const selectedOption = checkboxOptions.find(
-      (option) => option.id === value
-    );
-    if (selectedOption) {
-      setSelectedOptionId(value.toString());
-      setSelectedLegalOption({
-        title: selectedOption.title,
-        description: selectedOption.description,
-        amount: selectedOption.amount ?? 0,
-        id: selectedOption.id ?? 0,
-      });
-      setStep(2); // Move to agreement step
+    if (IS_OTHER_AGREEMENT_SELECTED) {
+      const selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+        (option) => option.value === value
+      );
+      if (selectedOption) {
+        setSelectedOptionId(value.toString());
+        setIsOpen(false); // Close the CreateTenancyAggrementModal
+        setGlobalInfoStore("selectedDocumentOption", selectedOption);
+        setGlobalInfoStore("openDocumentModal", true); // Open the document modal
+      }
+    } else {
+      const selectedOption = checkboxOptions.find(
+        (option) => option.id === value
+      );
+      if (selectedOption) {
+        setSelectedOptionId(value.toString());
+        setSelectedLegalOption({
+          title: selectedOption.title,
+          description: selectedOption.description,
+          amount: selectedOption.amount ?? 0,
+          id: selectedOption.id ?? 0,
+        });
+        setStep(2); // Move to agreement step for tenancy
+      }
     }
   };
 
@@ -153,7 +189,7 @@ const CreateTenancyAggrementModal = ({
         return (
           <div>
             {!IS_OTHER_AGREEMENT_SELECTED && (
-              <>
+              <div className="my-4">
                 <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium mb-1">
                   Easily generate a standardized tenancy agreement that will
                   automatically apply to all units under the property during new
@@ -163,7 +199,7 @@ const CreateTenancyAggrementModal = ({
                   To ensure accurate and relevant document content, please
                   select the appropriate property category before proceeding.
                 </p>
-              </>
+              </div>
             )}
             <div>
               {IS_OTHER_AGREEMENT_SELECTED ? (
@@ -197,6 +233,11 @@ const CreateTenancyAggrementModal = ({
                         </p>
                       </Checkbox>
                     ))}
+                    <Modal>
+                      <ModalContent>
+                        <div>document here</div>
+                      </ModalContent>
+                    </Modal>
                   </div>
                 </div>
               ) : checkboxOptions.length > 0 ? (

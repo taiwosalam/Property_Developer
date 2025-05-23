@@ -154,7 +154,7 @@ export type LandlordPageData = {
   messageUserData: messageUserDataTypes;
 };
 
-interface messageUserDataTypes {
+export interface messageUserDataTypes {
   branch_id: number;
   id: number;
   imageUrl: string;

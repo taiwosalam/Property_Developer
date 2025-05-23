@@ -218,24 +218,6 @@ const VehiclesRecordPage = () => {
     ref: index === data.length - 1 ? lastRowRef : null,
   }));
 
-  // useEffect(() => {
-  //   if (apiData) {
-  //     const transformedData = transformVehicleRecordApiResponse(apiData);
-  //     setState((prevState) => {
-  //       return {
-  //         ...prevState,
-  //         ...transformedData,
-  //         vehicle_records: {
-  //           ...transformedData.vehicle_records,
-  //           data: transformedData.vehicle_records.data, // Replace data
-  //           current_page: transformedData.vehicle_records.current_page,
-  //           last_page: transformedData.vehicle_records.last_page,
-  //           total: transformedData.vehicle_records.total,
-  //         },
-  //       };
-  //     });
-  //   }
-  // }, [apiData]);
 
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
