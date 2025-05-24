@@ -16,6 +16,7 @@ import { empty } from "@/app/config";
 import { truncateText } from "../vehicles-record/data";
 import { useRouter } from "next/navigation";
 import { getBadgeColor } from "@/lib/utils";
+import { useGlobalStore } from "@/store/general-store";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -40,6 +41,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   const handleViewDetails = () => {
     setModalOpen(true);
