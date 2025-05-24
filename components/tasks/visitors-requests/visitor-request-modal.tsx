@@ -13,7 +13,9 @@ import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 import {
   handleCheckIn,
   handleCheckOut,
+  handleDecline,
   ICheckInPayload,
+  IDeclinePayload,
 } from "@/app/(nav)/tasks/visitors/data";
 import { toast } from "sonner";
 
@@ -105,15 +107,14 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
     const formData = new FormData(e.currentTarget);
     const { date, time } = getCurrentDateTime();
 
-    const data: ICheckInPayload = {
-      inventory: formData.get("inventory") as string,
-      companion: formData.get("companion") as string,
-      check_out_date: date,
-      check_out_time: time,
+    const data: IDeclinePayload = {
+      reason: formData.get("inventory") as string,
+      decline_date: date,
+      decline_time: time,
     };
     try {
       setLoading(true);
-      const res = await handleCheckIn(props?.requestId, data);
+      const res = await handleDecline(props?.requestId, data);
       if (res) {
         toast.success("Request declined successfully");
         setActiveStep("success-action");
@@ -139,7 +140,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           <div className="flex items-center gap-2">
             <Picture size={50} src={props?.pictureSrc} rounded />
             <div className="text-base text-text-primary dark:text-white space-y-1">
-              <p className="flex">
+              <p className="flex items-center">
                 <span>{props?.userName}</span>
                 {props?.tier_id && (
                   <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
@@ -208,8 +209,12 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           </div>
         </div>
         <div className="mb-9 text-sm">
-          <p className="mb-2 text-text-label text-base font-bold dark:text-white">
-            Check In
+          <p
+            className={`mb-2 text-text-label text-base font-bold dark:text-white ${
+              props.checked_status === "cancelled" ? "text-red-500" : ""
+            }`}
+          >
+            {props.checked_status === "cancelled" ? "Decline" : "Check In"}
           </p>
           <div className="mb-4 flex flex-col md:flex-row md:items-center justify-between gap-1.5">
             <div className="flex gap-4">
@@ -220,14 +225,16 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 {props?.checked_in_by || "____ ____"}
               </p>
             </div>
-            <div className="flex gap-4">
-              <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
-                Companion
-              </p>
-              <p className="text-text-primary dark:text-darkText-2 font-medium">
-                {props?.check_in_companion || "___ ___"}
-              </p>
-            </div>
+            {props.status !== "cancelled" && (
+              <div className="flex gap-4">
+                <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
+                  Companion
+                </p>
+                <p className="text-text-primary dark:text-darkText-2 font-medium">
+                  {props?.check_in_companion || "___ ___"}
+                </p>
+              </div>
+            )}
             <div className="flex gap-4">
               <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                 Date - Time
@@ -239,20 +246,38 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               </p>
             </div>
           </div>
-          <p className="text-text-label dark:text-white font-normal mb-1">
-            Inventory
-          </p>
+          {props.checked_status !== "cancelled" && (
+            <p className="text-text-label dark:text-white font-normal mb-1">
+              Inventory
+            </p>
+          )}
           {props.status === "pending" ? (
             "---"
           ) : (
             <TruncatedText lines={2}>
-              <div
-                dangerouslySetInnerHTML={{ __html: props?.check_in_inventory }}
-              />
+              {props.status !== "cancelled" && (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: props?.check_in_inventory,
+                  }}
+                />
+              )}
             </TruncatedText>
+          )}
+
+          {props.checked_status === "cancelled" && (
+            <div className="space-y-2 mt-2">
+              <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
+                Decline Reason
+              </p>
+              <p className="text-text-primary dark:text-darkText-2 font-medium">
+                {"Reason for declined"}
+              </p>
+            </div>
           )}
         </div>
 
+        {/* Buttons */}
         {/* Buttons */}
         {props.checked_status === "pending" ? (
           <div className="mt-8 flex items-center justify-center gap-4 md:gap-[70px]">
@@ -291,6 +316,26 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               Check Out
             </Button>
           </div>
+        ) : props.checked_status === "cancelled" ? (
+          <div className="mt-8 flex items-center justify-center gap-[70px]">
+            {/* <ModalTrigger asChild close>
+              <Button
+                variant="sky_blue"
+                size="sm_bold"
+                className="py-[10px] px-6 rounded-lg !border-brand-9 !border"
+              >
+                Back
+              </Button>
+            </ModalTrigger> */}
+            {/* <Button
+              variant="light_red"
+              size="sm_bold"
+              className="py-[10px] px-6 rounded-lg"
+              onClick={() => setActiveStep("decline")} // Adjust the action as needed
+            >
+              View Cancellation Details
+            </Button> */}
+          </div>
         ) : (
           <div className="text-sm">
             <p className="mb-2 text-text-label dark:text-white text-base font-bold">
@@ -318,7 +363,9 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                   Date - Time
                 </p>
                 <p className="text-text-primary dark:text-darkText-2 font-medium">
-                  {`${props?.check_out_date} - ${props?.check_out_time}`}
+                  {`${props?.check_out_date || "___ ___"} - ${
+                    props?.check_out_time || "___ ___"
+                  }`}
                 </p>
               </div>
             </div>

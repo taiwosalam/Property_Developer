@@ -28,6 +28,8 @@ import { PropertyApiResponse } from "../../listing/property/data";
 import { IPropertyApi } from "../../settings/others/types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 const transformToVisitorRequestCardProps = (
   data: VisitorRequestDataDataType
@@ -105,7 +107,7 @@ const BookVisitorsPage = () => {
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
-    const statesArray = menuOptions["State"] || [];
+    const statesArray = menuOptions["Status"] || [];
     const agent = menuOptions["Landlord/Landlady Type"]?.[0];
     const propertyIdsArray = menuOptions["Property"] || [];
 
@@ -152,14 +154,17 @@ const BookVisitorsPage = () => {
     });
   };
 
-  if (loading)
-    return (
-      <CustomLoader
-        layout="page"
-        pageTitle="Visitation Request"
-        statsCardCount={3}
-      />
-    );
+  const visitationStatus = {
+    label: "Status",
+    value: [
+      { label: "In-Progress", value: "checked_in" },
+      { label: "Completed", value: "checked_out" },
+      { label: "Decline", value: "cancelled" },
+    ],
+  };
+
+  if (loading) return <PageCircleLoader />;
+
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -210,15 +215,14 @@ const BookVisitorsPage = () => {
                 },
               ]
             : []),
+            visitationStatus,
         ]}
         hasGridListToggle={false}
       />
       {loading || silentLoading ? (
-        <CustomLoader
-          layout="page"
-          pageTitle="Visitation Request"
-          statsCardCount={3}
-        />
+        <AutoResizingGrid gap={28} minWidth={400}>
+          <PropertyrequestSkeletonLoader length={10} />
+        </AutoResizingGrid>
       ) : !pageData?.visitors.length ? (
         // Show empty state when no visitors exist
         <EmptyList

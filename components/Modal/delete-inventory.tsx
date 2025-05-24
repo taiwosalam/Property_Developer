@@ -95,8 +95,6 @@ export const DeletePropertyRequestModal: React.FC<{
         </h1>
         <p className="text-text-disabled text-sm font-normal">
           Are you sure you want to proceed with deleting this property request?
-          Please note that only property requests without any comments can be
-          deleted.
         </p>
         <div className="flex items-end justify-end gap-2 w-full">
           <Button
