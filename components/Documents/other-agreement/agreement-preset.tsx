@@ -13,6 +13,8 @@ import {
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { formatPhoneNumbers } from "@/app/(nav)/management/agent-community/data";
+import AgreementSidebarInfo from "./agreement-sidebar";
+import AgreementBackground from "@/public/icons/icons";
 
 interface AgreementLayoutProps {
   children: React.ReactNode;
@@ -47,8 +49,6 @@ const AgreementLayout = ({ children }: AgreementLayoutProps) => {
     }
   }, [apiData]);
 
-  console.log("currentCompanyData", currentCompanyData);
-
   return (
     <div className="flex flex-col items-start p-6 bg-cover bg-center bg-no-repeat">
       {/* Header */}
@@ -56,45 +56,13 @@ const AgreementLayout = ({ children }: AgreementLayoutProps) => {
 
       {/* Main Content with Sidebar */}
       <div className="flex w-full mt-8 min-h-[65vh]">
-        {/* Sidebar (10% width) */}
-        {/* <div className="flex w-[10%] h-full flex-col justify-between text-white">
-          <p className="writing-mode-vertical-rl transform rotate-90 text-sm flex-1 flex text-black items-center justify-center">
-            {formatPhoneNumbers(currentCompanyData?.companyData?.phone_number)}
-          </p>
-          <p className="writing-mode-vertical-rl transform rotate-90 text-sm flex-1 flex text-black items-center justify-center">
-            {currentCompanyData?.companyData?.email ?? ""}
-          </p>
-          {currentCompanyData?.companyData?.head_office_address && (
-            <p className="writing-mode-vertical-rl transform rotate-90 text-sm flex-1 flex text-black items-center justify-center">
-              {currentCompanyData?.companyData?.head_office_address},{" "}
-              {currentCompanyData?.companyData?.city}, {currentCompanyData?.companyData?.state}
-            </p>
-          )}
-        </div> */}
+        <AgreementSidebarInfo />
+        <div className="relative flex w-[90%] min-h-[65vh]">
+          {/* Background */}
+          <AgreementBackground stroke="var(--secondary-color)" />
 
-        <div className="w-[10%] flex items-center justify-center text-black min-h-[65vh]">
-          <div className="transform -rotate-90 text-sm whitespace-pre text-center leading-6">
-            {formatPhoneNumbers(currentCompanyData?.companyData?.phone_number)}
-            {"\n"}
-            {currentCompanyData?.companyData?.email ?? ""}
-            {"\n"}
-            {currentCompanyData?.companyData?.head_office_address},{" "}
-            {currentCompanyData?.companyData?.city},{" "}
-            {currentCompanyData?.companyData?.state}
-          </div>
-        </div>
-
-        {/* Main Content Area (90% width) */}
-        <div
-          className="flex w-[90%]"
-          style={{
-            backgroundImage: "url(/empty/agreement.svg)",
-            backgroundSize: "contain",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          {children}
+          {/* Foreground content */}
+          <div className="relative z-10 w-full">{children}</div>
         </div>
       </div>
 
