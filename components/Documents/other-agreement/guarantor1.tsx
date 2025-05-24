@@ -3,7 +3,7 @@ import { LabeledLine } from "./application-form";
 const HeadText = ({ title }: { title: string }) => {
   return (
     <div>
-      <h2 className="text-[#2394f1] mt-3 font-semibold text-[16px]">{title}</h2>
+      <h2 className="text-brand-9 mt-3 font-semibold text-[16px]">{title}</h2>
     </div>
   );
 };
@@ -23,7 +23,7 @@ const Guarantor1 = () => {
 
       <div className="guarantor-1 custom-flex-col w-full mt-5">
         <div className="w-full flex justify-center">
-          <h2 className="text-[#2394f1] mt-3 font-bold underline text-2xl uppercase">
+          <h2 className="text-brand-9 mt-3 font-bold underline text-2xl uppercase">
             guarantor 1
           </h2>
         </div>

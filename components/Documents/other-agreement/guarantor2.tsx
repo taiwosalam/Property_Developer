@@ -3,7 +3,7 @@ import { LabeledLine } from "./application-form";
 const HeadText = ({ title }: { title: string }) => {
   return (
     <div>
-      <h2 className="text-[#2394f1] mt-3 font-semibold text-[16px]">{title}</h2>
+      <h2 className="text-brand-9 mt-3 font-semibold text-[16px]">{title}</h2>
     </div>
   );
 };
@@ -13,7 +13,7 @@ const Guarantor2 = () => {
     <div>
       <div className="guarantor-1 custom-flex-col w-full mt-5">
         <div className="w-full flex justify-center">
-          <h2 className="text-[#2394f1] mt-3 font-bold underline text-2xl uppercase">
+          <h2 className="text-brand-9 mt-3 font-bold underline text-2xl uppercase">
             guarantor 2
           </h2>
         </div>
@@ -101,13 +101,13 @@ const Guarantor2 = () => {
           </div>
         </div>
 
-        <div className="w-full flex items-center flex-col justify-center p-4 mt-5 shadow-sm border-2 border-b-2 border-[#2394f1]">
-          <p className="text-center text-[#2394f1] text-md font-semibold">
+        <div className="w-full flex items-center flex-col justify-center p-4 mt-5 shadow-sm border-2 border-b-2 border-brand-9">
+          <p className="text-center text-brand-9 text-md font-semibold">
             References may be provided by a current or former landlord, estate
             agent, employer, bank manager, parent, accountant, or another
             trusted individual.
           </p>
-          <p className="text-center text-[#2394f1] text-[16px] font-bold">
+          <p className="text-center text-brand-9 text-[16px] font-bold">
             All approved tenants and their guarantors are required to submit a
             passport-sized photograph and a photocopy of a valid means of
             identification, such as: National Identity Card (NIN Slip or Plastic

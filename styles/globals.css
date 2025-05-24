@@ -101,14 +101,14 @@ button .button .button--standard{
 
 
 .stroke-texts {
-  -webkit-text-stroke: 1px #2394f1;
+  -webkit-text-stroke: 1px var(--primary-color);
   color: white;
   text-shadow:
-      3px 3px 0 #2394f1,
-    -1px -1px 0 #2394f1,  
-     1px -1px 0 #2394f1,
-     -1px 1px 0 #2394f1,
-      1px 1px 0 #2394f1;
+      3px 3px 0 var(--primary-color),
+    -1px -1px 0 var(--primary-color),  
+     1px -1px 0 var(--primary-color),
+     -1px 1px 0 var(--primary-color),
+      1px 1px 0 var(--primary-color);
 }
 
 
