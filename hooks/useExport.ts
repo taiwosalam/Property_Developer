@@ -35,7 +35,7 @@ const useExport = (
       }).catch((err) => {
         console.error("html2canvas error for printRef:", err);
         throw err;
-      });
+      }); 
       const printWidth = printCanvas.width;
       const printHeight = printCanvas.height;
 

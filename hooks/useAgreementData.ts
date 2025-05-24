@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useOccupantStore } from "./occupant-store";
 
 export const useAgreementData = () => {
-  const { selectedOccupant, unitData } = useGlobalStore();
+  const { selectedOccupant, unitData, rentStartDate, rentEndDate,  } = useGlobalStore();
   const { occupant } = useOccupantStore();
   const [documentData, setDocumentData] = useState<DocumentPreviewData | null>(
     null
@@ -46,7 +46,9 @@ export const useAgreementData = () => {
           { document: unitData.property_document },
           // selectedOccupant,
           selectedTenant || undefined,
-          unitData
+          unitData,
+          rentStartDate || undefined,
+          rentEndDate || undefined
         );
         setDocumentData(transformed);
         setUnitName(unitData.unit_name || "Property");

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 // Imports
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import useFetch from "@/hooks/useFetch";
@@ -23,36 +23,15 @@ const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
   defaultOptions = [],
 }) => {
   const router = useRouter();
-
   const { data, loading, error, isNetworkError } =
     useFetch<DocumentsAPIResponse>(`/property-document/documents/${id}`);
 
   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<CheckboxOption[]>([]);
-
-  // Set up options from API data
-  // useEffect(() => {
-  //   if (data) {
-  //     const options = transformDocumenArticleResponse(data);
-  //     setCheckboxOptions(options);
-
-  //     // Initialize selected options based on defaultOptions if available
-  //     if (defaultOptions && defaultOptions.length > 0) {
-  //       // Find matching options from API data and default options
-  //       const initialSelected = options.filter((option) =>
-  //         defaultOptions.some((defaultOpt) => defaultOpt.value === option.value)
-  //       );
-  //       setSelectedOptions(initialSelected);
-
-  //       if (onOptionsChange) {
-  //         onOptionsChange(initialSelected);
-  //       }
-  //     }
-  //   }
-  // }, [data, defaultOptions]);
+  const isInitialized = useRef(false); // Track initialization
 
   useEffect(() => {
-    if (data) {
+    if (data && !isInitialized.current) {
       const options = transformDocumenArticleResponse(data);
       // Only update checkboxOptions if different
       setCheckboxOptions((prev) => {
@@ -67,17 +46,13 @@ const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
         const initialSelected = options.filter((option) =>
           defaultOptions.some((defaultOpt) => defaultOpt.value === option.value)
         );
-        setSelectedOptions((prev) => {
-          const isSame =
-            prev.length === initialSelected.length &&
-            prev.every((opt, i) => opt.value === initialSelected[i]?.value);
-          if (!isSame) {
-            if (onOptionsChange) onOptionsChange(initialSelected);
-            return initialSelected;
-          }
-          return prev;
-        });
+        setSelectedOptions(initialSelected);
+        if (onOptionsChange) onOptionsChange(initialSelected);
+      } else {
+        setSelectedOptions([]);
+        if (onOptionsChange) onOptionsChange([]);
       }
+      isInitialized.current = true; // Mark as initialized
     }
   }, [data, defaultOptions, onOptionsChange]);
 
@@ -85,15 +60,15 @@ const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
   const handleOptionToggle = (option: CheckboxOption) => {
     setSelectedOptions((prev) => {
       const exists = prev.find((item) => item.value === option.value);
+      let newSelected: CheckboxOption[];
       if (exists) {
-        const filtered = prev.filter((item) => item.value !== option.value);
-        if (onOptionsChange) onOptionsChange(filtered);
-        return filtered;
+        newSelected = prev.filter((item) => item.value !== option.value);
       } else {
-        const newSelected = [...prev, option];
-        if (onOptionsChange) onOptionsChange(newSelected);
-        return newSelected;
+        newSelected = [...prev, option];
       }
+      if (onOptionsChange) onOptionsChange(newSelected);
+      console.log("newSelected", newSelected); // Debugging
+      return newSelected;
     });
   };
 

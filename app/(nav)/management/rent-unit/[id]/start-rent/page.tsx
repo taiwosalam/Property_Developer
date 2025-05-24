@@ -237,8 +237,6 @@ const StartRent = () => {
   const IS_WEB_TENANT =
     selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
 
-  console.log("unit_data here s", unit_data);
-
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>

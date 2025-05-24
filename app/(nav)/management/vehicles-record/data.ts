@@ -153,7 +153,6 @@ export interface CheckIns {
   total: number;
 }
 
-
 export interface PaginationTypes {
   total: number;
   per_page: number;
@@ -161,7 +160,7 @@ export interface PaginationTypes {
   last_page: number;
   from: number;
   to: number;
-};
+}
 
 export interface Stats {
   check_ins: { total: number; this_month: number };
@@ -177,99 +176,9 @@ export interface VehicleRecordApiResponse {
   };
 }
 
-// export const transformVehicleRecordApiResponse = (
-//   response: VehicleRecordApiResponse
-// ): VehicleRecordPageData => {
-//   // console.log("transformVehicleRecordApiResponse input:", response);
-//   const vehicle_records = response.data.vehicle_records;
-//   const transformed = {
-//     check_ins: response.data.stats.check_ins.total,
-//     total: response.data.stats.total.total,
-//     total_this_month: response.data.stats.total.this_month,
-//     check_ins_this_month: response.data.stats.check_ins.this_month,
-//     check_outs: response.data.stats.check_outs.total,
-//     check_outs_this_month: response.data.stats.check_outs.this_month,
-//     vehicle_records: {
-//       last_page: vehicle_records.length > 0 ? 1 : 0, // Single page if data exists
-//       current_page: 1, // Default to page 1
-//       total: vehicle_records.length, // Total records
-//       data: vehicle_records.map((record) => ({
-//         id: record.vehicle_record.id,
-//         vehicle_brand: record.vehicle_record.vehicle_brand,
-//         user_id: record.vehicle_record.user_id,
-//         property_id: record.vehicle_record.property_id,
-//         plate_number: record.vehicle_record.plate_number.toUpperCase(),
-//         created_at: record.vehicle_record.created_at,
-//         updated_at: record.vehicle_record.updated_at,
-//         pictureSrc: record.vehicle_record.avatar || "",
-//         city: record.vehicle_record.city,
-//         address: record.vehicle_record.address,
-//         phone: record.vehicle_record.phone,
-//         lga: record.vehicle_record.lga,
-//         state: record.vehicle_record.state,
-//         name: record.vehicle_record.name,
-//         model: record.vehicle_record.model,
-//         status:
-//           record.vehicle_record.check_ins?.length > 0
-//             ? record.vehicle_record.check_ins[
-//                 record.vehicle_record.check_ins.length - 1
-//               ]?.status ?? "no_record"
-//             : "no_record",
-//         category: record.vehicle_record.visitor_category,
-//         registrationDate: dayjs(record.vehicle_record.created_at).format(
-//           "MMM DD YYYY"
-//         ),
-//         visitor_category: record.vehicle_record.visitor_category,
-//         vehicle_state: record.vehicle_record.vehicle_state,
-//         vehicle_type: record.vehicle_record.vehicle_type,
-//         manufacture_year: record.vehicle_record.manufacture_year,
-//         last_update: dayjs(record.vehicle_record.updated_at).format(
-//           "MMM DD YYYY hh:mm A"
-//         ),
-//         latest_check_in:
-//           record.vehicle_record.check_ins?.length > 0
-//             ? record.vehicle_record.check_ins[
-//                 record.vehicle_record.check_ins.length - 1
-//               ]
-//             : null, // Null if no check-ins
-//       })),
-//     },
-//   };
-
-//   const transformedWithDefaultCheckIn = {
-//     ...transformed,
-//     vehicle_records: {
-//       ...transformed.vehicle_records,
-//       data: transformed.vehicle_records.data.map(record => ({
-//         ...record,
-//         latest_check_in: record.latest_check_in || {
-//           id: 0,
-//           vehicle_record_id: record.id,
-//           in_by: '',
-//           out_by: '',
-//           passengers_in: '',
-//           passengers_out: '',
-//           inventory_in: '',
-//           inventory_out: '',
-//           check_in_time: '',
-//           check_out_time: '',
-//           status: 'no_record',
-//           created_at: '',
-//           updated_at: '',
-//           deleted_at: ''
-//         }
-//       }))
-//     }
-//   };
-
-//   return transformedWithDefaultCheckIn;
-// };
-
 export const transformVehicleRecordApiResponse = (
-  response: VehicleRecordApiResponse
-): VehicleRecordPageData => {
-  console.log("transformVehicleRecordApiResponse input:", response);
-
+  response: any
+): any => {
   // Extract data from the response
   const { vehicle_records, stats, pagination } = response.data;
 
@@ -288,12 +197,9 @@ export const transformVehicleRecordApiResponse = (
       last_page: pagination.last_page,
       current_page: pagination.current_page,
       total: pagination.total,
-      data: vehicle_records.map((record) => {
+      data: vehicle_records.map((record:any) => {
         const vehicle = record.vehicle_record;
-        const latestCheckIn =
-          vehicle.check_ins?.length > 0
-            ? vehicle.check_ins[vehicle.check_ins.length - 1]
-            : null;
+        const latestCheckIn = record.check_ins; // Direct access since check_ins is an object
 
         return {
           id: vehicle.id,
@@ -319,41 +225,119 @@ export const transformVehicleRecordApiResponse = (
           vehicle_type: vehicle.vehicle_type,
           manufacture_year: vehicle.manufacture_year,
           last_update: dayjs(vehicle.updated_at).format("MMM DD YYYY hh:mm A"),
-          latest_check_in: latestCheckIn,
+          latest_check_in: latestCheckIn || {
+            id: 0,
+            vehicle_record_id: vehicle.id,
+            in_by: "",
+            out_by: "",
+            passengers_in: "",
+            passengers_out: "",
+            inventory_in: "",
+            inventory_out: "",
+            check_in_time: "",
+            check_out_time: "",
+            status: "no_record",
+            created_at: "",
+            updated_at: "",
+            deleted_at: "",
+          },
         };
       }),
     },
   };
 
-  // Add default check-in if none exists
-  const transformedWithDefaultCheckIn = {
-    ...transformed,
-    vehicle_records: {
-      ...transformed.vehicle_records,
-      data: transformed.vehicle_records.data.map((record) => ({
-        ...record,
-        latest_check_in: record.latest_check_in || {
-          id: 0,
-          vehicle_record_id: record.id,
-          in_by: "",
-          out_by: "",
-          passengers_in: "",
-          passengers_out: "",
-          inventory_in: "",
-          inventory_out: "",
-          check_in_time: "",
-          check_out_time: "",
-          status: "no_record",
-          created_at: "",
-          updated_at: "",
-          deleted_at: "",
-        },
-      })),
-    },
-  };
-
-  return transformedWithDefaultCheckIn;
+  return transformed;
 };
+
+// export const transformVehicleRecordApiResponse = (
+//   response: VehicleRecordApiResponse
+// ): VehicleRecordPageData => {
+//   console.log("transformVehicleRecordApiResponse input:", response);
+
+//   // Extract data from the response
+//   const { vehicle_records, stats, pagination } = response.data;
+
+//   // Transform the data
+//   const transformed = {
+//     check_ins: stats.check_ins.total,
+//     total: stats.total.total,
+//     total_this_month: stats.total.this_month,
+//     check_ins_this_month: stats.check_ins.this_month,
+//     check_outs: stats.check_outs.total,
+//     check_outs_this_month: stats.check_outs.this_month,
+//     total_records: pagination.total,
+//     check_outs_pending: 0,
+//     check_ins_pending: 0,
+//     vehicle_records: {
+//       last_page: pagination.last_page,
+//       current_page: pagination.current_page,
+//       total: pagination.total,
+//       data: vehicle_records.map((record) => {
+//         const vehicle = record.vehicle_record;
+//         const latestCheckIn =
+//           vehicle.check_ins?.length > 0
+//             ? vehicle.check_ins[vehicle.check_ins.length - 1]
+//             : null;
+
+//         return {
+//           id: vehicle.id,
+//           vehicle_brand: vehicle.vehicle_brand,
+//           user_id: vehicle.user_id,
+//           property_id: vehicle.property_id,
+//           plate_number: vehicle.plate_number.toUpperCase(),
+//           created_at: vehicle.created_at,
+//           updated_at: vehicle.updated_at,
+//           pictureSrc: vehicle.avatar || "",
+//           city: vehicle.city,
+//           address: vehicle.address,
+//           phone: vehicle.phone,
+//           lga: vehicle.lga,
+//           state: vehicle.state,
+//           name: vehicle.name,
+//           model: vehicle.model,
+//           status: latestCheckIn?.status ?? "no_record",
+//           category: vehicle.visitor_category,
+//           registrationDate: dayjs(vehicle.created_at).format("MMM DD YYYY"),
+//           visitor_category: vehicle.visitor_category,
+//           vehicle_state: vehicle.vehicle_state,
+//           vehicle_type: vehicle.vehicle_type,
+//           manufacture_year: vehicle.manufacture_year,
+//           last_update: dayjs(vehicle.updated_at).format("MMM DD YYYY hh:mm A"),
+//           latest_check_in: latestCheckIn,
+//         };
+//       }),
+//     },
+//   };
+
+//   // Add default check-in if none exists
+//   const transformedWithDefaultCheckIn = {
+//     ...transformed,
+//     vehicle_records: {
+//       ...transformed.vehicle_records,
+//       data: transformed.vehicle_records.data.map((record) => ({
+//         ...record,
+//         latest_check_in: record.latest_check_in || {
+//           id: 0,
+//           vehicle_record_id: record.id,
+//           in_by: "",
+//           out_by: "",
+//           passengers_in: "",
+//           passengers_out: "",
+//           inventory_in: "",
+//           inventory_out: "",
+//           check_in_time: "",
+//           check_out_time: "",
+//           status: "no_record",
+//           created_at: "",
+//           updated_at: "",
+//           deleted_at: "",
+//         },
+//       })),
+//     },
+//   };
+
+//   return transformedWithDefaultCheckIn;
+// };
 
 export const veicleRecordTablefields: Field[] = [
   { id: "1", accessor: "pictureSrc", isImage: true, picSize: 40 },
