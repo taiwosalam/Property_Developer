@@ -219,7 +219,7 @@ const transformParties = (
   selectedOccupant?: Occupant
 ): DocumentPreviewData["parties"] => {
   const landlordName =
-    document.landlord_name ||
+    // document.landlord_name ||
     document.property?.landlord?.profile?.name ||
     "--- ---";
   const tenantName = selectedOccupant?.name || "--- ---";

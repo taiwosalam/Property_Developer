@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 // Imports
 import Button from "@/components/Form/Button/button";
@@ -56,15 +56,17 @@ const ManageTenancyAgreement = () => {
     [data]
   );
 
-  const [checkboxOptions, setCheckboxOptions] =
-    useState<CheckboxOption[]>(defaultOptions);
+  const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
   const documentIdValue = data?.document?.document?.id;
+
   const handleOptionsChange = (options: CheckboxOption[]) => {
     setCheckboxOptions(options);
+    console.log("options", options);
   };
 
   const handleUpdateDocument = async () => {
     const articles = transformArticlesForPayload(checkboxOptions);
+    console.log("checkboxOptions", checkboxOptions)
     const payload: TenancyAgreementPayload = {
       property_id: Number(propertyID),
       document_id: Number(documentIdValue),
@@ -82,7 +84,7 @@ const ManageTenancyAgreement = () => {
       );
       if (res) {
         toast.success("Document updated successfully");
-        router.push(`/documents/preview/?d=${documentId}&b=manage`);
+        router.push(`/documents/preview/?d=${documentId}`);
       }
     } catch (err) {
       toast.error("An error occurred while updating the document");
