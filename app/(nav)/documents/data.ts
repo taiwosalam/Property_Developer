@@ -13,6 +13,19 @@ export const createPropertyDocument = async (data: FormData) => {
   }
 };
 
+// /property-document/1
+export const updatePropertyDocument = async (id: number, data: FormData) => {
+  try {
+    const res = await api.post(`/property-document/${id}`, data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const DocumentssFilterOptionsWithDropdown = [
   {
     label: "Property",

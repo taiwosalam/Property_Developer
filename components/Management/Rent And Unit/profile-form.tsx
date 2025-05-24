@@ -48,8 +48,7 @@ export const ProfileForm: React.FC<{
   const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-
-  const { setGlobalInfoStore, selectedOccupant, tenantLoading } =
+  const { setGlobalInfoStore, rentStartDate, rentEndDate, selectedOccupant, tenantLoading } =
     useGlobalStore();
   const isWebUser = selectedOccupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = selectedOccupant?.userTag?.toLowerCase() === "mobile";
@@ -127,8 +126,10 @@ export const ProfileForm: React.FC<{
     }
     const formattedStartDate = startDate.format("YYYY-MM-DD");
     setStart_date(formattedStartDate);
+    setGlobalInfoStore("rentStartDate", formattedStartDate);
     const calculatedDueDate = calculateDueDate(startDate, rentPeriod);
     setDueDateLocal(calculatedDueDate);
+    setGlobalInfoStore("rentEndDate", calculatedDueDate?.format("YYYY-MM-DD"));
     setDueDate?.(calculatedDueDate);
     const isPast = startDate.isBefore(dayjs(), "day");
     setGlobalInfoStore("isPastDate", isPast); // Update store
@@ -244,7 +245,7 @@ export const ProfileForm: React.FC<{
         <DateInput
           id="start date"
           label="Start Date"
-          value={startDate || dayjs().startOf("day")}
+          value={startDate}
           onChange={setStartDate}
           lastYear={true}
           disabled={disableInput}

@@ -11,6 +11,7 @@ import {
 import { empty } from "@/app/config";
 import { WitnessSignatureDateProps } from "./data";
 import Signature from "@/components/Signature/signature";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 export const Parties: React.FC<PartiesProps> = ({ landlord, tenant }) => (
   <div className="flex flex-col items-center justify-center mb-10">
@@ -40,21 +41,25 @@ export const PropertyDescription: React.FC<PropertyDescriptionProps> = ({
 );
 
 // Component for attorney information
-export const AttorneyInfo: React.FC<AttorneyInfoProps> = ({ attorney }) => (
-  <div className="attorney flex items-center justify-center mt-10">
-    <p className="text-[30px] text-center uppercase font-bold">
-      Through his lawful Attorney: {attorney}
-    </p>
-    {/* <p className="text-[30px] font-bold uppercase">{attorney}</p> */}
-  </div>
-);
+export const AttorneyInfo: React.FC<AttorneyInfoProps> = ({ attorney }) => {
+  const company_name = usePersonalInfoStore((state) => state.company_name);
+  return (
+    <div className="attorney flex flex-col items-center justify-center mt-10">
+      <p className="text-[24px] text-center uppercase font-bold">
+        Through his lawful Attorney:
+      </p>
+      {/* NB: CHANGED TO COMPANY NAME AS REQUESTED */}
+      <p className="text-[30px] font-bold uppercase">{company_name}</p>
+    </div>
+  );
+};
 
 // Component for law firm details with logo and contact info
 export const LawFirmInfo: React.FC<LawFirmInfoProps> = ({ lawFirm }) => (
   <div className="flex items-start justify-between mt-[200px] px-[100px] mb-10">
-    <i className="uppercase font-semibold text-[30px]">Prepared by:</i>
-    <div className="wrapper">
-      <div className="logo w-[430px] h-[105px] bg-white shadow-md rounded-md">
+    <i className="uppercase font-semibold text-[25px] flex-1">Prepared by:</i>
+    <div className="wrapper flex-1">
+      <div className="logo w-[430px] h-[105px]">
         <Image
           alt="lawyer-logo"
           src={lawFirm.logoSrc}
@@ -63,7 +68,7 @@ export const LawFirmInfo: React.FC<LawFirmInfoProps> = ({ lawFirm }) => (
           className="w-full h-full object-contain"
         />
       </div>
-      <div className="flex flex-col items-center mt-4 gap-2">
+      <div className="flex flex-col justify-center items-center mt-4 gap-2">
         {lawFirm.contactDetails.map((detail, index) => (
           <p key={index} className={detail.className}>
             {detail.text}
@@ -71,12 +76,12 @@ export const LawFirmInfo: React.FC<LawFirmInfoProps> = ({ lawFirm }) => (
         ))}
       </div>
     </div>
-    <div className="seal custom-secondary-bg w-[300px] h-[300px] rounded-full">
+    <div className="flex-1 flex items-center justify-center seal min-w-[300px] min-h-[300px] rounded-full">
       <Image
         alt="seal"
         src={lawFirm.sealSrc}
-        width={100}
-        height={100}
+        width={300}
+        height={300}
         className="w-full h-full object-contain rounded-full"
       />
     </div>
@@ -127,7 +132,12 @@ export const Clause: React.FC<ClauseProps> = ({
     <div className="absolute left-0 text-[30px] font-bold before:content-[counter(item)'.']"></div>
     <p className="uppercase font-bold text-[30px]">{title}</p>
     {/* {content && <p className="font-semibold text-[25px]">{content}</p>} */}
-    {content && <p className="font-semibold text-[25px]" dangerouslySetInnerHTML={{ __html: content }} />}
+    {content && (
+      <p
+        className="font-semibold text-[25px]"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
+    )}
     {subClauses && subClauses.length > 0 && (
       <ol className="list-none pl-4 mt-2" style={{ counterReset: "subitem" }}>
         {subClauses.map((subClause, index) => (
@@ -162,6 +172,9 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
   witness,
   lawFirm,
 }) => {
+
+  console.log("landlord", landlord);
+  console.log("tenant", tenant);
   return (
     <div>
       <div className="flex flex-col items-start mt-8 font-bold">
@@ -170,35 +183,32 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
           SEALS THE DAY AND YEAR FIRST ABOVE WRITTEN.
         </h3>
         <p className="uppercase text-[25px] font-bold tracking-wide">
-          SIGNED SEALED BY THE WITHIN NAMED LANDLORD
+          SIGNED SEALED BY THE WITHIN NAMED TENANT
         </p>
       </div>
-      <div className="mt-6 flex flex-col gap-1">
+      <div className="mt-10 flex flex-col gap-1">
         <p>
           -----------------------------------------------------------------------------
         </p>
         <p className="uppercase text-[25px] font-bold tracking-wide">
-          {landlord.name}
+          {tenant?.name}
         </p>
         <p className="uppercase text-[25px] font-bold tracking-wide">
-          SIGNED SEALED BY THE WITHIN NAMED TENANT
+          SIGNED, SEALED, AND DELIVERED by the within-named Landlord
         </p>
       </div>
 
       <div className="mt-6 flex flex-col gap-1">
-        <p>
-          -----------------------------------------------------------------------------
-        </p>
         <p className="uppercase text-[25px] font-bold tracking-wide">
-          {tenant.name}
+          {landlord?.name}
         </p>
       </div>
 
       <div className="presence mt-[50px]">
         <h2 className="uppercase text-[25px] font-bold tracking-wide mb-4">
-          IN THE PRESENCE OF:
+          By his lawful Attorney
         </h2>
-        <Signature />
+        <Signature noTitle />
       </div>
 
       <div className="preparedby w-full flex flex-col items-center justify-center">

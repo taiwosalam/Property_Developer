@@ -20,9 +20,9 @@ import {
   tenant,
   transformDocumentData,
   witness,
-  witnessLandlord,
+  // witnessLandlord,
   witnessLawFirm,
-  witnessTenant,
+  // witnessTenant,
 } from "./data";
 import ExportPageFooter from "@/components/reports/export-page-footer";
 import useFetch from "@/hooks/useFetch";
@@ -31,6 +31,7 @@ import { DocumentPreviewData } from "./types";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import ServerError from "@/components/Error/ServerError";
 import NetworkError from "@/components/Error/NetworkError";
+import { useGlobalStore } from "@/store/general-store";
 
 const DocumentPreview: React.FC = () => {
   const printRef = useRef(null);
@@ -91,10 +92,8 @@ const DocumentPreview: React.FC = () => {
           />
           <ClauseList clauses={clauses} />
           <WitnessSignatureDate
-            landlord={witnessLandlord}
-            tenant={witnessTenant}
-            witness={witness}
-            // lawFirm={witnessLawFirm}
+            landlord={attestation.landlord}
+            tenant={attestation.tenant}
             lawFirm={lawFirm}
           />
         </div>
