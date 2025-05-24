@@ -98,7 +98,7 @@ const CreateTenancyAggrement = () => {
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
-        <BackButton>Create Tenancy Agreement</BackButton>
+        <BackButton customBackPath="/documents">Create Tenancy Agreement</BackButton>
         <CardsLoading length={2} />
       </div>
     );
@@ -108,7 +108,7 @@ const CreateTenancyAggrement = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-6">
-        <BackButton>Create Tenancy Agreement</BackButton>
+        <BackButton customBackPath="/documents">Create Tenancy Agreement</BackButton>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
           <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
             Property Details

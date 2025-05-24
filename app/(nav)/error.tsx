@@ -24,11 +24,10 @@ export default function Error({
           <ServerErrorIcon />
         </div>
       </div>
-      <div className="w-full flex items-center justify-center">
-        {/* <Button href="/">Go to Dashboard</Button> */}
+      {/* <div className="w-full flex items-start justify-start">
         <Button onClick={() => reset()}>Try Again</Button>
-      </div>
-      <div className="flex flex-col gap-[15px] items-center">
+      </div> */}
+      <div className="flex flex-col gap-[15px] items-start">
         <div>
           <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
             Error: Something Went Wrong
@@ -57,9 +56,9 @@ export default function Error({
                 - Use the browser&rsquo;s back button to return to the previous
                 page.
               </p>
-              <p>
-                - Click on the &quot;Try Again&quot; button to refresh the page.
-              </p>
+              <button className="text-brand-9" onClick={() => reset()}>
+                - Click here to refresh the page.
+              </button>
             </div>
           </div>
           <div className="flex flex-col gap-5">
