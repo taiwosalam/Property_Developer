@@ -18,6 +18,7 @@ import { CalendarContext } from "@/components/Calendar/calendar-context";
 import ComplaintsCalendarHeader from "./complaints-calendar-header";
 import ComplaintsCalendarFooter from "./complaints-calendar-footer";
 import { SectionSeparator } from "@/components/Section/section-components";
+import { createReminder } from "@/app/(nav)/tasks/complaints/[complainId]/manage-complain/data";
 
 const ComplaintsCalendar: React.FC<{
   header: string;
@@ -32,6 +33,7 @@ const ComplaintsCalendar: React.FC<{
     year: getYear(currentDate),
   });
   const { calendarDays } = data;
+  const [loading, setIsLoading] = useState(false);
 
   const setYear = (year: number) => {
     const newDate = new Date(year, getMonth(currentDate));

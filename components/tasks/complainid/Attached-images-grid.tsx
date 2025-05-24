@@ -23,24 +23,26 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
 
   return (
     <div className="space-y-4">
-      <div className="w-full flex items-center justify-between">
-        <h2 className="text-base font-medium">Attached Images</h2>
-        <button
-          type="button"
-          className="flex items-center space-x-2 text-text-label text-sm font-medium"
-          onClick={() => setShowImages(!showImages)}
-        >
-          <p>{showImages ? "Hide Images" : "Show Images"}</p>
-          <div
-            className={clsx(
-              showImages ? "-rotate-90" : "rotate-90",
-              "transition-transform"
-            )}
+      {images && images.length > 0 && (
+        <div className="w-full flex items-center justify-between">
+          <h2 className="text-base font-medium">Attached Images</h2>
+          <button
+            type="button"
+            className="flex items-center space-x-2 text-text-label text-sm font-medium"
+            onClick={() => setShowImages(!showImages)}
           >
-            <ChevronLeft fill="#5A5D61" />
-          </div>
-        </button>
-      </div>
+            <p>{showImages ? "Hide Images" : "Show Images"}</p>
+            <div
+              className={clsx(
+                showImages ? "-rotate-90" : "rotate-90",
+                "transition-transform"
+              )}
+            >
+              <ChevronLeft fill="#5A5D61" />
+            </div>
+          </button>
+        </div>
+      )}
 
       <AnimatePresence initial={false}>
         {showImages && (

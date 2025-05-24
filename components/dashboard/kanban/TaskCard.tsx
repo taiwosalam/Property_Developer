@@ -23,14 +23,22 @@ import TaskModal from "./task-action-modal";
 import { usePathname, useRouter } from "next/navigation";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import clsx from "clsx";
+import useFetch from "@/hooks/useFetch";
+import {
+  ComplaintDetailResponse,
+  ComplaintDetailsPageData,
+} from "@/app/(nav)/tasks/complaints/types";
+import { transformComplaintDetails } from "@/app/(nav)/tasks/complaints/data";
+import { getBadgeColor } from "@/lib/utils";
 
 export interface Task {
   id: UniqueIdentifier;
-  columnId: ColumnId;
+  tier?: number;
+  columnId: ColumnId | string;
   content: {
     messageCount: number;
     linkCount: number;
-    userAvatars: [string, string, string];
+    userAvatars: string[];
     date: string;
     status?: string;
     progress?: number;
@@ -71,6 +79,22 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const wasRecentlyDragged = useRef(false);
   const router = useRouter();
   const pathname = usePathname();
+  const [cardData, setCardData] = useState<ComplaintDetailsPageData | null>(
+    null
+  );
+
+  const {
+    data: complaintDataResponse,
+    loading,
+    error,
+  } = useFetch<ComplaintDetailResponse>(`complaint/${task.id}`);
+
+  useEffect(() => {
+    if (complaintDataResponse) {
+      const transformDetails = transformComplaintDetails(complaintDataResponse);
+      setCardData(transformDetails);
+    }
+  }, [complaintDataResponse]);
 
   const {
     setNodeRef,
@@ -133,7 +157,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     if (!isDragging && !wasRecentlyDragged.current && noDrag) {
       setModalOpen(true);
     } else {
-      router.push("/tasks/complaints/1/manage-complain/");
+      router.push(`/tasks/complaints/${task?.id}/manage-complain/`);
     }
   };
 
@@ -158,9 +182,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               <AvatarFallback>{task.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="space-x-1">
-              <p className="text-sm font-medium text-text-primary dark:text-darkText-1 flex items-center space-x-0.5">
+              <p className="text-sm font-medium text-text-primary dark:text-darkText-1 flex items-center space-x-0.5 capitalize">
                 {task.name}
-                <BadgeIcon color="black" />
+                <BadgeIcon color={getBadgeColor(task?.tier) ?? 'gray'} />
               </p>
               <p className="text-xs text-brand-9 font-medium capitalize">
                 {task.title}
@@ -224,10 +248,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   <Avatar
                     key={index}
                     className={clsx(
-                      "h-6 w-6 rounded-full border-2 border-white",
+                      "h-6 w-6 rounded-full border-2 border-white flex items-center",
                       index !== 0 && "-ml-2.5"
                     )}
                     style={{
+                      width: "20px",
+                      height: "20px",
                       boxShadow:
                         index !== task.content.userAvatars.length - 1
                           ? "3px 4px 8px 0px rgba(53, 37, 19, 0.31)"
@@ -235,7 +261,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                       zIndex: index,
                     }}
                   >
-                    <AvatarImage src={avatar} alt="Avatar" />
+                    <AvatarImage
+                      src={avatar}
+                      alt="Avatar"
+                      className="rounded-full h-full w-full flex items-center"
+                    />
                     <AvatarFallback>{avatar.charAt(0)}</AvatarFallback>
                   </Avatar>
                 ))}
@@ -249,26 +279,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </CardContent>
       </Card>
 
-      <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
-        <ModalContent>
-          <TaskModal
-            statusChanger={statusChanger}
-            complaintData={complaintData}
-          />
-        </ModalContent>
-      </Modal>
+      {cardData && (
+        <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
+          <ModalContent>
+            <TaskModal statusChanger={statusChanger} complaintData={cardData} setModalOpen={setModalOpen}/>
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
-};
-
-const complaintData = {
-  senderName: "Muibi Saheed",
-  senderVerified: true,
-  complaintTitle: "Door complain",
-  propertyName: "David Hall",
-  propertyAddress: "Olorishaoko, Moniya",
-  accountOfficer: "Ajala David",
-  branch: "Akinyele",
-  brief:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius fugiat provident porro sunt atque deserunt dicta voluptatem ipsum hic. Repellat est, totam eos sed magni distinctio laudantium exercitationem molestiae aliquid.",
 };

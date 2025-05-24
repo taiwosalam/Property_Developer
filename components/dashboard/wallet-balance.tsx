@@ -80,57 +80,57 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   useEffect(() => {
     if (data) {
       // console.log("data", data)
-      if(data.transactions.length > 0){
-      const recentTransactions = data.transactions.map((t) => {
-        // Parse the date and time strings into a Date object (assuming UTC from server)
-        const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC
-        const serverDateTime = new Date(dateTimeString);
+      if (data.transactions.length > 0) {
+        const recentTransactions = data.transactions.map((t) => {
+          // Parse the date and time strings into a Date object (assuming UTC from server)
+          const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC
+          const serverDateTime = new Date(dateTimeString);
 
-        // Get the user's time zone (replace with your actual method)
-        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; //Gets from browser
+          // Get the user's time zone (replace with your actual method)
+          const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; //Gets from browser
 
-        // Convert to user's local time
-        const localDateTime = new Date(
-          serverDateTime.toLocaleString("en-US", { timeZone: userTimeZone })
-        );
+          // Convert to user's local time
+          const localDateTime = new Date(
+            serverDateTime.toLocaleString("en-US", { timeZone: userTimeZone })
+          );
 
-        // Format the date and time as needed
-        const formattedDate = localDateTime.toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
+          // Format the date and time as needed
+          const formattedDate = localDateTime.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+          const formattedTime = localDateTime.toLocaleTimeString("en-US", {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          });
+
+          return {
+            ...t,
+            date: formattedDate,
+            time: formattedTime,
+            amount:
+              currencySymbols.naira +
+              formatNumber(t.amount, { forceTwoDecimals: true }),
+          };
         });
-        const formattedTime = localDateTime.toLocaleTimeString("en-US", {
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
+
+        const transactions = data.transactions.map((t) => {
+          return {
+            id: t.id,
+            source: t.source,
+            description: t.description,
+            date: t.date,
+            time: t.time,
+            amount: t.amount,
+            type: t.type,
+            status: t.status,
+            transaction_type: t.transaction_type,
+          };
         });
-
-        return {
-          ...t,
-          date: formattedDate,
-          time: formattedTime,
-          amount:
-            currencySymbols.naira +
-            formatNumber(t.amount, { forceTwoDecimals: true }),
-        };
-      });
-
-      const transactions = data.transactions.map((t) => {
-        return {
-          id: t.id,
-          source: t.source,
-          description: t.description,
-          date: t.date,
-          time: t.time,
-          amount: t.amount,
-          type: t.type,
-          status: t.status,
-          transaction_type: t.transaction_type,
-        };
-      });
-      setWalletStore("recentTransactions", recentTransactions);
-      setWalletStore("transactions", transactions);
+        setWalletStore("recentTransactions", recentTransactions);
+        setWalletStore("transactions", transactions);
       }
       setWalletStore("walletPinStatus", data.balance.pin_status);
       setWalletStore("walletId", data.balance.wallet_id);
@@ -210,7 +210,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
                 })}`}
           </p>
           <div className="text-white text-xs font-medium capitalize flex items-center space-x-1">
-              <p className="text-text-white-secondary ">caution deposit</p>
+            <p className="text-text-white-secondary ">caution deposit</p>
             <span className="text-white ml-2">
               {hideBalance
                 ? "*******"
@@ -254,7 +254,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
           </div>
         </div>
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {/* {error && <p className="text-red-500 text-sm">{error}</p>} */}
     </div>
   );
 };

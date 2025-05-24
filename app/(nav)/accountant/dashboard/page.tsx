@@ -100,6 +100,7 @@ const Dashboard = () => {
                 isNew
                 key={index}
                 task={{
+                  tier: 1,
                   id: 'task9',
                   columnId: 'approved',
                   content: {
