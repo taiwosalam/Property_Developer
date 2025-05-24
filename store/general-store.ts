@@ -44,6 +44,8 @@ interface GlobalStoreState {
   rents?: Rent[];
   emails?: EmailPageData;
 
+  rentStartDate: string | null;
+  rentEndDate: string | null;
   sms_transaction?: SMSTable;
   feature_history?: EnrollmentHistoryTable;
   campaign_history?: ICampaignTable[];
@@ -158,6 +160,9 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   messageUserData: null,
   openDocumentModal: false,
   selectedDocumentOption: null,
+
+  rentStartDate: null,
+  rentEndDate: null,
 
   profileSettingsData: null,
   // type‑safe setter:

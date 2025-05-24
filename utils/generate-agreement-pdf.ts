@@ -2,8 +2,8 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { empty } from "@/app/config";
 import {
-  witnessLandlord,
-  witnessTenant,
+  // witnessLandlord,
+  // witnessTenant,
 } from "@/app/(nav)/documents/preview/data";
 
 // Align with the structure from useAgreementData

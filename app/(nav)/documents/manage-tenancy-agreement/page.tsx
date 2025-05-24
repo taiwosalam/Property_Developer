@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 // Imports
 import Button from "@/components/Form/Button/button";
@@ -12,7 +12,7 @@ import DeleteDocumentModal from "@/components/Documents/delete-document-modal";
 import DocumentTenancyAgreements from "@/components/Documents/document-tenancy-agreements";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import {
   ManageDocumentsAPIResponse,
@@ -27,10 +27,16 @@ import DOMPurify from "dompurify";
 import CheckBoxLoader from "@/components/Loader/CheckBoxLoader";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import CardsLoading from "@/components/Loader/CardsLoading";
+import { transformArticlesForPayload } from "@/components/Documents/data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { TenancyAgreementPayload } from "@/components/Documents/types";
+import { toast } from "sonner";
+import { updatePropertyDocument } from "../data";
 
 const ManageTenancyAgreement = () => {
   const documentId = useSearchParams().get("d") ?? "";
-
+  const [reqLoading, setReqLoading] = useState(false);
+  const router = useRouter();
   const { data, loading, error, isNetworkError } =
     useFetch<ManageDocumentsAPIResponse>(`/property-document/${documentId}`);
 
@@ -49,7 +55,41 @@ const ManageTenancyAgreement = () => {
     () => (data ? transformDocumentArticleResponse(data) : []),
     [data]
   );
+
+  const [checkboxOptions, setCheckboxOptions] =
+    useState<CheckboxOption[]>(defaultOptions);
   const documentIdValue = data?.document?.document?.id;
+  const handleOptionsChange = (options: CheckboxOption[]) => {
+    setCheckboxOptions(options);
+  };
+
+  const handleUpdateDocument = async () => {
+    const articles = transformArticlesForPayload(checkboxOptions);
+    const payload: TenancyAgreementPayload = {
+      property_id: Number(propertyID),
+      document_id: Number(documentIdValue),
+      articles,
+      _method: "PUT",
+    };
+    if (!payload.articles.length)
+      return toast.warning("Please select at least one option to save");
+    try {
+      setReqLoading(true);
+      const res = await updatePropertyDocument(
+        Number(documentId),
+        objectToFormData(payload)
+        // payload
+      );
+      if (res) {
+        toast.success("Document updated successfully");
+        router.push(`/documents/preview/?d=${documentId}&b=manage`);
+      }
+    } catch (err) {
+      toast.error("An error occurred while updating the document");
+    } finally {
+      setReqLoading(false);
+    }
+  };
 
   // if (!documentIdValue || Number.isNaN(Number(documentIdValue))) {
   if (propertyLoading) {
@@ -60,7 +100,7 @@ const ManageTenancyAgreement = () => {
       </div>
     );
   }
-  
+
   if (isNetworkError) return <NetworkError />;
   if (error) return <div> {error} </div>;
 
@@ -141,6 +181,7 @@ const ManageTenancyAgreement = () => {
           <DocumentTenancyAgreements
             id={Number(data.document.document.id)}
             defaultOptions={defaultOptions}
+            onOptionsChange={handleOptionsChange}
           />
         ) : (
           <CheckBoxLoader />
@@ -158,20 +199,21 @@ const ManageTenancyAgreement = () => {
           </ModalContent>
         </Modal>
         <div className="flex gap-4">
-          <Button
+          {/* <Button
             href={`/documents/preview/?d=${documentId}`}
             variant="sky_blue"
             size="base_bold"
             className="py-2 px-6"
           >
             Preview
-          </Button>
+          </Button> */}
           <Button
-            // onClick={handleSaveDraft}
+            onClick={handleUpdateDocument}
             size="base_bold"
+            disabled={reqLoading}
             className="py-2 px-6"
           >
-            Save
+            {reqLoading ? "Please wait..." : "Update"}
           </Button>
         </div>
       </FixedFooter>

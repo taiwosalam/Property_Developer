@@ -20,7 +20,7 @@ export interface CompanySignaturesResponse {
   signatures: CompanySignature[];
 }
 
-const Signature = () => {
+const Signature = ({ noTitle } : {noTitle?: boolean}) => {
   const { data, loading, error } = useFetch<CompanySignaturesResponse>(
     "/company-signatures"
   );
@@ -31,7 +31,7 @@ const Signature = () => {
 
   return (
     <>
-      <p>Authorized Signature</p>
+      {!noTitle && <p>Authorized Signature</p>}
       <div className="space-y- flex gap-4">
         {data.signatures.map((sig) => (
           <div

@@ -47,6 +47,7 @@ export interface ArticlePayload {
 export interface TenancyAgreementPayload {
   property_id: number;
   document_id: number;
+  _method?: string;
   articles: ArticlePayload[];
 }
 
