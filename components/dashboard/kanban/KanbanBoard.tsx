@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 
 import { BoardColumn, BoardContainer } from "./BoardColumn";
@@ -23,6 +23,8 @@ import { type Task, TaskCard } from "./TaskCard";
 import type { Column } from "./BoardColumn";
 import { hasDraggableData } from "./utils";
 import { coordinateGetter } from "./multipleContainersKeyboardPreset";
+import { LoadingSpinner } from "@/app/(nav)/tasks/complaints/pending-scroll";
+import { Loader2 } from "lucide-react";
 
 const defaultCols = [
   {
@@ -39,280 +41,64 @@ const defaultCols = [
   },
 ] satisfies Column[];
 
-export type ColumnId = (typeof defaultCols)[number]["id"];
+export type ColumnId = (typeof defaultCols)[number]["id"] | string;
 
-const initialTasks: Task[] = [
-  {
-    id: "task1",
-    columnId: "rejected",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "rejected",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task2",
-    columnId: "rejected",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "rejected",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task3",
-    columnId: "rejected",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "rejected",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task4",
-    columnId: "processing",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "processing",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task5",
-    columnId: "processing",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "processing",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task6",
-    columnId: "approved",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "approved",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task7",
-    columnId: "approved",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "approved",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task8",
-    columnId: "approved",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "approved",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task9",
-    columnId: "approved",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "approved",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task10",
-    columnId: "approved",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "approved",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task11",
-    columnId: "approved",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "approved",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task12",
-    columnId: "approved",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "approved",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-  {
-    id: "task13",
-    columnId: "approved",
-    content: {
-      messageCount: 2,
-      linkCount: 1,
-      userAvatars: [
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-        "/empty/avatar.png",
-      ],
-      date: "25 Jan 2024",
-      status: "approved",
-      progress: 50,
-    },
-    name: "John Doe",
-    title: "Project Manager",
-    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    avatarSrc: "/empty/avatar.png",
-  },
-];
-export function KanbanBoard() {
+// Pagination state for each column
+interface ColumnPagination {
+  page: number;
+  hasMore: boolean;
+  loading: boolean;
+}
+
+interface KanbanBoardProps {
+  kanbanTask?: Task[];
+  pagination?: {
+    total_pages: number;
+    current_page: number;
+    per_page: number;
+    total: number;
+  };
+  onLoadMore?: (columnId: ColumnId, page: number) => Promise<void>;
+  loading?: boolean;
+  silentLoading?: boolean;
+}
+
+export function KanbanBoard({
+  kanbanTask,
+  pagination,
+  onLoadMore,
+  loading: initialLoading = false,
+  silentLoading = false,
+}: KanbanBoardProps) {
   const [columns, setColumns] = useState<Column[]>(defaultCols);
   const pickedUpTaskColumn = useRef<ColumnId | null>(null);
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-
+  const [tasks, setTasks] = useState<Task[]>(kanbanTask ?? []);
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
-
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+
+  // Pagination state for each column
+  const [columnPagination, setColumnPagination] = useState<
+    Record<ColumnId, ColumnPagination>
+  >({
+    processing: { page: 1, hasMore: true, loading: false },
+    approved: { page: 1, hasMore: true, loading: false },
+    rejected: { page: 1, hasMore: true, loading: false },
+  });
+
+  // Intersection observer refs for each column
+  const observerRefs = useRef<Record<ColumnId, IntersectionObserver | null>>({
+    processing: null,
+    approved: null,
+    rejected: null,
+  });
+
+  const loadingRefs = useRef<Record<ColumnId, HTMLDivElement | null>>({
+    processing: null,
+    approved: null,
+    rejected: null,
+  });
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -332,6 +118,138 @@ export function KanbanBoard() {
       column,
     };
   }
+
+  // Update tasks when new data comes in (append, don't replace)
+  useEffect(() => {
+    if (kanbanTask && kanbanTask.length > 0) {
+      setTasks((prevTasks) => {
+        // If this is the first page or a reset, replace the tasks
+        if (pagination?.current_page === 1) {
+          return kanbanTask;
+        }
+
+        // Otherwise, append new tasks avoiding duplicates
+        const existingIds = new Set(prevTasks.map((task) => task.id));
+        const newTasks = kanbanTask.filter((task) => !existingIds.has(task.id));
+        return [...prevTasks, ...newTasks];
+      });
+    }
+  }, [kanbanTask, pagination?.current_page]);
+
+  // Update pagination state based on the global pagination
+  useEffect(() => {
+    if (pagination) {
+      setColumnPagination((prev) => ({
+        ...prev,
+        // Update all columns with the same pagination info
+        // In a real scenario, you might want to track pagination per column
+        processing: {
+          ...prev.processing,
+          page: pagination.current_page,
+          hasMore: pagination.current_page < pagination.total_pages,
+          loading: false,
+        },
+        approved: {
+          ...prev.approved,
+          page: pagination.current_page,
+          hasMore: pagination.current_page < pagination.total_pages,
+          loading: false,
+        },
+        rejected: {
+          ...prev.rejected,
+          page: pagination.current_page,
+          hasMore: pagination.current_page < pagination.total_pages,
+          loading: false,
+        },
+      }));
+    }
+  }, [pagination]);
+
+  // Load more data for a specific column
+  const handleLoadMore = useCallback(
+    async (columnId: ColumnId) => {
+      const currentPagination = columnPagination[columnId];
+
+      if (
+        !currentPagination.hasMore ||
+        currentPagination.loading ||
+        !onLoadMore
+      ) {
+        return;
+      }
+
+      setColumnPagination((prev) => ({
+        ...prev,
+        [columnId]: {
+          ...prev[columnId],
+          loading: true,
+        },
+      }));
+
+      try {
+        await onLoadMore(columnId, currentPagination.page + 1);
+      } catch (error) {
+        console.error(`Error loading more data for ${columnId}:`, error);
+        // Reset loading state on error
+        setColumnPagination((prev) => ({
+          ...prev,
+          [columnId]: {
+            ...prev[columnId],
+            loading: false,
+          },
+        }));
+      }
+    },
+    [columnPagination, onLoadMore]
+  );
+
+  // Setup intersection observers for infinite scroll
+  useEffect(() => {
+    const setupObserver = (columnId: ColumnId) => {
+      if (observerRefs.current[columnId]) {
+        observerRefs.current[columnId]?.disconnect();
+      }
+
+      observerRefs.current[columnId] = new IntersectionObserver(
+        (entries) => {
+          const [entry] = entries;
+          if (entry.isIntersecting) {
+            handleLoadMore(columnId);
+          }
+        },
+        {
+          threshold: 0.1,
+          rootMargin: "100px",
+        }
+      );
+
+      const loadingElement = loadingRefs.current[columnId];
+      if (loadingElement && observerRefs.current[columnId]) {
+        observerRefs.current[columnId]?.observe(loadingElement);
+      }
+    };
+
+    // Setup observers for all columns
+    columns.forEach((col) => setupObserver(String(col.id)));
+
+    return () => {
+      // Cleanup observers
+      Object.values(observerRefs.current).forEach((observer) => {
+        observer?.disconnect();
+      });
+    };
+  }, [columns, handleLoadMore]);
+
+  // Ref callback for loading indicators
+  const setLoadingRef = useCallback((columnId: ColumnId) => {
+    return (element: HTMLDivElement | null) => {
+      loadingRefs.current[columnId] = element;
+
+      if (element && observerRefs.current[columnId]) {
+        observerRefs.current[columnId]?.observe(element);
+      }
+    };
+  }, []);
 
   const announcements: Announcements = {
     onDragStart({ active }) {
@@ -429,44 +347,113 @@ export function KanbanBoard() {
   };
 
   return (
-    <DndContext
-      accessibility={{
-        announcements,
-      }}
-      sensors={sensors}
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      onDragOver={onDragOver}
-    >
-      <BoardContainer>
-        <SortableContext items={columnsId}>
-          {columns.map((col) => (
-            <BoardColumn
-              key={col.id}
-              column={col}
-              tasks={tasks.filter((task) => task.columnId === col.id)}
-            />
-          ))}
-        </SortableContext>
-      </BoardContainer>
+    <>
+      <DndContext
+        accessibility={{
+          announcements,
+        }}
+        sensors={sensors}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragOver={onDragOver}
+      >
+        <div className="relative">
+          <BoardContainer>
+            <SortableContext items={columnsId}>
+              {columns.map((col) => (
+                <BoardColumn
+                  key={col.id}
+                  column={col}
+                  tasks={tasks.filter((task) => task.columnId === col.id)}
+                  loadingIndicator={
+                    columnPagination[col.id]?.hasMore ? (
+                      <div
+                        ref={setLoadingRef(String(col.id))}
+                        className="flex justify-center items-center p-6 text-sm text-gray-500 border-t border-gray-100 bg-gray-50/50"
+                      >
+                        {columnPagination[col.id]?.loading ? (
+                          <div className="flex items-center gap-3 animate-pulse">
+                            <div className="relative">
+                              <div className="w-6 h-6 border-3 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+                              <div className="absolute inset-0 w-6 h-6 border-3 border-transparent border-r-blue-300 rounded-full animate-spin animate-reverse"></div>
+                            </div>
 
-      {typeof window !== "undefined" &&
-        createPortal(
-          <DragOverlay>
-            {activeColumn && (
-              <BoardColumn
-                isOverlay
-                column={activeColumn}
-                tasks={tasks.filter(
-                  (task) => task.columnId === activeColumn.id
-                )}
-              />
-            )}
-            {activeTask && <TaskCard task={activeTask} isOverlay />}
-          </DragOverlay>,
-          document.body
-        )}
-    </DndContext>
+                            <Loader2 className="text-blue-600 animate-spin text-lg" />
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2 text-xs opacity-60 hover:opacity-80 transition-opacity">
+                            {/* <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                              />
+                            </svg>
+                            Scroll for more */}
+                          </div>
+                        )}
+                      </div>
+                    ) : columnPagination[col.id]?.page > 1 ? (
+                      <div className="flex justify-center items-center p-4 text-xs text-gray-400">
+                        {/* <div className="flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          All tasks loaded
+                        </div> */}
+                      </div>
+                    ) : null
+                  }
+                />
+              ))}
+            </SortableContext>
+          </BoardContainer>
+
+          {/* Global loading overlay for silent loading operations */}
+          {silentLoading && (
+            <div className="absolute top-0 right-0 m-4 z-50">
+              <div className="flex items-center gap-2 bg-white shadow-lg rounded-lg px-4 py-2 border">
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+                <span className="text-sm text-gray-600">Updating...</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {typeof window !== "undefined" &&
+          createPortal(
+            <DragOverlay>
+              {activeColumn && (
+                <BoardColumn
+                  isOverlay
+                  column={activeColumn}
+                  tasks={tasks.filter(
+                    (task) => task.columnId === activeColumn.id
+                  )}
+                />
+              )}
+              {activeTask && <TaskCard task={activeTask} isOverlay />}
+            </DragOverlay>,
+            document.body
+          )}
+      </DndContext>
+    </>
   );
 
   function onDragStart(event: DragStartEvent) {

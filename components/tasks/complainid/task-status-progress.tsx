@@ -2,7 +2,11 @@ import clsx from "clsx";
 import Button from "@/components/Form/Button/button";
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 
-const TaskStatusProgress = ({ percentage = 20 }) => {
+interface TaskStatusProgressProps {
+  percentage?: number;
+  date?: string;
+}
+const TaskStatusProgress = ({ percentage = 50, date }: TaskStatusProgressProps) => {
   return (
     <div
       className="border border-[rgba(193,194,195,0.40)] rounded-lg bg-white dark:bg-darkText-primary px-4 pt-4 pb-6"
@@ -29,7 +33,7 @@ const TaskStatusProgress = ({ percentage = 20 }) => {
         </div>
         <div className="space-y-1">
           <p className="text-neutral-4">Last updated:</p>
-          <p className="text-text-label">January 23, 2024</p>
+          <p className="text-text-label">{date}</p>
         </div>
       </div>
       <PageProgressBar
