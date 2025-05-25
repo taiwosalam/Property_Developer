@@ -110,7 +110,7 @@ const ManageTenancyAgreement = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-6">
-        <BackButton>Manage Tenancy Agreement</BackButton>
+        <BackButton customBackPath="/documents">Manage Tenancy Agreement</BackButton>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
           <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
             Property Details
@@ -215,7 +215,7 @@ const ManageTenancyAgreement = () => {
             disabled={reqLoading}
             className="py-2 px-6"
           >
-            {reqLoading ? "Please wait..." : "Update"}
+            {reqLoading ? "Please wait..." : "Preview"}
           </Button>
         </div>
       </FixedFooter>

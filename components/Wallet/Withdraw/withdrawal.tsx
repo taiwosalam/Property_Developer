@@ -27,7 +27,7 @@ import useBankLogo from "@/app/(nav)/bank";
 import { currencySymbols } from "@/utils/number-formatter";
 import { formatToNaira } from "@/app/(nav)/tasks/inspections/data";
 
-const DISCOUNT_PERCENTAGE = 0.9;
+const DISCOUNT_PERCENTAGE = 0.2;
 const BANK_CHARGES = 53.75;
 
 const calculateExpectedAmount = (amount: number): number => {

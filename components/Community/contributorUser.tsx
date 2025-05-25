@@ -83,7 +83,7 @@ const ContributorUser = ({
           />
         </div>
         <div className="userDetails flex flex-col gap-1">
-          <div className="flex gap-1 items-start">
+          <div className="flex gap-1 items-center">
             <p className="dark:text-white text-black text-[20px] font-bold capitalize">
               {`${title || ""} ${name || "--- ---"}`}
             </p>
