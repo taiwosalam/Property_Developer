@@ -9,7 +9,7 @@ const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
       <p className="text-text-tertiary text-base dark:text-darkText-1">
         {label}
       </p>
-      <p className="text-text-secondary text-sm text-right dark:text-darkText-2">
+      <p className="text-text-secondary capitalize text-sm text-right dark:text-darkText-2">
         {value}
       </p>
     </div>

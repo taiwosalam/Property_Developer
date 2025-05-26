@@ -52,7 +52,7 @@ const ManageMyPropertyRequest = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // 
+    //
     if (data?.data?.AgentRequest) {
       setPropertyRequests(data.data.AgentRequest);
       setComments(data.data.comments);
@@ -179,7 +179,11 @@ const ManageMyPropertyRequest = () => {
             />
           )}
           <button
-            disabled={isUpdating || !getGlobalInfoStore("canSubmit")}
+            disabled={
+              isUpdating ||
+              !getGlobalInfoStore("canSubmit") ||
+              !getGlobalInfoStore("isValidDateRange")
+            }
             type="submit"
             className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
           >

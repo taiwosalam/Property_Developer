@@ -123,7 +123,7 @@ const CreateAnnouncementForm: React.FC<{
   const onFormSubmit = (formData: FormData) => {
     // Append image files to FormData
     imageFiles.forEach((file, index) => {
-      formData.append(`images[${index}]`, file);
+      formData.append(`image[${index}]`, file);
     });
     if (company_id) formData.append("company_id", company_id);
 

@@ -1,15 +1,47 @@
 "use client";
 import clsx from "clsx";
 import moment from "moment";
-import Input from "@/components/Form/Input/input";
+//import Input from "@/components/Form/Input/input";
 import { SendMessageIcon, VerticalEllipsisIcon } from "@/public/icons/icons";
 import Message from "./message";
-import { useRef, useState, useCallback, useEffect } from "react";
+import {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  KeyboardEvent,
+  ChangeEvent,
+} from "react";
+import { sendTaskComment } from "@/app/(nav)/tasks/complaints/[complainId]/manage-complain/data";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
+import Button from "@/components/Form/Button/button";
+import { Loader2, SendIcon } from "lucide-react";
+import Input from "@mui/material/Input/Input";
 
-const MessagesFromTask = () => {
+interface MessageFromTaskProps {
+  comments?: {
+    id: number;
+    user: string;
+    isOwnMessage: boolean;
+    text: string;
+    avatar: string;
+    time: string;
+  }[];
+}
+const MessagesFromTask = ({ comments }: MessageFromTaskProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [inputContent, setInputContent] = useState("");
+  const [isSending, setIsSending] = useState(false);
+
+  const param = useParams();
+  const id = param.complainId as string;
+
+  const handleContentOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputContent(e.target.value);
+  };
 
   const handleScroll = useCallback(() => {
     setIsScrolling(true);
@@ -66,6 +98,42 @@ const MessagesFromTask = () => {
     });
   }, [isScrolling]);
 
+  const handleSendTask = async () => {
+    if (!inputContent) return;
+    try {
+      setIsSending(true);
+      const res = await sendTaskComment(id, inputContent.trim());
+      if (res) {
+        setInputContent("");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // Add effect to scroll on new messages
+  useEffect(() => {
+    scrollToBottom();
+  }, [comments]);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && !event.shiftKey && !isSending) {
+      event.preventDefault();
+      handleSendTask();
+    }
+  };
+
   return (
     <div
       className="rounded-lg border border-[rgba(193,194,195,0.40)] bg-white dark:border-darkText-2"
@@ -86,72 +154,87 @@ const MessagesFromTask = () => {
           ref={containerRef}
           className="p-4 h-[320px] overflow-y-scroll custom-round-scrollbar custom-flex-col"
         >
-          {messages.map((m, index) => {
-            const currentDate = moment(m.time).format("YYYY-MM-DD");
-            const previousDate =
-              index > 0
-                ? moment(messages[index - 1].time).format("YYYY-MM-DD")
-                : null;
-            const showDateLabel = currentDate !== previousDate;
-            return (
-              <div
-                key={m.id}
-                className={clsx("flex flex-col items-center", {
-                  "mb-1":
-                    index !== messages.length - 1 &&
-                    m.user === messages[index + 1]?.user,
-                  "mb-4":
-                    index !== messages.length - 1 &&
-                    m.user !== messages[index + 1]?.user,
-                })}
-              >
-                {showDateLabel && (
-                  <div
-                    className={clsx(
-                      "sticky-date-label text-xs border border-gray-300 dark:border-darkText-2 bg-white dark:bg-darkText-primary px-2 text-center w-fit rounded-full my-2 sticky top-0 transition-opacity duration-300"
-                    )}
-                  >
-                    {moment(m.time).calendar(null, {
-                      sameDay: "[Today]",
-                      lastDay: "[Yesterday]",
-                      lastWeek: "dddd",
-                      sameElse: function (now) {
-                        return moment(m.time).isBefore(
-                          moment().subtract(1, "year")
-                        )
-                          ? "MMM D, YYYY"
-                          : "ddd, MMM D";
-                      },
-                    })}
-                  </div>
-                )}
-                <Message
+          {comments && comments.length === 0 ? (
+            <p>No comment here</p>
+          ) : (
+          comments && comments.length > 0 && comments.map((m, index) => {
+              const currentDate = moment(m.time).startOf("day");
+              const previousDate =
+                index > 0
+                  ? moment(comments[index - 1].time).startOf("day")
+                  : null;
+
+              const showDateLabel =
+                !previousDate || !currentDate.isSame(previousDate, "day");
+              return (
+                <div
                   key={m.id}
-                  {...m}
-                  isLastInSequence={
-                    index === messages.length - 1 ||
-                    messages[index + 1]?.user !== m.user // Indicates whether this is the last message from d same sender in the consecutive sequence
-                  }
-                  isConsecutive={
-                    index > 0 && messages[index - 1]?.user === m.user // Check if the previous message is from the same user
-                  }
-                />
-              </div>
-            );
-          })}
+                  className={clsx("flex flex-col items-center", {
+                    "mb-1":
+                      index !== messages.length - 1 &&
+                      m.user === messages[index + 1]?.user,
+                    "mb-4":
+                      index !== messages.length - 1 &&
+                      m.user !== messages[index + 1]?.user,
+                  })}
+                >
+                  {showDateLabel && (
+                    <div
+                      className={clsx(
+                        "sticky-date-label text-xs border border-gray-300 dark:border-darkText-2 bg-white dark:bg-darkText-primary px-2 text-center w-fit rounded-full my-2 sticky top-0 transition-opacity duration-300"
+                      )}
+                    >
+                      {moment(m.time).calendar(null, {
+                        sameDay: "[Today]",
+                        lastDay: "[Yesterday]",
+                        lastWeek: "dddd",
+                        sameElse: function (now) {
+                          return moment(m.time).isBefore(
+                            moment().subtract(1, "year")
+                          )
+                            ? "MMM D, YYYY"
+                            : "ddd, MMM D";
+                        },
+                      })}
+                    </div>
+                  )}
+                  <Message
+                    key={m.id}
+                    {...m}
+                    isLastInSequence={
+                      index === messages.length - 1 ||
+                      messages[index + 1]?.user !== m.user // Indicates whether this is the last message from d same sender in the consecutive sequence
+                    }
+                    isConsecutive={
+                      index > 0 && messages[index - 1]?.user === m.user // Check if the previous message is from the same user
+                    }
+                  />
+                </div>
+              );
+            })
+          )}
         </div>
         <div className="px-4 py-1 flex items-center justify-between gap-2">
-          <Input
+          <input
             id="message"
             placeholder="Type your message here"
-            className="w-full bg-neutral-3 rounded"
-            inputClassName="border-none"
+            className="p-3 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out"
+            onChange={handleContentOnChange}
+            value={inputContent}
+            onKeyDown={handleKeyDown}
           />
-          <div className="bg-brand-9 p-2 rounded grid place-items-center">
-            <span className="text-white">
+          <Button
+            disabled={isSending}
+            size="xs_medium"
+            className="px-4 py-2"
+            onClick={handleSendTask}
+          >
+            {isSending ? (
+              <Loader2 className="animate-spin" />
+            ) : (
               <SendMessageIcon />
-            </span>
-          </div>
+            )}
+          </Button>
         </div>
       </div>
     </div>

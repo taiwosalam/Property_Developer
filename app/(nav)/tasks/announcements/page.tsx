@@ -16,9 +16,28 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import template1 from "@/public/templates/template1.png";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import ServerError from "@/components/Error/ServerError";
+import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import { hasActiveFilters } from "../../reports/data/utils";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { AxiosRequestConfig } from "axios";
+import { FilterResult, InspectionRequestParams } from "../inspections/data";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as InspectionRequestParams,
+  });
+  const [appliedFilter, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
 
   const {
     data: apiData,
@@ -26,6 +45,7 @@ const AnnouncementPage = () => {
     silentLoading,
     error,
     refetch,
+    isNetworkError,
   } = useFetch<{ announcements: Announcement[] }>(`/announcements`);
   useRefetchOnEvent("dispatchAnnouncement", () => refetch({ silent: true }));
 
@@ -37,6 +57,7 @@ const AnnouncementPage = () => {
 
   if (loading) <CardsLoading />;
   if (error) <ServerError error={error} />;
+  if (isNetworkError) <NetworkError />;
 
   return (
     <div className="space-y-9">
@@ -76,34 +97,63 @@ const AnnouncementPage = () => {
         filterOptionsMenu={announcementrFilterOptionsWithDropdown}
         hasGridListToggle={false}
       />
-      <AutoResizingGrid minWidth={315} gap={32}>
-        {announcements.map((announcement, index) => {
-          const image_urls = [announcement.image];
-          const formattedDate = new Date(
-            announcement.created_at
-          ).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
-          return (
-            <AnnouncementCard
-              title={announcement.title}
-              date={formattedDate}
-              key={index}
-              description={announcement.description}
-              id={announcement.company_id}
-              views={0}
-              newViews={0}
-              dislikes={0}
-              imageUrls={[template1]}
-              //mediaCount={announcement.image_urls.length}
-              mediaCount={image_urls.flat().length}
-              announcementId={announcement.id}
-            />
-          );
-        })}
-      </AutoResizingGrid>
+
+      <section>
+        {announcements?.length === 0 && !loading ? (
+          !!config.params?.search || hasActiveFilters(appliedFilter) ? (
+            <SearchError />
+          ) : (
+            <div className="col-span-full text-left py-8 text-gray-500">
+              <EmptyList
+                noButton
+                title="No Announcements Yet"
+                body={
+                  <p className="">
+                    There are currently no announcements available. You can
+                    create a broadcast information targeted to specific property
+                    occupants, all tenants, or your entire client base-based on
+                    the filters you select during creation.
+                    <br /> <br />
+                    <p>
+                      Once announcements are published, they will appear here
+                      for your review and management.
+                    </p>
+                  </p>
+                }
+              />
+            </div>
+          )
+        ) : (
+          <AutoResizingGrid minWidth={315} gap={32}>
+            {announcements.map((announcement, index) => {
+              const image_urls = [announcement.image];
+              const formattedDate = new Date(
+                announcement.created_at
+              ).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+              return (
+                <AnnouncementCard
+                  title={announcement.title}
+                  date={formattedDate}
+                  key={index}
+                  description={announcement.description}
+                  id={announcement.company_id}
+                  views={0}
+                  newViews={0}
+                  dislikes={0}
+                  imageUrls={[template1]}
+                  //mediaCount={announcement.image_urls.length}
+                  mediaCount={image_urls.flat().length}
+                  announcementId={announcement.id}
+                />
+              );
+            })}
+          </AutoResizingGrid>
+        )}
+      </section>
     </div>
   );
 };

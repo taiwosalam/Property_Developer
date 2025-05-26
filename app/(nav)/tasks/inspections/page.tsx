@@ -125,8 +125,6 @@ const InspectionPage = () => {
     },
   ];
 
-  console.log(propertyData)
-
   useEffect(() => {
     if (propertyData) {
       const uniqueProperties = new Set();

@@ -191,26 +191,22 @@ const Applications = () => {
         />
 
         <section>
-          {/* {pageData?.applications?.length === 0 && !loading ? (
+          {pageData?.applications?.length === 0 && !loading ? (
             !!config.params.search || hasActiveFilters(appliedFilters) ? (
               <SearchError />
             ) : (
               <EmptyList
                 noButton
-                title="No Application Yet"
+                title="There are currently no applicants for your property unit."
                 body={
                   <p>
-                    At the moment, there are no landlord or landlady profiles
-                    available for export. Once profile records are added to the
-                    system, they will appear here and be available for download
-                    or export.
+                    Once a potential occupant or tenant submits an application
+                    for any of your property units, their details will appear
+                    here.
                     <br />
                     <br />
-                    <p>
-                      This section will automatically populate with all
-                      available data as soon as new landlord or landlady
-                      profiles are created or imported into the platform.
-                    </p>
+                    You will then have the option to either assign rent or
+                    decline the application.
                   </p>
                 }
               />
@@ -221,7 +217,7 @@ const Applications = () => {
               gap={32}
               containerClassName="w-full"
             >
-              {/* {pageData && pageData?.applications?.length > 0 ? (
+              {pageData && pageData?.applications?.length > 0 ? (
                 pageData?.applications.map((item) => (
                   <ApplicationCard
                     key={item.id}
@@ -232,16 +228,15 @@ const Applications = () => {
                 ))
               ) : (
                 <p>No Application Data</p>
-              )} 
-             
+              )}
             </AutoResizingGrid>
-          )}*/}
+          )}
 
-          <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
+          {/* <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
             <ApplicationCard status="flagged" type="staff" />
             <ApplicationCard status="unflagged" type="guest" />
             <ApplicationCard status="unflagged" type="staff" />
-          </AutoResizingGrid>
+          </AutoResizingGrid> */}
         </section>
       </div>
     </div>
