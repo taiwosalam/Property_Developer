@@ -13,6 +13,7 @@ import useFetch from "@/hooks/useFetch";
 import { ComplaintDetailResponse } from "../../types";
 import { IManageComplaints, transformComplaintManage } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 // import CreateReminderModal from "@/components/tasks/complainid/create-reminder-modal";
 // import CreateTaskModal from "@/components/tasks/complainid/create-task-modal";
 
@@ -28,6 +29,7 @@ const images = [
 
 const ManageComplain = () => {
   const [pageData, setPageData] = useState<IManageComplaints | null>(null);
+  const { userId } = usePersonalInfoStore();
   const param = useParams();
   const id = param.complainId;
 
@@ -76,7 +78,10 @@ const ManageComplain = () => {
         <div className="h-full space-y-10">
           <AttchedImagesGrid images={pageData?.images || []} />
           <AssignTaskCard />
-          <MessagesFromTask />
+          <MessagesFromTask comments={pageData?.comments?.map(comment => ({
+            ...comment,
+            isOwnMessage: userId === comment.userId  // Set this based on your logic to determine if message is from current user
+          })) || []}/>
           <Notes notes={pageData?.notes ?? []} />
         </div>
       </div>

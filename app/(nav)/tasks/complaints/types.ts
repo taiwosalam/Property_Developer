@@ -100,6 +100,7 @@ interface ComplaintDetail {
     title: string;
     note_by: string;
   }[];
+  comments: ComplaintComment[];
   created_at: string;
   updated_at: string;
 }
@@ -107,6 +108,19 @@ interface ComplaintDetail {
 export interface ComplaintDetailResponse {
   message: string;
   complaint: ComplaintDetail;
+}
+
+export interface ComplaintComment {
+  id: number;
+  content: string;
+  created_at: string;
+  user: {
+    id: number;
+    name: string;
+    title: string;
+    professional_title: string;
+    picture: string;
+  };
 }
 
 export interface ComplaintDetailsPageData {

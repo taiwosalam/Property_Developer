@@ -22,6 +22,14 @@ export interface IManageComplaints {
   }[];
   progress: number;
   updated_at: string;
+  comments: {
+    id: number;
+    user: string;
+    userId: number;
+    text: string;
+    avatar: string;
+    time: string;
+  }[];
 }
 
 export const transformComplaintManage = (
@@ -69,6 +77,14 @@ export const transformComplaintManage = (
     updated_at: data?.complaint
       ? dayjs(data?.complaint?.updated_at).format("MMMM D, YYYY")
       : "",
+    comments: data?.complaint.comments.map((message) => ({
+      id: message.id,
+      text: message.content,
+      time: message.created_at,
+      user: message.user.name,
+      userId: message.user.id,
+      avatar: message.user.picture,
+    })),
   };
 };
 
@@ -122,6 +138,24 @@ export const updateComplaintNote = async ({
       return true;
     }
   } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const sendTaskComment = async (id: string, content: string) => {
+  const payload = {
+    content,
+  };
+
+  try {
+    const res = await api.post(`complaint/${id}/comment`, payload);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("manageComplain"));
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
     handleAxiosError(error);
     return false;
   }

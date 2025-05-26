@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import { PropertyRequestApi } from "./type";
+
 export interface PropertyRequestDataType {
   userName: string;
   requestDate: string;
@@ -14,6 +17,51 @@ export interface PropertyRequestDataType {
   minBudget: string;
   maxBudget: string;
 } // Check with backend if this is the correct data type
+
+export interface propertyRequestPageData {
+  total: number;
+  total_month: number;
+  requests: {
+    userName: string;
+    requestDate: string;
+    pictureSrc: string;
+    requestId: string;
+    state: string;
+    lga: string;
+    propertyType: string;
+    description: string;
+    phoneNumber: string;
+    requestType: string;
+    category: string;
+    subType: string;
+    minBudget: string;
+    maxBudget: string;
+  }[];
+}
+
+export const transformPropertyRequestData = (data: PropertyRequestApi): propertyRequestPageData => {
+  return {
+    total: data?.total_requests_overall,
+    total_month: data?.total_requests_this_month,
+
+    requests: data.data.map((request) => ({
+      userName: request.name,
+      requestDate: request?.created_at ? dayjs(request.created_at).format("DD/MM/YYYY") : "",
+      pictureSrc: request?.image ?? "",
+      requestId: request.id.toString(),
+      state: request?.state,
+      lga: request?.lga,
+      propertyType: request?.property_type,
+      description: request?.description,
+      phoneNumber: request?.phone,
+      requestType: request?.property_type,
+      category: request?.category,
+      subType: request?.property_sub_type,
+      minBudget: (request?.budget_min ?? 0).toString(),
+      maxBudget: (request?.budget_max ?? 0).toString(),
+    })),
+  };
+};
 
 export const PropertyRequestData: PropertyRequestDataType[] = [
   {
