@@ -11,6 +11,7 @@ import {
   formatNumber,
 } from "@/utils/number-formatter";
 import { getAllStates } from "@/utils/states";
+import dayjs from "dayjs";
 import { number } from "zod";
 //
 export interface RentAndUnitState {
@@ -981,6 +982,7 @@ export const transformUnitData = (response: any) => {
 
   // Transform data with conditional inclusion of fee fields
   const transformedData = {
+    ...data,
     title: data.property.title,
     unit_id: data.id,
     description: data.property.description,
@@ -1128,49 +1130,260 @@ interface RentPenaltySettings {
   decennial?: number;
 }
 
+// export const calculateRentPenalty = (
+//   chargePenalty: boolean,
+//   rentPenaltySettings: RentPenaltySettings | undefined,
+//   rentAmount: number | undefined,
+//   feePeriod: RentPeriod | undefined,
+//   overduePeriods: number
+// ): number => {
+//   // Return 0 if conditions are not met
+//   if (
+//     !chargePenalty ||
+//     !rentPenaltySettings ||
+//     !rentAmount ||
+//     !feePeriod ||
+//     overduePeriods <= 0
+//   ) {
+//     console.log("Penalty not applicable:", {
+//       chargePenalty,
+//       rentPenaltySettings,
+//       rentAmount,
+//       feePeriod,
+//       overduePeriods,
+//     });
+//     return 0;
+//   }
+
+//   // Get the penalty percentage for the fee period
+//   const penaltyPercentage = rentPenaltySettings[feePeriod] ?? 0;
+//   if (penaltyPercentage <= 0) {
+//     console.log("No penalty percentage for period:", feePeriod);
+//     return 0;
+//   }
+
+//   // Calculate penalty per period
+//   const penaltyPerPeriod = rentAmount * (penaltyPercentage / 100);
+
+//   // Total penalty = penalty per period * overdue periods
+//   const totalPenalty = penaltyPerPeriod * overduePeriods;
+
+//   console.log("Penalty calculation:", {
+//     penaltyPerPeriod,
+//     overduePeriods,
+//     totalPenalty,
+//   });
+
+//   return totalPenalty;
+// };
+
 export const calculateRentPenalty = (
   chargePenalty: boolean,
-  rentPenaltySettings: RentPenaltySettings | undefined,
-  rentAmount: number | undefined,
-  feePeriod: RentPeriod | undefined,
-  overduePeriods: number
+  rentPenaltySettings: Record<string, number>,
+  rentAmount: number,
+  feePeriod: RentPeriod,
+  dueDate: string
 ): number => {
-  // Return 0 if conditions are not met
   if (
     !chargePenalty ||
     !rentPenaltySettings ||
     !rentAmount ||
     !feePeriod ||
-    overduePeriods <= 0
+    !dueDate
   ) {
     console.log("Penalty not applicable:", {
       chargePenalty,
       rentPenaltySettings,
       rentAmount,
       feePeriod,
-      overduePeriods,
+      dueDate,
     });
     return 0;
   }
 
-  // Get the penalty percentage for the fee period
-  const penaltyPercentage = rentPenaltySettings[feePeriod] ?? 0;
+  const penaltyPeriods = calculatePenaltyPeriods(dueDate, feePeriod);
+  if (penaltyPeriods <= 0) {
+    console.log("No penalty periods:", { penaltyPeriods, dueDate, feePeriod });
+    return 0;
+  }
+
+  const penaltyPercentage = rentPenaltySettings[feePeriod] || 0;
   if (penaltyPercentage <= 0) {
     console.log("No penalty percentage for period:", feePeriod);
     return 0;
   }
 
-  // Calculate penalty per period
   const penaltyPerPeriod = rentAmount * (penaltyPercentage / 100);
-
-  // Total penalty = penalty per period * overdue periods
-  const totalPenalty = penaltyPerPeriod * overduePeriods;
+  const totalPenalty = penaltyPerPeriod * penaltyPeriods;
 
   console.log("Penalty calculation:", {
     penaltyPerPeriod,
-    overduePeriods,
+    penaltyPeriods,
     totalPenalty,
   });
 
   return totalPenalty;
 };
+
+export const calculatePenaltyPeriods = (
+  dueDate: string,
+  period: RentPeriod
+): number => {
+  const now = dayjs();
+  const due = dayjs(dueDate, "DD/MM/YYYY");
+
+  if (!due.isValid() || now.isBefore(due) || now.isSame(due, "day")) {
+    return 0;
+  }
+
+  switch (period) {
+    case "daily":
+      return now.diff(due, "hour") > 0 ? 1 : 0;
+    case "weekly":
+      return now.diff(due, "day") > 0 ? 1 : 0;
+    case "monthly":
+      return now.diff(due, "day") > 0 ? 1 : 0;
+    case "quarterly":
+      return Math.max(1, Math.ceil(now.diff(due, "month") / 3));
+    case "yearly":
+      return Math.max(1, Math.ceil(now.diff(due, "month") / 3));
+    case "biennially":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 2));
+    case "triennially":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 3));
+    case "quadrennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 4));
+    case "quinquennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 5));
+    case "sexennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 6));
+    case "septennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 7));
+    case "octennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 8));
+    case "nonennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 9));
+    case "decennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 10));
+    default:
+      return 0;
+  }
+};
+
+export const calculateOverduePeriods = (
+  dueDate: string,
+  period: RentPeriod
+): number => {
+  const now = dayjs();
+  const due = dayjs(dueDate, "DD/MM/YYYY");
+
+  console.log("calculateOverduePeriods inputs:", {
+    dueDate,
+    parsedDue: due.format("DD/MM/YYYY"),
+    now: now.format("DD/MM/YYYY"),
+    period,
+    isOverdue: now.isAfter(due),
+  });
+
+  if (!due.isValid() || now.isBefore(due) || now.isSame(due, "day")) {
+    console.log("Not overdue or invalid date:", {
+      dueDate,
+      isValid: due.isValid(),
+    });
+    return 0;
+  }
+
+  switch (period) {
+    case "daily":
+      return now.diff(due, "day");
+    case "weekly":
+      return now.diff(due, "day") > 0 ? 1 : 0; 
+    case "monthly":
+      return now.diff(due, "day") > 0 ? 1 : 0; 
+    case "quarterly":
+      return Math.floor(now.diff(due, "month") / 3);
+    case "yearly":
+      return Math.floor(now.diff(due, "month") / 3); 
+    case "biennially":
+      return Math.floor(now.diff(due, "year") / 2);
+    case "triennially":
+      return Math.floor(now.diff(due, "year") / 3);
+    // case "quadrennially":
+    //   return Math.floor(now.diff(due, "year") / 4);
+    case "quinquennial":
+      return Math.floor(now.diff(due, "year") / 5);
+    case "sexennial":
+      return Math.floor(now.diff(due, "year") / 6);
+    case "septennial":
+      return Math.floor(now.diff(due, "year") / 7);
+    case "octennial":
+      return Math.floor(now.diff(due, "year") / 8);
+    case "nonennial":
+      return Math.floor(now.diff(due, "year") / 9);
+    case "decennial":
+      return Math.floor(now.diff(due, "year") / 10);
+    default:
+      console.log("Unknown period:", period);
+      return 0;
+  }
+};
+
+
+
+// export const calculateOverduePeriods = (
+//   dueDate: string,
+//   period: RentPeriod
+// ): number => {
+//   const now = dayjs();
+//   const due = dayjs(dueDate, "DD/MM/YYYY");
+
+//   console.log("calculateOverduePeriods inputs:", {
+//     dueDate,
+//     parsedDue: due.format("DD/MM/YYYY"),
+//     now: now.format("DD/MM/YYYY"),
+//     period,
+//     isOverdue: now.isAfter(due),
+//   });
+
+//   if (!due.isValid() || now.isBefore(due) || now.isSame(due, "day")) {
+//     console.log("Not overdue or invalid date:", {
+//       dueDate,
+//       isValid: due.isValid(),
+//     });
+//     return 0;
+//   }
+
+//   switch (period) {
+//     case "daily":
+//       return now.diff(due, "day");
+//     case "weekly":
+//       return now.diff(due, "week");
+//     case "monthly":
+//       return now.diff(due, "month");
+//     case "quarterly":
+//       return Math.floor(now.diff(due, "month") / 3);
+//     case "yearly":
+//       return now.diff(due, "year");
+//     case "biennially":
+//       return Math.floor(now.diff(due, "year") / 2);
+//     case "triennially":
+//       return Math.floor(now.diff(due, "year") / 3);
+//     case "quadrennial":
+//       return Math.floor(now.diff(due, "year") / 4);
+//     case "quinquennial":
+//       return Math.floor(now.diff(due, "year") / 5);
+//     case "sexennial":
+//       return Math.floor(now.diff(due, "year") / 6);
+//     case "septennial":
+//       return Math.floor(now.diff(due, "year") / 7);
+//     case "octennial":
+//       return Math.floor(now.diff(due, "year") / 8);
+//     case "nonennial":
+//       return Math.floor(now.diff(due, "year") / 9);
+//     case "decennial":
+//       return Math.floor(now.diff(due, "year") / 10);
+//     default:
+//       console.log("Unknown period:", period);
+//       return 0;
+//   }
+// };

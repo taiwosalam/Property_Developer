@@ -25,6 +25,8 @@ const ThreadArticle = ({
 }: ThreadArticleProps) => {
   const [isLike, setIsLike] = useState(false);
 
+  console.log("readByData", readByData)
+
   const handleToggleLike = async (type: string) => {
     try {
       setIsLike(true);

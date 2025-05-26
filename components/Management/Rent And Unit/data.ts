@@ -153,7 +153,6 @@ export const getEstateData = (estate_data: any) => {
   ];
 };
 
-
 export const getPropertyEstateData = (estate_data: any) => {
   console.log("estate_data passed down", estate_data);
   if (!estate_data) {
@@ -185,7 +184,6 @@ export const getPropertyEstateData = (estate_data: any) => {
     { label: "Unit ID", value: estate_data.id ?? "-- --" },
   ];
 };
-
 
 export const getEstateSettingsDta = (estate_data: any) => {
   if (!estate_data) {
@@ -333,7 +331,6 @@ function parseCurrency(amountStr: string): number {
   return isNaN(parsed) ? 0 : parsed;
 }
 
-
 export function calculateBalance(
   amount_paid: string,
   start_date: string,
@@ -391,7 +388,8 @@ export function calculateOutstandingBalance(
   if (isEarliestPast || validRecords.length === 1) {
     totalExpectedRent = renewalPrice * validRecords.length;
   } else {
-    totalExpectedRent = renewalPrice * (validRecords.length - 1) + newTenantPrice;
+    totalExpectedRent =
+      renewalPrice * (validRecords.length - 1) + newTenantPrice;
   }
 
   let totalDaysPaidFor = 0;
@@ -418,7 +416,8 @@ export function calculateOutstandingBalance(
   });
 
   // Calculate daily rate and consumed rent
-  const dailyRate = totalDaysPaidFor > 0 ? totalExpectedRent / totalDaysPaidFor : 0;
+  const dailyRate =
+    totalDaysPaidFor > 0 ? totalExpectedRent / totalDaysPaidFor : 0;
   const consumedRent = dailyRate * totalDaysSpent;
 
   return totalExpectedRent - consumedRent;
@@ -479,43 +478,84 @@ export type RentPeriod =
   | "nonennial"
   | "decennial";
 
+// export const calculateDueDate = (
+//   startDate: Dayjs,
+//   rentPeriod: RentPeriod
+// ): Dayjs => {
+//   switch (rentPeriod) {
+//     case "daily":
+//       return startDate.add(1, "day");
+//     case "weekly":
+//       return startDate.add(1, "week");
+//     case "monthly":
+//       return startDate.add(1, "month");
+//     case "quarterly":
+//       return startDate.add(3, "month");
+//     case "yearly":
+//       return startDate.add(1, "year");
+//     case "biennially":
+//       return startDate.add(2, "year");
+//     case "triennially":
+//       return startDate.add(3, "year");
+//     case "quadrennial":
+//       return startDate.add(4, "year");
+//     case "quinquennial":
+//       return startDate.add(5, "year");
+//     case "sexennial":
+//       return startDate.add(6, "year");
+//     case "septennial":
+//       return startDate.add(7, "year");
+//     case "octennial":
+//       return startDate.add(8, "year");
+//     case "nonennial":
+//       return startDate.add(9, "year");
+//     case "decennial":
+//       return startDate.add(10, "year");
+//     default:
+//       return startDate.add(1, "month");
+//   }
+// };
+
+
+// NOW WE'RE REMOVING 1 DAY
 export const calculateDueDate = (
   startDate: Dayjs,
   rentPeriod: RentPeriod
 ): Dayjs => {
   switch (rentPeriod) {
     case "daily":
-      return startDate.add(1, "day");
+      return startDate.add(1, "day").subtract(1, "day");
     case "weekly":
-      return startDate.add(1, "week");
+      return startDate.add(1, "week").subtract(1, "day");
     case "monthly":
-      return startDate.add(1, "month");
+      return startDate.add(1, "month").subtract(1, "day");
     case "quarterly":
-      return startDate.add(3, "month");
+      return startDate.add(3, "month").subtract(1, "day");
     case "yearly":
-      return startDate.add(1, "year");
+      return startDate.add(1, "year").subtract(1, "day");
     case "biennially":
-      return startDate.add(2, "year");
+      return startDate.add(2, "year").subtract(1, "day");
     case "triennially":
-      return startDate.add(3, "year");
+      return startDate.add(3, "year").subtract(1, "day");
     case "quadrennial":
-      return startDate.add(4, "year");
+      return startDate.add(4, "year").subtract(1, "day");
     case "quinquennial":
-      return startDate.add(5, "year");
+      return startDate.add(5, "year").subtract(1, "day");
     case "sexennial":
-      return startDate.add(6, "year");
+      return startDate.add(6, "year").subtract(1, "day");
     case "septennial":
-      return startDate.add(7, "year");
+      return startDate.add(7, "year").subtract(1, "day");
     case "octennial":
-      return startDate.add(8, "year");
+      return startDate.add(8, "year").subtract(1, "day");
     case "nonennial":
-      return startDate.add(9, "year");
+      return startDate.add(9, "year").subtract(1, "day");
     case "decennial":
-      return startDate.add(10, "year");
+      return startDate.add(10, "year").subtract(1, "day");
     default:
-      return startDate.add(1, "month");
+      return startDate.add(1, "month").subtract(1, "day");
   }
 };
+
 
 export const transformDocuments = (docs: any) => {
   return docs.flatMap((doc: any) => {

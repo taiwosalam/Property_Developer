@@ -55,6 +55,7 @@ import {
   VoiceVisualizer,
 } from "@hasma/react-voice-visualizer";
 import { getLocalStorage } from "@/utils/local-storage";
+import { MessageInput } from "@/components/Message/messageInput";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { setChatData } = useChatStore();
@@ -253,8 +254,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                 )}
               </>
             )}
-            {/* STICKY PLUS */}
-            <div className="absolute bottom-5 z-[10]">
+            {/* STICKY PLUS --> BE CAREFUL NOT TO REMOVE MAX-W-50PX FOR THE STICKY BUTTON., IT TOOK ME OVER 5 HRS DEBUG 😪😥*/}
+            <div className="fixed bottom-20 z-[10] max-w-[50px] border-red-500 border">
               <Modal>
                 <ModalTrigger asChild>
                   <button
@@ -302,7 +303,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                           />
                         </ModalContent>
                       </Modal>
-                      <CommentTextArea
+                      <MessageInput
                         name="chat"
                         id="chat"
                         placeholder="Type your message here"

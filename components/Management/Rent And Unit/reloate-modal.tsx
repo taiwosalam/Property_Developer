@@ -35,8 +35,9 @@ const RelocateModal = ({ unit_id }: { unit_id: string }) => {
       <WalletModalPreset title="Relocate">
         <div className="custom-flex-col gap-6 justify-between">
           <p className="text-sm dark:text-darkText-1">
-            Your actions indicate that the occupant have already relocated from
-            the current unit of the estate. If you proceed, you will lose unit
+            Your action suggests that the occupant has already relocated or
+            moved out of the facility or estate unit. If you choose to proceed,
+            the occupant&apos;s record will be permanently removed from the unit&apos;s
             data.
           </p>
           <button

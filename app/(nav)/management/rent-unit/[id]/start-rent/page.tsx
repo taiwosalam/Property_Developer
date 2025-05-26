@@ -44,6 +44,7 @@ import { Currency } from "@/utils/number-formatter";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { AgreementPreview } from "@/components/Modal/tenant-document";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import FullPageLoader from "@/components/Loader/start-rent-loader";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -130,9 +131,9 @@ const StartRent = () => {
       selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
 
     const IS_FACILITY = propertyType === "facility";
-
-    if (!IS_FACILITY) {
-      // Open modal for non-facility tenants
+    
+    if (!IS_FACILITY && !isPastDate) {
+      // Open modal for non-facility and non-past date cases
       setIsAgreementModalOpen(true);
       return;
     }
@@ -184,8 +185,10 @@ const StartRent = () => {
       has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 1,
-      has_document: 1,
-      doc_file: doc_file,
+      has_document: isPastDate ? 0 : 1, // NOW WHEN PAST DATE IS SELECTED, NO DOCUMENT IS REQUIRED
+      ...(isPastDate ? {} : { doc_file }),
+      // has_document: 1,
+      // doc_file: doc_file,
     };
 
     const IS_FACILITY = propertyType === "facility";
@@ -225,6 +228,14 @@ const StartRent = () => {
     setDisableInput(reqLoading || pdfLoading);
   }, [reqLoading, pdfLoading]);
 
+  if (reqLoading || pdfLoading) {
+    return (
+      <FullPageLoader
+        text="Submitting rent..."
+        onClose={() => setReqLoading(false)} // For testing only
+      />
+    );
+  }
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;

@@ -64,7 +64,7 @@ const RenewRent = () => {
   const isRental = propertyType === "rental";
 
   // Zustand store
-  const { setOccupant, occupant, penaltyAmount, setUnitBalance, unitBalance } =
+  const { setOccupant, occupant, penaltyAmount, setUnitBalance, unitBalance, overduePeriods } =
     useOccupantStore();
 
   // State
@@ -121,7 +121,6 @@ const RenewRent = () => {
   const rentalData = getRentalData(unitData);
   const estateData = getEstateData(unitData);
   const estateSettingsDta = getEstateSettingsData(unitData);
-
   console.log("passed apiData", apiData);
 
   // PENDING INVOICE REPRESENTS PART PAYMENT TENANT MADE
@@ -341,6 +340,8 @@ const RenewRent = () => {
     }
   };
 
+  console.log("isUpfrontPaymentChecked", isUpfrontPaymentChecked);
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -386,7 +387,10 @@ const RenewRent = () => {
                   <RenewalFee
                     setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
                   />
-                  <OwingFee show={isUpfrontPaymentChecked} />
+                  {/* <OwingFee show={isUpfrontPaymentChecked} /> */}
+                  <OwingFee
+                    show={isUpfrontPaymentChecked || overduePeriods > 0}
+                  />
 
                   <RenewalRent
                     setStartDate={setStartDate}

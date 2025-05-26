@@ -61,7 +61,7 @@ export const RentDetails: React.FC<{
   const renewalRentDetailItems = [
     { label: "Start Date", value: startDate },
     { label: "Due Date", value: dueDate },
-    { label: `${period} Rent`, value: rentFee },
+    { label: `${period} ${isRental ? "Rent" : "Fee"}`, value: rentFee },
     { label: `Inspection Fee`, value: unitData.inspection_fee },
     { label: `Legal Fee`, value: unitData.legal_fee },
     { label: `Caution Fee`, value: unitData.caution_fee },

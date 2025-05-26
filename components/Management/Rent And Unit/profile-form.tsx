@@ -48,8 +48,13 @@ export const ProfileForm: React.FC<{
   const [rentPeriod, setRentPeriod] = useState<RentPeriod>(period);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const { setGlobalInfoStore, rentStartDate, rentEndDate, selectedOccupant, tenantLoading } =
-    useGlobalStore();
+  const {
+    setGlobalInfoStore,
+    rentStartDate,
+    rentEndDate,
+    selectedOccupant,
+    tenantLoading,
+  } = useGlobalStore();
   const isWebUser = selectedOccupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = selectedOccupant?.userTag?.toLowerCase() === "mobile";
 
@@ -125,11 +130,12 @@ export const ProfileForm: React.FC<{
       return;
     }
     const formattedStartDate = startDate.format("YYYY-MM-DD");
+    const formattStartDate = startDate.format("MMM DD YYYY");
     setStart_date(formattedStartDate);
-    setGlobalInfoStore("rentStartDate", formattedStartDate);
+    setGlobalInfoStore("rentStartDate", formattStartDate);
     const calculatedDueDate = calculateDueDate(startDate, rentPeriod);
     setDueDateLocal(calculatedDueDate);
-    setGlobalInfoStore("rentEndDate", calculatedDueDate?.format("YYYY-MM-DD"));
+    setGlobalInfoStore("rentEndDate", calculatedDueDate?.format("MMM DD YYYY"));
     setDueDate?.(calculatedDueDate);
     const isPast = startDate.isBefore(dayjs(), "day");
     setGlobalInfoStore("isPastDate", isPast); // Update store
@@ -173,7 +179,8 @@ export const ProfileForm: React.FC<{
         : prev.mobile_notification,
       create_invoice:
         currency !== "naira" && isMobileUser
-          ? false
+          // ? false
+          ? true
           : !isMobileUser
           ? false
           : prev.create_invoice,
@@ -286,9 +293,8 @@ export const ProfileForm: React.FC<{
           </p>
           {nonNaira && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              Your property was listed in a currency other than Naira. As a
-              result, automatic payments and wallet transactions are not
-              supported. You will need to handle all payments manually.
+              The property was listed in a currency other than Naira. You will
+              need to handle all payments manually.
             </p>
           )}
         </div>
@@ -296,13 +302,12 @@ export const ProfileForm: React.FC<{
         <div className="custom-flex-col gap-1">
           <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
             {`Confirms that you have received payment for the 
-          ${isRental ? "rent" : "counting"}.`}
+          ${isRental ? "rent" : "management"}.`}
           </p>
           {nonNaira && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              Your property was listed in a currency other than Naira. As a
-              result, automatic payments and wallet transactions are not
-              supported. You will need to handle all payments manually.
+              The property was listed in a currency other than Naira. You will
+              need to handle all payments manually.
             </p>
           )}
         </div>
@@ -325,8 +330,9 @@ export const ProfileForm: React.FC<{
           </p>
           {nonNaira && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              Your property was listed in a currency other than Naira. You will
-              need to handle all payments manually.
+              The property was listed in a currency other than Naira. As a
+              result, automatic payments and wallet transactions are not
+              supported. You will need to handle all payments manually.
             </p>
           )}
         </div>

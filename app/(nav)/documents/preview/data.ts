@@ -220,15 +220,15 @@ const transformParties = (
 ): DocumentPreviewData["parties"] => {
   const landlordName =
     // document.landlord_name ||
-    document.property?.landlord?.profile?.name ||
-    "--- ---";
+    document.property?.landlord?.profile?.name || "--- ---";
   const tenantName = selectedOccupant?.name || "--- ---";
   return { landlord: landlordName, tenant: tenantName };
 };
 
 // 2. Transform Property Description
 const transformPropertyDescription = (unitData: any, property: any): string => {
-  return `in respect of a ${unitData?.unit_name || "--- ---"} situate at ${
+  const details = transformUnitDetails(unitData);
+  return `in respect of ${details || "--- ---"} situate at ${
     unitData?.address || property.full_address || "--- ---"
   }, ${unitData?.city_area || property.city_area || "--- ---"}, ${
     unitData?.local_government || property.local_government || "--- ---"
@@ -309,13 +309,17 @@ const transformAttestation = (
   tenantName: string,
   selectedOccupant?: Occupant,
   unitData?: any,
-  property?: any
+  property?: any,
+  rentStartDate?: string
 ): DocumentPreviewData["attestation"] => {
-  const date = document.created_date || "--- ---";
+  const date = rentStartDate || "--- ---";
   const landlord = {
     name: landlordName,
-    address:
-      `${document.property?.landlord?.profile?.address || "--- ---"}, ${document.property?.landlord?.profile?.lga || "--- ---"}, ${document.property?.landlord?.profile?.city || "--- ---"}, ${document.property?.landlord?.profile?.state || "--- ---"}`
+    address: `${document.property?.landlord?.profile?.address || "--- ---"}, ${
+      document.property?.landlord?.profile?.lga || "--- ---"
+    }, ${document.property?.landlord?.profile?.city || "--- ---"}, ${
+      document.property?.landlord?.profile?.state || "--- ---"
+    }`,
   };
   const tenant = {
     name: tenantName,
@@ -385,7 +389,7 @@ const transformClauses = (
       title: "NOW THIS AGREEMENT WITNESSES AS FOLLOWS",
       subClauses: [
         `The Landlord hereby lets to the Tenant and the Tenant hereby accepts to let the <b>${
-          unitData?.unit_name || "--- ---"
+          unitDetails || "--- ---"
         }</b> and its appurtenances being <b>at ${
           unitData?.address || property?.full_address || "--- ---"
         }, ${unitData?.city_area || property?.city_area || "--- ---"}, ${
@@ -395,21 +399,17 @@ const transformClauses = (
         }</b> paying the sum of <b>${
           unitData?.newTenantPrice || formatFee("0", currency) || "--- ---"
         }</b> only as Rent, the receipt of which the Landlord hereby acknowledges.`,
-        `The tenancy hereby created for a term of ${
-          unitData?.fee_period
-        } period certain and definite, commencing from the <b>${
-          document?.created_date||
-          dayjs(rentStartDate).format("MMM DD YYYY") ||
-          "--- ---"
-        }</b> and shall terminate on the <b>${
-          dayjs(rentEndDate).format("MMM DD YYYY") || "--- ---"
-        }
+        `The tenancy hereby created for a term of ${period} period certain and definite, commencing from the <b>${
+          rentStartDate || "--- ---"
+        }</b> and shall terminate on the <b>${rentEndDate || "--- ---"}.
         </b>`,
         ...(showCaution
           ? [
               `The Tenant shall, upon execution of this Agreement, pay a refundable caution deposit in the sum of ${
                 unitData?.caution_fee || "--- ---"
-              }, which shall be held in trust by the Landlord or the Property Manager as security against any loss, damage, or breach of the terms and conditions of this Tenancy Agreement. The said deposit shall be refundable, without interest, to the Tenant within thirty (30) days of the lawful termination or expiration of the tenancy, provided that the premises are vacated in good condition. Deductions may be made from the caution deposit for the cost of repairs, replacements, or other charges arising from any default by the Tenant.`,
+              }, which shall be held in trust by the ${
+                unitData?.caution_deposit || "--- ---"
+              } as security against any loss, damage, or breach of the terms and conditions of this Tenancy Agreement. The said deposit shall be refundable, without interest, to the Tenant within thirty (30) days of the lawful termination or expiration of the tenancy, provided that the premises are vacated in good condition. Deductions may be made from the caution deposit for the cost of repairs, replacements, or other charges arising from any default by the Tenant.`,
             ]
           : []),
         ...(chargePenalty
@@ -475,7 +475,6 @@ export const transformDocumentData = (
   const currency = unitData?.currency || property?.currency || "naira";
   const chargePenalty = property.rent_penalty !== 0;
 
-
   const parties = transformParties(document, selectedOccupant);
   const propertyDescription = transformPropertyDescription(unitData, property);
   const attorney = transformAttorney(templateDocument);
@@ -487,7 +486,8 @@ export const transformDocumentData = (
     parties.tenant,
     selectedOccupant,
     unitData,
-    property
+    property,
+    rentStartDate
   );
   const clauses = transformClauses(
     document,
@@ -511,7 +511,6 @@ export const transformDocumentData = (
     clauses,
   };
 };
-
 
 // export const transformDocumentData = (
 //   data: any,

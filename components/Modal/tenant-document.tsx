@@ -128,18 +128,6 @@ export const AgreementPreview = ({
   return (
     <div className="agreement-preview-container">
       <div className="agreement-preview-header">
-        {/* {onClose && (
-          <Button
-            type="button"
-            onClick={onClose}
-            size="custom"
-            className="agreement-preview-close-button"
-            variant="sky_blue"
-            aria-label="Close modal"
-          >
-            Close
-          </Button>
-        )} */}
       </div>
       <div className="agreement-preview-content">
         <div ref={firstPageRef} className="agreement-preview-first-page">

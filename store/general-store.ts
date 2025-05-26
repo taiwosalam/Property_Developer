@@ -43,6 +43,7 @@ interface GlobalStoreState {
   vehicle_records?: VehicleRecordsType[];
   rents?: Rent[];
   emails?: EmailPageData;
+  overduePeriods: number | null;
 
   rentStartDate: string | null;
   rentEndDate: string | null;
@@ -151,8 +152,12 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   isValidDateRange: true,
   setIsValidDateRange: (isValid: boolean) => set({ isValidDateRange: isValid }),
   currentRentStats: null,
-  // timeRange: "last_30_days",
-  timeRange: "90d",
+  timeRange: "last_30_days",
+
+  overduePeriods: null,
+
+  
+  // timeRange: "90d",
   selectedDateRange: undefined,
   unitData: null,
   setSelectedOccupant: (occupant) => set({ selectedOccupant: occupant }),
