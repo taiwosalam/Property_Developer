@@ -127,6 +127,219 @@
 
 
 
+
+
+
+
+
+
+
+// import { useState, useEffect, useMemo } from "react";
+// import { RentSectionTitle } from "../rent-section-container";
+// import { FeeDetails } from "../rent-section-container";
+// import { FeeDetail } from "../types";
+// import { currencySymbols } from "@/utils/number-formatter";
+// import { useRenewRentContext } from "@/utils/renew-rent-context";
+// import { calculateOverduePeriods } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
+// import { calculateOwingAmountAndPeriods, getOwingFeeDetails } from "./data";
+// import { calculateRentPenalty } from "@/app/(nav)/management/rent-unit/data";
+// import { useOccupantStore } from "@/hooks/occupant-store";
+// import { RentPeriod } from "../data";
+
+// const OwingFee = ({ show = false }: { show?: boolean }) => {
+//   const { isRental, unitData, currency, due_date, start_date, isUpfrontPaymentChecked } =
+//     useRenewRentContext();
+
+//   console.log("unitDaya", unitData);
+//   console.log("due_date", due_date);
+//   // Zustand store
+//   const { penaltyAmount, setPenaltyAmount, setOverduePeriods, overduePeriods } = useOccupantStore();
+//   const [owingAmount, setOwingAmount] = useState<number>(0);
+//   // const [overduePeriods, setOverduePeriods] = useState<number>(0);
+
+//   const chargePenalty = unitData.chargePenalty;
+//   // const chargePenalty = true; //TODO: UNCOMMENT THE TOP
+//   const rent_penalty_setting = unitData.rent_penalty_setting;
+//   const feePeriod = unitData.fee_period;
+//   const rentAmount = Number(unitData.fee_amount);
+//   const renewalTenantTotalPrice = Number(unitData.renewalTenantTotalPrice) || 0;
+
+//   console.log("overduePeriods", overduePeriods)
+
+//   // useEffect(() => {
+//   //   if (due_date && unitData.fee_period && renewalTenantTotalPrice > 0) {
+
+//   //     // Calculate owing amount and periods
+//   //     const { overduePeriods, owingAmount } = calculateOwingAmountAndPeriods({
+//   //       start_date,
+//   //       due_date,
+//   //       feePeriod: feePeriod as RentPeriod,
+//   //       renewalTenantTotalPrice,
+//   //     });
+
+//   //     // Calculate penalty amount
+//   //     const periods = calculateOverduePeriods(
+//   //       due_date,
+//   //       unitData.fee_period as any
+//   //     );
+//   //     const calculatedOwing =
+//   //       periods * Number(unitData.renewalTenantTotalPrice);
+
+//   //     const penaltyAmount = calculateRentPenalty(
+//   //       chargePenalty,
+//   //       rent_penalty_setting,
+//   //       rentAmount,
+//   //       feePeriod as any,
+//   //       periods
+//   //     );
+//   //     setPenaltyAmount(penaltyAmount);
+//   //     setOwingAmount(calculatedOwing);
+//   //     // setOverduePeriods(periods);
+//   //     setOverduePeriods(overduePeriods);
+//   //   }
+//   // }, [
+//   //   due_date,
+//   //   unitData.fee_period,
+//   //   unitData.renewalTenantTotalPrice,
+//   //   chargePenalty,
+//   //   rent_penalty_setting,
+//   //   rentAmount,
+//   //   feePeriod,
+//   //   setPenaltyAmount,
+//   // ]);
+
+//   useEffect(() => {
+//     if (start_date && due_date && feePeriod && renewalTenantTotalPrice > 0) {
+//       // Calculate owing amount and periods
+//       const { overduePeriods, owingAmount } = calculateOwingAmountAndPeriods({
+//         start_date,
+//         due_date,
+//         feePeriod: feePeriod as RentPeriod,
+//         renewalTenantTotalPrice,
+//       });
+
+//       // Keep existing penalty calculation
+//       const calculatedPenalty = calculateRentPenalty(
+//         chargePenalty,
+//         rent_penalty_setting,
+//         rentAmount,
+//         feePeriod as RentPeriod,
+//         overduePeriods
+//       );
+
+//       console.log("overduePeriods", overduePeriods);
+//       console.log("owingAmount", owingAmount);
+//       console.log("penaltyAmount", calculatedPenalty);
+
+//       setOverduePeriods(overduePeriods);
+//       setOwingAmount(owingAmount);
+//       setPenaltyAmount(calculatedPenalty);
+//     } else {
+//       console.log("Missing data for owing calculation:", {
+//         start_date,
+//         due_date,
+//         feePeriod,
+//         renewalTenantTotalPrice,
+//       });
+//     }
+//   }, [
+//     start_date,
+//     due_date,
+//     feePeriod,
+//     renewalTenantTotalPrice,
+//     chargePenalty,
+//     rent_penalty_setting,
+//     rentAmount,
+//     setPenaltyAmount,
+//     setOverduePeriods,
+//   ]);
+
+//   const feeDetails = useMemo(
+//     () =>
+//       getOwingFeeDetails({
+//         isRental,
+//         currency: currency as keyof typeof currencySymbols,
+//         owingAmount,
+//         overduePeriods,
+//         unitData,
+//         penaltyAmount,
+//       }),
+//     [isRental, currency, owingAmount, overduePeriods, unitData, penaltyAmount]
+//   );
+
+//   console.log("penaltyAmount", penaltyAmount);
+//   console.log("feeDetails", feeDetails);
+
+//   // Render if show is true and either owingAmount or penaltyAmount is non-zero
+//   if (!show || (owingAmount <= 0 && penaltyAmount <= 0)) {
+//     console.log("OwingFee not rendered:", { show, owingAmount, penaltyAmount });
+//     return null;
+//   }
+
+//   // const feeDetails = useMemo(
+//   //   () =>
+//   //     getOwingFeeDetails({
+//   //       isRental,
+//   //       currency: currency as keyof typeof currencySymbols,
+//   //       owingAmount,
+//   //       overduePeriods,
+//   //       unitData,
+//   //       penaltyAmount,
+//   //     }),
+//   //   [isRental, currency, owingAmount, overduePeriods, unitData]
+//   // );
+
+//   console.log("penaltyAmount", penaltyAmount);
+//   console.log("feeDetails", feeDetails);
+//   // if (owingAmount <= 0 || !isUpfrontPaymentChecked) {
+//   //   return null;
+//   // }
+
+//   if (!show || owingAmount <= 0) {
+//     return null;
+//   }
+
+//   return (
+//     <div className="space-y-6">
+//       <RentSectionTitle>Outstanding Details</RentSectionTitle>
+//       <FeeDetails
+//         owing
+//         noEdit
+//         currency={currency}
+//         title={isRental ? "Breakdown" : "Breakdown"}
+//         feeDetails={feeDetails}
+//         total_package={
+//           Number(unitData.renewalTenantTotalPrice) + owingAmount + penaltyAmount
+//         }
+//         id={unitData.propertyId as string}
+//       />
+//     </div>
+//   );
+// };
+
+// export default OwingFee;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // "use client";
 // import React, { useEffect, useState } from "react";
 // // Imports

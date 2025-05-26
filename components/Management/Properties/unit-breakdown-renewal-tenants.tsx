@@ -17,9 +17,16 @@ const UnitBreakdownRenewalTenant = () => {
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
-  const agencyFeePercentage = parseFloat(
-    String(propertySettings?.agency_fee || "0")
-  );
+  const agencyFeePercentage = Number(propertySettings?.agency_fee || 0);
+
+  console.log("propertySettings", propertySettings);
+  const shouldChargeTenantAgencyFee =
+    propertySettings?.who_to_charge_renew_tenant?.toLowerCase() === "tenants" ||
+    propertySettings?.who_to_charge_renew_tenant?.toLowerCase() === "both";
+  console.log("shouldChargeTenantAgencyFee", shouldChargeTenantAgencyFee);
+
+  console.log("agencyFeePercentage", agencyFeePercentage);
+
   const IS_RENTAL = propertyType === "rental";
   const [otherChargesInput, setOtherChargesInput] = useState(
     !!parseFloat(unitData?.renew_other_charge || "0")
@@ -29,6 +36,9 @@ const UnitBreakdownRenewalTenant = () => {
     return {
       rentAmount: unitData?.renew_fee_amount
         ? formatNumber(parseFloat(unitData.renew_fee_amount))
+        : "",
+      agencyFee: unitData?.agency_fee
+        ? formatNumber(parseFloat(unitData.agency_fee))
         : "",
       serviceCharge: unitData?.renew_service_charge
         ? formatNumber(parseFloat(unitData.renew_service_charge))
@@ -46,6 +56,7 @@ const UnitBreakdownRenewalTenant = () => {
     };
   }, [
     unitData?.renew_fee_amount,
+    unitData?.agency_fee,
     unitData?.renew_service_charge,
     unitData?.renew_other_charge,
     unitData?.renew_vat,
@@ -53,8 +64,14 @@ const UnitBreakdownRenewalTenant = () => {
   ]);
 
   const [formValues, setFormValues] = useState(initialFormValues);
-  const { rentAmount, serviceCharge, vat, totalPackage, otherCharges } =
-    formValues;
+  const {
+    rentAmount,
+    agencyFee,
+    serviceCharge,
+    vat,
+    totalPackage,
+    otherCharges,
+  } = formValues;
   type FormField = keyof typeof formValues;
 
   // Update formValues based on input changes
@@ -94,10 +111,25 @@ const UnitBreakdownRenewalTenant = () => {
     }));
   }, [rentAmount, propertySettings?.VAT]);
 
+  // Calculate Agency Fee based on rentAmount and agencyFeePercentage
+  useEffect(() => {
+    const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
+    const calculatedAgencyFee = shouldChargeTenantAgencyFee
+      ? (rentAmountValue * agencyFeePercentage) / 100
+      : 0;
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      agencyFee: formatNumber(calculatedAgencyFee.toFixed(2)),
+    }));
+  }, [rentAmount, agencyFeePercentage, shouldChargeTenantAgencyFee]);
+
+
   // Calculate the total package including VAT if enabled
   useEffect(() => {
     const total =
       (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
+      (parseFloat(agencyFee.replace(/,/g, "")) || 0) +
       (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
       (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
       (parseFloat(vat.replace(/,/g, "")) || 0);
@@ -105,7 +137,7 @@ const UnitBreakdownRenewalTenant = () => {
       ...prevValues,
       totalPackage: formatNumber(total.toFixed(2)),
     }));
-  }, [rentAmount, serviceCharge, otherCharges, vat]);
+  }, [rentAmount, agencyFee, serviceCharge, otherCharges, vat]);
 
   // Reset form when formResetKey changes
   useEffect(() => {
@@ -118,7 +150,8 @@ const UnitBreakdownRenewalTenant = () => {
   return (
     <div>
       <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-        Unit Fee Breakdown - {IS_RENTAL ? " Renewal Tenants" : " Renewal Occupants"}
+        Unit Fee Breakdown -{" "}
+        {IS_RENTAL ? " Renewal Tenants" : " Renewal Occupants"}
       </h4>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -151,6 +184,17 @@ const UnitBreakdownRenewalTenant = () => {
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
         />
+        {shouldChargeTenantAgencyFee && (
+          <Input
+            id="renew_agency_fee"
+            label="Agency Fee"
+            inputClassName="bg-white"
+            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+            value={agencyFee}
+            readOnly
+            type="text"
+          />
+        )}
         {/* Only display VAT input if VAT is enabled */}
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input

@@ -96,7 +96,8 @@ export const Attestation: React.FC<AttestationProps> = ({
 }) => (
   <div className="flex flex-col items-start text-[30px]">
     <p>
-      <strong>THIS TENANCY AGREEMENT</strong> made this {date}
+      <strong>THIS TENANCY AGREEMENT</strong> made this day of {date}{" "}
+      <strong>BETWEEN</strong>
     </p>
     <p className="mt-4">
       <span className="uppercase font-bold">{landlord.name} </span>
@@ -110,7 +111,7 @@ export const Attestation: React.FC<AttestationProps> = ({
     <p className="uppercase my-4 font-bold">AND</p>
     <p>
       <span>
-        <b className="font-bold">{tenant.name} </b>
+        <b className="uppercase font-bold">{tenant.name} </b>
         <span>
           of <b className="font-bold">{tenant.address} </b> (hereinafter
           referred to as the <b className="font-bold"> “TENANT” </b> which
@@ -172,7 +173,6 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
   witness,
   lawFirm,
 }) => {
-
   console.log("landlord", landlord);
   console.log("tenant", tenant);
   return (
@@ -194,11 +194,14 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
           {tenant?.name}
         </p>
         <p className="uppercase text-[25px] font-bold tracking-wide">
-          SIGNED, SEALED, AND DELIVERED by the within-named Landlord
+          SIGNED, SEALED, AND DELIVERED by the within-named Landlord/landlady
         </p>
       </div>
 
       <div className="mt-6 flex flex-col gap-1">
+        <p>
+          -----------------------------------------------------------------------------
+        </p>
         <p className="uppercase text-[25px] font-bold tracking-wide">
           {landlord?.name}
         </p>
@@ -206,7 +209,7 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
 
       <div className="presence mt-[50px]">
         <h2 className="uppercase text-[25px] font-bold tracking-wide mb-4">
-          By his lawful Attorney
+          Witness By his lawful Attorney
         </h2>
         <Signature noTitle />
       </div>

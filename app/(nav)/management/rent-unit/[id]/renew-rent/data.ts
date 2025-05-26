@@ -22,11 +22,59 @@ export const getRentalData = (unit_data: any) => [
   { label: "Local Government", value: unit_data?.localGovernment || "____" },
   { label: "Full Address", value: unit_data?.address || "____" },
   { label: "Branch", value: unit_data?.branchName || "___" },
-  { label: "Account Officer", value: unit_data.account_officer || "____" }, // TODO: Replace dynamically if available
-  { label: "Landlord", value: unit_data.landlord || "___" }, // TODO: Replace dynamically if available
+  {
+    label: "Account Officer",
+    value: unit_data?.account_officer || unit_data.accountOfficer || "____",
+  }, // TODO: Replace dynamically if available
+  { label: "Landlord", value: unit_data?.landlord?.name || "___" }, // TODO: Replace dynamically if available
   { label: "Categories", value: unit_data?.categories || "____" },
   { label: "Unit ID", value: unit_data?.unit_id || "____" },
 ];
+
+// export const calculateOverduePeriods = (
+//   dueDate: string,
+//   period: RentPeriod
+// ): number => {
+//   const now = dayjs();
+//   const due = dayjs(dueDate, "DD/MM/YYYY");
+//   // Log the date comparison
+//   if (now.isBefore(due)) {
+//     return 0;
+//   }
+
+//   switch (period) {
+//     case "daily":
+//       return now.diff(due, "day");
+//     case "weekly":
+//       return now.diff(due, "week");
+//     case "monthly":
+//       return now.diff(due, "month");
+//     case "quarterly":
+//       return now.diff(due, "quarter");
+//     case "yearly":
+//       return now.diff(due, "year");
+//     case "biennially":
+//       return Math.floor(now.diff(due, "year") / 2);
+//     case "triennially":
+//       return Math.floor(now.diff(due, "year") / 3);
+//     case "quadrennial":
+//       return Math.floor(now.diff(due, "year") / 4);
+//     case "quinquennial":
+//       return Math.floor(now.diff(due, "year") / 5);
+//     case "sexennial":
+//       return Math.floor(now.diff(due, "year") / 6);
+//     case "septennial":
+//       return Math.floor(now.diff(due, "year") / 7);
+//     case "octennial":
+//       return Math.floor(now.diff(due, "year") / 8);
+//     case "nonennial":
+//       return Math.floor(now.diff(due, "year") / 9);
+//     case "decennial":
+//       return Math.floor(now.diff(due, "year") / 10);
+//     default:
+//       return 0;
+//   }
+// };
 
 export const calculateOverduePeriods = (
   dueDate: string,
@@ -34,41 +82,62 @@ export const calculateOverduePeriods = (
 ): number => {
   const now = dayjs();
   const due = dayjs(dueDate, "DD/MM/YYYY");
+
   // Log the date comparison
-  if (now.isBefore(due)) {
+  console.log("calculateOverduePeriods inputs:", {
+    dueDate,
+    parsedDue: due.format("DD/MM/YYYY"),
+    now: now.format("DD/MM/YYYY"),
+    period,
+    isOverdue: now.isAfter(due),
+  });
+
+  // If due date is invalid, not overdue, or same day, return 0
+  if (!due.isValid() || now.isBefore(due) || now.isSame(due, "day")) {
+    console.log("Not overdue or invalid date:", {
+      dueDate,
+      isValid: due.isValid(),
+    });
     return 0;
   }
 
   switch (period) {
     case "daily":
-      return now.diff(due, "day");
+      // Use hours: any hours overdue counts as 1 period
+      return now.diff(due, "hour") > 0 ? 1 : 0;
     case "weekly":
-      return now.diff(due, "week");
+      // Use days: any days overdue counts as 1 period
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "monthly":
-      return now.diff(due, "month");
+      // Use days: any days overdue counts as 1 period
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "quarterly":
-      return now.diff(due, "quarter");
+      // Use months: any months overdue counts as 1 period
+      return Math.max(1, Math.ceil(now.diff(due, "month") / 3));
     case "yearly":
-      return now.diff(due, "year");
+      // Use quarters: each 3 months overdue counts as 1 period
+      return Math.max(1, Math.ceil(now.diff(due, "month") / 3));
     case "biennially":
-      return Math.floor(now.diff(due, "year") / 2);
+      // Use years: each year overdue counts as 1 period
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 2));
     case "triennially":
-      return Math.floor(now.diff(due, "year") / 3);
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 3));
     case "quadrennial":
-      return Math.floor(now.diff(due, "year") / 4);
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 4));
     case "quinquennial":
-      return Math.floor(now.diff(due, "year") / 5);
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 5));
     case "sexennial":
-      return Math.floor(now.diff(due, "year") / 6);
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 6));
     case "septennial":
-      return Math.floor(now.diff(due, "year") / 7);
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 7));
     case "octennial":
-      return Math.floor(now.diff(due, "year") / 8);
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 8));
     case "nonennial":
-      return Math.floor(now.diff(due, "year") / 9);
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 9));
     case "decennial":
-      return Math.floor(now.diff(due, "year") / 10);
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 10));
     default:
+      console.log("Unknown period:", period);
       return 0;
   }
 };
@@ -610,7 +679,6 @@ export const getBalanceBreakdown = (
     outstanding,
   };
 };
-
 
 export const getOwingBreakdown = (
   dueDate: string,

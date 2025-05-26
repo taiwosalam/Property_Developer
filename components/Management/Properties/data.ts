@@ -160,7 +160,8 @@ export const transformUnitFormData = (
     images: filteredImages, // All images except the first one
     default_image: defaultImage, // Keep as File or string
     vat_amount: parseFee(formData.vat_amount),
-    renew_vat_amount: parseFee(formData.renew_vat_amount)
+    renew_vat_amount: parseFee(formData.renew_vat_amount),
+    renew_agency_fee: parseFee(formData.renew_agency_fee)
   };
 
   return payload;
