@@ -200,7 +200,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   return (
     <>
       {isCustom && id ? null : (
-        <div className="flex flex-1 p-4 pr-0">
+        <div className="flex flex-1 p-4 pr-0 relative">
           <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
             <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
               <div className="flex-1 relative">
@@ -254,7 +254,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               </>
             )}
             {/* STICKY PLUS */}
-            <div className="absolute bottom-5 z-[10]">
+            <div className="fixed bottom-20 z-[10]">
               <Modal>
                 <ModalTrigger asChild>
                   <button

@@ -145,13 +145,13 @@ export const RenewalRent = ({
           value={startDate}
           onChange={setStartDate}
         />
-        <DateInput
+        {/* <DateInput
           id="due_date"
           label="Due Date"
           value={localDueDate}
           disabled
           className="opacity-50"
-        />
+        /> */}
       </div>
       <div className="flex items-center justify-start gap-4 flex-wrap mb-4">
         {/* {visibleCheckboxOptions.map(({ label, key }) => ( */}

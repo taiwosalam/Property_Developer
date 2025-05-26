@@ -149,6 +149,9 @@ const TenancyRecord = ({
     amount_paid: record.amount_paid
       ? `${CURRENCY} ${formatNumber(record.amount_paid)}`
       : "",
+    rent_amount: record.rent_amount
+      ? `${CURRENCY} ${formatNumber(record.rent_amount)}`
+      : "",
     details: record.details || "",
     start_date: record.start_date
       ? dayjs(record.start_date).format("MMM D, YYYY")
@@ -200,11 +203,11 @@ const TenancyRecord = ({
             }
             style={{ width: "130px" }}
           />
-          <DetailItem
+          {/* <DetailItem
             label="Period/Duration"
             value={period}
             style={{ width: "130px" }}
-          />
+          /> */}
           <DetailItem label="Email" value={email} style={{ width: "130px" }} />
           <DetailItem
             label="Renewal Rent"
@@ -225,6 +228,16 @@ const TenancyRecord = ({
             style={{ width: "130px" }}
           />
           <DetailItem
+            label="Move In"
+            value={"--- ---"}
+            style={{ width: "130px" }}
+          />
+          <DetailItem
+            label="Move Out"
+            value={"--- ---"}
+            style={{ width: "130px" }}
+          />
+          {/* <DetailItem
             label="Renewal Package"
             value={
               renew_total_package
@@ -236,7 +249,7 @@ const TenancyRecord = ({
                 : undefined
             }
             style={{ width: "130px" }}
-          />
+          /> */}
         </div>
         <Picture
           containerClassName="flex-shrink-0 custom-secondary-bg rounded-md"

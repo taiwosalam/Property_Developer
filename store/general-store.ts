@@ -43,6 +43,7 @@ interface GlobalStoreState {
   vehicle_records?: VehicleRecordsType[];
   rents?: Rent[];
   emails?: EmailPageData;
+  overduePeriods: number | null;
 
   rentStartDate: string | null;
   rentEndDate: string | null;
@@ -147,6 +148,10 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   currentUnit: null,
   currentRentStats: null,
   timeRange: "last_30_days",
+
+  overduePeriods: null,
+
+  
   // timeRange: "90d",
   selectedDateRange: undefined,
   unitData: null,

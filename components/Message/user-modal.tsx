@@ -120,7 +120,7 @@ const SelectChatUsersModal = ({
 
   return (
     <LandlordTenantModalPreset
-      heading="Select User"
+      heading="Contact List"
       noPaddingTop
       style={{
         width: isMobile ? "80%" : "40%",

@@ -23,6 +23,7 @@ import {
   formatNumber,
 } from "@/utils/number-formatter";
 import ServerError from "@/components/Error/ServerError";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 const PriceSection: React.FC<{
   period: string;
@@ -90,12 +91,7 @@ const UnitPreviewPage = () => {
     }
   }, [apiData]);
 
-  if (loading)
-    return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-      </div>
-    );
+  if (loading) return <PageCircleLoader />;
 
   if (isNetworkError) return <NetworkError />;
 

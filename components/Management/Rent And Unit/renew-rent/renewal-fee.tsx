@@ -3,6 +3,8 @@ import { RentSectionTitle } from "../rent-section-container";
 import { FeeDetails } from "../rent-section-container";
 import { FeeDetail } from "../types";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
+import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 
 const RenewalFee = ({
   setIsUpfrontPaymentChecked,
@@ -11,6 +13,17 @@ const RenewalFee = ({
 }) => {
   const { isRental, unitData, currency, isUpfrontPaymentChecked } =
     useRenewRentContext();
+  const shouldChargeTenantAgencyFee =
+    unitData?.whoToChargeRenew?.toLowerCase() === "tenants" ||
+    unitData?.whoToChargeRenew?.toLowerCase() === "both";
+
+  // Calculate agency fee (% of renewalTenantPrice)
+  const agencyFeeAmount = shouldChargeTenantAgencyFee
+    ? Number(unitData.renew_fee_amount) *
+      (Number(unitData?.agency_fee || 0) / 100)
+    : 0;
+
+  console.log("unitData got herew", unitData);
 
   const feeDetails: FeeDetail[] = [
     {
@@ -29,9 +42,23 @@ const RenewalFee = ({
       name: "Other Charges",
       amount: unitData.renew_other_charge as any,
     },
+    ...(shouldChargeTenantAgencyFee
+      ? [
+          {
+            name: "Agency Fee",
+            amount:
+              formatFee(agencyFeeAmount, unitData?.currency || "naira") || "₦0",
+          },
+        ]
+      : []),
   ];
 
   const TOTAL_FEE = Number(unitData.renewalTenantTotalPrice as any);
+
+  // Format TOTAL_FEE --> Already calculated while creating prroperty
+  // const TOTAL_FEE = shouldChargeTenantAgencyFee
+  //   ? Number(unitData.renewalTenantTotalPrice) + agencyFeeAmount
+  //   : Number(unitData.renewalTenantTotalPrice) || 0;
 
   return (
     <div className="space-y-6">

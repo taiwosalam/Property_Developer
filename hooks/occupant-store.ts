@@ -35,6 +35,8 @@ interface OccupantState {
   setDueDate: (date: string | null) => void;
   setModalIsOpen: (isOpen: boolean) => void;
   penaltyAmount: number;
+  overduePeriods: number;
+  setOverduePeriods: (periods: number) => void;
   setPenaltyAmount: (penalty: number) => void;
 }
 
@@ -57,6 +59,8 @@ export const useOccupantStore = create<OccupantState>((set) => ({
   startDate: null,
   dueDate: null,
   modalIsOpen: false,
+  overduePeriods: 0,
+  setOverduePeriods: (periods) => set({ overduePeriods: periods }),
   setSelectedUnitId: (unitId) => set({ selectedUnitId: unitId }),
   setPage: (page) => set({ page }),
   setUnitData: (data) => set({ unitData: data }),

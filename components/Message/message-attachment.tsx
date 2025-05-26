@@ -1,22 +1,24 @@
 import {
   AudioIcon,
-  DocumentIcon, 
-  EmojiIcon, 
-  GalleryIcon
-} from '@/public/icons/icons';
-import React from 'react'
+  DocumentIcon,
+  EmojiIcon,
+  GalleryIcon,
+} from "@/public/icons/icons";
+import React from "react";
 
 import {
   EmojiComponent,
   MessageAudioComponent,
   MessageDocumentComponent,
   MessageGalleryComponent,
-  MessageModalPreset
-} from './message-attachments-components';
-import useStep from '@/hooks/useStep';
+  MessageModalPreset,
+} from "./message-attachments-components";
+import useStep from "@/hooks/useStep";
 
-
-const MessageAttachment: React.FC<{ onEmojiSelect: (emoji: string) => void; id: string; }> = ({ onEmojiSelect, id }) => {
+const MessageAttachment: React.FC<{
+  onEmojiSelect: (emoji: string) => void;
+  id: string;
+}> = ({ onEmojiSelect, id }) => {
   const { activeStep, changeStep } = useStep(5);
 
   const options = [
@@ -36,13 +38,13 @@ const MessageAttachment: React.FC<{ onEmojiSelect: (emoji: string) => void; id: 
       name: "Audio",
       icon: <AudioIcon />,
       component: <MessageAudioComponent id={id} />,
-      heading: "Audio"
+      heading: "Audio",
     },
     {
       name: "Document",
       icon: <DocumentIcon />,
       component: <MessageDocumentComponent id={id} />,
-      heading: "Document"
+      heading: "Document",
     },
   ];
 
