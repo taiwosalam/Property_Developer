@@ -130,7 +130,9 @@ const Chat = () => {
 
   // Find user
   const userId = Number(id);
-  const user = messageUserData || users.find((u: UsersProps) => Number(u.id) === Number(userId));
+  const user =
+    messageUserData ||
+    users.find((u: UsersProps) => Number(u.id) === Number(userId));
 
   if (!user) {
     router.replace("/messages");
@@ -172,9 +174,7 @@ const Chat = () => {
         </div>
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-      {error && (
-          <div className="text-red-500 text-center p-2">{error}</div>
-        )}
+        {error && <div className="text-red-500 text-center p-2">{error}</div>}
         {conversations.length > 0 &&
           conversations.map((group, index) => (
             <Messages
@@ -190,25 +190,6 @@ const Chat = () => {
 };
 
 export default Chat;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // const Chat = () => {
 //   const router = useRouter();
