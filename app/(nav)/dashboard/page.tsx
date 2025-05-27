@@ -104,6 +104,7 @@ const Dashboard = () => {
   useRefetchOnEvent("refetch-users-msg", () => {
     refetchMsg({ silent: true });
   });
+  
   useEffect(() => {
     if (usersMessages) {
       const transformed = transformUsersMessages(usersMessages);

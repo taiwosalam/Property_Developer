@@ -100,6 +100,7 @@ interface GlobalStoreState {
     imageUrl: string;
     name: string;
     position: string; 
+    last_seen?: string;
   } | null;
 
   openDocumentModal: boolean;

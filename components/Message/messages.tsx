@@ -6,8 +6,6 @@ import { getLocalStorage } from "@/utils/local-storage";
 const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
   const user_id = useAuthStore((state) => state.user_id);
   const id = getLocalStorage("user_id")
-
-  console.log("messages lol", messages)
   
   return (
     <div className="custom-flex-col gap-8">

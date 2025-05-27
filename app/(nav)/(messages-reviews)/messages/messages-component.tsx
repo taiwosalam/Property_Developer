@@ -19,8 +19,14 @@ const NoMessage: React.FC<{ loading?: boolean }> = ({ loading }) => {
     <div className="w-full h-full flex items-center justify-center">
       <div className="custom-flex-col gap-6 max-w-[80%]">
         <div className="custom-flex-col gap-4">
-          <div className="flex justify-center">
-            <Image src={logo} alt="logo" width={200} height={200} />
+          <div className="flex justify-center h-[70px] w-[70px]">
+            <Image
+              src={logo}
+              alt="logo"
+              width={1000}
+              height={1000}
+              className="h-full w-full object-contain"
+            />
           </div>
           <p className="text-center text-text-quaternary dark:text-darkText-1 text-sm font-normal">
             You don&rsquo;t have any recent chats. Click on the contact list to

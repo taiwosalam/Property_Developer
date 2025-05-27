@@ -6,10 +6,12 @@ export interface MessageCardProps {
   fullname: string;
   messages?: number;
   verified?: boolean;
+  online?: boolean;
   highlight?: boolean;
   groupDesc?: string;
   onClick?: () => void;
   content_type?: string;
+  last_seen?: string;
 }
 
 export interface MessagesProps {
