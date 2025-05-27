@@ -39,6 +39,7 @@ export interface PageMessages {
   messages?: number;
   verified?: boolean;
   content_type?: string;
+  unread_count?: number;
 }[]
 
 

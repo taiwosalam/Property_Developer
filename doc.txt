@@ -301,7 +301,21 @@ export default Chat;
 
 
 
+  // useEffect(() => {
+  //   if (usersMessages) {
+  //     const transformed = transformUsersMessages(usersMessages).filter(
+  //       (msg) => msg.id !== loggedInUserId
+  //     );
+  //     setPageUsersMsg(transformed);
+  //     setChatData("users_messages", transformed);
+  //   }
+  // }, [usersMessages]);
 
+  // useEffect(() => {
+  //   if (usersData) {
+  //     setChatData("users", transformCompanyUsersData(usersData));
+  //   }
+  // }, [usersData]);
 
 
 

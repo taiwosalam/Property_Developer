@@ -184,7 +184,7 @@ const Step1Menu: React.FC<{
 
   return (
     <>
-      <button
+      {/* <button
         type="button"
         className={commonClasses}
         onClick={() => changeStep("next")}
@@ -195,7 +195,7 @@ const Step1Menu: React.FC<{
         ) : (
           <CheckboxDefault size={18} />
         )}
-      </button>
+      </button> */}
       {filterOptions.map((option, index) => (
         <button
           type="button"
@@ -207,7 +207,7 @@ const Step1Menu: React.FC<{
         >
           <span>{option.label}</span>
           <span
-            style={{ backgroundColor: option.bgColor || "#01BA4C" }}
+            style={{ backgroundColor: option.bgColor || "var(--primary-color)" }}
             className="text-white rounded-full p-1 flex items-center justify-center w-5 h-5"
           >
             {option.value}

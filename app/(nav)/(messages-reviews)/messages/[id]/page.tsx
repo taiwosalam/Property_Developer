@@ -15,6 +15,9 @@ import Link from "next/link";
 import useConversationListener from "@/hooks/useConversationListen";
 import api from "@/services/api";
 import { useGlobalStore } from "@/store/general-store";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { motion, AnimatePresence } from "framer-motion";
+import MessageUserProfileModal from "@/components/Message/message-user-profile";
 
 interface Message {
   id: number;
@@ -36,25 +39,28 @@ const Chat = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isPusherFailed, setIsPusherFailed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showContactInfo, setShowContactInfo] = useState(false);
 
   // Fetch messages from API
   const fetchMessages = useCallback(async () => {
     try {
       setError(null);
       const response = await api.get(`/messages/conversations/user/${id}`);
-      console.log("API response:", response.data);
       if (response.data.status === "success") {
         const mappedMessages: Message[] = response.data.messages.map(
           (msg: any) => ({
             id: msg.id,
             text: msg.content ?? null,
             senderId: msg.sender_id,
-            // timestamp: `${msg.date} ${msg.timestamp}`,
-            timestamp: `${msg.updated_at} ${msg.timestamp}`,
+            timestamp: `${msg.date} ${msg.timestamp}`,
             content_type: msg.content_type,
           })
         );
+        // Store conversations and receiver (from the first message)
         setChatData("conversations", mappedMessages);
+        if (response.data.messages.length > 0) {
+          setChatData("receiver", response.data.messages[0].receiver);
+        }
       } else {
         setError("Failed to load messages.");
       }
@@ -84,16 +90,37 @@ const Chat = () => {
       return;
     }
 
+    // Reset state immediately when id changes
     setIsLoading(true);
     setConversations([]);
     setChatData("conversations", []);
+    setChatData("receiver", null); // Clear receiver data
     fetchMessages();
 
     return () => {
       setConversations([]);
       setChatData("conversations", []);
+      setChatData("receiver", null); // Clear receiver on cleanup
     };
   }, [id, fetchMessages, setChatData]);
+
+  // // Initialize Pusher and fetch messages
+  // useEffect(() => {
+  //   if (!id) {
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+  //   setConversations([]);
+  //   setChatData("conversations", []);
+  //   fetchMessages();
+
+  //   return () => {
+  //     setConversations([]);
+  //     setChatData("conversations", []);
+  //   };
+  // }, [id, fetchMessages, setChatData]);
 
   // Polling when Pusher fails
   useEffect(() => {
@@ -129,10 +156,24 @@ const Chat = () => {
   });
 
   // Find user
+
   const userId = Number(id);
   const user =
     messageUserData ||
     users.find((u: UsersProps) => Number(u.id) === Number(userId));
+  const isOnline = user?.last_seen?.toLowerCase() === "online";
+  const showStatus = user?.last_seen?.toLowerCase() !== "offline";
+
+  //SHOW CONTACT INFO
+  useEffect(() => {
+    if (showStatus) {
+      const timer = setTimeout(() => {
+        setShowContactInfo(true);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showStatus]);
 
   if (!user) {
     router.replace("/messages");
@@ -150,27 +191,42 @@ const Chat = () => {
           <button onClick={() => router.push("/messages")}>
             <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
           </button>
-          <Link
-            href={`/management/staff-branch/${user.branch_id}/branch-staff/${user?.staff_id}`}
-            className="flex items-center gap-4 text-left"
-          >
-            <Picture
-              src={user?.imageUrl || empty}
-              alt="profile picture"
-              containerClassName="custom-secondary-bg rounded-full"
-              size={32}
-              rounded
-              status={false}
-            />
-            <div className="custom-flex-col">
-              <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {user?.name}
-              </p>
-              <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
-                Tap here for contact info
-              </p>
-            </div>
-          </Link>
+          <Modal>
+            <ModalTrigger>
+              <div className="flex items-center gap-4 text-left">
+                <Picture
+                  src={user?.imageUrl || empty}
+                  alt="profile picture"
+                  containerClassName="custom-secondary-bg rounded-full"
+                  size={35}
+                  rounded
+                  status={isOnline}
+                />
+                <div className="custom-flex-col">
+                  <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+                    {user?.name}
+                  </p>
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={showContactInfo ? "contact" : "status"}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal"
+                    >
+                      {showContactInfo
+                        ? "Tap here for contact info"
+                        : user.last_seen}
+                    </motion.p>
+                  </AnimatePresence>
+                </div>
+              </div>
+            </ModalTrigger>
+            <ModalContent>
+              <MessageUserProfileModal />
+            </ModalContent>
+          </Modal>
         </div>
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
@@ -190,171 +246,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
-// const Chat = () => {
-//   const router = useRouter();
-//   const { data, setChatData } = useChatStore();
-//   const { id } = useParams<{ id: string }>();
-//   const user_id = useAuthStore((state) => state.user_id);
-//   const users = data?.users?.users || [];
-//   const messageUserData = useGlobalStore((s) => s.messageUserData);
-//   const store_messages = data?.conversations || [];
-//   const [conversations, setConversations] = useState<any[]>([]);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [isPusherFailed, setIsPusherFailed] = useState(false);
-//   const [error, setError] = useState<string | null>(null);
-
-//   // Fetch messages from API
-//   const fetchMessages = useCallback(async () => {
-//     try {
-//       setError(null);
-//       const response = await api.get(`/messages/conversations/user/${id}`);
-//       if (response.data.status === "success") {
-//         const mappedMessages: Message[] = response.data.messages.map(
-//           (msg: any) => ({
-//             id: msg.id,
-//             text: msg.content ?? null,
-//             senderId: msg.sender_id,
-//             timestamp: `${msg.date} ${msg.timestamp}`,
-//             content_type: msg.content_type,
-//           })
-//         );
-//         setChatData("conversations", mappedMessages);
-//       } else {
-//         setError("Failed to load messages.");
-//       }
-//     } catch (error: any) {
-//       console.error("API error:", error.response?.data || error.message);
-//       setError("Failed to load messages. Please try again later.");
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   }, [id, setChatData]);
-
-//   // Handle new Pusher messages
-//   const handleNewMessage = useCallback(
-//     (newMessage: Message) => {
-//       const updatedConversations = [...store_messages, newMessage].sort(
-//         (a, b) => a.id - b.id
-//       );
-//       setChatData("conversations", updatedConversations);
-//     },
-//     [store_messages, setChatData]
-//   );
-
-//   // Initialize Pusher and fetch messages
-//   useEffect(() => {
-//     if (!id) {
-//       setIsLoading(false);
-//       return;
-//     }
-
-//     setIsLoading(true);
-//     setConversations([]);
-//     setChatData("conversations", []);
-//     fetchMessages();
-
-//     return () => {
-//       setConversations([]);
-//       setChatData("conversations", []);
-//     };
-//   }, [id, fetchMessages, setChatData]);
-
-//   // Polling when Pusher fails
-//   useEffect(() => {
-//     let pollingInterval: NodeJS.Timeout | null = null;
-
-//     if (isPusherFailed) {
-//       console.log("Pusher failed, switching to polling every 30 seconds...");
-//       pollingInterval = setInterval(() => {
-//         fetchMessages();
-//       }, 30000);
-//     }
-
-//     return () => {
-//       if (pollingInterval) {
-//         console.log("Stopping polling...");
-//         clearInterval(pollingInterval);
-//       }
-//     };
-//   }, [isPusherFailed, fetchMessages]);
-
-//   // Update grouped conversations when messages change
-//   useEffect(() => {
-//     if (store_messages.length > 0) {
-//       const groupedMessages = groupMessagesByDay(store_messages);
-//       setConversations(groupedMessages);
-//     }
-//   }, [store_messages]);
-
-//   // Pusher subscription
-//   useConversationListener(id, handleNewMessage, (error: any) => {
-//     console.error("Pusher connection failed:", error);
-//     setIsPusherFailed(true);
-//   });
-
-//   // Find user
-//   const userId = Number(id);
-//   const user = messageUserData || users.find((u: UsersProps) => u.id === userId);
-
-//   if (!user) {
-//     router.replace("/messages");
-//     return null;
-//   }
-
-//   if (isLoading) {
-//     return <ChatSkeleton />;
-//   }
-
-//   return (
-//     <>
-//       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
-//         <div className="flex items-center gap-3">
-//           <button onClick={() => router.push("/messages")}>
-//             <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
-//           </button>
-//           <Link
-//             href={`/management/staff-branch/${user.branch_id}/branch-staff/${user?.staff_id}`}
-//             className="flex items-center gap-4 text-left"
-//           >
-//             <Picture
-//               src={user?.imageUrl || empty}
-//               alt="profile picture"
-//               containerClassName="custom-secondary-bg rounded-full"
-//               size={32}
-//               rounded
-//               status={false}
-//             />
-//             <div className="custom-flex-col">
-//               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-//                 {user?.name}
-//               </p>
-//               <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
-//                 Tap here for contact info
-//               </p>
-//             </div>
-//           </Link>
-//         </div>
-//       </div>
-//       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-//         {error && (
-//           <div className="text-red-500 text-center p-2">{error}</div>
-//         )}
-//         {conversations.length > 0 ? (
-//           conversations.map((group, index) => (
-//             <Messages
-//               key={index}
-//               day={group.day}
-//               messages={group.messages}
-//               userId={user_id as string}
-//             />
-//           ))
-//         ) : (
-//           <p className="text-center text-text-disabled">No messages yet.</p>
-//         )}
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Chat;

@@ -92,6 +92,8 @@ const SelectChatUsersModal = ({
   //   setIsOpen(false);
   // };
 
+  console.log("filteredUsers", filteredUsers);
+
   const handleUserClicked = (user: UsersProps) => {
     try {
       const currentMessageUserData = getGlobalInfoStore("messageUserData");
@@ -155,6 +157,7 @@ const SelectChatUsersModal = ({
                 onFilterApply={handleFilterApply}
                 setSelectedLabel={setSelectedFilter}
                 filterOptions={[
+                  { label: "Director", value: filters.roles?.director ?? 0 },
                   {
                     label: "Branch Manager",
                     value: filters.roles?.manager ?? 0,
@@ -164,10 +167,9 @@ const SelectChatUsersModal = ({
                     value: filters.roles?.account ?? 0,
                   },
                   { label: "Staff", value: filters.roles?.staff ?? 0 },
-                  { label: "Director", value: filters.roles?.director ?? 0 },
-                  { label: "Landlord/Landlady", value: 0 },
-                  { label: "Tenant/Occupants", value: 0 },
-                  { label: "Service Provider", value: 0 },
+                  // { label: "Landlord/Landlady", value: 0 },
+                  // { label: "Tenant/Occupants", value: 0 },
+                  // { label: "Service Provider", value: 0 },
                 ]}
               />
             )}

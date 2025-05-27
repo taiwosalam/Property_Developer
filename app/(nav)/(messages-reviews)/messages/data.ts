@@ -52,6 +52,7 @@ export interface MessageUserPageTypes {
 export const transformCompanyUsersData = (
   res: CompanyUsersAPIResponse
 ): MessageUserPageTypes => {
+  console.log("res", res)
   return {
     users: res.data.users.map((u) => ({
       id: u.id,
@@ -60,6 +61,7 @@ export const transformCompanyUsersData = (
       name: u.name,
       imageUrl: u.profile_picture || empty,
       position: u.role,
+      // online: u.online,
     })),
     filters: {
       roles: {
@@ -73,10 +75,11 @@ export const transformCompanyUsersData = (
   };
 };
 
+
 export const transformUsersMessages = (
   data: ConversationsAPIResponse | null | undefined
 ): PageMessages[] => {
-  // console.log("data got", data)
+  console.log("data got", data)
   if (!data || !data.conversations) return []; // Ensure data exists
 
   return data.conversations.map((c) => {
@@ -111,6 +114,7 @@ export const transformUsersMessages = (
       // content_type: c.latest_message_type,
       unread_count: c.unread_count,
       online: c.participant_onlineStatus === "online",
+      last_seen: c.participant_onlineStatus,
     };
   });
 };
