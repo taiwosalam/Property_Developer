@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Images
@@ -45,6 +45,11 @@ import MonthEventCalendar from "@/components/tasks/Examine/EventCalendar/month-e
 import { EventCalendarContext } from "@/components/tasks/Examine/EventCalendar/event-calendar-context";
 import CalendarActivities from "@/components/Calendar/calendar-activities";
 import { calendar_events } from "@/components/Calendar/events";
+import { CalendarEventProps } from "@/components/Calendar/types";
+import useFetch from "@/hooks/useFetch";
+import { config } from "process";
+import { transformEventTable, transformCalendarEvents } from "../data";
+import { CalendarEventsApiResponse } from "../types";
 
 const ManageCalendar = () => {
   // Hooks
@@ -66,6 +71,27 @@ const ManageCalendar = () => {
 
     return { activities };
   }, [activedate]);
+
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>(
+    []
+  );
+  
+  const {
+    data: calendarEventApiResponse,
+    loading,
+    error,
+    isNetworkError,
+  } = useFetch<CalendarEventsApiResponse>("/company/calender");
+
+  useEffect(() => {
+    if (calendarEventApiResponse) {
+      const eventsTable = transformEventTable(calendarEventApiResponse);
+      //setEventTable(eventsTable);
+
+      const events = transformCalendarEvents(calendarEventApiResponse);
+      setCalendarEvents(events);
+    }
+  }, [calendarEventApiResponse]);
 
   // Constants
   const data = new Calendar({
@@ -207,11 +233,11 @@ const ManageCalendar = () => {
           </div>
         </div>
         {activeLayout === "Year" ? (
-          <YearEventCalendar />
+          <YearEventCalendar events={calendarEvents} />
         ) : activeLayout === "Month" ? (
-          <MonthEventCalendar />
+          <MonthEventCalendar events={calendarEvents}/>
         ) : activeLayout === "Week" ? (
-          <WeekEventCalendar />
+          <WeekEventCalendar events={calendarEvents}/>
         ) : null}
         <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
@@ -225,8 +251,8 @@ const ManageCalendar = () => {
           }}
         >
           <ModalContent>
-            <div className="w-[95vw] max-w-[500px] max-h-[85vh]">
-              <CalendarActivities date={activedate} events={activities} />
+            <div className="w-[95vw] max-w-[500px] max-h-[600px] h-[550px]">
+              <CalendarActivities date={activedate} events={calendarEvents} />
             </div>
           </ModalContent>
         </Modal>

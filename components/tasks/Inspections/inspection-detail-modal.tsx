@@ -111,7 +111,7 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
             <Button
               size="xs_normal"
               className="py-2 px-6"
-              onClick={() => router.push("/message")}
+              onClick={() => router.push("/messages")}
             >
               Message
             </Button>

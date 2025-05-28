@@ -232,7 +232,7 @@ const Dashboard = () => {
               className="h-[358px]"
               sectionHeader="Recent Complaints"
               seeAllLink="/tasks/complaints"
-              notifications={recentComplaints?.complaints || []}
+              notifications={recentComplaints?.complaints.slice(0, 7) || []}
             />
           </div>
         </div>

@@ -111,6 +111,7 @@ const InspectionPage = () => {
 
   const { data: propertyData } = useFetch<PropertyListResponse>(`property/all`);
 
+
   useEffect(() => {
     if (apiData) {
       const transformData = transformInspectionCard(apiData);
@@ -129,7 +130,7 @@ const InspectionPage = () => {
     if (propertyData) {
       const uniqueProperties = new Set();
       const properties = propertyData.data
-        .filter(item => item?.property_type === "rental") // Filter for rental properties only
+        .filter(item => item?.property_type === "rental" && item?.units.length > 0) // Filter for rental properties only
         .map((item) => {
           if (item?.title && !uniqueProperties.has(item.title)) {
             uniqueProperties.add(item.title);

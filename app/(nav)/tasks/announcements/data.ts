@@ -22,6 +22,19 @@ export const createAnnouncement = async (formData: FormData) => {
     }
   } catch (error) {
     handleAxiosError(error);
-    return false
+    return false;
+  }
+};
+
+export const postLikeOrDislike = async (id: string, route: string) => {
+  try {
+    const res = await api.post(`announcements/${id}/${route}`);
+    if (res.status === 200 || res.status === 201) {
+       window.dispatchEvent(new Event("dispatchAnnouncement"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
   }
 };

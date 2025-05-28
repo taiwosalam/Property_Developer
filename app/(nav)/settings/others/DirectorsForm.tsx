@@ -204,7 +204,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
 
         <PhoneNumberInput
           disabled={
-            formData?.phone_number ? true : is_active !== 1 ? true : false
+            !formData?.phone_number ? true : is_active !== 1 ? true : false
           }
           id="phone_number"
           label="phone number"

@@ -30,4 +30,5 @@ export interface EventCalendarDayProps extends CalendarDayProps {
 
 export interface EventCalendarEventProps extends CalendarEventProps {
   color: Color;
+  showTime?: boolean
 }

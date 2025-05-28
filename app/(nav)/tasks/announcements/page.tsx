@@ -8,8 +8,9 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import {
   announcementrFilterOptionsWithDropdown,
   getAllAnnouncements,
+  postLikeOrDislike,
 } from "./data";
-import { Announcement } from "./types";
+import { Announcement, AnnouncementApiResponse } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -46,14 +47,18 @@ const AnnouncementPage = () => {
     error,
     refetch,
     isNetworkError,
-  } = useFetch<{ announcements: Announcement[] }>(`/announcements`);
+  } = useFetch<AnnouncementApiResponse>(`/announcements`);
   useRefetchOnEvent("dispatchAnnouncement", () => refetch({ silent: true }));
+
+  const [isLiking, setIsLiking] = useState(false);
 
   useEffect(() => {
     if (apiData) {
       setAnnouncements(apiData?.announcements);
     }
   }, [apiData]);
+
+  
 
   if (loading) <CardsLoading />;
   if (error) <ServerError error={error} />;
@@ -65,14 +70,14 @@ const AnnouncementPage = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Announcement"
-            newData={40}
+            newData={apiData?.total_announcements_this_month ?? 0}
             colorScheme={1}
-            total={657}
+            total={apiData?.total_announcements_overall ?? 0}
           />
           <ManagementStatistcsCard
             title="Examine"
-            newData={657}
-            total={40}
+            newData={apiData?.total_examined ?? 0}
+            total={apiData?.total_examined ?? 0}
             colorScheme={2}
           />
         </div>
@@ -126,7 +131,7 @@ const AnnouncementPage = () => {
         ) : (
           <AutoResizingGrid minWidth={315} gap={32}>
             {announcements.map((announcement, index) => {
-              const image_urls = [announcement.image];
+              const image_urls = announcement.images;
               const formattedDate = new Date(
                 announcement.created_at
               ).toLocaleDateString("en-US", {
@@ -141,9 +146,10 @@ const AnnouncementPage = () => {
                   key={index}
                   description={announcement.description}
                   id={announcement.company_id}
-                  views={0}
-                  newViews={0}
-                  dislikes={0}
+                  views={announcement.views_count}
+                  newViews={announcement.views_count}
+                  likes={announcement.likes_count}
+                  dislikes={announcement.dislikes_count}
                   imageUrls={[template1]}
                   //mediaCount={announcement.image_urls.length}
                   mediaCount={image_urls.flat().length}

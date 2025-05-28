@@ -149,8 +149,8 @@ const Comment: React.FC<CommentProps> = ({
         <button onClick={() => handleToggleLike("1")} disabled={isLike}>
           <p className="flex items-center gap-1">
             <LikeIcon
-              fill={`${user_liked ? "#E15B0F" : ""} `}
-              stroke={`${user_liked ? "#E15B0F" : "#000"} `}
+              fill={user_liked ? "#E15B0F" : ""}
+              stroke={user_liked ? "#E15B0F" : "#000"}
             />
             <span className="text-xs font-normal text-[#010A23]">{likes}</span>
           </p>

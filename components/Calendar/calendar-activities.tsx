@@ -11,7 +11,7 @@ const CalendarActivities: React.FC<CalendarActivitiesProps> = ({
 }) => {
   return (
     <div
-      className="w-full h-full bg-white dark:bg-darkText-primary rounded-lg overflow-hidden custom-flex-col gap-[18px]"
+      className={`w-full h-full overflow-auto bg-white dark:bg-darkText-primary rounded-lg custom-flex-col gap-[18px]`}
       style={{
         border: "1px solid rgba(193, 194, 195, 0.40)",
         boxShadow:
