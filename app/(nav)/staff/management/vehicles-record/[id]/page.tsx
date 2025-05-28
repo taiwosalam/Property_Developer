@@ -135,7 +135,7 @@ const VehiclesRecordPage = () => {
       plate_number: vehicleRecord.plate_number,
       last_update: vehicleRecord.last_update,
     };
-    setSelectedRecord(updatedRecord);
+    // setSelectedRecord(updatedRecord);  //TODO: UNCOMMENT AND ADD TS 
     setModalOpen(true);
   };
 

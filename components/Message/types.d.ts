@@ -18,6 +18,7 @@ export interface MessagesProps {
   day?: string;
   messages?: any[];
   userId?: string | number;
+  noScroll?: boolean;
 }
 
 export interface MessageProps {
@@ -26,4 +27,5 @@ export interface MessageProps {
   time: string;
   content_type?: string;
   type: "to user" | "from user";
+  noScroll?: boolean;
 }

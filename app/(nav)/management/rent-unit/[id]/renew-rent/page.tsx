@@ -64,8 +64,14 @@ const RenewRent = () => {
   const isRental = propertyType === "rental";
 
   // Zustand store
-  const { setOccupant, occupant, penaltyAmount, setUnitBalance, unitBalance, overduePeriods } =
-    useOccupantStore();
+  const {
+    setOccupant,
+    occupant,
+    penaltyAmount,
+    setUnitBalance,
+    unitBalance,
+    overduePeriods,
+  } = useOccupantStore();
 
   // State
   const [unitData, setUnitData] = useState<initDataProps>(initData);
@@ -79,6 +85,7 @@ const RenewRent = () => {
   const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
   const [reqLoading, setReqLoading] = useState(false);
   const [isCompletePayment, setIsCompletePayment] = useState(false);
+  const [hasPartPayment, setHasPartPayment] = useState(false);
 
   // API fetch
   const endpoint = `/unit/${id}/view`;
@@ -104,6 +111,10 @@ const RenewRent = () => {
       if (transformedData.previous_records) {
         setUnitBalance(transformedData.previous_records);
       }
+      // Update part payment status
+      setHasPartPayment(
+        Number(transformedData.pending_invoice?.amount_paid) > 0
+      );
     }
   }, [apiData, setOccupant, setUnitBalance]);
 
@@ -131,77 +142,13 @@ const RenewRent = () => {
   // UNIT CURRENCY WITH NAIRA FALLBACK
   const currency = unitData.currency as Currency;
 
-  // Handlers
-  // const handleRenewRent = async () => {
-  //   if (!unitData?.unit_id || !unitData?.occupant?.id) {
-  //     toast.warning(
-  //       "Missing required information: unit or occupant not found."
-  //     );
-  //     return;
-  //   }
-  //   if (!selectedCheckboxOptions) {
-  //     toast.warning("Notification preferences not set.");
-  //     return;
-  //   }
-  //   if (!startDate) {
-  //     toast.warning("Start date is required.");
-  //     return;
-  //   }
-  //   if (dueDate && dueDate.isBefore(dayjs(startDate), "day")) {
-  //     toast.warning("Due date cannot be before the start date.");
-  //     return;
-  //   }
-
-  //   // If rent_agreement is true, open the agreement preview modal
-  //   if (selectedCheckboxOptions.rent_agreement) {
-  //     setIsAgreementModalOpen(true);
-  //     return;
-  //   }
-
-  //   // If rent_agreement is false, proceed directly
-  //   await submitRent(null);
-  // };
-
-  // const submitRent = async (doc_file: File | null) => {
-  //   const successMsg = isRental
-  //     ? "Rent Renewed Successfully"
-  //     : "Fee Renewed Successfully";
-  //   const failedMsg = isRental ? "Failed to renew rent" : "Failed to renew fee";
-
-  //   const payloadObj = {
-  //     unit_id: unitData.unit_id,
-  //     tenant_id: unitData.occupant.id,
-  //     start_date: dayjs(startDate).format("MM/DD/YYYY"),
-  //     payment_type: "full",
-  //     rent_type: "renew",
-  //     mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
-  //     email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
-  //     has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
-  //     sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
-  //     has_penalty: penaltyAmount > 0 ? 1 : 0,
-  //     penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
-  //     has_document: doc_file ? 1 : 0,
-  //     ...(doc_file && { doc_file }),
-  //   };
-
-  //   const payload = objectToFormData(payloadObj);
-
-  //   try {
-  //     setReqLoading(true);
-  //     const res = await startRent(payload);
-  //     if (res) {
-  //       toast.success(successMsg);
-  //       router.push("/management/rent-unit");
-  //     }
-  //   } catch (err) {
-  //     toast.error(failedMsg);
-  //   } finally {
-  //     setReqLoading(false);
-  //     setIsAgreementModalOpen(false);
-  //   }
-  // };
-
   const handleRenewRent = async () => {
+    if (hasPartPayment) {
+      return toast.warning(
+        "Part payment already exists. Please complete the payment first."
+      );
+    }
+
     if (!unitData?.unit_id || !unitData?.occupant?.id) {
       toast.warning(
         "Missing required information: unit or occupant not found."
@@ -213,9 +160,10 @@ const RenewRent = () => {
       return;
     }
     if (!startDate) {
-      toast.warning("Start date is required.");
+      toast.warning("Payment date is required.");
       return;
     }
+
     if (dueDate && dueDate.isBefore(dayjs(startDate), "day")) {
       toast.warning("Due date cannot be before the start date.");
       return;
@@ -286,11 +234,75 @@ const RenewRent = () => {
   };
 
   // Part Payment Handler
+  // const handlePartPayment = async () => {
+  //   if (!unitBalance || unitBalance.length === 0) {
+  //     toast.error("No unit balance available");
+  //     return;
+  //   }
+  //   const hasPenalty = penaltyAmount > 0;
+  //   const amountToPay = hasPenalty
+  //     ? parseCurrency(amt) + penaltyAmount
+  //     : parseCurrency(amt);
+
+  //   const payload = {
+  //     unit_id: id,
+  //     amount: amountToPay,
+  //     // amount: parseCurrency(amt),
+  //     rent_id: unitBalance.data[0].id,
+  //     payment_date: dayjs(startDate).format("YYYY-MM-DD"),
+  //     tenant_id: unitData.occupant.id,
+  //     has_penalty: penaltyAmount > 0 ? 1 : 0,
+  //     penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
+  //     // penalty_amount: penaltyAmount,
+  //     type: "part_payment",
+  //   };
+
+  //   console.log("payload", payload);
+  //   try {
+  //     setReqLoading(true);
+  //     // const success = await editRent(payload);
+  //     // if (success) {
+  //     //   toast.success("Part payment added successfully");
+  //     //   window.dispatchEvent(new Event("refetchUnit"));
+  //     //   setStartDate(null);
+  //     //   setAmt("");
+  //     // }
+
+  //     const res = await addPartPayment(payload);
+  //     if (res) {
+  //       toast.success(res.message || "Part payment added successfully");
+  //       window.dispatchEvent(new Event("refetchUnit"));
+
+  //       // Check pay_status and handle accordingly
+  //       if (res.pay_status === "part") {
+  //         setAmt("");
+  //         setStartDate(null);
+  //       } else if (res.pay_status === "full") {
+  //         router.push("/management/rent-unit");
+  //       }
+  //     }
+  //   } catch (err) {
+  //     toast.error("Failed to create part payment");
+  //   } finally {
+  //     setReqLoading(false);
+  //   }
+  // };
+
+  // Part Payment Handler
   const handlePartPayment = async () => {
     if (!unitBalance || unitBalance.length === 0) {
       toast.error("No unit balance available");
       return;
     }
+    if (!startDate) {
+      toast.warning("Payment date is required for part payment");
+      return;
+    }
+    if (!amt || parseCurrency(amt) <= 0) {
+      toast.warning("Please enter a valid payment amount");
+      return;
+    }
+
     const hasPenalty = penaltyAmount > 0;
     const amountToPay = hasPenalty
       ? parseCurrency(amt) + penaltyAmount
@@ -299,31 +311,23 @@ const RenewRent = () => {
     const payload = {
       unit_id: id,
       amount: amountToPay,
-      // amount: parseCurrency(amt),
       rent_id: unitBalance.data[0].id,
       payment_date: dayjs(startDate).format("YYYY-MM-DD"),
       tenant_id: unitData.occupant.id,
       has_penalty: penaltyAmount > 0 ? 1 : 0,
       penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
-      // penalty_amount: penaltyAmount,
       type: "part_payment",
     };
 
-    console.log("payload", payload);
     try {
       setReqLoading(true);
-      // const success = await editRent(payload);
-      // if (success) {
-      //   toast.success("Part payment added successfully");
-      //   window.dispatchEvent(new Event("refetchUnit"));
-      //   setStartDate(null);
-      //   setAmt("");
-      // }
-
       const res = await addPartPayment(payload);
       if (res) {
         toast.success(res.message || "Part payment added successfully");
         window.dispatchEvent(new Event("refetchUnit"));
+
+        // Update part payment status
+        setHasPartPayment(true);
 
         // Check pay_status and handle accordingly
         if (res.pay_status === "part") {
@@ -492,7 +496,8 @@ const RenewRent = () => {
             <Button
               size="base_medium"
               className="py-2 px-6"
-              disabled={reqLoading}
+              // disabled={reqLoading}
+              disabled={reqLoading || !amt || !startDate}
               onClick={handlePartPayment}
             >
               {reqLoading ? "Please wait..." : "Update"}

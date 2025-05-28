@@ -3,7 +3,7 @@ import Message from "./message";
 import { MessagesProps } from "./types";
 import { getLocalStorage } from "@/utils/local-storage";
 
-const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
+const Messages: React.FC<MessagesProps> = ({ day, messages, userId, noScroll }) => {
   const user_id = useAuthStore((state) => state.user_id);
   const id = getLocalStorage("user_id")
   
@@ -28,6 +28,7 @@ const Messages: React.FC<MessagesProps> = ({ day, messages, userId }) => {
               time={m.time}
               text={m.text}
               seen={m.seen}
+              noScroll={noScroll}
             />
           );
         })}

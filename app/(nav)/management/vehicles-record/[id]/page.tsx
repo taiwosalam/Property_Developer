@@ -30,6 +30,8 @@ import { FilterResult } from "../../service-providers/types";
 import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";
 import ServerError from "@/components/Error/ServerError";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const VehiclesRecordPage = () => {
   const { id } = useParams();
@@ -212,15 +214,34 @@ const VehiclesRecordPage = () => {
     [silentLoading, hasMore]
   );
 
+  // console.log("data: ", data);
+
+  const statusMap: Record<string, string> = {
+    no_record: "pending",
+    pending: "check-in",
+    completed: "check-out",
+  };
+
   // Map data to include ref for the last row
   const tableData = data.map((record, index) => ({
     ...record,
+    name: (
+      <div className="flex gap-1">
+        <span>{record.name}</span>
+        {record.note && (
+          <div className="flex items-center">
+            <NoteBlinkingIcon size={20} className="blink-color" />
+          </div>
+        )}
+      </div>
+    ),
+    status: statusMap[record.status] || record.status,
     ref: index === data.length - 1 ? lastRowRef : null,
   }));
 
-
   const handleActionClick = (record: DataItem) => {
     const vehicleRecord = record as VehicleRecord;
+    // console.log("vehicleRecord: ", vehicleRecord);
     const updatedRecord = {
       ...vehicleRecord,
       latest_check_in: vehicleRecord.latest_check_in,
@@ -233,6 +254,7 @@ const VehiclesRecordPage = () => {
       checkOut: vehicleRecord.latest_check_in,
       plate_number: vehicleRecord.plate_number,
       last_update: vehicleRecord.last_update,
+      note: vehicleRecord.note,
     };
     setSelectedRecord(updatedRecord);
     setModalOpen(true);
@@ -307,9 +329,7 @@ const VehiclesRecordPage = () => {
       <section className="capitalize">
         {data.length === 0 && !silentLoading ? (
           search ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+            <SearchError />
           ) : (
             <EmptyList
               buttonText="+ create new"
@@ -437,9 +457,7 @@ const VehiclesRecordPage = () => {
               }}
             >
               <ModalContent>
-                <VehicleRecordModal
-                  {...(selectedRecord as VehicleRecord)}
-                />
+                <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
               </ModalContent>
             </Modal>
           </>

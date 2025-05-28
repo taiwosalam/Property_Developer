@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useRef } from "react";
 import clsx from "clsx";
@@ -19,15 +19,16 @@ const Message: React.FC<MessageProps> = ({
   time,
   content_type,
   type = "from user",
+  noScroll,
 }) => {
   const { isMobile } = useWindowWidth();
   const messageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (messageRef.current) {
+    if (!noScroll && messageRef.current) {
       messageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [text]); // Runs whenever text changes
+  }, [text, noScroll]);
 
   return (
     <div
@@ -40,14 +41,16 @@ const Message: React.FC<MessageProps> = ({
           "bg-status-caution-1 rounded-tl-none": type === "to user",
         })}
       >
-       
-       {/* Text Content */}
+        {/* Text Content */}
         {content_type === "text" && (
           <div
-            className={clsx("flex-1 text-sm font-normal overflow-hidden break-words whitespace-pre-wrap max-w-full", {
-              "text-white": type === "from user",
-              "text-text-quaternary": type === "to user",
-            })}
+            className={clsx(
+              "flex-1 text-sm font-normal overflow-hidden break-words whitespace-pre-wrap max-w-full",
+              {
+                "text-white": type === "from user",
+                "text-text-quaternary": type === "to user",
+              }
+            )}
             dangerouslySetInnerHTML={{
               __html: formatMessageText(text),
             }}
@@ -56,7 +59,7 @@ const Message: React.FC<MessageProps> = ({
         )}
 
         {/* Image Content */}
-        {content_type === "image"  && (
+        {content_type === "image" && (
           <Modal>
             <ModalTrigger asChild>
               <div className="relative w-40 h-40 cursor-pointer">
@@ -134,7 +137,9 @@ const Message: React.FC<MessageProps> = ({
           </p>
           {/* CHECKMARK */}
           {type === "from user" && (
-            <p className="text-white">{seen ? <TwoCheckMark /> : <OneCheckMark />}</p>
+            <p className="text-white">
+              {seen ? <TwoCheckMark /> : <OneCheckMark />}
+            </p>
           )}
         </div>
       </div>
