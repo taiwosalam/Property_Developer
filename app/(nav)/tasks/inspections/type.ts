@@ -104,6 +104,7 @@ type Property = {
   updated_at: string;
   deleted_at: string | null;
   branch: Branch;
+  units: [];
 };
 
 type Branch = {

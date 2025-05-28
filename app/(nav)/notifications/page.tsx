@@ -8,6 +8,7 @@ import useFetch from "@/hooks/useFetch";
 import {
   clearAllNotification,
   deleteAllNotification,
+  fetchNotifications,
   NotificationApiResponse,
   TNotificationData,
   transformNotificationData,
@@ -15,33 +16,43 @@ import {
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import ServerError from "@/components/Error/ServerError";
 import { toast } from "sonner";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { Loader2 } from "lucide-react";
 
 const Notifications = () => {
-  const [notifications, setNotifications] = useState<TNotificationData | null>(
-    null
-  );
+  const [notifications, setNotifications] = useState<
+    TNotificationData["notifications"]
+  >([]);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState<TNotificationData["meta"]>();
+
   const [notificationIds, setNotificationIds] = useState<string[]>([]);
   const [isClearingNotifications, setIsClearingNotifications] = useState(false);
-  const {
-    data: apiData,
-    silentLoading,
-    error,
-    refetch,
-  } = useFetch<NotificationApiResponse>(`/notifications`);
-  useRefetchOnEvent("refetchNotifications", () => refetch({ silent: true }));
 
-  console.log(apiData);
+  const loadMore = async () => {
+    const data = await fetchNotifications(page + 1);
+    if (data) {
+      setNotifications((prev) => [...prev, ...data.notifications]);
+      setMeta(data.meta);
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const { isLoading, lastElementRef } = useInfiniteScroll({
+    callback: loadMore,
+    hasMore: page < (meta?.last_page || 1),
+  });
 
   useEffect(() => {
-    if (apiData) {
-      const transformedData = transformNotificationData(apiData);
-      setNotifications(transformedData);
-      const ids = apiData.data.length
-        ? apiData?.data?.map((item) => item.id)
-        : [];
-      setNotificationIds(ids);
-    }
-  }, [apiData]);
+    const loadInitial = async () => {
+      const data = await fetchNotifications(1);
+      if (data) {
+        setNotifications(data.notifications);
+        setMeta(data.meta);
+      }
+    };
+    loadInitial();
+  }, []);
 
   const handleDeleteNotifications = async () => {
     if (!notificationIds.length) return;
@@ -59,8 +70,6 @@ const Notifications = () => {
     }
   };
 
-  if (error) return <ServerError error={error} />;
-
   return (
     <div
       className="space-y-8 overflow-auto custom-round-scrollbar pr-2"
@@ -69,7 +78,7 @@ const Notifications = () => {
       <div className="space-y-3 sticky top-0 bg-neutral-2 dark:bg-[#000000] z-[1]">
         <div className="flex items-center justify-between gap-4 text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium">
           <h1>Notifications</h1>
-          {apiData && apiData?.data.length > 0 && (
+          {notifications?.length > 0 && (
             <button
               type="button"
               onClick={handleDeleteNotifications}
@@ -80,21 +89,31 @@ const Notifications = () => {
                   : ""
               }`}
             >
-              {isClearingNotifications ? "Please wait..." : "Clear all"}
+              {isClearingNotifications ? "Please wait..." : "Clear"}
             </button>
           )}
         </div>
         <SectionSeparator />
       </div>
       <div className="custom-flex-col gap-6">
-        {notifications && !notifications?.notifications.length && (
-          <p>You currently have no new notification at this time</p>
+        {notifications.map((notification, index) => {
+          if (index === notifications.length - 1) {
+            return (
+              <div key={notification.id} ref={lastElementRef}>
+                <Notification notification={notification} />
+              </div>
+            );
+          }
+          return (
+            <Notification key={notification.id} notification={notification} />
+          );
+        })}
+
+        {isLoading && (
+          <div className="flex justify-center py-4">
+            <Loader2 className="h-6 w-6 animate-spin text-brand-9" />
+          </div>
         )}
-        {notifications &&
-          notifications.notifications.length > 0 &&
-          notifications.notifications.map((notification, index) => (
-            <Notification key={index} notification={notification} />
-          ))}
       </div>
     </div>
   );

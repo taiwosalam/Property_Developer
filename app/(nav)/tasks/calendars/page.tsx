@@ -23,6 +23,8 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import { CalendarEventProps } from "@/components/Calendar/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import PageLoader from "next/dist/client/page-loader";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 const CalendarPage = () => {
   const [fetchedTabelData, setFetchedTableData] = useState([]);
@@ -66,20 +68,9 @@ const CalendarPage = () => {
   };
 
   if (loading) {
-    return (
-      <div className="grid md:grid-cols-2 grid-cols-1 gap-2">
-        <div className="flex">
-          <CardsLoading length={2} />
-        </div>
-        <div className="flex">
-          <CardsLoading length={2} />
-        </div>
-      </div>
-    );
+    return <PageCircleLoader />;
   }
-  {
-    /* <CardsLoading />; */
-  }
+ 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -114,7 +105,7 @@ const CalendarPage = () => {
           </span>
         </Link>
       </div>
-      <div className="scroll-m-8" id="event">
+      <div className="scroll-m-8 pb-10" id="event">
         <CustomTable
           fields={CalendarTableFields}
           data={eventTable?.table.slice(0, 3) || []}

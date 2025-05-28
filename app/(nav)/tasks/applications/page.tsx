@@ -9,7 +9,7 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import { DocumentssFilterOptionsWithDropdown } from "../../documents/data";
 import useFetch from "@/hooks/useFetch";
 import {
-  ApplicationApiResponse,
+  ApplicationResponse,
   IApplicationPageData,
   transformApplicationData,
 } from "./data";
@@ -44,7 +44,9 @@ const Applications = () => {
     error,
     isNetworkError,
     silentLoading,
-  } = useFetch<ApplicationApiResponse>(`property-applications`, config);
+  } = useFetch<ApplicationResponse>(`/property-applications`, config);
+
+  console.log(apiData)
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -232,7 +234,7 @@ const Applications = () => {
             </AutoResizingGrid>
           )}
 
-          {/* <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
+           {/* <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
             <ApplicationCard status="flagged" type="staff" />
             <ApplicationCard status="unflagged" type="guest" />
             <ApplicationCard status="unflagged" type="staff" />

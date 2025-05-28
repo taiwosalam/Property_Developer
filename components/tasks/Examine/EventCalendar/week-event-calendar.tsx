@@ -12,8 +12,13 @@ import {
 } from "@/components/Calendar/data";
 
 import { EventCalendarEvent } from "./event-calendar-components";
+import { CalendarEventProps } from "@/components/Calendar/types";
 
-const WeekEventCalendar = () => {
+interface WeekEventCalendarProps {
+  events?: CalendarEventProps[];
+}
+
+const WeekEventCalendar = ({ events }: WeekEventCalendarProps) => {
   const {
     openModal,
     openActivityModal,
@@ -71,7 +76,7 @@ const WeekEventCalendar = () => {
           {weekDates.map((day, index) => (
             <div key={`${day}-${index}`} className="custom-flex-col">
               {event_calendar_hours.map((hour, idx) => {
-                const matchingEvents = filterEventsByDayAndHourRange(day, hour);
+                const matchingEvents = events && filterEventsByDayAndHourRange(day, hour, events);
 
                 return (
                   <div
@@ -81,7 +86,7 @@ const WeekEventCalendar = () => {
                     <div className="flex h-full flex-1">
                       <div
                         onClick={
-                          !!matchingEvents.length
+                          !!matchingEvents?.length
                             ? () => {
                                 openActivityModal(parseISO(day));
                               }
@@ -91,7 +96,7 @@ const WeekEventCalendar = () => {
                       >
                         <div className="max-h-full overflow-y-auto custom-round-scrollbar">
                           <div className="custom-flex-col">
-                            {matchingEvents.map((event, index) => (
+                            {matchingEvents?.map((event, index) => (
                               <EventCalendarEvent
                                 key={index}
                                 color={calendar_event_tags[event.type]}
