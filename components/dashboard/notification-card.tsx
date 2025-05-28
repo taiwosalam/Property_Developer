@@ -154,7 +154,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 </div>
                 <div className="w-full gap-1">
                   <div className="flex items-center gap-1 text-sm font-medium text-text-primary dark:text-[#f1f1fd] line-clamp-1 text-ellipsis">
-                    <span className="truncate">{notification.name}</span>
+                    <span className="truncate capitalize">{notification.name}</span>
                     {notification.badgeColor && (
                       <BadgeIcon color={notification.badgeColor} />
                     )}
@@ -217,8 +217,8 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                     {notification.time}
                   </p>
                   {notification.count !== undefined && (
-                    <div className="bg-brand-9 inline-flex items-center justify-center py-1 rounded-full whitespace-nowrap">
-                      <p className="text-white text-[10px] font-medium">
+                    <div className="bg-brand-9 inline-flex items-center max-w-[30px] justify-center py-1 rounded-full whitespace-nowrap">
+                      <p className="text-white text-[10px] font-medium text-center">
                         {roundUptoNine(notification.count)}
                       </p>
                     </div>
