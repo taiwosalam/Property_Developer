@@ -65,8 +65,11 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [message, setMessage] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
-  const [pageUsersMsg, setPageUsersMsg] =
-    useState<PageMessages[]>(message_card_data);
+  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>([]);
+  const [filteredMessages, setFilteredMessages] = useState<PageMessages[]>([]); // state for filtered messages
+  const [searchQuery, setSearchQuery] = useState(""); // state for search query
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]); // state for selected filters
+  const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   // We'll no longer use our own isRecording/audioBlob state for recording;
   // Instead, we use the voice visualizer hook.
   const [audioUrl, setAudioUrl] = useState<string>("");
@@ -136,6 +139,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     refetch({ silent: true });
   });
 
+  // Update messages and apply initial filtering
   useEffect(() => {
     if (usersMessages) {
       const transformed = transformUsersMessages(usersMessages).filter(
@@ -143,14 +147,66 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       );
       setPageUsersMsg(transformed);
       setChatData("users_messages", transformed);
+      applyFilters(transformed, searchQuery, selectedFilters, selectedBranches);
     }
-  }, [usersMessages]);
+  }, [usersMessages, loggedInUserId, setChatData]);
 
   useEffect(() => {
     if (usersData) {
       setChatData("users", transformCompanyUsersData(usersData));
     }
   }, [usersData]);
+
+  // Apply filters and search
+  const applyFilters = (
+    messages: PageMessages[],
+    query: string,
+    filters: string[],
+    branches: string[]
+  ) => {
+    let filtered = [...messages];
+
+    // Apply search filter
+    if (query) {
+      const lowerQuery = query.toLowerCase();
+      filtered = filtered.filter(
+        (msg) =>
+          msg.fullname.toLowerCase().includes(lowerQuery) ||
+          msg.desc.toLowerCase().includes(lowerQuery)
+      );
+    }
+
+    // Apply category filters
+    if (filters.length > 0) {
+      filtered = filtered.filter((msg) => {
+        if (filters.includes("Unread") && msg.unread_count === 0) {
+          return false;
+        }
+        // Note: "Inbox" and "Groups" may require additional logic based on your data structure
+        // For now, assume "Inbox" shows all user messages, and "Groups" is not implemented
+        return true;
+      });
+    }
+
+    // Apply branch filters
+    if (branches.length > 0 && usersData) {
+      const userIdsInBranches = usersData.data.users
+        .filter((user) => branches.includes(user.branch_id))
+        .map((user) => user.id);
+      filtered = filtered.filter((msg) => userIdsInBranches.includes(msg.id));
+    }
+
+    setFilteredMessages(filtered);
+  };
+
+  // HANDLE SEARCH
+  const handleSearchChange = (
+    value: string,
+    event?: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchQuery(value);
+    applyFilters(pageUsersMsg, value, selectedFilters, selectedBranches);
+  };
 
   // Function to send a text message
   const handleSendMsg = async () => {
@@ -211,6 +267,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   placeholder="Search for messages"
                   leftIcon={"/icons/search-icon.svg"}
                   inputClassName="pr-[52px] border-transparent"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
                 />
                 <div className="absolute top-1/2 right-0 -translate-y-1/2">
                   <FilterButton
@@ -231,7 +289,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                 </div>
               </div>
             </div>
-            {pageUsersMsg.length === 0 ? (
+            {filteredMessages.length === 0 ? (
               <NoMessage loading={loadingUsers} />
             ) : (
               <>
@@ -243,7 +301,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                   </div>
                 ) : (
                   <div className="custom-flex-col relative z-[1] pb-4">
-                    {pageUsersMsg.map((message, idx) => (
+                    {filteredMessages.map((message, idx) => (
                       <MessageCard
                         key={idx}
                         {...message}
@@ -255,7 +313,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               </>
             )}
             {/* STICKY PLUS --> BE CAREFUL NOT TO REMOVE MAX-W-50PX FOR THE STICKY BUTTON., IT TOOK ME OVER 5 HRS DEBUG 😪😥*/}
-            <div className="fixed bottom-20 z-[10] max-w-[50px] border-red-500 border">
+            <div className="fixed bottom-20 z-[10] max-w-[50px]">
               <Modal>
                 <ModalTrigger asChild>
                   <button
@@ -277,8 +335,15 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
           </div>
         </div>
       )}
+
+      {/* MESSAGE FORM AND NO MESSAGE COMPONENT WHEN NC CONVERSATION GOING ON */}
       {(!isCustom || id) && (
-        <div className="flex-1">
+        <div className="flex-1 overflow-hidden">
+          {!id && (
+            <div className="custom-flex-col w-full h-full">
+              <NoMessage loading={loadingUsers} />
+            </div>
+          )}
           <div className="custom-flex-col w-full h-full">
             {children}
             {id && (

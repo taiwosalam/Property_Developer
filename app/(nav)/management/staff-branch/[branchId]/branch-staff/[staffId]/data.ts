@@ -14,7 +14,7 @@ import Avatar1 from "@/public/empty/avatar-1.svg";
 import Avatar2 from "@/public/empty/avatar-2.svg";
 import Avatar3 from "@/public/empty/avatar-3.svg";
 import Avatar4 from "@/public/empty/avatar-4.svg";
-import { StaffAPIResponse, StaffPageTypes } from "./type";
+import { StaffAPIResponse, StaffChatTypes, StaffPageTypes } from "./type";
 import api, { handleAxiosError } from "@/services/api";
 import { properties } from "@/app/(nav)/user/management/landlord/data";
 import { empty } from "@/app/config";
@@ -24,6 +24,8 @@ import {
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
 import dayjs from "dayjs";
+import { groupMessagesByDay } from "@/app/(nav)/(messages-reviews)/messages/data";
+import moment from "moment";
 
 export const sendVerifyStaffOTP = async () => {
   try {
@@ -109,6 +111,7 @@ export const initialPageData: StaffPageTypes = {
     imageUrl: empty,
     branch_id: 0,
   },
+  staffChats: [],
 };
 
 export const placeholder_portfolio_data: StaffProfilePortfolioProps[] = [
@@ -449,7 +452,29 @@ export const transformStaffAPIResponse = (
       position: "staff",
       imageUrl: res.data.picture ?? empty,
       branch_id: 1, //TEST 
-    }
+    },
+    staffChats: res.messages?.map((chat): any => ({
+      pfp: chat.profile_picture || empty,
+      desc: chat.latest_message,
+      time: chat.latest_message_time,
+      fullname: chat.participant_name,
+      id: chat.participant_id.toString(),
+      messages: chat.unread_count, 
+      verified: chat.participant_type,
+      content_type: chat.latest_message_type,
+      unread_count: chat.unread_count,
+      last_seen: chat.participant_onlineStatus,
+      online: chat.participant_onlineStatus === "online",
+      groupedMessages: groupMessagesByDay(
+        chat.messages.map((msg:any) => ({
+          id: msg.id.toString(),
+          text: msg.content,
+          senderId: msg.sender_id.toString(),
+          timestamp: moment(msg.created_at).format("YYYY-MM-DD hh:mm A"),
+          content_type: msg.content_type,
+        }))
+      ),
+    })) || [],
   };
 };
 

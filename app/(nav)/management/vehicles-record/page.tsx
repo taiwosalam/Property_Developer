@@ -40,6 +40,7 @@ const VehilceRecords = () => {
     vehicle_records_this_month,
     current_page,
     last_page,
+    property_type_stats,
   } = pageData.stats;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -164,14 +165,14 @@ const VehilceRecords = () => {
         />
         <ManagementStatistcsCard
           title="Rental Vehicle Records"
-          newData={vehicle_records_this_month}
-          total={total_vehicle_records}
+          newData={property_type_stats.rental.this_month}
+          total={property_type_stats.rental.total}
           colorScheme={2}
         />
         <ManagementStatistcsCard
           title="Facility Vehicle Records"
-          newData={vehicle_records_this_month}
-          total={total_vehicle_records}
+          newData={property_type_stats.facility.this_month}
+          total={property_type_stats.facility.total}
           colorScheme={3}
         />
       </div>

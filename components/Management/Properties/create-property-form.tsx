@@ -53,6 +53,7 @@ import {
 } from "@/utils/getData";
 import { BranchDependentData } from "@/utils/types";
 import api, { handleAxiosError } from "@/services/api";
+import FullPageLoader from "@/components/Loader/start-rent-loader";
 
 const maxNumberOfImages = 6;
 
@@ -332,6 +333,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
+
+
+  if (requestLoading) {
+    return (
+      <FullPageLoader
+        text="Submitting..."
+      />
+    );
+  }
 
   return (
     <FlowProgress

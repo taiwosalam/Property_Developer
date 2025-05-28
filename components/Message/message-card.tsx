@@ -26,10 +26,13 @@ const MessageCard: React.FC<MessageCardProps> = ({
   messages = 0,
   onClick,
   content_type,
+  online,
+  last_seen,
 }) => {
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const IconComponent = getIconByContentType(content_type as string);
+  const isOnline = last_seen?.toLowerCase() === "online";
 
   const handleClick = () => {
     setGlobalStore("messageUserData", {
@@ -38,13 +41,14 @@ const MessageCard: React.FC<MessageCardProps> = ({
       position: "",
       name: fullname,
       imageUrl: pfp,
+      last_seen,
     });
 
     if (onClick) {
       onClick();
+    } else {
+      router.push(`/messages/${id}`);
     }
-
-    router.push(`/messages/${id}`);
   };
 
   const Children = () => (
@@ -53,11 +57,11 @@ const MessageCard: React.FC<MessageCardProps> = ({
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
           <Picture
-            src={pfp || empty || "/images/default-profile.png"}
+            src={pfp || empty}
             alt="profile picture"
             size={60}
             rounded
-            status={false}
+            status={online}
             containerClassName="custom-secondary-bg rounded-full"
           />
           <div className="custom-flex-col gap-1 flex-1">
@@ -66,11 +70,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 {fullname}
               </p>
               {verified && (
-                <Picture
-                  src="/icons/verified.svg"
-                  alt="verified"
-                  size={16}
-                />
+                <Picture src="/icons/verified.svg" alt="verified" size={16} />
               )}
             </div>
             {content_type === "text" ? (

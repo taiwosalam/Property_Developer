@@ -169,3 +169,15 @@ export const message_data: MessageCardProps[] = [
     verified: true,
   },
 ];
+
+export const default_user_data = {
+  name: "--- ---",
+  email: "--- ---",
+  phone: "--- ---",
+  picture: empty,
+  address: "--- ---",
+  city: "--- ---",
+  state: "--- ---",
+  lga: "--- ---",
+  tier_id: 1,
+};

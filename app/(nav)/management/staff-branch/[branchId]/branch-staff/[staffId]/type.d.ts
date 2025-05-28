@@ -33,6 +33,28 @@ export interface StaffAPIResponse {
     online_status?: "online" | "offline";
   };
   activities: StaffActivitiies[];
+  messages: {
+    participant_id: number;
+    participant_type: string;
+    participant_name: string;
+    participant_onlineStatus: string;
+    profile_picture: string | null;
+    unread_count: number;
+    latest_message: string;
+    latest_message_type: string;
+    latest_message_time: string;
+    messages: {
+      id: string | number;
+      sender_id: number;
+      sender_type: string;
+      receiver_id: number;
+      receiver_type: string;
+      content: string;
+      content_type: string;
+      read_at: string | null;
+      created_at: string;
+    }[];
+  }[];
 }
 
 export interface PropertiesRes {
@@ -129,4 +151,49 @@ export interface StaffPageTypes {
     tenants: any[];
   };
   messageUserData: messageUserDataTypes;
+  chats;
+  staffChats: StaffChatTypes[];
 }
+
+export interface GroupedMessage {
+  id: string;
+  text: string;
+  sender_id: string;
+  time: string;
+  content_type: string;
+  seen: boolean;
+}
+
+export interface GroupedMessages {
+  day: string;
+  messages: GroupedMessage[];
+}
+[];
+
+// export interface StaffChatTypes  {
+//   pfp: string;
+//   desc: string;
+//   time: string;
+//   fullname: string;
+//   id: string;
+//   messages?: number;
+//   verified?: boolean;
+//   content_type?: string;
+//   unread_count?: number;
+//   groupedMessages: GroupedMessages[];
+// };
+
+export interface StaffChatTypes {
+  pfp: string;
+  desc: string;
+  time: string;
+  fullname: string;
+  id: string;
+  messages?: number;
+  verified?: boolean;
+  content_type?: string;
+  unread_count?: number;
+  online?: boolean;
+  last_seen?: string;
+  groupedMessages: { day: string; messages: GroupedMessage[] }[];
+}[]

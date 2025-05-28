@@ -140,7 +140,8 @@ const CreateRecordForm = () => {
       if (res){
         toast.success("Vehicle record created successfully");
         useVehicleRecordStore.setState({ selectedProperty: "" });
-        router.push(`/management/vehicles-record/${propertyId}`);
+        // router.push(`/management/vehicles-record/${propertyId}`);
+        router.back();
       }
     } catch {
       toast.error(errorMessages.submit);

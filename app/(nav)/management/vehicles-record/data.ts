@@ -56,6 +56,7 @@ export interface VehicleData {
   registrationDate: string;
   last_update: string;
   latest_check_in: LatestCheckInData;
+  note?: string;
 }
 
 export interface LatestCheckInData {
@@ -204,6 +205,7 @@ export const transformVehicleRecordApiResponse = (
         return {
           id: vehicle.id,
           vehicle_brand: vehicle.vehicle_brand,
+          note: vehicle.note,
           user_id: vehicle.user_id,
           property_id: vehicle.property_id,
           plate_number: vehicle.plate_number.toUpperCase(),
@@ -370,6 +372,16 @@ export const initialData: initialPageState = {
     vehicle_records_this_month: 0,
     current_page: 0,
     last_page: 0,
+    property_type_stats: {
+      rental: {
+        total: 0,
+        this_month: 0,
+      },
+      facility: {
+        total: 0,
+        this_month: 0,
+      },
+    },
   },
 };
 
@@ -399,9 +411,10 @@ export const initialRecord: VehicleRecordData = {
 };
 
 export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
-  // console.log("res", res);
+  console.log("res", res);
   return {
     stats: {
+      property_type_stats: res.stats.property_type_stats,
       total_properties: res.stats.total_properties,
       properties_this_month: res.stats.properties_this_month,
       total_vehicle_records: res.stats.total_vehicle_records,
@@ -415,7 +428,7 @@ export const transformVehicleRecords = (res: VehicleRecordAPIRes) => {
       property_name: item.title,
       units_count: item.units_count,
       vehicle_records_count: item.vehicle_records_count,
-      address: `${item.full_address}, ${item.city_area}, ${item.local_government}, ${item.state}`,
+      address: `${item.full_address ?? ""} ${item.city_area ?? ""}, ${item.local_government ?? ""}, ${item.state ?? ""}`,
       total_unit_pictures: item.images.length,
       hasVideo: item.has_video,
       property_type: item.property_type,
