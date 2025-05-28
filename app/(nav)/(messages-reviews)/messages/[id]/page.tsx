@@ -104,24 +104,6 @@ const Chat = () => {
     };
   }, [id, fetchMessages, setChatData]);
 
-  // // Initialize Pusher and fetch messages
-  // useEffect(() => {
-  //   if (!id) {
-  //     setIsLoading(false);
-  //     return;
-  //   }
-
-  //   setIsLoading(true);
-  //   setConversations([]);
-  //   setChatData("conversations", []);
-  //   fetchMessages();
-
-  //   return () => {
-  //     setConversations([]);
-  //     setChatData("conversations", []);
-  //   };
-  // }, [id, fetchMessages, setChatData]);
-
   // Polling when Pusher fails
   useEffect(() => {
     let pollingInterval: NodeJS.Timeout | null = null;
@@ -216,8 +198,8 @@ const Chat = () => {
                       className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal"
                     >
                       {showContactInfo
-                        ? "Tap here for contact info"
-                        : user.last_seen}
+                        ? user.last_seen
+                        : "Tap here for contact info"}
                     </motion.p>
                   </AnimatePresence>
                 </div>
