@@ -26,20 +26,24 @@ interface BaseVehicleRecord {
   plate_number: string;
   last_update: string;
   category: string;
+  note: string;
 }
 
 interface PendingVehicleRecord extends BaseVehicleRecord {
-  status: "pending";
+  // status: "pending";
+  status: "check-in";
   latest_check_out?: null;
 }
 
 interface CompletedVehicleRecord extends BaseVehicleRecord {
-  status: "completed";
+  // status: "completed";
+  status: "check-out";
   checkOut?: CheckInOut;
 }
 
 interface NoRecordVehicleRecord extends BaseVehicleRecord {
-  status: "no_record";
+  // status: "no_record";
+  status: "pending";
   checkOut?: CheckInOut;
 }
 

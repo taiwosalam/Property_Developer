@@ -46,9 +46,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
     if (onClick) {
       onClick();
+    } else {
+      router.push(`/messages/${id}`);
     }
-
-    router.push(`/messages/${id}`);
   };
 
   const Children = () => (
@@ -70,11 +70,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 {fullname}
               </p>
               {verified && (
-                <Picture
-                  src="/icons/verified.svg"
-                  alt="verified"
-                  size={16}
-                />
+                <Picture src="/icons/verified.svg" alt="verified" size={16} />
               )}
             </div>
             {content_type === "text" ? (

@@ -110,9 +110,10 @@ const PreviousRecord: React.FC<
           </ModalTrigger>
           <ModalContent>
             <VehicleRecordModal
-              status={status as "completed" | "pending"}
+              status={status as "check-in" | "check-out"}
               pictureSrc={pictureSrc || empty}
               name={checkIn.name}
+              note={""}
               id={
                 recordData?.inventory_id?.toString() || userId?.toString() || ""
               }

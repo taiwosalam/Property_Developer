@@ -15,21 +15,28 @@ import ModalPreset from "@/components/Modal/modal-preset";
 import dayjs from "dayjs";
 import { empty } from "@/app/config";
 import { useModal } from "@/components/Modal/modal";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
+import DOMPurify from "dompurify";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 
 const VehicleRecordModal: React.FC<
   VehicleRecord & {
     showOpenRecordsButton?: boolean;
+    note?: string;
   }
 > = ({
   status,
   pictureSrc,
   name,
   id,
+  note,
   category,
   registrationDate,
   latest_check_in,
   showOpenRecordsButton = true,
 }) => {
+  const sanitizedNote = DOMPurify.sanitize(note || "");
   const [loading, setLoading] = useState(false);
   const { setIsOpen } = useModal();
 
@@ -130,7 +137,7 @@ const VehicleRecordModal: React.FC<
   };
 
   const [activeStep, setActiveStep] = useState<
-    "default" | "check-out" | "success-action" | "check-in"
+    "default" | "check-out" | "success-action" | "check-in" | "modal"
   >("default");
   const handleBack = () => {
     setActiveStep("default");
@@ -144,15 +151,23 @@ const VehicleRecordModal: React.FC<
             <Picture size={80} src={pictureSrc || empty} rounded />
             <div className="text-base text-text-primary dark:text-white space-y-1">
               <p className="flex items-center">
-                <span>{name}</span>
+                <button onClick={() => setActiveStep("modal")}>
+                  <span className="capitalize">{name}</span>
+                </button>
                 {/* <BadgeIcon color="blue" /> */}
               </p>
-              <p>
+              <div className="flex gap-1">
                 <span className="text-text-tertiary dark:text-darkText-1">
-                  ID:
-                </span>{" "}
-                {id}
-              </p>
+                  ID: {id}
+                </span>
+                {/* {note && (
+                  <button onClick={() => setActiveStep("modal")}>
+                    <div className="flex items-center">
+                      <NoteBlinkingIcon size={20} className="blink-color" />
+                    </div>
+                  </button>
+                )} */}
+              </div>
             </div>
           </div>
           <div className="space-y-2 text-sm">
@@ -252,23 +267,14 @@ const VehicleRecordModal: React.FC<
         </div>
         {/* Buttons */}
         <div className="mt-8 flex items-center justify-center gap-4 md:gap-[70px]">
-          {status === "pending" && (
+          {/* {status === "pending" && ( */}
+          {status === "check-in" && (
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
               onClick={() => setActiveStep("check-out")}
             >
               Check Out
-            </Button>
-          )}
-
-          {(status === "no_record" || status === "completed") && (
-            <Button
-              size="sm_bold"
-              className="py-[10px] px-6 rounded-lg"
-              onClick={() => setActiveStep("check-in")}
-            >
-              Check In
             </Button>
           )}
           {showOpenRecordsButton && (
@@ -278,6 +284,16 @@ const VehicleRecordModal: React.FC<
               href={`/management/vehicles-record/records/${id}/record`}
             >
               Open Records
+            </Button>
+          )}
+          {/* {(status === "no_record" || status === "completed") && ( */}
+          {(status === "pending" || status === "check-out") && (
+            <Button
+              size="sm_bold"
+              className="py-[10px] px-6 rounded-lg"
+              onClick={() => setActiveStep("check-in")}
+            >
+              Check In
             </Button>
           )}
         </div>
@@ -339,6 +355,20 @@ const VehicleRecordModal: React.FC<
           </Button>
         </div>
       </ModalPreset>
+    );
+  }
+
+  if (activeStep === "modal") {
+    return (
+      <LandlordTenantModalPreset heading="Note" style={{ maxWidth: "500px" }}>
+        <TruncatedText
+          lines={7}
+          className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
+          as="div"
+        >
+          <div dangerouslySetInnerHTML={{ __html: sanitizedNote }} />
+        </TruncatedText>
+      </LandlordTenantModalPreset>
     );
   }
 

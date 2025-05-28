@@ -61,7 +61,8 @@ const StaffProfile = () => {
     error: addressError,
   } = useAddressFromCoords(lat, lng);
 
-  const { staff, activities, chats, portfolio, messageUserData } = pageData;
+  const { staff, activities, chats, portfolio, messageUserData, staffChats } =
+    pageData;
 
   const {
     data: apiData,
@@ -85,13 +86,22 @@ const StaffProfile = () => {
   useEffect(() => {
     if (pageData) {
       const newMessageUserData = messageUserData;
+      const newStaffChatData = staffChats;
       const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
+      const currentStaffChatData = useGlobalStore.getState()?.staffChats;
 
       if (
         JSON.stringify(currentMessageUserData) !==
         JSON.stringify(newMessageUserData)
       ) {
         setGlobalStore("messageUserData", newMessageUserData);
+      }
+
+      if (
+        JSON.stringify(currentStaffChatData) !==
+        JSON.stringify(newStaffChatData)
+      ) {
+        setGlobalStore("staffChats", newStaffChatData);
       }
     }
   }, [setGlobalStore, pageData]);
@@ -101,7 +111,7 @@ const StaffProfile = () => {
     router.push(`/messages/${staff?.user_id}`);
   };
 
-  // console.log("portfolioData", portfolio);
+  // console.log("pageData", pageData);
 
   useEffect(() => {
     if (activities) {

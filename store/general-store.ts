@@ -33,6 +33,7 @@ import { OtherAgreementDocumentOption } from "@/components/Documents/other-agree
 import {
   ProfileSettingsPageState,
 } from "@/app/(nav)/settings/company/data";
+import { StaffChatTypes } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/type";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -44,6 +45,8 @@ interface GlobalStoreState {
   rents?: Rent[];
   emails?: EmailPageData;
   overduePeriods: number | null;
+
+  staffChats: any | null;
 
   rentStartDate: string | null;
   rentEndDate: string | null;
@@ -151,7 +154,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   timeRange: "last_30_days",
 
   overduePeriods: null,
-
+  staffChats: null,
   
   // timeRange: "90d",
   selectedDateRange: undefined,
