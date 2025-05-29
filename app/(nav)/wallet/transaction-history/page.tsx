@@ -26,8 +26,9 @@ import NetworkError from "@/components/Error/NetworkError";
 import { getTransactionIcon } from "@/components/Wallet/icons";
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
-import WalletAnalytics from "@/components/Wallet/wallet-analytics";
+import WalletAnalfilteredTransactionsytics from "@/components/Wallet/wallet-analytics";
 import { DateRangeSelector } from "./components";
+import WalletAnalytics from "@/components/Wallet/wallet-analytics";
 
 const TransactionHistory = () => {
   const [state, setState] = useState(initialPageData);
@@ -241,30 +242,69 @@ const TransactionHistory = () => {
     setGlobalStore,
   ]);
 
+  // Update fetchNextPage with better logging
   const fetchNextPage = useCallback(() => {
-    if (state.hasMore && !silentLoading) {
+    if (!state.hasMore || silentLoading || loading) {
+      return;
+    }
+
+    const nextPage = state.current_page + 1;
+    if (nextPage <= state.total_pages) {
       setConfig((prev) => ({
+        ...prev,
         params: {
           ...prev.params,
-          page: state.current_page + 1,
+          page: nextPage,
         } as TransactionQueryParams,
       }));
     }
-  }, [state.hasMore, silentLoading, state.current_page]);
+  }, [
+    state.hasMore,
+    silentLoading,
+    loading,
+    state.current_page,
+    state.total_pages,
+  ]);
 
+  // Update the IntersectionObserver setup
   const lastRowRef = useCallback(
     (node: HTMLElement | null) => {
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && state.hasMore) {
-          fetchNextPage();
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [fetchNextPage, state.hasMore]
-  );
+      if (!node || loading) return;
 
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && state.hasMore && !silentLoading) {
+            fetchNextPage();
+          }
+        },
+        {
+          root: document.getElementById("table-container"),
+          rootMargin: "100px",
+          threshold: 0.1,
+        }
+      );
+
+      observer.current.observe(node);
+
+      // Debug log when ref is attached
+      console.log("Observer attached to element", {
+        hasMore: state.hasMore,
+        currentPage: state.current_page,
+        totalPages: state.total_pages,
+      });
+    },
+    [
+      fetchNextPage,
+      state.hasMore,
+      silentLoading,
+      loading,
+      state.current_page,
+      state.total_pages,
+    ]
+  );
+  
   useEffect(() => {
     if (apiData) {
       setState((prevState) => {
@@ -314,6 +354,17 @@ const TransactionHistory = () => {
         }`}
       </span>
     ),
+    status: (
+      <span
+        className={clsx("font-medium", {
+          "text-yellow-500": t.status?.toLowerCase() === "pending",
+          "text-status-error-primary": t.status?.toLowerCase() === "failed",
+          "text-status-success-3": t.status?.toLowerCase() === "success",
+        })}
+      >
+        {t.status}
+      </span>
+    ),
     icon: (
       <div
         className={clsx(
@@ -349,15 +400,22 @@ const TransactionHistory = () => {
       queryParams.status = status;
     }
     if (type) {
-      queryParams.type = type;
+      queryParams.transaction_type = type;
     }
+    // Reset transactions to avoid stale data
+    setState((prevState) => ({
+      ...prevState,
+      transactions: [],
+      current_page: 1,
+      hasMore: true,
+    }));
     setConfig({
       params: queryParams,
     });
   };
 
-   // Get display text for current timeRange
-   const getTimeRangeDisplayText = () => {
+  // Get display text for current timeRange
+  const getTimeRangeDisplayText = () => {
     switch (timeRange) {
       case "90d":
         return "Last 3 months";
@@ -373,7 +431,6 @@ const TransactionHistory = () => {
         return "Last 30 days";
     }
   };
-
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -479,11 +536,13 @@ const TransactionHistory = () => {
               fontSize: "16px",
             }}
           />
-          {silentLoading && (
-            <div className="flex items-center justify-center py-4">
-              <div className="loader" />
-            </div>
-          )}
+          <div className="h-10 w-full">
+            {silentLoading && (
+              <div className="flex items-center justify-center py-4">
+                <div className="loader" />
+              </div>
+            )}
+          </div>
         </section>
       )}
     </div>

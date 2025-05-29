@@ -8,11 +8,12 @@ export interface AllTransactionsResponse {
       total_credit: string;
       total_withdrawal: string;
     };
-    current_page: number;
-    last_page: number;
+    //current_page: number;
+    //last_page: number;
     transactions: {
+      last_page: number;
       current_page: number;
-      data: Transaction[]
+      data: Transaction[];
     };
   };
 }
@@ -26,7 +27,7 @@ export interface TransactionPageData {
 
 export interface TransactionQueryParams {
   page?: number;
-  type?: string; // "credit" | "debit";
+  transaction_type?: string; // "credit" | "debit";
   status?: string; // "pending" | "failed" | "success";
   from?: string;
   to?: string;
