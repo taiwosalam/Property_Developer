@@ -25,9 +25,10 @@ interface BoardColumnProps {
   column: Column;
   tasks: Task[];
   isOverlay?: boolean;
+  loadingIndicator?: React.ReactNode; // Add this prop
 }
 
-export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
+export function BoardColumn({ column, tasks, isOverlay, loadingIndicator }: BoardColumnProps) {
   const tasksIds = useMemo(() => {
     return tasks.map((task) => task.id);
   }, [tasks]);
@@ -89,6 +90,9 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
               {tasks.map((task) => (
                 <TaskCard key={task.id} task={task} statusChanger={true} />
               ))}
+
+              {/* Add the loading indicator at the end */}
+              {!isOverlay && loadingIndicator}
             </SortableContext>
           </CardContent>
         </ScrollArea>

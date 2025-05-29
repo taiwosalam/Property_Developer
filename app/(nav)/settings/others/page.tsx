@@ -88,7 +88,7 @@ import {
   staffTierColorMap,
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
-import { title } from "process";
+
 
 const companyTypes = [
   {

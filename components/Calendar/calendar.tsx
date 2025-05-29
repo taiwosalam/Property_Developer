@@ -46,7 +46,6 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
   const [activeDate, setActiveDate] = useState(today);
   const [currentDate, setCurrentDate] = useState(startOfMonth(today));
 
- 
   const { activities, eventsByDate } = useMemo(() => {
     // Group events by date for multiple event detection
     const eventsByDate = events?.reduce((acc, event) => {
@@ -57,31 +56,31 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
       acc[dateKey].push(event);
       return acc;
     }, {} as Record<string, CalendarEventProps[]>);
-  
+
     // Get activities for the active date
     const activities = events
       ?.filter((event) => isSameDay(event.date, activeDate))
       .map((event) => {
         const dateKey = event.date.toDateString();
         const eventsOnDay = eventsByDate?.[dateKey];
-  
+
         // If multiple events exist on this day
         if (eventsOnDay && eventsOnDay.length > 1) {
           // Get all event types for this day
-          const allEventTypes = eventsOnDay.map(e => e.type).join(', ');
-          
+          const allEventTypes = eventsOnDay.map((e) => e.type).join(", ");
+
           return {
             ...event,
             type: "multiple event" as const,
             eventCount: eventsOnDay.length,
             originalType: event.type,
             title: `${event.type} (Part of multiple events: ${allEventTypes})`,
-            desc: `${event.desc}`
+            desc: `${event.desc}`,
           };
         }
         return event;
       });
-  
+
     return { activities, eventsByDate };
   }, [activeDate, events]);
 
@@ -155,14 +154,14 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
                   className="py-2 px-8"
                   href="/tasks/calendars/manage"
                 >
-                  manage
+                  explore
                 </Button>
               </div>
             )}
           </div>
         </div>
         <div style={{ maxHeight: "460px" }} className="lg:w-[40%]">
-          <CalendarActivities date={activeDate} events={activities ?? []} />
+          <CalendarActivities date={activeDate} events={activities ?? []}/>
         </div>
       </div>
     </CalendarContext.Provider>

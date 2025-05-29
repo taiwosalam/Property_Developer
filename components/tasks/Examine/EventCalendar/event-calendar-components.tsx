@@ -41,7 +41,7 @@ export const EventCalendarEvent: React.FC<EventCalendarEventProps> = ({
     <div className="w-full flex" style={{ backgroundColor }}>
       <div className="w-[5px]" style={{ backgroundColor: color }}></div>
       <div className="py-[10px] px-3">
-        <p className="text-xs font-normal" style={{ color }}>
+        <p className="text-xs font-normal capitalize" style={{ color }}>
           {title}
         </p>
       </div>

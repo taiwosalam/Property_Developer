@@ -39,9 +39,9 @@ export const transformAllTransactionsResponse = (
 ): TransactionPageData => {
   const { data } = response;
   return {
-    current_page: data.current_page,
-    total_pages: data.last_page,
-    hasMore: data.current_page < data.last_page,
+    current_page: data.transactions.current_page,
+    total_pages: data.transactions.last_page,
+    hasMore: data.transactions.current_page < data.transactions.last_page,
     transactions: data.transactions.data.map((t) => {
       // Parse the date and time strings into a Date object (assuming UTC from server)
       const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC

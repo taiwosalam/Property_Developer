@@ -67,7 +67,11 @@ const CreateMyPropertyRequest = () => {
           <Button
             type="submit"
             size="base_medium"
-            disabled={isCreating || !getGlobalInfoStore("canSubmit")}
+            disabled={
+              isCreating ||
+              !getGlobalInfoStore("canSubmit") ||
+              !getGlobalInfoStore("isValidDateRange")
+            }
             className="py-2 px-8"
           >
             {isCreating ? "Creating..." : "Create"}

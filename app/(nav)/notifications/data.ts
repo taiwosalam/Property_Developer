@@ -30,6 +30,12 @@ export type Notification = {
 
 export type NotificationApiResponse = {
   data: Notification[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
 };
 
 export type TNotificationData = {
@@ -44,6 +50,12 @@ export type TNotificationData = {
     sender_name: string;
     sender_picture: string;
   }[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
 };
 
 function extractNotificationType(notificationType: string): string {
@@ -70,11 +82,19 @@ export const transformNotificationData = (
       type: extractNotificationType(notification.type),
       subject: notification.data.subject || "",
       message: notification.data.message || "",
-      time: notification.created_at ? formatDateTime(notification.created_at) : "",
+      time: notification.created_at
+        ? formatDateTime(notification.created_at)
+        : "",
       from_id: notification.from_id,
       sender_name: notification.sender_name || "",
       sender_picture: notification?.sender_picture ?? "",
     })),
+    meta: {
+      total: data?.meta.total,
+      current_page: data?.meta?.current_page,
+      last_page: data?.meta?.last_page,
+      per_page: data?.meta?.per_page
+    }
   };
 };
 
@@ -117,5 +137,15 @@ export const deleteAllNotification = async (ids: string[]) => {
   } catch (error) {
     handleAxiosError(error);
     return false;
+  }
+};
+
+export const fetchNotifications = async (page: number = 1) => {
+  try {
+    const response = await api.get(`/notifications?page=${page}`);
+    return transformNotificationData(response.data);
+  } catch (error) {
+    handleAxiosError(error);
+    return null;
   }
 };

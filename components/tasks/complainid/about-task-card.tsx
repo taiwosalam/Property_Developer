@@ -6,8 +6,17 @@ import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import BackButton from "@/components/BackButton/back-button";
 import clsx from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
+import { getBadgeColor } from "@/lib/utils";
 
-const AboutTaskCard = () => {
+export interface AboutTaskCardProps {
+  description?: string;
+  tier_id?: number;
+  aboutCard?: {
+    label: string;
+    value: string | null;
+  }[];
+}
+const AboutTaskCard = ({ description, aboutCard, tier_id }: AboutTaskCardProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const toggleVisibility = () => {
@@ -50,11 +59,13 @@ const AboutTaskCard = () => {
             }}
           >
             <div className="grid grid-cols-3 gap-4">
-              {details.map((detail, index) => (
+              {aboutCard?.map((detail, index) => (
                 <DetailItem
                   key={index}
                   label={detail.label}
-                  value={detail.value}
+                  value={detail.value ?? "___ ___"}
+                  tier_id={tier_id}
+
                 />
               ))}
             </div>
@@ -66,10 +77,7 @@ const AboutTaskCard = () => {
                 className="text-sm text-[16px] font-normal text-text-secondary dark:text-darkText-2"
                 lines={3}
               >
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Accusamus distinctio quaerat inventore temporibus. Eos adipisci
-                maxime illum repellendus minus praesentium harum natus corrupti
-                itaque! Excepturi possimus at totam? Tempora, non.
+                {description ? description : "___ ___"}
               </TruncatedText>
             </div>
           </motion.div>
@@ -84,23 +92,26 @@ export default AboutTaskCard;
 const DetailItem = ({
   label,
   value,
+  tier_id,
 }: {
   label: string;
   value: string | number;
+  tier_id?: number;
 }) => (
   <div className="w-full">
     <p className="text-[16px] font-medium text-text-tertiary dark:text-white">
-      {label}
+      {label}:
     </p>
-    <p
-      className={clsx(
-        "text-sm text-[16px] font-normal text-text-secondary dark:text-darkText-1",
-        label === "Complaints sent by:" && "flex items-center"
+    <div className="flex items-center">
+      <p className="text-sm text-[16px] font-normal  text-text-secondary dark:text-darkText-1 capitalize">
+        {value}
+      </p>
+      {label === "Complaints sent by" ? (
+        <BadgeIcon color={getBadgeColor(tier_id) || "gray"} />
+      ) : (
+        ""
       )}
-    >
-      {value}
-      {label === "Complaints sent by:" && <BadgeIcon color="green" />}
-    </p>
+    </div>
   </div>
 );
 

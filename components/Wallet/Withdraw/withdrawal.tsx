@@ -37,7 +37,7 @@ const calculateExpectedAmount = (amount: number): number => {
 
   const expectedAmount = amount - discountAmount - BANK_CHARGES;
 
-  return expectedAmount;
+  return amount - expectedAmount;
 };
 
 const Withdrawal: React.FC<
@@ -186,12 +186,12 @@ const Withdrawal: React.FC<
             {!branch && error && (
               <p className="text-red-600 text-sm mt-1">{error}</p>
             )}
-            {(amount > 1000 && !branch) && (
+            {amount > 1000 && !branch && (
               <div>
                 <Input
                   readOnly
                   id="amount_expected"
-                  label="amount expected"
+                  label="charges"
                   CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                   style={{ backgroundColor: isDarkMode ? "black" : "white" }}
                   value={expectedAmount.toLocaleString()}
@@ -201,7 +201,7 @@ const Withdrawal: React.FC<
                 <p className="text-red-600 text-sm mt-1">
                   {`-${DISCOUNT_PERCENTAGE}% convenience fee and ${formatToNaira(
                     BANK_CHARGES
-                  )} bank transfer charges`}
+                  )} bank VAT`}
                 </p>
               </div>
             )}

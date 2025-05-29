@@ -9,9 +9,12 @@ import TableMenu from "../Table/table-menu";
 import { Box, MenuItem, Modal } from "@mui/material";
 //import Modal from "@mui/material";
 import useSubscriptionStore from "@/store/subscriptionStore";
-import { ConfirmModal, EditModal, SuccessModal } from "@/app/(nav)/settings/add-on/components";
+import {
+  ConfirmModal,
+  EditModal,
+  SuccessModal,
+} from "@/app/(nav)/settings/add-on/components";
 import PaymentMethod from "../Wallet/AddFunds/payment-method";
-
 
 interface DomainTable {
   data: {
@@ -48,7 +51,7 @@ export const CompanySettingsDomainTable = ({ data }: DomainTable) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-   const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
@@ -68,7 +71,7 @@ export const CompanySettingsDomainTable = ({ data }: DomainTable) => {
           <SectionTitle>
             <div className="py-4">
               <h2 className="text-base">Custom Domain</h2>
-              <p className="py-2 text-sm text-slate-400">
+              <p className="py-2 text-sm text-slate-">
                 Manage a custom domain of your choice to showcase your company
                 profile and promote your property listings portfolio to a global
                 audience.
@@ -77,20 +80,21 @@ export const CompanySettingsDomainTable = ({ data }: DomainTable) => {
           </SectionTitle>
           <div>
             <CustomTable
+              tableBodyCellSx={{
+                textTransform: "lowercase",
+              }}
               fields={personalized_domain.fields}
               data={data}
               onActionClick={(item, e) => {
                 handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
               }}
               className="lowercase"
-              
             />
             <TableMenu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              
               <MenuItem onClick={openWarning}>
                 <button type="button">Delete</button>
               </MenuItem>
@@ -134,14 +138,13 @@ export const CompanySettingsDomainTable = ({ data }: DomainTable) => {
               </Box>
             </Modal>
             <Modal
-              
               open={openEditModal}
               onClose={closeEdit}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
             >
               <Box sx={style}>
-                <EditModal data={data}/>
+                <EditModal data={data} />
               </Box>
             </Modal>
           </div>

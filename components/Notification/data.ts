@@ -32,3 +32,20 @@ export const notification_icons: Record<string, StaticImageData | any> = {
   "property draft": NotificationProperty,
   "property request": NotificationPropertyRequest,
 };
+
+export const notification_links: Record<string, string> = {
+  user: "/settings/company",
+  review: "/reviews",
+  message: "/messages",
+  invoice: "/wallet",
+  profile: "/settings/profile",
+  setting: "/settings",
+  listing: "/listings",
+  location: "/settings",
+  subscription: "/settings/subscription",
+  "wallet transaction": "/wallet",
+  "rent and unit": "management/rent-unit",
+  "agent community": "/management/agent-community",
+  "property draft": "/properties/drafts",
+  "property request": "/management/agent-request",
+};

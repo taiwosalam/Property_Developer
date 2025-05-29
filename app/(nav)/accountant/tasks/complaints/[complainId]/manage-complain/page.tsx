@@ -33,7 +33,7 @@ const ManageComplain = () => {
           buttonText="Create Task"
           // modalContent={<CreateTaskModal />}
         />
-        <TaskStatusProgress />
+        <TaskStatusProgress percentage={50}/>
       </div>
       <div className="w-full lg:w-2/5 lg:h-full">
         <div className="h-full space-y-10">

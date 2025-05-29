@@ -60,7 +60,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         message:
           "You do not have any recent messages. You can chat with staff, landlord/landlady, tenants, and occupants.",
       };
-    } else if (sectionHeader === "Complaints") {
+    } else if (sectionHeader === "Recent Complaints") {
       return {
         icon: <ComplainsEmptyIcon />,
         altText: "Complaints Icon",
@@ -139,7 +139,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                     ? `/management/staff-branch/${branchId}/branch-staff/${notification.staff_ID}`
                     : sectionHeader === "Recent Messages"
                     ? `/messages/${notification.id}`
-                    : "#"
+                    : "/tasks/complaints"
                 }
                 className="flex items-center gap-3 w-[70%]"
               >
@@ -173,6 +173,12 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                           {notification.title}
                         </p>
                       )}
+
+                  {sectionHeader === "Recent Complaints" && (
+                    <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                      {notification.message}
+                    </p>
+                  )}
 
                   <p className="text-xs text-text-tertiary font-normal capitalize">
                     {notification.content_type === "text" ? (

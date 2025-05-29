@@ -88,6 +88,9 @@ interface GlobalStoreState {
   setUnitData: (data: initDataProps | null) => void;
   canSubmit: boolean;
 
+  isValidDateRange: boolean,
+  setIsValidDateRange: (isValid: boolean) => void;
+
   branchWalletTransactions: Transactions[] | null;
 
   wallet_stats?: WalletStats;
@@ -152,6 +155,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   tenantLoading: false,
   tenantError: null,
   currentUnit: null,
+  isValidDateRange: true,
+  setIsValidDateRange: (isValid: boolean) => set({ isValidDateRange: isValid }),
   currentRentStats: null,
   timeRange: "last_30_days",
 
