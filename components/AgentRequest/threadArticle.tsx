@@ -1,8 +1,13 @@
-import { DislikeIcon, LikeIcon, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import {
+  DislikeIcon,
+  LikeIcon,
+  ThumbsDown,
+  ThumbsUp,
+} from "@/public/icons/icons";
 import Image from "next/image";
 import React, { useState } from "react";
 import { CommentData } from "../tasks/announcements/comment";
-import { togglePropertyRequestLike } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { togglePropertyRequestLike } from "@/app/(nav)/community/agent-forum/my-articles/data";
 import { toast } from "sonner";
 import user1 from "@/public/empty/user1.svg";
 import { empty } from "@/app/config";
@@ -25,7 +30,7 @@ const ThreadArticle = ({
 }: ThreadArticleProps) => {
   const [isLike, setIsLike] = useState(false);
 
-  console.log("readByData", readByData)
+  console.log("readByData", readByData);
 
   const handleToggleLike = async (type: string) => {
     try {

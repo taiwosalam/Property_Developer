@@ -1,14 +1,9 @@
-import {
-  Mail,
-  MapIcon,
-  PhoneIcon,
-  WebsiteIcon,
-} from "@/public/icons/icons";
+import { Mail, MapIcon, PhoneIcon, WebsiteIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import {
   CompanySummarySkeleton,
   formatCompanySummary,
-} from "@/app/(nav)/management/agent-community/components";
+} from "@/app/(nav)/community/agent-forum/components";
 import { CompanySummaryTypes } from "./types";
 import Link from "next/link";
 import { empty } from "@/app/config";
@@ -20,7 +15,6 @@ const CompanySummary = ({
   loading?: boolean;
   companySummary: CompanySummaryTypes;
 }) => {
-  
   if (loading) {
     return <CompanySummarySkeleton />;
   }

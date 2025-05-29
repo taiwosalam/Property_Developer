@@ -4,25 +4,27 @@ import "keen-slider/keen-slider.min.css";
 import Comment, { CommentData } from "@/components/tasks/announcements/comment";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import NewComment from "../../app/(nav)/management/agent-community/NewComment";
+import NewComment from "../../app/(nav)/community/agent-forum/NewComment";
 import {
   sendMyPropertyRequestComment,
   sendMyArticleReply,
   toggleCommentLike,
   sendMyPropertyRequestReply,
   togglePropertyRequestCommentLike,
-} from "@/app/(nav)/management/agent-community/my-articles/data";
+} from "@/app/(nav)/community/agent-forum/my-articles/data";
 import PropertyRequestNewComment from "./PropertyRequestNewComment";
 import CommunityComments from "./CommunityComments";
-import { CommentProps } from "@/app/(nav)/management/agent-community/type";
+import { CommentProps } from "@/app/(nav)/community/agent-forum/type";
 
 interface ThreadCommentProps {
   id: string;
   slug: string;
-  comments: CommentProps[] | CommentData[] & {
-    likes?: string | number;
-    dislikes?: string | number;
-  };
+  comments:
+    | CommentProps[]
+    | (CommentData[] & {
+        likes?: string | number;
+        dislikes?: string | number;
+      });
   setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
   edit?: boolean;
 }
@@ -32,7 +34,7 @@ const PropertyRequestComments = ({
   slug,
   comments,
   edit,
-  setComments
+  setComments,
 }: ThreadCommentProps) => {
   // console.log("comments", comments);
   const [likeCount, setLikeCount] = useState(() => {

@@ -4,12 +4,12 @@ import "keen-slider/keen-slider.min.css";
 import Comment, { CommentData } from "@/components/tasks/announcements/comment";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import NewComment from "../../app/(nav)/management/agent-community/NewComment";
+import NewComment from "../../app/(nav)/community/agent-forum/NewComment";
 import {
   sendMyArticleComment,
   sendMyArticleReply,
   toggleCommentLike,
-} from "@/app/(nav)/management/agent-community/my-articles/data";
+} from "@/app/(nav)/community/agent-forum/my-articles/data";
 import { WeekNumberFormatter } from "react-day-picker";
 
 interface ThreadCommentProps {
@@ -42,7 +42,7 @@ const CommunityComments = ({ slug, comments, edit }: ThreadCommentProps) => {
   // console.log('like clicked', commentId);
   const handleToggleLike = async (commentId: string | number, type: number) => {
     // if (isLoading || userAction === "like") return;
-    
+
     try {
       setIsLoading(true);
       const res = await toggleCommentLike(String(commentId), 1);

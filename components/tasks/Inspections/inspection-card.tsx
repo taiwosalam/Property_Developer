@@ -98,7 +98,9 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
           )}
         </div>
         <div className="flex items-center gap-4 justify-end">
-          <button onClick={() => router.push("/messages")}>
+          <button
+            onClick={() => router.push(`/messages/${inspection?.userId}`)}
+          >
             <Picture src={ChatIcon} alt="chat" size={24} />{" "}
           </button>
           <Modal>

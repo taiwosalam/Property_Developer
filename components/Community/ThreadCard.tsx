@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ThreadCardProps } from "@/app/(nav)/management/agent-community/type";
+import { ThreadCardProps } from "@/app/(nav)/community/agent-forum/type";
 import { ThreadBody, ThreadFooter, ThreadHeader } from "./ThreadComponents";
 
 const ThreadCard = ({
@@ -27,7 +27,7 @@ const ThreadCard = ({
   badge_color,
   isVerified,
 }: ThreadCardProps) => {
-  const link = `/management/agent-community/${
+  const link = `/community/agent-forum/${
     myArticle ? "my-articles" : "threads"
   }/${slug}/preview?id=${id}`;
   return (
@@ -56,7 +56,7 @@ const ThreadCard = ({
         dislikes={dislikes}
         slug={slug}
         shareLink={link}
-        setIsLikeDislikeLoading={setIsLikeDislikeLoading} 
+        setIsLikeDislikeLoading={setIsLikeDislikeLoading}
         user_liked={user_liked}
         user_disliked={user_disliked}
       />

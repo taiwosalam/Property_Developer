@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function ManagementPage() {
-  redirect("/management/landlord");
+  redirect("/community/agent-forum");
 }

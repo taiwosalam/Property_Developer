@@ -1,5 +1,5 @@
 import { CommentData } from "@/components/tasks/announcements/comment";
-import { sendMyPropertyRequestComment } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { sendMyPropertyRequestComment } from "@/app/(nav)/community/agent-forum/my-articles/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { SendMessageIcon } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
@@ -7,7 +7,7 @@ import { useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { CommentTextArea } from "@/app/(nav)/management/agent-community/NewComment";
+import { CommentTextArea } from "@/app/(nav)/community/agent-forum/NewComment";
 
 interface ThreadResponse {
   post: any;
@@ -56,8 +56,6 @@ const NewComment = ({ commentCount, id, slug }: Props) => {
       setIsSubmitting(false);
     }
   };
-
-  
 
   return (
     <div className="mt-6">

@@ -47,7 +47,7 @@ import WavesurferPlayer from "@wavesurfer/react";
 import NoMessage from "./messages-component";
 import { PlusIcon } from "@/public/icons/icons";
 import SelectChatUsersModal from "@/components/Message/user-modal";
-import { CommentTextArea } from "../../management/agent-community/NewComment";
+import { CommentTextArea } from "../../community/agent-forum/NewComment";
 
 // Import the voice visualizer hook and component
 import {
