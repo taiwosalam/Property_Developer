@@ -19,7 +19,7 @@ export default function useConversationListener(
 
   useEffect(() => {
     const currentUserId = getLocalStorage("user_id");
-    console.log("useConversationListener:", { currentUserId, participantId });
+    // console.log("useConversationListener:", { currentUserId, participantId });
 
     if (!currentUserId || !participantId) {
       console.log("useConversationListener skipped:", {
@@ -33,7 +33,7 @@ export default function useConversationListener(
       (a, b) => a - b
     );
     const channelName = `conversation.${minId}.${maxId}`;
-    const altChannelName = `conversation-${minId}-${maxId}`; // Debug variant
+    const altChannelName = `conversation-${minId}-${maxId}`; 
 
     const echo = initializeEcho();
     if (!echo) {
