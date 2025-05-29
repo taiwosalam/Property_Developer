@@ -1,4 +1,4 @@
-import { toggleLike } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { toggleLike } from "@/app/(nav)/community/agent-forum/my-articles/data";
 import { empty } from "@/app/config";
 import {
   CommentIcon,

@@ -101,9 +101,10 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               <span className="text-base font-medium capitalize">
                 {truncateText(userName, 30)}
               </span>
-              {cardType === "visitor" && (
-                <BadgeIcon color={getBadgeColor(props.tier_id) || "gray"} />
-              )}
+              {cardType === "visitor" ||
+                (cardType === "agent-community" && props?.tier === "2" && (
+                  <BadgeIcon color={"gray"} />
+                ))}
             </div>
             {cardType !== "agent-community" ? (
               <div className="flex items-center gap-1">
@@ -242,17 +243,17 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           <div className="flex items-center gap-2">
             {!props.user && (
               <button
-                onClick={() => router.push(`/messages`)}
+                onClick={() => router.push(`/messages/${props?.userId}`)}
                 type="button"
                 aria-label="Message"
                 className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
               >
-                Messsage
+                Message
               </button>
             )}
 
             {/* <Link
-              href={`/management/agent-request/${
+              href={`/community/agent-request//${
                 props.user ? "my-properties-request/" : ""
               }${requestId}/manage`}
               className={`mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1 ${
@@ -265,7 +266,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             </Link> */}
 
             <Link
-              href={`/management/agent-request/${
+              href={`/community/agent-request/${
                 props.user ? "my-properties-request/" : ""
               }${requestId}/preview`}
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"

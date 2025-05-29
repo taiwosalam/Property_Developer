@@ -12,7 +12,7 @@ import {
 } from "@/app/(nav)/settings/company/data";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { formatPhoneNumbers } from "@/app/(nav)/management/agent-community/data";
+import { formatPhoneNumbers } from "@/app/(nav)/community/agent-forum/data";
 import AgreementSidebarInfo from "./agreement-sidebar";
 import AgreementBackground from "@/public/icons/icons";
 

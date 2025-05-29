@@ -1,7 +1,7 @@
 // import { comments } from "@/app/(nav)/management/agent-community/data";
 import { comments } from "@/app/(nav)/accountant/management/agent-community/data";
 import { CommentProps } from "@/app/(nav)/accountant/management/agent-community/type";
-import Comment from "@/app/(nav)/management/agent-community/threads/[threadId]/preview/comment";
+import Comment from "@/app/(nav)/community/agent-forum/threads/[threadId]/preview/comment";
 
 interface ThreadCommentProps {
   comments?: CommentProps[];

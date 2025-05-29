@@ -7,7 +7,7 @@ import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { useState, useEffect } from "react";
 import { ValidationErrors } from "@/utils/types";
 import MultiSelect from "./multi-select";
-import Comment from "@/app/(nav)/management/agent-community/threads/[threadId]/preview/comment";
+import Comment from "@/app/(nav)/community/agent-forum/threads/[threadId]/preview/comment";
 import PropertyRequestUnitType from "./UnitType";
 import { PropertyRequestContext } from "./propertyRequest";
 import Input from "../Form/Input/input";
@@ -18,7 +18,7 @@ import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
 import { comments } from "@/app/(nav)/accountant/management/agent-community/data";
 import AgentRequestLoader from "../Loader/agent-reuest";
-import { RESTRICTED_ARTICLES_WORDS } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { RESTRICTED_ARTICLES_WORDS } from "@/app/(nav)/community/agent-forum/my-articles/data";
 import { useGlobalStore } from "@/store/general-store";
 
 const SkeletonBox = ({ className }: { className: string }) => (

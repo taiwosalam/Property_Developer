@@ -1,4 +1,4 @@
-import { readyByData } from "@/app/(nav)/management/agent-community/data";
+import { readyByData } from "@/app/(nav)/community/agent-forum/data";
 import Image from "next/image";
 import BadgeIcon, {
   BadgeIconColors,
@@ -6,12 +6,11 @@ import BadgeIcon, {
 } from "@/components/BadgeIcon/badge-icon";
 import user2 from "@/public/empty/user2.svg";
 import { empty } from "@/app/config";
-import { TextSkeleton } from "@/app/(nav)/management/agent-community/components";
+import { TextSkeleton } from "@/app/(nav)/community/agent-forum/components";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 
 const ReadyByCard = ({ data }: { data: any }) => {
-  
   console.log(data);
 
   const isArray = Array.isArray(data);
