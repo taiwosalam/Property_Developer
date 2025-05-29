@@ -72,8 +72,9 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
   heading,
   children,
   style,
+  className,
 }) => (
-  <div className="custom-flex-col gap-4">
+  <div className={cn("custom-flex-col gap-4", className)}>
     <div className="flex items-center justify-between">
       <h1 className="text-text-primary text-xl font-medium capitalize dark:text-[#f1f1fd]" style={style}>
         {heading}

@@ -130,7 +130,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
       >
         <SearchInput
           placeholder={searchInputPlaceholder}
-          className={`max-w-[250px] md:max-w-max ${
+          className={`search-input max-w-[250px] md:max-w-max ${
             hiddenSearchInput && "hidden"
           }`}
           onSearch={handleSearch}
@@ -141,7 +141,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               type="button"
               aria-label="list-view"
               className={clsx(
-                "p-1 rounded-md",
+                "p-1 rounded-md list-view-button",
                 !gridView
                   ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
                   : "bg-transparent text-[unset]"
@@ -154,7 +154,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
               type="button"
               aria-label="grid-view"
               className={clsx(
-                "p-1 rounded-md",
+                "p-1 rounded-md grid-view-button",
                 gridView
                   ? "bg-black text-white dark:bg-[#020617] dark:text-darkText-1"
                   : "bg-transparent text-[unset]"

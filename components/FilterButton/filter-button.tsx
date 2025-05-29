@@ -17,7 +17,7 @@ const FilterButton = ({
     <button
       type="button"
       className={cn(
-        "bg-white dark:bg-darkText-primary  rounded-lg p-2 flex items-center gap-2",
+        "filter-button bg-white dark:bg-darkText-primary  rounded-lg p-2 flex items-center gap-2",
         className
       )}
       onClick={onClick}

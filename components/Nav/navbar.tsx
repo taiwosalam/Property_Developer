@@ -54,6 +54,7 @@ import { usePathname } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { saveCompanyStatusToCookie } from "@/utils/saveRole";
+import { pageSteps } from "@/tour/steps/page-steps";
 
 const NotificationBadge = ({
   count,
@@ -252,122 +253,6 @@ const Header = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  // useEffect(() => {
-  //   if (!hasMounted.current && appearance) {
-  //     const savedTheme = getLocalStorage("theme");
-  //     const { colorMode, navbar, fonts, dashboardColor } = appearance;
-  //     if (savedTheme) {
-  //       setTheme(savedTheme);
-  //     } else {
-  //       setTheme(colorMode);
-  //       saveLocalStorage("theme", colorMode);
-  //     }
-
-  //     saveLocalStorage("navbar", navbar);
-  //     setColor(dashboardColor);
-  //     applyFont(fonts);
-  //     hasMounted.current = true;
-  //   }
-  // }, [appearance, setColor]);
-
-  // const toggleTheme = () => {
-  //   if (!hasMounted.current) return;
-
-  //   const primaryColor = getLocalStorage("primary-color");
-  //   if (primaryColor === "#000000") {
-  //     toast.error("Cannot use dark mode on the selected primary color");
-  //     setTheme("light");
-  //     saveLocalStorage("theme", "light");
-  //     return;
-  //   }
-
-  //   const newTheme = theme === "dark" ? "light" : "dark";
-  //   setTheme(newTheme);
-  //   saveLocalStorage("theme", newTheme); // Persist theme choice
-  // };
-
-  // Initialize theme on mount
-
-  // useEffect(() => {
-  //   if (!hasMounted.current) {
-  //     const savedTheme = getLocalStorage("theme");
-  //     if (savedTheme) {
-  //       setTheme(savedTheme);
-  //     } else if (appearance?.colorMode) {
-  //       setTheme(appearance.colorMode);
-  //       saveLocalStorage("theme", appearance.colorMode);
-  //     } else {
-  //       setTheme("light"); // Default fallback
-  //       saveLocalStorage("theme", "light");
-  //     }
-  //     hasMounted.current = true;
-
-  //     // Update additional_details.appearance to sync with Appearance component
-  //     if (appearance) {
-  //       const additionalDetails = getLocalStorage("additional_details");
-  //       const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-  //       if (details.appearance) {
-  //         details.appearance.colorMode =
-  //           savedTheme || appearance.colorMode || "light";
-  //         saveLocalStorage("additional_details", JSON.stringify(details));
-  //       }
-  //     }
-  //   }
-  // }, [appearance]); // Only depend on appearance
-
-  // // Sync appearance.colorMode with theme changes from Appearance component
-  // useEffect(() => {
-  //   if (
-  //     hasMounted.current &&
-  //     appearance?.colorMode &&
-  //     !isManualToggle.current
-  //   ) {
-  //     const savedTheme = getLocalStorage("theme");
-  //     if (savedTheme !== appearance.colorMode) {
-  //       setTheme(appearance.colorMode);
-  //       saveLocalStorage("theme", appearance.colorMode);
-  //     }
-  //   }
-  // }, [appearance?.colorMode]);
-
-  // // Debounced toggleTheme to prevent rapid calls
-  // const toggleTheme = debounce(() => {
-  //   if (!hasMounted.current) return;
-
-  //   isManualToggle.current = true; // Mark as manual toggle
-  //   const primaryColor = getLocalStorage("primary-color");
-  //   if (primaryColor === "#000000") {
-  //     toast.error("Cannot use dark mode on the selected primary color");
-  //     setTheme("light");
-  //     saveLocalStorage("theme", "light");
-
-  //     // Update additional_details.appearance
-  //     const additionalDetails = getLocalStorage("additional_details");
-  //     const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-  //     if (details.appearance) {
-  //       details.appearance.colorMode = "light";
-  //       saveLocalStorage("additional_details", JSON.stringify(details));
-  //     }
-  //   } else {
-  //     const newTheme = theme === "dark" ? "light" : "dark";
-  //     setTheme(newTheme);
-  //     saveLocalStorage("theme", newTheme);
-
-  //     // Update additional_details.appearance
-  //     const additionalDetails = getLocalStorage("additional_details");
-  //     const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-  //     if (details.appearance) {
-  //       details.appearance.colorMode = newTheme;
-  //       saveLocalStorage("additional_details", JSON.stringify(details));
-  //     }
-  //   }
-
-  //   // Reset manual toggle flag after a delay to allow appearance sync
-  //   setTimeout(() => {
-  //     isManualToggle.current = false;
-  //   }, 500);
-  // }, 300);
-
   const isOnline = useOnlineStatus();
 
   const lgIconsInteractionClasses =
@@ -425,7 +310,7 @@ const Header = () => {
                 alt="notifications"
                 href="/notifications"
               />
-              <NavIcon
+              {/* <NavIcon
                 icon={
                   theme === "dark" ? (
                     <SunIcon size={21} />
@@ -435,7 +320,7 @@ const Header = () => {
                 }
                 alt="theme-toggle"
                 onClick={toggleTheme}
-              />
+              /> */}
             </div>
           </div>
 
@@ -462,7 +347,7 @@ const Header = () => {
                     alt="messages"
                     href="/messages"
                   />
-                  <NavIcon
+                  {/* <NavIcon
                     icon={
                       theme === "dark" ? (
                         <SunIcon size={21} />
@@ -472,7 +357,7 @@ const Header = () => {
                     }
                     alt="theme-toggle"
                     onClick={toggleTheme}
-                  />
+                  /> */}
                 </motion.div>
               ) : (
                 <motion.div
@@ -503,9 +388,11 @@ const Header = () => {
         {/* Desktop Navigation */}
         <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
           <div className="flex-1 flex items-center gap-2">
-            <NavSwitchUserSwitch />
+            <div className="module-dropdown">
+              <NavSwitchUserSwitch />
+            </div>
             <Modal>
-              <ModalTrigger className="px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
+              <ModalTrigger className="nav-global-search px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
                 <SearchIcon size={24} />
                 <span className="text-[#0a132ea6] dark:text-white text-base font-semibold">
                   Search
@@ -519,7 +406,7 @@ const Header = () => {
               <ModalTrigger asChild>
                 <Button
                   size="base_medium"
-                  className="py-[10px] px-5 rounded-lg flex-1 max-w-fit"
+                  className="nav-create-new py-[10px] px-5 rounded-lg flex-1 max-w-fit"
                 >
                   <span className="line-clamp-1 text-ellipsis">
                     + Create New
@@ -538,7 +425,7 @@ const Header = () => {
               <Link
                 href="/messages"
                 aria-label="messages"
-                className={lgIconsInteractionClasses}
+                className={`nav-messages ${lgIconsInteractionClasses}`}
               >
                 <MailIcon />
                 <NotificationBadge
@@ -551,7 +438,7 @@ const Header = () => {
               <Link
                 href="/notifications"
                 aria-label="notifications"
-                className={lgIconsInteractionClasses}
+                className={`nav-notifications ${lgIconsInteractionClasses}`}
               >
                 <BellIcon />
                 <NotificationBadge
@@ -564,7 +451,7 @@ const Header = () => {
               type="button"
               aria-label="theme-toggle"
               onClick={toggleTheme}
-              className={lgIconsInteractionClasses}
+              className={`nav-theme-toggle ${lgIconsInteractionClasses}`}
             >
               {theme === "dark" ? <SunIcon /> : <MoonIcon />}
             </button>
@@ -573,7 +460,7 @@ const Header = () => {
       </div>
 
       {/* Profile Dropdown */}
-      <Dropdown>
+      <Dropdown className="profile-dropdown">
         <DropdownTrigger>
           <div className="flex items-center gap-4">
             <Picture

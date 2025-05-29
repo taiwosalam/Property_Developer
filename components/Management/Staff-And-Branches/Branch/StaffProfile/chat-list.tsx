@@ -11,7 +11,7 @@ const ChatList: React.FC<{
   staffChats: StaffChatTypes[];
 }> = ({ activeChatId, setActiveChatId, staffChats }) => {
   const [filteredChats, setFilteredChats] = useState<StaffChatTypes[]>(staffChats);
-  console.log("staffChats passed to list", staffChats);
+  // console.log("staffChats passed to list", staffChats);
 
   // Handle search input
   const handleSearch = (query: string) => {

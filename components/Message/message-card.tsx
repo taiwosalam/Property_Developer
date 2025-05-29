@@ -14,6 +14,7 @@ import { SectionSeparator } from "../Section/section-components";
 import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
+import BadgeIcon from "../BadgeIcon/badge-icon";
 
 const MessageCard: React.FC<MessageCardProps> = ({
   id,
@@ -70,7 +71,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 {fullname}
               </p>
               {verified && (
-                <Picture src="/icons/verified.svg" alt="verified" size={16} />
+                <BadgeIcon color="gray" />
+                // <Picture src="/icons/verified.svg" alt="verified" size={16} />
               )}
             </div>
             {content_type === "text" ? (

@@ -30,7 +30,6 @@ import {
   PageMessages,
 } from "../(messages-reviews)/messages/types";
 import { transformUsersMessages } from "../(messages-reviews)/messages/data";
-// import { message_card_data } from "@/components/Message/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { useChatStore } from "@/store/message";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
@@ -45,12 +44,16 @@ import { transformInvoiceData } from "../accounting/invoice/data";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import NetworkError from "@/components/Error/NetworkError";
 import { DashboardDataResponse } from "./types";
+import { useTourStore } from "@/store/tour-store";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
   const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { setChatData } = useChatStore();
+  const { setShouldRenderTour, completeTour, setPersist, isTourCompleted } =
+    useTourStore();
+
   const company_status = usePersonalInfoStore((state) => state.company_status);
   // console.log("company_status", company_status)
   const company_id = usePersonalInfoStore((state) => state.company_id);
@@ -94,7 +97,7 @@ const Dashboard = () => {
   useRefetchOnEvent("refetch-users-msg", () => {
     refetchMsg({ silent: true });
   });
-  
+
   useEffect(() => {
     if (usersMessages) {
       const transformed = transformUsersMessages(usersMessages);
@@ -136,6 +139,41 @@ const Dashboard = () => {
     ),
   }));
 
+
+ // Tour logic
+ useEffect(() => {
+  if (loading) {
+    // Wait for data to load
+    setShouldRenderTour(false);
+    return;
+  }
+  // Set persist to false for NavTour and DashboardTour
+  setPersist(false);
+  const hasNoProperties = dashboardStats.some(
+    (stat) => stat.title === "Properties" && stat.value === 0 
+  );
+  const hasNoVacantUnits = dashboardStats.some(
+    (stat) => stat.title === "Vacant Unit" && stat.value === 0 
+  );
+  const shouldRunTour =
+    company_status === "approved" && hasNoProperties && hasNoVacantUnits;
+
+  if (shouldRunTour) {
+    setShouldRenderTour(true);
+  } else {
+    setShouldRenderTour(false);
+  }
+
+  return () => setShouldRenderTour(false);
+}, [
+  company_status,
+  dashboardStats,
+  loading,
+  setShouldRenderTour,
+  setPersist,
+]);
+
+
   if (isNetworkError) return <NetworkError />;
   // ================== CONDITIONAL RENDERING ================== //
   if (!company_status) {
@@ -156,7 +194,7 @@ const Dashboard = () => {
       <section className="custom-flex-col gap-10">
         <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
           <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
-            <div className="w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
+            <div className="dashboard-stats w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
               {dashboardStats.map((card, index) => (
                 <Link href={card.link} key={index} prefetch={false}>
                   <Card
@@ -172,7 +210,7 @@ const Dashboard = () => {
 
             {/* Charts */}
             <div className="hidden md:block space-y-10">
-              <div className="w-full h-fit">
+              <div className="wallet-analysis-chart w-full h-fit">
                 <DashboardChart
                   chartTitle="Wallet Analysis"
                   visibleRange
@@ -181,7 +219,7 @@ const Dashboard = () => {
                   chartData={walletChartData}
                 />
               </div>
-              <div className="w-full h-fit">
+              <div className="listing-performance-chart w-full h-fit">
                 <DashboardChart
                   chartTitle="listing Performance"
                   visibleRange
@@ -193,24 +231,36 @@ const Dashboard = () => {
           </div>
 
           <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
-            <WalletBalanceCard />
-            <DashboarddCalendar />
-            <NotificationCard
-              className="h-[358px]"
-              seeAllLink="/messages"
-              sectionHeader="Recent Messages"
-              notifications={getRecentMessages(pageUsersMsg)}
-            />
-            <NotificationCard
-              className="h-[358px]"
-              sectionHeader="Complaints"
-              seeAllLink="/tasks/complaints"
-              notifications={complaintsData}
-            />
+            <div className="wallet-balance-card">
+              <WalletBalanceCard />
+            </div>
+            <div className="dashboard-calendar">
+              <DashboarddCalendar />
+            </div>
+            <div className="recent-messages-card">
+              <NotificationCard
+                className="h-[358px]"
+                seeAllLink="/messages"
+                sectionHeader="Recent Messages"
+                notifications={getRecentMessages(pageUsersMsg)}
+              />
+            </div>
+            <div className="complaints-card">
+              <NotificationCard
+                className="h-[358px]"
+                sectionHeader="Complaints"
+                seeAllLink="/tasks/complaints"
+                notifications={complaintsData}
+              />
+            </div>
           </div>
         </div>
 
-        <SectionContainer heading="Recent invoice" href="/accounting/invoice">
+        <SectionContainer
+          className="recent-invoice-table"
+          heading="Recent invoice"
+          href="/accounting/invoice"
+        >
           <CustomTable
             data={transformedRecentInvoiceTableData}
             fields={invoiceTableFields}
@@ -231,7 +281,11 @@ const Dashboard = () => {
           )}
         </SectionContainer>
 
-        <SectionContainer heading="Recent Complains" href="/tasks/complaints">
+        <SectionContainer
+          className="recent-complaints-section"
+          heading="Recent Complains"
+          href="/tasks/complaints"
+        >
           {dummyTasks.length === 0 ? (
             <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
               <p className="text-gray-500 dark:text-gray-400">

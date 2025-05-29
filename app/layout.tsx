@@ -9,6 +9,12 @@ import { Theme } from "@/components/theme";
 import { RoleProvider } from "@/hooks/roleContext";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { fetchProfile } from "@/lib/profile";
+import dynamic from "next/dynamic";
+// import TourManager from "@/tour/components/tour-manager";
+
+const CustomTour = dynamic(() => import("@/tour/components/tour-manager"), {
+  ssr: false,
+});
 
 export async function generateMetadata() {
   const data = await fetchProfile();
@@ -57,6 +63,7 @@ export default async function RootLayout({
                 position="top-right"
                 duration={5000}
               />
+            <CustomTour />
             </div>
           </Theme>
         </RoleProvider>

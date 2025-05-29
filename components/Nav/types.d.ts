@@ -18,12 +18,14 @@ export interface NavButtonProps {
   isOpen?: boolean;
   isCollapsed?: boolean;
   topNav?: boolean;
+  className?: string;
 }
 
 export interface NavDropdownProps extends NavButtonProps {
   onContentClick?: () => void;
   content: { label: string; href: string }[];
   onToggle?: () => void;
+  className?: string; 
 }
 
 export type NavItemsProps = {
