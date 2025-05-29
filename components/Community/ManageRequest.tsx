@@ -33,16 +33,18 @@ export const PropertyRequestFirstSection = ({
   placeholderText,
   desc,
   loading,
+  noMaxTitle
 }: {
   data?: any;
   desc?: string;
   title?: string;
   placeholderText: string;
   loading?: boolean;
+  noMaxTitle?: boolean;
 }) => {
   const [inputValue, setInputValue] = useState(data?.title ?? "");
   const [error, setError] = useState<string | null>(null);
-  const MAX_LENGTH = 40;
+  const MAX_LENGTH = noMaxTitle ? Infinity : 40;
 
   useEffect(() => {
     if (data?.title) {
@@ -74,15 +76,12 @@ export const PropertyRequestFirstSection = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
-        <label htmlFor="title">
-          {" "}
-          Title <span className="text-slate-400">(Optional)</span>
-        </label>
+        <label htmlFor="title"> Title {!noMaxTitle && <span className="text-slate-400">(Optional)</span>}</label>
         <input
           type="text"
           id="title"
           name="title"
-          maxLength={MAX_LENGTH}
+          maxLength={!noMaxTitle ? MAX_LENGTH : undefined}
           className="bg-white border border-solid border-[#C1C2C366] rounded-md dark:bg-darkText-primary dark:text-darkText-1 py-2 px-3 w-full text-text-secondary"
           value={inputValue}
           onChange={onChange}

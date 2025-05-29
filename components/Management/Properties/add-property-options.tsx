@@ -14,7 +14,7 @@ const AddPropertyOptionsView: React.FC<AddPropertyOptionsViewProps> = ({
   const rental_path = getRentalPropertyCreatePath(role);
   const facility_path = getFacilityPropertyCreatePath(role);
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center gap-7 md:gap-14">
+    <div className="add-property-options flex flex-col md:flex-row items-center justify-center gap-7 md:gap-14">
       <AddPropertyCard
         buttonText="create"
         title="Add Rental Property"

@@ -11,7 +11,7 @@ const EmptyList: React.FC<{
   modalContent?: React.ReactNode;
 }> = ({ title, body, buttonText, noButton, buttonLink, modalContent }) => {
   return (
-    <div className="mt-[50px] space-y-4">
+    <div className="empty-list mt-[50px] space-y-4">
       <div className="w-full text-brand-9 h-full flex justify-center items-center mb-4">
         <EmptyListIcon />
       </div>

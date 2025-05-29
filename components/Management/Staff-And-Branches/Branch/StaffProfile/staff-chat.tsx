@@ -30,7 +30,7 @@ const StaffChat = () => {
           activeChatId ? "hidden" : "block"
         } lg:block lg:w-[43%] lg:pr-2 bg-white dark:bg-darkText-primary rounded-lg lg:rounded-r-none max-h-[600px] overflow-auto custom-round-scrollbar`}
       >
-        {staffChats.length === 0 ? (
+        {staffChats?.length === 0 ? (
           <div className="py-4">
             <div className="h-full custom-flex-col gap-4 items-center justify-center">
               <div className="flex justify-center">

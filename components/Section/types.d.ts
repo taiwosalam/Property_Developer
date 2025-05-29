@@ -25,4 +25,5 @@ export interface SectionContainerProps {
   heading: string;
   children: React.ReactNode;
   style?: CSSProperties;
+  className?: string;
 }

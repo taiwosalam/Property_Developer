@@ -34,9 +34,11 @@ import {
   ProfileSettingsPageState,
 } from "@/app/(nav)/settings/company/data";
 import { StaffChatTypes } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/type";
+import { PropertyCardProps } from "@/components/Management/Properties/property-card";
 
 interface GlobalStoreState {
   sponsorValue: number;
+  managementProperties?: PropertyCardProps[];
   properties?: TransformedProperty[];
   landlords?: LandlordReportEntry[];
   tenants?: ITenantListReport[];
