@@ -98,6 +98,8 @@ const YearEventCalendar = ({ events }: YearEventCalendarProps) => {
     }),
   });
 
+  const { calendarDays } = data;
+
   return (
     <CalendarContext.Provider
       value={{
@@ -155,13 +157,12 @@ const YearEventCalendar = ({ events }: YearEventCalendarProps) => {
                       <CalendarDay
                         key={dayIndex}
                         {...day}
-                        onClick={() =>
-                          openActivityModal(day.date)
-                          // day.hasEvent
-                          //   ? () => {
-                          //       openActivityModal(day.date);
-                          //     }
-                          //   : openModal
+                        onClick={
+                          day.hasEvent
+                            ? () => {
+                                openActivityModal(day.date);
+                              }
+                            : openModal
                         }
                       />
                     ))}

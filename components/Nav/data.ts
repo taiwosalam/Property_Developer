@@ -17,17 +17,16 @@ export const nav_items: NavItemsProps = [
     type: "people",
     label: "management",
     content: [
+      { label: "staff & branches", href: "/staff-branch" },
       { label: "landlord & landlady", href: "/landlord" },
       { label: "tenants & occupants", href: "/tenants" },
-      { label: "staff & branches", href: "/staff-branch" },
+
       { label: "inventory", href: "/inventory" },
       { label: "properties", href: "/properties" },
       { label: "rent & mgmt", href: "/rent-unit" },
-      { label: "service providers", href: "/service-providers" },
+
       { label: "vehicles record", href: "/vehicles-record" },
-      { label: "team chat", href: "/team-chat" },
-      { label: "agent community", href: "/agent-community" },
-      { label: "agent request", href: "/agent-request" },
+      { label: "service providers", href: "/service-providers" },
     ],
   },
   {
@@ -69,6 +68,16 @@ export const nav_items: NavItemsProps = [
     ],
   },
   {
+    type: "task",
+    label: "community",
+    href: "/applications",
+    content: [
+      { label: "team chat", href: "/team-chat" },
+      { label: "agent forum", href: "/agent-forum" },
+      { label: "agent request", href: "/agent-request" },
+    ],
+  },
+  {
     type: "status_up",
     label: "reports",
     content: [
@@ -95,11 +104,6 @@ export const nav_items: NavItemsProps = [
     ],
   },
   { type: "empty_wallet", label: "wallet", href: "/wallet" },
-  // {
-  //   type: "task",
-  //   label: "applications",
-  //   href: "/applications",
-  // },
   {
     type: "folder",
     label: "documents",

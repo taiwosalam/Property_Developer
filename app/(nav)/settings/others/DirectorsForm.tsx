@@ -177,12 +177,17 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           validationErrors={errorMsgs}
           required
         />
+        <input 
+          id="alt_email"
+          name="alt_email"
+          hidden/>
         <Input
           disabled={is_active !== 1 ? true : false}
-          id="alt_email"
+          id="email"
           label="email"
           type="email"
-          value={formData?.email || ""}
+          name="email"
+          value={formData?.email}
           onChange={(value) => onFormChange?.("email", value)}
           inputClassName="rounded-[8px]"
           validationErrors={errorMsgs}
@@ -203,9 +208,9 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
 
         <PhoneNumberInput
-          disabled={
-            !formData?.phone_number ? true : is_active !== 1 ? true : false
-          }
+          // disabled={
+          //   formData?.phone_number ? true : is_active !== 1 ? true : false
+          // }
           id="phone_number"
           label="phone number"
           inputClassName="!bg-neutral-2"

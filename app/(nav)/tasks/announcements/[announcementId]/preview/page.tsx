@@ -7,19 +7,48 @@ import AnnouncementPost from "@/components/tasks/announcements/announcement-post
 import AttachedImagesGrid from "@/components/tasks/complainid/Attached-images-grid";
 import { LandlordTenantInfo as AnnouncementInfo } from "@/components/Management/landlord-tenant-info-components";
 import ReadBy from "@/components/tasks/announcements/read-by";
+import useFetch from "@/hooks/useFetch";
+import ServerError from "@/components/Error/ServerError";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import { AnnouncementDetailsResponse } from "../../types";
+import { useEffect, useState } from "react";
+import { AnnouncementDetailsPageData, transformAnnouncementDetailsData } from "./data";
 
+const images = [
+  { src: "/empty/SampleProperty.jpeg", isVideo: false },
+  { src: "/empty/SampleProperty2.jpeg", isVideo: true },
+  { src: "/empty/SampleProperty3.jpeg", isVideo: false },
+  { src: "/empty/SampleProperty4.png", isVideo: false },
+  { src: "/empty/SampleProperty5.jpg", isVideo: false },
+  { src: "/empty/SampleProperty6.jpg", isVideo: false },
+  { src: "/empty/SampleProperty.jpeg", isVideo: false },
+];
 const PreviewAnnouncement = () => {
   const router = useRouter();
   const { announcementId } = useParams();
-  const images = [
-    { src: "/empty/SampleProperty.jpeg", isVideo: false },
-    { src: "/empty/SampleProperty2.jpeg", isVideo: true },
-    { src: "/empty/SampleProperty3.jpeg", isVideo: false },
-    { src: "/empty/SampleProperty4.png", isVideo: false },
-    { src: "/empty/SampleProperty5.jpg", isVideo: false },
-    { src: "/empty/SampleProperty6.jpg", isVideo: false },
-    { src: "/empty/SampleProperty.jpeg", isVideo: false },
-  ];
+
+  const [pageData, setPageData] = useState<AnnouncementDetailsPageData | null>(null);
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    error,
+    isNetworkError,
+  } = useFetch<AnnouncementDetailsResponse>(`announcements/${announcementId}`);
+
+  useEffect(() => {
+    if(apiData){
+      const transformData = transformAnnouncementDetailsData(apiData);
+      setPageData(transformData)
+    }
+  }, [apiData]);
+
+  if (error) <ServerError error={error} />;
+  if (loading) <PageCircleLoader />;
+  if (isNetworkError) <NetworkError />;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-2">

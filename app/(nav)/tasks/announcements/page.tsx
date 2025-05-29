@@ -58,7 +58,7 @@ const AnnouncementPage = () => {
     }
   }, [apiData]);
 
-  
+  console.log(announcements);
 
   if (loading) <CardsLoading />;
   if (error) <ServerError error={error} />;
@@ -150,7 +150,7 @@ const AnnouncementPage = () => {
                   newViews={announcement.views_count}
                   likes={announcement.likes_count}
                   dislikes={announcement.dislikes_count}
-                  imageUrls={[template1]}
+                  imageUrls={announcement.images}
                   //mediaCount={announcement.image_urls.length}
                   mediaCount={image_urls.flat().length}
                   announcementId={announcement.id}

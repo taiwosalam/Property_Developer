@@ -19,7 +19,48 @@ export interface Announcement {
   created_at: string; // ISO date string
   updated_at: string; // ISO date string
   deleted_at: string | "";
-  images: string[] | StaticImageData[];
+  images: {
+    id: number;
+    url: string;
+    is_default: number;
+  }[];
   likes_count: number;
   dislikes_count: number;
 }
+
+type AnnouncementDetailsResponse = {
+  message: string;
+  announcement: {
+    id: number;
+    title: string;
+    description: string;
+    video_link: string | null;
+    branch_id: number | null;
+    property_id: number | null;
+    company_id: number;
+    created_by: number;
+    created_at: string;
+    updated_at: string;
+    likes_count: number;
+    dislikes_count: number;
+    views_count: number;
+    comments: Comment[];
+    images: AnnouncementImage[];
+  };
+};
+
+type AnnouncementImage = {
+  id: number;
+  url: string;
+  is_default: number;
+};
+
+type Comment = {
+  id: number;
+  content: string;
+  user_id: number;
+  commentable_type: string;
+  commentable_id: number;
+  created_at: string;
+  updated_at: string;
+};

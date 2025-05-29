@@ -2,16 +2,29 @@ import CommentsSection from "./comments-section";
 import { LikeIcon, DislikeIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import clsx from "clsx";
+import { IAnnounceUserSummary } from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
+import { Comment } from "@/app/(nav)/tasks/announcements/types";
+import { CommentData } from "./comment";
 
-const AnnouncementPost = () => {
-  const images = [
-    "/empty/SampleProperty.jpeg",
-    "/empty/SampleProperty2.jpeg",
-    "/empty/SampleProperty3.jpeg",
-    "/empty/SampleProperty4.png",
-    "/empty/SampleProperty5.jpg",
-    "/empty/SampleProperty6.jpg",
-  ];
+const images = [
+  "/empty/SampleProperty.jpeg",
+  "/empty/SampleProperty2.jpeg",
+  "/empty/SampleProperty3.jpeg",
+  "/empty/SampleProperty4.png",
+  "/empty/SampleProperty5.jpg",
+  "/empty/SampleProperty6.jpg",
+];
+
+interface AnnouncementPostProps {
+  data?: {
+    description: string;
+    likes: number;
+    dislikes: number;
+    viewers: IAnnounceUserSummary[];
+    comments: CommentData[]
+  };
+}
+const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
   // Limit to first 3 images
   const maxImagesToShow = 3;
   const excessImagesCount = images.length - maxImagesToShow;
@@ -81,7 +94,7 @@ const AnnouncementPost = () => {
           </div>
         </div>
       </div>
-      <CommentsSection comments={[]} />
+      <CommentsSection comments={data?.comments || []} />
     </div>
   );
 };

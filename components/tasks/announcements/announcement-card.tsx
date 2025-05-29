@@ -24,7 +24,11 @@ interface AnnouncementCardProps {
   newViews: number;
   likes?: number;
   dislikes: number;
-  imageUrls: string[] | StaticImageData[];
+  imageUrls: {
+    id: number;
+    url: string;
+    is_default: number;
+  }[] | string[];
   mediaCount: number;
   announcementId: string;
   viewOnly?: boolean;
@@ -67,8 +71,6 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
       setIsLiking(true);
       const res = await postLikeOrDislike(announcementId, route);
       if (res) {
-        toast.success("Post " + route);
-
         if (route === "like") {
           setIsLiked((prevState) => !prevState);
           setIsDisliked(false);
@@ -95,7 +97,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
           imageUrls.map((url, index) => (
             <Image
               key={index}
-              src={url || empty}
+              src={typeof url === 'string' ? url : url.url || empty}
               alt="sample"
               fill
               sizes="auto"
@@ -138,7 +140,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
           </p>
           <p className="flex items-center gap-1 text-text-disabled">
             <button
-              onClick={() => handlePostLikeOrDislike("like")}
+              //onClick={() => handlePostLikeOrDislike("like")}
               disabled={isLiking}
             >
               <LikeIcon
@@ -155,7 +157,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
           </p>
           <p className="flex items-center gap-1 text-text-disabled">
             <button
-              onClick={() => handlePostLikeOrDislike("dislike")}
+              //onClick={() => handlePostLikeOrDislike("dislike")}
               disabled={isLiking}
             >
               <DislikeIcon

@@ -34,16 +34,16 @@ export const notification_icons: Record<string, StaticImageData | any> = {
 };
 
 export const notification_links: Record<string, string> = {
-  user: "/profile",
+  user: "/settings/company",
   review: "/reviews",
   message: "/messages",
   invoice: "/wallet",
   profile: "/settings/profile",
   setting: "/settings",
   listing: "/listings",
-  location: "/settings/location",
+  location: "/settings",
   subscription: "/settings/subscription",
-  "wallet transaction": "/wallet/transactions",
+  "wallet transaction": "/wallet",
   "rent and unit": "management/rent-unit",
   "agent community": "/management/agent-community",
   "property draft": "/properties/drafts",
