@@ -25,7 +25,7 @@ const AddPropertyWithId = () => {
     }
   };
   return (
-    <form className="flex justify-center" onSubmit={handleSubmit}>
+    <form className="add-property-with-id flex justify-center" onSubmit={handleSubmit}>
       <div className="custom-flex-col gap-5 w-[300px]">
         <Input
           id="property_id"

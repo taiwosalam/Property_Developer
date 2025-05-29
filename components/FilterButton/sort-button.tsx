@@ -37,7 +37,7 @@ const SortButton: React.FC<{
   return (
     <button
       type="button"
-      className="bg-white dark:bg-darkText-primary rounded-lg p-2 flex items-center gap-2"
+      className="sort-button bg-white dark:bg-darkText-primary rounded-lg p-2 flex items-center gap-2"
       onClick={toggleSort}
     >
       {getIcon()}

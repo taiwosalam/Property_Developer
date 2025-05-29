@@ -28,6 +28,14 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const company_logo = usePersonalInfoStore((state) => state.company_logo);
   const isDirector = role === "director";
 
+  const sanitizeClassName = (label: string): string => {
+    return label
+      .toLowerCase()
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/[^a-z0-9-]/g, ''); // Remove any characters that aren't letters, numbers, or hyphens
+  };
+
+  
   return (
     <div className='custom-flex-col pb-3'>
       <div className='flex md:hidden justify-center p-3 pt-0'>
@@ -40,8 +48,9 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
         />
       </div>
 
-      {getNavs(role)?.map((item, idx) =>
-        item.content ? (
+      {getNavs(role)?.map((item, idx) => {
+        const className = sanitizeClassName(item.label); // Sanitize the label for use as a class name
+        return item.content ? (
           <NavDropdown
             key={idx}
             type={item.type}
@@ -55,6 +64,7 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
             isOpen={activeDropdown === item.label}
             onToggle={() => handleDropdownToggle(item.label)}
             isCollapsed={isCollapsed}
+            className={className} 
           >
             {item.label}
           </NavDropdown>
@@ -66,13 +76,13 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
             type={item.type}
             onClick={closeSideNav}
             isCollapsed={isCollapsed}
+            className={className} 
           >
             {item.label}
           </NavButton>
-        )
-      )}
+        );
+      })}
     </div>
   );
 };
-
 export default SideNav;

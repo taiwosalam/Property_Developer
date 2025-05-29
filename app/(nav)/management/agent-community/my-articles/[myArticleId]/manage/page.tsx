@@ -133,6 +133,7 @@ const ManageMyArticle = () => {
               desc={desc}
               data={article}
               loading={loading}
+              noMaxTitle
             />
           </div>
 

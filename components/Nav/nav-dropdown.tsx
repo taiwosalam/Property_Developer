@@ -8,8 +8,9 @@ import type { NavDropdownProps } from "./types";
 // Imports
 import { NavButton } from "./nav-components";
 import { AnimatePresence, motion } from "framer-motion";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
 import { useRole } from "@/hooks/roleContext";
+import clsx from "clsx";
 
 const NavDropdown: React.FC<NavDropdownProps> = ({
   type,
@@ -20,14 +21,15 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   isOpen,
   onToggle,
   isCollapsed,
+  className,
 }) => {
   const pathname = usePathname();
   const { role, setRole } = useRole();
   const isDirector = role === "director";
-  
+
   return (
     <div
-      className="custom-flex-col"
+      className={clsx("nav-dropdown", className)}
       title={isCollapsed ? String(children) : undefined}
     >
       <NavButton
@@ -55,13 +57,15 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
                 onClick={onContentClick}
                 minimized_highlight={
                   isDirector
-                    ? href ? pathname.includes(`${children}${href}`) : false
-                    : href ? pathname.includes(`${href}`) : false
+                    ? href
+                      ? pathname.includes(`${children}${href}`)
+                      : false
+                    : href
+                    ? pathname.includes(`${href}`)
+                    : false
                 }
                 href={
-                  isDirector
-                    ? href && `/${children}${href}`
-                    : href && `${href}`
+                  isDirector ? href && `/${children}${href}` : href && `${href}`
                 }
                 key={index}
                 minimized

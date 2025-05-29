@@ -32,9 +32,15 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import type { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+import { useTourStore } from "@/store/tour-store";
 
 const Properties = () => {
   const storedView = useView();
+  const { setShouldRenderTour, isTourCompleted } = useTourStore();
+  const setGlobalInfoStore = useGlobalStore(
+    (state) => state.setGlobalInfoStore
+  );
   const [view, setView] = useState<string | null>(storedView);
   const [pageData, setPageData] = useState<PropertiesPageState>(initialState);
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -57,6 +63,21 @@ const Properties = () => {
   } = pageData;
 
   // console.log("pageData", pageData)
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { tour: tourState } = useTourStore();
+
+  // Sync modal state with tour
+  useEffect(() => {
+    if (
+      tourState.tourKey === "PropertiesTour" &&
+      tourState.run &&
+      tourState.stepIndex === 2 &&
+      !isModalOpen
+    ) {
+      console.log("Properties: Tour waiting for modal open");
+    }
+  }, [tourState, isModalOpen]);
 
   const isFilterApplied = useCallback(() => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -146,29 +167,47 @@ const Properties = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
-        ...x,
-        ...transformPropertiesApiResponse(apiData),
-      }));
+      const transformed = transformPropertiesApiResponse(apiData);
+      setPageData((x) => ({ ...x, ...transformed }));
+      setGlobalInfoStore("managementProperties", transformed.properties);
     }
-  }, [apiData]);
+  }, [apiData, setGlobalInfoStore]);
+
+  // Tour logic for PropertiesTour
+  useEffect(() => {
+    if (loading) {
+      // Wait for data to load
+      setShouldRenderTour(false);
+      return;
+    }
+    // Check if properties are empty and the tour hasn't been completed
+    const shouldRunTour =
+      properties.length === 0 && !isTourCompleted("PropertiesTour");
+
+    if (shouldRunTour) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [properties, loading, setShouldRenderTour, isTourCompleted]);
 
   // console.log("total_pages", pageData)
-  
+
   if (loading)
     return (
-  <CustomLoader layout="page" pageTitle="Properties" statsCardCount={3} />
-);
+      <CustomLoader layout="page" pageTitle="Properties" statsCardCount={3} />
+    );
 
-if (isNetworkError) return <NetworkError />;
-if (error) return <ServerError error={error} />;
-
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
       {/* Header with statistics cards */}
       <div className="page-header-container" ref={contentTopRef}>
-        <div className="hidden md:flex gap-5 flex-wrap">
+        <div className="properties-stats hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Properties"
             newData={new_properties_count}
@@ -190,12 +229,16 @@ if (error) return <ServerError error={error} />;
         </div>
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button
+              onClick={() => setIsModalOpen(true)}
+              type="button"
+              className="page-header-button"
+            >
               + create property
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <AddPropertyModal />
+            <AddPropertyModal isOpen={isModalOpen} />
           </ModalContent>
         </Modal>
       </div>
@@ -238,7 +281,7 @@ if (error) return <ServerError error={error} />;
           ) : (
             <EmptyList
               buttonText="+ Add Property"
-              modalContent={<AddPropertyModal />}
+              modalContent={<AddPropertyModal isOpen={isModalOpen} />}
               title="You have not created any properties yet"
               body={
                 <p>
