@@ -34,6 +34,7 @@ import {
   formatOwingPeriod,
   getOwingBreakdown,
 } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 export const RenewalRentDetails: React.FC<{
   isRental: boolean;
@@ -522,7 +523,7 @@ export const RenewalRent: React.FC<{
 
 type UnitViewResponse = {
   data: {
-    previous_records: {
+    current_records: {
       data: any[];
       pagination: {
         current_page: number;
@@ -542,7 +543,7 @@ type PreviousRecords = {
 
 type PreviousRentRecordsProps = {
   isRental: boolean;
-  previous_records?: PreviousRecords;
+  current_records?: PreviousRecords;
   unit_id?: string;
   noRefetch?: boolean;
   currency?: Currency;
@@ -550,14 +551,14 @@ type PreviousRentRecordsProps = {
 
 export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   isRental,
-  previous_records,
+  current_records,
   unit_id,
   noRefetch = false,
   currency,
 }) => {
-  console.log("previous_records", previous_records);
+  // console.log("current_records", current_records);
   // Initialize records state from props
-  const [records, setRecords] = useState<any[]>(previous_records?.data || []);
+  const [records, setRecords] = useState<any[]>(current_records?.data || []);
   const { setRecords: setOccupantRecords } = useOccupantStore();
 
   // Set up pagination state using provided pagination info if any
@@ -566,11 +567,11 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
     total_pages: number;
     hasMore: boolean;
   }>({
-    current_page: previous_records?.pagination?.current_page || 1,
-    total_pages: previous_records?.pagination?.total_pages || 1,
+    current_page: current_records?.pagination?.current_page || 1,
+    total_pages: current_records?.pagination?.total_pages || 1,
     hasMore:
-      (previous_records?.pagination?.current_page || 1) <
-      (previous_records?.pagination?.total_pages || 1),
+      (current_records?.pagination?.current_page || 1) <
+      (current_records?.pagination?.total_pages || 1),
   });
 
   const observer = useRef<IntersectionObserver | null>(null);
@@ -584,8 +585,9 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   );
 
   // Always call useFetch, but we ignore its results if noRefetch is true.
-  const { data, loading, silentLoading, error, isNetworkError } =
+  const { data, loading, silentLoading, error, isNetworkError, refetch } =
     useFetch<UnitViewResponse>(`/unit/${unit_id}/view`, fetchOptions);
+    useRefetchOnEvent("refech-unit", () => refetch({ silent: true }));
 
   // Helper: debounce function to limit rapid calls.
   const debounce = (func: Function, delay: number) => {
@@ -629,8 +631,8 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   // Update records and pagination when new API data arrives.
   // Only update if noRefetch is false.
   useEffect(() => {
-    if (!noRefetch && data && data.data.previous_records) {
-      const newRecords = data.data.previous_records.data || [];
+    if (!noRefetch && data && data.data.current_records) {
+      const newRecords = data.data.current_records.data || [];
       setRecords((prevRecords) => {
         const combined = [...prevRecords, ...newRecords];
         const unique = combined.filter(
@@ -639,7 +641,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
         );
         return unique;
       });
-      const newPagination = data.data.previous_records.pagination;
+      const newPagination = data.data.current_records.pagination;
       if (newPagination) {
         setPagination((prev) => ({
           ...prev,

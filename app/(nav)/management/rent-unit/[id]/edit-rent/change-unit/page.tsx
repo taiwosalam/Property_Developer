@@ -357,7 +357,7 @@ const ChangeUnitpage = () => {
         <PreviousRentRecords
           isRental={isRental}
           unit_id={id as string}
-          previous_records={unitBalance as any}
+          current_records={unitBalance as any}
           noRefetch={true}
         />
       </section>

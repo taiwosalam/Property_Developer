@@ -30,7 +30,7 @@ interface PreviousRecords {
 
 interface UnitViewResponse {
   data: {
-    previous_records: PreviousRecords;
+    current_records: PreviousRecords;
   };
 }
 
@@ -40,7 +40,7 @@ const PreviousRentRecords = () => {
 
   // TODO: Revisit to fix type mismatch (unitData.previous_records should be PreviousRecords, not PreviousRecords[])
   // Using any to bypass TypeScript errors temporarily
-  const previousRecords: any = unitData.previous_records;
+  const previousRecords: any = unitData.current_records;
 
   // Initialize records and pagination
   const [records, setRecords] = useState<RentRecord[]>(
@@ -104,8 +104,8 @@ const PreviousRentRecords = () => {
   );
 
   useEffect(() => {
-    if (data?.data.previous_records) {
-      const newRecords = data.data.previous_records.data || [];
+    if (data?.data.current_records) {
+      const newRecords = data.data.current_records.data || [];
       setRecords((prevRecords) => {
         const combined = [...prevRecords, ...newRecords];
         // Remove duplicates based on id
@@ -115,7 +115,7 @@ const PreviousRentRecords = () => {
         );
         return unique;
       });
-      const newPagination = data.data.previous_records.pagination;
+      const newPagination = data.data.current_records.pagination;
       if (newPagination) {
         setPagination((prev) => ({
           ...prev,

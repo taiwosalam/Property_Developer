@@ -197,9 +197,6 @@ const StartRent = () => {
     const payloadObj = IS_FACILITY ? FacilityObj : RentalObj;
     // const payloadObj = MobilepayloadObj;
     const payload = objectToFormData(payloadObj);
-    console.log("DOc file", doc_file);
-    console.log("payload", payload);
-
     try {
       setReqLoading(true);
       const res = await startRent(payload);

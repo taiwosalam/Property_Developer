@@ -178,12 +178,14 @@ export const ProfileForm: React.FC<{
         ? true
         : prev.mobile_notification,
       create_invoice:
-        currency !== "naira" && isMobileUser
+        currency === "naira" && isMobileUser
           // ? false
           ? true
           : !isMobileUser
           ? false
-          : prev.create_invoice,
+          : currency !== "naira" && isMobileUser
+          ? false
+          : true,
     }));
   }, [isWebUser, isMobileUser, currency]);
 

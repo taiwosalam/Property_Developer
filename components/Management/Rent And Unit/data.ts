@@ -103,6 +103,11 @@ export const actions: Action[] = [
     label: "Relocate",
     modal: "Relocate",
   },
+  {
+    color: "#FF9800",
+    label: "Pending",
+    modal: "Pending",
+  },
 ];
 
 export interface CheckBoxOptions {
@@ -516,8 +521,8 @@ export type RentPeriod =
 //   }
 // };
 
-
 // NOW WE'RE REMOVING 1 DAY
+
 export const calculateDueDate = (
   startDate: Dayjs,
   rentPeriod: RentPeriod
@@ -556,7 +561,6 @@ export const calculateDueDate = (
   }
 };
 
-
 export const transformDocuments = (docs: any) => {
   return docs.flatMap((doc: any) => {
     const baseId = String(doc.id);
@@ -569,7 +573,8 @@ export const transformDocuments = (docs: any) => {
     // For each file in the files array, create a transformed object.
     return doc.files.map((file: any, index: number) => {
       // For the first file, use the base name. For subsequent files, append plus signs.
-      const name = `${baseName} ${index + 1}`;
+      // const name = `${baseName} ${index + 1}`;
+      const name = file.name ?? `${baseName} ${index + 1}`;
       const link = file.url || "";
       return {
         id: baseId,

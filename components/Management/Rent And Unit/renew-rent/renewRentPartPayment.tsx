@@ -23,7 +23,7 @@ export const RenewRentAddPartPayment: React.FC<{
   currency?: Currency;
   setIsUpfrontPaymentChecked?: (checked: boolean) => void;
   isUpfrontPaymentChecked?: boolean;
-  setSelectedCheckboxOptions?: (options: Record<string, boolean>) => void;
+  setSelectedCheckboxOptions?: any;
   prevAmt?: string;
   disabled?: boolean;
 }> = ({
