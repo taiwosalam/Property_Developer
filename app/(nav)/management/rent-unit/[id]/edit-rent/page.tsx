@@ -46,7 +46,11 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { FeeDetail } from "@/components/Management/Rent And Unit/types";
 import { useGlobalStore } from "@/store/general-store";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
-import { CheckBoxOptions, defaultChecks } from "@/components/Management/Rent And Unit/data";
+import {
+  CheckBoxOptions,
+  defaultChecks,
+} from "@/components/Management/Rent And Unit/data";
+import { PendingInvoicePayment } from "@/components/Management/Rent And Unit/Edit-Rent/unpaid-invoice";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
@@ -66,7 +70,7 @@ const EditRent = () => {
   const [isCompletePayment, setIsCompletePayment] = useState(false);
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
-  useState<CheckBoxOptions>(defaultChecks);
+    useState<CheckBoxOptions>(defaultChecks);
   const { setSelectedOccupant, setUnitData } = useGlobalStore();
   const endpoint = `/unit/${id}/view`;
 
@@ -116,8 +120,15 @@ const EditRent = () => {
 
   // PENDING INVOICE REPRESENTS PART PAYMENT TENANT MADE
   const PENDING_INVOICE = unit_data?.pending_invoice;
-  const PENDING_INVOICE_PAID_AMOUNT = Number(PENDING_INVOICE?.amount_paid) || 0;
-  const PENDING_INVOICE_BALANCE_DUE = Number(PENDING_INVOICE?.balance_due) || 0;
+  const PENDING_INVOICE_PAID_AMOUNT =
+  parseFloat(PENDING_INVOICE?.amount_paid) || 0;
+  const PENDING_INVOICE_BALANCE_DUE =
+    parseFloat(PENDING_INVOICE?.balance_due) || 0;
+  
+  // UNPAID INVOICE REPRESENTS PAYMENTS THAT WAS ADDED BUT HAVE NOT BEEN MARKED AS PAID
+  const UNPAID_INVOICE = unit_data?.unpaid_invoice;
+  const UNPAID_INVOICE_PAID_AMOUNT =
+    parseFloat(UNPAID_INVOICE?.amount_paid) || 0;
   const PART_PAYMENT_AMOUNT = PENDING_INVOICE_PAID_AMOUNT;
   // UNIT CURRENCY WITH NAIRA FALLBACK
   const CURRENCY = unit_data.currency || "naira";
@@ -125,9 +136,8 @@ const EditRent = () => {
 
   // console.log("PENDING_INVOICE_PAID_AMOUNT", PENDING_INVOICE_PAID_AMOUNT)
   // console.log("has_part_payment", has_part_payment)
-  
 
-  // ADD UPFRONT RENT
+  // ADD UPFRONT RENT HANDLER
   const handleUpfrontRent = async () => {
     if (!unitBalance || unitBalance.length === 0) {
       toast.error("No unit balance available");
@@ -139,6 +149,7 @@ const EditRent = () => {
       rent_id: unitBalance?.data[0]?.id,
       payment_date: startDate,
       tenant_id: unit_data.occupant.id,
+      has_penalty: penaltyAmount > 0 ? 1 : 0,
       type: "upfront_payment",
       has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
     };
@@ -156,7 +167,7 @@ const EditRent = () => {
     }
   };
 
-  // ADD PART PAYMENT
+  // ADD PART PAYMENT HANDLER
   const handlePartPayment = async () => {
     if (!unitBalance || unitBalance.length === 0) {
       toast.error("No unit balance available");
@@ -282,69 +293,106 @@ const EditRent = () => {
               id={propertyId as string}
             />
 
-            {PART_PAYMENT_AMOUNT <= 0 && (
+            {UNPAID_INVOICE_PAID_AMOUNT > 0 ? (
               <>
-                <EditCurrentRent
+                <PendingInvoicePayment
+                  feeDetails={[
+                    {
+                      name: "Status",
+                      amount: UNPAID_INVOICE.status,
+                    },
+                    {
+                      name: "Payment Date",
+                      amount: dayjs(UNPAID_INVOICE.invoice_date).format(
+                        "MMM DD YYYY"
+                      ),
+                    },
+                    {
+                      name: "Amount Paid",
+                      amount: formatFee(UNPAID_INVOICE_PAID_AMOUNT, CURRENCY),
+                    },
+                    {
+                      name: "Balance Due",
+                      amount: formatFee(UNPAID_INVOICE.balance_due, CURRENCY),
+                    },
+                  ]}
                   currency={CURRENCY}
-                  isRental={isRental}
-                  total={
-                    isRental
-                      ? unit_data.renewalTenantTotalPrice
-                      : unit_data.newTenantTotalPrice
-                  }
-                  setStart_Date={setStartDate}
-                  action={handleUpfrontRent}
-                  loading={reqLoading}
-                  setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
-                  isUpfrontPaymentChecked={isUpfrontPaymentChecked}
-                  setSelectedCheckboxOptions={setSelectedCheckboxOptions}
-                />
-
-                <AddPartPayment
-                  isRental={isRental}
-                  currency={CURRENCY}
-                  setStart_Date={setStartDate}
-                  action={handlePartPayment}
-                  loading={reqLoading}
-                  setAmt={setAmt}
-                  setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
-                  isUpfrontPaymentChecked={isUpfrontPaymentChecked}
-                  setSelectedCheckboxOptions={setSelectedCheckboxOptions}
+                  total={UNPAID_INVOICE.total_amount}
+                  invoice_id={UNPAID_INVOICE.id}
+                  unit_id={unit_data.id as string}
+                  page="edit"
                 />
               </>
-            )}
+            ) : (
+              <>
+                {PART_PAYMENT_AMOUNT <= 0 && (
+                  <>
+                    <EditCurrentRent
+                      currency={CURRENCY}
+                      isRental={isRental}
+                      total={
+                        isRental
+                          ? unit_data.renewalTenantTotalPrice
+                          : unit_data.newTenantTotalPrice
+                      }
+                      setStart_Date={setStartDate}
+                      action={handleUpfrontRent}
+                      loading={reqLoading}
+                      setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+                      isUpfrontPaymentChecked={isUpfrontPaymentChecked}
+                      setSelectedCheckboxOptions={setSelectedCheckboxOptions}
+                    />
 
-            {PART_PAYMENT_AMOUNT > 0 && (
-              <CompletePartPayment
-                feeDetails={[
-                  {
-                    name: "Part Payment",
-                    amount: formatFee(PART_PAYMENT_AMOUNT, CURRENCY),
-                  },
-                  {
-                    name: "Balance",
-                    amount: formatFee(PENDING_INVOICE_BALANCE_DUE, CURRENCY),
-                  },
-                ]}
-                currency={CURRENCY}
-                total={PART_PAYMENT_AMOUNT}
-                setIsCompletePayment={setIsCompletePayment}
-              />
-            )}
+                    <AddPartPayment
+                      isRental={isRental}
+                      currency={CURRENCY}
+                      setStart_Date={setStartDate}
+                      action={handlePartPayment}
+                      loading={reqLoading}
+                      setAmt={setAmt}
+                      setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+                      isUpfrontPaymentChecked={isUpfrontPaymentChecked}
+                      setSelectedCheckboxOptions={setSelectedCheckboxOptions}
+                    />
+                  </>
+                )}
 
-            {isCompletePayment && (
-              <AddPartPayment
-                isRental={isRental}
-                currency={CURRENCY}
-                setStart_Date={setStartDate}
-                action={handlePartPayment}
-                loading={reqLoading}
-                setAmt={setAmt}
-                isCompletePayment={isCompletePayment}
-                prevAmt={PENDING_INVOICE_BALANCE_DUE.toString()}
-                setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
-                isUpfrontPaymentChecked={true}
-              />
+                {PART_PAYMENT_AMOUNT > 0 && (
+                  <CompletePartPayment
+                    feeDetails={[
+                      {
+                        name: "Part Payment",
+                        amount: formatFee(PART_PAYMENT_AMOUNT, CURRENCY),
+                      },
+                      {
+                        name: "Balance",
+                        amount: formatFee(
+                          PENDING_INVOICE_BALANCE_DUE,
+                          CURRENCY
+                        ),
+                      },
+                    ]}
+                    currency={CURRENCY}
+                    total={PART_PAYMENT_AMOUNT}
+                    setIsCompletePayment={setIsCompletePayment}
+                  />
+                )}
+
+                {isCompletePayment && (
+                  <AddPartPayment
+                    isRental={isRental}
+                    currency={CURRENCY}
+                    setStart_Date={setStartDate}
+                    action={handlePartPayment}
+                    loading={reqLoading}
+                    setAmt={setAmt}
+                    isCompletePayment={isCompletePayment}
+                    prevAmt={PENDING_INVOICE_BALANCE_DUE.toString()}
+                    setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
+                    isUpfrontPaymentChecked={true}
+                  />
+                )}
+              </>
             )}
           </div>
           <div className="lg:flex-1 lg:!mt-[52px] space-y-8">

@@ -985,6 +985,7 @@ export const transformUnitData = (response: any) => {
   const previous_records = response.data.previous_records;
   const current_records = response.data.current_records;
   const pending_invoice = response.data.pending_invoice;
+  const unpaid_invoice = response.data.unpaid_invoice;
 
   // Helper function to format and validate fee amounts
   const formatFee = (
@@ -1076,6 +1077,7 @@ export const transformUnitData = (response: any) => {
     previous_records: previous_records ? previous_records : undefined,
     previous_tenants: data.previous_tenants ? data.previous_tenants : undefined,
     pending_invoice: pending_invoice || undefined,
+    unpaid_invoice: unpaid_invoice || undefined,
   };
 
   // Conditionally include fee fields only if valid

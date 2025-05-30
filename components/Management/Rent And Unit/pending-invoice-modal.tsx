@@ -13,9 +13,10 @@ import { cancelRent } from "@/app/(nav)/management/rent-unit/data";
 interface IPepndingTypes {
   unit_id: string;
   invoice_id: number;
+  page?: "edit" | "all-units" | "renew";
 }
 
-const PendingInvoiceModal = ({ unit_id, invoice_id }: IPepndingTypes) => {
+const PendingInvoiceModal = ({ unit_id, invoice_id, page }: IPepndingTypes) => {
   const [reqLoading, setReqLoading] = useState(false);
   const { setIsOpen } = useModal();
 
@@ -29,7 +30,11 @@ const PendingInvoiceModal = ({ unit_id, invoice_id }: IPepndingTypes) => {
       if (res) {
         toast.success("Updated successfully");
         setIsOpen(false);
-        window.dispatchEvent(new Event("refetchRentUnit"));
+        page === "edit"
+          ? window.dispatchEvent(new Event("refech-unit"))
+          : page && page === "renew"
+          ? window.dispatchEvent(new Event("refetchUnit"))
+          : window.dispatchEvent(new Event("refetchRentUnit"));
       }
     } catch (error) {
       console.error(error);
