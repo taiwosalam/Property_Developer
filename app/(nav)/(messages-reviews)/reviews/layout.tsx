@@ -55,7 +55,6 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
     company_id ? `/reviews/company/${company_id}` : null
   );
   useRefetchOnEvent("companyReviews", () => refetch({ silent: true }));
-
   useEffect(() => {
     if (reviewData) {
       const transData = transformReviewCard(reviewData);

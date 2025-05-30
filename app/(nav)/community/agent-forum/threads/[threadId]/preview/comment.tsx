@@ -130,7 +130,7 @@ const Comment: React.FC<CommentProps> = ({
             <span className="text-ellipsis line-clamp-1 capitalize">
               {name}
             </span>
-            {tier_id && tier_id > 1 && <BadgeIcon color={"gray"} />}
+            {tier_id && tier_id > 1 ? <BadgeIcon color={"gray"} /> : ""}
           </p>
           <p className="text-text-secondary dark:text-darkText-2 text-sm font-medium">
             {text}

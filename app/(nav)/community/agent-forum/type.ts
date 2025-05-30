@@ -27,6 +27,7 @@ export type ThreadCardProps = {
 export interface CommentProps {
   id: string | number;
   name: string;
+  image?: string | null;
   text: string;
   likes: number;
   dislikes: number;

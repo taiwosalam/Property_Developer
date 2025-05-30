@@ -282,12 +282,12 @@ const VehiclesRecordPage = () => {
             total={total_this_month}
             colorScheme={1}
           />
-          <ManagementStatistcsCard
+          {/* <ManagementStatistcsCard
             title="Check In"
             newData={check_ins_this_month}
             total={check_ins}
             colorScheme={2}
-          />
+          /> */}
           <ManagementStatistcsCard
             title="Check Out"
             newData={check_outs_this_month}

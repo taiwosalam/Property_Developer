@@ -120,12 +120,12 @@ export const deletePropertyRequest = async (id: string) => {
   }
 };
 
-const transformComment = (
+export const transformComment = (
   comment: CommentData,
   slug: string
 ): CommentProps => ({
   id: comment.id,
-  name: comment.name,
+  name: comment.name || "No name",
   image: comment.profile_picture,
   tier_id: comment.tier ? Number(comment.tier) : 0,
   text: comment.text,

@@ -47,10 +47,6 @@ const PreviewPage = () => {
     useFetch<PropertyRequestResponse>(`/agent_requests/${requestId}`);
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
 
-  console.log(data);
-
-  console.log(companySummary);
-
   useEffect(() => {
     if (data) {
       const transformedData = transformPropertyRequestResponse(data);
@@ -87,10 +83,10 @@ const PreviewPage = () => {
           <MoreDetailsCard propertyRequest={agentRequest} user={contributor} />
           <ThreadArticle
             propertyRequest={agentRequest}
-            comments={comments}
+            comments={commentThread || []}
             readByData={readBy}
             // slug={agentRequest?.slug ?? ""}
-          />
+          /> 
           <PropertyRequestComments
             id={requestId as string}
             slug={agentRequest?.slug ?? ""}
