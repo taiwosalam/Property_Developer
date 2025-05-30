@@ -1,7 +1,7 @@
 const StatusIndicator = ({ statusTitle }: { statusTitle: string }) => {
   let backgroundColor;
   switch (statusTitle) {
-    case "vacant":
+    case "vacant/pending":
       backgroundColor = "#FFBB53";
       break;
     case "occupied":
@@ -13,7 +13,7 @@ const StatusIndicator = ({ statusTitle }: { statusTitle: string }) => {
     case "expired":
       backgroundColor = "#E9212E";
       break;
-    case "relocate":
+    case "relocate/move out":
       backgroundColor = "#620E13";
       break;
     default:

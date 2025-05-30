@@ -12,9 +12,9 @@ interface UnitData {
 export const transformUnitDetails = (unitData: UnitData): string => {
   console.log("unitData", unitData);
   // Use actual property names from unitData
-  const unitType = unitData?.unitType?.toLowerCase() || unitData.unit_type || "";
+  const unitType = unitData?.unitType?.toLowerCase() || unitData?.unit_type || "";
   const unitPreference = unitData?.unitPreference || unitData?.preference || "";
-  const unitSubType = unitData?.unitSubType || unitData.unit_sub_type ||  "";
+  const unitSubType = unitData?.unitSubType || unitData?.unit_sub_type ||  "";
   const totalAreaSqm = unitData?.total_area_sqm || "";
   const numberOf = unitData?.number_of || "0";
   const bedroom = unitData?.bedrooms || unitData?.bedroom || "0"; // Handle both 'bedrooms' and 'bedroom'

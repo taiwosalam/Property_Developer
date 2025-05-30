@@ -148,7 +148,7 @@ const EditMobileUser = ({
               variant="light_red"
               className="py-2 px-8"
             >
-              {reqLoading ? "Please wait..." : "Delete"}
+                {reqLoading ? "Please wait..." : "Delete"}
             </Button>
             <Button
               onClick={() => setIsOpen(false)}

@@ -342,11 +342,11 @@ const RentAndUnit = () => {
             <section className="capitalize space-y-4 px-4 w-full">
               <div className="w-full flex items-center justify-end">
                 <div className="flex gap-4 flex-wrap">
-                  <StatusIndicator statusTitle="vacant" />
+                  <StatusIndicator statusTitle="vacant/pending" />
                   <StatusIndicator statusTitle="occupied" />
                   <StatusIndicator statusTitle="active" />
                   <StatusIndicator statusTitle="expired" />
-                  <StatusIndicator statusTitle="relocate" />
+                  <StatusIndicator statusTitle="relocate/move out" />
                 </div>
               </div>
               {view === "grid" || gridView ? (

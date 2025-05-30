@@ -39,11 +39,17 @@ const TenancyRecord = ({
   renewalPackage,
   tenant,
   unit_id,
-  documents,
+  // documents,
+  unit_documents,
   currency,
+  index,
+  move_in,
+  move_out,
 }: {
   unit_id?: string;
   name?: string;
+  move_in?: string;
+  move_out?: string;
   period?: string;
   email?: string;
   picture?: string;
@@ -52,11 +58,14 @@ const TenancyRecord = ({
   renew_total_package?: string;
   renewalPackage?: string;
   tenant?: any;
-  documents?: any[];
+  // documents?: any[];
+  unit_documents?: any[];
   currency?: Currency;
+  index?: number;
 }) => {
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
-  const transformedDocs = transformDocuments(documents || []);
+  // const transformedDocs = transformDocuments(documents || []);
+  const transformedDocs = transformDocuments(unit_documents || []);
   const groupedDocuments = groupDocumentsByType(transformedDocs);
   const CURRENCY =
     currencySymbols[currency as keyof typeof currencySymbols] ||
@@ -173,7 +182,10 @@ const TenancyRecord = ({
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h3 className="text-base font-bold text-brand-10">Tenancy Record</h3>
+        <div className="flex gap-2">
+          <p className="text-base font-bold text-brand-10">( {index} ) </p>
+          <h3 className="text-base font-bold text-brand-10">Tenancy Record</h3>
+        </div>
         <button
           type="button"
           className="rounded bg-brand-9 py-2 px-8"
@@ -214,9 +226,8 @@ const TenancyRecord = ({
             value={
               renew_rent
                 ? `${
-                    currencySymbols[
-                      currency as keyof typeof currencySymbols
-                    ] || "₦"
+                    currencySymbols[currency as keyof typeof currencySymbols] ||
+                    "₦"
                   }${formatNumber(parseFloat(renew_rent))}`
                 : undefined
             }
@@ -229,12 +240,12 @@ const TenancyRecord = ({
           />
           <DetailItem
             label="Move In"
-            value={"--- ---"}
+            value={dayjs(move_in).format("MMM DD YYYY")}
             style={{ width: "130px" }}
           />
           <DetailItem
             label="Move Out"
-            value={"--- ---"}
+            value={dayjs(move_out).format("MMM DD YYYY")}
             style={{ width: "130px" }}
           />
           {/* <DetailItem

@@ -146,9 +146,14 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   badge_color,
   currency,
   fee_period,
+  invoice_status,
+  invoice_id,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
+
+  const HAS_INVOICE_PENDING =
+    invoice_status && invoice_status.trim().toLowerCase() === "pending";
 
   const NOT_OCCUPIED =
     status.toLowerCase() === "relocate" || status.toLowerCase() === "vacant";
@@ -212,7 +217,10 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Expiry Date
               </span>
-              <p className="text-brand-primary font-medium"> {NOT_OCCUPIED ? "--- ---" : expiry_date} </p>
+              <p className="text-brand-primary font-medium">
+                {" "}
+                {NOT_OCCUPIED ? "--- ---" : expiry_date}{" "}
+              </p>
             </div>
           </div>
         </div>
@@ -226,18 +234,28 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
       {/* BUTTONS ACCORDING TO STATUS */}
       <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
         {actions
+          // First: skip all other logic if invoice_status is not 'pending' but action is "Pending"
           .filter((action) => {
             const label =
               typeof action.label === "function"
                 ? action.label(propertyType)
                 : action.label;
 
+            // Only allow Pending button if invoice_status is "pending"
+            if (label === "Pending") {
+              return invoice_status?.trim().toLowerCase() === "pending";
+            }
+
+            // Hide all other buttons if invoice_status is "pending"
+            if (invoice_status?.trim().toLowerCase() === "pending") {
+              return false;
+            }
+
             // Define button visibility based on status
             if (status === "vacant" || status === "relocate") {
               return label === "Start Rent" || label === "Move In";
             }
             if (status === "occupied") {
-              // Exclude "Renew Rent" and "Renew Fee" for occupied status
               return (
                 label !== "Start Rent" &&
                 label !== "Move In" &&
@@ -249,31 +267,32 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               return (
                 label === "Renew Rent" ||
                 label === "Renew Fee" ||
-                // label === "Edit" ||
                 label === "Move Out" ||
                 label === "Relocate"
               );
             }
-            return false; // Default: hide all buttons if status is unknown
+            return false;
           })
+
+          // Then filter based on propertyType logic
           .filter((action) => {
             const label =
               typeof action.label === "function"
                 ? action.label(propertyType)
                 : action.label;
 
-            // Additional filtering based on propertyType
-            if (propertyType === "rental" && label === "Relocate") {
+            if (propertyType === "rental" && label === "Relocate") return false;
+            if (propertyType === "facility" && label === "Move Out")
               return false;
-            }
-            if (propertyType === "facility" && label === "Move Out") {
-              return false;
-            }
+
             return true;
           })
+
+          // Finally render the buttons
           .map((action, i) => (
             <ActionButton
               unit_id={unitId}
+              invoice_id={invoice_id}
               key={i}
               propertyType={propertyType}
               {...action}

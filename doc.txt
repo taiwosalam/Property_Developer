@@ -111,6 +111,81 @@
 
 
 
+=========================== PROPERTY CARD BUTTON FILTERS ==================
+   {/* {actions
+          .filter((action) => {
+            const label =
+              typeof action.label === "function"
+                ? action.label(propertyType)
+                : action.label;
+
+            if (invoice_status === "pending") {
+              return label === "Pending";
+            }
+
+            // Define button visibility based on status
+            if (status === "vacant" || status === "relocate") {
+              return label === "Start Rent" || label === "Move In";
+            }
+            if (status === "occupied") {
+              // Exclude "Renew Rent" and "Renew Fee" for occupied status
+              return (
+                label !== "Start Rent" &&
+                label !== "Move In" &&
+                label !== "Renew Rent" &&
+                label !== "Renew Fee"
+              );
+            }
+
+            if (status === "expired") {
+              return (
+                label === "Renew Rent" ||
+                label === "Renew Fee" ||
+                // label === "Edit" ||
+                label === "Move Out" ||
+                label === "Relocate"
+              );
+            }
+            return false; // Default: hide all buttons if status is unknown
+          })
+          .filter((action) => {
+            const label =
+              typeof action.label === "function"
+                ? action.label(propertyType)
+                : action.label;
+
+            // Additional filtering based on propertyType
+            if (propertyType === "rental" && label === "Relocate") {
+              return false;
+            }
+            if (propertyType === "facility" && label === "Move Out") {
+              return false;
+            }
+            return true;
+          })
+          .map((action, i) => (
+            <ActionButton
+              unit_id={unitId}
+              invoice_id={invoice_id}
+              key={i}
+              propertyType={propertyType}
+              {...action}
+              route={
+                typeof action.route === "function"
+                  ? action.route(unitId, propertyType)
+                  : action.route
+              }
+              label={
+                typeof action.label === "function"
+                  ? action.label(propertyType)
+                  : action.label
+              }
+            />
+          ))} */}
+
+
+
+
 
 
 
