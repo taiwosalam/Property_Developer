@@ -46,6 +46,7 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { FeeDetail } from "@/components/Management/Rent And Unit/types";
 import { useGlobalStore } from "@/store/general-store";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
+import { CheckBoxOptions, defaultChecks } from "@/components/Management/Rent And Unit/data";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
@@ -64,6 +65,8 @@ const EditRent = () => {
   const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
   const [isCompletePayment, setIsCompletePayment] = useState(false);
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
+  useState<CheckBoxOptions>(defaultChecks);
   const { setSelectedOccupant, setUnitData } = useGlobalStore();
   const endpoint = `/unit/${id}/view`;
 
@@ -90,13 +93,13 @@ const EditRent = () => {
         setSelectedOccupant(transformedData.occupant);
         setOccupant(transformedData.occupant); // Store occupant data in Zustand
       }
-      if (transformedData.previous_records) {
-        setUnitBalance(transformedData.previous_records); // Store balance data in Zustand
+      if (transformedData.current_records) {
+        setUnitBalance(transformedData.current_records); // Store balance data in Zustand
       }
     }
   }, [apiData, setOccupant, setUnitBalance, setGlobalStore]);
 
-  const record = (unit_data?.previous_records as any)?.data?.[0];
+  const record = (unit_data?.current_records as any)?.data?.[0];
   const start_date = record?.start_date
     ? dayjs(record?.start_date).format("DD/MM/YYYY")
     : "__,__,__";
@@ -120,8 +123,8 @@ const EditRent = () => {
   const CURRENCY = unit_data.currency || "naira";
   const has_part_payment = PENDING_INVOICE_PAID_AMOUNT > 0;
 
-  console.log("PENDING_INVOICE_PAID_AMOUNT", PENDING_INVOICE_PAID_AMOUNT)
-  console.log("has_part_payment", has_part_payment)
+  // console.log("PENDING_INVOICE_PAID_AMOUNT", PENDING_INVOICE_PAID_AMOUNT)
+  // console.log("has_part_payment", has_part_payment)
   
 
   // ADD UPFRONT RENT
@@ -133,10 +136,11 @@ const EditRent = () => {
     const payload = {
       unit_id: id,
       amount: unit_data.renewalTenantTotalPrice,
-      rent_id: unitBalance.data[0].id,
+      rent_id: unitBalance?.data[0]?.id,
       payment_date: startDate,
       tenant_id: unit_data.occupant.id,
       type: "upfront_payment",
+      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
     };
     try {
       setReqLoading(true);
@@ -166,12 +170,13 @@ const EditRent = () => {
     const payload = {
       unit_id: id,
       amount: parseCurrency(amt),
-      rent_id: unitBalance.data[0].id,
+      rent_id: unitBalance?.data[0]?.id,
       payment_date: startDate,
-      tenant_id: unit_data.occupant.id,
+      tenant_id: unit_data?.occupant?.id,
       type: "part_payment",
       has_penalty: penaltyAmount > 0 ? 1 : 0,
       penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
+      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
     };
     try {
       setReqLoading(true);
@@ -292,6 +297,7 @@ const EditRent = () => {
                   loading={reqLoading}
                   setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
                   isUpfrontPaymentChecked={isUpfrontPaymentChecked}
+                  setSelectedCheckboxOptions={setSelectedCheckboxOptions}
                 />
 
                 <AddPartPayment
@@ -303,6 +309,7 @@ const EditRent = () => {
                   setAmt={setAmt}
                   setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
                   isUpfrontPaymentChecked={isUpfrontPaymentChecked}
+                  setSelectedCheckboxOptions={setSelectedCheckboxOptions}
                 />
               </>
             )}
@@ -357,7 +364,7 @@ const EditRent = () => {
         </div>
         <PreviousRentRecords
           isRental={isRental}
-          previous_records={unit_data.previous_records as any}
+          current_records={unit_data.current_records as any}
           unit_id={id as string}
           currency={CURRENCY}
         />

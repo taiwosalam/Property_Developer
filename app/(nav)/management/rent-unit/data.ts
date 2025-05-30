@@ -5,6 +5,7 @@ import {
 } from "@/components/BadgeIcon/badge-icon";
 import { RentPeriod } from "@/components/Management/Rent And Unit/data";
 import { propertyCategories } from "@/data";
+import api, { handleAxiosError } from "@/services/api";
 import {
   Currency,
   currencySymbols,
@@ -132,6 +133,8 @@ export const transformRentUnitApiResponse = (
       unit_name: u?.unit_name || "--- ---",
       caution_fee: u?.caution_fee || "--- ---",
       status: u.is_active,
+      invoice_status: u?.invoice_status?.toLowerCase() === "pending" ? "pending" : "paid",
+      invoice_id: u.invoice_id,
       fee_period: u.fee_period,
       propertyType: u.property.property_type as "rental" | "facility",
       address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
@@ -165,6 +168,19 @@ export const transformRentUnitApiResponse = (
     return {
       unit: transformedUnits,
     };
+  }
+};
+
+
+export const cancelRent = async (id: number, data: any) => {
+  try {
+    const res = await api.post(`/invoice/cancel/${id}`, data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error, "Failed to Cancel Rent");
+    return false;
   }
 };
 
@@ -307,6 +323,8 @@ export interface RentalPropertyCardProps {
   is_active?: string;
   fee_period?: string;
   currency?: Currency;
+  invoice_status?: string | null;
+  invoice_id?: number | null;
 }
 
 const allStates = getAllStates() || [];
@@ -965,6 +983,7 @@ export const transformUnitData = (response: any) => {
   const data = response.data;
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
+  const current_records = response.data.current_records;
   const pending_invoice = response.data.pending_invoice;
 
   // Helper function to format and validate fee amounts

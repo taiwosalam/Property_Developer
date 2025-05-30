@@ -5,6 +5,7 @@ import {
 } from "../rent-section-container";
 import { EstateDetailItem as DetailItem } from "../detail-item";
 import {
+  CheckBoxOptions,
   getRenewalRentDetailItems,
   renewalRentDetailItems,
   RentPeriod,
@@ -108,7 +109,7 @@ export const EditCurrentRent: React.FC<{
   currency?: Currency;
   setIsUpfrontPaymentChecked?: (checked: boolean) => void;
   isUpfrontPaymentChecked?: boolean;
-  setSelectedCheckboxOptions?: (options: Record<string, boolean>) => void;
+  setSelectedCheckboxOptions?: any;
 }> = ({
   isRental,
   total,
@@ -326,7 +327,8 @@ export const AddPartPayment: React.FC<{
   currency?: Currency;
   setIsUpfrontPaymentChecked?: (checked: boolean) => void;
   isUpfrontPaymentChecked?: boolean;
-  setSelectedCheckboxOptions?: (options: Record<string, boolean>) => void;
+  setSelectedCheckboxOptions?: any;
+  // setSelectedCheckboxOptions?: (options: Record<string, boolean>) => void;
   prevAmt?: string;
 }> = ({
   action,
@@ -346,7 +348,9 @@ export const AddPartPayment: React.FC<{
 
   const isWebUser = occupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = occupant?.userTag?.toLowerCase() === "mobile";
-
+  // Non-naira currency message
+  const nonNaira = currency !== "naira";
+  
   const CURRENCY_SYMBOL =
     currencySymbols[currency as keyof typeof currencySymbols] ||
     currencySymbols["naira"];
@@ -412,6 +416,24 @@ export const AddPartPayment: React.FC<{
   };
 
   // Update selectedOptions when userTag changes
+  // useEffect(() => {
+  //   setSelectedOptions((prev) => ({
+  //     ...prev,
+  //     mobile_notification: isWebUser
+  //       ? false
+  //       : isMobileUser
+  //       ? true
+  //       : prev.mobile_notification,
+  //     create_invoice:
+  //       currency !== "naira" && isMobileUser
+  //         ? false
+  //         : !isMobileUser
+  //         ? false
+  //         : prev.create_invoice,
+  //   }));
+  // }, [isWebUser, isMobileUser, currency]);
+
+  // Update selectedOptions when userTag changes
   useEffect(() => {
     setSelectedOptions((prev) => ({
       ...prev,
@@ -421,11 +443,14 @@ export const AddPartPayment: React.FC<{
         ? true
         : prev.mobile_notification,
       create_invoice:
-        currency !== "naira" && isMobileUser
-          ? false
+        currency === "naira" && isMobileUser
+          ? // ? false
+            true
           : !isMobileUser
           ? false
-          : prev.create_invoice,
+          : currency !== "naira" && isMobileUser
+          ? false
+          : true,
     }));
   }, [isWebUser, isMobileUser, currency]);
 

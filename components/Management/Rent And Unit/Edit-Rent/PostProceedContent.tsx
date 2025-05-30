@@ -353,7 +353,7 @@ const PostProceedContent = ({
           </div>
         </div>
         <PreviousRentRecords
-          previous_records={unitBalance && (unitBalance as any)}
+          current_records={unitBalance && (unitBalance as any)}
           isRental={isRental}
           unit_id={selectedUnitId}
           noRefetch={true}

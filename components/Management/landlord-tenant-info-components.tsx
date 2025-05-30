@@ -192,10 +192,11 @@ export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
         )}
       </div>
       <div className="p-4 bg-brand-primary text-white text-sm lg:text-base font-medium">
-        <p className="w-full whitespace-nowrap overflow-hidden text-ellipsis capitalize">
+      {/* whitespace-nowrap overflow-hidden text-ellipsis  */}
+        <p className="w-full capitalize text-xs line-clamp-2 text-ellipsis">
           {name}
         </p>
-        <p>{date}</p>
+        <p className="w-full capitalize text-xs">{date}</p>
       </div>
     </Link>
   );

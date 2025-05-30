@@ -189,6 +189,7 @@ const UnitPreviewPage = () => {
             unit_data?.previous_tenants?.map((t: any, index: number) => (
               <TenancyRecord
                 key={index}
+                index={unit_data.previous_tenants.length - index}
                 unit_id={id}
                 {...t}
                 currency={unit_data.currency}
