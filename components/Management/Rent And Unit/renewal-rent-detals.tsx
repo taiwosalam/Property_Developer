@@ -34,6 +34,7 @@ import {
   formatOwingPeriod,
   getOwingBreakdown,
 } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 export const RenewalRentDetails: React.FC<{
   isRental: boolean;
@@ -584,8 +585,9 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   );
 
   // Always call useFetch, but we ignore its results if noRefetch is true.
-  const { data, loading, silentLoading, error, isNetworkError } =
+  const { data, loading, silentLoading, error, isNetworkError, refetch } =
     useFetch<UnitViewResponse>(`/unit/${unit_id}/view`, fetchOptions);
+    useRefetchOnEvent("refech-unit", () => refetch({ silent: true }));
 
   // Helper: debounce function to limit rapid calls.
   const debounce = (func: Function, delay: number) => {
