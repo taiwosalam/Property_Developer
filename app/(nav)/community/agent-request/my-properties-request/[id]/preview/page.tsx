@@ -79,7 +79,11 @@ const PreviewPage = () => {
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <ThreadArticle propertyRequest={agentRequest} readByData={readBy} />
+          <ThreadArticle
+            propertyRequest={agentRequest}
+            readByData={readBy}
+            comments={commentThread || []}
+          />
           <PropertyRequestComments
             id={id as string}
             slug={agentRequest?.slug ?? ""}
@@ -88,10 +92,12 @@ const PreviewPage = () => {
           />
           <ThreadComments comments={commentThread || []} />
         </div>
-        <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <SummaryCard agentRequest={agentRequest} />
-          <MoreDetailsCard propertyRequest={agentRequest} />
-          <ReadyByCard data={readBy} />
+        <div className="w-full lg:flex-1">
+          <div className="sticky top-10 w-full lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
+            <SummaryCard agentRequest={agentRequest} />
+            <MoreDetailsCard propertyRequest={agentRequest} />
+            <ReadyByCard data={readBy} />
+          </div>
         </div>
       </div>
     </div>

@@ -468,7 +468,7 @@ const Comment: React.FC<CommentProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }; 
 
   return (
     <div data-comment-id={id} className="space-y-2">

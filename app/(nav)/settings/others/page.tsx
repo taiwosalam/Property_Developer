@@ -89,7 +89,6 @@ import {
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
 
-
 const companyTypes = [
   {
     id: 1,
@@ -446,12 +445,10 @@ const Others = () => {
     }
   };
 
-  const {
-    data: apiData,
-    refetch,
-  } = useFetch<ApiResponseDirector>(`/directors`);
+  const { data: apiData, refetch } =
+    useFetch<ApiResponseDirector>(`/directors`);
 
-  console.log(apiData)
+  console.log(apiData);
 
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
@@ -550,10 +547,25 @@ const Others = () => {
     ];
 
     const payload = new FormData();
+
+    // Handle phone number validation
+    const phoneNumber = data.get("phone_number");
+    const isValidPhone =
+      phoneNumber &&
+      typeof phoneNumber === "string" &&
+      phoneNumber.replace(/[\s+-]/g, "").length > 4; // Minimum length after removing formatting
+
     fields.forEach((field) => {
       const value = data.get(field);
       if (value) {
-        payload.append(field, value);
+        // Only append phone_number if it's valid
+        if (field === "phone_number") {
+          if (isValidPhone) {
+            payload.append(field, value);
+          }
+        } else {
+          payload.append(field, value);
+        }
       }
     });
 
@@ -583,6 +595,7 @@ const Others = () => {
       }
     } catch (error) {
       if (error instanceof Error) {
+        toast.error("Failed to add director");
       }
     } finally {
       setProcessing(false);
@@ -713,7 +726,6 @@ const Others = () => {
   const handleRestoreUser = async () => {
     if (!selectedRestrictedUser) return;
 
-    
     const payload = {
       user_id: selectedRestrictedUser?.id,
       is_active: true,
@@ -813,9 +825,7 @@ const Others = () => {
   };
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
 
-  const director_id = usePersonalInfoStore((state) => state.director_id)
-  
-  
+  const director_id = usePersonalInfoStore((state) => state.director_id);
 
   return (
     <>
@@ -829,8 +839,7 @@ const Others = () => {
           <div className="">
             <AutoResizingGrid minWidth={284} gap={16}>
               {cardView?.card?.map((director) => {
-
-                if(director.id === director_id) return null;
+                if (director.id === director_id) return null;
 
                 const directorId = director.id.toString();
                 const formData = formStateById[directorId];
@@ -866,7 +875,9 @@ const Others = () => {
                         phone_number={director.phone_number}
                         picture_url={director.picture}
                         user_tag={director.professional_title}
-                        badge_color={ director.tier_id === 2 ? "gray" : undefined }
+                        badge_color={
+                          director.tier_id === 2 ? "gray" : undefined
+                        }
                         is_verified={director?.is_verified}
                       />
                     </ModalTrigger>

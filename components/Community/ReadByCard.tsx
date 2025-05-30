@@ -11,8 +11,6 @@ import { useEffect } from "react";
 import dayjs from "dayjs";
 
 const ReadyByCard = ({ data }: { data: any }) => {
-  console.log(data);
-
   const isArray = Array.isArray(data);
 
   const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
@@ -25,38 +23,43 @@ const ReadyByCard = ({ data }: { data: any }) => {
       <h4 className="text-black dark:text-white font-semibold text-sm">
         Ready By
       </h4>
-      {isArray
-        ? data.map((item: any, index: number) => (
-            <div key={index} className="flex w-full gap-3 mt-3 justify-between">
-              <div className="flex gap-1 items-center">
-                <div className="imgWrapper h-10 w-10 rounded-full overflow-hidden">
-                  <Image
-                    src={item.profile_picture || empty}
-                    alt="user"
-                    width={100}
-                    height={100}
-                    className="w-full h-full object-cover rounded-full bg-brand-9"
-                  />
-                </div>
-                <p
-                  className="text-black dark:text-white text-md font-semibold capitalize
+      <div className="max-h-500 h-450 overflow-auto">
+        {isArray
+          ? data.map((item: any, index: number) => (
+              <div
+                key={index}
+                className="flex w-full gap-3 mt-3 justify-between"
+              >
+                <div className="flex gap-1 items-center">
+                  <div className="imgWrapper h-10 w-10 rounded-full overflow-hidden">
+                    <Image
+                      src={item.profile_picture || empty}
+                      alt="user"
+                      width={100}
+                      height={100}
+                      className="w-full h-full object-cover rounded-full bg-brand-9"
+                    />
+                  </div>
+                  <p
+                    className="text-black dark:text-white text-md font-semibold capitalize
                 "
-                >
-                  {item.name || <TextSkeleton />}
+                  >
+                    {item.name || <TextSkeleton />}
+                  </p>
+                  {item.tier_id && item.tier_id > 2 && (
+                    <BadgeIcon color={"gray"} />
+                  )}
+                  {/* <BadgeIcon color="blue" /> */}
+                </div>
+                <p className="text-black dark:text-white text-sm">
+                  {dayjs(item.viewed_at).format("MMM Do YYYY") || (
+                    <TextSkeleton />
+                  )}
                 </p>
-                {item.tier_id && item.tier_id > 2 && (
-                  <BadgeIcon color={"gray"} />
-                )}
-                {/* <BadgeIcon color="blue" /> */}
               </div>
-              <p className="text-black dark:text-white text-sm">
-                {dayjs(item.viewed_at).format("MMM Do YYYY") || (
-                  <TextSkeleton />
-                )}
-              </p>
-            </div>
-          ))
-        : null}
+            ))
+          : null}
+      </div>
     </div>
   );
 };

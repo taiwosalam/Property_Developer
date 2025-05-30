@@ -13,7 +13,10 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { AnnouncementDetailsResponse } from "../../types";
 import { useEffect, useState } from "react";
-import { AnnouncementDetailsPageData, transformAnnouncementDetailsData } from "./data";
+import {
+  AnnouncementDetailsPageData,
+  transformAnnouncementDetailsData,
+} from "./data";
 
 const images = [
   { src: "/empty/SampleProperty.jpeg", isVideo: false },
@@ -28,7 +31,9 @@ const PreviewAnnouncement = () => {
   const router = useRouter();
   const { announcementId } = useParams();
 
-  const [pageData, setPageData] = useState<AnnouncementDetailsPageData | null>(null);
+  const [pageData, setPageData] = useState<AnnouncementDetailsPageData | null>(
+    null
+  );
 
   const {
     data: apiData,
@@ -39,9 +44,9 @@ const PreviewAnnouncement = () => {
   } = useFetch<AnnouncementDetailsResponse>(`announcements/${announcementId}`);
 
   useEffect(() => {
-    if(apiData){
+    if (apiData) {
       const transformData = transformAnnouncementDetailsData(apiData);
-      setPageData(transformData)
+      setPageData(transformData);
     }
   }, [apiData]);
 
@@ -62,7 +67,7 @@ const PreviewAnnouncement = () => {
             <ChevronLeft />
           </button>
           <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-            Rent Increase & Maintenance
+            {pageData?.title}
           </h1>
         </div>
         <Button
@@ -70,13 +75,21 @@ const PreviewAnnouncement = () => {
           size="sm_medium"
           className="py-2 px-3"
         >
-          Manage Announcement
+         manage announcement
         </Button>
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         {/* Left Side */}
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <AnnouncementPost />
+          <AnnouncementPost
+            data={{
+              comments: pageData?.comments || [],
+              likes: pageData?.likes || 0,
+              dislikes: pageData?.dislikes || 0,
+              viewers: pageData?.viewers || [],
+              description: pageData?.description || "",
+            }}
+          />
         </div>
         {/* Right Side */}
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
@@ -85,8 +98,8 @@ const PreviewAnnouncement = () => {
             containerClassName="rounded-lg"
             heading="summary"
             info={{
-              branch: "All/ Bodija, Moniya, Tokyo",
-              properties: "All Projects/ Harmony Cottage, Bodija Hotels",
+              branch: pageData?.summary?.branch_name || "___ ___",
+              properties: pageData?.summary?.property_name || "___ ___",
             }}
           />
           <ReadBy />

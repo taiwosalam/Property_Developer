@@ -51,8 +51,6 @@ const Chat = () => {
 
   const groupDetails = apiData?.group_chat;
 
-  
-
   useEffect(() => {
     if (apiData) {
       setChatMessages(apiData?.group_chat?.chats);

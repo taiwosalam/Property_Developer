@@ -1,3 +1,4 @@
+import { CommentData } from "@/components/tasks/announcements/comment";
 import { StaticImageData } from "next/image";
 
 export interface AnnouncementApiResponse {
@@ -28,6 +29,20 @@ export interface Announcement {
   dislikes_count: number;
 }
 
+type AnnouncementComment = {
+  id: string | number;
+  profile_picture: string;
+  name: string;
+  tier: string;
+  content: string;
+  createdAt: string;
+  likes?: number;
+  dislikes?: number;
+  user_liked: boolean;
+  user_disliked: boolean;
+  replies?: AnnouncementComment[];
+};
+
 type AnnouncementDetailsResponse = {
   message: string;
   announcement: {
@@ -44,7 +59,14 @@ type AnnouncementDetailsResponse = {
     likes_count: number;
     dislikes_count: number;
     views_count: number;
-    comments: Comment[];
+    viewers: [];
+    read_by: [];
+    delivered: [];
+    summary: {
+      branch_name: string | null;
+      property_name: string | null;
+    };
+    comments: AnnouncementComment[];
     images: AnnouncementImage[];
   };
 };

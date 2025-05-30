@@ -1,20 +1,36 @@
 "use client";
 
 import "keen-slider/keen-slider.min.css";
-import Comment, { CommentData } from "@/components/tasks/announcements/comment";
+import Comment from "@/components/tasks/announcements/comment";
+import { CommentData } from "@/app/(nav)/community/agent-request/[requestId]/preview/types";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import NewComment from "../../app/(nav)/community/agent-forum/NewComment";
+import NewComment from "./PropertyRequestNewComment";
+// import {
+//   sendMyPropertyRequestComment,
+//   sendMyArticleReply,
+//   toggleCommentLike,
+//   sendMyPropertyRequestReply,
+//   togglePropertyRequestCommentLike,
+// } from "@/app/(nav)/community/agent-community/my-articles/data";
+
 import {
   sendMyPropertyRequestComment,
-  sendMyArticleReply,
-  toggleCommentLike,
   sendMyPropertyRequestReply,
   togglePropertyRequestCommentLike,
 } from "@/app/(nav)/community/agent-forum/my-articles/data";
 import PropertyRequestNewComment from "./PropertyRequestNewComment";
 import CommunityComments from "./CommunityComments";
-import { CommentProps } from "@/app/(nav)/community/agent-forum/type";
+//import { CommentProps } from "@/app/(nav)/community/agent-community/type";
+
+export interface CommentProps {
+  id: string | number;
+  name: string;
+  text: string;
+  likes: number;
+  dislikes: number;
+  replies?: CommentProps[];
+}
 
 interface ThreadCommentProps {
   id: string;
@@ -36,7 +52,7 @@ const PropertyRequestComments = ({
   edit,
   setComments,
 }: ThreadCommentProps) => {
-  // console.log("comments", comments);
+  //
   const [likeCount, setLikeCount] = useState(() => {
     if (comments && "likes" in comments) {
       return parseInt(comments.likes as string);
@@ -55,7 +71,6 @@ const PropertyRequestComments = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLike = async (id: string, commentId: string | number) => {
-    console.log("like clicked", commentId);
     if (isLoading || userAction === "like") return;
     setIsLoading(true);
 
@@ -68,14 +83,12 @@ const PropertyRequestComments = ({
       setUserAction("like");
       window.dispatchEvent(new Event("refetchComments"));
     } catch (error) {
-      console.error("Error toggling like:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDislike = async (id: string, commentId: string | number) => {
-    console.log("dislike clicked", commentId);
     if (isLoading || userAction === "dislike") return;
     setIsLoading(true);
 
@@ -88,11 +101,9 @@ const PropertyRequestComments = ({
       setUserAction("dislike");
       window.dispatchEvent(new Event("refetchComments"));
     } catch (error) {
-      console.error("Error toggling dislike:", error);
     } finally {
       setIsLoading(false);
     }
-    console.log("dislikeCount", dislikeCount);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -113,19 +124,16 @@ const PropertyRequestComments = ({
         const status = await sendMyPropertyRequestReply(slug, parentId, reply);
         if (status) {
           window.dispatchEvent(new Event("refetchComments"));
-          console.log("event triggered for reply");
         }
       } else if (message) {
         // Send comment to the server
         const status = await sendMyPropertyRequestComment(slug, message);
         if (status) {
           window.dispatchEvent(new Event("refetchComments"));
-          console.log("event triggered for comments");
         }
       }
     } catch (error) {
       toast.error("Failed to add comment/reply");
-      console.error("Error adding comment/reply:", error);
     } finally {
       setCommenting(false);
     }
