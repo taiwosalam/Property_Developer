@@ -26,6 +26,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import ServerError from "@/components/Error/ServerError";
 import { toast } from "sonner";
+import PendingInvoiceModal from "@/components/Management/Rent And Unit/pending-invoice-modal";
 
 const ManageInvoice = () => {
   const CURRENCY_SYMBOL = currencySymbols.naira;
@@ -52,6 +53,7 @@ const ManageInvoice = () => {
   }, [data]);
 
   const IS_PAID = pageData.status.toLowerCase() === "paid";
+  const IS_PENDING = pageData.status.toLowerCase() === "pending";
   const UNIT_ID = pageData.unit_id;
 
   const UnitKeyValData = {
@@ -97,7 +99,7 @@ const ManageInvoice = () => {
       const res = await updateInvoiceStatus(INVOICE_ID, {
         _method: "PUT",
       });
-      if (res){
+      if (res) {
         toast.success("Invoice updated successfully");
         router.push("/accounting/invoice");
       }
@@ -208,6 +210,7 @@ const ManageInvoice = () => {
         </AccountingTitleSection>
       </div>
       <FixedFooter className="flex items-center justify-between gap-4">
+        {/* {!IS_PAID && ( */}
         {!IS_PAID && (
           <Modal>
             <ModalTrigger asChild>
@@ -232,17 +235,28 @@ const ManageInvoice = () => {
             </Button>
           ) : ( */}
           <>
-            {!IS_PAID && (
-              <Button
-                variant="light_green"
-                size="base_bold"
-                className="py-2 px-8"
-                type="button"
-                onClick={handlePaidClick}
-                disabled={reqLoading}
-              >
-                {reqLoading ? "Please wait..." : "Mark as Paid"}
-              </Button>
+            {IS_PENDING && (
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button
+                    variant="light_green"
+                    size="base_bold"
+                    className="py-2 px-8"
+                    type="button"
+                    onClick={handlePaidClick}
+                    disabled={reqLoading}
+                  >
+                    {reqLoading ? "Please wait..." : "Manage Payment"}
+                  </Button>
+                </ModalTrigger>
+
+                <ModalContent>
+                  <PendingInvoiceModal
+                    invoice_id={Number(invoiceId)}
+                    page="invoice"
+                  />
+                </ModalContent>
+              </Modal>
             )}
             <Button
               type="button"

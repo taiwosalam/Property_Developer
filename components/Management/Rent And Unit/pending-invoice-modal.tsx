@@ -11,9 +11,9 @@ import { toast } from "sonner";
 import { cancelRent } from "@/app/(nav)/management/rent-unit/data";
 
 interface IPepndingTypes {
-  unit_id: string;
+  unit_id?: string;
   invoice_id: number;
-  page?: "edit" | "all-units" | "renew";
+  page?: "edit" | "all-units" | "renew" | "invoice";
 }
 
 const PendingInvoiceModal = ({ unit_id, invoice_id, page }: IPepndingTypes) => {

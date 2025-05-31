@@ -38,7 +38,7 @@ export const PendingInvoicePayment: React.FC<{
           <Modal>
             <ModalTrigger asChild>
               <Button
-                type="submit"
+                type="button"
                 variant="custom"
                 className="py-2 px-6 text-white text-xs font-medium cursor-pointer bg-[#FF9800]"
                 size="base_medium"
