@@ -70,8 +70,7 @@ const CreateTenancyAggrement = () => {
   //   }
   // };
 
-
-    const handleSaveDraft = async () => {
+  const handleSaveDraft = async (type: "create" | "preview") => {
     const articles = transformArticlesForPayload(checkboxOptions);
     const payload: TenancyAgreementPayload = {
       property_id: Number(propertyId),
@@ -85,7 +84,11 @@ const CreateTenancyAggrement = () => {
       const res = await createPropertyDocument(objectToFormData(payload));
       if (res) {
         toast.success("Draft saved successfully");
-        router.push(`/documents/preview/?d=${documentId}&b=manage`);
+        if (type === "preview") {
+          router.push(`/documents/preview/?d=${documentId}&b=manage`);
+        } else {
+          router.push(`/documents`);
+        }
       }
     } catch (err) {
       toast.error("An error occurred while saving the draft");
@@ -98,7 +101,9 @@ const CreateTenancyAggrement = () => {
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
-        <BackButton customBackPath="/documents">Create Tenancy Agreement</BackButton>
+        <BackButton customBackPath="/documents">
+          Create Tenancy Agreement
+        </BackButton>
         <CardsLoading length={2} />
       </div>
     );
@@ -108,7 +113,9 @@ const CreateTenancyAggrement = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-6">
-        <BackButton customBackPath="/documents">Create Tenancy Agreement</BackButton>
+        <BackButton customBackPath="/documents">
+          Create Tenancy Agreement
+        </BackButton>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
           <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
             Property Details
@@ -192,27 +199,22 @@ const CreateTenancyAggrement = () => {
           Back
         </Button>
         <div className="flex gap-6 ml-0">
-          {/* <Button
-            variant="sky_blue"
-            size="base_bold"
-            onClick={() => {
-              if (next) {
-                router.push(`/documents/preview/?d=${documentId}&b=manage`);
-              } else {
-                toast.warning("Please save as draft before previewing");
-              }
-            }}
-            className="py-2 px-6"
-          >
-            preview
-          </Button> */}
           <Button
-            onClick={handleSaveDraft}
+            onClick={() => handleSaveDraft("preview")}
             size="base_bold"
-            className="py-2 px-6"
+            variant="sky_blue"
             disabled={reqLoading}
+            className="py-2 px-6"
           >
             {reqLoading ? "Please wait..." : "Preview"}
+          </Button>
+          <Button
+            onClick={() => handleSaveDraft("create")}
+            size="base_bold"
+            disabled={reqLoading}
+            className="py-2 px-6"
+          >
+            {reqLoading ? "Please wait..." : "Create"}
           </Button>
         </div>
       </FixedFooter>
