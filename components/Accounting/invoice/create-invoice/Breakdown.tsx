@@ -40,7 +40,7 @@ const Breakdown = ({ data }: { data?: any }) => {
       <SectionSeparator />
       <div className="space-y-2">
         <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-          Total Package
+          Total
         </p>
         <p className="font-bold text-xl text-brand-9">
           {formatFee(Total, CURRENCY)}

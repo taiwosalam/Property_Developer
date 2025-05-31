@@ -68,7 +68,7 @@ export const transformUnitOptions = (
       (unit) => unit.is_active === "vacant" || unit.is_active === "relocate"
     )
     .map((unit) => ({
-      value: unit.id,
+      value: unit.unit_name,
       label: unit.unit_name,
     }));
 };
