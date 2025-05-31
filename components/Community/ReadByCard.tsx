@@ -13,6 +13,8 @@ import dayjs from "dayjs";
 const ReadyByCard = ({ data }: { data: any }) => {
   const isArray = Array.isArray(data);
 
+  console.log("data ", data)
+
   const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
     if (!tier || tier === 0) return undefined;
     return tierColorMap[tier as keyof typeof tierColorMap] || "blue";

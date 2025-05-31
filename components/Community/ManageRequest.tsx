@@ -76,7 +76,7 @@ export const PropertyRequestFirstSection = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
-        <label htmlFor="title"> Title {!noMaxTitle && <span className="text-slate-400">(Optional)</span>}</label>
+        <label htmlFor="title"> Title </label>
         <input
           type="text"
           id="title"

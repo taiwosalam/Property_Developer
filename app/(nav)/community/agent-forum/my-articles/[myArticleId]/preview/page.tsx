@@ -70,13 +70,12 @@ const ThreadPreview = () => {
 
   useEffect(() => {
     if (data) {
-      console.log("data", data);
       const transformedData = transformApiData(data as any);
       setPost(transformedData.post);
       setCompanySummary(transformedData.companySummary);
       setContributors(transformedData.contributors);
       setComments(transformedData.comments);
-      setReadyBy(data?.post?.readByData ?? []);
+      setReadyBy(transformedData.readByData ?? []);
     }
   }, [data]);
 

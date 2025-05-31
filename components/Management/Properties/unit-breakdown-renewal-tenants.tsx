@@ -164,7 +164,7 @@ const UnitBreakdownRenewalTenant = () => {
           required
           id="renew_fee_period"
           options={rentPeriods}
-          label="Rent Period"
+          label= {IS_RENTAL ? "Rent Period" : "Fee Period"}
           inputContainerClassName="bg-white"
           hiddenInputClassName="unit-form-input"
           resetKey={formResetKey}
@@ -173,7 +173,7 @@ const UnitBreakdownRenewalTenant = () => {
         <Input
           id="renew_fee_amount"
           required
-          label="Rent Amount"
+          label= {IS_RENTAL ? "Rent Amount" : "Fee Amount"}
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={rentAmount}

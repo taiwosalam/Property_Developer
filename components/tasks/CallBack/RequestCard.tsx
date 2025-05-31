@@ -6,7 +6,7 @@ import Picture from "@/components/Picture/picture";
 import samplePicture from "@/public/empty/SampleLandlord.jpeg";
 import { RequestCardProps, UserDetailItemsProp } from "./types";
 import { Modal, ModalContent } from "@/components/Modal/modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CallRequestModal from "./CallRequestModal";
 import VisitorRequestModal from "../visitors-requests/visitor-request-modal";
 import PropertyRequestModal from "../property-requests/property-request-modal";
@@ -17,6 +17,7 @@ import { truncateText } from "../vehicles-record/data";
 import { useRouter } from "next/navigation";
 import { getBadgeColor } from "@/lib/utils";
 import { useGlobalStore } from "@/store/general-store";
+import { toast } from "sonner";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -37,11 +38,33 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     pictureSrc,
     cardViewDetails,
     requestId,
+    userId,
   } = props;
 
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
+  const goToMessage = () => {
+    if (!userId) {
+      toast.warning("User ID not Found!");
+      return;
+    }
+
+    // Set the user data in the global store
+    const newMessageUserData = {
+      branch_id: 0,
+      id: userId,
+      imageUrl: pictureSrc || empty,
+      name: userName || "Unknown User",
+      position: "agent",
+    };
+    setGlobalStore("messageUserData", newMessageUserData);
+
+    // Redirect to the messaging page
+    router.push(`/messages/${userId}`);
+  };
+
 
   const handleViewDetails = () => {
     setModalOpen(true);
@@ -243,7 +266,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           <div className="flex items-center gap-2">
             {!props.user && (
               <button
-                onClick={() => router.push(`/messages/${props?.userId}`)}
+                // onClick={() => router.push(`/messages/${props?.userId}`)}
+                onClick={goToMessage}
                 type="button"
                 aria-label="Message"
                 className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"

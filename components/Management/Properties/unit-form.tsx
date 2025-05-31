@@ -23,6 +23,7 @@ import {
 import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import FullPageLoader from "@/components/Loader/start-rent-loader";
 
 export interface UnitFormState {
   images: string[];
@@ -263,6 +264,10 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       });
     }
   }, [props.empty, newForm]);
+
+  if(submitLoading){
+    return <FullPageLoader text="Processing Unit Data..." />
+  }
 
   return (
     <FlowProgress
