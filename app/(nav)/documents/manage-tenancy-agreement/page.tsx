@@ -64,9 +64,9 @@ const ManageTenancyAgreement = () => {
     console.log("options", options);
   };
 
-  const handleUpdateDocument = async () => {
+  const handleUpdateDocument = async (type: "update" | "preview") => {
     const articles = transformArticlesForPayload(checkboxOptions);
-    console.log("checkboxOptions", checkboxOptions)
+    // console.log("checkboxOptions", checkboxOptions);
     const payload: TenancyAgreementPayload = {
       property_id: Number(propertyID),
       document_id: Number(documentIdValue),
@@ -84,7 +84,11 @@ const ManageTenancyAgreement = () => {
       );
       if (res) {
         toast.success("Document updated successfully");
-        router.push(`/documents/preview/?d=${documentId}`);
+        if (type === "preview")
+          router.push(`/documents/preview/?d=${documentId}`);
+        else {
+          router.push(`/documents`);
+        }
       }
     } catch (err) {
       toast.error("An error occurred while updating the document");
@@ -110,7 +114,9 @@ const ManageTenancyAgreement = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-6">
-        <BackButton customBackPath="/documents">Manage Tenancy Agreement</BackButton>
+        <BackButton customBackPath="/documents">
+          Manage Tenancy Agreement
+        </BackButton>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
           <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
             Property Details
@@ -201,21 +207,23 @@ const ManageTenancyAgreement = () => {
           </ModalContent>
         </Modal>
         <div className="flex gap-4">
-          {/* <Button
-            href={`/documents/preview/?d=${documentId}`}
-            variant="sky_blue"
-            size="base_bold"
-            className="py-2 px-6"
-          >
-            Preview
-          </Button> */}
           <Button
-            onClick={handleUpdateDocument}
+            onClick={() => handleUpdateDocument("preview")}
             size="base_bold"
+            variant="sky_blue"
             disabled={reqLoading}
             className="py-2 px-6"
           >
             {reqLoading ? "Please wait..." : "Preview"}
+          </Button>
+
+          <Button
+            onClick={() => handleUpdateDocument("update")}
+            size="base_bold"
+            disabled={reqLoading}
+            className="py-2 px-6"
+          >
+            {reqLoading ? "Please wait..." : "Update"}
           </Button>
         </div>
       </FixedFooter>

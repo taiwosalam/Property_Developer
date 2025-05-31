@@ -29,6 +29,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   content_type,
   online,
   last_seen,
+  badgeColor,
 }) => {
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
@@ -70,8 +71,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                 {fullname}
               </p>
-              {verified && (
-                <BadgeIcon color="gray" />
+              {badgeColor && (
+                <BadgeIcon color={badgeColor} />
                 // <Picture src="/icons/verified.svg" alt="verified" size={16} />
               )}
             </div>

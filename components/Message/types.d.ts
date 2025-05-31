@@ -1,3 +1,5 @@
+import { BadgeIconColors } from "../BadgeIcon/badge-icon";
+
 export interface MessageCardProps {
   id: string;
   pfp: string;
@@ -12,6 +14,7 @@ export interface MessageCardProps {
   onClick?: () => void;
   content_type?: string;
   last_seen?: string;
+  badgeColor?: BadgeIconColors;
 }
 
 export interface MessagesProps {

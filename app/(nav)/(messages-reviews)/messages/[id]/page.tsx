@@ -149,11 +149,11 @@ const Chat = () => {
   //SHOW CONTACT INFO
   useEffect(() => {
     if (showStatus) {
-      const timer = setTimeout(() => {
-        setShowContactInfo(true);
-      }, 5000);
-
-      return () => clearTimeout(timer);
+      const interval = setInterval(() => {
+        setShowContactInfo((prev) => !prev);
+      }, 30000);
+  
+      return () => clearInterval(interval); // Cleanup interval on component unmount
     }
   }, [showStatus]);
 

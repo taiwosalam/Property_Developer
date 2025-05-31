@@ -74,23 +74,6 @@ const CreateTenancyAggrementModal = ({
     }
   }, [defaultOption]);
 
-  // // HANDLE CHECKBOX CHANGE
-  // const handleCheckboxChange = (value: string | number) => {
-  //   const selectedOption = checkboxOptions.find(
-  //     (option) => option.id === value
-  //   );
-  //   if (selectedOption) {
-  //     setSelectedOptionId(value.toString());
-  //     setSelectedLegalOption({
-  //       title: selectedOption.title,
-  //       description: selectedOption.description,
-  //       amount: selectedOption.amount ?? 0,
-  //       id: selectedOption.id ?? 0,
-  //     });
-  //     setStep(2); // Move to agreement step
-  //   }
-  // };
-
   const handleCheckboxChange = (value: string | number) => {
     if (IS_OTHER_AGREEMENT_SELECTED) {
       const selectedOption = OTHER_DOCUMENTS_OPTIONS.find(

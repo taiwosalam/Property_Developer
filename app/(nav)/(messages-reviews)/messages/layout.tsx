@@ -290,7 +290,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               </div>
             </div>
             {filteredMessages.length === 0 ? (
-              <NoMessage loading={loadingUsers} />
+              // <NoMessage loading={loadingUsers} />
+              <></>
             ) : (
               <>
                 {usersMsgLoading ? (

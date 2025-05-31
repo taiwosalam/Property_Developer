@@ -15,6 +15,7 @@ import {
   EmojiIcon,
   GalleryIcon,
 } from "@/public/icons/icons";
+import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 
 export const users_data: UsersProps[] = [
   { id: "1", name: "", imageUrl: "", position: "" },
@@ -61,6 +62,7 @@ export const transformCompanyUsersData = (
       name: u.name,
       imageUrl: u.profile_picture || empty,
       position: u.role,
+      // badgeColor: tierColorMap[u.user_tier as keyof typeof tierColorMap],
       // online: u.online,
     })),
     filters: {
@@ -115,6 +117,7 @@ export const transformUsersMessages = (
       unread_count: c.unread_count,
       online: c.participant_onlineStatus === "online",
       last_seen: c.participant_onlineStatus,
+      badgeColor: c.participant_tier ? tierColorMap[c.participant_tier as keyof typeof tierColorMap] : undefined,
     };
   });
 };

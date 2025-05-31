@@ -184,10 +184,12 @@ const Units = () => {
   } = useFetch<PropertyListResponse>("/property/all");
 
   const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: p.id.toString(),
-      label: p.title,
-    })) || [];
+    propertyData?.data
+      .filter(p => p.property_type === 'rental')
+      .map((p) => ({
+        value: p.id.toString(),
+        label: p.title,
+      })) || [];
 
   if (loading)
     return (
