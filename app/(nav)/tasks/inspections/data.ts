@@ -78,6 +78,7 @@ export type TInspectionDetails = {
   property: string;
   description: string;
   tier: number;
+  userId: number;
 };
 
 function formatReadableDate(dateString: string): string {
@@ -99,6 +100,7 @@ export const transformInspectionDetails = (
 
   return {
     id: inspections?.id ?? 0,
+    userId: inspections?.unit?.user_id,
     tier: inspections?.tier,
     property_name: inspections?.unit
       ? transformUnitDetails(inspections?.unit)
@@ -118,7 +120,9 @@ export const transformInspectionDetails = (
       inspections?.unit?.images.map((img) => {
         return { src: img.path };
       }) || [],
-    booked_by: inspections?.booked_by ? inspections?.booked_by.toLowerCase() : "___ ___",
+    booked_by: inspections?.booked_by
+      ? inspections?.booked_by.toLowerCase()
+      : "___ ___",
     inspection_date: inspections?.inspection_date
       ? formatReadableDate(inspections?.inspection_date)
       : "___ ___",
@@ -168,7 +172,9 @@ export const transformInspectionCard = (
             item?.unit?.images.map((img) => {
               return { src: img.path };
             }) || [],
-          booked_by: item?.booked_by ? item?.booked_by.toLowerCase() : "___ ___",
+          booked_by: item?.booked_by
+            ? item?.booked_by.toLowerCase()
+            : "___ ___",
           inspection_date: formatReadableDate(item?.inspection_date),
           inspection_time: item?.inspection_time || "___ ___",
         };

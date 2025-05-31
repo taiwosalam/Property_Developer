@@ -11,6 +11,8 @@ export interface RequestCardBaseProps {
   userName: string;
   requestId: string;
   user?: string;
+  userId?: number;
+  tier?: string;
 }
 
 export interface CallRequestCardProps extends RequestCardBaseProps {
@@ -62,6 +64,7 @@ export interface VisitorRequestCardProps extends RequestCardBaseProps {
 
 export interface PropertyRequestCardProps extends RequestCardBaseProps {
   cardType: "property";
+  userId?: number;
   state: string;
   lga: string;
   propertyType: string;
@@ -96,6 +99,7 @@ export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {
   cardType: "agent-community";
   userTitle: string;
   propertyTitle: string;
+  tier_id?: string | number;
   // targetAudience: string[];
   state: string;
   lga: string;

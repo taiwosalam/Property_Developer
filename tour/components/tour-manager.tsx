@@ -44,7 +44,7 @@ const CustomTour: React.FC = () => {
 
   useEffect(() => {
     setIsMounted(true);
-    console.log("CustomTour: Component mounted");
+
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect();
@@ -54,12 +54,6 @@ const CustomTour: React.FC = () => {
 
   useEffect(() => {
     if (!isMounted) return;
-    console.log("CustomTour Debug:", {
-      pathname,
-      companyStatus,
-      shouldRenderTour,
-      tourState,
-    });
   }, [isMounted, pathname, companyStatus, shouldRenderTour, tourState]);
 
   const selectTourConfig = () => {
@@ -75,7 +69,6 @@ const CustomTour: React.FC = () => {
     // Check current pathname
     const config = pageSteps[pathname];
     if (!config) {
-      console.log(`CustomTour: No tour config for ${pathname}`);
       return { steps: [], tourKey: "" };
     }
 
@@ -95,9 +88,6 @@ const CustomTour: React.FC = () => {
 
   const startTour = (steps: TourStep[], tourKey: string) => {
     if (retryCountRef.current >= maxRetries) {
-      console.error(
-        `CustomTour: Max retries reached for ${tourKey}, aborting tour`
-      );
       return;
     }
 
@@ -111,20 +101,16 @@ const CustomTour: React.FC = () => {
       }
       const exists = !!document.querySelector(step.target);
       if (!exists) {
-        console.log(`CustomTour: Target ${step.target} missing for ${tourKey}`);
       }
       return exists;
     });
 
     if (allTargetsPresent) {
-      console.log(`CustomTour: Starting ${tourKey} with steps`, steps);
       setTourState({ run: true, stepIndex: 0, steps, tourKey });
       retryCountRef.current = 0;
     } else {
       debugMissingTargets(steps, tourKey);
-      console.log(
-        `CustomTour: Retry ${retryCountRef.current + 1}/${maxRetries}`
-      );
+
       retryCountRef.current += 1;
       const delay = retryCountRef.current === 1 ? initialDelay : retryInterval;
       setTimeout(() => startTour(steps, tourKey), delay);
@@ -139,13 +125,10 @@ const CustomTour: React.FC = () => {
     ) {
       const modal = document.querySelector(".add-property-modal");
       if (modal) {
-        console.log("CustomTour: Modal detected, proceeding to next step");
         setTourState({ stepIndex: tourState.stepIndex + 1 });
       } else {
-        console.log("CustomTour: Waiting for modal to open");
         observerRef.current = new MutationObserver(() => {
           if (document.querySelector(".add-property-modal")) {
-            console.log("CustomTour: Modal opened, proceeding");
             setTourState({ stepIndex: tourState.stepIndex + 1 });
             observerRef.current?.disconnect();
           }
@@ -165,11 +148,6 @@ const CustomTour: React.FC = () => {
 
   useEffect(() => {
     if (!isMounted || companyStatus === null || !shouldRenderTour) {
-      console.log("CustomTour: Not starting tour", {
-        isMounted,
-        companyStatus,
-        shouldRenderTour,
-      });
       return;
     }
 
@@ -181,9 +159,11 @@ const CustomTour: React.FC = () => {
 
     // Check condition
     if (config.condition && !config.condition()) {
-      console.log(`CustomTour: Condition not met for ${config.tourKey}`);
       // Pass persist flag based on tourKey
-      const persist = config.tourKey === "NavTour" || config.tourKey === "DashboardTour" ? false : true;
+      const persist =
+        config.tourKey === "NavTour" || config.tourKey === "DashboardTour"
+          ? false
+          : true;
       completeTour(config.tourKey, persist);
       setShouldRenderTour(false);
       return;
@@ -194,7 +174,6 @@ const CustomTour: React.FC = () => {
     if (validSteps.length > 0) {
       startTour(validSteps, config.tourKey);
     } else {
-      console.log(`CustomTour: No valid steps for ${config.tourKey}`);
       setShouldRenderTour(false);
     }
   }, [
@@ -209,9 +188,6 @@ const CustomTour: React.FC = () => {
 
   useEffect(() => {
     if (!tourState.run || tourState.stepIndex >= tourState.steps.length) {
-      console.log(
-        "CustomTour: Not rendering - tour not running or steps exhausted"
-      );
       return;
     }
     const step = tourState.steps[tourState.stepIndex];
@@ -220,18 +196,15 @@ const CustomTour: React.FC = () => {
         ? document.body
         : document.querySelector(step.target);
     if (target) {
-      console.log(`CustomTour: Positioning tooltip for ${step.target}`);
       positionTooltip(target, tooltipRef, step.placement);
       target.scrollIntoView({ behavior: "smooth", block: "center" });
     } else {
-      console.log(`CustomTour: Target ${step.target} not found, skipping`);
       handleNext();
     }
   }, [tourState.stepIndex, tourState.run, tourState.steps]);
 
   const handleNext = () => {
     if (tourState.stepIndex === 0) {
-      console.log("CustomTour: Welcome step - proceeding to next");
       setTourState({ stepIndex: tourState.stepIndex + 1 });
     } else if (tourState.stepIndex < tourState.steps.length - 1) {
       setTourState({ stepIndex: tourState.stepIndex + 1 });
@@ -242,22 +215,25 @@ const CustomTour: React.FC = () => {
 
   const handleBack = () => {
     if (tourState.stepIndex > 0) {
-      console.log("CustomTour: Going back");
       setTourState({ stepIndex: tourState.stepIndex - 1 });
     }
   };
 
   const handleSkip = () => {
-    console.log(`CustomTour: Skipped ${tourState.tourKey}`);
     // Pass persist flag based on tourKey
-    const persist = tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour" ? false : true;
+    const persist =
+      tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
+        ? false
+        : true;
     completeTour(tourState.tourKey, persist);
   };
 
   const handleFinish = () => {
-    console.log(`CustomTour: Completed ${tourState.tourKey}`);
     // Pass persist flag based on tourKey
-    const persist = tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour" ? false : true;
+    const persist =
+      tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
+        ? false
+        : true;
     completeTour(tourState.tourKey, persist);
     // Chain NavTour to DashboardTour
     if (
@@ -270,7 +246,6 @@ const CustomTour: React.FC = () => {
         const steps = getTourStepsWithWelcome(config);
         const validSteps = checkTargets(steps);
         if (validSteps.length > 0) {
-          console.log("CustomTour: Starting DashboardTour after NavTour");
           startTour(validSteps, "DashboardTour");
         }
       }
@@ -278,18 +253,15 @@ const CustomTour: React.FC = () => {
   };
 
   const handleDeclineTour = () => {
-    console.log(`CustomTour: Declined ${tourState.tourKey}`);
     // Pass persist flag based on tourKey
-    const persist = tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour" ? false : true;
+    const persist =
+      tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
+        ? false
+        : true;
     completeTour(tourState.tourKey, persist);
   };
 
   if (!isMounted || !tourState.run || tourState.steps.length === 0) {
-    console.log("CustomTour: Not rendering - conditions not met", {
-      isMounted,
-      tourRun: tourState.run,
-      stepsLength: tourState.steps.length,
-    });
     return null;
   }
 
@@ -299,14 +271,9 @@ const CustomTour: React.FC = () => {
       ? document.body
       : document.querySelector(currentStep.target);
   if (!targetElement) {
-    console.log(
-      `CustomTour: Target ${currentStep.target} not found, skipping step`
-    );
     handleNext();
     return null;
   }
-
-  console.log("CustomTour: Rendering TourCard for step", currentStep);
 
   const targetRect = targetElement.getBoundingClientRect();
   const isFirstStep = tourState.stepIndex === 0;

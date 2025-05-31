@@ -1,15 +1,35 @@
-import { DislikeIcon, LikeIcon, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import {
+  DislikeIcon,
+  LikeIcon,
+  ThumbsDown,
+  ThumbsUp,
+} from "@/public/icons/icons";
 import Image from "next/image";
 import React, { useState } from "react";
-import { CommentData } from "../tasks/announcements/comment";
-import { togglePropertyRequestLike } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { togglePropertyRequestLike } from "@/app/(nav)/community/agent-forum/my-articles/data";
 import { toast } from "sonner";
 import user1 from "@/public/empty/user1.svg";
 import { empty } from "@/app/config";
+import { CommentProps } from "@/app/(nav)/community/agent-forum/type";
+
+const getUniqueCommenters = (comments: CommentProps[]) => {
+  const uniqueUsers = new Map();
+  
+  comments.forEach(comment => {
+    if (comment.name && !uniqueUsers.has(comment.name)) {
+      uniqueUsers.set(comment.name, {
+        id: comment.name,
+        image: comment.image,
+      });
+    }
+  });
+  
+  return Array.from(uniqueUsers.values());
+};
 
 interface ThreadArticleProps {
   propertyRequest: any;
-  comments: CommentData[];
+  comments: CommentProps[];
   readByData: {
     name: string;
     profile_picture: string;
@@ -25,8 +45,6 @@ const ThreadArticle = ({
 }: ThreadArticleProps) => {
   const [isLike, setIsLike] = useState(false);
 
-  console.log("readByData", readByData)
-
   const handleToggleLike = async (type: string) => {
     try {
       setIsLike(true);
@@ -37,6 +55,9 @@ const ThreadArticle = ({
       setIsLike(false);
     }
   };
+
+  const uniqueCommenters = getUniqueCommenters(comments);
+
 
   return (
     <div className="">
@@ -77,26 +98,21 @@ const ThreadArticle = ({
           </button>
 
           <div className="flex items-center">
-            {readByData &&
-              readByData.length > 0 &&
-              readByData
-                .map((reader) => (
-                  <div className="flex" key={reader.viewed_at}>
-                    <div className="images flex z-30 w-[30px] h-[30px] rounded-full -mr-3">
-                      <Image
-                        key={reader.viewed_at}
-                        src={reader.profile_picture ?? empty}
-                        alt="blog"
-                        width={30}
-                        height={30}
-                        className="-mr-3 bg-brand-9 w-full h-full rounded-full object-cover"
-                      />
-                    </div>
-                  </div>
-                ))
-                .slice(0, 3)}
+            {uniqueCommenters.slice(0, 3).map((commenter) => (
+              <div className="flex" key={commenter.id}>
+                <div className="images flex z-30 w-[30px] h-[30px] rounded-full -mr-3">
+                  <Image
+                    src={commenter?.image ?? empty}
+                    alt="commenter avatar"
+                    width={30}
+                    height={30}
+                    className="-mr-3 bg-brand-9 w-full h-full rounded-full object-cover"
+                  />
+                </div>
+              </div>
+            ))}
             <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-              {readByData?.length}
+              {uniqueCommenters.length}
             </div>
           </div>
         </div>

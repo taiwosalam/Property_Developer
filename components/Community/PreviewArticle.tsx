@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { CommentData } from "../tasks/announcements/comment";
-import { toggleLike } from "@/app/(nav)/management/agent-community/my-articles/data";
-import { ThreadArticleSkeleton } from "@/app/(nav)/management/agent-community/components";
+import { toggleLike } from "@/app/(nav)/community/agent-forum/my-articles/data";
+import { ThreadArticleSkeleton } from "@/app/(nav)/community/agent-forum/components";
 import DOMPurify from "dompurify";
 import {
   DislikeIcon,

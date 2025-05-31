@@ -27,6 +27,7 @@ import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../../reports/data/utils";
 import ServerError from "@/components/Error/ServerError";
+import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 
 const InspectionPage = () => {
   const [inspectionData, setInspectionData] =
@@ -111,7 +112,6 @@ const InspectionPage = () => {
 
   const { data: propertyData } = useFetch<PropertyListResponse>(`property/all`);
 
-
   useEffect(() => {
     if (apiData) {
       const transformData = transformInspectionCard(apiData);
@@ -130,7 +130,9 @@ const InspectionPage = () => {
     if (propertyData) {
       const uniqueProperties = new Set();
       const properties = propertyData.data
-        .filter(item => item?.property_type === "rental" && item?.units.length > 0) // Filter for rental properties only
+        .filter(
+          (item) => item?.property_type === "rental" && item?.units.length > 0
+        ) // Filter for rental properties only
         .map((item) => {
           if (item?.title && !uniqueProperties.has(item.title)) {
             uniqueProperties.add(item.title);
@@ -141,8 +143,10 @@ const InspectionPage = () => {
           }
           return null;
         })
-        .filter((item): item is { label: string; value: string } => item !== null);
-  
+        .filter(
+          (item): item is { label: string; value: string } => item !== null
+        );
+
       setAllProperties(properties);
     }
   }, [propertyData]);
@@ -151,10 +155,14 @@ const InspectionPage = () => {
     return <NetworkError />;
   }
   if (loading) {
-    return <CustomLoader layout="page" pageTitle="Inspection" />;
+    return(
+      <AutoResizingGrid gap={28} minWidth={400}>
+         <PropertyrequestSkeletonLoader length={10} />
+      </AutoResizingGrid>
+    );
   }
-  if(error){
-    <ServerError error={error}/>
+  if (error) {
+    <ServerError error={error} />;
   }
 
   return (

@@ -311,8 +311,8 @@ import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { empty } from "@/app/config";
-import { CommentTextArea } from "@/app/(nav)/management/agent-community/NewComment";
-import { toggleCommentLike } from "@/app/(nav)/management/agent-community/my-articles/data";
+import { CommentTextArea } from "@/app/(nav)/community/agent-forum/NewComment";
+import { toggleCommentLike } from "@/app/(nav)/community/agent-forum/my-articles/data";
 
 // Base comment data structure
 export interface CommentData {

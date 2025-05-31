@@ -1,4 +1,4 @@
-import { propertySummaryData } from "@/app/(nav)/management/agent-community/data";
+import { propertySummaryData } from "@/app/(nav)/community/agent-forum/data";
 
 const SummaryCard = () => {
   return (

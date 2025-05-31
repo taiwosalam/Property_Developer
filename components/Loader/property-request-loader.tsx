@@ -1,6 +1,10 @@
-import { RequestCardSkeleton } from "@/app/(nav)/management/agent-community/components";
+import { RequestCardSkeleton } from "@/app/(nav)/community/agent-forum/components";
 
-export const PropertyrequestSkeletonLoader = ({ length }: { length: number }) => {
+export const PropertyrequestSkeletonLoader = ({
+  length,
+}: {
+  length: number;
+}) => {
   return (
     <>
       {Array.from({ length }).map((_, index) => (

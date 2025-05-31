@@ -1,4 +1,4 @@
-import { formatDateRange } from "@/app/(nav)/management/agent-request/data";
+import { formatDateRange } from "@/app/(nav)/community/agent-request/data";
 import { formatNumber } from "@/utils/number-formatter";
 
 const MoreDetailsCard = ({

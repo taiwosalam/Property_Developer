@@ -13,7 +13,7 @@ import {
   IApplicationPageData,
   transformApplicationData,
 } from "./data";
-import { transformApiData } from "../../management/agent-community/threads/[threadId]/preview/data";
+import { transformApiData } from "../../community/agent-forum/threads/[threadId]/preview/data";
 import { AxiosRequestConfig } from "axios";
 import { LandlordRequestParams } from "../../management/landlord/data";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
@@ -46,7 +46,7 @@ const Applications = () => {
     silentLoading,
   } = useFetch<ApplicationResponse>(`/property-applications`, config);
 
-  console.log(apiData)
+  console.log(apiData);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -234,7 +234,7 @@ const Applications = () => {
             </AutoResizingGrid>
           )}
 
-           {/* <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
+          {/* <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
             <ApplicationCard status="flagged" type="staff" />
             <ApplicationCard status="unflagged" type="guest" />
             <ApplicationCard status="unflagged" type="staff" />

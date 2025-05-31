@@ -1,4 +1,4 @@
-import { formatPhoneNumbers } from "@/app/(nav)/management/agent-community/data";
+import { formatPhoneNumbers } from "@/app/(nav)/community/agent-forum/data";
 import {
   AgreementEmailIcon,
   AgreementLocationIcon,
