@@ -148,12 +148,18 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   fee_period,
   invoice_status,
   invoice_id,
+  partial_pending
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
 
   const HAS_INVOICE_PENDING =
     invoice_status && invoice_status.trim().toLowerCase() === "pending";
+
+    const pendingPart = partial_pending || invoice_status?.trim().toLowerCase() === "pending";
+    console.log("partial_pending", partial_pending);
+    console.log("invoice_status", invoice_status);
+    console.log("pendingPart", pendingPart);
 
   const NOT_OCCUPIED =
     status.toLowerCase() === "relocate" || status.toLowerCase() === "vacant";
@@ -181,7 +187,9 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               {unit_title}
             </h3>
             <div className="flex items-center space-x-1">
-              <StatusDots status={status} propertyType={propertyType} />
+            <StatusDots status={status} propertyType={propertyType} partial_pending={pendingPart} />
+            {/* <StatusDots status={status} propertyType={propertyType} partial_pending={pendingPart} /> */}
+              {/* <StatusDots status={status} propertyType={propertyType} /> */}
             </div>
           </div>
           <p className="text-sm font-normal truncate">

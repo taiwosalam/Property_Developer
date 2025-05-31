@@ -67,6 +67,8 @@ const StartRent = () => {
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [disableInput, setDisableInput] = useState(false);
 
+  const isWebUser = selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
+
   const endpoint = `/unit/${id}/view`;
   const {
     data: apiData,
@@ -167,7 +169,7 @@ const StartRent = () => {
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
       // has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0, //LOTUS BACKEND ASKED FOR REVERSE
-      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
+      has_invoice: isWebUser ? 1 : selectedCheckboxOptions.create_invoice ? 0 : 1,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 0,
       has_document: 0,
@@ -182,7 +184,7 @@ const StartRent = () => {
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
       // has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0, //INITIAL - LOTUS NOW BACKEND ASKED FOR REVERSE
-      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
+      has_invoice: isWebUser ? 1 : selectedCheckboxOptions.create_invoice ? 0 : 1,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 1,
       has_document: isPastDate ? 0 : 1, // NOW WHEN PAST DATE IS SELECTED, NO DOCUMENT IS REQUIRED

@@ -221,6 +221,21 @@ export const getPropertySettingsData = (propertyData: any): any[] => {
   ];
 };
 
+
+export const isValidAmount = (val: any) => {
+  if (val === undefined || val === null || val === "") return false;
+  if (typeof val === "string" && /^_.*,.*,_*$/.test(val)) return false;
+
+  const cleaned = typeof val === "string"
+    ? val.replace(/[^0-9.]/g, "")
+    : val;
+
+  return parseFloat(cleaned) > 0;
+};
+
+
+
+
 // /tenant-rent/move_out
 export const moveOut = async (data: any) => {
   try {
