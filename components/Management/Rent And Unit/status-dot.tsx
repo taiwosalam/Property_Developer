@@ -16,9 +16,14 @@ export const getBackgroundColor = (status: string): string => {
 interface StatusDotsProps {
   status: string;
   propertyType?: string;
+  partial_pending?: boolean;
 }
 
-export const StatusDots: React.FC<StatusDotsProps> = ({ status, propertyType }) => {
+export const StatusDots: React.FC<StatusDotsProps> = ({
+  status,
+  propertyType,
+  partial_pending,
+}) => {
   let colors: string[] = [];
 
   // Handle specific cases based on propertyType and status
@@ -39,6 +44,11 @@ export const StatusDots: React.FC<StatusDotsProps> = ({ status, propertyType }) 
     colors = [getBackgroundColor(status)];
   }
 
+    // Always show partial_pending yellow dot first if true
+    if (partial_pending) {
+      colors.unshift(getBackgroundColor("vacant")); // yellow
+    }
+
   return (
     <div className="flex gap-1">
       {colors.map((color, index) => (
@@ -46,7 +56,7 @@ export const StatusDots: React.FC<StatusDotsProps> = ({ status, propertyType }) 
           key={index}
           className="w-4 h-4 rounded-full"
           style={{ backgroundColor: color }}
-          data-testid={`status-dot-${index}`} 
+          data-testid={`status-dot-${index}`}
         />
       ))}
     </div>

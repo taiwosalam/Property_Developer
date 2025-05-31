@@ -53,7 +53,11 @@ const PendingInvoiceModal = ({ unit_id, invoice_id, page }: IPepndingTypes) => {
       if (res) {
         toast.success("Rent Cancelled successfully");
         setIsOpen(false);
-        window.dispatchEvent(new Event("refetchRentUnit"));
+        page === "edit"
+          ? window.dispatchEvent(new Event("refech-unit"))
+          : page && page === "renew"
+          ? window.dispatchEvent(new Event("refetchUnit"))
+          : window.dispatchEvent(new Event("refetchRentUnit"));
       }
     } catch (error) {
       console.error(error);
@@ -64,18 +68,17 @@ const PendingInvoiceModal = ({ unit_id, invoice_id, page }: IPepndingTypes) => {
 
   return (
     <LandlordTenantModalPreset
-      heading="Pending Rent – Awaiting Payment"
+      heading="Pending Payment – Awaiting Confirmation"
       style={{ maxWidth: "700px" }}
     >
       <div className="flex flex-col gap-3">
         <p>
-          This rent is currently unpaid and marked as pending, awaiting payment
-          from the prospective occupant.
+          This payment is currently unsettled and marked as pending, awaiting
+          completion by the client or recipient.
         </p>
         <p>
-          If payment has been received, click &apos;Mark as Paid.&apos; If the
-          payment is delayed or the client is no longer interested, you may
-          choose to cancel the request.
+          If the payment has been received, click &apos;Mark as Paid.&apos; If it&apos;s
+          delayed or no longer applicable, you may choose &apos;Cancel Payment&apos; to cancel the request.
         </p>
       </div>
 
@@ -97,7 +100,7 @@ const PendingInvoiceModal = ({ unit_id, invoice_id, page }: IPepndingTypes) => {
           disabled={reqLoading}
           onClick={handleCancelRent}
         >
-          {reqLoading ? "Please wait..." : "Cancel Rent"}
+          {reqLoading ? "Please wait..." : "Cancel Payment"}
         </Button>
       </div>
     </LandlordTenantModalPreset>

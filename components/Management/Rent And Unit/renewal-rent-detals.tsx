@@ -663,13 +663,15 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
     amount_paid: `${CURRENCY} ${formatNumber(record.amount_paid) || 0}`,
     rent_amount: `${CURRENCY} ${formatNumber(record.rent_amount) || 0}`,
     start_date: record.start_date
-      ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+      ? record.start_date
       : null,
     due_date: record.due_date
-      ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+      ? record.due_date
+      // ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
       : null,
     payment_date: record.payment_date
-      ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
+      ? record.payment_date
+      // ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
       : null,
     // Only attach ref if refetching is enabled
     ref: !noRefetch && index === records.length - 1 ? lastRowRef : null,

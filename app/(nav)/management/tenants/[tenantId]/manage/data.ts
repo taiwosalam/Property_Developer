@@ -19,6 +19,11 @@ import { empty } from "@/app/config";
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
   {
+    id: "7",
+    label: "Unit Name",
+    accessor: "unit_name",
+  },
+  {
     id: "2",
     label: "Payment Date",
     accessor: "payment_date",
@@ -117,6 +122,7 @@ export interface IndividualTenantAPIResponse {
         | {
             url: string;
             updated_at: string;
+            name: string;
           }
         | string
       )[];
@@ -138,17 +144,16 @@ export const transformIndividualTenantAPIResponse = ({
     data?.statement?.map((stmt, index) => ({
       ...stmt,
       "S/N": (index + 1).toString(),
+      unit_name: stmt?.unit_name || "--- ---",
       amount_paid: stmt?.amount_paid
         ? `${formatFee(stmt.amount_paid, stmt.currency || "naira")}`
         : "--- ---",
       payment_date: stmt?.payment_date
         ? // ? moment(stmt.payment_date, "YYYY-MM-DD").format("DD/MM/YYYY")
-          dayjs(stmt.payment_date).format("DD/MM/YYYY")
+          stmt.payment_date
         : "",
-      start_date: stmt?.start_date
-        ? dayjs(stmt.start_date).format("DD/MM/YYYY")
-        : "",
-      end_date: stmt?.end_date ? dayjs(stmt.end_date).format("DD/MM/YYYY") : "",
+      start_date: stmt?.start_date ? stmt.start_date : "",
+      end_date: stmt?.end_date ? stmt.end_date : "",
     })) || [];
 
   const transformRentToUnitItemProps = (
@@ -244,7 +249,7 @@ export const transformIndividualTenantAPIResponse = ({
             } else {
               return {
                 id: uuidv4(),
-                name: `${doc.type} ${index + 1}`,
+                name: file?.name ?? `${doc.type} ${index + 1}`,
                 date: file?.updated_at
                   ? moment(file.updated_at).format("DD/MM/YYYY")
                   : "",
@@ -262,8 +267,8 @@ export const transformIndividualTenantAPIResponse = ({
       name: data?.name || "",
       position: "tenant",
       imageUrl: data.picture ?? empty,
-      branch_id: 1, //TEST 
-    }
+      branch_id: 1, //TEST
+    },
   };
 };
 
