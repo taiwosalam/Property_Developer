@@ -7,7 +7,7 @@ const TeamChat = () => {
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="custom-flex-col gap-6 max-w-[100%]">
-        <div className="custom-flex-col gap-4">
+        <div className="custom-flex-col gap-4 px-10">
           <div className="flex justify-center">
             {/* <Image src={LogoPlaceholder} alt="logo" width={200} /> */}
           </div>
