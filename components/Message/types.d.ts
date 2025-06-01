@@ -1,6 +1,6 @@
 export interface MessageCardProps {
   id: string;
-  pfp: string;
+  pfp: string | null;
   desc: string;
   time: string;
   fullname: string;

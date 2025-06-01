@@ -1,10 +1,21 @@
 "use client";
 
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useParams } from "next/navigation";
 
 // Types
-import type { Group, GroupsResponse, MessagesLayoutProps } from "./types";
+import type {
+  Group,
+  GroupsResponse,
+  MessagesLayoutProps,
+  TeamChatResponseData,
+} from "./types";
 
 // Images
 import ClipBlue from "@/public/icons/clip-blue.svg";
@@ -20,7 +31,7 @@ import {
   sendGroupMessage,
   team_chat_data,
 } from "./data";
-import TeamChartCard from "./TeamChartCard";
+import TeamChatCard from "./TeamChartCard";
 import SendIcon from "@/public/icons/send-msg.svg";
 import {
   EmptyListIcon,
@@ -55,27 +66,12 @@ import TeamMessageAttachment from "@/components/Message/Team/TeamMessageAttachme
 
 import dayjs from "dayjs";
 import Button from "@/components/Form/Button/button";
+import { IGroupChatCard, transformGroupChatListData } from "./team.data";
 
 const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
-  const { id } = useParams();
-  const {
-    data: allGroupData,
-    error,
-    silentLoading,
-    loading,
-    refetch,
-    isNetworkError,
-  } = useFetch<GroupsResponse>(`group-chat/all-group`);
-
-  //const {data: apiData, isNetworkError, error } = useFetch("group-chat/all-group");
-
-  const groupCount = allGroupData?.group_count;
-  const groupList = allGroupData?.groups;
-
   const { isCustom } = useWindowWidth(900);
   const [isSearch, setIsSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [group, setGroup] = useState(groupList ?? []);
   const params = useParams();
   const paramId = params.id;
 
@@ -87,6 +83,28 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const [playbackWS, setPlaybackWS] = useState<any>(null);
   const [reqLoading, setReqLoading] = useState(false);
 
+  const [teamChatPageData, setTeamChatPageData] =
+    useState<IGroupChatCard | null>(null);
+
+  const {
+    data: teamData,
+    refetch,
+    loading,
+    silentLoading,
+    error,
+    isNetworkError,
+  } = useFetch<TeamChatResponseData>(`group-chats`);
+  useRefetchOnEvent("refetchTeamChat", () => {
+    refetch({ silent: true });
+  });
+
+  useEffect(() => {
+    if (teamData) {
+      const transData = transformGroupChatListData(teamData);
+      setTeamChatPageData(transData);
+    }
+  }, [teamData]);
+
   const onReady = (ws: any) => {
     setPlaybackWS(ws);
     setIsPlaying(false);
@@ -97,12 +115,19 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     playbackWS && playbackWS.playPause();
   };
 
-  const filteredMemberList: Group[] =
-    (groupList?.length ?? 0) > 0
-      ? (groupList ?? []).filter((member) =>
-          member.group_name.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      : [];
+  const filteredMemberList = useMemo(() => {
+    if (!teamChatPageData?.team || teamChatPageData.team.length === 0) {
+      return [];
+    }
+
+    if (!searchTerm.trim()) {
+      return teamChatPageData.team;
+    }
+
+    return teamChatPageData.team.filter((team) =>
+      team.fullname.toLowerCase().includes(searchTerm.toLowerCase().trim())
+    );
+  }, [teamChatPageData?.team, searchTerm]);
 
   const style = {
     position: "absolute",
@@ -113,10 +138,6 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
 
   const { isDeleteMember, openDeleteMember, closeDeleteMember } =
     useTeamChatStore();
-
-  useRefetchOnEvent("refetch_team_chat", () => {
-    refetch({ silent: true });
-  });
 
   useEffect(() => {
     if (paramId) {
@@ -158,20 +179,6 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   };
 
-  const transformGroupData = (data: Group) => {
-    const isImage = isImageFile(data?.latest_message?.content);
-    return {
-      id: data.group_id.toString(),
-      pfp: data?.group_picture ?? "",
-      desc: data?.latest_message?.content ?? "",
-      time: formatMessageDate(data?.latest_message?.timestamp) ?? "",
-      fullname: data.group_name,
-      verified: true,
-      messages: data.unread_message_count ?? 0,
-      content_type: isImage ? "image" : data?.latest_message?.content_type,
-    };
-  };
-
   const handleSendAudio = async () => {
     if (!voiceControls.recordedBlob) return;
     const audioFile = new File([voiceControls.recordedBlob], "voice-note.wav", {
@@ -185,7 +192,10 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     };
     try {
       setReqLoading(true);
-      const res = await sendGroupMessage(`${id}`, objectToFormData(payload));
+      const res = await sendGroupMessage(
+        `${paramId}`,
+        objectToFormData(payload)
+      );
       if (res) {
         setAudioUrl("");
         window.dispatchEvent(new Event("refetch_team_message"));
@@ -210,16 +220,6 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   }, [voiceControls.recordedBlob]);
 
-  //   const sortGroupsByLatestMessage = (groups: Group[]) => {
-  //     return [...groups].sort((a, b) => {
-  //         // If a group has no messages, push it to the top (until it gets a message)
-  //         if (!a.latest_message?.timestamp) return -1;
-  //         if (!b.latest_message?.timestamp) return 1;
-
-  //         return dayjs(b.latest_message?.timestamp).valueOf() - dayjs(a.latest_message?.timestamp).valueOf();
-  //     });
-  // };
-
   if (isNetworkError) {
     return <NetworkError />;
   }
@@ -227,104 +227,107 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   return (
     <>
       <TeamChatHeader />
-      <div className="flex bg-white dark:bg-darkText-primary h-[70vh] relative">
-       {groupList?.length === 0 && ( <div className="flex gap-2 m-4">
-        <div>
-          <h2 className="text-lg mb-2 font-semibold">Groups</h2>
-          <div className="flex items-center justify-center text-sm rounded-full w-6 h-6 text-white bg-brand-9 mt-[2px]">
-            {groupCount ? groupCount : 0}
+      <div className="flex bg-white dark:bg-darkText-primary h-[70vh] relative border-blue-600">
+        {/* {filteredMemberList && filteredMemberList.length === 0 && (
+          <div className="flex gap-2 m-4">
+            <div className="hidden">
+              <h2 className="text-lg mb-2 font-semibold">Groups</h2>
+              <div className="flex items-center justify-center text-sm rounded-full w-6 h-6 text-white bg-brand-9 mt-[2px]">
+                {teamChatPageData ? teamChatPageData.group_count : 0}
+              </div>
+            </div>
+
+            <div className="flex justify-center flex-col items-center my-auto w-full border-red-600">
+              <div className="w-full text-brand-9 h-full flex justify-center items-center mb-4">
+                <EmptyListIcon />
+              </div>
+              <Button size="sm_medium" className="py-2 px-7 ">
+                Create Team Chat
+              </Button>
+              <div className="mt-6 text-slate-600 space-y-4 mx-auto">
+                <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
+                  You haven&apos;t created a team chat yet
+                </p>
+                <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20 " />
+                <div>
+                  <p className="text-text-secondary dark:text-darkText-2 font-normal text-sm">
+                    It looks like you haven&apos;t created a team chat yet.
+                    Click Create Team Chat to set one up. Team chat allows you
+                    to create a group chat for a specific department in your
+                    organization.
+                    <br />
+                    <br />
+                    You can select users to add, assign a name and description.
+                    All added members will see the group in their profiles. To
+                    learn more about this page later, click your profile picture
+                    at the top right of the dashboard and select Assistance &
+                    Support.
+                    <br />
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )} */}
+
+        <div className="flex flex-1 p-4 pr-0 w-full">
+          <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
+            <div className="flex gap-4 items-center w-full justify-between sticky top-0 z-50 bg-white dark:bg-darkText-primary pb-2">
+              {!isSearch && (
+                <div className="flex items-center gap-2 w-full">
+                  <h2 className="text-lg font-semibold">Groups</h2>
+                  <div className="flex items-center justify-center text-sm rounded-full w-6 h-6 text-white bg-brand-9">
+                    {teamChatPageData ? teamChatPageData.group_count : 0}
+                  </div>
+                </div>
+              )}
+              {isSearch && (
+                <div className="flex w-3/4 bg-darkText-primary gap-2 items-center justify-between rounded-lg h-10 transition-all duration-300 ease-in-out">
+                  <input
+                    type="text"
+                    placeholder="Search"
+                    className="w-full border border-text-disabled dark:bg-darkText-primary focus:outline-none rounded-lg h-full px-2"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              )}
+              <button
+                className="flex"
+                onClick={() => setIsSearch((prev) => !prev)}
+              >
+                {teamChatPageData && teamChatPageData.team.length > 0 ? (
+                  <SearchIcon size={35} />
+                ) : (
+                  ""
+                )}
+              </button>
+            </div>
+            <div className="custom-flex-col relative z-20 pb-4">
+              {loading ? (
+                <TeamMessageCardSkeleton count={5} />
+              ) : (
+                filteredMemberList &&
+                filteredMemberList?.length > 0 &&
+                filteredMemberList?.map((member, idx) => (
+                  <TeamChatCard
+                    key={idx}
+                    {...member}
+                    highlight={member.id.toString() === paramId}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
-        
-          <div className="flex justify-center flex-col items-center my-auto w-screen">
-            <div className="w-full text-brand-9 h-full flex justify-center items-center mb-4">
-              <EmptyListIcon />
-            </div>
-            <Button size="sm_medium" className="py-2 px-7 ">
-              Create Team Chat
-            </Button>
-            <div className="max-w-3xl mt-6 text-slate-600 space-y-4 w-[85%] mx-auto">
-              <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
-                You haven&apos;t created a team chat yet
-              </p>
-              <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20 w-full" />
-              <p className="text-text-secondary dark:text-darkText-2 font-normal text-sm">
-                It looks like you haven&apos;t created a team chat yet. Click
-                Create Team Chat to set one up. Team chat allows you to create a
-                group chat for a specific department in your organization.
-                <br />
-                <br />
-                You can select users to add, assign a name and description.
-                All added members will see the group in their profiles.
-                To learn more about this page later, click your profile picture at the
-                top right of the dashboard and select Assistance & Support.
-                <br />
-              </p>
-            </div>
-          </div>
-          </div>
-        )}
-        {isCustom && groupList && groupList.length && id ? null : (
-          <div className="flex flex-1 p-4 pr-0 w-full">
-            <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
-              <div className="flex gap-4 items-center w-full justify-between sticky top-0 z-[2] bg-white dark:bg-darkText-primary pb-2">
-                {!isSearch && (
-                  <div className="flex items-center gap-2 w-full">
-                    <h2 className="text-lg font-semibold">Groups</h2>
-                    <div className="flex items-center justify-center text-sm rounded-full w-6 h-6 text-white bg-brand-9">
-                      {groupCount ? groupCount : 0}
-                    </div>
-                  </div>
-                )}
-                {isSearch && (
-                  <div className="flex w-3/4 bg-darkText-primary gap-2 items-center rounded-lg h-10 transition-all duration-300 ease-in-out">
-                    <input
-                      type="text"
-                      placeholder="Search"
-                      className="w-full border border-text-disabled dark:bg-darkText-primary focus:outline-none rounded-lg h-full px-2"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-                )}
-                <button
-                  className="flex"
-                  onClick={() => setIsSearch((prev) => !prev)}
-                >
-                  {groupList && groupList.length ? (
-                    <SearchIcon size={35} />
-                  ) : (
-                    ""
-                  )}
-                </button>
-              </div>
-              <div className="custom-flex-col relative z-[9999] pb-4">
-                {/* {groupList && groupList.length ? <SearchIcon size={35} /> : ""} */}
 
-                {loading ? (
-                  <TeamMessageCardSkeleton count={5} />
-                ) : (
-                  groupList &&
-                  groupList?.length > 0 &&
-                  filteredMemberList
-                    ?.reverse()
-                    ?.map((member, idx) => (
-                      <TeamChartCard
-                        key={idx}
-                        {...transformGroupData(member)}
-                        highlight={member.group_id.toString() === id}
-                      />
-                    ))
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-        {(!isCustom || id) && (
-          <div className="flex-1">
-            <div className="custom-flex-col h-full">
-              {groupList && groupList?.length ? children : ""}
-              {id && (
+        {(!isCustom || paramId) && (
+          <div className="flex-1 relative">
+            <div className="custom-flex-col h-full justify-end">
+              {teamChatPageData && teamChatPageData.team?.length
+                ? children
+                : ""}
+              {paramId && (
                 <div className="py-4 px-6 flex items-center gap-4">
                   <Modal>
                     <ModalTrigger asChild>

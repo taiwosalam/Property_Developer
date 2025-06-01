@@ -1,5 +1,5 @@
 "use client";
-import { deleteGroupMember, team_chat_members_data } from "./data";
+import { removeGroupMember, team_chat_members_data } from "./data";
 import { FilterIcons, SearchIcon, TrashIcon } from "@/public/icons/icons";
 import { useEffect, useState } from "react";
 import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
@@ -17,41 +17,23 @@ import MemberComponent from "./Member";
 import { GroupChatResponse, User } from "./types";
 // import TrashIcon from "@/public/icons/trash.svg";
 
-const AddMembers = () => {
+interface AddMembersProps {
+  groupId: number;
+  group_members: {
+    id: number;
+    picture: string | null;
+    fullname: string;
+    role: string;
+  }[];
+}
+const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
   const { id } = useParams();
   const { setIsOpen } = useModal();
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  // Function to filter members based on search input
-
-  const {
-    data: apiData,
-    loading,
-    silentLoading,
-    refetch,
-  } = useFetch<GroupChatResponse>(`group-chat/${id}`);
-
-  useRefetchOnEvent("refetch_team_chat", () => refetch({ silent: true }));
-
-  const groupMembers = apiData?.group_chat?.users;
-
-  const [members, setMembers] = useState<User[] | undefined>(
-    groupMembers ?? undefined
+  const filteredMembers = (group_members ?? []).filter((member) =>
+    member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const [groupId, setGroupId] = useState("");
-
-  useEffect(() => {
-    if (apiData) {
-      setMembers(apiData?.group_chat?.users);
-      setGroupId(apiData?.group_chat?.id.toString());
-    }
-  }, [apiData]);
-
-  const filteredMembers = (members ?? []).filter((member) =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  console.log(groupMembers);
 
   const {
     isAddMember,
@@ -70,10 +52,12 @@ const AddMembers = () => {
   };
 
   const deleteMemberFromList = async (userId: string) => {
-    const formData = new FormData();
-    formData.append("user_ids[]", userId);
+    const payload = {
+      "_method": "POST",
+      user_ids: [userId],
+    };
 
-    await deleteGroupMember(groupId, formData);
+    await removeGroupMember(groupId, payload);
   };
 
   return (
@@ -102,11 +86,7 @@ const AddMembers = () => {
           </button>
         </div>
       </div>
-      {loading ? (
-        <div>
-          <TeamMessageCardSkeleton count={2} />
-        </div>
-      ) : filteredMembers && filteredMembers.length > 0 ? (
+      {filteredMembers && filteredMembers.length > 0 ? (
         filteredMembers.map((item, index) => (
           <div
             key={index}
@@ -115,7 +95,7 @@ const AddMembers = () => {
             <div className="flex items-center gap-2 w-3/4">
               <div className="imgWrapper h-10 w-10 relative overflow-hidden">
                 <Image
-                  src={item?.profile?.picture || Avatar1}
+                  src={item.picture || Avatar1}
                   alt="profile"
                   width={100}
                   height={100}
@@ -124,10 +104,10 @@ const AddMembers = () => {
               </div>
               <div className="flex flex-col">
                 <p className="text-text-primary dark:text-white text-sm font-medium">
-                  {item.name}
+                  {item.fullname}
                 </p>
                 <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal">
-                  {item?.email}
+                  {item?.role}
                 </p>
               </div>
             </div>

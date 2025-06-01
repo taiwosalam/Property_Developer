@@ -1,10 +1,30 @@
 import clsx from "clsx";
 import { useState } from "react";
-import { About } from "./team-chat-components";
+import { About } from "../../accountant/management/team-chat/team-chat-components";
 import AddMembers from "./AddMembers";
 import DeleteModal from "./DeleteModal";
 
-export const TeamChatGroupDetailsModal = () => {
+interface TeamChatGroupDetailsModalProps {
+  about: {
+    id: number;
+    group_name: string;
+    description: string;
+    created_at: string;
+    total_members: number;
+    total_active: number;
+    picture: string | null;
+  };
+  group_members: {
+    id: number;
+    picture: string | null;
+    fullname: string;
+    role: string;
+  }[];
+}
+export const TeamChatGroupDetailsModal = ({
+  about,
+  group_members,
+}: TeamChatGroupDetailsModalProps) => {
   const [side, setSide] = useState<"about" | "members">("about");
   const activeStyle =
     "text-white bg-brand-9 text-xs sm:text-sm sm:p-1 px-2 dark:bg-[#3C3D37] transition-all duration-300 ease-in-out w-full py-1 rounded-lg";
@@ -34,8 +54,8 @@ export const TeamChatGroupDetailsModal = () => {
           </button>
         </div>
         <div className="w-[75%] overflow-y-auto custom-round-scrollbar">
-          {side === "about" && <About />}
-          {side === "members" && <AddMembers />}
+          {side === "about" && <About about={about}/>}
+          {side === "members" && <AddMembers group_members={group_members} groupId={about.id}/>}
         </div>
       </div>
     </div>
