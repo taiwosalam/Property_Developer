@@ -67,6 +67,8 @@ import TeamMessageAttachment from "@/components/Message/Team/TeamMessageAttachme
 import dayjs from "dayjs";
 import Button from "@/components/Form/Button/button";
 import { IGroupChatCard, transformGroupChatListData } from "./team.data";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import ServerError from "@/components/Error/ServerError";
 
 const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { isCustom } = useWindowWidth(900);
@@ -223,6 +225,8 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   if (isNetworkError) {
     return <NetworkError />;
   }
+  if (loading) <PageCircleLoader />;
+  if (error) <ServerError error={error} />;
 
   return (
     <>
@@ -304,7 +308,7 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
               </button>
             </div>
             <div className="custom-flex-col relative z-20 pb-4">
-              {loading ? (
+              {silentLoading ? (
                 <TeamMessageCardSkeleton count={5} />
               ) : (
                 filteredMemberList &&
