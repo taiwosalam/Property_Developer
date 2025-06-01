@@ -9,7 +9,7 @@ import Avatar3 from "@/public/empty/avatar-3.svg";
 import Avatar4 from "@/public/empty/avatar-4.svg";
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
-import { ChatMessage } from "./[id]/types";
+//import { ChatMessage } from "./[id]/types";
 import { Day } from "react-day-picker";
 
 import dayjs from "dayjs";
@@ -143,11 +143,11 @@ export const team_chat_members_data = [
 
 export const createNewTeamChat = async (data: FormData) => {
   try {
-    const response = await api.post(`group-chat/create`, data);
+    const response = await api.post(`group-chats`, data);
     if (response.status === 201 || response.status === 200) {
       toast.success("Team chat created");
-      window.dispatchEvent(new Event("refetch_team_chat"));
-      return response;
+      window.dispatchEvent(new Event("refetchTeamChat"));
+      return true;
     }
   } catch (error) {
     handleAxiosError(error);
@@ -219,6 +219,25 @@ export const deleteMember = async (groupId: string, userId: string) => {
   }
 };
 
+export const updateGroupNameOrDescription = async (
+  groupId: number,
+  name: string,
+  description: string
+) => {
+  const endpoint = `group-chat/${groupId}?description=${description}&name=${name}`;
+  try {
+    const response = await api.patch(endpoint);
+    if (response.status === 201 || response.status === 200) {
+      toast.success("Name & description updated");
+      window.dispatchEvent(new Event("refetchTeamChat"));
+      return response;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const updateGroupAvatar = async (data: FormData) => {
   try {
     const response = await api.post(`group-chat/create`, data);
@@ -234,12 +253,12 @@ export const updateGroupAvatar = async (data: FormData) => {
 };
 
 //http://127.0.0.1:8000/api/v1/group-chat/2/remove-users
-export const deleteGroupMember = async (groupId: string, data: FormData) => {
+export const removeGroupMember = async (groupId: number, data: any) => {
   try {
-    const response = await api.post(`group-chat/${groupId}/remove-users`, data);
+    const response = await api.post(`group-chats/${groupId}/members`, data);
     if (response.status === 201 || response.status === 200) {
       toast.success("Deleted");
-      window.dispatchEvent(new Event("refetch_team_chat"));
+      window.dispatchEvent(new Event("refetchTeamChat"));
       return response;
     }
   } catch (error) {
@@ -251,9 +270,7 @@ export const deleteGroupMember = async (groupId: string, data: FormData) => {
 // curl --location --request POST 'http://127.0.0.1:8000/api/v1/group-chat/2/send-message?message=testing%20the%20chat'
 export const sendGroupMessage = async (groupId: string, data: FormData) => {
   try {
-    const response = await api.post(
-      `group-chat/${groupId}/send-message`, data
-    );
+    const response = await api.post(`group-chat/${groupId}/send-message`, data);
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetch_team_chat"));
       console.log(response);
@@ -272,7 +289,7 @@ export function isImageFile(filename: string): boolean {
 export const transformMessageData = (data: MessageChat[]) => {
   return data
     .map((m) => {
-      const isImage = isImageFile(m?.content)
+      const isImage = isImageFile(m?.content);
       return {
         content_type: isImage ? "image" : m?.content_type,
         time: dayjs(m?.created_at).format("h:mm A"),
@@ -299,18 +316,17 @@ export const formatDate = (dateString: string) => {
 };
 
 export const formatMessageDate = (dateString: string): string => {
-    const date = dayjs(dateString);
-    const now = dayjs();
+  const date = dayjs(dateString);
+  const now = dayjs();
 
-    if (date.isSame(now, "day")) {
-        // If today, show time in 12-hour format with AM/PM
-        return date.format("hh:mm A");
-    } else if (date.isSame(now.subtract(1, "day"), "day")) {
-        // If yesterday, show 'Yesterday'
-        return "Yesterday";
-    } else {
-        // Otherwise, show the day name (e.g., "Monday")
-        return date.format("dddd");
-    }
+  if (date.isSame(now, "day")) {
+    // If today, show time in 12-hour format with AM/PM
+    return date.format("hh:mm A");
+  } else if (date.isSame(now.subtract(1, "day"), "day")) {
+    // If yesterday, show 'Yesterday'
+    return "Yesterday";
+  } else {
+    // Otherwise, show the day name (e.g., "Monday")
+    return date.format("dddd");
+  }
 };
-

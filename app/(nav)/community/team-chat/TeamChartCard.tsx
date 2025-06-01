@@ -15,7 +15,7 @@ import Image from "next/image";
 import avatarIcon from "@/public/empty/avatar-2.svg"
 import { getIconByContentType } from "../../(messages-reviews)/messages/data";
 
-const TeamChartCard: React.FC<MessageCardProps> = ({
+const TeamChatCard: React.FC<MessageCardProps> = ({
   id,
   pfp = empty,
   desc,
@@ -29,7 +29,7 @@ const TeamChartCard: React.FC<MessageCardProps> = ({
   const IconComponent = getIconByContentType(content_type as string);
   return (
     <Link
-      href={`/management/team-chat/${id}`}
+      href={`/community/team-chat/${id}`}
       className={clsx("custom-flex-col gap-4 px-3", {
         "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
       })}
@@ -37,7 +37,7 @@ const TeamChartCard: React.FC<MessageCardProps> = ({
       <div></div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
-         { pfp ? <Picture src={pfp} alt="profile picture" size={60} rounded status /> : <Picture src={avatarIcon} size={60} rounded status/>}
+         { pfp ? <Picture src={empty} alt="profile picture" size={60} rounded status /> : <Picture src={avatarIcon} size={60} rounded status/>}
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
@@ -76,4 +76,4 @@ const TeamChartCard: React.FC<MessageCardProps> = ({
   );
 };
 
-export default TeamChartCard;
+export default TeamChatCard;

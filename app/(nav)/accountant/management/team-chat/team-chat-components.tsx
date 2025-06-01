@@ -15,6 +15,8 @@ import { useParams } from "next/navigation";
 import MemberComponent from "./Member";
 import useStep from "@/hooks/useStep";
 import SaveIcon from "@/public/icons/save.svg";
+import { group } from "console";
+import { updateGroupNameOrDescription } from "@/app/(nav)/community/team-chat/data";
 
 const style = {
   position: "absolute",
@@ -32,37 +34,37 @@ export const TeamChatHeader = () => {
   return (
     <div className="flex items-center justify-between w-full mb-4">
       <div>
-        <PageTitle
-          title="Team Chat"
-          noExclamationMark
-        />
+        <PageTitle title="Team Chat" noExclamationMark />
       </div>
     </div>
   );
 };
 
-export const About = () => {
+interface IAboutTeamChat {
+  about?: {
+    id: number;
+    group_name: string;
+    description: string;
+    created_at: string;
+    total_members: number;
+    total_active: number;
+    picture: string | null;
+  };
+}
+export const About = ({ about }: IAboutTeamChat) => {
   const router = useRouter();
   const { id } = useParams();
 
-  const data = team_chat_data.find((item) => item.id === id) || {
-    pfp: null,
-    fullname: "",
-    groupDesc: "",
-  };
-  const [groupImage, setGroupImage] = useState<string | null>(data.pfp);
-  const [groupName, setGroupName] = useState<string>(data.fullname);
+  const [groupImage, setGroupImage] = useState<string | null>(
+    about?.picture || ""
+  );
+  const [groupName, setGroupName] = useState<string>(about?.group_name || "");
   const [groupDescription, setGroupDescription] = useState<string>(
-    data.groupDesc || ""
+    about?.description || ""
   );
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
   const [isEditingDescription, setIsEditingDescription] =
     useState<boolean>(false);
-
-  if (!data.pfp) {
-    router.replace("/management/team-chat");
-    return null;
-  }
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -74,11 +76,20 @@ export const About = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  const updateNameOrDescription = async () => {
+    if(!about?.id) return;
+    try {
+      await updateGroupNameOrDescription(about?.id, groupName, groupDescription);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="p-4 transition-all duration-300 ease-in-out">
       <div className="imageWrapper h-20 w-20 relative overflow-hidden">
         <Image
-          src={groupImage || GroupImage}
+          src={about?.picture ?? groupImage ?? GroupImage}
           alt="team chat"
           width={100}
           height={100}
@@ -115,13 +126,19 @@ export const About = () => {
                 onChange={(e) => setGroupName(e.target.value)}
                 className="text-text-primary dark:text-white text-sm font-medium border border-text-disabled rounded-md p-1 w-3/4 focus:outline-none"
               />
-              <button type="button" onClick={() => setIsEditingName(false)}>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditingName(false);
+                  updateNameOrDescription();
+                }}
+              >
                 <Image src={SaveIcon} alt="save" width={16} height={16} />
               </button>
             </div>
           ) : (
             <h3 className="text-text-primary dark:text-white text-sm font-medium">
-              {groupName}
+              {about?.group_name}
             </h3>
           )}
           {isEditingName ? null : (
@@ -136,18 +153,18 @@ export const About = () => {
         <div className="created">
           <h4 className="text-text-disabled text-sm font-normal">Created</h4>
           <p className="text-text-primary dark:text-white text-xs font-medium">
-            12/12/2024 1:50AM
+            {about?.created_at}
           </p>
         </div>
         <div className="stats">
           <h4 className="text-text-disabled text-sm font-normal">Stats</h4>
           <div className="flex items-center gap-2">
             <p className="text-text-disabled text-xs font-medium">
-              30.2k Members
+              {about?.total_members} Members
             </p>
             <div className="w-1 h-1 rounded-full bg-status-success-3"></div>
             <p className="text-status-success-3 dark:text-status-success-2 text-xs font-medium">
-              30 Online
+              {about?.total_active} Online
             </p>
           </div>
         </div>
@@ -167,14 +184,17 @@ export const About = () => {
               <button
                 className="flex justify-end ml-2"
                 type="button"
-                onClick={() => setIsEditingDescription(false)}
+                onClick={() => {
+                  setIsEditingDescription(false);
+                  updateNameOrDescription();
+                }}
               >
                 <Image src={SaveIcon} alt="save" width={16} height={16} />
               </button>
             </div>
           ) : (
             <span className="text-text-primary dark:text-white text-xs font-medium">
-              {groupDescription}
+              {about?.description}
             </span>
           )}
           {isEditingDescription ? null : (

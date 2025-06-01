@@ -22,7 +22,7 @@ import Image from "next/image";
 import avatarIcon from "@/public/empty/avatar-2.svg";
 import { TeamChatHeaderSkeleton } from "@/components/Skeleton/member-card-skeleton";
 import { GroupChatResponse, MessageChat, MessageChats } from "../types";
-import { ChatMessages } from "./types";
+import { GroupChatDetailsResponse } from "./types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { groupMessagesByDay } from "@/app/(nav)/(messages-reviews)/messages/data";
@@ -32,19 +32,29 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useAuthStore } from "@/store/authStore";
 import NoMessage from "@/app/(nav)/(messages-reviews)/messages/messages-component";
+import { IChatDetailsPage, transformTeamDetails } from "./data";
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 
 const Chat = () => {
   const router = useRouter();
   const { id } = useParams();
+  const [pageData, setPageData] = useState<null | IChatDetailsPage>(null);
 
   const {
     data: apiData,
     loading,
     silentLoading,
     refetch,
-  } = useFetch<GroupChatResponse>(`group-chat/${id}`);
+  } = useFetch<GroupChatDetailsResponse>(`group-chats/${id}`);
+
+  useEffect(() => {
+    if (apiData) {
+      const transDetailsData = transformTeamDetails(apiData);
+      setPageData(transDetailsData);
+    }
+  }, [apiData]);
+
   const [chatMessages, setChatMessages] = useState<MessageChat[] | null>(null);
   const [conversations, setConversations] = useState<any[]>([]);
   const user_id = useAuthStore((state) => state.user_id);
@@ -57,7 +67,7 @@ const Chat = () => {
     }
   }, [apiData]);
 
-  useRefetchOnEvent("refetch_team_chat", () => {
+  useRefetchOnEvent("refetchTeamChat", () => {
     refetch({ silent: true });
   });
 
@@ -90,7 +100,7 @@ const Chat = () => {
       <div className="py-4 px-6 bg-neutral-2 dark:bg-darkText-primary">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => router.push("/management/team-chat")}
+            onClick={() => router.push("/community/team-chat")}
             className="text-dark dark:text-white"
           >
             <Chevron size={20} />
@@ -119,7 +129,12 @@ const Chat = () => {
                   </div>
                 </ModalTrigger>
                 <ModalContent>
-                  <TeamChatGroupDetailsModal />
+                  {pageData?.about && (
+                    <TeamChatGroupDetailsModal
+                      about={pageData.about}
+                      group_members={pageData?.group_members}
+                    />
+                  )}
                 </ModalContent>
               </Modal>
             </button>

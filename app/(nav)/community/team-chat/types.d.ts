@@ -8,7 +8,7 @@ type User = {
   profile_picture: string;
   email: string;
   profile: {
-    picture: string
+    picture: string;
   };
   role: string;
   branch: string;
@@ -34,7 +34,7 @@ type Filters = {
   branch_count: number;
 };
 
-type UsersResponse = {
+export type TeamChatUsersResponse = {
   message: string;
   status: "success" | "error";
   data: {
@@ -140,3 +140,62 @@ interface GroupChatResponse {
   users: [];
   group_chat: GroupChat;
 }
+
+export type TeamChatResponseData = {
+  success: boolean;
+  data: {
+    group_count: number;
+    groups: GroupData[];
+    total_unread: number;
+  };
+  pusher_config: {
+    key: string;
+    cluster: string;
+    auth_endpoint: string;
+    options: {
+      encrypted: boolean;
+      useTLS: boolean;
+    };
+  };
+  meta: {
+    total_groups: number;
+    timestamp: string; // ISO datetime string
+  };
+};
+
+type GroupData = {
+  id: number;
+  uuid: string;
+  name: string;
+  picture: string | null;
+  description: string;
+  unread_count: number;
+  latest_message: MessageData[] | null;
+  members: {
+    count: number;
+    list: Member[];
+  };
+  total_messages: number;
+  user_role: "admin" | "member" | string; // add more roles if needed
+  privacy: "private" | "public" | string;
+  realtime_channel: string;
+  created_at: string; // ISO datetime string
+};
+
+type MessageData = {
+  id: string;
+  content: string;
+  time: string;
+  content_type: string;
+  // define this if you expect structure for latest_message in the future
+  // example:
+  // id: number;
+  // content: string;
+  // sender_id: number;
+  // timestamp: string;
+};
+
+type Member = {
+  id: number;
+  name: string;
+};
