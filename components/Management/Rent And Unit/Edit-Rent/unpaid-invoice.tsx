@@ -20,7 +20,9 @@ export const PendingInvoicePayment: React.FC<{
 
   return (
     <div className="space-y-1">
-      <RentSectionTitle> Pending Part Payment </RentSectionTitle>
+      <RentSectionTitle>
+        Pending Payment – Awaiting Confirmation
+      </RentSectionTitle>
       <div className="mt-4 bg-white p-4 rounded-md">
         <div className="grid grid-cols-2 gap-4">
           {feeDetails.map((fee, index) => (
@@ -35,8 +37,13 @@ export const PendingInvoicePayment: React.FC<{
         <div className="flex items-end justify-end w-full mt-2">
           <Modal>
             <ModalTrigger asChild>
-              <Button type="submit" className="py-2 px-6" size="base_medium">
-                Confirm Payment
+              <Button
+                type="button"
+                variant="custom"
+                className="py-2 px-6 text-white text-xs font-medium cursor-pointer bg-[#FF9800]"
+                size="base_medium"
+              >
+                Manage Payment
               </Button>
             </ModalTrigger>
             <ModalContent>

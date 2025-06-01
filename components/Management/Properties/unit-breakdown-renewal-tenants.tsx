@@ -46,6 +46,9 @@ const UnitBreakdownRenewalTenant = () => {
       otherCharges: unitData?.renew_other_charge
         ? formatNumber(parseFloat(unitData.renew_other_charge))
         : "",
+      securityFee: unitData?.security_fee
+        ? formatNumber(parseFloat((unitData.renew_security_fee || '0').toString()))
+        : "",
       // Initialize VAT to "0"
       vat: unitData?.renew_vat
         ? formatNumber(parseFloat(unitData.renew_vat as string))
@@ -61,6 +64,7 @@ const UnitBreakdownRenewalTenant = () => {
     unitData?.renew_other_charge,
     unitData?.renew_vat,
     unitData?.renew_total_package,
+    unitData?.renew_security_fee,
   ]);
 
   const [formValues, setFormValues] = useState(initialFormValues);
@@ -71,6 +75,7 @@ const UnitBreakdownRenewalTenant = () => {
     vat,
     totalPackage,
     otherCharges,
+    securityFee,
   } = formValues;
   type FormField = keyof typeof formValues;
 
@@ -124,12 +129,12 @@ const UnitBreakdownRenewalTenant = () => {
     }));
   }, [rentAmount, agencyFeePercentage, shouldChargeTenantAgencyFee]);
 
-
   // Calculate the total package including VAT if enabled
   useEffect(() => {
     const total =
       (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
       (parseFloat(agencyFee.replace(/,/g, "")) || 0) +
+      (parseFloat(securityFee.replace(/,/g, "")) || 0) +
       (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
       (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
       (parseFloat(vat.replace(/,/g, "")) || 0);
@@ -159,7 +164,7 @@ const UnitBreakdownRenewalTenant = () => {
           required
           id="renew_fee_period"
           options={rentPeriods}
-          label="Rent Period"
+          label= {IS_RENTAL ? "Rent Period" : "Fee Period"}
           inputContainerClassName="bg-white"
           hiddenInputClassName="unit-form-input"
           resetKey={formResetKey}
@@ -168,7 +173,7 @@ const UnitBreakdownRenewalTenant = () => {
         <Input
           id="renew_fee_amount"
           required
-          label="Rent Amount"
+          label= {IS_RENTAL ? "Rent Amount" : "Fee Amount"}
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={rentAmount}
@@ -182,6 +187,15 @@ const UnitBreakdownRenewalTenant = () => {
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
+          type="text"
+        />
+        <Input
+          id="renew_security_fee"
+          label="Security Fee"
+          inputClassName="bg-white unit-form-input"
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          value={securityFee}
+          onChange={(value) => handleInputChange("securityFee", value)}
           type="text"
         />
         {shouldChargeTenantAgencyFee && (

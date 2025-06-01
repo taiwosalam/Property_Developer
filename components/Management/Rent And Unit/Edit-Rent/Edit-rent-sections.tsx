@@ -36,7 +36,7 @@ import {
 import { getBalanceBreakdown } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
 import { useGlobalStore } from "@/store/general-store";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
-import { parseAmount } from "./data";
+import { isValidAmount, parseAmount } from "./data";
 import { toast } from "sonner";
 
 export const RentDetails: React.FC<{
@@ -68,13 +68,7 @@ export const RentDetails: React.FC<{
     { label: `Caution Fee`, value: unitData.caution_fee },
     { label: `VAT Amount`, value: unitData.vat_amount },
     { label: "Other Fees", value: unitData.other_charge },
-  ].filter((item) => {
-    // Exclude items where value is undefined, empty, or an invalid placeholder
-    if (item.value === undefined || item.value === "") return false;
-    if (typeof item.value === "string" && /^_.*,.*,_*$/.test(item.value))
-      return false;
-    return true;
-  });
+  ].filter(item => isValidAmount(item.value));
 
   // Only render the section if there are valid items
   if (renewalRentDetailItems.length === 0) return null;
@@ -128,6 +122,8 @@ export const EditCurrentRent: React.FC<{
   const CURRENCY_SYMBOL =
     currencySymbols[currency as keyof typeof currencySymbols] ||
     currencySymbols["naira"];
+
+  const nonNaira = currency !== "naira";
   // const [reqLoading, setReqLoading] = useState(false);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -262,26 +258,43 @@ export const EditCurrentRent: React.FC<{
               </Checkbox>
             ))}
             {isWebUser ? (
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                {`Confirms that you have received payment for the 
+              <div className="custom-flex-col gap-1">
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  {`Confirms that you have received payment for the 
           ${isRental ? "rent" : "counting"}.`}
-              </p>
+                </p>
+                {nonNaira && (
+                  <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                    The property was listed in a currency other than Naira. You
+                    will need to handle all payments manually.
+                  </p>
+                )}
+              </div>
             ) : (
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                {selectedOptions["create_invoice"]
-                  ? `Payment will be reflected once the ${
-                      isRental ? "tenant" : "occupant"
-                    } makes a payment towards the generated invoice.`
-                  : `Confirms that you have received payment for the ${
-                      isRental ? "rent" : "counting"
-                    }. ${
-                      currency === "naira"
-                        ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                            isRental ? "tenant" : "occupant"
-                          } to make the payment.`
-                        : ""
-                    }`}
-              </p>
+              <div className="custom-flex-col gap-1">
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  {selectedOptions["create_invoice"]
+                    ? `Payment will be reflected once the ${
+                        isRental ? "tenant" : "occupant"
+                      } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
+                    : `Confirms that you have received payment for the ${
+                        isRental ? "rent" : "counting"
+                      }. ${
+                        currency === "naira"
+                          ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+                              isRental ? "tenant" : "occupant"
+                            } to make the payment.`
+                          : ""
+                      }`}
+                </p>
+                {nonNaira && (
+                  <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                    The property was listed in a currency other than Naira. As a
+                    result, automatic payments and wallet transactions are not
+                    supported. You will need to handle all payments manually.
+                  </p>
+                )}
+              </div>
             )}
           </div>
           <div className="flex items-center justify-end">
@@ -350,7 +363,7 @@ export const AddPartPayment: React.FC<{
   const isMobileUser = occupant?.userTag?.toLowerCase() === "mobile";
   // Non-naira currency message
   const nonNaira = currency !== "naira";
-  
+
   const CURRENCY_SYMBOL =
     currencySymbols[currency as keyof typeof currencySymbols] ||
     currencySymbols["naira"];
@@ -566,26 +579,43 @@ export const AddPartPayment: React.FC<{
             </Modal>
           </div>
           {isWebUser ? (
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              {`Confirms that you have received payment for the 
+            <div className="custom-flex-col gap-1">
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                {`Confirms that you have received payment for the 
           ${isRental ? "rent" : "counting"}.`}
-            </p>
+              </p>
+              {nonNaira && (
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  The property was listed in a currency other than Naira. You
+                  will need to handle all payments manually.
+                </p>
+              )}
+            </div>
           ) : (
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              {selectedOptions["create_invoice"]
-                ? `Payment will be reflected once the ${
-                    isRental ? "tenant" : "occupant"
-                  } makes a payment towards the generated invoice.`
-                : `Confirms that you have received payment for the ${
-                    isRental ? "rent" : "counting"
-                  }. ${
-                    currency === "naira"
-                      ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                          isRental ? "tenant" : "occupant"
-                        } to make the payment.`
-                      : ""
-                  }`}
-            </p>
+            <div className="custom-flex-col gap-1">
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                {selectedOptions["create_invoice"]
+                  ? `Payment will be reflected once the ${
+                      isRental ? "tenant" : "occupant"
+                    } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
+                  : `Confirms that you have received payment for the ${
+                      isRental ? "rent" : "counting"
+                    }. ${
+                      currency === "naira"
+                        ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+                            isRental ? "tenant" : "occupant"
+                          } to make the payment.`
+                        : ""
+                    }`}
+              </p>
+              {nonNaira && (
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  The property was listed in a currency other than Naira. As a
+                  result, automatic payments and wallet transactions are not
+                  supported. You will need to handle all payments manually.
+                </p>
+              )}
+            </div>
           )}
         </>
       )}

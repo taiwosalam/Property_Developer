@@ -179,8 +179,8 @@ export const ProfileForm: React.FC<{
         : prev.mobile_notification,
       create_invoice:
         currency === "naira" && isMobileUser
-          // ? false
-          ? true
+          ? // ? false
+            true
           : !isMobileUser
           ? false
           : currency !== "naira" && isMobileUser
@@ -319,7 +319,7 @@ export const ProfileForm: React.FC<{
             {selectedOptions["create_invoice"]
               ? `Payment will be reflected once the ${
                   isRental ? "tenant" : "occupant"
-                } makes a payment towards the generated invoice.`
+                } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
               : `Confirms that you have received payment for the ${
                   isRental ? "rent" : "counting"
                 }. ${

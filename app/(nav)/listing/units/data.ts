@@ -146,6 +146,7 @@ export const transformRentUnitApiResponse = (
         status: u.status as keyof typeof unit_listing_status,
         property_id: u?.property?.id || "--- ---",
         property_title: u?.property?.title || "--- ---",
+        partial_pending: false, //TO MATCH - NOT NEED
         propertyType:
           (u?.property?.property_type as "rental" | "facility") || "rental",
         address: `${u?.property?.full_address || "--- ---"}, ${
@@ -175,6 +176,8 @@ export const transformRentUnitApiResponse = (
       published_vacant: response.data.published_vacant,
       month_published_vacant: response.data.month_published_vacant,
       unpublished_vacant: response.data.unpublished_vacant,
+      month_moderation_vacant: response.data.month_moderation_vacant,
+      moderation_vacant: response.data.moderation_vacant,
       month_unpublished_vacant: response.data.month_unpublished_vacant,
       unit: transformedUnits,
     };

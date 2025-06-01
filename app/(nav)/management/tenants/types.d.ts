@@ -98,6 +98,7 @@ export interface Statement {
   start_date: string;
   end_date: string;
   currency: Currency;
+  unit_name?: string;
 }
 
 export interface TenantData {

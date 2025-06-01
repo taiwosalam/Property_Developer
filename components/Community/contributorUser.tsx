@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import Button from "../Form/Button/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { formatPhoneNumbersToString } from "@/utils/format-phone-numbers-tostring";
 
 interface Contributor {
   name?: string;
@@ -45,6 +46,8 @@ const ContributorUser = ({
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const router = useRouter();
 
+  const formattedPhone = formatPhoneNumbersToString(phone || phone_number);
+
   useEffect(() => {
     if (contributors) {
       const newMessageUserData = {
@@ -73,7 +76,7 @@ const ContributorUser = ({
   return (
     <div className="flex flex-col mt-6 gap-4">
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="imgWrapper h-[154px] w-[154px] mx-auto md:mx-0 shadow-lg rounded-md p-2">
+        <div className="imgWrapper min-h-[154px] min-w-[154px] mx-auto md:mx-0 shadow-lg rounded-md p-2">
           <Image
             src={picture || empty}
             alt="user"
@@ -97,7 +100,7 @@ const ContributorUser = ({
               {role || ""}
             </p>
           </div>
-          <p className="text-sm">Contact : {phone || phone_number || ""}</p>
+          <p className="text-sm">Contact : {formattedPhone || ""}</p>
           <p className="text-sm">Email Address: {email || ""}</p>
         </div>
       </div>

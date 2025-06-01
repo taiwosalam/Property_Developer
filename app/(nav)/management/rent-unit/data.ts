@@ -142,6 +142,7 @@ export const transformRentUnitApiResponse = (
         ? tierColorMap[u.occupant?.tier as keyof typeof tierColorMap]
         : undefined,
       tenant_id: u.occupant.tenant_id,
+      partial_pending: u.partial_pending ? true : false,
     };
   });
   if (isUnitApiResponse(response)) {
@@ -325,6 +326,7 @@ export interface RentalPropertyCardProps {
   currency?: Currency;
   invoice_status?: string | null;
   invoice_id?: number | null;
+  partial_pending?: boolean;
 }
 
 const allStates = getAllStates() || [];

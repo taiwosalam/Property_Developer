@@ -121,10 +121,10 @@ const EditRent = () => {
   // PENDING INVOICE REPRESENTS PART PAYMENT TENANT MADE
   const PENDING_INVOICE = unit_data?.pending_invoice;
   const PENDING_INVOICE_PAID_AMOUNT =
-  parseFloat(PENDING_INVOICE?.amount_paid) || 0;
+    parseFloat(PENDING_INVOICE?.amount_paid) || 0;
   const PENDING_INVOICE_BALANCE_DUE =
     parseFloat(PENDING_INVOICE?.balance_due) || 0;
-  
+
   // UNPAID INVOICE REPRESENTS PAYMENTS THAT WAS ADDED BUT HAVE NOT BEEN MARKED AS PAID
   const UNPAID_INVOICE = unit_data?.unpaid_invoice;
   const UNPAID_INVOICE_PAID_AMOUNT =
@@ -133,6 +133,8 @@ const EditRent = () => {
   // UNIT CURRENCY WITH NAIRA FALLBACK
   const CURRENCY = unit_data.currency || "naira";
   const has_part_payment = PENDING_INVOICE_PAID_AMOUNT > 0;
+
+  const IS_WEB_USER = unit_data?.occupant?.userTag?.toLowerCase() === "web";
 
   // console.log("PENDING_INVOICE_PAID_AMOUNT", PENDING_INVOICE_PAID_AMOUNT)
   // console.log("has_part_payment", has_part_payment)
@@ -151,7 +153,11 @@ const EditRent = () => {
       tenant_id: unit_data.occupant.id,
       has_penalty: penaltyAmount > 0 ? 1 : 0,
       type: "upfront_payment",
-      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
+      has_invoice: IS_WEB_USER
+        ? 1
+        : selectedCheckboxOptions.create_invoice
+        ? 0
+        : 1,
     };
     try {
       setReqLoading(true);
@@ -187,7 +193,11 @@ const EditRent = () => {
       type: "part_payment",
       has_penalty: penaltyAmount > 0 ? 1 : 0,
       penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
-      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
+      has_invoice: IS_WEB_USER
+        ? 1
+        : selectedCheckboxOptions.create_invoice
+        ? 0
+        : 1,
     };
     try {
       setReqLoading(true);
@@ -255,41 +265,27 @@ const EditRent = () => {
               feeDetails={[
                 {
                   name: isRental ? "Rent" : "Fee",
-                  amount: isRental
-                    ? unit_data.renewalTenantPrice
-                    : unit_data.newTenantPrice,
+                  amount: unit_data.renewalTenantPrice,
                 },
                 {
                   name: "Service Charge",
-                  amount: isRental
-                    ? unit_data.renew_service_charge
-                    : unit_data.service_charge,
+                  amount: unit_data.renew_service_charge,
                 },
                 {
                   name: isRental ? "Renew VAT Amount" : "VAT Amount",
-                  amount: isRental
-                    ? unit_data.renew_vat_amount
-                    : unit_data.vat_amount,
+                  amount: unit_data.renew_vat_amount,
                 },
                 {
                   name: "Security Fee",
-                  amount: isRental
-                    ? unit_data.security_fee
-                    : unit_data.security_fee,
+                  amount: unit_data.security_fee,
                 },
                 {
                   name: "Other Charges",
-                  amount: isRental
-                    ? unit_data.renew_other_charge
-                    : unit_data.other_charge,
+                  amount: unit_data.renew_other_charge,
                 },
               ].filter((fee) => fee.amount !== undefined && fee.amount !== "")}
               currency={unit_data.currency || "naira"}
-              total_package={
-                isRental
-                  ? (unit_data.renewalTenantTotalPrice as any)
-                  : unit_data.newTenantTotalPrice
-              }
+              total_package={unit_data.renewalTenantTotalPrice as any}
               id={propertyId as string}
             />
 

@@ -96,7 +96,10 @@ const CreateArticle = () => {
         >
           <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
             <div className="first flex flex-col w-full lg:w-[60%]">
-              <PropertyRequestFirstSection placeholderText="Please be aware that you are responsible for all posts or uploads you make. Post Real Estate, Property related Articles and stay on topic." />
+              <PropertyRequestFirstSection
+                noMaxTitle
+                placeholderText="Please be aware that you are responsible for all posts or uploads you make. Post Real Estate, Property related Articles and stay on topic."
+              />
             </div>
 
             <div className="second flex flex-col w-full lg:w-[40%]">

@@ -68,7 +68,7 @@ export const transformUnitOptions = (
       (unit) => unit.is_active === "vacant" || unit.is_active === "relocate"
     )
     .map((unit) => ({
-      value: unit.id,
+      value: unit.unit_name,
       label: unit.unit_name,
     }));
 };
@@ -220,6 +220,21 @@ export const getPropertySettingsData = (propertyData: any): any[] => {
     },
   ];
 };
+
+
+export const isValidAmount = (val: any) => {
+  if (val === undefined || val === null || val === "") return false;
+  if (typeof val === "string" && /^_.*,.*,_*$/.test(val)) return false;
+
+  const cleaned = typeof val === "string"
+    ? val.replace(/[^0-9.]/g, "")
+    : val;
+
+  return parseFloat(cleaned) > 0;
+};
+
+
+
 
 // /tenant-rent/move_out
 export const moveOut = async (data: any) => {

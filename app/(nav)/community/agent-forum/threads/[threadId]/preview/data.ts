@@ -24,28 +24,12 @@ export const transformApiData = (apiData: ThreadResponse | null) => {
   }
 
   const { data } = apiData;
-
-  console.log("data",  data)
-
-  // let targetAudience: string[] = [];
-  // try {
-  //   const audience = data.post?.target_audience;
-  //   if (typeof audience === "string") {
-  //     targetAudience = JSON.parse(audience);
-  //   } else if (Array.isArray(audience)) {
-  //     targetAudience = audience;
-  //   }
-  // } catch (error) {
-  //   console.error("Error parsing target_audience:", error);
-  //   targetAudience = [];
-  // }
-
   return {
     post: data.post ?? null,
     companySummary: data.company_summary ?? null,
     contributors: data.contributor ?? null,
     comments: data.comments ?? [],
     targetAudience: `${data.post.state ?? ""}, ${data.post.lga ?? ""}`,
-    readByData: data?.post?.readByData ?? [],
+    readByData: data?.readByData ?? [],
   };
 };

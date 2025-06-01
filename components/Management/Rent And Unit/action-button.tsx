@@ -11,7 +11,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   route,
   modal,
   unit_id,
-  propertyType,
+propertyType,
   invoice_id,
 }) => {
   const commonStyles =

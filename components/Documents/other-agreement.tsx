@@ -1,4 +1,5 @@
-import { useRef } from "react";
+"use client";
+import { useEffect, useRef, useState } from "react";
 import Button from "../Form/Button/button";
 import AgreementLayout from "./other-agreement/agreement-preset";
 import { ApplicationForm } from "./other-agreement/application-form";
@@ -8,6 +9,7 @@ import useMultiPageExport from "@/hooks/useMultipageExport";
 import { ManagemenApplicationForm } from "./other-agreement/management-form";
 import { ManagemenApplicationForm2 } from "./other-agreement/management-form-2";
 import { ManagemenApplicationForm3 } from "./other-agreement/management-form-3";
+import FullPageLoader from "../Loader/start-rent-loader";
 
 export interface OtherAgreementDocumentOption {
   title: string;
@@ -21,6 +23,7 @@ const OtherAgreementDocument = ({
   selectedOption: OtherAgreementDocumentOption;
 }) => {
   const { title, value, description } = selectedOption;
+  const [isLoading, setIsLoading] = useState(true);
   const page1Ref = useRef<HTMLDivElement>(null);
   const page2Ref = useRef<HTMLDivElement>(null);
   const page3Ref = useRef<HTMLDivElement>(null);
@@ -29,6 +32,19 @@ const OtherAgreementDocument = ({
     page2Ref,
     page3Ref,
   ]);
+
+  // Simulate loading until content is rendered
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false); 
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <FullPageLoader />; // Show a loading indicator while content is loading
+  }
 
   const IS_TENANCY_APPLICATION_FORM = value === "tenancy_application_form";
 
