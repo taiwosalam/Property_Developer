@@ -68,13 +68,13 @@ export const RentDetails: React.FC<{
     { label: `Caution Fee`, value: unitData.caution_fee },
     { label: `VAT Amount`, value: unitData.vat_amount },
     { label: "Other Fees", value: unitData.other_charge },
-  ].filter(item => isValidAmount(item.value));
+  ].filter((item) => isValidAmount(item.value));
 
   // Only render the section if there are valid items
   if (renewalRentDetailItems.length === 0) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="current-rent-details space-y-6">
       <RentSectionTitle>
         {isRental ? "Current Rent" : "Fee Details"}
       </RentSectionTitle>
@@ -197,9 +197,9 @@ export const EditCurrentRent: React.FC<{
   ];
 
   // =============== CHECKBOX LOGICS ENDS ===========================//
-
+  //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g upfront-payment-wrapper 😡🤬💀💀
   return (
-    <div>
+    <div className="upfront-payment-wrapper">
       <div className="flex gap-1 flex-col">
         <div className="flex gap-2">
           <RentSectionTitle>
@@ -241,7 +241,7 @@ export const EditCurrentRent: React.FC<{
               formatNumber
             />
           </div>
-          <div className="flex items-center justify-start gap-4 flex-wrap mb-4">
+          <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
             {checkboxOptions.map(({ label, key }) => (
               <Checkbox
                 sm
@@ -257,6 +257,16 @@ export const EditCurrentRent: React.FC<{
                 {label}
               </Checkbox>
             ))}
+
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              onClick={handleUpdate}
+              disabled={loading}
+            >
+              {loading ? "Please wait..." : "Update"}
+            </Button>
+
             {isWebUser ? (
               <div className="custom-flex-col gap-1">
                 <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
@@ -299,14 +309,6 @@ export const EditCurrentRent: React.FC<{
           </div>
           <div className="flex items-center justify-end">
             {/* <ModalTrigger asChild> */}
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              onClick={handleUpdate}
-              disabled={loading}
-            >
-              {loading ? "Please wait..." : "Update"}
-            </Button>
             {/* </ModalTrigger> */}
             <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
               <ModalContent>
@@ -480,8 +482,10 @@ export const AddPartPayment: React.FC<{
     { label: "Email Alert", key: "email_alert" },
   ];
 
+  //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g part-payment-wrapper 😡🤬💀💀
+
   return (
-    <div>
+    <div className="part-payment-wrapper">
       <div className="flex gap-1 flex-col">
         <div className="flex gap-2">
           <RentSectionTitle>
@@ -508,6 +512,15 @@ export const AddPartPayment: React.FC<{
       {(!isUpfrontPaymentChecked || isCompletePayment) && (
         <>
           <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <DateInput
+              id="date"
+              label="Date"
+              value={startDate}
+              lastYear
+              onChange={handleStartDate}
+              containerClassName="bg-white"
+              disablePast
+            />
             <Input
               id="amount"
               placeholder=""
@@ -518,15 +531,6 @@ export const AddPartPayment: React.FC<{
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
               defaultValue={prevAmt ?? ""}
-            />
-            <DateInput
-              id="date"
-              label="Date"
-              value={startDate}
-              lastYear
-              onChange={handleStartDate}
-              containerClassName="bg-white"
-              disablePast
             />
           </div>
           <div className="flex items-center justify-between gap-4 mb-2">
@@ -654,65 +658,73 @@ export const TransferTenants = ({
       );
     setOpenUnitModal(true);
   };
+
+  //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g transfer-tenants-wrapper 😡🤬💀💀
+
   return (
-    <RentSectionContainer
-      title={`Transfer ${isRental ? "Tenants" : "Occupants"}`}
-    >
-      <p className="text-sm text-text-secondary dark:text-darkText-2 font-normal mb-6">
-        Transfer {isRental ? "tenants" : "occupants"} to another unit within the
-        same property with the option to calculate and deduct outstanding
-        amounts from the new unit.
-        <br />
-        <br />
-        Alternatively move the same {isRental ? "tenants" : "occupants"} from
-        their current {isRental && "rental"} property to another{" "}
-        {isRental ? "rental" : "property"} with the option to pay either the
-        outstanding amounts or previous package or new package and also
-        calculate and deduct any outstanding payments.
-      </p>
-      <div className="flex items-center gap-2 justify-end">
-        <Modal
-          state={{ isOpen: openPropertyModal, setIsOpen: setOpenPropertyModal }}
-        >
-          {/* <ModalTrigger asChild> */}
-          <Button
-            type="submit"
-            className="py-2 px-6"
-            size="base_medium"
-            onClick={handleOpenPropertyModal}
+    <div className="transfer-tenants-wrapper">
+      <RentSectionContainer
+        title={`Transfer ${isRental ? "Tenants" : "Occupants"}`}
+      >
+        <p className="text-sm text-text-secondary dark:text-darkText-2 font-normal mb-6">
+          Transfer {isRental ? "tenants" : "occupants"} to another unit within
+          the same property with the option to calculate and deduct outstanding
+          amounts from the new unit.
+          <br />
+          <br />
+          Alternatively move the same {isRental ? "tenants" : "occupants"} from
+          their current {isRental && "rental"} property to another{" "}
+          {isRental ? "rental" : "property"} with the option to pay either the
+          outstanding amounts or previous package or new package and also
+          calculate and deduct any outstanding payments.
+        </p>
+        <div className="flex items-center gap-2 justify-end">
+          <Modal
+            state={{
+              isOpen: openPropertyModal,
+              setIsOpen: setOpenPropertyModal,
+            }}
           >
-            Switch {isRental ? "Property" : "Facility"}
-          </Button>
-          {/* </ModalTrigger> */}
-          <ModalContent>
-            <SwitchPropertyModal
-              isRental={isRental}
-              propertyId={propertyId ?? 0}
-              currency={currency || "naira"}
-            />
-          </ModalContent>
-        </Modal>
-        <Modal state={{ isOpen: openUnitModal, setIsOpen: setOpenUnitModal }}>
-          {/* <ModalTrigger asChild> */}
-          <Button
-            onClick={handleOpenUnitModal}
-            type="submit"
-            className="py-2 px-6"
-            size="base_medium"
-          >
-            Switch Unit
-          </Button>
-          {/* </ModalTrigger> */}
-          <ModalContent>
-            <SwitchUnitModal
-              isRental={isRental}
-              propertyId={propertyId as number}
-              unitId={unitId ?? 0} //FIX BY REMOVING 0 AFTER INTEGRATING OTHER ROLES
-            />
-          </ModalContent>
-        </Modal>
-      </div>
-    </RentSectionContainer>
+            {/* <ModalTrigger asChild> */}
+            <Button
+              type="submit"
+              className="py-2 px-6"
+              size="base_medium"
+              onClick={handleOpenPropertyModal}
+            >
+              Switch {isRental ? "Property" : "Facility"}
+            </Button>
+            {/* </ModalTrigger> */}
+            <ModalContent>
+              <SwitchPropertyModal
+                isRental={isRental}
+                propertyId={propertyId ?? 0}
+                currency={currency || "naira"}
+              />
+            </ModalContent>
+          </Modal>
+          <Modal state={{ isOpen: openUnitModal, setIsOpen: setOpenUnitModal }}>
+            {/* <ModalTrigger asChild> */}
+            <Button
+              onClick={handleOpenUnitModal}
+              type="submit"
+              className="py-2 px-6"
+              size="base_medium"
+            >
+              Switch Unit
+            </Button>
+            {/* </ModalTrigger> */}
+            <ModalContent>
+              <SwitchUnitModal
+                isRental={isRental}
+                propertyId={propertyId as number}
+                unitId={unitId ?? 0} //FIX BY REMOVING 0 AFTER INTEGRATING OTHER ROLES
+              />
+            </ModalContent>
+          </Modal>
+        </div>
+      </RentSectionContainer>
+    </div>
   );
 };
 
@@ -1075,7 +1087,7 @@ export const CompletePartPayment: React.FC<{
   };
 
   return (
-    <div className="space-y-1">
+    <div className="complete-part-payment-wrapper space-y-1">
       <RentSectionTitle>Complete Part Payment</RentSectionTitle>
       <div className="mt-4 bg-white p-4 rounded-md">
         <div className="grid grid-cols-2">

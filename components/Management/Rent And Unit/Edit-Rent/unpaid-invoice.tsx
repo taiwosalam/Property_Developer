@@ -19,7 +19,7 @@ export const PendingInvoicePayment: React.FC<{
   const CURRENCY = currencySymbols[currency as keyof typeof currencySymbols];
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1 pending-invoice-payment-wrapper">
       <RentSectionTitle>
         Pending Payment – Awaiting Confirmation
       </RentSectionTitle>

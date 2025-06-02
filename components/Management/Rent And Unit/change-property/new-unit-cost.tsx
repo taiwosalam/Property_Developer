@@ -30,8 +30,9 @@ export const ChangePropertyNewUnitCost: React.FC<{
 
   const feeDetails = getNewUnitFeeDetails(unitData, calculation, isRental);
 
+   // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g new-rent-wrapper💀💀💀👿
   return (
-    <div className="space-y-1">
+    <div className="new-rent-wrapper space-y-1">
       <RentSectionTitle>{title || "New Rent"}</RentSectionTitle>
       <TenantCalculationSwitch switches={["calculation"]} />
       {isExcess && (

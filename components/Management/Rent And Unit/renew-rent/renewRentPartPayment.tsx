@@ -135,7 +135,7 @@ export const RenewRentAddPartPayment: React.FC<{
   ];
 
   return (
-    <div>
+    <div className="renew-rent-part-payment-wrapper">
       <div className="flex gap-1 flex-col">
         <div className="flex gap-2">
           <RentSectionTitle>

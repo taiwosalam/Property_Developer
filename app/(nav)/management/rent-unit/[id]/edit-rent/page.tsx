@@ -51,6 +51,7 @@ import {
   defaultChecks,
 } from "@/components/Management/Rent And Unit/data";
 import { PendingInvoicePayment } from "@/components/Management/Rent And Unit/Edit-Rent/unpaid-invoice";
+import { useTourStore } from "@/store/tour-store";
 
 const EditRent = () => {
   const searchParams = useSearchParams();
@@ -58,6 +59,8 @@ const EditRent = () => {
   const router = useRouter();
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
+  // TOUR STORE
+  const { setShouldRenderTour, setPersist, isTourCompleted } = useTourStore();
 
   //STORE TO SAVE SELECTED OCCUPANT/TENANT
   const { setOccupant, occupant, penaltyAmount, setUnitBalance, unitBalance } =
@@ -66,7 +69,7 @@ const EditRent = () => {
   const [startDate, setStartDate] = useState<string | null>(null);
   const [amt, setAmt] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
-  const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
+  const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(false);
   const [isCompletePayment, setIsCompletePayment] = useState(false);
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
@@ -226,11 +229,33 @@ const EditRent = () => {
     }
   };
 
+  // TOUR LOGIC
+  useEffect(() => {
+    if (loading) {
+      // Wait for data to load
+      setShouldRenderTour(false);
+      return;
+    }
+
+    // Set persist to true for StartRentTour to ensure completion is saved
+    setPersist(false);
+
+    // Check if tour has already been completed
+    if (!isTourCompleted("StartRentTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    // Cleanup to prevent tour from running on unmount
+    return () => setShouldRenderTour(false);
+  }, [loading, setShouldRenderTour, setPersist, isTourCompleted]);
+
   // LOADING & ERROR HANDLING
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
-
+  //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g renewal-fee-wrapper 😡🤬💀💀
   return (
     <div className="space-y-6 pb-[100px]">
       <BackButton>Edit {isRental ? "Rent" : "Fee"}</BackButton>
@@ -413,12 +438,11 @@ const EditRent = () => {
           currency={CURRENCY}
         />
       </section>
-
-      <FixedFooter className="flex gap-4 justify-end">
-        <Button size="base_medium" className="py-2 px-6">
-          Save
-        </Button>
-      </FixedFooter>
+        <FixedFooter className="flex gap-4 justify-end">
+          <Button size="base_medium" className="py-2 px-6">
+            Save
+          </Button>
+        </FixedFooter>
     </div>
   );
 };

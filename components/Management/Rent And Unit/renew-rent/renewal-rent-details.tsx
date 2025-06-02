@@ -23,8 +23,10 @@ const RenewalRentDetails = () => {
     },
   ];
 
+  // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g current-rent-details-wrapper💀💀💀👿
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 current-rent-details-wrapper">
       <RentSectionTitle>
         {isRental ? "Current Rent" : "Fee Renewal Details"}
       </RentSectionTitle>

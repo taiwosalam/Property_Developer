@@ -104,8 +104,7 @@ export const ProceedPreviousUnitBalance: React.FC<{
     breakdown,
     unitData?.currency
   );
-
-  console.log("startDate", startDate)
+  
   const unitDetails = getUnitDetails(
     unitData,
     unitData?.currency,
