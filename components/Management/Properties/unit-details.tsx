@@ -112,7 +112,8 @@ const UnitDetails = () => {
     }
   }, [selectedUnitType, propertyDetails?.category]);
 
-  const displayUnitName = unitData && unitData.notYetUploaded
+  const displayUnitName =
+    unitData && unitData.notYetUploaded
       ? `${unitData?.unit_name} (Unit ${(index ?? 0) + 1})`
       : unitData?.unit_name || "";
 
@@ -125,6 +126,7 @@ const UnitDetails = () => {
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Input
+          className="unit-name-wrapper"
           id="unit_name"
           label="Unit Number or Name"
           inputClassName="bg-white rounded-[8px] unit-form-input"
@@ -134,6 +136,7 @@ const UnitDetails = () => {
         />
         <Select
           id="unit_type"
+          className="unit-type-wrapper"
           options={unitTypeOptions}
           label="Unit Type"
           inputContainerClassName="bg-white"
@@ -150,6 +153,7 @@ const UnitDetails = () => {
           <Select
             options={unitSubtypeOptions || []}
             id="unit_sub_type"
+            className="unit-subtype-wrapper"
             label="Unit Sub Type"
             inputContainerClassName="bg-white"
             value={selectedSubtype}
@@ -161,6 +165,7 @@ const UnitDetails = () => {
         )}
         <Select
           id="unit_preference"
+          className="unit-preference-wrapper"
           label="Unit Preference"
           inputContainerClassName="bg-white"
           options={unitPreferencesOptions}

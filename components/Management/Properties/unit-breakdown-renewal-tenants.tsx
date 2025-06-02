@@ -19,7 +19,6 @@ const UnitBreakdownRenewalTenant = () => {
     currencySymbols[propertySettings?.currency || "naira"];
   const agencyFeePercentage = Number(propertySettings?.agency_fee || 0);
 
-  console.log("propertySettings", propertySettings);
   const shouldChargeTenantAgencyFee =
     propertySettings?.who_to_charge_renew_tenant?.toLowerCase() === "tenants" ||
     propertySettings?.who_to_charge_renew_tenant?.toLowerCase() === "both";
@@ -153,7 +152,7 @@ const UnitBreakdownRenewalTenant = () => {
   }, [formResetKey, initialFormValues, unitData?.renew_other_charge]);
 
   return (
-    <div>
+    <div className="unit-fee-breakdown-renew-tenant">
       <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
         Unit Fee Breakdown -{" "}
         {IS_RENTAL ? " Renewal Tenants" : " Renewal Occupants"}

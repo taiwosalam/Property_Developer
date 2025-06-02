@@ -98,13 +98,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     propertySettings?.coordinate || ""
   );
 
-
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },
     { label: "Keep it with Manager", value: "Company" },
     { label: "Escrow it", value: "Admin" },
     { label: "None", value: "Null" },
-  ]
+  ];
 
   const {
     state: selectedState,
@@ -334,13 +333,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }
   }, []);
 
-
   if (requestLoading) {
-    return (
-      <FullPageLoader
-        text="Submitting..."
-      />
-    );
+    return <FullPageLoader text="Submitting..." />;
   }
 
   return (
@@ -970,13 +964,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           </div>
         </div>
 
-        <PropertyFormFooter
-          editMode={editMode}
-          handleReset={handleReset}
-          requestLoading={requestLoading}
-          propertyId={propertyId}
-          onAddUnit={onAddUnit}
-        />
+        <div className="create-property-form-footer">
+          <PropertyFormFooter
+            editMode={editMode}
+            handleReset={handleReset}
+            requestLoading={requestLoading}
+            propertyId={propertyId}
+            onAddUnit={onAddUnit}
+          />
+        </div>
       </AuthForm>
     </FlowProgress>
   );

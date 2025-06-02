@@ -178,7 +178,7 @@ export const createPropertySteps: TourStep[] = [
       "Select the default currency to be used for managing this property's financial transactions on the platform. This setting determines how rent, fees, and other charges are displayed and calculated throughout the system.<br /><b>Available Options:</b> <b>Naira (₦)</b>, <b>Dollar ($)</b> and <b>Pounds (£)</b>.Choosing the appropriate currency ensures accurate financial reporting and consistency in all property-related records.",
   },
   {
-    target: ".property-footer-action-buttons",
+    target: ".create-property-form-footer",
     placement: "top",
     title: "Action Button Overview",
     content:

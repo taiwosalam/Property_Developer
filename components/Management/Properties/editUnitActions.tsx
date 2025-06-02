@@ -22,7 +22,7 @@ const EditUnitActions = () => {
     form?.requestSubmit();
   };
   return (
-    <div className="flex gap-4 justify-end">
+    <div className="flex gap-4 justify-end edit-unit-action-btns">
       <Button
         size="sm_medium"
         variant="light_red"

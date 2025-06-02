@@ -8,6 +8,7 @@ import { editRentSteps } from "./edit-rent";
 import { selectUnitRentSteps } from "./select-unit-steps";
 import { renewRentSteps } from "./renew-steps";
 import { createPropertySteps } from "./create-property";
+import { addUnitSteps } from "./add-unit-steps";
 
 export interface PageTourConfig {
   steps: TourStep[];
@@ -72,6 +73,14 @@ export const pageSteps: Record<string, PageTourConfig> = {
     tourKey: "CreatePropertyTour",
     match: (pathname: string) =>
       pathname === "/management/properties/create-rental-property",
+  },
+  "/management/properties/create-rental-property/add-unit": {
+    steps: addUnitSteps,
+    tourKey: "AddUnitTour",
+    match: (pathname: string) =>
+      /^\/management\/properties\/create-rental-property\/[^\/]+\/add-unit$/.test(
+        pathname
+      ),
   },
 };
 
