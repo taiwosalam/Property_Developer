@@ -1,12 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { useWalletStore } from "@/store/wallet-store";
-import { useChatStore } from "@/store/message";
-import { navSteps } from "../steps/nav-steps";
-import { dashboardSteps } from "../steps/dashboard-steps";
 import { getTourStepsWithWelcome, pageSteps } from "../steps/page-steps";
 import { TourState, TourStep } from "../types";
 import TourOverlay from "./tour-overlay";
@@ -14,13 +10,9 @@ import TourCard from "./tour-card";
 import {
   checkTargets,
   debugMissingTargets,
-  getTourCompletionStatus,
   positionTooltip,
-  saveTourCompletion,
 } from "../tour-util";
-import { useGlobalStore } from "@/store/general-store";
 import { useTourStore } from "@/store/tour-store";
-import { propertiesSteps } from "../steps/properties-step";
 
 const CustomTour: React.FC = () => {
   const pathname = usePathname();
@@ -30,92 +22,97 @@ const CustomTour: React.FC = () => {
     shouldRenderTour,
     setTourState,
     setShouldRenderTour,
-    setPersist, // Add setPersist
+    setPersist,
     completeTour,
     isTourCompleted,
   } = useTourStore();
   const [isMounted, setIsMounted] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const retryCountRef = useRef(0);
-  const maxRetries = 20;
-  const retryInterval = 2000;
-  const initialDelay = 8000;
+  const maxRetries = 15; // Increased retries
+  const retryInterval = 1000; // Slower retry
+  const initialDelay = 2000; // Longer initial delay
+  const animationFrameRef = useRef<number | null>(null);
   const observerRef = useRef<MutationObserver | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
-
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
+      if (observerRef.current) observerRef.current.disconnect();
+      if (animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
     };
   }, []);
 
-  useEffect(() => {
-    if (!isMounted) return;
-  }, [isMounted, pathname, companyStatus, shouldRenderTour, tourState]);
-
   const selectTourConfig = () => {
-    // Check NavTour first on dashboard
     if (pathname === "/dashboard" && !isTourCompleted("NavTour")) {
-      const navConfig = pageSteps["/"];
-      if (navConfig) {
-        setPersist(false); // Set persist to false for NavTour
+      const navConfig = pageSteps["/dashboard"];
+      if (navConfig && navConfig.match?.(pathname)) {
+        setPersist(false);
         return navConfig;
       }
     }
 
-    // Check current pathname
-    const config = pageSteps[pathname];
-    if (!config) {
-      return { steps: [], tourKey: "" };
+    for (const key in pageSteps) {
+      const config = pageSteps[key];
+      if (config.match?.(pathname) && !isTourCompleted(config.tourKey)) {
+        setPersist(config.tourKey !== "DashboardTour");
+        return config;
+      }
     }
 
-    if (isTourCompleted(config.tourKey)) {
-      return { steps: [], tourKey: "" };
-    }
-
-    // Set persist based on tourKey
-    if (config.tourKey === "DashboardTour") {
-      setPersist(false); // Set persist to false for DashboardTour
-    } else {
-      setPersist(true); // Default to persisting for other tours (e.g., PropertiesTour)
-    }
-
-    return config;
+    return { steps: [], tourKey: "" };
   };
 
   const startTour = (steps: TourStep[], tourKey: string) => {
     if (retryCountRef.current >= maxRetries) {
+      setShouldRenderTour(false);
       return;
     }
 
-    const allTargetsPresent = steps.every((step, index) => {
+    const validSteps = steps.filter((step, index) => {
       if (index === 0 && step.target === "body") return true;
-      if (
-        tourKey === "PropertiesTour" &&
-        step.target === ".add-property-modal"
-      ) {
-        return true; // Defer modal check
+      if (tourKey === "PropertiesTour" && step.target === ".add-property-modal")
+        return true;
+      const element = document.querySelector(step.target);
+      if (!element) {
+        console.log(
+          `Target ${step.target} not found for ${tourKey}. Skipping step.`
+        );
+        return false;
       }
-      const exists = !!document.querySelector(step.target);
-      if (!exists) {
-      }
-      return exists;
+      return true;
     });
 
-    if (allTargetsPresent) {
-      setTourState({ run: true, stepIndex: 0, steps, tourKey });
+    if (validSteps.length > 1) {
+      // Allow tour to start with at least one valid step
+      setTourState({ run: true, stepIndex: 0, steps: validSteps, tourKey });
       retryCountRef.current = 0;
     } else {
       debugMissingTargets(steps, tourKey);
-
       retryCountRef.current += 1;
-      const delay = retryCountRef.current === 1 ? initialDelay : retryInterval;
-      setTimeout(() => startTour(steps, tourKey), delay);
+      setTimeout(
+        () => startTour(steps, tourKey),
+        retryCountRef.current === 1 ? initialDelay : retryInterval
+      );
     }
   };
+
+  const updatePosition = useCallback(
+    (step: TourStep, target: Element) => {
+      if (!tourState.run || !tooltipRef.current) {
+        if (animationFrameRef.current)
+          cancelAnimationFrame(animationFrameRef.current);
+        return;
+      }
+
+      positionTooltip(target, tooltipRef, step.placement);
+      animationFrameRef.current = requestAnimationFrame(() =>
+        updatePosition(step, target)
+      );
+    },
+    [tourState.run]
+  );
 
   useEffect(() => {
     if (
@@ -140,9 +137,7 @@ const CustomTour: React.FC = () => {
       }
     }
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
+      if (observerRef.current) observerRef.current.disconnect();
     };
   }, [tourState, setTourState]);
 
@@ -157,25 +152,14 @@ const CustomTour: React.FC = () => {
       return;
     }
 
-    // Check condition
     if (config.condition && !config.condition()) {
-      // Pass persist flag based on tourKey
-      const persist =
-        config.tourKey === "NavTour" || config.tourKey === "DashboardTour"
-          ? false
-          : true;
-      completeTour(config.tourKey, persist);
+      completeTour(config.tourKey, config.tourKey !== "DashboardTour");
       setShouldRenderTour(false);
       return;
     }
 
     const steps = getTourStepsWithWelcome(config);
-    const validSteps = checkTargets(steps);
-    if (validSteps.length > 0) {
-      startTour(validSteps, config.tourKey);
-    } else {
-      setShouldRenderTour(false);
-    }
+    startTour(steps, config.tourKey);
   }, [
     pathname,
     isMounted,
@@ -188,25 +172,53 @@ const CustomTour: React.FC = () => {
 
   useEffect(() => {
     if (!tourState.run || tourState.stepIndex >= tourState.steps.length) {
+      if (animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
       return;
     }
+
     const step = tourState.steps[tourState.stepIndex];
     const target =
       step.target === "body"
         ? document.body
         : document.querySelector(step.target);
-    if (target) {
-      positionTooltip(target, tooltipRef, step.placement);
-      target.scrollIntoView({ behavior: "smooth", block: "center" });
-    } else {
+
+    if (!target) {
+      console.warn(`Target not found for step: ${step.target}. Skipping step.`);
       handleNext();
+      return;
     }
-  }, [tourState.stepIndex, tourState.run, tourState.steps]);
+
+    console.log(`Targeting: ${step.target}`, target);
+
+    const matches =
+      step.target === "body"
+        ? [document.body]
+        : document.querySelectorAll(step.target);
+    if (matches.length > 1) {
+      console.warn(
+        `Multiple elements found for ${step.target}. Using first match.`,
+        matches
+      );
+    }
+
+    target.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    const scrollTimeout = setTimeout(() => {
+      if (animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
+      updatePosition(step, target);
+    }, 800); // Increased delay
+
+    return () => {
+      clearTimeout(scrollTimeout);
+      if (animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
+    };
+  }, [tourState.stepIndex, tourState.run, tourState.steps, updatePosition]);
 
   const handleNext = () => {
-    if (tourState.stepIndex === 0) {
-      setTourState({ stepIndex: tourState.stepIndex + 1 });
-    } else if (tourState.stepIndex < tourState.steps.length - 1) {
+    if (tourState.stepIndex < tourState.steps.length - 1) {
       setTourState({ stepIndex: tourState.stepIndex + 1 });
     } else {
       handleFinish();
@@ -220,29 +232,18 @@ const CustomTour: React.FC = () => {
   };
 
   const handleSkip = () => {
-    // Pass persist flag based on tourKey
-    const persist =
-      tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
-        ? false
-        : true;
-    completeTour(tourState.tourKey, persist);
+    completeTour(tourState.tourKey, tourState.tourKey !== "DashboardTour");
   };
 
   const handleFinish = () => {
-    // Pass persist flag based on tourKey
-    const persist =
-      tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
-        ? false
-        : true;
-    completeTour(tourState.tourKey, persist);
-    // Chain NavTour to DashboardTour
+    completeTour(tourState.tourKey, tourState.tourKey !== "DashboardTour");
     if (
       tourState.tourKey === "NavTour" &&
       pathname === "/dashboard" &&
       !isTourCompleted("DashboardTour")
     ) {
       const config = pageSteps["/dashboard"];
-      if (config) {
+      if (config && config.match?.(pathname)) {
         const steps = getTourStepsWithWelcome(config);
         const validSteps = checkTargets(steps);
         if (validSteps.length > 0) {
@@ -253,12 +254,7 @@ const CustomTour: React.FC = () => {
   };
 
   const handleDeclineTour = () => {
-    // Pass persist flag based on tourKey
-    const persist =
-      tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
-        ? false
-        : true;
-    completeTour(tourState.tourKey, persist);
+    completeTour(tourState.tourKey, tourState.tourKey !== "DashboardTour");
   };
 
   if (!isMounted || !tourState.run || tourState.steps.length === 0) {
@@ -271,35 +267,341 @@ const CustomTour: React.FC = () => {
       ? document.body
       : document.querySelector(currentStep.target);
   if (!targetElement) {
+    console.warn(`Current step target not found: ${currentStep.target}`);
     handleNext();
     return null;
   }
 
   const targetRect = targetElement.getBoundingClientRect();
-  const isFirstStep = tourState.stepIndex === 0;
-  const isLastStep = tourState.stepIndex === tourState.steps.length - 1;
 
   return (
     <>
       <TourOverlay
         step={currentStep}
-        isFirstStep={isFirstStep}
-        targetRect={targetRect}
+        targetElement={
+          currentStep.target === "body" ? document.body : targetElement
+        }
       />
       <TourCard
         step={currentStep}
         stepIndex={tourState.stepIndex}
         totalSteps={tourState.steps.length}
-        isFirstStep={isFirstStep}
-        isLastStep={isLastStep}
+        isFirstStep={tourState.stepIndex === 0}
+        isLastStep={tourState.stepIndex === tourState.steps.length - 1}
+        isWelcomeStep={tourState.stepIndex === 0}
         tooltipRef={tooltipRef}
         onBack={handleBack}
         onNext={handleNext}
-        onSkip={isFirstStep ? handleDeclineTour : handleSkip}
-        isWelcomeStep={isFirstStep}
+        onSkip={tourState.stepIndex === 0 ? handleDeclineTour : handleSkip}
       />
     </>
   );
 };
 
 export default CustomTour;
+
+// "use client";
+
+// import React, { useState, useEffect, useRef } from "react";
+// import { usePathname } from "next/navigation";
+// import { usePersonalInfoStore } from "@/store/personal-info-store";
+// import { useWalletStore } from "@/store/wallet-store";
+// import { useChatStore } from "@/store/message";
+// import { navSteps } from "../steps/nav-steps";
+// import { dashboardSteps } from "../steps/dashboard-steps";
+// import { getTourStepsWithWelcome, pageSteps } from "../steps/page-steps";
+// import { TourState, TourStep } from "../types";
+// import TourOverlay from "./tour-overlay";
+// import TourCard from "./tour-card";
+// import {
+//   checkTargets,
+//   debugMissingTargets,
+//   getTourCompletionStatus,
+//   positionTooltip,
+//   saveTourCompletion,
+// } from "../tour-util";
+// import { useGlobalStore } from "@/store/general-store";
+// import { useTourStore } from "@/store/tour-store";
+// import { propertiesSteps } from "../steps/properties-step";
+
+// const CustomTour: React.FC = () => {
+//   const pathname = usePathname();
+//   const companyStatus = usePersonalInfoStore((state) => state.company_status);
+//   const {
+//     tour: tourState,
+//     shouldRenderTour,
+//     setTourState,
+//     setShouldRenderTour,
+//     setPersist, // Add setPersist
+//     completeTour,
+//     isTourCompleted,
+//   } = useTourStore();
+//   const [isMounted, setIsMounted] = useState(false);
+//   const tooltipRef = useRef<HTMLDivElement>(null);
+//   const retryCountRef = useRef(0);
+//   const maxRetries = 20;
+//   const retryInterval = 2000;
+//   const initialDelay = 8000;
+//   const observerRef = useRef<MutationObserver | null>(null);
+
+//   useEffect(() => {
+//     setIsMounted(true);
+
+//     return () => {
+//       if (observerRef.current) {
+//         observerRef.current.disconnect();
+//       }
+//     };
+//   }, []);
+
+//   useEffect(() => {
+//     if (!isMounted) return;
+//   }, [isMounted, pathname, companyStatus, shouldRenderTour, tourState]);
+
+//   const selectTourConfig = () => {
+//     // Check NavTour first on dashboard
+//     if (pathname === "/dashboard" && !isTourCompleted("NavTour")) {
+//       const navConfig = pageSteps["/"];
+//       if (navConfig) {
+//         setPersist(false); // Set persist to false for NavTour
+//         return navConfig;
+//       }
+//     }
+
+//     // Check current pathname
+//     const config = pageSteps[pathname];
+//     if (!config) {
+//       return { steps: [], tourKey: "" };
+//     }
+
+//     if (isTourCompleted(config.tourKey)) {
+//       return { steps: [], tourKey: "" };
+//     }
+
+//     // Set persist based on tourKey
+//     if (config.tourKey === "DashboardTour") {
+//       setPersist(false); // Set persist to false for DashboardTour
+//     } else {
+//       setPersist(true); // Default to persisting for other tours (e.g., PropertiesTour)
+//     }
+
+//     return config;
+//   };
+
+//   const startTour = (steps: TourStep[], tourKey: string) => {
+//     if (retryCountRef.current >= maxRetries) {
+//       return;
+//     }
+
+//     const allTargetsPresent = steps.every((step, index) => {
+//       if (index === 0 && step.target === "body") return true;
+//       if (
+//         tourKey === "PropertiesTour" &&
+//         step.target === ".add-property-modal"
+//       ) {
+//         return true; // Defer modal check
+//       }
+//       const exists = !!document.querySelector(step.target);
+//       if (!exists) {
+//       }
+//       return exists;
+//     });
+
+//     if (allTargetsPresent) {
+//       setTourState({ run: true, stepIndex: 0, steps, tourKey });
+//       retryCountRef.current = 0;
+//     } else {
+//       debugMissingTargets(steps, tourKey);
+
+//       retryCountRef.current += 1;
+//       const delay = retryCountRef.current === 1 ? initialDelay : retryInterval;
+//       setTimeout(() => startTour(steps, tourKey), delay);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (
+//       tourState.tourKey === "PropertiesTour" &&
+//       tourState.run &&
+//       tourState.stepIndex === 8
+//     ) {
+//       const modal = document.querySelector(".add-property-modal");
+//       if (modal) {
+//         setTourState({ stepIndex: tourState.stepIndex + 1 });
+//       } else {
+//         observerRef.current = new MutationObserver(() => {
+//           if (document.querySelector(".add-property-modal")) {
+//             setTourState({ stepIndex: tourState.stepIndex + 1 });
+//             observerRef.current?.disconnect();
+//           }
+//         });
+//         observerRef.current.observe(document.body, {
+//           childList: true,
+//           subtree: true,
+//         });
+//       }
+//     }
+//     return () => {
+//       if (observerRef.current) {
+//         observerRef.current.disconnect();
+//       }
+//     };
+//   }, [tourState, setTourState]);
+
+//   useEffect(() => {
+//     if (!isMounted || companyStatus === null || !shouldRenderTour) {
+//       return;
+//     }
+
+//     const config = selectTourConfig();
+//     if (!config.tourKey || config.steps.length === 0) {
+//       setShouldRenderTour(false);
+//       return;
+//     }
+
+//     // Check condition
+//     if (config.condition && !config.condition()) {
+//       // Pass persist flag based on tourKey
+//       const persist =
+//         config.tourKey === "NavTour" || config.tourKey === "DashboardTour"
+//           ? false
+//           : true;
+//       completeTour(config.tourKey, persist);
+//       setShouldRenderTour(false);
+//       return;
+//     }
+
+//     const steps = getTourStepsWithWelcome(config);
+//     const validSteps = checkTargets(steps);
+//     if (validSteps.length > 0) {
+//       startTour(validSteps, config.tourKey);
+//     } else {
+//       setShouldRenderTour(false);
+//     }
+//   }, [
+//     pathname,
+//     isMounted,
+//     companyStatus,
+//     shouldRenderTour,
+//     setTourState,
+//     setShouldRenderTour,
+//     completeTour,
+//   ]);
+
+//   useEffect(() => {
+//     if (!tourState.run || tourState.stepIndex >= tourState.steps.length) {
+//       return;
+//     }
+//     const step = tourState.steps[tourState.stepIndex];
+//     const target =
+//       step.target === "body"
+//         ? document.body
+//         : document.querySelector(step.target);
+//     if (target) {
+//       positionTooltip(target, tooltipRef, step.placement);
+//       target.scrollIntoView({ behavior: "smooth", block: "center" });
+//     } else {
+//       handleNext();
+//     }
+//   }, [tourState.stepIndex, tourState.run, tourState.steps]);
+
+//   const handleNext = () => {
+//     if (tourState.stepIndex === 0) {
+//       setTourState({ stepIndex: tourState.stepIndex + 1 });
+//     } else if (tourState.stepIndex < tourState.steps.length - 1) {
+//       setTourState({ stepIndex: tourState.stepIndex + 1 });
+//     } else {
+//       handleFinish();
+//     }
+//   };
+
+//   const handleBack = () => {
+//     if (tourState.stepIndex > 0) {
+//       setTourState({ stepIndex: tourState.stepIndex - 1 });
+//     }
+//   };
+
+//   const handleSkip = () => {
+//     // Pass persist flag based on tourKey
+//     const persist =
+//       tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
+//         ? false
+//         : true;
+//     completeTour(tourState.tourKey, persist);
+//   };
+
+//   const handleFinish = () => {
+//     // Pass persist flag based on tourKey
+//     const persist =
+//       tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
+//         ? false
+//         : true;
+//     completeTour(tourState.tourKey, persist);
+//     // Chain NavTour to DashboardTour
+//     if (
+//       tourState.tourKey === "NavTour" &&
+//       pathname === "/dashboard" &&
+//       !isTourCompleted("DashboardTour")
+//     ) {
+//       const config = pageSteps["/dashboard"];
+//       if (config) {
+//         const steps = getTourStepsWithWelcome(config);
+//         const validSteps = checkTargets(steps);
+//         if (validSteps.length > 0) {
+//           startTour(validSteps, "DashboardTour");
+//         }
+//       }
+//     }
+//   };
+
+//   const handleDeclineTour = () => {
+//     // Pass persist flag based on tourKey
+//     const persist =
+//       tourState.tourKey === "NavTour" || tourState.tourKey === "DashboardTour"
+//         ? false
+//         : true;
+//     completeTour(tourState.tourKey, persist);
+//   };
+
+//   if (!isMounted || !tourState.run || tourState.steps.length === 0) {
+//     return null;
+//   }
+
+//   const currentStep = tourState.steps[tourState.stepIndex];
+//   const targetElement =
+//     currentStep.target === "body"
+//       ? document.body
+//       : document.querySelector(currentStep.target);
+//   if (!targetElement) {
+//     handleNext();
+//     return null;
+//   }
+
+//   const targetRect = targetElement.getBoundingClientRect();
+//   const isFirstStep = tourState.stepIndex === 0;
+//   const isLastStep = tourState.stepIndex === tourState.steps.length - 1;
+
+//   return (
+//     <>
+//       <TourOverlay
+//         step={currentStep}
+//         isFirstStep={isFirstStep}
+//         targetRect={targetRect}
+//       />
+//       <TourCard
+//         step={currentStep}
+//         stepIndex={tourState.stepIndex}
+//         totalSteps={tourState.steps.length}
+//         isFirstStep={isFirstStep}
+//         isLastStep={isLastStep}
+//         tooltipRef={tooltipRef}
+//         onBack={handleBack}
+//         onNext={handleNext}
+//         onSkip={isFirstStep ? handleDeclineTour : handleSkip}
+//         isWelcomeStep={isFirstStep}
+//       />
+//     </>
+//   );
+// };
+
+// export default CustomTour;

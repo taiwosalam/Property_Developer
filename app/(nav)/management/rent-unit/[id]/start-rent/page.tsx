@@ -45,12 +45,14 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { AgreementPreview } from "@/components/Modal/tenant-document";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
+import { useTourStore } from "@/store/tour-store";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const { selectedOccupant, isPastDate } = useGlobalStore();
+  const { setShouldRenderTour, setPersist, isTourCompleted } = useTourStore();
   const id = searchParams.get("id");
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
@@ -133,7 +135,7 @@ const StartRent = () => {
       selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
 
     const IS_FACILITY = propertyType === "facility";
-    
+
     if (!IS_FACILITY && !isPastDate) {
       // Open modal for non-facility and non-past date cases
       setIsAgreementModalOpen(true);
@@ -169,7 +171,11 @@ const StartRent = () => {
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
       // has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0, //LOTUS BACKEND ASKED FOR REVERSE
-      has_invoice: isWebUser ? 1 : selectedCheckboxOptions.create_invoice ? 0 : 1,
+      has_invoice: isWebUser
+        ? 1
+        : selectedCheckboxOptions.create_invoice
+        ? 0
+        : 1,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 0,
       has_document: 0,
@@ -184,7 +190,11 @@ const StartRent = () => {
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
       // has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0, //INITIAL - LOTUS NOW BACKEND ASKED FOR REVERSE
-      has_invoice: isWebUser ? 1 : selectedCheckboxOptions.create_invoice ? 0 : 1,
+      has_invoice: isWebUser
+        ? 1
+        : selectedCheckboxOptions.create_invoice
+        ? 0
+        : 1,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 1,
       has_document: isPastDate ? 0 : 1, // NOW WHEN PAST DATE IS SELECTED, NO DOCUMENT IS REQUIRED
@@ -227,6 +237,34 @@ const StartRent = () => {
     setDisableInput(reqLoading || pdfLoading);
   }, [reqLoading, pdfLoading]);
 
+  // TOUR LOGIC
+  useEffect(() => {
+    if (loading || allTenantsLoading) {
+      // Wait for data to load
+      setShouldRenderTour(false);
+      return;
+    }
+
+    // Set persist to true for StartRentTour to ensure completion is saved
+    setPersist(false);
+
+    // Check if tour has already been completed
+    if (!isTourCompleted("StartRentTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    // Cleanup to prevent tour from running on unmount
+    return () => setShouldRenderTour(false);
+  }, [
+    loading,
+    allTenantsLoading,
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+  ]);
+
   if (reqLoading || pdfLoading) {
     return (
       <FullPageLoader
@@ -257,11 +295,12 @@ const StartRent = () => {
         />
         <EstateSettings
           id={propertyId as string}
-          title={`${isRental ? "Property" : "Facility"} Settings`}
+          title={`${isRental ? "Unit" : "Facility"} Settings`}
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }
-          {...(isRental ? { gridThree: true } : {})}
+          // {...(isRental ? { gridThree: true } : {})}
+          gridThree
         />
         <OccupantProfile
           isRental={isRental}
@@ -298,7 +337,7 @@ const StartRent = () => {
           disableInput={disableInput}
         />
       </section>
-      <FixedFooter className={`flex justify-end gap-4`}>
+      <FixedFooter className={`start-rent-button flex justify-end gap-4`}>
         {/* {isRental && IS_WEB_TENANT && !isPastDate && ( */}
         {/* {isRental && !isPastDate && (
           <Modal>

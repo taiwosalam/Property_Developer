@@ -20,14 +20,6 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
     isUpfrontPaymentChecked,
   } = useRenewRentContext();
 
-  console.log("OwingFee inputs:", {
-    unitData,
-    due_date,
-    start_date,
-    isUpfrontPaymentChecked,
-    currency,
-  });
-
   // Zustand store
   const { penaltyAmount, setPenaltyAmount, setOverduePeriods, overduePeriods } =
     useOccupantStore();
@@ -65,20 +57,6 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
         feePeriod as RentPeriod,
         due_date
       );
-
-      console.log("Calculations:", {
-        overduePeriods,
-        owingAmount,
-        calculatedPenalty,
-        penaltyInputs: {
-          chargePenalty,
-          rent_penalty_setting,
-          rentAmount,
-          feePeriod,
-          due_date,
-        },
-      });
-
       setOverduePeriods(overduePeriods);
       setOwingAmount(owingAmount);
       setPenaltyAmount(calculatedPenalty);
@@ -123,7 +101,7 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="outstanding-details-wrapper space-y-6">
       <RentSectionTitle>Outstanding Details</RentSectionTitle>
       <FeeDetails
         owing

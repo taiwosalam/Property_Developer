@@ -243,6 +243,7 @@ interface BalanceRecord {
 }
 
 // // Helper function to extract start_date and due_date from balance records
+
 // export function extractBalanceDates(
 //   records: BalanceRecord[],
 //   fee_period: string = "yearly",
@@ -258,24 +259,25 @@ interface BalanceRecord {
 //   );
 
 //   if (validRecords.length > 0) {
-//     // Find earliest start_date that is today or future
-//     const futureStartDates = validRecords
+//     // Find earliest start_date (include past dates)
+//     const startDates = validRecords
 //       .map((record) => ({
 //         date: dayjs(record.start_date),
-//         formatted: dayjs(record.start_date).format("MMM D, YYYY").toLowerCase(),
+//         // formatted: dayjs(record.start_date).format("MMM D, YYYY").toLowerCase(),
+//         formatted: record.start_date,
 //       }))
-//       .filter(({ date }) => date.isSame(today, "day") || date.isAfter(today))
 //       .sort((a, b) => a.date.diff(b.date));
 
-//     start_date = futureStartDates[0]?.formatted || null;
+//     start_date = startDates[0]?.formatted || null;
 
-//     // Find latest due_date that is in the future
+//     // Find latest due_date that is in the future or today
 //     const futureDueDates = validRecords
 //       .map((record) => ({
 //         date: dayjs(record.due_date),
-//         formatted: dayjs(record.due_date).format("MMM D, YYYY").toLowerCase(),
+//         // formatted: dayjs(record.due_date).format("MMM D, YYYY").toLowerCase(),
+//         formatted: record.due_date,
 //       }))
-//       .filter(({ date }) => date.isAfter(today))
+//       .filter(({ date }) => date.isSame(today, "day") || date.isAfter(today))
 //       .sort((a, b) => b.date.diff(a.date)); // Sort descending
 
 //     due_date = futureDueDates[0]?.formatted || null;
@@ -318,8 +320,8 @@ export function extractBalanceDates(
     // Find earliest start_date (include past dates)
     const startDates = validRecords
       .map((record) => ({
-        date: dayjs(record.start_date),
-        formatted: dayjs(record.start_date).format("MMM D, YYYY").toLowerCase(),
+        date: dayjs(record.start_date, "DD-MM-YYYY"), // fixed here
+        formatted: record.start_date,
       }))
       .sort((a, b) => a.date.diff(b.date));
 
@@ -328,8 +330,8 @@ export function extractBalanceDates(
     // Find latest due_date that is in the future or today
     const futureDueDates = validRecords
       .map((record) => ({
-        date: dayjs(record.due_date),
-        formatted: dayjs(record.due_date).format("MMM D, YYYY").toLowerCase(),
+        date: dayjs(record.due_date, "DD-MM-YYYY"), // fixed here
+        formatted: record.due_date,
       }))
       .filter(({ date }) => date.isSame(today, "day") || date.isAfter(today))
       .sort((a, b) => b.date.diff(a.date)); // Sort descending
@@ -343,7 +345,7 @@ export function extractBalanceDates(
   }
 
   if (!due_date && start_date) {
-    const start = dayjs(start_date);
+    const start = dayjs(start_date, "DD-MM-YYYY");
     due_date = start
       .add(
         fee_period === "daily" ? 1 : 365,

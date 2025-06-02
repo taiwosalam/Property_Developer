@@ -54,10 +54,12 @@ import { AgreementPreview } from "@/components/Modal/tenant-document";
 import { RenewRentAddPartPayment } from "@/components/Management/Rent And Unit/renew-rent/renewRentPartPayment";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 import { PendingInvoicePayment } from "@/components/Management/Rent And Unit/Edit-Rent/unpaid-invoice";
+import { useTourStore } from "@/store/tour-store";
 
 const RenewRent = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const { setShouldRenderTour, setPersist, isTourCompleted } = useTourStore();
   const router = useRouter();
 
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
@@ -83,7 +85,7 @@ const RenewRent = () => {
     useState<CheckBoxOptions>(defaultChecks);
   const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
-  const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
+  const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(false);
   const [reqLoading, setReqLoading] = useState(false);
   const [isCompletePayment, setIsCompletePayment] = useState(false);
   const [hasPartPayment, setHasPartPayment] = useState(false);
@@ -119,6 +121,23 @@ const RenewRent = () => {
     }
   }, [apiData, setOccupant, setUnitBalance]);
 
+  // TOUR LOGIC
+  useEffect(() => {
+    if (loading || !unitData.unit_id) {
+      setShouldRenderTour(false);
+      return;
+    }
+
+    setPersist(false); // Disable persist for this tour - set to true to persist it to localstorage
+    if (!isTourCompleted("RenewRentTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [loading, unitData, setShouldRenderTour, setPersist, isTourCompleted]);
+
   // Derived data
   const propertyId = unitData.propertyId;
   const previousRecord = (unitData?.current_records as any)?.data?.[0];
@@ -137,8 +156,10 @@ const RenewRent = () => {
 
   // PENDING INVOICE REPRESENTS PART PAYMENT TENANT MADE
   const PENDING_INVOICE = unitData?.pending_invoice;
-  const PENDING_INVOICE_PAID_AMOUNT = parseFloat(PENDING_INVOICE?.amount_paid) || 0;
-  const PENDING_INVOICE_BALANCE_DUE = parseFloat(PENDING_INVOICE?.balance_due) || 0;
+  const PENDING_INVOICE_PAID_AMOUNT =
+    parseFloat(PENDING_INVOICE?.amount_paid) || 0;
+  const PENDING_INVOICE_BALANCE_DUE =
+    parseFloat(PENDING_INVOICE?.balance_due) || 0;
   const PART_PAYMENT_AMOUNT = PENDING_INVOICE_PAID_AMOUNT;
 
   // UNPAID INVOICE REPRESENTS PAYMENTS THAT WAS ADDED BUT HAVE NOT BEEN MARKED AS PAID
@@ -238,61 +259,6 @@ const RenewRent = () => {
       setPdfLoading(false);
     }
   };
-
-  // Part Payment Handler
-  // const handlePartPayment = async () => {
-  //   if (!unitBalance || unitBalance.length === 0) {
-  //     toast.error("No unit balance available");
-  //     return;
-  //   }
-  //   const hasPenalty = penaltyAmount > 0;
-  //   const amountToPay = hasPenalty
-  //     ? parseCurrency(amt) + penaltyAmount
-  //     : parseCurrency(amt);
-
-  //   const payload = {
-  //     unit_id: id,
-  //     amount: amountToPay,
-  //     // amount: parseCurrency(amt),
-  //     rent_id: unitBalance.data[0].id,
-  //     payment_date: dayjs(startDate).format("YYYY-MM-DD"),
-  //     tenant_id: unitData.occupant.id,
-  //     has_penalty: penaltyAmount > 0 ? 1 : 0,
-  //     penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
-  //     // penalty_amount: penaltyAmount,
-  //     type: "part_payment",
-  //   };
-
-  //   console.log("payload", payload);
-  //   try {
-  //     setReqLoading(true);
-  //     // const success = await editRent(payload);
-  //     // if (success) {
-  //     //   toast.success("Part payment added successfully");
-  //     //   window.dispatchEvent(new Event("refetchUnit"));
-  //     //   setStartDate(null);
-  //     //   setAmt("");
-  //     // }
-
-  //     const res = await addPartPayment(payload);
-  //     if (res) {
-  //       toast.success(res.message || "Part payment added successfully");
-  //       window.dispatchEvent(new Event("refetchUnit"));
-
-  //       // Check pay_status and handle accordingly
-  //       if (res.pay_status === "part") {
-  //         setAmt("");
-  //         setStartDate(null);
-  //       } else if (res.pay_status === "full") {
-  //         router.push("/management/rent-unit");
-  //       }
-  //     }
-  //   } catch (err) {
-  //     toast.error("Failed to create part payment");
-  //   } finally {
-  //     setReqLoading(false);
-  //   }
-  // };
 
   // Part Payment Handler
   const handlePartPayment = async () => {
@@ -419,7 +385,7 @@ const RenewRent = () => {
                     total={UNPAID_INVOICE.total_amount}
                     invoice_id={UNPAID_INVOICE.id}
                     unit_id={unitData.id as string}
-                    page='renew'
+                    page="renew"
                   />
                 </>
               ) : (
@@ -438,6 +404,8 @@ const RenewRent = () => {
                       <RenewalRent
                         setStartDate={setStartDate}
                         setDueDate={setDueDate}
+                        loading={reqLoading}
+                        action={handleRenewRent} //ADDED ACTION TO RENEW
                         setSelectedCheckboxOptions={setSelectedCheckboxOptions}
                       />
                     </>
@@ -476,7 +444,7 @@ const RenewRent = () => {
                       setStart_Date={(date: string | null) =>
                         date ? setStartDate(dayjs(date)) : setStartDate(null)
                       }
-                      noBtn
+                      // noBtn //USE NOBTN PROP TO PUT BUTTON ELSEWHERE
                       loading={reqLoading}
                       setAmt={setAmt}
                       action={handlePartPayment}
@@ -521,32 +489,37 @@ const RenewRent = () => {
               size="base_medium"
               className="py-2 px-6"
               disabled={reqLoading}
-              onClick={handlePartPayment}
+              onClick={() => router.push("/management/rent-unit")}
+              // onClick={handlePartPayment}
             >
-              {reqLoading ? "Please wait..." : "Finish Payment"}
+              Save
+              {/* {reqLoading ? "Please wait..." : "Finish Payment"} */}
             </Button>
           ) : isUpfrontPaymentChecked ? (
             <Button
               size="base_medium"
               className="py-2 px-6"
               disabled={reqLoading}
-              onClick={handleRenewRent}
+              onClick={() => router.push("/management/rent-unit")}
+              // onClick={handleRenewRent}
             >
-              {reqLoading
+              Save
+              {/* {reqLoading
                 ? "Please wait..."
                 : isRental
                 ? "Renew Rent"
-                : "Renew"}
+                : "Renew"} */}
             </Button>
           ) : (
             <Button
               size="base_medium"
               className="py-2 px-6"
-              // disabled={reqLoading}
-              disabled={reqLoading || !amt || !startDate}
-              onClick={handlePartPayment}
+              onClick={() => router.push("/management/rent-unit")}
+              // disabled={reqLoading || !amt || !startDate}
+              // onClick={handlePartPayment}
             >
-              {reqLoading ? "Please wait..." : "Update"}
+              Save
+              {/* {reqLoading ? "Please wait..." : "Update"} */}
             </Button>
           )}
         </FixedFooter>

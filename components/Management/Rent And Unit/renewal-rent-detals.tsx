@@ -122,9 +122,9 @@ export const RenewalFee: React.FC<{
     deduction,
     currencySymbol
   );
-
+  //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g renewal-fee-wrapper 😡🤬💀💀
   return (
-    <div className="space-y-6">
+    <div className="renewal-fee-wrapper space-y-6">
       {hasToggleProps ? (
         // Render with toggle (checkbox and description)
         <div className="flex gap-1 flex-col">
@@ -442,7 +442,7 @@ export const RenewalRent: React.FC<{
   };
 
   return (
-    <div>
+    <div className="start-new-unit-rent-wrapper">
       {allowStartDateInput && (
         <>
           <RentSectionTitle>
@@ -587,7 +587,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   // Always call useFetch, but we ignore its results if noRefetch is true.
   const { data, loading, silentLoading, error, isNetworkError, refetch } =
     useFetch<UnitViewResponse>(`/unit/${unit_id}/view`, fetchOptions);
-    useRefetchOnEvent("refech-unit", () => refetch({ silent: true }));
+  useRefetchOnEvent("refech-unit", () => refetch({ silent: true }));
 
   // Helper: debounce function to limit rapid calls.
   const debounce = (func: Function, delay: number) => {
@@ -662,17 +662,15 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
     ...record,
     amount_paid: `${CURRENCY} ${formatNumber(record.amount_paid) || 0}`,
     rent_amount: `${CURRENCY} ${formatNumber(record.rent_amount) || 0}`,
-    start_date: record.start_date
-      ? record.start_date
-      : null,
+    start_date: record.start_date ? record.start_date : null,
     due_date: record.due_date
       ? record.due_date
-      // ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
-      : null,
+      : // ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+        null,
     payment_date: record.payment_date
       ? record.payment_date
-      // ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
-      : null,
+      : // ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
+        null,
     // Only attach ref if refetching is enabled
     ref: !noRefetch && index === records.length - 1 ? lastRowRef : null,
   }));
@@ -685,6 +683,10 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   if (isNetworkError) return <NetworkError />;
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
+
+  
+  //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g previous-records-container 😡🤬💀💀
+
 
   return (
     <div className="previous-records-container">

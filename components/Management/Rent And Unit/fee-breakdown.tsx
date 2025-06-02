@@ -14,7 +14,7 @@ export const FeeBreakdown: React.FC<{
     (fee) => fee.amount !== undefined && fee.amount !== ""
   );
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 new-tenant-fee-card">
       <RentSectionTitle>
         {isRental ? "New Tenant Fee" : "New Occupant Fee"}
       </RentSectionTitle>

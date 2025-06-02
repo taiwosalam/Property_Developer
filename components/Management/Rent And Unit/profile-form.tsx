@@ -210,32 +210,37 @@ export const ProfileForm: React.FC<{
   // Non-naira currency message
   const nonNaira = currency !== "naira";
 
+  // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE💀💀💀👿
   return (
     <div className="space-y-6">
       <div className="space-y-4">
         <div className="flex flex-col md:flex-row md:items-end gap-x-[35px] gap-y-4">
-          <SelectWithImage
-            id={`available_${isRental ? "tenant" : "occupant"}`}
-            label={`Choose Available ${isRental ? "Tenant" : "Occupant"}`}
-            options={occupants.map((occupant) => ({
-              label: occupant.name,
-              value: occupant.id,
-              icon: occupant.picture || empty,
-            }))}
-            className="md:flex-1 md:max-w-[300px]"
-            onChange={(value) => handleSelectId(value)}
-            disabled={disableInput}
-          />
-          <Modal>
-            <ModalTrigger asChild>
-              <Button size="16_bold" className="py-2 px-6">
-                Choose With ID
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <AddOccupantWithId onTenantIdSelect={handleTenantIdFromModal} />
-            </ModalContent>
-          </Modal>
+          <div className="select-tenant-with-dropdown">
+            <SelectWithImage
+              id={`available_${isRental ? "tenant" : "occupant"}`}
+              label={`Choose Available ${isRental ? "Tenant" : "Occupant"}`}
+              options={occupants.map((occupant) => ({
+                label: occupant.name,
+                value: occupant.id,
+                icon: occupant.picture || empty,
+              }))}
+              className="md:flex-1 md:max-w-[300px]"
+              onChange={(value) => handleSelectId(value)}
+              disabled={disableInput}
+            />
+          </div>
+          <div className="select-tenant-using-id">
+            <Modal>
+              <ModalTrigger asChild>
+                <Button size="16_bold" className="py-2 px-6">
+                  Choose With ID
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <AddOccupantWithId onTenantIdSelect={handleTenantIdFromModal} />
+              </ModalContent>
+            </Modal>
+          </div>
         </div>
         <div className="block lg:hidden">
           <MatchedProfile
@@ -250,7 +255,7 @@ export const ProfileForm: React.FC<{
         Start {isRental ? "Rent" : "Counting"}
       </RentSectionTitle>
       <div className="h-[1px] bg-[#C0C2C8] mb-4" />
-      <div className="grid grid-cols-2 gap-4">
+      <div className="start-rent-start-and-end-date grid grid-cols-2 gap-4">
         <DateInput
           id="start date"
           label="Start Date"
@@ -267,7 +272,7 @@ export const ProfileForm: React.FC<{
           className="opacity-50"
         />
       </div>
-      <div className="flex items-center justify-start gap-4 flex-wrap">
+      <div className="checkbox-options flex items-center justify-start gap-4 flex-wrap">
         {checkboxOptions.map(({ label, key }) => (
           <Checkbox
             sm

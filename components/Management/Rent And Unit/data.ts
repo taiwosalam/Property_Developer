@@ -127,7 +127,7 @@ export const defaultChecks: CheckBoxOptions = {
 };
 
 export const getEstateData = (estate_data: any) => {
-  console.log("estate_data passed down", estate_data);
+  console.log("You see it here", estate_data)
   if (!estate_data) {
     return [
       { label: "Property Title", value: "-- --" },
@@ -159,7 +159,7 @@ export const getEstateData = (estate_data: any) => {
 };
 
 export const getPropertyEstateData = (estate_data: any) => {
-  console.log("estate_data passed down", estate_data);
+  console.log("estate_data passed down here you og", estate_data);
   if (!estate_data) {
     return [
       { label: "Property Title", value: "-- --" },
@@ -175,17 +175,17 @@ export const getPropertyEstateData = (estate_data: any) => {
   }
 
   return [
-    { label: "Property Title", value: estate_data.property_name ?? "-- --" },
-    { label: "State", value: estate_data.state ?? "-- --" },
+    { label: "Property Title", value: estate_data?.property_title ?? "-- --" },
     {
-      label: "Local Government",
-      value: estate_data.local_government ?? "-- --",
+      label: "Full Address",
+      value: `${estate_data?.address ?? "--- ---"}, ${
+        estate_data?.localGovernment ?? "--- ---"
+      }, ${estate_data?.state ?? "--- ---"},`,
     },
-    { label: "Full Address", value: estate_data.address ?? "-- --" },
-    { label: "Branch", value: estate_data.branch ?? "-- --" },
-    { label: "Account Officer", value: estate_data.account_officer ?? "-- --" },
+    { label: "Branch", value: estate_data.branchName ?? "-- --" },
+    { label: "Account Officer", value: estate_data.accountOfficer ?? "-- --" },
     { label: "Description", value: estate_data.description ?? "-- --" },
-    { label: "Categories", value: estate_data.category ?? "-- --" },
+    { label: "Categories", value: estate_data.categories ?? "-- --" },
     { label: "Unit ID", value: estate_data.id ?? "-- --" },
   ];
 };

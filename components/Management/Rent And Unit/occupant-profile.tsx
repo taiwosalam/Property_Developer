@@ -32,13 +32,21 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
         <OccupantProfileLoading />
       ) : (
         <div className="pt-6 space-y-4">
-          <RentSectionTitle>
-            {isRental ? "Tenant" : "Occupant"} Profile
-          </RentSectionTitle>
           <div className="lg:flex lg:gap-10">
             {/* Left Column */}
             <div className="lg:w-3/5 space-y-5">
+              <FeeBreakdown
+                id={id}
+                total_package={total_package}
+                feeDetails={feeDetails}
+                isRental={isRental}
+                currency={currency || "naira"}
+              />
+              <RentSectionTitle>
+                {isRental ? "Tenant" : "Occupant"} Profile
+              </RentSectionTitle>
               <div className="h-[2px] bg-[#C0C2C8] opacity-20" />
+
               <ProfileForm
                 period={period as RentPeriod}
                 setSelectedCheckboxOptions={setSelectedCheckboxOptions}
@@ -49,13 +57,6 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 setDueDate={setDueDate}
                 currency={currency || "naira"}
                 disableInput={disableInput}
-              />
-              <FeeBreakdown
-                id={id}
-                total_package={total_package}
-                feeDetails={feeDetails}
-                isRental={isRental}
-                currency={currency || "naira"}
               />
             </div>
 

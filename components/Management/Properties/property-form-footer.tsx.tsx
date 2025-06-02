@@ -45,7 +45,7 @@ const PropertyFormFooter: React.FC<{
   };
 
   return (
-    <>
+    <div className="property-footer-action-buttons">
       {editMode && (
         <Button
           size="sm_medium"
@@ -129,7 +129,7 @@ const PropertyFormFooter: React.FC<{
           </>
         )}
       </FixedFooter>
-    </>
+    </div>
   );
 };
 
