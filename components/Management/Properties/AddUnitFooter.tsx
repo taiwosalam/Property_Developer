@@ -163,7 +163,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
   };
 
   return (
-    <FixedFooter className="flex items-center justify-end gap-10">
+    <FixedFooter className="unit-footer-actions flex items-center justify-end gap-10">
       <Modal state={{ isOpen: footerModalOpen, setIsOpen: setFooterModalOpen }}>
         <ModalContent>
           <FooterModal noForm={noForm} />

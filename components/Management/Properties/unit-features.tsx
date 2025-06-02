@@ -43,7 +43,7 @@ const UnitFeatures = () => {
   const isRental = propertyType === "rental";
 
   return (
-    <div>
+    <div className="unit-features-wrapper">
       <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
         Units Features
       </h4>

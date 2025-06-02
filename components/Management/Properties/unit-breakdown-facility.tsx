@@ -118,7 +118,7 @@ const UnitBreakdownFacility = () => {
   }, [formResetKey, initialFormValues, unitData?.other_charge]);
 
   return (
-    <div>
+    <div className="unit-fee-breakdown-new-tenant">
       <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
         Unit Fee Breakdown
       </h4>
