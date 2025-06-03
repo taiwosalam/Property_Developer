@@ -23,8 +23,6 @@ const RenewalFee = ({
       (Number(unitData?.agency_fee || 0) / 100)
     : 0;
 
-  console.log("unitData got herew", unitData);
-
   const feeDetails: FeeDetail[] = [
     {
       name: isRental ? "Rent" : "Fee",
@@ -55,14 +53,24 @@ const RenewalFee = ({
 
   const TOTAL_FEE = Number(unitData.renewalTenantTotalPrice as any);
 
-  // Format TOTAL_FEE --> Already calculated while creating prroperty
-  // const TOTAL_FEE = shouldChargeTenantAgencyFee
-  //   ? Number(unitData.renewalTenantTotalPrice) + agencyFeeAmount
-  //   : Number(unitData.renewalTenantTotalPrice) || 0;
-
+  // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g renewal-rent-wrapper💀💀💀👿
   return (
     <div className="space-y-6">
-      <div className="flex gap-1 flex-col">
+      <div className="renewal-rent-wrapper">
+        <RentSectionTitle>
+          {isRental ? "Renewal Rent" : "Renewal Fee"}
+        </RentSectionTitle>
+        <FeeDetails
+          title={isRental ? "Breakdown" : "Annual Fee"}
+          feeDetails={feeDetails}
+          // total_package={Number(unitData.renewalTenantTotalPrice)}
+          total_package={TOTAL_FEE}
+          id={unitData.propertyId as string}
+          currency={currency}
+          noEdit
+        />
+      </div>
+      <div className="flex gap-1 flex-col renew-rent-option-container">
         <div className="flex gap-2">
           <RentSectionTitle>
             {isRental ? "Renewal Rent" : "Renewal Fee"}
@@ -78,8 +86,8 @@ const RenewalFee = ({
           payment of the total amount.
         </p>
       </div>
-      {isUpfrontPaymentChecked && (
-        <FeeDetails
+      {/* {isUpfrontPaymentChecked && ( */}
+      {/* <FeeDetails
           title={isRental ? "Breakdown" : "Annual Fee"}
           feeDetails={feeDetails}
           // total_package={Number(unitData.renewalTenantTotalPrice)}
@@ -87,8 +95,8 @@ const RenewalFee = ({
           id={unitData.propertyId as string}
           currency={currency}
           noEdit
-        />
-      )}
+        /> */}
+      {/* )} */}
     </div>
   );
 };

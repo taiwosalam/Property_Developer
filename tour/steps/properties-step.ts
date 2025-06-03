@@ -4,7 +4,8 @@ export const welcomeStep: TourStep = {
   target: "body",
   content:
     "Discover key features and learn how to make the most of your dashboard. You can skip the tour or let us guide you through the essentials:",
-  placement: "left",
+  // placement: "left",
+  placement: "center",
   title: "Would you like to take a tour?",
   disableBeacon: true,
 };

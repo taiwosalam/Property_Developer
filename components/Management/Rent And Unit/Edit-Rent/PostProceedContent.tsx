@@ -9,8 +9,9 @@ import {
   RentPreviousRecords,
   calculateBalance,
   getEstateData,
-  getEstateSettingsDta,
   getPropertyEstateData,
+  // getEstateSettingsDta,
+  // getPropertyEstateData,
 } from "@/components/Management/Rent And Unit/data";
 import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent } from "@/components/Modal/modal";
@@ -38,8 +39,13 @@ import useFetch from "@/hooks/useFetch";
 import dayjs from "dayjs";
 import { formatNumber } from "@/utils/number-formatter";
 import { toast } from "sonner";
-import { getPropertySettingsData, getRentalData } from "./data";
-import { switchUnit } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/data";
+// import { getPropertySettingsData, getRentalData } from "./data";
+import {
+  getEstateSettingsData,
+  getPropertySettingsData,
+  getRentalData,
+  switchUnit,
+} from "@/app/(nav)/management/rent-unit/[id]/edit-rent/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
@@ -51,6 +57,7 @@ import { ProceedPreviousUnitBalance } from "../change-property/previous-unit";
 import { ProceedPayAble } from "../change-property/payable";
 import { extractBalanceDates } from "../change-property/data";
 import { AgreementPreview } from "@/components/Modal/tenant-document";
+import { useTourStore } from "@/store/tour-store";
 
 const PostProceedContent = ({
   selectedUnitId,
@@ -61,6 +68,7 @@ const PostProceedContent = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setShouldRenderTour, setPersist, isTourCompleted } = useTourStore();
   const {
     occupant,
     propertyData,
@@ -133,7 +141,6 @@ const PostProceedContent = ({
     }
   }, [apiData, setUnitData]);
 
-
   // Extract and save startDate and dueDate
   useEffect(() => {
     if (unitData && (unitBalance?.data || startDate)) {
@@ -142,8 +149,7 @@ const PostProceedContent = ({
         unitData.fee_period || "yearly",
         startDate
       );
-
-      console.log("Extracted date:", { start_date, due_date });
+      // console.log("Extracted date:", { start_date, due_date });
 
       // Save to store if different
       if (start_date && startDate !== start_date) {
@@ -155,19 +161,36 @@ const PostProceedContent = ({
     }
   }, [unitBalance, unitData, startDate, setStartDate, setDueDate]);
 
+  // TOUR LOGIC
+  useEffect(() => {
+    if (loading || !unitData) {
+      setShouldRenderTour(false);
+      return;
+    }
+
+    setPersist(false); // Persist to true PostProceedUnitTour completion
+    if (!isTourCompleted("PostProceedUnitTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [loading, unitData, setShouldRenderTour, setPersist, isTourCompleted]);
+
   const balance =
     unitBalance?.data?.map((record: any) => ({
       ...record,
       amount_paid: `₦${formatNumber(record.amount_paid) || 0}`,
       start_date: record.start_date
-        ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+        ? // ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+          record.start_date
         : null,
       due_date: record.due_date
-        ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+        ? // ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+          record.due_date
         : null,
-      payment_date: record.payment_date
-        ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
-        : null,
+      payment_date: record.payment_date ? record.payment_date : null,
     })) || [];
 
   const startday = balance?.[0]?.start_date;
@@ -200,43 +223,23 @@ const PostProceedContent = ({
   const balanceLabel = isExcess ? "Client Excess" : "Refund Client";
   const showBalanceCard = totalPayable < 0 || isExcess;
 
+  console.log("propertyData", propertyData)
+
   const currentUnitAmt = formatFee(newUnitTotal, unitData?.currency || "naira");
 
   const rentalData = getRentalData(isUnit ? currentUnit : propertyData);
   const propertySettingsData = getPropertySettingsData(
     isUnit ? currentUnit : propertyData
   );
-  const PropertyPageEstateData = getPropertyEstateData(propertyData);
+  // const PropertyPageEstateData = getPropertyEstateData(propertyData);
+  const PropertyPageEstateData = getPropertyEstateData(unitData);
   const UnitPageEstateData = getEstateData(currentUnit);
   const estateData = isUnit ? UnitPageEstateData : PropertyPageEstateData;
   // const estateData = getEstateData(isUnit ? currentUnit : propertyData);
 
-  const estateSettingsDta = getEstateSettingsDta(
+  const estateSettingsDta = getEstateSettingsData(
     isUnit ? currentUnit : propertyData
   );
-
-  // const handleSwitchUnit = async () => {
-  //   const id = balance[0].id;
-  //   const data = {
-  //     new_unit_id: selectedUnitId,
-  //     calculation: calculation ? 1 : 0,
-  //     deduction: deduction ? 1 : 0,
-  //     payment_date: startDate,
-  //   };
-  //   try {
-  //     setReqLoading(true);
-  //     const res = await switchUnit(id as string, objectToFormData(data));
-  //     if (res) {
-  //       setModalIsOpen(true);
-  //       toast.success("Unit Switched Successfully");
-  //       router.push("/management/rent-unit");
-  //     }
-  //   } catch (err) {
-  //     toast.error("Failed to switch Unit, please try again");
-  //   } finally {
-  //     setReqLoading(false);
-  //   }
-  // };
 
   const handleSwitchUnit = async () => {
     if (!selectedUnitId || !balance[0]?.id) {
@@ -319,6 +322,7 @@ const PostProceedContent = ({
       <BackButton>
         {page === "unit" ? "Change Unit" : "Change Property Unit"}
       </BackButton>
+
       <section className="space-y-6">
         <EstateDetails
           title={`${isRental ? "Property" : "Estate"} Details`}
@@ -332,13 +336,16 @@ const PostProceedContent = ({
           {...(isRental ? { gridThree: true } : {})}
           id={propertyId as string}
         />
-
-        <ProceedPreviousUnitBalance />
+        <div className="previous-unit-balance">
+          <ProceedPreviousUnitBalance />
+        </div>
         <div className="pt-6 lg:flex lg:gap-10 space-y-8">
           <div className="lg:w-3/5 space-y-8">
             <ChangePropertyNewUnitCost id={unitData?.id} />
+            <div className="calculation-toggle">
+              <ProceedPreviousUnitBalance title="Calculations" workings />
+            </div>
 
-            <ProceedPreviousUnitBalance title="Calculations" workings />
             <ProceedPayAble />
             <StartRent
               isRental={isRental}
@@ -348,7 +355,7 @@ const PostProceedContent = ({
               setStart_Date={(date) => setStartDate(date)}
             />
           </div>
-          <div className="lg:flex-1 lg:!mt-[52px]">
+          <div className="matched-profile-container lg:flex-1 lg:!mt-[52px]">
             <MatchedProfile occupant={occupant} title="User Profile" />
           </div>
         </div>

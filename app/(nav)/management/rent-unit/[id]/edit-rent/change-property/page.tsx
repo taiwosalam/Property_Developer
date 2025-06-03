@@ -75,8 +75,16 @@ const ChangePropertyPage: React.FC = () => {
   if (!propertyData) return <div>No property data found</div>;
 
   if (step1Done) {
-    return <PostProceedContent selectedUnitId={selectedUnitId as string} />;
+    return (
+      <PostProceedContent
+        selectedUnitId={selectedUnitId as string}
+        page="property"
+      />
+    );
   }
+
+
+  console.log("propertyData", propertyData)
 
   const isRental = propertyData.isRental;
 
@@ -133,6 +141,12 @@ const ChangePropertyPage: React.FC = () => {
       </div>
 
       <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle>
+      <div className="my-2">
+        <p>
+          Select the new unit you wish to move into by toggling the desired
+          unit, then click &apos;Proceed&apos; to continue to the next step
+        </p>
+      </div>
       <section className="space-y-4">
         {filteredUnits.length > 0 ? (
           filteredUnits.map((u, index) => (

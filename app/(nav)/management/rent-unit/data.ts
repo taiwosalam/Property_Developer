@@ -983,6 +983,7 @@ export interface initDataProps {
 // ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
+  // console.log("unit response", data);
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   const current_records = response.data.current_records;
@@ -1045,6 +1046,9 @@ export const transformUnitData = (response: any) => {
     property_state: data.property.state,
     property_address: `${data.property.full_address}, ${data.property.city_area} ${data.property.local_government}, ${data.property.state}`,
     propertyId: data.property.id,
+    requestCallBack: convertToYesNo(Number(data.property.request_call_back)),
+    vehicleRecord: convertToYesNo(Number(data.property.vehicle_record)),
+    bookVisitor: convertToYesNo(Number(data.property.book_visitors)),
     total_package: data.total_package,
     en_suit: data.en_suit,
     prepaid: data.prepaid,

@@ -98,13 +98,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     propertySettings?.coordinate || ""
   );
 
-
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },
     { label: "Keep it with Manager", value: "Company" },
     { label: "Escrow it", value: "Admin" },
     { label: "None", value: "Null" },
-  ]
+  ];
 
   const {
     state: selectedState,
@@ -334,13 +333,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }
   }, []);
 
-
   if (requestLoading) {
-    return (
-      <FullPageLoader
-        text="Submitting..."
-      />
-    );
+    return <FullPageLoader text="Submitting..." />;
   }
 
   return (
@@ -361,7 +355,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       >
         <div className="max-w-[970px] scroll-mt-[160px]" ref={scrollTargetRef}>
           <input name="property_type" type="hidden" value={formType} />
-          <div className="mb-5 lg:mb-8">
+          <div className="mb-5 lg:mb-8 property-picture-upload-wrapper">
             <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
               Set{" "}
               {formType === "rental"
@@ -419,7 +413,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </DragDropContext>
           </div>
           {formType === "rental" && (
-            <div className="md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="youtube-video-link-wrapper md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
               <Input
                 id="video_link"
                 label="Video Link"
@@ -454,6 +448,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               id="category"
               label="Category"
               isSearchable={false}
+              className="property-category-wrapper"
               inputContainerClassName="bg-white"
               resetKey={resetKey}
               required
@@ -474,6 +469,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               }
               inputClassName="bg-white dark:bg-darkText-primary rounded-[8px] property-form-input"
               required
+              className="property-name-wrapper"
               defaultValue={
                 editMode ? propertyDetails?.property_title : undefined
               }
@@ -483,6 +479,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               options={getAllStates()}
               label="State"
               value={selectedState}
+              className="property-state-wrapper "
               inputContainerClassName="bg-white"
               onChange={(state) => setPropertyState({ state })}
               required
@@ -514,6 +511,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               label="Street Name/Number"
               inputClassName="bg-white rounded-[8px] property-form-input"
               required
+              className="property-street-wrapper"
               defaultValue={
                 editMode ? propertyDetails?.full_address : undefined
               }
@@ -533,6 +531,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 label="Landlord"
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
+                className="property-landlord-wrapper"
                 defaultValue={
                   editMode && propertyDetails?.land_lord_id
                     ? landlordOptions.find(
@@ -558,6 +557,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 id="branch_id"
                 required
                 label="Branch"
+                className="property-branch-wrapper"
                 resetKey={resetKey}
                 options={branchOptions}
                 inputContainerClassName="bg-white"
@@ -602,6 +602,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   label="Inventory"
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
+                  className="property-inventory-wrapper"
                   hiddenInputClassName="property-form-input"
                   placeholder={
                     inventoryLoading
@@ -610,7 +611,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       ? "Error loading inventories"
                       : "Select inventory"
                   }
-                  // error={inventoryError}
                 />
               </>
             )}
@@ -629,6 +629,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 }
                 id="account_officer_id"
                 label="Account Officer"
+                className="property-officer-wrapper"
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
                 hiddenInputClassName="property-form-input"
@@ -643,7 +644,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 disabled={branchData.accountOfficer.loading}
               />
             )}
-            <div className="bg-transparent flex flex-col gap-2 self-end">
+            <div className="property-staff-wrapper bg-transparent flex flex-col gap-2 self-end">
               <label className="text-text-label dark:text-darkText-2">
                 Staff
               </label>
@@ -679,7 +680,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   ? "Facility Description"
                   : "Estate/Facility Description"
               }
-              className="md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent"
+              className="property-description-wrapper md:col-span-2 lg:col-span-3 dark:text-white !dark:bg-transparent"
               placeholder="Write here"
               resetKey={resetKey}
               required={!isFacility}
@@ -724,6 +725,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
+              className="property-agency-fee-wrapper"
               hiddenInputClassName="property-form-input"
               defaultValue={
                 editMode && formType === "rental"
@@ -740,6 +742,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   options={["landlord", "tenants", "both", "none"]}
                   label="Who to pay Agency Fee (New Rent)"
                   isSearchable={false}
+                  className="property-new-agency-fee-wrapper"
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
                   requiredNoStar
@@ -752,6 +755,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 />
                 <Select
                   id="who_to_charge_renew_tenant"
+                  className="property-renew-agency-fee-wrapper"
                   options={["landlord", "tenants", "both", "none"]}
                   label="Who to pay Agency Fee (Renewal Rent)"
                   isSearchable={false}
@@ -769,6 +773,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   options={CautionDepositOptions}
                   isSearchable={false}
                   id="caution_deposit"
+                  className="property-caution-deposit-wrapper"
                   label="Caution Deposit"
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
@@ -789,6 +794,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
+              className="property-group-chat-wrapper"
               hiddenInputClassName="property-form-input"
               defaultValue={
                 editMode
@@ -806,6 +812,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
+              className="property-penalty-wrapper"
               hiddenInputClassName="property-form-input"
               defaultValue={
                 editMode && formType === "rental"
@@ -821,6 +828,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               label="Request Call Back"
               isSearchable={false}
               inputContainerClassName="bg-white"
+              className="property-request-call-back-wrapper"
               resetKey={resetKey}
               requiredNoStar
               hiddenInputClassName="property-form-input"
@@ -833,6 +841,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               id="book_visitors"
               label="Book Visitors"
               isSearchable={false}
+              className="property-book-visitors-wrapper"
               inputContainerClassName="bg-white"
               resetKey={resetKey}
               requiredNoStar
@@ -848,6 +857,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             <Select
               options={["yes", "no"]}
               id="vehicle_record"
+              className="property-vehicle-records-wrapper"
               label="Vehicle Records"
               isSearchable={false}
               inputContainerClassName="bg-white"
@@ -859,6 +869,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             <Select
               options={["yes", "no"]}
               id="active_vat"
+              className="property-active-vat-wrapper"
               label="Activate 7.5% VAT"
               isSearchable={false}
               inputContainerClassName="bg-white"
@@ -877,6 +888,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               }))}
               id="currency"
               label="Currency"
+              className="property-currency-wrapper"
               isSearchable={false}
               inputContainerClassName="bg-white"
               resetKey={resetKey}
@@ -952,13 +964,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           </div>
         </div>
 
-        <PropertyFormFooter
-          editMode={editMode}
-          handleReset={handleReset}
-          requestLoading={requestLoading}
-          propertyId={propertyId}
-          onAddUnit={onAddUnit}
-        />
+        <div className="create-property-form-footer">
+          <PropertyFormFooter
+            editMode={editMode}
+            handleReset={handleReset}
+            requestLoading={requestLoading}
+            propertyId={propertyId}
+            onAddUnit={onAddUnit}
+          />
+        </div>
       </AuthForm>
     </FlowProgress>
   );

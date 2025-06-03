@@ -66,8 +66,9 @@ export const ProceedPayAble: React.FC = () => {
   //     ? subtitles.excess
   //     : subtitles.refund;
 
+   // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g payment-status-wrapper💀💀💀👿
   return (
-    <div className="space-y-1">
+    <div className="payment-status-wrapper space-y-1">
       <RentSectionTitle>Payment Status</RentSectionTitle>
       <p className="text-sm">• {subtitle}</p>
       <div className="mt-2">

@@ -28,6 +28,9 @@ const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
   "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
     border: "1px solid #C1C2C366",
   },
+  "& .Mui-disabled": {
+    color: "#FFF", 
+  },
 }));
 
 interface CustomDatePickerProps {
@@ -96,11 +99,17 @@ export default function CustomDatePicker({
               name: inputId,
               id: inputId,
               inputProps: {
-                className: `date-input dark:bg-darkText-primary dark:text-white ${inputClassName}`,
+                className: `date-input dark:bg-darkText-primary dark:text-white ${
+                  disabled ? "text-red-500" : ""
+                } ${inputClassName}`,
                 sx: {
                   height: "unset",
                   paddingTop: "13px",
                   paddingBottom: "13px",
+                  ...(disabled && {
+                    color: "#FFF !important", 
+                    WebkitTextFillColor: "#FFF !important", 
+                  }),
                 },
               },
             },

@@ -19,7 +19,7 @@ const EstateSettings = ({
 }) => {
   return (
     <div
-      className="py-6 px-6 bg-white dark:bg-darkText-primary rounded-md space-y-4"
+      className="estate-settings-wrapper py-6 px-6 bg-white dark:bg-darkText-primary rounded-md space-y-4"
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
     >
       <RentSectionTitle>{title}</RentSectionTitle>

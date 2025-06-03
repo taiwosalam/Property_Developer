@@ -18,6 +18,7 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import ServerError from "@/components/Error/ServerError";
 import BackButton from "@/components/BackButton/back-button";
 import PostProceedContent from "@/components/Management/Rent And Unit/Edit-Rent/PostProceedContent";
+import { useTourStore } from "@/store/tour-store";
 
 const SelectUnitPage = () => {
   const searchParams = useSearchParams();
@@ -82,6 +83,13 @@ const SelectUnitPage = () => {
       <BackButton>
         {isRental ? "Change Tenant's Unit" : "Change Occupant's Unit"}
       </BackButton>
+      <div className="my-3">
+        <p>
+          Select the new unit you wish to move into by toggling the desired
+          unit, then click &apos;Proceed&apos; to continue to the next step
+        </p>
+      </div>
+
       {/* <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle> */}
       <div className="space-y-4">
         {unitOptions.length === 0 ? (

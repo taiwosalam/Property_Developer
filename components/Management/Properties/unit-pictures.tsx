@@ -48,7 +48,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   }, [formResetKey, resetImages]);
 
   return (
-    <div ref={ref} className={clsx("scroll-mt-[160px]", isEditing && "!mt-0")}>
+    <div ref={ref} className={clsx("unit-form-pictures-wrapper scroll-mt-[160px]", isEditing && "!mt-0")}>
       <h4 className="flex items-center text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
         {propertyType === "rental" && <span className="text-red-500">*</span>}
         Unit Pictures

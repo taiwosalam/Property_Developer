@@ -6,6 +6,7 @@ import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs, { Dayjs } from "dayjs";
 import { calculateDueDate, CheckBoxOptions } from "../data";
 import { useRenewRentContext } from "@/utils/renew-rent-context";
+import Button from "@/components/Form/Button/button";
 
 interface CheckboxStates {
   create_invoice: boolean;
@@ -19,10 +20,14 @@ export const RenewalRent = ({
   setStartDate,
   setDueDate,
   setSelectedCheckboxOptions,
+  loading,
+  action,
 }: {
   setStartDate: (date: Dayjs | null) => void;
   setDueDate: (date: Dayjs | null) => void;
   setSelectedCheckboxOptions: (options: CheckBoxOptions) => void;
+  loading?: boolean;
+  action: () => void;
 }) => {
   const {
     isRental,
@@ -132,11 +137,8 @@ export const RenewalRent = ({
   }
 
   return (
-    <div>
-      <RentSectionTitle>
-        {isRental ? "Renew Rent" : "Renewal Fee"}
-      </RentSectionTitle>
-      <SectionSeparator className="mt-4 mb-6" />
+    <div className="renew-rent-date-checkboxoptions-wrapper">
+      <SectionSeparator className="mt-4" />
       <div className="grid grid-cols-2 gap-4 mb-8">
         <DateInput
           id="payment_date"
@@ -145,16 +147,8 @@ export const RenewalRent = ({
           value={startDate}
           onChange={setStartDate}
         />
-        {/* <DateInput
-          id="due_date"
-          label="Due Date"
-          value={localDueDate}
-          disabled
-          className="opacity-50"
-        /> */}
       </div>
-      <div className="flex items-center justify-start gap-4 flex-wrap mb-4">
-        {/* {visibleCheckboxOptions.map(({ label, key }) => ( */}
+      <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
         {checkboxOptions.map(({ label, key }) => (
           <Checkbox
             sm
@@ -172,6 +166,7 @@ export const RenewalRent = ({
             {label}
           </Checkbox>
         ))}
+
         {startDate?.isBefore(dayjs(), "day") ? (
           <div className="custom-flex-col gap-1">
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
@@ -227,6 +222,16 @@ export const RenewalRent = ({
             )}
           </div>
         )}
+
+        <Button
+          size="base_medium"
+          className="py-2 px-6"
+          onClick={action}
+          type="button"
+          disabled={loading}
+        >
+          {loading ? "Please wait..." : "Update"}
+        </Button>
       </div>
     </div>
   );

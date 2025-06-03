@@ -18,6 +18,7 @@ import AddUnitFooter from "@/components/Management/Properties/AddUnitFooter";
 import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
 import { UnitTypeKey } from "@/data";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
+import { useTourStore } from "@/store/tour-store";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
@@ -25,6 +26,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const router = useRouter();
   const [dataNotFound, setDataNotFound] = useState(false);
   const [showUnitForm, setShowUnitForm] = useState(true);
+  const { setShouldRenderTour, setPersist, isTourCompleted } = useTourStore();
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
@@ -47,13 +49,27 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const [clickedNo, setClickedNo] = useState(false);
 
-  
   const resetForm = () => {
     setImages([]);
     setImageFiles([]);
     setUnitType("");
     setFormResetKey((prev) => prev + 1);
   };
+
+  useEffect(() => {
+    if (!loading && propertyData) {
+      setPersist(false);
+      if (!isTourCompleted("AddUnitTour")) {
+        setShouldRenderTour(true);
+      } else {
+        setShouldRenderTour(false);
+      }
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [loading, propertyData, setShouldRenderTour, setPersist, isTourCompleted]);
 
   useEffect(() => {
     if (propertyData) {
@@ -131,7 +147,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           <PageProgressBar
             breakpoints={[25, 50, 75]}
             percentage={37}
-            className="mb-[52px]"
+            className="mb-[52px] add-unit-flowgress"
           />
           <div className="space-y-6 lg:space-y-8">
             <PropertyDetails heading="Property Details" />

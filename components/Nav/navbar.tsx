@@ -447,14 +447,15 @@ const Header = () => {
                 />
               </Link>
             </div>
-            <button
+            {/* FIX MODE TOGGLE LATER - CONFLICTING WITH THE SETTIGS APPEARANCE TOGGLE */}
+            {/* <button
               type="button"
               aria-label="theme-toggle"
               onClick={toggleTheme}
               className={`nav-theme-toggle ${lgIconsInteractionClasses}`}
             >
               {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
