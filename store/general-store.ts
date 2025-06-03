@@ -35,6 +35,7 @@ import {
 } from "@/app/(nav)/settings/company/data";
 import { StaffChatTypes } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/type";
 import { PropertyCardProps } from "@/components/Management/Properties/property-card";
+import { IVisitorsReportPageData } from "@/app/(nav)/reports/visitors/data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -47,7 +48,7 @@ interface GlobalStoreState {
   rents?: Rent[];
   emails?: EmailPageData;
   overduePeriods: number | null;
-
+  visitorsRequest: IVisitorsReportPageData | null;
   staffChats: any | null;
 
   rentStartDate: string | null;
@@ -159,7 +160,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setIsValidDateRange: (isValid: boolean) => set({ isValidDateRange: isValid }),
   currentRentStats: null,
   timeRange: "last_30_days",
-
+  visitorsRequest: null,
   overduePeriods: null,
   staffChats: null,
   

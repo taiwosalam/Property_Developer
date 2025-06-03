@@ -155,9 +155,10 @@ export const createNewTeamChat = async (data: FormData) => {
   }
 };
 
+// group-chats/3/members
 export const addUserToGroup = async (groupId: string, data: FormData) => {
   try {
-    const response = await api.post(`group-chat/${groupId}/add-users`, data);
+    const response = await api.post(`group-chats/${groupId}/members`, data);
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetch_team_chat"));
       toast.success("Member added successfully");
@@ -180,7 +181,7 @@ export const updateGroupNameAndDescription = async (
       `group-chat/${groupId}?description=${description}&name=${name}`
     );
     if (response.status === 200 || response.status === 201) {
-      window.dispatchEvent(new Event("refetch_team_chat"));
+      window.dispatchEvent(new Event("refetchTeamChat"));
       toast.success("Updated successfully");
       return response;
     }
@@ -222,11 +223,12 @@ export const deleteMember = async (groupId: string, userId: string) => {
 export const updateGroupNameOrDescription = async (
   groupId: number,
   name: string,
-  description: string
+  description: string,
+  picture: string
 ) => {
-  const endpoint = `group-chat/${groupId}?description=${description}&name=${name}`;
+  const endpoint = `group-chats/${groupId}?description=${description}&name=${name}&picture=${picture}`;
   try {
-    const response = await api.patch(endpoint);
+    const response = await api.put(endpoint);
     if (response.status === 201 || response.status === 200) {
       toast.success("Name & description updated");
       window.dispatchEvent(new Event("refetchTeamChat"));
@@ -252,14 +254,14 @@ export const updateGroupAvatar = async (data: FormData) => {
   }
 };
 
-//http://127.0.0.1:8000/api/v1/group-chat/2/remove-users
-export const removeGroupMember = async (groupId: number, data: any) => {
+export const removeGroupMember = async (groupId: number, userId: number) => {
   try {
-    const response = await api.post(`group-chats/${groupId}/members`, data);
+    const response = await api.delete(
+      `group-chats/${groupId}/members?user_ids[]=${userId}`
+    ); // Append user_ids as a query parameter
     if (response.status === 201 || response.status === 200) {
-      toast.success("Deleted");
       window.dispatchEvent(new Event("refetchTeamChat"));
-      return response;
+      return true;
     }
   } catch (error) {
     handleAxiosError(error);

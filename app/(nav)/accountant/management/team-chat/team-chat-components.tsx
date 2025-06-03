@@ -55,7 +55,7 @@ export const About = ({ about }: IAboutTeamChat) => {
   const router = useRouter();
   const { id } = useParams();
 
-  const [groupImage, setGroupImage] = useState<string | null>(
+  const [groupImage, setGroupImage] = useState<string>(
     about?.picture || ""
   );
   const [groupName, setGroupName] = useState<string>(about?.group_name || "");
@@ -80,7 +80,7 @@ export const About = ({ about }: IAboutTeamChat) => {
   const updateNameOrDescription = async () => {
     if(!about?.id) return;
     try {
-      await updateGroupNameOrDescription(about?.id, groupName, groupDescription);
+      await updateGroupNameOrDescription(about?.id, groupName, groupDescription, groupImage);
     } catch (error) {
       console.error(error);
     }

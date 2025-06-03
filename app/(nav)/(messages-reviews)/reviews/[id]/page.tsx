@@ -15,6 +15,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ReviewResponseApi } from "./types";
 import { ISingleReview, transformSingleReview } from "../data";
+import ReplyComment from "@/components/Review/reply-comments";
 
 const ReviewChat = () => {
   const router = useRouter();
@@ -34,6 +35,8 @@ const ReviewChat = () => {
     }
   }, [data]);
 
+  console.log(review?.main);
+
   return (
     <>
       <div className="py-4 px-6 bg-neutral-2">
@@ -48,10 +51,13 @@ const ReviewChat = () => {
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white custom-flex-col">
         <Review {...review?.main} main />
+
+        {review?.replies?.comments?.map((comment) => (
+          <ReplyComment key={comment.id} {...comment} />
+        ))}
         {/* {message_card_data.map((item, index) => {
           return <Review {...item} key={index}/>;
         })} */}
-
       </div>
     </>
   );

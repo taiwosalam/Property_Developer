@@ -1,6 +1,8 @@
 import { empty } from "@/app/config";
 import { GroupChatDetailsResponse } from "./types";
 import dayjs from "dayjs";
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
 
 export interface IChatDetailsPage {
   about: {
@@ -41,4 +43,26 @@ export const transformTeamDetails = (
       role: "director",
     })),
   };
+};
+
+export const sendTeamMessage = async (groupId: string, message: string) => {
+  const payload = {
+    content_type: "text",
+    content: message,
+  };
+  try {
+    const res = await api.post(
+      `/group-chats/${groupId}/messages`,
+      payload
+    );
+    if (res.status === 200 || res.status === 201) {
+      toast.success("Message sent!");
+      window.dispatchEvent(new Event("refetchTeam"));
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+    handleAxiosError(error);
+    return false;
+  }
 };

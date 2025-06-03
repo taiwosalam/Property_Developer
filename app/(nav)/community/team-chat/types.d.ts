@@ -170,7 +170,7 @@ type GroupData = {
   picture: string | null;
   description: string;
   unread_count: number;
-  latest_message: MessageData[] | null;
+  latest_message: Latest | null;
   members: {
     count: number;
     list: Member[];
@@ -180,6 +180,18 @@ type GroupData = {
   privacy: "private" | "public" | string;
   realtime_channel: string;
   created_at: string; // ISO datetime string
+};
+
+type LatestMessage = {
+  id: number;
+  content: string;
+  type: "text" | "file" | "image" | "audio";
+  sender: {
+    id: number;
+    name: string;
+  };
+  sent_at: string;
+  is_edited: false;
 };
 
 type MessageData = {

@@ -1,4 +1,9 @@
-import { TeamChatResponseData, TeamChatUsersResponse, UsersResponse } from "./types";
+import dayjs from "dayjs";
+import {
+  TeamChatResponseData,
+  TeamChatUsersResponse,
+  UsersResponse,
+} from "./types";
 
 export interface IMemberList {
   members: {
@@ -34,23 +39,23 @@ export interface IGroupChatCard {
     content_type: string;
   }[];
 }
-export const transformGroupChatListData = (res: TeamChatResponseData): IGroupChatCard => {
-  const { data } = res
+export const transformGroupChatListData = (
+  res: TeamChatResponseData
+): IGroupChatCard => {
+  const { data } = res;
   return {
     group_count: data?.group_count,
-    team: data.groups.map((item) => (
-      {
-        id: item?.id.toString(),
-        pfp: item?.picture,
-        desc: item?.latest_message ? item?.latest_message[0]?.content : "New message from director",
-        time: item?.latest_message ? item?.latest_message[0]?.time : "12:00pm",
-        fullname: item?.name,
-        verified: false,
-        messages: item?.latest_message ? item?.latest_message.length : 2,
-        content_type: "text"
-      }
-    ))
-  }
-
-
-}
+    team: data.groups.map((item) => ({
+      id: item?.id.toString(),
+      pfp: item?.picture,
+      desc: item?.latest_message ? item?.latest_message?.content : "",
+      time: item?.latest_message
+        ? dayjs(item?.latest_message?.sent_at).format("hh:mmA")
+        : "",
+      fullname: item?.name,
+      verified: false,
+      messages: item?.unread_count,
+      content_type: "text",
+    })),
+  };
+};

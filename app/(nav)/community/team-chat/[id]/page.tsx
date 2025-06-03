@@ -33,6 +33,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useAuthStore } from "@/store/authStore";
 import NoMessage from "@/app/(nav)/(messages-reviews)/messages/messages-component";
 import { IChatDetailsPage, transformTeamDetails } from "./data";
+import Pusher from "pusher-js";
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 
@@ -40,6 +41,36 @@ const Chat = () => {
   const router = useRouter();
   const { id } = useParams();
   const [pageData, setPageData] = useState<null | IChatDetailsPage>(null);
+
+  const [chatMessages, setChatMessages] = useState<MessageChat[] | null>(null);
+  const [conversations, setConversations] = useState<any[]>([]);
+  const user_id = useAuthStore((state) => state.user_id);
+
+  const [messages, setMessages] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Initialize Pusher
+    const pusher = new Pusher(`${process.env.NEXT_PUBLIC_PUSHER_APP_KEY}`, {
+      // Replace with your Pusher App Key
+      cluster: `${process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER}`, // Replace with your Pusher App Cluster
+    });
+
+    // Subscribe to the channel
+    const channel = pusher.subscribe(`private-group.${id.toString()}`);
+
+    // Bind to the 'new-message' event
+    channel.bind("new-message", (data: any) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
+    });
+
+    // Unsubscribe when the component unmounts
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+    };
+  }, [id.toString()]); // Re-run the effect when the groupId changes
+
+  // ... (rest of your component)
 
   const {
     data: apiData,
@@ -55,10 +86,6 @@ const Chat = () => {
     }
   }, [apiData]);
 
-  const [chatMessages, setChatMessages] = useState<MessageChat[] | null>(null);
-  const [conversations, setConversations] = useState<any[]>([]);
-  const user_id = useAuthStore((state) => state.user_id);
-
   const groupDetails = apiData?.group_chat;
 
   useEffect(() => {
@@ -67,7 +94,7 @@ const Chat = () => {
     }
   }, [apiData]);
 
-  useRefetchOnEvent("refetchTeamChat", () => {
+  useRefetchOnEvent("refetchTeam", () => {
     refetch({ silent: true });
   });
 

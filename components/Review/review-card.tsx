@@ -98,7 +98,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
           </div>
           <div className="flex justify-between">
             <div className="flex gap-4">
-              <p className="text-text-primary">View all replies</p>
+              <p className="text-text-primary text-xs">View all replies</p>
               <div className="flex gap-[10px]">
                 <button
                   className="flex gap-1"
