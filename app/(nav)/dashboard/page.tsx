@@ -171,23 +171,18 @@ const Dashboard = () => {
  // Tour logic
  useEffect(() => {
   if (loading) {
-    // Wait for data to load
     setShouldRenderTour(false);
     return;
   }
-  // Set persist to false for NavTour and DashboardTour
-  setPersist(true);
+  setPersist(true); // All tours persist
   const hasNoProperties = dashboardStats.some(
-    (stat) => stat.title === "Properties" && stat.value === 0 
+    (stat) => stat.title === "Properties" && stat.value === 0
   );
-
-  const hasNoVacantUnits = dashboardStats.some(
-    (stat) => stat.title === "Vacant Unit" && stat.value === 0 
-  );
-  console.log("hasNoProperties", hasNoProperties);
-  console.log("hasNoVacantUnits", hasNoVacantUnits);
+  console.log("hasNoProperties:", hasNoProperties, "isTourCompleted(DashboardTour):", isTourCompleted("DashboardTour")); // Debug
   const shouldRunTour =
-    company_status === "approved" && hasNoProperties && hasNoVacantUnits;
+    company_status === "approved" &&
+    hasNoProperties &&
+    !isTourCompleted("DashboardTour");
 
   if (shouldRunTour) {
     setShouldRenderTour(true);
@@ -202,7 +197,11 @@ const Dashboard = () => {
   loading,
   setShouldRenderTour,
   setPersist,
+  isTourCompleted,
 ]);
+
+
+
 
 
   if (isNetworkError) return <NetworkError />;
