@@ -1,42 +1,6 @@
 import { TourStep } from "../types";
 
 export const dashboardSteps: TourStep[] = [
-  //   {
-  //     target: ".recent-messages-card",
-  //     content: "See your recent messages and reply directly.",
-  //     placement: "left",
-  //     title: "Recent Messages",
-  //   },
-  //   {
-  //     target: ".complaints-card",
-  //     content: "Review and address recent complaints.",
-  //     placement: "left",
-  //     title: "Complaints",
-  //   },
-  //   {
-  //     target: ".wallet-analysis-chart",
-  //     content: "Analyze your wallet activity over time.",
-  //     placement: "top",
-  //     title: "Wallet Analysis",
-  //   },
-  //   {
-  //     target: ".listing-performance-chart",
-  //     content: "Track the performance of your listings.",
-  //     placement: "top",
-  //     title: "Listing Performance",
-  //   },
-  //   {
-  //     target: ".recent-invoice-table",
-  //     content: "View and manage your recent invoices.",
-  //     placement: "top",
-  //     title: "Recent Invoices",
-  //   },
-  //   {
-  //     target: ".recent-complaints-section",
-  //     content: "See recent complaints and take action.",
-  //     placement: "top",
-  //     title: "Recent Complaints",
-  //   },
   {
     target: ".management",
     content:
@@ -88,12 +52,6 @@ export const dashboardSteps: TourStep[] = [
     title:
       "Your secure gateway for tracking and managing all digital transactions on the platform.",
   },
-  //   {
-  //     target: ".applications",
-  //     content: "The Document Menu is where you securely draft, store, manage, and access all documents related to your property operations. From tenancy agreements to application forms, everything is organized and available when you need for rental management anytime, anywhere.",
-  //     placement: "right",
-  //     title: "Your digital vault for all property-related documents.",
-  //   },
   {
     target: ".documents",
     content:
@@ -130,4 +88,12 @@ export const dashboardSteps: TourStep[] = [
     placement: "left",
     title: "Calendar Card – Stay on Top of Important Dates",
   },
+  {
+    target: "body",
+    content:
+      "You’ve successfully completed the introduction walkthrough. This final screen confirms that you’ve reviewed and understood the key sections of the platform. The tour has familiarized you with the essential features, making it easier to navigate and manage your dashboard confidently. <br />You can now proceed with your tasks, or restart the tour if you’d like a quick refresher.",
+    placement: "center",
+    title: "Tour Guide Complete – What’s Next?",
+    disableBeacon: true,
+  }
 ];
