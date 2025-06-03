@@ -113,3 +113,18 @@ export const postReaction = async (reviewId: string | number, url: string) => {
     return false;
   }
 };
+export const replyComment = async (id: string, comment: string) => {
+  const payload = {
+    comment,
+  };
+  try {
+    const response = await api.post(`/reviews/${id}/comment`, payload);
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchReview"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};

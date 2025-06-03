@@ -69,6 +69,7 @@ import Button from "@/components/Form/Button/button";
 import { IGroupChatCard, transformGroupChatListData } from "./team.data";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import ServerError from "@/components/Error/ServerError";
+import { sendTeamMessage } from "./[id]/data";
 
 const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { isCustom } = useWindowWidth(900);
@@ -159,6 +160,22 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       // Set new height with max limit
       textareaRef.current.style.height =
         Math.min(textareaRef.current.scrollHeight, 100) + "px";
+    }
+  };
+
+  const handleSendGroupMessage = async () => {
+    if (!groupId || !message.length) return;
+
+    try {
+      setReqLoading(true);
+      const res = await sendTeamMessage(paramId as string, message);
+      if (res) {
+        setMessage("");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setReqLoading(false);
     }
   };
 
@@ -362,7 +379,7 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     />
                   )}
                   {message.length > 0 ? (
-                    <button onClick={sendMessage}>
+                    <button onClick={handleSendGroupMessage}>
                       <Picture src={SendIcon} alt="text message" size={24} />
                     </button>
                   ) : (

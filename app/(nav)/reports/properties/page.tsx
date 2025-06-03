@@ -139,11 +139,6 @@ const PropertiesReport = () => {
 
   const { properties, monthly_properties, total_properties } = pageData
 
-  const handleExport = () => {
-    if (!data || loading) return;
-    setPropertiesStore("properties", properties);
-    router.push("/reports/properties/export");
-  };
 
   if (loading) return <CustomLoader layout="page" pageTitle="Properties Report" view="table" />;
   if (isNetworkError) return <NetworkError />;

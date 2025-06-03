@@ -15,6 +15,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useAuthStore } from "@/store/authStore";
 import MemberComponent from "./Member";
 import { GroupChatResponse, User } from "./types";
+import { toast } from "sonner";
 // import TrashIcon from "@/public/icons/trash.svg";
 
 interface AddMembersProps {
@@ -51,13 +52,16 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
     console.log("isAddMember is", isAddMember);
   };
 
-  const deleteMemberFromList = async (userId: string) => {
-    const payload = {
-      "_method": "POST",
-      user_ids: [userId],
-    };
-
-    await removeGroupMember(groupId, payload);
+  const deleteMemberFromList = async (userId: number) => {
+    if (!userId) return;
+    try {
+      const res = await removeGroupMember(groupId, userId);
+      if (res) {
+        toast.success("Deleted successful");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -114,7 +118,7 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
             <button
               type="button"
               className="w-1/4 flex justify-end"
-              onClick={() => deleteMemberFromList(item?.id.toString())}
+              onClick={() => deleteMemberFromList(item?.id)}
               //onClick={() => openDeleteMember()}
             >
               <TrashIcon size={16} />
