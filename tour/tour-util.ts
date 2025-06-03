@@ -68,12 +68,39 @@ export const checkTargets = (tourSteps: TourStep[]): TourStep[] => {
   });
 };
 
+// export const getTourCompletionStatus = (tourKey: string): boolean => {
+//   return getLocalStorage(`hasCompleted${tourKey}`) === "true";
+// };
+
+// export const saveTourCompletion = (tourKey: string): void => {
+//   saveLocalStorage(`hasCompleted${tourKey}`, "true");
+// };
+
 export const getTourCompletionStatus = (tourKey: string): boolean => {
-  return getLocalStorage(`hasCompleted${tourKey}`) === "true";
+  const tourData = getLocalStorage("tour");
+  if (tourData) {
+    try {
+      const parsedData = JSON.parse(tourData);
+      return parsedData[tourKey] === true;
+    } catch (e) {
+      console.warn("Error parsing tour data from localStorage:", e);
+    }
+  }
+  return false;
 };
 
 export const saveTourCompletion = (tourKey: string): void => {
-  saveLocalStorage(`hasCompleted${tourKey}`, "true");
+  const tourData = getLocalStorage("tour");
+  let parsedData: Record<string, boolean> = {};
+  if (tourData) {
+    try {
+      parsedData = JSON.parse(tourData);
+    } catch (e) {
+      console.warn("Error parsing tour data from localStorage:", e);
+    }
+  }
+  parsedData[tourKey] = true;
+  saveLocalStorage("tour", JSON.stringify(parsedData));
 };
 
 export const debugMissingTargets = (steps: TourStep[], tourKey: string) => {
