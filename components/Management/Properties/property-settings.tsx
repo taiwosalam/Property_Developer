@@ -6,10 +6,10 @@ const PropertySettings = ({ heading }: { heading: string }) => {
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   return (
     <div
-      className="unit-propert-settings-wrapper py-6 px-4 rounded-lg bg-white"
+      className="unit-propert-settings-wrapper py-6 px-4 rounded-lg bg-white dark:bg-darkText-primary"
       style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
     >
-      <h2 className="text-primary-navy text-lg lg:text-xl font-bold">
+      <h2 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
         {heading}
       </h2>
       <hr className="my-2.5" />
@@ -20,7 +20,7 @@ const PropertySettings = ({ heading }: { heading: string }) => {
             <p className="text-[#747474] capitalize">
               {propertyType === "rental" ? "Agency Fee" : "Management Fee"}
             </p>
-            <p className="text-black font-medium">
+            <p className="text-black dark:text-darkText-1 font-medium">
               {propertyType === "rental"
                 ? propertySettings?.agency_fee
                 : propertySettings?.management_fee}
@@ -30,59 +30,59 @@ const PropertySettings = ({ heading }: { heading: string }) => {
           {propertyType === "rental" && (
             <div>
               <p className="text-[#747474]">Who to charge Agency Fee</p>
-              <p className="text-black font-medium capitalize">
+              <p className="text-black dark:text-darkText-1 font-medium capitalize">
                 {propertySettings?.who_to_charge_new_tenant}
               </p>
             </div>
           )}
           <div>
             <p className="text-[#747474]">Book Visitors</p>
-            <p className="text-black font-medium capitalize">
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
               {propertySettings?.book_visitors}
             </p>
           </div>
           <div>
             <p className="text-[#747474]">VAT</p>
-            <p className="text-black font-medium capitalize">
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
               {propertySettings?.VAT}
             </p>
           </div>
           {propertyType === "rental" && (
             <div>
               <p className="text-[#747474]">Caution Deposit</p>
-              <p className="text-black font-medium capitalize">
+              <p className="text-black dark:text-darkText-1 font-medium capitalize">
                 {propertySettings?.caution_deposit}
               </p>
             </div>
           )}
           <div>
             <p className="text-[#747474]">Group Chat</p>
-            <p className="text-black font-medium capitalize">
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
               {propertySettings?.group_chat}
             </p>
           </div>
           <div>
             <p className="text-[#747474]">Rent Penalty</p>
-            <p className="text-black font-medium capitalize">
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
               {propertySettings?.rent_penalty}
             </p>
           </div>
           <div>
             <p className="text-[#747474]">Request Call back</p>
-            <p className="text-black font-medium capitalize">
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
               {propertySettings?.request_callback}
             </p>
           </div>
           <div>
             <p className="text-[#747474]">Vehicle Record</p>
-            <p className="text-black font-medium capitalize">
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
               {propertySettings?.vehicle_record}
             </p>
           </div>
           {propertyType === "rental" && (
             <div>
               <p className="text-[#747474]">Currency</p>
-              <p className="text-black font-medium capitalize">
+              <p className="text-black dark:text-darkText-1 font-medium capitalize">
                 {propertySettings?.currency
                   ? currencySymbols[propertySettings.currency]
                   : currencySymbols.naira}

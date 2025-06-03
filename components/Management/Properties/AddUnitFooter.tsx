@@ -47,56 +47,6 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
     }
   };
 
-  // const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   console.log("Save Clicked:", {
-  //     noForm,
-  //     newForm,
-  //     canSubmit,
-  //     addedUnitsLength: addedUnits.length,
-  //     hasNotYetUploaded: addedUnits.some((unit) => unit.notYetUploaded),
-  //     missingFields,
-  //   });
-
-  //   // Check for unuploaded units
-  //   if (addedUnits.length > 0) {
-  //     const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
-  //     if (hasNotYetUploaded) {
-  //       console.log("Blocked: Units not yet uploaded");
-  //       toast.warning(
-  //         "There are units that have not been updated yet. Please update them to continue."
-  //       );
-  //       return;
-  //     }
-  //   }
-
-  //   // Check if a form exists (based on noForm, newForm, or missingFields)
-  //   if (!noForm || newForm || missingFields.length > 0) {
-  //     console.log("Form validation required:", { canSubmit, missingFields });
-  //     if (!canSubmit) {
-  //       console.log("Validation failed, showing toast");
-  //       toast.error(
-  //         `The following fields are required: ${missingFields.join(", ")}`
-  //       );
-  //       return;
-  //     }
-  //     console.log("Form valid, proceeding with submission");
-  //     setSaveClick(true);
-  //     const form = e.currentTarget.form;
-  //     setTimeout(() => {
-  //       form?.requestSubmit();
-  //     }, 0);
-  //   } else if (addedUnits.length === 0) {
-  //     console.log("No units added, no valid form, showing warning");
-  //     toast.warning("Please add at least one unit before saving.");
-  //     return;
-  //   } else {
-  //     console.log(
-  //       "No form, units added, redirecting to /management/properties"
-  //     );
-  //     router.push("/management/properties");
-  //   }
-  // };
 
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

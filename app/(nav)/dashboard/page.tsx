@@ -176,7 +176,7 @@ const Dashboard = () => {
     return;
   }
   // Set persist to false for NavTour and DashboardTour
-  setPersist(false);
+  setPersist(true);
   const hasNoProperties = dashboardStats.some(
     (stat) => stat.title === "Properties" && stat.value === 0 
   );

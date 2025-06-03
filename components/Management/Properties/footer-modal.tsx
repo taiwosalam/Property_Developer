@@ -90,15 +90,15 @@ const FooterModal = ({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white py-7 px-6 shadow-lg text-center z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-darkText-primary py-7 px-6 shadow-lg text-center z-50">
       {countPopup && (
         <div
           ref={popupRef}
-          className="absolute top-[-90%] left-[50%] translate-x-[-50%] bg-neutral-2 p-4"
+          className="absolute top-[-90%] left-[50%] translate-x-[-50%] bg-neutral-2 dark:bg-darkText-primary p-4"
         >
-          <div className="flex items-center gap-4">
+          <div className="flex items-end gap-4">
             <div>
-              <p className="text-base text-text-secondary mb-2">
+              <p className="text-base dark:text-darkText-1 text-text-secondary mb-2">
                 How many units more?
               </p>
               <Input
@@ -123,12 +123,12 @@ const FooterModal = ({
               {submitLoading ? "Adding..." : "Add"}
             </Button>
           </div>
-          <div className="text-neutral-2 absolute top-full left-[50%] translate-x-[-50%]">
+          <div className="text-neutral-2 dark:text-darkText-primary absolute top-full left-[50%] translate-x-[-50%]">
             <Pointer />
           </div>
         </div>
       )}
-      <p className="text-brand-10 text-base font-medium mb-5">
+      <p className="text-brand-10 dark:text-white text-base font-medium mb-5">
         Does the new unit you want to add have similar details, breakdown, and
         features to the one you added last?
       </p>

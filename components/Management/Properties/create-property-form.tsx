@@ -936,7 +936,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       onChange={(e) => setCoordinate(e.target.value)}
                       value={coordinate}
                       type="text"
-                      className="w-full h-full rounded-[4px] outline-none px-2"
+                      className="w-full h-full dark:bg-transparent rounded-[4px] outline-none px-2"
                     />
                     {coordinate && (
                       <button
