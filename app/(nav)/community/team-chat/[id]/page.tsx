@@ -56,7 +56,7 @@ const Chat = () => {
     });
 
     // Subscribe to the channel
-    const channel = pusher.subscribe(`private-group.${id.toString()}`);
+    const channel = pusher.subscribe(`presence-group-chat.${id.toString()}`);
 
     // Bind to the 'new-message' event
     channel.bind("new-message", (data: any) => {
@@ -97,6 +97,24 @@ const Chat = () => {
   useRefetchOnEvent("refetchTeam", () => {
     refetch({ silent: true });
   });
+
+  useEffect(() => {
+  if (!id) return;
+
+  const interval = setInterval(() => {
+    refetch({ silent: true });
+  }, 3000);
+
+  const handleRefetch = () => {
+    refetch({ silent: true });
+  };
+  window.addEventListener("refetchTeam", handleRefetch);
+
+  return () => {
+    clearInterval(interval);
+    window.removeEventListener("refetchTeam", handleRefetch);
+  };
+}, [id, refetch]);
 
   useEffect(() => {
     const groupedMessagesArray = chatMessages

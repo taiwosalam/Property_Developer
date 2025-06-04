@@ -70,6 +70,37 @@ import { IGroupChatCard, transformGroupChatListData } from "./team.data";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import ServerError from "@/components/Error/ServerError";
 import { sendTeamMessage } from "./[id]/data";
+import initializePusher from "@/lib/pusher";
+import Messages from "@/components/Message/messages";
+
+import type { Channel, PresenceChannel } from "pusher-js";
+import Pusher from "pusher-js";
+
+interface Message {
+  id: number;
+  content: string;
+  user_id: number;
+  group_id: number;
+  created_at: string;
+  user: {
+    id: number;
+    name: string;
+    avatar?: string;
+  };
+}
+
+interface GroupMember {
+  id: number;
+  name: string;
+  avatar?: string;
+  role: string;
+  joined_at: string;
+}
+
+interface GroupChatProps {
+  groupId: number;
+  currentUserId: number;
+}
 
 const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { isCustom } = useWindowWidth(900);
@@ -78,7 +109,6 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const params = useParams();
   const paramId = params.id;
 
-  const [message, setMessage] = useState<string>("");
   const [groupId, setGroupId] = useState(paramId ?? "");
 
   const [audioUrl, setAudioUrl] = useState("");
@@ -108,6 +138,19 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   }, [teamData]);
 
+  const handleSendMessage = async () => {
+    try {
+      const res = await sendTeamMessage( groupId.toString(), message, "text");
+      if(res){
+        setMessage("");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
   const onReady = (ws: any) => {
     setPlaybackWS(ws);
     setIsPlaying(false);
@@ -131,13 +174,6 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       team.fullname.toLowerCase().includes(searchTerm.toLowerCase().trim())
     );
   }, [teamChatPageData?.team, searchTerm]);
-
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  };
 
   const { isDeleteMember, openDeleteMember, closeDeleteMember } =
     useTeamChatStore();
@@ -163,40 +199,24 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
     }
   };
 
-  const handleSendGroupMessage = async () => {
-    if (!groupId || !message.length) return;
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
-    try {
-      setReqLoading(true);
-      const res = await sendTeamMessage(paramId as string, message);
-      if (res) {
-        setMessage("");
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setReqLoading(false);
-    }
-  };
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [message, setMessage] = useState("");
+  const [onlineMembers, setOnlineMembers] = useState<GroupMember[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const sendMessage = async () => {
-    const payload = {
-      content: message,
-      content_type: "text",
-      //reply_to: "null",
-    };
-    try {
-      setReqLoading(true);
-      if (groupId && message.length > 0) {
-        await sendGroupMessage(groupId as string, objectToFormData(payload));
-        setMessage("");
-      }
-    } catch (error) {
-      toast.error("Fail to send msg");
-    } finally {
-      setReqLoading(false);
+  const channelRef = useRef<Channel | null>(null);
+  const presenceChannelRef = useRef<PresenceChannel | null>(null);
+  const pusherRef = useRef<Pusher | null>(null);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
-  };
+  }, [messages]);
 
   const handleSendAudio = async () => {
     if (!voiceControls.recordedBlob) return;
@@ -204,16 +224,14 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       type: voiceControls.recordedBlob.type,
     });
     const payload = {
-      file: audioFile,
-      content: null,
-      content_type: "audio",
-      //receiver_type: "user",
+      content: audioFile,
     };
     try {
       setReqLoading(true);
-      const res = await sendGroupMessage(
+      const res = await sendTeamMessage(
         `${paramId}`,
-        objectToFormData(payload)
+        objectToFormData(payload),
+        "audio"
       );
       if (res) {
         setAudioUrl("");
@@ -379,7 +397,7 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     />
                   )}
                   {message.length > 0 ? (
-                    <button onClick={handleSendGroupMessage}>
+                    <button onClick={handleSendMessage}>
                       <Picture src={SendIcon} alt="text message" size={24} />
                     </button>
                   ) : (
