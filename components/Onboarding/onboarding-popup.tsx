@@ -81,7 +81,7 @@ const OnboardingPopup = () => {
           </div>
         </div>
       )}
-      <div className="flex justify-end px-4">
+      <div className="onboarding-help-wrapper flex justify-end px-4">
         <button
           onClick={handleClick}
           className="w-[60px] h-[60px] rounded-full bg-brand-9 flex items-center justify-center can-touch"

@@ -5,6 +5,7 @@ import { SettingsSectionTitle } from "../Settings/settings-components";
 import Input from "../Form/Input/input";
 import CopyText from "../CopyText/copy-text";
 import { checkDomainAvailability } from "@/app/(onboarding)/setup/data";
+import { useGlobalStore } from "@/store/general-store";
 
 //  Props interface
 interface CompanyDomainProps {
@@ -18,6 +19,7 @@ const CompanyDomain: React.FC<CompanyDomainProps> = ({
   isEditMode,
   domain,
 }) => {
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [customDomain, setCustomDomain] = useState<string>("");
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [searching, setSearching] = useState<boolean>(false);
@@ -51,6 +53,7 @@ const CompanyDomain: React.FC<CompanyDomainProps> = ({
       setSearching(true);
       const available = await checkDomainAvailability(customDomain);
       setIsAvailable(available);
+      setGlobalStore("domainAvailable", available)
       setSearching(false);
     }, 500);
 
@@ -61,7 +64,7 @@ const CompanyDomain: React.FC<CompanyDomainProps> = ({
   const isOwner = customDomain && domain && `${customDomain}.ourlisting.ng` === domain;
 
   return (
-    <div>
+    <div className="company-domain-wrapper">
       <SettingsSectionTitle
         title="Domain"
         desc="Create a website domain for your company to centralize all details and enable seamless software integration."

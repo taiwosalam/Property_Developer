@@ -9,6 +9,7 @@ import { selectUnitRentSteps } from "./select-unit-steps";
 import { renewRentSteps } from "./renew-steps";
 import { createPropertySteps } from "./create-property";
 import { addUnitSteps } from "./add-unit-steps";
+import { setupSteps } from "./setup-steps";
 
 export interface PageTourConfig {
   steps: TourStep[];
@@ -81,6 +82,11 @@ export const pageSteps: Record<string, PageTourConfig> = {
       /^\/management\/properties\/create-rental-property\/[^\/]+\/add-unit$/.test(
         pathname
       ),
+  },
+  "/setup": {
+    steps: setupSteps,
+    tourKey: "SetupTour",
+    match: (pathname: string) => pathname === "/setup",
   },
 };
 

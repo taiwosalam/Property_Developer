@@ -33,9 +33,11 @@ import {
 } from "@/app/(nav)/settings/company/data";
 import useFetch from "@/hooks/useFetch";
 import { toast } from "sonner";
+import { useTourStore } from "@/store/tour-store";
 
 const Setup = () => {
   const router = useRouter();
+  const { setShouldRenderTour, setPersist, isTourCompleted } = useTourStore();
   const [companyName, setCompanyName] = useState("");
   const searchParams = useSearchParams();
   const idParam = searchParams.get("id");
@@ -63,6 +65,21 @@ const Setup = () => {
     error,
     refetch,
   } = useFetch(`/companies/${company_id}`);
+
+  useEffect(() => {
+    if (!loading) {
+      setPersist(false);
+      if (!isTourCompleted("SetupTour")) {
+        setShouldRenderTour(true);
+      } else {
+        setShouldRenderTour(false);
+      }
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [loading, setShouldRenderTour, setPersist, isTourCompleted]);
 
   useEffect(() => {
     if (apiData) {
@@ -121,7 +138,7 @@ const Setup = () => {
         returnType="form-data"
         onFormSubmit={handleSubmit}
       >
-        <SetupHeader requestLoading={requestLoading} />
+        <SetupHeader isEditMode={isEditMode} requestLoading={requestLoading} />
         <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
           <CompanyType />
           <Section separatorStyles="max-w-[1200px]">
@@ -133,13 +150,14 @@ const Setup = () => {
                   label="company name"
                   placeholder="Write here"
                   inputClassName="setup-f bg-white"
-                  className="lg:col-span-2"
+                  className="company-name-wrapper lg:col-span-2"
                   onChange={setCompanyName}
                   defaultValue={companyData?.company_name ?? ""}
                 />
                 <Input
                   id="referral_id"
                   label="Referral ID (Optional)"
+                  className="referal-wrapper"
                   placeholder="Enter your Referral ID"
                   inputClassName="setup-f bg-white"
                   defaultValue={companyData?.referrer}
@@ -161,20 +179,22 @@ const Setup = () => {
               companyName={isEditMode ? companyData?.company_name : companyName}
             />
           </Section>
-          <div className="flex gap-[2px] flex-col">
-            <h1 className="text-text-primary text-xl font-semibold capitalize dark:text-[#f1f1fd]">
-              directors details
-            </h1>
-            <p className="text-text-quaternary capitalize">
-              Fill the details below to add a director to your company
-            </p>
+          <div className="director-details-wrapper">
+            <div className="flex gap-[2px] flex-col">
+              <h1 className="text-text-primary text-xl font-semibold capitalize dark:text-[#f1f1fd]">
+                directors details
+              </h1>
+              <p className="text-text-quaternary capitalize">
+                Fill the details below to add a director to your company
+              </p>
+            </div>
+            <ProfilePicture />
+            <ProfileInformation
+              data={directorsData[0]}
+              year={companyData?.years_in_business as string}
+              bio={companyData?.director_bio}
+            />
           </div>
-          <ProfilePicture />
-          <ProfileInformation
-            data={directorsData[0]}
-            year={companyData?.years_in_business as string}
-            bio={companyData?.director_bio}
-          />
         </div>
       </AuthForm>
     </FlowProgress>
