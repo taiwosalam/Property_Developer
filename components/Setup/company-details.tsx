@@ -9,7 +9,7 @@ import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import { industryOptions } from "@/data";
 import dayjs from "dayjs";
 
-const CompanyDetails = ({data}: {data: any}) => {
+const CompanyDetails = ({ data }: { data: any }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const date = dayjs(data.date_of_registration);
 
@@ -22,6 +22,7 @@ const CompanyDetails = ({data}: {data: any}) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-[950px] specific-grid">
         <Input
           required
+          className="cac-reg-wrapper"
           label="CAC Registration Number"
           id="cac_registration_number"
           placeholder="Write here"
@@ -35,6 +36,7 @@ const CompanyDetails = ({data}: {data: any}) => {
           onChange={handleInputChange}
           inputClassName="setup-f required"
           disableFuture
+          className="registration-date-wrapper"
           // value={date}
         />
         <FileInput
@@ -44,40 +46,42 @@ const CompanyDetails = ({data}: {data: any}) => {
           placeholder="CAC"
           buttonName="Document"
           fileType="pdf"
+          className="cac-certificate-wrapper"
           size={2}
           sizeUnit="MB"
           hiddenInputClassName="setup-f required"
           // defaultValue={data.cac_certificate}
         />
-
-        <Select
-          id="industry"
-          label="Select Your Industry"
-          options={industryOptions}
-          hiddenInputClassName="setup-f"
-          defaultValue={data.industry}
-        />
-
-        <Input
-          label="Membership Number"
-          id="membership_number"
-          placeholder="Write here"
-          inputClassName="rounded-[8px] setup-f bg-white"
-          defaultValue={data.membership_number}
-        />
-
-        <FileInput
-          id="membership_certificate"
-          label="membership Certificate"
-          fileType="pdf"
-          size={2}
-          sizeUnit="MB"
-          placeholder="certificate"
-          buttonName="Document"
-          hiddenInputClassName="setup-f"
-          // defaultValue={data.membership_certificate}
-        />
       </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-[950px] specific-grid industry-selection-wrapper">
+          <Select
+            id="industry"
+            label="Select Your Industry"
+            options={industryOptions}
+            hiddenInputClassName="setup-f"
+            defaultValue={data.industry}
+          />
+
+          <Input
+            label="Membership Number"
+            id="membership_number"
+            placeholder="Write here"
+            inputClassName="rounded-[8px] setup-f bg-white"
+            defaultValue={data.membership_number}
+          />
+
+          <FileInput
+            id="membership_certificate"
+            label="membership Certificate"
+            fileType="pdf"
+            size={2}
+            sizeUnit="MB"
+            placeholder="certificate"
+            buttonName="Document"
+            hiddenInputClassName="setup-f"
+            // defaultValue={data.membership_certificate}
+          />
+        </div>
     </div>
   );
 };

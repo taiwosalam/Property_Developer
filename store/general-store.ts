@@ -109,6 +109,8 @@ interface GlobalStoreState {
     last_seen?: string;
   } | null;
 
+  domainAvailable: boolean;
+
   openDocumentModal: boolean;
   selectedDocumentOption: OtherAgreementDocumentOption | null;
   
@@ -182,6 +184,9 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   rentEndDate: null,
 
   profileSettingsData: null,
+
+  domainAvailable: false,
+
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {
     set({ [key]: value } as Pick<GlobalStoreState, typeof key>);

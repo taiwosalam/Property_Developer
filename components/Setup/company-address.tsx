@@ -9,7 +9,7 @@ import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
 import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
 
-const                                CompanyAddress = ({data}: {data:any}) => {
+const CompanyAddress = ({data}: {data:any}) => {
   // State to hold selected values
   const [address, setAddress] = useState({
     state: "",
@@ -26,7 +26,7 @@ const                                CompanyAddress = ({data}: {data:any}) => {
   };
 
   return (
-    <div className="custom-flex-col gap-5">
+    <div className="custom-flex-col gap-5 company-address-wrapper">
       <SectionHeading title="company address">
         Provide your complete head office address for the verification process.
         Please select your state, local government area, city, and upload a

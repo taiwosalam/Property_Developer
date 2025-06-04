@@ -178,7 +178,6 @@ const Dashboard = () => {
   const hasNoProperties = dashboardStats.some(
     (stat) => stat.title === "Properties" && stat.value === 0
   );
-  console.log("hasNoProperties:", hasNoProperties, "isTourCompleted(DashboardTour):", isTourCompleted("DashboardTour")); // Debug
   const shouldRunTour =
     company_status === "approved" &&
     hasNoProperties &&

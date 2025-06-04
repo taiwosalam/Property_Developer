@@ -514,28 +514,33 @@ const CustomTour: React.FC = () => {
   }, [tourState, setTourState]);
 
   useEffect(() => {
-    if (!isMounted || companyStatus === null || !shouldRenderTour) {
+    if (!isMounted || !shouldRenderTour) {
+      console.log("Tour not started: isMounted or shouldRenderTour is false"); // Debug
+      return;
+    }
+
+    // Skip companyStatus check for /setup
+    if (pathname === "/setup" || companyStatus !== null) {
+      const config = selectTourConfig();
+      if (!config.tourKey || config.steps.length === 0) {
+        setShouldRenderTour(false);
+        return;
+      }
+
+      if (config.condition && !config.condition()) {
+        console.log(`Tour condition not met for ${config.tourKey}`); // Debug
+        completeTour(config.tourKey, persist);
+        setShouldRenderTour(false);
+        return;
+      }
+
+      const steps = getTourStepsWithWelcome(config);
+      startTour(steps, config.tourKey);
+    } else {
       console.log(
-        "Tour not started: isMounted, companyStatus, or shouldRenderTour is false"
+        "Tour not started: companyStatus is null for non-/setup route"
       ); // Debug
-      return;
     }
-
-    const config = selectTourConfig();
-    if (!config.tourKey || config.steps.length === 0) {
-      setShouldRenderTour(false);
-      return;
-    }
-
-    if (config.condition && !config.condition()) {
-      console.log(`Tour condition not met for ${config.tourKey}`); // Debug
-      completeTour(config.tourKey, persist);
-      setShouldRenderTour(false);
-      return;
-    }
-
-    const steps = getTourStepsWithWelcome(config);
-    startTour(steps, config.tourKey);
   }, [
     pathname,
     isMounted,
@@ -546,6 +551,40 @@ const CustomTour: React.FC = () => {
     completeTour,
     persist,
   ]);
+
+  // useEffect(() => {
+  //   if (!isMounted || companyStatus === null || !shouldRenderTour) {
+  //     console.log(
+  //       "Tour not started: isMounted, companyStatus, or shouldRenderTour is false"
+  //     ); // Debug
+  //     return;
+  //   }
+
+  //   const config = selectTourConfig();
+  //   if (!config.tourKey || config.steps.length === 0) {
+  //     setShouldRenderTour(false);
+  //     return;
+  //   }
+
+  //   if (config.condition && !config.condition()) {
+  //     console.log(`Tour condition not met for ${config.tourKey}`); // Debug
+  //     completeTour(config.tourKey, persist);
+  //     setShouldRenderTour(false);
+  //     return;
+  //   }
+
+  //   const steps = getTourStepsWithWelcome(config);
+  //   startTour(steps, config.tourKey);
+  // }, [
+  //   pathname,
+  //   isMounted,
+  //   companyStatus,
+  //   shouldRenderTour,
+  //   setTourState,
+  //   setShouldRenderTour,
+  //   completeTour,
+  //   persist,
+  // ]);
 
   useEffect(() => {
     if (!tourState.run || tourState.stepIndex >= tourState.steps.length) {
@@ -669,9 +708,6 @@ const CustomTour: React.FC = () => {
 };
 
 export default CustomTour;
-
-
-
 
 // CUSTOM NAVIGATION
 

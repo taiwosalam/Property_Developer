@@ -7,7 +7,7 @@ const CompanyMobileNumber: React.FC<{ phoneNumbers?: string[] }> = ({
 }) => {
   // console.log("phoneNumbers", phoneNumbers);
   return (
-    <div className="custom-flex-col gap-5">
+    <div className="company-phone-wrapper custom-flex-col gap-5">
       <SectionHeading title="Company Mobile Number">
         Please provide a valid phone number as it is essential for the company
         profile.
