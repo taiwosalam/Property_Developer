@@ -63,7 +63,6 @@ const ManageCalendar = () => {
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
   const [activeLayout, setActiveLayout] = useState<CalendarLayoutType>("Month");
 
-
   // Memos
   // const { activities } = useMemo(() => {
   //   const activities = calendar_events.filter((event) =>
@@ -291,7 +290,11 @@ const ManageCalendar = () => {
         >
           <ModalContent>
             <div className="w-[95vw] max-w-[500px] max-h-[600px] h-[550px]">
-              <CalendarActivities date={activeDate} events={activities ?? []} />
+              <CalendarActivities
+                date={activeDate}
+                events={activities ?? []}
+                setIsOpen={setActivityModalIsOpen}
+              />
             </div>
           </ModalContent>
         </Modal>

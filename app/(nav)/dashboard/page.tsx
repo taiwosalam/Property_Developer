@@ -204,12 +204,6 @@ const Dashboard = () => {
     setPersist,
   ]);
 
-  const [openModal, setOpenModal] = useState(false);
-
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
   if (isNetworkError) return <NetworkError />;
   // ================== CONDITIONAL RENDERING ================== //
   if (!company_status) {

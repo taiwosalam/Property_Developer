@@ -57,10 +57,12 @@ const DashboarddCalendar = () => {
     events: calendarEvents,
   });
 
+  const [activityModalIsOpen, setActivityModalIsOpen] = useState(false);
+
   const handleDayClick = (day: any) => {
     setActiveDate(day.date);
     console.log(day.date, "Clicked!");
-
+    setActivityModalIsOpen(true);
     // router.push(`/tasks/calendars`, { scroll: true });
   };
 
@@ -105,7 +107,6 @@ const DashboarddCalendar = () => {
   }, [activeDate, calendarEvents]);
 
   // Constants
-  const [activityModalIsOpen, setActivityModalIsOpen] = useState(false);
 
   const openActivityModal = (date: Date) => {
     setActiveDate(date);
@@ -164,23 +165,25 @@ const DashboarddCalendar = () => {
               ))}
             </div>
           </div>
-          <Modal
-            state={{
-              isOpen: activityModalIsOpen,
-              setIsOpen: setActivityModalIsOpen,
-            }}
-          >
-            <ModalContent>
-              <div className="w-[95vw] max-w-[500px] max-h-[600px] h-[550px] relative z-[9999]">
-                <CalendarActivities
-                  date={activeDate}
-                  events={activities ?? []}
-                />
-              </div>
-            </ModalContent>
-          </Modal>
         </div>
       </EventCalendarContext.Provider>
+
+      <Modal
+        state={{
+          isOpen: activityModalIsOpen,
+          setIsOpen: setActivityModalIsOpen,
+        }}
+      >
+        <ModalContent>
+          <div className="w-[95vw] max-w-[500px] max-h-[600px] h-[550px]">
+            <CalendarActivities
+              date={activeDate}
+              events={activities ?? []}
+              setIsOpen={setActivityModalIsOpen}
+            />
+          </div>
+        </ModalContent>
+      </Modal>
     </>
   );
 };

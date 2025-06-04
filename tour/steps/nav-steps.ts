@@ -14,14 +14,14 @@ export const navSteps: TourStep[] = [
   {
     target: ".nav-global-search",
     content:
-      "The Global Search is your command center for quickly locating properties, tenants, transactions, documents, and more — all in one place.",
+      "The Global Search is your command center for quickly locating anything and more. Need to find,? Just search by part of the name, unit number, or even info - Global Search will fetch the best matches.",
     placement: "bottom",
     title: "Easily Find Anything, Anytime",
   },
   {
     target: ".nav-create-new",
     content:
-      "The Global Create button is your shortcut to quickly add new entries across all modules in your dashboard. No need to navigate through multiple menus!",
+      "The Global Create button is your shortcut to quickly add new entries across all modules in your dashboard. No need to navigate through multiple menus! - just hit Global Create and do it instantly, without losing your current page!",
     placement: "bottom",
     title: "Create Anything, Anytime",
   },

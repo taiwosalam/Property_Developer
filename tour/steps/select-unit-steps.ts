@@ -75,8 +75,8 @@ export const selectUnitRentSteps: TourStep[] = [
   {
     target: "body",
     placement: "center",
-    title: "You're All Set!",
+    title: "Tour Guide Complete – What’s Next?",
     content:
-      "You’ve completed the tour!<br />You’re now ready to select a new unit and proceed with the transfer.<br />Click 'Finish' to close the tour.",
+      "You’ve successfully completed the introduction walkthrough. This final screen confirms that you’ve reviewed and understood the key sections of the platform. The tour has familiarized you with the essential features, making it easier to navigate and manage your dashboard confidently. <br />You can now proceed with your tasks, or restart the tour if you’d like a quick refresher.",
   },
 ];

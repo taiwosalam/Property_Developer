@@ -1,13 +1,10 @@
 import { TourStep } from "../types";
-import { welcomeStep } from "./properties-step";
 
 export const startRentSteps: TourStep[] = [
-  // welcomeStep,
   {
     target: "body",
     content:
       "Learn how to assign tenants or occupant to a unit and begin a new rent or fee of period with ease. If you're already familiar with the process, you can choose to skip the tour.",
-    // placement: "left",
     placement: "center",
     title: "Ready to Get Started? Take a Quick Tour",
     disableBeacon: true,
