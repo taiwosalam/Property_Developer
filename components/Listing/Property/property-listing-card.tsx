@@ -164,7 +164,10 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               //   </PropertyListingRed>
               status === "request" ? (
                 <PropertyListingTitleDesc
-                  title="Taiwo Salam & Co. Properties Ltd"
+                  title={
+                    data?.company_name ||
+                    "Taiwo Salam & Co. Properties Ltd"
+                  }
                   desc="Requests permission to add and manage this property in their portfolio."
                 />
               ) : null}

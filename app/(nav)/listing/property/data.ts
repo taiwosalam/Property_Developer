@@ -179,6 +179,7 @@ export const transformDraftUnitData = (
         images: p.images.map((image) => image.path),
         property_name: p.title,
         address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
+        company_name: p.invites.map((name) => name.company.company_name),
         state: p.state,
         local_government: p.local_government,
         total_unit: units,
