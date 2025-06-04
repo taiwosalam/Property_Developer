@@ -59,6 +59,13 @@ export const createPropertySteps: TourStep[] = [
       "Enter the specific street name and number where the property is located. Providing accurate street details helps pinpoint the exact location of your property, making it easier for tenants and clients to find. Please do not include local government, city, or area names in this field, and avoid using spaces or special characters to ensure proper formatting and system compatibility.",
   },
   {
+    target: ".coordinate-wrapper",
+    placement: "top",
+    title: "Coordinate Overview",
+    content:
+      "Enter the geographic coordinates (latitude and longitude) to accurately place the property on the map. This improves location precision and makes it easier for tenants, visitors, and service teams to find the property. <br />You can either: Drag the map pin to the exact spot, or Use your current location if you're at the property during creation.",
+  },
+  {
     target: ".property-landlord-wrapper",
     placement: "top",
     title: "Landlord Selection Overview",
@@ -71,13 +78,6 @@ export const createPropertySteps: TourStep[] = [
     title: "Branch Selection Overview",
     content:
       "A property cannot be created without assigning it to a branch. Select the appropriate branch or office location that fits your management structure. This helps organize properties based on operational zones, teams, or geographic regions. <br /> If your company oversees multiple properties across different branches or cities, assigning the correct branch ensures accurate reporting, task management, and staff accountability. <br />To create or manage branches, go to Management > Staff & Branches.",
-  },
-  {
-    target: ".property-inventory-wrapper",
-    placement: "top",
-    title: "Inventory Overview",
-    content:
-      "Attach specific inventory records to the property for accurate tracking of items included within the unit. To create new inventory records, navigate to <b>Management > Inventory.</b> <br />Managing inventory ensures you keep a detailed log of all assets provided to tenants or occupants - such as furniture, appliances, or fixtures. This improves accountability, supports maintenance planning, and is especially important for furnished properties or shared facilities.",
   },
   {
     target: ".property-officer-wrapper",
@@ -129,6 +129,13 @@ export const createPropertySteps: TourStep[] = [
       "A caution deposit is collected from tenants before move-in as a security measure to protect landlords against potential damages, unpaid rent, or breaches of contract. Clearly defining the caution deposit promotes transparency and helps manage tenant expectations within the platform. <br /><b>Who Holds the Caution Deposit?</b><br />Select where the caution deposit will be held from the available options. Choosing *None* means no caution deposit is required. Selecting the appropriate option ensures clear responsibility and proper handling of tenant deposits.",
   },
   {
+    target: ".property-currency-wrapper",
+    placement: "top",
+    title: "Currency Selection Overview",
+    content:
+      "Select the default currency to be used for managing this property's financial transactions on the platform. This setting determines how rent, fees, and other charges are displayed and calculated throughout the system.<br /><b>Available Options:</b> <b>Naira (₦)</b>, <b>Dollar ($)</b> and <b>Pounds (£)</b>.Choosing the appropriate currency ensures accurate financial reporting and consistency in all property-related records.",
+  },
+  {
     target: ".property-group-chat-wrapper",
     placement: "top",
     title: "Caution Deposit Overview",
@@ -171,18 +178,18 @@ export const createPropertySteps: TourStep[] = [
       "Enable or disable the automatic application of 7.5% Value Added Tax (VAT) to applicable rent or service charges within the property.<br /><b>Yes:</b>  Apply 7.5% VAT to all relevant property transactions. This is useful for properties or agencies required to charge VAT for legal or accounting compliance.<br /><b>No:</b> Exclude VAT from charges if it is not applicable to your property management operations.",
   },
   {
-    target: ".property-currency-wrapper",
+    target: ".property-inventory-wrapper",
     placement: "top",
-    title: "Currency Selection Overview",
+    title: "Inventory Overview",
     content:
-      "Select the default currency to be used for managing this property's financial transactions on the platform. This setting determines how rent, fees, and other charges are displayed and calculated throughout the system.<br /><b>Available Options:</b> <b>Naira (₦)</b>, <b>Dollar ($)</b> and <b>Pounds (£)</b>.Choosing the appropriate currency ensures accurate financial reporting and consistency in all property-related records.",
+      "Attach specific inventory records to the property for accurate tracking of items included within the unit. To create new inventory records, navigate to <b>Management > Inventory.</b> <br />Managing inventory ensures you keep a detailed log of all assets provided to tenants or occupants - such as furniture, appliances, or fixtures. This improves accountability, supports maintenance planning, and is especially important for furnished properties or shared facilities.",
   },
   {
     target: ".create-property-form-footer",
     placement: "top",
     title: "Action Button Overview",
     content:
-      "The Clear Field button resets all fields on the form, deleting any data you've entered so far.<br />The Add Unit button finalizes the creation of the property record and redirects you to the next page where you can begin adding units under that property <br /><b>Note:</b> A property must have at least one unit to be published. Properties created without units will be saved as pending and can be found under <b>Listing > Property Draft/Request.</b>"
+      "The Clear Field button resets all fields on the form, deleting any data you've entered so far.<br />The Add Unit button finalizes the creation of the property record and redirects you to the next page where you can begin adding units under that property <br /><b>Note:</b> A property must have at least one unit to be published. Properties created without units will be saved as pending and can be found under <b>Listing > Property Draft/Request.</b>",
   },
   {
     target: "body",
