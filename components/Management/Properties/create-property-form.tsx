@@ -10,7 +10,7 @@ import type {
 } from "./types";
 import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { PlusIcon, DeleteIconX } from "@/public/icons/icons";
+import { PlusIcon, DeleteIconX, ExclamationMark } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -54,6 +54,8 @@ import {
 import { BranchDependentData } from "@/utils/types";
 import api, { handleAxiosError } from "@/services/api";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
+import { useTourStore } from "@/store/tour-store";
+import { usePathname } from "next/navigation";
 
 const maxNumberOfImages = 6;
 
@@ -76,6 +78,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     property_form_state_data
   );
   const { role, setRole } = useRole();
+  const { goToStep, restartTour } = useTourStore();
+  const pathname = usePathname();
   const isDirector = role === "director";
   const isAccountOfficer = role === "account";
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -327,6 +331,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     setRequestLoading(false);
   };
 
+  const handleGoToTourStep = (stepIndex: number) => {
+    console.log(`Triggering goToStep(${stepIndex}) for pathname: ${pathname}`);
+    goToStep(stepIndex, pathname);
+  };
+
   useEffect(() => {
     if (scrollTargetRef.current) {
       scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
@@ -428,15 +437,24 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </div>
           )}
           {/* Property Details */}
-          <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
-            {formType === "rental"
-              ? "Property Details"
-              : selectedCategory?.toLocaleLowerCase() === "estate"
-              ? "Estate Details"
-              : selectedCategory?.toLocaleLowerCase() === "facility"
-              ? "Facility Details"
-              : "Estate/Facility Details"}
-          </p>
+          <div className="flex gap-2 items-center">
+            <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
+              {formType === "rental"
+                ? "Property Details"
+                : selectedCategory?.toLocaleLowerCase() === "estate"
+                ? "Estate Details"
+                : selectedCategory?.toLocaleLowerCase() === "facility"
+                ? "Facility Details"
+                : "Estate/Facility Details"}
+            </p>
+            <button
+              onClick={() => handleGoToTourStep(8)}
+              type="button"
+              className="text-orange-normal"
+            >
+              <ExclamationMark />
+            </button>
+          </div>
           <hr className="my-4" />
           <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
             <Select
@@ -524,6 +542,58 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               }}
             />
 
+            {formType === "rental" && (
+              <>
+                <div className="coordinate-wrapper flex flex-col gap-2">
+                  <label> Coordinates </label>
+                  <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
+                    <Modal>
+                      <ModalTrigger asChild>
+                        <button className="capitalize bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
+                          Set Location
+                        </button>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <GoogleMapsModal
+                          setLat={setLat}
+                          setLng={setLng}
+                          setCoordinate={setCoordinate}
+                          coordinate={coordinate as string}
+                        />
+                      </ModalContent>
+                    </Modal>
+                    <input
+                      name="coordinate"
+                      id="coordinate"
+                      onChange={(e) => setCoordinate(e.target.value)}
+                      value={coordinate}
+                      type="text"
+                      className="w-full h-full dark:bg-transparent rounded-[4px] outline-none px-2"
+                    />
+                    {coordinate && (
+                      <button
+                        type="button"
+                        className="bg-transparent outline-none"
+                        onClick={(e) => {
+                          const previousSibling = e.currentTarget
+                            .previousElementSibling as HTMLInputElement;
+                          if (previousSibling) {
+                            setCoordinate("");
+                            previousSibling.value = "";
+                            e.stopPropagation();
+                          } else {
+                            console.warn("Previous sibling does not exist.");
+                          }
+                        }}
+                      >
+                        <DeleteIconX />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+
             {!isFacility && (
               <SelectWithImage
                 options={landlordOptions}
@@ -584,35 +654,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 }
                 // error={branchesError}
               />
-            )}
-
-            {formType === "rental" && (
-              <>
-                <Select
-                  options={inventoryOptions}
-                  id="inventory_id"
-                  defaultValue={
-                    editMode
-                      ? inventoryOptions.find(
-                          (option: any) =>
-                            option.value === propertyDetails?.inventory?.id
-                        )
-                      : undefined
-                  }
-                  label="Inventory"
-                  inputContainerClassName="bg-white"
-                  resetKey={resetKey}
-                  className="property-inventory-wrapper"
-                  hiddenInputClassName="property-form-input"
-                  placeholder={
-                    inventoryLoading
-                      ? "Loading inventories..."
-                      : inventoryError
-                      ? "Error loading inventories"
-                      : "Select inventory"
-                  }
-                />
-              </>
             )}
 
             {!isAccountOfficer && (
@@ -690,17 +731,25 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             />
           </div>
           {/* Property Settings */}
-
-          <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
-            <span className="text-status-error-primary">*</span>
-            {formType === "rental"
-              ? "Property Settings"
-              : selectedCategory?.toLocaleLowerCase() === "estate"
-              ? "Estate Settings"
-              : selectedCategory?.toLocaleLowerCase() === "facility"
-              ? "Facility Settings"
-              : "Estate/Facility Settings"}
-          </p>
+          <div className="flex gap-2 items-center">
+            <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
+              <span className="text-status-error-primary">*</span>
+              {formType === "rental"
+                ? "Property Settings"
+                : selectedCategory?.toLocaleLowerCase() === "estate"
+                ? "Estate Settings"
+                : selectedCategory?.toLocaleLowerCase() === "facility"
+                ? "Facility Settings"
+                : "Estate/Facility Settings"}
+            </p>
+            <button
+              onClick={() => handleGoToTourStep(4)}
+              type="button"
+              className="text-orange-normal"
+            >
+              <ExclamationMark />
+            </button>
+          </div>
 
           <hr className="my-4" />
           <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
@@ -785,6 +834,38 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 />
               </>
             )}
+
+            {/* NOTE: I ADDED CURRENCY TO FACILITY PROPERTY CREATE FORM  */}
+            <Select
+              options={Object.entries(currencySymbols).map(([key, symbol]) => ({
+                value: key.toLowerCase(),
+                label: `${symbol} ${
+                  key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
+                }`,
+              }))}
+              id="currency"
+              label="Currency"
+              className="property-currency-wrapper"
+              isSearchable={false}
+              inputContainerClassName="bg-white"
+              resetKey={resetKey}
+              requiredNoStar
+              hiddenInputClassName="property-form-input"
+              defaultValue={
+                editMode && propertySettings?.currency
+                  ? {
+                      value: propertySettings.currency,
+                      label: `${currencySymbols[propertySettings.currency]} ${
+                        propertySettings.currency.charAt(0).toUpperCase() +
+                        propertySettings.currency.slice(1).toLowerCase()
+                      }`,
+                    }
+                  : {
+                      value: "naira",
+                      label: `${currencySymbols.naira} Naira`,
+                    }
+              }
+            />
 
             <Select
               id="group_chat"
@@ -878,87 +959,33 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               hiddenInputClassName="property-form-input"
               defaultValue={editMode ? propertySettings?.VAT : "yes"}
             />
-            {/* NOTE: I ADDED CURRENCY TO FACILITY PROPERTY CREATE FORM  */}
-            <Select
-              options={Object.entries(currencySymbols).map(([key, symbol]) => ({
-                value: key.toLowerCase(),
-                label: `${symbol} ${
-                  key.charAt(0).toUpperCase() + key.slice(1).toLowerCase()
-                }`,
-              }))}
-              id="currency"
-              label="Currency"
-              className="property-currency-wrapper"
-              isSearchable={false}
-              inputContainerClassName="bg-white"
-              resetKey={resetKey}
-              requiredNoStar
-              hiddenInputClassName="property-form-input"
-              defaultValue={
-                editMode && propertySettings?.currency
-                  ? {
-                      value: propertySettings.currency,
-                      label: `${currencySymbols[propertySettings.currency]} ${
-                        propertySettings.currency.charAt(0).toUpperCase() +
-                        propertySettings.currency.slice(1).toLowerCase()
-                      }`,
-                    }
-                  : {
-                      value: "naira",
-                      label: `${currencySymbols.naira} Naira`,
-                    }
-              }
-            />
 
             {formType === "rental" && (
               <>
-                <div className="flex flex-col gap-2">
-                  <label> Coordinates </label>
-                  <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
-                    <Modal>
-                      <ModalTrigger asChild>
-                        <button className="capitalize bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
-                          Set Location
-                        </button>
-                      </ModalTrigger>
-                      <ModalContent>
-                        <GoogleMapsModal
-                          setLat={setLat}
-                          setLng={setLng}
-                          setCoordinate={setCoordinate}
-                          coordinate={coordinate as string}
-                        />
-                      </ModalContent>
-                    </Modal>
-                    <input
-                      name="coordinate"
-                      id="coordinate"
-                      onChange={(e) => setCoordinate(e.target.value)}
-                      value={coordinate}
-                      type="text"
-                      className="w-full h-full dark:bg-transparent rounded-[4px] outline-none px-2"
-                    />
-                    {coordinate && (
-                      <button
-                        type="button"
-                        className="bg-transparent outline-none"
-                        onClick={(e) => {
-                          const previousSibling = e.currentTarget
-                            .previousElementSibling as HTMLInputElement;
-                          if (previousSibling) {
-                            setCoordinate("");
-                            previousSibling.value = "";
-                            e.stopPropagation();
-                          } else {
-                            console.warn("Previous sibling does not exist.");
-                          }
-                        }}
-                      >
-                        <DeleteIconX />
-                      </button>
-                    )}
-                  </div>
-                </div>
+                <Select
+                  options={inventoryOptions}
+                  id="inventory_id"
+                  defaultValue={
+                    editMode
+                      ? inventoryOptions.find(
+                          (option: any) =>
+                            option.value === propertyDetails?.inventory?.id
+                        )
+                      : undefined
+                  }
+                  label="Inventory"
+                  inputContainerClassName="bg-white"
+                  resetKey={resetKey}
+                  className="property-inventory-wrapper"
+                  hiddenInputClassName="property-form-input"
+                  placeholder={
+                    inventoryLoading
+                      ? "Loading inventories..."
+                      : inventoryError
+                      ? "Error loading inventories"
+                      : "Select inventory"
+                  }
+                />
               </>
             )}
           </div>
