@@ -139,7 +139,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     >
       <div ref={containerRef} className={className}>
         {showProgressBar && (
-          <div className="flex gap-[10px] bg-white dark:bg-darkText-primary" style={style}>
+          <div className="setup-flow-progress flex gap-[10px] bg-white dark:bg-darkText-primary" style={style}>
             {Array(steps)
               .fill(null)
               .map((_, index) => (

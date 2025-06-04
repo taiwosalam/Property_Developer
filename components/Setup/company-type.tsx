@@ -48,7 +48,7 @@ const CompanyType = () => {
 
   return (
     <Section separatorStyles="max-w-[1200px]">
-      <div className="custom-flex-col gap-[18px]">
+      <div className="company-type-module-wrapper custom-flex-col gap-[18px]">
         <SectionHeading required title="company type">
           Please choose the company type that best fits your default dashboard
           configuration.
