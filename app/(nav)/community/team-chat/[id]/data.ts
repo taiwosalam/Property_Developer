@@ -45,9 +45,9 @@ export const transformTeamDetails = (
   };
 };
 
-export const sendTeamMessage = async (groupId: string, message: string) => {
+export const sendTeamMessage = async (groupId: string, message: any, type: string) => {
   const payload = {
-    content_type: "text",
+    content_type: type,
     content: message,
   };
   try {

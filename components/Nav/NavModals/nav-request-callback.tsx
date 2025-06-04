@@ -20,6 +20,21 @@ const NavRequestCallback = () => {
   const city = usePersonalInfoStore((state) => state.company_city);
   const [reqLoading, setReqLoading] = useState(false);
 
+  const [textAreaValue, setTextAreaValue] = useState("");
+  const [error, setError] = useState("");
+
+  const handleTextOnChange = (value: string) => {
+    setTextAreaValue(value);
+
+    // Clear error if length is valid
+    if (value.trim().length >= 17) {
+      setError("");
+    } else if (value.trim()) {
+      // Only show error if there's non-whitespace content
+      setError(`Must be 10 characters long`);
+    }
+  };
+
   const handleSubmit = async (data: FormData) => {
     const isValid = validateFields([
       {
@@ -88,10 +103,22 @@ const NavRequestCallback = () => {
             <br />
             Note: You can make this request only once per week.
           </p>
-          <TextArea id="info" />
+          <TextArea
+            id="info"
+            value={textAreaValue}
+            onChange={handleTextOnChange}
+          />
+          {error && textAreaValue.trim() && (
+            <p className="text-xs text-red-600 mt-1">{error}</p>
+          )}
         </div>
         <div className="flex justify-end">
-          <Button type="submit" size="base_bold" className="py-2 px-8">
+          <Button
+            type="submit"
+            size="base_bold"
+            className="py-2 px-8"
+            disabled={textAreaValue.trim().length < 17 || reqLoading}
+          >
             {reqLoading ? "Please wait..." : "Send"}
           </Button>
         </div>

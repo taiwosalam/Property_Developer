@@ -55,6 +55,7 @@ import {
 } from "../tasks/complaints/data";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import { useTourStore } from "@/store/tour-store";
+import Button from "@/components/Form/Button/button";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
@@ -167,43 +168,47 @@ const Dashboard = () => {
     }
   }, [complaintData]);
 
+  // Tour logic
+  useEffect(() => {
+    if (loading) {
+      // Wait for data to load
+      setShouldRenderTour(false);
+      return;
+    }
+    // Set persist to false for NavTour and DashboardTour
+    setPersist(false);
+    const hasNoProperties = dashboardStats.some(
+      (stat) => stat.title === "Properties" && stat.value === 0
+    );
 
- // Tour logic
- useEffect(() => {
-  if (loading) {
-    // Wait for data to load
-    setShouldRenderTour(false);
-    return;
-  }
-  // Set persist to false for NavTour and DashboardTour
-  setPersist(false);
-  const hasNoProperties = dashboardStats.some(
-    (stat) => stat.title === "Properties" && stat.value === 0 
-  );
+    const hasNoVacantUnits = dashboardStats.some(
+      (stat) => stat.title === "Vacant Unit" && stat.value === 0
+    );
+    console.log("hasNoProperties", hasNoProperties);
+    console.log("hasNoVacantUnits", hasNoVacantUnits);
+    const shouldRunTour =
+      company_status === "approved" && hasNoProperties && hasNoVacantUnits;
 
-  const hasNoVacantUnits = dashboardStats.some(
-    (stat) => stat.title === "Vacant Unit" && stat.value === 0 
-  );
-  console.log("hasNoProperties", hasNoProperties);
-  console.log("hasNoVacantUnits", hasNoVacantUnits);
-  const shouldRunTour =
-    company_status === "approved" && hasNoProperties && hasNoVacantUnits;
+    if (shouldRunTour) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
 
-  if (shouldRunTour) {
-    setShouldRenderTour(true);
-  } else {
-    setShouldRenderTour(false);
-  }
+    return () => setShouldRenderTour(false);
+  }, [
+    company_status,
+    dashboardStats,
+    loading,
+    setShouldRenderTour,
+    setPersist,
+  ]);
 
-  return () => setShouldRenderTour(false);
-}, [
-  company_status,
-  dashboardStats,
-  loading,
-  setShouldRenderTour,
-  setPersist,
-]);
+  const [openModal, setOpenModal] = useState(false);
 
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
 
   if (isNetworkError) return <NetworkError />;
   // ================== CONDITIONAL RENDERING ================== //
@@ -268,6 +273,7 @@ const Dashboard = () => {
             <div className="dashboard-calendar">
               <DashboarddCalendar />
             </div>
+
             <div className="recent-messages-card">
               <NotificationCard
                 className="h-[358px]"
