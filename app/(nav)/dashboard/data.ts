@@ -85,7 +85,7 @@ export const getDashboardCardData = (data: Record<string, any>) => [
     icon: BedIcon,
     value: data.data.vacant_unit,
     subValue: data.data.month_vacant_unit,
-    link: "/management/rent-unit",
+    link: "/management/rent-unit?is_active=vacant",
   },
   {
     title: "Expired",
@@ -93,7 +93,7 @@ export const getDashboardCardData = (data: Record<string, any>) => [
     icon: ExpiredIcon,
     value: data.data.expired_unit,
     subValue: data.data.month_expired_unit,
-    link: "/management/expired-units",
+    link: "/management/rent-unit?is_active=expired",
   },
   {
     title: "Invoices",

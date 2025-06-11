@@ -131,14 +131,6 @@ export interface EstateSetting {
   label: string;
   value: string;
 }
-// export const getEstateSettingsData = (estate_data: any): EstateSetting[] => {
-//   return [
-//     { label: "Management Fee", value: estate_data.unitAgentFee },
-//     { label: "Period", value: estate_data.renew_fee_period },
-//     { label: "Fee Penalty", value: estate_data.rent_penalty },
-//     { label: "Group Chat", value: estate_data.group_chat },
-//   ];
-// };
 
 export const getEstateSettingsData = (unit_data: any) => [
   { label: "Management Fee", value: unit_data?.management_fee ?? "--- ---" },

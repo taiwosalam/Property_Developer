@@ -19,13 +19,17 @@ const Breakdown = ({ data }: { data?: any }) => {
             data={{
               "annual fee": formatFee(data?.annual_fee, CURRENCY),
               "service charge": formatFee(data?.service_charge, CURRENCY),
-              "refundable caution fee": formatFee(data?.caution_fee, CURRENCY),
+              "caution fee": formatFee(data?.caution_fee, CURRENCY),
+              "inspection fee": formatFee(data?.inspection_fee, CURRENCY),
+              "agency fee": formatFee(data?.agency_fee, CURRENCY),
             }}
             direction="column"
             referenceObject={{
               "annual fee": "",
               "service charge": "",
-              "refundable caution fee": "",
+              "caution fee": "",
+              "inspection fee": "",
+              "agency fee": "",
             }}
           />
         ) : (

@@ -37,9 +37,11 @@ import TableLoading from "@/components/Loader/TableLoading";
 import useStaffRoles from "@/hooks/getStaffs";
 import ServerError from "@/components/Error/ServerError";
 import { PropertyListResponse } from "./[id]/edit-rent/type";
+import { useSearchParams } from "next/navigation";
 
 const RentAndUnit = () => {
   const view = useView();
+  const searchParams = useSearchParams();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const {
     getManagers,
@@ -49,6 +51,16 @@ const RentAndUnit = () => {
     error: staffsError,
   } = useStaffRoles();
   const accountOfficers = getAccountOfficers();
+
+  // Initialize appliedFilters with is_active from URL
+  const initialFilters: FilterResult = {
+    options: [],
+    menuOptions: searchParams.get("is_active")
+      ? { Status: [searchParams.get("is_active")!] }
+      : {},
+    startDate: null,
+    endDate: null,
+  };
 
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
 
@@ -80,12 +92,8 @@ const RentAndUnit = () => {
 
   const { gridView, total_pages, current_page, last_page } = state;
 
-  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
-    options: [],
-    menuOptions: {},
-    startDate: null,
-    endDate: null,
-  });
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>(initialFilters);
+  const isInitialMount = useRef(true);
 
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -98,7 +106,13 @@ const RentAndUnit = () => {
   };
 
   const handleFilterApply = (filters: FilterResult) => {
-    setAppliedFilters(filters);
+    setAppliedFilters((prev) => ({
+      ...filters,
+      menuOptions: {
+        ...prev.menuOptions, // Preserve existing filters like Status from URL
+        ...filters.menuOptions,
+      },
+    }));
     setPage(1);
   };
 
@@ -115,27 +129,36 @@ const RentAndUnit = () => {
 
   const endpoint = "/unit/list";
   const config: AxiosRequestConfig = useMemo(() => {
-    return {
-      params: {
-        page,
-        date_from: appliedFilters.startDate
-          ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
-          : undefined,
-        date_to: appliedFilters.endDate
-          ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
-          : undefined,
-        search: search,
-        branch_id: appliedFilters.menuOptions["Branch"] || [],
-        state: appliedFilters.menuOptions["State"] || [],
-        property_type: appliedFilters.menuOptions["Property Type"]?.[0],
-        is_active: appliedFilters.menuOptions["Status"]?.[0],
-        staff_id: appliedFilters.menuOptions["Account Officer"] || [],
-        sort_by: sort,
-      } as RentUnitFilterParams,
+    const params: RentUnitFilterParams = {
+      page,
+      date_from: appliedFilters.startDate
+        ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+        : undefined,
+      date_to: appliedFilters.endDate
+        ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+        : undefined,
+      search: search || undefined,
+      branch_id: appliedFilters.menuOptions["Branch"]?.length
+        ? appliedFilters.menuOptions["Branch"]
+        : undefined,
+      state: appliedFilters.menuOptions["State"]?.length
+        ? appliedFilters.menuOptions["State"]
+        : undefined,
+      property_type: (appliedFilters.menuOptions["Property Type"]?.[0] as "rental" | "facility" | undefined),
+        // appliedFilters.menuOptions["Property Type"]?.[0] || undefined,
+      is_active: appliedFilters.menuOptions["Status"]?.[0] || undefined,
+      staff_id: appliedFilters.menuOptions["Account Officer"]?.length
+        ? appliedFilters.menuOptions["Account Officer"]
+        : undefined,
+      sort_by: sort || undefined,
     };
+    // Clean undefined params
+    const cleanedParams = Object.fromEntries(
+      Object.entries(params).filter(([_, v]) => v !== undefined)
+    );
+    return { params: cleanedParams };
   }, [appliedFilters, search, sort, page]);
 
-  // console.log("total_pages", state)
 
   // Added a ref to the top of the content section
   const contentTopRef = useRef<HTMLDivElement>(null);
@@ -154,6 +177,22 @@ const RentAndUnit = () => {
   const handleSearch = (query: string) => {
     setSearch(query);
   };
+
+  // Remove redundant useEffect for is_active
+  // Moved to initialFilters
+  useEffect(() => {
+    const isActiveFromUrl = searchParams.get("is_active");
+    if (isActiveFromUrl && !appliedFilters.menuOptions["Status"]?.length) {
+      setAppliedFilters((prev) => ({
+        ...prev,
+        menuOptions: {
+          ...prev.menuOptions,
+          Status: [isActiveFromUrl],
+        },
+      }));
+    }
+    isInitialMount.current = false; // Mark initial mount complete
+  }, [searchParams]);
 
   const {
     data: propertyData,
@@ -176,7 +215,6 @@ const RentAndUnit = () => {
       label: p.title,
     })) || [];
 
-    console.log("propertyOptions", propertyOptions)
   const {
     data: apiData,
     loading,
@@ -225,7 +263,11 @@ const RentAndUnit = () => {
 
   if (loading)
     return (
-      <CustomLoader layout="page" statsCardCount={3} pageTitle="Rent & Management" />
+      <CustomLoader
+        layout="page"
+        statsCardCount={3}
+        pageTitle="Rent & Management"
+      />
     );
 
   if (isNetworkError) return <NetworkError />;
@@ -282,14 +324,14 @@ const RentAndUnit = () => {
         isDateTrue
         filterOptionsMenu={[
           ...RentAndUnitFiltersWithDropdown,
-          ...(propertyOptions.length > 0 
+          ...(propertyOptions.length > 0
             ? [
-              {
-                label: "Properties",
-                value: propertyOptions,
-              },
-            ]
-          : []),
+                {
+                  label: "Properties",
+                  value: propertyOptions,
+                },
+              ]
+            : []),
           ...(branchOptions.length > 0
             ? [
                 {

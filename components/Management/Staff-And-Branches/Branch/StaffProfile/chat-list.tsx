@@ -42,7 +42,6 @@ const ChatList: React.FC<{
     setFilteredChats(staffChats);
   }, [staffChats]);
 
-  console.log("staffChats passed to list", staffChats);
   return (
     <div className="h-full flex flex-col gap-4 relative">
       <div className="flex gap-3 sticky top-0 z-[2] p-4 pb-0 bg-white dark:bg-darkText-primary">
@@ -50,13 +49,6 @@ const ChatList: React.FC<{
           placeholder="Search for messages"
           className="flex-1 bg-neutral-2"
           onSearch={handleSearch}
-        />
-        <FilterButton
-          className="bg-neutral-2 rounded-lg dark:bg-darkText-primary dark:border dark:border-darkText-1"
-          noTitle
-          style={{
-            padding: "10px 16px",
-          }}
         />
       </div>
 
@@ -81,7 +73,7 @@ const ChatList: React.FC<{
             />
           ))
         ) : (
-          <p className="text-text-disabled text-center py-4">No chats found</p>
+          <p className="text-text-disabled text-center py-4">No Chat/Message found</p>
         )}
       </div>
 

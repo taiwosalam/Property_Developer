@@ -157,9 +157,9 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
     invoice_status && invoice_status.trim().toLowerCase() === "pending";
 
     const pendingPart = partial_pending || invoice_status?.trim().toLowerCase() === "pending";
-    console.log("partial_pending", partial_pending);
-    console.log("invoice_status", invoice_status);
-    console.log("pendingPart", pendingPart);
+    // console.log("partial_pending", partial_pending);
+    // console.log("invoice_status", invoice_status);
+    // console.log("pendingPart", pendingPart);
 
   const NOT_OCCUPIED =
     status.toLowerCase() === "relocate" || status.toLowerCase() === "vacant";

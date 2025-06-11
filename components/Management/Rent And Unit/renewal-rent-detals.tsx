@@ -160,25 +160,6 @@ export const RenewalFee: React.FC<{
             currency={currency}
             noEdit={noEdit}
           />
-          {/* {showCalculation && (
-            <div className="space-y-2">
-              <p className="text-[#747474] dark:text-white text-base font-normal">
-                Net Owing Calculation
-              </p>
-              <div className="space-y-2">
-                {netOwingBreakdown.map((item, index) => (
-                  <div key={index} className="flex items-start">
-                    <p className="text-[#747474] dark:text-white w-[150px] capitalize">
-                      {item.label}
-                    </p>
-                    <p className="text-black dark:text-darkText-2 capitalize">
-                      {item.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )} */}
         </>
       )}
     </div>

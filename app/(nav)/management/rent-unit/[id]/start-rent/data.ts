@@ -42,13 +42,25 @@ export const initialTenants: Tenant[] = [
 export const getPropertySettingsData = (unit_data: any) => [
   { label: "Agency Fee", value: `${unit_data?.agency_fee ?? "--- ---"}%` },
   { label: "Period", value: unit_data?.fee_period ?? "--- ---" },
-  { label: "Who to charge New Rent", value: unit_data?.whoToCharge ?? "--- ---" },
-  { label: "Who to charge New Renew", value: unit_data?.whoToChargeRenew ?? "--- ---" },
+  {
+    label: "Who to charge New Rent",
+    value: unit_data?.whoToCharge ?? "--- ---",
+  },
+  {
+    label: "Who to charge New Renew",
+    value: unit_data?.whoToChargeRenew ?? "--- ---",
+  },
   { label: "Caution Deposit", value: unit_data?.caution_deposit ?? "--- ---" },
   { label: "Currency", value: unit_data?.currency ?? "--- ---" },
   { label: "Group Chat", value: `${unit_data?.group_chat ?? "--- ---"}` },
-  { label: "Request Callback", value: `${unit_data?.requestCallBack ?? "--- ---"}` },
-  { label: "Vehicle Record", value: `${unit_data?.vehicleRecord ?? "--- ---"}` },
+  {
+    label: "Request Callback",
+    value: `${unit_data?.requestCallBack ?? "--- ---"}`,
+  },
+  {
+    label: "Vehicle Record",
+    value: `${unit_data?.vehicleRecord ?? "--- ---"}`,
+  },
   { label: "Rent Penalty", value: `${unit_data?.rent_penalty ?? "--- ---"}` },
   { label: "Book Visitor", value: unit_data?.bookVisitor ?? "--- ---" },
 ];
@@ -67,7 +79,7 @@ export const getEstateData = (unit_data: any) => [
   {
     label: "Account Officer",
     value: unit_data?.accountOfficer ?? "--- ---",
-  }, 
+  },
   { label: "Description", value: unit_data?.description ?? "--- ---" },
   { label: "Category", value: unit_data?.categories ?? "--- ---" },
   { label: "Unit ID", value: unit_data?.unit_id ?? "--- ---" },
@@ -77,8 +89,14 @@ export const getEstateSettingsData = (unit_data: any) => [
   { label: "Management Fee", value: unit_data?.management_fee ?? "--- ---" },
   { label: "Period", value: unit_data?.fee_period ?? "--- ---" },
   { label: "Book Visitor", value: unit_data?.bookVisitor ?? "--- ---" },
-  { label: "Request Callback", value: `${unit_data?.requestCallBack ?? "--- ---"}` },
-  { label: "Vehicle Record", value: `${unit_data?.vehicleRecord ?? "--- ---"}` },
+  {
+    label: "Request Callback",
+    value: `${unit_data?.requestCallBack ?? "--- ---"}`,
+  },
+  {
+    label: "Vehicle Record",
+    value: `${unit_data?.vehicleRecord ?? "--- ---"}`,
+  },
   { label: "Fee Penalty", value: unit_data?.fee_penalty ?? "--- ---" },
   { label: "Group Chat", value: unit_data?.group_chat ?? "--- ---" },
   { label: "Currency", value: unit_data?.currency ?? "--- ---" },

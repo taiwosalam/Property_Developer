@@ -195,14 +195,17 @@ const Dashboard = () => {
       setShouldRenderTour(false);
     }
 
-    return () => setShouldRenderTour(false);
-  }, [
-    company_status,
-    dashboardStats,
-    loading,
-    setShouldRenderTour,
-    setPersist,
-  ]);
+  return () => setShouldRenderTour(false);
+}, [
+  company_status,
+  dashboardStats,
+  loading,
+  setShouldRenderTour,
+  setPersist,
+  isTourCompleted,
+]);
+
+console.log("recentComplaints", recentComplaints?.complaints)
 
   if (isNetworkError) return <NetworkError />;
   // ================== CONDITIONAL RENDERING ================== //

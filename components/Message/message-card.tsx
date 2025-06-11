@@ -71,10 +71,10 @@ const MessageCard: React.FC<MessageCardProps> = ({
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                 {fullname}
               </p>
-              {badgeColor && (
+              {/* NB: NEEDED BADGE - BUT WE CAN'T DISTINGUISH WEB AND MOBILE TO SHOW DIFFERENT TAGE */}
+              {/* {badgeColor && (
                 <BadgeIcon color={badgeColor} />
-                // <Picture src="/icons/verified.svg" alt="verified" size={16} />
-              )}
+              )} */}
             </div>
             {content_type === "text" ? (
               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
