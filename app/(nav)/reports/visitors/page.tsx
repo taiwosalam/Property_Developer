@@ -230,7 +230,7 @@ const Visitors = () => {
           total={pageData?.request_total || 0}
           colorScheme={1}
         />
-        <ManagementStatistcsCard
+        {/* <ManagementStatistcsCard
           title="Checked In Visitors"
           newData={pageData?.checked_in_month || 0}
           total={pageData?.checked_in_total || 0}
@@ -241,7 +241,7 @@ const Visitors = () => {
           newData={pageData?.checked_out_month || 0}
           total={pageData?.checked_out_total || 0}
           colorScheme={3}
-        />
+        /> */}
       </div>
       <FilterBar
         azFilter

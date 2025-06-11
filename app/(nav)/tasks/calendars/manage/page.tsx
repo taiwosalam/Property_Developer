@@ -57,25 +57,25 @@ const ManageCalendar = () => {
 
   // States
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [activedate, setActiveDate] = useState(new Date());
+  const [activeDate, setActiveDate] = useState(new Date());
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
   const [activityModalIsOpen, setActivityModalIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
   const [activeLayout, setActiveLayout] = useState<CalendarLayoutType>("Month");
 
   // Memos
-  const { activities } = useMemo(() => {
-    const activities = calendar_events.filter((event) =>
-      isSameDay(event.date, activedate)
-    );
+  // const { activities } = useMemo(() => {
+  //   const activities = calendar_events.filter((event) =>
+  //     isSameDay(event.date, activedate)
+  //   );
 
-    return { activities };
-  }, [activedate]);
+  //   return { activities };
+  // }, [activedate]);
 
   const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>(
     []
   );
-  
+
   const {
     data: calendarEventApiResponse,
     loading,
@@ -130,6 +130,44 @@ const ManageCalendar = () => {
   // Move by 1 week
   const nextWeek = () => setCurrentDate((prev) => addWeeks(prev, 1));
   const prevWeek = () => setCurrentDate((prev) => subWeeks(prev, 1));
+
+  const { activities, eventsByDate } = useMemo(() => {
+    // Group events by date for multiple event detection
+    const eventsByDate = calendarEvents?.reduce((acc, event) => {
+      const dateKey = event.date.toDateString();
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(event);
+      return acc;
+    }, {} as Record<string, CalendarEventProps[]>);
+
+    // Get activities for the active date
+    const activities = calendarEvents
+      ?.filter((event) => isSameDay(event.date, activeDate))
+      .map((event) => {
+        const dateKey = event.date.toDateString();
+        const eventsOnDay = eventsByDate?.[dateKey];
+
+        // If multiple events exist on this day
+        if (eventsOnDay && eventsOnDay.length > 1) {
+          // Get all event types for this day
+          const allEventTypes = eventsOnDay.map((e) => e.type).join(", ");
+
+          return {
+            ...event,
+            type: "multiple event" as const,
+            eventCount: eventsOnDay.length,
+            originalType: event.type,
+            title: `${event.type} (Part of multiple events: ${allEventTypes})`,
+            desc: `${event.desc}`,
+          };
+        }
+        return event;
+      });
+
+    return { activities, eventsByDate };
+  }, [activeDate, calendarEvents]);
 
   return (
     <EventCalendarContext.Provider
@@ -235,9 +273,9 @@ const ManageCalendar = () => {
         {activeLayout === "Year" ? (
           <YearEventCalendar events={calendarEvents} />
         ) : activeLayout === "Month" ? (
-          <MonthEventCalendar events={calendarEvents}/>
+          <MonthEventCalendar events={calendarEvents} />
         ) : activeLayout === "Week" ? (
-          <WeekEventCalendar events={calendarEvents}/>
+          <WeekEventCalendar events={calendarEvents} />
         ) : null}
         <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
@@ -252,7 +290,11 @@ const ManageCalendar = () => {
         >
           <ModalContent>
             <div className="w-[95vw] max-w-[500px] max-h-[600px] h-[550px]">
-              <CalendarActivities date={activedate} events={calendarEvents} />
+              <CalendarActivities
+                date={activeDate}
+                events={activities ?? []}
+                setIsOpen={setActivityModalIsOpen}
+              />
             </div>
           </ModalContent>
         </Modal>

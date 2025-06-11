@@ -175,7 +175,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                       )}
 
                   {sectionHeader === "Recent Complaints" && (
-                    <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                    <p className="line-clamp-2 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
                       {notification.message}
                     </p>
                   )}

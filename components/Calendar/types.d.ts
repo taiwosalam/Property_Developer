@@ -67,5 +67,6 @@ export interface CalendarDayProps {
 export interface CalendarActivitiesProps {
   date: Date;
   events: CalendarEventProps[];
+  setIsOpen?: (isOpen: boolean) => void
 }
 // --------------------------------------------------

@@ -258,7 +258,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       </div>
       <div className="flex justify-end px-[18px]">
         {(cardType === "property" || cardType === "deposit") && (
-          <button type="button" aria-label="Message" className="mr-4">
+          <button type="button" aria-label="Message" className="mr-4"
+          onClick={goToMessage}>
             <ReplyIcon2 />
           </button>
         )}
