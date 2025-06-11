@@ -73,7 +73,7 @@ const StaffChat = () => {
           />
         ) : (
           <div className="h-full custom-flex-col gap-4 items-center justify-center">
-            <div className="flex justify-center">
+            <div className="flex justify-center max-w-[100px] max-h-[100px]">
               <Image src={logo} alt="logo" width={200} height={200} />
             </div>
             <p className="text-center text-text-quaternary dark:text-darkText-1 text-sm font-normal">

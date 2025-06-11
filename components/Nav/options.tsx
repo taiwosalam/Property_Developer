@@ -45,7 +45,7 @@ export const profile_actions: (
     },
   },
   {
-    label: "Request Call",
+    label: "Request Call Back",
     modal: <NavRequestCallback />,
   },
 ];

@@ -82,6 +82,7 @@ interface GlobalStoreState {
   vatTimeRangeLabel?: string;
   timeRange: string; // e.g., "7d", "30d", "90d", "custom"
   timeRangeLabel: string;
+  invoiceTimeRange: string;
   selectedDateRange: DateRange | undefined; // { from: Date, to: Date }
   unitData: initDataProps | null;
   setSelectedOccupant: (occupant: Occupant | null) => void;
@@ -162,6 +163,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setIsValidDateRange: (isValid: boolean) => set({ isValidDateRange: isValid }),
   currentRentStats: null,
   timeRange: "last_30_days",
+  invoiceTimeRange: "90d",
   visitorsRequest: null,
   overduePeriods: null,
   staffChats: null,

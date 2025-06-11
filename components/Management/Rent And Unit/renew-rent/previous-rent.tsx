@@ -138,13 +138,16 @@ const PreviousRentRecords = () => {
           currencySymbols[currency as keyof typeof currencySymbols] || "₦"
         } ${formatNumber(record.rent_amount) || 0}`,
         start_date: record.start_date
-          ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+          // ? dayjs(record.start_date).format("MMM D, YYYY").toLowerCase()
+          ? record.start_date
           : null,
         due_date: record.due_date
-          ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+          // ? dayjs(record.due_date).format("MMM D, YYYY").toLowerCase()
+          ? record.due_date
           : null,
         payment_date: record.payment_date
-          ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
+          // ? dayjs(record.payment_date).format("MMM D, YYYY").toLowerCase()
+          ? record.payment_date
           : null,
         ref: index === records.length - 1 ? lastRowRef : null,
       })),

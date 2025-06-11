@@ -53,6 +53,9 @@ export const transformComplaintDashboard = (
         badgeColor: getBadgeColor(complaint?.tier_id) ?? "blue",
         title: complaint?.title,
         message: complaint?.description,
+        time: complaint?.created_at
+          ? dayjs(complaint.created_at).format("hh:mma")
+          : "___ ___",
       })),
   };
 };

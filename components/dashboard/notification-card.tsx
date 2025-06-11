@@ -215,9 +215,6 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   Message
                 </button>
               ) : (
-                // <Link href={`/messages/${notification.user_id}`}>
-                //   <p className="text-[10px] text-text-disabled">Message</p>
-                // </Link>
                 <div className="custom-flex-col items-center">
                   <p className="text-[10px] text-text-disabled">
                     {notification.time}

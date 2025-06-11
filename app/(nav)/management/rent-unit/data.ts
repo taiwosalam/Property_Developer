@@ -296,13 +296,15 @@ export interface User {
 
 export interface RentUnitFilterParams {
   date_from?: string;
+  page: number;
   date_to?: string;
   branch_id?: string[];
   state?: string[];
   staff_id?: string[];
   property_type?: "rental" | "facility";
-  sort_by?: "desc";
+  sort_by?: "desc" | "asc";
   search?: string;
+  is_active?: string;
 }
 
 export interface RentalPropertyCardProps {

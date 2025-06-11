@@ -10,7 +10,7 @@ interface UnitData {
 }
 
 export const transformUnitDetails = (unitData: UnitData): string => {
-  console.log("unitData", unitData);
+  // console.log("unitData", unitData);
   // Use actual property names from unitData
   const unitType = unitData?.unitType?.toLowerCase() || unitData?.unit_type || "";
   const unitPreference = unitData?.unitPreference || unitData?.preference || "";

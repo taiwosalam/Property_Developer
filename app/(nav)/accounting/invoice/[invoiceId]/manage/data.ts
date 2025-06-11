@@ -69,7 +69,7 @@ export const updateInvoiceStatus = async (id: number, data: any) => {
 export const deleteInvoice = async (id: number) => {
   try {
     const res = await api.delete(`/invoice/${id}`);
-    if (res.status === 201) {
+    if (res.status === 200) {
       return true;
     }
   } catch (error) {

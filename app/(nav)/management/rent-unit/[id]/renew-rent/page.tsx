@@ -142,17 +142,18 @@ const RenewRent = () => {
   const propertyId = unitData.propertyId;
   const previousRecord = (unitData?.current_records as any)?.data?.[0];
   const start_date = previousRecord?.start_date
-    ? dayjs(previousRecord.start_date).format("DD/MM/YYYY")
+    // ? dayjs(previousRecord.start_date).format("DD/MM/YYYY")
+    ? previousRecord.start_date
     : "__,__,___";
   const due_date = previousRecord?.due_date
-    ? dayjs(previousRecord.due_date).format("DD/MM/YYYY")
+    // ? dayjs(previousRecord.due_date).format("DD/MM/YYYY")
+    ? previousRecord.due_date
     : "___,___,___";
 
   const propertySettingsData = getPropertySettingsData(unitData);
   const rentalData = getRentalData(unitData);
   const estateData = getEstateData(unitData);
   const estateSettingsDta = getEstateSettingsData(unitData);
-  console.log("passed apiData", apiData);
 
   // PENDING INVOICE REPRESENTS PART PAYMENT TENANT MADE
   const PENDING_INVOICE = unitData?.pending_invoice;
