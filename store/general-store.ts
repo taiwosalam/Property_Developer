@@ -89,6 +89,7 @@ interface GlobalStoreState {
   setIsPastDate: (isPast: boolean) => void;
   setUnitData: (data: initDataProps | null) => void;
   canSubmit: boolean;
+  SelectedDirectorPics: boolean;
 
   isValidDateRange: boolean,
   setIsValidDateRange: (isValid: boolean) => void;
@@ -175,6 +176,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setIsPastDate: (isPast) => set({ isPastDate: isPast }),
   setUnitData: (data) => set({ unitData: data }),
   canSubmit: true,
+  SelectedDirectorPics: false,
 
   branchWalletTransactions: null,
 

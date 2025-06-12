@@ -13,8 +13,10 @@ const SetupHeader: React.FC<{
   const { goToStep, restartTour } = useTourStore();
   const pathname = usePathname();
   const domainAvailable = useGlobalStore((s) => s.domainAvailable);
+  const SelectedDirectorPics = useGlobalStore((s) => s.SelectedDirectorPics);
 
-  const isSubmitDisabled = !canSubmit || requestLoading || !domainAvailable;
+  const isSubmitDisabled =
+    !canSubmit || !SelectedDirectorPics || requestLoading || !domainAvailable;
 
   return (
     <div className="setup-header-wrapper sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between items-center gap-1">
@@ -34,7 +36,9 @@ const SetupHeader: React.FC<{
           </button>
         </div>
         <p className="text-text-tertiary hidden md:block">
-         {isEditMode ? "Update all required fields accurately to complete onboarding and unlock full access." : "To complete your onboarding and gain full access to the platform, please ensure all required fields are accurately filled before submitting your information."} 
+          {isEditMode
+            ? "Update all required fields accurately to complete onboarding and unlock full access."
+            : "To complete your onboarding and gain full access to the platform, please ensure all required fields are accurately filled before submitting your information."}
         </p>
       </div>
       <Button type="submit" disabled={isSubmitDisabled}>

@@ -24,8 +24,9 @@ export const create_new_items: CreateNewItemsProps = [
       { label: "tenants / occupants", modal: <AddTenantModal /> },
       { label: "branch", modal: <CreateBranchModal /> },
       //   { label: "staff", modal: <CreateStaffModal /> }, // NOTE: This modal require a branch id, thats why its commented out
-      { label: "inventory", link: "/management/inventory/create-inventory" },
+      // { label: "inventory", link: "/management/inventory/create-inventory" },
       { label: "property", modal: <AddPropertyModal /> },
+      { label: "service provider", modal: <AddServiceProviderModal /> },
     ],
   },
   {
@@ -34,7 +35,6 @@ export const create_new_items: CreateNewItemsProps = [
     content: [
       { label: "examine", modal: <CreateExamineModal /> },
       { label: "maintenance", link: "/tasks/maintenance/create-new" },
-      { label: "service provider", modal: <AddServiceProviderModal /> },
       { label: "event", modal: <CreateReminderMOdal /> },
       { label: "task", modal: <CreateReminderMOdal /> },
       { label: "reminder", modal: <CreateReminderMOdal /> },
@@ -239,3 +239,18 @@ export const staff_create_new_items: CreateNewItemsProps = [
     ],
   },
 ];
+
+
+
+
+  // Array of labels for features that are not yet available
+export const unavailableFeatures = [
+    'task', 
+    'event',
+    'reminder',
+    'announcement',
+    'examine',
+    'maintenance',
+    'announcement',
+    'quit notice',
+  ];

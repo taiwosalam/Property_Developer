@@ -84,13 +84,14 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
 
   return (
     <CommpanyStatusPreset
-      // back={activeStep !== 1 ? () => setActiveStep(1) : undefined}
       back={activeStep === 2 ? () => setActiveStep(1) : undefined}
       type={
         status === "approved"
           ? "success"
           : status === "rejected"
-          ? "warning"
+          ? "rejected"
+          : status === "pending" 
+          ? 'pending'
           : "success"
       }
       className="lg:w-[50%] w-60%"

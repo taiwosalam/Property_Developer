@@ -152,7 +152,8 @@ const Documents = () => {
             <CreateTenancyAggrementModal />
           </ModalContent>
         </Modal>
-        <Modal
+        {/* ALREADY IN ROOT LAYOUT */}
+        {/* <Modal
           state={{
             isOpen: openDocumentModal,
             setIsOpen: (isOpen) =>
@@ -166,7 +167,7 @@ const Documents = () => {
               <div>No document selected</div>
             )}
           </ModalContent>
-        </Modal>
+        </Modal> */}
         <DrawerComponent />
       </div>
       <div className="custom-flex-col gap-6">
