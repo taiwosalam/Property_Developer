@@ -396,7 +396,7 @@ export const logout = async (): Promise<boolean> => {
   const resetAuthStore = useAuthStore.getState().reset;
   try {
     const { data } = await api.post("logout");
-    const message = data?.message || "Successfully logged out";
+    const message = data?.message || "Successfu lly logged out";
 
     // Remove token from cookies
     Cookies.remove("auth-token");

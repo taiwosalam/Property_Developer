@@ -89,8 +89,6 @@ const Setup = () => {
     }
   }, [apiData]);
 
-  // console.log("here", companyData, directorsData);
-
   const handleSubmit = async (formData: FormData) => {
     setRequestLoading(true);
     const data = transformFormData(formData);
@@ -100,6 +98,7 @@ const Setup = () => {
       ...data,
       ...(isEditMode ? { _method: "PATCH", status: "pending" } : {}),
     };
+
     if (isEditMode && !company_id) {
       return toast.warning("Company Id is missing");
     }
@@ -108,7 +107,6 @@ const Setup = () => {
       : createCompany(payload);
 
     // console.log("payload", payload);
-    // const status = await createCompany(payload);
     const status = await action;
     if (status) {
       await setRole("director");

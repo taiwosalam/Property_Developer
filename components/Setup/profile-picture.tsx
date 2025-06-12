@@ -1,8 +1,6 @@
 import Image from "next/image";
-import { useState, useRef } from "react";
-// Imports
+import { useState } from "react";
 import { SectionHeading } from "../Section/section-components";
-import Button from "../Form/Button/button";
 import {
   DeleteIconOrange,
   UploadImageIcon,
@@ -20,7 +18,7 @@ const ProfilePicture = () => {
     preview,
     inputFileRef,
     handleImageChange: originalHandleImageChange,
-    clearSelection: clearImageSelection,
+    clearSelection,
   } = useImageUploader({
     placeholder: CameraCircle,
     maxSize: { unit: "MB", value: 2 },
@@ -31,7 +29,7 @@ const ProfilePicture = () => {
 
   // Handle avatar selection
   const handleAvatarSelection = (avatarUrl: string) => {
-    clearImageSelection(); // Clear uploaded file
+    clearSelection(); // Clear uploaded file
     setSelectedAvatar(avatarUrl); // Set avatar
     setAvatarModalOpen(false); // Close modal
   };
@@ -39,49 +37,30 @@ const ProfilePicture = () => {
   // Handle file upload
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedAvatar(""); // Clear avatar
+    console.log("Selected file:", e.target.files?.[0]); // Debug log
     originalHandleImageChange(e); // Handle file upload
   };
 
   // Handle deletion of image or avatar
   const handleDelete = () => {
-    clearImageSelection(); // Clear file
+    clearSelection(); // Clear file
     setSelectedAvatar(""); // Clear avatar
-  };
-
-  // Trigger file input click
-  const handleUploadClick = () => {
-    if (inputFileRef.current) {
-      inputFileRef.current.click();
-    }
-  };
-
-  // Open avatar modal
-  const handleChooseAvatarClick = () => {
-    setAvatarModalOpen(true);
   };
 
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="profile picture">
-        The profile photo size should be 100 x 100 pixels with a maximum file
-        size of 2MB. Or choose an avatar.
+        The profile photo size should be 100 x 100 pixels with a maximum file size
+        of 2MB. Or choose an avatar.
       </SectionHeading>
 
       <div className="flex gap-5 items-end">
-        {/* Hidden inputs for form data */}
+        {/* Hidden input for avatar */}
         <input
           type="hidden"
           name="avatar"
-          className="setu-f"
+          className="setup-f"
           value={selectedAvatar}
-        />
-        <input
-          name="director_profile_picture"
-          type="file"
-          accept="image/*"
-          ref={inputFileRef}
-          onChange={handleImageChange}
-          className="hidden setup-f"
         />
 
         {/* File upload side */}
@@ -105,42 +84,22 @@ const ProfilePicture = () => {
               </button>
             </div>
           ) : (
-            <label htmlFor="picture" className="!w-fit cursor-pointer relative">
+            <label
+              htmlFor="director_profile_picture"
+              className="!w-fit cursor-pointer relative"
+            >
               <Picture src={preview} alt="Camera" size={60} rounded />
-              {preview && preview !== CameraCircle && (
-                <div
-                  role="button"
-                  aria-label="remove image"
-                  className="absolute top-0 right-0"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    clearImageSelection();
-                  }}
-                >
-                  <DeleteIconOrange size={20} />
-                </div>
-              )}
-              <input
-                type="file"
-                id="picture"
-                name="picture"
-                accept="image/*"
-                className="hidden pointer-events-none"
-                onChange={handleImageChange}
-                ref={inputFileRef}
-              />
             </label>
-            // <button
-            //   type="button"
-            //   onClick={handleUploadClick}
-            //   className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
-            // >
-            //   <UploadImageIcon />
-            //   <span className="text-text-secondary text-xs font-normal">
-            //     Upload Profile Picture
-            //   </span>
-            // </button>
           )}
+          <input
+            id="director_profile_picture"
+            name="director_profile_picture"
+            type="file"
+            accept="image/*"
+            ref={inputFileRef}
+            onChange={handleImageChange}
+            className="hidden setup-f"
+          />
         </div>
 
         {/* Avatar selection button */}
@@ -168,7 +127,7 @@ const ProfilePicture = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedAvatar("");
-                      clearImageSelection();
+                      clearSelection();
                     }}
                   >
                     <DeleteIconOrange size={20} />
