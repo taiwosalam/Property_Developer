@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SectionHeading } from "../Section/section-components";
 import {
   DeleteIconOrange,
@@ -12,8 +12,13 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import Avatars from "../Avatars/avatars";
 import Picture from "../Picture/picture";
+import { FlowProgressContext } from "../FlowProgress/flow-progress";
+import { useGlobalStore } from "@/store/general-store";
 
 const ProfilePicture = () => {
+  const { canSubmit } = useContext(FlowProgressContext);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
   const {
     preview,
     inputFileRef,
@@ -24,8 +29,20 @@ const ProfilePicture = () => {
     maxSize: { unit: "MB", value: 2 },
   });
 
+  // Track picture selection status and trigger FlowProgress validation
+  useEffect(() => {
+    const hasPicture = Boolean(
+      preview &&
+        preview !== CameraCircle &&
+        inputFileRef.current?.files?.[0]?.size &&
+        inputFileRef.current.files[0].size > 0 
+    );
+    const hasAvatar = selectedAvatar !== "";
+    const sub = hasAvatar || hasPicture
+    setGlobalStore("SelectedDirectorPics", sub);
+  }, [preview, inputFileRef, selectedAvatar]);
+
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState("");
 
   // Handle avatar selection
   const handleAvatarSelection = (avatarUrl: string) => {
@@ -37,7 +54,6 @@ const ProfilePicture = () => {
   // Handle file upload
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedAvatar(""); // Clear avatar
-    console.log("Selected file:", e.target.files?.[0]); // Debug log
     originalHandleImageChange(e); // Handle file upload
   };
 
@@ -50,8 +66,8 @@ const ProfilePicture = () => {
   return (
     <div className="custom-flex-col gap-5">
       <SectionHeading required title="profile picture">
-        The profile photo size should be 100 x 100 pixels with a maximum file size
-        of 2MB. Or choose an avatar.
+        The profile photo size should be 100 x 100 pixels with a maximum file
+        size of 2MB. Or choose an avatar.
       </SectionHeading>
 
       <div className="flex gap-5 items-end">

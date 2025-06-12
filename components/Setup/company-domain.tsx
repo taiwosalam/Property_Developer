@@ -6,12 +6,13 @@ import Input from "../Form/Input/input";
 import CopyText from "../CopyText/copy-text";
 import { checkDomainAvailability } from "@/app/(onboarding)/setup/data";
 import { useGlobalStore } from "@/store/general-store";
+import { sanitizeDomainInput } from "@/utils/sanitize-domain";
 
 //  Props interface
 interface CompanyDomainProps {
   companyName: string;
   isEditMode: boolean;
-  domain?: string; 
+  domain?: string;
 }
 
 const CompanyDomain: React.FC<CompanyDomainProps> = ({
@@ -29,20 +30,38 @@ const CompanyDomain: React.FC<CompanyDomainProps> = ({
     if (isEditMode && domain) {
       // In editMode, extract the subdomain from the full domain (e.g., "example" from "example.ourlisting.ng")
       const subdomain = domain.replace(/\.ourlisting\.ng$/, "");
-      setCustomDomain(subdomain);
+      // setCustomDomain(subdomain);
+      setCustomDomain(sanitizeDomainInput(subdomain));
     } else if (companyName) {
-      // When not in editMode, derive from companyName
-      const defaultDomain = companyName.trim().toLowerCase().replace(/\s+/g, "");
+      const defaultDomain = sanitizeDomainInput(companyName);
       setCustomDomain(defaultDomain);
     }
   }, [companyName, isEditMode, domain]);
 
   const handleCustomDomainChange = (value: string) => {
-    setCustomDomain(value);
+    const sanitizedValue = sanitizeDomainInput(value);
+    setCustomDomain(sanitizedValue);
   };
 
-  // Debounce API call for domain availability
+  // Check if the current customDomain matches the domain prop (i.e., it’s the owner’s domain)
+  const isOwner =
+    customDomain && domain && `${customDomain}.ourlisting.ng` === domain;
+  // Set domainAvailable to true in global store if isEditMode and isOwner
   useEffect(() => {
+    if (isEditMode && isOwner) {
+      setGlobalStore("domainAvailable", true);
+      setIsAvailable(true); // Update local state to reflect availability
+    }
+  }, [isEditMode, isOwner, setGlobalStore]);
+
+
+
+  useEffect(() => {
+    // Skip API check if in editMode and isOwner (domain is already owned)
+    if (isEditMode && isOwner) {
+      return;
+    }
+
     if (customDomain.trim() === "") {
       setIsAvailable(null);
       setSearching(false);
@@ -53,15 +72,12 @@ const CompanyDomain: React.FC<CompanyDomainProps> = ({
       setSearching(true);
       const available = await checkDomainAvailability(customDomain);
       setIsAvailable(available);
-      setGlobalStore("domainAvailable", available)
+      setGlobalStore("domainAvailable", available);
       setSearching(false);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [customDomain]);
-
-  // Check if the current customDomain matches the domain prop (i.e., it’s the owner’s domain)
-  const isOwner = customDomain && domain && `${customDomain}.ourlisting.ng` === domain;
+  }, [customDomain, isEditMode, isOwner, setGlobalStore]);
 
   return (
     <div className="company-domain-wrapper">
@@ -99,8 +115,9 @@ const CompanyDomain: React.FC<CompanyDomainProps> = ({
             ) : (
               isAvailable !== null && (
                 <div
-                  className={`status ${isAvailable ? "bg-green-500" : "bg-red-500"
-                    } text-white px-2 py-1 rounded-md text-xs`}
+                  className={`status ${
+                    isAvailable ? "bg-green-500" : "bg-red-500"
+                  } text-white px-2 py-1 rounded-md text-xs`}
                 >
                   {isAvailable ? "Available" : "Not Available"}
                 </div>

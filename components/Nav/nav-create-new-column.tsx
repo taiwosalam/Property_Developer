@@ -9,6 +9,8 @@ import type { NavCreateNewColumnProps } from "./types";
 import SVG from "../SVG/svg";
 import { useModal } from "../Modal/modal";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { toast } from "sonner";
+import { unavailableFeatures } from "./nav-create-new-items";
 
 const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   data = [],
@@ -34,6 +36,15 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
     setIsOpen(false);
   };
 
+  // Handler to check if feature is available before triggering action
+  const handleAction = (label: string, action: () => void) => {
+    if (unavailableFeatures.includes(label.toLowerCase())) {
+      toast.warning(`${label} feature is not available yet. Coming soon!`);
+    } else {
+      action();
+    }
+  };
+
   return (
     <div className="flex gap-10 w-full overflow-auto custom-round-scrollbar">
       {content.map(({ type, label, content }, index) => (
@@ -54,7 +65,15 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
                 <Link
                   href={link}
                   className={class_styles}
-                  onClick={closeCreateNewModal}
+                  onClick={(e) => {
+                    handleAction(label, () => {
+                      closeCreateNewModal();
+                    });
+                    if (unavailableFeatures.includes(label.toLowerCase())) {
+                      e.preventDefault();
+                    }
+                  }}
+                  // onClick={closeCreateNewModal}
                 >
                   {icon}
                   <p className="text-text-secondary dark:text-darkText-1 capitalize">
@@ -65,7 +84,10 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
                 <button
                   type="button"
                   className={class_styles}
-                  onClick={() => handleModalTrigger(modal)}
+                  onClick={() =>
+                    handleAction(label, () => handleModalTrigger(modal))
+                  }
+                  // onClick={() => handleModalTrigger(modal)}
                 >
                   {icon}
                   <p className="text-text-secondary dark:text-darkText-1 capitalize">

@@ -38,9 +38,6 @@ const Wallet = () => {
   const timeRange = useGlobalStore((state) => state.timeRange);
   const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
 
-  // Log transactions and date range for debugging
-  console.log("Transactions:", transactions);
-  console.log("Selected Date Range:", selectedDateRange);
 
   // Compute totals for the current period
   const currentTotals = computeTotals(transactions, selectedDateRange);

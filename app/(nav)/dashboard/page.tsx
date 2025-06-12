@@ -205,8 +205,6 @@ const Dashboard = () => {
   isTourCompleted,
 ]);
 
-console.log("recentComplaints", recentComplaints?.complaints)
-
   if (isNetworkError) return <NetworkError />;
   // ================== CONDITIONAL RENDERING ================== //
   if (!company_status) {

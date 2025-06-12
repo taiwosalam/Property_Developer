@@ -33,12 +33,16 @@ import {
   transformBeneficiaries,
 } from "@/app/(nav)/wallet/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { useTourStore } from "@/store/tour-store";
+import { usePathname } from "next/navigation";
+import CautionDepositModal from "../Modal/caution-deposit-modal";
 
 const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   noHeader,
   className,
 }) => {
-  // const {isOpen, setIsOpen} = useModal()
+  const { goToStep, restartTour } = useTourStore();
+  const pathname = usePathname();
   const walletPinStatus = useWalletStore((s) => s.walletPinStatus);
   const balance = useWalletStore((s) => s.balance);
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
@@ -221,7 +225,14 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
                     }
                   )}`}
             </span>
-            <CautionIcon />
+            <Modal>
+              <ModalTrigger>
+                <CautionIcon />
+              </ModalTrigger>
+              <ModalContent>
+                <CautionDepositModal />
+              </ModalContent>
+            </Modal>
           </div>
           <div className="w-full flex justify-between">
             {options.map((option, index) => {
