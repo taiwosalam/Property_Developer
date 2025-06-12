@@ -66,7 +66,9 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
+  const company_wallet = usePersonalInfoStore((state) => state.company_wallet);
 
+  console.log("company_wallet", company_wallet);
   const directorId = usePersonalInfoStore((state) => state.director_id);
 
   const {
@@ -413,7 +415,7 @@ const Security = () => {
         </AuthForm>
       </SettingsSection>
       <SettingsSignature />
-      <SettingsWalletSection />
+      {company_wallet?.has_pin && <SettingsWalletSection />}
       <SettingsPasswordSection />
       <SettingsBank />
       <SettingsSMS />

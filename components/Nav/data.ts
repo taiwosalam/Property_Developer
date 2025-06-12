@@ -514,6 +514,7 @@ export interface ProfileResponse {
       id: number;
       picture: string;
     };
+    company_wallet: any;
     profile: {
       picture: string | null;
       title: string;
