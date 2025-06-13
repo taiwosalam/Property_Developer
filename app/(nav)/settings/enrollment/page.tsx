@@ -30,7 +30,8 @@ const Enrollment = () => {
     tableHeadClassName: "h-[45px]",
   };
 
-   const transformedSubscriptions = enrollment_subscriptions.data.map((data) => ({
+  const transformedSubscriptions = enrollment_subscriptions.data.map(
+    (data) => ({
       ...data,
       status: (
         <p
@@ -42,7 +43,8 @@ const Enrollment = () => {
           {data.status}
         </p>
       ),
-    }));
+    })
+  );
 
   const calculatePrice = (
     billingType: "monthly" | "yearly",
@@ -57,8 +59,6 @@ const Enrollment = () => {
     let discount = "";
     let totalPrice: number | string = 0;
     let isLifeTimePlan = false;
-
-     
 
     // Adjust quantity based on the selected plan
     if (planType === "premium" && quantity > 6) {
@@ -285,12 +285,13 @@ const Enrollment = () => {
               </h2>
             </div>
             <div className="flex gap-2 items-center">
-              <Link 
+              <Link
                 href="/settings/enrollment/history"
-                className="text-text-label dark:text-white font-medium">
-                See All 
+                className="text-text-label dark:text-white font-medium"
+              >
+                See All
               </Link>
-              <ChevronRight className="text-sm font-medium"/>
+              <ChevronRight className="text-sm font-medium" />
             </div>
           </div>
           <CustomTable

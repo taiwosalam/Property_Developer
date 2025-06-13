@@ -10,6 +10,7 @@ import { RoleProvider } from "@/hooks/roleContext";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { fetchProfile } from "@/lib/profile";
 import dynamic from "next/dynamic";
+import RequestWarningModal from "@/components/Modal/request-warning-modal";
 // import TourManager from "@/tour/components/tour-manager";
 
 const CustomTour = dynamic(() => import("@/tour/components/tour-manager"), {
@@ -64,6 +65,7 @@ export default async function RootLayout({
                 duration={5000}
               />
             <CustomTour />
+            <RequestWarningModal />
             </div>
           </Theme>
         </RoleProvider>

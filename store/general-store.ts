@@ -117,6 +117,13 @@ interface GlobalStoreState {
   selectedDocumentOption: OtherAgreementDocumentOption | null;
   
   profileSettingsData: ProfileSettingsPageState | null; 
+
+  warningModal: {
+    isOpen: boolean;
+    message: string;
+  };
+  setWarningModal: (isOpen: boolean, message?: string) => void;
+
   // add more keys here as needed…
 }
 
@@ -208,6 +215,16 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
       isPastDate: false,
       tenantLoading: false,
       tenantError: null,
+    });
+  },
+
+  warningModal: {
+    isOpen: false,
+    message: "",
+  },
+  setWarningModal: (isOpen, message = "") => {
+    set({
+      warningModal: { isOpen, message },
     });
   },
 }));

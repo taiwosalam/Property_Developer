@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
+import { useGlobalStore } from "@/store/general-store";
 
 // Create axios instance
 const api = axios.create({
@@ -49,10 +50,18 @@ export const handleAxiosError = (
   error: any,
   defaultMessage: string = "An unexpected error occurred"
 ) => {
+  const setWarningModal = useGlobalStore.getState().setWarningModal;
+
   if (axios.isAxiosError(error)) {
     // Check for CORS error or network error
     if (!error.response) {
       toast.error(error.message || "Network error");
+      return;
+    }
+
+    // Check for warning status
+    if (error.response.data?.status === "warning") {
+      setWarningModal(true, error.response.data.message || defaultMessage);
       return;
     }
 

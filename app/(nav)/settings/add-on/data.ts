@@ -203,6 +203,7 @@ export const SponsorFields = [
   //   accessor: "date",
   // },
 ];
+
 export const DomainFields = [
   {
     id: "0",
