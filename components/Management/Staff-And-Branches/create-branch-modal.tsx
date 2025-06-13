@@ -105,6 +105,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
       }
     } else {
       setIsLoading(false);
+      setIsOpen(false);
     }
   };
 

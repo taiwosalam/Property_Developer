@@ -32,6 +32,8 @@ interface PersonalInfoStoreState {
   industry: string | null;
   cac_registration_number: string | null;
 
+  company_wallet: any;
+
   setPersonalInfo: <
     K extends keyof Omit<PersonalInfoStoreState, "setPersonalInfo">
   >(
@@ -54,6 +56,8 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   requestDemo: false,
   director_id: null,
   director_picture: null,
+
+  company_wallet: null,
   
   profile_picture: null,
 

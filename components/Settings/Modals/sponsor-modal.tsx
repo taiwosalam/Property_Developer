@@ -1,5 +1,6 @@
 "use client";
 
+import { parseFormattedNumber } from "@/app/(nav)/accounting/invoice/create-invoice/data";
 import Button from "@/components/Form/Button/button";
 import { BuySponsor } from "@/components/Listing/data";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
@@ -17,6 +18,7 @@ interface ISponsorModalProps {
   cost?: number;
   onSubmit?: () => Promise<boolean | undefined>;
   message?: boolean;
+  page?: "subscription" | "sponsor";
 }
 const SPONSOR_COST = 2000;
 const SponsorModal = ({
@@ -24,22 +26,35 @@ const SponsorModal = ({
   cost,
   onSubmit,
   message,
+  page,
 }: ISponsorModalProps) => {
-  const amount = count * (cost ?? SPONSOR_COST);
+  const amount =
+    page === "subscription" ? cost : count * (cost ?? SPONSOR_COST);
   const [reqLoading, setReqLoading] = React.useState(false);
   const { setIsOpen } = useModal();
   const { isMobile } = useWindowWidth();
 
+  const successMsg =
+    page === "subscription"
+      ? "Subscription activated successfully"
+      : "Sponsorship activated successfully";
+  const errorMsg =
+    page === "subscription"
+      ? "Subscription activation failed"
+      : "Sponsorship activation failed";
+      
   const handleSubmit = async () => {
     try {
       setReqLoading(true);
       if (onSubmit) {
         const res = await onSubmit();
         if (res) {
+          toast.success(successMsg);
           setIsOpen(false);
         }
       }
     } catch (error) {
+      toast.error(errorMsg);
     } finally {
       setReqLoading(false);
     }
@@ -48,14 +63,16 @@ const SponsorModal = ({
   return (
     <LandlordTenantModalPreset
       heading="Confirmation Required"
-      style={{ width: isMobile ? "80%" : "40%" }}
+      style={{ width: isMobile ? "80%" : "50%" }}
     >
       <div>
         <div className="custom-flex-col items-center justify-center gap-4">
           <p className="text-md">
             You are about to proceed with a transaction that will debit your
             wallet with{" "}
-            <strong className="text-brand-9">₦{formatNumber(amount)}.</strong>
+            <strong className="text-brand-9">
+              ₦{formatNumber(amount?.toString() || "0")}.
+            </strong>
           </p>
           {message ? (
             <p>

@@ -29,6 +29,7 @@ interface SettingsEnrollmentCardProps {
   isFree?: boolean;
   onBillingTypeChange: (type: "monthly" | "yearly") => void;
   isLifeTimePlan: boolean;
+  onSelectPlan?: () => Promise<boolean | undefined>;
 }
 
 const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
@@ -49,6 +50,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   isFree = false,
   onBillingTypeChange,
   isLifeTimePlan,
+  onSelectPlan,
 }) => {
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     if (!isFree) {
@@ -84,7 +86,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
 
   return (
     <div
-      className={`min-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
+      className={`min-w-[300px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}
@@ -126,7 +128,12 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         handleCardClick={handleCardClick}
       />
       <FeaturesList showFeatures={showFeatures} features={features} />
-      <SelectPlanButton isFree={isFree} />
+      <SelectPlanButton
+        isFree={isFree}
+        price={price}
+        planTitle={planTitle}
+        onSelectPlan={onSelectPlan}
+      />
     </div>
   );
 };

@@ -4,6 +4,8 @@ import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
 import { Modal } from "@/components/Modal/modal";
 import { ModalContent } from "@/components/Modal/modal";
 import SponsorModal from "../Modals/sponsor-modal";
+import { AnimatePresence, motion } from "framer-motion";
+import { parseFormattedNumber } from "@/app/(nav)/accounting/invoice/create-invoice/data";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -275,12 +277,12 @@ export const FeaturesToggle: React.FC<{
       onClick={handleCardClick}
     >
       {showFeatures ? getFeaturesText() : "View Features"}
-      <Image
-        src={showFeatures ? "/icons/up.svg" : "/icons/down.svg"}
-        alt="arrow-right"
-        width={20}
-        height={20}
-      />
+      <motion.div
+        animate={{ rotate: showFeatures ? 180 : 0 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        <Image src={"/icons/up.svg"} alt="arrow-right" width={20} height={20} />
+      </motion.div>
     </button>
   </div>
 );
@@ -288,48 +290,78 @@ export const FeaturesToggle: React.FC<{
 export const FeaturesList: React.FC<{
   showFeatures?: boolean;
   features?: string[];
-}> = ({ showFeatures = false, features = [] }) =>
-  showFeatures && (
-    <div className="featuresWrapper my-2 flex flex-col gap-2 w-full items-start justify-start px-6">
-      <div className="flex items-start gap-2 flex-col">
-        {features.map((feature, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <Image src="/icons/mark.svg" alt="mark" width={16} height={17} />
-            <p className="text-brand-9 text-sm font-medium tracking-[0px]">
-              {feature}
-            </p>
-          </div>
-        ))}
+}> = ({ showFeatures = false, features = [] }) => (
+  <AnimatePresence>
+    {showFeatures && (
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: "auto", opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="featuresWrapper my-2 flex flex-col gap-2 w-full items-start justify-start px-6 overflow-hidden"
+      >
+        <div className="flex items-start gap-2 flex-col">
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -10 }} // Slight slide-in effect for each item
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05, duration: 0.2 }} // Staggered animation
+              className="flex items-center gap-2"
+            >
+              <Image src="/icons/mark.svg" alt="mark" width={16} height={17} />
+              <p className="text-brand-9 text-sm font-medium tracking-[0px]">
+                {feature}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+interface SelectPlanButtonProps {
+  isFree?: boolean;
+  price: string;
+  planTitle: string;
+  onSelectPlan?: () => Promise<boolean | undefined>;
+}
+
+export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
+  isFree = false,
+  price,
+  planTitle,
+  onSelectPlan,
+}) => {
+  const subCost = parseFormattedNumber(price);
+  return (
+    <div className="px-6 pb-4 flex justify-end">
+      <div
+        className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
+          isFree ? "bg-brand-9 bg-opacity-40 cursor-not-allowed" : "bg-brand-9"
+        }`}
+      >
+        <Modal>
+          <ModalTrigger asChild className="w-full text-white">
+            <button
+              className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+              disabled={isFree}
+            >
+              Select Plan
+            </button>
+          </ModalTrigger>
+          <ModalContent>
+            <SponsorModal
+              page="subscription"
+              count={10}
+              cost={subCost ?? 0}
+              message={true}
+              onSubmit={onSelectPlan}
+            />
+          </ModalContent>
+        </Modal>
       </div>
     </div>
   );
-
-export const SelectPlanButton: React.FC<{ isFree?: boolean }> = ({
-  isFree = false,
-}) => (
-  <div className="px-6 pb-4 flex justify-end">
-    <div
-      className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
-        isFree ? "bg-brand-9 bg-opacity-40 cursor-not-allowed" : "bg-brand-9"
-      }`}
-    >
-      <Modal>
-        <ModalTrigger asChild className="w-full text-white">
-          <button
-            className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
-            disabled={isFree}
-          >
-            Select Plan
-          </button>
-        </ModalTrigger>
-        <ModalContent>
-          <SponsorModal
-            count={10}
-            cost={100}
-            message={true}
-          />
-        </ModalContent>
-      </Modal>
-    </div>
-  </div>
-);
+};

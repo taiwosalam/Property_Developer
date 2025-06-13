@@ -192,7 +192,8 @@ const Header = () => {
 
   useEffect(() => {
     if (data?.data) {
-      const { user, company, profile, requestDemos, director } = data.data;
+      const { user, company, profile, requestDemos, director, company_wallet } =
+        data.data;
 
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo("userId", user.id);
@@ -230,6 +231,7 @@ const Header = () => {
         setPersonalInfo("membership_number", company.membership_number);
         setPersonalInfo("is_verified", company.is_verified);
         setPersonalInfo("industry", company.industry);
+        setPersonalInfo("company_wallet", company_wallet);
         setPersonalInfo(
           "cac_registration_number",
           company.cac_registration_number
