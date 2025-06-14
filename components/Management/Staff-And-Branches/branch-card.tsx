@@ -77,7 +77,8 @@ const BranchCard: React.FC<BranchCardProps> = ({
             )}
           </div>
         </div>
-        {is_active === 1 && (
+        {/* {is_active === 1 && ( */}
+        {/* {is_active && ( */}
           <div className="flex gap-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&>div]:items-center overflow-x-auto max-w-[100%]">
             <div>
               <p className="bg-support-3 text-white font-medium text-base p-1 rounded-lg w-8">
@@ -104,9 +105,10 @@ const BranchCard: React.FC<BranchCardProps> = ({
               </p>
             </div>
           </div>
-        )}
+        {/* )} */}
 
-        {is_active === 0 && (
+        {/* {is_active === 0 && ( */}
+        {!is_active && (
           <Button
             type="button"
             onClick={() =>

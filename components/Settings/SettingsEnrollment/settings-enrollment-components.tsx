@@ -6,6 +6,7 @@ import { ModalContent } from "@/components/Modal/modal";
 import SponsorModal from "../Modals/sponsor-modal";
 import { AnimatePresence, motion } from "framer-motion";
 import { parseFormattedNumber } from "@/app/(nav)/accounting/invoice/create-invoice/data";
+import { FormSteps } from "@/app/(onboarding)/auth/types";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -326,6 +327,9 @@ interface SelectPlanButtonProps {
   price: string;
   planTitle: string;
   onSelectPlan?: () => Promise<boolean | undefined>;
+  onSelect?: () => void; 
+  page?: "modal" | "settings";
+  changeStep?: (step: FormSteps | number) => void;
 }
 
 export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
@@ -333,8 +337,17 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   price,
   planTitle,
   onSelectPlan,
+  onSelect,
+  page,
+  changeStep,
 }) => {
   const subCost = parseFormattedNumber(price);
+  const handleSelectPlan = () => {
+    if (page === "modal" && changeStep) {
+      onSelectPlan?.();
+      changeStep(3); 
+    }
+  };
   return (
     <div className="px-6 pb-4 flex justify-end">
       <div
@@ -342,25 +355,37 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
           isFree ? "bg-brand-9 bg-opacity-40 cursor-not-allowed" : "bg-brand-9"
         }`}
       >
-        <Modal>
-          <ModalTrigger asChild className="w-full text-white">
-            <button
-              className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
-              disabled={isFree}
-            >
-              Select Plan
-            </button>
-          </ModalTrigger>
-          <ModalContent>
-            <SponsorModal
-              page="subscription"
-              count={10}
-              cost={subCost ?? 0}
-              message={true}
-              onSubmit={onSelectPlan}
-            />
-          </ModalContent>
-        </Modal>
+
+        {page === "modal" ? (
+          <button
+            className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+            disabled={isFree}
+            onClick={handleSelectPlan}
+          >
+            Select Plan
+          </button>
+        ) : (
+          <Modal>
+            <ModalTrigger asChild className="w-full text-white">
+              <button
+                className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+                disabled={isFree}
+              >
+                Select Plan
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <SponsorModal
+                page="subscription"
+                count={10}
+                cost={subCost ?? 0}
+                message={true}
+                onSubmit={onSelectPlan}
+                onSelect={onSelect}
+              />
+            </ModalContent>
+          </Modal>
+        )}
       </div>
     </div>
   );

@@ -68,7 +68,6 @@ const Security = () => {
   const title = usePersonalInfoStore((state) => state.title);
   const company_wallet = usePersonalInfoStore((state) => state.company_wallet);
 
-  console.log("company_wallet", company_wallet);
   const directorId = usePersonalInfoStore((state) => state.director_id);
 
   const {
@@ -417,7 +416,7 @@ const Security = () => {
       <SettingsSignature />
       {company_wallet?.has_pin && <SettingsWalletSection />}
       <SettingsPasswordSection />
-      <SettingsBank />
+      {company_wallet?.has_pin && <SettingsBank />}
       <SettingsSMS />
       <SettingsSmtp />
     </>

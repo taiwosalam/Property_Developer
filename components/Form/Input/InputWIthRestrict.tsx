@@ -8,6 +8,7 @@ import Picture from "@/components/Picture/picture";
 import { formatCostInputValue } from "@/utils/number-formatter";
 import { EyeHideIcon, EyeShowIcon } from "@/public/icons/icons";
 import { InputProps } from "./types";
+import { useGlobalStore } from "@/store/general-store";
 
 export interface RestrictedWordsOptions {
   words?: string[];
@@ -45,6 +46,8 @@ const RestrictInput: React.FC<InputProps> = ({
   name,
   restrictedWordsOptions,
 }) => {
+  const hasRestrictedWords = useGlobalStore((s) => s.hasRestrictedWords);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [internalValue, setInternalValue] = useState<string>(
@@ -87,16 +90,16 @@ const RestrictInput: React.FC<InputProps> = ({
     );
 
     const hasRestrictedWord = matchedRestrictedWords.length > 0;
-
     if (restrictedWordsOptions && hasRestrictedWord) {
+      setGlobalStore("hasRestrictedWords", true);
       const formattedWords = matchedRestrictedWords
-        .map((w) => `"${w}"`)
-        .join(", ");
+      .map((w) => `"${w}"`)
+      .join(", ");
       setValidationError(
         restrictedWordsOptions?.errorMessage ||
-          `Please don’t include ${formattedWords} as it refers to an area, LGA, or state.`
+        `Please don’t include ${formattedWords} as it refers to an area, LGA, or state.`
       );
-
+      
       // Handle both signatures
       if (onChange) {
         if (onChange.length === 1) {
@@ -107,6 +110,7 @@ const RestrictInput: React.FC<InputProps> = ({
       }
     } else {
       setValidationError(null);
+      setGlobalStore("hasRestrictedWords", false);
 
       if (onChange) {
         if (onChange.length === 1) {

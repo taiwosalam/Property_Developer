@@ -14,19 +14,28 @@ import {
 } from "@/app/(nav)/settings/subscription/data";
 import SettingsEnrollmentCard from "../Settings/SettingsEnrollment/settings-enrollment-card";
 import SettingsEnrollmentCardSkeleton from "../Settings/SettingsEnrollment/enrolllment-card-skeleton";
-import CustomSub from "../Settings/custom-sub";
+import ProfessionalPlan from "../Settings/custom-sub";
+import { FormSteps } from "@/app/(onboarding)/auth/types";
 
 interface WarningStepProps {
   message?: string;
   onNext?: () => void;
   onPrevious?: () => void;
   onClose: () => void;
+  changeStep: (step: FormSteps | number) => void; // Add changeStep prop
+  setSelectedPlan?: (
+    plan: Pick<
+      PropertyManagerSubsTransformedPlan,
+      "id" | "price" | "planTitle"
+    > | null
+  ) => void;
 }
 
 export const WarningStep1 = ({
   message,
   onNext,
   onClose,
+  changeStep,
 }: WarningStepProps) => {
   return (
     <div className="bg-white dark:bg-[#3C3D37] rounded-lg shadow-xl p-6 min-w-[400px] max-w-[500px] z-[10002] text-gray-900 dark:text-gray-100">
@@ -70,7 +79,12 @@ export const WarningStep1 = ({
   );
 };
 
-export const WarningStep2 = ({ onPrevious, onClose }: WarningStepProps) => {
+export const WarningStep2 = ({
+  onPrevious,
+  onClose,
+  changeStep,
+  setSelectedPlan
+}: WarningStepProps) => {
   const [showFeatures, setShowFeatures] = useState(false);
   const [pageData, setPageData] = useState<
     PropertyManagerSubsTransformedPlan[]
@@ -84,7 +98,6 @@ export const WarningStep2 = ({ onPrevious, onClose }: WarningStepProps) => {
   useEffect(() => {
     if (data?.data) {
       const transformed = transformPropertyManagerSubsApiData(data.data);
-      // Filter out free plans
       const nonFreePlans = transformed.filter((plan) => !plan.isFree);
       setPageData(nonFreePlans);
     }
@@ -176,13 +189,23 @@ export const WarningStep2 = ({ onPrevious, onClose }: WarningStepProps) => {
     []
   );
 
+  // Handle plan selection
+  const handleSelectPlan = useCallback(
+    (
+      plan: Pick<
+        PropertyManagerSubsTransformedPlan,
+        "id" | "price" | "planTitle"
+      >
+    ) => {
+      setSelectedPlan?.(plan); // Store the selected plan
+      changeStep(3); // Move to step 3
+    },
+    [setSelectedPlan, changeStep]
+  );
+
   return (
-    <LandlordTenantModalPreset
-      heading="Property Manager Subscription"
-      back={{ handleBack: () => onPrevious && onPrevious() }}
-      style={{ maxHeight: "80vh", minWidth: "80vw" }}
-    >
-      <div className="flex mb-4 pb-10 flex-nowrap overflow-x-auto custom-round-scrollbar gap-4 pricingWrapper mt-4">
+    <div className="w-full flex gap-4 relative overflow-x-auto hide-scrollbar">
+      <div className="flex mb-4 pb-10 flex-nowrap gap-4 pricingWrapper mt-4">
         {loading
           ? Array(2)
               .fill(0)
@@ -202,11 +225,19 @@ export const WarningStep2 = ({ onPrevious, onClose }: WarningStepProps) => {
                 onBillingTypeChange={(type) =>
                   handleBillingTypeChange(plan.id, type)
                 }
-                onSelectPlan={() => activatePlan(plan.id)}
+                onSelect={() =>
+                  handleSelectPlan({
+                    id: plan.id,
+                    price: plan.price,
+                    planTitle: plan.planTitle,
+                  })
+                }
+                page="modal"
+                changeStep={changeStep}
               />
             ))}
-        <CustomSub />
       </div>
-    </LandlordTenantModalPreset>
+      <ProfessionalPlan page="modal" />
+    </div>
   );
 };

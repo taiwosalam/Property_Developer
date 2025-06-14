@@ -21,7 +21,7 @@ import {
   activatePlan,
 } from "./data";
 import SettingsEnrollmentCardSkeleton from "@/components/Settings/SettingsEnrollment/enrolllment-card-skeleton";
-import CustomSub from "@/components/Settings/custom-sub";
+import ProfessionalPlan from "@/components/Settings/custom-sub";
 
 const Enrollment = () => {
   const [showFeatures, setShowFeatures] = useState(false);
@@ -182,7 +182,7 @@ const Enrollment = () => {
                 />
               ))}
         </div>
-        <CustomSub />
+        <ProfessionalPlan />
       </SettingsSection>
 
       <SettingsSection title="Subscription/Renewal History">

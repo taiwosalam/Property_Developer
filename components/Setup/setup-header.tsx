@@ -14,9 +14,16 @@ const SetupHeader: React.FC<{
   const pathname = usePathname();
   const domainAvailable = useGlobalStore((s) => s.domainAvailable);
   const SelectedDirectorPics = useGlobalStore((s) => s.SelectedDirectorPics);
+  const hasRestrictedWords = useGlobalStore((s) => s.hasRestrictedWords);
 
   const isSubmitDisabled =
-    !canSubmit || !SelectedDirectorPics || requestLoading || !domainAvailable;
+    !canSubmit ||
+    !SelectedDirectorPics ||
+    requestLoading ||
+    !domainAvailable ||
+    hasRestrictedWords;
+
+    console.log("hasRestrictedWords", hasRestrictedWords)
 
   return (
     <div className="setup-header-wrapper sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between items-center gap-1">

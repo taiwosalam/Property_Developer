@@ -108,7 +108,6 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
     try {
       setLoading(true)
       if (otp !== null) {
-        console.log("otp", otp)
         const res = await changePassword(objectToFormData(payload))
         if (res) {
           toast.success("Password changed successfully")
