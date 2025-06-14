@@ -10,6 +10,7 @@ import {
   QuantityCounter,
   SelectPlanButton,
 } from "./settings-enrollment-components";
+import { FormSteps } from "@/app/(onboarding)/auth/types";
 
 interface SettingsEnrollmentCardProps {
   planTitle: string;
@@ -30,6 +31,9 @@ interface SettingsEnrollmentCardProps {
   onBillingTypeChange: (type: "monthly" | "yearly") => void;
   isLifeTimePlan: boolean;
   onSelectPlan?: () => Promise<boolean | undefined>;
+  onSelect?: () => void;
+  page?: "modal" | "settings";
+  changeStep?: (step: FormSteps | number) => void;
 }
 
 const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
@@ -51,6 +55,9 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   onBillingTypeChange,
   isLifeTimePlan,
   onSelectPlan,
+  onSelect,
+  page,
+  changeStep,
 }) => {
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     if (!isFree) {
@@ -86,7 +93,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
 
   return (
     <div
-      className={`min-w-[300px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
+      className={`min-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}
@@ -132,7 +139,9 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         isFree={isFree}
         price={price}
         planTitle={planTitle}
-        onSelectPlan={onSelectPlan}
+        onSelectPlan={page === "modal" ? onSelect : (onSelectPlan as any)}
+        page={page}
+        changeStep={changeStep}
       />
     </div>
   );

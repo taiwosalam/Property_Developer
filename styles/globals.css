@@ -499,6 +499,16 @@ button:disabled:not(.retain-opacity) {
   text-transform: unset !important;
 }
 
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
 /* ------------------------ */
 .loader {
   width: 36px;

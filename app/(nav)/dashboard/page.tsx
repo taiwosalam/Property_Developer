@@ -184,8 +184,6 @@ const Dashboard = () => {
     const hasNoVacantUnits = dashboardStats.some(
       (stat) => stat.title === "Vacant Unit" && stat.value === 0
     );
-    console.log("hasNoProperties", hasNoProperties);
-    console.log("hasNoVacantUnits", hasNoVacantUnits);
     const shouldRunTour =
       company_status === "approved" && hasNoProperties && hasNoVacantUnits;
 

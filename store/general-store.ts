@@ -124,6 +124,7 @@ interface GlobalStoreState {
   };
   setWarningModal: (isOpen: boolean, message?: string) => void;
 
+  hasRestrictedWords: boolean;
   // add more keys here as needed…
 }
 
@@ -197,6 +198,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   profileSettingsData: null,
 
   domainAvailable: false,
+  hasRestrictedWords: false,
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {
