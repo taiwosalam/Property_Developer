@@ -36,6 +36,9 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { useTourStore } from "@/store/tour-store";
 import { usePathname } from "next/navigation";
 import CautionDepositModal from "../Modal/caution-deposit-modal";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   noHeader,
@@ -47,7 +50,10 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   const balance = useWalletStore((s) => s.balance);
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const [hideBalance, setHideBalance] = useState(true);
-
+  const { role, setRole } = useRole();
+  const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
+  const hasWalletAccess =
+    usePermission(role, "Full Wallet Access") || isCompanyOwner;
   const hideWalletBalance = () => {
     setHideBalance((prevHideBalance) => {
       const newHideBalance = !prevHideBalance;
@@ -235,33 +241,32 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
             </Modal>
           </div>
           <div className="w-full flex justify-between">
-            {options.map((option, index) => {
-              return option.action ? (
-                <Modal key={index}>
-                  <ModalTrigger className="space-y-2">
-                    <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                      <span className="text-brand-9 ">{option.icon}</span>
+            {options.map((option, index) => (
+              <div key={index} className="space-y-2">
+                {option.action && hasWalletAccess ? (
+                  <Modal>
+                    <ModalTrigger className="space-y-2">
+                      <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
+                        <span className="text-brand-9">{option.icon}</span>
+                      </div>
+                      <p className="capitalize text-white dark:text-white text-xs font-normal">
+                        {option.name}
+                      </p>
+                    </ModalTrigger>
+                    <ModalContent>{option.action}</ModalContent>
+                  </Modal>
+                ) : (
+                  <>
+                    <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto opacity-50 cursor-not-allowed">
+                      <span className="text-brand-9">{option.icon}</span>
                     </div>
                     <p className="capitalize text-white dark:text-white text-xs font-normal">
                       {option.name}
                     </p>
-                  </ModalTrigger>
-                  <ModalContent>{option.action}</ModalContent>
-                </Modal>
-              ) : (
-                <div
-                  className="space-y-2 opacity-50 cursor-not-allowed"
-                  key={index}
-                >
-                  <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                    <span className="text-brand-9 ">{option.icon}</span>
-                  </div>
-                  <p className="capitalize text-white dark:text-white text-xs font-normal">
-                    {option.name}
-                  </p>
-                </div>
-              );
-            })}
+                  </>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>

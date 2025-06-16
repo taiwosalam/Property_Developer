@@ -16,7 +16,7 @@ const InsufficientBalance = ({
     <div className="bg-white dark:bg-[#3C3D37] rounded-lg shadow-xl p-6 min-w-[400px] max-w-[500px] z-[10002] text-gray-900 dark:text-gray-100">
       <div className="flex justify-between items-start">
         <h3 className="text-lg dark:text-white font-semibold mb-2">
-          Insufficient Balabce
+          Insufficient Balance
         </h3>
         <button
           onClick={onClose}

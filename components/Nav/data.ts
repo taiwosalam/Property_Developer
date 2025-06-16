@@ -491,6 +491,7 @@ export interface ProfileResponse {
       email: string | null;
       unread_messages_count: number;
       unread_notifications_count: number;
+      is_owner: boolean;
     };
     company?: {
       company_id: string;
@@ -506,7 +507,6 @@ export interface ProfileResponse {
       date_of_registration: string;
       membership_number: string;
       is_verified: boolean;
-      is_owner: boolean;
       industry: string;
       cac_registration_number: string;
     };

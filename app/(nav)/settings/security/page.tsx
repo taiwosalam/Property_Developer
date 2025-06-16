@@ -62,8 +62,11 @@ import Image from "next/image";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs from "dayjs";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 const Security = () => {
+  const { role } = useRole();
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
   const company_wallet = usePersonalInfoStore((state) => state.company_wallet);
@@ -211,6 +214,21 @@ const Security = () => {
     }
   };
 
+  // PERMISSIONS TO RENDER COMPONENTS
+  // 💀😈👿 BE CAREFUL NOT TO SPOIL THE BELOW PERMISSIONS 💀😈👿
+  const IS_COMPANY_OWNER = usePersonalInfoStore((state) => state.is_owner);
+  const canSetSignature =
+    usePermission(role, "Set Authorized Signature") || IS_COMPANY_OWNER;
+  const canChangeWalletPin =
+    usePermission(role, "Change Wallet PIN") || IS_COMPANY_OWNER;
+  const canUpdateBankDetails =
+    usePermission(role, "Update Bank Details") || IS_COMPANY_OWNER;
+  const canUpdateSMS =
+    usePermission(role, "Modify SMS Sender Name") || IS_COMPANY_OWNER;
+  const canConfigureSMTP =
+    usePermission(role, "Configure SMTP Settings") || IS_COMPANY_OWNER;
+  // 💀😈👿 BE CAREFUL NOT TO SPOIL THE ABOVE PERMISSIONS 💀😈👿
+
   return (
     <>
       <SettingsSection title="directors profile">
@@ -348,7 +366,7 @@ const Security = () => {
                       <ModalTrigger>
                         <Button
                           disabled={pageData?.is_bvn_verified}
-                          className="bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white absolute top-9 right-2 py-2 h-9"
+                          className="bg-brand-9 dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white absolute top-9 right-2 py-2 h-9"
                         >
                           {pageData?.is_bvn_verified ? "Verified" : "Verify"}
                         </Button>
@@ -413,12 +431,14 @@ const Security = () => {
           </div>
         </AuthForm>
       </SettingsSection>
-      <SettingsSignature />
-      {company_wallet?.has_pin && <SettingsWalletSection />}
+      {canSetSignature && <SettingsSignature />}
+      {company_wallet?.has_pin && canChangeWalletPin && (
+        <SettingsWalletSection />
+      )}
       <SettingsPasswordSection />
-      {company_wallet?.has_pin && <SettingsBank />}
-      <SettingsSMS />
-      <SettingsSmtp />
+      {company_wallet?.has_pin && canUpdateBankDetails && <SettingsBank />}
+      {canUpdateSMS && <SettingsSMS />}
+      {canConfigureSMTP && <SettingsSmtp />}
     </>
   );
 };
