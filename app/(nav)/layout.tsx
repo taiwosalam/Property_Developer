@@ -21,14 +21,27 @@ import { useRole } from "@/hooks/roleContext";
 import { getRoleFromCookie } from "@/utils/getRole";
 import { getLocalStorage, saveLocalStorage } from "@/utils/local-storage";
 import { Modal, ModalContent } from "@/components/Modal/modal";
-import { useGlobalStore } from "@/store/general-store"; 
+import { useGlobalStore } from "@/store/general-store";
 import OtherAgreementDocument from "@/components/Documents/other-agreement";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePermissionsStore } from "@/store/permissions";
+import { getRoleTitle } from "@/hooks/getPermission";
+
+const roleMapping: Record<string, string> = {
+  "admin configuration (company director)": "director",
+  "partner configuration (branch manager)": "manager",
+  "colleague configuration (account officer)": "account",
+  "staff configuration (other staff)": "staff",
+  "Users Configuration (Landlord, Occupant & Tenants)": "user",
+};
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const { openDocumentModal, selectedDocumentOption, setGlobalInfoStore } = useGlobalStore();
+  const { openDocumentModal, selectedDocumentOption, setGlobalInfoStore } =
+    useGlobalStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
@@ -37,6 +50,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
   const { role, setRole } = useRole();
   const hasMounted = useRef(false);
+  const { setPermissions, setLoading, setError } = usePermissionsStore();
   const loggedInUserDetails = getLocalStorage("additional_details");
   let appearance:
     | {
@@ -50,16 +64,50 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (loggedInUserDetails) {
     ({ appearance } = loggedInUserDetails);
   }
+
+  const {
+    data: manaConfigData,
+    loading: configLoading,
+    error: configError,
+    refetch,
+  } = useFetch<any>("/company/permissions");
+  useRefetchOnEvent("refetchPermissions", () => refetch({ silent: true }));
+
   const [navbar, setNavbar] = useState(appearance?.navbar);
 
-  // console.log("api navbar", appearance?.navbar)
-  // console.log("navbar", navbar)
   useOutsideClick(sideNavRef, () => {
     if (isMobile) {
       setIsSideNavOpen(false);
     }
   });
 
+  // Store permissions in Zustand when data is fetched
+  useEffect(() => {
+    if (manaConfigData?.data) {
+      setLoading(configLoading);
+      setError(configError);
+
+      const formattedPermissions = Object.keys(manaConfigData.data).reduce(
+        (acc, role) => {
+          const title = getRoleTitle(role);
+          acc[title] = manaConfigData.data[role] || [];
+          return acc;
+        },
+        {} as Record<string, string[]>
+      );
+
+      setPermissions(formattedPermissions);
+    }
+  }, [
+    manaConfigData,
+    configLoading,
+    configError,
+    setPermissions,
+    setLoading,
+    setError,
+  ]);
+
+  
   useEffect(() => {
     if (navs !== null) {
       setNavbar(navs);

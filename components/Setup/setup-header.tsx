@@ -23,8 +23,6 @@ const SetupHeader: React.FC<{
     !domainAvailable ||
     hasRestrictedWords;
 
-    console.log("hasRestrictedWords", hasRestrictedWords)
-
   return (
     <div className="setup-header-wrapper sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between items-center gap-1">
       <div className="custom-flex-col">

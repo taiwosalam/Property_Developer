@@ -29,6 +29,7 @@ interface PersonalInfoStoreState {
   date_of_registration: string | null;
   membership_number: string | null;
   is_verified: boolean;
+  is_owner: boolean;
   industry: string | null;
   cac_registration_number: string | null;
 
@@ -76,6 +77,7 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   date_of_registration: null,
   membership_number: null,
   is_verified: false,
+  is_owner: false,
   industry: null,
   cac_registration_number: null,
   setPersonalInfo: (key, value) => set({ [key]: value }),

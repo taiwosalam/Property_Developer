@@ -88,6 +88,7 @@ import {
   staffTierColorMap,
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
+import { usePermission } from "@/hooks/getPermission";
 
 const companyTypes = [
   {
@@ -447,8 +448,6 @@ const Others = () => {
 
   const { data: apiData, refetch } =
     useFetch<ApiResponseDirector>(`/directors`);
-
-  console.log(apiData);
 
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
@@ -825,12 +824,31 @@ const Others = () => {
   };
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
 
+  // PERMISSIONS TO RENDER COMPONENTS
+  // 💀😈👿 BE CAREFUL NOT TO SPOIL THE BELOW PERMISSIONS 💀😈👿
   const director_id = usePersonalInfoStore((state) => state.director_id);
+  const IS_COMPANY_OWNER = usePersonalInfoStore((state) => state.is_owner);
+  const canManageDirectors = usePermission("director", "Add Other Directors");
+  const canManageMessagesReviews = usePermission(
+    "director",
+    "Manage Messages & Reviews"
+  );
+  const canManageCompanyModules = usePermission(
+    "director",
+    "Change Company Module"
+  );
+  const canManageNotificationPreference = usePermission(
+    "director",
+    "Notification Preferences"
+  );
+  const canResetSystem = usePermission("director", "Reset System Settings");
+  // 💀😈👿 BE CAREFUL NOT TO SPOIL THE ABOVE PERMISSIONS 💀😈👿
 
   return (
     <>
       <SettingsSection title="Director and Access Control">
         {/* COMPANY DIRECTORS */}
+
         <div className="custom-flex-col gap-6 mt-4">
           <SettingsSectionTitle
             title="Company Director"
@@ -930,34 +948,38 @@ const Others = () => {
                   </Modal>
                 );
               })}
-              <Modal
-                state={{
-                  isOpen: isDirectorModalOpen,
-                  setIsOpen: setIsDirectorModalOpen,
-                }}
-              >
-                <div className="card p-2 flex max-w-[290px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
-                  <ModalTrigger>
-                    <div className="flex flex-col items-center gap-1 justify-center py-4">
-                      <Image
-                        src="/icons/profile.svg"
-                        alt="add director"
-                        width={30}
-                        height={30}
-                      />
-                      <span> + Add new Profile </span>
-                    </div>
-                  </ModalTrigger>
-                </div>
-                <ModalContent>
-                  <LandlordTenantModalPreset
-                    heading={modal_states[activeStep].heading}
-                    back={activeStep !== "options" ? { handleBack } : undefined}
-                  >
-                    {modal_states[activeStep].content}
-                  </LandlordTenantModalPreset>
-                </ModalContent>
-              </Modal>
+              {(IS_COMPANY_OWNER || canManageDirectors) && (
+                <Modal
+                  state={{
+                    isOpen: isDirectorModalOpen,
+                    setIsOpen: setIsDirectorModalOpen,
+                  }}
+                >
+                  <div className="card p-2 flex max-w-[290px] flex-col items-center justify-center border-dotted border-2 rounded-md border-borders-normal">
+                    <ModalTrigger>
+                      <div className="flex flex-col items-center gap-1 justify-center py-4">
+                        <Image
+                          src="/icons/profile.svg"
+                          alt="add director"
+                          width={30}
+                          height={30}
+                        />
+                        <span> + Add new Profile </span>
+                      </div>
+                    </ModalTrigger>
+                  </div>
+                  <ModalContent>
+                    <LandlordTenantModalPreset
+                      heading={modal_states[activeStep].heading}
+                      back={
+                        activeStep !== "options" ? { handleBack } : undefined
+                      }
+                    >
+                      {modal_states[activeStep].content}
+                    </LandlordTenantModalPreset>
+                  </ModalContent>
+                </Modal>
+              )}
             </AutoResizingGrid>
           </div>
         </div>
@@ -1047,25 +1069,26 @@ Once restricted, they will no longer have access to participate in the property'
       </SettingsSection>
 
       {/* COMPANY TYPE SETTINGS */}
-      <SettingsSection title="Company Default Module">
-        <div className="custom-flex-col gap-3">
-          {companyTypes.map((type) => (
-            <SettingsOthersType
-              key={type.id}
-              id={type.id}
-              title={type.title}
-              desc={type.desc}
-              icon={type.icon}
-              onClick={() => handleCompanyModuleChange(type.id.toString())}
-              selectedGroup={selectedGroup}
-              setSelectedGroup={setSelectedGroup}
-              groupName={type.id.toString()}
-            />
-          ))}
-        </div>
+      {(canManageCompanyModules || IS_COMPANY_OWNER) && (
+        <SettingsSection title="Company Default Module">
+          <div className="custom-flex-col gap-3">
+            {companyTypes.map((type) => (
+              <SettingsOthersType
+                key={type.id}
+                id={type.id}
+                title={type.title}
+                desc={type.desc}
+                icon={type.icon}
+                onClick={() => handleCompanyModuleChange(type.id.toString())}
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
+                groupName={type.id.toString()}
+              />
+            ))}
+          </div>
 
-        <div className="flex justify-end mt-2">
-          {/* 
+          <div className="flex justify-end mt-2">
+            {/* 
             Enable this when other company module
             is available 
           <SettingsUpdateButton
@@ -1073,121 +1096,128 @@ Once restricted, they will no longer have access to participate in the property'
             action={handleCompanyModuleUpdate}
             loading={updatingModule}
           /> */}
-          <Button disabled className="bg-opacity-70 mt-4">
-            Update
-          </Button>
-        </div>
-      </SettingsSection>
+            <Button disabled className="bg-opacity-70 mt-4">
+              Update
+            </Button>
+          </div>
+        </SettingsSection>
+      )}
 
       {/* MESSAGES & REVIEW SETTINGS */}
-      <SettingsSection title="Messages & Review Settings">
-        <div className="custom-flex-col gap-3">
-          {messageReviewSettings.map((setting, index) => (
-            <SettingsOthersType
-              key={index}
-              title={setting.title}
-              desc={setting.desc}
-              icon={setting.icon}
-              name={setting.name}
-              state={{
-                isChecked: messageReviewSettingsState[setting.name],
-                setIsChecked: (value) =>
-                  handleSetIsCheckedMessageReview(setting.name, value),
-              }}
-              onChange={handleMessageReviewCheckbox}
-            />
-          ))}
-        </div>
-
-        <div className="flex justify-end mt-2">
-          {/* <Button onClick={updateMessageReviewSettings} disabled={processingMessageReview}>
-            {processingMessageReview? "Updating..." : "Update"}
-          </Button> */}
-          <SettingsUpdateButton
-            action={updateMessageReviewSettings}
-            loading={processingMessageReview}
-          />
-        </div>
-      </SettingsSection>
-
-      {/* NOTIFICATIONS */}
-      <SettingsSection title="Notifications">
-        <div className="custom-flex-col gap-6 mt-4">
-          <div className="mt-2 flex flex-col gap-2">
-            <h4> Notify me when: </h4>
-            {notificationOptions.map((option) => (
-              <DocumentCheckbox
-                key={option.name}
-                name={option.name}
-                darkText
-                state={{
-                  isChecked: notificationSettings[option.name],
-                  // CHANGE 2: Use the new helper function
-                  setIsChecked: (value) =>
-                    handleSetIsChecked(option.name, value),
-                }}
-                onChange={handleCheckboxChange}
-              >
-                {option.text}
-              </DocumentCheckbox>
-            ))}
-          </div>
-
-          <div className="toggle flex flex-col gap-2">
-            {notificationOtherSettings.map((setting, index) => (
-              <SettingsOthersCheckBox
-                plan={userPlan}
+      {(canManageMessagesReviews || IS_COMPANY_OWNER) && (
+        <SettingsSection title="Messages & Review Settings">
+          <div className="custom-flex-col gap-3">
+            {messageReviewSettings.map((setting, index) => (
+              <SettingsOthersType
                 key={index}
-                name={setting.name}
                 title={setting.title}
                 desc={setting.desc}
-                value={setting.name}
-                checked={checkedStates[setting.name] || false}
-                onChange={handleCheckedState}
+                icon={setting.icon}
+                name={setting.name}
+                state={{
+                  isChecked: messageReviewSettingsState[setting.name],
+                  setIsChecked: (value) =>
+                    handleSetIsCheckedMessageReview(setting.name, value),
+                }}
+                onChange={handleMessageReviewCheckbox}
               />
             ))}
           </div>
-        </div>
-        <div className="flex justify-end mt-2">
-          <SettingsUpdateButton
-            loading={loadingNotification}
-            action={saveSettings}
-            //action={userPlan === "professional" ? saveSettings : undefined}
-          />
-        </div>
-      </SettingsSection>
+
+          <div className="flex justify-end mt-2">
+            {/* <Button onClick={updateMessageReviewSettings} disabled={processingMessageReview}>
+            {processingMessageReview? "Updating..." : "Update"}
+          </Button> */}
+            <SettingsUpdateButton
+              action={updateMessageReviewSettings}
+              loading={processingMessageReview}
+            />
+          </div>
+        </SettingsSection>
+      )}
+
+      {/* NOTIFICATIONS */}
+      {(canManageNotificationPreference || IS_COMPANY_OWNER) && (
+        <SettingsSection title="Notifications">
+          <div className="custom-flex-col gap-6 mt-4">
+            <div className="mt-2 flex flex-col gap-2">
+              <h4> Notify me when: </h4>
+              {notificationOptions.map((option) => (
+                <DocumentCheckbox
+                  key={option.name}
+                  name={option.name}
+                  darkText
+                  state={{
+                    isChecked: notificationSettings[option.name],
+                    // CHANGE 2: Use the new helper function
+                    setIsChecked: (value) =>
+                      handleSetIsChecked(option.name, value),
+                  }}
+                  onChange={handleCheckboxChange}
+                >
+                  {option.text}
+                </DocumentCheckbox>
+              ))}
+            </div>
+
+            <div className="toggle flex flex-col gap-2">
+              {notificationOtherSettings.map((setting, index) => (
+                <SettingsOthersCheckBox
+                  plan={userPlan}
+                  key={index}
+                  name={setting.name}
+                  title={setting.title}
+                  desc={setting.desc}
+                  value={setting.name}
+                  checked={checkedStates[setting.name] || false}
+                  onChange={handleCheckedState}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-end mt-2">
+            <SettingsUpdateButton
+              loading={loadingNotification}
+              action={saveSettings}
+              //action={userPlan === "professional" ? saveSettings : undefined}
+            />
+          </div>
+        </SettingsSection>
+      )}
 
       {/* RESET SETTINGS */}
-      <SettingsSection title="Reset Settings">
-        <h4 className="text-sm text-text-disabled">
-          This section enables you to revert all modifications made in the
-          settings back to their default state.
-        </h4>
-        <div className="mt-4 flex flex-col gap-2">
-          {resetSettingsOptions.map((option, index) => (
-            <SettingsOthersType
-              key={index}
-              //id={option.name}
-              title={option.title}
-              desc={option.desc}
-              icon={option.icon}
-              name={option.name}
-              state={{
-                isChecked: resetOptions.includes(option.name),
-                setIsChecked: () => {},
-              }}
-              checked={resetOptions.includes(option.name)}
-              //onChange={() => handleResetCheckboxChange(option.name)}
-              onChange={handleResetCheckboxChange}
-            />
-          ))}
-        </div>
-        <SettingsUpdateButton
-          action={resetSettings}
-          loading={loadingReset}
-          text="Reset"
-        />
-      </SettingsSection>
+      {(canResetSystem || IS_COMPANY_OWNER) && (
+        <SettingsSection title="Reset Settings">
+          <h4 className="text-sm text-text-disabled">
+            This section enables you to revert all modifications made in the
+            settings back to their default state.
+          </h4>
+          <div className="mt-4 flex flex-col gap-2">
+            {resetSettingsOptions.map((option, index) => (
+              <SettingsOthersType
+                key={index}
+                //id={option.name}
+                title={option.title}
+                desc={option.desc}
+                icon={option.icon}
+                name={option.name}
+                state={{
+                  isChecked: resetOptions.includes(option.name),
+                  setIsChecked: () => {},
+                }}
+                checked={resetOptions.includes(option.name)}
+                //onChange={() => handleResetCheckboxChange(option.name)}
+                onChange={handleResetCheckboxChange}
+              />
+            ))}
+          </div>
+          <SettingsUpdateButton
+            action={resetSettings}
+            loading={loadingReset}
+            text="Reset"
+          />
+        </SettingsSection>
+      )}
     </>
   );
 };
