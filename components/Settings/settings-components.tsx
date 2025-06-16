@@ -628,17 +628,20 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
     <div className="flex gap-2 mt-4">
       <button
         onClick={resetZoom}
+        type="button"
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         <ResetZoomIcon />
       </button>
       <button
+        type="button"
         onClick={increaseZoom}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         <ZoomPlusIcon />
       </button>
       <button
+        type="button"
         onClick={decreaseZoom}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >

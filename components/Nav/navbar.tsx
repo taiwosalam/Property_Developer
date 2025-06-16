@@ -231,7 +231,7 @@ const Header = () => {
         setPersonalInfo("date_of_registration", company.date_of_registration);
         setPersonalInfo("membership_number", company.membership_number);
         setPersonalInfo("is_verified", company.is_verified);
-        setPersonalInfo("is_owner", company.is_owner);
+        setPersonalInfo("is_owner", user.is_owner);
         setPersonalInfo("industry", company.industry);
         setPersonalInfo("company_wallet", company_wallet);
         setPersonalInfo(

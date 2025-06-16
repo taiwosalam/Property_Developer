@@ -3,12 +3,19 @@ import {
   PropertyManagerSubsApiResponseTypes,
   PropertyManagerSubsTransformedPlan,
 } from "./types";
+import { cleanPricingValue } from "@/utils/cleanPrice";
 
-export const activatePlan = async (planId: number) => {
+export const activatePlan = async (data: any) => {
+  const payload = {
+    plan_id: data.id,
+    payment_method: "wallet",
+    quantity: data.quantity,
+    duration: data.billingType,
+    amount: parseFloat(cleanPricingValue(data.price)),
+  };
+
   try {
-    const res = await api.put(
-      `/property-manager-subscription-plan/${planId}/activate`
-    );
+    const res = await api.post(`/property-manager-subscription`, payload);
     if (res.status === 200) {
       return true;
     }
@@ -90,7 +97,6 @@ export const calculatePrice = (
     isLifeTimePlan,
   };
 };
-
 
 // Transform function to map API data to the required format
 export const transformPropertyManagerSubsApiData = (

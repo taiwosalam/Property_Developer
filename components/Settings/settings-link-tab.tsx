@@ -32,13 +32,24 @@ const SettingsLinkTab: React.FC<
 
   // Permission checks
   const permissions: Record<string, { check: boolean; icon: React.FC }> = {
-    company: { check: true, icon: ProfileIcon },
-    management: { check: true, icon: ManagementIcon },
+    company: {
+      check:
+        usePermission(role, "Modify Company Information") || isCompanyOwner,
+      icon: ProfileIcon,
+    },
+    management: {
+      check:
+        usePermission(role, "Access Management Settings") || isCompanyOwner,
+      icon: ManagementIcon,
+    },
     "add-on": {
       check: usePermission(role, "Manage Add-on Settings") || isCompanyOwner,
       icon: SubscriptionIcon,
     },
-    services: { check: true, icon: ServicesIcon },
+    services: {
+      check: usePermission(role, "Edit Services") || isCompanyOwner,
+      icon: ServicesIcon,
+    },
     security: { check: true, icon: SecurityIcon },
     subscription: {
       check:
