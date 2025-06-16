@@ -282,7 +282,7 @@ const Profile = () => {
                     className="w-[450px]"
                     id="membership_certificate"
                     label="Membership document"
-                    placeholder=""
+                    placeholder="Upload Membership File"
                     buttonName="Document"
                     fileType="pdf"
                     size={2}
@@ -349,7 +349,7 @@ const Profile = () => {
             <div className="w-full flex flex-col lg:flex-row gap-4">
               <Input
                 id="head_office_address"
-                label="Head Office Address"
+                label="Street/Office Number"
                 placeholder=""
                 disabled={verifications?.utility_status === "verified"}
                 className="w-full lg:w-[500px]"
@@ -362,7 +362,7 @@ const Profile = () => {
                   noUpload={verifications?.utility_status === "verified"}
                   id="utility_document"
                   label="utility document"
-                  placeholder=""
+                  placeholder="Upload Utility File"
                   buttonName="Document"
                   fileType="pdf"
                   size={2}

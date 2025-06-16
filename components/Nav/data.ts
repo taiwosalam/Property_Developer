@@ -506,6 +506,7 @@ export interface ProfileResponse {
       date_of_registration: string;
       membership_number: string;
       is_verified: boolean;
+      is_owner: boolean;
       industry: string;
       cac_registration_number: string;
     };

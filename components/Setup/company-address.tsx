@@ -76,19 +76,9 @@ const CompanyAddress = ({ data }: { data: any }) => {
           value={address.city} // Controlled value
           required
         />
-
-        {/* <Input
-          label="head office address"
-          id="head_office_address"
-          placeholder="Write here"
-          className="lg:col-span-2"
-          inputClassName="rounded-[8px] setup-f bg-white"
-          required
-          defaultValue={data.head_office_address}
-        /> */}
-
+        
         <RestrictInput
-          label="head office address"
+          label="Street/Office Number"
           id="head_office_address"
           placeholder="Write here"
           inputClassName="bg-white rounded-[8px] property-form-input"
