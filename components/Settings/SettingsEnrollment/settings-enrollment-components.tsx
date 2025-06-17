@@ -7,6 +7,7 @@ import SponsorModal from "../Modals/sponsor-modal";
 import { AnimatePresence, motion } from "framer-motion";
 import { parseFormattedNumber } from "@/app/(nav)/accounting/invoice/create-invoice/data";
 import { FormSteps } from "@/app/(onboarding)/auth/types";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -327,7 +328,7 @@ interface SelectPlanButtonProps {
   price: string;
   planTitle: string;
   onSelectPlan?: () => Promise<boolean | undefined>;
-  onSelect?: () => void; 
+  onSelect?: () => void;
   page?: "modal" | "settings";
   changeStep?: (step: FormSteps | number) => void;
 }
@@ -342,10 +343,23 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   changeStep,
 }) => {
   const subCost = parseFormattedNumber(price);
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+  const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
+  const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
+
+  const disabled = isFree || isCurrentPlan;
+  const buttonText = isCurrentPlan
+    ? "Subscribed"
+    : isFree
+    ? "Free Plan"
+    : "Select Plan";
+
   const handleSelectPlan = () => {
     if (page === "modal" && changeStep) {
       onSelectPlan?.();
-      changeStep(3); 
+      changeStep(3);
     }
   };
   return (
@@ -355,23 +369,22 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
           isFree ? "bg-brand-9 bg-opacity-40 cursor-not-allowed" : "bg-brand-9"
         }`}
       >
-
         {page === "modal" ? (
           <button
             className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
-            disabled={isFree}
+            disabled={disabled}
             onClick={handleSelectPlan}
           >
-            Select Plan
+            {buttonText}
           </button>
         ) : (
           <Modal>
             <ModalTrigger asChild className="w-full text-white">
               <button
                 className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
-                disabled={isFree}
+                disabled={disabled}
               >
-                Select Plan
+                {buttonText}
               </button>
             </ModalTrigger>
             <ModalContent>

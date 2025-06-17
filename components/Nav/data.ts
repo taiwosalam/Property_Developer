@@ -521,6 +521,8 @@ export interface ProfileResponse {
       title: string;
     };
     requestDemos: any[];
+    isSubscriptionExpired: boolean;
+    currentPlan: string;
   };
 }
 

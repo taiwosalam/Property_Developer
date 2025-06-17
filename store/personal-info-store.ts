@@ -34,6 +34,8 @@ interface PersonalInfoStoreState {
   cac_registration_number: string | null;
 
   company_wallet: any;
+  isSubscriptionExpired: boolean;
+  currentPlan: string;
 
   setPersonalInfo: <
     K extends keyof Omit<PersonalInfoStoreState, "setPersonalInfo">
@@ -80,5 +82,8 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   is_owner: false,
   industry: null,
   cac_registration_number: null,
+
+  isSubscriptionExpired: false,
+  currentPlan: "",
   setPersonalInfo: (key, value) => set({ [key]: value }),
 }));

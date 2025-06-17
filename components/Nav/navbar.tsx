@@ -181,7 +181,7 @@ const Header = () => {
 
   useEffect(() => {
     if (appearance && !hasMounted.current) {
-      console.log("APPEARANCE", appearance)
+      console.log("APPEARANCE", appearance);
       const { colorMode, navbar, fonts, dashboardColor } = appearance;
       saveLocalStorage("navbar", navbar);
       setColor(dashboardColor);
@@ -193,8 +193,16 @@ const Header = () => {
 
   useEffect(() => {
     if (data?.data) {
-      const { user, company, profile, requestDemos, director, company_wallet } =
-        data.data;
+      const {
+        user,
+        currentPlan,
+        isSubscriptionExpired,
+        company,
+        profile,
+        requestDemos,
+        director,
+        company_wallet,
+      } = data.data;
 
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo("userId", user.id);
@@ -234,6 +242,8 @@ const Header = () => {
         setPersonalInfo("is_owner", user.is_owner);
         setPersonalInfo("industry", company.industry);
         setPersonalInfo("company_wallet", company_wallet);
+        setPersonalInfo("isSubscriptionExpired", isSubscriptionExpired);
+        setPersonalInfo("currentPlan", currentPlan);
         setPersonalInfo(
           "cac_registration_number",
           company.cac_registration_number

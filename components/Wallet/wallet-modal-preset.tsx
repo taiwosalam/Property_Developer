@@ -29,7 +29,7 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
         className={cn(
           "custom-flex-col py-4 px-6 bg-brand-1 dark:bg-[#3C3D37] sticky top-0 z-[2]",
           headerClassName
-        )}
+      )}
       >
         <div className="flex items-center justify-between">
           {back ? (
