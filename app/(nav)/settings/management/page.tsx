@@ -20,6 +20,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import useFetch from "@/hooks/useFetch";
 import ManagementCheckbox from "@/components/Documents/DocumentCheckbox/management-checkbox";
 import { ApiResponseUserPlan } from "../others/types";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
@@ -31,6 +32,7 @@ const roleMapping: Record<string, string> = {
 
 const Management = () => {
   const { data, isLoading, error } = useSettings();
+  const IS_COMPANY_OWNER = usePersonalInfoStore((state) => state.is_owner);
   const [updating, setUpdating] = useState(false);
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({
     manager: false,
@@ -157,7 +159,6 @@ const Management = () => {
     }
   };
 
-
   // TENANT & OCCUPANT SCREENING LEVEL
   const handleUpdateScreeningLevel = async (data: Record<string, any>) => {
     if (
@@ -190,48 +191,60 @@ const Management = () => {
   return (
     <>
       <>
-        {staffConfigurations.map(({ title, subTitle, permissions }) => (
-          <SettingsSection key={title} title={title} subTitle={subTitle}>
-            <div className="custom-flex-col gap-8">
-              <div className="flex">
-                <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
-                  {permissions.map((column, index) => (
-                    <div key={index} className="custom-flex-col gap-4">
-                      {column.map((text, idx) => {
-                        const formattedText = formatPermission(text);
-                        const isChecked =
-                          selectedPermissions[title]?.includes(formattedText) ||
-                          false;
+        {/* {staffConfigurations.map(({ title, subTitle, permissions }) => ( */}
+        {staffConfigurations
+          .filter(
+            ({ title }) =>
+              title !== "admin configuration (company director)" ||
+              IS_COMPANY_OWNER
+          )
+          .map(({ title, subTitle, permissions }) => (
+            <SettingsSection key={title} title={title} subTitle={subTitle}>
+              <div className="custom-flex-col gap-8">
+                <div className="flex">
+                  <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
+                    {permissions.map((column, index) => (
+                      <div key={index} className="custom-flex-col gap-4">
+                        {column.map((text, idx) => {
+                          const formattedText = formatPermission(text);
+                          const isChecked =
+                            selectedPermissions[title]?.includes(
+                              formattedText
+                            ) || false;
 
-                        return (
-                          // In the render section where ManagementCheckbox is used
-                          <ManagementCheckbox
-                            key={idx}
-                            darkText
-                            checked={isChecked}
-                            onClick={() => handleCheckboxClick(title, text)}
-                          >
-                            {text}
-                          </ManagementCheckbox>
-                        );
-                      })}
-                    </div>
-                  ))}
+                          return (
+                            // In the render section where ManagementCheckbox is used
+                            <ManagementCheckbox
+                              key={idx}
+                              darkText
+                              checked={isChecked}
+                              onClick={() => handleCheckboxClick(title, text)}
+                            >
+                              {text}
+                            </ManagementCheckbox>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-end w-full justify-end">
+                  <Button
+                    size="base_bold"
+                    className="py-[10px] px-8"
+                    onClick={() => handleUpdate(title)}
+                    disabled={
+                      loadingStates[roleMapping[title]] || configLoading
+                    }
+                  >
+                    {loadingStates[roleMapping[title]]
+                      ? "Updating..."
+                      : "Update"}
+                  </Button>
                 </div>
               </div>
-              <div className="flex items-end w-full justify-end">
-                <Button
-                  size="base_bold"
-                  className="py-[10px] px-8"
-                  onClick={() => handleUpdate(title)}
-                  disabled={loadingStates[roleMapping[title]] || configLoading}
-                >
-                  {loadingStates[roleMapping[title]] ? "Updating..." : "Update"}
-                </Button>
-              </div>
-            </div>
-          </SettingsSection>
-        ))}
+            </SettingsSection>
+          ))}
       </>
     </>
   );

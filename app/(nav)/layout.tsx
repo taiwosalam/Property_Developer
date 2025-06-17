@@ -27,6 +27,8 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { usePermissionsStore } from "@/store/permissions";
 import { getRoleTitle } from "@/hooks/getPermission";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import ExpiredSubscriptionModal from "@/components/Modal/expired-subscription-flow";
 
 const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
@@ -44,12 +46,19 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     useGlobalStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
+  const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const navs = getLocalStorage("navbar");
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
   const { role, setRole } = useRole();
   const hasMounted = useRef(false);
+
+  const isSubscriptionExpired = usePersonalInfoStore(
+    (state) => state.isSubscriptionExpired
+  );
+
+  // const isSubscriptionExpired = true; FOR TEST - DELETE LATER
   const { setPermissions, setLoading, setError } = usePermissionsStore();
   const loggedInUserDetails = getLocalStorage("additional_details");
   let appearance:
@@ -107,13 +116,21 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setError,
   ]);
 
-  
   useEffect(() => {
     if (navs !== null) {
       setNavbar(navs);
     }
     setSelectedOption("view", appearance?.view || "grid");
   }, [navs]);
+
+  // Open expired subscription modal when isSubscriptionExpired is true
+  useEffect(() => {
+    if (isSubscriptionExpired) {
+      setIsExpiredModalOpen(true);
+    } else {
+      setIsExpiredModalOpen(false);
+    }
+  }, [isSubscriptionExpired]);
 
   useEffect(() => {
     setIsSideNavOpen(!isMobile);
@@ -278,6 +295,18 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             ) : (
               <div>No document selected</div>
             )}
+          </ModalContent>
+        </Modal>
+
+        {/* EXPIRED PLAN MODAL  */}
+        <Modal
+          state={{
+            isOpen: isExpiredModalOpen,
+            setIsOpen: setIsExpiredModalOpen,
+          }}
+        >
+          <ModalContent disableOutsideClick>
+           <ExpiredSubscriptionModal />
           </ModalContent>
         </Modal>
       </>
