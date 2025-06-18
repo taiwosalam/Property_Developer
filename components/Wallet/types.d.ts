@@ -44,6 +44,7 @@ export interface WalletModalPresetProps {
   children: React.ReactNode;
   headerClassName?: string;
   className?: string;
+  noClose?: boolean;
 }
 
 export interface WalletFundsCardsHeadingProps {

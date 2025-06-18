@@ -18,6 +18,7 @@ interface SettingsEnrollmentCardProps {
   desc: string;
   planFor?: string;
   price: string;
+  lifetimePrice: string | number;
   discount: string;
   discountText: string;
   duration: string;
@@ -42,6 +43,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   desc,
   planFor,
   price,
+  lifetimePrice,
   discount,
   discountText,
   duration,
@@ -144,7 +146,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
       <FeaturesList showFeatures={showFeatures} features={features} />
       <SelectPlanButton
         isFree={isFree}
-        price={price}
+        price={duration === "lifetime" ? String(lifetimePrice) : price}
         planTitle={planTitle}
         onSelectPlan={page === "modal" ? onSelect : (onSelectPlan as any)}
         page={page}

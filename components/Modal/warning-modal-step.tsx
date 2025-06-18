@@ -234,7 +234,7 @@ export const WarningStep2 = ({
                 onSelect={() =>
                   handleSelectPlan({
                     id: plan.id,
-                    price: plan.price,
+                    price: String(plan.duration === "lifetime" ? plan.lifetimePrice : plan.price),
                     planTitle: plan.planTitle,
                   })
                 }

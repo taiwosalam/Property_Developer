@@ -433,7 +433,6 @@ const ExpiredSubscriptionModal: React.FC = () => {
       amount: amountToPay,
     };
 
-    console.log("Renew Payload:", payload);
     try {
       setReqLoading(true);
       const res = await renewSubscription(payload);
@@ -511,6 +510,7 @@ const ExpiredSubscriptionModal: React.FC = () => {
           <WalletModalPreset
             title="Renew Subscription"
             back={() => setStep(1)}
+            noClose
             className="md:w-[50%] w-[80%]"
           >
             <div className="custom-flex-col gap-8">

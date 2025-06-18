@@ -149,7 +149,7 @@ const Enrollment = () => {
 
   return (
     <>
-      <SettingsSection title="Subscription Plan">
+      {/* <SettingsSection title="Subscription Plan">
         <h4 className="text-[14px] text-text-disabled">
           This subscription plan is for Property Manager module only. To view
           other subscription plans, go to the respective module or switch from
@@ -273,7 +273,7 @@ const Enrollment = () => {
             </div>
           </div>
         </div>
-      </SettingsSection>
+      </SettingsSection> */}
 
       <SettingsSection title="Subscription/Renewal History">
         <div className="custom-flex-col gap-7">
