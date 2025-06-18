@@ -92,7 +92,6 @@ const SelectChatUsersModal = ({
   //   setIsOpen(false);
   // };
 
-  console.log("filteredUsers", filteredUsers);
 
   const handleUserClicked = (user: UsersProps) => {
     try {

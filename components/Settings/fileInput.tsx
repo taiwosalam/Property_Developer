@@ -108,7 +108,7 @@ const FileUploadInput = ({
           onClick={handleClick}
           className={clsx(
             "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
-            fileName ? "bg-neutral-2" : "bg-none",
+            fileName ? "bg-neutral-2 dark:bg-transparent" : "bg-none",
             disabled && "cursor-not-allowed opacity-50"
           )}
         >

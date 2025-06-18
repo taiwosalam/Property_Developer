@@ -75,6 +75,8 @@ const SponsorModal = ({
         if (res) {
           toast.success(successMsg);
           setIsOpen(false);
+          window.dispatchEvent(new Event("refetchSubscriptionPlan"))
+          window.dispatchEvent(new Event("refetchEnrollments"))
         }
       }
     } catch (error) {
@@ -167,5 +169,3 @@ const SponsorModal = ({
 };
 
 export default SponsorModal;
-
-
