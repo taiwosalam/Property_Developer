@@ -93,8 +93,6 @@ const Property = () => {
     refetch,
   } = useFetch<PropertyApiResponse | any>(endpoint, config);
 
-  console.log(apiData);
-
   useEffect(() => {
     if (apiData) {
       setPageData((x) => ({ ...x, ...transformDraftUnitData(apiData) }));
@@ -106,7 +104,6 @@ const Property = () => {
   // Listen for the refetch event
   useRefetchOnEvent("refetchPropertyDraft", () => refetch({ silent: true }));
 
-  console.log("pageData", pageData);
   if (loading)
     return (
       <CustomLoader

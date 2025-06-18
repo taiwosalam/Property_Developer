@@ -51,6 +51,7 @@ body {
   outline: 1px solid red; //FOR CSS DEBUGGING
 } */
 
+
 .autocomplete-suggestions {
   position: absolute;
   top: 100%;

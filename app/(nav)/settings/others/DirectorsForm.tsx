@@ -209,7 +209,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           disabled={is_active !== 1 ? true : false}
           id="phone_number"
           label="phone number"
-          inputClassName="!bg-neutral-2"
+          inputClassName="!bg-neutral-2 dark:!bg-transparent"
           value={formData?.phone_number || ""}
           onChange={(value) => onFormChange?.("phone_number", value)}
         />

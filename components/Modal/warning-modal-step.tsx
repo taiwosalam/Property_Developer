@@ -83,7 +83,7 @@ export const WarningStep2 = ({
   onPrevious,
   onClose,
   changeStep,
-  setSelectedPlan
+  setSelectedPlan,
 }: WarningStepProps) => {
   const [showFeatures, setShowFeatures] = useState(false);
   const [pageData, setPageData] = useState<
@@ -113,6 +113,8 @@ export const WarningStep2 = ({
               type,
               plan.quantity,
               plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
               plan.planTitle.toLowerCase().includes("premium")
                 ? "premium"
                 : "basic"
@@ -144,6 +146,8 @@ export const WarningStep2 = ({
               billingType,
               newQuantity,
               plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
               plan.planTitle.toLowerCase().includes("premium")
                 ? "premium"
                 : "basic"
@@ -172,6 +176,8 @@ export const WarningStep2 = ({
               billingType,
               newQuantity,
               plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
               plan.planTitle.toLowerCase().includes("premium")
                 ? "premium"
                 : "basic"

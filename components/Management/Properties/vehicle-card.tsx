@@ -95,7 +95,7 @@ const VehicleCard: React.FC<any> = ({ data }) => {
             isClickable && !viewOnly ? () => setIsModalActive(true) : undefined
           }
         >
-          <p className="text-brand-5 text-xs lg:text-sm font-bold">ID: {id} </p>
+          <p className="text-brand-9 text-xs lg:text-sm font-bold">ID: {id} </p>
           <p className="text-[#374151] dark:text-white text-lg md:text-xl lg:text-2xl font-bold">
             <span className="text-ellipsis line-clamp-1 break-all">
               {property_name}
@@ -104,14 +104,14 @@ const VehicleCard: React.FC<any> = ({ data }) => {
               ({units_count} Units)
             </span>
           </p>
-          <p className="flex items-center gap-1 text-brand-tertiary text-xs lg:text-sm font-normal text-ellipsis line-clamp-1 break-all">
+          <p className="flex items-center gap-1 text-brand-9 text-xs lg:text-sm font-normal text-ellipsis line-clamp-1 break-all">
             <LocationIcon />
             <span className="text-ellipsis line-clamp-1 break-all">
               {address}
             </span>
           </p>
           <div className="flex flex-wrap justify-between items-center mt-1">
-            <p className="text-black text-xs lg:text-sm font-normal">
+            <p className="text-black dark:text-white text-xs lg:text-sm font-normal">
               Total Vehicles Record
             </p>
             <h3 className="text-brand-9 text-xl lg:text-2xl font-bold">

@@ -53,7 +53,6 @@ export interface MessageUserPageTypes {
 export const transformCompanyUsersData = (
   res: CompanyUsersAPIResponse
 ): MessageUserPageTypes => {
-  console.log("res", res)
   return {
     users: res.data.users.map((u) => ({
       id: u.id,

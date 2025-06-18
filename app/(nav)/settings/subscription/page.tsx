@@ -12,6 +12,7 @@ import { ChevronRight } from "lucide-react";
 import { enrollment_subscriptions } from "../add-on/data";
 import useFetch from "@/hooks/useFetch";
 import {
+  EnrollmentApiResponse,
   PropertyManagerSubsApiResponseTypes,
   PropertyManagerSubsTransformedPlan,
 } from "./types";
@@ -19,12 +20,20 @@ import {
   calculatePrice,
   transformPropertyManagerSubsApiData,
   activatePlan,
+  extendPropertyManagerPlan,
+  upgradePropertyManagerPlan,
+  transformEnrollmentHistory,
 } from "./data";
 import SettingsEnrollmentCardSkeleton from "@/components/Settings/SettingsEnrollment/enrolllment-card-skeleton";
-import ProfessionalPlan from "@/components/Settings/custom-sub";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { cleanPricingValue } from "@/utils/cleanPrice";
 
 const Enrollment = () => {
   const [showFeatures, setShowFeatures] = useState(false);
+  const { company_id } = usePersonalInfoStore();
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
   const [pageData, setPageData] = useState<
     PropertyManagerSubsTransformedPlan[]
   >([]);
@@ -32,14 +41,33 @@ const Enrollment = () => {
     useFetch<PropertyManagerSubsApiResponseTypes>(
       "/property-manager-subscription-plan"
     );
+  useRefetchOnEvent("refetchSubscriptionPlan", () => refetch({ silent: true }));
+
+  const {
+    data: companyEnrollments,
+    error: enrollmentErr,
+    loading: enrollmentLoading,
+    refetch: refetchEnrollments,
+  } = useFetch<EnrollmentApiResponse>(`/enrollments/${company_id}`);
+  useRefetchOnEvent("refetchEnrollments", () =>
+    refetchEnrollments({ silent: true })
+  );
+
+  const enrollments_subs = companyEnrollments
+    ? transformEnrollmentHistory(companyEnrollments.data.enrollments)
+    : null;
 
   // Transform API data and set pageData
   useEffect(() => {
     if (data?.data) {
       const transformed = transformPropertyManagerSubsApiData(data.data);
-      setPageData(transformed);
+      // Filter out Free plan if user is not on Free plan
+      const filtered = transformed.filter(
+        (plan) => !plan.isFree || currentPlanKeyword === "free"
+      );
+      setPageData(filtered);
     }
-  }, [data]);
+  }, [data, currentPlanKeyword]);
 
   // Handle billing type change for a specific plan
   const handleBillingTypeChange = useCallback(
@@ -51,6 +79,8 @@ const Enrollment = () => {
               type,
               plan.quantity,
               plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
               plan.planTitle.toLowerCase().includes("premium")
                 ? "premium"
                 : "basic"
@@ -82,6 +112,8 @@ const Enrollment = () => {
               billingType,
               newQuantity,
               plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
               plan.planTitle.toLowerCase().includes("premium")
                 ? "premium"
                 : "basic"
@@ -110,6 +142,8 @@ const Enrollment = () => {
               billingType,
               newQuantity,
               plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
               plan.planTitle.toLowerCase().includes("premium")
                 ? "premium"
                 : "basic"
@@ -127,25 +161,53 @@ const Enrollment = () => {
     []
   );
 
+  // Handle select plan
+  const handleSelectPlan = useCallback(
+    async (plan: PropertyManagerSubsTransformedPlan) => {
+      const thisPlanKeyword = plan.planTitle?.split(" ")[0]?.toLowerCase();
+      // Determine if it's an upgrade or extension
+      const isExtend = currentPlanKeyword === thisPlanKeyword;
+      const isUpgrade =
+        (currentPlanKeyword === "free" &&
+          (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
+        (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
+
+      const payload = {
+        plan_id: plan?.id || 0,
+        payment_method: "wallet",
+        quantity: plan.quantity,
+        duration: plan.isLifeTimePlan ? "lifetime" : plan.billingType,
+        amount: cleanPricingValue(plan.price),
+      };
+
+      if (isExtend) {
+        return await extendPropertyManagerPlan(payload);
+      } else if (isUpgrade) {
+        return await upgradePropertyManagerPlan(payload);
+      } else {
+        return await activatePlan(payload);
+      }
+    },
+    [currentPlanKeyword]
+  );
+
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
 
-  const transformedSubscriptions = enrollment_subscriptions.data
-    .slice(0, 6)
-    .map((data) => ({
-      ...data,
-      status: (
-        <p
-          className={clsx({
-            "text-status-success-2": data.status === "Active",
-            "text-status-caution-2": data.status === "Pending",
-          })}
-        >
-          {data.status}
-        </p>
-      ),
-    }));
+  const transformedSubscriptions = enrollments_subs?.map((data) => ({
+    ...data,
+    status: (
+      <p
+        className={clsx({
+          "text-status-success-2": data.status === "Active",
+          "text-status-caution-2": data.status === "Pending",
+        })}
+      >
+        {data.status}
+      </p>
+    ),
+  }));
 
   return (
     <>
@@ -155,64 +217,90 @@ const Enrollment = () => {
           other subscription plans, go to the respective module or switch from
           the top left of the dashboard header.
         </h4>
+        <div
+          className={clsx(
+            "mb-4 pb-10 flex gap-4 pricingWrapper overflow-x-auto flex-nowrap custom-round-scrollbar mt-4 ",
+            currentPlanKeyword !== "free" ? "flex-row" : "flex-col"
+          )}
+        >
+          <div className="flex gap-4">
+            {loading
+              ? Array(3)
+                  .fill(0)
+                  .map((_, index) => (
+                    <SettingsEnrollmentCardSkeleton key={index} />
+                  ))
+              : pageData.map((plan) => (
+                  <SettingsEnrollmentCard
+                    key={plan.id}
+                    {...plan}
+                    showFeatures={showFeatures}
+                    setShowFeatures={setShowFeatures}
+                    incrementQuantity={() =>
+                      incrementQuantity(plan.id, plan.billingType)
+                    }
+                    decrementQuantity={() =>
+                      decrementQuantity(plan.id, plan.billingType)
+                    }
+                    onBillingTypeChange={(type) =>
+                      handleBillingTypeChange(plan.id, type)
+                    }
+                    onSelectPlan={() => handleSelectPlan(plan)}
+                  />
+                ))}
+          </div>
+          <div
+            className={clsx(
+              "flex flex-col justify-between relative dark:border dark:border-gray-500 pr-10 pl-4 rounded-md flex-wrap shadow-md py-4 bg-[url('/icons/enrollment-bg.svg')] bg-no-repeat bg-center bg-cover bg-opacity-60",
+              currentPlanKeyword === "free"
+                ? "mt-8 w-full"
+                : "mt-0 min-w-[400px]"
+            )}
+            style={{ minHeight: "300px" }}
+          >
+            <h3 className="text-[16px] underline font-bold text-brand-9">
+              PROFESSIONAL PLAN
+            </h3>
+            <p className="text-sm max-w-[964px] text-text-secondary dark:text-darkText-1">
+              If none of the available plans meets your company&apos;s standards,
+              consider opting for the Professional plan. This plan provides
+              unlimited access to all software solutions. Professional plans are
+              ideal for established property managers who wish to customize the
+              software with their company&apos;s name and brand.
+            </p>
 
-        <div className="flex mb-4 pb-10 flex-nowrap overflow-x-auto custom-round-scrollbar gap-4 pricingWrapper mt-4">
-          {loading
-            ? Array(3)
-                .fill(0)
-                .map((_, index) => (
-                  <SettingsEnrollmentCardSkeleton key={index} />
-                ))
-            : pageData.map((plan) => (
-                <SettingsEnrollmentCard
-                  key={plan.id}
-                  {...plan}
-                  showFeatures={showFeatures}
-                  setShowFeatures={setShowFeatures}
-                  incrementQuantity={() =>
-                    incrementQuantity(plan.id, plan.billingType)
-                  }
-                  decrementQuantity={() =>
-                    decrementQuantity(plan.id, plan.billingType)
-                  }
-                  onBillingTypeChange={(type) =>
-                    handleBillingTypeChange(plan.id, type)
-                  }
-                  onSelectPlan={() => activatePlan(plan)}
-                />
-              ))}
-        </div>
-        <div className="flex flex-col dark:border dark:border-gray-500 w-full pr-10 pl-4 rounded-md mt-8 flex-wrap shadow-md py-4 bg-[url('/icons/enrollment-bg.svg')] bg-no-repeat bg-center bg-cover bg-opacity-60">
-          <h3 className="text-[16px] underline font-bold text-brand-9">
-            PROFESSIONAL PLAN
-          </h3>
-          <p className="text-sm max-w-[964px] text-text-secondary dark:text-darkText-1">
-            If none of the available plans meets your company&apos;s standards,
-            consider opting for the Professional plan. This plan provides
-            unlimited access to all software solutions. Professional plans are
-            ideal for established property managers who wish to customize the
-            software with their company&apos;s name and brand.
-          </p>
-
-          <h4 className="text-sm font-bold mt-4 text-text-secondary dark:text-white">
-            Features Included:
-          </h4>
-          <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 justify-start w-full lg:justify-between flex-wrap">
-            <strong className="leading-[150%] w-full lg:w-4/5 max-w-[750px]">
-              All plans benefit and all Ads-on Inclusive; API integrations,
-              SaaS, Whitelabel, Custom domain, Unlimited Branches, Director,
-              Staff and Property Creations. Dedicated account officer, 24/7
-              Support and training, Email integration, and SMS prefer name.
-            </strong>
-
-            <div className="w-full sm:w-1/2 lg:w-1/5 bg-brand-9 h-10 text-white px-4 py-2 rounded-md flex items-center justify-center">
-              <Link
-                href="https://ourproperty.com.ng/resources/professional-plan/"
-                className=""
-                target="_blank"
+            <div
+              className={clsx(
+                "flex gap-4",
+                currentPlanKeyword !== "free"
+                  ? "flex-col w-full"
+                  : "lg:flex-row lg:gap-0 lg:justify-between justify-start"
+              )}
+            >
+              <h4 className="text-sm font-bold mt-4 text-text-secondary dark:text-white">
+                Features Included:
+              </h4>
+              <strong className="leading-[150%] w-full lg:w-4/5 max-w-[750px]">
+                All plans benefit and all Ads-on Inclusive; API integrations,
+                SaaS, Whitelabel, Custom domain, Unlimited Branches, Director,
+                Staff and Property Creations. Dedicated account officer, 24/7
+                Support and training, Email integration, and SMS prefer name.
+              </strong>
+              <div
+                className={clsx(
+                  "mt-auto h-10 px-4 py-2 rounded-md flex items-center justify-center",
+                  currentPlanKeyword !== "free"
+                    ? "w-full bg-brand-9 justify-end items-end text-white"
+                    : "w-full sm:w-1/2 lg:w-1/5 text-black"
+                )}
               >
-                Read More
-              </Link>
+                <Link
+                  href="https://ourproperty.com.ng/resources/professional-plan/"
+                  target="_blank"
+                >
+                  Read More
+                </Link>
+              </div>
             </div>
           </div>
         </div>

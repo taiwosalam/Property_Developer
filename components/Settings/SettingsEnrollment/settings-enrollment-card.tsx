@@ -11,6 +11,7 @@ import {
   SelectPlanButton,
 } from "./settings-enrollment-components";
 import { FormSteps } from "@/app/(onboarding)/auth/types";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 interface SettingsEnrollmentCardProps {
   planTitle: string;
@@ -59,6 +60,11 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   page,
   changeStep,
 }) => {
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+  const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
+  const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
+
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     if (!isFree) {
       if (type === "yearly") {
@@ -80,12 +86,13 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         } Features`;
 
   const getThemeColor = () => {
+    const baseClasses = isCurrentPlan ? "border" : "border-none";
     if (isFree) {
-      return "border-[#38BDF8] text-[#38BDF8]";
+      return `${baseClasses} border-[#38BDF8] dark:border-gray-800 text-[#38BDF8]`;
     } else if (planTitle.toLowerCase().includes("premium")) {
-      return "border-[#8C62FF] text-[#8C62FF] bg-[#F4F9FF]";
+      return `${baseClasses} border-[#8C62FF] dark:border-gray-400 text-[#8C62FF] bg-[#F4F9FF]`;
     } else {
-      return "border-brand-9 text-brand-9";
+      return `${baseClasses} border-brand-9 text-brand-9 dark:border-gray-400`;
     }
   };
 
@@ -93,7 +100,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
 
   return (
     <div
-      className={`min-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
+      className={`min-w-[400px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}
