@@ -16,9 +16,6 @@ export const transformPropertyData = (
 ): AddUnitStoreWithoutFunctions | null => {
   const { data } = response;
   if (!data) return null;
-
-  console.log("res", response);
-
   return {
     property_id: data.id,
     propertyType: data.property_type === "rental" ? "rental" : "facility",
@@ -98,8 +95,7 @@ export const createUnit = async (propertyId: string, formData: any) => {
     toast.success(data?.message || "Unit Added Succesfully");
     return data.data?.id;
   } catch (error) {
-    // handleAxiosError(error, "Failed to add unit");
-    toast.error("Something Went Wrong!");
+    handleAxiosError(error, "Failed to add unit");
     return null;
   }
 };
@@ -111,8 +107,7 @@ export const getUnitById = async (unitId: string) => {
     }>(`unit/${unitId}/view`);
     return data.data;
   } catch (error) {
-    // handleAxiosError(error, "Failed to fetch unit data");
-    toast.error("Something Went Wrong!");
+    handleAxiosError(error, "Failed to fetch unit data");
     return null;
   }
 };
@@ -128,8 +123,7 @@ export const editUnit = async (unitId: string, formData: any) => {
     toast.success(data?.message || "Unit Updated Succesfully");
     return data.data.id;
   } catch (error) {
-    // handleAxiosError(error, "Failed to update unit");
-    toast.error("Something Went Wrong!")
+    handleAxiosError(error, "Failed to update unit");
     return null;
   }
 };
@@ -140,8 +134,7 @@ export const deleteUnit = async (unitId: string) => {
     toast.success(data?.message || "Unit Deleted Succesfully");
     return true;
   } catch (error) {
-    // handleAxiosError(error, "Failed to delete unit");
-    toast.error("Something Went Wrong!")
+    handleAxiosError(error, "Failed to delete unit");
     return false;
   }
 };

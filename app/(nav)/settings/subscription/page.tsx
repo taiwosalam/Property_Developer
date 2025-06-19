@@ -28,6 +28,8 @@ import SettingsEnrollmentCardSkeleton from "@/components/Settings/SettingsEnroll
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { cleanPricingValue } from "@/utils/cleanPrice";
+import ProfessionalPlanComponent from "./professional-plan";
+import ProfessionalPlanCard from "./professional-card";
 
 const Enrollment = () => {
   const [showFeatures, setShowFeatures] = useState(false);
@@ -69,25 +71,34 @@ const Enrollment = () => {
     }
   }, [data, currentPlanKeyword]);
 
-  // Handle billing type change for a specific plan
   const handleBillingTypeChange = useCallback(
     (planId: number, type: "monthly" | "yearly") => {
       setPageData((prevData) =>
         prevData.map((plan) => {
-          if (plan.id === planId && !plan.isFree) {
-            const priceDetails = calculatePrice(
-              type,
-              plan.quantity,
-              plan.baseMonthlyPrice,
-              plan.baseYearlyPrice,
-              plan.lifetimePrice,
-              plan.planTitle.toLowerCase().includes("premium")
-                ? "premium"
-                : "basic"
-            );
+          if (plan.id === planId) {
+            const newQuantity = 1; // Reset quantity to 1
+            const priceDetails = plan.isFree
+              ? {
+                  price: "LIFE TIME",
+                  discount: "",
+                  discountText: "",
+                  duration: "lifetime",
+                  isLifeTimePlan: false,
+                }
+              : calculatePrice(
+                  type,
+                  newQuantity,
+                  plan.baseMonthlyPrice,
+                  plan.baseYearlyPrice,
+                  plan.lifetimePrice,
+                  plan.planTitle.toLowerCase().includes("premium")
+                    ? "premium"
+                    : "basic"
+                );
             return {
               ...plan,
               billingType: type,
+              quantity: newQuantity,
               ...priceDetails,
             };
           }
@@ -98,7 +109,6 @@ const Enrollment = () => {
     []
   );
 
-  // Handle quantity increment for a specific plan
   const incrementQuantity = useCallback(
     (planId: number, billingType: "monthly" | "yearly") => {
       setPageData((prevData) =>
@@ -161,7 +171,6 @@ const Enrollment = () => {
     []
   );
 
-  console.log("pageData", pageData);
   // Handle select plan
   const handleSelectPlan = useCallback(
     async (plan: PropertyManagerSubsTransformedPlan) => {
@@ -211,6 +220,8 @@ const Enrollment = () => {
     ),
   }));
 
+  const ACTIVE_PLAN_EXPIRY_DATE = enrollments_subs?.[0].due_date;
+
   return (
     <>
       <SettingsSection title="Subscription Plan">
@@ -221,7 +232,7 @@ const Enrollment = () => {
         </h4>
         <div
           className={clsx(
-            "mb-4 pb-10 flex gap-4 pricingWrapper overflow-x-auto flex-nowrap custom-round-scrollbar mt-4 ",
+            "mb-4 pb-10 flex items-center justfiy-center gap-4 pricingWrapper overflow-x-auto flex-nowrap custom-round-scrollbar mt-4 ",
             currentPlanKeyword !== "free" ? "flex-row" : "flex-col"
           )}
         >
@@ -236,6 +247,7 @@ const Enrollment = () => {
                   <SettingsEnrollmentCard
                     key={plan.id}
                     {...plan}
+                    expiry_date={ACTIVE_PLAN_EXPIRY_DATE}
                     showFeatures={showFeatures}
                     setShowFeatures={setShowFeatures}
                     incrementQuantity={() =>
@@ -251,93 +263,49 @@ const Enrollment = () => {
                   />
                 ))}
           </div>
-          <div
-            className={clsx(
-              "flex flex-col justify-between relative dark:border dark:border-gray-500 pr-10 pl-4 rounded-md flex-wrap shadow-md py-4 bg-[url('/icons/enrollment-bg.svg')] bg-no-repeat bg-center bg-cover bg-opacity-60",
-              currentPlanKeyword === "free"
-                ? "mt-8 w-full"
-                : "mt-0 min-w-[400px]"
-            )}
-            style={{ minHeight: "300px" }}
-          >
-            <h3 className="text-[16px] underline font-bold text-brand-9">
-              PROFESSIONAL PLAN
-            </h3>
-            <p className="text-sm max-w-[964px] text-text-secondary dark:text-darkText-1">
-              If none of the available plans meets your company&apos;s
-              standards, consider opting for the Professional plan. This plan
-              provides unlimited access to all software solutions. Professional
-              plans are ideal for established property managers who wish to
-              customize the software with their company&apos;s name and brand.
-            </p>
-
-            <div
-              className={clsx(
-                "flex gap-4",
-                currentPlanKeyword !== "free"
-                  ? "flex-col w-full"
-                  : "lg:flex-row lg:gap-0 lg:justify-between justify-start"
-              )}
-            >
-              <h4 className="text-sm font-bold mt-4 text-text-secondary dark:text-white">
-                Features Included:
-              </h4>
-              <strong className="leading-[150%] w-full lg:w-4/5 max-w-[750px]">
-                All plans benefit and all Ads-on Inclusive; API integrations,
-                SaaS, Whitelabel, Custom domain, Unlimited Branches, Director,
-                Staff and Property Creations. Dedicated account officer, 24/7
-                Support and training, Email integration, and SMS prefer name.
-              </strong>
-              <div
-                className={clsx(
-                  "mt-auto h-10 px-4 py-2 rounded-md flex items-center justify-center",
-                  currentPlanKeyword !== "free"
-                    ? "w-full bg-brand-9 justify-end items-end text-white"
-                    : "w-full sm:w-1/2 lg:w-1/5 text-black"
-                )}
-              >
-                <Link
-                  href="https://ourproperty.com.ng/resources/professional-plan/"
-                  target="_blank"
-                >
-                  Read More
-                </Link>
-              </div>
-            </div>
-          </div>
+          {currentPlanKeyword !== "free" && (
+            <ProfessionalPlanCard
+              showFeatures={showFeatures}
+              setShowFeatures={setShowFeatures}
+            />
+          )}
         </div>
+        {currentPlanKeyword === "free" && <ProfessionalPlanComponent />}
       </SettingsSection>
 
-      {transformedSubscriptions && transformedSubscriptions.length > 0 && (
-        <SettingsSection title="Subscription/Renewal History">
-          {transformedSubscriptions && transformedSubscriptions.length > 0 && (
-            <div className="custom-flex-col gap-7 scroll-m-8" id="table">
-              <SettingsSectionTitle desc="Track and manage your active and past enrollments with ease. Below is a detailed record of your current subscription plan, along with any previously paid fees for past enrollments." />
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-black dark:text-white text-lg font-medium">
-                    Subscription Overview
-                  </h2>
+      {transformedSubscriptions &&
+        transformedSubscriptions.length > 0 &&
+        currentPlanKeyword !== "free" && (
+          <SettingsSection title="Subscription/Renewal History">
+            {transformedSubscriptions &&
+              transformedSubscriptions.length > 0 && (
+                <div className="custom-flex-col gap-7 scroll-m-8" id="table">
+                  <SettingsSectionTitle desc="Easily track and manage your active and past enrollments. Below is a detailed overview of your current subscription plan and a history of all previously paid fees." />
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-black dark:text-white text-lg font-medium">
+                        Subscription Overview
+                      </h2>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <Link
+                        href="/reports/subscription-history?b=true"
+                        className="text-text-label dark:text-white font-medium"
+                      >
+                        See All
+                      </Link>
+                      <ChevronRight className="text-sm font-medium" />
+                    </div>
+                  </div>
+                  <CustomTable
+                    data={transformedSubscriptions}
+                    fields={enrollment_subscriptions.fields}
+                    {...table_style_props}
+                  />
                 </div>
-                <div className="flex gap-2 items-center">
-                  <Link
-                    href="/reports/subscription-history?b=true"
-                    className="text-text-label dark:text-white font-medium"
-                  >
-                    See All
-                  </Link>
-                  <ChevronRight className="text-sm font-medium" />
-                </div>
-              </div>
-              <CustomTable
-                data={transformedSubscriptions}
-                fields={enrollment_subscriptions.fields}
-                {...table_style_props}
-              />
-            </div>
-          )}
-        </SettingsSection>
-      )}
+              )}
+          </SettingsSection>
+        )}
     </>
   );
 };

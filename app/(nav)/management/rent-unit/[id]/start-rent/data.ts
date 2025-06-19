@@ -47,7 +47,7 @@ export const getPropertySettingsData = (unit_data: any) => [
     value: unit_data?.whoToCharge ?? "--- ---",
   },
   {
-    label: "Who to charge New Renew",
+    label: "Who to charge Renewal Rent",
     value: unit_data?.whoToChargeRenew ?? "--- ---",
   },
   { label: "Caution Deposit", value: unit_data?.caution_deposit ?? "--- ---" },

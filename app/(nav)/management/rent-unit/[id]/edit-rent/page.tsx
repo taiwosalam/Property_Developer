@@ -204,27 +204,22 @@ const EditRent = () => {
     };
     try {
       setReqLoading(true);
-      // const success = await editRent(payload);
-      // if (success) {
-      //   toast.success("Part payment added successfully");
-      //   window.dispatchEvent(new Event("refech-unit"));
-      // }
       const res = await addPartPayment(payload);
       if (res) {
         toast.success(res.message || "Part payment added successfully");
         console.log("res", res);
         window.dispatchEvent(new Event("refech-unit"));
-        if (res.data.payment_type) {
-          setAmt("");
-          setStartDate(null);
-        }
-        // Check pay_status and handle accordingly
-        // if (res.data.payment_type === "part") {
+        // if (res.data.payment_type) {
         //   setAmt("");
         //   setStartDate(null);
-        // } else if (res.data.payment_type === "full") {
-        //   router.push("/management/rent-unit");
         // }
+        // Check pay_status and handle accordingly
+        if (res.data.payment_type === "part") {
+          setAmt("");
+          setStartDate(null);
+        } else if (res.data.payment_type === "full") {
+          router.push("/management/rent-unit");
+        }
       }
     } catch (err) {
       toast.error("Failed to create part payment");
@@ -274,7 +269,6 @@ const EditRent = () => {
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }
-          // {...(isRental ? { gridThree: true } : {})}
           gridThree
         />
 

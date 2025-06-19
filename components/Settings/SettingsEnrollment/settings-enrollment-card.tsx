@@ -36,6 +36,7 @@ interface SettingsEnrollmentCardProps {
   onSelect?: () => void;
   page?: "modal" | "settings";
   changeStep?: (step: FormSteps | number) => void;
+  expiry_date?: string;
 }
 
 const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
@@ -61,19 +62,25 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   onSelect,
   page,
   changeStep,
+  expiry_date,
 }) => {
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
+  const [isHovered, setIsHovered] = useState(false);
+
+  // const handleBillingTypeChange = (type: "monthly" | "yearly") => {
+  //   if (!isFree) {
+  //     if (type === "yearly") {
+  //       decrementQuantity();
+  //     }
+  //     onBillingTypeChange(type);
+  //   }
+  // };
 
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
-    if (!isFree) {
-      if (type === "yearly") {
-        decrementQuantity();
-      }
-      onBillingTypeChange(type);
-    }
+    onBillingTypeChange(type); // Trigger parent handler for all plans
   };
 
   const handleCardClick = () => {
@@ -102,6 +109,8 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
 
   return (
     <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={`min-w-[400px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
@@ -110,6 +119,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         planFor={planFor}
         isFree={isFree}
         themeColor={themeColor}
+        expiry_date={expiry_date}
       />
       <div
         className={`priceWrapper w-full flex items-center justify-center flex-col px-4 mt-5 ${
@@ -129,14 +139,16 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
           discountText={discountText}
           isLifeTimePlan={isLifeTimePlan}
         />
-        <QuantityCounter
-          quantity={quantity}
-          incrementQuantity={incrementQuantity}
-          decrementQuantity={decrementQuantity}
-          isFree={isFree}
-          billingType={billingType}
-          isLifeTimePlan={isLifeTimePlan}
-        />
+        {!isFree && (
+          <QuantityCounter
+            quantity={quantity}
+            incrementQuantity={incrementQuantity}
+            decrementQuantity={decrementQuantity}
+            isFree={isFree}
+            billingType={billingType}
+            isLifeTimePlan={isLifeTimePlan}
+          />
+        )}
       </div>
       <FeaturesToggle
         showFeatures={showFeatures}
@@ -151,6 +163,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         onSelectPlan={page === "modal" ? onSelect : (onSelectPlan as any)}
         page={page}
         changeStep={changeStep}
+        hovered={isHovered} 
       />
     </div>
   );

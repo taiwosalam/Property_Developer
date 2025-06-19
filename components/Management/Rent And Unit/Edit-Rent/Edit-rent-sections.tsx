@@ -78,7 +78,7 @@ export const RentDetails: React.FC<{
       <RentSectionTitle>
         {isRental ? "Current Rent" : "Fee Details"}
       </RentSectionTitle>
-      <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
+      <RentSectionContainer title={isRental ? "Rent Details" : "Current Fee"}>
         <div className="grid md:grid-cols-2 gap-4">
           {renewalRentDetailItems.map((item, index) => (
             <DetailItem
@@ -1089,7 +1089,7 @@ export const CompletePartPayment: React.FC<{
   return (
     <div className="complete-part-payment-wrapper space-y-1">
       <RentSectionTitle>Complete Part Payment</RentSectionTitle>
-      <div className="mt-4 bg-white p-4 rounded-md">
+      <div className="mt-4 bg-white dark:bg-darkText-primary p-4 rounded-md">
         <div className="grid grid-cols-2">
           {validFeeDetails.map((fee, index) => (
             <DetailItem

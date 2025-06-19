@@ -51,7 +51,7 @@ export const updateMyArticle = async (formData: FormData, slug: string) => {
     });
     return response.status === 200 || response.status === 201;
   } catch (error) {
-    console.error("Error creating article:", error);
+    handleAxiosError(error);
     return false;
   }
 };
@@ -65,7 +65,7 @@ export const toggleLike = async (slug: string, type: number) => {
       return true;
     }
   } catch (error) {
-    console.error("Error toggling like:", error);
+    handleAxiosError(error);
     return false;
   }
 };
@@ -75,7 +75,7 @@ export const getMyArticlesDetails = async (slug: string) => {
     const response = await api.get(`/agent_community/${slug}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching my articles details:", error);
+    handleAxiosError(error);
     throw error;
   }
 };
@@ -85,7 +85,7 @@ export const deleteMyArticle = async (slug: string) => {
     const response = await api.delete(`/agent_community/${slug}`);
     return response.status === 200 || response.status === 201;
   } catch (error) {
-    console.error("Error deleting my article:", error);
+    handleAxiosError(error);
     return false;
   }
 };
@@ -119,7 +119,6 @@ export const updateMyArticlesNot = async (id: number, formData: any) => {
       }
     }
 
-    console.log("formDataObject", formDataObject);
     const response = await api.put(`/agent_community/${id}`, formDataObject);
     return response.status === 200 || response.status === 201;
   } catch (error) {
@@ -129,7 +128,6 @@ export const updateMyArticlesNot = async (id: number, formData: any) => {
         ? (Object.values(messages) as string[][])
         : [];
       const firstErrorMessage = messagesArray[0]?.[0];
-      console.log("error message:", firstErrorMessage);
       const errorMessage =
         firstErrorMessage || "Failed to update article. Please try again.";
       toast.error(errorMessage);
@@ -152,7 +150,7 @@ export const sendMyArticleComment = async (slug: string, content: string) => {
     } else {
       toast.error("Error sending comment:");
     }
-    // console.error("Error sending comment:", error);
+    handleAxiosError(error);
     return false;
     // throw error;
   }
@@ -177,7 +175,7 @@ export const sendMyPropertyRequestComment = async (
     } else {
       toast.error("Error sending comment:");
     }
-    // console.error("Error sending comment:", error);
+    handleAxiosError(error);
     return false;
     // throw error;
   }
@@ -203,7 +201,7 @@ export const sendMyPropertyRequestCommentReply = async (
     } else {
       toast.error("Error sending comment:");
     }
-    // console.error("Error sending comment:", error);
+    handleAxiosError(error);
     return false;
     // throw error;
   }
@@ -232,7 +230,6 @@ export const togglePropertyRequestLike = async (
     } else {
       toast.error("Error sending comment:");
     }
-    // console.error("Error sending comment:", error);
     return false;
     // throw error;
   }
@@ -261,7 +258,6 @@ export const togglePropertyRequestLikeComments = async (
     } else {
       toast.error("Error sending comment:");
     }
-    // console.error("Error sending comment:", error);
     return false;
     // throw error;
   }

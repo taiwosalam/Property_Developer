@@ -52,6 +52,7 @@ const RenewalFee = ({
   ];
 
   const TOTAL_FEE = Number(unitData.renewalTenantTotalPrice as any);
+  const periodString = unitData.fee_period.charAt(0).toUpperCase() + unitData.fee_period.slice(1);
 
   // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g renewal-rent-wrapper💀💀💀👿
   return (
@@ -61,7 +62,7 @@ const RenewalFee = ({
           {isRental ? "Renewal Rent" : "Renewal Fee"}
         </RentSectionTitle>
         <FeeDetails
-          title={isRental ? "Breakdown" : "Annual Fee"}
+          title={isRental ? "Breakdown" : `${periodString} Fee`}
           feeDetails={feeDetails}
           // total_package={Number(unitData.renewalTenantTotalPrice)}
           total_package={TOTAL_FEE}

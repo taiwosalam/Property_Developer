@@ -10,12 +10,17 @@ import useFetch from "@/hooks/useFetch";
 import {
   activatePlan,
   calculatePrice,
+  extendPropertyManagerPlan,
   transformPropertyManagerSubsApiData,
+  upgradePropertyManagerPlan,
 } from "@/app/(nav)/settings/subscription/data";
 import SettingsEnrollmentCard from "../Settings/SettingsEnrollment/settings-enrollment-card";
 import SettingsEnrollmentCardSkeleton from "../Settings/SettingsEnrollment/enrolllment-card-skeleton";
 import ProfessionalPlan from "../Settings/custom-sub";
 import { FormSteps } from "@/app/(onboarding)/auth/types";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { cleanPricingValue } from "@/utils/cleanPrice";
+import ProfessionalPlanCard from "@/app/(nav)/settings/subscription/professional-card";
 
 interface WarningStepProps {
   message?: string;
@@ -23,12 +28,7 @@ interface WarningStepProps {
   onPrevious?: () => void;
   onClose: () => void;
   changeStep: (step: FormSteps | number) => void; // Add changeStep prop
-  setSelectedPlan?: (
-    plan: Pick<
-      PropertyManagerSubsTransformedPlan,
-      "id" | "price" | "planTitle"
-    > | null
-  ) => void;
+  setSelectedPlan?: (plan: PropertyManagerSubsTransformedPlan | null) => void;
 }
 
 export const WarningStep1 = ({
@@ -86,6 +86,9 @@ export const WarningStep2 = ({
   setSelectedPlan,
 }: WarningStepProps) => {
   const [showFeatures, setShowFeatures] = useState(false);
+  const { company_id } = usePersonalInfoStore();
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
   const [pageData, setPageData] = useState<
     PropertyManagerSubsTransformedPlan[]
   >([]);
@@ -104,24 +107,62 @@ export const WarningStep2 = ({
   }, [data]);
 
   // Handle billing type change for a specific plan
+  // const handleBillingTypeChange = useCallback(
+  //   (planId: number, type: "monthly" | "yearly") => {
+  //     setPageData((prevData) =>
+  //       prevData.map((plan) => {
+  //         if (plan.id === planId && !plan.isFree) {
+  //           const priceDetails = calculatePrice(
+  //             type,
+  //             plan.quantity,
+  //             plan.baseMonthlyPrice,
+  //             plan.baseYearlyPrice,
+  //             plan.lifetimePrice,
+  //             plan.planTitle.toLowerCase().includes("premium")
+  //               ? "premium"
+  //               : "basic"
+  //           );
+  //           return {
+  //             ...plan,
+  //             billingType: type,
+  //             ...priceDetails,
+  //           };
+  //         }
+  //         return plan;
+  //       })
+  //     );
+  //   },
+  //   []
+  // );
+
   const handleBillingTypeChange = useCallback(
     (planId: number, type: "monthly" | "yearly") => {
       setPageData((prevData) =>
         prevData.map((plan) => {
-          if (plan.id === planId && !plan.isFree) {
-            const priceDetails = calculatePrice(
-              type,
-              plan.quantity,
-              plan.baseMonthlyPrice,
-              plan.baseYearlyPrice,
-              plan.lifetimePrice,
-              plan.planTitle.toLowerCase().includes("premium")
-                ? "premium"
-                : "basic"
-            );
+          if (plan.id === planId) {
+            const newQuantity = 1; // Reset quantity to 1
+            const priceDetails = plan.isFree
+              ? {
+                  price: "LIFE TIME",
+                  discount: "",
+                  discountText: "",
+                  duration: "lifetime",
+                  isLifeTimePlan: false,
+                }
+              : calculatePrice(
+                  type,
+                  newQuantity,
+                  plan.baseMonthlyPrice,
+                  plan.baseYearlyPrice,
+                  plan.lifetimePrice,
+                  plan.planTitle.toLowerCase().includes("premium")
+                    ? "premium"
+                    : "basic"
+                );
             return {
               ...plan,
               billingType: type,
+              quantity: newQuantity,
               ...priceDetails,
             };
           }
@@ -197,20 +238,16 @@ export const WarningStep2 = ({
 
   // Handle plan selection
   const handleSelectPlan = useCallback(
-    (
-      plan: Pick<
-        PropertyManagerSubsTransformedPlan,
-        "id" | "price" | "planTitle"
-      >
-    ) => {
+    (plan: PropertyManagerSubsTransformedPlan) => {
       setSelectedPlan?.(plan); // Store the selected plan
       changeStep(3); // Move to step 3
     },
     [setSelectedPlan, changeStep]
   );
 
+
   return (
-    <div className="w-full flex gap-4 relative overflow-x-auto hide-scrollbar">
+    <div className="w-full min-h-[120px] flex gap-4 relative overflow-x-auto hide-scrollbar">
       <div className="flex mb-4 pb-10 flex-nowrap gap-4 pricingWrapper mt-4">
         {loading
           ? Array(2)
@@ -231,19 +268,16 @@ export const WarningStep2 = ({
                 onBillingTypeChange={(type) =>
                   handleBillingTypeChange(plan.id, type)
                 }
-                onSelect={() =>
-                  handleSelectPlan({
-                    id: plan.id,
-                    price: String(plan.duration === "lifetime" ? plan.lifetimePrice : plan.price),
-                    planTitle: plan.planTitle,
-                  })
-                }
                 page="modal"
                 changeStep={changeStep}
+                onSelect={() => handleSelectPlan(plan)}
               />
             ))}
       </div>
-      <ProfessionalPlan page="modal" />
+      <ProfessionalPlanCard
+        showFeatures={showFeatures}
+        setShowFeatures={setShowFeatures}
+      />
     </div>
   );
 };

@@ -181,7 +181,6 @@ const Header = () => {
 
   useEffect(() => {
     if (appearance && !hasMounted.current) {
-      console.log("APPEARANCE", appearance);
       const { colorMode, navbar, fonts, dashboardColor } = appearance;
       saveLocalStorage("navbar", navbar);
       setColor(dashboardColor);
