@@ -1041,6 +1041,7 @@ export const transformUnitData = (response: any) => {
     fee_penalty: convertToYesNo(Number(data.property.fee_penalty)),
     chargePenalty: data.property.rent_penalty || data.property.fee_penalty,
     caution_deposit: data.user.property.caution_deposit,
+    propertyType: data.property.property_type as "rental" | "facility",
     // PROPERTY VALUES
     property_title: data.property.title,
     whoToCharge: data.user.property.who_to_charge_new_tenant,

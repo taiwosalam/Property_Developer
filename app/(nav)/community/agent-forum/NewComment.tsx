@@ -20,22 +20,26 @@ interface ThreadResponse {
 interface Props {
   likeCount: number;
   dislikeCount: number;
-  userAction?: 'like' | 'dislike' | null;
+  userAction?: "like" | "dislike" | null;
   commentCount: number;
   slug: string;
 }
 
 const NewComment = ({ commentCount, slug }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data, error, loading, refetch: refetchComments } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
+  const {
+    data,
+    error,
+    loading,
+    refetch: refetchComments,
+  } = useFetch<ThreadResponse>(`/agent_community/${slug}`);
 
-
-    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const formData = new FormData(e.target as HTMLFormElement);
     const message = formData.get("message") as string;
-    
+
     if (!message) return;
     try {
       setIsSubmitting(true);
@@ -46,14 +50,13 @@ const NewComment = ({ commentCount, slug }: Props) => {
       }
       (e.target as HTMLFormElement).reset();
     } catch (error) {
-      console.error('Failed to submit:', error);
+      console.error("Failed to submit:", error);
       toast.error("Failed to add comment");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  
   return (
     <div className="mt-6">
       <p className="text-text-secondary dark:text-darkText-2 text-md font-semibold mb-4">
@@ -63,23 +66,12 @@ const NewComment = ({ commentCount, slug }: Props) => {
         onSubmit={handleFormSubmit}
         className="flex items-center justify-between gap-3"
       >
-        {/* <Input
-          id="message"
-          name="message"
-          placeholder="Type your message here"
-          disabled={isSubmitting}
-          className="w-full"
-          inputClassName="border-none bg-neutral-3"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") e.preventDefault();
-          }}
-        /> */}
-        <CommentTextArea 
+        <CommentTextArea
           placeholder="Type your message here"
           id="message"
           name="message"
           disabled={isSubmitting}
-        />  
+        />
         <button
           type="submit"
           // onClick={handleFormSubmit}
@@ -96,38 +88,34 @@ const NewComment = ({ commentCount, slug }: Props) => {
       </form>
     </div>
   );
-}
+};
 
 export default NewComment;
 
-
-
-
 export const CommentTextArea = ({
-  className, 
-  placeholder, 
-  id, 
-  name, 
+  className,
+  placeholder,
+  id,
+  name,
   disabled,
   value,
   onChange,
 }: {
-  className?: string, 
-  placeholder: string, 
-  id: string, 
-  name: string, 
-  value?: string,
-  disabled?: boolean
-  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>; 
-})=> {
-
+  className?: string;
+  placeholder: string;
+  id: string;
+  name: string;
+  value?: string;
+  disabled?: boolean;
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+}) => {
   const handleKeyPressSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if(e.key === "Enter" && !e.shiftKey){
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       const form = e.currentTarget.form;
-      if(form) form.requestSubmit();
+      if (form) form.requestSubmit();
     }
-  }
+  };
 
   return (
     <textarea
@@ -138,7 +126,7 @@ export const CommentTextArea = ({
       onKeyDown={handleKeyPressSend}
       onChange={onChange}
       className={cn(
-        "w-full px-2 py-1 border border-solid border-[#C1C2C366] bg-neutral-3 outline-brand-9 max-h-[80px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
+        "w-full px-2 py-1 border border-solid border-[#C1C2C366] bg-neutral-3 outline-brand-9 max-h-[80px] rounded-[4px] overflow-y-auto custom-round-scrollbar dark:bg-transparent",
         className
       )}
       disabled={disabled}
@@ -150,4 +138,4 @@ export const CommentTextArea = ({
       }}
     ></textarea>
   );
-}
+};

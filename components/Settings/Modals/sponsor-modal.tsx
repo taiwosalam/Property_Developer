@@ -75,8 +75,8 @@ const SponsorModal = ({
         if (res) {
           toast.success(successMsg);
           setIsOpen(false);
-          window.dispatchEvent(new Event("refetchSubscriptionPlan"))
-          window.dispatchEvent(new Event("refetchEnrollments"))
+          window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+          window.dispatchEvent(new Event("refetchEnrollments"));
         }
       }
     } catch (error) {
@@ -110,9 +110,7 @@ const SponsorModal = ({
                   similarly to rent. If your plan expires before payment is
                   made, all users in your company will lose access to all
                   features. However, your data will be securely stored and
-                  maintained until you renew your subscription. <br /> <br />{" "}
-                  Access will only be restored after all outstanding
-                  subscription payments have been fully settled.
+                  maintained until you renew your subscription. <br /> <br />
                 </p>
               ) : (
                 <p>

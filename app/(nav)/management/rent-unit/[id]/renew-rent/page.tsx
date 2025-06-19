@@ -353,7 +353,7 @@ const RenewRent = () => {
             estateSettingsDta={
               isRental ? propertySettingsData : estateSettingsDta
             }
-            {...(isRental ? { gridThree: true } : {})}
+            gridThree
           />
           <div className="pt-6 lg:flex lg:gap-10 space-y-8">
             <div className="lg:w-3/5 space-y-8">

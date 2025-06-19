@@ -21,6 +21,7 @@ import {
 } from "@/app/(nav)/settings/others/types";
 import useFetch from "@/hooks/useFetch";
 import SettingsWebsiteDomain from "./settings-website-domain";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const websiteOptions = [
   {
@@ -72,14 +73,22 @@ const WebsitePages = () => {
     [key: string]: boolean;
   }>({});
 
-  const [selectedColor, setSelectedColor] = useState<string | null>(DEFAULT_COLOR);
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    DEFAULT_COLOR
+  );
   const [selectedFont, setSelectedFont] = useState<string | null>(null);
   const [customColor, setCustomColor] = useState(DEFAULT_COLOR);
   const [modalOpen, setModalOpen] = useState(false);
   const [userPlan, setUserPlan] = useState<string>("");
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
   const [propertyVisibility, setPropertyVisibility] = useState<{
     [key: string]: boolean;
   }>({});
+  const isSubscriptionExpired = usePersonalInfoStore(
+    (state) => state.isSubscriptionExpired
+  );
+
   const [loading, setLoading] = useState<boolean>(false);
   const [websiteSettings, setWebsiteSettings] =
     useState<IWebsiteSettings | null>(null);
@@ -190,7 +199,41 @@ const WebsitePages = () => {
     }
   };
 
-  //
+  // 👹👿💀 PERMISSIONS HERE - DO NOT ALTER UNLESS DISCUSSED 👹👿💀
+  // Define dynamic conditions for each checkbox
+  const getCheckboxConfig = (optionName: string) => {
+    const isFreeOrExpired =
+      isSubscriptionExpired || currentPlanKeyword === "free";
+    const configs: {
+      [key: string]: {
+        forceChecked?: boolean;
+        isToggleable: boolean;
+        restrictedMessage?: string;
+      };
+    } = {
+      sponsored_logo: {
+        forceChecked: isFreeOrExpired ? true : undefined,
+        isToggleable: !isFreeOrExpired,
+        restrictedMessage:
+          "You cannot toggle the sponsored logo on a free plan.",
+      },
+      // Example: Add more options with specific conditions
+      // about_us_display: {
+      //   forceChecked: isFreeOrExpired ? false : undefined, // Example: Force unchecked for free/expired
+      //   isToggleable: !isFreeOrExpired,
+      //   restrictedMessage:
+      //     "About Us page cannot be toggled on a free plan or with an expired subscription.",
+      // },
+      // Default for other options (fully toggleable)
+      default: {
+        forceChecked: undefined,
+        isToggleable: true,
+      },
+    };
+
+    return configs[optionName] || configs.default;
+  };
+  // 👹👿💀 PERMISSIONS HERE - DO NOT ALTER UNLESS DISCUSSED 👹👿💀
 
   return (
     <div>
@@ -233,14 +276,19 @@ const WebsitePages = () => {
             );
           })}
         </div>
+        {/* WEBSITE OPTIONS */}
         <div className="toggles flex flex-col gap-5 mb-7">
-          {websiteOptions.map((option, index) => (
+          {/* {websiteOptions.map((option, index) => (
             <SettingsOthersCheckBox
               key={index}
-              plan={"professional"} //Plan from API to determine whether user can toggle the switch
               title={option.title}
               desc={option.desc}
-              checked={checkedStates[option.name]} // userPlan === "professional"  ?
+              checked={
+                option.name === "sponsored_logo" && isSponsoredLogoDisabled
+                  ? true
+                  : checkedStates[option.name]
+              }
+              // checked={checkedStates[option.name]} // userPlan === "professional"  ?
               value={option.name}
               onChange={(value, checked) => {
                 setCheckedStates((prev) => ({
@@ -249,7 +297,30 @@ const WebsitePages = () => {
                 }));
               }}
             />
-          ))}
+          ))} */}
+
+          {websiteOptions.map((option, index) => {
+            const config = getCheckboxConfig(option.name);
+            return (
+              <SettingsOthersCheckBox
+                key={index}
+                plan="professional"
+                title={option.title}
+                desc={option.desc}
+                checked={checkedStates[option.name]}
+                value={option.name}
+                onChange={(value, checked) => {
+                  setCheckedStates((prev) => ({
+                    ...prev,
+                    [option.name]: checked,
+                  }));
+                }}
+                forceChecked={config.forceChecked}
+                isToggleable={config.isToggleable}
+                restrictedMessage={config.restrictedMessage}
+              />
+            );
+          })}
         </div>
 
         {/* WEBSITE COLORS SETTINGS  */}

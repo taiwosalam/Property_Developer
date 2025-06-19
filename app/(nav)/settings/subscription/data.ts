@@ -96,83 +96,6 @@ export const renewPropertyManagerPlan = async (payload: any) => {
   }
 };
 
-// export const calculatePrice = (
-//   billingType: "monthly" | "yearly",
-//   quantity: number,
-//   baseMonthly: number,
-//   baseYearlyPrice: number,
-//   lifetimePrice: number,
-//   planType: "basic" | "premium"
-// ) => {
-//   // Handle invalid baseMonthly
-//   if (isNaN(baseMonthly) || baseMonthly <= 0) {
-//     baseMonthly = planType === "basic" ? 0 : 0; // Fallback to dummy data prices
-//   }
-
-//   const limitedQuantity =
-//     billingType === "yearly" ? Math.min(quantity, 5) : quantity;
-//   let basePrice = billingType === "monthly" ? baseMonthly : baseYearlyPrice;
-//   let discountText = "";
-//   let discount = "";
-//   let totalPrice: number | string = 0;
-//   let isLifeTimePlan = false;
-
-//   // Adjust quantity based on the selected plan
-//   if (planType === "premium" && quantity > 6) {
-//     quantity = 6; // Limit premium plan quantity to a maximum of 6
-//   }
-
-//   if (billingType === "monthly") {
-//     totalPrice = basePrice * limitedQuantity;
-//     discount =
-//       planType === "basic"
-//         ? `(Billed at ₦${(baseMonthly * 12).toLocaleString()}/year)`
-//         : `(Billed at ₦${(baseMonthly * 12).toLocaleString()}/year)`;
-//   } else {
-//     if (quantity > 5) {
-//       totalPrice = "LIFE TIME PLAN";
-//       isLifeTimePlan = true;
-//       discount =
-//         planType === "basic" ? "₦750,000/outrightly" : "₦2,000,000/outrightly";
-//     } else {
-//       const discounts = [0.025, 0.04, 0.06, 0.08, 0.1];
-//       totalPrice = basePrice * limitedQuantity;
-//       const discountPercentage = discounts[limitedQuantity - 1] || 0;
-//       const discountAmount = totalPrice * discountPercentage;
-//       totalPrice -= discountAmount;
-//       discountText = `Save ${(discountPercentage * 100).toFixed(1)}%`;
-//       discount = `(Billed at ₦${baseMonthly.toLocaleString()}/month)`;
-//     }
-//   }
-
-//   return {
-//     price:
-//       typeof totalPrice === "number"
-//         ? totalPrice.toLocaleString("en-NG", {
-//             style: "currency",
-//             currency: "NGN",
-//           })
-//         : totalPrice,
-//     discountText,
-//     discount,
-//     duration:
-//       quantity > 5 && billingType === "yearly"
-//         ? ""
-//         : `${quantity}${
-//             quantity === 1
-//               ? billingType === "monthly"
-//                 ? "m"
-//                 : "y"
-//               : billingType === "monthly"
-//               ? "m"
-//               : "y"
-//           }`,
-//     isLifeTimePlan,
-//   };
-// };
-
-// Transform function to map API data to the required format
-
 export const calculatePrice = (
   billingType: "monthly" | "yearly",
   quantity: number,
@@ -244,92 +167,15 @@ export const calculatePrice = (
   };
 };
 
-// export const transformPropertyManagerSubsApiData = (
-//   apiData: PropertyManagerSubsApiResponseTypes["data"]
-// ): PropertyManagerSubsTransformedPlan[] => {
-//   const planDescriptions: Record<string, string> = {
-//     FREE: "Free plans offer a reduced set of features in comparison to paid alternatives, but provide users with trial options to explore the software without time constraints.",
-//     "Basic Plan":
-//       "The Basic plan is ideal for Property Managers overseeing maximum of 2 branches with a limited number of properties. It offers basic features tailored for smaller-scale operations.",
-//     PREMIUM:
-//       "Highly recommended for Property Managers overseeing over 7 branches and managing more than 100 properties. It's an ideal solution for those seeking a streamlined approach to property management.",
-//   };
-
-//   return apiData.map((plan) => {
-//     // Transform planName to match UI format
-//     const planTitle =
-//       plan.planName === "FREE"
-//         ? "FREE PLAN"
-//         : plan.planName === "PREMIUM"
-//         ? "Premium Plan"
-//         : "Basic Plan";
-
-//     // Transform features to match UI format
-//     const features = plan.features.map((feature) => {
-//       if (feature.key === "is_addon") {
-//         return feature.value === 1
-//           ? "Ads-on are required"
-//           : "Ads-on are not required";
-//       }
-//       return `Maximum of ${feature.value} ${feature.label}${
-//         feature.value !== 1 ? "s" : ""
-//       }`;
-//     });
-
-//     // Use API pricing for base calculations
-//     const baseMonthlyPrice = parseFloat(plan.pricing.perMonth) || 0;
-//     const baseYearlyPrice = parseFloat(plan.pricing.perYear) || 0;
-//     const lifetimePrice =
-//       parseFloat(plan.pricing.lifetime) ||
-//       (planTitle.toLowerCase().includes("premium") ? 0 : 0);
-//     const billingType =
-//       plan.duration === "lifetime"
-//         ? "lifetime"
-//         : (plan.duration as "monthly" | "yearly");
-//     const isFree = plan.is_free === 1;
-
-//     // Calculate price details using existing calculatePrice logic
-//     const priceDetails = calculatePrice(
-//       billingType,
-//       1, // Default quantity for initial render
-//       baseMonthlyPrice,
-//       baseYearlyPrice,
-//       lifetimePrice,
-//       planTitle.toLowerCase().includes("premium") ? "premium" : "basic"
-//     );
-
-//     return {
-//       id: plan.id,
-//       planTitle,
-//       desc: planDescriptions[plan.planName] || plan.description, // Use hardcoded description
-//       planFor: planTitle.toLowerCase().includes("free")
-//         ? undefined
-//         : "Property Managers",
-//       price: isFree ? "₦0.00" : priceDetails.price,
-//       discount: priceDetails.discount,
-//       discountText: priceDetails.discountText,
-//       duration: priceDetails.duration,
-//       features,
-//       isFree,
-//       isLifeTimePlan: priceDetails.isLifeTimePlan,
-//       billingType,
-//       quantity: isFree ? 0 : 1, // Default quantity
-//       baseMonthlyPrice, // Store original base price
-//     };
-//   });
-// };
-
-// Transform enrollment history API data for CustomTable
-
 export const transformPropertyManagerSubsApiData = (
   apiData: PropertyManagerSubsApiResponseTypes["data"]
 ): PropertyManagerSubsTransformedPlan[] => {
   const planDescriptions: Record<string, string> = {
     FREE: "Free plans offer a reduced set of features in comparison to paid alternatives, but provide users with trial options to explore the software without time constraints.",
     "Basic Plan":
-      "The Basic plan is ideal for Property Managers overseeing maximum of 2 branches with a limited number of properties. It offers basic features tailored for smaller-scale operations.",
+      "The Basic plan is perfect for <strong>property manager company</strong> handling a limited number of branches and properties. It includes essential features designed for small-scale operations.",
     PREMIUM:
-      "Highly recommended for Property Managers overseeing over 7 branches and managing more than 100 properties. It's an ideal solution for those seeking a streamlined approach to property management.",
+      "Highly recommended for <strong>property manager company</strong> overseeing multiple branches and a larger portfolio of properties. Ideal for those seeking a streamlined and efficient property management solution.",
   };
 
   return apiData.map((plan) => {
@@ -343,13 +189,33 @@ export const transformPropertyManagerSubsApiData = (
     const features = plan.features.map((feature) => {
       if (feature.key === "is_addon") {
         return feature.value === 1
-          ? "Ads-on are required"
-          : "Ads-on are not required";
+          ? "SMS add-ons are required"
+          : "SMS add-ons are not required";
       }
-      return `Maximum of ${feature.value} ${feature.label}${
-        feature.value !== 1 ? "s" : ""
-      }`;
+
+      // Define singular and plural labels for each feature
+      const customLabels: Record<
+        string,
+        { singular: string; plural: string }
+      > = {
+        tenant_limit: { singular: "Tenant/Occupant", plural: "Tenants/Occupants" },
+        branch_limit: { singular: "Branch", plural: "Branches" },
+        staff_limit: { singular: "Staff", plural: "Staff" },
+        property_limit: { singular: "Property", plural: "Properties" },
+        unit_limit: { singular: "Unit Listing", plural: "Unit Listings" },
+        director_limit: { singular: "Director", plural: "Directors" },
+      };
+
+      const labelConfig = customLabels[feature.key] || {
+        singular: feature.label,
+        plural: feature.label,
+      };
+      const label =
+        feature.value === 1 ? labelConfig.singular : labelConfig.plural;
+
+      return `Maximum of ${feature.value} ${label}`;
     });
+
 
     const baseMonthlyPrice = parseFloat(plan.pricing.perMonth) || 0;
     const baseYearlyPrice = parseFloat(plan.pricing.perYear) || 0;
@@ -377,7 +243,7 @@ export const transformPropertyManagerSubsApiData = (
       planFor: planTitle.toLowerCase().includes("free")
         ? undefined
         : "Property Managers",
-      price: isFree ? "₦0.00" : priceDetails.price,
+      price: isFree ? "LIFE TIME PLAN" : priceDetails.price,
       discount: priceDetails.discount,
       discountText: priceDetails.discountText,
       duration: priceDetails.duration,

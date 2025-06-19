@@ -118,7 +118,8 @@ export const CalendarActivity: React.FC<CalendarEventProps> = ({
       style={{ backgroundColor: calendar_event_tags[originalType || type] }}
     />
     <p className="p-1 text-text-primary text-sm font-normal">
-      <span className="capitalize font-bold">{originalType || type}</span> || {desc}
+      <span className="capitalize font-bold dark:text-white">{originalType || type}</span> 
+      <span className="dark:text-darkText-2"> || {desc}</span>
     </p>
   </div>
 );

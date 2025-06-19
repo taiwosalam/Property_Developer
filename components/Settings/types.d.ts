@@ -156,19 +156,6 @@ export interface SettingsDirectorTypes {
 }
 
 export interface SettingsOthersCheckBoxProps {
-  // title: string;
-  // desc: string;
-  // checked?: boolean;
-  // value: string;
-  // onChange: (value: string, checked: boolean) => void;
-  // plan?: string;
-  // state?: {
-  //   isChecked: boolean;
-  //   setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  // };
-  // name?: string;
-  // onClick?: () => void;
-
   title: string;
   desc: string;
   checked?: boolean;
@@ -181,6 +168,9 @@ export interface SettingsOthersCheckBoxProps {
   };
   name?: string; // Made required for consistency
   onClick?: () => void;
+  forceChecked?: boolean; // Force the checkbox to a specific state (true/false)
+  isToggleable?: boolean; // Allow or prevent toggling
+  restrictedMessage?: string;
 }
 
 export interface SettingsThemeTypes {

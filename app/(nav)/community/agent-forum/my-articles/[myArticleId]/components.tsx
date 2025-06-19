@@ -32,50 +32,6 @@ export const ThreadArticle = (): JSX.Element => {
     }
   };
 
-  // const handleLike = useCallback(async () => {
-  //   if (isLoading || userAction === "like" || post?.user_liked) return;
-
-  //   const previousAction = userAction;
-
-  //   // Optimistic UI: Update action state
-  //   setIsLoading(true);
-  //   setUserAction("like");
-
-  //   try {
-  //     await toggleLike(slug, 1);
-  //     window.dispatchEvent(new Event("refetchComments"));
-  //   } catch (error) {
-  //     // Rollback action state on error
-  //     setUserAction(previousAction);
-  //     toast.error("Error toggling like");
-  //     console.error("Error toggling like:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, [isLoading, userAction, post?.user_liked, slug]);
-
-  // const handleDislike = useCallback(async () => {
-  //   if (isLoading || userAction === "dislike") return;
-
-  //   const previousAction = userAction;
-
-  //   // Optimistic UI: Update action state
-  //   setIsLoading(true);
-  //   setUserAction("dislike");
-
-  //   try {
-  //     await toggleLike(slug, -1);
-  //     window.dispatchEvent(new Event("refetchComments"));
-  //   } catch (error) {
-  //     // Rollback action state on error
-  //     setUserAction(previousAction);
-  //     toast.error("Error toggling dislike");
-  //     console.error("Error toggling dislike:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, [isLoading, userAction, slug]);
-
   if (!post) return <ThreadArticleSkeleton />;
   const sanitizedHTML = DOMPurify.sanitize(post?.content || "");
 
@@ -87,7 +43,7 @@ export const ThreadArticle = (): JSX.Element => {
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">
-          <span className="text-text-secondary font-semibold text-md">
+          <span className="text-text-secondary dark:text-white font-semibold text-md">
             Comments
           </span>
         </div>
@@ -117,17 +73,6 @@ export const ThreadArticle = (): JSX.Element => {
               <p>{post?.likes_down}</p>
             </button>
           </div>
-          {/* <LikeDislikeButtons
-            commentCount={post?.comments_count}
-            slug={slug}
-            likeCount={parseInt(post?.likes_up || "0")}
-            dislikeCount={parseInt(post?.likes_down || "0")}
-            handleLike={handleLike}
-            handleDislike={handleDislike}
-            userAction={userAction}
-            isLoading={isLoading}
-            user_liked={post?.user_liked}
-          /> */}
           <div className="flex items-center">
             <div className="images flex z-30">
               {comments.slice(0, 3).map((comment, index) => (

@@ -38,49 +38,7 @@ const CommunityComments = ({ slug, comments, edit }: ThreadCommentProps) => {
   });
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  // console.log('like clicked', commentId);
-  const handleToggleLike = async (commentId: string | number, type: number) => {
-    // if (isLoading || userAction === "like") return;
-
-    try {
-      setIsLoading(true);
-      const res = await toggleCommentLike(String(commentId), 1);
-      // if (userAction === "dislike") {
-      //   setDislikeCount((prev) => prev - 1);
-      // }
-      // setLikeCount((prev) => prev + 1);
-      // setUserAction("like");
-      if (res) {
-        window.dispatchEvent(new Event("refetchComments"));
-      }
-    } catch (error) {
-      console.error("Error toggling like:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDislike = async (commentId: string | number) => {
-    console.log("dislike clicked", commentId);
-    if (isLoading || userAction === "dislike") return;
-    setIsLoading(true);
-
-    try {
-      await toggleCommentLike(String(commentId), -1);
-      if (userAction === "like") {
-        setLikeCount((prev) => prev - 1);
-      }
-      setDislikeCount((prev) => prev + 1);
-      setUserAction("dislike");
-      window.dispatchEvent(new Event("refetchComments"));
-    } catch (error) {
-      console.error("Error toggling dislike:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -129,9 +87,6 @@ const CommunityComments = ({ slug, comments, edit }: ThreadCommentProps) => {
           <Comment
             key={comment.id}
             {...comment}
-            // toggleLike={handleToggleLike}
-            // handleLike={handleLike}
-            // handleDislike={handleDislike}
             handleSubmit={handleSubmit}
           />
         ))}

@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { parseFormattedNumber } from "@/app/(nav)/accounting/invoice/create-invoice/data";
 import { FormSteps } from "@/app/(onboarding)/auth/types";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import parse from "html-react-parser";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -15,19 +16,26 @@ export const PlanHeader: React.FC<{
   planFor?: string;
   isFree?: boolean;
   themeColor?: string;
+  expiry_date?: string;
 }> = ({
   planTitle = "",
   desc = "",
   planFor = "",
   isFree = false,
   themeColor = "",
+  expiry_date = "",
 }) => {
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
   const getBgColor = () => {
     if (isFree) return "bg-[#38BDF8] bg-opacity-40";
     if (planTitle.toLowerCase() === "basic plan") return "bg-brand-9";
     if (planTitle.toLowerCase() === "premium plan") return "bg-[#8C62FF]";
     return "bg-brand-9"; // Default fallback color
   };
+
+  const upperTitle = planTitle.toUpperCase();
+  const freeTitle = "FREE PLAN (Active until upgraded)";
+  const title = !isFree ? upperTitle : freeTitle;
 
   return (
     <div
@@ -36,19 +44,14 @@ export const PlanHeader: React.FC<{
       <h3
         className={`text-[16px] font-medium tracking-[0px] text-[${themeColor}]`}
       >
-        {planTitle.toUpperCase()}
+        {title}
+        {expiry_date &&
+          !isFree &&
+          currentPlan.toUpperCase() === upperTitle &&
+          ` (Active till ${expiry_date})`}
       </h3>
       <p className="text-[14px] font-medium tracking-[0px] text-text-secondary dark:text-darkText-1">
-        {desc.split(planFor).map((part, index) =>
-          index === 0 ? (
-            part
-          ) : (
-            <>
-              <strong key={index}>{planFor}</strong>
-              {part}
-            </>
-          )
-        )}
+        {parse(desc)}
       </p>
       <div className="absolute left-0 bottom-0 flex items-center justify-center w-full">
         <div
@@ -67,14 +70,10 @@ export const PriceSection: React.FC<{
 }> = ({ price = "", discount = "", isFree = false, duration }) => (
   <div className="w-full max-w-[344px] flex-col flex items-center">
     <h3
-      className={`text-[20px] font-bold tracking-[0px] leading-[150%] text-text-secondary dark:text-white ${
-        isFree ? "text-opacity-40 dark:text-opacity-40" : ""
-      }`}
+      className={`text-[20px] font-bold tracking-[0px] leading-[150%] text-text-secondary dark:text-white`}
     >
-      {isFree ? "₦0.00" : price}
-      {duration &&
-        duration.toUpperCase() !== "LIFE TIME PLAN" &&
-        ` / ${duration}`}
+      {price}
+      {duration && duration.toLowerCase() !== "lifetime" && ` / ${duration}`}
     </h3>
     {!isFree && (
       <p className="text-text-disabled text-sm font-medium tracking-[0px]">
@@ -98,9 +97,7 @@ export const BillingTypeSelector: React.FC<{
   isLifeTimePlan = false,
 }) => (
   <div
-    className={`flex w-full justify-center my-5 bg-brand-1 dark:bg-[#3C3D37] min-h-[54px] gap-5 py-2 rounded-md ${
-      isFree ? "bg-opacity-40 dark:bg-opacity-40" : ""
-    }`}
+    className={`flex w-full justify-center my-5 bg-brand-1 dark:bg-[#3C3D37] min-h-[54px] gap-5 py-2 rounded-md`}
   >
     <BillingTypeButton
       type="yearly"
@@ -149,18 +146,15 @@ export const BillingTypeButton: React.FC<{
         billingType === type
           ? "border rounded-md transition-all duration-300 ease-in-out " +
             (isFree
-              ? "border-text-disabled dark:border-[#3C3D37]"
+              ? "border-brand-9 bg-white dark:bg-darkText-primary"
               : "border-brand-9 bg-white dark:bg-darkText-primary")
           : ""
       }`}
     >
       <button
         onClick={() => handleBillingTypeChange(type)}
-        disabled={isFree}
-        className={`flex flex-col items-center ${
-          isFree
-            ? "text-text-secondary dark:text-darkText-1 opacity-50 cursor-not-allowed text-sm"
-            : "text-text-secondary dark:text-darkText-1 text-base"
+        className={`flex flex-col items-center text-text-secondary dark:text-darkText-1 text-base ${
+          billingType === type ? "font-bold" : ""
         }`}
       >
         {isFree
@@ -172,16 +166,18 @@ export const BillingTypeButton: React.FC<{
         {(type === "yearly" && !isLifeTimePlan) ||
         (type === "yearly" && isLifeTimePlan) ? (
           <span
-            className={`${
-              isFree
-                ? "text-text-secondary dark:text-darkText-1 opacity-50 cursor-not-allowed"
-                : "text-brand-9"
+            className={`text-brand-9 ${
+              isFree || (isLifeTimePlan && type === "yearly")
+                ? "opacity-50"
+                : ""
             }`}
           >
-            {isFree || (isLifeTimePlan && type === "yearly")
+            {isLifeTimePlan && type === "yearly"
               ? "Save stress"
               : billingType === "yearly"
               ? discountText
+              : isFree
+              ? ""
               : "Get Discount"}
           </span>
         ) : null}
@@ -273,7 +269,7 @@ export const FeaturesToggle: React.FC<{
   getFeaturesText = () => "View Features",
   handleCardClick = () => {},
 }) => (
-  <div className="flex w-full px-6 py-4">
+  <div className="flex w-full px-6 py-3">
     <button
       className="text-brand-9 text-[18px] font-medium tracking-[0px] flex items-center gap-2"
       onClick={handleCardClick}
@@ -331,6 +327,7 @@ interface SelectPlanButtonProps {
   onSelect?: () => void;
   page?: "modal" | "settings";
   changeStep?: (step: FormSteps | number) => void;
+  hovered?: boolean;
 }
 
 export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
@@ -341,6 +338,7 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   onSelect,
   page,
   changeStep,
+  hovered,
 }) => {
   const subCost = parseFormattedNumber(price);
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
@@ -359,6 +357,8 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
     return false; // Enable buttons for extend (current plan) or upgrade (higher-tier plans)
   })();
 
+  console.log("hovered", hovered);
+
   // Determine button text
   const buttonText = (() => {
     if (isCurrentPlan) {
@@ -376,6 +376,8 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
     }
     return "Select Plan"; // Fallback
   })();
+
+  const notMessage = buttonText === "Extend Plan";
 
   const handleSelectPlan = () => {
     if (page === "modal" && changeStep) {
@@ -405,7 +407,7 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
                 className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
                 disabled={isDisabled}
               >
-                {buttonText}
+                {(!hovered && isCurrentPlan) ? "Current Plan" : buttonText}
               </button>
             </ModalTrigger>
             <ModalContent>
@@ -413,7 +415,7 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
                 page="subscription"
                 count={10}
                 cost={subCost ?? 0}
-                message={true}
+                message={!notMessage}
                 onSubmit={onSelectPlan}
                 onSelect={onSelect}
               />

@@ -64,8 +64,8 @@ export const CompanySettingDomain = ({
         className="w-[700px]"
       >
         <div>
-          <div className="bg-neutral-2 rounded-2xl flex flex-col gap-2 mt-4 px-6 py-4">
-            <p className="pb-2 text-slate-500">
+          <div className="bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-gray-400 rounded-2xl flex flex-col gap-2 mt-4 px-6 py-4">
+            <p className="pb-2 text-slate-500 dark:text-darkText-1">
               Custom Domain allows you to use your own domain name instead of
               the system&apos;s auto-generated subdomain. You can purchase any
               domain of your choice and connect it directly to your company
@@ -82,7 +82,7 @@ export const CompanySettingDomain = ({
               />
               <div className="flex justify-end gap-2">
                 <Button
-                  className="px-16 w-28 bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white mt-5 py-2 h-9"
+                  className="px-16 w-28 bg-brand-9 dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white mt-5 py-2 h-9"
                   onClick={handleAddCustomDomain}
                   disabled={loading}
                 >
