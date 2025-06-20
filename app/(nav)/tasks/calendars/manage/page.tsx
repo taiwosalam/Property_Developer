@@ -180,12 +180,12 @@ const ManageCalendar = () => {
       }}
     >
       <div className="custom-flex-col gap-6 pb-10">
-        <div className="sticky top-[150px] z-10 bg-neutral-2 flex gap-6 items-center justify-between flex-wrap py-3 border-t border-b border-solid border-[#EAECF0]">
+        <div className="sticky top-[150px] z-10 bg-neutral-2 dark:bg-darkText-primary flex gap-6 items-center justify-between flex-wrap py-3 dark:border-none border-t border-b border-solid border-[#EAECF0]">
           <div className="flex items-center gap-4 text-black text-xl font-medium capitalize">
             <button onClick={handleBack} type="button" aria-label="Go Back">
               <ChevronLeft />
             </button>
-            <button onClick={goToToday}>Today</button>
+            <button onClick={goToToday} className="dark:text-white text-black">Today</button>
             <div className="flex items-center gap-3">
               <button
                 onClick={
@@ -216,7 +216,7 @@ const ManageCalendar = () => {
                 <ArrowRight size={18} color="#696B70" />
               </button>
             </div>
-            <p>
+            <p className="dark:text-white">
               {activeLayout === "Month"
                 ? format(setMonth(new Date(year, 0), month), "MMMM")
                 : activeLayout === "Week"
@@ -225,7 +225,7 @@ const ManageCalendar = () => {
               {year}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 dark:bg-darkText-primary">
             <Dropdown
               state={{ isOpen: dropdownIsOpen, setIsOpen: setDropdownIsOpen }}
             >
@@ -247,7 +247,7 @@ const ManageCalendar = () => {
                   <React.Fragment key={`${layout}-${index}`}>
                     <button
                       onClick={() => changeLayout(layout)}
-                      className="py-1 px-3 font-medium text-start hover:bg-neutral-2"
+                      className="py-1 px-3 font-medium text-start hover:bg-neutral-2 dark:hover:bg-gray-600"
                     >
                       {layout}
                     </button>

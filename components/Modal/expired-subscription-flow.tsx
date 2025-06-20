@@ -33,6 +33,8 @@ const ExpiredSubscriptionModal: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const { setIsOpen } = useModal();
   const router = useRouter();
+  const [isUpgrade, setIsUpgrade] = useState(false);
+  const [isExtend, setIsExtend] = useState(false);
   const [selectedPlan, setSelectedPlan] =
     useState<PropertyManagerSubsTransformedPlan | null>(null);
   const { selectedSubPlan } = useGlobalStore((state) => ({
@@ -41,53 +43,6 @@ const ExpiredSubscriptionModal: React.FC = () => {
 
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
-
-  // const handleSelectPlan = useCallback(async () => {
-  //   if (!selectedPlan?.id) return toast.warning("Plan ID is missing!");
-  //   const thisPlanKeyword = selectedPlan?.planTitle
-  //     ?.split(" ")[0]
-  //     ?.toLowerCase();
-  //   // Determine if it's an upgrade or extension
-  //   const isExtend = currentPlanKeyword === thisPlanKeyword;
-  //   const isUpgrade =
-  //     (currentPlanKeyword === "free" &&
-  //       (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
-  //     (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
-
-  //   const payload = {
-  //     plan_id: selectedPlan?.id || 0,
-  //     payment_method: "wallet",
-  //     quantity: selectedPlan?.quantity ?? 0,
-  //     duration: selectedPlan?.isLifeTimePlan
-  //       ? "lifetime"
-  //       : selectedPlan?.billingType,
-  //     amount: cleanPricingValue(String(selectedPlan?.price ?? 0)),
-  //   };
-
-  //   const action = isExtend
-  //     ? activatePlan(payload)
-  //     ? isUpgrade
-  //     ? upgradePropertyManagerPlan(payload)
-  //     : extendPropertyManagerPlan(payload)
-
-  //     try{
-  //       setReqLoading(true);
-  //       const res = await action;
-  //     } catch (error){
-  //       toast.error("Something went wrong!");
-  //     } finally{
-  //       setReqLoading(false);
-  //     }
-
-  //   // if (isExtend) {
-  //   //   return await activatePlan(payload);
-  //   //   // return await extendPropertyManagerPlan(payload);
-  //   // } else if (isUpgrade) {
-  //   //   return await upgradePropertyManagerPlan(payload);
-  //   // } else {
-  //   //   return await activatePlan(payload);
-  //   // }
-  // }, [currentPlanKeyword, selectedPlan]);
 
   const handleSelectPlan = useCallback(async () => {
     if (!selectedPlan?.id) return toast.warning("Plan ID is missing!");
@@ -98,19 +53,22 @@ const ExpiredSubscriptionModal: React.FC = () => {
 
     // Determine if it's an upgrade or extension
     const isExtend = currentPlanKeyword === thisPlanKeyword;
+
+    // Determine if it's an upgrade or extension
     const isUpgrade =
       (currentPlanKeyword === "free" &&
         (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
       (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
-
     const payload = {
       plan_id: selectedPlan.id,
       payment_method: "wallet",
-      quantity: selectedPlan.quantity ?? 1,
+      quantity: selectedPlan.isLifeTimePlan ? 1 : selectedPlan.quantity,
       duration: selectedPlan.isLifeTimePlan
         ? "lifetime"
         : selectedPlan.billingType,
-      amount: cleanPricingValue(String(selectedPlan.price ?? 0)),
+      amount: selectedPlan.isLifeTimePlan
+        ? selectedPlan.lifetimePrice
+        : cleanPricingValue(selectedPlan.price),
     };
 
     let actionFn;
@@ -134,7 +92,7 @@ const ExpiredSubscriptionModal: React.FC = () => {
           expires: 365, // Set cookie expiry (e.g., 1 year)
           path: "/",
         });
-        router.refresh();
+        window.dispatchEvent(new Event("refetchSubscriptionPlan"));
         setIsOpen(false);
       }
     } catch (error) {
@@ -143,6 +101,33 @@ const ExpiredSubscriptionModal: React.FC = () => {
       setReqLoading(false);
     }
   }, [selectedPlan, currentPlanKeyword, setIsOpen, router]);
+
+  useEffect(() => {
+    if (!selectedPlan) return;
+
+    const thisPlanKeyword = selectedPlan.planTitle
+      ?.split(" ")[0]
+      ?.toLowerCase();
+
+    setIsExtend(currentPlanKeyword === thisPlanKeyword);
+
+    const upgrade =
+      (currentPlanKeyword === "free" &&
+        (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
+      (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
+
+    setIsUpgrade(upgrade);
+  }, [selectedPlan, currentPlanKeyword]);
+
+  const confirmMessage = () => {
+    if (isExtend) {
+      return "By confirming, you authorize this charge and acknowledge that the amount will be deducted from your wallet balance.";
+    } else if (isUpgrade) {
+      return "Selecting this plan will activate access to its features for your company. Please note that once selected, you cannot downgrade your account. <br /> <br /> Subscriptions are billed similarly to rent. If your plan expires before payment is  made, all users in your company will lose access to all features. However, your data will be securely stored and maintained until you renew your subscription. <br /> <br />";
+    } else {
+      return "Selecting this plan will activate access to its features for your company. Please note that once selected, you cannot downgrade your account. <br /> <br /> Subscriptions are billed similarly to rent. If your plan expires before payment is  made, all users in your company will lose access to all features. However, your data will be securely stored and maintained until you renew your subscription. <br /> <br />";
+    }
+  };
 
   const renderContent = () => {
     switch (step) {
@@ -212,7 +197,7 @@ const ExpiredSubscriptionModal: React.FC = () => {
             setParentStep={setStep}
             onSubmit={handleSelectPlan}
             loading={reqLoading}
-            message
+            message={confirmMessage()}
           />
         );
       default:

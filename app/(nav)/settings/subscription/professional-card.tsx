@@ -9,6 +9,7 @@ import {
   FeaturesToggle,
   PlanHeader,
 } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
+import { CounterButton } from "@/components/Wallet/AddFunds/payment-method";
 import { useState } from "react";
 
 const features = [
@@ -43,12 +44,13 @@ const ProfessionalPlanCard = ({
       >
         <h3 className={`text-[16px] font-medium tracking-[0px] text-[#01ba4c]`}>
           {/* PROFESSIONAL PLAN (Active till 12/02/2025) TODO: CHANGE TO THIS  LATER */}
-          PROFESSIONAL PLAN 
+          PROFESSIONAL PLAN
         </h3>
         <p className="text-[14px] font-medium tracking-[0px] text-text-secondary dark:text-darkText-1">
-        If other available plans don&apos;t meet your needs, consider the
-          Professional plan - ideal for established <strong>property manager company</strong>. It offers
-          unlimited access and full brand customization.
+          If other available plans don&apos;t meet your needs, consider the
+          Professional plan - ideal for established{" "}
+          <strong>property manager company</strong>. It offers unlimited access
+          and full brand customization.
         </p>
         <div className="absolute left-0 bottom-0 flex items-center justify-center w-full">
           <div
@@ -96,6 +98,36 @@ const ProfessionalPlanCard = ({
               Pay Monthly
             </button>
           </div>
+        </div>
+
+        {/* COUNTER */}
+        <div className="counter flex items-center justify-center w-full gap-2">
+          <div
+            className={`flex items-center gap-6 w-full max-w-[74px] border border-neutral-3 px-2 rounded-md "border-text-disabled dark:border-[#3C3D37]
+            }`}
+          >
+            <p
+              className={`count pl-1 text-[#000] dark:text-white text-[14px] font-medium tracking-[0px] opacity-50 cursor-not-allowed
+              }`}
+            >
+              {0}
+            </p>
+            <div className="btns flex flex-col">
+              <CounterButton
+                onClick={()=> {}}
+                icon="/icons/plus.svg"
+                alt="plus"
+              />
+              <CounterButton
+                onClick={()=> {}}
+                icon="/icons/minus.svg"
+                alt="minus"
+              />
+            </div>
+          </div>
+          <p className={`text-text-secondary opacity-50 cursor-not-allowed`}>
+            Total
+          </p>
         </div>
       </div>
 

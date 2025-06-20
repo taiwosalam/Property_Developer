@@ -31,6 +31,11 @@ export const enrollment_subscriptions: SubscriptionTableType = {
       accessor: "price",
     },
     {
+      id: "8",
+      label: "Amount Paid",
+      accessor: "amount_paid",
+    },
+    {
       id: "4",
       label: "Start Date",
       accessor: "start_date",

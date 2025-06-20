@@ -186,9 +186,9 @@ const Enrollment = () => {
       const payload = {
         plan_id: plan?.id || 0,
         payment_method: "wallet",
-        quantity: plan.quantity,
+        quantity:  plan.isLifeTimePlan ? 1 : plan.quantity,
         duration: plan.isLifeTimePlan ? "lifetime" : plan.billingType,
-        amount: cleanPricingValue(plan.price),
+        amount: plan.isLifeTimePlan ? plan.lifetimePrice : cleanPricingValue(plan.price),
       };
 
       if (isExtend) {

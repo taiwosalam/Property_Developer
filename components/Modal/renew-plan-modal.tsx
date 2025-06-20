@@ -14,6 +14,7 @@ import ProfessionalPlanCard from "@/app/(nav)/settings/subscription/professional
 import useFetch from "@/hooks/useFetch";
 import { FormSteps } from "@/app/(onboarding)/auth/types";
 import { useGlobalStore } from "@/store/general-store";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 interface WarningStepProps {
   message?: string;
@@ -42,6 +43,7 @@ export const RenewSubPlanModal = ({
     useFetch<PropertyManagerSubsApiResponseTypes>(
       "/property-manager-subscription-plan"
     );
+  useRefetchOnEvent("refetchSubscriptionPlan", () => refetch({ silent: true }));
 
   // Transform API data and set pageData
   useEffect(() => {
@@ -154,13 +156,13 @@ export const RenewSubPlanModal = ({
   );
 
   //   // Handle plan selection
-    const handleSelectPlan = useCallback(
-      (plan: PropertyManagerSubsTransformedPlan) => {
-        setSelectedPlan?.(plan); // Store the selected plan
-        changeStep(3); // Move to step 3
-      },
-      [setSelectedPlan, changeStep]
-    );
+  const handleSelectPlan = useCallback(
+    (plan: PropertyManagerSubsTransformedPlan) => {
+      setSelectedPlan?.(plan); // Store the selected plan
+      changeStep(3); // Move to step 3
+    },
+    [setSelectedPlan, changeStep]
+  );
 
   return (
     <div className="w-full min-h-[120px] flex gap-4 relative overflow-x-auto hide-scrollbar">
@@ -189,11 +191,11 @@ export const RenewSubPlanModal = ({
                 onSelect={() => handleSelectPlan(plan)}
               />
             ))}
+        <ProfessionalPlanCard
+          showFeatures={showFeatures}
+          setShowFeatures={setShowFeatures}
+        />
       </div>
-      <ProfessionalPlanCard
-        showFeatures={showFeatures}
-        setShowFeatures={setShowFeatures}
-      />
     </div>
   );
 };

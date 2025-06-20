@@ -45,7 +45,7 @@ const InputTextarea: React.FC<InputTextareaProps> = ({
           rows={rows}
           onChange={({ target }) => onChange && onChange(target.value)}
           className={clsx(
-            "p-3 text-xs md:text-sm font-normal rounded-lg w-full custom-primary-outline border border-solid border-[#C1C2C366] hover:border-[#00000099] transition-colors duration-300 ease-in-out resize-none",
+            "p-3 text-xs md:text-sm font-normal rounded-lg w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-transparent hover:border-[#00000099] transition-colors duration-300 ease-in-out resize-none",
             {
               "cursor-not-allowed": disabled,
             },

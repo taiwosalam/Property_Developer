@@ -194,17 +194,18 @@ export const transformPropertyManagerSubsApiData = (
       }
 
       // Define singular and plural labels for each feature
-      const customLabels: Record<
-        string,
-        { singular: string; plural: string }
-      > = {
-        tenant_limit: { singular: "Tenant/Occupant", plural: "Tenants/Occupants" },
-        branch_limit: { singular: "Branch", plural: "Branches" },
-        staff_limit: { singular: "Staff", plural: "Staff" },
-        property_limit: { singular: "Property", plural: "Properties" },
-        unit_limit: { singular: "Unit Listing", plural: "Unit Listings" },
-        director_limit: { singular: "Director", plural: "Directors" },
-      };
+      const customLabels: Record<string, { singular: string; plural: string }> =
+        {
+          tenant_limit: {
+            singular: "Tenant/Occupant",
+            plural: "Tenants/Occupants",
+          },
+          branch_limit: { singular: "Branch", plural: "Branches" },
+          staff_limit: { singular: "Staff", plural: "Staff" },
+          property_limit: { singular: "Property", plural: "Properties" },
+          unit_limit: { singular: "Unit Listing", plural: "Unit Listings" },
+          director_limit: { singular: "Director", plural: "Directors" },
+        };
 
       const labelConfig = customLabels[feature.key] || {
         singular: feature.label,
@@ -215,7 +216,6 @@ export const transformPropertyManagerSubsApiData = (
 
       return `Maximum of ${feature.value} ${label}`;
     });
-
 
     const baseMonthlyPrice = parseFloat(plan.pricing.perMonth) || 0;
     const baseYearlyPrice = parseFloat(plan.pricing.perYear) || 0;
@@ -283,6 +283,9 @@ export const transformEnrollmentHistory = (
       duration: enrollment.period || "--- ---",
       discount,
       price: `₦${formatNumber(parseFloat(enrollment.amount))}`,
+      amount_paid: enrollment.amount_paid
+        ? `₦${formatNumber(parseFloat(enrollment.amount_paid))}`
+        : `₦${formatNumber(parseFloat(enrollment.amount))}`,
       start_date: enrollment.date ? enrollment.date : "--- ---",
       due_date: enrollment.expire_date || "--- ---",
       status: enrollment.status || "--- ---",

@@ -14,10 +14,10 @@ import {
 import { hexToRgb } from "@/utils/rgbaToHex";
 
 export const EventCalendarWeekDays: React.FC = () => (
-  <div className="rounded-t-xl bg-[#F1F4F9] grid grid-cols-7">
+  <div className="rounded-t-xl bg-[#F1F4F9] dark:bg-[#3C3D37] grid grid-cols-7">
     {calendar_week_days.map((day, index) => (
       <div key={index} className="w-full pt-6 pb-3">
-        <p className="text-center text-text-secondary text-sm font-medium uppercase">
+        <p className="text-center text-text-secondary dark:text-darkText-2 text-sm font-medium uppercase">
           {day}
         </p>
       </div>
@@ -69,13 +69,13 @@ export const EventCalendarDay: React.FC<EventCalendarDayProps> = ({
         <div className="flex-1 custom-flex-col justify-between">
           <button
             onClick={isCurrentMonth ? onClick : undefined}
-            className={clsx("flex flex-1 justify-end pt-[14px] pb-[7px] pr-6 hover:bg-neutral-2", {
+            className={clsx("flex flex-1 justify-end pt-[14px] pb-[7px] pr-6 dark:hover:bg-gray-600 hover:bg-neutral-2", {
               "cursor-not-allowed": !isCurrentMonth,
             })}
           >
             <p
               className={clsx("text-base font-medium", {
-                "text-text-secondary": isCurrentMonth,
+                "text-text-secondary dark:text-white": isCurrentMonth,
                 "text-text-disabled": !isCurrentMonth,
               })}
             >

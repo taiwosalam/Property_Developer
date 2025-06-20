@@ -60,7 +60,7 @@ const MonthEventCalendar = ({ events }: MonthEventCalendarProps) => {
   }, [events, month, year]);
 
   return (
-    <div className="rounded-lg border border-solid border-[#B9B9B9] bg-white pt-6 pb-4 px-7 overflow-x-auto custom-round-scrollbar">
+    <div className="rounded-lg border border-solid border-[#B9B9B9] dark:border-gray-500 bg-white dark:bg-darkText-primary pt-6 pb-4 px-7 overflow-x-auto custom-round-scrollbar">
       <div className="min-w-[800px] custom-flex-col">
         <EventCalendarWeekDays />
         <div className="grid grid-cols-7 border-x border-solid border-[rgba(63,63,63,0.1)]">

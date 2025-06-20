@@ -75,6 +75,7 @@ export interface EnrollmentApiResponse {
       period: string;
       date: string;
       amount: string;
+      amount_paid: string;
       status: string;
       expire_date: string;
     }[];
