@@ -36,6 +36,7 @@ interface PersonalInfoStoreState {
   company_wallet: any;
   isSubscriptionExpired: boolean;
   currentPlan: string;
+  currentExpiryDate: string;
 
   setPersonalInfo: <
     K extends keyof Omit<PersonalInfoStoreState, "setPersonalInfo">
@@ -85,5 +86,6 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
 
   isSubscriptionExpired: false,
   currentPlan: "",
+  currentExpiryDate: "",
   setPersonalInfo: (key, value) => set({ [key]: value }),
 }));

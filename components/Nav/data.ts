@@ -523,6 +523,7 @@ export interface ProfileResponse {
     requestDemos: any[];
     isSubscriptionExpired: boolean;
     currentPlan: string;
+    currentExpiryDate: string;
   };
 }
 

@@ -36,6 +36,7 @@ import {
 import { StaffChatTypes } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/type";
 import { PropertyCardProps } from "@/components/Management/Properties/property-card";
 import { IVisitorsReportPageData } from "@/app/(nav)/reports/visitors/data";
+import { PropertyManagerSubsTransformedPlan } from "@/app/(nav)/settings/subscription/types";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -117,6 +118,7 @@ interface GlobalStoreState {
   selectedDocumentOption: OtherAgreementDocumentOption | null;
   
   profileSettingsData: ProfileSettingsPageState | null; 
+  selectedSubPlan: PropertyManagerSubsTransformedPlan | null;
 
   warningModal: {
     isOpen: boolean;
@@ -196,6 +198,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   rentEndDate: null,
 
   profileSettingsData: null,
+  selectedSubPlan: null,
 
   domainAvailable: false,
   hasRestrictedWords: false,
