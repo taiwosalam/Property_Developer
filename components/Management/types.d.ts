@@ -11,4 +11,5 @@ export interface LandlordTenantModalPresetProps {
   style?: CSSProperties;
   children: React.ReactNode;
   lightSeparator?: boolean;
+  customClose?: () => void;
 }

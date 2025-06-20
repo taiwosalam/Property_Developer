@@ -24,9 +24,10 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { cleanPricingValue } from "@/utils/cleanPrice";
 
 const RequestWarningModal = () => {
-  const { warningModal, setWarningModal } = useGlobalStore((state) => ({
+  const { warningModal, setWarningModal, selectedSubPlan } = useGlobalStore((state) => ({
     warningModal: state.warningModal,
     setWarningModal: state.setWarningModal,
+    selectedSubPlan: state.selectedSubPlan,
   }));
   const { company_id } = usePersonalInfoStore();
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
@@ -62,7 +63,6 @@ const RequestWarningModal = () => {
   };
 
   const handleSelectPlan = useCallback(async () => {
-    console.log("plan", selectedPlan);
     // setSelectedPlan?.(selectedPlan);
     const thisPlanKeyword = selectedPlan?.planTitle
       ?.split(" ")[0]

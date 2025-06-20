@@ -1,141 +1,148 @@
 "use client";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import Button from "@/components/Form/Button/button";
 import { ExpiredSubIcon } from "@/public/icons/icons";
-import WalletModalPreset from "../Wallet/wallet-modal-preset";
-import { CounterButton } from "../Settings/SettingsEnrollment/settings-enrollment-components";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import RenewSubConfirmModal from "../Settings/Modals/renew-confirm-step";
 import useFetch from "@/hooks/useFetch";
 import { ActiveSubscriptionResponse } from "@/app/(nav)/types";
-import { PropertyManagerSubsApiResponseTypes } from "@/app/(nav)/settings/subscription/types";
 import {
-  calculateAmountAndValidTillFromPricing,
-  renewSubscription,
-} from "@/app/(nav)/data";
+  PropertyManagerSubsApiResponseTypes,
+  PropertyManagerSubsTransformedPlan,
+} from "@/app/(nav)/settings/subscription/types";
+import { RenewSubPlanModal } from "./renew-plan-modal";
+import { cleanPricingValue } from "@/utils/cleanPrice";
+import {
+  activatePlan,
+  extendPropertyManagerPlan,
+  renewPropertyManagerPlan,
+  upgradePropertyManagerPlan,
+} from "@/app/(nav)/settings/subscription/data";
+import { parseFormattedNumber } from "@/app/(nav)/accounting/invoice/create-invoice/data";
+import { FormSteps } from "@/app/(onboarding)/auth/types";
 import { toast } from "sonner";
+import { useGlobalStore } from "@/store/general-store";
+import Cookies from "js-cookie";
 
 const ExpiredSubscriptionModal: React.FC = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<FormSteps | number>(1);
   const [reqLoading, setReqLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { setIsOpen } = useModal();
   const router = useRouter();
-  const { data, error, loading, isNetworkError } =
-    useFetch<ActiveSubscriptionResponse>(
-      `/property-manager-subscription/active`
-    );
+  const [selectedPlan, setSelectedPlan] =
+    useState<PropertyManagerSubsTransformedPlan | null>(null);
+  const { selectedSubPlan } = useGlobalStore((state) => ({
+    selectedSubPlan: state.selectedSubPlan,
+  }));
 
-  const {
-    data: Plans,
-    loading: plansLoading,
-    error: plansError,
-    refetch,
-  } = useFetch<PropertyManagerSubsApiResponseTypes>(
-    "/property-manager-subscription-plan"
-  );
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
 
-  const currentSub = data?.data;
-  const renewalPlan = currentSub?.renewal_plan;
-  const renewalKeyword = renewalPlan?.name?.split(" ")[0]?.toLowerCase();
+  // const handleSelectPlan = useCallback(async () => {
+  //   if (!selectedPlan?.id) return toast.warning("Plan ID is missing!");
+  //   const thisPlanKeyword = selectedPlan?.planTitle
+  //     ?.split(" ")[0]
+  //     ?.toLowerCase();
+  //   // Determine if it's an upgrade or extension
+  //   const isExtend = currentPlanKeyword === thisPlanKeyword;
+  //   const isUpgrade =
+  //     (currentPlanKeyword === "free" &&
+  //       (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
+  //     (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
 
-  const matchedPlan = Plans?.data?.find((plan) =>
-    plan.planName.toLowerCase().startsWith(renewalKeyword ?? "")
-  );
+  //   const payload = {
+  //     plan_id: selectedPlan?.id || 0,
+  //     payment_method: "wallet",
+  //     quantity: selectedPlan?.quantity ?? 0,
+  //     duration: selectedPlan?.isLifeTimePlan
+  //       ? "lifetime"
+  //       : selectedPlan?.billingType,
+  //     amount: cleanPricingValue(String(selectedPlan?.price ?? 0)),
+  //   };
 
-  const selectedDuration =
-    renewalPlan?.duration === "monthly"
-      ? "perMonth"
-      : renewalPlan?.duration === "yearly"
-      ? "perYear"
-      : "lifetime";
+  //   const action = isExtend
+  //     ? activatePlan(payload)
+  //     ? isUpgrade
+  //     ? upgradePropertyManagerPlan(payload)
+  //     : extendPropertyManagerPlan(payload)
 
-  const { amountToPay, validTill } =
-    matchedPlan && renewalPlan
-      ? calculateAmountAndValidTillFromPricing(
-          matchedPlan.pricing,
-          selectedDuration,
-          quantity,
-          renewalPlan.start_date
-        )
-      : { amountToPay: 0, validTill: "-" };
+  //     try{
+  //       setReqLoading(true);
+  //       const res = await action;
+  //     } catch (error){
+  //       toast.error("Something went wrong!");
+  //     } finally{
+  //       setReqLoading(false);
+  //     }
 
-  const maxQuantity =
-    selectedDuration === "perMonth"
-      ? 11
-      : selectedDuration === "perYear"
-      ? 5
-      : 1;
+  //   // if (isExtend) {
+  //   //   return await activatePlan(payload);
+  //   //   // return await extendPropertyManagerPlan(payload);
+  //   // } else if (isUpgrade) {
+  //   //   return await upgradePropertyManagerPlan(payload);
+  //   // } else {
+  //   //   return await activatePlan(payload);
+  //   // }
+  // }, [currentPlanKeyword, selectedPlan]);
 
-  const handleIncrement = () =>
-    setQuantity((prev) => (prev < maxQuantity ? prev + 1 : prev));
+  const handleSelectPlan = useCallback(async () => {
+    if (!selectedPlan?.id) return toast.warning("Plan ID is missing!");
 
-  const handleDecrement = () =>
-    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (isNaN(value) || value < 1) {
-      setQuantity(1);
-    } else if (value > maxQuantity) {
-      setQuantity(maxQuantity);
-    } else {
-      setQuantity(value);
-    }
-  };
-
-  const handleRenewSub = async () => {
-    const renewalKeyword = currentSub?.renewal_plan?.name
+    const thisPlanKeyword = selectedPlan.planTitle
       ?.split(" ")[0]
       ?.toLowerCase();
 
-    const PLAN_NAME_TO_ID: Record<string, number> = {
-      free: 1,
-      basic: 2,
-      premium: 3,
-    };
-
-    const plan_id = PLAN_NAME_TO_ID[renewalKeyword ?? ""] ?? 0;
-    if (!plan_id || amountToPay === undefined) {
-      console.error("Missing or invalid plan_id or amount.");
-      return;
-    }
+    // Determine if it's an upgrade or extension
+    const isExtend = currentPlanKeyword === thisPlanKeyword;
+    const isUpgrade =
+      (currentPlanKeyword === "free" &&
+        (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
+      (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
 
     const payload = {
-      plan_id,
+      plan_id: selectedPlan.id,
       payment_method: "wallet",
-      quantity,
-      duration:
-        selectedDuration === "perMonth"
-          ? "monthly"
-          : selectedDuration === "perYear"
-          ? "yearly"
-          : "lifetime",
-      amount: amountToPay,
+      quantity: selectedPlan.quantity ?? 1,
+      duration: selectedPlan.isLifeTimePlan
+        ? "lifetime"
+        : selectedPlan.billingType,
+      amount: cleanPricingValue(String(selectedPlan.price ?? 0)),
     };
+
+    let actionFn;
+
+    if (isExtend) {
+      // actionFn = extendPropertyManagerPlan;
+      actionFn = renewPropertyManagerPlan;
+    } else if (isUpgrade) {
+      actionFn = upgradePropertyManagerPlan;
+    } else {
+      actionFn = activatePlan;
+    }
 
     try {
       setReqLoading(true);
-      const res = await renewSubscription(payload);
+      const res = await actionFn(payload);
       if (res) {
-        toast.success("Subscription renewed successfully");
+        toast.success("Subscription updated successfully!");
+        // Set cookie to false to indicate subscription is active
+        Cookies.set("expired_company_subscription", "false", {
+          expires: 365, // Set cookie expiry (e.g., 1 year)
+          path: "/",
+        });
+        router.refresh();
         setIsOpen(false);
       }
     } catch (error) {
-      console.error("Error renewing subscription:", error);
+      toast.error("Something went wrong while updating the subscription.");
     } finally {
       setReqLoading(false);
     }
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-    usePersonalInfoStore.setState({ isSubscriptionExpired: false });
-    setStep(1);
-  };
+  }, [selectedPlan, currentPlanKeyword, setIsOpen, router]);
 
   const renderContent = () => {
     switch (step) {
@@ -168,22 +175,16 @@ const ExpiredSubscriptionModal: React.FC = () => {
                   All users under your company account will lose access until
                   subscription is reactivated.
                 </li>
-                <li>
-                  Outstanding payments must be cleared before full access is
-                  reactivated.
-                </li>
               </ul>
 
-              <p className="my-4 ">
-                Click the button to renew and regain access
-              </p>
+              <p className="my-4 ">Click the button to regain access</p>
               <div className="flex justify-center gap-4">
                 <Button
                   size="base_bold"
                   className="py-[10px] px-8 bg-brand-9 text-white rounded-md hover:bg-brand-10"
                   onClick={() => setStep(2)}
                 >
-                  Renew Subscription
+                  Activate Subscription
                 </Button>
               </div>
             </div>
@@ -191,114 +192,27 @@ const ExpiredSubscriptionModal: React.FC = () => {
         );
       case 2:
         return (
-          <WalletModalPreset
-            title="Renew Subscription"
-            back={() => setStep(1)}
-            noClose
-            className="md:w-[50%] w-[80%]"
+          <LandlordTenantModalPreset
+            heading="Property Manager Subscription"
+            back={{ handleBack: () => setStep(1) }}
+            style={{ maxHeight: "80vh", minWidth: "80vw" }}
           >
-            <div className="custom-flex-col gap-8">
-              <div className="flex items-center justify-between">
-                <div className="custom-flex-col gap-2">
-                  <p>
-                    (Current Plan) -
-                    <b className="text-[20px] font-bold">
-                      {currentSub?.current_plan?.name}
-                    </b>
-                  </p>
-                  <h1 className="font-normal text-text-secondary dark:text-darkText-1">
-                    ₦{currentSub?.current_plan?.amount} (
-                    {currentSub?.current_plan?.duration})
-                  </h1>
-                </div>
-                <div className="custom-flex-col gap-2">
-                  <p> {currentSub?.current_plan?.expired_date} </p>
-                  <h1 className="text-lg font-normal dark:text-darkText-1 text-text-secondary">
-                    Expired Date
-                  </h1>
-                </div>
-              </div>
-
-              {/* RENEWAL */}
-              <div className="flex items-center justify-between">
-                <div className="custom-flex-col gap-2">
-                  <p>
-                    (Renewal Plan) -
-                    <b className="text-[20px] font-bold">
-                      {currentSub?.renewal_plan?.name}
-                    </b>
-                  </p>
-                  <h1 className="font-normal text-text-secondary dark:text-darkText-1">
-                    ₦{amountToPay.toLocaleString()} ({quantity}{" "}
-                    {selectedDuration === "perMonth" ? "Months" : "Years"})
-                  </h1>
-                </div>
-
-                <div className="custom-flex-col gap-2">
-                  <p> {currentSub?.renewal_plan?.start_date} </p>
-                  <h1 className="text-lg font-normal dark:text-darkText-1 text-text-secondary">
-                    Start Date
-                  </h1>
-                </div>
-
-                {/* COUNTER */}
-                <div className="flex gap-3 items-center ">
-                  <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
-                    <input
-                      type="number"
-                      value={quantity}
-                      min={1}
-                      onChange={handleInputChange}
-                      className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
-                    />
-                    <div className="btn flex flex-col items-end justify-end">
-                      <CounterButton
-                        onClick={handleIncrement}
-                        icon="/icons/plus.svg"
-                        alt="plus"
-                      />
-                      <CounterButton
-                        onClick={handleDecrement}
-                        icon="/icons/minus.svg"
-                        alt="minus"
-                      />
-                    </div>
-                  </div>
-                  Total {selectedDuration === "perMonth" ? "Months" : "Years"}
-                </div>
-              </div>
-
-              {/* AMOUNT TO PAY */}
-              <div className="flex items-center justify-between">
-                <div className="custom-flex-col gap-2">
-                  <p className="font-normal text-text-secondary dark:text-darkText-1">
-                    Amount to Pay
-                  </p>
-                  <h1 className="font-bold text-[20px] dark:text-white text-black">
-                    ₦{amountToPay.toLocaleString()}
-                  </h1>
-                </div>
-                <div className="custom-flex-col gap-2">
-                  <p> {validTill} </p>
-                  <h1 className="text-lg font-normal dark:text-darkText-1 text-text-secondary">
-                    Valid Till
-                  </h1>
-                </div>
-
-                <div className="justify-end items-center">
-                  <Button onClick={() => setStep(3)}>Make Payment</Button>
-                </div>
-              </div>
-            </div>
-          </WalletModalPreset>
+            <RenewSubPlanModal
+              onPrevious={() => setStep(1)}
+              onClose={() => setStep(3)}
+              changeStep={setStep}
+              setSelectedPlan={setSelectedPlan}
+            />
+          </LandlordTenantModalPreset>
         );
       case 3:
         return (
           <RenewSubConfirmModal
-            cost={amountToPay}
+            cost={parseFormattedNumber(selectedPlan?.price) ?? 0}
             setParentStep={setStep}
-            onSubmit={handleRenewSub}
+            onSubmit={handleSelectPlan}
             loading={reqLoading}
+            message
           />
         );
       default:

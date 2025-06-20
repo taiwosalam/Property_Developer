@@ -201,6 +201,7 @@ const Header = () => {
         requestDemos,
         director,
         company_wallet,
+        currentExpiryDate,
       } = data.data;
 
       setPersonalInfo("user_id", user.userid);
@@ -243,6 +244,7 @@ const Header = () => {
         setPersonalInfo("company_wallet", company_wallet);
         setPersonalInfo("isSubscriptionExpired", isSubscriptionExpired);
         setPersonalInfo("currentPlan", currentPlan);
+        setPersonalInfo("currentExpiryDate", currentExpiryDate);
         setPersonalInfo(
           "cac_registration_number",
           company.cac_registration_number

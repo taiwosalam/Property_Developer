@@ -20,9 +20,7 @@ interface ISponsorModalProps {
   onSubmit?: () => void;
   setParentStep: (step: number) => void;
   loading: boolean;
-  //   onSelect?: () => void;
-  //   message?: boolean;
-  //   page?: "subscription" | "sponsor";
+    message?: boolean;
 }
 
 const RenewSubConfirmModal = ({
@@ -30,10 +28,12 @@ const RenewSubConfirmModal = ({
   onSubmit,
   setParentStep,
   loading,
+  message,
 }: ISponsorModalProps) => {
   const company_wallet = usePersonalInfoStore((state) => state.company_wallet);
   const COMPANY_WALLET_BALANCE = company_wallet?.wallet_balance ?? 0;
   const [step, setStep] = React.useState(1);
+  const [reqLoading, setReqLoading] = React.useState(false);
   const { setIsOpen } = useModal();
   const { isMobile } = useWindowWidth();
 
@@ -67,6 +67,7 @@ const RenewSubConfirmModal = ({
             heading="Confirmation Required"
             back={{ handleBack: () => setParentStep(2) }}
             style={{ width: isMobile ? "80%" : "50%" }}
+            customClose={() => setParentStep(2)}
           >
             <div className="custom-flex-col items-center justify-center gap-4">
               <p className="text-md">
@@ -76,17 +77,22 @@ const RenewSubConfirmModal = ({
                   ₦{formatNumber(cost?.toString() || "0")}.
                 </strong>
               </p>
-              <p>
-                Selecting this plan will activate access to its features for
-                your company. Please note that once selected, you cannot
-                downgrade your account. <br /> <br /> Subscriptions are billed
-                similarly to rent. If your plan expires before payment is made,
-                all users in your company will lose access to all features.
-                However, your data will be securely stored and maintained until
-                you renew your subscription. <br /> <br /> Access will only be
-                restored after all outstanding subscription payments have been
-                fully settled.
-              </p>
+              {message ? (
+                <p>
+                  Selecting this plan will activate access to its features for
+                  your company. Please note that once selected, you cannot
+                  downgrade your account. <br /> <br /> Subscriptions are billed
+                  similarly to rent. If your plan expires before payment is
+                  made, all users in your company will lose access to all
+                  features. However, your data will be securely stored and
+                  maintained until you renew your subscription. <br /> <br />
+                </p>
+              ) : (
+                <p>
+                  By confirming, you authorize this charge and acknowledge that
+                  the amount will be deducted from your wallet balance.
+                </p>
+              )}
 
               <p>Do you wish to proceed?</p>
             </div>
@@ -106,7 +112,7 @@ const RenewSubConfirmModal = ({
                 size="base_medium"
                 className="px-8 py-2"
                 variant="light_red"
-                onClick={() => setIsOpen(false)}
+                onClick={() => setParentStep(2)}
               >
                 Cancel
               </Button>
