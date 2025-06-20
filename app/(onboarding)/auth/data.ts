@@ -407,6 +407,7 @@ export const logout = async (): Promise<boolean> => {
 
     // Remove token from cookies
     Cookies.remove("auth-token");
+    Cookies.remove("company_subscription_status");
 
     resetAuthStore();
     toast.success(message);

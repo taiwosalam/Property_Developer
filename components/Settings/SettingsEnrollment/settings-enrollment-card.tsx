@@ -138,6 +138,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
           isFree={isFree}
           discountText={discountText}
           isLifeTimePlan={isLifeTimePlan}
+          planTitle={planTitle}
         />
         {!isFree && (
           <QuantityCounter

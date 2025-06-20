@@ -14,13 +14,14 @@ import React from "react";
 import { toast } from "sonner";
 import InsufficientBalance from "./insufficient-balance";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
+import parse from "html-react-parser";
 
 interface ISponsorModalProps {
   cost: number;
   onSubmit?: () => void;
   setParentStep: (step: number) => void;
   loading: boolean;
-    message?: boolean;
+  message?: string;
 }
 
 const RenewSubConfirmModal = ({
@@ -28,7 +29,7 @@ const RenewSubConfirmModal = ({
   onSubmit,
   setParentStep,
   loading,
-  message,
+  message = "By confirming, you authorize this charge and acknowledge that the amount will be deducted from your wallet balance.",
 }: ISponsorModalProps) => {
   const company_wallet = usePersonalInfoStore((state) => state.company_wallet);
   const COMPANY_WALLET_BALANCE = company_wallet?.wallet_balance ?? 0;
@@ -77,22 +78,8 @@ const RenewSubConfirmModal = ({
                   ₦{formatNumber(cost?.toString() || "0")}.
                 </strong>
               </p>
-              {message ? (
-                <p>
-                  Selecting this plan will activate access to its features for
-                  your company. Please note that once selected, you cannot
-                  downgrade your account. <br /> <br /> Subscriptions are billed
-                  similarly to rent. If your plan expires before payment is
-                  made, all users in your company will lose access to all
-                  features. However, your data will be securely stored and
-                  maintained until you renew your subscription. <br /> <br />
-                </p>
-              ) : (
-                <p>
-                  By confirming, you authorize this charge and acknowledge that
-                  the amount will be deducted from your wallet balance.
-                </p>
-              )}
+
+              <p>{parse(message)}</p>
 
               <p>Do you wish to proceed?</p>
             </div>

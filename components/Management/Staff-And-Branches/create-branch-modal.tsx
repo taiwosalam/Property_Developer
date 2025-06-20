@@ -202,7 +202,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
             />
             <TextArea
               id="branch_description"
-              label="Branch Description"
+              label="Write About Branch"
               placeholder="Write here"
               required
               inputSpaceClassName="bg-neutral-2 dark:bg-darkText-primary !h-[100px]"
@@ -211,7 +211,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
           </div>
           <div className="flex justify-between items-end gap-4 flex-wrap">
             <div className="custom-flex-col gap-3">
-              <p className="text-black text-base font-medium">
+              <p className="text-black dark:text-darkText-2 text-base font-medium">
                 <span className="text-status-error-primary">*</span>Upload
                 picture or select Sample
               </p>

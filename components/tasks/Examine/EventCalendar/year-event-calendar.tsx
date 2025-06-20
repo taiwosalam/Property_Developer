@@ -28,6 +28,7 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import { Calendar } from "@/components/Calendar/data";
 import { CalendarEventProps } from "@/components/Calendar/types";
 import { CalendarContext } from "@/components/Calendar/calendar-context";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 
 interface YearEventCalendarProps {
   events?: CalendarEventProps[];
@@ -111,7 +112,7 @@ const YearEventCalendar = ({ events }: YearEventCalendarProps) => {
         prevMonth: () => setCurrentDate((prev) => subMonths(prev, 1)),
       }}
     >
-      <div className="flex gap-y-10 justify-between flex-wrap">
+      <div className="flex gap-y-10 justify-between gap-x-5 flex-wrap w-full">
         {months.map((month, index) => {
           const monthData = new Calendar({
             month,
@@ -123,7 +124,8 @@ const YearEventCalendar = ({ events }: YearEventCalendarProps) => {
           });
 
           return (
-            <div
+            <AutoResizingGrid minWidth={350} key={index}>
+              {/* <div
               key={index}
               className={clsx(
                 "w-full md:w-[48%] xl:w-[32%] flex justify-evenly",
@@ -140,8 +142,8 @@ const YearEventCalendar = ({ events }: YearEventCalendarProps) => {
                       : index % 3 === 2,
                 }
               )}
-            >
-              <div className="p-[18px] rounded-sm bg-neutral-3 custom-flex-col gap-2">
+            > */}
+              <div className="p-[18px] rounded-sm bg-neutral-3 dark:bg-darkText-primary custom-flex-col gap-2">
                 <p>
                   {format(setMonth(new Date(year, 0), month), "MMMM")} {year}
                 </p>
@@ -169,7 +171,8 @@ const YearEventCalendar = ({ events }: YearEventCalendarProps) => {
                   </div>
                 </div>
               </div>
-            </div>
+              {/* </div> */}
+            </AutoResizingGrid>
           );
         })}
       </div>

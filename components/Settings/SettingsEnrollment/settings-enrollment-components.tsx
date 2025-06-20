@@ -10,6 +10,8 @@ import { FormSteps } from "@/app/(onboarding)/auth/types";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import parse from "html-react-parser";
 import dayjs from "dayjs";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -27,6 +29,8 @@ export const PlanHeader: React.FC<{
   expiry_date = "",
 }) => {
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  dayjs.extend(isSameOrBefore);
+  dayjs.extend(customParseFormat);
   const currentExpiryDate = usePersonalInfoStore(
     (state) => state.currentExpiryDate
   );
@@ -38,16 +42,16 @@ export const PlanHeader: React.FC<{
   };
 
   // Format expiry date and determine status
-  const formattedExpiryDate = expiry_date
-    ? dayjs(expiry_date).format("MMMM D, YYYY")
-    : currentExpiryDate
-    ? dayjs(currentExpiryDate).format("MMMM D, YYYY")
+  const parsedExpiryDate = expiry_date
+    ? dayjs(expiry_date, "DD/MM/YYYY")
+    : dayjs(currentExpiryDate);
+
+  const formattedExpiryDate = parsedExpiryDate.isValid()
+    ? parsedExpiryDate.format("MMMM D, YYYY")
     : "";
 
-  const isExpired = expiry_date
-    ? dayjs(expiry_date).isBefore(dayjs(), "day")
-    : currentExpiryDate
-    ? dayjs(currentExpiryDate).isBefore(dayjs(), "day")
+  const isExpired = parsedExpiryDate.isValid()
+    ? parsedExpiryDate.isSameOrBefore(dayjs(), "day")
     : false;
 
   const statusText = isExpired ? "Expired since" : "Active till";
@@ -65,8 +69,9 @@ export const PlanHeader: React.FC<{
       >
         {title}
         {formattedExpiryDate &&
-          !isFree &&
-          currentPlan.toUpperCase() === upperTitle &&
+          currentPlan
+            .toLowerCase()
+            .includes(planTitle.toLowerCase().split(" ")[0]) &&
           ` (${statusText} ${formattedExpiryDate})`}
       </h3>
       <p className="text-[14px] font-medium tracking-[0px] text-text-secondary dark:text-darkText-1">
@@ -106,14 +111,16 @@ export const BillingTypeSelector: React.FC<{
   billingType?: string;
   handleBillingTypeChange?: (type: "monthly" | "yearly") => void;
   isFree?: boolean;
-  discountText?: string;
   isLifeTimePlan?: boolean;
+  discountText?: string;
+  planTitle?: string;
 }> = ({
   billingType = "monthly",
   handleBillingTypeChange = () => {},
   isFree = false,
   discountText = "",
   isLifeTimePlan = false,
+  planTitle = "",
 }) => (
   <div
     className={`flex w-full justify-center my-5 bg-brand-1 dark:bg-[#3C3D37] min-h-[54px] gap-5 py-2 rounded-md`}
@@ -125,6 +132,7 @@ export const BillingTypeSelector: React.FC<{
       isFree={isFree}
       discountText={discountText}
       isLifeTimePlan={isLifeTimePlan}
+      planTitle={planTitle}
     />
     <BillingTypeButton
       type="monthly"
@@ -133,6 +141,7 @@ export const BillingTypeSelector: React.FC<{
       isFree={isFree}
       discountText={discountText}
       isLifeTimePlan={isLifeTimePlan}
+      planTitle={planTitle}
     />
   </div>
 );
@@ -146,6 +155,7 @@ export const BillingTypeButton: React.FC<{
   duration?: string;
   isLifeTimePlan?: boolean;
   planType?: "basic" | "premium" | "free";
+  planTitle?: string;
 }> = ({
   type,
   billingType = "monthly",
@@ -155,19 +165,24 @@ export const BillingTypeButton: React.FC<{
   duration = "",
   isLifeTimePlan,
   planType,
+  planTitle = "",
 }) => {
   const isYearlyLifeTimePlan =
     type === "yearly" && isLifeTimePlan && planType === "basic";
 
+  const getBgColor = () => {
+    if (isFree) return "border border-[#38BDF8] rounded-md bg-opacity-40";
+    if (planTitle.toLowerCase() === "basic plan")
+      return "border border-brand-9 rounded-md";
+    if (planTitle.toLowerCase() === "premium plan")
+      return "border border-[#8C62FF] rounded-md";
+    return "bg-brand-9 rounded-md"; // Default fallback color
+  };
+
   return (
     <div
       className={`flex flex-col items-center justify-center px-6 ${
-        billingType === type
-          ? "border rounded-md transition-all duration-300 ease-in-out " +
-            (isFree
-              ? "border-brand-9 bg-white dark:bg-darkText-primary"
-              : "border-brand-9 bg-white dark:bg-darkText-primary")
-          : ""
+        billingType === type && getBgColor()
       }`}
     >
       <button
@@ -349,101 +364,6 @@ interface SelectPlanButtonProps {
   hovered?: boolean;
 }
 
-// export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
-//   isFree = false,
-//   price,
-//   planTitle,
-//   onSelectPlan,
-//   onSelect,
-//   page,
-//   changeStep,
-//   hovered,
-// }) => {
-//   const subCost = parseFormattedNumber(price);
-//   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
-
-//   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
-//   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
-//   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
-
-//   // Determine if the button should be disabled
-//   const isDisabled = (() => {
-//     if (isFree) return true; // Free plan button is always disabled
-//     if (currentPlanKeyword === "premium" && thisPlanKeyword === "basic") {
-//       // Disable Basic plan button for Premium users (no downgrading)
-//       return true;
-//     }
-//     return false; // Enable buttons for extend (current plan) or upgrade (higher-tier plans)
-//   })();
-
-//   // Determine button text
-//   const buttonText = (() => {
-//     if (isCurrentPlan) {
-//       if (currentPlanKeyword === "free") return "Current Plan";
-//       return "Extend Plan"; // For Basic or Premium, if it's the current plan
-//     }
-//     if (currentPlanKeyword === "free") {
-//       return "Upgrade Plan"; // Free plan users see "Upgrade" for Basic/Premium
-//     }
-//     if (currentPlanKeyword === "basic" && thisPlanKeyword === "premium") {
-//       return "Upgrade Plan"; // Basic plan users see "Upgrade" for Premium
-//     }
-//     if (currentPlanKeyword === "premium") {
-//       return thisPlanKeyword === "premium" ? "Extend Plan" : "Basic Plan"; // Premium users see "Extend" for Premium, "Basic Plan" for others
-//     }
-//     return "Select Plan"; // Fallback
-//   })();
-
-//   const notMessage = buttonText === "Extend Plan";
-
-//   const handleSelectPlan = () => {
-//     if (page === "modal" && changeStep) {
-//       onSelectPlan?.();
-//       changeStep(3);
-//     }
-//   };
-//   return (
-//     <div className="px-6 pb-4 flex justify-end">
-//       <div
-//         className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
-//           isFree ? "bg-brand-9 bg-opacity-40 cursor-not-allowed" : "bg-brand-9"
-//         }`}
-//       >
-//         {page === "modal" ? (
-//           <button
-//             className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
-//             disabled={isDisabled}
-//             onClick={handleSelectPlan}
-//           >
-//             {buttonText}
-//           </button>
-//         ) : (
-//           <Modal>
-//             <ModalTrigger asChild className="w-full text-white">
-//               <button
-//                 className={`text-center text-[14px] w-full text-white font-medium tracking-[0px] text-white disabled:opacity-50 disabled:cursor-not-allowed`}
-//                 // disabled={isDisabled}
-//               >
-//                 {(!hovered && isCurrentPlan) ? "Current Plan" : buttonText}
-//               </button>
-//             </ModalTrigger>
-//             <ModalContent>
-//               <SponsorModal
-//                 page="subscription"
-//                 count={10}
-//                 cost={subCost ?? 0}
-//                 message={!notMessage}
-//                 onSubmit={onSelectPlan}
-//                 onSelect={onSelect}
-//               />
-//             </ModalContent>
-//           </Modal>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
 export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   isFree = false,
   price,
@@ -456,6 +376,13 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
 }) => {
   const subCost = parseFormattedNumber(price);
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentExpiryDate = usePersonalInfoStore(
+    (state) => state.currentExpiryDate
+  );
+
+  const isExpired = currentExpiryDate
+    ? dayjs(currentExpiryDate).isSameOrBefore(dayjs(), "day")
+    : false;
 
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
@@ -496,13 +423,28 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   const handleSelectPlan = () => {
     if (page === "modal" && changeStep) {
       onSelectPlan?.();
+      window.dispatchEvent(new Event("refetchSubscriptionPlan"));
       changeStep(3);
     } else if (!useModal && hasAction) {
       onSelect?.(); // Direct action for non-modal actionable scenarios
+      window.dispatchEvent(new Event("refetchSubscriptionPlan"));
     }
   };
 
-  const displayText = !hovered && isCurrentPlan ? "Current Plan" : buttonText;
+  const isDowngradeBlocked =
+    (currentPlanKeyword === "professional" &&
+      (thisPlanKeyword === "premium" || thisPlanKeyword === "basic")) ||
+    (currentPlanKeyword === "premium" && thisPlanKeyword === "basic");
+
+
+  const displayText =
+    isDowngradeBlocked && hovered
+      ? "Plan cannot be downgraded"
+      : isExpired && hovered && isCurrentPlan
+      ? "Renew Plan"
+      : !hovered && isCurrentPlan
+      ? "Current Plan"
+      : buttonText;
 
   return (
     <div className="px-6 pb-4 flex justify-end">

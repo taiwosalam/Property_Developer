@@ -21,6 +21,7 @@ import { FormSteps } from "@/app/(onboarding)/auth/types";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { cleanPricingValue } from "@/utils/cleanPrice";
 import ProfessionalPlanCard from "@/app/(nav)/settings/subscription/professional-card";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 interface WarningStepProps {
   message?: string;
@@ -96,6 +97,7 @@ export const WarningStep2 = ({
     useFetch<PropertyManagerSubsApiResponseTypes>(
       "/property-manager-subscription-plan"
     );
+  useRefetchOnEvent("refetchSubscriptionPlan", () => refetch({ silent: true }));
 
   // Transform API data and set pageData
   useEffect(() => {
@@ -216,7 +218,6 @@ export const WarningStep2 = ({
     [setSelectedPlan, changeStep]
   );
 
-
   return (
     <div className="w-full min-h-[120px] flex gap-4 relative overflow-x-auto hide-scrollbar">
       <div className="flex mb-4 pb-10 flex-nowrap gap-4 pricingWrapper mt-4">
@@ -245,7 +246,7 @@ export const WarningStep2 = ({
               />
             ))}
       </div>
-      <ProfessionalPlanCard
+    <ProfessionalPlanCard
         showFeatures={showFeatures}
         setShowFeatures={setShowFeatures}
       />

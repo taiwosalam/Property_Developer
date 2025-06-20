@@ -14,7 +14,7 @@ import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-i
 
 const ManageExaminepage = () => {
   const commonClasses =
-    "py-3 px-4 text-text-secondary text-base font-normal bg-neutral-3 rounded-[4px] flex-row-reverse justify-between";
+    "py-3 px-4 text-text-secondary text-base font-normal bg-neutral-3 dark:bg-darkText-primary rounded-[4px] flex-row-reverse justify-between dark:border dark:border-gray-500";
 
   const commonBoxStyle: React.CSSProperties = {
     boxShadow:
