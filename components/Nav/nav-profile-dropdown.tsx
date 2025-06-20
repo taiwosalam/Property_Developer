@@ -50,7 +50,7 @@ const NavProfileDropdown = () => {
   return (
     <>
       <div className="custom-flex-col">
-        <div className="flex items-center gap-4 p-4">
+        <Link href={"/settings/security"} className="flex items-center gap-4 p-4">
           <Picture
             src={profile_picture || Avatar}
             alt="profile picture"
@@ -66,7 +66,7 @@ const NavProfileDropdown = () => {
             <p className="dark:text-white">{truncateName(name, 50)}</p>
             <p className="dark:text-darkText-2">ID: {userId}</p>
           </div>
-        </div>
+        </Link>
         <SectionSeparator />
       </div>
       {actions &&

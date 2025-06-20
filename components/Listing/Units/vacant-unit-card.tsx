@@ -7,6 +7,7 @@ import {
   CameraIcon,
   EditPencilIcon,
   PreviewEyeIcon,
+  StartRentIcon,
   StatsChartIcon,
 } from "@/public/icons/icons";
 import SampleProperty6 from "@/public/empty/SampleProperty6.jpg";
@@ -36,7 +37,6 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useFetch from "@/hooks/useFetch";
 import { useGlobalStore } from "@/store/general-store";
 
-
 const VacantUnitCard = ({
   status,
   unit_data,
@@ -58,7 +58,6 @@ const VacantUnitCard = ({
   const [publishing, setPublishing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const is_sponsored = unit_data.is_sponsored;
-
 
   const referenceObject = {
     property_title: "",
@@ -160,7 +159,7 @@ const VacantUnitCard = ({
                 <KeyValueList
                   data={keyValueData}
                   referenceObject={referenceObject}
-                  truncateLength={35} 
+                  truncateLength={35}
                 />
               </div>
             </div>
@@ -248,7 +247,7 @@ const VacantUnitCard = ({
           </Modal>
 
           <Link
-            href={`/management/properties/${unit_data.property_id}`}
+            href={`/management/rent-unit/${unit_data.unitId}`}
             className="flex items-center gap-2"
           >
             <PreviewEyeIcon />
@@ -271,6 +270,13 @@ const VacantUnitCard = ({
           >
             <EditPencilIcon />
             <p>Edit</p>
+          </Link>
+          <Link
+            href={`/management/rent-unit/${unit_data.unitId}/start-rent?type=${unit_data.propertyType}&id=${unit_data.unitId}`}
+            className="flex gap-2 font-bold"
+          >
+            <StartRentIcon size={24} />
+            <p>Link Tenant</p>
           </Link>
         </div>
       </div>

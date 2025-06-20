@@ -201,7 +201,7 @@ const Header = () => {
         requestDemos,
         director,
         company_wallet,
-        currentExpiryDate,
+        currentExpiryDate
       } = data.data;
 
       setPersonalInfo("user_id", user.userid);
