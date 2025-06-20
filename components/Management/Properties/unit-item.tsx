@@ -9,6 +9,8 @@ import BadgeIcon, {
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import PropertyTag from "@/components/Tags/property-tag";
 import { UnitStatusColors } from "./property-preview";
+import { actions } from "../Rent And Unit/data";
+import { ActionButton } from "../Rent And Unit/action-button";
 
 export interface UnitItemProps {
   propertyType: string;
@@ -75,7 +77,9 @@ const UnitItem: React.FC<UnitItemProps> = ({
         <div className="min-w-[400px] flex-1 text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
           <div>
             <p className="text-[#747474] dark:text-white">Unit Details</p>
-            <p className="text-black dark:text-darkText-1 capitalize">{unitDetails}</p>
+            <p className="text-black dark:text-darkText-1 capitalize">
+              {unitDetails}
+            </p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Rent</p>
@@ -83,7 +87,9 @@ const UnitItem: React.FC<UnitItemProps> = ({
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Unit No/Name</p>
-            <p className="text-black dark:text-darkText-1 capitalize">{unitName}</p>
+            <p className="text-black dark:text-darkText-1 capitalize">
+              {unitName}
+            </p>
           </div>
           {cautionDeposit && (
             <div>
@@ -102,13 +108,17 @@ const UnitItem: React.FC<UnitItemProps> = ({
           {unitType && (
             <div>
               <p className="text-[#747474] dark:text-white">Unit Type</p>
-              <p className="text-black dark:text-darkText-1 capitalize">{unitType}</p>
+              <p className="text-black dark:text-darkText-1 capitalize">
+                {unitType}
+              </p>
             </div>
           )}
           {totalPackage && (
             <div>
               <p className="text-[#747474] dark:text-white">Total Package</p>
-              <p className="text-black dark:text-darkText-1 capitalize">{totalPackage}</p>
+              <p className="text-black dark:text-darkText-1 capitalize">
+                {totalPackage}
+              </p>
             </div>
           )}
           {tenantName && (
@@ -154,7 +164,77 @@ const UnitItem: React.FC<UnitItemProps> = ({
       </div>
 
       <SectionSeparator className="my-4 h-[2px]" />
-      <PropertyTag propertyType={propertyType as "facility" | "rental"} />
+      <div className="flex justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <PropertyTag list propertyType={propertyType as "facility" | "rental"} />
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {actions
+            .filter((action) => {
+              const label =
+                typeof action.label === "function"
+                  ? action.label(propertyType as "rental" | "facility")
+                  : action.label;
+
+              // Define button visibility based on status
+              if (unitStatus === "vacant" || unitStatus === "relocate") {
+                return label === "Start Rent" || label === "Move In";
+              }
+              if (unitStatus === "occupied") {
+                // Exclude "Renew Rent" and "Renew Fee" for occupied unitStatus
+                return (
+                  label !== "Start Rent" &&
+                  label !== "Move In" &&
+                  label !== "Renew Rent" &&
+                  label !== "Renew Fee"
+                );
+              }
+              if (unitStatus === "expired") {
+                return (
+                  label === "Renew Rent" ||
+                  label === "Renew Fee" ||
+                  // label === "Edit" ||
+                  label === "Move Out" ||
+                  label === "Relocate"
+                );
+              }
+              return false; // Default: hide all buttons if unitStatus is unknown
+            })
+            .filter((action) => {
+              const label =
+                typeof action.label === "function"
+                  ? action.label(propertyType as "rental" | "facility")
+                  : action.label;
+
+              // Additional filtering based on propertyType
+              if (propertyType === "rental" && label === "Relocate") {
+                return false;
+              }
+              if (propertyType === "facility" && label === "Move Out") {
+                return false;
+              }
+              return true;
+            })
+            .map((action, i) => (
+              <ActionButton
+                unit_id={unitId}
+                key={i}
+                propertyType={propertyType as "rental" | "facility"}
+                {...action}
+                route={
+                  typeof action.route === "function"
+                    ? action.route(unitId, propertyType as "rental" | "facility")
+                    : action.route
+                }
+                label={
+                  typeof action.label === "function"
+                    ? action.label(propertyType as "rental" | "facility")
+                    : action.label
+                }
+              />
+            ))}
+        </div>
+      </div>
     </div>
   );
 };

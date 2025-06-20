@@ -106,6 +106,9 @@ const CreateInvoicePage = () => {
   ];
 
   const handleCreateInvoice = async (data: any) => {
+    if(!data.tenant_name){
+      return toast.warning("Please select a tenant");
+    } 
     const payload = {
       property_id: selectedProperty,
       tenant_id: data.tenant_name ?? "",

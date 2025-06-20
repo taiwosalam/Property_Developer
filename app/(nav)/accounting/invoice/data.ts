@@ -265,7 +265,7 @@ const transformSingleInvoice = (
   const isValidDate = dayjs(invoice.invoice_date, "YYYY-MM-DD", true).isValid();
   const formattedDate = isValidDate
     ? dayjs(invoice.invoice_date).format("MMM DD YYYY")
-    : "Invalid Date";
+    : invoice.invoice_date;
 
   return {
     ...invoice,
@@ -278,7 +278,7 @@ const transformSingleInvoice = (
     badge_color: invoice.client_tier
       ? tierColorMap[invoice.client_tier as keyof typeof tierColorMap]
       : undefined,
-    date: formattedDate,
+    date: invoice.invoice_date,
     is_auto:
       invoice.is_auto !== undefined ? convertToBoolean(invoice.is_auto) : false,
   };
