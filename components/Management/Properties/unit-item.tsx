@@ -54,6 +54,11 @@ const UnitItem: React.FC<UnitItemProps> = ({
   partial_pending,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
+  const isRental = propertyType.toLowerCase() === "rental"
+
+  const startRentBtnText = isRental
+    ? "Add Tenant"
+    : "Assign Occupant";
   const pendingPart =
     partial_pending || invoice_status?.trim().toLowerCase() === "pending";
   return (
@@ -243,6 +248,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
                 key={i}
                 propertyType={propertyType as "rental" | "facility"}
                 {...action}
+                startText={startRentBtnText}
                 route={
                   typeof action.route === "function"
                     ? action.route(unitId, propertyType as "rental" | "facility")

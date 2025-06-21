@@ -8,6 +8,10 @@ import dynamic from "next/dynamic";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import { type PropertyDetailsSettingsOthersCardProps } from "./property-details-settings-others-card";
 import { type UnitItemProps } from "./unit-item";
+import DOMPurify from "dompurify";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
+import parse from "html-react-parser";
+import Button from "@/components/Form/Button/button";
 
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
@@ -35,11 +39,11 @@ export interface PropertyPreviewProps
   landlordData?: any;
   rent_penalty?: string;
   fee_period?: string;
+  description?: string;
   units: UnitItemProps[];
 }
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
-  // console.log("propss", props);
   const {
     id,
     property_name,
@@ -51,8 +55,10 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
     isRental,
     landlord,
     units,
+    description,
     ...others
   } = props;
+  const sanitizedDescription = DOMPurify.sanitize(description ?? "");
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
@@ -66,39 +72,40 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
       </BackButton>
 
       {/* Heading */}
-      <div className="text-black dark:text-white">
-        <p className="text-base font-medium dark:text-darkText-1">ID: {id}</p>
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
-          {property_name} ({total_units} Unit{total_units > 1 ? "s" : ""})
-        </h1>
-        <p className="text-sm text-text-label font-normal flex items-center gap-1">
-          <LocationIcon />
-          {address}
-        </p>
+      <div className="flex justify-between items-center">
+        <div className="text-black dark:text-white">
+          <p className="text-base font-medium dark:text-darkText-1">ID: {id}</p>
+          <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
+            {property_name} ({total_units} Unit{total_units > 1 ? "s" : ""})
+          </h1>
+          <p className="text-sm text-text-label font-normal flex items-center gap-1">
+            <LocationIcon />
+            {address}
+          </p>
+        </div>
+        <Button href={`management/properties/${id}edit-property`}>
+          Manage
+        </Button>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-x-[30px] gap-y-5">
         <div className="lg:w-[60%] space-y-6">
           {/* Main Image */}
-          <ImageSlider images={images} className="aspect-[1.4] rounded-lg" />
+          <ImageSlider
+            videoLink={isRental ? video_link : undefined}
+            images={images}
+            className="aspect-[1.4] rounded-lg"
+          />
 
-          {/* Videos */}
-          {isRental && isClient && video_link && (
-            <div className="space-y-4">
-              <p className="text-black text-lg md:text-xl lg:text-2xl font-bold">
-                Video
-              </p>
-              <div className="relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]">
-                <DynamicReactPlayer
-                  url={video_link}
-                  width="100%"
-                  height="100%"
-                  pip
-                  controls
-                />
-              </div>
-            </div>
-          )}
+          {/* Description */}
+          <div className="space-y-4">
+            <p className="text-black text-lg md:text-xl lg:text-2xl font-bold">
+              Property Description
+            </p>
+            <TruncatedText lines={5} as="div">
+              {parse(sanitizedDescription)}
+            </TruncatedText>
+          </div>
         </div>
 
         <div className="lg:flex-1 space-y-4">

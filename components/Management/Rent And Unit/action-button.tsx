@@ -13,17 +13,24 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   unit_id,
   propertyType,
   invoice_id,
+  startText,
 }) => {
   const commonStyles =
     "py-2 px-4 rounded-[20px] text-white text-xs font-medium cursor-pointer";
   // Evaluate color: if it's a function, call it with propertyType; otherwise, use it directly
   const buttonColor = typeof color === "function" ? color(propertyType) : color;
+  // Determine final label based on startText override
+  const resolvedLabel =
+    (label === "Start Rent" || label === "Move In") && startText
+      ? startText
+      : label;
 
   if (route) {
     return (
       <Link href={route} passHref>
         <div className={commonStyles} style={{ backgroundColor: buttonColor }}>
-          {label}
+          {/* {label} */}
+          {resolvedLabel}
         </div>
       </Link>
     );
@@ -37,7 +44,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
             className={commonStyles}
             style={{ backgroundColor: buttonColor }}
           >
-            {label}
+             {resolvedLabel}
           </button>
         </ModalTrigger>
         {modal === "Relocate" ? (
