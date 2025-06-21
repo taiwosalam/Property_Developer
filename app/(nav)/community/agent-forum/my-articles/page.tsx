@@ -181,7 +181,7 @@ const MyArticlePage = () => {
           colorScheme={1}
         />
         <Button
-          href="/management/agent-community"
+          href="/community/agent-forum"
           type="button"
           className="page-header-button"
         >

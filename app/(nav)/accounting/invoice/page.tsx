@@ -566,8 +566,9 @@ const AccountingInvoicePage = () => {
         ) : (
           <section>
             <EmptyList
-              buttonText="+ create invoice"
-              buttonLink="/accounting/invoice/create-invoice"
+              noButton
+              // buttonText="+ create invoice"
+              // buttonLink="/accounting/invoice/create-invoice"
               // modalContent={<CreateInvoiceModal />}
               title="You haven't created any invoices yet."
               body={

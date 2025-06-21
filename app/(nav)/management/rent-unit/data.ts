@@ -133,7 +133,8 @@ export const transformRentUnitApiResponse = (
       unit_name: u?.unit_name || "--- ---",
       caution_fee: u?.caution_fee || "--- ---",
       status: u.is_active,
-      invoice_status: u?.invoice_status?.toLowerCase() === "pending" ? "pending" : "paid",
+      invoice_status:
+        u?.invoice_status?.toLowerCase() === "pending" ? "pending" : "paid",
       invoice_id: u.invoice_id,
       fee_period: u.fee_period,
       propertyType: u.property.property_type as "rental" | "facility",
@@ -171,7 +172,6 @@ export const transformRentUnitApiResponse = (
     };
   }
 };
-
 
 export const cancelRent = async (id: number, data: any) => {
   try {
@@ -1327,13 +1327,13 @@ export const calculateOverduePeriods = (
     case "daily":
       return now.diff(due, "day");
     case "weekly":
-      return now.diff(due, "day") > 0 ? 1 : 0; 
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "monthly":
-      return now.diff(due, "day") > 0 ? 1 : 0; 
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "quarterly":
       return Math.floor(now.diff(due, "month") / 3);
     case "yearly":
-      return Math.floor(now.diff(due, "month") / 3); 
+      return Math.floor(now.diff(due, "month") / 3);
     case "biennially":
       return Math.floor(now.diff(due, "year") / 2);
     case "triennially":
@@ -1357,8 +1357,6 @@ export const calculateOverduePeriods = (
       return 0;
   }
 };
-
-
 
 // export const calculateOverduePeriods = (
 //   dueDate: string,

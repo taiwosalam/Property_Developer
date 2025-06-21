@@ -43,6 +43,7 @@ import {
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 
 export const StaffEditProfileInfoSection = () => {
   const { data: staff } = useStaffEditContext();
@@ -130,7 +131,9 @@ export const StaffEditProfileInfoSection = () => {
             label="years of experience (since)"
             inputClassName="setup-f required"
             disableFuture
-            defaultValue={staff?.experience ? dayjs(staff?.experience) : undefined}
+            defaultValue={
+              staff?.experience ? dayjs(staff?.experience) : undefined
+            }
           />
           <Select
             id="gender"
@@ -165,6 +168,7 @@ export const StaffEditProfileInfoSection = () => {
 
 export const StaffEditMoveToAnotherBranchSection = () => {
   const { data: staff } = useStaffEditContext();
+  const router = useRouter();
   // const [branchId, setBranchId] = useState("");
   const [moving, setMoving] = useState(false);
   const name = staff?.full_name;
@@ -181,8 +185,9 @@ export const StaffEditMoveToAnotherBranchSection = () => {
     data: staffsData,
     loading: staffsLoading,
     error: staffsError,
-  } = useFetch<any>(`/staffs/${branchId}`);
-  const staffs = staffsData?.data.staff;
+  } = useFetch<any>(`/branch/${branchId}/staff`);
+  // } = useFetch<any>(`/staffs/${branchId}`);
+  const staffs = staffsData?.data;
 
   const branchOptions =
     branchesData?.data
@@ -197,12 +202,21 @@ export const StaffEditMoveToAnotherBranchSection = () => {
       ?.filter((staffItem: any) => staffItem.id !== staff?.id)
       .map((staff: any) => ({
         value: staff.id,
-        label: `${staff.title} ${staff.name}`,
+        label: `${staff.title} ${staff.user.name}`,
       })) || [];
 
   const hasManager = staff?.position === "manager";
 
   const handleMoveStaff = async (data: Record<string, string>) => {
+    if (!data.select_new_branch) {
+      toast.warning("Please select a branch to move to");
+      return;
+    }
+
+    if (data.select_new_branch_position === "manager") {
+      toast.warning("Please select a new position for the new branch");
+      return;
+    }
     const payload = {
       new_branch_id: data.select_new_branch,
       new_position: data.select_new_branch_position,
@@ -217,6 +231,9 @@ export const StaffEditMoveToAnotherBranchSection = () => {
         );
         if (status) {
           window.dispatchEvent(new Event("staff-updated"));
+          router.push(
+            `/management/staff-branch/${data.select_new_branch}`
+          );
         }
       } finally {
         setMoving(false);
@@ -245,10 +262,10 @@ export const StaffEditMoveToAnotherBranchSection = () => {
               branchesLoading
                 ? "Loading branches..."
                 : branchesError
-                  ? "Error loading branches"
-                  : "Select branch"
+                ? "Error loading branches"
+                : "Select branch"
             }
-          //   defaultValue={staff?.real_estate_title}
+            //   defaultValue={staff?.real_estate_title}
           />
           <Select
             id="transfer_current_position_to"
@@ -261,7 +278,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
             label="select new branch position"
             inputContainerClassName="bg-neutral-2"
             options={["manager", "account officer", "staff"]}
-          //   defaultValue={staff?.real_estate_title}
+            //   defaultValue={staff?.real_estate_title}
           />
           <div className="md:col-span-2 flex justify-end">
             <Button type="submit" size="base_medium" className="py-2 px-6">
@@ -291,15 +308,16 @@ export const StaffEditChangePositionSection = () => {
     data: staffsData,
     loading: staffsLoading,
     error: staffsError,
-  } = useFetch<any>(`/staffs/${branchId}`);
-  const staffs = staffsData?.data.staff;
+  } = useFetch<any>(`/branch/${branchId}/staff`);
+  // } = useFetch<any>(`/staffs/${branchId}`);
+  const staffs = staffsData?.data;
 
   const staffOptions =
     staffs
       ?.filter((staffItem: any) => staffItem.id !== staff?.id)
       .map((staff: any) => ({
         value: staff.id,
-        label: `${staff.title} ${staff.name}`,
+        label: `${staff.title} ${staff.user.name}`,
       })) || [];
 
   const hasManager = staff?.position === "manager";
@@ -345,7 +363,7 @@ export const StaffEditChangePositionSection = () => {
             label="new position"
             inputContainerClassName="bg-neutral-2"
             options={positionOptions}
-          //   defaultValue={staff?.real_estate_title}
+            //   defaultValue={staff?.real_estate_title}
           />
 
           <div className="md:col-span-2 flex justify-end">
@@ -596,7 +614,9 @@ export const StaffEditAvatarInfoSection = () => {
         </label>
 
         <div className="custom-flex-col gap-3">
-          <p className="text-black dark:text-white text-base font-medium">Choose Avatar</p>
+          <p className="text-black dark:text-white text-base font-medium">
+            Choose Avatar
+          </p>
           <Modal
             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >
