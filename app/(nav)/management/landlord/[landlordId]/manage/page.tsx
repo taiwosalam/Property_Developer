@@ -234,9 +234,21 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 >
                   edit
                 </Button>
+                <Button
+                  variant="light_green"
+                  size="base_medium"
+                  className="py-2 px-8"
+                  onClick={() => toast.warning("Coming soon!!!")}
+                >
+                  Link New Unit
+                </Button>
                 <Modal>
                   <ModalTrigger asChild>
-                    <Button size="base_medium" className="py-2 px-8">
+                    <Button
+                      variant="sky_blue"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
                       update with Email
                     </Button>
                   </ModalTrigger>

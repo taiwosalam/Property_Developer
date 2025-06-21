@@ -93,7 +93,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   // });
 
   // Conditionally set exceptions based on user_tag
-  const exceptions = ["notes", "flag","messageUserData"];
+  const exceptions = ["notes", "flag", "messageUserData"];
   if (tenant.user_tag === "web") {
     exceptions.push("guarantor_1", "guarantor_2");
   }
@@ -236,10 +236,22 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 >
                   edit
                 </Button>
+                <Button
+                  variant="light_green"
+                  size="base_medium"
+                  className="py-2 px-8"
+                  onClick={() => toast.warning("Coming soon!!!")}
+                >
+                  Link New Unit
+                </Button>
                 <Modal>
                   <ModalTrigger>
-                    <Button size="base_medium" className="py-2 px-8">
-                      update with Email
+                    <Button
+                      variant="sky_blue"
+                      size="base_medium"
+                      className="py-2 px-8"
+                    >
+                      update with ID
                     </Button>
                   </ModalTrigger>
                   <ModalContent>

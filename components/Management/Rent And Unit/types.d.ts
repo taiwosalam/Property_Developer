@@ -18,6 +18,7 @@ export interface ActionButtonProps {
   route?: string;
   modal?: string;
   unit_id?: string;
+  startText?: string;
   invoice_id?: number | null;
 }
 
