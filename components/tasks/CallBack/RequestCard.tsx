@@ -65,7 +65,6 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     router.push(`/messages/${userId}`);
   };
 
-
   const handleViewDetails = () => {
     setModalOpen(true);
   };
@@ -118,16 +117,18 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     >
       <div className="px-[18px] flex items-center justify-between flex-wrap gap-2 capitalize">
         <div className="flex gap-2">
-          <Picture size={50} src={pictureSrc || empty} rounded />
+          <Picture size={50} src={pictureSrc || empty} rounded className="object-cover"/>
           <div className="space-y-1">
             <div className="flex items-center gap-0.5">
               <span className="text-base font-medium capitalize">
                 {truncateText(userName, 30)}
               </span>
-              {cardType === "visitor" ||
-                (cardType === "agent-community" && props?.tier === "2" && (
-                  <BadgeIcon color={"gray"} />
-                ))}
+               {cardType === "visitor" && props?.tier_id  && (
+                  <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
+                )}
+              {cardType === "agent-community" && props?.tier === "2" && (
+                <BadgeIcon color={"gray"} />
+              )}
             </div>
             {cardType !== "agent-community" ? (
               <div className="flex items-center gap-1">
@@ -258,8 +259,12 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       </div>
       <div className="flex justify-end px-[18px]">
         {(cardType === "property" || cardType === "deposit") && (
-          <button type="button" aria-label="Message" className="mr-4"
-          onClick={goToMessage}>
+          <button
+            type="button"
+            aria-label="Message"
+            className="mr-4"
+            onClick={goToMessage}
+          >
             <ReplyIcon2 />
           </button>
         )}
