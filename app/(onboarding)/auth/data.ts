@@ -257,6 +257,7 @@ export const auth_slider_content: AuthSliderContent = [
 export const login = async (formData: Record<string, any>) => {
   try {
     Cookies.remove("role");
+    Cookies.remove("subscription_status");
     const { data } = await axios.post<LoginResponse>(
       `${base_url}login`,
       formData
@@ -265,6 +266,9 @@ export const login = async (formData: Record<string, any>) => {
     // console.log("Login response", data)
     const token = data.access_token;
     const expired_company_subscription = data.subscription_expired;
+    const subscription_status = data.subscription_expired
+      ? "active"
+      : "expired";
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
@@ -293,6 +297,11 @@ export const login = async (formData: Record<string, any>) => {
       secure: true,
       sameSite: "Strict",
     });
+    Cookies.set("subscription_status", subscription_status, {
+      expires: 7,
+      secure: true,
+      sameSite: "Strict",
+    });
 
     // SAVE TO ZUSTAND
     useAuthStore.getState().setAuthState("token", token);
@@ -311,7 +320,7 @@ export const login = async (formData: Record<string, any>) => {
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
     await saveClientRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (BROWSER COOKIE)
     await saveCompanyStatusToCookie(company_status); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
-    await saveCompanySubscriptionStatusToCookie(expired_company_subscription); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
+    // await saveCompanySubscriptionStatusToCookie(expired_company_subscription); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
 
     if (emailVerified) {
       toast.success(data?.message || "Login successful!");
@@ -408,7 +417,9 @@ export const logout = async (): Promise<boolean> => {
     // Remove token from cookies
     Cookies.remove("auth-token");
     Cookies.remove("company_subscription_status");
-
+    Cookies.remove("expired_company_subscription");
+    Cookies.remove("subscription_status"); 
+    
     resetAuthStore();
     toast.success(message);
     return true;
