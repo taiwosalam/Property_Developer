@@ -55,6 +55,7 @@ import LandlordTenantModalPreset from "../../landlord-tenant-modal-preset";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
 import { MAX_FILE_SIZE_MB } from "@/data";
 import useFetch from "@/hooks/useFetch";
+import { groupDocumentsByType } from "@/utils/group-documents";
 
 export const LandlordEditProfileInfoSection = () => {
   const [reqLoading, setReqLoading] = useState(false);
@@ -581,7 +582,17 @@ export const LandlordEditAttachmentInfoSection = () => {
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
   const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
-  const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
+  // const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
+  const [urlsToRemove, setUrlsToRemove] = useState<
+    { url: string; type: string }[]
+  >([]);
+
+  useEffect(() => {
+    if (landlord?.documents) {
+      // Initialize documents state with the landlord's documents
+      setDocuments(landlord.documents);
+    }
+  }, [landlord?.documents]);
 
   const { fileInputRef, handleFileChange, resetFiles } = useMultipleFileUpload({
     maxFileSizeMB: MAX_FILE_SIZE_MB,
@@ -615,7 +626,13 @@ export const LandlordEditAttachmentInfoSection = () => {
     const documentToRemove = documents.find((doc) => doc.id === fileId);
 
     if (documentToRemove && !documentToRemove.file && documentToRemove.link) {
-      setUrlsToRemove((prevUrls) => [...prevUrls, documentToRemove.link]);
+      setUrlsToRemove((prevUrls) => [
+        ...prevUrls,
+        {
+          url: documentToRemove.link,
+          type: documentToRemove.document_type || "others",
+        },
+      ]);
     }
 
     setDocuments((prev) => prev.filter((doc) => doc.id !== fileId));
@@ -642,9 +659,8 @@ export const LandlordEditAttachmentInfoSection = () => {
     setReqLoading(false);
   };
 
-  // useEffect(() => {
-  //   setDocuments(landlord?.documents || []);
-  // }, [landlord?.documents]);
+  // Group documents for display
+  const groupedDocuments = groupDocumentsByType(documents);
 
   return (
     <LandlordTenantInfoEditSection title="attachment">
@@ -684,7 +700,7 @@ export const LandlordEditAttachmentInfoSection = () => {
           accept={acceptedExtensions.join(",")}
           multiple
         />
-        <div className="flex flex-wrap gap-4 col-span-full">
+        {/* <div className="flex flex-wrap gap-4 col-span-full">
           {documents?.map((document) => (
             <div key={document.id} className="relative w-fit">
               <LandlordTenantInfoDocument {...document} />
@@ -697,7 +713,37 @@ export const LandlordEditAttachmentInfoSection = () => {
               </button>
             </div>
           ))}
+        </div> */}
+
+        <div className="col-span-full">
+          {Object.entries(groupedDocuments).map(([documentType, docs]) => (
+            <div key={documentType} className="mb-6">
+              <h3 className="text-lg font-semibold capitalize mb-2">
+                {documentType === "others" ? "Other Documents" : documentType}
+              </h3>
+              <div className="flex flex-wrap gap-4">
+                {docs?.map((document) => (
+                  <div key={document.id} className="relative w-fit">
+                    <LandlordTenantInfoDocument {...document} />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0"
+                      onClick={() => handleDeleteDocument(document.id)}
+                    >
+                      <DeleteIconOrange size={32} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          {documents.length === 0 && (
+            <div className="flex justify-center items-center h-32 text-neutral-500">
+              No documents available
+            </div>
+          )}
         </div>
+
         <Button
           size="base_medium"
           className="col-span-full w-fit ml-auto py-2 px-6"
@@ -856,7 +902,9 @@ export const LandlordEditAvatarInfoSection = () => {
         </label>
 
         <div className="custom-flex-col gap-3">
-          <p className="text-black text-base font-medium dark:text-white">Choose Avatar</p>
+          <p className="text-black text-base font-medium dark:text-white">
+            Choose Avatar
+          </p>
           <Modal
             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >
