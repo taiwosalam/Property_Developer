@@ -29,6 +29,9 @@ export interface UnitItemProps {
   note?: boolean;
   totalPackage?: string;
   unitType?: string;
+  invoice_status?: string;
+  invoice_id?: number;
+  partial_pending?: boolean;
 }
 
 const UnitItem: React.FC<UnitItemProps> = ({
@@ -46,9 +49,13 @@ const UnitItem: React.FC<UnitItemProps> = ({
   cautionDeposit,
   totalPackage,
   unitType,
+  invoice_status,
+  invoice_id,
+  partial_pending,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
-
+  const pendingPart =
+    partial_pending || invoice_status?.trim().toLowerCase() === "pending";
   return (
     <div
       className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
@@ -166,22 +173,35 @@ const UnitItem: React.FC<UnitItemProps> = ({
       <SectionSeparator className="my-4 h-[2px]" />
       <div className="flex justify-between gap-2">
         <div className="flex items-center gap-2">
-          <PropertyTag list propertyType={propertyType as "facility" | "rental"} />
+          <PropertyTag
+            list
+            propertyType={propertyType as "facility" | "rental"}
+          />
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
           {actions
+            // First: skip all other logic if invoice_status is not 'pending' but action is "Pending"
             .filter((action) => {
               const label =
                 typeof action.label === "function"
                   ? action.label(propertyType as "rental" | "facility")
                   : action.label;
 
+              // Only allow Pending button if invoice_status is "pending"
+              if (label === "Pending") {
+                return invoice_status?.trim().toLowerCase() === "pending";
+              }
+
+              // Hide all other buttons if invoice_status is "pending"
+              if (invoice_status?.trim().toLowerCase() === "pending") {
+                return false;
+              }
+
               // Define button visibility based on status
               if (unitStatus === "vacant" || unitStatus === "relocate") {
                 return label === "Start Rent" || label === "Move In";
               }
               if (unitStatus === "occupied") {
-                // Exclude "Renew Rent" and "Renew Fee" for occupied unitStatus
                 return (
                   label !== "Start Rent" &&
                   label !== "Move In" &&
@@ -193,31 +213,33 @@ const UnitItem: React.FC<UnitItemProps> = ({
                 return (
                   label === "Renew Rent" ||
                   label === "Renew Fee" ||
-                  // label === "Edit" ||
                   label === "Move Out" ||
                   label === "Relocate"
                 );
               }
-              return false; // Default: hide all buttons if unitStatus is unknown
+              return false;
             })
+
+            // Then filter based on propertyType logic
             .filter((action) => {
               const label =
                 typeof action.label === "function"
                   ? action.label(propertyType as "rental" | "facility")
                   : action.label;
 
-              // Additional filtering based on propertyType
-              if (propertyType === "rental" && label === "Relocate") {
+              if (propertyType === "rental" && label === "Relocate")
                 return false;
-              }
-              if (propertyType === "facility" && label === "Move Out") {
+              if (propertyType === "facility" && label === "Move Out")
                 return false;
-              }
+
               return true;
             })
+
+            // Finally render the buttons
             .map((action, i) => (
               <ActionButton
                 unit_id={unitId}
+                invoice_id={Number(invoice_id) ?? 0}
                 key={i}
                 propertyType={propertyType as "rental" | "facility"}
                 {...action}

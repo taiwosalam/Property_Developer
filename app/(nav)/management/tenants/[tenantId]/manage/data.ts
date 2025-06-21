@@ -160,7 +160,7 @@ export const transformIndividualTenantAPIResponse = ({
     rent: CurrentRent | PreviousRent
   ): UnitItemProps => ({
     propertyType: rent?.property_type || "",
-    unitId: rent?.id?.toString() || "",
+    unitId: rent?.unit_id?.toString() || "",
     unitImages: rent?.unit_image?.map((img) => img?.path || "") || [],
     unitDetails: `${rent?.unit_type || ""} - ${rent?.unit_sub_type || ""}`,
     unitStatus: rent?.unit_status as keyof typeof UnitStatusColors,
