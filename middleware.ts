@@ -37,10 +37,10 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for expired company subscription
+  // check for company subscription status
   if (
     !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
-    expired_company_subscription === "true"
+    expired_company_subscription === "false"
   ) {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }

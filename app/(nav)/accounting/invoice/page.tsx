@@ -54,9 +54,11 @@ import ServerError from "@/components/Error/ServerError";
 import useStaffRoles from "@/hooks/getStaffs";
 import { parseHTML } from "@/utils/parse-html";
 import clsx from "clsx";
+import { useSearchParams } from "next/navigation";
 
 const AccountingInvoicePage = () => {
   const isDarkMode = useDarkMode();
+  const searchParams = useSearchParams();
   const {
     setGlobalInfoStore,
     otherCurrencies,
@@ -109,12 +111,17 @@ const AccountingInvoicePage = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+  // Initialize appliedFilters with status from URL
+  const initialFilters: FilterResult = {
     options: [],
-    menuOptions: {},
+    menuOptions: searchParams.get("status")
+      ? { Status: [searchParams.get("status")!] }
+      : {},
     startDate: null,
     endDate: null,
-  });
+  };
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>(initialFilters);
 
   const isFilterApplied = useCallback(() => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;

@@ -46,30 +46,6 @@ const CreateTenancyAggrement = () => {
     useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
   const propertyData = data ? transformSinglePropertyData(data) : null;
 
-  // const handleSaveDraft = async () => {
-  //   const articles = transformArticlesForPayload(checkboxOptions);
-  //   const payload: TenancyAgreementPayload = {
-  //     property_id: Number(propertyId),
-  //     document_id: documentId,
-  //     articles,
-  //   };
-  //   if (!payload.articles.length)
-  //     return toast.warning("Please select at least one option to save draft");
-  //   try {
-  //     setReqLoading(true);
-  //     const res = await createPropertyDocument(objectToFormData(payload));
-  //     if (res) {
-  //       toast.success("Draft saved successfully");
-  //       // router.push("/documents");
-  //       setNext(true);
-  //     }
-  //   } catch (err) {
-  //     toast.error("An error occurred while saving the draft");
-  //   } finally {
-  //     setReqLoading(false);
-  //   }
-  // };
-
   const handleSaveDraft = async (type: "create" | "preview") => {
     const articles = transformArticlesForPayload(checkboxOptions);
     const payload: TenancyAgreementPayload = {

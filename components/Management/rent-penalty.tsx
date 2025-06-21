@@ -73,8 +73,6 @@ const RentPenalty: React.FC<RentPenaltyProps> = ({
     }
   }, [rentPenalty]);
 
-  // ...existing code...
-
   // Add these utility functions at the top of the file
   const convertPercentToNumber = (value: string): number => {
     return Number(value?.replace("%", "")) || 0;
@@ -126,7 +124,7 @@ const RentPenalty: React.FC<RentPenaltyProps> = ({
   };
 
   return (
-    <SettingsSection title="Rent Penalty Settings">
+    <SettingsSection title="Rent Penalty Configurations">
       <div className="flex flex-col gap-8">
         <p className="text-sm font-normal text-text-disabled dark:text-darkText-2">
           The tenant or occupant is required to complete full rent payment on or

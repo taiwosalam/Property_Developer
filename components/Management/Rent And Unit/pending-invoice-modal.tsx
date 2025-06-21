@@ -30,6 +30,7 @@ const PendingInvoiceModal = ({ unit_id, invoice_id, page }: IPepndingTypes) => {
       if (res) {
         toast.success("Updated successfully");
         setIsOpen(false);
+        window.dispatchEvent(new Event("refetchtenant"));
         page === "edit"
           ? window.dispatchEvent(new Event("refech-unit"))
           : page && page === "renew"
