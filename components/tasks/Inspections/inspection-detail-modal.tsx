@@ -21,6 +21,7 @@ import BadgeIcon, {
   BadgeIconColors,
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
+import { toast } from "sonner";
 
 interface InspectionDetailsModelProps {
   data: TInspectionDetails;
@@ -31,6 +32,14 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
   const getBadgeColor = (tier?: number): BadgeIconColors => {
     if (!tier) return "blue";
     return tierColorMap[tier as keyof typeof tierColorMap] || "";
+  };
+
+  const gotoMessage = () => {
+    if (!data.userId) {
+      toast.warning("User ID is missing");
+      router.push("/messages");
+    }
+    router.push(`/messages/${data.userId}`);
   };
   return (
     <div
@@ -111,7 +120,7 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
             <Button
               size="xs_normal"
               className="py-2 px-6"
-              onClick={() => router.push("/messages")}
+              onClick={gotoMessage}
             >
               Message
             </Button>
