@@ -200,6 +200,65 @@ const filterInvoices = (
   });
 };
 
+
+// const calculateStatistics = (
+//   invoices: InvoiceListResponse["data"]["invoices"]
+// ): InvoiceStatistics => {
+//   const initialStats: InvoiceStatistics = {
+//     total_receipt_num: 0,
+//     total_paid_receipt_num: 0,
+//     total_pending_receipt_num: 0,
+//     total_receipt: "₦0.00",
+//     total_paid_receipt: "₦0.00",
+//     total_pending_receipt: "₦0.00",
+//     percentage_change_total: 0,
+//     percentage_change_paid: 0,
+//     percentage_change_pending: 0,
+//   };
+
+//   const stats = invoices.reduce((acc, invoice) => {
+//     const totalAmount = cleanAmount(invoice.total_amount);
+//     const amountPaid = cleanAmount(invoice.amount_paid);
+//     const balanceDue = cleanAmount(invoice.balance_due);
+
+//     acc.total_receipt_num += totalAmount;
+//     acc.total_paid_receipt_num += amountPaid;
+//     acc.total_pending_receipt_num += balanceDue;
+//     return acc;
+//   }, initialStats);
+
+//   // Format totals
+//   stats.total_receipt = formatFee(stats.total_receipt_num, "naira") ?? "₦0.00";
+//   stats.total_paid_receipt =
+//     formatFee(stats.total_paid_receipt_num, "naira") ?? "₦0.00";
+//   stats.total_pending_receipt =
+//     formatFee(stats.total_pending_receipt, "naira") ?? "₦0.00";
+
+//   // Calculate percentages
+//   stats.percentage_change_paid =
+//     stats.total_receipt_num > 0
+//       ? Number(
+//           Math.min(
+//             (stats.total_paid_receipt_num / stats.total_receipt_num) * 100,
+//             100
+//           ).toFixed(2)
+//         )
+//       : 0;
+//   stats.percentage_change_pending =
+//     stats.total_receipt_num > 0
+//       ? Number(
+//           Math.min(
+//             (stats.total_pending_receipt_num / stats.total_receipt_num) * 100,
+//             100
+//           ).toFixed(2)
+//         )
+//       : 0;
+//   stats.percentage_change_total = 0;
+
+//   return stats;
+// };
+
+
 // Calculate naira statistics
 const calculateStatistics = (
   invoices: InvoiceListResponse["data"]["invoices"]
@@ -219,7 +278,11 @@ const calculateStatistics = (
   const stats = invoices.reduce((acc, invoice) => {
     const totalAmount = cleanAmount(invoice.total_amount);
     const amountPaid = cleanAmount(invoice.amount_paid);
-    const balanceDue = cleanAmount(invoice.balance_due);
+    // Use balance_due for non-pending invoices, but calculate for pending
+    const balanceDue =
+      invoice.status.toLowerCase() === "pending"
+        ? totalAmount - amountPaid
+        : cleanAmount(invoice.balance_due);
 
     acc.total_receipt_num += totalAmount;
     acc.total_paid_receipt_num += amountPaid;

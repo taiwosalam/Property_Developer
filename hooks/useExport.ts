@@ -11,7 +11,6 @@ const useExport = (
 ) => {
   const isDarkMode = useDarkMode();
 
-  console.log("isDarkMode", isDarkMode)
   const generatePdf = async () => {
     const pdf = new jsPDF();
     const pdfPageWidth = pdf.internal.pageSize.getWidth();
