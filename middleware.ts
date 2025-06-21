@@ -4,16 +4,14 @@ import { roleBasedRoutes } from "./data";
 export async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
   const role = req.cookies.get("role")?.value;
-  //const authToken = req.cookies.get("authToken")?.value;
   const company_status = req.cookies.get("company_status")?.value;
+  const expired_company_subscription = req.cookies.get(
+    "expired_company_subscription"
+  )?.value;
 
-
-  console.log("role", role)
-  console.log("company_status", company_status)
-
-  // if(!authToken){
-  //   return NextResponse.redirect(new URL("/auth/sign-in", req.url))
-  // }
+  console.log("role", role);
+  console.log("company_subscription_status", expired_company_subscription);
+  console.log("company_status", company_status);
 
   // Public routes accessible without authentication
   const publicRoutes = [
@@ -25,9 +23,26 @@ export async function middleware(req: NextRequest) {
     "/management/agent-community",
   ];
 
+  // Define dashboard paths that bypass company_status check
+  const dashboardPaths = [
+    "/dashboard",
+    "/accountant/dashboard",
+    "/manager/dashboard",
+    "/staff/dashboard",
+    "/user/dashboard",
+  ];
+
   // Allow public routes to proceed without checks
   if (publicRoutes.includes(currentPath)) {
     return NextResponse.next();
+  }
+
+  // Check for expired company subscription
+  if (
+    !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
+    expired_company_subscription === "true"
+  ) {
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
   // If role is 'user', redirect to /setup unless already on an auth/setup page
@@ -49,15 +64,6 @@ export async function middleware(req: NextRequest) {
     if (role === "director") return NextResponse.next();
     return NextResponse.redirect(new URL("/auth/user/sign-in", req.url));
   }
-
-  // Define dashboard paths that bypass company_status check
-  const dashboardPaths = [
-    "/dashboard",
-    "/accountant/dashboard",
-    "/manager/dashboard",
-    "/staff/dashboard",
-    "/user/dashboard",
-  ];
 
   // Company status check: if currentPath does NOT start with a dashboard path,
   // and company_status is "pending" or "rejected", redirect to unauthorized

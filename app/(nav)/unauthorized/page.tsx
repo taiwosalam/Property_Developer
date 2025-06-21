@@ -10,11 +10,16 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useEffect, useState } from "react";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import CompanyStatusModal from "@/components/dashboard/company-status";
+import ExpiredSubscriptionModal from "@/components/Modal/expired-subscription-flow";
 
 const Unauthorized = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
   const { role, setRole } = useRole();
+  const isSubscriptionExpired = usePersonalInfoStore(
+    (state) => state.isSubscriptionExpired
+  );
 
   const company_status = usePersonalInfoStore((state) => state.company_status);
 
@@ -23,6 +28,15 @@ const Unauthorized = () => {
       setIsModalOpen(true);
     }
   }, [company_status]);
+
+  // Open expired subscription modal when isSubscriptionExpired is true
+  useEffect(() => {
+    if (isSubscriptionExpired) {
+      setIsExpiredModalOpen(true);
+    } else {
+      setIsExpiredModalOpen(false);
+    }
+  }, [isSubscriptionExpired]);
   // console.log('user role', role);
   const dashboard = getDashboardPage(role);
 
@@ -37,6 +51,19 @@ const Unauthorized = () => {
           </ModalContent>
         </Modal>
       )}
+
+      {/* EXPIRED PLAN MODAL  */}
+      <Modal
+        state={{
+          isOpen: isExpiredModalOpen,
+          setIsOpen: setIsExpiredModalOpen,
+        }}
+      >
+        <ModalContent disableOutsideClick>
+          <ExpiredSubscriptionModal />
+        </ModalContent>
+      </Modal>
+
       <div className="py-11 px-20 flex flex-col gap-10">
         <div className="w-full flex items-center justify-center">
           <div className="relative text-brand-9">

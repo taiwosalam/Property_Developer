@@ -36,6 +36,19 @@ const NavRequestCallback = () => {
   };
 
   const handleSubmit = async (data: FormData) => {
+    const reason = data.get("info") as string;
+
+    if (!reason) {
+      toast.warning("Please provide a reason for the call back.");
+      return;
+    }
+
+    if(reason.length < 10){
+      toast.warning("Please provide atleast 10 character reason for the call back.");
+      return;
+    }
+
+    // Validate fields (name, email, phone, state, lga, city
     const isValid = validateFields([
       {
         value: name,
@@ -73,7 +86,7 @@ const NavRequestCallback = () => {
       state,
       lga,
       city,
-      reason: data.get("info"),
+      reason,
     };
 
     try {

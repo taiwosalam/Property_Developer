@@ -92,6 +92,8 @@ export const transformFormData = (formData: FormData): CompanyPayload => {
   const avatar = formData.get("avatar") as string;
   const profilePicture = formData.get("director_profile_picture") as File;
 
+  console.log("profilePicture", profilePicture)
+
   if (avatar && avatar.trim() !== "") {
     (director as any).avatar = avatar;
     // Remove profile_picture if avatar is present

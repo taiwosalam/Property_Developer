@@ -289,7 +289,8 @@ const Appearance = () => {
   const handleUpdateScheme = async () => {
     const payload = {
       dashboardColor: selectedColor,
-      fonts: appearance.font
+      fonts: appearance.font,
+      zoomLevel,
     }
     try {
       setReqLoading(true)
@@ -309,6 +310,21 @@ const Appearance = () => {
       }
     } catch (err) {
       toast.error("Failed to Update Scheme")
+    } finally {
+      setReqLoading(false)
+    }
+  }
+
+  const updateZoom = async () => {
+    try {
+      setReqLoading(true)
+      const res = await updateSettings(objectToFormData({zoomLevel}), 'zoom_moderation');
+      if (res && res.status === 200) {
+        window.dispatchEvent(new Event("refetch-settings"));
+        toast.success(`Zoom updated successfully`)
+      }
+    } catch (err) {
+      toast.error("Failed to Update Zoom")
     } finally {
       setReqLoading(false)
     }

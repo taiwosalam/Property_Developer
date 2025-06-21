@@ -29,8 +29,14 @@ interface PersonalInfoStoreState {
   date_of_registration: string | null;
   membership_number: string | null;
   is_verified: boolean;
+  is_owner: boolean;
   industry: string | null;
   cac_registration_number: string | null;
+
+  company_wallet: any;
+  isSubscriptionExpired: boolean;
+  currentPlan: string;
+  currentExpiryDate: string;
 
   setPersonalInfo: <
     K extends keyof Omit<PersonalInfoStoreState, "setPersonalInfo">
@@ -54,6 +60,8 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   requestDemo: false,
   director_id: null,
   director_picture: null,
+
+  company_wallet: null,
   
   profile_picture: null,
 
@@ -72,7 +80,12 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   date_of_registration: null,
   membership_number: null,
   is_verified: false,
+  is_owner: false,
   industry: null,
   cac_registration_number: null,
+
+  isSubscriptionExpired: false,
+  currentPlan: "",
+  currentExpiryDate: "",
   setPersonalInfo: (key, value) => set({ [key]: value }),
 }));

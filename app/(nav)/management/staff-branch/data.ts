@@ -117,6 +117,7 @@ export const transformBranchApiResponse = (
   response: BranchApiResponse
 ): BranchesPageData => {
   const { data, branch_count, pagination } = response;
+  console.log("branch data", response)
   return {
     total_pages: pagination.last_page,
     current_page: pagination.current_page,

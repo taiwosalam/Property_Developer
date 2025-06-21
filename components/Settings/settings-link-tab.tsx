@@ -20,16 +20,55 @@ import clsx from "clsx";
 import Cookies from "js-cookie";
 import { getSettingsPath } from "@/app/(onboarding)/auth/data";
 import { useRole } from "@/hooks/roleContext";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { usePermission } from "@/hooks/getPermission";
 
 const SettingsLinkTab: React.FC<
   SettingsLinkTabProps & { className?: string }
 > = ({ type, active, className }) => {
-  const active_color = "#fff";
-  const default_color = "#000";
-
-  const color = active ? "#000" : "#fff";
-  const { role, setRole } = useRole();
+  const { role } = useRole();
   const path = getSettingsPath(role);
+  const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
+
+  // Permission checks
+  const permissions: Record<string, { check: boolean; icon: React.FC }> = {
+    company: {
+      check:
+        usePermission(role, "Modify Company Information") || isCompanyOwner,
+      icon: ProfileIcon,
+    },
+    management: {
+      check:
+        usePermission(role, "Access Management Settings") || isCompanyOwner,
+      icon: ManagementIcon,
+    },
+    "add-on": {
+      check: usePermission(role, "Manage Add-on Settings") || isCompanyOwner,
+      icon: SubscriptionIcon,
+    },
+    services: {
+      check: usePermission(role, "Edit Services") || isCompanyOwner,
+      icon: ServicesIcon,
+    },
+    security: { check: true, icon: SecurityIcon },
+    subscription: {
+      check:
+        usePermission(role, "Manage Subscription Settings") || isCompanyOwner,
+      icon: EnrollmentIcon,
+    },
+    appearance: {
+      check: usePermission(role, "Customize Appearance") || isCompanyOwner,
+      icon: AppearanceIcon,
+    },
+    others: { check: true, icon: SettingsIcon },
+    preference: { check: true, icon: PreferenceIcon },
+  };
+
+  // Get the permission config for the current type
+  const config = permissions[type];
+
+  // If the user doesn't have permission, don't render the link
+  if (!config?.check) return null;
 
   return (
     <Link
@@ -45,33 +84,12 @@ const SettingsLinkTab: React.FC<
         className
       )}
     >
-      {type === "company" ? (
-        <ProfileIcon />
-      ) : type === "management" ? (
-        <ManagementIcon />
-      // ) : type === "subscription" ? (
-      //   <SubscriptionIcon />
-      ) : type === "add-on" ? (
-        <SubscriptionIcon />
-      ) : type === "services" ? (
-        <ServicesIcon />
-      ) : type === "security" ? (
-        <SecurityIcon />
-      ) : type === "subscription" ? (
-        <EnrollmentIcon />
-      ) : type === "appearance" ? (
-        <AppearanceIcon />
-      ) : type === "others" ? (
-        <SettingsIcon />
-      ) : type === "preference" ? (
-        <PreferenceIcon />
-      ) : null}
+      <config.icon />
       <p
-        className={`text-base font-normal capitalize ${
-          active
-            ? "dark:text-white"
-            : "dark:text-darkText-1 dark:hover:text-white"
-        }`}
+        className={clsx("text-base font-normal capitalize", {
+          "dark:text-white": active,
+          "dark:text-darkText-1 dark:hover:text-white": !active,
+        })}
       >
         {type}
       </p>

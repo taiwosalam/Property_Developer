@@ -36,7 +36,11 @@ import {
   staff_profile_actions,
   user_profile_actions,
 } from "@/components/Nav/options";
-import { saveCompanyStatusToCookie, saveRoleToCookie } from "@/utils/saveRole";
+import {
+  saveCompanyStatusToCookie,
+  saveCompanySubscriptionStatusToCookie,
+  saveRoleToCookie,
+} from "@/utils/saveRole";
 import { saveMiddlewareRoleToCookie } from "@/utils/setMiddlewareRole";
 import { saveClientRoleToCookie } from "@/utils/saveClientRole";
 import { saveLocalStorage } from "@/utils/local-storage";
@@ -200,6 +204,7 @@ export const getFacilityPropertyCreatePath = (role: string | null): string => {
 interface LoginResponse {
   message: string;
   access_token: string;
+  subscription_expired: boolean;
   data: {
     details: {
       id: string;
@@ -259,6 +264,7 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().reset();
     // console.log("Login response", data)
     const token = data.access_token;
+    const expired_company_subscription = data.subscription_expired;
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
@@ -305,6 +311,7 @@ export const login = async (formData: Record<string, any>) => {
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
     await saveClientRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (BROWSER COOKIE)
     await saveCompanyStatusToCookie(company_status); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
+    await saveCompanySubscriptionStatusToCookie(expired_company_subscription); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
 
     if (emailVerified) {
       toast.success(data?.message || "Login successful!");
@@ -396,10 +403,11 @@ export const logout = async (): Promise<boolean> => {
   const resetAuthStore = useAuthStore.getState().reset;
   try {
     const { data } = await api.post("logout");
-    const message = data?.message || "Successfully logged out";
+    const message = data?.message || "Successfu lly logged out";
 
     // Remove token from cookies
     Cookies.remove("auth-token");
+    Cookies.remove("company_subscription_status");
 
     resetAuthStore();
     toast.success(message);

@@ -75,7 +75,7 @@ const AICustomPromptModal: React.FC<AICustomPromptModalProps> = ({
               rows={10}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Ask anything..."
-              className="w-full p-3 border rounded-lg text-black dark:text-white bg-white dark:bg-darkText-1 border-gray-300 dark:border-darkText-1 focus:outline-none focus:ring-2 focus:ring-brand-9"
+              className="w-full p-3 border rounded-lg text-black dark:text-white bg-white dark:bg-transparent border-gray-300 dark:border-darkText-1 focus:outline-none focus:ring-2 focus:ring-brand-9"
             />
             <div className="mt-4 flex justify-end">
               <Button

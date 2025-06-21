@@ -184,8 +184,6 @@ const Dashboard = () => {
     const hasNoVacantUnits = dashboardStats.some(
       (stat) => stat.title === "Vacant Unit" && stat.value === 0
     );
-    console.log("hasNoProperties", hasNoProperties);
-    console.log("hasNoVacantUnits", hasNoVacantUnits);
     const shouldRunTour =
       company_status === "approved" && hasNoProperties && hasNoVacantUnits;
 
@@ -195,14 +193,15 @@ const Dashboard = () => {
       setShouldRenderTour(false);
     }
 
-    return () => setShouldRenderTour(false);
-  }, [
-    company_status,
-    dashboardStats,
-    loading,
-    setShouldRenderTour,
-    setPersist,
-  ]);
+  return () => setShouldRenderTour(false);
+}, [
+  company_status,
+  dashboardStats,
+  loading,
+  setShouldRenderTour,
+  setPersist,
+  isTourCompleted,
+]);
 
   if (isNetworkError) return <NetworkError />;
   // ================== CONDITIONAL RENDERING ================== //

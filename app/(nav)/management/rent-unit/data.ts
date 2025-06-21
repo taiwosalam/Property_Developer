@@ -133,7 +133,8 @@ export const transformRentUnitApiResponse = (
       unit_name: u?.unit_name || "--- ---",
       caution_fee: u?.caution_fee || "--- ---",
       status: u.is_active,
-      invoice_status: u?.invoice_status?.toLowerCase() === "pending" ? "pending" : "paid",
+      invoice_status:
+        u?.invoice_status?.toLowerCase() === "pending" ? "pending" : "paid",
       invoice_id: u.invoice_id,
       fee_period: u.fee_period,
       propertyType: u.property.property_type as "rental" | "facility",
@@ -171,7 +172,6 @@ export const transformRentUnitApiResponse = (
     };
   }
 };
-
 
 export const cancelRent = async (id: number, data: any) => {
   try {
@@ -296,13 +296,15 @@ export interface User {
 
 export interface RentUnitFilterParams {
   date_from?: string;
+  page: number;
   date_to?: string;
   branch_id?: string[];
   state?: string[];
   staff_id?: string[];
   property_type?: "rental" | "facility";
-  sort_by?: "desc";
+  sort_by?: "desc" | "asc";
   search?: string;
+  is_active?: string;
 }
 
 export interface RentalPropertyCardProps {
@@ -1039,6 +1041,7 @@ export const transformUnitData = (response: any) => {
     fee_penalty: convertToYesNo(Number(data.property.fee_penalty)),
     chargePenalty: data.property.rent_penalty || data.property.fee_penalty,
     caution_deposit: data.user.property.caution_deposit,
+    propertyType: data.property.property_type as "rental" | "facility",
     // PROPERTY VALUES
     property_title: data.property.title,
     whoToCharge: data.user.property.who_to_charge_new_tenant,
@@ -1324,13 +1327,13 @@ export const calculateOverduePeriods = (
     case "daily":
       return now.diff(due, "day");
     case "weekly":
-      return now.diff(due, "day") > 0 ? 1 : 0; 
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "monthly":
-      return now.diff(due, "day") > 0 ? 1 : 0; 
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "quarterly":
       return Math.floor(now.diff(due, "month") / 3);
     case "yearly":
-      return Math.floor(now.diff(due, "month") / 3); 
+      return Math.floor(now.diff(due, "month") / 3);
     case "biennially":
       return Math.floor(now.diff(due, "year") / 2);
     case "triennially":
@@ -1354,8 +1357,6 @@ export const calculateOverduePeriods = (
       return 0;
   }
 };
-
-
 
 // export const calculateOverduePeriods = (
 //   dueDate: string,

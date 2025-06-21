@@ -126,17 +126,51 @@ export const uploadDocuments = async (
   return true;
 };
 
+// export const removeDocuments = async (
+//   urlsToRemove: string[],
+//   tenantId: string
+// ) => {
+//   const payload: RemoveFilePayload = { remove_files: urlsToRemove };
+//   try {
+//     await api.post(`/tenant/${tenantId}/attach-documents`, payload);
+//     return true;
+//   } catch (error) {
+//     return false;
+//   }
+// };
+
 export const removeDocuments = async (
-  urlsToRemove: string[],
+  urlsToRemove: { url: string; type: string }[],
   tenantId: string
 ) => {
-  const payload: RemoveFilePayload = { remove_files: urlsToRemove };
-  try {
-    await api.post(`/tenant/${tenantId}/attach-documents`, payload);
-    return true;
-  } catch (error) {
-    return false;
+  // Group URLs by document type
+  const urlsByType = urlsToRemove.reduce<Record<string, string[]>>(
+    (acc, { url, type }) => {
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(url);
+      return acc;
+    },
+    {}
+  );
+
+  // Send removal requests for each document type
+  for (const [type, remove_files] of Object.entries(urlsByType)) {
+    const formData = new FormData();
+    formData.append("type", type);
+    remove_files.forEach((url, index) => {
+      formData.append(`remove_files[${index}]`, url);
+    });
+
+    try {
+      await api.post(`/tenant/${tenantId}/attach-documents`, formData);
+    } catch (error) {
+      console.error(`Failed to remove documents of type ${type}:`, error);
+      return false;
+    }
   }
+  return true;
 };
 
 export const isValidValue = (value: string | undefined | null): boolean => {

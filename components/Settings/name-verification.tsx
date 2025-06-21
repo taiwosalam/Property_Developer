@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, useEffect, useState } from "react";
-import { Button } from "../ui/button";
+// import { Button } from "../ui/button";
 import WalletModalPreset from "../Wallet/wallet-modal-preset";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Input from "../Form/Input/input";
@@ -16,6 +16,7 @@ import {
 } from "@/app/(nav)/settings/security/data";
 import { BvnLookupResponse } from "@/app/(nav)/settings/security/types";
 import { toast } from "sonner";
+import Button from "../Form/Button/button";
 
 interface NameVerificationProps {
   fullName: string;
@@ -102,21 +103,21 @@ export const NameVerification = ({
             className="w-[800px]"
           >
             <div>
-              <div className="p-[18px] rounded-2xl bg-neutral-2">
+              <div className="p-[18px] rounded-2xl bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-gray-500">
                 <div className="flex gap-3">
                   <div className="flex items-center gap-1">
-                    <p className="font-bold text-lg text-black capitalize">
+                    <p className="font-bold text-lg text-black dark:text-white capitalize">
                       {fullName}
                     </p>
                     <BadgeIcon color={"gray"} />
                   </div>
                 </div>
                 <div className="flex flex-col gap-2 mt-4">
-                  <p className="pb-2 border-b-2 border-dotted border-slate-400 text-black">
+                  <p className="pb-2 border-b-2 border-dotted border-slate-400 text-black dark:text-darkText-1">
                     Get a verified badge and build trust with clients and
                     colleagues.
                   </p>
-                  <p className="text-slate-500">
+                  <p className="text-slate-500 dark:text-darkText-1">
                     We use your Bank Verification Number (BVN) to confirm your
                     identity, prevent fraud, and comply with Know Your Customer
                     (KYC) and Anti-Money Laundering (AML) regulations set by the
@@ -124,8 +125,8 @@ export const NameVerification = ({
                   </p>
                 </div>
               </div>
-              <div className="bg-neutral-2 rounded-2xl flex flex-col gap-2 mt-4 px-6 py-4">
-                <p className="pb-2 text-slate-500">
+              <div className="bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-gray-500 rounded-2xl flex flex-col gap-2 mt-4 px-6 py-4">
+                <p className="pb-2 text-slate-500 dark:text-darkText-1">
                   Your BVN is used solely as a unique identifier for
                   verification purposes. It is collected with your consent and
                   handled securely, in full compliance with data privacy laws.
@@ -143,10 +144,11 @@ export const NameVerification = ({
                     onChange={handleBvnChange}
                   />
                 </div>
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-2 items-center">
                   <Button
-                    className="bg-blue-500 dark:bg-blue-500 dark:text-white hover:bg-blue-500/70 dark:hover:bg-blue-500/70 text-white mt-5 py-2 h-9"
+                    className="bg-brand-9 flex items-center dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white mt-5 py-2 h-9"
                     onClick={handleInitiateBVNLookup}
+                    disabled={isInitiating}
                   >
                     {isInitiating ? "Please wait..." : "Confirm"}
                   </Button>
@@ -257,7 +259,7 @@ export const VerificationMethod = ({
         className="w-[800px]"
         back={onBack}
       >
-        <div className="p-[18px] rounded-2xl bg-neutral-2 mt-4 mb-4">
+        <div className="p-[18px] rounded-2xl dark:bg-darkText-primary dark:border dark:border-gray-500 mt-4 mb-4">
           <p className="text-red-500">
             {responseMethod?.message ||
               "Failed to load verification methods. Please try again."}
@@ -302,7 +304,7 @@ export const VerificationMethod = ({
 
             return (
               <div
-                className="p-[18px] rounded-2xl bg-neutral-2 mb-4 cursor-pointer"
+                className="p-[18px] rounded-2xl bg-neutral-2 mb-4 cursor-pointer dark:bg-darkText-primary dark:border dark:border-gray-500"
                 key={index}
                 onClick={() => onMethodSelect(method.title)}
               >
@@ -323,14 +325,16 @@ export const VerificationMethod = ({
                       </p>
                     </div>
                   </div>
-                  <div>
+                  <div className="flex items-center justify-end">
                     <Button
                       // onClick={(e) => {
                       //   e.stopPropagation(); // Prevent onClick from triggering parent div
                       //   handleProceedToOTP({ method: method.method });
                       // }}
-                      className="h-5 py-4 bg-blue-800 hover:bg-blue-800/80"
+                      variant="custom"
+                      className="p-2 bg-brand-9 hover:bg-brand-9/80 items-center flex"
                       disabled={isProceeding}
+                      size="sm_normal"
                     >
                       {isProceeding ? "Please wait..." : "Proceed"}
                     </Button>
@@ -715,16 +719,16 @@ export const AlternateMethod = ({
               } to receive an OTP for BVN verification`}
           </p>
           {selectMethod === "Email" ? (
-            <p className="max-w-[20rem] text-gray-500 text-center">
+            <p className="max-w-[20rem] text-gray-500 dark:text-white text-center">
               To verify your identity, please complete the email address above.
             </p>
           ) : selectMethod === "Alternative Number" ? (
-            <p className="max-w-[20rem] text-gray-500 text-center">
+            <p className="max-w-[20rem] text-gray-500 dark:text-white text-center">
               Please enter any other phone number linked to any of your bank
               accounts.
             </p>
           ) : (
-            <p className="max-w-[20rem] text-gray-500 text-center">
+            <p className="max-w-[20rem] text-gray-500 dark:text-white text-center">
               To verify your identity, please complete the phone number above
             </p>
           )}
@@ -754,8 +758,9 @@ export const AlternateMethod = ({
                 />
               )}
               <Button
-                className="bg-transparent flex justify-center items-center font-semibold text-center py-4 text-lg text-blue-700 hover:bg-transparent"
+                className="bg-transparent flex justify-center items-center font-semibold text-center py-4 text-lg dark:text-white hover:bg-transparent"
                 onClick={onChangeOption}
+                variant="custom"
               >
                 Change option
               </Button>
@@ -771,7 +776,7 @@ export const AlternateMethod = ({
               Back
             </Button> */}
             <Button
-              className="py-4 bg-blue-800 hover:bg-blue-800/80 w-full"
+              className="py-4 bg-brand-9 hover:bg-brand-9/80 w-full"
               onClick={handleProceedToOTP}
               disabled={isSubmitting}
             >

@@ -19,7 +19,6 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({ next }) => {
             id="title"
             placeholder="Add Title"
             className="md:col-span-2"
-            style={{ backgroundColor: "white" }}
           />
           <Select
             id="branch"

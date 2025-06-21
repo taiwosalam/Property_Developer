@@ -179,7 +179,8 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                     />
                   ))
               ) : (
-                <NoReviews />
+                // <NoReviews />
+                <></>
               )}
             </div>
           </div>

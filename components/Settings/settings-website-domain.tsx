@@ -36,6 +36,8 @@ import dayjs from "dayjs";
 
 const SettingsWebsiteDomain = () => {
   const [customDomain, setCustomDomain] = useState("");
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { company_id, user_id } = usePersonalInfoStore();
@@ -302,9 +304,10 @@ const SettingsWebsiteDomain = () => {
               onSelect={(value) => handleSelect("template1", value)}
               isSelected={selectedTemplate === "template1"}
               profile={true}
+              plan={currentPlanKeyword}
             />
             <ThemeCard
-              plan="professional"
+              plan={currentPlanKeyword}
               img={WebsiteTemplate2}
               value="template2"
               onSelect={(value) => handleSelect("template2", value)}
@@ -312,7 +315,7 @@ const SettingsWebsiteDomain = () => {
               profile={true}
             />
             <ThemeCard
-              plan="professional"
+              plan={currentPlanKeyword}
               img={WebsiteTemplate3}
               value="template3"
               onSelect={(value) => handleSelect("template3", value)}

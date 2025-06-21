@@ -10,6 +10,7 @@ import { checkValidatonError } from "@/utils/validation";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import Image from "next/image";
 import { empty } from "@/app/config";
+import Picture from "@/components/Picture/picture";
 
 const SelectWithImage: React.FC<SelectProps> = ({
   id,
@@ -209,41 +210,15 @@ const SelectWithImage: React.FC<SelectProps> = ({
           )}
           {/* Conditionally render input or selected value based on `isSearchable` */}
           {selectedValue && !isOpen ? (
-            // <div className="flex items-center gap-1 bg-red-500">
-            //   {selectedIcon && selectedIcon !== "null" && (
-            //     <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
-            //       <Image
-            //         src={selectedIcon}
-            //         alt={`${selectedLabel} icon`}
-            //         width={20}
-            //         height={20}
-            //         className="w-full h-full object-contain"
-            //       />
-            //     </div>
-            //   )}
-
-            //   <span
-            //     className={clsx(
-            //       "flex-1 capitalize text-text-disabled dark:bg-transparent text-xs md:text-sm font-normal",
-            //       inputTextClassName
-            //     )}
-            //   >
-            //     {/* {selectedLabel} */}
-            //     <span className="truncate">{selectedLabel}</span>
-            //   </span>
-            // </div>
-
             <div className="flex items-center gap-1 w-full overflow-hidden">
               {selectedIcon && selectedIcon !== "null" && (
-                <div className="custom-secondary-bg p-[2px] h-6 w-6 mr-[1px] rounded-full items-center">
-                  <Image
-                    src={selectedIcon}
-                    alt={`${selectedLabel} icon`}
-                    width={25}
-                    height={25}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+                <Picture
+                  src={selectedIcon || empty}
+                  alt={`${selectedLabel} icon`}
+                  size={25}
+                  rounded
+                  containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
+                />
               )}
               <span
                 className={clsx(
@@ -342,17 +317,13 @@ const SelectWithImage: React.FC<SelectProps> = ({
                       onClick={() => handleSelection(option)}
                     >
                       {icon && (
-                        // <IconComponent className="h-4 w-4 mr-2" />
-                        <div className="custom-secondary-bg p-[2px] h-6 min-w-6 mr-[1px] rounded-full items-center">
-                          <Image
-                            // src={icon as string || empty}
-                            src={icon as string}
-                            alt={`${value}`}
-                            width={25}
-                            height={25}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
+                        <Picture
+                          src={icon || empty}
+                          alt="User picture"
+                          size={25}
+                          rounded
+                          containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
+                        />
                       )}
                       <span className="truncate">{label}</span>
                     </div>

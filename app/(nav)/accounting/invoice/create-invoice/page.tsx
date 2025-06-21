@@ -35,6 +35,7 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { currencySymbols } from "@/utils/number-formatter";
+import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 
 const CreateInvoicePage = () => {
   const searchParams = useSearchParams();
@@ -54,11 +55,28 @@ const CreateInvoicePage = () => {
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
 
+  // PROPERTY SELECTION LOGIC
+  const [selectedProperty, setSelectedProperty] = useState<number>(0);
+  const {
+    data: properties,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    properties?.data
+      .filter((p) => p.has_unit)
+      .map((p) => ({
+        value: `${p.id}`,
+        label: p.title,
+      })) || [];
+  // PROPERTY SELECTION LOGIC ENDS
+
   const {
     data: TenantsData,
     loading: TenantLoading,
     error: TenantsError,
-  } = useFetch<PropertyTenantResponse>(`all-tenants/${propertyId}`);
+  } = useFetch<PropertyTenantResponse>(`all-tenants/${selectedProperty}`);
 
   const TENANT_OPTIONS =
     TenantsData?.data.map((t) => ({
@@ -67,34 +85,11 @@ const CreateInvoicePage = () => {
       icon: t.picture,
     })) || [];
 
-  const handleAddPaymentClick = () => {
-    if (paymentTitle && paymentAmount) {
-      // Remove commas and parse the amount as a float
-      const parsedAmount = parseFloat(paymentAmount.replace(/,/g, ""));
-      if (!isNaN(parsedAmount)) {
-        setPayments([
-          ...payments,
-          { title: paymentTitle, amount: parsedAmount },
-        ]);
-        setPaymentTitle("");
-        setPaymentAmount("");
-      }
-    }
-  };
-
-  const totalAmount = payments.reduce(
-    (total, payment) => total + payment.amount,
-    0
-  );
-  const handleDeletePayment = (index: number) => {
-    setPayments(payments.filter((_, i) => i !== index));
-  };
-
   const { data, loading, error, isNetworkError } =
-    useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
+    useFetch<SinglePropertyResponse>(
+      selectedProperty ? `property/${selectedProperty}/view` : null
+    );
   const propertyData = data ? transformSinglePropertyData(data) : null;
-
-  console.log("propertyData", propertyData);
 
   if (loading) {
     return (
@@ -108,12 +103,14 @@ const CreateInvoicePage = () => {
     { value: "once", label: "Once" },
     { value: "weekly", label: "Weekly" },
     { value: "monthly", label: "Monthly" },
-    // { value: "yearly", label: "Yearly" },
   ];
 
   const handleCreateInvoice = async (data: any) => {
+    if(!data.tenant_name){
+      return toast.warning("Please select a tenant");
+    } 
     const payload = {
-      property_id: propertyData?.id,
+      property_id: selectedProperty,
       tenant_id: data.tenant_name ?? "",
       amount: parseFormattedNumber(data.amount),
       description: data.description,
@@ -156,12 +153,28 @@ const CreateInvoicePage = () => {
             property_name={propertyData?.property_name}
             account_officer={propertyData?.account_officer}
           />
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <Select
+              id="property"
+              label={`Choose Property`}
+              options={propertyOptions}
+              disabled={propertyLoading}
+              placeholder={
+                propertyLoading
+                  ? "Loading properties..."
+                  : propertyError
+                  ? "Failed to load properties"
+                  : "Select a property"
+              }
+              onChange={(value) => setSelectedProperty(Number(value))}
+            />
+
             <SelectWithImage
               id="tenant_name"
               options={TENANT_OPTIONS}
               label="Tenant/Occupant"
-              disabled={isSelectDisabled || TenantLoading}
+              // disabled={isSelectDisabled || TenantLoading}
+              disabled={TenantLoading}
               placeholder={
                 TenantLoading
                   ? "Loading Tenants"
@@ -178,7 +191,7 @@ const CreateInvoicePage = () => {
               checked={isSelectDisabled}
               onChange={handleGenerateInvoiceCheckboxChange}
             >
-              Click to generate invoive for all tenants and occupants of this
+              Click to generate invoice for all tenants and occupants of this
               property (mobile users)
             </Checkbox>
             <Select
@@ -195,7 +208,7 @@ const CreateInvoicePage = () => {
               id="amount"
               label="Amount"
               className="w-full"
-              CURRENCY_SYMBOL={CURRENCY}
+              // CURRENCY_SYMBOL={CURRENCY}
               formatNumber
               value={paymentAmount}
               onChange={setPaymentAmount}

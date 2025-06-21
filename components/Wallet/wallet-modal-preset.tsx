@@ -14,6 +14,7 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
   children,
   headerClassName,
   className,
+  noClose,
 }) => {
   return (
     <div
@@ -42,9 +43,11 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
           ) : (
             <div></div>
           )}
-          <ModalTrigger close>
-            <XIcon size="30" />
-          </ModalTrigger>
+          {!noClose && (
+            <ModalTrigger close>
+              <XIcon size="30" />
+            </ModalTrigger>
+          )}
         </div>
         <p className="text-text-secondary dark:text-white font-medium text-center capitalize">
           {title}

@@ -215,6 +215,7 @@ const StaffAndBranches = () => {
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
+  console.log("branches", branches)
   return (
     <div className="space-y-9">
       {/* For grid view use the contentTopRef so that manual pagination scrolls to top */}
@@ -306,7 +307,8 @@ const StaffAndBranches = () => {
         ) : view === "grid" ? (
           <AutoResizingGrid minWidth={284} key="card">
             {branches.map((b) =>
-              b.is_active === 1 ? (
+              // b.is_active === 1 ? (
+              b.is_active ? (
                 <Link href={`/management/staff-branch/${b.id}`} key={b.id}>
                   <BranchCard {...b} />
                 </Link>

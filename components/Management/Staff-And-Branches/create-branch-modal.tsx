@@ -6,7 +6,7 @@ import { useModal } from "@/components/Modal/modal";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
-import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
+import { getAllStates, getLocalGovernments, getCities, getAllLocalGovernments, getAllCities } from "@/utils/states";
 import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
@@ -19,10 +19,13 @@ import { PersonIcon, DeleteIconOrange } from "@/public/icons/icons";
 import { checkFormDataForImageOrAvatar } from "@/utils/checkFormDataForImageOrAvatar";
 import { createBranch } from "./data";
 import { BranchCardProps } from "./branch-card";
+import RestrictInput from "@/components/Form/Input/InputWIthRestrict";
+import { useGlobalStore } from "@/store/general-store";
 // import VerifyEmailModal from "./verify-email-modal";
 
 const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
   const { setIsOpen } = useModal();
+  const hasRestrictedWords = useGlobalStore((s) => s.hasRestrictedWords);
   const router = useRouter();
   const pathname = usePathname();
   const [formStep, setFormStep] = useState(1);
@@ -74,11 +77,14 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
   const handleFormSubmit = async (data: Record<string, any>) => {
     // Check if the branch name already exists
     const branchExists = branches?.some(
-      (branch) => branch.branch_title.toLowerCase() === data.branch_name.toLowerCase()
+      (branch) =>
+        branch.branch_title.toLowerCase() === data.branch_name.toLowerCase()
     );
 
     if (branchExists) {
-      toast.error("A branch with this name already exists. Please choose a different name.");
+      toast.error(
+        "A branch with this name already exists. Please choose a different name."
+      );
       return; // Prevent further processing
     }
 
@@ -105,6 +111,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
       }
     } else {
       setIsLoading(false);
+      setIsOpen(false);
     }
   };
 
@@ -117,8 +124,9 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
       <div className="relative">
         <AuthForm
           skipValidation
-          className={`custom-flex-col gap-5 transition-opacity duration-150 ${formStep === 2 ? "pointer-events-none opacity-0" : "opacity-100"
-            }`}
+          className={`custom-flex-col gap-5 transition-opacity duration-150 ${
+            formStep === 2 ? "pointer-events-none opacity-0" : "opacity-100"
+          }`}
           onFormSubmit={handleFormSubmit}
         >
           <input type="hidden" name="avatar" value={activeAvatar} />
@@ -157,12 +165,22 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
               allowCustom={true}
               inputContainerClassName="bg-neutral-2"
             />
-            <Input
-              label="Branch Full Address"
+
+            <RestrictInput
+              label="Street/Office Number"
               id="branch_address"
-              required
+              placeholder="Write here"
               inputClassName="rounded-[8px]"
+              required
+              restrictedWordsOptions={{
+                words: [
+                  ...getAllStates(),
+                  ...getAllLocalGovernments(),
+                  ...getAllCities(),
+                ],
+              }}
             />
+
             <Select
               label="Branch Wallet"
               id="branch_wallet"
@@ -184,7 +202,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
             />
             <TextArea
               id="branch_description"
-              label="Branch Description"
+              label="Write About Branch"
               placeholder="Write here"
               required
               inputSpaceClassName="bg-neutral-2 dark:bg-darkText-primary !h-[100px]"
@@ -193,8 +211,9 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
           </div>
           <div className="flex justify-between items-end gap-4 flex-wrap">
             <div className="custom-flex-col gap-3">
-              <p className="text-black text-base font-medium">
-                <span className="text-status-error-primary">*</span>Upload picture or select Sample
+              <p className="text-black dark:text-darkText-2 text-base font-medium">
+                <span className="text-status-error-primary">*</span>Upload
+                picture or select Sample
               </p>
               <div className="flex items-end gap-3">
                 <label htmlFor="picture" className="cursor-pointer relative">
@@ -260,7 +279,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
               type="submit"
               size="base_medium"
               className="py-2 px-8 ml-auto !w-fit"
-              disabled={isLoading}
+              disabled={isLoading || hasRestrictedWords}
             >
               {isLoading ? "Creating..." : "Create"}
             </Button>

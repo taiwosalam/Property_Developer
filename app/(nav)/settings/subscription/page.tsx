@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import SettingsSection from "@/components/Settings/settings-section";
 import SettingsEnrollmentCard from "@/components/Settings/SettingsEnrollment/settings-enrollment-card";
 import Link from "next/link";
@@ -10,142 +10,217 @@ import { CustomTableProps } from "@/components/Table/types";
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 import { enrollment_subscriptions } from "../add-on/data";
+import useFetch from "@/hooks/useFetch";
+import {
+  EnrollmentApiResponse,
+  PropertyManagerSubsApiResponseTypes,
+  PropertyManagerSubsTransformedPlan,
+} from "./types";
+import {
+  calculatePrice,
+  transformPropertyManagerSubsApiData,
+  activatePlan,
+  extendPropertyManagerPlan,
+  upgradePropertyManagerPlan,
+  transformEnrollmentHistory,
+} from "./data";
+import SettingsEnrollmentCardSkeleton from "@/components/Settings/SettingsEnrollment/enrolllment-card-skeleton";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { cleanPricingValue } from "@/utils/cleanPrice";
+import ProfessionalPlanComponent from "./professional-plan";
+import ProfessionalPlanCard from "./professional-card";
 
 const Enrollment = () => {
   const [showFeatures, setShowFeatures] = useState(false);
-  const [basicBillingType, setBasicBillingType] = useState<
-    "monthly" | "yearly"
-  >("monthly");
-  const [premiumBillingType, setPremiumBillingType] = useState<
-    "monthly" | "yearly"
-  >("monthly");
-  const [basicQuantity, setBasicQuantity] = useState(1);
-  const [premiumQuantity, setPremiumQuantity] = useState(1);
-  const [basicIsLifeTimePlan, setBasicIsLifeTimePlan] = useState(false);
-  const [premiumIsLifeTimePlan, setPremiumIsLifeTimePlan] = useState(false);
+  const { company_id } = usePersonalInfoStore();
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+  const [pageData, setPageData] = useState<
+    PropertyManagerSubsTransformedPlan[]
+  >([]);
+  const { data, loading, error, refetch } =
+    useFetch<PropertyManagerSubsApiResponseTypes>(
+      "/property-manager-subscription-plan"
+    );
+  useRefetchOnEvent("refetchSubscriptionPlan", () => refetch({ silent: true }));
 
-  const [pageData, setPageData] = useState([]);
+  const {
+    data: companyEnrollments,
+    error: enrollmentErr,
+    loading: enrollmentLoading,
+    refetch: refetchEnrollments,
+  } = useFetch<EnrollmentApiResponse>(`/enrollments/${company_id}`);
+  useRefetchOnEvent("refetchEnrollments", () =>
+    refetchEnrollments({ silent: true })
+  );
+
+  const enrollments_subs = companyEnrollments
+    ? transformEnrollmentHistory(companyEnrollments.data.enrollments)
+    : null;
+
+  // Transform API data and set pageData
+  useEffect(() => {
+    if (data?.data) {
+      const transformed = transformPropertyManagerSubsApiData(data.data);
+      // Filter out Free plan if user is not on Free plan
+      const filtered = transformed.filter(
+        (plan) => !plan.isFree || currentPlanKeyword === "free"
+      );
+      setPageData(filtered);
+    }
+  }, [data, currentPlanKeyword]);
+
+  const handleBillingTypeChange = useCallback(
+    (planId: number, type: "monthly" | "yearly") => {
+      setPageData((prevData) =>
+        prevData.map((plan) => {
+          if (plan.id === planId) {
+            const newQuantity = 1; // Reset quantity to 1
+            const priceDetails = plan.isFree
+              ? {
+                  price: "LIFE TIME",
+                  discount: "",
+                  discountText: "",
+                  duration: "lifetime",
+                  isLifeTimePlan: false,
+                }
+              : calculatePrice(
+                  type,
+                  newQuantity,
+                  plan.baseMonthlyPrice,
+                  plan.baseYearlyPrice,
+                  plan.lifetimePrice,
+                  plan.planTitle.toLowerCase().includes("premium")
+                    ? "premium"
+                    : "basic"
+                );
+            return {
+              ...plan,
+              billingType: type,
+              quantity: newQuantity,
+              ...priceDetails,
+            };
+          }
+          return plan;
+        })
+      );
+    },
+    []
+  );
+
+  const incrementQuantity = useCallback(
+    (planId: number, billingType: "monthly" | "yearly") => {
+      setPageData((prevData) =>
+        prevData.map((plan) => {
+          if (plan.id === planId && !plan.isFree) {
+            const newQuantity = Math.min(
+              plan.quantity + 1,
+              billingType === "yearly" ? 6 : 11
+            );
+            const priceDetails = calculatePrice(
+              billingType,
+              newQuantity,
+              plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
+              plan.planTitle.toLowerCase().includes("premium")
+                ? "premium"
+                : "basic"
+            );
+            return {
+              ...plan,
+              quantity: newQuantity,
+              ...priceDetails,
+            };
+          }
+          return plan;
+        })
+      );
+    },
+    []
+  );
+
+  // Handle quantity decrement for a specific plan
+  const decrementQuantity = useCallback(
+    (planId: number, billingType: "monthly" | "yearly") => {
+      setPageData((prevData) =>
+        prevData.map((plan) => {
+          if (plan.id === planId && !plan.isFree) {
+            const newQuantity = Math.max(1, plan.quantity - 1);
+            const priceDetails = calculatePrice(
+              billingType,
+              newQuantity,
+              plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
+              plan.planTitle.toLowerCase().includes("premium")
+                ? "premium"
+                : "basic"
+            );
+            return {
+              ...plan,
+              quantity: newQuantity,
+              ...priceDetails,
+            };
+          }
+          return plan;
+        })
+      );
+    },
+    []
+  );
+
+  // Handle select plan
+  const handleSelectPlan = useCallback(
+    async (plan: PropertyManagerSubsTransformedPlan) => {
+      console.log("plan", plan);
+      const thisPlanKeyword = plan.planTitle?.split(" ")[0]?.toLowerCase();
+      // Determine if it's an upgrade or extension
+      const isExtend = currentPlanKeyword === thisPlanKeyword;
+      const isUpgrade =
+        (currentPlanKeyword === "free" &&
+          (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
+        (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
+
+      const payload = {
+        plan_id: plan?.id || 0,
+        payment_method: "wallet",
+        quantity:  plan.isLifeTimePlan ? 1 : plan.quantity,
+        duration: plan.isLifeTimePlan ? "lifetime" : plan.billingType,
+        amount: plan.isLifeTimePlan ? plan.lifetimePrice : cleanPricingValue(plan.price),
+      };
+
+      if (isExtend) {
+        return await extendPropertyManagerPlan(payload);
+      } else if (isUpgrade) {
+        return await upgradePropertyManagerPlan(payload);
+      } else {
+        return await activatePlan(payload);
+      }
+    },
+    [currentPlanKeyword]
+  );
 
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
 
-  const transformedSubscriptions = enrollment_subscriptions.data
-    .slice(0, 6)
-    .map((data) => ({
-      ...data,
-      status: (
-        <p
-          className={clsx({
-            "text-status-success-2": data.status === "Active",
-            "text-status-caution-2": data.status === "Pending",
-          })}
-        >
-          {data.status}
-        </p>
-      ),
-    }));
+  const transformedSubscriptions = enrollments_subs?.map((data) => ({
+    ...data,
+    status: (
+      <p
+        className={clsx({
+          "text-status-success-2": data.status === "Active",
+          "text-status-caution-2": data.status === "Pending",
+        })}
+      >
+        {data.status}
+      </p>
+    ),
+  }));
 
-  const calculatePrice = (
-    billingType: "monthly" | "yearly",
-    quantity: number,
-    baseMonthly: number,
-    planType: "basic" | "premium"
-  ) => {
-    const limitedQuantity =
-      billingType === "yearly" ? Math.min(quantity, 5) : quantity;
-    let basePrice = billingType === "monthly" ? baseMonthly : baseMonthly * 12;
-    let discountText = "";
-    let discount = "";
-    let totalPrice: number | string = 0;
-    let isLifeTimePlan = false;
-
-    // Adjust quantity based on the selected plan
-    if (planType === "premium" && quantity > 6) {
-      quantity = 6; // Limit premium plan quantity to a maximum of 6
-    }
-
-    if (billingType === "monthly") {
-      totalPrice = basePrice * limitedQuantity;
-      discount =
-        planType === "basic"
-          ? "(Billed at ₦40,950/year)"
-          : "(Billed at ₦140,000/year)";
-    } else {
-      if (quantity > 5) {
-        totalPrice = "LIFE TIME PLAN";
-        isLifeTimePlan = true;
-        discount =
-          planType === "basic"
-            ? "₦750,000/outrightly"
-            : "₦2,000,000/outrightly";
-      } else {
-        const discounts = [0.025, 0.04, 0.06, 0.08, 0.1];
-        totalPrice = basePrice * limitedQuantity;
-        const discountPercentage = discounts[limitedQuantity - 1];
-        const discountAmount = totalPrice * discountPercentage;
-        totalPrice -= discountAmount;
-        discountText = `Save ${(discountPercentage * 100).toFixed(1)}%`;
-        discount = `(Billed at ₦${baseMonthly.toLocaleString()}/month)`;
-      }
-    }
-
-    return {
-      price:
-        typeof totalPrice === "number"
-          ? totalPrice.toLocaleString("en-NG", {
-              style: "currency",
-              currency: "NGN",
-            })
-          : totalPrice,
-      discountText,
-      discount,
-      duration:
-        quantity > 5 && billingType === "yearly"
-          ? ""
-          : `${quantity}${
-              quantity === 1
-                ? billingType === "monthly"
-                  ? "m"
-                  : "y"
-                : billingType === "monthly"
-                ? "m"
-                : "y"
-            }`,
-      isLifeTimePlan, // Return the lifetime plan status
-    };
-  };
-
-  const incrementQuantity = (
-    setter: React.Dispatch<React.SetStateAction<number>>,
-    billingType: "monthly" | "yearly"
-  ) => {
-    setter((prev) => Math.min(prev + 1, billingType === "yearly" ? 6 : 11));
-  };
-
-  const decrementQuantity = (
-    setter: React.Dispatch<React.SetStateAction<number>>
-  ) => {
-    setter((prev) => Math.max(1, prev - 1));
-  };
-
-  const basicPriceDetails = calculatePrice(
-    basicBillingType,
-    basicQuantity,
-    3500,
-    "basic"
-  );
-  const premiumPriceDetails = calculatePrice(
-    premiumBillingType,
-    premiumQuantity,
-    12000,
-    "premium"
-  );
-
-  useEffect(() => {
-    setBasicIsLifeTimePlan(basicPriceDetails.isLifeTimePlan);
-    setPremiumIsLifeTimePlan(premiumPriceDetails.isLifeTimePlan);
-  }, [basicPriceDetails.isLifeTimePlan, premiumPriceDetails.isLifeTimePlan]);
+  const ACTIVE_PLAN_EXPIRY_DATE = enrollments_subs?.[0].due_date;
 
   return (
     <>
@@ -155,154 +230,82 @@ const Enrollment = () => {
           other subscription plans, go to the respective module or switch from
           the top left of the dashboard header.
         </h4>
-
-        <div className="flex mb-4 pb-10 flex-nowrap overflow-x-auto custom-round-scrollbar gap-4 pricingWrapper mt-4">
-          <SettingsEnrollmentCard
-            planTitle="FREE PLAN"
-            desc="Free plans offer a reduced set of features in comparison to paid alternatives, but provide users with trial options to explore the software without time constraints."
-            price="₦000.00"
-            duration=""
-            showFeatures={showFeatures}
-            setShowFeatures={setShowFeatures}
-            features={[
-              "Maximum of 1 Branch",
-              "Maximum of 1 Director",
-              "Maximum of 1 Staff",
-              "Maximum of 1 Properties",
-              "Maximum of 1 Unit Listings",
-              "Maximum of 4 Tenants & Occupants",
-              "Ads-on are required",
-            ]}
-            billingType="monthly"
-            quantity={0}
-            isFree={true}
-            discount=""
-            discountText=""
-            incrementQuantity={() => {}}
-            decrementQuantity={() => {}}
-            onBillingTypeChange={() => {}}
-            isLifeTimePlan={false}
-          />
-
-          <SettingsEnrollmentCard
-            planTitle="Basic Plan"
-            desc="The Basic plan is ideal for Property Managers overseeing maximum of 2 branches with a limited number of properties. It offers basic features tailored for smaller-scale operations."
-            planFor="Property Managers"
-            showFeatures={showFeatures}
-            setShowFeatures={setShowFeatures}
-            billingType={basicBillingType}
-            quantity={basicQuantity}
-            incrementQuantity={() =>
-              incrementQuantity(setBasicQuantity, basicBillingType)
-            }
-            decrementQuantity={() => decrementQuantity(setBasicQuantity)}
-            isFree={false}
-            onBillingTypeChange={(type) => setBasicBillingType(type)}
-            features={[
-              "Maximum of 2 Branches",
-              "Maximum of 2 Directors",
-              "Maximum of 8 Staffs",
-              "Maximum of 50 Properties ",
-              "Maximum of 200 Unit Listings",
-              "Maximum of 150 Tenants & Occupants ",
-              "Ads-on are required",
-            ]}
-            {...basicPriceDetails} // Spread the calculated price details
-            isLifeTimePlan={basicIsLifeTimePlan}
-          />
-
-          <SettingsEnrollmentCard
-            planTitle="Premium Plan"
-            desc="Highly recommended for Property Managers overseeing over 7 branches and managing more than 100 properties. It's an ideal solution for those seeking a streamlined approach to property management."
-            planFor="Property Managers"
-            showFeatures={showFeatures}
-            setShowFeatures={setShowFeatures}
-            billingType={premiumBillingType}
-            quantity={premiumQuantity}
-            incrementQuantity={() =>
-              incrementQuantity(setPremiumQuantity, premiumBillingType)
-            }
-            decrementQuantity={() => decrementQuantity(setPremiumQuantity)}
-            isFree={false}
-            onBillingTypeChange={(type) => setPremiumBillingType(type)}
-            features={[
-              "Maximum of 8 Branches",
-              "Maximum of 4 Directors",
-              "Maximum of 15 Staffs",
-              "Maximum of 150 Properties ",
-              "Maximum of 600 Unit Listings",
-              "Unlimited Tenants & Occupants",
-              "Ads-on for SMS & Domain Required",
-            ]}
-            {...premiumPriceDetails} // Spread the calculated price details
-            isLifeTimePlan={premiumIsLifeTimePlan}
-          />
-        </div>
-
-        <div className="flex flex-col w-full pr-10 pl-4 rounded-md mt-8 flex-wrap shadow-md py-4 bg-[url('/icons/enrollment-bg.svg')] bg-no-repeat bg-center bg-cover bg-opacity-60">
-          <h3 className="text-[16px] underline font-bold text-brand-9">
-            PROFESSIONAL PLAN
-          </h3>
-          <p className="text-sm max-w-[964px] text-text-secondary dark:text-darkText-1">
-            If none of the available plans meets your company&apos;s standards,
-            consider opting for the Professional plan. This plan provides
-            unlimited access to all software solutions. Professional plans are
-            ideal for established property managers who wish to customize the
-            software with their company&apos;s name and brand.
-          </p>
-
-          <h4 className="text-sm font-bold mt-4 text-text-secondary dark:text-white">
-            Features Included:
-          </h4>
-          <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 justify-start w-full lg:justify-between flex-wrap">
-            <strong className="leading-[150%] w-full lg:w-4/5 max-w-[750px]">
-              All plans benefit and all Ads-on Inclusive; API integrations,
-              SaaS, Whitelabel, Custom domain, Unlimited Branches, Director,
-              Staff and Property Creations. Dedicated account officer, 24/7
-              Support and training, Email integration, and SMS prefer name.
-            </strong>
-
-            <div className="w-full sm:w-1/2 lg:w-1/5 bg-brand-9 h-10 text-white px-4 py-2 rounded-md flex items-center justify-center">
-              <Link
-                href="https://ourproperty.com.ng/resources/professional-plan/"
-                className=""
-                target="_blank"
-              >
-                Read More
-              </Link>
-            </div>
+        <div
+          className={clsx(
+            "mb-4 pb-10 flex items-center justfiy-center gap-4 pricingWrapper overflow-x-auto flex-nowrap custom-round-scrollbar mt-4 ",
+            currentPlanKeyword !== "free" ? "flex-row" : "flex-col"
+          )}
+        >
+          <div className="flex gap-4">
+            {loading
+              ? Array(3)
+                  .fill(0)
+                  .map((_, index) => (
+                    <SettingsEnrollmentCardSkeleton key={index} />
+                  ))
+              : pageData.map((plan) => (
+                  <SettingsEnrollmentCard
+                    key={plan.id}
+                    {...plan}
+                    expiry_date={ACTIVE_PLAN_EXPIRY_DATE}
+                    showFeatures={showFeatures}
+                    setShowFeatures={setShowFeatures}
+                    incrementQuantity={() =>
+                      incrementQuantity(plan.id, plan.billingType)
+                    }
+                    decrementQuantity={() =>
+                      decrementQuantity(plan.id, plan.billingType)
+                    }
+                    onBillingTypeChange={(type) =>
+                      handleBillingTypeChange(plan.id, type)
+                    }
+                    onSelectPlan={() => handleSelectPlan(plan)}
+                  />
+                ))}
           </div>
-        </div>
-      </SettingsSection>
-
-      <SettingsSection title="Subscription/Renewal History">
-        {transformedSubscriptions && transformedSubscriptions.length > 0 && (
-          <div className="custom-flex-col gap-7 scroll-m-8" id="table">
-            <SettingsSectionTitle desc="Track and manage your active and past enrollments with ease. Below is a detailed record of your current subscription plan, along with any previously paid fees for past enrollments." />
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-black dark:text-white text-lg font-medium">
-                  Subscription Overview
-                </h2>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Link
-                  href="/reports/subscription-history?b=true"
-                  className="text-text-label dark:text-white font-medium"
-                >
-                  See All
-                </Link>
-                <ChevronRight className="text-sm font-medium" />
-              </div>
-            </div>
-            <CustomTable
-              data={transformedSubscriptions}
-              fields={enrollment_subscriptions.fields}
-              {...table_style_props}
+          {currentPlanKeyword !== "free" && (
+            <ProfessionalPlanCard
+              showFeatures={showFeatures}
+              setShowFeatures={setShowFeatures}
             />
-          </div>
-        )}
+          )}
+        </div>
+        {currentPlanKeyword === "free" && <ProfessionalPlanComponent />}
       </SettingsSection>
+
+      {transformedSubscriptions &&
+        transformedSubscriptions.length > 0 &&
+        currentPlanKeyword !== "free" && (
+          <SettingsSection title="Subscription/Renewal History">
+            {transformedSubscriptions &&
+              transformedSubscriptions.length > 0 && (
+                <div className="custom-flex-col gap-7 scroll-m-8" id="table">
+                  <SettingsSectionTitle desc="Easily track and manage your active and past enrollments. Below is a detailed overview of your current subscription plan and a history of all previously paid fees." />
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-black dark:text-white text-lg font-medium">
+                        Subscription Overview
+                      </h2>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <Link
+                        href="/reports/subscription-history?b=true"
+                        className="text-text-label dark:text-white font-medium"
+                      >
+                        See All
+                      </Link>
+                      <ChevronRight className="text-sm font-medium" />
+                    </div>
+                  </div>
+                  <CustomTable
+                    data={transformedSubscriptions}
+                    fields={enrollment_subscriptions.fields}
+                    {...table_style_props}
+                  />
+                </div>
+              )}
+          </SettingsSection>
+        )}
     </>
   );
 };

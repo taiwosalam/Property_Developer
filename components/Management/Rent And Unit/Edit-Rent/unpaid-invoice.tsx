@@ -23,7 +23,7 @@ export const PendingInvoicePayment: React.FC<{
       <RentSectionTitle>
         Pending Payment – Awaiting Confirmation
       </RentSectionTitle>
-      <div className="mt-4 bg-white p-4 rounded-md">
+      <div className="mt-4 bg-white dark:bg-darkText-primary p-4 rounded-md">
         <div className="grid grid-cols-2 gap-4">
           {feeDetails.map((fee, index) => (
             <DetailItem

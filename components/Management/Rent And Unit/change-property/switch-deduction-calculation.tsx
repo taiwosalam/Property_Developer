@@ -12,8 +12,23 @@ interface TenantCalculationSwitchProps {
 const TenantCalculationSwitch: React.FC<TenantCalculationSwitchProps> = ({
   switches = ["calculation", "deduction"], // Default to both switches
 }) => {
-  const { calculation, deduction, setCalculation, setDeduction } =
+  const { calculation, deduction, unitData, setCalculation, setDeduction } =
     useOccupantStore();
+  const propertyType = unitData.propertyType;
+  const isRental = propertyType?.toLowerCase() === "rental";
+
+  const calTextPlus = isRental
+    ? "Calculate the total package of the new rent, including caution deposit, service charge, agency fee, legal fee, and other charges for the tenants transferring to the new unit."
+    : "Calculate the total package of the new occupant, including service charge, and other charges for the occupant transferring to the new unit.";
+  const calTextMinus = isRental
+    ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before."
+    : "Charge the occupant the same total package as renewal occupant since they were occupant in one of the units of the property before.";
+  const deductPlus = isRental
+    ? "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost."
+    : "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost.";
+  const deductMinus = isRental
+    ? "Do not deduct the current outstanding rent balance from the cost of the new units that the tenants are moving into."
+    : "Do not deduct the current outstanding rent balance from the cost of the new units that the occupants are moving into.";
 
   const handleCalculationToggle = () => {
     setCalculation(!calculation);
@@ -44,11 +59,7 @@ const TenantCalculationSwitch: React.FC<TenantCalculationSwitchProps> = ({
               />
               <p>Calculation</p>
             </div>
-            <p>
-              {calculation
-                ? "Calculate the total package of the new rent, including caution deposit, service charge, agency fee, legal fee, and other charges for the tenants transferring to the new unit."
-                : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before."}
-            </p>
+            <p>{calculation ? calTextPlus : calTextMinus}</p>
           </div>
         )}
         {validSwitches.includes("deduction") && (
@@ -61,11 +72,7 @@ const TenantCalculationSwitch: React.FC<TenantCalculationSwitchProps> = ({
               />
               <p>Deduction</p>
             </div>
-            <p>
-              {deduction
-                ? "Deduct the current outstanding rent balance from the cost of the new unit when calculating the total cost."
-                : "Do not deduct the current outstanding rent balance from the cost of the new units that the occupants are moving into."}
-            </p>
+            <p>{deduction ? deductPlus : deductMinus}</p>
           </div>
         )}
       </div>

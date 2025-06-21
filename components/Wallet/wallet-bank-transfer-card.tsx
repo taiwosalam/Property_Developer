@@ -3,8 +3,26 @@ import clsx from "clsx";
 import Button from "../Form/Button/button";
 import { WalletFundsCardsHeading } from "./wallet-components";
 import { useWalletStore } from "@/store/wallet-store";
+import { WalletDataResponse } from "@/app/(nav)/wallet/data";
+import { useEffect } from "react";
+import useFetch from "@/hooks/useFetch";
 
 const WalletBankTransferCard = () => {
+  const setWalletStore = useWalletStore((s) => s.setWalletStore);
+  const { data, error, refetch } =
+    useFetch<WalletDataResponse>("/wallets/dashboard");
+
+  useEffect(() => {
+    if (data) {
+      setWalletStore("account", {
+        account_number: data.account.account_number,
+        account_name: data.account.account_name,
+        bank: data.account.bank,
+        customer_code: data.account.customer_code,
+      });
+    }
+  }, [data]);
+
   const account = useWalletStore((state) => state.account);
 
   const handleCopy = () => {

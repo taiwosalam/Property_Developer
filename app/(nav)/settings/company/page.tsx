@@ -48,10 +48,30 @@ import WebsiteTypography from "@/components/Settings/website-custom-typography";
 import Button from "@/components/Form/Button/button";
 import { StaticImageData } from "next/image";
 import clsx from "clsx";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
+import { useRouter } from "next/navigation";
 
 const Profile = () => {
   const company_id = usePersonalInfoStore((state) => state.company_id);
   const [requestLoading, setRequestLoading] = useState(false);
+  const { role, setRole } = useRole();
+  const router = useRouter();
+
+  // PERMISSIONS TO RENDER COMPONENTS
+  // 💀😈👿 BE CAREFUL NOT TO SPOIL THE BELOW PERMISSIONS 💀😈👿
+  const IS_COMPANY_OWNER = usePersonalInfoStore((state) => state.is_owner);
+  const canViewThisPage =
+    usePermission("director", "Change Company Module") || IS_COMPANY_OWNER;
+  // 💀😈👿 BE CAREFUL NOT TO SPOIL THE BELOW PERMISSIONS 💀😈👿
+
+  // Redirect if user doesn't have permission
+  useEffect(() => {
+    console.log("canViewThisPage", canViewThisPage)
+    if (!canViewThisPage) {
+      router.push("/settings/security");
+    }
+  }, [canViewThisPage]);
 
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
@@ -63,6 +83,7 @@ const Profile = () => {
     lga: "",
     city: "",
   });
+
   const handleAddressChange = (key: keyof typeof address, value: string) => {
     setAddress((prev) => ({
       ...prev,
@@ -282,7 +303,7 @@ const Profile = () => {
                     className="w-[450px]"
                     id="membership_certificate"
                     label="Membership document"
-                    placeholder=""
+                    placeholder="Upload Membership File"
                     buttonName="Document"
                     fileType="pdf"
                     size={2}
@@ -349,7 +370,7 @@ const Profile = () => {
             <div className="w-full flex flex-col lg:flex-row gap-4">
               <Input
                 id="head_office_address"
-                label="Head Office Address"
+                label="Street/Office Number"
                 placeholder=""
                 disabled={verifications?.utility_status === "verified"}
                 className="w-full lg:w-[500px]"
@@ -362,7 +383,7 @@ const Profile = () => {
                   noUpload={verifications?.utility_status === "verified"}
                   id="utility_document"
                   label="utility document"
-                  placeholder=""
+                  placeholder="Upload Utility File"
                   buttonName="Document"
                   fileType="pdf"
                   size={2}
@@ -377,18 +398,6 @@ const Profile = () => {
                   }
                   // onChange={handleUploadUtility}
                 />
-                {/* {companyData.utility_document && (
-                  <div className="flex pt-2 sm:pt-7">
-                    <SettingsVerifiedBadge
-                      status={verifications.utility_status}
-                    />
-                  </div>
-                )} */}
-                {/* {uploadingUtility && (
-                  <button className="w-1/2 sm:w-auto py-2 px-3 mt-2 sm:mt-0 text-brand-9  ">
-                    Verify Document
-                  </button>
-                )} */}
               </div>
             </div>
             <CompanyMobileNumber

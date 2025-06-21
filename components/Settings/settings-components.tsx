@@ -320,16 +320,27 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
   value,
   onChange,
   plan,
+  forceChecked,
+  isToggleable = true,
+  restrictedMessage = "This option is restricted based on your subscription plan.",
 }) => {
+  // const handleToggle = () => {
+  //   // if (plan !== "professional") {
+  //   //   toast.error(
+  //   //     "You cannot toggle the switch until you upgrade to a professional plan."
+  //   //   );
+  //   //   return;
+  //   // } else {
+  //   onChange(value, !checked);
+  //   //}
+  // };
+
   const handleToggle = () => {
-    // if (plan !== "professional") {
-    //   toast.error(
-    //     "You cannot toggle the switch until you upgrade to a professional plan."
-    //   );
-    //   return;
-    // } else {
+    if (!isToggleable) {
+      toast.warning(restrictedMessage);
+      return;
+    }
     onChange(value, !checked);
-    //}
   };
 
   return (
@@ -343,11 +354,16 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
         </p>
       </div>
       <div className="flex justify-end items-center flex-1">
-        <Switch checked={checked} onClick={handleToggle} />
+        {/* <Switch checked={checked} onClick={handleToggle} /> */}
+        <Switch
+          checked={forceChecked !== undefined ? forceChecked : checked}
+          onClick={handleToggle}
+        />
       </div>
     </div>
   );
 };
+
 export const SettingsTenantOccupantTier: React.FC<
   SettingsTenantOccupantTierProps
 > = ({ tier, desc, color }) => (
@@ -428,9 +444,11 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const validPlans = plan === "basic" || plan === "premium";
+
   const handleClick = () => {
     if (
-      plan !== "professional" &&
+      !validPlans &&
       (value === "template2" || value === "template3") // Fixed condition
     ) {
       setShowProfessionalMessage(true);
@@ -489,7 +507,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
           {showProfessionalMessage && (
             <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
               <p className="text-white text-center px-4 py-2 rounded">
-                Sorry, this theme is for Professional Plan subscribers only
+                Sorry, this website template isn&apos;t available on the free plan.
               </p>
             </div>
           )}
@@ -628,17 +646,20 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
     <div className="flex gap-2 mt-4">
       <button
         onClick={resetZoom}
+        type="button"
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         <ResetZoomIcon />
       </button>
       <button
+        type="button"
         onClick={increaseZoom}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         <ZoomPlusIcon />
       </button>
       <button
+        type="button"
         onClick={decreaseZoom}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >

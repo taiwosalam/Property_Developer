@@ -1,8 +1,6 @@
 import Image from "next/image";
-import { useState, useRef } from "react";
-// Imports
+import { useContext, useEffect, useState } from "react";
 import { SectionHeading } from "../Section/section-components";
-import Button from "../Form/Button/button";
 import {
   DeleteIconOrange,
   UploadImageIcon,
@@ -14,24 +12,41 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import Avatars from "../Avatars/avatars";
 import Picture from "../Picture/picture";
+import { FlowProgressContext } from "../FlowProgress/flow-progress";
+import { useGlobalStore } from "@/store/general-store";
 
 const ProfilePicture = () => {
+  const { canSubmit } = useContext(FlowProgressContext);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
   const {
     preview,
     inputFileRef,
     handleImageChange: originalHandleImageChange,
-    clearSelection: clearImageSelection,
+    clearSelection,
   } = useImageUploader({
     placeholder: CameraCircle,
     maxSize: { unit: "MB", value: 2 },
   });
 
+  // Track picture selection status and trigger FlowProgress validation
+  useEffect(() => {
+    const hasPicture = Boolean(
+      preview &&
+        preview !== CameraCircle &&
+        inputFileRef.current?.files?.[0]?.size &&
+        inputFileRef.current.files[0].size > 0 
+    );
+    const hasAvatar = selectedAvatar !== "";
+    const sub = hasAvatar || hasPicture
+    setGlobalStore("SelectedDirectorPics", sub);
+  }, [preview, inputFileRef, selectedAvatar]);
+
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState("");
 
   // Handle avatar selection
   const handleAvatarSelection = (avatarUrl: string) => {
-    clearImageSelection(); // Clear uploaded file
+    clearSelection(); // Clear uploaded file
     setSelectedAvatar(avatarUrl); // Set avatar
     setAvatarModalOpen(false); // Close modal
   };
@@ -44,20 +59,8 @@ const ProfilePicture = () => {
 
   // Handle deletion of image or avatar
   const handleDelete = () => {
-    clearImageSelection(); // Clear file
+    clearSelection(); // Clear file
     setSelectedAvatar(""); // Clear avatar
-  };
-
-  // Trigger file input click
-  const handleUploadClick = () => {
-    if (inputFileRef.current) {
-      inputFileRef.current.click();
-    }
-  };
-
-  // Open avatar modal
-  const handleChooseAvatarClick = () => {
-    setAvatarModalOpen(true);
   };
 
   return (
@@ -68,20 +71,12 @@ const ProfilePicture = () => {
       </SectionHeading>
 
       <div className="flex gap-5 items-end">
-        {/* Hidden inputs for form data */}
+        {/* Hidden input for avatar */}
         <input
           type="hidden"
           name="avatar"
-          className="setu-f"
+          className="setup-f"
           value={selectedAvatar}
-        />
-        <input
-          name="director_profile_picture"
-          type="file"
-          accept="image/*"
-          ref={inputFileRef}
-          onChange={handleImageChange}
-          className="hidden setup-f"
         />
 
         {/* File upload side */}
@@ -105,42 +100,22 @@ const ProfilePicture = () => {
               </button>
             </div>
           ) : (
-            <label htmlFor="picture" className="!w-fit cursor-pointer relative">
+            <label
+              htmlFor="director_profile_picture"
+              className="!w-fit cursor-pointer relative"
+            >
               <Picture src={preview} alt="Camera" size={60} rounded />
-              {preview && preview !== CameraCircle && (
-                <div
-                  role="button"
-                  aria-label="remove image"
-                  className="absolute top-0 right-0"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    clearImageSelection();
-                  }}
-                >
-                  <DeleteIconOrange size={20} />
-                </div>
-              )}
-              <input
-                type="file"
-                id="picture"
-                name="picture"
-                accept="image/*"
-                className="hidden pointer-events-none"
-                onChange={handleImageChange}
-                ref={inputFileRef}
-              />
             </label>
-            // <button
-            //   type="button"
-            //   onClick={handleUploadClick}
-            //   className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
-            // >
-            //   <UploadImageIcon />
-            //   <span className="text-text-secondary text-xs font-normal">
-            //     Upload Profile Picture
-            //   </span>
-            // </button>
           )}
+          <input
+            id="director_profile_picture"
+            name="director_profile_picture"
+            type="file"
+            accept="image/*"
+            ref={inputFileRef}
+            onChange={handleImageChange}
+            className="hidden setup-f"
+          />
         </div>
 
         {/* Avatar selection button */}
@@ -168,7 +143,7 @@ const ProfilePicture = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       setSelectedAvatar("");
-                      clearImageSelection();
+                      clearSelection();
                     }}
                   >
                     <DeleteIconOrange size={20} />

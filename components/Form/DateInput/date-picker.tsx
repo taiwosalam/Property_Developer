@@ -29,7 +29,7 @@ const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
     border: "1px solid #C1C2C366",
   },
   "& .Mui-disabled": {
-    color: "#FFF", 
+    color: "#FFF",
   },
 }));
 
@@ -99,16 +99,16 @@ export default function CustomDatePicker({
               name: inputId,
               id: inputId,
               inputProps: {
-                className: `date-input dark:bg-darkText-primary dark:text-white ${
-                  disabled ? "text-red-500" : ""
-                } ${inputClassName}`,
+                className: `date-input text-black dark:text-white ${inputClassName}`,
                 sx: {
                   height: "unset",
                   paddingTop: "13px",
                   paddingBottom: "13px",
                   ...(disabled && {
-                    color: "#FFF !important", 
-                    WebkitTextFillColor: "#FFF !important", 
+                    color: isDarkMode ? "#FFF !important" : "#000 !important",
+                    WebkitTextFillColor: isDarkMode
+                      ? "#FFF !important"
+                      : "#000 !important",
                   }),
                 },
               },

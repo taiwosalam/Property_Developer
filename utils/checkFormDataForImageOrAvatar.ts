@@ -70,12 +70,18 @@ export function convertYesNoToBoolean(data: InputData, fields: string[]): void {
   });
 }
 
-export const mapNumericToYesNo = (value?: 1 | 0) => {
-  const mapping = {
-    1: "Yes",
-    0: "No",
-  } as const;
-  return value !== undefined ? mapping[value] : undefined;
+// export const mapNumericToYesNo = (value?: 1 | 0) => {
+//   const mapping = {
+//     1: "Yes",
+//     0: "No",
+//   } as const;
+//   return value !== undefined ? mapping[value] : undefined;
+// };
+
+export const mapNumericToYesNo = (value?: any): any => {
+  if (value === 1 || value === true) return "Yes";
+  if (value === 0 || value === false) return "No";
+  return value;
 };
 
 export function objectToFormData(

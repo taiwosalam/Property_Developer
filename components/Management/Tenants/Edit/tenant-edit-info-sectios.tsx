@@ -55,6 +55,7 @@ import { useMultipleFileUpload } from "@/hooks/useMultipleFilesUpload";
 import { v4 as uuidv4 } from "uuid";
 import { lookupBankDetails } from "@/app/(nav)/management/landlord/[landlordId]/manage/edit/data";
 import useFetch from "@/hooks/useFetch";
+import { groupDocumentsByType } from "@/utils/group-documents";
 
 const states = getAllStates();
 
@@ -582,7 +583,8 @@ export const TenantEditAttachmentSection = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [documentType, setDocumentType] = useState("");
   const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
-  const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
+  // const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
+  const [urlsToRemove, setUrlsToRemove] = useState<{ url: string; type: string }[]>([]);
   const { fileInputRef, handleFileChange, resetFiles } = useMultipleFileUpload({
     maxFileSizeMB: MAX_FILE_SIZE_MB,
     acceptedExtensions,
@@ -615,7 +617,13 @@ export const TenantEditAttachmentSection = () => {
     const documentToRemove = documents.find((doc) => doc.id === fileId);
 
     if (documentToRemove && !documentToRemove.file && documentToRemove.link) {
-      setUrlsToRemove((prevUrls) => [...prevUrls, documentToRemove.link]);
+      setUrlsToRemove((prevUrls) => [
+        ...prevUrls,
+        {
+          url: documentToRemove.link,
+          type: documentToRemove.document_type || "others",
+        },
+      ]);
     }
 
     setDocuments((prev) => prev.filter((doc) => doc.id !== fileId));
@@ -639,10 +647,15 @@ export const TenantEditAttachmentSection = () => {
     setReqLoading(false);
   };
 
-  // useEffect(() => {
-  //   setDocuments(tenant?.documents || []);
-  // }, [tenant?.documents]);
+  useEffect(() => {
+    if (tenant?.documents) {
+      // Initialize documents state with the tenant's documents
+      setDocuments(tenant.documents);
+    }
+  }, [tenant?.documents]);
 
+  // Group documents for display
+  const groupedDocuments = groupDocumentsByType(documents);
   return (
     <LandlordTenantInfoEditSection title="attachment">
       <LandlordTenantInfoEditGrid>
@@ -675,7 +688,7 @@ export const TenantEditAttachmentSection = () => {
           ref={fileInputRef}
           multiple
         />
-        <div className="flex flex-wrap gap-4 col-span-full">
+        {/* <div className="flex flex-wrap gap-4 col-span-full">
           {documents?.map((document) => (
             <div key={document.id} className="relative w-fit">
               <LandlordTenantInfoDocument {...document} />
@@ -688,6 +701,34 @@ export const TenantEditAttachmentSection = () => {
               </button>
             </div>
           ))}
+        </div> */}
+        <div className="col-span-full">
+          {Object.entries(groupedDocuments).map(([documentType, docs]) => (
+            <div key={documentType} className="mb-6">
+              <h3 className="text-lg font-semibold capitalize mb-2">
+                {documentType === "others" ? "Other Documents" : documentType}
+              </h3>
+              <div className="flex flex-wrap gap-4">
+                {docs?.map((document) => (
+                  <div key={document.id} className="relative w-fit">
+                    <LandlordTenantInfoDocument {...document} />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0"
+                      onClick={() => handleDeleteDocument(document.id)}
+                    >
+                      <DeleteIconOrange size={32} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          {documents.length === 0 && (
+            <div className="flex justify-center items-center h-32 text-neutral-500">
+              No documents available
+            </div>
+          )}
         </div>
         <Button
           size="base_medium"
@@ -846,7 +887,9 @@ export const TenantEditAvatarInfoSection = () => {
         </label>
 
         <div className="custom-flex-col gap-3">
-          <p className="text-black dark:text-white text-base font-medium">Choose Avatar</p>
+          <p className="text-black dark:text-white text-base font-medium">
+            Choose Avatar
+          </p>
           <Modal
             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >

@@ -491,6 +491,7 @@ export interface ProfileResponse {
       email: string | null;
       unread_messages_count: number;
       unread_notifications_count: number;
+      is_owner: boolean;
     };
     company?: {
       company_id: string;
@@ -514,11 +515,15 @@ export interface ProfileResponse {
       id: number;
       picture: string;
     };
+    company_wallet: any;
     profile: {
       picture: string | null;
       title: string;
     };
     requestDemos: any[];
+    isSubscriptionExpired: boolean;
+    currentPlan: string;
+    currentExpiryDate: string;
   };
 }
 

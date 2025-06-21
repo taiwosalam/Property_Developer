@@ -7,9 +7,16 @@ import Input from "../Form/Input/input";
 import Select from "../Form/Select/select";
 import FileInput from "../Form/FileInput/file-input";
 import { SectionHeading } from "../Section/section-components";
-import { getAllStates, getCities, getLocalGovernments } from "@/utils/states";
+import {
+  getAllCities,
+  getAllLocalGovernments,
+  getAllStates,
+  getCities,
+  getLocalGovernments,
+} from "@/utils/states";
+import RestrictInput from "../Form/Input/InputWIthRestrict";
 
-const CompanyAddress = ({data}: {data:any}) => {
+const CompanyAddress = ({ data }: { data: any }) => {
   // State to hold selected values
   const [address, setAddress] = useState({
     state: "",
@@ -69,15 +76,22 @@ const CompanyAddress = ({data}: {data:any}) => {
           value={address.city} // Controlled value
           required
         />
-
-        <Input
-          label="head office address"
+        
+        <RestrictInput
+          label="Street/Office Number"
           id="head_office_address"
           placeholder="Write here"
-          className="lg:col-span-2"
-          inputClassName="rounded-[8px] setup-f bg-white"
+          inputClassName="bg-white rounded-[8px] property-form-input"
           required
+          className="lg:col-span-2"
           defaultValue={data.head_office_address}
+          restrictedWordsOptions={{
+            words: [
+              ...getAllStates(),
+              ...getAllLocalGovernments(),
+              ...getAllCities(),
+            ],
+          }}
         />
 
         <FileInput

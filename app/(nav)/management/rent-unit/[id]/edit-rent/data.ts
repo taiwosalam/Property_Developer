@@ -43,27 +43,12 @@ export const getRentalData = (unit_data: any) => [
   {
     label: "Account Officer",
     value: unit_data?.accountOfficer ?? "--- ---",
-  }, // TODO
+  },
   { label: "Landlord", value: unit_data?.landlord_name ?? "--- ---" }, // TODO
   { label: "Category", value: unit_data?.categories ?? "--- ---" },
   { label: "Unit ID", value: unit_data?.unit_id ?? "--- ---" },
 ];
 
-// export const getEstateData = (unit_data: any): RentalField[] => {
-//   console.log("unit_data", unit_data);
-//   return [
-//     { label: "Property Title", value: unit_data.property_title },
-//     { label: "State", value: unit_data.property_state },
-//     { label: "Local Government", value: unit_data.localGovernment },
-//     { label: "Full Address", value: unit_data.property_address },
-//     { label: "Branch", value: unit_data.branchName },
-//     { label: "Account Officer", value: unit_data.accountOfficer },
-//     { label: "Description", value: unit_data.description || "--- ---" },
-//     // { label: "Landlord", value: unit_data.landlord || "--- ---" },
-//     { label: "Categories", value: unit_data.categories },
-//     { label: "Unit ID", value: unit_data.unit_id },
-//   ];
-// };
 
 export const getEstateData = (unit_data: any) => [
   { label: "Property Name", value: unit_data?.title ?? "--- ---" },
@@ -89,17 +74,6 @@ type PropertySetting = {
   label: string;
   value: string;
 };
-
-// export const getPropertySettingsData = (unit_data: any): PropertySetting[] => {
-//   return [
-//     { label: "Agency Fee", value: unit_data.unitAgentFee },
-//     { label: "Period", value: unit_data.fee_period },
-//     { label: "Who to Charge", value: unit_data.whoToCharge },
-//     { label: "Caution Deposit", value: unit_data.caution_deposit },
-//     { label: "Group Chat", value: unit_data.group_chat },
-//     { label: "Rent Penalty", value: unit_data.rent_penalty },
-//   ];
-// };
 
 export const getPropertySettingsData = (unit_data: any) => [
   { label: "Agency Fee", value: `${unit_data?.agency_fee ?? "--- ---"}%` },
@@ -131,14 +105,6 @@ export interface EstateSetting {
   label: string;
   value: string;
 }
-// export const getEstateSettingsData = (estate_data: any): EstateSetting[] => {
-//   return [
-//     { label: "Management Fee", value: estate_data.unitAgentFee },
-//     { label: "Period", value: estate_data.renew_fee_period },
-//     { label: "Fee Penalty", value: estate_data.rent_penalty },
-//     { label: "Group Chat", value: estate_data.group_chat },
-//   ];
-// };
 
 export const getEstateSettingsData = (unit_data: any) => [
   { label: "Management Fee", value: unit_data?.management_fee ?? "--- ---" },

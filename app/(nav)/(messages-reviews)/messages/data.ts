@@ -53,7 +53,6 @@ export interface MessageUserPageTypes {
 export const transformCompanyUsersData = (
   res: CompanyUsersAPIResponse
 ): MessageUserPageTypes => {
-  console.log("res", res)
   return {
     users: res.data.users.map((u) => ({
       id: u.id,
@@ -109,7 +108,7 @@ export const transformUsersMessages = (
       pfp: c.profile_picture,
       desc: c.latest_message,
       time: c.latest_message_time,
-      fullname: c.participant_name,
+      fullname: `${c.participant_title ?? ""} ${c.participant_name}`,
       messages: c.unread_count,
       verified: false, // change later
       content_type: finalContentType,

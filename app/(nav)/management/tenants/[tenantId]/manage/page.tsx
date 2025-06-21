@@ -360,7 +360,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
       </LandlordTenantInfoSection>
 
       <LandlordTenantInfoSection title="previous rent">
-        <div className="opacity-40">
+        <div className="opacity-40 pointer-events-none">
           {tenant?.previous_rent?.length === 0 ? (
             <p className="text-center text-gray-500 text-lg py-4">
               Tenant does not have any previous rent yet

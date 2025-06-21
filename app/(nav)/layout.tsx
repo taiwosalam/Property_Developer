@@ -20,40 +20,117 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useRole } from "@/hooks/roleContext";
 import { getRoleFromCookie } from "@/utils/getRole";
 import { getLocalStorage, saveLocalStorage } from "@/utils/local-storage";
+import { Modal, ModalContent } from "@/components/Modal/modal";
+import { useGlobalStore } from "@/store/general-store";
+import OtherAgreementDocument from "@/components/Documents/other-agreement";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePermissionsStore } from "@/store/permissions";
+import { getRoleTitle } from "@/hooks/getPermission";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import ExpiredSubscriptionModal from "@/components/Modal/expired-subscription-flow";
+
+const roleMapping: Record<string, string> = {
+  "admin configuration (company director)": "director",
+  "partner configuration (branch manager)": "manager",
+  "colleague configuration (account officer)": "account",
+  "staff configuration (other staff)": "staff",
+  "Users Configuration (Landlord, Occupant & Tenants)": "user",
+};
 
 const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const { openDocumentModal, selectedDocumentOption, setGlobalInfoStore } =
+    useGlobalStore();
   const sideNavRef = useRef<HTMLDivElement>(null);
   const { isMobile } = useWindowWidth();
+  const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(false);
   const [isSideNavOpen, setIsSideNavOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const navs = getLocalStorage('navbar');
+  const navs = getLocalStorage("navbar");
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
   const { role, setRole } = useRole();
   const hasMounted = useRef(false);
-  const loggedInUserDetails = getLocalStorage('additional_details');
-  let appearance: { colorMode: string; view: string; navbar: string; fonts: string; dashboardColor: string; } | undefined;
+
+  const isSubscriptionExpired = usePersonalInfoStore(
+    (state) => state.isSubscriptionExpired
+  );
+
+  // const isSubscriptionExpired = true; FOR TEST - DELETE LATER
+  const { setPermissions, setLoading, setError } = usePermissionsStore();
+  const loggedInUserDetails = getLocalStorage("additional_details");
+  let appearance:
+    | {
+        colorMode: string;
+        view: string;
+        navbar: string;
+        fonts: string;
+        dashboardColor: string;
+      }
+    | undefined;
   if (loggedInUserDetails) {
     ({ appearance } = loggedInUserDetails);
   }
-  const [navbar, setNavbar] = useState(appearance?.navbar)
 
-  // console.log("api navbar", appearance?.navbar)
-  // console.log("navbar", navbar)
+  const {
+    data: manaConfigData,
+    loading: configLoading,
+    error: configError,
+    refetch,
+  } = useFetch<any>("/company/permissions");
+  useRefetchOnEvent("refetchPermissions", () => refetch({ silent: true }));
+
+  const [navbar, setNavbar] = useState(appearance?.navbar);
+
   useOutsideClick(sideNavRef, () => {
     if (isMobile) {
       setIsSideNavOpen(false);
     }
   });
 
+  // Store permissions in Zustand when data is fetched
   useEffect(() => {
-    if (navs !== null){
-      setNavbar(navs)
+    if (manaConfigData?.data) {
+      setLoading(configLoading);
+      setError(configError);
+
+      const formattedPermissions = Object.keys(manaConfigData.data).reduce(
+        (acc, role) => {
+          const title = getRoleTitle(role);
+          acc[title] = manaConfigData.data[role] || [];
+          return acc;
+        },
+        {} as Record<string, string[]>
+      );
+
+      setPermissions(formattedPermissions);
     }
-    setSelectedOption("view", appearance?.view || "grid")
+  }, [
+    manaConfigData,
+    configLoading,
+    configError,
+    setPermissions,
+    setLoading,
+    setError,
+  ]);
+
+  useEffect(() => {
+    if (navs !== null) {
+      setNavbar(navs);
+    }
+    setSelectedOption("view", appearance?.view || "grid");
   }, [navs]);
+
+  // Open expired subscription modal when isSubscriptionExpired is true
+  useEffect(() => {
+    if (isSubscriptionExpired) {
+      setIsExpiredModalOpen(true);
+    } else {
+      setIsExpiredModalOpen(false);
+    }
+  }, [isSubscriptionExpired]);
 
   useEffect(() => {
     setIsSideNavOpen(!isMobile);
@@ -79,8 +156,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className='flex items-center justify-center w-full h-screen bg-neutral-100 dark:bg-neutral-900'>
-        <div className='animate-spin w-12 h-12 border-4 border-brand-9 border-t-transparent rounded-full'></div>
+      <div className="flex items-center justify-center w-full h-screen bg-neutral-100 dark:bg-neutral-900">
+        <div className="animate-spin w-12 h-12 border-4 border-brand-9 border-t-transparent rounded-full"></div>
       </div>
     );
   }
@@ -88,24 +165,24 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <LayoutContext.Provider value={{ isSideNavOpen }}>
       <Header />
-      {navbar === 'row' ? (
-        <div className='sticky top-[100px] z-[2] bg-white dark:bg-[#020617]'>
+      {navbar === "row" ? (
+        <div className="sticky top-[100px] z-[2] bg-white dark:bg-[#020617]">
           <TopNav />
         </div>
       ) : (
         <aside
           ref={sideNavRef}
           className={clsx(
-            'h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300',
+            "h-[calc(100vh-100px)] w-[250px] fixed top-[100px] z-[3] bg-white dark:bg-[#020617] dark:border-[#252525] dark:border-r no-scrollbar overflow-auto transition-transform duration-300",
             {
-              '-translate-x-full md:w-[110px]': !isSideNavOpen,
-              'translate-x-0 md:w-[235px] lg:w-[250px]': isSideNavOpen,
+              "-translate-x-full md:w-[110px]": !isSideNavOpen,
+              "translate-x-0 md:w-[235px] lg:w-[250px]": isSideNavOpen,
             },
-            'md:translate-x-0'
+            "md:translate-x-0"
           )}
           style={{
             // boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-            transitionProperty: 'width, transform',
+            transitionProperty: "width, transform",
           }}
         >
           <SideNav
@@ -122,48 +199,48 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <>
         <div
           style={{
-            boxShadow: '0px 2px 20px 0px rgba(0, 0, 0, 0.02)',
-            transitionProperty: 'margin-left',
-            transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)",
+            transitionProperty: "margin-left",
+            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
-          className={clsx('custom-flex-col sticky z-[2] duration-300', {
-            'w-full top-[150px]': navbar === 'row', // Adjusted top to 150px to account for TopNav height
-            'top-[99px]': navbar !== 'row',
-            'md:ml-[110px] lg:ml-[110px]': !isSideNavOpen && navbar !== 'row',
-            'md:ml-[235px] lg:ml-[250px]': isSideNavOpen && navbar !== 'row',
+          className={clsx("custom-flex-col sticky z-[2] duration-300", {
+            "w-full top-[150px]": navbar === "row", // Adjusted top to 150px to account for TopNav height
+            "top-[99px]": navbar !== "row",
+            "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
+            "md:ml-[235px] lg:ml-[250px]": isSideNavOpen && navbar !== "row",
           })}
         >
           <div
-            className='h-[1px]'
-            style={{ boxShadow: '0px 2px 20px 0px rgba(0, 0, 0, 0.02)' }}
+            className="h-[1px]"
+            style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
           <div
             className={`h-[50px] px-3 flex items-center ${
-              navbar !== 'row' ? 'justify-between' : 'justify-end'
+              navbar !== "row" ? "justify-between" : "justify-end"
             } gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden`}
           >
-            {navbar !== 'row' && (
+            {navbar !== "row" && (
               <button
-                type='button'
-                aria-label='toggle sidenav'
+                type="button"
+                aria-label="toggle sidenav"
                 onClick={() => {
                   setIsSideNavOpen(!isSideNavOpen);
                 }}
               >
                 {isSideNavOpen ? (
                   <SVG
-                    type='sidebar'
+                    type="sidebar"
                     color={primaryColor as Color}
-                    className='w-8 h-8'
+                    className="w-8 h-8"
                   />
                 ) : (
                   <>
                     <SVG
-                      type='sidebar'
+                      type="sidebar"
                       color={primaryColor as Color}
-                      className='w-8 h-8 md:hidden'
+                      className="w-8 h-8 md:hidden"
                     />
-                    <div className='hidden md:block text-brand-9'>
+                    <div className="hidden md:block text-brand-9">
                       <SidenavArrow />
                     </div>
                   </>
@@ -171,39 +248,67 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </button>
             )}
             <p
-              className='capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate'
+              className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate"
               style={{
-                direction: 'rtl', // RTL direction for truncating from the start
+                direction: "rtl", // RTL direction for truncating from the start
               }}
             >
-              {pathname.split('/').slice(1).join(' > ')}
+              {pathname.split("/").slice(1).join(" > ")}
             </p>
           </div>
           <div
-            className='h-[1px]'
-            style={{ boxShadow: '0px 2px 20px 0px rgba(0, 0, 0, 0.02)' }}
+            className="h-[1px]"
+            style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
         </div>
         <main
           style={{
-            transitionProperty: 'margin-left',
-            transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            transitionProperty: "margin-left",
+            transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
           className={clsx(
-            'px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-152px)]',
+            "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-152px)]",
             {
-              'w-full md:ml-0 lg:ml-0': navbar === 'row',
-              'md:ml-[110px] lg:ml-[110px]': !isSideNavOpen && navbar !== 'row',
-              'opacity-50 pointer-events-none md:ml-[235px] lg:ml-[250px]':
-                isSideNavOpen && navbar !== 'row',
+              "w-full md:ml-0 lg:ml-0": navbar === "row",
+              "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
+              "opacity-50 pointer-events-none md:ml-[235px] lg:ml-[250px]":
+                isSideNavOpen && navbar !== "row",
             },
             {
-              'md:opacity-100 md:pointer-events-auto': navbar !== 'row',
+              "md:opacity-100 md:pointer-events-auto": navbar !== "row",
             }
           )}
         >
           {children}
         </main>
+        {/* AGREEMENT MODAL IS HERE CUZ IT''S NEEDED ON NAVBAR COMPONENT*/}
+        <Modal
+          state={{
+            isOpen: openDocumentModal,
+            setIsOpen: (isOpen) =>
+              setGlobalInfoStore("openDocumentModal", Boolean(isOpen)),
+          }}
+        >
+          <ModalContent>
+            {selectedDocumentOption ? (
+              <OtherAgreementDocument selectedOption={selectedDocumentOption} />
+            ) : (
+              <div>No document selected</div>
+            )}
+          </ModalContent>
+        </Modal>
+
+        {/* EXPIRED PLAN MODAL  */}
+        <Modal
+          state={{
+            isOpen: isExpiredModalOpen,
+            setIsOpen: setIsExpiredModalOpen,
+          }}
+        >
+          <ModalContent disableOutsideClick>
+           <ExpiredSubscriptionModal />
+          </ModalContent>
+        </Modal>
       </>
     </LayoutContext.Provider>
   );

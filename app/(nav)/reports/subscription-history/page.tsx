@@ -2,15 +2,6 @@
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-// import {
-//   reportsListingsFilterOptionsWithDropdown,
-//   trackingTableFields,
-// } from "./data";
-// import {
-//   ActivityApiResponse,
-//   ActivityTable,
-//   transformActivityAData,
-// } from "./[userId]/types";
 import { useCallback, useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";

@@ -7,20 +7,6 @@ import type { TenantOccupantTier } from "@/components/Settings/types";
 // Imports
 import SettingsSection from "@/components/Settings/settings-section";
 
-import {
-  SettingsSectionTitle,
-  SettingsTenantOccupantTier,
-  SettingsUpdateButton,
-} from "@/components/Settings/settings-components";
-
-import Select from "@/components/Form/Select/select";
-
-import {
-  tenant_occupant_tiers,
-  tenant_occupant_level_types,
-  tenant_occupant_options,
-} from "@/components/Settings/data";
-
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import { staffConfigurations, updateSettingsManagement } from "./data";
 import Button from "@/components/Form/Button/button";
@@ -34,6 +20,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import useFetch from "@/hooks/useFetch";
 import ManagementCheckbox from "@/components/Documents/DocumentCheckbox/management-checkbox";
 import { ApiResponseUserPlan } from "../others/types";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
@@ -45,6 +32,7 @@ const roleMapping: Record<string, string> = {
 
 const Management = () => {
   const { data, isLoading, error } = useSettings();
+  const IS_COMPANY_OWNER = usePersonalInfoStore((state) => state.is_owner);
   const [updating, setUpdating] = useState(false);
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({
     manager: false,
@@ -171,8 +159,6 @@ const Management = () => {
     }
   };
 
-  // UPDATE RENT PENALTY
-
   // TENANT & OCCUPANT SCREENING LEVEL
   const handleUpdateScreeningLevel = async (data: Record<string, any>) => {
     if (
@@ -205,179 +191,61 @@ const Management = () => {
   return (
     <>
       <>
-        {staffConfigurations.map(({ title, subTitle, permissions }) => (
-          <SettingsSection key={title} title={title} subTitle={subTitle}>
-            <div className="custom-flex-col gap-8">
-              <div className="flex">
-                <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
-                  {permissions.map((column, index) => (
-                    <div key={index} className="custom-flex-col gap-4">
-                      {column.map((text, idx) => {
-                        const formattedText = formatPermission(text);
-                        const isChecked =
-                          selectedPermissions[title]?.includes(formattedText) ||
-                          false;
+        {/* {staffConfigurations.map(({ title, subTitle, permissions }) => ( */}
+        {staffConfigurations
+          .filter(
+            ({ title }) =>
+              title !== "admin configuration (company director)" ||
+              IS_COMPANY_OWNER
+          )
+          .map(({ title, subTitle, permissions }) => (
+            <SettingsSection key={title} title={title} subTitle={subTitle}>
+              <div className="custom-flex-col gap-8">
+                <div className="flex">
+                  <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
+                    {permissions.map((column, index) => (
+                      <div key={index} className="custom-flex-col gap-4">
+                        {column.map((text, idx) => {
+                          const formattedText = formatPermission(text);
+                          const isChecked =
+                            selectedPermissions[title]?.includes(
+                              formattedText
+                            ) || false;
 
-                        return (
-                          // In the render section where ManagementCheckbox is used
-                          <ManagementCheckbox
-                            key={idx}
-                            darkText
-                            checked={isChecked}
-                            onClick={() => handleCheckboxClick(title, text)}
-                          >
-                            {text}
-                          </ManagementCheckbox>
-                        );
-                      })}
-                    </div>
-                  ))}
+                          return (
+                            // In the render section where ManagementCheckbox is used
+                            <ManagementCheckbox
+                              key={idx}
+                              darkText
+                              checked={isChecked}
+                              onClick={() => handleCheckboxClick(title, text)}
+                            >
+                              {text}
+                            </ManagementCheckbox>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-end w-full justify-end">
+                  <Button
+                    size="base_bold"
+                    className="py-[10px] px-8"
+                    onClick={() => handleUpdate(title)}
+                    disabled={
+                      loadingStates[roleMapping[title]] || configLoading
+                    }
+                  >
+                    {loadingStates[roleMapping[title]]
+                      ? "Updating..."
+                      : "Update"}
+                  </Button>
                 </div>
               </div>
-              <div className="flex items-end w-full justify-end">
-                <Button
-                  size="base_bold"
-                  className="py-[10px] px-8"
-                  onClick={() => handleUpdate(title)}
-                  disabled={loadingStates[roleMapping[title]] || configLoading}
-                >
-                  {loadingStates[roleMapping[title]] ? "Updating..." : "Update"}
-                </Button>
-              </div>
-            </div>
-          </SettingsSection>
-        ))}
+            </SettingsSection>
+          ))}
       </>
-      {/* <SettingsSection
-        title="Users Configuration (Landlord, Occupant & Tenants)"
-        subTitle="Can be access through mobile app or web cross platform."
-      >
-        <div className="custom-flex-col gap-8">
-          <div className="flex">
-            <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
-              <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText checked={false}>
-                  Create Profile Account For Tenants/Occupant
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={false}>
-                  Create Profile Account For Landlord/Landlady
-                </DocumentCheckbox>
-              </div>
-              <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText checked={false}>
-                  Create Profile Account For Service Provider
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={false}>
-                  Create Profile Account When You Sent Invite
-                </DocumentCheckbox>
-              </div>
-            </div>
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection> */}
-      <SettingsSection title="tenant / occupant screening">
-        <div className="custom-flex-col gap-8">
-          <AuthForm onFormSubmit={handleUpdateScreeningLevel}>
-            <div className="custom-flex-col gap-10">
-              <div className="custom-flex-col gap-6">
-                <p className="text-text-disabled text-sm font-normal">
-                  Choose the tier level of tenant/occupant you prefer to apply
-                  for your property. If tenants/occupant are not yet on the
-                  selected tier, they will need to update their profile to meet
-                  your requirements before they can apply. The chosen tier level
-                  will determine the content of the application form that
-                  tenants/occupant must fill out before applying for listed
-                  property.
-                  <br />
-                  <span className="text-status-error-2">*</span>Choosing from
-                  Tier 1 to Tier 5 determines and increases the difficulty of
-                  screening new tenant/occupant. Tier 1 and Tier 2 are
-                  recommended levels for screening.
-                </p>
-                <div className="custom-flex-col gap-4">
-                  <SettingsSectionTitle title="Tenant / Occupant level type" />
-                  {Object.entries(tenant_occupant_level_types).map(
-                    ([tier, props]) => (
-                      <SettingsTenantOccupantTier
-                        key={tier}
-                        {...{ tier: tier as TenantOccupantTier, ...props }}
-                      />
-                    )
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-10">
-                <Select
-                  id="tenant_screening_level_type"
-                  label="tenant screening level type"
-                  defaultValue={`Tier ${screeningLevel?.tenant_screening_level}`}
-                  options={tenant_occupant_options as unknown as string[]}
-                  inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
-                />
-                <Select
-                  id="occupant_screening_level_type"
-                  label="occupant screening level type"
-                  defaultValue={`Tier ${screeningLevel?.occupant_screening_level}`}
-                  options={tenant_occupant_options as unknown as string[]}
-                  inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
-                />
-              </div>
-            </div>
-            <SettingsUpdateButton
-              submit
-              loading={isScreeningLevel}
-              action={handleUpdateScreeningLevel as any}
-            />
-          </AuthForm>
-        </div>
-        {/* </SettingsSection >
-      <SettingsSection title="rent penalty settings"> */}
-      </SettingsSection>
-      <RentPenalty />
-      {/* <SettingsSection title="rent penalty settings">
-        <div className="custom-flex-col gap-8">
-          <p className="text-text-disabled text-sm font-normal">
-            The tenant is required to make full rent payment on or before the
-            expiration of the current rent period. If the tenant is interested
-            in renewing the rent but makes payment after the due date, there
-            will be a monthly interest charged on the substantive rent until
-            both the rent and the accrued interest are fully paid.
-          </p>
-          <AuthForm onFormSubmit={handleUpdateRentPenalty}>
-            <div className="flex">
-              <Select
-                options={[
-                  "1%",
-                  "2%",
-                  "2.5%",
-                  "3%",
-                  "3.5%",
-                  "5%",
-                  "6%",
-                  "7%",
-                  "7.5%",
-                  "8%",
-                  "9%",
-                  "10%",
-                ]}
-                defaultValue={`${rentPenalty}%`}
-                id="monthly_interest_rent"
-                label="They will be subject to a monthly interest charge on rent"
-                inputContainerClassName="bg-neutral-2"
-              />
-            </div>
-            <div className="flex items-end w-full justify-end">
-              <SettingsUpdateButton
-                submit
-                action={handleUpdateRentPenalty as any}
-                loading={isPenalty}
-                next={false}
-              />
-            </div>
-          </AuthForm>
-        </div>
-      </SettingsSection> */}
     </>
   );
 };

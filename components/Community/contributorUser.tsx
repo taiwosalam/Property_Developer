@@ -76,7 +76,7 @@ const ContributorUser = ({
   return (
     <div className="flex flex-col mt-6 gap-4">
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="imgWrapper min-h-[154px] min-w-[154px] mx-auto md:mx-0 shadow-lg rounded-md p-2">
+        <div className="imgWrapper w-[170px] h-[170px] mx-auto md:mx-0 shadow-lg rounded-md p-2">
           <Image
             src={picture || empty}
             alt="user"

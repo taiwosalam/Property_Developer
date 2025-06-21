@@ -97,6 +97,7 @@ const PostProceedContent = ({
   const isRental = propertyType === "rental";
   const currentUnit = useGlobalStore((s) => s.currentUnit);
   const currentRentStats = useGlobalStore((s) => s.currentRentStats);
+  const { selectedOccupant, isPastDate } = useGlobalStore();
   const oustandingObj = currentRentStats?.oustandingObj || [];
   const outstanding = currentRentStats?.outstanding || 0;
   const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
@@ -223,7 +224,7 @@ const PostProceedContent = ({
   const balanceLabel = isExcess ? "Client Excess" : "Refund Client";
   const showBalanceCard = totalPayable < 0 || isExcess;
 
-  console.log("propertyData", propertyData)
+  console.log("propertyData", propertyData);
 
   const currentUnitAmt = formatFee(newUnitTotal, unitData?.currency || "naira");
 
@@ -253,27 +254,29 @@ const PostProceedContent = ({
       toast.warning("Start date not selected.");
       return;
     }
-
+    const IS_FACILITY = propertyType === "facility";
     // Open modal for all tenants
-    setIsAgreementModalOpen(true);
+    // setIsAgreementModalOpen(true); 
+    if (!IS_FACILITY && !isPastDate) {
+      // Open modal for non-facility and non-past date cases
+      setIsAgreementModalOpen(true);
+      return;
+    }
+
+    await submitSwitchUnit(null);
+    return;
   };
 
-  const submitSwitchUnit = async (doc_file: File) => {
+  const submitSwitchUnit = async (doc_file: File | null) => {
     const id = balance[0].id;
     const data = {
       new_unit_id: selectedUnitId,
       calculation: calculation ? 1 : 0,
       deduction: deduction ? 1 : 0,
       payment_date: startDate,
-      has_document: 1,
-      doc_file, // Always include doc_file
+      has_document: isRental ? 1 : 0,
+      ...(isRental ? { doc_file } : {}), // Only include doc_file for rental properties
     };
-
-    console.log(
-      "Final PDF size before API:",
-      doc_file.size / (1024 * 1024),
-      "MB"
-    );
 
     try {
       setReqLoading(true);
@@ -333,7 +336,7 @@ const PostProceedContent = ({
           estateSettingsDta={
             isRental ? propertySettingsData : estateSettingsDta
           }
-          {...(isRental ? { gridThree: true } : {})}
+          gridThree
           id={propertyId as string}
         />
         <div className="previous-unit-balance">

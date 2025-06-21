@@ -23,6 +23,7 @@ const PaymentIframe: React.FC<PaymentIframeProps> = ({
         if (res) {
           clearInterval(polling);
           window.dispatchEvent(new Event("refetch-wallet"));
+          window.dispatchEvent(new Event("/wallets/dashboard"));
           onPaymentConfirmed(); // Notify parent that payment is confirmed
         }
       } catch (error) {

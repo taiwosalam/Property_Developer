@@ -16,6 +16,7 @@ const Button: React.FC<ButtonProps> = ({
   size = "default",
   variant = "default",
   onClick,
+  blankPage,
   ...props
 }) => {
   return href ? (
@@ -27,6 +28,7 @@ const Button: React.FC<ButtonProps> = ({
         button_variants.variant[variant],
         className
       )}
+      target={blankPage ? "_blank" : undefined}
       style={style}
       onClick={onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>}
     >

@@ -36,6 +36,7 @@ import {
 import { StaffChatTypes } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/type";
 import { PropertyCardProps } from "@/components/Management/Properties/property-card";
 import { IVisitorsReportPageData } from "@/app/(nav)/reports/visitors/data";
+import { PropertyManagerSubsTransformedPlan } from "@/app/(nav)/settings/subscription/types";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -82,12 +83,14 @@ interface GlobalStoreState {
   vatTimeRangeLabel?: string;
   timeRange: string; // e.g., "7d", "30d", "90d", "custom"
   timeRangeLabel: string;
+  invoiceTimeRange: string;
   selectedDateRange: DateRange | undefined; // { from: Date, to: Date }
   unitData: initDataProps | null;
   setSelectedOccupant: (occupant: Occupant | null) => void;
   setIsPastDate: (isPast: boolean) => void;
   setUnitData: (data: initDataProps | null) => void;
   canSubmit: boolean;
+  SelectedDirectorPics: boolean;
 
   isValidDateRange: boolean,
   setIsValidDateRange: (isValid: boolean) => void;
@@ -115,6 +118,15 @@ interface GlobalStoreState {
   selectedDocumentOption: OtherAgreementDocumentOption | null;
   
   profileSettingsData: ProfileSettingsPageState | null; 
+  selectedSubPlan: PropertyManagerSubsTransformedPlan | null;
+
+  warningModal: {
+    isOpen: boolean;
+    message: string;
+  };
+  setWarningModal: (isOpen: boolean, message?: string) => void;
+
+  hasRestrictedWords: boolean;
   // add more keys here as needed…
 }
 
@@ -162,6 +174,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setIsValidDateRange: (isValid: boolean) => set({ isValidDateRange: isValid }),
   currentRentStats: null,
   timeRange: "last_30_days",
+  invoiceTimeRange: "90d",
   visitorsRequest: null,
   overduePeriods: null,
   staffChats: null,
@@ -173,6 +186,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setIsPastDate: (isPast) => set({ isPastDate: isPast }),
   setUnitData: (data) => set({ unitData: data }),
   canSubmit: true,
+  SelectedDirectorPics: false,
 
   branchWalletTransactions: null,
 
@@ -184,8 +198,10 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   rentEndDate: null,
 
   profileSettingsData: null,
+  selectedSubPlan: null,
 
   domainAvailable: false,
+  hasRestrictedWords: false,
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {
@@ -204,6 +220,16 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
       isPastDate: false,
       tenantLoading: false,
       tenantError: null,
+    });
+  },
+
+  warningModal: {
+    isOpen: false,
+    message: "",
+  },
+  setWarningModal: (isOpen, message = "") => {
+    set({
+      warningModal: { isOpen, message },
     });
   },
 }));

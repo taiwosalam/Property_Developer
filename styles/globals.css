@@ -51,6 +51,7 @@ body {
   outline: 1px solid red; //FOR CSS DEBUGGING
 } */
 
+
 .autocomplete-suggestions {
   position: absolute;
   top: 100%;
@@ -498,6 +499,16 @@ button:disabled:not(.retain-opacity) {
 .undo-text-transform {
   text-transform: unset !important;
 }
+
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 
 /* ------------------------ */
 .loader {

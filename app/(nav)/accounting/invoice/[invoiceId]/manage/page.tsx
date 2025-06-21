@@ -27,6 +27,8 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import ServerError from "@/components/Error/ServerError";
 import { toast } from "sonner";
 import PendingInvoiceModal from "@/components/Management/Rent And Unit/pending-invoice-modal";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 const ManageInvoice = () => {
   const CURRENCY_SYMBOL = currencySymbols.naira;
@@ -34,9 +36,10 @@ const ManageInvoice = () => {
   const router = useRouter();
   const [reqLoading, setReqLoading] = useState(false);
   const [pageData, setPageData] = useState<InvoicePageData>(defaultInvoiceData);
-  const { data, error, loading, isNetworkError } = useFetch<InvoiceResponse>(
-    `/invoice/${invoiceId}`
-  );
+  const { data, error, loading, isNetworkError, refetch } =
+    useFetch<InvoiceResponse>(`/invoice/${invoiceId}`);
+  // Listen for the refetch event
+  useRefetchOnEvent("refetchRentUnit", () => refetch({ silent: true }));
 
   // Helper function to safely format numbers
   const safeFormatNumber = (value: number | undefined | null): string => {
@@ -133,12 +136,14 @@ const ManageInvoice = () => {
           {UNIT_ID ? (
             <>
               <p className="font-normal text-[14px] text-[#6C6D6D] dark:text-darkText-1">
-                New rent payment for {pageData.unit_name}
+                <TruncatedText>
+                  <div dangerouslySetInnerHTML={{ __html: pageData.details }} />
+                </TruncatedText>
               </p>
               <div>
                 <Breakdown data={pageData} />
               </div>
-              <div className="flex">
+              {/* <div className="flex">
                 <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
                   <Input
                     id="annual-rent"
@@ -195,7 +200,7 @@ const ManageInvoice = () => {
                     // defaultValue={formatNumber(pageData.) as string}
                   />
                 </div>
-              </div>
+              </div> */}
             </>
           ) : (
             <>
@@ -203,10 +208,10 @@ const ManageInvoice = () => {
             </>
           )}
 
-          <p className="font-normal text-[14px] text-[#6C6D6D] dark:text-darkText-1">
+          {/* <p className="font-normal text-[14px] text-[#6C6D6D] dark:text-darkText-1">
             <span className="text-status-error-primary text-2xl">*</span>
             Invoices with payment cannot be edited or deleted.
-          </p>
+          </p> */}
         </AccountingTitleSection>
       </div>
       <FixedFooter className="flex items-center justify-between gap-4">

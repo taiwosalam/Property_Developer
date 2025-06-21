@@ -52,7 +52,6 @@ const CreateArticle = () => {
     imageFiles.forEach((file) => formData.append("pictures[]", file));
 
     const transformedData = transformFormArticleData(formData);
-    console.log("Submitting:", transformedData);
 
     setIsCreating(true);
     try {
