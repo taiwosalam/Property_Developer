@@ -41,6 +41,7 @@ const MoveOutModal = ({ unit_id }: { unit_id: string; }) => {
       const res = await moveOut(payload);
       if (res) {
         window.dispatchEvent(new Event("refetchRentUnit"));
+        window.dispatchEvent(new Event("refetchtenant"));
         setModalView("success");
       }
     } catch (error) {

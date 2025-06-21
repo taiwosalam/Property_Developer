@@ -101,7 +101,7 @@ export const getDashboardCardData = (data: Record<string, any>) => [
     icon: InvoiceIcon,
     value: data.data.invoice_count,
     subValue: data.data.month_invoice_count,
-    link: "/accounting/invoice",
+    link: "/accounting/invoice?status=pending",
   },
   {
     title: "Inquiries",

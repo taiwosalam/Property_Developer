@@ -145,8 +145,8 @@ const InvitationForm: React.FC<InvitationFormProps> = ({
       </AuthForm>
 
       {formStep === 3 && mobileUser && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-white p-4">
-          <h3 className="text-base font-medium text-gray-900 mb-4 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-white dark:bg-transparent p-4">
+          <h3 className="text-base font-medium text-gray-900 dark:text-white mb-4 text-center">
             Verify if this is the correct mobile user to add
           </h3>
           <UserCard className="min-w-[300px] max-w-[400px] mb-4" {...mobileUser} />

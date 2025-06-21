@@ -103,7 +103,11 @@ const EditMobileUser = ({
       const res = await action;
       if (res) {
         toast.success("Deleted Successfully");
-        router.back();
+        if (isLandlord){
+          router.push("/management/landlord");
+        }else{
+          router.push("/management/tenant");
+        }
       }
     } catch (error) {
       toast.error("Failed to Delete, Try again");

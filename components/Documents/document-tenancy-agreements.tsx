@@ -92,7 +92,8 @@ const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
         >
           <div
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(option.description),
+              // __html: DOMPurify.sanitize(option.description),
+              __html: DOMPurify.sanitize(option.summary),
             }}
           />
         </DocumentCheckbox>
