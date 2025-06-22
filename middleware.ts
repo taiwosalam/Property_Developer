@@ -34,13 +34,13 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // check for company subscription status
-  // if (
-  //   !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
-  //   subscription_status === "expired"
-  // ) {
-  //   return NextResponse.redirect(new URL("/unauthorized", req.url));
-  // }
+  // check for company subscription status :: TODOD - UNCOMMENT AFTER LOGIN RESPONSE IS CORRECT
+  if (
+    !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
+    subscription_status === "expired"
+  ) {
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
+  }
 
   // If role is 'user', redirect to /setup unless already on an auth/setup page
   if (
