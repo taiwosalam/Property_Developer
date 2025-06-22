@@ -49,7 +49,7 @@ const NavProfileDropdown = () => {
 
   return (
     <>
-      <div className="custom-flex-col hover:bg-[#3c3d37]">
+      <div className="custom-flex-col hover:bg-gray-600 dark:hover:bg-[#3c3d37]">
         <Link href={"/settings/security"} className="flex items-center gap-4 p-4">
           <Picture
             src={profile_picture || Avatar}
