@@ -35,12 +35,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // check for company subscription status
-  if (
-    !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
-    subscription_status === "expired"
-  ) {
-    return NextResponse.redirect(new URL("/unauthorized", req.url));
-  }
+  // if (
+  //   !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
+  //   subscription_status === "expired"
+  // ) {
+  //   return NextResponse.redirect(new URL("/unauthorized", req.url));
+  // }
 
   // If role is 'user', redirect to /setup unless already on an auth/setup page
   if (
