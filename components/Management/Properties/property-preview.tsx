@@ -83,7 +83,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
             {address}
           </p>
         </div>
-        <Button href={`management/properties/${id}edit-property`}>
+        <Button href={`/management/properties/${id}/edit-property`}>
           Manage
         </Button>
       </div>
@@ -99,10 +99,10 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
 
           {/* Description */}
           <div className="space-y-4">
-            <p className="text-black text-lg md:text-xl lg:text-2xl font-bold">
+            <p className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-bold">
               Property Description
             </p>
-            <TruncatedText lines={5} as="div">
+            <TruncatedText lines={5} as="div" className="dark:text-darkText-1">
               {parse(sanitizedDescription)}
             </TruncatedText>
           </div>

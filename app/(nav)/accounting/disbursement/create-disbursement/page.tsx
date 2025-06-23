@@ -50,12 +50,16 @@ const CreateDisbursement = () => {
     error: propertiesError,
     loading: propertiesLoading,
   } = useFetch<PropertyListResponse>("/property/all");
+  
+  const propertiesWithUnits =
+    propertyOptionData?.data.filter(
+      (p) => Array.isArray(p.units) && p.units.length > 0
+    ) || [];
 
-  const propertyOptions =
-    propertyOptionData?.data.map((p) => ({
-      value: p.id,
-      label: p.title,
-    })) || [];
+  const propertyOptions = propertiesWithUnits.map((p) => ({
+    value: p.id,
+    label: p.title,
+  }));
 
   // FETCH ALL PROPERTY UNITS
   const {

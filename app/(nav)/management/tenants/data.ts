@@ -4,6 +4,7 @@ import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 interface TenantCardProps {
   id: string;
   name: string;
+  title: string;
   email: string;
   phone_number: string;
   user_tag: "mobile" | "web";
@@ -83,6 +84,7 @@ export interface TenantApiResponse {
     tenants: {
       id: string;
       name: string;
+      title: string;
       email: string;
       phone: string;
       picture: string;
@@ -131,6 +133,7 @@ export const transformTenantApiResponse = (
     tenants: tenants.map((tenant) => ({
       id: tenant.id,
       name: tenant.name,
+      title: tenant.title,
       email: tenant.email,
       phone_number: tenant.phone,
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",

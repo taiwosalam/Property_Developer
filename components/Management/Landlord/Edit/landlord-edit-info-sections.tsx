@@ -29,6 +29,7 @@ import {
   familyTypes,
   employmentOptions,
   employmentTypeOptions,
+  titles,
 } from "@/data";
 import { useLandlordEditContext } from "../landlord-edit-context";
 import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
@@ -82,7 +83,8 @@ export const LandlordEditProfileInfoSection = () => {
     const payload = {
       first_name: data.landlord_firstname,
       last_name: data.landlord_lastname,
-      email: data.landlord_email,
+      title: data.title,
+      // email: data.landlord_email,  NB - Backend can't update email
       phone_number: data.landlord_phone,
       state: data.landlord_state,
       local_government: data.landlord_local_government,
@@ -136,13 +138,24 @@ export const LandlordEditProfileInfoSection = () => {
             inputClassName="rounded-lg"
             defaultValue={landlord?.name.split(" ")[1]}
           />
-          <Input
+
+          <Select
+            options={titles}
+            id="title"
+            name="title"
+            label="Profile Title"
+            placeholder="Select options"
+            defaultValue={landlord?.title}
+            inputContainerClassName="bg-neutral-2"
+          />
+
+          {/* <Input
             id="landlord_email"
             type="email"
             label="email"
             inputClassName="rounded-lg"
             defaultValue={landlord?.email}
-          />
+          /> */}
           <PhoneNumberInput
             id="landlord_phone"
             label="phone number"

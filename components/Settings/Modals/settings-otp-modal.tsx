@@ -210,6 +210,7 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
               length={4}
               onChange={setOtp}
               ref={pinFieldRef}
+              type="password"
               validate={/^[0-9]$/}
               className="w-10 h-10 text-center border border-solid border-[#2B2B2B] rounded-lg custom-primary-outline"
             />

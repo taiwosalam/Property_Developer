@@ -68,6 +68,7 @@ export interface IndividualLandlordAPIResponse {
     // first_name: string;
     // last_name: string;
     name: string;
+    title: string;
     email: string;
     phone: string;
     user_id: string;
@@ -131,6 +132,7 @@ export const transformIndividualLandlordAPIResponse = ({
     id: data.id,
     picture: data.picture || "",
     name: data.name,
+    title: data.title || "",
     email: data.email,
     phone_number: data.phone === "" || !data.phone ? "" : data.phone,
     gender: data.gender,

@@ -313,6 +313,7 @@ import { toast } from "sonner";
 import { empty } from "@/app/config";
 import { CommentTextArea } from "@/app/(nav)/community/agent-forum/NewComment";
 import { toggleCommentLike } from "@/app/(nav)/community/agent-forum/my-articles/data";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 // Base comment data structure
 export interface CommentData {
@@ -365,6 +366,7 @@ const Comment: React.FC<CommentProps> = ({
   handleLike,
   handleDislike,
 }) => {
+  const isDarkMode = useDarkMode()
   const [localShowInput, setLocalShowInput] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -409,52 +411,6 @@ const Comment: React.FC<CommentProps> = ({
     },
     [handleSubmit, id, parentId, setShowInput]
   );
-
-  // Handle like with optimistic UI
-  // const handleCommentLike = useCallback(async () => {
-  //   if (isLoading || user_liked || userAction === "like") return;
-
-  //   const previousAction = userAction;
-
-  //   // Optimistic UI: Update action state and disable buttons
-  //   setIsLoading(true);
-  //   setUserAction("like");
-
-  //   try {
-  //     handleLike(parentId || id);
-  //     window.dispatchEvent(new Event("refetchComments"));
-  //   } catch (error) {
-  //     // Rollback action state on error
-  //     setUserAction(previousAction);
-  //     console.error("Error toggling like:", error);
-  //     toast.error("Failed to like comment");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, [id, parentId, isLoading, userAction, user_liked, handleLike]);
-
-  // // Handle dislike with optimistic UI
-  // const handleCommentDislike = useCallback(async () => {
-  //   if (isLoading || userAction === "dislike") return;
-
-  //   const previousAction = userAction;
-
-  //   // Optimistic UI: Update action state and disable buttons
-  //   // setUserAction("dislike");
-
-  //   try {
-  //     setIsLoading(true);
-  //     toggleLike(parentId || id, -1);
-  //     window.dispatchEvent(new Event("refetchComments"));
-  //   } catch (error) {
-  //     // Rollback action state on error
-  //     setUserAction(previousAction);
-  //     console.error("Error toggling dislike:", error);
-  //     toast.error("Failed to dislike comment");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }, [id, parentId, isLoading, userAction, handleDislike]);
 
   const handleToggleLike = async (type: number) => {
     try {
@@ -518,7 +474,7 @@ const Comment: React.FC<CommentProps> = ({
         >
           <LikeIcon
             fill={`${user_liked ? "#E15B0F" : ""} `}
-            stroke={`${user_liked ? "#E15B0F" : "#000"} `}
+            stroke={`${user_liked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
           />
           <span className="text-xs font-normal">{likes}</span>
         </button>
@@ -530,7 +486,7 @@ const Comment: React.FC<CommentProps> = ({
         >
           <DislikeIcon
             fill={`${user_disliked ? "#E15B0F" : "none"} `}
-            stroke={`${user_disliked ? "#E15B0F" : "#000"} `}
+            stroke={`${user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
           />
           <span className="text-xs font-normal">{dislikes}</span>
         </button>

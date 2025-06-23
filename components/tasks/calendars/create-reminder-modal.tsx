@@ -33,7 +33,7 @@ const CreateReminderMOdal = () => {
               className={clsx(
                 "capitalize text-xs px-4 py-1",
                 {
-                  "bg-brand-2 rounded-[4px] text-brand-primary":
+                  "bg-brand-2 rounded-[4px] text-brand-primary dark:text-black":
                     activeTab === tab,
                 },
                 {

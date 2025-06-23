@@ -16,8 +16,14 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { DeleteIconX } from "@/public/icons/icons";
 import { useRouter, useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
-import { SinglePropertyResponse, transformSinglePropertyData } from "@/app/(nav)/management/properties/[id]/data";
-import { transformUnitOptions, UnitsApiResponse } from "@/components/Management/Rent And Unit/Edit-Rent/data";
+import {
+  SinglePropertyResponse,
+  transformSinglePropertyData,
+} from "@/app/(nav)/management/properties/[id]/data";
+import {
+  transformUnitOptions,
+  UnitsApiResponse,
+} from "@/components/Management/Rent And Unit/Edit-Rent/data";
 import MultiSelect from "@/components/Form/MultiSelect/multiselect";
 import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
@@ -27,20 +33,21 @@ import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { createExpense } from "../data";
 
-
 const CreateExpensePage = () => {
   const router = useRouter();
-  const companyId = usePersonalInfoStore((state) => state.company_id) || '';
-  const [payments, setPayments] = useState<{ payment_title: string; amount: number }[]>(
-    []
-  );
+  const companyId = usePersonalInfoStore((state) => state.company_id) || "";
+  const [payments, setPayments] = useState<
+    { payment_title: string; amount: number }[]
+  >([]);
   const searchParams = useSearchParams();
   const property_id = searchParams.get("p");
-  const [reqLoading, setReqLoading] = useState(false)
+  const [reqLoading, setReqLoading] = useState(false);
   const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
-  const [unitsSelected, setUnitsSelecetd] = useState<any[]>([])
+  const [unitsSelected, setUnitsSelecetd] = useState<any[]>([]);
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
+  const [loadingUnits, setLoadingUnits] = useState(false);
+
   const handleAddPaymentClick = () => {
     if (paymentTitle && paymentAmount) {
       // Remove commas and parse the amount as a float
@@ -64,7 +71,7 @@ const CreateExpensePage = () => {
     setPayments(payments.filter((_, i) => i !== index));
   };
 
-  const [selectedPropertyId, setSelectedPropertyId] = useState('')
+  const [selectedPropertyId, setSelectedPropertyId] = useState("");
 
   const {
     data: propertyOptionData,
@@ -72,11 +79,15 @@ const CreateExpensePage = () => {
     loading: propertiesLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
-  const propertyOptions =
-    propertyOptionData?.data.map((p) => ({
-      value: p.id,
-      label: p.title,
-    })) || [];
+  const propertiesWithUnits =
+    propertyOptionData?.data.filter(
+      (p) => Array.isArray(p.units) && p.units.length > 0
+    ) || [];
+
+  const propertyOptions = propertiesWithUnits.map((p) => ({
+    value: p.id,
+    label: p.title,
+  }));
 
   //FETCH D PROPERTY DATA
   const { data, loading, error, isNetworkError } =
@@ -87,15 +98,35 @@ const CreateExpensePage = () => {
   const {
     data: unitsData,
     error: unitError,
-    loading: loadingUnits,
+    loading: unitsFetchLoading,
   } = useFetch<UnitsApiResponse>(`/unit/${selectedPropertyId}/all`);
 
   useEffect(() => {
+    if (unitsData || unitError) {
+      setLoadingUnits(false);
+    }
+
     if (unitsData) {
       const unitsTransformOptions = transformUnitOptions(unitsData);
       setUnitsOptions(unitsTransformOptions);
     }
-  }, [unitsData]);
+  }, [unitsData, unitError]);
+
+  useEffect(() => {
+    if (selectedPropertyId) {
+      setLoadingUnits(true);
+    } else {
+      setUnitsOptions([]);
+      setUnitsSelecetd([]);
+    }
+  }, [selectedPropertyId]);
+
+  useEffect(() => {
+    if (!selectedPropertyId) {
+      setUnitsOptions([]);
+      setUnitsSelecetd([]);
+    }
+  }, [selectedPropertyId]);
 
   // console.log("payments", payments)
 
@@ -106,22 +137,22 @@ const CreateExpensePage = () => {
       description: data.expenses_description,
       // unit: data.units,
       unit: unitsSelected,
-      payments: payments
-    }
-    
+      payments: payments,
+    };
+
     try {
-      setReqLoading(true)
-      const res = await createExpense(objectToFormData(payload))
-      if (res){
-        toast.success("Expense created Successfully.")
+      setReqLoading(true);
+      const res = await createExpense(objectToFormData(payload));
+      if (res) {
+        toast.success("Expense created Successfully.");
         router.back();
       }
     } catch (error) {
       toast.error("Failed to create expenses, please try again!");
-    }finally{
-      setReqLoading(false)
+    } finally {
+      setReqLoading(false);
     }
-  }
+  };
 
   return (
     <section className="space-y-7 pb-[100px]">
@@ -137,10 +168,10 @@ const CreateExpensePage = () => {
               disabled={propertiesLoading}
               placeholder={
                 propertiesLoading
-                  ? 'Loading properties...'
+                  ? "Loading properties..."
                   : propertiesError
-                    ? 'Error loading properties'
-                    : 'Select property'
+                  ? "Error loading properties"
+                  : "Select property"
               }
               error={propertiesError}
             />
@@ -148,19 +179,21 @@ const CreateExpensePage = () => {
               id="units"
               options={unitsOptions}
               onValueChange={setUnitsSelecetd}
+              resetKey={Number(selectedPropertyId) || 0}
               label="Unit Name"
               className="max-w-[300px]"
+              disabled={loadingUnits}
               placeholder={
                 loadingUnits
-                  ? 'Loading units...'
+                  ? "Loading units..."
                   : propertiesError
-                    ? 'Error loading Units'
-                    : 'Select Unit'
+                  ? "Error loading Units"
+                  : "Select Unit"
               }
             />
           </div>
 
-          <div className='max-w-[968px]'>
+          <div className="max-w-[968px]">
             <TextArea id="expenses_description" label="Expenses Description" />
           </div>
         </div>
@@ -222,7 +255,9 @@ const CreateExpensePage = () => {
                         }).format(payment.amount)}
                       </p>
                       <Modal>
-                        <ModalTrigger aria-label={`Delete ${payment.payment_title}`}>
+                        <ModalTrigger
+                          aria-label={`Delete ${payment.payment_title}`}
+                        >
                           <DeleteIconX />
                         </ModalTrigger>
                         <ModalContent>
@@ -257,8 +292,13 @@ const CreateExpensePage = () => {
           {/* <Button variant="border" size="sm_normal" className="py-2 px-8">
           Cancel
         </Button> */}
-          <Button disabled={reqLoading} type="submit" size="sm_normal" className="py-2 px-8">
-           {reqLoading ? "Please wait..." : "Create"}
+          <Button
+            disabled={reqLoading}
+            type="submit"
+            size="sm_normal"
+            className="py-2 px-8"
+          >
+            {reqLoading ? "Please wait..." : "Create"}
           </Button>
         </FixedFooter>
       </AuthForm>

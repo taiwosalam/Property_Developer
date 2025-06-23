@@ -3,6 +3,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import useDarkMode from "./useCheckDarkMode";
 import { toast } from "sonner";
+import useWindowWidth from "./useWindowWidth";
 
 const useExport = (
   firstPageRef?: RefObject<HTMLDivElement>,
@@ -10,6 +11,7 @@ const useExport = (
   printRef?: RefObject<HTMLDivElement>
 ) => {
   const isDarkMode = useDarkMode();
+  const { isMobile, isTablet } = useWindowWidth();
 
   const generatePdf = async () => {
     const pdf = new jsPDF();
@@ -34,7 +36,7 @@ const useExport = (
       }).catch((err) => {
         console.error("html2canvas error for printRef:", err);
         throw err;
-      }); 
+      });
       const printWidth = printCanvas.width;
       const printHeight = printCanvas.height;
 
@@ -158,7 +160,15 @@ const useExport = (
   };
 
   const handlePrint = async () => {
-    // if(isDarkMode) return toast.warning("Please switch to Light Mode to Print")
+    // Check if device is mobile or tablet
+    if (isMobile || isTablet) {
+      toast.warning("Please use a desktop or laptop to print this document.");
+      return;
+    }
+    if (isDarkMode) {
+      toast.warning("Please switch to Light Mode for better print");
+    }
+
     try {
       const pdf = await generatePdf();
       const pdfData = pdf.output("blob");
@@ -175,7 +185,14 @@ const useExport = (
   };
 
   const handleDownload = async () => {
-    // if(isDarkMode) return toast.warning("Please switch to Light Mode to Download")
+    // Check if device is mobile or tablet
+    if (isMobile || isTablet) {
+      toast.warning("Please use a desktop or laptop to print this document.");
+      return;
+    }
+    if (isDarkMode) {
+      toast.warning("Please switch to Light Mode to Download");
+    }
     try {
       const pdf = await generatePdf();
       // pdf.save(`${fileName || "report"}.pdf`);

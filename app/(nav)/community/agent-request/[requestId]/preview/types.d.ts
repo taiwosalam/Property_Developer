@@ -44,6 +44,7 @@ export interface Contributor {
 
 export interface CompanySummary {
   company_logo: string;
+  dark_logo: string;
   name: string;
   company_bio: string;
   email: string;

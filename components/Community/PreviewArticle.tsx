@@ -13,6 +13,7 @@ import {
 } from "@/public/icons/icons";
 import Image from "next/image";
 import { empty } from "@/app/config";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const PreviewThreadArticle = ({
   post,
@@ -24,6 +25,7 @@ const PreviewThreadArticle = ({
   comments: CommentData[];
 }): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
+  const isDarkMode = useDarkMode();
 
   const handleToggleLike = async (type: number) => {
     try {
@@ -53,7 +55,7 @@ const PreviewThreadArticle = ({
       />
       <div className="flex justify-between mt-6">
         <div className="flex items-center gap-2">
-          <span className="text-text-secondary font-semibold text-md">
+          <span className="text-text-secondary dark:text-white font-semibold text-md">
             Comments
           </span>
         </div>
@@ -66,18 +68,18 @@ const PreviewThreadArticle = ({
           >
             <LikeIcon
               fill={`${post.user_liked ? "#E15B0F" : ""} `}
-              stroke={`${post.user_liked ? "#E15B0F" : "#000"} `}
+              stroke={`${post.user_liked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
             />
             <p>{post.likes_up}</p>
           </button>
           <button
-            className="flex items-center gap-1"
+            className="flex dark:text-white items-center gap-1"
             disabled={isLoading}
             onClick={() => handleToggleLike(-1)}
           >
             <DislikeIcon
               fill={`${post.user_disliked ? "#E15B0F" : "none"} `}
-              stroke={`${post.user_disliked ? "#E15B0F" : "#000"} `}
+              stroke={`${post.user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
             />
             <p>{post.likes_down}</p>
           </button>

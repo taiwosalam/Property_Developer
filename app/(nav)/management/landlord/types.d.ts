@@ -116,6 +116,7 @@ export type LandlordPageData = {
   // first_name: string;
   // last_name: string;
   name: string;
+  title: string;
   email: string;
   gender: string;
   phone_number: string;

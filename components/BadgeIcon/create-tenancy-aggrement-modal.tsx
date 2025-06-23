@@ -267,7 +267,7 @@ const CreateTenancyAggrementModal = ({
     <LandlordTenantModalPreset
       noPaddingTop
       {...(step !== 0 ? { back: { handleBack } } : {})}
-      style={{ maxWidth: "714px" }}
+      style={{ maxWidth: "714px", overflow: "visible" }}
       heading={getHeading()}
     >
       {renderContent()}

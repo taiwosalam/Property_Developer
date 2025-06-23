@@ -24,6 +24,7 @@ export interface UnitItemProps {
   serviceCharge?: string;
   cautionDeposit?: string;
   tenantName?: string;
+  title?: string;
   tenantBadgeColor?: BadgeIconColors;
   dueDate?: string;
   note?: boolean;

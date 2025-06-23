@@ -182,7 +182,7 @@ const ManageCalendar = () => {
       <div className="custom-flex-col gap-6 pb-10">
         <div className="sticky top-[150px] z-10 bg-neutral-2 dark:bg-darkText-primary flex gap-6 items-center justify-between flex-wrap py-3 dark:border-none border-t border-b border-solid border-[#EAECF0]">
           <div className="flex items-center gap-4 text-black text-xl font-medium capitalize">
-            <button onClick={handleBack} type="button" aria-label="Go Back">
+            <button className="dark:text-white" onClick={handleBack} type="button" aria-label="Go Back">
               <ChevronLeft />
             </button>
             <button onClick={goToToday} className="dark:text-white text-black">Today</button>

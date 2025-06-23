@@ -165,7 +165,7 @@ const StaffProfile = () => {
                 <div className="space-y-4">
                   <div>
                     <div className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-center">
-                      {staff?.name}
+                      {staff?.title || ""} {staff?.name}
                       {staff.badge_color && (
                         <BadgeIcon color={staff.badge_color} />
                       )}
