@@ -20,10 +20,11 @@ import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-c
 import useFetch from "@/hooks/useFetch";
 import { number } from "zod";
 import { toast } from "sonner";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
 
 const CreateMaintenace = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
@@ -39,6 +40,8 @@ const CreateMaintenace = () => {
 
   const [quotation, setQuotation] = useState("");
 
+  const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
+
   const [selectedBranch, setSelectedBranch] = useState<{
     id: number;
     branch_name: string;
@@ -47,7 +50,9 @@ const CreateMaintenace = () => {
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(
     null
   );
-  const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
+  const [selectedProviderId, setSelectedProviderId] = useState<number | null>(
+    null
+  );
 
   const [providerOptions, setProviderOptions] = useState<
     { id: number; name: string }[]
@@ -104,8 +109,6 @@ const CreateMaintenace = () => {
     }
   }, [propertyData, selectedPropertyId]);
 
-  console.log(selectedPropertyId);
-
   useEffect(() => {
     if (branchData) {
       const branches = branchData?.data?.map(
@@ -136,6 +139,15 @@ const CreateMaintenace = () => {
 
   const handleSubmit = async (data: FormData) => {
     // BACKEND ERROR: METHOD NOT ALLOWED
+    //data.delete("unit[]");
+
+    // Append each selected unit id as an array item
+    selectedUnits.forEach((id) => {
+      data.append("unit[]", id.toString());
+    });
+
+    data.append("calendar_event", "1");
+
     if (quotation && quotation.length > 0) {
       data.append("quotation_type", "text");
     }
@@ -144,14 +156,15 @@ const CreateMaintenace = () => {
       const response = await createMaintenance(data);
       if (response) {
         toast.success("Maintenance created");
-        router.push('/tasks/maintenance')
+        router.push("/tasks/maintenance");
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  console.log(selectedUnits);
 
   return (
     <div className="font-medium space-y-6">
@@ -179,13 +192,13 @@ const CreateMaintenace = () => {
             id="property_id"
             name="property_id"
           />
-          <input
-            value={selectedUnitId ?? ""}
+          {/* <input
+            value={selectedUnits ?? ""}
             type="hidden"
             aria-hidden
             id="unit_id"
             name="unit_id"
-          />
+          /> */}
           <Select
             id=""
             label="Branch"
@@ -230,24 +243,21 @@ const CreateMaintenace = () => {
             onChange={(name) => {
               const property = propertyOptions.find((p) => p.name === name);
               setSelectedPropertyId(property ? property.id : null);
-              setUnitOptions([]);
+              //setUnitOptions([{ id: null, name: "" }]);
+              setSelectedUnits([]);
             }}
           />
-          <Select
-            disabled={!selectedPropertyId || unitSilentLoading}
-            placeholder={
-              unitSilentLoading ? "Please wait..." : "Select options"
-            }
+
+          <MultiSelectObj
+            //disabled={!selectedPropertyId || unitSilentLoading}
             id=""
             label="Affected Units"
+            onValueChange={(selected) => setSelectedUnits(selected.map(String))}
             options={
-              unitOptions.length > 0 ? unitOptions.map((u) => u.name) : []
+              unitOptions.length > 0
+                ? unitOptions.map((u) => ({ label: u.name, value: u.id }))
+                : []
             }
-            inputContainerClassName="bg-white"
-            onChange={(name) => {
-              const unit = unitOptions.find((p) => p.name === name);
-              setSelectedUnitId(unit ? unit.id : null);
-            }}
           />
           <Select
             id="priority"
@@ -255,26 +265,36 @@ const CreateMaintenace = () => {
             options={priorityLevelsOption.map((level) => {
               return {
                 label: level.label,
-                value: level.value
-              }
+                value: level.value,
+              };
             })}
             isSearchable={false}
             inputContainerClassName="bg-white capitalize"
           />
-          <Select
+          <Input type="text" id="requested_by" label="Requested By" inputClassName="rounded-lg"/>
+
+          {/* <Select
             id="requested_by"
             label="Requested By"
             options={["user 1", "user 2"]}
             inputContainerClassName="bg-white"
-          />
+          /> */}
           <Select
             id="maintenance_type"
             label="Maintenance Type"
             options={maintenanceTypes}
             inputContainerClassName="bg-white"
           />
-          <Select
+
+          <input
+            value={selectedPropertyId ?? ""}
+            type="hidden"
+            aria-hidden
             id="service_provider"
+            name="service_provider"
+          />
+          <Select
+            id=""
             label="Service Provider"
             disabled={providerSilentLoading}
             placeholder={
@@ -285,6 +305,15 @@ const CreateMaintenace = () => {
                 ? providerOptions.map((option) => option.name)
                 : []
             }
+            value={
+              selectedProviderId
+                ? providerOptions.find((b) => b.id === selectedPropertyId)?.name
+                : ""
+            }
+            onChange={(name) => {
+              const provider = providerOptions.find((b) => b.name === name);
+              setSelectedBranchId(provider ? provider.id : null);
+            }}
             inputContainerClassName="bg-white"
           />
         </div>
@@ -341,7 +370,7 @@ const CreateMaintenace = () => {
               </DocumentCheckbox>
             </div>
             <div>
-              <DocumentCheckbox
+              {/* <DocumentCheckbox
                 darkText
                 name="calendar_event"
                 state={{
@@ -350,7 +379,7 @@ const CreateMaintenace = () => {
                 }}
               >
                 Add to Calendar
-              </DocumentCheckbox>
+              </DocumentCheckbox> */}
             </div>
           </div>
           <Button

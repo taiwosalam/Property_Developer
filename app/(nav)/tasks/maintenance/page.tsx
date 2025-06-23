@@ -20,6 +20,7 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import { MaintenanceApiResponse } from "./type";
 import PageLoader from "next/dist/client/page-loader";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const Maintenance = () => {
   const [maintenanceData, setMaintenanceData] =
@@ -31,9 +32,10 @@ const Maintenance = () => {
     error,
     loading,
     isNetworkError,
+    refetch,
   } = useFetch<MaintenanceApiResponse>(`maintenance`);
 
-  console.log(apiData);
+  //useRefetchOnEvent("dispatchMaintenance", () => refetch({ silent: true }));
 
   useEffect(() => {
     // getALLMaintenance;
@@ -45,7 +47,7 @@ const Maintenance = () => {
 
   if (loading) {
     return (
-      <AutoResizingGrid gap={28} minWidth={400}>
+      <AutoResizingGrid gap={28} minWidth={380}>
         <PropertyrequestSkeletonLoader length={10} />
       </AutoResizingGrid>
     );
@@ -87,19 +89,21 @@ const Maintenance = () => {
         isDateTrue
         filterOptionsMenu={maintenanceFilterOptionsWithDropdown}
       />
-      <AutoResizingGrid minWidth={380} gap={32}>
-        {maintenanceData && maintenanceData.data.length > 0
-          ? maintenanceData?.data.map((card) => {
-              return (
-                <MaintenanceCard
-                  key={card?.card.maintenanceId}
-                  card={card.card}
-                  modal={card.modal}
-                />
-              );
-            })
-          : "No Maintenance Yet"}
-      </AutoResizingGrid>
+      <section className="w-full">
+        <AutoResizingGrid minWidth={380} gap={32}>
+          {maintenanceData
+            ? maintenanceData?.data.map((card, i) => {
+                return (
+                  <MaintenanceCard
+                    key={i}
+                    card={card.card}
+                    modal={card.modal}
+                  />
+                );
+              })
+            : "No Maintenance Yet"}
+        </AutoResizingGrid>
+      </section>
     </div>
   );
 };

@@ -104,7 +104,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ card, modal }) => {
           <p className="text-text-tertiary text-base dark:text-darkText-1">
             Start - End Date:
           </p>
-          <p className="text-text-secondary text-sm dark:text-darkText-2 max-w-[8rem]">
+          <p className="text-text-secondary text-sm dark:text-darkText-2">
             {card?.startEndDate}
           </p>
         </div>

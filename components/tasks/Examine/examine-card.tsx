@@ -7,12 +7,25 @@ import ExamineIcon from "@/public/icons/examine-icon.svg";
 import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
 interface ExamineCardProps {
   viewOnly?: boolean;
+  id?: number;
+  title?: string;
+  description?: string;
+  examine_date?: string; // e.g., "20th January 2026"
+  image?: string[]; //
 }
 
-const ExamineCard: React.FC<ExamineCardProps> = ({ viewOnly }) => {
+const ExamineCard: React.FC<ExamineCardProps> = ({
+  viewOnly,
+  id,
+  title,
+  description,
+  image,
+  examine_date,
+}) => {
   const router = useRouter();
   return (
     <div
@@ -28,20 +41,17 @@ const ExamineCard: React.FC<ExamineCardProps> = ({ viewOnly }) => {
       <div className="custom-flex-col gap-[22px] px-[18px]">
         <div className="custom-flex-col gap-2">
           <div className="cusotm-flex-col gap-1 font-medium">
-            <p className="text-black dark:text-white text-base">
-              Examine (House inspection)
-            </p>
-            <p className="text-text-tertiary dark:text-darkText-1 text-sm">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry&apos;s standard dummy
-              text ever since the 1500s, and
-            </p>
+            <p className="text-black dark:text-white text-base pb-1">{title}</p>
+            {description && (
+              <div
+                className="text-text-tertiary dark:text-darkText-1 text-sm"
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
+            )}
           </div>
           <div className="flex justify-between text-sm font-medium">
-            <p className="text-text-label dark:text-darkText-2">
-              ID: 123568765
-            </p>
-            <p className="text-neutral-4">12/01/24</p>
+            <p className="text-text-label dark:text-darkText-2">ID: {id}</p>
+            <p className="text-neutral-4">{examine_date}</p>
           </div>
         </div>
         {!viewOnly && (
