@@ -23,6 +23,7 @@ import { useAgreementExport } from "@/hooks/useAgreementExport";
 import { compressImage } from "@/utils/compress-image";
 import PageCircleLoader from "../Loader/PageCircleLoader";
 import { useModal } from "./modal";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 interface AgreementPreviewProps {
   onClose?: () => void;
@@ -40,6 +41,8 @@ export const AgreementPreview = ({
   const firstPageRef = useRef<HTMLDivElement>(null);
   const restOfContentRef = useRef<HTMLDivElement>(null);
   const [compressedData, setCompressedData] = useState<any>(null);
+  // Use the useWindowWidth hook to detect device type
+  const { isMobile, isTablet, isLaptop, isDesktop } = useWindowWidth();
 
   const { documentData, unitName, isLoading, error } = useAgreementData();
   const { handleDownload, generatePdfFile, isDownloading } = useAgreementExport(
@@ -115,6 +118,21 @@ export const AgreementPreview = ({
     return <PageCircleLoader />;
   }
 
+  // If the device is mobile or tablet, render a message instead of the agreement preview
+  if (isMobile || isTablet) {
+    return (
+      <div className="agreement-preview-container flex flex-col items-center justify-center h-full text-center p-4">
+        <h2 className="text-xl font-semibold mb-4">
+          Desktop or Laptop Required
+        </h2>
+        <p className="text-gray-600">
+          To view, download, or print this agreement, please open this page on a
+          desktop or laptop device.
+        </p>
+      </div>
+    );
+  }
+
   const {
     parties,
     propertyDescription,
@@ -127,8 +145,7 @@ export const AgreementPreview = ({
 
   return (
     <div className="agreement-preview-container">
-      <div className="agreement-preview-header">
-      </div>
+      <div className="agreement-preview-header"></div>
       <div className="agreement-preview-content">
         <div ref={firstPageRef} className="agreement-preview-first-page">
           <Parties landlord={parties.landlord} tenant={parties.tenant} />

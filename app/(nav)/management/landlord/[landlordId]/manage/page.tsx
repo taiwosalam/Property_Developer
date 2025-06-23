@@ -138,8 +138,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <div className="custom-flex-col">
                 <div className="flex items-center">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    {/* {landlordData?.first_name} {landlordData?.last_name} */}
-                    {landlordData.name}
+                    {landlordData.title} {landlordData.name}
                   </p>
                   <div className="flex gap-2 items-center">
                     {landlordData.badge_color && (
@@ -237,17 +236,17 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 <Button
                   variant="light_green"
                   size="base_medium"
-                  className="py-2 px-8"
+                  className="py-2 px-4"
                   onClick={() => toast.warning("Coming soon!!!")}
                 >
-                  Link New Unit
+                  Attach Property
                 </Button>
                 <Modal>
                   <ModalTrigger asChild>
                     <Button
                       variant="sky_blue"
                       size="base_medium"
-                      className="py-2 px-8"
+                      className="py-2 px-4"
                     >
                       update with Email
                     </Button>

@@ -124,7 +124,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
               "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
           }}
         >
-          <div className="p-[18px] pb-0 bg-brand-1 custom-flex-col gap-2">
+          <div className="p-[18px] pb-0 bg-brand-1 dark:bg-[#3d3c37] custom-flex-col gap-2">
             <CalendarHeader />
             <div className="w-full overflow-x-auto custom-round-scrollbar pb-[18px]">
               <CalendarEventsTags events={calendar_event_tags} />

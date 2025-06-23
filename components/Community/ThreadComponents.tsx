@@ -13,6 +13,7 @@ import { useState } from "react";
 import ReactPlayer from "react-player";
 import { toast } from "sonner";
 import BadgeIcon, { BadgeIconColors } from "../BadgeIcon/badge-icon";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 // ============= THREAD HEADER ======================
 export const ThreadHeader = ({
@@ -143,6 +144,7 @@ export const ThreadFooter = ({
   user_disliked?: boolean;
   setIsLikeDislikeLoading?: (value: boolean) => void;
 }) => {
+  const isDarkMode = useDarkMode()
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -192,7 +194,7 @@ export const ThreadFooter = ({
         >
           <LikeIcon
             fill={`${user_liked ? "#E15B0F" : ""} `}
-            stroke={`${user_liked ? "#E15B0F" : "#000"} `}
+            stroke={`${user_liked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
           />
           <p>{likes}</p>
         </button>
@@ -203,7 +205,7 @@ export const ThreadFooter = ({
         >
           <DislikeIcon
             fill={`${user_disliked ? "#E15B0F" : "none"} `}
-            stroke={`${user_disliked ? "#E15B0F" : "#000"} `}
+            stroke={`${user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
           />
           <p>{dislikes}</p>
         </button>

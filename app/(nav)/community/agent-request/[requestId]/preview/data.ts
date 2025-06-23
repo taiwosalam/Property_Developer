@@ -175,6 +175,7 @@ export const transformPropertyRequestResponse = (
     contributor,
     companySummary: {
       company_logo: company_summary.company_logo,
+      dark_logo: company_summary.dark_logo,
       company_bio: company_summary.company_bio,
       name: company_summary.name,
       email: company_summary.email,

@@ -101,18 +101,78 @@ export const Campaign = () => {
     tableHeadClassName: "h-[45px]",
   };
 
+  // const handlePostCampaign = async () => {
+  //   if (!company_id) return;
+
+  //   const monthString = selectedPeriod.split(" ")[0];
+
+  //   try {
+  //     const formData = new FormData();
+
+  //     formData.append("period", String(Number(monthString)));
+  //     formData.append("amount", String(totalAmount));
+  //     //formData.append("company_id", company_id);
+  //     formData.append("link", `https://${campaignValue}`);
+  //     formData.append("name", campaignName);
+  //     formData.append("type", selectedPage);
+
+  //     if (uploadedFile) {
+  //       if (uploadedFile.type !== "image/svg+xml") {
+  //         toast.error("Only SVG files are allowed");
+  //         return;
+  //       }
+
+  //       if (uploadedFile.size > 1024 * 1024) {
+  //         toast.error("File size must be less than 1MB");
+  //         return;
+  //       }
+
+  //       formData.append("attachment", uploadedFile);
+  //     }
+
+  //     const res = await postCampaign(formData, company_id);
+  //     if (res) {
+  //       // toast.success("Campaign sent successfully");
+  //       return true;
+  //     }
+  //   } catch (error) {}
+  // };
+
   const handlePostCampaign = async () => {
     if (!company_id) return;
 
     const monthString = selectedPeriod.split(" ")[0];
+
+    // === 1. Validate the campaignValue ===
+    if (!campaignValue || typeof campaignValue !== "string") {
+      toast.warning("Campaign link is required");
+      return;
+    }
+
+    const trimmedLink = campaignValue.trim();
+
+    // Check if it starts with https:// (only that, not http://)
+    const isHttpsLink = trimmedLink.startsWith("https://");
+
+    // Invalid if it starts with something else (e.g., http://, ftp://)
+    if (
+      trimmedLink.startsWith("http://") ||
+      trimmedLink.startsWith("ftp://") ||
+      (!isHttpsLink && trimmedLink.includes("://"))
+    ) {
+      toast.error("Only HTTPS links are allowed");
+      return;
+    }
+
+    // === 2. Build full valid link ===
+    const finalLink = isHttpsLink ? trimmedLink : `https://${trimmedLink}`;
 
     try {
       const formData = new FormData();
 
       formData.append("period", String(Number(monthString)));
       formData.append("amount", String(totalAmount));
-      //formData.append("company_id", company_id);
-      formData.append("link", `https://${campaignValue}`);
+      formData.append("link", finalLink);
       formData.append("name", campaignName);
       formData.append("type", selectedPage);
 
@@ -132,10 +192,12 @@ export const Campaign = () => {
 
       const res = await postCampaign(formData, company_id);
       if (res) {
-        toast.success("Campaign sent successfully");
+        // toast.success("Campaign sent successfully");
         return true;
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("An error occurred while posting the campaign");
+    }
   };
 
   return (

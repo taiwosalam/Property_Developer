@@ -57,6 +57,7 @@ export interface CompanySummaryTypes {
   addresses: Address;
   company_is_verified: boolean;
   company_logo: string;
+  dark_logo: string;
   company_status: string;
   contact_details: ContactDetails;
   details: Details;

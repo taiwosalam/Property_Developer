@@ -143,7 +143,8 @@ export const RenewalRent = ({
         <DateInput
           id="payment_date"
           label="Payment Date"
-          disablePast
+          // disablePast
+          lastYear
           value={startDate}
           onChange={setStartDate}
         />

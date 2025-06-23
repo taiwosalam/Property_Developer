@@ -7,6 +7,7 @@ import {
 import { CompanySummaryTypes } from "./types";
 import Link from "next/link";
 import { empty } from "@/app/config";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const CompanySummary = ({
   loading,
@@ -15,6 +16,7 @@ const CompanySummary = ({
   loading?: boolean;
   companySummary: CompanySummaryTypes;
 }) => {
+  const isDarkMode = useDarkMode();
   if (loading) {
     return <CompanySummarySkeleton />;
   }
@@ -33,7 +35,10 @@ const CompanySummary = ({
     website,
     socialHandles,
     stats,
+    dark_logo,
   } = formatCompanySummary(companySummary);
+
+  const COMPANY_LOGO = isDarkMode ? dark_logo : logo;
 
   return (
     <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
@@ -45,7 +50,7 @@ const CompanySummary = ({
       <div className="mt-4 flex flex-col items-center">
         <div className="h-[70px] w-[260px] rounded-lg border border-brand-9 p-2">
           <Image
-            src={logo || empty}
+            src={COMPANY_LOGO}
             alt="Company Logo"
             width={500}
             height={500}
@@ -105,7 +110,7 @@ const CompanySummary = ({
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-black p-2 dark:border-white"
+              className="rounded-full border border-black p-2 dark:border-white dark:text-white"
             >
               {icon}
             </Link>

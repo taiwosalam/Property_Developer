@@ -80,7 +80,7 @@ export const transformCompanyUsersData = (
 export const transformUsersMessages = (
   data: ConversationsAPIResponse | null | undefined
 ): PageMessages[] => {
-  console.log("data got", data)
+  // console.log("data got", data)
   if (!data || !data.conversations) return []; // Ensure data exists
 
   return data.conversations.map((c) => {

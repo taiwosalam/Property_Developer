@@ -151,6 +151,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   partial_pending,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isImgHovered, setImgIsHovered] = useState(false);
   const router = useRouter();
 
   const HAS_INVOICE_PENDING =
@@ -164,14 +165,27 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
 
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">
-      <div className="h-[200px] relative">
+      <div
+        className="h-[200px] relative"
+        onMouseEnter={() => setImgIsHovered(true)}
+        onMouseLeave={() => setImgIsHovered(false)}
+      >
         <PropertyTag
           propertyType={propertyType}
           className="absolute top-5 right-5 z-10"
         />
-        {/* <PropertyImageSlider images={images} showOverlay={isHovered} /> */}
         <ImageSlider images={images.map((image) => image)} className="h-full" />
+
+        {/* Hover text overlay at bottom */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 z-30 bg-black bg-opacity-50 text-white text-xs text-center py-1 transition-opacity duration-300 ${
+            isImgHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          Click the card to view rent history
+        </div>
       </div>
+
       <div
         role="button"
         className="p-2 pb-4 border-b border-[#C0C2C8] space-y-3 cursor-pointer transition-all duration-500"

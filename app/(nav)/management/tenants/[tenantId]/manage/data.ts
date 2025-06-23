@@ -66,6 +66,7 @@ export interface IndividualTenantAPIResponse {
     // first_name: string;
     // last_name: string;
     name: string;
+    title: string;
     email: string;
     phone: string;
     tier_id?: 1 | 2 | 3 | 4 | 5;
@@ -181,6 +182,7 @@ export const transformIndividualTenantAPIResponse = ({
         )}`
       : "--- ---",
     tenantName: data?.name || "",
+    title: data?.title || "",
     tenantBadgeColor: data?.tier_id ? tierColorMap[data.tier_id] : undefined,
     dueDate: rent?.due_date ? moment(rent.due_date).format("DD/MM/YYYY") : "",
   });
@@ -195,6 +197,7 @@ export const transformIndividualTenantAPIResponse = ({
     id: data?.id || "",
     picture: data?.picture || empty,
     name: data?.name || "--- ---",
+    title: data.title || "",
     user_id: data?.user_id || "--- ---",
     email: data?.email || "--- ---",
     user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",

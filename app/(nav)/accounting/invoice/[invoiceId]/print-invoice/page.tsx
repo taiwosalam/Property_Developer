@@ -140,7 +140,10 @@ const PreviewExpenses = () => {
                         ),
                         "non refundable legal fee": "",
                         "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
-                        "Company Owe": formatFee(pageData.company_owed, CURRENCY),
+                        "Company Owe": formatFee(
+                          pageData.company_owed,
+                          CURRENCY
+                        ),
                       }}
                       chunkSize={2}
                       direction="column"
@@ -168,32 +171,38 @@ const PreviewExpenses = () => {
               </p>
             </div>
           </AccountingTitleSection>
-          <AccountingTitleSection title="Account Details">
-            <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
-              <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
-                <KeyValueList
-                  data={{
-                    "account name":
-                      BANK_DETAILS?.account_name ||
-                      companyBankDetails.account_name,
-                    "account number":
-                      BANK_DETAILS?.account_number ||
-                      companyBankDetails.account_number,
-                    "bank name":
-                      BANK_DETAILS?.bank_name || companyBankDetails.bank_name,
-                  }}
-                  chunkSize={1}
-                  direction="column"
-                  referenceObject={{
-                    "account number": "",
-                    "account name": "",
-                    "bank name": "",
-                  }}
-                />
-              </div>
-            </div>
-            <Signature />
-          </AccountingTitleSection>
+          {BANK_DETAILS?.account_name ||
+            (companyBankDetails.account_name && (
+              <>
+                <AccountingTitleSection title="Account Details">
+                  <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
+                    <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+                      <KeyValueList
+                        data={{
+                          "account name":
+                            BANK_DETAILS?.account_name ||
+                            companyBankDetails.account_name,
+                          "account number":
+                            BANK_DETAILS?.account_number ||
+                            companyBankDetails.account_number,
+                          "bank name":
+                            BANK_DETAILS?.bank_name ||
+                            companyBankDetails.bank_name,
+                        }}
+                        chunkSize={1}
+                        direction="column"
+                        referenceObject={{
+                          "account number": "",
+                          "account name": "",
+                          "bank name": "",
+                        }}
+                      />
+                    </div>
+                  </div>
+                </AccountingTitleSection>
+              </>
+            ))}
+          <Signature />
         </div>
         <ExportPageFooter printRef={printRef} />
       </div>

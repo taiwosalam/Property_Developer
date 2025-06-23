@@ -404,6 +404,7 @@ const Tenants = () => {
                         key={t.id}
                         picture_url={t.picture_url}
                         name={t.name}
+                        title={t.title}
                         user_tag={t.user_tag}
                         badge_color={t.badge_color}
                         email={t.email}

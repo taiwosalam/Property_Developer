@@ -24,6 +24,7 @@ import {
 } from "@/utils/number-formatter";
 import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import Button from "@/components/Form/Button/button";
 
 const PriceSection: React.FC<{
   period: string;
@@ -102,17 +103,22 @@ const UnitPreviewPage = () => {
       <BackButton as="p"> {unit_data.title} </BackButton>
 
       {/* Heading */}
-      <div className="text-black dark:text-white">
-        <p className="text-base font-medium dark:text-darkText-1">
-          ID: {unit_data.unit_id}
-        </p>
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold capitalize">
-          {unit_data.unit_name}
-        </h1>
-        <p className="text-sm text-text-label font-normal flex items-center gap-1 capitalize">
-          <LocationIcon />
-          {unit_data.address}
-        </p>
+      <div className="flex items-center justify-between">
+        <div className="text-black dark:text-white">
+          <p className="text-base font-medium dark:text-darkText-1">
+            ID: {unit_data.unit_id}
+          </p>
+          <h1 className="text-lg md:text-xl lg:text-2xl font-bold capitalize">
+            {unit_data.unit_name}
+          </h1>
+          <p className="text-sm text-text-label font-normal flex items-center gap-1 capitalize">
+            <LocationIcon />
+            {unit_data.address}
+          </p>
+        </div>
+        <Button href={`/management/properties/${unit_data.propertyId}/edit-property`}>
+          Manage
+        </Button>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-x-[30px] gap-y-5">

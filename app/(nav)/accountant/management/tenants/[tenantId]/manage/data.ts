@@ -49,6 +49,7 @@ export interface IndividualTenantAPIResponse {
     // first_name: string;
     // last_name: string;
     name: string;
+    title: string;
     email: string;
     phone: string;
     tier_id?: 1 | 2 | 3 | 4 | 5;
@@ -114,6 +115,7 @@ export const transformIndividualTenantAPIResponse = ({
     picture: data.picture || "",
     name: data.name,
     user_id: data.user_id,
+    title: data.title,
     // first_name: data.first_name,
     // last_name: data.last_name,
     email: data.email,

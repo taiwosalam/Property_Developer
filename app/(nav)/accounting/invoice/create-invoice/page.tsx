@@ -10,12 +10,9 @@ import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { empty } from "@/app/config";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { DeleteIconX } from "@/public/icons/icons";
 import { useRouter, useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import {
@@ -27,6 +24,7 @@ import ServerError from "@/components/Error/ServerError";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import {
   createInvoice,
+  getPropertyTenants,
   parseFormattedNumber,
   PropertyTenantResponse,
 } from "./data";
@@ -44,15 +42,17 @@ const CreateInvoicePage = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false);
+  const [tenantLoading, setTenantLoading] = useState(false);
+  const [tenantsData, setTenantsData] = useState<PropertyTenantResponse | null>(
+    null
+  );
+  const [tenantsError, setTenantsError] = useState<string | null>(null);
+
   const handleGenerateInvoiceCheckboxChange = (checked: boolean) => {
     setIsSelectDisabled(checked);
   };
   const [selectedTenant, setSelectedTenant] = useState("");
 
-  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
-    []
-  );
-  const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
 
   // PROPERTY SELECTION LOGIC
@@ -70,16 +70,42 @@ const CreateInvoicePage = () => {
         value: `${p.id}`,
         label: p.title,
       })) || [];
-  // PROPERTY SELECTION LOGIC ENDS
 
-  const {
-    data: TenantsData,
-    loading: TenantLoading,
-    error: TenantsError,
-  } = useFetch<PropertyTenantResponse>(`all-tenants/${selectedProperty}`);
+  useEffect(() => {
+    const fetchTenants = async () => {
+      setTenantLoading(true);
+      setTenantsError(null);
+
+      try {
+        const data = await getPropertyTenants(selectedProperty);
+        if (data) {
+          setTenantsData(data);
+        } else {
+          setTenantsData(null);
+          setTenantsError("No tenants found");
+        }
+      } catch (error) {
+        setTenantsError("Error loading tenants");
+        setTenantsData(null);
+      } finally {
+        setTenantLoading(false);
+      }
+    };
+
+    if (selectedProperty) {
+      fetchTenants();
+    } else {
+      setTenantsData(null);
+      setTenantsError(null);
+    }
+  }, [selectedProperty]);
+
+  useEffect(() => {
+    setSelectedTenant("");
+  }, [selectedProperty]);
 
   const TENANT_OPTIONS =
-    TenantsData?.data.map((t) => ({
+    tenantsData?.data.map((t) => ({
       value: t.id,
       label: t.name,
       icon: t.picture,
@@ -106,9 +132,9 @@ const CreateInvoicePage = () => {
   ];
 
   const handleCreateInvoice = async (data: any) => {
-    if(!data.tenant_name){
+    if (!data.tenant_name) {
       return toast.warning("Please select a tenant");
-    } 
+    }
     const payload = {
       property_id: selectedProperty,
       tenant_id: data.tenant_name ?? "",
@@ -173,19 +199,20 @@ const CreateInvoicePage = () => {
               id="tenant_name"
               options={TENANT_OPTIONS}
               label="Tenant/Occupant"
-              // disabled={isSelectDisabled || TenantLoading}
-              disabled={TenantLoading}
+              disabled={isSelectDisabled || tenantLoading}
+              resetKey={selectedProperty}
               placeholder={
-                TenantLoading
+                tenantLoading
                   ? "Loading Tenants"
-                  : TenantsError
-                  ? "Error Loading Tenants"
+                  : tenantsError
+                  ? tenantsError
                   : TENANT_OPTIONS.length === 0
                   ? "No Tenants Found"
                   : "Select Tenant"
               }
               onChange={setSelectedTenant}
             />
+
             <Checkbox
               className="self-end items-start text-left"
               checked={isSelectDisabled}

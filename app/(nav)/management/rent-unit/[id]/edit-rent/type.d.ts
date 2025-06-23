@@ -33,6 +33,7 @@ export interface Property {
     created_at: string;
     updated_at: string;
     has_document: boolean;
+    units: any[];
   }
   
   export interface PropertyListResponse {
