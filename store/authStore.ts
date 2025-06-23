@@ -63,6 +63,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     Cookies.remove('authToken');
     Cookies.remove('user_role'); 
     Cookies.remove('company_subscription_status'); 
+    Cookies.remove("subscription_status"); 
     Cookies.remove("role");
     set({
       email: email ?? null,

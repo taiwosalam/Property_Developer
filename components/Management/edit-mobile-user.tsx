@@ -103,7 +103,11 @@ const EditMobileUser = ({
       const res = await action;
       if (res) {
         toast.success("Deleted Successfully");
-        router.back();
+        if (isLandlord) {
+          router.push("/management/landlord");
+        } else {
+          router.push("/management/tenant");
+        }
       }
     } catch (error) {
       toast.error("Failed to Delete, Try again");
@@ -119,7 +123,7 @@ const EditMobileUser = ({
           <div className="flex flex-col md:flex-row items-center justify-center gap-7 md:gap-14">
             <AddLandlordOrTenantCard
               buttonText="proceed"
-              title={is_flagged ? "Unflag" : "Flag"}
+              title={is_flagged ? "Unflag Profile" : "Flag Profile"}
               loading={reqLoading}
               onClick={() => setActiveStep(is_flagged ? "unflag" : "flag")}
               desc={
@@ -135,6 +139,18 @@ const EditMobileUser = ({
               onClick={() => setActiveStep("delete")}
               desc="Do you want to remove this client from your dashboard? You can only delete users who have no properties attached to their profile."
             />
+
+            <AddLandlordOrTenantCard
+              loading={reqLoading}
+              buttonText="proceed"
+              title={isLandlord ? "Add New Property" : "Link New Unit"}
+              onClick={() => toast.warning("Coming soon!!!")}
+              desc={
+                isLandlord
+                  ? "Process of linking a newly added property from the property records page to the profile, identifying that profile as the owner."
+                  : "The process involves connecting a newly added rental or facility unit to an existing profile record within the system."
+              }
+            />
           </div>
         </LandlordTenantModalPreset>
       ) : activeStep === "delete" ? (
@@ -148,7 +164,7 @@ const EditMobileUser = ({
               variant="light_red"
               className="py-2 px-8"
             >
-                {reqLoading ? "Please wait..." : "Delete"}
+              {reqLoading ? "Please wait..." : "Delete"}
             </Button>
             <Button
               onClick={() => setIsOpen(false)}

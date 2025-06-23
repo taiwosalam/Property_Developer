@@ -24,6 +24,7 @@ const RelocateModal = ({ unit_id }: { unit_id: string }) => {
       if (res) {
         setModalView("success");
         window.dispatchEvent(new Event("refetchRentUnit"));
+        window.dispatchEvent(new Event("refetchtenant"));
       }
     } catch (error) {
       toast.error("Fail to Move out. Please try again later.");

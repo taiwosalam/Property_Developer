@@ -178,11 +178,11 @@ const Setup = () => {
             />
           </Section>
           <div className="director-details-wrapper">
-            <div className="flex gap-[2px] flex-col">
+            <div className="flex gap-[2px] flex-col mb-4">
               <h1 className="text-text-primary text-xl font-semibold capitalize dark:text-[#f1f1fd]">
                 directors details
               </h1>
-              <p className="text-text-quaternary capitalize">
+              <p className="text-text-quaternary dark:text-darkText-1 capitalize">
                 Fill the details below to add a director to your company
               </p>
             </div>

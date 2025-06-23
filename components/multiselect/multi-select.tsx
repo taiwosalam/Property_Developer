@@ -29,6 +29,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import Image from "next/image";
+import Picture from "../Picture/picture";
 
 /**
  * Variants for the multi-select component to handle different styles.
@@ -59,7 +60,7 @@ const multiSelectVariants = cva(
  */
 interface MultiSelectProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof multiSelectVariants> {
+    VariantProps<typeof multiSelectVariants> {
   /**
    * An array of option objects to be displayed in the multi-select component.
    * Each option object has a label, value, and an optional icon.
@@ -144,16 +145,16 @@ export const MultiSelect = React.forwardRef<
     },
     ref
   ) => {
-    const [selectedValues, setSelectedValues] =
-    React.useState<string[]>(defaultValue || []);
+    const [selectedValues, setSelectedValues] = React.useState<string[]>(
+      defaultValue || []
+    );
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
-    
+
     // console.log("default", defaultValue)
     // React.useEffect(() => {
     //   console.log("defaultValue changed:", selectedValues);
     // }, [defaultValue]);
-
 
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>
@@ -179,7 +180,9 @@ export const MultiSelect = React.forwardRef<
     const toggleOption = (option: string) => {
       if (selectedValues.includes(option)) {
         // If the option is already selected, remove it
-        const newSelectedValues = selectedValues.filter((value) => value !== option);
+        const newSelectedValues = selectedValues.filter(
+          (value) => value !== option
+        );
         setSelectedValues(newSelectedValues);
         onValueChange(newSelectedValues);
       } else {
@@ -187,7 +190,7 @@ export const MultiSelect = React.forwardRef<
         if (maxSelect && selectedValues.length >= maxSelect) {
           return;
         }
-    
+
         // Otherwise, add the new option
         const newSelectedValues = [...selectedValues, option];
         setSelectedValues(newSelectedValues);
@@ -195,7 +198,6 @@ export const MultiSelect = React.forwardRef<
       }
     };
 
-    
     const handleClear = () => {
       setSelectedValues([]);
       onValueChange([]);
@@ -243,7 +245,9 @@ export const MultiSelect = React.forwardRef<
                 <div className="flex flex-wrap items-center">
                   {selectedValues.slice(0, maxCount).map((value) => {
                     // const option = options.find((o) => o.value === value);
-                    const option = options.find((o) => String(o.value) === String(value));
+                    const option = options.find(
+                      (o) => String(o.value) === String(value)
+                    );
                     const IconComponent = option?.icon;
                     return (
                       <Badge
@@ -254,7 +258,10 @@ export const MultiSelect = React.forwardRef<
                             : "text-text-disabled border-none",
                           multiSelectVariants({ variant })
                         )}
-                        style={{ animationDuration: `${animation}s`, fontWeight: "normal" }}
+                        style={{
+                          animationDuration: `${animation}s`,
+                          fontWeight: "normal",
+                        }}
                       >
                         {/* {IconComponent && ( */}
                         {option?.icon && (
@@ -288,7 +295,10 @@ export const MultiSelect = React.forwardRef<
                         isAnimating ? "animate-bounce" : "border-none",
                         multiSelectVariants({ variant })
                       )}
-                      style={{ animationDuration: `${animation}s`, color: "GrayText" }}
+                      style={{
+                        animationDuration: `${animation}s`,
+                        color: "GrayText",
+                      }}
                     >
                       {`+ ${selectedValues.length - maxCount} more`}
                       {/* <XCircle
@@ -339,23 +349,25 @@ export const MultiSelect = React.forwardRef<
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
-               {!maxSelect && <CommandItem
-                  key="all"
-                  onSelect={toggleAll}
-                  className="cursor-pointer"
-                >
-                  <div
-                    className={cn(
-                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                      selectedValues.length === options.length
-                        ? "bg-primary text-primary-foreground"
-                        : "opacity-50 [&_svg]:invisible"
-                    )}
+                {!maxSelect && (
+                  <CommandItem
+                    key="all"
+                    onSelect={toggleAll}
+                    className="cursor-pointer"
                   >
-                    <CheckIcon className="h-4 w-4" />
-                  </div>
-                <span>(Select All)</span>
-                </CommandItem>}
+                    <div
+                      className={cn(
+                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                        selectedValues.length === options.length
+                          ? "bg-primary text-primary-foreground"
+                          : "opacity-50 [&_svg]:invisible"
+                      )}
+                    >
+                      <CheckIcon className="h-4 w-4" />
+                    </div>
+                    <span>(Select All)</span>
+                  </CommandItem>
+                )}
                 {options.map((option) => {
                   const isSelected = selectedValues.includes(option.value);
                   return (
@@ -376,13 +388,13 @@ export const MultiSelect = React.forwardRef<
                       </div>
                       {option.icon && (
                         // <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                        <div className="custom-secondary-bg h-6 w-6 p-[2px] mr-[1px] rounded-full items-center justify-center">
-                          <Image
+                        <div className="">
+                          <Picture
                             src={option.icon}
                             alt={option.value}
-                            width={25}
-                            height={25}
-                            className="w-full h-full object-contain"
+                            size={25}
+                            rounded
+                            containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
                           />
                         </div>
                       )}

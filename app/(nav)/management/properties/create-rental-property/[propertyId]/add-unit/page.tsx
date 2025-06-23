@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -154,7 +155,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
             <PropertySettings heading="Property Settings" />
             {addedUnits.length > 0 && (
               <>
-                <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
+                <h4 className="text-brand-9 text-lg lg:text-xl font-bold">
                   Added Units
                 </h4>
                 <hr className="!my-4 border-none bg-borders-dark h-[1px]" />

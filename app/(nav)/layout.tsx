@@ -58,7 +58,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     (state) => state.isSubscriptionExpired
   );
 
-  // const isSubscriptionExpired = true; FOR TEST - DELETE LATER
+  // BELOW IS FOR TESTING PURPOSES ONLY
+  // const isSubscriptionExpired = true;
   const { setPermissions, setLoading, setError } = usePermissionsStore();
   const loggedInUserDetails = getLocalStorage("additional_details");
   let appearance:
@@ -306,7 +307,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           }}
         >
           <ModalContent disableOutsideClick>
-           <ExpiredSubscriptionModal />
+            <ExpiredSubscriptionModal />
           </ModalContent>
         </Modal>
       </>

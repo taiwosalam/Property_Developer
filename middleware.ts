@@ -5,13 +5,10 @@ export async function middleware(req: NextRequest) {
   const currentPath = req.nextUrl.pathname;
   const role = req.cookies.get("role")?.value;
   const company_status = req.cookies.get("company_status")?.value;
-  const expired_company_subscription = req.cookies.get(
-    "expired_company_subscription"
-  )?.value;
+  const subscription_status = req.cookies.get("subscription_status")?.value;
 
   console.log("role", role);
-  console.log("company_subscription_status", expired_company_subscription);
-  console.log("company_status", company_status);
+  console.log("subscription_status", subscription_status);
 
   // Public routes accessible without authentication
   const publicRoutes = [
@@ -37,10 +34,10 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for expired company subscription
+  // check for company subscription status :: TODOD - UNCOMMENT AFTER LOGIN RESPONSE IS CORRECT
   if (
     !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
-    expired_company_subscription === "true"
+    subscription_status === "expired"
   ) {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
