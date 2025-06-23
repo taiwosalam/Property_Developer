@@ -35,7 +35,7 @@ const Maintenance = () => {
     refetch,
   } = useFetch<MaintenanceApiResponse>(`maintenance`);
 
-  //useRefetchOnEvent("dispatchMaintenance", () => refetch({ silent: true }));
+  useRefetchOnEvent("dispatchMaintenance", () => refetch({ silent: true }));
 
   useEffect(() => {
     // getALLMaintenance;
