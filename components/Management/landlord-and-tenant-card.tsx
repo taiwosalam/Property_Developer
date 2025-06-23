@@ -22,7 +22,7 @@ export interface UserCardProps {
   note?: boolean;
   is_flagged?: boolean;
   is_verified?: boolean;
-  is_active?: number;
+  is_active?: boolean;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -65,7 +65,7 @@ const UserCard: React.FC<UserCardProps> = ({
             <BadgeIcon color={badge_color} />
           )}
 
-          {is_active === 0 && (
+          {!is_active && (
             <div className="text-red-500 text-xs pl-2">
               <FlagBadge size={18} />
             </div>

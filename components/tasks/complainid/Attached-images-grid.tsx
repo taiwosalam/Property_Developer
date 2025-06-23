@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import clsx from "clsx";
+import PopupVideoModal from "@/components/VideoPlayer/PopupVideoModal";
 interface AttachedImagesGridProps {
   images: { src: string; isVideo: boolean }[];
 }
@@ -14,12 +15,34 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
   const [screenModal, setScreenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const [videoModal, setVideoModal] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+
   const openModal = (index: number) => {
-    setCurrentIndex(index);
-    setTimeout(() => {
-      setScreenModal(true);
-    }, 0);
+    const selected = images[index];
+
+    if (selected.isVideo) {
+      setVideoUrl(selected.src);
+      setVideoModal(true);
+    } else {
+      setCurrentIndex(index);
+      setTimeout(() => {
+        setScreenModal(true);
+      }, 0);
+    }
   };
+
+  // const openModal = (index: number) => {
+  //   setCurrentIndex(index);
+  //   setTimeout(() => {
+  //     setScreenModal(true);
+  //   }, 0);
+  // };
+
+  const imageOnly = images.filter((img) => !img.isVideo);
+  const adjustedIndex = imageOnly.findIndex(
+    (img, i) => images.indexOf(img) === currentIndex
+  );
 
   return (
     <div className="space-y-4">
@@ -59,17 +82,19 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
                 key={index}
                 className="w-full md:h-[200px] h-[120px] xl:h-[115px] lg:h-[140px] bg-gray-200 rounded-lg relative overflow-hidden"
               >
-                <Image
-                  src={image.src}
-                  alt={`image-${index}`}
-                  fill
-                  sizes="auto"
-                  priority
-                  className="object-cover object-center cursor-pointer"
-                  quality={60}
-                  onClick={() => openModal(index)}
-                  role="button"
-                />
+                {!image.isVideo && (
+                  <Image
+                    src={image.src}
+                    alt={`image-${index}`}
+                    fill
+                    sizes="auto"
+                    priority
+                    className="object-cover object-center cursor-pointer"
+                    quality={60}
+                    onClick={() => openModal(index)}
+                    role="button"
+                  />
+                )}
                 {image.isVideo && (
                   <div
                     className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-10"
@@ -110,12 +135,15 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
       {/* Image Modal */}
       <PopupImageModal
         isOpen={screenModal}
-        onClose={() => {
-          setScreenModal(false);
-          // setCurrentIndex(0);
-        }}
-        images={images}
-        currentIndex={currentIndex}
+        onClose={() => setScreenModal(false)}
+        images={imageOnly}
+        currentIndex={adjustedIndex}
+      />
+
+      <PopupVideoModal
+        isOpen={videoModal}
+        videoUrl={videoUrl}
+        onClose={() => setVideoModal(false)}
       />
     </div>
   );

@@ -10,7 +10,7 @@ import {
   getAllAnnouncements,
   postLikeOrDislike,
 } from "./data";
-import { Announcement, AnnouncementApiResponse } from "./types";
+import { Announcement, AnnouncementApiResponse, Announcements } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -25,7 +25,7 @@ import { AxiosRequestConfig } from "axios";
 import { FilterResult, InspectionRequestParams } from "../inspections/data";
 
 const AnnouncementPage = () => {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [announcements, setAnnouncements] = useState<Announcements[]>([]);
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -54,7 +54,7 @@ const AnnouncementPage = () => {
 
   useEffect(() => {
     if (apiData) {
-      setAnnouncements(apiData?.announcements);
+      setAnnouncements(apiData?.data);
     }
   }, [apiData]);
 
@@ -70,14 +70,14 @@ const AnnouncementPage = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Announcement"
-            newData={apiData?.total_announcements_this_month ?? 0}
+            newData={0}
             colorScheme={1}
-            total={apiData?.total_announcements_overall ?? 0}
+            total={0}
           />
           <ManagementStatistcsCard
             title="Examine"
-            newData={apiData?.total_examined ?? 0}
-            total={apiData?.total_examined ?? 0}
+            newData={apiData?.total_examine_month ?? 0}
+            total={apiData?.total_examine ?? 0}
             colorScheme={2}
           />
         </div>
@@ -145,7 +145,7 @@ const AnnouncementPage = () => {
                   date={formattedDate}
                   key={index}
                   description={announcement.description}
-                  id={announcement.company_id}
+                  id={announcement.company_id.toString()}
                   views={announcement.views_count}
                   newViews={announcement.views_count}
                   likes={announcement.likes_count}
@@ -153,7 +153,7 @@ const AnnouncementPage = () => {
                   imageUrls={announcement.images}
                   //mediaCount={announcement.image_urls.length}
                   mediaCount={image_urls.flat().length}
-                  announcementId={announcement.id}
+                  announcementId={announcement.id.toString()}
                 />
               );
             })}

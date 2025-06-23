@@ -46,7 +46,7 @@ type User = {
     lga: string | null;
     bvn: string | null;
   };
-  is_active: number;
+  is_active: boolean;
   is_company_owner: number;
   tier_id: number;
   deleted_at: string | null;

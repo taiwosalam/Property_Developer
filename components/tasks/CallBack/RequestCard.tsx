@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { getBadgeColor } from "@/lib/utils";
 import { useGlobalStore } from "@/store/general-store";
 import { toast } from "sonner";
+import { resolveCallRequest } from "@/app/(nav)/tasks/inquires/data";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -39,11 +40,14 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     cardViewDetails,
     requestId,
     userId,
+    id,
   } = props;
 
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
+  const [isResolving, setIsResolving] = useState(false);
 
   const goToMessage = () => {
     if (!userId) {
@@ -69,7 +73,21 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     setModalOpen(true);
   };
 
-  const handleResolve = () => {
+  const handleResolve = async () => {
+    if (!id) return;
+
+    try {
+      setIsResolving(true);
+      const res = await resolveCallRequest(id);
+
+      if (res) {
+        toast.success("Resolved successfully");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsResolving(false);
+    }
     // console.log("Resolve button clicked");
   };
 
@@ -95,7 +113,11 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     if (cardType === "visitor") {
       return "Details";
     } else if (cardType === "callback") {
-      return props.status === "completed" ? "Details" : "Resolve";
+      return props.status === "completed"
+        ? "Details"
+        : isResolving
+        ? "Please wait..."
+        : "Resolve";
     } else if (cardType === "property") {
       return "More Details";
     } else if (cardType === "deposit") {
@@ -117,15 +139,21 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     >
       <div className="px-[18px] flex items-center justify-between flex-wrap gap-2 capitalize">
         <div className="flex gap-2">
-          <Picture size={50} src={pictureSrc || empty} rounded className="object-cover"/>
+          <Picture
+            size={50}
+            src={pictureSrc || empty}
+            rounded
+            className="object-cover"
+          />
           <div className="space-y-1">
             <div className="flex items-center gap-0.5">
               <span className="text-base font-medium capitalize">
                 {truncateText(userName, 30)}
               </span>
-               {cardType === "visitor" && props?.tier_id  && (
+              {cardType === "visitor" ||
+                (cardType === "callback" && props?.tier_id && (
                   <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
-                )}
+                ))}
               {cardType === "agent-community" && props?.tier === "2" && (
                 <BadgeIcon color={"gray"} />
               )}
@@ -306,6 +334,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           </div>
         ) : (
           <Button
+            disabled={isResolving}
             size="sm_medium"
             className="py-2 px-8"
             onClick={handleButtonClick}

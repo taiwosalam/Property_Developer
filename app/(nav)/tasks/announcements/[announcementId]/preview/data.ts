@@ -1,5 +1,8 @@
 //import { CommentData } from "@/components/tasks/announcements/comment";
-import { AnnouncementDetailsResponse } from "../../types";
+import {
+  AnnouncementDetailsResponse,
+  AnnouncementResponseDetails,
+} from "../../types";
 import { empty } from "@/app/config";
 //import { transformComment } from "@/app/(nav)/community/agent-request/[requestId]/preview/data";
 
@@ -30,10 +33,9 @@ export interface AnnouncementDetailsPageData {
   title: string;
   description: string;
   media: {
-    src: string[];
+    src: string;
     isVideo: boolean;
-    videoUrl: string;
-  };
+  }[];
   likes: number;
   dislikes: number;
   comments: CommentProps[];
@@ -78,7 +80,7 @@ export const transformComment = (
 });
 
 export const transformAnnouncementDetailsData = (
-  data: AnnouncementDetailsResponse
+  data: AnnouncementResponseDetails
 ): AnnouncementDetailsPageData => {
   const { announcement } = data;
   return {
@@ -90,17 +92,19 @@ export const transformAnnouncementDetailsData = (
     comments: announcement?.comments.map((comment) =>
       transformComment(comment, "slug")
     ),
-    media: {
-      src:
-        announcement?.images.length > 0
-          ? announcement?.images.map((image) => image.url)
-          : [],
-      isVideo: announcement?.video_link ? true : false,
-      videoUrl: announcement?.video_link ? announcement.video_link : "",
-    },
+    media: [
+      ...(announcement.video_link
+        ? [{ src: announcement.video_link, isVideo: true }]
+        : []),
+      ...announcement.images.map((image) => ({
+        src: image.url,
+        isVideo: false,
+      })),
+    ],
+
     summary: {
-      property_name: announcement?.summary?.property_name ?? "Bodija Branch",
-      branch_name: announcement?.summary?.branch_name ?? "Bodija",
+      property_name: announcement?.summary?.property_name || "--- ---",
+      branch_name: announcement?.summary?.branch_name || "--- ---",
     },
     viewers: [],
     read_by: [],

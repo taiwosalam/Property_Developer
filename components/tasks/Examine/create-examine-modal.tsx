@@ -6,12 +6,18 @@ import Button from "@/components/Form/Button/button";
 import CreateExamineDate from "./create-examine-date";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
+import { createExamine } from "@/app/(nav)/tasks/examine/data";
+import { toast } from "sonner";
+import { useState } from "react";
 
-const CreateExamineModal = () => {
+interface IExamineModal {
+  setIsOpen?: (isOpen: boolean) => void
+}
+const CreateExamineModal = ({ setIsOpen }: IExamineModal) => {
   const { activeStep, changeStep } = useStep(2);
 
   return activeStep === 1 ? (
-    <CreateExamineDate next={() => changeStep("next")} />
+    <CreateExamineDate next={() => changeStep("next")} setIsOpen={setIsOpen}/>
   ) : (
     <ModalPreset type="success">
       <p className="text-text-disabled text-sm font-normal">

@@ -72,6 +72,8 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
     }
   };
 
+  console.log(data);
+
   return (
     <div
       className="p-6 pb-0 rounded-2xl bg-white dark:bg-darkText-primary custom-flex-col gap-4"
@@ -165,8 +167,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               status === "request" ? (
                 <PropertyListingTitleDesc
                   title={
-                    data?.company_name ||
-                    "Taiwo Salam & Co. Properties Ltd"
+                    data?.company_name || "Taiwo Salam & Co. Properties Ltd"
                   }
                   desc="Requests permission to add and manage this property in their portfolio."
                 />
@@ -207,7 +208,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   </Button>
                   <Modal state={{ isOpen, setIsOpen }}>
                     <ModalContent>
-                      <ListingFlow />
+                      <ListingFlow inviteId={data?.inviteId[0]}/>
                     </ModalContent>
                   </Modal>
                   <Button

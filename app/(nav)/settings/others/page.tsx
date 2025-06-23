@@ -273,6 +273,10 @@ const Others = () => {
   const [isDirectorModalOpen, setIsDirectorModalOpen] = useState(false);
   const { company_id } = usePersonalInfoStore();
 
+  const { data: apiDataProfile } = useFetch(`user/profile`);
+
+  console.log(apiDataProfile);
+
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettings>({
       profile_changes: true,
@@ -648,7 +652,7 @@ const Others = () => {
           )}
           formData={formData}
           onFormChange={handleFormChange}
-          is_active={1}
+          is_active={false}
         />
       ),
     },

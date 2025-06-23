@@ -9,7 +9,10 @@ import SettingsUpdateModal from "./settings-update-modal";
 import NewPinModal from "./new-pin";
 import { ConfirmModal, ProceedModal, SuccessModal } from "./listing-modal";
 
-const ListingFlow = () => {
+interface ListingFlowProps {
+    inviteId?: number;
+}
+const ListingFlow = ({ inviteId }: ListingFlowProps) => {
     const { activeStep, changeStep } = useStep(3);
     const [showProceedModal, setShowProceedModal] = useState(false);
 
@@ -29,7 +32,7 @@ const ListingFlow = () => {
 
     return activeStep === 1 ? (
         showProceedModal ? (
-            <ProceedModal changeStep={changeStep} />
+            <ProceedModal changeStep={changeStep} inviteId={inviteId}/>
         ) : (   
             <ConfirmModal changeStep={changeStep} />
         )

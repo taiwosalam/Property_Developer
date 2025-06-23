@@ -28,32 +28,52 @@ const Person = () => {
   );
 };
 
-const ReadBy = () => {
+interface ReadAndDelivered {
+  name: string;
+  tier: number;
+  image: string;
+  dateTime: string;
+}
+interface ReadByProps {
+  readBy?: ReadAndDelivered[];
+  delivered?: ReadAndDelivered[];
+}
+
+const ReadBy = ({ readBy, delivered }: ReadByProps) => {
   return (
     <div className="p-[18px] rounded-lg bg-brand-1 dark:bg-darkText-primary space-y-6">
       <div className="space-y-3">
         <h6 className="text-sm text-text-label dark:text-white font-medium">
           Read by
         </h6>
-        <div className="space-y-4">
-          {Array(3)
-            .fill(null)
-            .map((_, i) => (
-              <Person key={i} />
-            ))}
-        </div>
+        {readBy && readBy.length > 0 ? (
+          <div className="space-y-4">
+            {Array(3)
+              .fill(null)
+              .map((_, i) => (
+                <Person key={i} />
+              ))}
+          </div>
+        ) : (
+          "No recent read by"
+        )}
       </div>
       <div className="space-y-3">
         <h6 className="text-sm text-text-label dark:text-white font-medium">
           Delivered To
         </h6>
-        <div className="space-y-4">
-          {Array(3)
-            .fill(null)
-            .map((_, i) => (
-              <Person key={i} />
-            ))}
-        </div>
+
+        {delivered && delivered.length > 0 ? (
+          <div className="space-y-4">
+            {Array(3)
+              .fill(null)
+              .map((_, i) => (
+                <Person key={i} />
+              ))}
+          </div>
+        ) : (
+          "No recent delivered by"
+        )}
       </div>
     </div>
   );
