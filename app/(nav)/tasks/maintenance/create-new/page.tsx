@@ -4,7 +4,7 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import Select from "@/components/Form/Select/select";
 import Input from "@/components/Form/Input/input";
 import DateInput from "@/components/Form/DateInput/date-input";
-import { useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import TextArea from "@/components/Form/TextArea/textarea";
 import {
   currencySymbols,
@@ -12,13 +12,18 @@ import {
 } from "@/utils/number-formatter";
 import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { maintenanceTypes, priorityLevels } from "./data";
+import { maintenanceTypes, priorityLevels, priorityLevelsOption } from "./data";
 import { createMaintenance } from "../data";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import BackButton from "@/components/BackButton/back-button";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+import useFetch from "@/hooks/useFetch";
+import { number } from "zod";
+import { toast } from "sonner";
+import { useRouter } from "next/router";
 
 const CreateMaintenace = () => {
+  const router = useRouter()
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
@@ -28,18 +33,131 @@ const CreateMaintenace = () => {
   const handleMaintenanceCostChange = (value: string) => {
     setMaintenanceCost(formatCostInputValue(value));
   };
+  const [isLoading, setIsLoading] = useState(false);
+  const [announcement, setAnnouncement] = useState(false);
+  const [calendarEvent, setCalendarEvent] = useState(false);
 
-  const handleSubmit = async (data: any) => {
-    console.log(data);
+  const [quotation, setQuotation] = useState("");
+
+  const [selectedBranch, setSelectedBranch] = useState<{
+    id: number;
+    branch_name: string;
+  } | null>(null);
+  const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
+  const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(
+    null
+  );
+  const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
+
+  const [providerOptions, setProviderOptions] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [branchOptions, setBranchOptions] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [propertyOptions, setPropertyOptions] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [unitOptions, setUnitOptions] = useState<
+    { id: number; name: string }[]
+  >([]);
+
+  const { data: providerData, silentLoading: providerSilentLoading } =
+    useFetch<any>(`service-providers`);
+  const { data: branchData, silentLoading: branchSilentLoading } =
+    useFetch<any>(`branches`);
+
+  const { data: propertyData, silentLoading: propertySilentLoading } =
+    useFetch<any>(selectedBranchId ? `branch/${selectedBranchId}` : null);
+
+  const { data: unitsData, silentLoading: unitSilentLoading } = useFetch<any>(
+    selectedPropertyId ? `property/${selectedPropertyId}/view` : null
+  );
+
+  useEffect(() => {
+    if (unitsData) {
+      const units = unitsData.data?.units?.map(
+        (unit: { id: number; unit_name: string }) => {
+          {
+            return {
+              id: unit.id,
+              name: unit.unit_name,
+            };
+          }
+        }
+      );
+      setUnitOptions(units);
+    }
+  }, [unitsData]);
+
+  useEffect(() => {
+    if (propertyData) {
+      const properties = propertyData.data?.branch?.properties?.map(
+        (property: { id: number; title: string }) => {
+          return {
+            id: property.id,
+            name: property.title,
+          };
+        }
+      );
+      setPropertyOptions(properties);
+    }
+  }, [propertyData, selectedPropertyId]);
+
+  console.log(selectedPropertyId);
+
+  useEffect(() => {
+    if (branchData) {
+      const branches = branchData?.data?.map(
+        (branch: { id: number; branch_name: string }) => {
+          return {
+            id: branch.id,
+            name: branch.branch_name,
+          };
+        }
+      );
+      setBranchOptions(branches);
+    }
+  }, [branchData]);
+
+  useEffect(() => {
+    if (providerData && providerData?.data?.providers?.data.length > 0) {
+      const providers = providerData?.data?.providers?.data?.map(
+        (provider: { id: number; company_name: string }) => {
+          return {
+            id: provider.id,
+            name: provider.company_name,
+          };
+        }
+      );
+      setProviderOptions(providers);
+    }
+  }, [providerData]);
+
+  const handleSubmit = async (data: FormData) => {
     // BACKEND ERROR: METHOD NOT ALLOWED
-    const response = await createMaintenance(data);
+    if (quotation && quotation.length > 0) {
+      data.append("quotation_type", "text");
+    }
+    try {
+      setIsLoading(true);
+      const response = await createMaintenance(data);
+      if (response) {
+        toast.success("Maintenance created");
+        router.push('/tasks/maintenance')
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="font-medium space-y-6">
       <BackButton>New Maintenance Schedule</BackButton>
       <AuthForm
-        returnType="string"
+        returnType="form-data"
         onFormSubmit={handleSubmit}
         setValidationErrors={() => {}}
         className="space-y-5 pb-[150px]"
@@ -47,30 +165,101 @@ const CreateMaintenace = () => {
         <h2 className="text-sm md:text-base text-brand-10">Details</h2>
         <SectionSeparator className="!mt-4 !mb-6" />
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <input
+            value={selectedBranchId ?? ""}
+            type="hidden"
+            aria-hidden
+            id="branch_id"
+            name="branch_id"
+          />
+          <input
+            value={selectedPropertyId ?? ""}
+            type="hidden"
+            aria-hidden
+            id="property_id"
+            name="property_id"
+          />
+          <input
+            value={selectedUnitId ?? ""}
+            type="hidden"
+            aria-hidden
+            id="unit_id"
+            name="unit_id"
+          />
           <Select
-            id="branch"
+            id=""
             label="Branch"
-            options={["branch 1", "branch 2"]}
+            disabled={branchSilentLoading}
+            placeholder={
+              branchSilentLoading ? "Please wait..." : "Select options"
+            }
+            options={
+              branchOptions.length > 0
+                ? branchOptions.map((branch) => branch.name)
+                : []
+            }
             inputContainerClassName="bg-white"
+            value={
+              selectedBranchId
+                ? branchOptions.find((b) => b.id === selectedBranchId)?.name
+                : ""
+            }
+            onChange={(name) => {
+              const branch = branchOptions.find((b) => b.name === name);
+              setSelectedBranchId(branch ? branch.id : null);
+            }}
           />
           <Select
-            id="property"
+            disabled={!selectedBranchId || propertySilentLoading}
+            placeholder={
+              propertySilentLoading ? "Please wait..." : "Select options"
+            }
+            id=""
             label="Property"
-            options={["property 1", "property 2"]}
+            options={
+              propertyOptions.length > 0
+                ? propertyOptions.map((property) => property.name)
+                : []
+            }
             inputContainerClassName="bg-white"
+            value={
+              selectedPropertyId
+                ? propertyOptions.find((p) => p.id === selectedPropertyId)?.name
+                : ""
+            }
+            onChange={(name) => {
+              const property = propertyOptions.find((p) => p.name === name);
+              setSelectedPropertyId(property ? property.id : null);
+              setUnitOptions([]);
+            }}
           />
           <Select
-            id="affected_units"
+            disabled={!selectedPropertyId || unitSilentLoading}
+            placeholder={
+              unitSilentLoading ? "Please wait..." : "Select options"
+            }
+            id=""
             label="Affected Units"
-            options={["unit 1", "unit 2"]}
+            options={
+              unitOptions.length > 0 ? unitOptions.map((u) => u.name) : []
+            }
             inputContainerClassName="bg-white"
+            onChange={(name) => {
+              const unit = unitOptions.find((p) => p.name === name);
+              setSelectedUnitId(unit ? unit.id : null);
+            }}
           />
           <Select
             id="priority"
             label="Priority"
-            options={priorityLevels}
+            options={priorityLevelsOption.map((level) => {
+              return {
+                label: level.label,
+                value: level.value
+              }
+            })}
             isSearchable={false}
-            inputContainerClassName="bg-white"
+            inputContainerClassName="bg-white capitalize"
           />
           <Select
             id="requested_by"
@@ -79,7 +268,7 @@ const CreateMaintenace = () => {
             inputContainerClassName="bg-white"
           />
           <Select
-            id="maintenance_service_type"
+            id="maintenance_type"
             label="Maintenance Type"
             options={maintenanceTypes}
             inputContainerClassName="bg-white"
@@ -87,7 +276,15 @@ const CreateMaintenace = () => {
           <Select
             id="service_provider"
             label="Service Provider"
-            options={["tailor", "lawyer"]}
+            disabled={providerSilentLoading}
+            placeholder={
+              providerSilentLoading ? "Please wait..." : "Select options"
+            }
+            options={
+              providerOptions.length > 0
+                ? providerOptions.map((option) => option.name)
+                : []
+            }
             inputContainerClassName="bg-white"
           />
         </div>
@@ -116,12 +313,14 @@ const CreateMaintenace = () => {
           />
           <div className="col-span-full grid gap-4 md:gap-5 md:grid-cols-2">
             <TextArea
-              id="maintenance_quotation"
+              value={quotation}
+              onChange={(value: string) => setQuotation(value)}
+              id="quotation"
               label="Maintenance Quotation"
               inputSpaceClassName="bg-white dark:bg-darkText-primary"
             />
             <TextArea
-              id="work_details"
+              id="detail"
               label="Work Details"
               inputSpaceClassName="bg-white dark:bg-darkText-primary"
             />
@@ -130,18 +329,37 @@ const CreateMaintenace = () => {
         <FixedFooter className="flex items-center justify-between gap-x-10 gap-y-4 flex-wrap">
           <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary">
             <div>
-              <DocumentCheckbox darkText>Create Announcement</DocumentCheckbox>
+              <DocumentCheckbox
+                darkText
+                name="announcement"
+                state={{
+                  isChecked: announcement,
+                  setIsChecked: setAnnouncement,
+                }}
+              >
+                Create Announcement
+              </DocumentCheckbox>
             </div>
             <div>
-              <DocumentCheckbox darkText>Add to Calendar</DocumentCheckbox>
+              <DocumentCheckbox
+                darkText
+                name="calendar_event"
+                state={{
+                  isChecked: calendarEvent,
+                  setIsChecked: setCalendarEvent,
+                }}
+              >
+                Add to Calendar
+              </DocumentCheckbox>
             </div>
           </div>
           <Button
             type="submit"
             size="custom"
+            disabled={isLoading}
             className="px-8 py-2 text-sm lg:text-base"
           >
-            Create Maintenance
+            {isLoading ? "Please wait..." : "Create Maintenance"}
           </Button>
         </FixedFooter>
       </AuthForm>

@@ -24,11 +24,13 @@ interface AnnouncementCardProps {
   newViews: number;
   likes?: number;
   dislikes: number;
-  imageUrls: {
-    id: number;
-    url: string;
-    is_default: number;
-  }[] | string[];
+  imageUrls:
+    | {
+        id: number;
+        url: string;
+        is_default: number;
+      }[]
+    | string[];
   mediaCount: number;
   announcementId: string;
   viewOnly?: boolean;
@@ -93,18 +95,20 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
       }}
     >
       <div className="relative rounded-t-lg w-full h-[170px] overflow-hidden">
-        {imageUrls &&
-          imageUrls.map((url, index) => (
-            <Image
-              key={index}
-              src={typeof url === 'string' ? url : url.url || empty}
-              alt="sample"
-              fill
-              sizes="auto"
-              priority={index === 0}
-              className="object-cover object-center"
-            />
-          ))}
+        <Image
+          src={
+            imageUrls.length
+              ? typeof imageUrls[0] === "string"
+                ? imageUrls[0]
+                : imageUrls[0]?.url
+              : empty
+          }
+          alt="sample"
+          fill
+          sizes="auto"
+          className="object-cover object-center"
+        />
+
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
           <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
             <VideoIcon />

@@ -8,16 +8,50 @@ import MaintenanceCard from "@/components/tasks/maintenance/maintenance-card";
 import { useEffect, useState } from "react";
 import {
   getALLMaintenance,
+  IMaintenanceCard,
   maintenanceFilterOptionsWithDropdown,
+  transformMaintenanceCard,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
+import useFetch from "@/hooks/useFetch";
+import ServerError from "@/components/Error/ServerError";
+import NetworkError from "@/components/Error/NetworkError";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import { MaintenanceApiResponse } from "./type";
+import PageLoader from "next/dist/client/page-loader";
+import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 
 const Maintenance = () => {
-  const [maintenanceData, setMaintenanceData] = useState([]);
+  const [maintenanceData, setMaintenanceData] =
+    useState<IMaintenanceCard | null>(null);
+
+  const {
+    data: apiData,
+    silentLoading,
+    error,
+    loading,
+    isNetworkError,
+  } = useFetch<MaintenanceApiResponse>(`maintenance`);
+
+  console.log(apiData);
 
   useEffect(() => {
     // getALLMaintenance;
-  }, []);
+    if (apiData) {
+      const transformData = transformMaintenanceCard(apiData);
+      setMaintenanceData(transformData);
+    }
+  }, [apiData]);
+
+  if (loading) {
+    return (
+      <AutoResizingGrid gap={28} minWidth={400}>
+        <PropertyrequestSkeletonLoader length={10} />
+      </AutoResizingGrid>
+    );
+  }
+  if (error) return <ServerError error={error} />;
+  if (isNetworkError) return <NetworkError />;
 
   return (
     <div className="custom-flex-col gap-8">
@@ -25,8 +59,8 @@ const Maintenance = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Maintenance"
-            newData={34}
-            total={657}
+            newData={maintenanceData?.stats.this_month || 0}
+            total={maintenanceData?.stats.total || 0}
             colorScheme={1}
           />
         </div>
@@ -54,28 +88,17 @@ const Maintenance = () => {
         filterOptionsMenu={maintenanceFilterOptionsWithDropdown}
       />
       <AutoResizingGrid minWidth={380} gap={32}>
-        {Array(10)
-          .fill(null)
-          .map((_, index) => {
-            const statuses: ("not started" | "ongoing" | "completed")[] = [
-              "not started",
-              "ongoing",
-              "completed",
-            ];
-            return (
-              <MaintenanceCard
-                key={index}
-                maintenanceId="12345678"
-                status={statuses[index % 3]}
-                propertyName="David Hall, Moniya"
-                dateCreated="21/01/2024"
-                serviceProvider="Lawyer"
-                startEndDate="21ST - 26TH JAN 2024"
-                priority="High"
-                serviceType="Legal Work"
-              />
-            );
-          })}
+        {maintenanceData && maintenanceData.data.length > 0
+          ? maintenanceData?.data.map((card) => {
+              return (
+                <MaintenanceCard
+                  key={card?.card.maintenanceId}
+                  card={card.card}
+                  modal={card.modal}
+                />
+              );
+            })
+          : "No Maintenance Yet"}
       </AutoResizingGrid>
     </div>
   );

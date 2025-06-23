@@ -155,6 +155,8 @@ const FileInput: React.FC<FileInputProps> = ({
     previousFileRef.current = file;
   }, [file, handleInputChange]);
 
+  console.log(fileName);
+
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
       {label && (
@@ -195,7 +197,7 @@ const FileInput: React.FC<FileInputProps> = ({
             className={`relative  ${clsx(
               "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
               textStyles,
-              fileName ? "bg-neutral-2" : "bg-none"
+              //fileName ? "bg-neutral-2" : "bg-none"
             )}`}
           >
             {!settingsPage ? (

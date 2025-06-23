@@ -11,7 +11,10 @@ import useFetch from "@/hooks/useFetch";
 import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
-import { AnnouncementDetailsResponse } from "../../types";
+import {
+  AnnouncementDetailsResponse,
+  AnnouncementResponseDetails,
+} from "../../types";
 import { useEffect, useState } from "react";
 import {
   AnnouncementDetailsPageData,
@@ -41,7 +44,7 @@ const PreviewAnnouncement = () => {
     silentLoading,
     error,
     isNetworkError,
-  } = useFetch<AnnouncementDetailsResponse>(`announcements/${announcementId}`);
+  } = useFetch<AnnouncementResponseDetails>(`announcements/${announcementId}`);
 
   useEffect(() => {
     if (apiData) {
@@ -75,7 +78,7 @@ const PreviewAnnouncement = () => {
           size="sm_medium"
           className="py-2 px-3"
         >
-         manage announcement
+          manage announcement
         </Button>
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
@@ -93,13 +96,16 @@ const PreviewAnnouncement = () => {
         </div>
         {/* Right Side */}
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <AttachedImagesGrid images={images} />
+          {pageData && pageData?.media.length > 0 && (
+            <AttachedImagesGrid images={pageData?.media} />
+          )}
+
           <AnnouncementInfo
             containerClassName="rounded-lg"
             heading="summary"
             info={{
-              branch: pageData?.summary?.branch_name || "___ ___",
-              properties: pageData?.summary?.property_name || "___ ___",
+              branch: pageData?.summary?.branch_name,
+              properties: pageData?.summary?.property_name,
             }}
           />
           <ReadBy />
