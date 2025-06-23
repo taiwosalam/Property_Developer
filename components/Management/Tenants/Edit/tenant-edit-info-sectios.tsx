@@ -28,6 +28,7 @@ import {
   employmentOptions,
   employmentTypeOptions,
   MAX_FILE_SIZE_MB,
+  titles,
 } from "@/data";
 import type { TenantData } from "@/app/(nav)/management/tenants/types";
 import CameraCircle from "@/public/icons/camera-circle.svg";
@@ -81,7 +82,8 @@ export const TenantEditProfileInfoSection = () => {
     const payload = {
       first_name: data.tenant_firstname,
       last_name: data.tenant_lastname,
-      email: data.tenant_email,
+      title: data.title,
+      // email: data.tenant_email,
       phone_number: data.tenant_phone_number,
       state: data.tenant_state,
       local_government: data.tenant_local_government,
@@ -138,13 +140,23 @@ export const TenantEditProfileInfoSection = () => {
             required
             inputClassName="rounded-lg"
           />
-          <Input
+          <Select
+            options={titles}
+            id="title"
+            name="title"
+            label="Profile Title"
+            placeholder="Select options"
+            defaultValue={tenant?.title}
+            inputContainerClassName="bg-neutral-2"
+          />
+          {/* <Input
             id="tenant_email"
             type="email"
             label="email"
+            disabled
             defaultValue={tenant?.email}
             inputClassName="rounded-lg"
-          />
+          /> */}
           <PhoneNumberInput
             id="tenant_phone_number"
             label="phone number"
@@ -584,7 +596,9 @@ export const TenantEditAttachmentSection = () => {
   const [documentType, setDocumentType] = useState("");
   const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
   // const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
-  const [urlsToRemove, setUrlsToRemove] = useState<{ url: string; type: string }[]>([]);
+  const [urlsToRemove, setUrlsToRemove] = useState<
+    { url: string; type: string }[]
+  >([]);
   const { fileInputRef, handleFileChange, resetFiles } = useMultipleFileUpload({
     maxFileSizeMB: MAX_FILE_SIZE_MB,
     acceptedExtensions,

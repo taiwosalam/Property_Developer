@@ -25,10 +25,10 @@ const CalendarActivities: React.FC<CalendarActivitiesProps> = ({
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="p-[18px] flex justify-between gap-1 bg-brand-1 font-medium capitalize">
+      <div className="p-[18px] flex justify-between gap-1 bg-brand-1 dark:bg-[#3c3d37] font-medium capitalize">
         <div className="flex-col gap-1">
-          <p className="text-black text-base">Activities</p>
-          <p className="text-text-label text-sm">
+          <p className="text-black text-base dark:text-white">Activities</p>
+          <p className="text-text-label text-sm dark:text-gray-400">
             {format(date, "dd MMMM yyyy")}
           </p>
         </div>

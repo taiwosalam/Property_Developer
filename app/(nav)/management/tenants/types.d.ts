@@ -107,6 +107,7 @@ export interface TenantData {
   // first_name: string;
   // last_name: string;
   name: string;
+  title: string;
   email: string;
   user_id: string;
   user_tag: "web" | "mobile";

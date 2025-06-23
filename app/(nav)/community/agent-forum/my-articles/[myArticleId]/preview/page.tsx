@@ -5,9 +5,6 @@ import Image, { StaticImageData } from "next/image";
 import "keen-slider/keen-slider.min.css";
 import { PropertyImageSlider } from "@/components/Management/Rent And Unit/rental-property-card";
 import { ChevronLeft } from "@/public/icons/icons";
-import user1 from "@/public/empty/user1.svg";
-import user2 from "@/public/empty/user2.svg";
-import user3 from "@/public/empty/user3.svg";
 import { useRouter, useParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import Comment, { CommentData } from "@/components/tasks/announcements/comment";
@@ -15,14 +12,9 @@ import ReadyByCard from "@/components/Community/ReadByCard";
 import useFetch from "@/hooks/useFetch";
 import { useEffect } from "react";
 import { useState } from "react";
-import { toggleLike } from "../../data";
 import {
-  LikeDislikeButtons,
   Loader,
-  ThreadArticleSkeleton,
 } from "../../../components";
-import { toast } from "sonner";
-import NewComment from "../../../NewComment";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CommunityComments from "@/components/Community/CommunityComments";
 import { CommunitySlider } from "@/components/Community/CommunitySlider";

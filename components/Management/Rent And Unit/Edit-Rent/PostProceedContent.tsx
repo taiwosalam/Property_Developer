@@ -275,6 +275,7 @@ const PostProceedContent = ({
       deduction: deduction ? 1 : 0,
       payment_date: startDate,
       has_document: isRental ? 1 : 0,
+      has_invoice: 1, //ADDED AS REQUEST BY MR-TAIWO
       ...(isRental ? { doc_file } : {}), // Only include doc_file for rental properties
     };
 
@@ -282,7 +283,7 @@ const PostProceedContent = ({
       setReqLoading(true);
       const res = await switchUnit(id as string, objectToFormData(data));
       if (res) {
-        setModalIsOpen(true);
+        // setModalIsOpen(true);
         toast.success("Unit Switched Successfully");
         router.push("/management/rent-unit");
       }

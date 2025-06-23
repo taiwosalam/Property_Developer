@@ -11,6 +11,7 @@ import { Lock } from "lucide-react";
 export interface UserCardProps {
   picture_url?: string | null;
   name: string;
+  title?: string;
   id?: string | null;
   email?: string | null;
   phone_number?: string | null;
@@ -26,6 +27,7 @@ export interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({
   email,
+  title,
   phone_number,
   picture_url,
   name,
@@ -55,7 +57,7 @@ const UserCard: React.FC<UserCardProps> = ({
       </div>
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center justify-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
-          <span className="text-ellipsis line-clamp-1 break-all">{name} </span>
+          <span className="text-ellipsis line-clamp-1 break-all">{title ?? ""} {name} </span>
           {/* {is_verified && badge_color && user_tag !== "web" && (
             <BadgeIcon color={badge_color} />
           )} */}

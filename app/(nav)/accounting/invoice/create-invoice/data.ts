@@ -43,3 +43,14 @@ export const parseFormattedNumber = (
   // Return null for invalid numbers (e.g., NaN or empty after cleaning)
   return isNaN(parsedValue) ? null : parsedValue;
 };
+
+export const getPropertyTenants = async (id: number) => {
+  try {
+    const res = await api.get(`all-tenants/${id}`);
+    if (res.status === 200) {
+      return res.data;
+    }
+  } catch (err) {
+    handleAxiosError(err);
+  }
+};

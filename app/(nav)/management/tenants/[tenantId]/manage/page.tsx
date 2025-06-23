@@ -136,7 +136,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <div className="custom-flex-col">
                 <div className="flex items-center gap-2">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    {tenant.name}
+                   {tenant.title} {tenant.name}
                   </p>
                   {tenant.badge_color && (
                     <BadgeIcon color={tenant.badge_color} />

@@ -34,7 +34,7 @@ export const MessageInput = ({
       onKeyDown={handleKeyPressSend}
       onChange={onChange}
       className={cn(
-        "w-full px-2 py-1 border border-solid border-[#C1C2C366] bg-neutral-3 outline-brand-9 max-h-[80px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
+        "w-full px-2 py-1 border border-solid border-[#C1C2C366] bg-neutral-3 outline-brand-9 dark:bg-darkText-primary max-h-[80px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
         className
       )}
       disabled={disabled}

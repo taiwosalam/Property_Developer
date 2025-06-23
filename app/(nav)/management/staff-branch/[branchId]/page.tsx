@@ -5,16 +5,12 @@ import Link from "next/link";
 // Imports
 import Card from "@/components/dashboard/card";
 import Button from "@/components/Form/Button/button";
-import {
-  dashboardCardData,
-} from "@/app/(nav)/dashboard/data";
+import { dashboardCardData } from "@/app/(nav)/dashboard/data";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
 import { LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import {
-  branchIdChartConfig,
-} from "./data";
+import { branchIdChartConfig } from "./data";
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import BranchActivitiesCard from "@/components/Management/Staff-And-Branches/Branch/branch-activity-card";
 import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
@@ -126,7 +122,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const transformedWalletTableData =
     transactions &&
-    transactions.map((t:any) => ({
+    transactions.map((t: any) => ({
       ...t,
       amount: (
         <span
@@ -171,7 +167,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   const walletChartData =
     recent_transactions &&
-    recent_transactions.map((t:any) => ({
+    recent_transactions.map((t: any) => ({
       date: t.date,
       totalfunds: t.amount,
       credit:
@@ -312,7 +308,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             />
             <AccountStatsCard
               title="Total Pending Invoice"
-              balance={receipt_statistics?.total_pending_receipt || 0}
+              balance={Number(receipt_statistics?.total_pending_receipt) || 0}
               percentage={
                 Number(receipt_statistics?.percentage_change_pending) || 0
               }
@@ -357,7 +353,13 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             </Link>
           ))}
         </div>
-        <BranchActivitiesCard className="lg:flex-1" />
+        <NotificationCard
+          sectionHeader="Staffs"
+          seeAllLink={`/management/staff-branch/${branchId}/branch-staff`}
+          notifications={branchData.staffs}
+          branchId={branchId}
+          className="md:flex-1 lg:h-[380px]"
+        />
       </div>
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 items-start">
         <DashboardChart
@@ -367,13 +369,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           chartConfig={branchIdChartConfig}
           chartData={walletChartData}
         />
-        <NotificationCard
-          sectionHeader="Staffs"
-          seeAllLink={`/management/staff-branch/${branchId}/branch-staff`}
-          notifications={branchData.staffs}
-          branchId={branchId}
-          className="md:flex-1 lg:h-[380px]"
-        />
+        <BranchActivitiesCard className="lg:flex-1" />
       </div>
       <div className="custom-flex-col gap-10">
         <div className="flex justify-between">

@@ -46,6 +46,7 @@ interface AttachedDocument extends AttachedDocumentCard {
 export interface TenantData {
   id: string;
   picture: string;
+  title: string;
   // first_name: string;
   // last_name: string;
   name: string;

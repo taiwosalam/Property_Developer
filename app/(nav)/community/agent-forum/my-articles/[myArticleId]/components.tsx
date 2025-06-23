@@ -10,8 +10,10 @@ import { SummarySkeleton } from "@/components/Loader/SummarySkeleton";
 import { toggleLike } from "../data";
 import { LikeDislikeButtons, ThreadArticleSkeleton } from "../../components";
 import { DislikeIcon, LikeIcon } from "@/public/icons/icons";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 export const ThreadArticle = (): JSX.Element => {
+  const isDarkMode = useDarkMode();
   const { post, slug, comments } = useThreadContext();
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(
     post?.user_liked ? "like" : null
@@ -57,7 +59,9 @@ export const ThreadArticle = (): JSX.Element => {
             >
               <LikeIcon
                 fill={`${post.user_liked ? "#E15B0F" : ""} `}
-                stroke={`${post.user_liked ? "#E15B0F" : "#000"} `}
+                stroke={`${
+                  post.user_liked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"
+                } `}
               />
               <p>{post?.likes_up}</p>
             </button>
@@ -68,7 +72,9 @@ export const ThreadArticle = (): JSX.Element => {
             >
               <DislikeIcon
                 fill={`${post.user_disliked ? "#E15B0F" : "none"} `}
-                stroke={`${post.user_disliked ? "#E15B0F" : "#000"} `}
+                stroke={`${
+                  post.user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"
+                } `}
               />
               <p>{post?.likes_down}</p>
             </button>

@@ -36,6 +36,7 @@ interface NotificationProps {
   };
 }
 const Notification: React.FC<NotificationProps> = ({ notification }) => {
+  console.log("notification", notification)
   return (
     <div className="custom-flex-col gap-4">
       <div className="flex gap-4">

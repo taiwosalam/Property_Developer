@@ -23,7 +23,7 @@ export const CalendarEventTagItem: React.FC<CalendarEventTagItemProps> = ({
       className={clsx("w-[5px] h-[5px]", { "rounded-full": rounded })}
       style={{ backgroundColor: color }}
     />
-    <p className="text-text-label text-sm font-medium capitalize whitespace-nowrap">
+    <p className="text-text-label dark:text-darkText-2 text-sm font-medium capitalize whitespace-nowrap">
       {title}
     </p>
   </div>
