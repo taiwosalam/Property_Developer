@@ -83,8 +83,8 @@ export const LandlordEditProfileInfoSection = () => {
     const payload = {
       first_name: data.landlord_firstname,
       last_name: data.landlord_lastname,
-      title: data.title,
-      // email: data.landlord_email,  NB - Backend can't update email
+      // title: data.title,
+      // email: data.landlord_email, 
       phone_number: data.landlord_phone,
       state: data.landlord_state,
       local_government: data.landlord_local_government,
@@ -93,6 +93,12 @@ export const LandlordEditProfileInfoSection = () => {
       owner_type: data.owner_type,
       gender: data.gender,
     };
+
+     // Add email only if different from default
+     if (data.landlord_email !== landlord?.email) {
+      (payload as any).email = data.landlord_email;
+    }
+
     cleanPhoneNumber(payload);
     if (!payload.phone_number) {
       payload.phone_number = "";
@@ -139,23 +145,14 @@ export const LandlordEditProfileInfoSection = () => {
             defaultValue={landlord?.name.split(" ")[1]}
           />
 
-          <Select
-            options={titles}
-            id="title"
-            name="title"
-            label="Profile Title"
-            placeholder="Select options"
-            defaultValue={landlord?.title}
-            inputContainerClassName="bg-neutral-2"
-          />
-
-          {/* <Input
+          <Input
             id="landlord_email"
             type="email"
             label="email"
+            disabled={!!landlord?.email}
             inputClassName="rounded-lg"
             defaultValue={landlord?.email}
-          /> */}
+          />
           <PhoneNumberInput
             id="landlord_phone"
             label="phone number"

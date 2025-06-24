@@ -11,6 +11,7 @@ import PropertyTag from "@/components/Tags/property-tag";
 import { UnitStatusColors } from "./property-preview";
 import { actions } from "../Rent And Unit/data";
 import { ActionButton } from "../Rent And Unit/action-button";
+import { empty } from "@/app/config";
 
 export interface UnitItemProps {
   propertyType: string;
@@ -168,7 +169,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
             </div>
           )}
           <Image
-            src={unitImages[0]}
+            src={unitImages[0] ?? empty}
             alt={unitName}
             fill
             className="object-cover object-center"

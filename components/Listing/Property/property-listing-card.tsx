@@ -30,6 +30,7 @@ import ListingFlow from "@/components/Settings/Modals/listing-otp-flow";
 import { useRouter } from "next/navigation";
 import { deleteProperty } from "@/app/(nav)/management/properties/[id]/edit-property/data";
 import { toast } from "sonner";
+import { empty } from "@/app/config";
 
 const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   data,
@@ -100,7 +101,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               className="relative rounded-2xl overflow-hidden"
             >
               <Picture
-                src={data.images && data.images[0]}
+                src={data.images ? data.images[0] : empty}
                 alt="property preview"
                 width={220}
                 height={204}
@@ -125,7 +126,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
                     <p className="text-black dark:text-white font-medium text-[10px]">
-                      +23
+                      +{data.images?.length ?? 0}
                     </p>
                   </div>
                 </div>
@@ -133,7 +134,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
                     <p className="text-black dark:text-white font-medium text-[10px]">
-                      2
+                      {data.images?.length ?? 0}
                     </p>
                   </div>
                   <div className="bg-brand-1 dark:bg-darkText-primary dark:text-white rounded py-1 px-1.5 gap-1.5 flex items-center">
@@ -165,8 +166,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               status === "request" ? (
                 <PropertyListingTitleDesc
                   title={
-                    data?.company_name ||
-                    "Taiwo Salam & Co. Properties Ltd"
+                    data?.company_name || "Taiwo Salam & Co. Properties Ltd"
                   }
                   desc="Requests permission to add and manage this property in their portfolio."
                 />

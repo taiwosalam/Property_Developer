@@ -23,9 +23,11 @@ const SettingsSMS = () => {
 
   useEffect(() => {
     if (data) {
-      setName(sanitizeDomainInput(data.sms_name));
+      const sanitizedName = sanitizeDomainInput(data.sms_name);
+      setName(sanitizedName.slice(0, 11));
     }
   }, [data]);
+  
   const handleUpdateSMS = async (data: Record<string, string>) => {
     const sanitizedName = sanitizeDomainInput(data.desired_name);
     const payload = {

@@ -93,6 +93,7 @@ export interface OccupantProfileProps {
   feeDetails: FeeDetail[];
   total_package: number;
   loading?: boolean;
+  tenantsLoading?: boolean;
   id: string;
   currency?: Currency;
   setSelectedTenantId?: (id: string) => void;

@@ -49,6 +49,7 @@ import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { saveLocalStorage } from "@/utils/local-storage";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -69,7 +70,8 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
     if (tenant) {
       const newMessageUserData = tenant?.messageUserData;
       const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
-
+      setGlobalStore("selectedTenantId", tenant.id);
+      saveLocalStorage("selectedTenantId", tenant.id);
       if (
         JSON.stringify(currentMessageUserData) !==
         JSON.stringify(newMessageUserData)
@@ -77,7 +79,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         setGlobalStore("messageUserData", newMessageUserData || null);
       }
     }
-  }, [setGlobalStore, tenant]);
+  }, [setGlobalStore, tenant, saveLocalStorage]);
 
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <ServerError error={error} />;
@@ -136,7 +138,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <div className="custom-flex-col">
                 <div className="flex items-center gap-2">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                   {tenant.title} {tenant.name}
+                    {tenant.title} {tenant.name}
                   </p>
                   {tenant.badge_color && (
                     <BadgeIcon color={tenant.badge_color} />
@@ -240,7 +242,9 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                   variant="light_green"
                   size="base_medium"
                   className="py-2 px-8"
-                  onClick={() => toast.warning("Coming soon!!!")}
+                  onClick={() =>
+                    router.push(`/management/rent-unit/?is_active=vacant&tenant_id=${tenantId}`)
+                  }
                 >
                   Link New Unit
                 </Button>

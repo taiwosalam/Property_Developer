@@ -52,6 +52,13 @@ const RentAndUnit = () => {
   } = useStaffRoles();
   const accountOfficers = getAccountOfficers();
 
+  useEffect(() => {
+    const tenantIdFromUrl = searchParams.get("tenant_id");
+    if (!tenantIdFromUrl) {
+      localStorage.removeItem("selectedTenantId");
+    }
+  }, [searchParams]);
+
   // Initialize appliedFilters with is_active from URL
   const initialFilters: FilterResult = {
     options: [],
@@ -92,7 +99,8 @@ const RentAndUnit = () => {
 
   const { gridView, total_pages, current_page, last_page } = state;
 
-  const [appliedFilters, setAppliedFilters] = useState<FilterResult>(initialFilters);
+  const [appliedFilters, setAppliedFilters] =
+    useState<FilterResult>(initialFilters);
   const isInitialMount = useRef(true);
 
   const isFilterApplied = () => {
@@ -144,8 +152,11 @@ const RentAndUnit = () => {
       state: appliedFilters.menuOptions["State"]?.length
         ? appliedFilters.menuOptions["State"]
         : undefined,
-      property_type: (appliedFilters.menuOptions["Property Type"]?.[0] as "rental" | "facility" | undefined),
-        // appliedFilters.menuOptions["Property Type"]?.[0] || undefined,
+      property_type: appliedFilters.menuOptions["Property Type"]?.[0] as
+        | "rental"
+        | "facility"
+        | undefined,
+      // appliedFilters.menuOptions["Property Type"]?.[0] || undefined,
       is_active: appliedFilters.menuOptions["Status"]?.[0] || undefined,
       staff_id: appliedFilters.menuOptions["Account Officer"]?.length
         ? appliedFilters.menuOptions["Account Officer"]
@@ -158,7 +169,6 @@ const RentAndUnit = () => {
     );
     return { params: cleanedParams };
   }, [appliedFilters, search, sort, page]);
-
 
   // Added a ref to the top of the content section
   const contentTopRef = useRef<HTMLDivElement>(null);
