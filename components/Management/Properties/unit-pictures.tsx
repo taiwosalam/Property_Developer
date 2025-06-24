@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { PlusIcon } from "@/public/icons/icons";
 import DraggableImage from "./draggable-image";
 import { useUnitForm } from "./unit-form-context";
@@ -8,11 +8,22 @@ import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import { useAddUnitStore } from "@/store/add-unit-store";
 // import { MAX_FILE_SIZE_MB } from "@/data";
 import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
+import { useGlobalStore } from "@/store/general-store";
+import Button from "@/components/Form/Button/button";
+import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import { toast } from "sonner";
 
 const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
+  const allowEditUnit = useGlobalStore((s) => s.allowEditUnit);
+  const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const { images, setImages, isEditing, formResetKey } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const maxImages = propertyType === "facility" ? 5 : 14;
+
+  const { canSubmit, missingFields, handleInputChange } =
+    useContext(FlowProgressContext);
+  const { submitLoading, setIsEditing, resetForm } = useUnitForm();
 
   const {
     fileInputRef,
@@ -47,12 +58,56 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
     }
   }, [formResetKey, resetImages]);
 
+  const handleUpdateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    handleInputChange();
+    if (!canSubmit) {
+      toast.error(
+        `The following fields are required: ${missingFields.join(", ")}`
+      );
+      return;
+    }
+    const form = e.currentTarget.form;
+    form?.requestSubmit();
+  };
+
   return (
-    <div ref={ref} className={clsx("unit-form-pictures-wrapper scroll-mt-[160px]", isEditing && "!mt-0")}>
-      <h4 className="flex items-center text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
-        {propertyType === "rental" && <span className="text-red-500">*</span>}
-        Unit Pictures
-      </h4>
+    <div
+      ref={ref}
+      className={clsx(
+        "unit-form-pictures-wrapper scroll-mt-[160px]",
+        isEditing && "!mt-0"
+      )}
+    >
+      <div className="flex justify-between items-center">
+        <h4 className="flex items-center text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+          {propertyType === "rental" && <span className="text-red-500">*</span>}
+          Unit Pictures
+        </h4>
+        {allowEditUnit && (
+          <div className="flex gap-4 justify-end edit-unit-action-btns">
+            <Button
+              size="sm_medium"
+              variant="light_red"
+              className="py-1 px-8"
+              onClick={() => {
+                setGlobalStore("closeUnitForm", true);
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              type="button"
+              size="sm_medium"
+              className="py-1 px-8"
+              disabled={submitLoading}
+              onClick={handleUpdateClick}
+            >
+              {submitLoading ? "Updating..." : "Update"}
+            </Button>
+          </div>
+        )}
+      </div>
       <hr
         className={clsx(
           "my-4 border-none bg-borders-dark",

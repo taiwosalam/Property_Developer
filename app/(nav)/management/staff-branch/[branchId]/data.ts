@@ -6,7 +6,10 @@ import type {
 } from "./types";
 import api, { handleAxiosError } from "@/services/api";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
-import { staffTierColorMap, tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import {
+  staffTierColorMap,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 
 export const branchIdChartConfig = {
   totalfunds: {
@@ -82,7 +85,7 @@ export const transformSingleBranchAPIResponse = (
     listings: { total: branch.listing, new_this_month: branch.listing_month },
     branch_wallet: sub_wallet !== null ? { ...sub_wallet } : null,
     receipt_statistics: branch.receipt_statistic,
-    staffs: branch.staffs.slice(0, 5).map((s:any) => {
+    staffs: branch.staffs.slice(0, 5).map((s: any) => {
       return {
         avatarSrc: s.picture,
         name: `${s.title ? s.title + " " : ""}${s.name}`,
@@ -97,7 +100,7 @@ export const transformSingleBranchAPIResponse = (
     }),
     transactions:
       recentTransactions !== null
-        ? recentTransactions.map((t:any) => {
+        ? recentTransactions.map((t: any) => {
             return {
               id: t.id,
               amount:
@@ -121,7 +124,7 @@ export const transformSingleBranchAPIResponse = (
         : [],
     recent_transactions:
       recentTransactions !== null
-        ? recentTransactions.map((t:any) => {
+        ? recentTransactions.map((t: any) => {
             return {
               id: t.id,
               amount: t.amount,
@@ -136,7 +139,11 @@ export const transformSingleBranchAPIResponse = (
             };
           })
         : [],
-    hasManager: manager !== null && manager.length > 0,
+    hasManager: Array.isArray(branch.staffs)
+      ? branch.staffs.some(
+          (s: any) => s.staff_role?.toLowerCase() === "manager"
+        )
+      : false,
   };
 };
 

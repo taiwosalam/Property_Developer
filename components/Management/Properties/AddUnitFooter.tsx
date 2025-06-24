@@ -20,8 +20,9 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
   const [footerModalOpen, setFooterModalOpen] = useState(false);
   const router = useRouter();
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
-  const newForm = useAddUnitStore((s) => s.newForm ?? false); // Fallback to false if undefined
+  const newForm = useAddUnitStore((s) => s.newForm ?? false);
   const [checkSubmit, setCheckSubmit] = useState(false);
+  const [saveAfterValidation, setSaveAfterValidation] = useState(false);
 
   useEffect(() => {
     if (checkSubmit) {
@@ -37,6 +38,23 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
     }
   }, [canSubmit, missingFields, checkSubmit, noForm]);
 
+  useEffect(() => {
+    if (saveAfterValidation) {
+      if (!canSubmit && !noForm) {
+        toast.error(
+          `The following fields are required: ${missingFields.join(", ")}`
+        );
+      } else {
+        setSaveClick(true);
+        const form = document.getElementById(
+          "add-unit-form"
+        ) as HTMLFormElement | null;
+        form?.requestSubmit();
+      }
+      setSaveAfterValidation(false);
+    }
+  }, [saveAfterValidation, canSubmit, missingFields, noForm, setSaveClick]);
+
   const handleAddMoreClick = () => {
     console.log("Add More Clicked:", { noForm, newForm, canSubmit });
     if (!noForm) {
@@ -46,7 +64,6 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
       setFooterModalOpen(true);
     }
   };
-
 
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -58,6 +75,10 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
       hasNotYetUploaded: addedUnits.some((unit) => unit.notYetUploaded),
       missingFields,
     });
+
+    const formInDom = document.getElementById(
+      "add-unit-form"
+    ) as HTMLFormElement | null;
 
     // Check for unuploaded units
     if (addedUnits.length > 0) {
@@ -104,6 +125,17 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
         form?.requestSubmit();
       }, 0);
       router.push("/management/properties");
+    } else if (canSubmit && addedUnits.length > 0 && formInDom) {
+      // if canSubmit is true and no units added, redirect after submission
+      console.log(
+        "Single unit submitted, redirecting to /management/properties"
+      );
+      setSaveClick(true);
+      const form = e.currentTarget.form;
+      setTimeout(() => {
+        form?.requestSubmit();
+      }, 0);
+      router.push("/management/properties");
     } else {
       console.log(
         "No form, units added, redirecting to /management/properties"
@@ -111,6 +143,49 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
       router.push("/management/properties");
     }
   };
+
+  // const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   console.log("Save Clicked:", {
+  //     noForm,
+  //     newForm,
+  //     canSubmit,
+  //     addedUnitsLength: addedUnits.length,
+  //     hasNotYetUploaded: addedUnits.some((unit) => unit.notYetUploaded),
+  //     missingFields,
+  //   });
+
+  //   const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
+
+  //   if (addedUnits.length > 0 && hasNotYetUploaded) {
+  //     toast.warning(
+  //       "There are units that have not been updated yet. Please update them to continue."
+  //     );
+  //     return;
+  //   }
+
+  //   console.log("noForm", noForm);
+  //   if (!noForm || newForm || missingFields.length > 0) {
+  //     setSaveClick(true);
+  //     handleInputChange();
+  //     setSaveAfterValidation(true);
+  //     return;
+  //   }
+
+  //   if (addedUnits.length === 0 && !canSubmit) {
+  //     toast.success("Property has been added to your drafts.");
+  //     router.push("/management/properties");
+  //   } else if (canSubmit && addedUnits.length === 0) {
+  //     setSaveClick(true);
+  //     const form = document.getElementById(
+  //       "add-unit-form"
+  //     ) as HTMLFormElement | null;
+  //     form?.requestSubmit();
+  //     router.push("/management/properties");
+  //   } else {
+  //     router.push("/management/properties");
+  //   }
+  // };
 
   return (
     <FixedFooter className="unit-footer-actions flex items-center justify-end gap-10">

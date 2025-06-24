@@ -90,6 +90,8 @@ interface GlobalStoreState {
   setIsPastDate: (isPast: boolean) => void;
   setUnitData: (data: initDataProps | null) => void;
   canSubmit: boolean;
+  allowEditUnit: boolean;
+  closeUnitForm: boolean;
   SelectedDirectorPics: boolean;
 
   isValidDateRange: boolean,
@@ -205,6 +207,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   selectedTenantId: null,
   domainAvailable: false,
   hasRestrictedWords: false,
+  allowEditUnit: false,
+  closeUnitForm: false,
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {

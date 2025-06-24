@@ -55,13 +55,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({
     setPage([page + newDirection, newDirection]);
   };
 
-  // Debugging: Log slide details
-  console.log({
-    imageIndex,
-    totalSlides,
-    isVideoSlide: imageIndex === images.length,
-    videoLink,
-  });
+
 
   return (
     <div

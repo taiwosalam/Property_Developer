@@ -60,7 +60,6 @@ const SelectWithImage: React.FC<SelectProps> = ({
   // State to store validation error message
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  console.log("defaultValue", defaultValue)
   const updateDropdownPosition = () => {
     if (dropdownRef.current) {
       const dropdownRect = dropdownRef.current.getBoundingClientRect();
