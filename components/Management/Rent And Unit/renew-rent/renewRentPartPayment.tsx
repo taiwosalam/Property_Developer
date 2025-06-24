@@ -158,7 +158,7 @@ export const RenewRentAddPartPayment: React.FC<{
             : "Select this option if the client wishes to make a partial advance payment of the total amount."}
         </p>
       </div>
-      <OwingFee show={!isUpfrontPaymentChecked} />
+      {/* <OwingFee show={!isUpfrontPaymentChecked} /> */}
       <SectionSeparator className="mt-4 mb-6" />
       {(!isUpfrontPaymentChecked || isCompletePayment) && (
         <>

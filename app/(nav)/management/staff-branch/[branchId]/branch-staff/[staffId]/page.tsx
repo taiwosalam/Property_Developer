@@ -210,7 +210,9 @@ const StaffProfile = () => {
               phone: staff?.phone,
               "personal title": staff?.title,
               "real estate title": staff?.real_estate_title,
-              "years of experience": `${staff?.experience} Years+`,
+              ...(staff?.experience
+                ? { "years of experience": `${staff.experience} Years+` }
+                : {}),
             }}
           />
           <LandlordTenantInfoBox>

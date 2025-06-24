@@ -32,12 +32,12 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
   const renewalTenantTotalPrice = Number(unitData.renewalTenantTotalPrice) || 0;
 
   // Warn about unusual daily fee period
-  if (feePeriod === "daily" && renewalTenantTotalPrice > 10000) {
-    console.warn(
-      "Unusual daily fee period with high renewalTenantTotalPrice:",
-      renewalTenantTotalPrice
-    );
-  }
+  // if (feePeriod === "daily" && renewalTenantTotalPrice > 10000) {
+  //   console.warn(
+  //     "Unusual daily fee period with high renewalTenantTotalPrice:",
+  //     renewalTenantTotalPrice
+  //   );
+  // }
 
   useEffect(() => {
     if (start_date && due_date && feePeriod && renewalTenantTotalPrice > 0) {

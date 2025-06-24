@@ -33,7 +33,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   const [formStep, setFormStep] = useState(1);
   const { branch } = useBranchStore();
 
-  const { staffs } = branch
+  const { staffs } = branch;
   // console.log("Branch data", branch.isManagerAvailable)
 
   const {
@@ -60,7 +60,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
 
   const handleCreateStaff = async (data: FormData) => {
     const email = data.get("email")?.toString() || "";
- 
+
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or select an avatar.");
       return;
@@ -85,6 +85,12 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
       setIsLoading(false);
     }
   };
+
+  const STAFF_ROLE_OPTIONS = [
+    ...(hasManager ? [] : [{ value: "manager", label: "branch manager" }]),
+    { value: "account_officer", label: "account officer" },
+    { value: "staff", label: "Other Staff" },
+  ];
 
   return (
     <LandlordTenantModalPreset
@@ -131,22 +137,9 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
             <Select
               id="position"
               required
-              label="position"
+              label="Staff Role"
               inputContainerClassName="bg-neutral-2"
-              options={[
-                ...(hasManager
-                  ? []
-                  : [{ value: "manager", label: "branch manager" }]),
-                "account officer",
-                "staff",
-              ]}
-              // options={[
-              //   ...(branch.isManagerAvailable
-              //     ? []
-              //     : [{ value: "manager", label: "branch manager" }]),
-              //   "account officer",
-              //   "staff",
-              // ]}
+              options={STAFF_ROLE_OPTIONS}
             />
             <Select
               id="gender"

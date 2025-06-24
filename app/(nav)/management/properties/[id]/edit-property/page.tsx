@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import UnitForm from "@/components/Management/Properties/unit-form";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
 
 const EditProperty = ({ params }: { params: { id: string } }) => {
   const { id: propertyId } = params;
@@ -25,6 +26,8 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
   const [showNewUnitForm, setShowNewUnitForm] = useState(false);
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertyType = useAddUnitStore((s) => s.propertyType);
+  const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
+  const [allowEdit, setAllowEdit] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (
@@ -71,7 +74,6 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
   } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
   useRefetchOnEvent("refetchSingleProperty", () => refetch({ silent: true }));
 
-
   useEffect(() => {
     if (propertyData) {
       const transformedData = transformPropertyData(propertyData);
@@ -97,11 +99,11 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />
+  if (error) return <ServerError error={error} />;
   if (dataNotFound)
     return <div className="text-red-500">Property Data not found</div>;
   if (!propertyDetails) return null;
-  
+
   return (
     <div className="space-y-7 pb-[100px]">
       <BackButton>Edit Property</BackButton>
@@ -127,7 +129,11 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
           <AddUnitFormCard key={index} data={unit} index={index} />
         ))}
 
-        {showNewUnitForm && (
+        {/* {showNewUnitForm && (
+          <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
+        )} */}
+
+        {showNewUnitForm && !closeUnitForm && (
           <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
         )}
       </div>

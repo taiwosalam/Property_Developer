@@ -24,6 +24,8 @@ import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
+import { useGlobalStore } from "@/store/general-store";
+import DynamicFooterActions from "./footer-action";
 
 export interface UnitFormState {
   images: string[];
@@ -67,7 +69,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   } = useContext(UnitFormContext) || {};
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
   const newForm = useAddUnitStore((state) => state.newForm);
-
+  const allowEditUnit = useGlobalStore((s) => s.allowEditUnit);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
 
@@ -265,8 +267,8 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     }
   }, [props.empty, newForm]);
 
-  if(submitLoading){
-    return <FullPageLoader text="Processing Unit Data..." />
+  if (submitLoading) {
+    return <FullPageLoader text="Processing Unit Data..." />;
   }
 
   return (
@@ -333,6 +335,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           ) : (
             <AddUntFooter noForm={props.empty} />
           )}
+          <DynamicFooterActions />
         </AuthForm>
       </UnitFormContext.Provider>
     </FlowProgress>
