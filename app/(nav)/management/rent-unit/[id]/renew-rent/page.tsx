@@ -142,12 +142,12 @@ const RenewRent = () => {
   const propertyId = unitData.propertyId;
   const previousRecord = (unitData?.current_records as any)?.data?.[0];
   const start_date = previousRecord?.start_date
-    // ? dayjs(previousRecord.start_date).format("DD/MM/YYYY")
-    ? previousRecord.start_date
+    ? // ? dayjs(previousRecord.start_date).format("DD/MM/YYYY")
+      previousRecord.start_date
     : "__,__,___";
   const due_date = previousRecord?.due_date
-    // ? dayjs(previousRecord.due_date).format("DD/MM/YYYY")
-    ? previousRecord.due_date
+    ? // ? dayjs(previousRecord.due_date).format("DD/MM/YYYY")
+      previousRecord.due_date
     : "___,___,___";
 
   const propertySettingsData = getPropertySettingsData(unitData);
@@ -398,9 +398,6 @@ const RenewRent = () => {
                         setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
                       />
                       {/* <OwingFee show={isUpfrontPaymentChecked} /> */}
-                      <OwingFee
-                        show={isUpfrontPaymentChecked || overduePeriods > 0}
-                      />
 
                       <RenewalRent
                         setStartDate={setStartDate}
