@@ -116,7 +116,7 @@ const BookVisitorsPage = () => {
       search: "",
     };
     if (statesArray.length > 0) {
-      queryParams.states = statesArray.join(",");
+      queryParams.status = statesArray.join(",");
     }
     if (propertyIdsArray.length > 0) {
       queryParams.property_ids = propertyIdsArray.join(",");
@@ -215,7 +215,7 @@ const BookVisitorsPage = () => {
                 },
               ]
             : []),
-            visitationStatus,
+          visitationStatus,
         ]}
         hasGridListToggle={false}
       />
@@ -230,12 +230,19 @@ const BookVisitorsPage = () => {
           title="No Visitor Requests Available Yet"
           body={
             <p>
-              At the moment, there are no visitor requests available. Once
-              requests are added to the system, they will appear here.
+              There are currently no visitor requests. Once a visitor submits a
+              request, the details will appear here. Visitor requests help you
+              manage and approve visits to your properties, ensuring smooth
+              scheduling and security.
               <br />
               <br />
-              This section will automatically populate with all available data
-              as soon as new visitor requests are created in the platform.
+              This message will automatically disappear once visitor requests
+              are received.
+              <br />
+              <br />
+              Need assistance? Click your profile icon in the top right corner
+              and select &quot;Assistance & Support&quot; for guidance on how to
+              use this page page.
             </p>
           }
         />

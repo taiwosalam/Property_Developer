@@ -5,18 +5,10 @@ import dayjs from "dayjs";
 
 export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
   {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
-  {
     radio: true,
     label: "Status",
     value: [
-      { label: "all", value: "all", isChecked: true },
+      { label: "all", value: "all" },
       { label: "Pending", value: "Pending" },
       { label: "Ongoing", value: "Ongoing" },
       { label: "Completed", value: "Completed" },
@@ -143,6 +135,7 @@ export interface IMaintenanceCard {
       start_date: string;
       end_date: string;
       cost: string;
+      units: string;
     };
   }[];
 }
@@ -159,6 +152,7 @@ export const transformMaintenanceCard = (
       return {
         card: {
           maintenanceId: item?.id.toString(),
+
           status:
             item?.status && item?.status === "pending"
               ? "not started"
@@ -167,20 +161,24 @@ export const transformMaintenanceCard = (
           dateCreated: item?.created_at
             ? dayjs(item?.created_at).format("DD/MM/YYYY")
             : "___ ___",
-          serviceProvider: item?.service_provider,
+          serviceProvider: item?.provider?.company_name ?? "___ ___",
           startEndDate: formatStartEndDate(item?.start_date, item?.end_date),
           priority: item?.priority,
-          serviceType: "Plumbing",
+          serviceType: item?.provider?.service_render ?? "___ ___",
           viewOnly: false,
         },
         modal: {
           maintenanceId: item?.id,
+          units:
+            item?.unit && item.unit.length > 0
+              ? item.unit.join(",")
+              : "___ ___",
           property_name: item?.property.title,
           created_at: item?.created_at
             ? dayjs(item?.created_at).format("DD/MM/YYYY")
             : "___ ___",
           priority: item?.priority,
-          service_type: "Plumbing",
+          service_type: item?.provider?.service_render ?? "___ ___",
           service_provider: item?.service_provider,
           work_details: item?.detail,
           quotation: item?.quotation,
@@ -192,3 +190,16 @@ export const transformMaintenanceCard = (
     }),
   };
 };
+
+export interface MaintenanceRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  account_officer_id?: string;
+  start_date?: string;
+  end_date?: string;
+  property_id?: string;
+  branch_id?: string;
+  status?: string;
+  is_active?: string;
+}

@@ -179,7 +179,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
         <input id="alt_email" name="alt_email" hidden />
         <Input
-          disabled={!is_active}
+          disabled={true}
           id="email"
           label="email"
           type="email"

@@ -294,6 +294,7 @@ export const CampaignFields = [
     id: "2",
     label: "Link",
     accessor: "link",
+    
   },
   {
     id: "3",

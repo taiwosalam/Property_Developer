@@ -42,6 +42,7 @@ type MaintenanceRequest = {
   priority: "high" | "critical" | "low" | "very low" | "medium";
   maintenance_type: string;
   service_provider: string;
+  unit: string[];
   requester: Requester;
   cost: string;
   quotation: string;
@@ -57,9 +58,16 @@ type MaintenanceRequest = {
   created_at: string;
   updated_at: string;
   property: Property;
-  unit: Unit;
+  provider: IProvider;
   branch: Branch;
 };
+
+interface IProvider {
+  id: number;
+  name: string;
+  company_name: string;
+  service_render: string;
+}
 
 type Requester = {
   id: number;

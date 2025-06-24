@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import Button from "@/components/Form/Button/button";
 import AnnouncementCard from "@/components/tasks/announcements/announcement-card";
@@ -23,6 +23,9 @@ import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { AxiosRequestConfig } from "axios";
 import { FilterResult, InspectionRequestParams } from "../inspections/data";
+import { debounce } from "lodash";
+import { MaintenanceRequestParams } from "../maintenance/data";
+import dayjs from "dayjs";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
@@ -47,7 +50,7 @@ const AnnouncementPage = () => {
     error,
     refetch,
     isNetworkError,
-  } = useFetch<AnnouncementApiResponse>(`/announcements`);
+  } = useFetch<AnnouncementApiResponse>(`/announcements`, config);
   useRefetchOnEvent("dispatchAnnouncement", () => refetch({ silent: true }));
 
   const [isLiking, setIsLiking] = useState(false);
@@ -58,7 +61,54 @@ const AnnouncementPage = () => {
     }
   }, [apiData]);
 
-  console.log(announcements);
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const status = menuOptions["Status"] || [];
+      const property = menuOptions["Property"] || [];
+
+      const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
+      if (status.length > 0) queryParams.status = status.join(",");
+      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
+  );
+
+  const handlePageChange = (page: number) => {
+    setConfig((prev) => ({
+      params: { ...prev.params, page },
+    }));
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+  };
+
+  const handleSearch = async (query: string) => {
+    setConfig({
+      params: { ...config.params, search: query },
+    });
+  };
+
+  const { data: propertyData } = useFetch<any>(`property/list`);
+
+  const propertyOptions = propertyData?.data?.properties?.data?.map(
+    (property: { id: number; title: string }) => ({
+      value: property.id,
+      label: property.title,
+    })
+  );
 
   if (loading) <CardsLoading />;
   if (error) <ServerError error={error} />;
@@ -97,39 +147,93 @@ const AnnouncementPage = () => {
             "This page contains a list of Announcement on the platform.",
         }}
         searchInputPlaceholder="Search Announcement"
-        handleFilterApply={() => {}}
+        handleFilterApply={handleAppliedFilter}
+        handleSearch={handleSearch}
+        onSort={handleSort}
         isDateTrue
-        filterOptionsMenu={announcementrFilterOptionsWithDropdown}
+        filterOptionsMenu={[
+          ...(propertyOptions?.length > 0
+            ? [
+                {
+                  label: "Property",
+                  value: propertyOptions,
+                },
+              ]
+            : []),
+        ]}
         hasGridListToggle={false}
       />
 
-      <section>
-        {announcements?.length === 0 && !loading ? (
-          !!config.params?.search || hasActiveFilters(appliedFilter) ? (
-            <SearchError />
-          ) : (
-            <div className="col-span-full text-left py-8 text-gray-500">
-              <EmptyList
-                noButton
-                title="No Announcements Yet"
-                body={
-                  <p className="">
-                    There are currently no announcements available. You can
-                    create a broadcast information targeted to specific property
-                    occupants, all tenants, or your entire client base-based on
-                    the filters you select during creation.
-                    <br /> <br />
-                    <p>
-                      Once announcements are published, they will appear here
-                      for your review and management.
-                    </p>
-                  </p>
-                }
-              />
-            </div>
-          )
+      {loading || silentLoading ? (
+        <AutoResizingGrid gap={28} minWidth={400}>
+          <CardsLoading length={10} />
+        </AutoResizingGrid>
+      ) : !announcements.length ? (
+        // Show empty state when no visitors exist
+        <EmptyList
+          noButton
+          title="No Announcements Available"
+          body={
+            <p>
+              There are currently no announcements created. Once you add an
+              announcement, the details will appear here. Announcements help
+              keep everyone informed about important updates, events, or changes
+              related to the properties you manage. They can also be used to
+              share company news on the domain website.
+              <br />
+              <br />
+              This message will automatically disappear once announcements
+              records are added.
+              <br />
+              <br />
+              Need assistance? Click your profile icon in the top right corner
+              and select &quot;Assistance & Support&quot; for help on using this
+              page.
+            </p>
+          }
+        />
+      ) : !!config.params.search || hasActiveFilters(appliedFilter) ? (
+        // If we have data but search/filters return nothing, show search error
+        announcements.length === 0 ? (
+          <SearchError />
         ) : (
-          <AutoResizingGrid minWidth={315} gap={32}>
+          // Show filtered/searched results
+          <section>
+            <AutoResizingGrid gap={32} minWidth={315}>
+              {announcements.map((announcement, index) => {
+                const image_urls = announcement.images;
+                const formattedDate = new Date(
+                  announcement.created_at
+                ).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                });
+                return (
+                  <AnnouncementCard
+                    title={announcement.title}
+                    date={formattedDate}
+                    key={index}
+                    description={announcement.description}
+                    id={announcement.company_id.toString()}
+                    views={announcement.views_count}
+                    newViews={announcement.views_count}
+                    likes={announcement.likes_count}
+                    dislikes={announcement.dislikes_count}
+                    imageUrls={announcement.images}
+                    //mediaCount={announcement.image_urls.length}
+                    mediaCount={image_urls.flat().length}
+                    announcementId={announcement.id.toString()}
+                  />
+                );
+              })}
+            </AutoResizingGrid>
+          </section>
+        )
+      ) : (
+        // Show all results when no search/filters active
+        <section>
+          <AutoResizingGrid gap={32} minWidth={315}>
             {announcements.map((announcement, index) => {
               const image_urls = announcement.images;
               const formattedDate = new Date(
@@ -158,8 +262,8 @@ const AnnouncementPage = () => {
               );
             })}
           </AutoResizingGrid>
-        )}
-      </section>
+        </section>
+      )}
     </div>
   );
 };
