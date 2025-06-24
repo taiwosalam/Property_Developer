@@ -8,10 +8,12 @@ import {
   transformSinglePropertyData,
 } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const PropertyPreviewPage = ({ params }: { params: { id: string } }) => {
-  const { data, loading, error, isNetworkError } =
+  const { data, loading, error, isNetworkError, refetch } =
     useFetch<SinglePropertyResponse>(`property/${params.id}/view`);
+    useRefetchOnEvent("property-updated", () => refetch({ silent: true }));
 
   const propertyData = data ? transformSinglePropertyData(data) : null;
 

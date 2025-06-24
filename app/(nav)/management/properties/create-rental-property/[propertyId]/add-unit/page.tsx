@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -20,6 +19,7 @@ import { UnitFormContext } from "@/components/Management/Properties/unit-form-co
 import { UnitTypeKey } from "@/data";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import { useTourStore } from "@/store/tour-store";
+import { useGlobalStore } from "@/store/general-store";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
@@ -49,6 +49,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const [saveClick, setSaveClick] = useState(false);
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const [clickedNo, setClickedNo] = useState(false);
+  const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
 
   const resetForm = () => {
     setImages([]);
@@ -164,7 +165,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
                 ))}
               </>
             )}
-            {(addedUnits.length === 0 || showUnitForm) && (
+            {(addedUnits.length === 0 || showUnitForm) && !closeUnitForm && (
               <div>
                 <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
               </div>

@@ -8,6 +8,7 @@ import { Pointer } from "@/public/icons/icons";
 import { useUnitForm } from "./unit-form-context";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { useAddUnitStore } from "@/store/add-unit-store";
+import { useGlobalStore } from "@/store/general-store";
 
 const FooterModal = ({
   showUnitForm,
@@ -19,8 +20,11 @@ const FooterModal = ({
   onAddUnits?: (count: number) => void;
 }) => {
   const { setIsOpen } = useModal();
-  const { duplicate, setDuplicate, submitLoading, setClickedNo } = useUnitForm();
+  const { duplicate, setDuplicate, submitLoading, setClickedNo } =
+    useUnitForm();
   const [countPopup, setCountPopup] = useState(false);
+  const allowEditUnit = useGlobalStore((s) => s.allowEditUnit);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [count, setCount] = useState(duplicate?.count || 1);
   const popupRef = useRef<HTMLDivElement>(null);
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
@@ -77,15 +81,26 @@ const FooterModal = ({
   };
 
   const handleNoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const formInDom = document.getElementById(
+      "add-unit-form"
+    ) as HTMLFormElement | null;
     if (noForm) {
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();
       setAddUnitStore("newForm", true);
       setClickedNo?.(true);
+      if (formInDom) {
+        setGlobalStore("allowEditUnit", true);
+        formInDom.reset();
+      }
     } else {
       setClickedNo?.(true);
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();
+      if (formInDom) {
+        setGlobalStore("allowEditUnit", true);
+        formInDom.reset();
+      }
     }
   };
 

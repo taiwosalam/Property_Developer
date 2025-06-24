@@ -258,7 +258,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
           handleSearch={handleSearch}
           onSort={handleSort}
         />
-        <section>
+        <section className="mt-8">
           {loading || silentLoading ? (
             view === "grid" ? (
               <AutoResizingGrid minWidth={284} gap={16} key="loading">

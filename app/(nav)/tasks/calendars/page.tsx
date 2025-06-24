@@ -70,26 +70,14 @@ const CalendarPage = () => {
   if (loading) {
     return <PageCircleLoader />;
   }
- 
+
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
       <div className="custom-flex-col gap-8">
-        <FilterBar
-          pageTitle="Calendar"
-          aboutPageModalData={{
-            title: "Calendar",
-            description:
-              "This page contains a list of Calendar on the platform.",
-          }}
-          searchInputPlaceholder="Search"
-          handleFilterApply={() => {}}
-          isDateTrue
-          filterOptionsMenu={calendarsrFilterOptionsWithDropdown}
-          hasGridListToggle={false}
-        />
+        <PageTitle title="Calendar" />
         <CalendarComponent events={calendarEvents} />
       </div>
       <div className="page-title-container">

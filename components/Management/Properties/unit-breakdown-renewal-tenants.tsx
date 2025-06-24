@@ -22,10 +22,6 @@ const UnitBreakdownRenewalTenant = () => {
   const shouldChargeTenantAgencyFee =
     propertySettings?.who_to_charge_renew_tenant?.toLowerCase() === "tenants" ||
     propertySettings?.who_to_charge_renew_tenant?.toLowerCase() === "both";
-  console.log("shouldChargeTenantAgencyFee", shouldChargeTenantAgencyFee);
-
-  console.log("agencyFeePercentage", agencyFeePercentage);
-
   const IS_RENTAL = propertyType === "rental";
   const [otherChargesInput, setOtherChargesInput] = useState(
     !!parseFloat(unitData?.renew_other_charge || "0")

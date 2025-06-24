@@ -246,39 +246,40 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   }, [selectedBranchId]);
 
   useEffect(() => {
-    if (branchData.staff.data) {
+    if (branchData?.staff?.data) {
       setPropertyState({
-        staffOptions: branchData.staff.data.data.map((s: any) => ({
+        staffOptions: branchData?.staff?.data?.data?.map((s: any) => ({
           value: s.id,
           label: s.user.name,
           icon: s.user.profile.picture,
         })),
       });
     }
-  }, [branchData.staff.data]);
+  }, [branchData?.staff?.data]);
 
   const landlordOptions =
-    landlordsData?.data.map((landlord) => ({
+    landlordsData?.data?.map((landlord) => ({
       value: landlord.id,
       label: landlord.name,
       icon: landlord.picture,
     })) || [];
 
   const inventoryOptions =
-    branchData.inventory.data?.data.map((inventory: any) => ({
+    branchData?.inventory?.data?.data?.map((inventory: any) => ({
       value: inventory.id,
       label: inventory.title,
     })) || [];
 
+
   const officerOptions =
-    branchData.accountOfficer.data?.data.map((officer: any) => ({
+    branchData?.accountOfficer?.data?.data?.map((officer: any) => ({
       value: officer.id,
       label: officer.user.name,
       icon: officer.user.profile.picture,
     })) || [];
 
   const staffOption =
-    branchData.staff.data?.data
+    branchData?.staff?.data?.data
       .filter((s: any) => s.staff_role !== "manager")
       .map((s: any) => ({
         value: s.id,
@@ -289,7 +290,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   useEffect(() => {
     if (staffsData) {
       setPropertyState({
-        staffOptions: staffsData.data.map((s: any) => ({
+        staffOptions: staffsData?.data?.map((s: any) => ({
           value: s.id,
           label: s.user.name,
           icon: s.user.profile.picture,
@@ -622,14 +623,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
                 className="property-landlord-wrapper"
-                // defaultValue={
-                //   editMode && propertyDetails?.land_lord_id
-                //     ? landlordOptions.find(
-                //         (landlord) =>
-                //           landlord.value === propertyDetails.land_lord_id
-                //       )
-                //     : undefined
-                // }
                 defaultValue={
                   editMode && propertyDetails?.land_lord_id
                     ? landlordOptions.find(

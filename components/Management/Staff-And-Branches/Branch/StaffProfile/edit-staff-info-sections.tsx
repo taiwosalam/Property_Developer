@@ -247,7 +247,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
         <LandlordTenantInfoEditGrid>
           <Select
             id="current_position"
-            label="Current Position"
+            label="Current Role"
             inputContainerClassName="bg-neutral-2"
             options={[]}
             defaultValue={position}
@@ -269,13 +269,13 @@ export const StaffEditMoveToAnotherBranchSection = () => {
           />
           <Select
             id="transfer_current_position_to"
-            label="transfer current position to"
+            label="transfer current role to"
             options={staffOptions}
             inputContainerClassName="bg-neutral-2"
           />
           <Select
             id="select_new_branch_position"
-            label="select new branch position"
+            label="select new branch role"
             inputContainerClassName="bg-neutral-2"
             options={["manager", "account officer", "staff"]}
             //   defaultValue={staff?.real_estate_title}
@@ -349,18 +349,18 @@ export const StaffEditChangePositionSection = () => {
   };
 
   return (
-    <LandlordTenantInfoEditSection title={`change ${name} position`}>
+    <LandlordTenantInfoEditSection title={`change ${name} role`}>
       <AuthForm onFormSubmit={handleUpdateStaffPosition} skipValidation>
         <LandlordTenantInfoEditGrid>
           <Select
             id="assign_current_position_to"
-            label="assign current position to"
+            label="assign current role to"
             inputContainerClassName="bg-neutral-2"
             options={staffOptions}
           />
           <Select
             id="new_position"
-            label="new position"
+            label="new role"
             inputContainerClassName="bg-neutral-2"
             options={positionOptions}
             //   defaultValue={staff?.real_estate_title}
