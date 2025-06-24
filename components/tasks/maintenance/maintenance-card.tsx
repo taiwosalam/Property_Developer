@@ -28,6 +28,7 @@ interface MaintenanceCardProps {
     start_date: string;
     end_date: string;
     cost: string;
+    units: string;
   };
 }
 

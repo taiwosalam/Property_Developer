@@ -22,6 +22,7 @@ import { number } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
+import clsx from "clsx";
 
 const CreateMaintenace = () => {
   const router = useRouter();
@@ -164,7 +165,7 @@ const CreateMaintenace = () => {
     }
   };
 
-  console.log(selectedUnits);
+  console.log(selectedProviderId);
 
   return (
     <div className="font-medium space-y-6">
@@ -249,13 +250,17 @@ const CreateMaintenace = () => {
           />
 
           <MultiSelectObj
-            //disabled={!selectedPropertyId || unitSilentLoading}
+            className={`${clsx({
+              "opacity-70": !selectedPropertyId || unitSilentLoading,
+            })}`}
+            disabled={!selectedPropertyId || unitSilentLoading}
             id=""
+            placeholder={unitSilentLoading ? "Please wait" : "Choose option"}
             label="Affected Units"
             onValueChange={(selected) => setSelectedUnits(selected.map(String))}
             options={
               unitOptions.length > 0
-                ? unitOptions.map((u) => ({ label: u.name, value: u.id }))
+                ? unitOptions.map((u) => ({ label: u.name, value: u.name }))
                 : []
             }
           />
@@ -271,7 +276,12 @@ const CreateMaintenace = () => {
             isSearchable={false}
             inputContainerClassName="bg-white capitalize"
           />
-          <Input type="text" id="requested_by" label="Requested By" inputClassName="rounded-lg"/>
+          <Input
+            type="text"
+            id="requested_by"
+            label="Requested By"
+            inputClassName="rounded-lg"
+          />
 
           {/* <Select
             id="requested_by"
@@ -287,7 +297,7 @@ const CreateMaintenace = () => {
           />
 
           <input
-            value={selectedPropertyId ?? ""}
+            value={selectedProviderId ?? ""}
             type="hidden"
             aria-hidden
             id="service_provider"
@@ -312,7 +322,7 @@ const CreateMaintenace = () => {
             }
             onChange={(name) => {
               const provider = providerOptions.find((b) => b.name === name);
-              setSelectedBranchId(provider ? provider.id : null);
+              setSelectedProviderId(provider ? provider.id : null);
             }}
             inputContainerClassName="bg-white"
           />

@@ -826,6 +826,16 @@ const Others = () => {
       [id]: step,
     }));
   };
+
+  const [isOwner, setIsOwner] = useState(false);
+  const { data: userProfile } = useFetch<any>(`user/profile`);
+
+  useEffect(() => {
+    if (userProfile) {
+      setIsOwner(userProfile?.data?.user?.is_owner);
+    }
+  }, [userProfile]);
+
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
 
   // PERMISSIONS TO RENDER COMPONENTS
@@ -883,12 +893,21 @@ const Others = () => {
                       isOpen:
                         isCloseOnUpdate && activeDirectorId === directorId,
                       setIsOpen: (isOpen) => {
+                        if (!isOwner) return;
                         setIsCloseOnUpdate(isOpen);
                         setActiveDirectorId(isOpen ? directorId : null);
                       },
                     }}
                   >
-                    <ModalTrigger>
+                    <ModalTrigger
+                      disabled={!isOwner}
+                      onClick={() => {
+                        if (!isOwner)
+                          toast.error(
+                            "Only the company owner can edit directors."
+                          );
+                      }}
+                    >
                       <UserCard
                         is_active={director.is_active}
                         key={director.id}

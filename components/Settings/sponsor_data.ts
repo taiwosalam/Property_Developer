@@ -204,6 +204,17 @@ export interface ICampaignTable {
   expired_date: string;
 }
 
+function getImageNameFromUrl(url: string): string {
+  try {
+    const parsedUrl = new URL(url);
+    const segments = parsedUrl.pathname.split("/");
+    return segments.pop() || ""; // Gets the last part after the last slash
+  } catch (error) {
+    console.error("Invalid URL:", error);
+    return "";
+  }
+}
+
 export const transformCampaignData = (
   data: CampaignHistoryResponse
 ): ICampaignTable[] => {
@@ -213,13 +224,9 @@ export const transformCampaignData = (
     campaign_type: item?.type || "___ ___",
     campaign_name: item?.name || "___ ___",
     link: item?.link?.toLowerCase() || "___ ___",
-    uploaded: item?.attachment?.toLowerCase() || "___ ___",
+    uploaded: item?.attachment ? getImageNameFromUrl(item.attachment) : "",
     period: item?.period
-      ? `${
-          Number(item?.period) > 1
-            ? Number(item?.period).toFixed() + " months"
-            : Number(item?.period).toFixed() + " month"
-        }`
+      ? Math.round(parseFloat(item?.period)).toString()
       : "___ ___",
     amount: item.amount ? formatToNaira(item.amount) : "___ ____",
     expired_date: item?.expire_date

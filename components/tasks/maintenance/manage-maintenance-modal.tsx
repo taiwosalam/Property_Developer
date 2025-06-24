@@ -27,6 +27,7 @@ interface MaintenanceModalProps {
   start_date: string;
   end_date: string;
   cost: string;
+  units: string;
 
   setIsOpen?: (open: boolean) => void;
 }
@@ -147,10 +148,10 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
           </div>
           <div>
             <p className="text-text-tertiary text-base dark:text-darkText-1">
-              Service Provider:
+              Affected Units:
             </p>
-            <p className="text-text-secondary text-sm dark:text-darkText-2">
-              {props?.service_provider}
+            <p className="text-text-secondary text-sm dark:text-darkText-2 capitalize">
+              {props?.units}
             </p>
           </div>
         </div>
