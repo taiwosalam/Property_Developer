@@ -61,7 +61,7 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
               variant="border"
               className="py-2 px-6"
               onClick={() => {
-                router.push("/tasks/examine/[examineId]/manage");
+                router.push(`/tasks/examine/${id}/manage`);
               }}
             >
               manage
@@ -70,7 +70,7 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
               size="xs_normal"
               className="py-2 px-6"
               onClick={() => {
-                router.push("/tasks/examine/[examineId]/report");
+                router.push(`/tasks/examine/${id}/report`);
               }}
             >
               report

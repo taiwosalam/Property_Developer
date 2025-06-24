@@ -11,8 +11,135 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { SectionContainer } from "@/components/Section/section-components";
 import DeleteExamineModal from "@/components/tasks/Examine/delete-examine-modal";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import {
+  deleteExamine,
+  examineService,
+  inspectionCheckList,
+  transformExamineManageData,
+  updateExamine,
+} from "./data";
+import { IExaminePageData } from "./data";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { toast } from "sonner";
 
 const ManageExaminepage = () => {
+  const [examinePageData, setExaminePageData] =
+    useState<IExaminePageData | null>(null);
+  const params = useParams();
+  const router = useRouter();
+  const paramId = params?.examineId;
+
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [notes, setNotes] = useState("");
+  const [sendToLandlord, setSendToLandlord] = useState(false);
+  const [sendToTenant, setSendToTenant] = useState(false);
+  const [inspectionChecklist, setInspectionChecklist] = useState<{
+    [key: string]: string;
+  }>({});
+
+  const [siteSummary, setSiteSummary] = useState<{ [key: string]: string }>({});
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const {
+    data: apiData,
+    loading,
+    error,
+    silentLoading,
+    isNetworkError,
+  } = useFetch<ExamineSingleDataResponse>(`/examine/${paramId}`);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformData = transformExamineManageData(apiData);
+      setExaminePageData(transformData);
+    }
+  }, [apiData]);
+
+  const handleExamineUpdate = async () => {
+    if (!paramId) return;
+
+    // Build the checklist array
+    const checklistArray = Object.entries(inspectionChecklist)
+      .filter(([_, value]) => value)
+      .map(([key, value]) => ({ [key]: value }));
+
+    const summaryArray = Object.entries(siteSummary)
+      .filter(([_, value]) => value)
+      .map(([key, value]) => ({ [key]: value }));
+
+    // Build the payload object
+    const payload = {
+      services: selectedServices,
+      send_to_landlord: !!sendToLandlord,
+      send_to_tenant: !!sendToTenant,
+      inspection_checklist: checklistArray,
+      inspection_summary: notes,
+      summary: summaryArray,
+      // ...add other fields as needed
+    };
+    try {
+      setIsUpdating(true);
+      const res = await updateExamine(paramId as string, payload);
+      if (res) {
+        toast.success("Examine updated");
+        router.push("/tasks/examine");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  useEffect(() => {
+    if (examinePageData) {
+      setSelectedServices(examinePageData?.service);
+      setNotes(examinePageData?.inspection_summary_notes);
+      setSendToLandlord(examinePageData?.send_to_landlord);
+      setSendToTenant(examinePageData?.send_to_tenant);
+
+      if (Array.isArray(examinePageData.inspection_checklist)) {
+        const checklistObj = examinePageData.inspection_checklist.reduce(
+          (acc, item) => {
+            try {
+              // Parse the JSON string if item is a string, otherwise use as is
+              const parsed = typeof item === "string" ? JSON.parse(item) : item;
+              // Merge key-value into accumulator
+              Object.entries(parsed).forEach(([key, value]) => {
+                acc[key] = String(value);
+              });
+            } catch (e) {
+              // Handle malformed JSON gracefully
+            }
+            return acc;
+          },
+          {} as { [key: string]: string }
+        );
+        setInspectionChecklist(checklistObj);
+      }
+    }
+  }, [examinePageData]);
+
+  useEffect(() => {
+    if (
+      examinePageData?.inspection_summary &&
+      Array.isArray(examinePageData.inspection_summary)
+    ) {
+      const summaryObj = examinePageData.inspection_summary.reduce(
+        (acc, item) => {
+          const [key, value] = Object.entries(item)[0];
+          acc[key] = value;
+          return acc;
+        },
+        {} as { [key: string]: string }
+      );
+      setSiteSummary(summaryObj);
+    }
+  }, [examinePageData]);
+
   const commonClasses =
     "py-3 px-4 text-text-secondary text-base font-normal bg-neutral-3 dark:bg-darkText-primary rounded-[4px] flex-row-reverse justify-between dark:border dark:border-gray-500";
 
@@ -35,7 +162,7 @@ const ManageExaminepage = () => {
                 Inspected Date:
               </p>
               <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-                8 -11th January 2024
+                {examinePageData?.date}
               </p>
             </div>
             <div className="flex items-start justify-between gap-2">
@@ -43,9 +170,7 @@ const ManageExaminepage = () => {
                 Added Guest:
               </p>
               <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-                Landlord
-                <br />
-                Mr Ajadi David
+                {examinePageData?.added_guest}
               </p>
             </div>
           </LandlordTenantInfoBox>
@@ -56,149 +181,199 @@ const ManageExaminepage = () => {
             <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
               Description
             </p>
-            <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-              eget dictum sem, ut molestie eros. Morbi in dolor augue. Sed
-              aliquet ipsum fringilla sapien facilisis consectetur.
-            </p>
+            {examinePageData?.description && (
+              <div
+                className="text-sm font-medium text-text-secondary dark:text-darkText-2"
+                dangerouslySetInnerHTML={{
+                  __html: examinePageData?.description,
+                }}
+              />
+            )}
           </LandlordTenantInfoBox>
         </div>
-        <SectionContainer heading="Service connected to property">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-            <Checkbox className={commonClasses}>Electricity</Checkbox>
-            <Checkbox className={commonClasses}>Sewer</Checkbox>
-            <Checkbox className={commonClasses}>Gas</Checkbox>
-            <Checkbox className={commonClasses}>Drainage</Checkbox>
-            <Checkbox className={commonClasses}>Water</Checkbox>
-            <Checkbox className={commonClasses}>Smoke Detector</Checkbox>
-          </div>
-        </SectionContainer>
-        <SectionContainer heading="Site Summary">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-            {["Age of Building", "Construction Type", "Roof"].map(
-              (item, index) => (
-                <Input
-                  placeholder="Input here"
-                  id={item + index}
-                  type="text"
-                  className="w-full"
-                  key={index}
-                  label={item}
+        <section>
+          <AuthForm onFormSubmit={handleExamineUpdate}>
+            <SectionContainer heading="Service connected to property">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+                {examineService?.map((service, i) => (
+                  <Checkbox
+                    id={"services"}
+                    name={"services"}
+                    checked={selectedServices?.includes(service)}
+                    onChange={(checked) => {
+                      setSelectedServices((prev) => {
+                        const safePrev = Array.isArray(prev) ? prev : [];
+                        return checked
+                          ? [...safePrev, service]
+                          : safePrev.filter((s) => s !== service);
+                      });
+                    }}
+                    value={service}
+                    key={i}
+                    className={commonClasses}
+                  >
+                    {service}
+                  </Checkbox>
+                ))}
+              </div>
+            </SectionContainer>
+            <SectionContainer heading="Site Summary" className="py-4">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+                {["Age of Building", "Construction Type", "Roof"].map(
+                  (item, index) => (
+                    <Input
+                      placeholder="Input here"
+                      id={item + index}
+                      type="text"
+                      className="w-full"
+                      key={index}
+                      label={item}
+                      value={siteSummary[item] || ""}
+                      onChange={(value) =>
+                        setSiteSummary((prev) => ({
+                          ...prev,
+                          [item]: value,
+                        }))
+                      }
+                    />
+                  )
+                )}
+                <Select
+                  id="condition"
+                  label="Condition"
+                  options={["Good", "Bad"]}
+                  value={siteSummary["Condition"] || ""}
+                  onChange={(value) =>
+                    setSiteSummary((prev) => ({
+                      ...prev,
+                      Condition: value,
+                    }))
+                  }
                 />
-              )
-            )}
-            <Select
-              id="condition"
-              label="Condition"
-              options={["Good", "Bad"]}
-            />
-            {["Extension/ Renovation", "Out Buildings"].map((item, index) => (
-              <Input
-                placeholder="Input here"
-                id={item + index}
-                type="text"
-                className="w-full"
-                key={index}
-                label={item}
+                {["Extension/Renovation", "Out Buildings"].map(
+                  (item, index) => (
+                    <Input
+                      placeholder="Input here"
+                      id={item + index}
+                      type="text"
+                      className="w-full"
+                      key={index}
+                      label={item}
+                      value={siteSummary[item] || ""}
+                      onChange={(value) =>
+                        setSiteSummary((prev) => ({
+                          ...prev,
+                          [item]: value,
+                        }))
+                      }
+                    />
+                  )
+                )}
+                {["Sub Floor", "Site"].map((item, index) => (
+                  <Input
+                    placeholder="Input here"
+                    id={item + index}
+                    type="text"
+                    className="w-full"
+                    key={index}
+                    label={item}
+                    value={siteSummary[item] || ""}
+                    onChange={(value) =>
+                      setSiteSummary((prev) => ({
+                        ...prev,
+                        [item]: value,
+                      }))
+                    }
+                  />
+                ))}
+                <Select
+                  id="compare"
+                  label="Compare To Others"
+                  options={["Good", "Bad"]}
+                  value={siteSummary["Compare To Others"] || ""}
+                  onChange={(value) =>
+                    setSiteSummary((prev) => ({
+                      ...prev,
+                      "Compare To Others": value,
+                    }))
+                  }
+                />
+              </div>
+            </SectionContainer>
+            <SectionContainer heading="Inspection Checklist">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+                {inspectionCheckList.map((item, index) => (
+                  <Select
+                    key={index}
+                    id={item + index}
+                    label={item}
+                    placeholder="Select options"
+                    options={["Good", "Bad"]}
+                    value={inspectionChecklist[item] || ""}
+                    onChange={(value) => {
+                      setInspectionChecklist((prev) => ({
+                        ...prev,
+                        [item]: value,
+                      }));
+                    }}
+                  />
+                ))}
+              </div>
+            </SectionContainer>
+            <SectionContainer heading="Inspection Summary Notes">
+              <TextArea
+                id="inspection_summary"
+                value={notes}
+                onChange={(value) => setNotes(value)}
               />
-            ))}
-            {["Sub Floor", "Site"].map((item, index) => (
-              <Input
-                placeholder="Input here"
-                id={item + index}
-                type="text"
-                className="w-full"
-                key={index}
-                label={item}
-              />
-            ))}
-            <Select
-              id="compare"
-              label="Compare to others"
-              options={["Good", "Bad"]}
-            />
-          </div>
-        </SectionContainer>
-        <SectionContainer heading="Inspection Checklist">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-            {[
-              "Outdoor Steps and Sidewalk",
-              "Dining Rooms",
-              "Outdoor Paint",
-              "Den(s)",
-              "Driveway",
-              "Study Room(s)",
-              "Storage Room(s)",
-              "Outdoor Plantation",
-              "Outdoor Entry Way",
-              "Game Room(s)",
-              "Doors",
-              "Music Room(s)",
-              "Door Fixtures",
-              "Fireplaces",
-              "Flooring",
-              "Carpentry",
-              "Bathroom Tiles",
-              "Bathroom Faucets",
-              "Window",
-              "Water Pressure",
-              "Window Screen",
-              "Kitchen",
-              "Window Fixtures",
-              "Laundry",
-              "Window Furnishing",
-              "Lighting",
-              "Ceilings",
-              "Disposal",
-              "Light Fixtures",
-              "Shelving",
-              "Staircases",
-              "Bedrooms",
-              "Indoor Paint",
-              "Wardrobes and Closets",
-              "Electrical Outlets and Fixtures",
-              "Living Room",
-            ].map((item, index) => (
-              <Select
-                key={index}
-                id={item + index}
-                label={item}
-                placeholder="Select options"
-                options={["Good", "Bad"]}
-              />
-            ))}
-          </div>
-        </SectionContainer>
-        <SectionContainer heading="Inspection Summary Notes">
-          <TextArea id="inspection_summary_notes" />
-        </SectionContainer>
-        <FixedFooter className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {["Send to Landlord", "Send to Tenant"].map((item, index) => (
-              <Checkbox key={index}>{item}</Checkbox>
-            ))}
-          </div>
+            </SectionContainer>
+            <FixedFooter className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Checkbox
+                  checked={sendToLandlord}
+                  onChange={setSendToLandlord}
+                  name="send_to_landlord"
+                  id="send_to_landlord"
+                >
+                  Send to Landlord
+                </Checkbox>
+                <Checkbox
+                  checked={sendToTenant}
+                  onChange={setSendToTenant}
+                  name="send_to_tenant"
+                  id="send_to_tenant"
+                >
+                  Send to Tenant
+                </Checkbox>
+              </div>
 
-          <div className="flex items-center gap-4">
-            <Modal>
-              <ModalTrigger>
+              <div className="flex items-center gap-4">
+                <Modal>
+                  <ModalTrigger>
+                    <Button
+                      variant="light_red"
+                      size="base_medium"
+                      className="py-2 px-6"
+                    >
+                      Delete
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <DeleteExamineModal />
+                  </ModalContent>
+                </Modal>
                 <Button
-                  variant="light_red"
+                  type="submit"
                   size="base_medium"
                   className="py-2 px-6"
+                  disabled={isUpdating}
                 >
-                  Delete
+                  {isUpdating ? "Please wait..." : "Submit"}
                 </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <DeleteExamineModal />
-              </ModalContent>
-            </Modal>
-            <Button type="submit" size="base_medium" className="py-2 px-6">
-              Submit
-            </Button>
-          </div>
-        </FixedFooter>
+              </div>
+            </FixedFooter>
+          </AuthForm>
+        </section>
       </div>
     </div>
   );

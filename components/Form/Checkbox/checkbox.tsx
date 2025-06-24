@@ -20,6 +20,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
   radio,
   defaultChecked = false,
   disabled, // new optional prop
+  name,
+  id,
+  value,
 }) => {
   const [internalChecked, setInternalChecked] = useState(defaultChecked);
   const [isHovered, setIsHovered] = useState(false);
@@ -58,6 +61,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
         onMouseLeave: () => setIsHovered(false),
       })}
     >
+      <input type="hidden" checked={isChecked} name={name} id={id} />
       {isChecked ? (
         radio ? (
           <RadioCheckedIcon />
