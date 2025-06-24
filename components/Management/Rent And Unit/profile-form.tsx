@@ -19,6 +19,8 @@ import { useGlobalStore } from "@/store/general-store";
 import { MatchedProfile } from "./matched-profile";
 import { getSingleTenantData } from "@/utils/getData";
 import { Currency } from "@/utils/number-formatter";
+import { getLocalStorage } from "@/utils/local-storage";
+import { toast } from "sonner";
 
 export const ProfileForm: React.FC<{
   occupants: { name: string; id: string; picture?: string }[];
@@ -30,6 +32,7 @@ export const ProfileForm: React.FC<{
   period: RentPeriod;
   currency?: Currency;
   disableInput?: boolean;
+  tenantsLoading?: boolean;
 }> = ({
   occupants,
   isRental,
@@ -40,8 +43,8 @@ export const ProfileForm: React.FC<{
   period,
   currency,
   disableInput,
+  tenantsLoading,
 }) => {
-  const [selectedId, setSelectedId] = useState<string>("");
   const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [dueDate, setDueDateLocal] = useState<Dayjs | null>(null);
@@ -55,6 +58,8 @@ export const ProfileForm: React.FC<{
     selectedOccupant,
     tenantLoading,
   } = useGlobalStore();
+  const defaultTenantId = getLocalStorage("selectedTenantId") || "";
+  const [selectedId, setSelectedId] = useState<string>(defaultTenantId || "");
   const isWebUser = selectedOccupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = selectedOccupant?.userTag?.toLowerCase() === "mobile";
 
@@ -63,6 +68,22 @@ export const ProfileForm: React.FC<{
       setRentPeriod(period);
     }
   }, [period]);
+
+  // Validate defaultTenantId
+  useEffect(() => {
+    if (tenantsLoading || !defaultTenantId) return;
+
+    const validTenant = occupants.find(
+      (occupant) => occupant.id === defaultTenantId
+    );
+    if (!validTenant) {
+      setSelectedId("");
+      setSelectedTenantId?.("");
+      // if (typeof window !== "undefined") {
+      //   localStorage.removeItem("selectedTenantId");
+      // }
+    }
+  }, [defaultTenantId, occupants, setSelectedTenantId, tenantsLoading]);
 
   // Handle select id from dropdown
   const handleSelectId = (id: string) => {
@@ -210,6 +231,24 @@ export const ProfileForm: React.FC<{
   // Non-naira currency message
   const nonNaira = currency !== "naira";
 
+  const defaultTenantOption =
+    defaultTenantId && occupants.length > 0
+      ? occupants.find(
+          (occupant) => String(occupant.id) === String(defaultTenantId)
+        )
+      : null;
+
+  const tenantSelectDefaultValue = defaultTenantOption
+    ? {
+        label: defaultTenantOption.name,
+        value: defaultTenantOption.id,
+        icon: defaultTenantOption.picture || empty,
+      }
+    : undefined;
+
+  console.log("occupants", occupants);
+  console.log("tenantSelectDefaultValue", tenantSelectDefaultValue);
+
   // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE💀💀💀👿
   return (
     <div className="space-y-6">
@@ -226,6 +265,8 @@ export const ProfileForm: React.FC<{
               }))}
               className="md:flex-1 md:max-w-[300px]"
               onChange={(value) => handleSelectId(value)}
+              // defaultValue={defaultTenantId || undefined}
+              defaultValue={tenantSelectDefaultValue}
               disabled={disableInput}
             />
           </div>

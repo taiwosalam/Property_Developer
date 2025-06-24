@@ -9,7 +9,11 @@ import VerifiedIcon from "@/public/icons/verified.svg";
 // Imports
 import { empty } from "@/app/config";
 import Picture from "../Picture/picture";
-import { notification_icons, notification_links } from "./data";
+import {
+  normalizeNotificationType,
+  notification_icons,
+  notification_links,
+} from "./data";
 import { SectionSeparator } from "../Section/section-components";
 import useFetch from "@/hooks/useFetch";
 import Link from "next/link";
@@ -36,12 +40,18 @@ interface NotificationProps {
   };
 }
 const Notification: React.FC<NotificationProps> = ({ notification }) => {
-  console.log("notification", notification)
+  const resolvedType = notification.type.includes("\\")
+    ? normalizeNotificationType(notification.type)
+    : notification.type.toLowerCase().trim();
+
+  const route = notification_links[resolvedType] || "/";
+  
   return (
     <div className="custom-flex-col gap-4">
       <div className="flex gap-4">
         <Link
-          href={notification_links[notification.type.toLowerCase()]}
+          // href={notification_links[notification.type.toLowerCase()]}
+          href={route}
           className="w-full flex gap-4"
         >
           <div className="flex items-start">

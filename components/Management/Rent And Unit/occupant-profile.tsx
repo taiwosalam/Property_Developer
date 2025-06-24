@@ -8,6 +8,7 @@ import { RentSectionTitle } from "./rent-section-container";
 import { Skeleton } from "@mui/material";
 import { RentPeriod } from "./data";
 import { useGlobalStore } from "@/store/general-store";
+import { getLocalStorage } from "@/utils/local-storage";
 
 export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   isRental,
@@ -24,8 +25,11 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
   setDueDate,
   currency,
   disableInput,
+  tenantsLoading,
 }) => {
   const { selectedOccupant, tenantLoading, tenantError } = useGlobalStore();
+  const defaultTenantId = getLocalStorage("selectedTenantId") || "";
+
   return (
     <>
       {loading ? (
@@ -57,6 +61,7 @@ export const OccupantProfile: React.FC<OccupantProfileProps> = ({
                 setDueDate={setDueDate}
                 currency={currency || "naira"}
                 disableInput={disableInput}
+                tenantsLoading={tenantsLoading}
               />
             </div>
 

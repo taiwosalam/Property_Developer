@@ -119,7 +119,8 @@ interface GlobalStoreState {
   
   profileSettingsData: ProfileSettingsPageState | null; 
   selectedSubPlan: PropertyManagerSubsTransformedPlan | null;
-
+  selectedLandlordId: string | null;
+  selectedTenantId: string | null;
   warningModal: {
     isOpen: boolean;
     message: string;
@@ -200,6 +201,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   profileSettingsData: null,
   selectedSubPlan: null,
 
+  selectedLandlordId: null,
+  selectedTenantId: null,
   domainAvailable: false,
   hasRestrictedWords: false,
 

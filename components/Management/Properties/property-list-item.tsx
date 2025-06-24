@@ -6,6 +6,7 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import PropertyTag from "@/components/Tags/property-tag";
+import { empty } from "@/app/config";
 
 interface PropertyListItemProps {
   id: string;
@@ -151,7 +152,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             </div>
           </div>
           <Image
-            src={images[0]}
+            src={images[0] ?? empty}
             alt={property_name}
             fill
             className="object-cover"

@@ -46,6 +46,7 @@ import { AgreementPreview } from "@/components/Modal/tenant-document";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
 import { useTourStore } from "@/store/tour-store";
+import { getLocalStorage, removeLocalStorage } from "@/utils/local-storage";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -335,6 +336,7 @@ const StartRent = () => {
           id={propertyId as string}
           setDueDate={setDueDate}
           disableInput={disableInput}
+          tenantsLoading={allTenantsLoading}
         />
       </section>
       <FixedFooter className={`start-rent-button flex justify-end gap-4`}>

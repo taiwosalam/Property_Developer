@@ -11,6 +11,7 @@ import Select from "../Form/Select/select";
 import { tenantRejectOptions } from "@/app/(nav)/management/tenants/data";
 import { flagTenant } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import AddPropertyModal from "./Properties/add-property-modal";
 
 const EditMobileUser = ({
   page,
@@ -29,7 +30,7 @@ const EditMobileUser = ({
   const isLandlord = page === "landlord";
   const [reqLoading, setReqLoading] = useState(false);
   const [activeStep, setActiveStep] = useState<
-    "option" | "flag" | "delete" | "unflag"
+    "option" | "flag" | "delete" | "unflag" | "add-property"
   >(is_flagged ? "unflag" : "option");
   const [reason, setReason] = useState("");
   const { setIsOpen } = useModal();
@@ -116,6 +117,14 @@ const EditMobileUser = ({
     }
   };
 
+  const continuePropertyUnit = ()=> {
+    if (isLandlord) {
+      setActiveStep("add-property")
+    } else {
+      router.push(`/management/rent-unit/?is_active=vacant&tenant_id=${id}`)
+    }
+  }
+
   return (
     <>
       {activeStep === "option" ? (
@@ -144,10 +153,10 @@ const EditMobileUser = ({
               loading={reqLoading}
               buttonText="proceed"
               title={isLandlord ? "Add New Property" : "Link New Unit"}
-              onClick={() => toast.warning("Coming soon!!!")}
+              onClick={continuePropertyUnit}
               desc={
                 isLandlord
-                  ? "Process of linking a newly added property from the property records page to the profile, identifying that profile as the owner."
+                  ? "The process of adding a new property and its unit to a profile, assigning ownership of both to that profile."
                   : "The process involves connecting a newly added rental or facility unit to an existing profile record within the system."
               }
             />
@@ -212,6 +221,10 @@ const EditMobileUser = ({
             </div>
           </div>
         </ModalPreset>
+      ) : activeStep === "add-property" ? (
+        <>
+          <AddPropertyModal />
+        </>
       ) : (
         <ModalPreset
           type="warning"

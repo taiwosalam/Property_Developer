@@ -56,6 +56,8 @@ import api, { handleAxiosError } from "@/services/api";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
 import { useTourStore } from "@/store/tour-store";
 import { usePathname } from "next/navigation";
+import { useGlobalStore } from "@/store/general-store";
+import { toast } from "sonner";
 
 const maxNumberOfImages = 6;
 
@@ -74,6 +76,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const selectedLandlordId = useGlobalStore((s) => s.selectedLandlordId);
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
@@ -177,6 +181,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }));
     resetImages();
     setSelectedCategory(null);
+    setSelectedLandlord([]);
+    setGlobalStore("selectedLandlordId", "");
   };
 
   const {
@@ -292,6 +298,21 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }
   }, [staffsData]);
 
+  // Set default landlord from selectedLandlordId
+  useEffect(() => {
+    if (!editMode && selectedLandlordId && landlordOptions.length > 0) {
+      const defaultLandlord = landlordOptions.find(
+        (landlord) => landlord.value === selectedLandlordId
+      );
+      if (defaultLandlord) {
+        setSelectedLandlord([selectedLandlordId]);
+      } else {
+        toast.warning("Selected landlord not found in available options.");
+        setGlobalStore("selectedLandlordId", "");
+      }
+    }
+  }, [selectedLandlordId, landlordOptions, editMode, setGlobalStore]);
+
   useEffect(() => {
     if (editMode && propertyDetails) {
       setState((x) => ({
@@ -332,7 +353,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   const handleGoToTourStep = (stepIndex: number) => {
-    console.log(`Triggering goToStep(${stepIndex}) for pathname: ${pathname}`);
     goToStep(stepIndex, pathname);
   };
 
@@ -602,11 +622,23 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
                 className="property-landlord-wrapper"
+                // defaultValue={
+                //   editMode && propertyDetails?.land_lord_id
+                //     ? landlordOptions.find(
+                //         (landlord) =>
+                //           landlord.value === propertyDetails.land_lord_id
+                //       )
+                //     : undefined
+                // }
                 defaultValue={
                   editMode && propertyDetails?.land_lord_id
                     ? landlordOptions.find(
                         (landlord) =>
                           landlord.value === propertyDetails.land_lord_id
+                      )
+                    : selectedLandlordId && !editMode
+                    ? landlordOptions.find(
+                        (landlord) => landlord.value === selectedLandlordId
                       )
                     : undefined
                 }
