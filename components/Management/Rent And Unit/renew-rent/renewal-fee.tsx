@@ -5,6 +5,7 @@ import { FeeDetail } from "../types";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 import { formatFee } from "@/app/(nav)/management/rent-unit/data";
+import OwingFee from "./owing-fee";
 
 const RenewalFee = ({
   setIsUpfrontPaymentChecked,
@@ -71,6 +72,7 @@ const RenewalFee = ({
           noEdit
         />
       </div>
+      <OwingFee show={true} />
       <div className="flex gap-1 flex-col renew-rent-option-container">
         <div className="flex gap-2">
           <RentSectionTitle>
@@ -87,17 +89,6 @@ const RenewalFee = ({
           payment of the total amount.
         </p>
       </div>
-      {/* {isUpfrontPaymentChecked && ( */}
-      {/* <FeeDetails
-          title={isRental ? "Breakdown" : "Annual Fee"}
-          feeDetails={feeDetails}
-          // total_package={Number(unitData.renewalTenantTotalPrice)}
-          total_package={TOTAL_FEE}
-          id={unitData.propertyId as string}
-          currency={currency}
-          noEdit
-        /> */}
-      {/* )} */}
     </div>
   );
 };
