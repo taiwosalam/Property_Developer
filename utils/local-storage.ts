@@ -22,3 +22,11 @@ export const getLocalStorage = (key: string) => {
   }
   return null; // Return null if not in the browser
 };
+
+
+
+export const removeLocalStorage = (key: string) => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem(key);
+  }
+};

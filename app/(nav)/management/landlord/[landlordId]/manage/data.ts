@@ -269,7 +269,8 @@ export const transformIndividualLandlordAPIResponse = ({
         unit_name: s.unit_name,
         credit: amount > 0 ? formatFee(amount, s.currency || "naira") || "" : null,
         debit: amount < 0 ? formatFee(amount, s.currency || "naira") || "" : null,
-        date: s.date ? dayjs(s.date).format("DD/MM/YYYY") : "--- ---",
+        // date: s.date ? dayjs(s.date).format("DD/MM/YYYY") : "--- ---",
+        date: s.date ? s.date : "--- ---",
         badge_color: s.payer_tier
           ? tierColorMap[s.payer_tier as keyof typeof tierColorMap]
           : null,

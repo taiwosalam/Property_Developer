@@ -42,12 +42,19 @@ import { SectionContainer } from "@/components/Section/section-components";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import { useGlobalStore } from "@/store/general-store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
+
+const AddPropertyModal = dynamic(
+  () => import("@/components/Management/Properties/add-property-modal"),
+  { ssr: false }
+);
 
 const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   const { data, error, loading, isNetworkError, refetch } =
@@ -60,6 +67,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
 
   useEffect(() => {
     if (landlordData) {
+      setGlobalStore("selectedLandlordId", landlordData.id); 
       const newMessageUserData = landlordData?.messageUserData;
       const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
 
@@ -108,6 +116,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     if (!landlordData.user_id)
       return toast.warning("Landlord User ID not Found!");
     router.push(`/messages/${landlordData?.user_id}`);
+  };
+
+  const handleAttachProperty = () => {
+    setGlobalStore("selectedLandlordId", landlordId); 
+    setIsModalOpen(true);
   };
 
   return (
@@ -233,14 +246,22 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 >
                   edit
                 </Button>
-                <Button
-                  variant="light_green"
-                  size="base_medium"
-                  className="py-2 px-4"
-                  onClick={() => toast.warning("Coming soon!!!")}
-                >
-                  Attach Property
-                </Button>
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button
+                      variant="light_green"
+                      size="base_medium"
+                      className="py-2 px-4 page-header-button"
+                      type="button"
+                      onClick={handleAttachProperty}
+                    >
+                      Attach Property
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <AddPropertyModal />
+                  </ModalContent>
+                </Modal>
                 <Modal>
                   <ModalTrigger asChild>
                     <Button

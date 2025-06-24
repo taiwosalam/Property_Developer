@@ -13,22 +13,6 @@ const AddPropertyModal = ({ isOpen }: { isOpen?: boolean }) => {
   const [view, setView] = useState<AddPropertyModalViews>("options");
   const { tour: tourState, setTourState } = useTourStore();
 
-  // Sync tour with modal view
-  useEffect(() => {
-    if (!isOpen || !tourState.run || tourState.tourKey !== "PropertiesTour")
-      return;
-    const stepIndex = tourState.stepIndex;
-    if (stepIndex === 3 && view !== "options") {
-      console.log("AddPropertyModal: Setting view to options for tour step 3");
-      setView("options");
-    } else if (stepIndex === 4 && view !== "add-property-with-id") {
-      console.log(
-        "AddPropertyModal: Setting view to add-property-with-id for tour step 4"
-      );
-      setView("add-property-with-id");
-    }
-  }, [isOpen, view, tourState, setView]);
-
   const handleBack = () => {
     setView("options");
   };

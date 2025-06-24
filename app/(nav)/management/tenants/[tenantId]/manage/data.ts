@@ -198,13 +198,13 @@ export const transformIndividualTenantAPIResponse = ({
     picture: data?.picture || empty,
     name: data?.name || "--- ---",
     title: data.title || "",
-    user_id: data?.user_id || "--- ---",
-    email: data?.email || "--- ---",
+    user_id: data?.user_id || "",
+    email: data?.email || "",
     user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
     badge_color: data?.user_tier ? tierColorMap[data.user_tier] : undefined,
-    phone_number: data?.phone || "--- ---",
+    phone_number: data?.phone || "",
     tenant_type: data?.tenant_type || "",
-    gender: data?.gender || "--- ---",
+    gender: data?.gender || "",
     birthdate: data.birthday
       ? dayjs(data.birthday).format("MMM DD YYYY")
       : "--- ---",
@@ -213,10 +213,10 @@ export const transformIndividualTenantAPIResponse = ({
     is_flagged: data.flag.is_flagged === 1,
     flag: data.flag,
     contact_address: {
-      address: data?.address || "--- ---",
-      city: data?.city || "--- ---",
-      state: data?.state || "--- ---",
-      local_govt: data?.local_government || "--- ---",
+      address: data?.address || "",
+      city: data?.city || "",
+      state: data?.state || "",
+      local_govt: data?.local_government || "",
     },
     next_of_kin: data?.next_of_kin || {},
     others: {

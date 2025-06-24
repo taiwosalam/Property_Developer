@@ -82,7 +82,6 @@ export const TenantEditProfileInfoSection = () => {
     const payload = {
       first_name: data.tenant_firstname,
       last_name: data.tenant_lastname,
-      title: data.title,
       // email: data.tenant_email,
       phone_number: data.tenant_phone_number,
       state: data.tenant_state,
@@ -92,7 +91,12 @@ export const TenantEditProfileInfoSection = () => {
       tenant_type: data.tenant_type,
       gender: data.gender,
     };
-    console.log("payload", payload);
+
+    // Add email only if different from default
+    if (data.tenant_email !== tenant?.email) {
+      (payload as any).email = data.tenant_email;
+    }
+    
     cleanPhoneNumber(payload);
     if (!payload.phone_number) {
       payload.phone_number = "";
@@ -140,23 +144,14 @@ export const TenantEditProfileInfoSection = () => {
             required
             inputClassName="rounded-lg"
           />
-          <Select
-            options={titles}
-            id="title"
-            name="title"
-            label="Profile Title"
-            placeholder="Select options"
-            defaultValue={tenant?.title}
-            inputContainerClassName="bg-neutral-2"
-          />
-          {/* <Input
+          <Input
             id="tenant_email"
             type="email"
             label="email"
-            disabled
+            disabled={!!tenant?.email}
             defaultValue={tenant?.email}
             inputClassName="rounded-lg"
-          /> */}
+          />
           <PhoneNumberInput
             id="tenant_phone_number"
             label="phone number"

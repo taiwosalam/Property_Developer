@@ -4,7 +4,7 @@ import type { CreateNewItemsProps } from "./types";
 // Imports
 import AddTenantModal from "../Management/Tenants/add-tenant-modal";
 import AddLandlordModal from "../Management/Landlord/add-landlord-modal";
-import AddPropertyModal from "../Management/Properties/add-property-modal";
+// import AddPropertyModal from "../Management/Properties/add-property-modal";
 import CreateReminderMOdal from "../tasks/calendars/create-reminder-modal";
 // import CreateStaffModal from "../Management/Staff-And-Branches/create-staff-modal";
 import CreateBranchModal from "../Management/Staff-And-Branches/create-branch-modal";
@@ -14,6 +14,12 @@ import LegalProcedureModal from "../Documents/legal-procedure-modal";
 import CreateExamineModal from "../tasks/Examine/create-examine-modal";
 import AddServiceProviderModal from "../tasks/service-providers/add-service-provider-modal";
 import CreateTenancyAggrementModal from "../BadgeIcon/create-tenancy-aggrement-modal";
+import dynamic from "next/dynamic";
+
+const AddPropertyModal = dynamic(
+  () => import("@/components/Management/Properties/add-property-modal"),
+  { ssr: false }
+);
 
 export const create_new_items: CreateNewItemsProps = [
   {

@@ -33,19 +33,36 @@ export const notification_icons: Record<string, StaticImageData | any> = {
   "property request": NotificationPropertyRequest,
 };
 
+
 export const notification_links: Record<string, string> = {
   user: "/settings/company",
   review: "/reviews",
   message: "/messages",
   invoice: "/wallet",
-  profile: "/settings/profile",
+  profile: "/settings/company",
   setting: "/settings",
-  listing: "/listings",
+  listing: "/listings/units",
   location: "/settings",
   subscription: "/settings/subscription",
-  "wallet transaction": "/wallet",
-  "rent and unit": "management/rent-unit",
-  "agent community": "/management/agent-community",
-  "property draft": "/properties/drafts",
-  "property request": "/management/agent-request",
+  "wallet transaction notification": "/wallet",
+  "rent and unit notification": "/management/rent-unit",
+  "agent community notification": "/community/agent-forum",
+  "property draft notification": "/listing/property",
+  "property request notification": "/community/agent-request",
+  "invoice notification": "/accounting/invoice",
+  "new request published": "/community/agent-request",
+  "new post published": "/community/agent-forum",
+  "listing notification": "/listing/units",
+  "company setting notification": "/settings/company",
+  "subscription notification": "/settings/subscription",
+};
+
+
+export const normalizeNotificationType = (fullType: string) => {
+  const parts = fullType.split("\\");
+  const lastPart = parts[parts.length - 1] || "";
+  return lastPart
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .toLowerCase()
+    .trim(); // "new request published"
 };
