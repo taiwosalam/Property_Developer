@@ -100,6 +100,14 @@ const RentAndUnit = () => {
     sessionStorage.setItem("rent_and_unit_page", current_page.toString());
   }, [current_page]);
 
+  useEffect(() => {
+    const tenantIdFromUrl = searchParams.get("tenant_id");
+    if (!tenantIdFromUrl) {
+      localStorage.removeItem("selectedTenantId");
+    }
+  }, []);
+  
+
   const [appliedFilters, setAppliedFilters] =
     useState<FilterResult>(initialFilters);
   const isInitialMount = useRef(true);
