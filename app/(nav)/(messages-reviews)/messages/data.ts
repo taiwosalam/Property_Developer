@@ -62,7 +62,7 @@ export const transformCompanyUsersData = (
       imageUrl: u.profile_picture || empty,
       position: u.role,
       // badgeColor: tierColorMap[u.user_tier as keyof typeof tierColorMap],
-      // online: u.online,
+      online_status: u.online_status,
     })),
     filters: {
       roles: {

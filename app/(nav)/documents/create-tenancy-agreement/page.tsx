@@ -97,28 +97,34 @@ const CreateTenancyAggrement = () => {
             Property Details
           </h2>
           <SectionSeparator />
-          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+          <div className="flex gap-2 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{
                 "property name": propertyData?.property_name || "--- ---",
                 "property address": propertyData?.address || "--- ---",
-                "agency fee":
-                  propertyData?.agency_fee != null
-                    ? `${propertyData.agency_fee}%`
-                    : "--- ---",
                 "property type": propertyData?.propertyType || "--- ---",
+                "Landlord/Landlady Name":
+                  propertyData?.landlord_info?.name || "--- ---",
+                "Landlord/Landlady Address": `${
+                  propertyData?.landlord_info?.address || "---"
+                } ${propertyData?.landlord_info?.city || "---"} ${
+                  propertyData?.landlord_info?.state || "---"
+                }`,
+                "account type": propertyData?.landlordData?.agent || "--- ---",
               }}
               chunkSize={2}
               referenceObject={{
                 "property name": "",
                 "property address": "",
-                "agency fee": "",
                 "property type": "",
+                "Landlord/Landlady Name": "",
+                "Landlord/Landlady Address": "",
+                "account type": "",
               }}
             />
           </div>
         </LandlordTenantInfoBox>
-        <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
+        {/* <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
           <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
             Landlord/Landlady Details
           </h2>
@@ -145,7 +151,7 @@ const CreateTenancyAggrement = () => {
               }}
             />
           </div>
-        </LandlordTenantInfoBox>
+        </LandlordTenantInfoBox> */}
       </div>
       <div className="custom-flex-col gap-8">
         <div className="custom-flex-col gap-4">

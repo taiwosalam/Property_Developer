@@ -164,7 +164,7 @@ const UnitBreakdownFacility = () => {
         />
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input
-            id="vat"
+            id="vat_amount"
             label="Value Added Tax (VAT)"
             inputClassName="bg-white unit-form-input"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}

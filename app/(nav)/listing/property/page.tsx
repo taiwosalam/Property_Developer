@@ -101,6 +101,7 @@ const Property = () => {
       }));
     }
   }, [apiData]);
+
   // Listen for the refetch event
   useRefetchOnEvent("refetchPropertyDraft", () => refetch({ silent: true }));
 

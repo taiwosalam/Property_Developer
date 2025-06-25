@@ -42,7 +42,15 @@ const Properties = () => {
     (state) => state.setGlobalInfoStore
   );
   const [view, setView] = useState<string | null>(storedView);
-  const [pageData, setPageData] = useState<PropertiesPageState>(initialState);
+  // const [pageData, setPageData] = useState<PropertiesPageState>(initialState);
+  const [pageData, setPageData] = useState<PropertiesPageState>(() => {
+    const savedPage = sessionStorage.getItem("properties_page");
+    return {
+      ...initialState,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+    };
+  });
+
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -61,6 +69,11 @@ const Properties = () => {
     new_facility_properties_count,
     properties,
   } = pageData;
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("properties_page", current_page.toString());
+  }, [current_page]);
 
   // console.log("pageData", pageData)
 
@@ -99,7 +112,7 @@ const Properties = () => {
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
-        page,
+       page: current_page,
         date_from: appliedFilters.startDate
           ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
           : undefined,
@@ -116,12 +129,17 @@ const Properties = () => {
         sort_by: sort,
       } as PropertiesFilterParams,
     };
-  }, [appliedFilters, search, sort, page]);
+  }, [appliedFilters, search, sort, current_page]);
 
   // Added a ref to the top of the content section
   const contentTopRef = useRef<HTMLDivElement>(null);
   const handlePageChange = (page: number) => {
-    setPage(page);
+    // setPage(page);
+    setPageData((prevData) => ({
+      ...prevData,
+      current_page: page,
+      properties: storedView === "grid" ? [] : prevData.properties,
+    }));
     // Scroll to the top where properties card start
     if (contentTopRef.current) {
       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
@@ -130,15 +148,33 @@ const Properties = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setSort(order);
+    setPageData((prevData) => ({
+      ...prevData,
+      current_page: 1,
+      properties: [],
+    }));
+    sessionStorage.setItem("properties_page", "1");
   };
 
   const handleSearch = (query: string) => {
     setSearch(query);
+    setPageData((prevData) => ({
+      ...prevData,
+      current_page: 1,
+      properties: [],
+    }));
+    sessionStorage.setItem("properties_page", "1");
   };
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
-    setPage(1);
+    // setPage(1);
+    setPageData((prevData) => ({
+      ...prevData,
+      current_page: 1,
+      properties: [],
+    }));
+    sessionStorage.setItem("properties_page", "1");
   };
 
   useEffect(() => {

@@ -156,7 +156,6 @@ export const transformDraftUnitData = (
     ? response.data.invites
     : response.data;
 
-  console.log("Property data", propertyData)
   const transformedProperties: any = propertyData.data.map(
     (p) => {
       const status = p.invites.length > 0 ? "request" : "draft";
@@ -185,6 +184,7 @@ export const transformDraftUnitData = (
         total_unit: units,
         last_updated: lastUpdated,
         hasVideo: !!p.video_link,
+        video_link: p.video_link,
         property_type: p.property_type,
         branch: p.branch?.branch_name,
         total_returns: totalReturns,

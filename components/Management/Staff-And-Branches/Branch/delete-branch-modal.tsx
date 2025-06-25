@@ -24,10 +24,11 @@ const DeleteBranchModal: React.FC<{
     setReqLoading(true);
     const status = await deleteBranch(branchId);
     if (status) {
-      changeStep("next");
-      setTimeout(() => {
-        router.push("/management/staff-branch");
-      }, 1500);
+      toast.success("Branch has been successfully deleted.");
+      router.push("/management/staff-branch");
+      // changeStep("next");
+      // setTimeout(() => {
+      // }, 1500);
     }
   };
 

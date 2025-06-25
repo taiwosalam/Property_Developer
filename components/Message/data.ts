@@ -1,6 +1,6 @@
 // Types
 import { PageMessages } from "@/app/(nav)/(messages-reviews)/messages/types";
-import type { MessageCardProps } from "./types";
+import type { MessageCardProps, UserDetails } from "./types";
 
 // Images
 import Avatar1 from "@/public/empty/avatar-1.svg";
@@ -8,6 +8,12 @@ import Avatar2 from "@/public/empty/avatar-2.svg";
 import Avatar3 from "@/public/empty/avatar-3.svg";
 import Avatar4 from "@/public/empty/avatar-4.svg";
 import { empty } from "@/app/config";
+
+
+export const getCleanRoleName = (data?: UserDetails | null): string => {
+  const name = data?.roles?.[0]?.name;
+  return typeof name === "string" ? name.replace(/_\d+$/, "") : "user";
+}
 
 export const message_card_data: PageMessages[] = [
   {

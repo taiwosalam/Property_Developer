@@ -46,9 +46,14 @@ const Tenants = () => {
   const storedView = useView();
   const contentTopRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<string | null>(storedView);
-  const [pageData, setPageData] = useState<TenantPageData>(
-    defaultTenantPageData
-  );
+  const [pageData, setPageData] = useState<TenantPageData>(() => {
+    const savedPage = sessionStorage.getItem("tenant_page");
+    return {
+      ...defaultTenantPageData,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+    };
+  });
+
   const {
     total_pages,
     current_page,
@@ -61,12 +66,20 @@ const Tenants = () => {
     tenants,
   } = pageData;
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as TenantRequestParams,
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("tenant_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: "",
+      } as TenantRequestParams,
+    };
   });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("tenant_page", current_page.toString());
+  }, [current_page]);
 
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
@@ -127,6 +140,12 @@ const Tenants = () => {
     setConfig({
       params: queryParams,
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("tenant_page", "1");
   };
 
   const handlePageChange = (page: number) => {
@@ -145,11 +164,18 @@ const Tenants = () => {
       }
     }
   };
-
-  const handleSearch = async (query: string) =>
+  
+  const handleSearch = async (query: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, page: 1 },
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("tenant_page", "1");
+  };
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({

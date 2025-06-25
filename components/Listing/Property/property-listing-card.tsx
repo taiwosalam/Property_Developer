@@ -131,15 +131,17 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   </div>
                 </div>
                 <div className="flex gap-3 justify-end">
-                  <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+                  {/* <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
                     <p className="text-black dark:text-white font-medium text-[10px]">
                       {data.images?.length ?? 0}
                     </p>
-                  </div>
-                  <div className="bg-brand-1 dark:bg-darkText-primary dark:text-white rounded py-1 px-1.5 gap-1.5 flex items-center">
-                    <VideoIcon />
-                  </div>
+                  </div> */}
+                  {data.video_link && (
+                    <div className="bg-brand-1 dark:bg-darkText-primary dark:text-white rounded py-1 px-1.5 gap-1.5 flex items-center">
+                      <VideoIcon />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

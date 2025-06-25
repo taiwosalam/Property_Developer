@@ -127,7 +127,7 @@ export const getEstateSettingsData = (unit_data: any) => [
 export const switchUnit = async (id: String, data: any) => {
   try {
     const res = await api.post(`/tenant-rent/${id}/switch`, data);
-    if (res.status === 200) {
+    if (res.status === 201 || res.status === 200) {
       return true;
     }
   } catch (error) {

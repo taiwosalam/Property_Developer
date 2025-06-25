@@ -14,6 +14,7 @@ export interface PropertyListingCardDataProps {
   state: string;
   local_government: string;
   total_unit: string;
+  video_link?: string;
   images?: string[];
 }
 

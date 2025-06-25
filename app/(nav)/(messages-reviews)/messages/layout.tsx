@@ -221,6 +221,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       if (res) {
         setMessage("");
         window.dispatchEvent(new Event("refetch-users-msg"));
+        window.dispatchEvent(new Event("refetchMessages"));
       }
     } catch (err) {
       toast.error("Failed to send msg");
@@ -246,6 +247,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       if (res) {
         // Clear the recording data after sending
         window.dispatchEvent(new Event("refetch-users-msg"));
+        window.dispatchEvent(new Event("refetchMessages"));
       }
     } catch (err) {
       toast.error("Failed to send audio message");
@@ -348,7 +350,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
           <div className="custom-flex-col w-full h-full">
             {children}
             {id && (
-              <AuthForm onFormSubmit={() => {}}>
+              <AuthForm onFormSubmit={handleSendMsg}>
                 <div className="py-4 px-6 flex w-full items-center gap-4">
                   {!audioUrl && !voiceControls.isRecordingInProgress && (
                     <div className="flex w-full items-center gap-4">
@@ -380,7 +382,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     </div>
                   )}
                   {message ? (
-                    <button type="button" onClick={handleSendMsg}>
+                    <button type="submit" onClick={handleSendMsg}>
                       {reqLoading ? (
                         <div className="animate-spin h-5 w-5 border-2 border-brand-9 rounded-full" />
                       ) : (
@@ -403,20 +405,6 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       )}
                       {voiceControls.isRecordingInProgress && (
                         <>
-                          {/* <button type="button" onClick={voiceControls.togglePauseResume}>
-                            <Picture
-                              src={PauseIcon}
-                              alt={voiceControls.isPausedRecording ? "Resume" : "Pause"}
-                              size={24}
-                            />
-                          </button> */}
-                          {/* <button
-                            type="button"
-                            onClick={voiceControls.stopRecording}
-                            className="flex items-center space-x-2"
-                          >
-                            <span className="text-sm text-red-500">Stop Recording</span>
-                          </button> */}
                         </>
                       )}
                     </>
@@ -466,12 +454,6 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       </div>
                     </div>
                   )}
-                  {/* Recording waveform visualizer */}
-                  {/* {voiceControls.isRecordingInProgress && (
-                    <div className="w-full mt-4 h-full">
-                      <VoiceVisualizer ref={voiceControls.audioRef} controls={voiceControls} />
-                    </div>
-                  )} */}
 
                   {voiceControls.isRecordingInProgress && (
                     <div className="w-full mt-4" style={{ height: "100px" }}>
