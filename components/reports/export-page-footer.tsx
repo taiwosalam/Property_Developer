@@ -11,6 +11,7 @@ interface ExportPageFooterProps {
   setFullContent?: (content: boolean) => void;
   fullContent?: boolean;
   customBackRoute?: string;
+  noBack?: boolean;
 }
 
 const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
@@ -20,6 +21,7 @@ const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
   firstPageRef,
   restOfContentRef,
   customBackRoute,
+  noBack = true,
 }) => {
   const { handlePrint, handleDownload } = useExport(
     firstPageRef,
@@ -81,17 +83,20 @@ const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
   return (
     <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
       <div className="flex">
-        <Button
-          type="button"
-          // onClick={() => router.back()}
-          onClick={handleBack}
-          size="custom"
-          className="py-2 px-8 font-bold text-sm lg:text-base"
-          variant="sky_blue"
-        >
-          Back
-        </Button>
+        {noBack && (
+          <Button
+            type="button"
+            // onClick={() => router.back()}
+            onClick={handleBack}
+            size="custom"
+            className="py-2 px-8 font-bold text-sm lg:text-base"
+            variant="sky_blue"
+          >
+            Back
+          </Button>
+        )}
       </div>
+
       <div className="flex gap-6">
         <Button
           type="button"
