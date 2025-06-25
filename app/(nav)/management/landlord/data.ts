@@ -194,6 +194,7 @@ export interface LandlordRequestParams {
   agent?: string;
   branch_ids?: string;
   property_ids?: string;
+  status?: string;
 }
 
 export const transformMobileUseData = (res: any): UserCardProps => {
@@ -212,7 +213,7 @@ export const transformMobileUseData = (res: any): UserCardProps => {
 };
 
 export const transformCardData = (data: any): UserCardProps => {
-  console.log("data", data)
+  console.log("data", data);
   // const badgeColor =
   // tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
   return {
@@ -244,13 +245,9 @@ export const transformMobileUseDataForVehicleRecord = (
   };
 };
 
-
-
-
-
 export const transformTenantUserData = (res: any): UserCardProps => {
   const { data } = res;
-  console.log("res", data)
+  console.log("res", data);
   const badgeColor =
     tierColorMap[data.user_tier as keyof typeof tierColorMap] || "green";
   return {
@@ -263,4 +260,3 @@ export const transformTenantUserData = (res: any): UserCardProps => {
     badge_color: badgeColor,
   };
 };
-

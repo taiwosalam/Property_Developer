@@ -8,4 +8,7 @@ export interface CheckboxProps {
   radio?: boolean;
   disabled?: boolean;
   defaultChecked?: boolean;
+  id?: string;
+  name?: string;
+  value?: string;
 }

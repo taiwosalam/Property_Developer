@@ -1,15 +1,41 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 // Imports
 import useStep from "@/hooks/useStep";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
+import { useParams, useRouter } from "next/navigation";
+import { deleteExamine } from "@/app/(nav)/tasks/examine/[examineId]/manage/data";
+import { toast } from "sonner";
 
 const DeleteExamineModal = () => {
   const { activeStep, changeStep } = useStep(2);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const params = useParams();
+  const paramId = params?.examineId;
+
+  const router = useRouter();
+
+  const handleDeleteExamine = async () => {
+    if (!paramId) return;
+
+    try {
+      setIsDeleting(true);
+      const res = await deleteExamine(paramId as string);
+      if (res) {
+        toast.success("Examine deleted");
+        changeStep("next");
+        router.push("/tasks/examine");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return activeStep === 1 ? (
     <ModalPreset type="warning">
@@ -18,7 +44,9 @@ const DeleteExamineModal = () => {
         note that you can only delete completed Examine.
       </p>
       <div className="flex flex-col items-center gap-4">
-        <Button onClick={() => changeStep("next")}>proceed</Button>
+        <Button onClick={handleDeleteExamine}>
+          {isDeleting ? "Please wait..." : "Proceed"}
+        </Button>
         <ModalTrigger
           close
           className="text-brand-primary text-sm font-medium px-3"
@@ -34,7 +62,7 @@ const DeleteExamineModal = () => {
       </p>
       <div className="flex justify-center">
         <ModalTrigger close asChild>
-          <Button>ok</Button>
+          <Button onClick={() => router.push("/tasks/examine")}>ok</Button>
         </ModalTrigger>
       </div>
     </ModalPreset>

@@ -73,6 +73,8 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
     }
   };
 
+  console.log(data);
+
   return (
     <div
       className="p-6 pb-0 rounded-2xl bg-white dark:bg-darkText-primary custom-flex-col gap-4"
@@ -209,7 +211,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   </Button>
                   <Modal state={{ isOpen, setIsOpen }}>
                     <ModalContent>
-                      <ListingFlow />
+                      <ListingFlow inviteId={data?.inviteId[0]}/>
                     </ModalContent>
                   </Modal>
                   <Button

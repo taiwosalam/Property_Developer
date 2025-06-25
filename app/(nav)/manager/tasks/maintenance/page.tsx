@@ -63,17 +63,18 @@ const Maintenance = () => {
               "completed",
             ];
             return (
-              <MaintenanceCard
-                key={index}
-                maintenanceId="12345678"
-                status={statuses[index % 3]}
-                propertyName="David Hall, Moniya"
-                dateCreated="21/01/2024"
-                serviceProvider="Lawyer"
-                startEndDate="21ST - 26TH JAN 2024"
-                priority="High"
-                serviceType="Legal Work"
-              />
+              <div key={index}></div>
+              // <MaintenanceCard
+              //   key={index}
+              //   maintenanceId="12345678"
+              //   status={statuses[index % 3]}
+              //   propertyName="David Hall, Moniya"
+              //   dateCreated="21/01/2024"
+              //   serviceProvider="Lawyer"
+              //   startEndDate="21ST - 26TH JAN 2024"
+              //   priority="High"
+              //   serviceType="Legal Work"
+              // />
             );
           })}
       </AutoResizingGrid>

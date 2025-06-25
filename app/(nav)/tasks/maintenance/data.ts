@@ -1,19 +1,14 @@
 import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
+import api, { handleAxiosError } from "@/services/api";
+import { MaintenanceApiResponse } from "./type";
+import dayjs from "dayjs";
 
 export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
-  {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
   {
     radio: true,
     label: "Status",
     value: [
-      { label: "all", value: "all", isChecked: true },
+      { label: "all", value: "all" },
       { label: "Pending", value: "Pending" },
       { label: "Ongoing", value: "Ongoing" },
       { label: "Completed", value: "Completed" },
@@ -23,15 +18,188 @@ export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
 
 export const createMaintenance = async (
   data: FormData //change to formdata later
-) => {};
+) => {
+  try {
+    const res = await api.post(`maintenance`, data);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchMaintenance"));
+      return true;
+    }
+  } catch (error) {
+    console.error(error);
+    handleAxiosError(error);
+    return false;
+  }
+};
 
 export const getALLMaintenance = async () => {};
 
 export const getMaintenanceById = async (id: string) => {};
 
+interface UpdateMetainanceData {
+  start_date: Date;
+  end_date: Date;
+  cost: string;
+}
 export const updateMaintenance = async (
-  id: string,
-  data: FormData //change to formdata later
-) => {};
+  id: number,
+  data: UpdateMetainanceData //change to formdata later
+) => {
+  const payload = {
+    start_date: data?.start_date,
+    end_date: data?.end_date,
+    cost: data?.cost,
+  };
+  try {
+    const res = await api.patch(`maintenance/${id}`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchMaintenance"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    console.log(error);
+  }
+};
 
-export const deleteMaintenance = async (id: string) => {};
+export const deleteMaintenance = async (id: number) => {
+  try {
+    const res = await api.delete(`maintenance/${id}`);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchMaintenance"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+function getDayWithSuffix(day: number): string {
+  if (day > 3 && day < 21) return `${day}TH`;
+  const lastDigit = day % 10;
+  switch (lastDigit) {
+    case 1:
+      return `${day}ST`;
+    case 2:
+      return `${day}ND`;
+    case 3:
+      return `${day}RD`;
+    default:
+      return `${day}TH`;
+  }
+}
+
+function formatStartEndDate(start: string, end: string): string {
+  const startDate = dayjs(start);
+  const endDate = dayjs(end);
+
+  const startDay = getDayWithSuffix(startDate.date());
+  const endDay = getDayWithSuffix(endDate.date());
+  const month = endDate.format("MMM").toUpperCase(); // e.g., "JAN"
+  const year = endDate.format("YYYY");
+
+  return `${startDay} - ${endDay} ${month} ${year}`;
+}
+
+export interface IMaintenanceCard {
+  stats: {
+    total: number;
+    this_month: number;
+  };
+  data: {
+    card: {
+      maintenanceId: string;
+      status: "not started" | "ongoing" | "completed" | "pending";
+      propertyName: string;
+      dateCreated: string;
+      serviceProvider: string;
+      startEndDate: string;
+      priority: "high" | "critical" | "low" | "very low" | "medium";
+      serviceType: string;
+      viewOnly?: boolean;
+    };
+    modal: {
+      maintenanceId: number;
+      property_name: string;
+      created_at: string;
+      priority: "high" | "critical" | "low" | "very low" | "medium";
+      service_type: string;
+      service_provider: string;
+      work_details: string;
+      quotation: string;
+      start_date: string;
+      end_date: string;
+      cost: string;
+      units: string;
+    };
+  }[];
+}
+export const transformMaintenanceCard = (
+  apiData: MaintenanceApiResponse
+): IMaintenanceCard => {
+  const { data } = apiData;
+  return {
+    stats: {
+      total: apiData?.stats.total,
+      this_month: apiData?.stats.this_month,
+    },
+    data: data?.data.map((item) => {
+      return {
+        card: {
+          maintenanceId: item?.id.toString(),
+
+          status:
+            item?.status && item?.status === "pending"
+              ? "not started"
+              : item?.status,
+          propertyName: item?.property.title,
+          dateCreated: item?.created_at
+            ? dayjs(item?.created_at).format("DD/MM/YYYY")
+            : "___ ___",
+          serviceProvider: item?.provider?.company_name ?? "___ ___",
+          startEndDate: formatStartEndDate(item?.start_date, item?.end_date),
+          priority: item?.priority,
+          serviceType: item?.provider?.service_render ?? "___ ___",
+          viewOnly: false,
+        },
+        modal: {
+          maintenanceId: item?.id,
+          units:
+            item?.unit && item.unit.length > 0
+              ? item.unit.join(",")
+              : "___ ___",
+          property_name: item?.property.title,
+          created_at: item?.created_at
+            ? dayjs(item?.created_at).format("DD/MM/YYYY")
+            : "___ ___",
+          priority: item?.priority,
+          service_type: item?.provider?.service_render ?? "___ ___",
+          service_provider: item?.service_provider,
+          work_details: item?.detail,
+          quotation: item?.quotation,
+          start_date: item?.start_date,
+          end_date: item?.end_date,
+          cost: item?.cost,
+        },
+      };
+    }),
+  };
+};
+
+export interface MaintenanceRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  account_officer_id?: string;
+  start_date?: string;
+  end_date?: string;
+  property_id?: string;
+  branch_id?: string;
+  status?: string;
+  is_active?: string;
+}

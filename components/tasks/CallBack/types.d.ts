@@ -13,6 +13,7 @@ export interface RequestCardBaseProps {
   user?: string;
   userId?: number;
   tier?: string;
+  id?: number;
 }
 
 export interface CallRequestCardProps extends RequestCardBaseProps {
@@ -25,6 +26,8 @@ export interface CallRequestCardProps extends RequestCardBaseProps {
   resolvedBy: string;
   resolvedDateTime: string;
   branch: string;
+  id?: number;
+  tier_id?: number;
   cardViewDetails: {
     label: string;
     accessor: keyof CallRequestCardProps;
@@ -138,4 +141,5 @@ export interface CallRequestModalProps {
   accountOfficer: string;
   resolvedBy: string;
   resolvedDateTime: string;
+  tier_id?: number;
 }

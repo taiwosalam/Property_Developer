@@ -21,13 +21,24 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   onClick,
   onChange,
   name,
-}) => { 
+}) => {
   // Internal state for when the component is uncontrolled
   const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
 
   // Determine whether to use controlled or internal state
   const isChecked = state ? state.isChecked : internalIsChecked;
   const setIsChecked = state ? state.setIsChecked : setInternalIsChecked;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.checked;
+    setIsChecked(newValue);
+    if (name && onChange) {
+      onChange(name, newValue); // Notify parent of change
+    }
+    if (onClick) {
+      onClick();
+    }
+  };
 
   const handleClick = () => {
     // This works fine for both controlled and uncontrolled scenarios
@@ -52,6 +63,14 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
       onClick={handleClick}
       type="button"
     >
+      <input
+        type="checkbox"
+        name={name}
+        value={isChecked ? "1" : "0"}
+        checked={isChecked}
+        onChange={handleChange}
+        className="hidden"
+      />
       <div
         className={cn("flex h-full", {
           "items-center": alignCheckboxCenter,

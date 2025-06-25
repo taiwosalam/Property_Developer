@@ -34,7 +34,7 @@ interface DirectorsFormProps {
   onFormChange?: (field: string, value: string) => void;
   isEditing?: boolean;
   initialImage?: string | null;
-  is_active?: number;
+  is_active?: boolean;
 }
 
 type Address = "selectedState" | "selectedLGA" | "selectedCity";
@@ -146,7 +146,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
     >
       <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Select
-          disabled={is_active !== 1 ? true : false}
+          disabled={!is_active}
           options={titles}
           id="title"
           name="title"
@@ -157,7 +157,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           onChange={(value) => onFormChange?.("title", value)}
         />
         <Select
-          disabled={is_active !== 1 ? true : false}
+          disabled={!is_active}
           isSearchable={false}
           id="professional_title"
           label="real estate title"
@@ -168,7 +168,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
 
         <Input
-          disabled={is_active !== 1 ? true : false}
+          disabled={!is_active}
           id="full_name"
           label="Full Name"
           value={formData?.full_name || ""}
@@ -179,7 +179,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         />
         <input id="alt_email" name="alt_email" hidden />
         <Input
-          disabled={is_active !== 1 ? true : false}
+          disabled={true}
           id="email"
           label="email"
           type="email"
@@ -191,7 +191,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           required
         />
         <DateInput
-          disabled={is_active !== 1 ? true : false}
+          disabled={!is_active}
           id="years_in_business"
           label=" Years of Experience (Since)"
           onChange={(value) =>
@@ -206,7 +206,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
 
         <PhoneNumberInput
           required
-          disabled={is_active !== 1 ? true : false}
+          disabled={!is_active}
           id="phone_number"
           label="phone number"
           inputClassName="!bg-neutral-2 dark:!bg-transparent"
@@ -217,7 +217,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
         <div className="md:col-span-3 w-full">
           <TextArea
-            readOnly={is_active !== 1 ? true : false}
+            readOnly={!is_active}
             id="about_director"
             label="About Director"
             placeholder=""
@@ -237,7 +237,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           </div>
           <div className="flex items-end gap-3">
             <button
-              disabled={is_active !== 1 ? true : false}
+              disabled={!is_active}
               type="button"
               className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
               aria-label="upload picture"
@@ -269,7 +269,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
               )}
             </button>
             <button
-              disabled={is_active !== 1 ? true : false}
+              disabled={!is_active}
               type="button"
               onClick={() => handleAvatarSelect()}
               className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
@@ -321,7 +321,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
                 isDeleting ? "opacity-70" : "opacity-100"
               }`}
               variant="red"
-              disabled={isDeleting || is_active !== 1 ? true : false}
+              disabled={isDeleting || !is_active}
             >
               {isDeleting ? "Please wait..." : "Delete"}
             </Button>
@@ -337,9 +337,9 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
             >
               {isLocking
                 ? "Please wait..."
-                : is_active === 0
-                ? "Unlock"
-                : "Lock"}
+                : is_active
+                ? "Lock"
+                : "UnLock"}
             </Button>
             <Button
               type="submit"
@@ -347,7 +347,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
               className={`py-2 px-8 ml-auto font-bold ${
                 isProcessing ? "opacity-70" : "opacity-100"
               }`}
-              disabled={isProcessing || is_active !== 1 ? true : false}
+              disabled={isProcessing || !is_active}
             >
               {isProcessing ? "Please wait..." : "Update"}
             </Button>

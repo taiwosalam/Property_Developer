@@ -171,17 +171,18 @@ const eventToComponentMap = {
     </div>
   ),
   Maintenance: (
-    <MaintenanceCard
-      viewOnly={true}
-      dateCreated="12/12/12"
-      serviceProvider="John Doe"
-      startEndDate="12/12/12"
-      priority="High"
-      serviceType="Plumbing"
-      maintenanceId="1"
-      status="not started"
-      propertyName="Property 1"
-    />
+    <div></div>
+    // <MaintenanceCard
+    //   viewOnly={true}
+    //   dateCreated="12/12/12"
+    //   serviceProvider="John Doe"
+    //   startEndDate="12/12/12"
+    //   priority="High"
+    //   serviceType="Plumbing"
+    //   maintenanceId="1"
+    //   status="not started"
+    //   propertyName="Property 1"
+    // />
   ),
 
   Announcement: (

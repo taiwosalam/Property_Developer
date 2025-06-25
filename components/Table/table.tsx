@@ -196,7 +196,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     color: isDarkMode ? "#C1C2C3" : "#050901",
                     ...tableBodyCellSx,
                     ...field.cellStyle,
-                    ...(field.accessor === "email"
+                    ...(field.accessor === "email" ||
+                    field.accessor === "link" ||
+                    field.accessor === "uploaded"
                       ? { textTransform: "lowercase" }
                       : {}),
                     ...(isDarkMode ? { color: "#C1C2C3" } : {}),

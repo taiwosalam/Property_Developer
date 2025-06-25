@@ -2,32 +2,40 @@ import clsx from "clsx";
 import Button from "@/components/Form/Button/button";
 import ManageMaintenanceModal from "./manage-maintenance-modal";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
+import { useState } from "react";
 
 interface MaintenanceCardProps {
-  maintenanceId: string;
-  status: "not started" | "ongoing" | "completed";
-  propertyName: string;
-  dateCreated: string;
-  serviceProvider: string;
-  startEndDate: string;
-  priority: string;
-  serviceType: string;
-  viewOnly?: boolean;
+  card: {
+    maintenanceId: string;
+    status: "not started" | "ongoing" | "completed" | "pending";
+    propertyName: string;
+    dateCreated: string;
+    serviceProvider: string;
+    startEndDate: string;
+    priority: "high" | "critical" | "low" | "very low" | "medium";
+    serviceType: string;
+    viewOnly?: boolean;
+  };
+  modal: {
+    maintenanceId: number;
+    property_name: string;
+    created_at: string;
+    priority: "high" | "critical" | "low" | "very low" | "medium";
+    service_type: string;
+    service_provider: string;
+    work_details: string;
+    quotation: string;
+    start_date: string;
+    end_date: string;
+    cost: string;
+    units: string;
+  };
 }
 
-const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
-  maintenanceId,
-  status,
-  propertyName,
-  dateCreated,
-  serviceProvider,
-  startEndDate,
-  priority,
-  serviceType,
-  viewOnly,
-}) => {
+const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ card, modal }) => {
+  const [isOpen, setIsOpen] = useState(false);
   let statusClasses = "";
-  switch (status) {
+  switch (card?.status) {
     case "not started":
       statusClasses =
         "border-status-error-1 bg-status-error-1 text-status-error-primary";
@@ -53,7 +61,9 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
         <p>
           <span className="text-base text-text-tertiary dark:text-darkText-2">
             Maintenance ID:{" "}
-            <span className="text-text-secondary text-sm">{maintenanceId}</span>
+            <span className="text-text-secondary text-sm">
+              {card?.maintenanceId}
+            </span>
           </span>
         </p>
         <p
@@ -62,7 +72,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             "p-2 border capitalize rounded-sm text-xs font-normal ml-auto"
           )}
         >
-          {status}
+          {card?.status}
         </p>
       </div>
       <hr className="mt-3 mb-6 border-t border-dashed border-brand-7 opacity-50" />
@@ -72,7 +82,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             Property Name:
           </p>
           <p className="text-text-secondary text-sm dark:text-darkText-2">
-            {propertyName}
+            {card?.propertyName}
           </p>
         </div>
         <div>
@@ -80,7 +90,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             Date Created:
           </p>
           <p className="text-text-secondary text-sm dark:text-darkText-2">
-            {dateCreated}
+            {card?.dateCreated}
           </p>
         </div>
         <div>
@@ -88,7 +98,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             Service Provider:
           </p>
           <p className="text-text-secondary text-sm dark:text-darkText-2">
-            {serviceProvider}
+            {card?.serviceProvider}
           </p>
         </div>
         <div>
@@ -96,15 +106,15 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             Start - End Date:
           </p>
           <p className="text-text-secondary text-sm dark:text-darkText-2">
-            {startEndDate}
+            {card?.startEndDate}
           </p>
         </div>
         <div>
           <p className="text-text-tertiary text-base dark:text-darkText-1">
             Priority:
           </p>
-          <p className="text-text-secondary text-sm dark:text-darkText-2">
-            {priority}
+          <p className="text-text-secondary text-sm dark:text-darkText-2 capitalize">
+            {card?.priority}
           </p>
         </div>
         <div>
@@ -112,19 +122,24 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({
             Service Type:
           </p>
           <p className="text-text-secondary text-sm dark:text-darkText-2">
-            {serviceType}
+            {card?.serviceType}
           </p>
         </div>
       </div>
-      {!viewOnly && (
-        <Modal>
+      {!card?.viewOnly && (
+        <Modal
+          state={{
+            isOpen,
+            setIsOpen,
+          }}
+        >
           <ModalTrigger asChild>
             <Button size="xs_normal" className="px-6 py-2 block ml-auto">
               Manage
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <ManageMaintenanceModal />
+            <ManageMaintenanceModal {...modal} setIsOpen={setIsOpen} />
           </ModalContent>
         </Modal>
       )}

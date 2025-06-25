@@ -93,6 +93,10 @@ const PropertyRequest = () => {
     if (endDate) {
       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
     }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
+    }
+
     setConfig({
       params: queryParams,
     });
@@ -142,6 +146,7 @@ const PropertyRequest = () => {
         searchInputPlaceholder="Search Property Request"
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
+        onSort={handleSort}
         isDateTrue
         hasGridListToggle={false}
       />
@@ -157,9 +162,9 @@ const PropertyRequest = () => {
           title="No Property Requests Yet"
           body={
             <p>
-              There are currently no property requests
-              submitted by potential tenants or occupants. Once a request is
-              made for a specific type of property, it will appear here.
+              There are currently no property requests submitted by potential
+              tenants or occupants. Once a request is made for a specific type
+              of property, it will appear here.
               <br />
               <br />
               You will be able to review the request, match it with available

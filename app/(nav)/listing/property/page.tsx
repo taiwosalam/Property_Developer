@@ -8,7 +8,15 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import { property_listing_status } from "@/components/Listing/Property/data";
 import { PropertyListingStatusItem } from "@/components/Listing/Property/property-listing-component";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { DraftPropertyFilterParams, DraftPropertyState, initialState, listingPropertyFilter, PropertyApiResponse, PropertyPageState, transformDraftUnitData } from "./data";
+import {
+  DraftPropertyFilterParams,
+  DraftPropertyState,
+  initialState,
+  listingPropertyFilter,
+  PropertyApiResponse,
+  PropertyPageState,
+  transformDraftUnitData,
+} from "./data";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
@@ -19,7 +27,7 @@ import NetworkError from "@/components/Error/NetworkError";
 
 const Property = () => {
   const [pageData, setPageData] = useState<PropertyPageState>(initialState);
-  
+
   const [state, setState] = useState<DraftPropertyState>({
     total_pages: 1,
     current_page: 1,
@@ -38,7 +46,7 @@ const Property = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
-  
+
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
     return (
@@ -50,7 +58,9 @@ const Property = () => {
   };
 
   const endpoint =
-    isFilterApplied() || search || sort ? "/unit/vacant/list/filter" : "/property/invite/lists";
+    isFilterApplied() || search || sort
+      ? "/unit/vacant/list/filter"
+      : "/property/invite/lists";
 
   const config: AxiosRequestConfig = useMemo(() => {
     return {
@@ -84,7 +94,7 @@ const Property = () => {
     setPage(1);
   };
 
-    const {
+  const {
     data: apiData,
     loading,
     silentLoading,
@@ -173,7 +183,7 @@ const Property = () => {
             key={property.id}
             data={property as any}
             status={property.status}
-            propertyType={property.property_type as 'rental' | 'gated'}
+            propertyType={property.property_type as "rental" | "gated"}
           />
         ))}
       </div>

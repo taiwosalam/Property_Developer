@@ -235,7 +235,7 @@ export type DirectorCardProps = {
     lga: string;
     name: string;
     title: string;
-    is_active: number;
+    is_active: boolean;
     picture: string | null;
     full_name: string;
     email: string;
