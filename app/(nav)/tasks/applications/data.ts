@@ -207,7 +207,7 @@ export const transformApplicationData = (
     month_mobile_application: 0,
     web_application: 0,
     month_web_application: 0,
-    applications: res.map((item) => ({
+    applications: res?.map((item) => ({
       id: item?.application_id,
       images: item?.main_image?.map(String) || [],
       full_name: item?.application_form.user_details?.name,
@@ -219,7 +219,7 @@ export const transformApplicationData = (
       address: "24 Mount Everest",
       phone_number: item?.application_form?.user_details?.phone,
       date: item?.application_form?.application_date,
-      total_package: String(item?.fees?.new_tenant?.total_package || ''),
+      total_package: String(item?.fees?.new_tenant?.total_package || ""),
       yearly_amount: "1,222,332", //item?.unit?.fee_amount,
       period_type: "203,323,232", //item?.unit?.fee_period,
       currency: "NGN",

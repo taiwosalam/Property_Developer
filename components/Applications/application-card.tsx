@@ -146,7 +146,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         </div>
       ) : (
         <Link
-          href={"/applications/1/manage"}
+          href={"applications/applicationId/manage"}
           className="custom-flex-col gap-3 px-2"
         >
           <Content />
