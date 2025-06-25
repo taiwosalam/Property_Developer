@@ -1,10 +1,11 @@
 export interface ApplicationCardProps {
-  type?: "staff" | "guest";
+  type?: "staff" | "guest" | "mobile";
   status: "flagged" | "unflagged";
 
   data?: {
     id: number;
     images: string[];
+    photo: string;
     full_name: string;
     tier_id: number;
     user_id: string;

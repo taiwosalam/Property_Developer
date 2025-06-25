@@ -23,11 +23,13 @@ import FlaggedApplicantAccountModal from "./flagged-applicant-account-modal";
 import clsx from "clsx";
 import Link from "next/link";
 import PopupImageModal from "../PopupSlider/PopupSlider";
+import { getBadgeColor } from "@/lib/utils";
+import { empty } from "@/app/config";
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   status,
   type = "staff",
-  data
+  data,
 }) => {
   const [isOpened, setIsOpened] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,29 +43,32 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   const Content = () => (
     <>
       <div className="flex gap-2 items-center">
-        <Picture src={Avatar} alt="avatar" size={50} rounded />
+        <Picture src={data?.photo || empty} alt="avatar" size={50} rounded />
         <div className="custom-flex-col">
           <div className="flex items-center gap-2">
-            <p className="text-black text-sm font-bold dark:text-white">
-              David Ajala
+            <p className="text-black text-sm font-bold dark:text-white capitalize">
+              {data?.full_name}
             </p>
-            {type == "staff" ? (
-              <BadgeIcon color="blue" noMargin />
+            {type == "mobile" ? (
+              <BadgeIcon
+                color={getBadgeColor(data?.tier_id) || "gray"}
+                noMargin
+              />
             ) : (
               <p className="text-support-3 text-xs font-bold italic">Guest</p>
             )}
           </div>
-          {type == "staff" ? (
+          {type == "mobile" ? (
             <p
               className={`text-black text-xs font-normal ${secondaryFont.className} dark:text-white`}
             >
-              User ID: 12345678909
+              User ID: {data?.user_id}
             </p>
           ) : (
             <p
               className={`text-black dark:text-darkText-1 text-xs font-normal ${secondaryFont.className}`}
             >
-              ajaladavid75@gmail.com
+              {data?.email}
             </p>
           )}
         </div>
@@ -73,12 +78,12 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           <p
             className={`text-text-quaternary dark:text-white text-base font-bold ${secondaryFont.className}`}
           >
-            Semi-Furnished 2 Bedroom Self-contain
+            {data?.property_name}
           </p>
           <div className="flex items-center gap-1">
             <Picture src={LocationIcon} alt="location" width={12} height={16} />
             <p className="text-text-disabled text-xs font-normal">
-              Street 23, All Avenue, Nigeria
+              {data?.address}
             </p>
           </div>
         </div>
@@ -86,20 +91,25 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           <div className="custom-flex-col gap-2 text-borders-normal text-xs font-medium">
             <div className="flex items-center gap-2">
               <Picture src={PhoneFilled} alt="phone number" size={16} />
-              <p className="dark:text-white">+2348132086958</p>
+              <p className="dark:text-white">{data?.phone_number}</p>
             </div>
             <div className="flex items-center gap-2">
               <Picture src={CalendarFilled} alt="date" size={16} />
-              <p className="dark:text-white">12/12/2024</p>
+              <p className="dark:text-white">{data?.date}</p>
             </div>
           </div>
           <div className={`custom-flex-col ${secondaryFont.className}`}>
-            <p className="text-brand-primary text-2xl font-bold">₦1,950,000</p>
+            <p className="text-brand-primary text-2xl font-bold">
+              {(data?.currency ?? "") + data?.total_package}
+            </p>
             <p className="text-text-label dark:text-white text-xs font-semibold">
               Total Package
             </p>
             <p className="text-text-disabled text-base font-medium">
-              <span className="text-highlight">₦700,000</span> / Yearly
+              <span className="text-highlight">
+                {(data?.currency ?? "") + data?.yearly_amount}
+              </span>{" "}
+              / Yearly
             </p>
           </div>
         </div>
@@ -124,7 +134,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         className="relative w-full h-[180px]"
       >
         <Image
-          src={SampleProperty4}
+          src={data?.images?.[0] || empty}
           alt="preview"
           fill
           sizes="500px"
@@ -132,7 +142,11 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         />
         <PopupImageModal
           isOpen={isOpened}
-          images={[{ src: SampleProperty4 }]}
+          images={
+            Array.isArray(data?.images)
+              ? data.images.map((img) => ({ src: img }))
+              : []
+          }
           onClose={() => setIsOpened(false)}
         />
       </div>
@@ -146,7 +160,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         </div>
       ) : (
         <Link
-          href={"applications/applicationId/manage"}
+          href={`applications/${data?.id}/manage`}
           className="custom-flex-col gap-3 px-2"
         >
           <Content />

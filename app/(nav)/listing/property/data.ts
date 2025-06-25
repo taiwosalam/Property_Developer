@@ -1,6 +1,6 @@
 import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
 import { PropertyCardProps } from "@/components/Management/Properties/property-card";
-import { handleAxiosError } from "@/services/api";
+import api, { handleAxiosError } from "@/services/api";
 import axios from "axios";
 import moment from "moment";
 import { toast } from "sonner";
@@ -223,9 +223,10 @@ export const transformDraftUnitData = (
 
 export const declineOrApproveInvite = async (id: number, type: string) => {
   try {
-    const res = await axios.post(`property/invite/${id}/${type}`);
+    const res = await api.post(`property/invite/${id}/${type}`);
     if (res.status === 200 || res.status === 201) {
-      toast.success(type + " successful")
+      toast.success(type + " successful");
+      window.dispatchEvent(new Event("refetchPropertyDraft"));
       return true;
     }
   } catch (error) {
