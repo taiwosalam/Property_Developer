@@ -153,7 +153,8 @@ const TenancyRecord = ({
   const tableData = records.map((record, index) => ({
     "S/N": index + 1,
     payment_date: record.payment_date
-      ? dayjs(record.payment_date).format("MMM D, YYYY")
+      // ? dayjs(record.payment_date).format("MMM D, YYYY")
+      ?   record.payment_date
       : "",
     amount_paid: record.amount_paid
       ? `${CURRENCY} ${formatNumber(record.amount_paid)}`
@@ -163,10 +164,10 @@ const TenancyRecord = ({
       : "",
     details: record.details || "",
     start_date: record.start_date
-      ? dayjs(record.start_date).format("MMM D, YYYY")
+      ? record.start_date
       : "",
     due_date: record.due_date
-      ? dayjs(record.due_date).format("MMM D, YYYY")
+      ? record.due_date
       : "",
     // Attach a ref for the last row to trigger pagination (if more pages exist)
     ref: index === records.length - 1 && pagination.hasMore ? lastRowRef : null,

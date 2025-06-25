@@ -105,7 +105,7 @@ export const getTenantById = async (tenantId: string) => {
   }
 };
 
-// Fetch user by identifier 
+// Fetch user by identifier
 export const getUsers = async (identifier: string) => {
   try {
     const res = await api.get(`/get-users?identifier=${identifier}`);
@@ -119,10 +119,7 @@ export const getUsers = async (identifier: string) => {
   }
 };
 
-
-
-
-export const getSingleTenantData = async(id: string) => {
+export const getSingleTenantData = async (id: string) => {
   try {
     const res = await api.get(`tenant/${id}`);
     if (res.status === 200) {
@@ -131,6 +128,37 @@ export const getSingleTenantData = async(id: string) => {
   } catch (error) {
     handleAxiosError(error);
     toast.error("Failed to fetch tenant data");
-    return null; 
+    return null;
   }
-}
+};
+
+// Fetch messages from API
+// const fetchMessages = useCallback(async () => {
+//   try {
+//     setError(null);
+//     const response = await api.get(`/messages/conversations/user/${id}`);
+//     if (response.data.status === "success") {
+//       const mappedMessages: Message[] = response.data.messages.map(
+//         (msg: any) => ({
+//           id: msg.id,
+//           text: msg.content ?? null,
+//           senderId: msg.sender_id,
+//           timestamp: `${msg.date} ${msg.timestamp}`,
+//           content_type: msg.content_type,
+//         })
+//       );
+//       // Store conversations and receiver (from the first message)
+//       setChatData("conversations", mappedMessages);
+//       if (response.data.messages.length > 0) {
+//         setChatData("receiver", response.data.messages[0].receiver);
+//       }
+//     } else {
+//       setError("Failed to load messages.");
+//     }
+//   } catch (error: any) {
+//     console.error("API error:", error.response?.data || error.message);
+//     setError("Failed to load messages. Please try again later.");
+//   } finally {
+//     setIsLoading(false);
+//   }
+// }, [id, setChatData]);

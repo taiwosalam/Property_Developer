@@ -47,9 +47,17 @@ const states = getAllStates();
 const Landlord = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
-  const [pageData, setPageData] = useState<LandlordsPageData>(
-    initialLandlordsPageData
-  );
+  // const [pageData, setPageData] = useState<LandlordsPageData>(
+  //   initialLandlordsPageData
+  // );
+
+  const [pageData, setPageData] = useState<LandlordsPageData>(() => {
+    const savedPage = sessionStorage.getItem("landlord_page");
+    return {
+      ...initialLandlordsPageData,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+    };
+  });
 
   const {
     total_pages,
@@ -63,11 +71,14 @@ const Landlord = () => {
     landlords,
   } = pageData;
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as LandlordRequestParams,
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("landlord_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: "",
+      } as LandlordRequestParams,
+    };
   });
 
   const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
@@ -91,6 +102,11 @@ const Landlord = () => {
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("landlord_page", current_page.toString());
+  }, [current_page]);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -138,6 +154,13 @@ const Landlord = () => {
     setConfig({
       params: queryParams,
     });
+
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("landlord_page", "1");
   };
 
   // Added a ref to the top of the content section
@@ -163,6 +186,12 @@ const Landlord = () => {
     setConfig({
       params: { ...config.params, search: query },
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("landlord_page", "1");
   };
 
   const branchOptions =
@@ -192,6 +221,7 @@ const Landlord = () => {
       landlords: [],
       current_page: 1,
     }));
+    sessionStorage.setItem("landlord_page", "1");
     window.dispatchEvent(new Event("refetchLandlords"));
   }, [view]);
 

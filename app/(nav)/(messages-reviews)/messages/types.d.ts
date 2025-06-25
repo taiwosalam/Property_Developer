@@ -2,14 +2,15 @@ export interface MessagesLayoutProps {
   children: React.ReactNode;
 }
 
-
 export interface UsersProps {
   id: string;
-  name: string
-  imageUrl: string
+  name: string;
+  imageUrl: string;
   position: string;
+  status?: string;
   staff_id?: string;
   branch_id?: string;
+  online_status?: string;
 }
 
 export interface Conversations {
@@ -22,13 +23,11 @@ export interface Conversations {
   unread_count: number;
 }
 
-
 export interface ConversationsAPIResponse {
   Message: string;
   status: string;
   conversations: Conversation[];
 }
-
 
 export interface PageMessages {
   pfp: string;
@@ -40,8 +39,8 @@ export interface PageMessages {
   verified?: boolean;
   content_type?: string;
   unread_count?: number;
-}[]
-
+}
+[];
 
 export interface User {
   id: string;
@@ -50,6 +49,7 @@ export interface User {
   role: string;
   staff_id: string;
   branch_id: string;
+  online_status: string;
 }
 
 export interface RoleFilters {
@@ -71,14 +71,14 @@ export interface Filters {
 
 export interface CompanyUsersAPIResponse {
   data: {
-      users: User[];
-      filters: Filters;
-  }
+    users: User[];
+    filters: Filters;
+  };
 }
 
 export type BranchStaff = {
   user: {
     id: number;
-    name: string
-  }
-}
+    name: string;
+  };
+};

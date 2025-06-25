@@ -11,3 +11,10 @@ export interface AvatarLinksResponse {
   }[];
 }
 
+export interface BranchAvatarLinksResponse {
+  images: {
+    id: string;
+    image_url: string;
+  }[];
+}
+
