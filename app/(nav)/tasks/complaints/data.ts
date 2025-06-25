@@ -70,13 +70,13 @@ export const transformComplaintsData = (
     total_month_completed: Number(data?.total_month_completed) || 0,
     total_rejected: Number(data?.total_rejected) || 0,
     total_month_rejected: Number(data?.total_month_rejected) || 0,
-    complaints: data.complaints.map((complaint) => ({
+    complaints: data?.complaints?.map((complaint) => ({
       id: complaint.id,
-      columnId: complaint.status?.toLowerCase(),
+      columnId: complaint?.status?.toLowerCase(),
       content: {
         messageCount: 10,
         linkCount: 8,
-        userAvatars: complaint.complaint_images,
+        userAvatars: complaint?.complaint_images,
         date: complaint?.created_at
           ? dayjs(complaint?.created_at).format("DD MMMM YYYY")
           : "___ ___",
@@ -86,8 +86,8 @@ export const transformComplaintsData = (
       name: complaint?.name,
       title: complaint?.title,
       message: complaint?.description,
-      avatarSrc: complaint.picture,
-      tier: complaint.tier_id,
+      avatarSrc: complaint?.picture,
+      tier: complaint?.tier_id,
     })),
     pagination: {
       total: data?.pagination.total,

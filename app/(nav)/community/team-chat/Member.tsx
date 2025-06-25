@@ -40,6 +40,7 @@ import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import { IMemberList, transformTeamMemberData } from "./team.data";
 import { empty } from "@/app/config";
+import TextArea from "@/components/Form/TextArea/textarea";
 
 const style = {
   position: "absolute",
@@ -338,13 +339,14 @@ const MemberComponent = ({
             <div className="flex flex-col mt-4 gap-1">
               <p className="dark:text-white">Group Description</p>
               <div className="w-full">
-                <input
+                {/* <input
                   type="text"
                   id="description"
                   name="description"
                   placeholder="Group Description"
                   className="border border-text-disabled dark:bg-darkText-primary rounded-md px-2 py-3 w-full"
-                />
+                /> */}
+                <TextArea id="description" placeholder="Group Description" />
               </div>
             </div>
             <div className="flex flex-col items-start gap-2 mt-2">

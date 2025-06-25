@@ -54,6 +54,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
   invoice_status,
   invoice_id,
   partial_pending,
+ 
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const isRental = propertyType.toLowerCase() === "rental"
