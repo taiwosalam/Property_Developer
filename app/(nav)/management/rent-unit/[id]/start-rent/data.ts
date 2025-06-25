@@ -63,6 +63,7 @@ export const getPropertySettingsData = (unit_data: any) => [
   },
   { label: "Rent Penalty", value: `${unit_data?.rent_penalty ?? "--- ---"}` },
   { label: "Book Visitor", value: unit_data?.bookVisitor ?? "--- ---" },
+  { label: "VAT", value: unit_data?.active_vat ?? "--- ---" },
 ];
 
 export const getEstateData = (unit_data: any) => [
@@ -99,6 +100,7 @@ export const getEstateSettingsData = (unit_data: any) => [
   },
   { label: "Fee Penalty", value: unit_data?.fee_penalty ?? "--- ---" },
   { label: "Group Chat", value: unit_data?.group_chat ?? "--- ---" },
+  { label: "VAT", value: unit_data?.active_vat ?? "--- ---" },
   { label: "Currency", value: unit_data?.currency ?? "--- ---" },
 ];
 

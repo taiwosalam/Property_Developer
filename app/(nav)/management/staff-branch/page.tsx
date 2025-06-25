@@ -46,9 +46,14 @@ const StaffAndBranches = () => {
   // For grid view we use this ref to scroll to top when changing pages.
   const contentTopRef = useRef<HTMLDivElement>(null);
 
-  const [pageData, setPageData] = useState<BranchesPageData>(
-    initialBranchesPageData
-  );
+  const [pageData, setPageData] = useState<BranchesPageData>(() => {
+    const savedPage = sessionStorage.getItem("branches_page");
+    return {
+      ...initialBranchesPageData,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+    };
+  });
+
   const {
     total_pages,
     current_page,
@@ -113,6 +118,12 @@ const StaffAndBranches = () => {
       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
     }
     setConfig({ params: queryParams });
+    setPageData((prevData) => ({
+      ...prevData,
+      branches: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("branches_page", "1");
   };
 
   const handleSelectTableItem = (item: DataItem) => {
@@ -123,9 +134,20 @@ const StaffAndBranches = () => {
     router.push(`/management/staff-branch/${item.id}`);
   };
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: { page: 1, search: "" } as BranchRequestParams,
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("branches_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: "",
+      } as BranchRequestParams,
+    };
   });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("branches_page", current_page.toString());
+  }, [current_page]);
 
   // Manual page change (Pagination) triggers scroll only in grid view.
   const handlePageChange = (page: number) => {
@@ -137,6 +159,12 @@ const StaffAndBranches = () => {
 
   const handleSearch = async (query: string) => {
     setConfig({ params: { ...config.params, search: query } });
+    setPageData((prevData) => ({
+      ...prevData,
+      branches: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("branches_page", "1");
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -215,7 +243,7 @@ const StaffAndBranches = () => {
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
-  console.log("branches", branches)
+  console.log("branches", branches);
   return (
     <div className="space-y-9">
       {/* For grid view use the contentTopRef so that manual pagination scrolls to top */}

@@ -33,6 +33,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ServerError from "@/components/Error/ServerError";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -42,10 +43,20 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const [view, setView] = useState<string | null>(storedView);
   const gridSectionRef = useRef<HTMLDivElement>(null);
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-    } as BranchStaffRequestParams,
+  // const [config, setConfig] = useState<AxiosRequestConfig>({
+  //   params: {
+  //     page: 1,
+  //   } as BranchStaffRequestParams,
+  // });
+
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    // Retrieve saved page from sessionStorage on mount
+    const savedPage = sessionStorage.getItem(`staff_page_${branchId}`);
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+      } as BranchStaffRequestParams,
+    };
   });
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -67,11 +78,23 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
 
   const [state, setState] = useState<BranchStaffPageState>({
     total_pages: 0,
-    current_page: 1,
+    // current_page: 1,
+    current_page: parseInt(
+      sessionStorage.getItem(`staff_page_${branchId}`) || "1",
+      10
+    ),
     branch_name: "",
     branch_address: "",
     staffs: [],
   });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem(
+      `staff_page_${branchId}`,
+      state.current_page.toString()
+    );
+  }, [state.current_page, branchId]);
 
   const handlePageChange = (page: number) => {
     setConfig({
@@ -90,8 +113,9 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
 
   const handleSearch = async (query: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, current_page: 1 },
     });
+    sessionStorage.setItem(`staff_page_${branchId}`, "1");
   };
 
   const handleFilterApply = (filters: FilterResult) => {
@@ -105,15 +129,15 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     if (position) {
       queryParams.position = position;
     }
-    // if (startDate) {
-    //   queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
-    // }
-    // if (endDate) {
-    //   queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
-    // }
     setConfig({
       params: queryParams,
     });
+    setState((prevState) => ({
+      ...prevState,
+      staffs: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem(`staff_page_${branchId}`, "1");
   };
 
   const {
@@ -124,13 +148,27 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     silentLoading,
     refetch,
   } = useFetch<StaffListResponse>(`staffs?branch_id=${branchId}`, config);
+  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
+  // IF VIEW CHANGE., REFETCH DATA FROM PAGE 1
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setState((prevData) => ({
+      ...prevData,
+      staffs: [],
+      current_page: 1,
+    }));
+    window.dispatchEvent(new Event("refetch_staff"));
+  }, [view]);
 
   useEffect(() => {
     if (apiData) {
       const transformedData = transformStaffListResponse(apiData);
       setState((prevState) => {
         const newStaffs =
-          transformedData.current_page === 1
+          view === "grid" || transformedData.current_page === 1
             ? transformedData.staffs
             : [...prevState?.staffs, ...transformedData.staffs];
         return {
@@ -139,12 +177,11 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
         };
       });
     }
-  }, [apiData]);
+  }, [apiData, view]);
 
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
-  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 
   // Intersection Observer for infinite scroll
   const observer = useRef<IntersectionObserver | null>(null);
@@ -192,10 +229,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     router.push(`/management/staff-branch/${branchId}/branch-staff/${item.id}`);
   };
 
-  // console.log("staff", state)
-
   if (isNetworkError) return <NetworkError />;
-
   if (error) return <ServerError error={error} />;
 
   return (

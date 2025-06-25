@@ -79,19 +79,30 @@ export const ProfileForm: React.FC<{
     if (!validTenant) {
       setSelectedId("");
       setSelectedTenantId?.("");
-      // if (typeof window !== "undefined") {
-      //   localStorage.removeItem("selectedTenantId");
-      // }
-    }
+      // localStorage.removeItem("selectedTenantId");
+    }    
   }, [defaultTenantId, occupants, setSelectedTenantId, tenantsLoading]);
 
   // Handle select id from dropdown
+  // const handleSelectId = (id: string) => {
+  //   setSelectedId(id);
+  //   setSelectedTenantId(id);
+  //   setIsModalIdSelected(false);
+  // };
+
+
   const handleSelectId = (id: string) => {
+    // Clear previous data
+    setGlobalInfoStore("selectedOccupant", null);
+    localStorage.removeItem("selectedTenantId");
+  
+    // Update with new tenant
     setSelectedId(id);
-    setSelectedTenantId(id);
+    setSelectedTenantId?.(id);
     setIsModalIdSelected(false);
   };
 
+  
   // Callback function to receive the ID from AddOccupantWithId
   const handleTenantIdFromModal = (tenantId: string) => {
     setSelectedId(tenantId);

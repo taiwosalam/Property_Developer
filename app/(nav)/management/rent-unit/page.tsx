@@ -52,13 +52,6 @@ const RentAndUnit = () => {
   } = useStaffRoles();
   const accountOfficers = getAccountOfficers();
 
-  useEffect(() => {
-    const tenantIdFromUrl = searchParams.get("tenant_id");
-    if (!tenantIdFromUrl) {
-      localStorage.removeItem("selectedTenantId");
-    }
-  }, [searchParams]);
-
   // Initialize appliedFilters with is_active from URL
   const initialFilters: FilterResult = {
     options: [],
@@ -90,14 +83,30 @@ const RentAndUnit = () => {
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
-  const [state, setState] = useState<RentAndUnitState>({
-    gridView: selectedView === "grid",
-    total_pages: 1,
-    current_page: 1,
-    last_page: 1,
+  const [state, setState] = useState<RentAndUnitState>(() => {
+    const savedPage = sessionStorage.getItem("rent_and_unit_page");
+    return {
+      gridView: view === "grid",
+      total_pages: 1,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+      last_page: 1,
+    };
   });
 
   const { gridView, total_pages, current_page, last_page } = state;
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("rent_and_unit_page", current_page.toString());
+  }, [current_page]);
+
+  useEffect(() => {
+    const tenantIdFromUrl = searchParams.get("tenant_id");
+    if (!tenantIdFromUrl) {
+      localStorage.removeItem("selectedTenantId");
+    }
+  }, []);
+  
 
   const [appliedFilters, setAppliedFilters] =
     useState<FilterResult>(initialFilters);
@@ -121,7 +130,13 @@ const RentAndUnit = () => {
         ...filters.menuOptions,
       },
     }));
-    setPage(1);
+    // setPage(1);
+    setState((prev) => ({
+      ...prev,
+      current_page: 1,
+      unit: [],
+    }));
+    sessionStorage.setItem("rent_and_unit_page", "1");
   };
 
   const { menuOptions, startDate, endDate } = appliedFilters;
@@ -138,7 +153,7 @@ const RentAndUnit = () => {
   const endpoint = "/unit/list";
   const config: AxiosRequestConfig = useMemo(() => {
     const params: RentUnitFilterParams = {
-      page,
+      page: current_page,
       date_from: appliedFilters.startDate
         ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
         : undefined,
@@ -168,12 +183,21 @@ const RentAndUnit = () => {
       Object.entries(params).filter(([_, v]) => v !== undefined)
     );
     return { params: cleanedParams };
-  }, [appliedFilters, search, sort, page]);
+  }, [appliedFilters, search, sort, current_page]);
 
   // Added a ref to the top of the content section
   const contentTopRef = useRef<HTMLDivElement>(null);
   const handlePageChange = (page: number) => {
-    setPage(page);
+    // setPage(page);
+    setState((prev) => ({
+      ...prev,
+      current_page: page,
+      // unit: view === "grid" ? [] : prev.unit,
+    }));
+    setPageData((prev) => ({
+      ...prev,
+      unit: view === "grid" ? [] : prev.unit,
+    }));
     // Scroll to the top where cards start
     if (contentTopRef.current) {
       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
@@ -182,10 +206,30 @@ const RentAndUnit = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setSort(order);
+    setState((prev) => ({
+      ...prev,
+      current_page: 1,
+      unit: [],
+    }));
+    setPageData((prev) => ({
+      ...prev,
+      unit: [],
+    }));
+    sessionStorage.setItem("rent_and_unit_page", "1");
   };
 
   const handleSearch = (query: string) => {
     setSearch(query);
+    setState((prev) => ({
+      ...prev,
+      current_page: 1,
+      unit: [],
+    }));
+    setPageData((prev) => ({
+      ...prev,
+      unit: [],
+    }));
+    sessionStorage.setItem("rent_and_unit_page", "1");
   };
 
   // Remove redundant useEffect for is_active

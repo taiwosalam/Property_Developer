@@ -26,9 +26,11 @@ import ServerError from "@/components/Error/ServerError";
 import { updateBranch } from "./data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import BranchBankSettings from "@/components/Settings/branch-bank";
+import { useRouter } from "next/navigation";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
+  const router = useRouter();
   const [isGridView, setIsGridView] = useState(true);
 
   const [updateRequestLoading, setUpdateRequestLoading] = useState(false);
@@ -64,7 +66,9 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
         branchData.id
       );
       if (status) {
+        toast.success("Branch Bank Details Updated Successfully");
         window.dispatchEvent(new Event("refectch-branch"));
+        router.push(`/management/staff-branch/${branchID}`);
       }
     } catch (err) {
       console.error(err);

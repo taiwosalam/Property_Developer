@@ -284,8 +284,8 @@ const PostProceedContent = ({
       const res = await switchUnit(id as string, objectToFormData(data));
       if (res) {
         // setModalIsOpen(true);
-        toast.success("Unit Switched Successfully");
         router.push("/management/rent-unit");
+        toast.success("Unit Switched Successfully");
       }
     } catch (err) {
       toast.error("Failed to switch Unit, please try again");

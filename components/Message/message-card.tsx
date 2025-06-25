@@ -4,7 +4,7 @@ import Link from "next/link";
 import VerifiedIcon from "@/public/icons/verified.svg";
 
 // Types
-import type { MessageCardProps } from "./types";
+import type { MessageCardProps, UserDetailsResponse } from "./types";
 
 // Imports
 import clsx from "clsx";
@@ -14,7 +14,10 @@ import { SectionSeparator } from "../Section/section-components";
 import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
-import BadgeIcon from "../BadgeIcon/badge-icon";
+import BadgeIcon, { tierColorMap } from "../BadgeIcon/badge-icon";
+import useFetch from "@/hooks/useFetch";
+import { getCleanRoleName } from "./data";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 const MessageCard: React.FC<MessageCardProps> = ({
   id,
@@ -29,12 +32,29 @@ const MessageCard: React.FC<MessageCardProps> = ({
   content_type,
   online,
   last_seen,
-  badgeColor,
+  // badgeColor,
 }) => {
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const IconComponent = getIconByContentType(content_type as string);
   const isOnline = last_seen?.toLowerCase() === "online";
+
+  // USER TO CHAT DATA
+  const {
+    data: userProfile,
+    error: userError,
+    loading,
+    isNetworkError,
+  } = useFetch<UserDetailsResponse>(`/all-users?identifier=${id}`);
+  const userProfileData = userProfile?.data ?? null;
+
+  const role = getCleanRoleName(userProfileData);
+  const isAcct = role === "director" || role === "manager" || role === "staff";
+  const showActBadge = isAcct && userProfileData?.tier_id === 2;
+
+  const badgeColor =
+    tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
+    "gray";
 
   const handleClick = () => {
     setGlobalStore("messageUserData", {
@@ -53,6 +73,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
     }
   };
 
+  console.log("id", id);
+
   const Children = () => (
     <>
       <div></div>
@@ -69,12 +91,13 @@ const MessageCard: React.FC<MessageCardProps> = ({
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {fullname}
+                {capitalizeWords(fullname)} {id}
               </p>
-              {/* NB: NEEDED BADGE - BUT WE CAN'T DISTINGUISH WEB AND MOBILE TO SHOW DIFFERENT TAGE */}
-              {/* {badgeColor && (
+              {showActBadge ? (
+                <BadgeIcon color="gray" />
+              ) : !isAcct ? (
                 <BadgeIcon color={badgeColor} />
-              )} */}
+              ) : null}
             </div>
             {content_type === "text" ? (
               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">

@@ -32,6 +32,7 @@ export const getPropertySettingsData = (unit_data: any) => [
   },
   { label: "Rent Penalty", value: `${unit_data?.rent_penalty ?? "--- ---"}` },
   { label: "Book Visitor", value: unit_data?.bookVisitor ?? "--- ---" },
+  { label: "VAT", value: unit_data?.active_vat ?? "--- ---" },
 ];
 
 export const getRentalData = (unit_data: any) => [
@@ -53,51 +54,6 @@ export const getRentalData = (unit_data: any) => [
   { label: "Category", value: unit_data?.categories ?? "--- ---" },
   { label: "Unit ID", value: unit_data?.unit_id ?? "--- ---" },
 ];
-
-// export const calculateOverduePeriods = (
-//   dueDate: string,
-//   period: RentPeriod
-// ): number => {
-//   const now = dayjs();
-//   const due = dayjs(dueDate, "DD/MM/YYYY");
-//   // Log the date comparison
-//   if (now.isBefore(due)) {
-//     return 0;
-//   }
-
-//   switch (period) {
-//     case "daily":
-//       return now.diff(due, "day");
-//     case "weekly":
-//       return now.diff(due, "week");
-//     case "monthly":
-//       return now.diff(due, "month");
-//     case "quarterly":
-//       return now.diff(due, "quarter");
-//     case "yearly":
-//       return now.diff(due, "year");
-//     case "biennially":
-//       return Math.floor(now.diff(due, "year") / 2);
-//     case "triennially":
-//       return Math.floor(now.diff(due, "year") / 3);
-//     case "quadrennial":
-//       return Math.floor(now.diff(due, "year") / 4);
-//     case "quinquennial":
-//       return Math.floor(now.diff(due, "year") / 5);
-//     case "sexennial":
-//       return Math.floor(now.diff(due, "year") / 6);
-//     case "septennial":
-//       return Math.floor(now.diff(due, "year") / 7);
-//     case "octennial":
-//       return Math.floor(now.diff(due, "year") / 8);
-//     case "nonennial":
-//       return Math.floor(now.diff(due, "year") / 9);
-//     case "decennial":
-//       return Math.floor(now.diff(due, "year") / 10);
-//     default:
-//       return 0;
-//   }
-// };
 
 export const calculateOverduePeriods = (
   dueDate: string,

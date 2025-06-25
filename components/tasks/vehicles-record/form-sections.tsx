@@ -286,14 +286,16 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             )}
           </div>
           {showSubmitButton && (
-            <div className="flex w-full bg-red-500 items-center justify-end">
-              <Button
-                type="submit"
-                size="16_bold"
-                className="mr-auto rounded-lg py-2 px-8"
-              >
-                {loading ? "Loading..." : editMode ? "Update" : "Create"}
-              </Button>
+            <div className="flex w-full items-center justify-end">
+              <div className="flex items-center justify-end">
+                <Button
+                  type="submit"
+                  size="16_bold"
+                  className="mr-auto rounded-lg py-2 px-8"
+                >
+                  {loading ? "Loading..." : editMode ? "Update" : "Create"}
+                </Button>
+              </div>
             </div>
           )}
         </div>
@@ -400,7 +402,8 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
           inputContainerClassName="bg-neutral-2"
           defaultValue={editMode ? props.data.visitor_category : undefined}
         />
-        {showSubmitButton && (
+
+        {/* {showSubmitButton && (
           <FixedFooter>
             <div className="flex w-full items-center justify-end">
               <Button
@@ -413,7 +416,19 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
               </Button>
             </div>
           </FixedFooter>
-        )}
+        )} */}
+      </div>
+      <div className="w-full mt-3">
+        <div className="flex w-full items-center justify-end">
+          <Button
+            type="submit"
+            size="16_bold"
+            disabled={props.loading}
+            className="rounded-lg py-2 px-8"
+          >
+            {props.loading ? "Loading..." : editMode ? "Update" : "Create"}
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -18,13 +18,31 @@ import { useGlobalStore } from "@/store/general-store";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { motion, AnimatePresence } from "framer-motion";
 import MessageUserProfileModal from "@/components/Message/message-user-profile";
+import { capitalizeWords } from "@/hooks/capitalize-words";
+import { UserDetailsResponse } from "@/components/Message/types";
+import { getCleanRoleName } from "@/components/Message/data";
+import useFetch from "@/hooks/useFetch";
+import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 interface Message {
   id: number;
   text: string | null;
-  senderId: number;
+  senderId: number | string;
   timestamp: string;
   content_type: string;
+}
+interface MessagesApiResponse {
+  status: string;
+  messages: Array<{
+    id: number;
+    content: string | null;
+    sender_id: string | number;
+    date: string;
+    timestamp: string;
+    content_type: string;
+    receiver?: any;
+  }>;
 }
 
 const Chat = () => {
@@ -37,40 +55,69 @@ const Chat = () => {
   const store_messages = data?.conversations || [];
   const [conversations, setConversations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isPusherFailed, setIsPusherFailed] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [isPusherFailed, setIsPusherFailed] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
   const [showContactInfo, setShowContactInfo] = useState(false);
 
+  // USER TO CHAT DATA
+  const {
+    data: userProfile,
+    error: userError,
+    loading: loadingUser,
+  } = useFetch<UserDetailsResponse>(`/all-users?identifier=${id}`);
+  const userProfileData = userProfile?.data ?? null;
+
+  const role = getCleanRoleName(userProfileData);
+  const isAcct = role === "director" || role === "manager" || role === "staff";
+  const showActBadge = isAcct && userProfileData?.tier_id === 2;
+
+  const badgeColor =
+    tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
+    "gray";
+
+  // FETCH MESSAGES
+
+  // Fetch messages using useFetch
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<MessagesApiResponse>(`/messages/conversations/user/${id}`);
+  useRefetchOnEvent("refetchMessages", () => refetch({ silent: true }));
+
   // Fetch messages from API
-  const fetchMessages = useCallback(async () => {
-    try {
-      setError(null);
-      const response = await api.get(`/messages/conversations/user/${id}`);
-      if (response.data.status === "success") {
-        const mappedMessages: Message[] = response.data.messages.map(
-          (msg: any) => ({
-            id: msg.id,
-            text: msg.content ?? null,
-            senderId: msg.sender_id,
-            timestamp: `${msg.date} ${msg.timestamp}`,
-            content_type: msg.content_type,
-          })
-        );
-        // Store conversations and receiver (from the first message)
-        setChatData("conversations", mappedMessages);
-        if (response.data.messages.length > 0) {
-          setChatData("receiver", response.data.messages[0].receiver);
-        }
-      } else {
-        setError("Failed to load messages.");
-      }
-    } catch (error: any) {
-      console.error("API error:", error.response?.data || error.message);
-      setError("Failed to load messages. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [id, setChatData]);
+  // const fetchMessages = useCallback(async () => {
+  //   try {
+  //     setError(null);
+  //     const response = await api.get(`/messages/conversations/user/${id}`);
+  //     if (response.data.status === "success") {
+  //       const mappedMessages: Message[] = response.data.messages.map(
+  //         (msg: any) => ({
+  //           id: msg.id,
+  //           text: msg.content ?? null,
+  //           senderId: msg.sender_id,
+  //           timestamp: `${msg.date} ${msg.timestamp}`,
+  //           content_type: msg.content_type,
+  //         })
+  //       );
+  //       // Store conversations and receiver (from the first message)
+  //       setChatData("conversations", mappedMessages);
+  //       if (response.data.messages.length > 0) {
+  //         setChatData("receiver", response.data.messages[0].receiver);
+  //       }
+  //     } else {
+  //       setError("Failed to load messages.");
+  //     }
+  //   } catch (error: any) {
+  //     console.error("API error:", error.response?.data || error.message);
+  //     setError("Failed to load messages. Please try again later.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [id, setChatData]);
 
   // Handle new Pusher messages
   const handleNewMessage = useCallback(
@@ -83,45 +130,79 @@ const Chat = () => {
     [store_messages, setChatData]
   );
 
-  // Initialize Pusher and fetch messages
+  // Transform API data and update store
   useEffect(() => {
-    if (!id) {
-      setIsLoading(false);
-      return;
+    if (apiData && apiData.status === "success") {
+      const mappedMessages: Message[] = apiData.messages.map((msg) => ({
+        id: msg.id,
+        text: msg.content ?? null,
+        senderId: msg.sender_id,
+        timestamp: `${msg.date} ${msg.timestamp}`,
+        content_type: msg.content_type,
+      }));
+      setChatData("conversations", mappedMessages);
+      if (apiData.messages.length > 0) {
+        setChatData("receiver", apiData.messages[0].receiver);
+      }
     }
+  }, [apiData, setChatData]);
 
-    // Reset state immediately when id changes
-    setIsLoading(true);
-    setConversations([]);
-    setChatData("conversations", []);
-    setChatData("receiver", null); // Clear receiver data
-    fetchMessages();
-
-    return () => {
-      setConversations([]);
-      setChatData("conversations", []);
-      setChatData("receiver", null); // Clear receiver on cleanup
-    };
-  }, [id, fetchMessages, setChatData]);
-
-  // Polling when Pusher fails
+  // Polling when needed
   useEffect(() => {
     let pollingInterval: NodeJS.Timeout | null = null;
 
     if (isPusherFailed) {
-      console.log("Pusher failed, switching to polling every 30 seconds...");
       pollingInterval = setInterval(() => {
-        fetchMessages();
-      }, 30000);
+        refetch({ silent: true });
+      }, 5000); // Poll every 5 seconds
     }
 
     return () => {
       if (pollingInterval) {
-        console.log("Stopping polling...");
         clearInterval(pollingInterval);
       }
     };
-  }, [isPusherFailed, fetchMessages]);
+  }, [isPusherFailed, refetch]);
+
+  // Initialize Pusher and fetch messages
+  // useEffect(() => {
+  //   if (!id) {
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   // Reset state immediately when id changes
+  //   setIsLoading(true);
+  //   setConversations([]);
+  //   setChatData("conversations", []);
+  //   setChatData("receiver", null); // Clear receiver data
+  //   fetchMessages();
+
+  //   return () => {
+  //     setConversations([]);
+  //     setChatData("conversations", []);
+  //     setChatData("receiver", null); // Clear receiver on cleanup
+  //   };
+  // }, [id, fetchMessages, setChatData]);
+
+  // Polling when Pusher fails
+  // useEffect(() => {
+  //   let pollingInterval: NodeJS.Timeout | null = null;
+
+  //   if (isPusherFailed) {
+  //     console.log("Pusher failed, switching to polling every 30 seconds...");
+  //     pollingInterval = setInterval(() => {
+  //       fetchMessages();
+  //     }, 30000);
+  //   }
+
+  //   return () => {
+  //     if (pollingInterval) {
+  //       console.log("Stopping polling...");
+  //       clearInterval(pollingInterval);
+  //     }
+  //   };
+  // }, [isPusherFailed, fetchMessages]);
 
   // Update grouped conversations when messages change
   useEffect(() => {
@@ -132,13 +213,12 @@ const Chat = () => {
   }, [store_messages]);
 
   // Pusher subscription
-  useConversationListener(id, handleNewMessage, (error: any) => {
-    console.error("Pusher connection failed:", error);
-    setIsPusherFailed(true);
-  });
+  // useConversationListener(id, handleNewMessage, (error: any) => {
+  //   console.error("Pusher connection failed:", error);
+  //   setIsPusherFailed(true);
+  // });
 
   // Find user
-
   const userId = Number(id);
   const user =
     messageUserData ||
@@ -152,7 +232,7 @@ const Chat = () => {
       const interval = setInterval(() => {
         setShowContactInfo((prev) => !prev);
       }, 30000);
-  
+
       return () => clearInterval(interval); // Cleanup interval on component unmount
     }
   }, [showStatus]);
@@ -162,7 +242,7 @@ const Chat = () => {
     return null;
   }
 
-  if (isLoading) {
+  if (loading) {
     return <ChatSkeleton />;
   }
 
@@ -185,9 +265,16 @@ const Chat = () => {
                   status={isOnline}
                 />
                 <div className="custom-flex-col">
-                  <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                    {user?.name}
-                  </p>
+                  <div className="flex items-center">
+                    <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+                      {capitalizeWords(user?.name ?? "")}
+                    </p>
+                    {showActBadge ? (
+                      <BadgeIcon color="gray" />
+                    ) : !isAcct ? (
+                      <BadgeIcon color={badgeColor} />
+                    ) : null}
+                  </div>
                   <AnimatePresence mode="wait">
                     <motion.p
                       key={showContactInfo ? "contact" : "status"}
@@ -206,7 +293,7 @@ const Chat = () => {
               </div>
             </ModalTrigger>
             <ModalContent>
-              <MessageUserProfileModal />
+              <MessageUserProfileModal id={Number(id)} />
             </ModalContent>
           </Modal>
         </div>

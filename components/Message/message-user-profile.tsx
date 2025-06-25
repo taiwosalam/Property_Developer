@@ -4,28 +4,40 @@ import BadgeIcon, { tierColorMap } from "../BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 import { secondaryFont } from "@/utils/fonts";
 import { useChatStore } from "@/store/message";
-import { default_user_data } from "./data";
+import { default_user_data, getCleanRoleName } from "./data";
 import { truncateText } from "../tasks/vehicles-record/data";
+import useFetch from "@/hooks/useFetch";
+import { useEffect, useState } from "react";
+import { UserDetails, UserDetailsResponse } from "./types";
+import NetworkError from "../Error/NetworkError";
+import MessageUserProfileSkeleton from "../Skeleton/profile-skeleton";
+import ServerError from "../Error/ServerError";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
-const MessageUserProfileModal = () => {
-  const { data } = useChatStore();
-  const receiver = data?.receiver;
-
+const MessageUserProfileModal = ({ id }: { id: number }) => {
   const {
-    name = default_user_data.name,
-    email = default_user_data.email,
-    phone = default_user_data.phone,
-    picture = default_user_data.picture,
-    address = default_user_data.address,
-    city = default_user_data.city,
-    state = default_user_data.state,
-    lga = default_user_data.lga,
-    tier_id = default_user_data.tier_id,
-  } = receiver || {};
+    data: userProfile,
+    error,
+    loading,
+    isNetworkError,
+  } = useFetch<UserDetailsResponse>(`/all-users?identifier=${id}`);
+  const userProfileData = userProfile?.data ?? null;
 
-  const badgeColor =    
-    tierColorMap[tier_id as keyof typeof tierColorMap] || "gray";
+  const role = getCleanRoleName(userProfileData);
+  const isAcct = role === "director" || role === "manager" || role === "staff";
+  const showActBadge = isAcct && userProfileData?.tier_id === 2;
 
+  const badgeColor =
+    tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
+    "gray";
+
+  if (loading) return <MessageUserProfileSkeleton />;
+  if (isNetworkError) {
+    return <NetworkError />;
+  }
+  if (error) return <ServerError error={error} />;
+
+  const fullname = capitalizeWords(userProfileData?.name ?? "") ?? "";
   return (
     <LandlordTenantModalPreset
       style={{ maxWidth: "614px" }}
@@ -34,7 +46,7 @@ const MessageUserProfileModal = () => {
       <div className="flex gap-1 items-center justify-center gap-4">
         <div className="imwrapper h-[100px] w-[100px]">
           <Image
-            src={picture ?? empty}
+            src={userProfileData?.profile?.picture ?? empty}
             alt="user profile"
             width={100}
             height={100}
@@ -44,20 +56,25 @@ const MessageUserProfileModal = () => {
         <div className="flex flex-col">
           <div className="flex items-center">
             <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-              {truncateText(name ?? default_user_data.name, 40)}
+              {userProfileData?.profile?.title} {" "}
+              {truncateText(fullname ?? "", 40)}
             </p>
-            <BadgeIcon color={badgeColor} />
+            {showActBadge ? (
+              <BadgeIcon color="gray" />
+            ) : !isAcct ? (
+              <BadgeIcon color={badgeColor} />
+            ) : null}
           </div>
           <div className="custom-flex-col">
             <p
               className={`${secondaryFont.className} text-sm font-normal dark:text-white text-[#151515B3]`}
             >
-              {email ?? default_user_data.email}
+              {userProfileData?.email ?? default_user_data.email}
             </p>
             <p
               className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}
             >
-              {phone ?? default_user_data.phone}
+              {userProfileData?.phone ?? default_user_data.phone}
             </p>
           </div>
         </div>
@@ -74,7 +91,7 @@ const MessageUserProfileModal = () => {
               Adress
             </p>
             <p className="w-2/3 text-black dark:text-white text-md font-semibold capitalize">
-              {address ?? default_user_data.address}
+              {userProfileData?.profile?.address ?? default_user_data.address}
             </p>
           </div>
           <div className="flex">
@@ -82,7 +99,7 @@ const MessageUserProfileModal = () => {
               City
             </p>
             <p className="w-2/3 text-black dark:text-white text-md font-semibold capitalize">
-              {city ?? default_user_data.city}
+              {userProfileData?.profile?.city ?? default_user_data.city}
             </p>
           </div>
           <div className="flex">
@@ -90,7 +107,7 @@ const MessageUserProfileModal = () => {
               State
             </p>
             <p className="w-2/3 text-black dark:text-white text-md font-semibold capitalize">
-               {state ?? default_user_data.state}
+              {userProfileData?.profile?.state ?? default_user_data.state}
             </p>
           </div>
           <div className="flex">
@@ -98,7 +115,7 @@ const MessageUserProfileModal = () => {
               L.G
             </p>
             <p className="w-2/3 text-black dark:text-white text-md font-semibold capitalize">
-              {lga ?? default_user_data.lga}
+              {userProfileData?.profile?.lga ?? default_user_data.lga}
             </p>
           </div>
         </div>

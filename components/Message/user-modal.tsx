@@ -17,6 +17,9 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import { getLocalStorage } from "@/utils/local-storage";
 import { useGlobalStore } from "@/store/general-store";
 import clsx from "clsx";
+import { UserDetailsResponse } from "./types";
+import { getCleanRoleName } from "./data";
+import useFetch from "@/hooks/useFetch";
 
 const SelectChatUsersModal = ({
   usersData,
@@ -38,6 +41,7 @@ const SelectChatUsersModal = ({
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const { setGlobalInfoStore, getGlobalInfoStore } = useGlobalStore();
+
   const [filteredUsers, setFilteredUsers] = useState<UsersProps[]>(
     usersData || []
   );
@@ -91,7 +95,6 @@ const SelectChatUsersModal = ({
   //   router.push("/messages/" + id);
   //   setIsOpen(false);
   // };
-
 
   const handleUserClicked = (user: UsersProps) => {
     try {
@@ -196,9 +199,11 @@ const SelectChatUsersModal = ({
             key={user.id}
           >
             <MessageUserCard
+              id={Number(user.id)}
               imageUrl={user.imageUrl}
               name={user.name}
               position={user.position}
+              status={user.online_status ?? "offline"}
             />
           </div>
         ))
