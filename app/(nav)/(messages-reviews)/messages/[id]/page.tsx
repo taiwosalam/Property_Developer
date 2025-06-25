@@ -163,6 +163,7 @@ const Chat = () => {
       }
     };
   }, [isPusherFailed, refetch]);
+  // useConversationListener(user_id!, (m) => handleNewMessage(m));
 
   // Initialize Pusher and fetch messages
   // useEffect(() => {

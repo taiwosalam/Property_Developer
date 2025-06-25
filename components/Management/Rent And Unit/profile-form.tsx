@@ -257,8 +257,8 @@ export const ProfileForm: React.FC<{
       }
     : undefined;
 
-  console.log("occupants", occupants);
-  console.log("tenantSelectDefaultValue", tenantSelectDefaultValue);
+  // console.log("occupants", occupants);
+  // console.log("tenantSelectDefaultValue", tenantSelectDefaultValue);
 
   // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE💀💀💀👿
   return (
