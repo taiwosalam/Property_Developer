@@ -1,6 +1,7 @@
 import { property } from "lodash";
 import { RentHistoryItem, TApplicationDetailsResponse } from "./type";
 import api, { handleAxiosError } from "@/services/api";
+import { getBadgeColor } from "@/lib/utils";
 
 export interface IRentHistory {
   unitId: number;
@@ -37,6 +38,7 @@ export interface IApplicationDetails {
     email: string;
     user_tag: "mobile" | "web";
     encodedId: string;
+    photo: string;
     notes: string;
     applied_duration: string;
     gender: "male" | "female";
@@ -116,13 +118,14 @@ export const transformApplicationDetailsPageData = (
       account_officer: property_details?.account_officer || "--- ---",
     },
     profile_details: {
-      fullName: user?.name || "--- ---",
+      fullName: user?.name.toLowerCase() || "--- ---",
       tier_id: user?.tier_id,
       email: user?.email || "--- ---",
       user_tag: user?.type || "mobile",
       encodedId: user?.encodedId,
       notes: "Here's a note",
       applied_duration: "7 years",
+      photo: user?.profile,
       gender: profile_details?.gender,
       birthday: profile_details?.birthday || "--- ---",
       religion: profile_details?.religion || "--- ---",
@@ -169,16 +172,18 @@ export const transformApplicationDetailsPageData = (
         unitId: current?.id,
         dueDate: current?.due_date || "--- ---",
         unitDetails: current?.details || "--- ---",
-        unitName: "Unit Name",
-        cautionDeposit: "Caution Deposit Amount",
-        tenantName: "Tenant Name",
+        unitName: current?.unit_name || "--- ---",
+        cautionDeposit: current?.cautionDeposit || "--- ---",
+        tenantName: user?.name,
         totalPackage: current?.total_amount || "--- ---",
-        serviceCharge: "Service Charge",
+        serviceCharge: current?.serviceCharge ?? "--- ---",
         start_date: current?.start_date || "--- ---",
-        tenantBadgeColor: "red",
+        tenantBadgeColor: user?.tier_id
+          ? getBadgeColor(user?.tier_id) ?? "gray"
+          : "gray",
         rent: current?.rent_amount || "--- ---",
-        propertyType: "",
-        unitStatus: "relocate",
+        propertyType: current?.propertyType,
+        unitStatus: "occupied",
         unitImages: [],
       })) || [],
     previous_rent:
@@ -186,17 +191,19 @@ export const transformApplicationDetailsPageData = (
         unitId: current?.id,
         dueDate: current?.due_date || "--- ---",
         unitDetails: current?.details || "--- ---",
-        unitName: "Unit Name",
-        cautionDeposit: "Caution Deposit Amount",
-        tenantName: "Tenant Name",
+        unitName: current?.unit_name || "--- ---",
+        cautionDeposit: current?.cautionDeposit || "--- ---",
+        tenantName: user?.name,
         totalPackage: current?.total_amount || "--- ---",
-        serviceCharge: "Service Charge",
+        serviceCharge: current?.serviceCharge ?? "--- ---",
         start_date: current?.start_date || "--- ---",
-        tenantBadgeColor: "red",
+        tenantBadgeColor: user?.tier_id
+          ? getBadgeColor(user?.tier_id) ?? "gray"
+          : "gray",
         rent: current?.rent_amount || "--- ---",
+        propertyType: current?.propertyType,
+        unitStatus: "occupied",
         unitImages: [],
-        propertyType: "",
-        unitStatus: "relocate",
       })) || [],
     experience: profile_details?.prior_experience || "--- ---",
     justification: profile_details?.rent_justification || "--- ---",

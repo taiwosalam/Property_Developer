@@ -1,0 +1,284 @@
+export interface GlobalSearchApiResponse {
+  query: string;
+  results: {
+    users: Array<{
+      id: number;
+      encodedId: string;
+      name: string | null;
+      email: string | null;
+      phone: string | null;
+      username: string | null;
+      referrer_code: string | null;
+      email_verified_at: string | null;
+      phone_verified_at: string | null;
+      username_updated_at: string | null;
+      is_active: boolean;
+      is_company_owner: boolean;
+      tier_id: number;
+      last_seen: string | null;
+      provider_id: string | null;
+      provider_name: string | null;
+      deleted_at: string | null;
+      created_at: string;
+      updated_at: string;
+      searchable_type: "users";
+      is_verified: boolean;
+      unread_messages_count: number;
+      unread_notifications_count: number;
+      profile_completion_status: string;
+      is_subscription_expired: boolean;
+      current_plan: string | null;
+      current_subscription_expiry: string | null;
+      profile: {
+        id: number;
+        user_id: number;
+        type: string;
+        name: string | null;
+        email: string | null;
+        phone: string | null;
+        picture: string | null;
+        background_image: string | null;
+        title: string | null;
+        gender: string | null;
+        address: string | null;
+        state: string | null;
+        lga: string | null;
+        city: string | null;
+        bio: string | null;
+        dob: string | null;
+        religion: string | null;
+        marital_status: string | null;
+        occupation: string | null;
+        job_type: string | null;
+        family_type: string | null;
+        facebook: string | null;
+        x: string | null;
+        instagram: string | null;
+        linkedin: string | null;
+        youtube: string | null;
+        tiktok: string | null;
+        website: string | null;
+        note: string | null;
+        bvn_link_at: string | null;
+        created_at: string;
+        updated_at: string;
+        deleted_at: string | null;
+        bvn_linked: boolean;
+        completion_status: string;
+      };
+      roles: Array<{
+        id: number;
+        name: string;
+        guard_name: string;
+        created_at: string;
+        updated_at: string;
+        pivot: {
+          model_type: string;
+          model_id: number;
+          role_id: number;
+        };
+      }>;
+    }>;
+    properties: Array<{
+      id: number;
+      branch_id: number;
+      inventory_id: number | null;
+      landlord_id: number | null;
+      user_id: number;
+      company_id: number;
+      video_link: string | null;
+      title: string;
+      state: string;
+      local_government: string;
+      city_area: string;
+      full_address: string;
+      category: string;
+      description: string;
+      property_type: string;
+      agency_fee: number;
+      who_to_charge_new_tenant: string | null;
+      who_to_charge_renew_tenant: string | null;
+      caution_deposit: string | null;
+      group_chat: boolean;
+      rent_penalty: boolean;
+      fee_penalty: boolean;
+      request_call_back: boolean;
+      book_visitors: boolean;
+      vehicle_record: boolean;
+      active_vat: boolean;
+      currency: string;
+      coordinate: string | null;
+      management_fee: number;
+      fee_period: string | null;
+      is_featured: boolean;
+      created_at: string;
+      updated_at: string;
+      deleted_at: string | null;
+      searchable_type: "properties";
+      image_count: number;
+      unit_count: number;
+      review_count: number;
+    }>;
+    units: Array<{
+      id: number;
+      user_id: number;
+      property_id: number;
+      tenant_id: number | null;
+      unit_name: string;
+      unit_type: string;
+      unit_sub_type: string | null;
+      unit_preference: string;
+      measurement: string;
+      bedroom: string;
+      bathroom: string;
+      toilet: number;
+      facilities: string[] | null;
+      en_suit: boolean;
+      prepaid: boolean;
+      wardrobe: boolean;
+      pet_allowed: boolean;
+      total_area_sqm: string;
+      number_of: string;
+      fee_period: string;
+      fee_amount: string;
+      vat_amount: string;
+      security_fee: string;
+      service_charge: string;
+      agency_fee: string;
+      legal_fee: string;
+      caution_fee: string;
+      inspection_fee: string;
+      management_fee: string | null;
+      other_charge: string;
+      negotiation: boolean;
+      total_package: string;
+      renew_fee_period: string;
+      renew_fee_amount: string;
+      renew_vat_amount: string;
+      renew_service_charge: string;
+      renew_other_charge: string;
+      renew_total_package: string;
+      renew_agency_fee: string;
+      renew_security_fee: string;
+      renew_legal_fee: string | null;
+      renew_caution_fee: string | null;
+      renew_inspection_fee: string | null;
+      renew_management_fee: string | null;
+      is_active: string;
+      published: boolean;
+      status: string;
+      reject_reason: string | null;
+      created_at: string;
+      updated_at: string;
+      deleted_at: string | null;
+      searchable_type: "units";
+    }>;
+    agentCommunities: any[];
+    agentRequests: any[];
+    wallets: any[];
+  };
+  meta: SearchResponseMeta;
+}
+
+interface SearchResponseMeta {
+  total: number;
+  details: {
+    users: SearchResponseMetaDetails;
+    properties: SearchResponseMetaDetails;
+    units: SearchResponseMetaDetails;
+    agentCommunities: SearchResponseMetaDetails;
+    agentRequests: SearchResponseMetaDetails;
+  };
+}
+
+interface SearchResponseMetaDetails {
+  total: number;
+  current_page: number;
+  last_page: number;
+  per_page: number;
+}
+
+interface ISearchItem {
+  id: number;
+  type: string;
+  title: string;
+  
+}
+export interface IGlobalSearchPageData {
+  query: string;
+  results: {
+
+  }
+  counts: {
+    users: number;
+    properties: number;
+    units: number;
+    agentCommunities: number;
+    agentRequest: number;
+    //wallets: number;
+  };
+}
+export const transformGlobalSearchPageData = (
+  res: GlobalSearchApiResponse
+): IGlobalSearchPageData => {
+  const {
+    query,
+    meta: { details },
+    results,
+  } = res;
+  return {
+    query: query,
+    results: {
+      users: results.users.map((user) => ({
+        type: "users",
+        title: user.name || "Unknown User",
+        subtitle: user.email || "No email",
+        extra: user.roles?.[0]?.name || user.profile?.title || "No role",
+        icon: "people",
+        isVerified: user.is_verified || false,
+      })),
+      properties: results.properties.map((property) => ({
+        type: "properties",
+        title: property.title || "Unknown Property",
+        subtitle: property.full_address || "No address",
+        extra: property.category || "No category",
+        icon: "chart",
+      })),
+      units: results.units.map((unit) => ({
+        type: "units",
+        title: unit.unit_name || "Unknown Unit",
+        subtitle: unit.unit_type || "No type",
+        extra: `₦${unit.total_package || "0"}`,
+        icon: "chart",
+      })),
+      agentCommunities: results.agentCommunities.map((community) => ({
+        type: "agentCommunities",
+        title: community.name || "Unknown Community",
+        subtitle: community.description || "No description",
+        extra: "Community",
+        icon: "task",
+      })),
+      agentRequests: results.agentRequests.map((request) => ({
+        type: "agentRequests",
+        title: request.title || "Unknown Request",
+        subtitle: request.description || "No description",
+        extra: "Request",
+        icon: "task",
+      })),
+      wallets: results.wallets.map((wallet) => ({
+        type: "wallets",
+        title: wallet.name || "Unknown Wallet",
+        subtitle: wallet.description || "No description",
+        extra: "Wallet",
+        icon: "empty_wallet",
+      })),
+    },
+    counts: {
+      users: details?.users?.total || 0,
+      properties: details?.properties?.total || 0,
+      units: details?.units?.total || 0,
+      agentCommunities: details?.agentCommunities?.total || 0,
+      agentRequest: details?.agentRequests?.total || 0,
+    },
+  };
+};

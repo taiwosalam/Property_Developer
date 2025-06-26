@@ -25,7 +25,7 @@ export interface NavDropdownProps extends NavButtonProps {
   onContentClick?: () => void;
   content: { label: string; href: string }[];
   onToggle?: () => void;
-  className?: string; 
+  className?: string;
 }
 
 export type NavItemsProps = {
@@ -75,4 +75,9 @@ export interface NavModalLayoutProps {
 
 export interface NavGlobalSearchItemProps {
   icon: SVGType;
+  title?: string;
+  subtitle?: string;
+  extra?: string;
+  query?: string;
+  isVerified?: boolean;
 }
