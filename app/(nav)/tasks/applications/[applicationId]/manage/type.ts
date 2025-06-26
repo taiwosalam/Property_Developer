@@ -99,4 +99,10 @@ export type RentHistoryItem = {
   invoice_status: string;
   start_date: string;
   due_date: string;
+  cautionDeposit: string | null;
+  propertyType: string;
+  unit_id: number;
+  unit_name: string;
+  serviceCharge: null;
+  unitImages: string[];
 };

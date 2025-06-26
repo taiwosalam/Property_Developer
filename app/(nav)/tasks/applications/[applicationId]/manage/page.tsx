@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { empty } from "@/app/config";
 
 const ManageApplication = () => {
   const isDarkMode = useDarkMode();
@@ -154,7 +155,12 @@ const ManageApplication = () => {
             style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
           >
             <div className="flex items-center px-10 gap-5">
-              <Picture src={Avatar3} alt="profile picture" size={120} rounded />
+              <Picture
+                src={profile_details?.photo || empty}
+                alt="profile picture"
+                size={120}
+                rounded
+              />
               <div className="custom-flex-col gap-4">
                 <div className="custom-flex-col">
                   <div className="flex gap-2">
