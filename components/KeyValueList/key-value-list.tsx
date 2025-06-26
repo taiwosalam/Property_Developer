@@ -57,12 +57,25 @@ const KeyValueList = <T extends object>({
                     >
                       {String(key).split("_").join(" ")}
                     </p>
-                    <p
-                      className="text-black dark:text-darkText-2 line-clamp-1"
-                      style={styles?.[key]?.value}
-                    >
-                      {truncateText(String(data[key]), truncateLength)}
-                    </p>
+                    {String(key) === "description" ? (
+                      <p
+                        className="text-black dark:text-darkText-2 line-clamp-1"
+                        style={styles?.[key]?.value}
+                        dangerouslySetInnerHTML={{
+                          __html: truncateText(
+                            String(data[key]),
+                            truncateLength
+                          ),
+                        }}
+                      />
+                    ) : (
+                      <p
+                        className="text-black dark:text-darkText-2 line-clamp-1"
+                        style={styles?.[key]?.value}
+                      >
+                        {truncateText(String(data[key]), truncateLength)}
+                      </p>
+                    )}
                   </div>
                 ))}
               </>
@@ -80,15 +93,29 @@ const KeyValueList = <T extends object>({
                   ))}
                 </div>
                 <div className="custom-flex-col gap-4">
-                  {filteredChunk.map((key) => (
-                    <p
-                      key={`${chunkIndex}-${String(key)}-value`}
-                      className="text-black dark:text-darkText-2"
-                      style={styles?.[key]?.value}
-                    >
-                      {truncateText(String(data[key]), truncateLength)}
-                    </p>
-                  ))}
+                  {filteredChunk.map((key) =>
+                    String(key) === "description" ? (
+                      <p
+                        key={`${chunkIndex}-${String(key)}-value`}
+                        className="text-black dark:text-darkText-2"
+                        style={styles?.[key]?.value}
+                        dangerouslySetInnerHTML={{
+                          __html: truncateText(
+                            String(data[key]),
+                            truncateLength
+                          ),
+                        }}
+                      />
+                    ) : (
+                      <p
+                        key={`${chunkIndex}-${String(key)}-value`}
+                        className="text-black dark:text-darkText-2"
+                        style={styles?.[key]?.value}
+                      >
+                        {truncateText(String(data[key]), truncateLength)}
+                      </p>
+                    )
+                  )}
                 </div>
               </>
             )}

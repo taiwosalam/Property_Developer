@@ -204,7 +204,7 @@ export interface ICampaignTable {
   expired_date: string;
 }
 
-function getImageNameFromUrl(url: string): string {
+export function getImageNameFromUrl(url: string): string {
   try {
     const parsedUrl = new URL(url);
     const segments = parsedUrl.pathname.split("/");

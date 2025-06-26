@@ -401,7 +401,7 @@ export const tabs: {
 }[] = [
   {
     icon: "people",
-    label: "managememt",
+    label: "management",
   },
   {
     icon: "briefcase_timer",
@@ -425,7 +425,7 @@ export const tabs: {
   },
   {
     icon: "task",
-    label: "applications",
+    label: "community",
   },
   {
     icon: "folder",

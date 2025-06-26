@@ -25,6 +25,7 @@ import ServerError from "@/components/Error/ServerError";
 import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
@@ -44,9 +45,10 @@ const Applications = () => {
     error,
     isNetworkError,
     silentLoading,
-  } = useFetch<ApplicationResponse>(`/property-applications`, config);
+    refetch,
+  } = useFetch<ApplicationResponse>(`/property-applications/company`, config);
 
-  console.log(apiData);
+  useRefetchOnEvent("dispatchApplication", () => refetch({ silent: true }));
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -141,6 +143,8 @@ const Applications = () => {
       />
     );
 
+  console.log(pageData?.applications);
+
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -223,20 +227,20 @@ const Applications = () => {
                 ? pageData?.applications.map((item) => (
                     <ApplicationCard
                       key={item.id}
-                      status="flagged"
-                      type="guest"
-                      {...item}
+                      status={item?.flagged}
+                      type="mobile"
+                      data={item}
                     />
                   ))
-                : ""}
+                : "No Application Yet"}
             </AutoResizingGrid>
           )}
 
-          <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
+          {/* <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
             <ApplicationCard status="flagged" type="staff" />
             <ApplicationCard status="unflagged" type="guest" />
             <ApplicationCard status="unflagged" type="staff" />
-          </AutoResizingGrid>
+          </AutoResizingGrid>  */}
         </section>
       </div>
     </div>

@@ -9,6 +9,7 @@ import Button from "../Button/button";
 import { DeleteIconX, EyeShowIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { SettingsVerifiedBadge } from "@/components/Settings/settings-components";
+import { getImageNameFromUrl } from "@/components/Settings/sponsor_data";
 
 const FileInput: React.FC<FileInputProps> = ({
   id,
@@ -27,7 +28,7 @@ const FileInput: React.FC<FileInputProps> = ({
   noUpload,
   membership_status,
   endAdornment,
-  isSvg
+  isSvg,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
@@ -78,7 +79,7 @@ const FileInput: React.FC<FileInputProps> = ({
       //restorePreviousFile();
       return;
     }
-    if(isSvg){
+    if (isSvg) {
       if (newFile.type !== "image/svg+xml") {
         toast.warning("Only SVG files are supported.");
         restorePreviousFile();
@@ -141,6 +142,8 @@ const FileInput: React.FC<FileInputProps> = ({
     setIsLgScreen(width >= 1024);
   }, [width]);
 
+  console.log(fileName);
+
   useEffect(() => {
     if (file) {
       setShowVerifyBtn(true);
@@ -154,8 +157,6 @@ const FileInput: React.FC<FileInputProps> = ({
     handleInputChange?.();
     previousFileRef.current = file;
   }, [file, handleInputChange]);
-
-  console.log(fileName);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -172,7 +173,9 @@ const FileInput: React.FC<FileInputProps> = ({
       )}
       <div className="relative flex gap-2 items-center w-full">
         <div
-          className={`relative w-full ${settingsPage && "flex"}  ${clsx(
+          className={`relative w-full ${
+            settingsPage && "flex"
+          }  ${clsx(
             noUpload ? "cursor-not-allowed opacity-50" : "cursor-pointer"
           )}`}
         >
@@ -190,13 +193,14 @@ const FileInput: React.FC<FileInputProps> = ({
             ref={fileInputRef}
             onChange={handleFileChange}
           />
+
           <div
             role="button"
             aria-label="upload"
             onClick={handleClick}
             className={`relative  ${clsx(
               "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
-              textStyles,
+              textStyles
               //fileName ? "bg-neutral-2" : "bg-none"
             )}`}
           >
@@ -214,9 +218,15 @@ const FileInput: React.FC<FileInputProps> = ({
               </span>
             ) : (
               <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-                {noUpload
+                {defaultFile
+                  ? getImageNameFromUrl(defaultFile)
+                  : fileName
+                  ? fileName
+                  : !defaultFile && noUpload
                   ? "Click eye icon to view document"
-                  : placeholder}
+                  : `Click ${
+                      isLgScreen ? "the side button" : "here"
+                    } to upload ${placeholder || "file"}`}
               </span>
             )}
 

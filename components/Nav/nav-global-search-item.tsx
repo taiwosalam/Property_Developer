@@ -11,8 +11,31 @@ import SVG from "../SVG/svg";
 import Picture from "../Picture/picture";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 
-const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({ icon }) => {
+const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
+  icon,
+  title,
+  subtitle,
+  extra,
+  query,
+  isVerified = false,
+}) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
+
+  // Highlight the query in text (case-insensitive)
+  const highlightQuery = (text: string) => {
+    if (!query || !text) return text;
+    const regex = new RegExp(`(${query})`, "gi");
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+      part.toLowerCase() === query.toLowerCase() ? (
+        <span key={index} className="bg-yellow-200">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
 
   return (
     <div
@@ -31,17 +54,24 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({ icon }) => {
           <div className="custom-flex-col gap-1 font-medium">
             <div className="flex items-center gap-2">
               <p className="text-black dark:text-white text-base capitalize">
-                Bimbo David
+                {highlightQuery(title ?? "")}
               </p>
-              <Picture src={Verified} alt="verified" size={16} />
+              {isVerified && (
+                <Picture src={Verified} alt="verified" size={16} />
+              )}
             </div>
-            <p className="text-text-tertiary text-sm">ID: 123456789</p>
+            <p className="text-text-tertiary text-sm">
+              {highlightQuery(subtitle ?? "")}
+            </p>
           </div>
         </div>
         <p className="text-text-tertiary text-base font-medium capitalize">
-          Landlord / Landlady
+          {extra}
         </p>
       </div>
+      <p className="text-text-tertiary text-base font-medium capitalize">
+        Landlord / Landlady
+      </p>
     </div>
   );
 };
