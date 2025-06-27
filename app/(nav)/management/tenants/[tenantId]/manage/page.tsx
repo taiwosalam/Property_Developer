@@ -97,7 +97,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   // Conditionally set exceptions based on user_tag
   const exceptions = ["notes", "flag", "messageUserData"];
   if (tenant.user_tag === "web") {
-    exceptions.push("guarantor_1", "guarantor_2");
+    exceptions.push("guarantor_1", "guarantor_2", "phone_number");
   }
 
   const otherData = getObjectProperties({
@@ -110,6 +110,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
     router.push(`/messages/${tenant?.id}`);
   };
 
+  console.log("tenant.is_flagged", tenant)
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">

@@ -60,9 +60,6 @@ const UserCard: React.FC<UserCardProps> = ({
           <span className="text-ellipsis line-clamp-1 break-all">
             {title ?? ""} {name}{" "}
           </span>
-          {/* {is_verified && badge_color && user_tag !== "web" && (
-            <BadgeIcon color={badge_color} />
-          )} */}
           {badge_color && user_tag !== "web" && (
             <BadgeIcon color={badge_color} />
           )}

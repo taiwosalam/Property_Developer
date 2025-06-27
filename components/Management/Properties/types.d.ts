@@ -5,6 +5,7 @@ import { transformPropertyFormData } from "./data";
 export type AddPropertyModalViews = "options" | "add-property-with-id";
 
 export interface AddPropertyOptionsViewProps {
+  id?: number; //ID is for landlord to add property
   setModalView: React.Dispatch<React.SetStateAction<AddPropertyModalViews>>;
 }
 
@@ -23,6 +24,7 @@ export interface CreatePropertyFormProps {
   editMode?: boolean;
   propertyId?: string;
   onAddUnit?: () => void;
+  landlordId?: number;
 }
 
 export interface StaffData {

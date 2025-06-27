@@ -120,7 +120,7 @@ export interface TenantData {
   marital_status: string | null;
   is_flagged?: boolean;
   flag?: {
-    is_flagged: 1 | 0;
+    is_flagged: boolean;
     flagged_by: number | string;
     reason: string;
   };

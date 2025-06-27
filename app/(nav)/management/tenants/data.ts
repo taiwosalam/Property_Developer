@@ -86,7 +86,11 @@ export interface TenantApiResponse {
       name: string;
       title: string;
       email: string;
-      phone: string;
+      // phone: string;
+      phone: {
+        profile_phone: string | null;
+        user_phone: string | null;
+      };
       picture: string;
       agent: string;
       user_tier: 1 | 2 | 3 | 4 | 5;
@@ -135,7 +139,12 @@ export const transformTenantApiResponse = (
       name: tenant.name,
       title: tenant.title,
       email: tenant.email,
-      phone_number: tenant.phone,
+      phone_number: `${tenant.phone.profile_phone ?? ""}${
+        tenant.phone.user_phone && tenant.phone.profile_phone
+          ? " / " + tenant.phone.user_phone
+          : ""
+      }`,
+      // phone_number: tenant.phone,
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
       note: tenant.note.note !== null && tenant.note.note !== "",

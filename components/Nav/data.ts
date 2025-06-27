@@ -44,6 +44,7 @@ export const nav_items: NavItemsProps = [
       { label: "visitors request", href: "/visitors" },
       { label: "property request", href: "/property-request" },
       { label: "deposits request", href: "/deposits" },
+      { label: "undo / trash", href: "/undo" },
     ],
   },
   {
@@ -92,7 +93,6 @@ export const nav_items: NavItemsProps = [
       { label: "tracking", href: "/tracking" },
       { label: "call request", href: "/call" },
       { label: "visitors request", href: "/visitors" },
-      { label: "undo / trash", href: "/undo" },
       { label: "vehicles record", href: "/vehicles-record" },
       { label: "calendar", href: "/calendar-event" },
       { label: "subscription history", href: "/subscription-history" },

@@ -223,7 +223,7 @@ const EditMobileUser = ({
         </ModalPreset>
       ) : activeStep === "add-property" ? (
         <>
-          <AddPropertyModal />
+          <AddPropertyModal id={Number(id ?? 0)} />
         </>
       ) : (
         <ModalPreset

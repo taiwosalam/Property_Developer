@@ -189,7 +189,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           value={{
             data: {
               ...tenant,
-              flag: { is_flagged: 0, flagged_by: "", reason: "" }, //from backend later
+              flag: { is_flagged: false, flagged_by: "", reason: "" }, //from backend later
             },
           }}
         >

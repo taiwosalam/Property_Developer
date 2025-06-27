@@ -68,7 +68,11 @@ export interface IndividualTenantAPIResponse {
     name: string;
     title: string;
     email: string;
-    phone: string;
+    // phone: string;
+    phone: {
+      profile_phone: string | null;
+      user_phone: string | null;
+    }
     tier_id?: 1 | 2 | 3 | 4 | 5;
     user_tier?: 1 | 2 | 3 | 4 | 5;
     picture?: string;
@@ -76,7 +80,7 @@ export interface IndividualTenantAPIResponse {
     gender: string;
     tenant_type: string;
     flag: {
-      is_flagged: 1 | 0;
+      is_flagged: boolean;
       flagged_by: number | string;
       reason: string;
     };
@@ -137,6 +141,7 @@ export interface IndividualTenantAPIResponse {
 export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
+  console.log("tennaa", data)
   const lastUpdated = data?.note?.last_updated_at
     ? dayjs(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
@@ -202,7 +207,12 @@ export const transformIndividualTenantAPIResponse = ({
     email: data?.email || "",
     user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
     badge_color: data?.user_tier ? tierColorMap[data.user_tier] : undefined,
-    phone_number: data?.phone || "",
+    // phone_number: data?.phone || "",
+    phone_number: `${data.phone.profile_phone ?? ""}${
+      data.phone.user_phone && data.phone.profile_phone
+        ? " / " + data.phone.user_phone
+        : ""
+    }`,
     tenant_type: data?.tenant_type || "",
     gender: data?.gender || "",
     birthdate: data.birthday
@@ -210,7 +220,7 @@ export const transformIndividualTenantAPIResponse = ({
       : "--- ---",
     religion: data.religion || "--- ---",
     marital_status: data.marital_status || "--- ---",
-    is_flagged: data.flag.is_flagged === 1,
+    is_flagged: data.flag.is_flagged,
     flag: data.flag,
     contact_address: {
       address: data?.address || "",

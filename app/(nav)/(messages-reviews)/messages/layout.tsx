@@ -45,7 +45,17 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
 import WavesurferPlayer from "@wavesurfer/react";
 import NoMessage from "./messages-component";
-import { AudioStopIcon, PlayIconButton, PlusIcon } from "@/public/icons/icons";
+import {
+  MessageVNPauseIcon,
+  AudioStopIcon,
+  MessageVNPlayIcon,
+  PlayIconButton,
+  PlusIcon,
+  MessageAttachIcon,
+  MessageMicIcon,
+  MessageSendIcon,
+  MessageDeleteIcon,
+} from "@/public/icons/icons";
 import SelectChatUsersModal from "@/components/Message/user-modal";
 import { CommentTextArea } from "../../community/agent-forum/NewComment";
 
@@ -360,12 +370,8 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     <div className="flex w-full items-center gap-4">
                       <Modal>
                         <ModalTrigger asChild>
-                          <button type="button">
-                            <Picture
-                              src={ClipBlue}
-                              alt="attachment"
-                              size={24}
-                            />
+                          <button type="button" className="text-brand-9">
+                            <MessageAttachIcon size={30} />
                           </button>
                         </ModalTrigger>
                         <ModalContent>
@@ -386,11 +392,15 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     </div>
                   )}
                   {message ? (
-                    <button type="button" onClick={handleSendMsg}>
+                    <button
+                      type="button"
+                      className="text-brand-9"
+                      onClick={handleSendMsg}
+                    >
                       {reqLoading ? (
                         <div className="animate-spin h-5 w-5 border-2 border-brand-9 rounded-full" />
                       ) : (
-                        <Picture src={SendIcon} alt="text message" size={24} />
+                        <MessageSendIcon size={30} />
                       )}
                     </button>
                   ) : (
@@ -398,13 +408,10 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       {!audioUrl && !voiceControls.isRecordingInProgress && (
                         <button
                           type="button"
+                          className="text-brand-9"
                           onClick={voiceControls.startRecording}
                         >
-                          <Picture
-                            src={MicrophoneBlue}
-                            alt="voice note"
-                            size={24}
-                          />
+                          <MessageMicIcon size={30} />
                         </button>
                       )}
                       {voiceControls.isRecordingInProgress && (
@@ -436,21 +443,13 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                               <button
                                 type="button"
                                 onClick={voiceControls.togglePauseResume}
-                                className="px-3 py-1 rounded text-black text-sm"
+                                className="px-3 py-1 rounded text-brand-9 text-sm"
                               >
-                                <Picture
-                                  src={
-                                    voiceControls.isPausedRecording
-                                      ? PlayIcon
-                                      : PauseIcon
-                                  }
-                                  alt={
-                                    voiceControls.isPausedRecording
-                                      ? "play voice"
-                                      : "pause voice"
-                                  }
-                                  size={30}
-                                />
+                                {voiceControls.isPausedRecording ? (
+                                  <MessageVNPlayIcon size={30} />
+                                ) : (
+                                  <MessageVNPauseIcon size={30} />
+                                )}
                               </button>
 
                               <button
@@ -459,7 +458,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                                   voiceControls.stopRecording();
                                   setAudioUrl("");
                                 }}
-                                className="rounded text-[#305ce3] text-sm"
+                                className="rounded text-brand-9 text-sm"
                               >
                                 {/* <AudioStopIcon /> */}
                                 <StopCircleIcon size={30} />
@@ -473,44 +472,37 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
 
                   {audioUrl && (
                     <div className="flex w-full items-center justify-end gap-2">
-                      <button type="button" onClick={() => setAudioUrl("")}>
-                        <Picture
-                          src={DeleteIcon}
-                          alt="delete voice"
-                          size={28}
-                        />
+                      <button className="text-brand-9" type="button" onClick={() => setAudioUrl("")}>
+                        <MessageDeleteIcon size={30} />
                       </button>
                       <WavesurferPlayer
                         height={40}
                         width={400}
-                        waveColor="rgb(100, 0, 100)"
-                        progressColor="rgb(200, 0, 200)"
+                        waveColor="#e5e7eb"
+                        progressColor="var(--primary-color)" 
                         url={audioUrl}
                         onReady={onReady}
                         onPlay={() => setIsPlaying(true)}
                         onPause={() => setIsPlaying(false)}
                       />
                       <div className="flex gap-2">
-                        <button type="button" onClick={onPlayPause}>
-                          <Picture
-                            src={isPlaying ? PauseIcon : PlayIcon}
-                            alt="voice pause-play"
-                            size={24}
-                          />
+                        <button type="button" className="text-brand-9" onClick={onPlayPause}>
+                          {isPlaying ? (
+                            <MessageVNPlayIcon size={30} />
+                          ) : (
+                            <MessageVNPlayIcon size={30} />
+                          )}
                         </button>
                         <button
                           type="button"
                           onClick={handleSendAudio}
                           disabled={reqLoading}
+                          className="text-brand-9"
                         >
                           {reqLoading ? (
                             <div className="w-5 h-5 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
                           ) : (
-                            <Picture
-                              src={SendIcon}
-                              alt="voice note"
-                              size={24}
-                            />
+                            <MessageSendIcon size={30} />
                           )}
                         </button>
                       </div>

@@ -175,32 +175,46 @@ export const getRoleSignInPage = (role: string | null): string => {
   }
 };
 
-export const getRentalPropertyCreatePath = (role: string | null): string => {
+export const getRentalPropertyCreatePath = (
+  role: string | null,
+  landlordId?: number
+): string => {
+  const basePath = (prefix: string = "") =>
+    `${prefix}/management/properties/create-rental-property${
+      landlordId ? `?landlord=${landlordId}` : ""
+    }`;
+
   switch (role) {
     case "director":
-      return "/management/properties/create-rental-property";
+      return basePath();
     case "manager":
-      return "/manager/management/properties/create-rental-property";
+      return basePath("/manager");
     case "account":
-      return "/accountant/management/properties/create-rental-property";
+      return basePath("/accountant");
     default:
-      return "/management/properties/create-rental-property";
+      return basePath();
   }
 };
 
-export const getFacilityPropertyCreatePath = (role: string | null): string => {
+export const getFacilityPropertyCreatePath = (
+  role: string | null,
+  landlordId?: number
+): string | undefined => {
+  const basePath = (prefix: string = "") =>
+    `${prefix}/management/properties/create-gated-estate-property${
+      landlordId ? `?landlord=${landlordId}` : ""
+    }`;
   switch (role) {
     case "director":
-      return "/management/properties/create-gated-estate-property";
+      return basePath();
     case "manager":
-      return "/manager/management/properties/create-gated-estate-property";
+      return basePath("/manager");
     case "account":
-      return "/accountant/management/properties/create-gated-estate-property";
+      return basePath("/accountant");
     default:
-      return "/management/properties/create-gated-estate-property";
+      return basePath();
   }
 };
-
 interface LoginResponse {
   message: string;
   access_token: string;
@@ -416,7 +430,7 @@ export const logout = async (): Promise<boolean> => {
     Cookies.remove("auth-token");
     Cookies.remove("company_subscription_status");
     Cookies.remove("expired_company_subscription");
-    Cookies.remove("subscription_status"); 
+    Cookies.remove("subscription_status");
 
     resetAuthStore();
     toast.success(message);

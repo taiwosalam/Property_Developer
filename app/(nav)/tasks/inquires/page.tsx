@@ -270,11 +270,13 @@ const Inquires = () => {
         </section>
       )}
 
-      <Pagination
-        totalPages={callRequestPageData?.pagination?.total ?? 1}
-        currentPage={callRequestPageData?.pagination?.current_page ?? 1}
-        onPageChange={handlePageChange}
-      />
+      {(callRequestPageData?.call_requests?.length ?? 0) > 0 && (
+        <Pagination
+          totalPages={callRequestPageData?.pagination?.total ?? 1}
+          currentPage={callRequestPageData?.pagination?.current_page ?? 1}
+          onPageChange={handlePageChange}
+        />
+      )}
     </section>
   );
 };
