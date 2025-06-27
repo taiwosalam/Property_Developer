@@ -17,7 +17,7 @@ export interface MessageCardProps {
   badgeColor?: BadgeIconColors;
   tier?: number;
   title?: string;
-  role?: string;
+  role: string;
 }
 
 export interface MessagesProps {

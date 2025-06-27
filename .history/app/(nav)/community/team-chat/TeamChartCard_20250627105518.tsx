@@ -27,7 +27,7 @@ const TeamChatCard: React.FC<MessageCardProps> = ({
   content_type,
   tier,
   title,
-  role,
+  role
 }) => {
   const IconComponent = getIconByContentType(content_type as string);
   return (

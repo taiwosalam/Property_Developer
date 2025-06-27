@@ -59,9 +59,6 @@ export const transformGroupChatListData = (
       verified: false,
       messages: item?.unread_count,
       content_type: "text",
-      tier: 1,
-      title: "",
-      role: "",
     })),
   };
 };

@@ -37,9 +37,7 @@ export interface IGroupChatCard {
     verified: boolean;
     messages: number;
     content_type: string;
-    tier: number;
-    title: string;
-    role: string;
+    
   }[];
 }
 export const transformGroupChatListData = (
@@ -59,9 +57,6 @@ export const transformGroupChatListData = (
       verified: false,
       messages: item?.unread_count,
       content_type: "text",
-      tier: 1,
-      title: "",
-      role: "",
     })),
   };
 };

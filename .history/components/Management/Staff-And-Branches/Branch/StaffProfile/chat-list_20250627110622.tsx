@@ -68,7 +68,7 @@ const ChatList: React.FC<{
               online={message.online}
               last_seen={message.last_seen}
               title={""}
-              role={""}
+              role=""
               tier={0}
               // unread_count={message.unread_count}
               highlight={message.id === activeChatId}
