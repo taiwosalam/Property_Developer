@@ -205,8 +205,8 @@ const Management = () => {
   return (
     <>
       <>
-        {staffConfigurations.map(({ title, subTitle, permissions }) => (
-          <SettingsSection key={title} title={title} subTitle={subTitle}>
+        {staffConfigurations.map(({ title, permissions }) => (
+          <SettingsSection key={title} title={title} subTitle={""}>
             <div className="custom-flex-col gap-8">
               <div className="flex">
                 <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">

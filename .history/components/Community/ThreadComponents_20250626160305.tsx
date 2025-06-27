@@ -148,6 +148,22 @@ export const ThreadFooter = ({
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // const handleToggleLike = async (type: number) => {
+  //   try {
+  //     setIsLoading(true);
+  //     setIsLikeDislikeLoading?.(true);
+  //     const res = await toggleLike(slug, type);
+  //     if (res) {
+  //       window.dispatchEvent(new Event("refetchThreads"));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error toggling like:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //     setIsLikeDislikeLoading?.(false);
+  //   }
+  // };
+
   const handleToggleLike = async (type: number) => {
     try {
       setIsLoading(true);

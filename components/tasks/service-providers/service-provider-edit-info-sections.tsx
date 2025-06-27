@@ -147,7 +147,7 @@ export const ServiceProviderEditProfileInfoSection = () => {
             id="phone"
             label="phone"
             required
-            inputContainerClassName="bg-neutral-2"
+            // inputClassName="dark:!bg-transparent !bg-neutral-2"
             defaultValue={serviceProvider?.personal_number}
           />
           <Input

@@ -45,7 +45,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
 import WavesurferPlayer from "@wavesurfer/react";
 import NoMessage from "./messages-component";
-import { PlusIcon } from "@/public/icons/icons";
+import { AudioStopIcon, PlayIconButton, PlusIcon } from "@/public/icons/icons";
 import SelectChatUsersModal from "@/components/Message/user-modal";
 import { CommentTextArea } from "../../community/agent-forum/NewComment";
 
@@ -56,6 +56,7 @@ import {
 } from "@hasma/react-voice-visualizer";
 import { getLocalStorage } from "@/utils/local-storage";
 import { MessageInput } from "@/components/Message/messageInput";
+import { PauseCircleIcon, StopCircleIcon } from "lucide-react";
 
 const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { setChatData } = useChatStore();
@@ -246,6 +247,9 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
       const res = await SendMessage(objectToFormData(payload), `${id}`);
       if (res) {
         // Clear the recording data after sending
+        setAudioUrl("");
+        voiceControls.stopRecording();
+        setMessage("");
         window.dispatchEvent(new Event("refetch-users-msg"));
         window.dispatchEvent(new Event("refetchMessages"));
       }
@@ -350,7 +354,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
           <div className="custom-flex-col w-full h-full">
             {children}
             {id && (
-              <AuthForm onFormSubmit={handleSendMsg}>
+              <AuthForm onFormSubmit={() => {}}>
                 <div className="py-4 px-6 flex w-full items-center gap-4">
                   {!audioUrl && !voiceControls.isRecordingInProgress && (
                     <div className="flex w-full items-center gap-4">
@@ -382,7 +386,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     </div>
                   )}
                   {message ? (
-                    <button type="submit" onClick={handleSendMsg}>
+                    <button type="button" onClick={handleSendMsg}>
                       {reqLoading ? (
                         <div className="animate-spin h-5 w-5 border-2 border-brand-9 rounded-full" />
                       ) : (
@@ -405,10 +409,68 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                       )}
                       {voiceControls.isRecordingInProgress && (
                         <>
+                          <div className="flex flex-col gap-2 w-full items-center justify-center mt-2">
+                            <div
+                              className="w-full mt-2"
+                              // style={{ height: "100px" }}
+                            >
+                              <VoiceVisualizer
+                                ref={voiceControls.audioRef}
+                                controls={voiceControls}
+                                isControlPanelShown={false}
+                                isProgressIndicatorOnHoverShown={true}
+                                isProgressIndicatorTimeShown={true}
+                                height={50}
+                                width="100%"
+                                backgroundColor="transparent"
+                                mainBarColor="#2392f5"
+                                secondaryBarColor="#fe0095"
+                                speed={3}
+                                barWidth={3}
+                                gap={1}
+                                rounded={5}
+                              />
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={voiceControls.togglePauseResume}
+                                className="px-3 py-1 rounded text-black text-sm"
+                              >
+                                <Picture
+                                  src={
+                                    voiceControls.isPausedRecording
+                                      ? PlayIcon
+                                      : PauseIcon
+                                  }
+                                  alt={
+                                    voiceControls.isPausedRecording
+                                      ? "play voice"
+                                      : "pause voice"
+                                  }
+                                  size={30}
+                                />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  voiceControls.stopRecording();
+                                  setAudioUrl("");
+                                }}
+                                className="rounded text-[#305ce3] text-sm"
+                              >
+                                {/* <AudioStopIcon /> */}
+                                <StopCircleIcon size={30} />
+                              </button>
+                            </div>
+                          </div>
                         </>
                       )}
                     </>
                   )}
+
                   {audioUrl && (
                     <div className="flex w-full items-center justify-end gap-2">
                       <button type="button" onClick={() => setAudioUrl("")}>
@@ -455,7 +517,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                     </div>
                   )}
 
-                  {voiceControls.isRecordingInProgress && (
+                  {/* {voiceControls.isRecordingInProgress && (
                     <div className="w-full mt-4" style={{ height: "100px" }}>
                       <VoiceVisualizer
                         ref={voiceControls.audioRef}
@@ -471,7 +533,7 @@ const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
                         rounded={5}
                       />
                     </div>
-                  )}
+                  )} */}
                 </div>
               </AuthForm>
             )}

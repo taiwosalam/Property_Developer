@@ -3,8 +3,8 @@ import api, { handleAxiosError } from "@/services/api";
 export const staffConfigurations = [
   {
     title: "admin configuration (company director)",
-    subTitle:
-      "Can be accessed through mobile app, software, or web cross-platform.",
+    // subTitle:
+    //   "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [
       [
         "Add Other Directors",
@@ -32,8 +32,8 @@ export const staffConfigurations = [
   },
   {
     title: "partner configuration (branch manager)",
-    subTitle:
-      "Can be accessed through mobile app, software, or web cross-platform.",
+    // subTitle:
+    //   "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [
       [
         "Can view and reply branch messages",
@@ -67,8 +67,8 @@ export const staffConfigurations = [
   },
   {
     title: "colleague configuration (account officer)",
-    subTitle:
-      "Can be accessed through mobile app, software, or web cross-platform.",
+    // subTitle:
+    //   "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [
       [
         "Can manage assigned tenants/occupants",
@@ -93,8 +93,8 @@ export const staffConfigurations = [
     ],
   },
   {
-    title: "staff configuration (other staff)",
-    subTitle: "Can be accessed through mobile app or web cross-platform.",
+    title: "staff configuration (other staff) Configuration",
+    // subTitle: "Can be accessed through mobile app or web cross-platform.",
     permissions: [
       [
         "Can be added to task",
@@ -117,7 +117,7 @@ export const staffConfigurations = [
   },
   {
     title: "Users Configuration (Landlord, Occupant & Tenants)",
-    subTitle: "Can be accessed through mobile app or web cross-platform.",
+    // subTitle: "Can be accessed through mobile app or web cross-platform.",
     permissions: [
       [
         "Create Profile Account For Tenants/Occupant",

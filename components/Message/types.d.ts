@@ -15,6 +15,9 @@ export interface MessageCardProps {
   content_type?: string;
   last_seen?: string;
   badgeColor?: BadgeIconColors;
+  tier: number;
+  title: string;
+  role: string;
 }
 
 export interface MessagesProps {

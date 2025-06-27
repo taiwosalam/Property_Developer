@@ -83,6 +83,14 @@ export const team_chat_data: MessageCardProps[] = [
      groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
   },
   {
+    id: "7",
+    pfp: Avatar3,
+    desc: "Let me know if you need any further assistance. I'm here to help with anything you might need.",
+    time: "7:00 PM",
+    fullname: "Maintenance Department",
+     groupDesc: 'Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.',
+  },
+  {
     id: "8",
     pfp: Avatar4,
     tier: 1,
