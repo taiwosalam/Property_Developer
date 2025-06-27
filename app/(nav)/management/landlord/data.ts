@@ -123,7 +123,11 @@ export interface LandlordApiResponse {
       id: string;
       name: string;
       email: string | null;
-      phone: string | null;
+      // phone: string | null;
+      phone: {
+        user_phone: string | null;
+        profile_phone: string | null;
+      };
       username: string | null;
       picture: string;
       agent: string;
@@ -173,7 +177,8 @@ export const transformLandlordApiResponse = (
       id: landlord.id,
       name: landlord.name,
       email: landlord.email,
-      phone_number: landlord.phone,
+      phone_number: `${landlord.phone.profile_phone ?? ""}${landlord.phone.user_phone && landlord.phone.profile_phone  ? " / " + landlord.phone.user_phone : ""}`,
+      // phone_number: landlord.phone,
       user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: landlord.picture,
       note: landlord.note.note !== null && landlord.note.note !== "",

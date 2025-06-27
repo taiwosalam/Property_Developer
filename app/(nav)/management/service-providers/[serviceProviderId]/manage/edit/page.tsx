@@ -28,7 +28,7 @@ import type {
   IndividualServiceProvidersAPIResponse,
   ServiceProviderData,
 } from "@/app/(nav)/accountant/management/service-providers/[serviceProviderId]/manage/types";
-import { mockData } from "@/app/(nav)/management/landlord/data";
+// import { mockData } from "@/app/(nav)/management/landlord/data";
 import { useRouter } from "next/navigation";
 
 const EditServiceProvider = () => {

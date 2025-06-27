@@ -9,7 +9,7 @@ import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import AddPropertyWithId from "./add-property-with-id";
 import { useTourStore } from "@/store/tour-store";
 
-const AddPropertyModal = ({ isOpen }: { isOpen?: boolean }) => {
+const AddPropertyModal = ({ isOpen, id }: { isOpen?: boolean; id?: number }) => {
   const [view, setView] = useState<AddPropertyModalViews>("options");
   const { tour: tourState, setTourState } = useTourStore();
 
@@ -25,7 +25,7 @@ const AddPropertyModal = ({ isOpen }: { isOpen?: boolean }) => {
   > = {
     options: {
       heading: "Add Property",
-      content: <AddPropertyOptionsView setModalView={setView} />,
+      content: <AddPropertyOptionsView id={id} setModalView={setView} />,
     },
     "add-property-with-id": {
       heading: "Request Property with ID",

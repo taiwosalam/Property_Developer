@@ -19,20 +19,20 @@ import {
   TrashRecordsResponse,
   UndoTableData,
 } from "./types";
-import { ReportsRequestParams } from "../tenants/data";
+import { ReportsRequestParams } from "../../reports/tenants/data";
 import NetworkError from "@/components/Error/NetworkError";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import { AxiosRequestConfig } from "axios";
 import { error } from "console";
 import dayjs from "dayjs";
 import { BranchStaff } from "../../(messages-reviews)/messages/types";
-import data from "../landlord/page";
-import { FilterResult, BranchFilter, PropertyFilter } from "../tenants/types";
-import { transformUnitListData } from "../units/types";
+import data from "../../reports/landlord/page";
+import { FilterResult, BranchFilter, PropertyFilter } from "../../reports/tenants/types";
+import { transformUnitListData } from "../../reports/units/types";
 import Link from "next/link";
 import TableMenu from "@/components/Table/table-menu";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { hasActiveFilters } from "../data/utils";
+import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import ServerError from "@/components/Error/ServerError";

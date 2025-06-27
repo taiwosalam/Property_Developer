@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import BackButton from "@/components/BackButton/back-button";
 import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 import CreateRentalPropertyForm from "@/components/Management/Properties/create-property-form";
@@ -12,6 +12,9 @@ import { ExclamationMark } from "@/public/icons/icons";
 const CreateProperty = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const landlordId = searchParams.get("landlordId") || "";
+
   const {
     setShouldRenderTour,
     setPersist,
@@ -66,6 +69,7 @@ const CreateProperty = () => {
         <CreateRentalPropertyForm
           handleSubmit={handleSubmit}
           formType="rental"
+          landlordId={Number(landlordId)} 
         />
       </div>
     </>

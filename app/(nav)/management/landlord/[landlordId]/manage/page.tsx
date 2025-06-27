@@ -67,7 +67,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
 
   useEffect(() => {
     if (landlordData) {
-      setGlobalStore("selectedLandlordId", landlordData.id); 
+      setGlobalStore("selectedLandlordId", landlordData.id);
       const newMessageUserData = landlordData?.messageUserData;
       const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
 
@@ -118,9 +118,15 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
     router.push(`/messages/${landlordData?.user_id}`);
   };
 
+  // const handleAttachProperty = () => {
+  //   setGlobalStore("selectedLandlordId", landlordId);
+  //   setIsModalOpen(true);
+  // };
+
   const handleAttachProperty = () => {
-    setGlobalStore("selectedLandlordId", landlordId); 
-    setIsModalOpen(true);
+    router.push(
+      `/management/properties/create-rental-property?landlordId=${landlordId}`
+    );
   };
 
   return (
@@ -259,7 +265,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <AddPropertyModal />
+                    <AddPropertyModal id={Number(landlordId)} />
                   </ModalContent>
                 </Modal>
                 <Modal>

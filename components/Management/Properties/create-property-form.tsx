@@ -9,7 +9,7 @@ import type {
   AllInventoryResponse,
 } from "./types";
 import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { PlusIcon, DeleteIconX, ExclamationMark } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
@@ -58,6 +58,7 @@ import { useTourStore } from "@/store/tour-store";
 import { usePathname } from "next/navigation";
 import { useGlobalStore } from "@/store/general-store";
 import { toast } from "sonner";
+import { landlordTableFields } from "@/app/(nav)/manager/management/landlord/data";
 
 const maxNumberOfImages = 6;
 
@@ -71,6 +72,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   formType,
   propertyId,
   onAddUnit,
+  landlordId,
 }) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
@@ -182,7 +184,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     resetImages();
     setSelectedCategory(null);
     setSelectedLandlord([]);
-    setGlobalStore("selectedLandlordId", "");
+    // setGlobalStore("selectedLandlordId", "");
   };
 
   const {
@@ -257,19 +259,21 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }
   }, [branchData?.staff?.data]);
 
-  const landlordOptions =
-    landlordsData?.data?.map((landlord) => ({
-      value: landlord.id,
-      label: landlord.name,
-      icon: landlord.picture,
-    })) || [];
+  const landlordOptions = useMemo(
+    () =>
+      landlordsData?.data?.map((landlord) => ({
+        value: landlord.id,
+        label: landlord.name,
+        icon: landlord.picture,
+      })) || [],
+    [landlordsData]
+  );
 
   const inventoryOptions =
     branchData?.inventory?.data?.data?.map((inventory: any) => ({
       value: inventory.id,
       label: inventory.title,
     })) || [];
-
 
   const officerOptions =
     branchData?.accountOfficer?.data?.data?.map((officer: any) => ({
@@ -300,19 +304,18 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   }, [staffsData]);
 
   // Set default landlord from selectedLandlordId
-  useEffect(() => {
-    if (!editMode && selectedLandlordId && landlordOptions.length > 0) {
-      const defaultLandlord = landlordOptions.find(
-        (landlord) => landlord.value === selectedLandlordId
-      );
-      if (defaultLandlord) {
-        setSelectedLandlord([selectedLandlordId]);
-      } else {
-        toast.warning("Selected landlord not found in available options.");
-        setGlobalStore("selectedLandlordId", "");
-      }
-    }
-  }, [selectedLandlordId, landlordOptions, editMode, setGlobalStore]);
+  // useEffect(() => {
+  //   if (!editMode && landlordId && landlordOptions.length > 0) {
+  //     const defaultLandlord = landlordOptions.find(
+  //       (landlord) => landlord.value === landlordId
+  //     );
+  //     if (defaultLandlord) {
+  //       setSelectedLandlord([landlordId]);
+  //     } else {
+  //       toast.warning("Selected landlord not found in available options.");
+  //     }
+  //   }
+  // }, [landlordId, landlordOptions, editMode, setGlobalStore]);
 
   useEffect(() => {
     if (editMode && propertyDetails) {
@@ -615,7 +618,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               </>
             )}
 
-            {!isFacility && (
+            {/* {!isFacility && (
               <SelectWithImage
                 options={landlordOptions}
                 id="land_lord_id"
@@ -623,6 +626,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
                 className="property-landlord-wrapper"
+                onChange={(value) => setSelectedLandlord([value])}
                 defaultValue={
                   editMode && propertyDetails?.land_lord_id
                     ? landlordOptions.find(
@@ -645,7 +649,42 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 }
                 // error={landlordsError}
               />
-            )}
+            )} */}
+
+            <SelectWithImage
+              options={landlordOptions}
+              id="land_lord_id"
+              label="Landlord"
+              inputContainerClassName="bg-white"
+              resetKey={resetKey}
+              className="property-landlord-wrapper"
+              defaultValue={
+                editMode && propertyDetails?.land_lord_id
+                  ? landlordOptions.find(
+                      (landlord) =>
+                        String(landlord.value) ===
+                        String(propertyDetails.land_lord_id)
+                    )
+                  : landlordId
+                  ? landlordOptions.find(
+                      (landlord) =>
+                        String(landlord.value) === String(landlordId)
+                    )
+                  : undefined
+              }
+              // onChange={(option) =>
+              //   setSelectedLandlord(option ? [String(option.value)] : [])
+              // }
+              onChange={(value) => setSelectedLandlord([value])}
+              hiddenInputClassName="property-form-input"
+              placeholder={
+                landlordsLoading
+                  ? "Loading landlords..."
+                  : landlordsError
+                  ? "Error loading landlords"
+                  : "Select landlord"
+              }
+            />
 
             {isDirector && (
               <Select

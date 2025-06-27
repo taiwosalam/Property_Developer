@@ -68,7 +68,11 @@ export interface IndividualTenantAPIResponse {
     name: string;
     title: string;
     email: string;
-    phone: string;
+    // phone: string;
+    phone: {
+      profile_phone: string | null;
+      user_phone: string | null;
+    }
     tier_id?: 1 | 2 | 3 | 4 | 5;
     user_tier?: 1 | 2 | 3 | 4 | 5;
     picture?: string;
@@ -202,7 +206,12 @@ export const transformIndividualTenantAPIResponse = ({
     email: data?.email || "",
     user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
     badge_color: data?.user_tier ? tierColorMap[data.user_tier] : undefined,
-    phone_number: data?.phone || "",
+    // phone_number: data?.phone || "",
+    phone_number: `${data.phone.profile_phone ?? ""}${
+      data.phone.user_phone && data.phone.profile_phone
+        ? " / " + data.phone.user_phone
+        : ""
+    }`,
     tenant_type: data?.tenant_type || "",
     gender: data?.gender || "",
     birthdate: data.birthday
