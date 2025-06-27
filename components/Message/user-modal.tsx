@@ -204,6 +204,8 @@ const SelectChatUsersModal = ({
               name={user.name}
               position={user.position}
               status={user.online_status ?? "offline"}
+              tier={user.tier ?? 0}
+              title={user.title ?? ""}
             />
           </div>
         ))

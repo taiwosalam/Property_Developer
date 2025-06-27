@@ -85,7 +85,7 @@ const Chat = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<MessagesApiResponse>(`/messages/conversations/user/${id}`);
+  } = useFetch<MessagesApiResponse>(`/messages/conversations/${id}`);
   useRefetchOnEvent("refetchMessages", () => refetch({ silent: true }));
 
   // Fetch messages from API
@@ -154,7 +154,7 @@ const Chat = () => {
     if (isPusherFailed) {
       pollingInterval = setInterval(() => {
         refetch({ silent: true });
-      }, 5000); // Poll every 5 seconds
+      }, 8000); // Poll every 5 seconds
     }
 
     return () => {

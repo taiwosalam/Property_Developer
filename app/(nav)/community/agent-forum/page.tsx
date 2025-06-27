@@ -51,7 +51,10 @@ const AgentCommunityPage = () => {
     data: [],
     meta: {
       last_page: 1,
-      current_page: 1,
+      current_page: parseInt(
+        sessionStorage.getItem("agent_community_page") || "1",
+        10
+      ),
       total_items: 0,
       current_month_posts: 0,
       total: 0,
@@ -59,8 +62,10 @@ const AgentCommunityPage = () => {
     isLoading: false,
     searchQuery: "",
   };
+
   const [state, setState] = useState(initialState);
-  const { data, isLoading, searchQuery, meta } = state;
+  // const { data, isLoading, searchQuery, meta } = state;
+  const { data, searchQuery, meta } = state;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -68,6 +73,14 @@ const AgentCommunityPage = () => {
     startDate: null,
     endDate: null,
   });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem(
+      "agent_community_page",
+      meta.current_page.toString()
+    );
+  }, [meta.current_page]);
 
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -81,28 +94,32 @@ const AgentCommunityPage = () => {
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
-      page: 1,
+      page: parseInt(sessionStorage.getItem("agent_community_page") || "1", 10),
       search: "",
       sort: "asc",
     } as ArticlesRequestParams,
   });
 
   const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order);
     setConfig({
-      params: { ...config.params, sort: order },
+      params: { ...config.params, sort: order, page: 1 },
     });
+    sessionStorage.setItem("agent_community_page", "1");
   };
 
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
+    sessionStorage.setItem("agent_community_page", page.toString());
   };
 
   const handleSearch = async (query: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, page: 1 },
     });
+    sessionStorage.setItem("agent_community_page", "1");
   };
 
   const handleFilterApply = (filters: FilterResult) => {
@@ -138,8 +155,7 @@ const AgentCommunityPage = () => {
     setConfig({
       params: queryParams,
     });
-
-    // console.log({ menuOptions, startDate, endDate, options })
+    sessionStorage.setItem("agent_community_page", "1");
   };
 
   const {
@@ -150,8 +166,12 @@ const AgentCommunityPage = () => {
     error,
     refetch,
   } = useFetch<ThreadApiResponse>("agent_community", config);
+  useRefetchOnEvent("refetchThreads", async () => {
+    await refetch({ silent: true });
+    window.dispatchEvent(new Event("refetchThreadsDone"));
+  });
 
-  useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
+  // useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
@@ -178,8 +198,8 @@ const AgentCommunityPage = () => {
   if (isNetworkError) return <NetworkError />;
 
   if (error) return <ServerError error={error} />;
-
-  // console.log("threads", data);
+  const alreadylod = true;
+  console.log("isLikeDislikeLoading", isLikeDislikeLoading);
   return (
     <div className="space-y-7">
       <div className="flex gap-5 flex-wrap items-center justify-between">
@@ -250,8 +270,7 @@ const AgentCommunityPage = () => {
         )
       ) : (
         <AutoResizingGrid minWidth={300}>
-          {/* {silentLoading && !isLikeDislikeLoading ? ( */}
-          {config.params.search || isFilterApplied() ? (
+          {silentLoading && !isLikeDislikeLoading ? (
             <ThreadSkeletonLoader length={10} />
           ) : threads.length === 0 ? (
             <section>

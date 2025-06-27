@@ -53,14 +53,15 @@ const RenewalFee = ({
   ];
 
   const TOTAL_FEE = Number(unitData.renewalTenantTotalPrice as any);
-  const periodString = unitData.fee_period.charAt(0).toUpperCase() + unitData.fee_period.slice(1);
+  const periodString =
+    unitData.fee_period.charAt(0).toUpperCase() + unitData.fee_period.slice(1);
 
   // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g renewal-rent-wrapper💀💀💀👿
   return (
     <div className="space-y-6">
       <div className="renewal-rent-wrapper">
         <RentSectionTitle>
-          {isRental ? "Renewal Rent" : "Renewal Fee"}
+          {isRental ? "Renew Rent" : "Renew Fee"}
         </RentSectionTitle>
         <FeeDetails
           title={isRental ? "Breakdown" : `${periodString} Fee`}
@@ -85,8 +86,8 @@ const RenewalFee = ({
           />
         </div>
         <p>
-          Select this option if the client wishes to make a partial advance
-          payment of the total amount.
+          Select this option if the client is making an outright payment for the
+          renewal, with the full amount.
         </p>
       </div>
     </div>

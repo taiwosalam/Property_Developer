@@ -103,6 +103,7 @@ export interface ServiceProviderDetailsResponse {
     updated_at: string;
     phone: string;
     service_render: string;
+    company_logo: string;
     state: string;
     user_id: number;
     wallet_id: string;

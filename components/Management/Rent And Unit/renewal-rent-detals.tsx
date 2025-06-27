@@ -54,7 +54,7 @@ export const RenewalRentDetails: React.FC<{
   return (
     <div className="space-y-6">
       <RentSectionTitle>
-        {isRental ? "Current Rent" : "Fee Renewal Details"}
+        {isRental ? "Current Rent" : "Current Details"}
       </RentSectionTitle>
       <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
         <div className="grid md:grid-cols-2 gap-4">

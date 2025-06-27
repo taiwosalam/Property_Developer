@@ -43,6 +43,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import dayjs from "dayjs";
+import { empty } from "@/app/config";
 
 const ManageServiceProvider = () => {
   const params = useParams();
@@ -96,6 +97,7 @@ const ManageServiceProvider = () => {
         : "",
     provider_notes: userData?.note || "",
   };
+  console.log("providerData", providerData)
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -275,7 +277,7 @@ const ManageServiceProvider = () => {
               About Business
             </p>
             <Picture
-              src={SampleLogo}
+              src={providerData?.company_logo ?? empty}
               alt="sample logo"
               width={300}
               height={67}

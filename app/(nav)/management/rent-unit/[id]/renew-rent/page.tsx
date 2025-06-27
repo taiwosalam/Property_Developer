@@ -85,7 +85,7 @@ const RenewRent = () => {
     useState<CheckBoxOptions>(defaultChecks);
   const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
-  const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(false);
+  const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(true);
   const [reqLoading, setReqLoading] = useState(false);
   const [isCompletePayment, setIsCompletePayment] = useState(false);
   const [hasPartPayment, setHasPartPayment] = useState(false);
@@ -163,6 +163,7 @@ const RenewRent = () => {
     parseFloat(PENDING_INVOICE?.balance_due) || 0;
   const PART_PAYMENT_AMOUNT = PENDING_INVOICE_PAID_AMOUNT;
 
+  const isWebUser = occupant?.userTag?.toLowerCase() === "web";
   // UNPAID INVOICE REPRESENTS PAYMENTS THAT WAS ADDED BUT HAVE NOT BEEN MARKED AS PAID
   const UNPAID_INVOICE = unitData?.unpaid_invoice;
   const UNPAID_INVOICE_PAID_AMOUNT =
@@ -221,7 +222,12 @@ const RenewRent = () => {
       rent_type: "renew",
       mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
       email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
-      has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
+      has_invoice: isWebUser
+        ? 1
+        : selectedCheckboxOptions.create_invoice
+        ? 0
+        : 1,
+      // has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       has_penalty: penaltyAmount > 0 ? 1 : 0,
       penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
@@ -290,7 +296,12 @@ const RenewRent = () => {
       has_penalty: penaltyAmount > 0 ? 1 : 0,
       penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
       type: "part_payment",
-      has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
+      has_invoice: isWebUser
+        ? 1
+        : selectedCheckboxOptions.create_invoice
+        ? 0
+        : 1,
+      // has_invoice: selectedCheckboxOptions.create_invoice ? 0 : 1,
     };
 
     try {
@@ -426,6 +437,12 @@ const RenewRent = () => {
                             PENDING_INVOICE_BALANCE_DUE,
                             currency
                           ),
+                        },
+                        {
+                          name: "Last Updated",
+                          amount:
+                            unitData?.pending_invoice.last_updated_date ??
+                            "__,__,__",
                         },
                       ]}
                       currency={currency}

@@ -16,6 +16,7 @@ import {
   GalleryIcon,
 } from "@/public/icons/icons";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export const users_data: UsersProps[] = [
   { id: "1", name: "", imageUrl: "", position: "" },
@@ -53,6 +54,7 @@ export interface MessageUserPageTypes {
 export const transformCompanyUsersData = (
   res: CompanyUsersAPIResponse
 ): MessageUserPageTypes => {
+  // console.log("transformCompanyUsersData", res);
   return {
     users: res.data.users.map((u) => ({
       id: u.id,
@@ -61,6 +63,8 @@ export const transformCompanyUsersData = (
       name: u.name,
       imageUrl: u.profile_picture || empty,
       position: u.role,
+      tier: u.tier,
+      title: u.title,
       // badgeColor: tierColorMap[u.user_tier as keyof typeof tierColorMap],
       online_status: u.online_status,
     })),
@@ -76,18 +80,22 @@ export const transformCompanyUsersData = (
   };
 };
 
-
 export const transformUsersMessages = (
   data: ConversationsAPIResponse | null | undefined
 ): PageMessages[] => {
-  // console.log("data got", data)
+  console.log("data got", data);
   if (!data || !data.conversations) return []; // Ensure data exists
 
   return data.conversations.map((c) => {
     let finalContentType = "text"; // Default to 'text'
 
-    if (c.latest_message_type !== "text") {
-      // If it's a file, check the file extension.
+    // if (c.latest_message_type !== "text") {
+    //   // If it's a file, check the file extension.
+    //   const extension = c.latest_message.split(".").pop()?.toLowerCase() || "";
+    if (
+      c.latest_message_type !== "text" &&
+      typeof c.latest_message === "string"
+    ) {
       const extension = c.latest_message.split(".").pop()?.toLowerCase() || "";
       if (["mp3", "wav", "ogg", "webm"].includes(extension)) {
         finalContentType = "audio";
@@ -104,19 +112,30 @@ export const transformUsersMessages = (
     }
 
     return {
-      id: c.participant_id,
-      pfp: c.profile_picture,
+      id: c.id,
+      pfp: c.avatar,
       desc: c.latest_message,
       time: c.latest_message_time,
-      fullname: `${c.participant_title ?? ""} ${c.participant_name}`,
+      fullname: `${c.title ?? ""} ${capitalizeWords(c.name)}`,
       messages: c.unread_count,
       verified: false, // change later
       content_type: finalContentType,
-      // content_type: c.latest_message_type,
+      role: c.role,
+      tier: c.tier,
+      title: c.title,
       unread_count: c.unread_count,
-      online: c.participant_onlineStatus === "online",
-      last_seen: c.participant_onlineStatus,
-      badgeColor: c.participant_tier ? tierColorMap[c.participant_tier as keyof typeof tierColorMap] : undefined,
+      online: c.is_online === "online",
+      last_seen: c.is_online,
+      // badgeColor: c.tier
+      //   ? tierColorMap[c.tier as keyof typeof tierColorMap]
+      //   : undefined,
+      badgeColor:
+        c.tier === 2 &&
+        ["director", "account", "staff", "manager"].includes(c.role)
+          ? "gray"
+          : c.tier
+          ? tierColorMap[c.tier as keyof typeof tierColorMap]
+          : undefined,
     };
   });
 };
@@ -210,7 +229,9 @@ interface GroupedMessage {
   seen: boolean;
 }
 
-export const groupMessagesByDay = (data: Message[]): { day: string; messages: GroupedMessage[] }[] => {
+export const groupMessagesByDay = (
+  data: Message[]
+): { day: string; messages: GroupedMessage[] }[] => {
   console.log("groupMessagesByDay input:", data);
   if (!data || !data.length) return [];
 
@@ -223,8 +244,12 @@ export const groupMessagesByDay = (data: Message[]): { day: string; messages: Gr
 
   // Group by day
   const groups = sorted.reduce((acc, message) => {
-    const dayKey = moment(message.timestamp, "YYYY-MM-DD hh:mm A").format("YYYY-MM-DD");
-    const displayDay = moment(message.timestamp, "YYYY-MM-DD hh:mm A").format("MMMM D, YYYY");
+    const dayKey = moment(message.timestamp, "YYYY-MM-DD hh:mm A").format(
+      "YYYY-MM-DD"
+    );
+    const displayDay = moment(message.timestamp, "YYYY-MM-DD hh:mm A").format(
+      "MMMM D, YYYY"
+    );
 
     if (!acc[dayKey]) {
       acc[dayKey] = { day: displayDay, messages: [] };

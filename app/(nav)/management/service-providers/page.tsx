@@ -59,7 +59,10 @@ interface ServiceProviderCardProps {
 
 const defaultServiceProviderPageData: ServiceProviderPageData = {
   total_pages: 1,
-  current_page: 1,
+  current_page: parseInt(
+    sessionStorage.getItem("service_providers_page") || "1",
+    10
+  ),
   total: 0,
   total_month: 0,
   total_web: 0,
@@ -73,7 +76,13 @@ const ServiceProviders = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
   const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: { page: 1, search: "" } as ServiceProviderRequestParams,
+    params: {
+      page: parseInt(
+        sessionStorage.getItem("service_providers_page") || "1",
+        10
+      ),
+      search: "",
+    } as ServiceProviderRequestParams,
   });
   const [pageData, setPageData] = useState<ServiceProviderPageData>(
     defaultServiceProviderPageData
@@ -95,6 +104,12 @@ const ServiceProviders = () => {
     startDate: null,
     endDate: null,
   });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("service_providers_page", current_page.toString());
+  }, [current_page]);
+
   const {
     data: apiData,
     silentLoading,
@@ -150,6 +165,7 @@ const ServiceProviders = () => {
     if (view === "grid") {
       setShouldScroll(true);
     }
+    sessionStorage.setItem("service_providers_page", page.toString());
   };
 
   useEffect(() => {
@@ -166,14 +182,16 @@ const ServiceProviders = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort: order },
+      params: { ...config.params, sort: order, page: 1 },
     });
+    sessionStorage.setItem("service_providers_page", "1");
   };
 
   const handleSearch = (query: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, page: 1 },
     });
+    sessionStorage.setItem("service_providers_page", "1");
   };
 
   useEffect(() => {
@@ -188,6 +206,7 @@ const ServiceProviders = () => {
     }));
     //refetch({ silent: true });
     window.dispatchEvent(new Event("refetchServiceProvider"));
+    sessionStorage.setItem("service_providers_page", "1");
   }, [view]);
 
   useEffect(() => {

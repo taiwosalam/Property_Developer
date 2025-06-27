@@ -144,7 +144,7 @@ export const ThreadFooter = ({
   user_disliked?: boolean;
   setIsLikeDislikeLoading?: (value: boolean) => void;
 }) => {
-  const isDarkMode = useDarkMode()
+  const isDarkMode = useDarkMode();
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -152,15 +152,25 @@ export const ThreadFooter = ({
     try {
       setIsLoading(true);
       setIsLikeDislikeLoading?.(true);
+
       const res = await toggleLike(slug, type);
+
       if (res) {
-        window.dispatchEvent(new Event("refetchThreads"));
+        return new Promise<void>((resolve) => {
+          const onRefetchDone = () => {
+            setIsLikeDislikeLoading?.(false);
+            window.removeEventListener("refetchThreadsDone", onRefetchDone);
+            resolve();
+          };
+
+          window.addEventListener("refetchThreadsDone", onRefetchDone);
+          window.dispatchEvent(new Event("refetchThreads"));
+        });
       }
     } catch (error) {
       console.error("Error toggling like:", error);
     } finally {
       setIsLoading(false);
-      setIsLikeDislikeLoading?.(false);
     }
   };
 
@@ -205,7 +215,9 @@ export const ThreadFooter = ({
         >
           <DislikeIcon
             fill={`${user_disliked ? "#E15B0F" : "none"} `}
-            stroke={`${user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
+            stroke={`${
+              user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"
+            } `}
           />
           <p>{dislikes}</p>
         </button>
