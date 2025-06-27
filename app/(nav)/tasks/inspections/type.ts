@@ -29,6 +29,7 @@ type InspectionData = {
   inspection_time: string;
   description: string;
   booked_by: string;
+  booked_id: number;
   tier: number;
   booked_by_id: number;
   phone: string;
@@ -212,6 +213,7 @@ export interface InspectionPageType {
     address: string;
     inspection_type: "virtual_inspection" | "physical_inspection";
     booked_by: string;
+    booked_by_id: number;
     inspection_date: string;
     inspection_time: string;
   }[];

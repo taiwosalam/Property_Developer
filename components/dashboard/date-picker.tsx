@@ -17,9 +17,9 @@ import { useGlobalStore } from "@/store/general-store";
 
 const calculateDefaultDateRange = () => {
   const now = new Date();
-  const fromDate = new Date();
-  fromDate.setDate(now.getDate() - 30);
-  return { from: fromDate, to: now };
+  const toDate = new Date();
+  toDate.setDate(now.getDate() + 30); // 30 days ahead
+  return { from: now, to: toDate };
 };
 
 export function DatePickerWithRange({

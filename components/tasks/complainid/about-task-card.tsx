@@ -104,7 +104,7 @@ const DetailItem = ({
     </p>
     <div className="flex items-center">
       <p className="text-sm text-[16px] font-normal  text-text-secondary dark:text-darkText-1 capitalize">
-        {value}
+        {typeof value === "string" ? value.toLowerCase() : value}
       </p>
       {label === "Complaints sent by" ? (
         <BadgeIcon color={getBadgeColor(tier_id) || "gray"} />

@@ -173,7 +173,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       >
         <CardHeader className="px-3 py-3 space-between flex flex-row border-secondary relative">
           <div className="w-full flex items-center space-x-2">
-            <Avatar className="hidden h-9 w-9 rounded-full sm:flex overflow-hidden">
+            <Avatar className="hidden h-9 w-9 rounded-full sm:flex overflow-hidden custom-secondary-bg">
               <AvatarImage
                 src={task.avatarSrc}
                 alt="Avatar"

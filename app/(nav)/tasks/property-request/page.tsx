@@ -65,7 +65,7 @@ const PropertyRequest = () => {
     isNetworkError,
     error,
     silentLoading,
-  } = useFetch<PropertyRequestApi>(`property-requests`, config);
+  } = useFetch<PropertyRequestApi>(`property-request/company`, config);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],

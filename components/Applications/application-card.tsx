@@ -82,7 +82,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           </p>
           <div className="flex items-center gap-1">
             <Picture src={LocationIcon} alt="location" width={12} height={16} />
-            <p className="text-text-disabled text-xs font-normal">
+            <p className="text-text-disabled text-xs font-normal capitalize">
               {data?.address}
             </p>
           </div>

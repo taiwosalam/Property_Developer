@@ -56,7 +56,7 @@ const ManageComplain = () => {
       <div className="w-full lg:w-3/5 lg:h-full space-y-10">
         <AboutTaskCard
           aboutCard={pageData?.aboutCard || []}
-          description={pageData?.description || ""}
+          description={pageData?.description|| ""}
           tier_id={pageData?.tier_id}
         />
         <ComplaintsCalendar
