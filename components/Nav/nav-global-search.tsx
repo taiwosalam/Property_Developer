@@ -41,7 +41,9 @@ const NavGlobalSearch = () => {
   );
 
   useEffect(() => {
-    debouncedSetQuery(searchQuery);
+    if (searchQuery.length > 1) {
+      debouncedSetQuery(searchQuery);
+    }
   }, [searchQuery, debouncedSetQuery]);
 
   const {
@@ -63,11 +65,9 @@ const NavGlobalSearch = () => {
     }
   }, [apiData]);
 
-  console.log(searchResults);
-
   // Mapping of tab labels to count fields or aggregated counts
   const getTabCount = (label: string): number => {
-    if (!searchResults) return 0;
+    if (!searchResults || searchQuery.length === 0) return 0;
 
     const counts = searchResults.counts;
     switch (label.toLowerCase()) {
@@ -90,6 +90,29 @@ const NavGlobalSearch = () => {
     }
   };
 
+  // Map tabs to result arrays
+  const getTabResults = (label: string) => {
+    if (!searchResults?.results) return [];
+    switch (label.toLowerCase()) {
+      case "management":
+        return [
+          ...searchResults.results.users,
+          ...searchResults.results.properties,
+        ];
+      case "listing":
+        return [...searchResults.results.units];
+      case "community":
+        return [
+          ...searchResults.results.agentCommunities,
+          ...searchResults.results.agentRequests,
+        ];
+      // case "wallet":
+      //   return searchResults.results.wallets;
+      default:
+        return [];
+    }
+  };
+
   // Error message logic
   const getErrorMessage = () => {
     if (isNetworkError) {
@@ -97,6 +120,9 @@ const NavGlobalSearch = () => {
     }
     if (error) {
       return <SearchError />;
+    }
+    if (loading || silentLoading) {
+      return <LoaderSkeleton />;
     }
     return null;
   };
@@ -126,14 +152,15 @@ const NavGlobalSearch = () => {
           <SectionSeparator />
         </div>
         <div className="flex">
-          <div className="flex gap-3 w-[60%] h-[45px]">
+          <div className="h-[45px] flex gap-3 w-[60%]">
             <Input
               id="search"
-              onChange={(value: string) => setSearchQuery(value)}
               value={searchQuery}
+              onChange={(value: string) => setSearchQuery(value)}
               placeholder="Search"
               className="h-full flex-1 text-sm bg-neutral-3 dark:bg-black"
             />
+
             <button
               aria-label="search"
               className="bg-brand-9 h-full aspect-square flex justify-center items-center rounded-md"
@@ -148,7 +175,6 @@ const NavGlobalSearch = () => {
           <div className="flex gap-8">
             {tabs.map(({ label }, idx) => {
               const count = getTabCount(label);
-
               return (
                 <NavSearchTab
                   key={idx}
@@ -166,9 +192,15 @@ const NavGlobalSearch = () => {
       <div className="pb-3 px-8 flex-1 overflow-x-hidden overflow-y-auto">
         {error || isNetworkError ? (
           <div className="flex-1 flex items-center justify-center">
-            <p className="text-red-500 text-base font-medium text-center p-4">
-              {getErrorMessage()}
-            </p>
+            {getErrorMessage()}
+          </div>
+        ) : loading || silentLoading ? (
+          <div className="flex-1 flex flex-col">
+            <div className="sticky top-0 z-[2] flex justify-between pt-3 pb-2 pr-16 bg-white dark:bg-black text-text-tertiary text-base font-normal capitalize">
+              <p className="dark:text-darkText-1">{tabs[activeTab].label}</p>
+              <p className="dark:text-darkText-1">type</p>
+            </div>
+            <LoaderSkeleton />
           </div>
         ) : (
           <div className="custom-flex-col">
@@ -177,11 +209,28 @@ const NavGlobalSearch = () => {
               <p className="dark:text-darkText-1">type</p>
             </div>
             <div className="relative z-[1] custom-flex-col gap-3">
-              {Array(10)
-                .fill(null)
-                .map((_, idx) => (
-                  <NavGlobalSearchItem key={idx} icon={tabs[activeTab].icon} />
-                ))}
+              {searchQuery === "" ? (
+                <p className="text-gray-500 text-base font-medium text-center p-4">
+                  Start typing to search for properties, units, users, and more
+                </p>
+              ) : getTabResults(tabs[activeTab].label).length > 0 ? (
+                getTabResults(tabs[activeTab].label).map((item, idx) => (
+                  <NavGlobalSearchItem
+                    key={`${item.type}-${idx}`}
+                    icon={item.icon as SVGType}
+                    title={item.title}
+                    subtitle={item.subtitle}
+                    extra={item.extra}
+                    query={searchQuery}
+                    isVerified={item.isVerified}
+                    type={item.type}
+                  />
+                ))
+              ) : (
+                <p className="text-gray-500 text-base font-medium text-center p-4">
+                  No results found for {tabs[activeTab].label}.
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -224,12 +273,44 @@ const SearchError = () => {
         Oops! We ran into some trouble
       </p>
 
-      <div className="h-[2px] bg-[#C0C2C8] bg-opacity-20 w-full" />
       <div className="flex flex-col gap-7 text-text-secondary dark:text-darkText-2 font-normal text-sm">
-        <p>
+        <p className="py-4">
           We&apos;re sorry - something went wrong on our end. Don&apos;t worry,
           our team has been alerted and is already working to fix it.
         </p>
+      </div>
+    </>
+  );
+};
+
+const LoaderSkeleton = () => {
+  return (
+    <>
+      <div className="pb-3 px-8 flex-1 overflow-x-hidden overflow-y-hidden mt-4">
+        <div className="flex flex-col">
+          <div className="relative z-[1] flex flex-col gap-3">
+            {Array(3)
+              .fill(null)
+              .map((_, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-4 p-3 border border-gray-200 dark:border-gray-700 rounded-lg"
+                >
+                  {/* Icon skeleton */}
+                  <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse flex-shrink-0"></div>
+
+                  {/* Content skeleton */}
+                  <div className="flex-1 flex flex-col gap-5">
+                    <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                    <div className="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+
+                  {/* Type/Status skeleton */}
+                  <div className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
+                </div>
+              ))}
+          </div>
+        </div>
       </div>
     </>
   );

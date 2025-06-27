@@ -80,4 +80,6 @@ export interface NavGlobalSearchItemProps {
   extra?: string;
   query?: string;
   isVerified?: boolean;
+  tier_id?: number;
+  type?: string;
 }

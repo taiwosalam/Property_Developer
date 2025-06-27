@@ -35,8 +35,6 @@ const ReviewChat = () => {
     }
   }, [data]);
 
-  console.log(review?.main);
-
   return (
     <>
       <div className="py-4 px-6 bg-neutral-2">
