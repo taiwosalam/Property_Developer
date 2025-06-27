@@ -26,6 +26,9 @@ import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
+import { getAllStates } from "@/utils/states";
+
+const allStates = getAllStates();
 
 const transformToPropertyRequestCardProps = (
   data: PropertyRequestDataType
@@ -81,7 +84,7 @@ const PropertyRequest = () => {
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
-    const statesArray = menuOptions["Status"] || [];
+    const statesArray = menuOptions["State"] || [];
     const agent = menuOptions["Landlord/Landlady Type"]?.[0];
     const propertyIdsArray = menuOptions["Property"] || [];
 
@@ -95,6 +98,9 @@ const PropertyRequest = () => {
     }
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
+    }
+    if (statesArray.length > 0) {
+      queryParams.states = statesArray.join(",");
     }
 
     setConfig({
@@ -139,6 +145,12 @@ const PropertyRequest = () => {
       <FilterBar
         azFilter
         pageTitle="Request"
+        filterOptionsMenu={[
+          {
+            label: "State",
+            value: allStates.map((state) => ({ label: state, value: state })),
+          },
+        ]}
         aboutPageModalData={{
           title: "Request",
           description: "This page contains a list of Request on the platform.",

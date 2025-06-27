@@ -12,6 +12,7 @@ import {
   rejectComplaint,
 } from "@/app/(nav)/tasks/complaints/data";
 import { toast } from "sonner";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 interface ComplaintData {
   id: number;
@@ -58,6 +59,10 @@ const TaskModal = ({
 
   const handleApproveOrProcessComplaint = async (route: string) => {
     if (!id) {
+      return;
+    }
+    if (notes.length < 1) {
+      toast.warning("Please provide a note");
       return;
     }
     const payload: IChangeComplainStatus = {
@@ -113,7 +118,7 @@ const TaskModal = ({
               </p>
               <div className="flex items-center space-x-1">
                 <span className="dark:text-darkText-2 capitalize">
-                  {senderName}
+                  {senderName?.toLowerCase()}
                 </span>
                 {senderVerified && (
                   <BadgeIcon color={getBadgeColor(tier) ?? "gray"} />
@@ -121,13 +126,13 @@ const TaskModal = ({
               </div>
             </div>
             <div className="flex justify-between items-center">
-              <p className="text-text-tertiary dark:text-darkText-1 text-sm w-[140px]">
+              <p className="text-text-tertiary dark:text-darkText-1 text-sm w-[140px] line-clamp-2">
                 Complaint Title:
               </p>
               <span className="dark:text-darkText-2">{complaintTitle}</span>
             </div>
             <div className="flex justify-between items-center">
-              <p className="text-text-tertiary dark:text-darkText-1 w-[140px]">
+              <p className="text-text-tertiary dark:text-darkText-1 w-[140px] line-clamp-2">
                 Property Name:
               </p>
               <span className="dark:text-darkText-2">{propertyName}</span>
@@ -136,7 +141,9 @@ const TaskModal = ({
               <p className="text-text-tertiary dark:text-darkText-1 w-[140px]">
                 Property Address:
               </p>
-              <span className="dark:text-darkText-2">{propertyName}</span>
+              <span className="dark:text-darkText-2 line-clamp-2 capitalize">
+                {propertyAddress}
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">
@@ -154,7 +161,10 @@ const TaskModal = ({
               <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">
                 Brief:
               </p>
-              <span className="dark:text-darkText-2"> {brief}</span>
+              <TruncatedText>
+                 <span className="dark:text-darkText-2">{brief}</span>
+              </TruncatedText>
+             
             </div>
           </div>
         </div>
@@ -166,9 +176,9 @@ const TaskModal = ({
               ? "Kindly approve or reject this complaint"
               : "Change the status of this complaint"}
           </p>
-          <p className="font-medium text-text-secondary dark:text-darkText-1 my-3">
-            Attach note:
-          </p>
+          <div className="font-medium text-text-secondary dark:text-darkText-1 my-3 flex gap-1">
+            <p className="text-red-500">*</p> Attach note:
+          </div>
           <div className="mt-4">
             <TextArea
               id="note"
@@ -202,7 +212,7 @@ const TaskModal = ({
               </div>
             ) : (
               <Button
-                disabled={isLoading || notes.length === 0}
+                disabled={isLoading}
                 size="16_bold"
                 className="py-2 px-6 w-full"
                 //   className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"

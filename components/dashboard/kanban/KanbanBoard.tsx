@@ -33,7 +33,7 @@ const defaultCols = [
   },
   {
     id: "approved" as const,
-    title: "Approved",
+    title: "Completed",
   },
   {
     id: "rejected" as const,
