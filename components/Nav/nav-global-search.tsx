@@ -76,7 +76,12 @@ const NavGlobalSearch = () => {
     const counts = searchResults.counts;
     switch (label.toLowerCase()) {
       case "management":
-        return (counts.users || 0) + (counts.properties || 0);
+        return (
+          (counts.users || 0) +
+          (counts.properties || 0) +
+          (counts.landlords || 0) +
+          (counts.tenants || 0)
+        );
       case "listing":
         return counts.units || 0;
       case "community":
@@ -102,6 +107,8 @@ const NavGlobalSearch = () => {
         return [
           ...searchResults.results.users,
           ...searchResults.results.properties,
+          ...searchResults.results.landlords,
+          ...searchResults.results.tenants,
         ];
       case "listing":
         return [...searchResults.results.units];
@@ -125,6 +132,8 @@ const NavGlobalSearch = () => {
       counts.users > 0 ||
       counts.properties > 0 ||
       counts.units > 0 ||
+      counts.landlords > 0 ||
+      counts.tenants > 0 ||
       counts.agentCommunities > 0 ||
       counts.agentRequest > 0
     );

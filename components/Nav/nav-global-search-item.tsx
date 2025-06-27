@@ -22,7 +22,7 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   query,
   type,
   isVerified = false,
-  tier_id
+  tier_id,
 }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
@@ -62,7 +62,7 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
                 {highlightQuery(title ?? "")}
               </p>
               {isVerified && (
-                <BadgeIcon color={getBadgeColor(tier_id) || "gray"}/>
+                <BadgeIcon color={getBadgeColor(tier_id) || "gray"} />
               )}
             </div>
             <p className="text-text-tertiary text-sm">
@@ -75,7 +75,7 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
         </div>
       </div>
       <p className="text-text-tertiary text-base font-medium capitalize">
-        {type}
+        {type && type === "landlords" ? "landlords/landlady" : type}
       </p>
     </div>
   );

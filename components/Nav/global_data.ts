@@ -173,6 +173,24 @@ export interface GlobalSearchApiResponse {
       deleted_at: string | null;
       searchable_type: "units";
     }>;
+    landlords: Array<{
+      profile_id: number;
+      profile: {
+        id: number;
+        type: string;
+        name: string;
+        email: string;
+      };
+    }>;
+    tenants: Array<{
+      profile_id: number;
+      profile: {
+        id: number;
+        name: string;
+        email: string;
+        type: string;
+      };
+    }>;
     agentCommunities: any[];
     agentRequests: any[];
     wallets: any[];
@@ -185,6 +203,8 @@ interface SearchResponseMeta {
   details: {
     users: SearchResponseMetaDetails;
     properties: SearchResponseMetaDetails;
+    landlords: SearchResponseMetaDetails;
+    tenants: SearchResponseMetaDetails;
     units: SearchResponseMetaDetails;
     agentCommunities: SearchResponseMetaDetails;
     agentRequests: SearchResponseMetaDetails;
@@ -212,6 +232,8 @@ export interface IGlobalSearchPageData {
   results: {
     users: ISearchItem[];
     properties: ISearchItem[];
+    landlords: ISearchItem[];
+    tenants: ISearchItem[];
     units: ISearchItem[];
     agentCommunities: ISearchItem[];
     agentRequests: ISearchItem[];
@@ -222,6 +244,8 @@ export interface IGlobalSearchPageData {
     units: number;
     agentCommunities: number;
     agentRequest: number;
+    landlords: number;
+    tenants: number;
     //wallets: number;
   };
 }
@@ -241,10 +265,28 @@ export const transformGlobalSearchPageData = (
         type: "users",
         title: user.name?.toLowerCase() || "Unknown User",
         subtitle: user.email || "No email",
-        extra: user.roles?.[0]?.name  || "",
+        extra: user.roles?.[0]?.name || "",
         icon: "people",
         isVerified: user.is_verified || false,
         tier_id: user.tier_id,
+      })),
+      landlords: results?.landlords?.map((landlord) => ({
+        id: landlord?.profile_id,
+        type: landlord?.profile?.type,
+        subtitle: landlord?.profile?.email,
+        extra: "",
+        icon: "people",
+        isVerified: false,
+        title: landlord?.profile?.name,
+      })),
+      tenants: results?.tenants?.map((tenant) => ({
+        id: tenant?.profile_id,
+        type: tenant?.profile?.type,
+        subtitle: tenant?.profile?.email,
+        extra: "",
+        icon: "people",
+        isVerified: false,
+        title: tenant?.profile?.name,
       })),
       properties: results.properties.map((property) => ({
         id: property?.id,
@@ -290,6 +332,8 @@ export const transformGlobalSearchPageData = (
     counts: {
       users: details?.users?.total || 0,
       properties: details?.properties?.total || 0,
+      landlords: details?.landlords?.total || 0,
+      tenants: details?.tenants?.total || 0,
       units: details?.units?.total || 0,
       agentCommunities: details?.agentCommunities?.total || 0,
       agentRequest: details?.agentRequests?.total || 0,
