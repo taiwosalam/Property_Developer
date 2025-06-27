@@ -22,7 +22,10 @@ dayjs.extend(advancedFormat);
 
 const ExportSubscription = () => {
   const exportRef = useRef<HTMLDivElement>(null);
-  
+  const [fullContent, setFullContent] = useState(false);
+
+  const subscriptions = useGlobalStore((s) => s.subscriptions);
+
   return (
     <div className="space-y-9 pb-[100px]">
       <BackButton as="p">Back</BackButton>
@@ -37,17 +40,17 @@ const ExportSubscription = () => {
           </h1>
         </div>
         <CustomTable
-          //className={`${fullContent && "max-h-none"}`}
+          className={`${fullContent && "max-h-none"}`}
           fields={enrollment_subscriptions.fields}
-          data={[]}
+          data={subscriptions || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />
       </div>
       <ExportPageFooter
         printRef={exportRef}
-        //setFullContent={setFullContent}
-        //fullContent={fullContent}
+        setFullContent={setFullContent}
+        fullContent={fullContent}
       />
     </div>
   );

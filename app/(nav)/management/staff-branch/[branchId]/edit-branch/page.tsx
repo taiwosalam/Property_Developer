@@ -127,13 +127,6 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
           somedata={branchData}
           setUpdateRequestLoading={setUpdateRequestLoading}
         />
-        {/* <SettingsBank
-          branch
-          branch_account_name={branchData?.account_name}
-          branch_account_number={branchData?.account_number}
-          branch_bank_name={branchData?.bank_name}
-          action={updateBranchBankDetails}
-        /> */}
         <BranchBankSettings
           branch_account_name={branchData?.account_name}
           branch_account_number={branchData?.account_number}

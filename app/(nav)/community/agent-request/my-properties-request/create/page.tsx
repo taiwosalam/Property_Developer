@@ -40,7 +40,7 @@ const CreateMyPropertyRequest = () => {
         router.push("/community/agent-request/my-properties-request");
       }
     } catch (error) {
-      toast.error("Failed to create property request. Please try again.");
+      console.error("Failed to create property request. Please try again.");
     } finally {
       setIsCreating(false);
     }

@@ -37,6 +37,7 @@ import { StaffChatTypes } from "@/app/(nav)/management/staff-branch/[branchId]/b
 import { PropertyCardProps } from "@/components/Management/Properties/property-card";
 import { IVisitorsReportPageData } from "@/app/(nav)/reports/visitors/data";
 import { PropertyManagerSubsTransformedPlan } from "@/app/(nav)/settings/subscription/types";
+import { DataItem } from "@/components/Table/types";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -45,6 +46,7 @@ interface GlobalStoreState {
   landlords?: LandlordReportEntry[];
   tenants?: ITenantListReport[];
   units?: UnitListRequest[];
+  subscriptions?: DataItem[];
   vehicle_records?: VehicleRecordsType[];
   rents?: Rent[];
   emails?: EmailPageData;
@@ -153,6 +155,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   landlords: [],
   tenants: [],
   units: [],
+  subscriptions:[],
   activities: [],
   vehicle_records: [],
   rent: [],

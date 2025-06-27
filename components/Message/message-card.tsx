@@ -35,19 +35,34 @@ const MessageCard: React.FC<MessageCardProps> = ({
   tier,
   title,
   role,
+  type,
   // badgeColor,
 }) => {
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const IconComponent = getIconByContentType(content_type as string);
+  const isGroupChat = type?.toLowerCase() === "group";
   const isOnline = last_seen?.toLowerCase() === "online";
 
-  const isAcct = role === "director" || role === "manager" || role === "staff";
-  const showActBadge = isAcct && tier === 2;
+  // Only show badge for:
+  // - Not group chat
+  // - If role is in special roles array and tier is 2
+  // - OR if not in special roles array but tier is defined (custom tier badge)
+  const specialRoles = ["director", "account", "staff", "manager"];
 
-  const badgeColor =
-    tierColorMap[tier as keyof typeof tierColorMap] ||
-    "gray";
+  let badgeColor: string | undefined;
+  if (!isGroupChat) {
+    if (specialRoles.includes(role ?? "")) {
+      if (tier === 2) {
+        badgeColor = tierColorMap[2];
+      }
+      // else badgeColor remains undefined (do not show badge)
+    } else if (tier && tierColorMap[tier as keyof typeof tierColorMap]) {
+      // other roles but with a tier (map their tier as badge)
+      badgeColor = tierColorMap[tier as keyof typeof tierColorMap];
+    }
+    // else, badgeColor remains undefined (no badge)
+  }
 
   const handleClick = () => {
     setGlobalStore("messageUserData", {
@@ -66,8 +81,6 @@ const MessageCard: React.FC<MessageCardProps> = ({
     }
   };
 
-  console.log("id", id);
-
   const Children = () => (
     <>
       <div></div>
@@ -84,13 +97,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-              {capitalizeWords(fullname)} 
+                {capitalizeWords(fullname)}
               </p>
-              {showActBadge ? (
-                <BadgeIcon color="gray" />
-              ) : !isAcct ? (
-                <BadgeIcon color={badgeColor} />
-              ) : null}
+              {!isGroupChat && badgeColor && <BadgeIcon color={badgeColor as any} />}
             </div>
             {content_type === "text" ? (
               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">

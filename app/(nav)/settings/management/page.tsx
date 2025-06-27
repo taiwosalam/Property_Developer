@@ -276,7 +276,7 @@ const Management = () => {
           <SettingsUpdateButton />
         </div>
       </SettingsSection> */}
-      <SettingsSection title="tenant / occupant screening">
+      <SettingsSection title="tenant / occupant screening configuration">
         <div className="custom-flex-col gap-8">
           <AuthForm onFormSubmit={handleUpdateScreeningLevel}>
             <div className="custom-flex-col gap-10">
