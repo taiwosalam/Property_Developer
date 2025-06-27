@@ -286,7 +286,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           : null}
       </div>
       <div className="flex justify-end px-[18px]">
-        {(cardType === "property" || cardType === "deposit") && (
+        {(cardType === "deposit") && (
           <button
             type="button"
             aria-label="Message"
@@ -296,7 +296,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             <ReplyIcon2 />
           </button>
         )}
-        {cardType === "agent-community" ? (
+        {(cardType === "agent-community" || cardType === "property") ? (
           <div className="flex items-center gap-2">
             {!props.user && (
               <button
@@ -362,6 +362,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               accountOfficer={props.accountOfficer}
               resolvedBy={props.resolvedBy}
               resolvedDateTime={props.resolvedDateTime}
+              tier_id={props?.tier_id}
             />
           ) : cardType === "visitor" ? (
             <VisitorRequestModal

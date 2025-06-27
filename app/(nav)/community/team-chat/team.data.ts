@@ -19,7 +19,7 @@ export const transformTeamMemberData = (
   return {
     members: data.data.users.map((member) => ({
       id: member.id,
-      username: member.name,
+      username: member.name?.toLowerCase(),
       profile_picture: member.profile_picture,
       role: member.role,
     })),

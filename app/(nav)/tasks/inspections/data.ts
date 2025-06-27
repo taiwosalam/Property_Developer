@@ -71,6 +71,7 @@ export type TInspectionDetails = {
   address: string;
   images: { src: string }[];
   booked_by: string;
+  booked_by_id: number;
   inspection_date: string;
   inspection_time: string;
   phone: string;
@@ -123,6 +124,7 @@ export const transformInspectionDetails = (
     booked_by: inspections?.booked_by
       ? inspections?.booked_by.toLowerCase()
       : "___ ___",
+    booked_by_id: inspections?.booked_by_id,
     inspection_date: inspections?.inspection_date
       ? formatReadableDate(inspections?.inspection_date)
       : "___ ___",
@@ -175,6 +177,7 @@ export const transformInspectionCard = (
           booked_by: item?.booked_by
             ? item?.booked_by.toLowerCase()
             : "___ ___",
+          booked_by_id: item?.booked_by_id,
           inspection_date: formatReadableDate(item?.inspection_date),
           inspection_time: item?.inspection_time || "___ ___",
         };

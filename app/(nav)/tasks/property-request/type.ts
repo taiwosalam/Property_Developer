@@ -1,4 +1,3 @@
-
 export interface PropertyRequestData {
   id: number;
   user_id: number;
@@ -19,7 +18,7 @@ export interface PropertyRequestData {
 
 export interface PropertyRequestApi {
   status: "success";
-  total_requests_overall: number;
   total_requests_this_month: number;
+  total_requests_overall: number;
   data: PropertyRequestData[];
 }

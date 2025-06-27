@@ -37,6 +37,7 @@ import { StaffChatTypes } from "@/app/(nav)/management/staff-branch/[branchId]/b
 import { PropertyCardProps } from "@/components/Management/Properties/property-card";
 import { IVisitorsReportPageData } from "@/app/(nav)/reports/visitors/data";
 import { PropertyManagerSubsTransformedPlan } from "@/app/(nav)/settings/subscription/types";
+import { ICallbackRequest, ICallbackRequestPageData } from "@/app/(nav)/reports/call/data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -58,6 +59,7 @@ interface GlobalStoreState {
   feature_history?: EnrollmentHistoryTable;
   campaign_history?: ICampaignTable[];
   sponsored_listing?: ISponsoredListing[];
+  callback_requests?: ICallbackRequest[]
 
   activities?: ActivityDataReport[];
   user_activities?: ActivityDataReport[];
@@ -158,6 +160,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   rent: [],
   campaign_history: [],
   sponsored_listing: [],
+  callback_requests: [],
   user_activities: [],
   accounting_invoices: [],
   accounting_statistics: null,

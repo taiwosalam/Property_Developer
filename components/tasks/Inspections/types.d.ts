@@ -23,6 +23,7 @@ export interface InspectionCardProps {
     images: Image[];
     inspection_type: "virtual_inspection" | "physical_inspection";
     booked_by: string;
+    booked_by_id: number;
     inspection_date: string;
     inspection_time: string;
   }

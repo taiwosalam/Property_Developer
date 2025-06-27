@@ -94,6 +94,8 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
     }
   };
 
+  console.log(reviews);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {

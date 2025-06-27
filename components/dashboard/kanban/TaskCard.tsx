@@ -173,7 +173,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       >
         <CardHeader className="px-3 py-3 space-between flex flex-row border-secondary relative">
           <div className="w-full flex items-center space-x-2">
-            <Avatar className="hidden h-9 w-9 rounded-full sm:flex overflow-hidden">
+            <Avatar className="hidden h-9 w-9 rounded-full sm:flex overflow-hidden custom-secondary-bg">
               <AvatarImage
                 src={task.avatarSrc}
                 alt="Avatar"
@@ -184,7 +184,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <div className="space-x-1">
               <p className="text-sm font-medium text-text-primary dark:text-darkText-1 flex items-center space-x-0.5 capitalize">
                 {task.name}
-                <BadgeIcon color={getBadgeColor(task?.tier) ?? 'gray'} />
+                <BadgeIcon color={getBadgeColor(task?.tier) ?? "gray"} />
               </p>
               <p className="text-xs text-brand-9 font-medium capitalize">
                 {task.title}
@@ -225,16 +225,22 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   {task.content.status}
                 </p>
               </div>
-              <p
-                className="text-text-tertiary dark-text-darkText-1 font-normal"
-                hidden={isNew}
-              >
-                {task.content.progress}/100%
-              </p>
+              {task?.content?.status !== "rejected" && (
+                <p
+                  className="text-text-tertiary dark-text-darkText-1 font-normal"
+                  hidden={isNew}
+                >
+                  {task.content.progress || 30}/100%
+                </p>
+              )}
             </div>
             <div className="py-2">
               <Progress
-                value={task.content.progress}
+                value={
+                  task?.content?.status === "rejected"
+                    ? 100
+                    : task?.content?.progress
+                }
                 fillColor={isNew ? "" : bg}
               />
             </div>
@@ -243,7 +249,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <div className="flex gap-2.5 items-center">
               <MailIcon size={20} />
               <ClipIcon />
-              <div className="flex itema-center">
+              {/* <div className="flex itema-center">
                 {task?.content?.userAvatars?.map((avatar, index) => (
                   <Avatar
                     key={index}
@@ -269,7 +275,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                     <AvatarFallback>{avatar?.charAt(0)}</AvatarFallback>
                   </Avatar>
                 ))}
-              </div>
+              </div> */}
             </div>
 
             <p className="bg-[var(--secondary-color)] bg-opacity-10 text-xs rounded-md py-2 px-4">
@@ -282,7 +288,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       {cardData && (
         <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
           <ModalContent>
-            <TaskModal statusChanger={statusChanger} complaintData={cardData} setModalOpen={setModalOpen}/>
+            <TaskModal
+              statusChanger={statusChanger}
+              complaintData={cardData}
+              setModalOpen={setModalOpen}
+            />
           </ModalContent>
         </Modal>
       )}

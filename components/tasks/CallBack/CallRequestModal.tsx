@@ -27,7 +27,9 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             <Picture size={50} src={requesterPicture} rounded />
           </div>
           <div className="flex items-center gap-0.5 justify-center">
-            <span className="text-[16px] font-medium">{requesterName}</span>
+            <span className="text-[16px] font-medium capitalize">
+              {requesterName}
+            </span>
             <BadgeIcon color={getBadgeColor(tier_id) || "gray"} />
           </div>
           <div className="flex items-center space-x-1">
@@ -63,7 +65,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Property Address
             </p>
-            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
+            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2 capitalize">
               {propertyAddress}
             </p>
           </div>
@@ -95,7 +97,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-text-secondary font-medium text-[14px] dark:text-darkText-1">
+            <p className="text-text-secondary font-medium text-[14px] dark:text-darkText-1 capitalize">
               {resolvedBy}
             </p>
             <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">

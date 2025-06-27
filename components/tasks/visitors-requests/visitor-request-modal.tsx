@@ -107,6 +107,13 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
     const formData = new FormData(e.currentTarget);
     const { date, time } = getCurrentDateTime();
 
+    const reason = formData.get("inventory") as string;
+
+    if (!reason || reason.trim() === "") {
+      toast.warning("Please provide a reason for declining this request.");
+      return;
+    }
+
     const data: IDeclinePayload = {
       reason: formData.get("inventory") as string,
       decline_date: date,
@@ -221,7 +228,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                 By
               </p>
-              <p className="text-text-primary dark:text-darkText-2 font-medium">
+              <p className="text-text-primary dark:text-darkText-2 font-medium capitalize">
                 {props?.checked_in_by || "____ ____"}
               </p>
             </div>
@@ -230,7 +237,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                   Companion
                 </p>
-                <p className="text-text-primary dark:text-darkText-2 font-medium">
+                <p className="text-text-primary dark:text-darkText-2 font-medium capitalize">
                   {props?.check_in_companion || "___ ___"}
                 </p>
               </div>

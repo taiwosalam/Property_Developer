@@ -62,8 +62,7 @@ const Review: React.FC<ReviewProps> = ({
             )}
           </div>
           <p className="text-text-disabled text-xs">
-            {desc ||
-              "Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi sequi, harum error ut dolores accusamus nesciunt velit amet rem. Ipsa."}
+            {desc}
           </p>
         </div>
         <div className="flex items-center justify-between text-[10px] font-medium">

@@ -123,27 +123,27 @@ const ManageApplication = () => {
             <KeyValueList
               data={{
                 "property title": property_details?.property_title,
-                "full access": property_details?.full_access,
+                "full address": property_details?.full_access,
                 landlord: property_details?.landlord,
-                description: property_details?.description,
-                state: property_details?.state,
+                //description: property_details?.description,
+                //state: property_details?.state,
                 branch: property_details?.branch,
                 categories: property_details?.categories,
                 rent: property_details?.rent,
-                "local government": property_details?.local_government,
+                //"local government": property_details?.local_government,
                 "account officer": property_details?.account_officer,
               }}
               chunkSize={4}
               referenceObject={{
                 "property title": "",
-                "full access": "",
+                "full address": "",
                 landlord: "",
-                description: "",
-                state: "",
+                //description: "",
+                //state: "",
                 branch: "",
                 categories: "",
                 rent: "",
-                "local government": "",
+                //"local government": "",
                 "account officer": "",
               }}
             />
