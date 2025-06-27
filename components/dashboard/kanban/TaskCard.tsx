@@ -244,7 +244,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               <MailIcon size={20} />
               <ClipIcon />
               <div className="flex itema-center">
-                {task.content.userAvatars.map((avatar, index) => (
+                {task?.content?.userAvatars?.map((avatar, index) => (
                   <Avatar
                     key={index}
                     className={clsx(
@@ -255,7 +255,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                       width: "20px",
                       height: "20px",
                       boxShadow:
-                        index !== task.content.userAvatars.length - 1
+                        index !== task?.content?.userAvatars?.length - 1
                           ? "3px 4px 8px 0px rgba(53, 37, 19, 0.31)"
                           : undefined,
                       zIndex: index,
@@ -266,7 +266,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                       alt="Avatar"
                       className="rounded-full h-full w-full flex items-center"
                     />
-                    <AvatarFallback>{avatar.charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{avatar?.charAt(0)}</AvatarFallback>
                   </Avatar>
                 ))}
               </div>

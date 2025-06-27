@@ -22,9 +22,10 @@ import BadgeIcon, {
   BadgeIconColors,
   tierColorMap,
 } from "../BadgeIcon/badge-icon";
-import { ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import { DislikeIcon, LikeIcon, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
 import { toast } from "sonner";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 interface ReviewCardProp {
   id: number;
@@ -37,21 +38,28 @@ interface ReviewCardProp {
   timestamp: string;
   picture: string;
   highlight: boolean;
+  user_like: boolean;
+  user_dislike: boolean;
 }
 const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
   const { userId } = usePersonalInfoStore();
-  
+    const isDarkMode = useDarkMode()
+
   const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
     if (!tier || tier === 0) return undefined;
     return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
   };
 
-  const handlePostReaction = async (type: string) => {
+  const handlePostReaction = async (type: number) => {
     if (!props.id) return;
     try {
       const res = await postReaction(props.id, type);
       if (res) {
-        toast.success(`Post ${type}`);
+        if (type === 1) {
+          toast.success(`Post liked`);
+        } else {
+          toast.success("Post dislike");
+        }
       }
     } catch (error) {
       console.log(error);
@@ -73,7 +81,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
             alt="profile picture"
             size={60}
             rounded
-            status
+            //status
           />
         </div>
         <div className="custom-flex-col gap-1 flex-1 text-xs font-normal">
@@ -101,25 +109,32 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
               <p className="text-text-primary text-xs">View all replies</p>
               <div className="flex gap-[10px]">
                 <button
-                  className="flex gap-1"
+                  className="flex items-center gap-1"
                   onClick={(e) => {
-                    handlePostReaction("like");
+                    handlePostReaction(1);
                     e.preventDefault();
                     e.stopPropagation();
                   }}
                 >
-                  <ThumbsUp />
+                  <LikeIcon
+                             fill={`${props?.user_like ? "#E15B0F" : ""} `}
+                             stroke={`${props?.user_like ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
+                           />
                   <p className="text-text-disabled">{props.up_vote}</p>
                 </button>
+
                 <button
-                  className="flex gap-1"
+                  className="flex items-center gap-1"
                   onClick={(e) => {
-                    handlePostReaction("dislike");
+                    handlePostReaction(-1);
                     e.preventDefault();
                     e.stopPropagation();
                   }}
                 >
-                  <ThumbsDown />
+                  <DislikeIcon
+                             fill={`${props?.user_dislike ? "#E15B0F" : "none"} `}
+                             stroke={`${props?.user_dislike ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
+                           />
                   <p className="text-text-disabled">{props.down_vote}</p>
                 </button>
               </div>

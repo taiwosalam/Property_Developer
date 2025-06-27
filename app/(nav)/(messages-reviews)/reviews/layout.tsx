@@ -119,15 +119,15 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                   <div className="flex gap-2 items-center">
                     <div className="p-2 flex items-center gap-2 cursor-pointer">
                       <PositiveIcon size={28} />
-                      <p className="text-lg text-[#01BA4C]">10</p>
+                      <p className="text-lg text-[#01BA4C]">{reviews?.total_like}</p>
                     </div>
                     <div className="p-2 flex gap-2 items-center rounded-md border cursor-pointer">
                       <NeutralIcon size={29} />
-                      <p className="text-lg text-[#FFBB53]">10</p>
+                      <p className="text-lg text-[#FFBB53]">{reviews?.neutral_count}</p>
                     </div>
                     <div className="p-2 flex gap-2 items-center cursor-pointer">
                       <NegativeIcon size={28} />
-                      <p className="text-lg text-[#E9212E]">10</p>
+                      <p className="text-lg text-[#E9212E]">{reviews?.total_dislike}</p>
                     </div>
                   </div>
                   <Input

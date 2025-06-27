@@ -199,16 +199,23 @@ interface SearchResponseMetaDetails {
 }
 
 interface ISearchItem {
-  id: number;
   type: string;
   title: string;
-  
+  subtitle: string;
+  extra: string;
+  icon: string;
+  isVerified?: boolean;
+  tier_id?: number;
 }
 export interface IGlobalSearchPageData {
   query: string;
   results: {
-
-  }
+    users: ISearchItem[];
+    properties: ISearchItem[];
+    units: ISearchItem[];
+    agentCommunities: ISearchItem[];
+    agentRequests: ISearchItem[];
+  };
   counts: {
     users: number;
     properties: number;
@@ -230,21 +237,25 @@ export const transformGlobalSearchPageData = (
     query: query,
     results: {
       users: results.users.map((user) => ({
+        id: user?.id,
         type: "users",
-        title: user.name || "Unknown User",
+        title: user.name?.toLowerCase() || "Unknown User",
         subtitle: user.email || "No email",
-        extra: user.roles?.[0]?.name || user.profile?.title || "No role",
+        extra: user.roles?.[0]?.name  || "",
         icon: "people",
         isVerified: user.is_verified || false,
+        tier_id: user.tier_id,
       })),
       properties: results.properties.map((property) => ({
+        id: property?.id,
         type: "properties",
         title: property.title || "Unknown Property",
         subtitle: property.full_address || "No address",
         extra: property.category || "No category",
-        icon: "chart",
+        icon: "people",
       })),
       units: results.units.map((unit) => ({
+        id: unit?.id,
         type: "units",
         title: unit.unit_name || "Unknown Unit",
         subtitle: unit.unit_type || "No type",
@@ -252,26 +263,29 @@ export const transformGlobalSearchPageData = (
         icon: "chart",
       })),
       agentCommunities: results.agentCommunities.map((community) => ({
-        type: "agentCommunities",
-        title: community.name || "Unknown Community",
+        id: community?.id,
+        type: "Agent Community",
+        title: community.title || "Unknown Community",
         subtitle: community.description || "No description",
         extra: "Community",
         icon: "task",
       })),
       agentRequests: results.agentRequests.map((request) => ({
-        type: "agentRequests",
+        id: request?.id,
+        type: "Agent Requests",
         title: request.title || "Unknown Request",
         subtitle: request.description || "No description",
         extra: "Request",
         icon: "task",
       })),
-      wallets: results.wallets.map((wallet) => ({
-        type: "wallets",
-        title: wallet.name || "Unknown Wallet",
-        subtitle: wallet.description || "No description",
-        extra: "Wallet",
-        icon: "empty_wallet",
-      })),
+      // wallets: results.wallets.map((wallet) => ({
+      //   id: wallet?.i
+      //   type: "wallets",
+      //   title: wallet.name || "Unknown Wallet",
+      //   subtitle: wallet.description || "No description",
+      //   extra: "Wallet",
+      //   icon: "empty_wallet",
+      // })),
     },
     counts: {
       users: details?.users?.total || 0,

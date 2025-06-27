@@ -20,7 +20,8 @@ export interface ReviewData {
   likes_count: number;
   dislikes_count: number;
   replies_count: number;
-  reply_comments: any[]; // Replace with specific type if reply objects exist
+  comments: any[];
+  replies: any[]; // Replace with specific type if reply objects exist
   time_ago: string;
 }
 
@@ -31,4 +32,5 @@ export interface ReviewUser {
   created_at: string;
   updated_at: string;
   profile_picture_url: string;
+  profile_picture: string;
 }
