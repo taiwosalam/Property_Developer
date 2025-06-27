@@ -11,6 +11,8 @@ export interface UsersProps {
   staff_id?: string;
   branch_id?: string;
   online_status?: string;
+  title?: string;
+  tier?: number;
 }
 
 export interface Conversations {
@@ -39,6 +41,9 @@ export interface PageMessages {
   verified?: boolean;
   content_type?: string;
   unread_count?: number;
+  tier: number;
+  role: string;
+  title: string;
 }
 [];
 
@@ -47,6 +52,8 @@ export interface User {
   name: string;
   profile_picture: string | null;
   role: string;
+  title: string;
+  tier: number;
   staff_id: string;
   branch_id: string;
   online_status: string;

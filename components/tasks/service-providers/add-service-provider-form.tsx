@@ -267,10 +267,10 @@ const AddServiceProviderForm = ({
           >
             {isLoading ? "Creating..." : "Create"}
           </Button>
-        </div>
+        </div>  
       </AuthForm>
       {stepForm === 2 && (
-        <div className="bg-white absolute top-0 left-0 right-0 pb-[20px]">
+        <div className="bg-white dark:bg-darkText-primary absolute top-0 left-0 right-0 pb-[20px]">
           <Avatars onClick={handleAvatarSelection} />
         </div>
       )}

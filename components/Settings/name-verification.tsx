@@ -506,36 +506,29 @@ export const InputPinDialog = ({
             {method === "email" ? "email" : "phone number"}
           </p>
           <p className="text-gray-500">
-            {/* (<span className="text-blue-400">{formatContactInfo()}</span>) */}
           </p>
           <p className="text-gray-500">for confirmation</p>
           <div className="py-12">
             <AuthPinField onChange={setCode} length={6} />
           </div>
-
-          <Button
-            onClick={onChangeOption}
-            className="bg-transparent flex justify-center items-center font-semibold text-center py-4 text-lg text-blue-700 hover:bg-transparent"
-          >
-            Change options
-          </Button>
         </div>
         <div className="mt-6">
           <div className="flex items-center gap-2">
             <Button
               onClick={handleResendCode}
               disabled={isResendDisabled}
-              className="bg-transparent p-0 hover:bg-transparent"
+              variant="custom"
+              className=""
             >
               <div className="flex items-center gap-2">
                 <RotateCw
                   className={`${
-                    isResendDisabled ? "text-gray-400" : "text-blue-700"
+                    isResendDisabled ? "text-gray-400" : "text-brand-9"
                   }`}
                 />
                 <p
                   className={`${
-                    isResendDisabled ? "text-gray-400" : "text-blue-400"
+                    isResendDisabled ? "text-gray-400" : "text-brand-9"
                   }`}
                 >
                   {isResendDisabled
@@ -548,7 +541,8 @@ export const InputPinDialog = ({
           <div className="flex justify-between mt-8">
             <Button
               onClick={handleBVNInfoDetails}
-              className="w-full py-4 bg-blue-800 hover:bg-blue-800/80"
+              className="px-8 py-2"
+              size="base_medium"
               disabled={loading}
             >
               {loading ? "Please wait..." : "Proceed"}

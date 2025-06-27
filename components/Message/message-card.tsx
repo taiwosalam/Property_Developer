@@ -32,6 +32,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
   content_type,
   online,
   last_seen,
+  tier,
+  title,
+  role,
   // badgeColor,
 }) => {
   const router = useRouter();
@@ -39,21 +42,11 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const IconComponent = getIconByContentType(content_type as string);
   const isOnline = last_seen?.toLowerCase() === "online";
 
-  // USER TO CHAT DATA
-  const {
-    data: userProfile,
-    error: userError,
-    loading,
-    isNetworkError,
-  } = useFetch<UserDetailsResponse>(`/all-users?identifier=${id}`);
-  const userProfileData = userProfile?.data ?? null;
-
-  const role = getCleanRoleName(userProfileData);
   const isAcct = role === "director" || role === "manager" || role === "staff";
-  const showActBadge = isAcct && userProfileData?.tier_id === 2;
+  const showActBadge = isAcct && tier === 2;
 
   const badgeColor =
-    tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
+    tierColorMap[tier as keyof typeof tierColorMap] ||
     "gray";
 
   const handleClick = () => {
@@ -91,7 +84,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {capitalizeWords(fullname)} {id}
+              {title} {" "}  {capitalizeWords(fullname)} 
               </p>
               {showActBadge ? (
                 <BadgeIcon color="gray" />

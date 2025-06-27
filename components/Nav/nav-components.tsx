@@ -14,6 +14,7 @@ import clsx from "clsx";
 import SVG from "../SVG/svg";
 import { useThemeStoreSelectors } from "@/store/themeStore";
 import { AnimatePresence, motion } from "framer-motion";
+import { roundUptoNine } from "@/app/(nav)/(messages-reviews)/messages/data";
 
 export const NavButton: React.FC<NavButtonProps> = ({
   type,
@@ -46,7 +47,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
           "pl-10 pr-5": !topNav,
           "px-5": topNav,
         },
-        className 
+        className
       )}
       style={{
         backgroundColor: minimized_highlight ? SecondaryColor : undefined,
@@ -132,15 +133,41 @@ export const NavButton: React.FC<NavButtonProps> = ({
   );
 };
 
+
+export const NotificationBadge = ({
+  count,
+  color,
+}: {
+  count: number | string;
+  color: string;
+}) => {
+  if (!count || count === "0" || count === 0) return null;
+
+  const isPlusCount = typeof count === "string" && count.includes("+");
+  const numericCount = typeof count === "string" ? parseInt(count, 10) : count;
+
+  if (!numericCount || numericCount <= 0) return null;
+
+  return (
+    <span
+      className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
+    >
+      {isPlusCount || numericCount > 9 ? "9+" : numericCount}
+    </span>
+  );
+};
+
 export const NavIcon: React.FC<NavIconProps> = ({
   icon,
   alt,
   href,
   onClick,
+  count,
+  badgeColor,
 }) => {
   const class_styles =
-    "p-[5px] rounded-lg bg-background-2 dark:bg-[#3C3D37] flex items-center justify-center w-[28px] h-[28px] sm:w-[36px] sm:h-[36px] aspect-square";
-
+    "p-[5px] relative rounded-lg bg-background-2 dark:bg-[#3C3D37] flex items-center justify-center w-[28px] h-[28px] sm:w-[36px] sm:h-[36px] aspect-square";
+  const roundedCount = roundUptoNine(count ?? 0);
   return href ? (
     <Link
       href={href}
@@ -150,6 +177,9 @@ export const NavIcon: React.FC<NavIconProps> = ({
       onClick={onClick ? () => onClick() : undefined}
     >
       {icon}
+      {Number(roundedCount) > 0 && (
+        <NotificationBadge count={roundedCount} color={badgeColor ?? "green"} />
+      )}
     </Link>
   ) : (
     <button
@@ -160,6 +190,9 @@ export const NavIcon: React.FC<NavIconProps> = ({
       onClick={onClick ? () => onClick() : undefined}
     >
       {icon}
+      {Number(roundedCount) > 0 && (
+        <NotificationBadge count={roundedCount} color={badgeColor ?? "green"} />
+      )}
     </button>
   );
 };

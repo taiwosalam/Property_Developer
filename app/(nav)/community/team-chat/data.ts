@@ -33,6 +33,9 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "Security Department",
     messages: 5,
     verified: true,
+    tier: 1,
+    title:"",
+    role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
@@ -43,6 +46,9 @@ export const team_chat_data: MessageCardProps[] = [
     time: "3:15 PM",
     fullname: "Accounting Department",
     verified: true,
+    tier: 1,
+    title:"",
+    role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
@@ -53,6 +59,9 @@ export const team_chat_data: MessageCardProps[] = [
     time: "1:30 PM",
     fullname: "Lounge & Drinks",
     messages: 2,
+    tier: 1,
+    title:"",
+    role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
@@ -63,6 +72,9 @@ export const team_chat_data: MessageCardProps[] = [
     time: "4:00 PM",
     fullname: "Cleaning & Laundering",
     verified: false,
+    tier: 1,
+    title:"",
+    role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
@@ -73,6 +85,9 @@ export const team_chat_data: MessageCardProps[] = [
     time: "5:45 PM",
     fullname: "All Staff",
     messages: 3,
+    tier: 1,
+    title:"",
+    role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
@@ -84,6 +99,9 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "HR Department",
     messages: 1,
     verified: true,
+    tier: 1,
+    title:"",
+    role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
@@ -92,6 +110,9 @@ export const team_chat_data: MessageCardProps[] = [
     pfp: Avatar3,
     desc: "Let me know if you need any further assistance. I'm here to help with anything you might need.",
     time: "7:00 PM",
+    tier: 1,
+    title:"",
+    role: "",
     fullname: "Maintenance Department",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
@@ -103,12 +124,18 @@ export const team_chat_data: MessageCardProps[] = [
     time: "8:10 PM",
     fullname: "Frontend Dev",
     verified: false,
+    tier: 1,
+    title:"",
+    role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
   },
   {
     id: "9",
     pfp: Avatar1,
+    tier: 1,
+    title:"",
+    role: "",
     desc: "Would you like to join us for dinner tonight? We're planning to go to a new restaurant that just opened downtown. It would be great to catch up with you!",
     time: "9:05 PM",
     fullname: "Backend Dev",
@@ -119,6 +146,9 @@ export const team_chat_data: MessageCardProps[] = [
   {
     id: "10",
     pfp: Avatar2,
+    tier: 1,
+    title:"",
+    role: "",
     desc: "Please review the attached file. It's important that we get this finalized before the end of the day.",
     time: "10:30 PM",
     fullname: "Marketing Department",

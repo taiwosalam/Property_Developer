@@ -25,7 +25,7 @@ export interface NavDropdownProps extends NavButtonProps {
   onContentClick?: () => void;
   content: { label: string; href: string }[];
   onToggle?: () => void;
-  className?: string;
+  className?: string; 
 }
 
 export type NavItemsProps = {
@@ -37,7 +37,9 @@ export type NavItemsProps = {
 
 export interface NavIconProps {
   alt?: string;
+  count?: number;
   href?: string;
+  badgeColor?: string;
   icon: React.ReactNode;
   onClick?: () => void;
 }

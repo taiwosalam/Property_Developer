@@ -14,6 +14,8 @@ interface CardProps {
   name: string;
   position: string;
   status: string;
+  title: string;
+  tier: number;
 }
 
 const positionMap: Record<string, string> = {
@@ -29,23 +31,27 @@ const MessageUserCard = ({
   position,
   status,
   id,
+  title,
+  tier,
 }: CardProps) => {
-  // USER TO CHAT DATA
-  const {
-    data: userProfile,
-    error: userError,
-    loading,
-    isNetworkError,
-  } = useFetch<UserDetailsResponse>(`/all-users?identifier=${id}`);
-  const userProfileData = userProfile?.data ?? null;
+  const isAcct =
+    position === "director" ||
+    position === "manager" ||
+    position === "staff" ||
+    position === "account";
+  const showActBadge = isAcct && tier === 2;
 
-  const role = getCleanRoleName(userProfileData);
-  const isAcct = role === "director" || role === "manager" || role === "staff";
-  const showActBadge = isAcct && userProfileData?.tier_id === 2;
+  const isRoleThatShouldGrayBadge = [
+    "director",
+    "manager",
+    "staff",
+    "account",
+  ].includes(position);
+  const isGrayBadge = tier === 2 && isRoleThatShouldGrayBadge;
 
-  const badgeColor =
-    tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
-    "gray";
+  const badgeColor = isGrayBadge
+    ? "gray"
+    : tierColorMap[tier as keyof typeof tierColorMap] || undefined;
 
   const displayPosition = positionMap[position.toLowerCase()] || position;
   const isOnline = status?.toLowerCase() === "online";
@@ -63,7 +69,7 @@ const MessageUserCard = ({
       <div className="flex flex-col">
         <div className="flex items-centerr">
           <p className="text-text-primary dark:text-white text-lg font-medium capitalize">
-            {userProfileData?.profile?.title} {" "} {capitalizeWords(name)}
+            {title} {capitalizeWords(name)}
           </p>
           {showActBadge ? (
             <BadgeIcon color="gray" />

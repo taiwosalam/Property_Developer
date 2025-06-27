@@ -39,18 +39,23 @@ interface ThreadApiResponse {
 }
 const MyArticlePage = () => {
   const router = useRouter();
+  const [isLikeDislikeLoading, setIsLikeDislikeLoading] = useState(false);
   const initialState: ThreadApiResponse = {
     data: [],
     meta: {
       pagination: {
         last_page: 1,
-        current_page: 1,
+        current_page: parseInt(
+          sessionStorage.getItem("my_article_page") || "1",
+          10
+        ),
         total: 0,
       },
       total_posts: 0,
       recent_posts: 0,
     },
   };
+
   const [state, setState] = useState(initialState);
   const { data, meta } = state;
 
@@ -63,16 +68,25 @@ const MyArticlePage = () => {
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
-      page: 1,
+      page: parseInt(sessionStorage.getItem("my_article_page") || "1", 10),
       search: "",
       sort: "asc",
     } as ArticlesRequestParams,
   });
 
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem(
+      "my_article_page",
+      meta.pagination.current_page.toString()
+    );
+  }, [meta.pagination.current_page]);
+
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort: order },
+      params: { ...config.params, sort: order, page: 1 },
     });
+    sessionStorage.setItem("my_article_page", "1");
   };
 
   const handleFilterApply = (filters: FilterResult) => {
@@ -106,8 +120,7 @@ const MyArticlePage = () => {
     setConfig({
       params: queryParams,
     });
-
-    console.log({ menuOptions, startDate, endDate, options });
+    sessionStorage.setItem("my_article_page", "1");
   };
 
   const isFilterApplied = () => {
@@ -129,13 +142,14 @@ const MyArticlePage = () => {
         current_page: page,
       },
     }));
+    sessionStorage.setItem("my_article_page", page.toString());
   };
 
   const handleSearch = (query: string) => {
-    setConfig((prevConfig) => ({
-      ...prevConfig,
-      params: { ...prevConfig.params, search: query, page: 1 },
-    }));
+    setConfig({
+      params: { ...config.params, search: query, page: 1 },
+    });
+    sessionStorage.setItem("my_article_page", "1");
   };
 
   const {
@@ -146,7 +160,10 @@ const MyArticlePage = () => {
     error,
     refetch,
   } = useFetch<ThreadApiResponse>("/agent_community/user/posts", config);
-  useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
+  useRefetchOnEvent("refetchThreads", async () => {
+    await refetch({ silent: true });
+    window.dispatchEvent(new Event("refetchThreadsDone"));
+  });
 
   useEffect(() => {
     if (apiData) {
@@ -226,7 +243,7 @@ const MyArticlePage = () => {
         ) : (
           <AutoResizingGrid minWidth={300}>
             {/* {silentLoading ? ( */}
-            {config.params.search || isFilterApplied() ? (
+            {silentLoading && !isLikeDislikeLoading ? (
               <ThreadSkeletonLoader length={10} />
             ) : threads && threads.length > 0 ? (
               threads.map((thread, index) => (
@@ -235,6 +252,7 @@ const MyArticlePage = () => {
                   {...thread}
                   published={thread.published}
                   myArticle
+                  setIsLikeDislikeLoading={setIsLikeDislikeLoading}
                 />
               ))
             ) : null}

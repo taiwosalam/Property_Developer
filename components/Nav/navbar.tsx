@@ -17,7 +17,7 @@ import clsx from "clsx";
 import { getGreeting, truncateName } from "./data";
 import NavCreateNew from "./nav-create-new";
 import NavGlobalSearch from "./nav-global-search";
-import { NavIcon } from "@/components/Nav/nav-components";
+import { NavIcon, NotificationBadge } from "@/components/Nav/nav-components";
 import NavSwitchUserSwitch from "./nav-switch-user-switch";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
@@ -35,7 +35,7 @@ import {
   NavCloseIcon,
 } from "@/public/icons/icons";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
@@ -55,35 +55,6 @@ import { debounce } from "@/utils/debounce";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { saveCompanyStatusToCookie } from "@/utils/saveRole";
 import { pageSteps } from "@/tour/steps/page-steps";
-
-const NotificationBadge = ({
-  count,
-  color,
-}: {
-  count: number | string;
-  color: string;
-}) => {
-  if (typeof count === "string" && count.includes("+")) {
-    return (
-      <span
-        className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
-      >
-        {count}
-      </span>
-    );
-  }
-  const numericCount = typeof count === "string" ? parseInt(count, 10) : count;
-
-  if (!numericCount || numericCount <= 0) return null;
-
-  return (
-    <span
-      className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
-    >
-      {numericCount > 9 ? "9+" : numericCount}
-    </span>
-  );
-};
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
@@ -201,7 +172,7 @@ const Header = () => {
         requestDemos,
         director,
         company_wallet,
-        currentExpiryDate
+        currentExpiryDate,
       } = data.data;
 
       setPersonalInfo("user_id", user.userid);
@@ -273,6 +244,30 @@ const Header = () => {
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
 
+  // Animation variants for slide effect
+  const slideVariants: Variants = {
+    logo: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    profile: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    logoExit: {
+      y: "100%",
+      opacity: 0,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    profileExit: {
+      y: "-100%",
+      opacity: 0,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+  };
+
   return (
     <header
       className={clsx(
@@ -281,7 +276,7 @@ const Header = () => {
       )}
     >
       <div className="flex-1 h-full flex gap-6 items-center">
-        {/* Logo */}
+        {/* Logo - Desktop Only */}
         <div className="hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden">
           {loading ? (
             <Skeleton
@@ -311,31 +306,37 @@ const Header = () => {
                 icon={<DropdownListIcon size={21} />}
                 alt="dropdown list"
               />
-              <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
-              <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
+              <Modal>
+                <ModalTrigger>
+                  <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
+                </ModalTrigger>
+                <ModalContent>
+                  <NavGlobalSearch />
+                </ModalContent>
+              </Modal>
+              <Modal>
+                <ModalTrigger>
+                  <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
+                </ModalTrigger>
+                <ModalContent>
+                  <NavCreateNew />
+                </ModalContent>
+              </Modal>
             </div>
             <div className="flex items-center gap-2">
               <NavIcon
                 icon={<MailIcon size={21} />}
-                alt="messages"
                 href="/messages"
+                alt="messages"
+                count={unreadMessageCount}
+                badgeColor="red"
               />
               <NavIcon
                 icon={<BellIcon size={21} />}
+                count={notificationCounts}
                 alt="notifications"
                 href="/notifications"
               />
-              {/* <NavIcon
-                icon={
-                  theme === "dark" ? (
-                    <SunIcon size={21} />
-                  ) : (
-                    <MoonIcon size={21} />
-                  )
-                }
-                alt="theme-toggle"
-                onClick={toggleTheme}
-              /> */}
             </div>
           </div>
 
@@ -355,24 +356,35 @@ const Header = () => {
                     icon={<DropdownListIcon size={21} />}
                     alt="dropdown list"
                   />
-                  <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
-                  <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
+                  <Modal>
+                    <ModalTrigger>
+                      <NavIcon
+                        icon={<SearchIconBold size={21} />}
+                        alt="search"
+                      />
+                    </ModalTrigger>
+                    <ModalContent>
+                      <NavGlobalSearch />
+                    </ModalContent>
+                  </Modal>
+                  <Modal>
+                    <ModalTrigger>
+                      <NavIcon
+                        icon={<PlusBoldIcon size={21} />}
+                        alt="create new"
+                      />
+                    </ModalTrigger>
+                    <ModalContent>
+                      <NavCreateNew />
+                    </ModalContent>
+                  </Modal>
                   <NavIcon
+                    href="/messages"
                     icon={<MailIcon size={21} />}
                     alt="messages"
-                    href="/messages"
+                    count={unreadMessageCount}
+                    badgeColor="red"
                   />
-                  {/* <NavIcon
-                    icon={
-                      theme === "dark" ? (
-                        <SunIcon size={21} />
-                      ) : (
-                        <MoonIcon size={21} />
-                      )
-                    }
-                    alt="theme-toggle"
-                    onClick={toggleTheme}
-                  /> */}
                 </motion.div>
               ) : (
                 <motion.div
@@ -381,9 +393,18 @@ const Header = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
+                  className="flex items-center gap-2"
                 >
                   <NavIcon
+                    icon={<MailIcon size={21} />}
+                    href="/messages"
+                    badgeColor="red"
+                    alt="messages"
+                    count={unreadMessageCount}
+                  />
+                  <NavIcon
                     icon={<BellIcon size={21} />}
+                    count={notificationCounts}
                     alt="notifications"
                     href="/notifications"
                   />
@@ -462,48 +483,115 @@ const Header = () => {
                 />
               </Link>
             </div>
-            {/* FIX MODE TOGGLE LATER - CONFLICTING WITH THE SETTIGS APPEARANCE TOGGLE */}
-            {/* <button
-              type="button"
-              aria-label="theme-toggle"
-              onClick={toggleTheme}
-              className={`nav-theme-toggle ${lgIconsInteractionClasses}`}
-            >
-              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-            </button> */}
           </div>
         </div>
       </div>
-
-      {/* Profile Dropdown */}
-      <Dropdown className="profile-dropdown">
-        <DropdownTrigger>
-          <div className="flex items-center gap-4">
-            <Picture
-              src={profile_picture || empty}
-              alt="profile picture"
-              status={isOnline}
-              size={isMobile ? 50 : 60}
-              rounded
-              containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
-            />
-            <div className="flex flex-col text-text-secondary capitalize">
-              <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
-                {getGreeting()},
-              </p>
-              <p className="text-xs md:text-base font-medium dark:text-white capitalize">
-                {truncateName(name ? name?.toLowerCase() : "", 50)}
-              </p>
+      
+      {/* Mobile: Company Logo / Profile Dropdown with Slide Animation */}
+      <div className="md:hidden w-[300px] h-full relative">
+        <AnimatePresence mode="wait">
+          {mobileToggleOpen ? (
+            <motion.div
+              key="profile"
+              variants={slideVariants}
+              initial="profileExit"
+              animate="profile"
+              exit="profileExit"
+              className="w-full h-full absolute top-0 left-0"
+            >
+              {/* Dropdown is outside of any overflow:hidden */}
+              <Dropdown className="profile-dropdown w-full h-full">
+                <DropdownTrigger>
+                  <div className="flex items-center gap-2 p-2 bg-white dark:bg-[#020617] h-full">
+                    <Picture
+                      src={profile_picture || empty}
+                      alt="profile picture"
+                      status={isOnline}
+                      size={50}
+                      rounded
+                      containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
+                    />
+                    <div className="flex flex-col text-text-secondary capitalize overflow-hidden">
+                      <p className="text-[10px] font-normal dark:text-[#F1F1D9] whitespace-nowrap">
+                        {getGreeting()},
+                      </p>
+                      <p className="text-xs font-medium dark:text-white capitalize truncate">
+                        {truncateName(name ? name.toLowerCase() : "", 30)}
+                      </p>
+                    </div>
+                  </div>
+                </DropdownTrigger>
+                <DropdownContent
+                  direction="down"
+                  position="left"
+                  className="custom-flex-col gap-2 pb-[10px] min-w-[200px] text-sm font-normal capitalize z-50"
+                >
+                  <NavProfileDropdown />
+                </DropdownContent>
+              </Dropdown>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="logo"
+              variants={slideVariants}
+              initial="logoExit"
+              animate="logo"
+              exit="logoExit"
+              className="w-full h-full absolute top-0 left-0"
+            >
+              {loading ? (
+                <Skeleton
+                  width="100%"
+                  height="100%"
+                  animation="wave"
+                  sx={{ transform: "none" }}
+                />
+              ) : (
+                <Image
+                  src={company_logo || empty}
+                  alt="company logo"
+                  width={200}
+                  height={200}
+                  priority
+                  className="object-contain w-full h-full"
+                />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      {/* Desktop: Profile Dropdown */}
+      <div className="hidden md:block">
+        <Dropdown className="profile-dropdown">
+          <DropdownTrigger>
+            <div className="flex items-center gap-4">
+              <Picture
+                src={profile_picture || empty}
+                alt="profile picture"
+                status={isOnline}
+                size={isMobile ? 50 : 60}
+                rounded
+                containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
+              />
+              <div className="flex flex-col text-text-secondary capitalize">
+                <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
+                  {getGreeting()},
+                </p>
+                <p className="text-xs md:text-base font-medium dark:text-white capitalize">
+                  {truncateName(name ? name.toLowerCase() : "", 50)}
+                </p>
+              </div>
             </div>
-          </div>
-        </DropdownTrigger>
-        <DropdownContent
-          position={isMobile ? "left" : "right"}
-          className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize"
-        >
-          <NavProfileDropdown />
-        </DropdownContent>
-      </Dropdown>
+          </DropdownTrigger>
+          <DropdownContent
+            direction="down"
+            position="right"
+            className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize z-20"
+          >
+            <NavProfileDropdown />
+          </DropdownContent>
+        </Dropdown>
+      </div>
     </header>
   );
 };
