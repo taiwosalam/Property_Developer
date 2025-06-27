@@ -10,6 +10,9 @@ import Verified from "@/public/icons/verified.svg";
 import SVG from "../SVG/svg";
 import Picture from "../Picture/picture";
 import { useThemeStoreSelectors } from "@/store/themeStore";
+import { Badge } from "../ui/badge";
+import { getBadgeColor } from "@/lib/utils";
+import BadgeIcon from "../BadgeIcon/badge-icon";
 
 const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   icon,
@@ -17,7 +20,9 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   subtitle,
   extra,
   query,
+  type,
   isVerified = false,
+  tier_id
 }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
 
@@ -57,20 +62,20 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
                 {highlightQuery(title ?? "")}
               </p>
               {isVerified && (
-                <Picture src={Verified} alt="verified" size={16} />
+                <BadgeIcon color={getBadgeColor(tier_id) || "gray"}/>
               )}
             </div>
             <p className="text-text-tertiary text-sm">
               {highlightQuery(subtitle ?? "")}
             </p>
+            <p className="text-text-tertiary text-base font-medium capitalize">
+              {extra}
+            </p>
           </div>
         </div>
-        <p className="text-text-tertiary text-base font-medium capitalize">
-          {extra}
-        </p>
       </div>
       <p className="text-text-tertiary text-base font-medium capitalize">
-        Landlord / Landlady
+        {type}
       </p>
     </div>
   );

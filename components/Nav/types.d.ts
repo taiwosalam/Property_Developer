@@ -77,5 +77,11 @@ export interface NavModalLayoutProps {
 
 export interface NavGlobalSearchItemProps {
   icon: SVGType;
-  
+  title?: string;
+  subtitle?: string;
+  extra?: string;
+  query?: string;
+  isVerified?: boolean;
+  tier_id?: number;
+  type?: string;
 }

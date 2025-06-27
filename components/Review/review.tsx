@@ -29,7 +29,7 @@ const Review: React.FC<ReviewProps> = ({
     return tierColorMap[tier as keyof typeof tierColorMap] || "blue";
   };
 
-  const handlePostReaction = async (type: string) => {
+  const handlePostReaction = async (type: number) => {
     if(!id) return;
     try{
       
@@ -77,11 +77,11 @@ const Review: React.FC<ReviewProps> = ({
                   <Picture src={Comment} alt="reply" size={16} />
                   <p className="text-text-secondary">Reply</p>
                 </button>
-                <button className="flex gap-1"  onClick={() => handlePostReaction("dislike")}>
+                <button className="flex gap-1"  onClick={() => handlePostReaction(-1)}>
                   <Picture src={Dislike} alt="dislike" size={16} />
                   <p className="text-text-disabled">0</p>
                 </button>
-                <button className="flex gap-1"  onClick={() => handlePostReaction("like")}>
+                <button className="flex gap-1"  onClick={() => handlePostReaction(1)}>
                   <Picture src={Dislike} alt="dislike" size={16} />
                   <p className="text-text-disabled">0</p>
                 </button>

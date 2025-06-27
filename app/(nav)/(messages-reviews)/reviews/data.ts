@@ -7,6 +7,13 @@ export type ReviewResponse = {
 };
 
 type Review = {
+  user_liked: boolean;
+  user_disliked: boolean;
+  comments_count: number;
+  thumbs_up_count: number;
+  thumbs_down_count: number;
+  neutral_count: number;
+  views_count: number;
   id: number;
   review_type: number;
   user_id: number;
@@ -36,11 +43,16 @@ type User = {
 };
 
 export interface IReviewCard {
+  total_like: number;
+  total_dislike: number;
+  neutral_count: number;
   reviews: {
     id: number;
     picture: string;
     fullname: string;
     review: string;
+    user_like: boolean;
+    user_dislike: boolean;
     up_vote: number;
     down_vote: number;
     reply_count: number;
@@ -51,14 +63,28 @@ export interface IReviewCard {
 export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
   const { data: reviews } = data;
   return {
+    total_like: reviews.reduce(
+      (sum, review) => sum + (review.likes_count || 0),
+      0
+    ),
+    total_dislike: reviews.reduce(
+      (sum, review) => sum + (review.dislikes_count || 0),
+      0
+    ),
+    neutral_count: reviews.reduce(
+      (sum, review) => sum + (review.neutral_count || 0),
+      0
+    ),
     reviews: reviews.map((review) => {
       return {
         id: review.id,
+        user_dislike: review?.user_liked,
+        user_like: review?.user_disliked,
         picture: review?.user?.profile_picture_url,
         fullname: review?.user.name || "",
         review: review?.review || "",
-        up_vote: review?.likes_count || 0,
-        down_vote: review?.dislikes_count || 0,
+        up_vote: review?.thumbs_up_count || 0,
+        down_vote: review?.thumbs_down_count || 0,
         reply_count: review?.replies_count || 0,
         tier_id: review?.user?.tier_id,
         timestamp: review?.time_ago,
@@ -89,21 +115,26 @@ export const transformSingleReview = (
     main: {
       id: review.id,
       pfp: review.user?.profile_picture_url,
-      fullname: review.user.name,
+      fullname: review.user.name?.toLowerCase(),
       tier_id: review.user.tier_id,
       desc: review.review,
-      likes: review.reactions.likes,
-      dislikes: review.reactions.dislikes,
+      likes: review.reactions?.likes,
+      dislikes: review.reactions?.dislikes,
     },
     replies: {
-      comments: review?.reply_comments,
+      comments: review?.comments,
     },
   };
 };
 
-export const postReaction = async (reviewId: string | number, url: string) => {
+export const postReaction = async (reviewId: string | number, data: number) => {
+  // /reviews/{reviewId}/like
+  const payload = {
+    type: data,
+  };
+
   try {
-    const response = await api.post(`reviews/${reviewId}/${url}`);
+    const response = await api.post(`reviews/${reviewId}/like`, payload);
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("companyReviews"));
       return true;
@@ -113,12 +144,16 @@ export const postReaction = async (reviewId: string | number, url: string) => {
     return false;
   }
 };
-export const replyComment = async (id: string, comment: string) => {
+export const replyComment = async (id: string, content: string) => {
   const payload = {
-    comment,
+    content,
   };
   try {
-    const response = await api.post(`/reviews/${id}/comment`, payload);
+    const response = await api.post(`/reviews/${id}/comment`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetchReview"));
       return true;
