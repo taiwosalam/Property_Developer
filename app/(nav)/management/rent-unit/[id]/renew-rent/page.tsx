@@ -427,10 +427,10 @@ const RenewRent = () => {
                           name: "Part Payment",
                           amount: formatFee(PART_PAYMENT_AMOUNT, currency),
                         },
-                        {
-                          name: "Penalty Amount",
-                          amount: formatFee(penaltyAmount, currency),
-                        },
+                        // {
+                        //   name: "Penalty Amount",
+                        //   amount: formatFee(penaltyAmount, currency),
+                        // },
                         {
                           name: "Balance",
                           amount: formatFee(
@@ -439,7 +439,7 @@ const RenewRent = () => {
                           ),
                         },
                         {
-                          name: "Last Updated",
+                          name: "Last Payment",
                           amount:
                             unitData?.pending_invoice.last_updated_date ??
                             "__,__,__",

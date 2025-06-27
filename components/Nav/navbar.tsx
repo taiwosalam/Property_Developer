@@ -352,9 +352,17 @@ const Header = () => {
                   transition={{ duration: 0.3 }}
                   className="flex items-center gap-2"
                 >
-                  <NavIcon
+                  {/* <NavIcon
                     icon={<DropdownListIcon size={21} />}
                     alt="dropdown list"
+                  /> */}
+                  <NavSwitchUserSwitch
+                    trigger={
+                      <NavIcon
+                        icon={<DropdownListIcon size={21} />}
+                        alt="dropdown list"
+                      />
+                    }
                   />
                   <Modal>
                     <ModalTrigger>
@@ -486,7 +494,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile: Company Logo / Profile Dropdown with Slide Animation */}
       <div className="md:hidden w-[300px] h-full relative">
         <AnimatePresence mode="wait">

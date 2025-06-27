@@ -59,7 +59,7 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
       value={{
         data: {
           ...tenantData,
-          flag: { is_flagged: 0, flagged_by: "", reason: "" }, //FLAG FROM API - fixed later
+          flag: { is_flagged: false, flagged_by: "", reason: "" }, //FLAG FROM API - fixed later
         },
       }}
     >

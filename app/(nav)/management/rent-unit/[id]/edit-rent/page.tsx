@@ -140,7 +140,6 @@ const EditRent = () => {
   const IS_WEB_USER = unit_data?.occupant?.userTag?.toLowerCase() === "web";
 
   // console.log("PENDING_INVOICE_PAID_AMOUNT", PENDING_INVOICE_PAID_AMOUNT)
-  // console.log("has_part_payment", has_part_payment)
 
   // ADD UPFRONT RENT HANDLER
   const handleUpfrontRent = async () => {
@@ -162,6 +161,7 @@ const EditRent = () => {
         ? 0
         : 1,
     };
+    
     try {
       setReqLoading(true);
       const success = await editRent(payload);
@@ -202,6 +202,7 @@ const EditRent = () => {
         ? 0
         : 1,
     };
+    console.log("payload part", payload)
     try {
       setReqLoading(true);
       const res = await addPartPayment(payload);
@@ -391,6 +392,12 @@ const EditRent = () => {
                           CURRENCY
                         ),
                       },
+                      {
+                        name: "Last Payment",
+                        amount:
+                          unit_data?.pending_invoice.last_updated_date ??
+                          "__,__,__",
+                      },
                     ]}
                     currency={CURRENCY}
                     total={PART_PAYMENT_AMOUNT}
@@ -408,6 +415,7 @@ const EditRent = () => {
                     setAmt={setAmt}
                     isCompletePayment={isCompletePayment}
                     prevAmt={PENDING_INVOICE_BALANCE_DUE.toString()}
+                    setSelectedCheckboxOptions={setSelectedCheckboxOptions}
                     setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
                     isUpfrontPaymentChecked={true}
                   />
@@ -435,6 +443,7 @@ const EditRent = () => {
           current_records={unit_data.current_records as any}
           unit_id={id as string}
           currency={CURRENCY}
+          page="edit-rent"
         />
       </section>
       <FixedFooter className="flex gap-4 justify-end">

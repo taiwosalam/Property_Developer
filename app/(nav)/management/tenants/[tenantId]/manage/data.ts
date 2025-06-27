@@ -80,7 +80,7 @@ export interface IndividualTenantAPIResponse {
     gender: string;
     tenant_type: string;
     flag: {
-      is_flagged: 1 | 0;
+      is_flagged: boolean;
       flagged_by: number | string;
       reason: string;
     };
@@ -141,6 +141,7 @@ export interface IndividualTenantAPIResponse {
 export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
+  console.log("tennaa", data)
   const lastUpdated = data?.note?.last_updated_at
     ? dayjs(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
@@ -219,7 +220,7 @@ export const transformIndividualTenantAPIResponse = ({
       : "--- ---",
     religion: data.religion || "--- ---",
     marital_status: data.marital_status || "--- ---",
-    is_flagged: data.flag.is_flagged === 1,
+    is_flagged: data.flag.is_flagged,
     flag: data.flag,
     contact_address: {
       address: data?.address || "",

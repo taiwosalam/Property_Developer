@@ -529,6 +529,7 @@ type PreviousRentRecordsProps = {
   unit_id?: string;
   noRefetch?: boolean;
   currency?: Currency;
+  page?: string;
 };
 
 export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
@@ -537,10 +538,18 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   unit_id,
   noRefetch = false,
   currency,
+  page,
 }) => {
   // console.log("current_records", current_records);
   // Initialize records state from props
-  const [records, setRecords] = useState<any[]>(current_records?.data || []);
+  // const [records, setRecords] = useState<any[]>(current_records?.data || []);
+  const [records, setRecords] = useState<any[]>(
+    page === "edit-rent"
+      ? current_records?.data
+        ? [...current_records.data].reverse()
+        : []
+      : current_records?.data || []
+  );
   const { setRecords: setOccupantRecords } = useOccupantStore();
 
   // Set up pagination state using provided pagination info if any
@@ -621,7 +630,8 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
           (record, index, self) =>
             index === self.findIndex((r) => r.id === record.id)
         );
-        return unique;
+         // Reverse the records if page === 'edit-rent'
+         return page === 'edit-rent' ? unique.reverse() : unique;
       });
       const newPagination = data.data.current_records.pagination;
       if (newPagination) {
@@ -666,9 +676,7 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
   if (error)
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
-  
   //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g previous-records-container 😡🤬💀💀
-
 
   return (
     <div className="previous-records-container">

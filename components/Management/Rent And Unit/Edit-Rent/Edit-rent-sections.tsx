@@ -430,23 +430,6 @@ export const AddPartPayment: React.FC<{
     }));
   };
 
-  // Update selectedOptions when userTag changes
-  // useEffect(() => {
-  //   setSelectedOptions((prev) => ({
-  //     ...prev,
-  //     mobile_notification: isWebUser
-  //       ? false
-  //       : isMobileUser
-  //       ? true
-  //       : prev.mobile_notification,
-  //     create_invoice:
-  //       currency !== "naira" && isMobileUser
-  //         ? false
-  //         : !isMobileUser
-  //         ? false
-  //         : prev.create_invoice,
-  //   }));
-  // }, [isWebUser, isMobileUser, currency]);
 
   // Update selectedOptions when userTag changes
   useEffect(() => {

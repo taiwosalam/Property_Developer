@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/history
 /.pnp
 .pnp.js
 .yarn/install-state.gz
@@ -12,6 +13,11 @@
 # next.js
 /.next/
 /out/
+
+#history
+/.history
+
+
 
 # production
 /build

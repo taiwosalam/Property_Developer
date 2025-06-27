@@ -84,7 +84,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-              {title} {" "}  {capitalizeWords(fullname)} 
+              {capitalizeWords(fullname)} 
               </p>
               {showActBadge ? (
                 <BadgeIcon color="gray" />
