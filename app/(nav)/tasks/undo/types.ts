@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { getLastSegment } from "../tracking/[userId]/types";
+import { getLastSegment } from "../../reports/tracking/[userId]/types";
 
 export interface TrashRecordsResponse {
   status: string;

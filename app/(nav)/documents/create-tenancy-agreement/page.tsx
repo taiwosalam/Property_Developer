@@ -102,7 +102,7 @@ const CreateTenancyAggrement = () => {
               data={{
                 "property name": propertyData?.property_name || "--- ---",
                 "property address": propertyData?.address || "--- ---",
-                "property type": propertyData?.propertyType || "--- ---",
+                "property type": propertyData?.category || "--- ---",
                 "Landlord/Landlady Name":
                   propertyData?.landlord_info?.name || "--- ---",
                 "Landlord/Landlady Address": `${

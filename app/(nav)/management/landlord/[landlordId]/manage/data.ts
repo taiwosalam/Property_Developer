@@ -70,7 +70,11 @@ export interface IndividualLandlordAPIResponse {
     name: string;
     title: string;
     email: string;
-    phone: string;
+    // phone: string;
+    phone: {
+      profile_phone: string | null;
+      user_phone: string | null;
+    };
     user_id: string;
     tier_id?: 1 | 2 | 3 | 4 | 5;
     user_tier?: 1 | 2 | 3 | 4 | 5;
@@ -134,7 +138,12 @@ export const transformIndividualLandlordAPIResponse = ({
     name: data.name,
     title: data.title || "",
     email: data.email,
-    phone_number: data.phone === "" || !data.phone ? "" : data.phone,
+    phone_number: `${data.phone.profile_phone ?? ""}${
+      data.phone.user_phone && data.phone.profile_phone
+        ? " / " + data.phone.user_phone
+        : ""
+    }`,
+    // phone_number: data.phone === "" || !data.phone ? "" : data.phone,
     gender: data.gender,
     notes: {
       last_updated: lastUpdated,
@@ -206,7 +215,7 @@ export const transformIndividualLandlordAPIResponse = ({
         property_type: properties.property_type, // Override for properties_managed
         total_unit_pictures: 2,
         hasVideo: true,
-        currency: properties.currency, 
+        currency: properties.currency,
         mobile_tenants: 0,
         web_tenants: 0,
         owing_units: 0,
@@ -267,8 +276,10 @@ export const transformIndividualLandlordAPIResponse = ({
         payment_id: s.payment_id,
         details: s.details,
         unit_name: s.unit_name,
-        credit: amount > 0 ? formatFee(amount, s.currency || "naira") || "" : null,
-        debit: amount < 0 ? formatFee(amount, s.currency || "naira") || "" : null,
+        credit:
+          amount > 0 ? formatFee(amount, s.currency || "naira") || "" : null,
+        debit:
+          amount < 0 ? formatFee(amount, s.currency || "naira") || "" : null,
         // date: s.date ? dayjs(s.date).format("DD/MM/YYYY") : "--- ---",
         date: s.date ? s.date : "--- ---",
         badge_color: s.payer_tier
@@ -281,8 +292,8 @@ export const transformIndividualLandlordAPIResponse = ({
       name: data.name,
       position: "landlord",
       imageUrl: data.picture ?? empty,
-      branch_id: 1, //TEST 
-    }
+      branch_id: 1, //TEST
+    },
   };
 };
 

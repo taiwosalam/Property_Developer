@@ -9,10 +9,11 @@ import { useRole } from '@/hooks/roleContext';
 
 const AddPropertyOptionsView: React.FC<AddPropertyOptionsViewProps> = ({
   setModalView,
+  id,
 }) => {
    const { role, setRole } = useRole();
-  const rental_path = getRentalPropertyCreatePath(role);
-  const facility_path = getFacilityPropertyCreatePath(role);
+  const rental_path = getRentalPropertyCreatePath(role, id);
+  const facility_path = getFacilityPropertyCreatePath(role, id);
   return (
     <div className="add-property-options flex flex-col md:flex-row items-center justify-center gap-7 md:gap-14">
       <AddPropertyCard

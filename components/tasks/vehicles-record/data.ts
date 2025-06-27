@@ -106,7 +106,8 @@ export const updateVehicleRecord = async (data: any, id: number) => {
 };
 
 export const transformTenant = (
-  data: IndividualTenantAPIResponse | null
+  // data: IndividualTenantAPIResponse | null //uncomment and fix later
+  data: any | null
 ): PersonalDataProps => {
   const tenant = data?.data;
   return {
