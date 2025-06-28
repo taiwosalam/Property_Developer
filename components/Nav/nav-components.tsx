@@ -166,7 +166,7 @@ export const NavIcon: React.FC<NavIconProps> = ({
   badgeColor,
 }) => {
   const class_styles =
-    "p-[5px] relative rounded-lg bg-background-2 dark:bg-[#3C3D37] flex items-center justify-center w-[28px] h-[28px] sm:w-[36px] sm:h-[36px] aspect-square";
+    "p-[5px] text-black dark:text-white relative rounded-lg bg-background-2 dark:bg-[#3C3D37] flex items-center justify-center w-[28px] h-[28px] sm:w-[36px] sm:h-[36px] aspect-square";
   const roundedCount = roundUptoNine(count ?? 0);
   return href ? (
     <Link

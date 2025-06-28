@@ -365,6 +365,7 @@ const RenewRent = () => {
               isRental ? propertySettingsData : estateSettingsDta
             }
             gridThree
+            noEdit
           />
           <div className="pt-6 lg:flex lg:gap-10 space-y-8">
             <div className="lg:w-3/5 space-y-8">

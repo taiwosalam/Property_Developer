@@ -121,10 +121,10 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
   const TOTAL = renewalTenantTotalPrice + owingAmount + penaltyAmount;
 
   const calculationFeeDetails = [
-    {
-      name: "Charge Penalty",
-      amount: convertToYesNo(unitData.chargePenalty),
-    },
+    // {
+    //   name: "Charge Penalty",
+    //   amount: convertToYesNo(unitData.chargePenalty),
+    // },
     {
       name: "Renewal Period",
       amount: renewfeePeriod,

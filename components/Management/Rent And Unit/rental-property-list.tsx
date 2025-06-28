@@ -12,6 +12,7 @@ import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import Link from "next/link";
 import { empty } from "@/app/config";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   propertyType,
@@ -125,8 +126,8 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 }
                 className="flex items-center gap-1"
               >
-                <span className="font-medium text-brand-primary border-b border-black dark:border-darkText-2">
-                  {NOT_OCCUPIED ? "--- ---" : tenant_name}
+                <span className="font-medium text-brand-primary capitalize border-b border-black dark:border-darkText-2">
+                  {NOT_OCCUPIED ? "--- ---" : capitalizeWords(tenant_name)}
                 </span>
                 {badge_color && !NOT_OCCUPIED && (
                   <BadgeIcon color={badge_color} />

@@ -150,7 +150,7 @@ export const RenewalRent = ({
         />
       </div>
       <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
-        {checkboxOptions.map(({ label, key }) => (
+        {visibleCheckboxOptions.map(({ label, key }) => (
           <Checkbox
             sm
             key={key}

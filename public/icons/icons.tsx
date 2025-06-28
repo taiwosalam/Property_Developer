@@ -2878,11 +2878,11 @@ export const CheckboxCheckedIcon = () => {
   );
 };
 
-export const SidebarIcon = () => {
+export const SidebarIcon = ({ size =12 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="12"
+      width={size}
       height="20"
       viewBox="0 0 12 20"
       fill="none"
@@ -2890,21 +2890,21 @@ export const SidebarIcon = () => {
       <g clipPath="url(#clip0_16629_32762)">
         <path
           d="M2.37225 15.1411L6.74725 15.1411"
-          stroke="#5A5D61"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
           d="M2.37225 10.3911L9.37225 10.3911"
-          stroke="#5A5D61"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
           d="M2.37225 5.64111L4.99725 5.64111"
-          stroke="#5A5D61"
+          stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -2915,7 +2915,7 @@ export const SidebarIcon = () => {
           <rect
             width="19"
             height="10.5"
-            fill="white"
+            fill="currentColor"
             transform="translate(11.1223 0.891113) rotate(90)"
           />
         </clipPath>
