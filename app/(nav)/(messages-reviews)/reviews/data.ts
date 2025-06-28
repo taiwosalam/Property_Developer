@@ -64,11 +64,11 @@ export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
   const { data: reviews } = data;
   return {
     total_like: reviews.reduce(
-      (sum, review) => sum + (review.likes_count || 0),
+      (sum, review) => sum + (review.thumbs_up_count || 0),
       0
     ),
     total_dislike: reviews.reduce(
-      (sum, review) => sum + (review.dislikes_count || 0),
+      (sum, review) => sum + (review.thumbs_down_count || 0),
       0
     ),
     neutral_count: reviews.reduce(
@@ -81,7 +81,7 @@ export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
         user_dislike: review?.user_liked,
         user_like: review?.user_disliked,
         picture: review?.user?.profile_picture_url,
-        fullname: review?.user.name || "",
+        fullname: review?.user?.name?.toLowerCase() || "",
         review: review?.review || "",
         up_vote: review?.thumbs_up_count || 0,
         down_vote: review?.thumbs_down_count || 0,

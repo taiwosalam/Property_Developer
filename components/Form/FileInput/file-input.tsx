@@ -159,7 +159,7 @@ const FileInput: React.FC<FileInputProps> = ({
   }, [file, handleInputChange]);
 
   return (
-    <div className={clsx("custom-flex-col gap-2", className)}>
+    <div className={clsx("custom-flex-col gap-2 w-full overflow-hidden", className)}>
       {label && (
         <Label
           labelclassName={clsx("!opacity-100", {
@@ -217,7 +217,7 @@ const FileInput: React.FC<FileInputProps> = ({
                     } to upload ${placeholder || "file"}`}
               </span>
             ) : (
-              <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
+              <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-60 w-full">
                 {defaultFile
                   ? getImageNameFromUrl(defaultFile)
                   : fileName

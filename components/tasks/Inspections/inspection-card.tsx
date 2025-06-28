@@ -24,14 +24,22 @@ import {
   transformInspectionDetails,
 } from "@/app/(nav)/tasks/inspections/data";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
   const { data: inspectionData } = useFetch<InspectionDetailsApiResponse>(
     `inspections/${data?.id}`
   );
   const [inspection, setInspection] = useState<TInspectionDetails | null>(null);
-
   const router = useRouter();
+
+  const goToMessage = () => {
+    if (!data?.booked_by_id) {
+      toast.warning("User ID not Found!");
+      return;
+    }
+    router.push(`/messages/${data?.booked_by_id}`);
+  };
 
   useEffect(() => {
     if (inspectionData) {
@@ -99,9 +107,12 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
         </div>
         <div className="flex items-center gap-4 justify-end">
           <button
-            onClick={() => router.push(`/messages/${inspection?.userId}`)}
+            onClick={goToMessage}
+            type="button"
+            aria-label="Message"
+            className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
           >
-            <Picture src={ChatIcon} alt="chat" size={24} />{" "}
+            Message
           </button>
           <Modal>
             <ModalTrigger asChild>

@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { PropertyRequestApi } from "./type";
+import { formatToNaira } from "@/lib/utils";
 
 export interface PropertyRequestDataType {
   userName: string;
@@ -22,6 +23,7 @@ export interface propertyRequestPageData {
   total: number;
   total_month: number;
   requests: {
+    userId: number;
     userName: string;
     requestDate: string;
     pictureSrc: string;
@@ -39,14 +41,19 @@ export interface propertyRequestPageData {
   }[];
 }
 
-export const transformPropertyRequestData = (data: PropertyRequestApi): propertyRequestPageData => {
+export const transformPropertyRequestData = (
+  data: PropertyRequestApi
+): propertyRequestPageData => {
   return {
     total: data?.total_requests_overall,
     total_month: data?.total_requests_this_month,
 
     requests: data.data.map((request) => ({
-      userName: request.name,
-      requestDate: request?.created_at ? dayjs(request.created_at).format("DD/MM/YYYY") : "",
+      userId: request?.user_id,
+      userName: request.name?.toLowerCase(),
+      requestDate: request?.created_at
+        ? dayjs(request.created_at).format("DD/MM/YYYY")
+        : "",
       pictureSrc: request?.image ?? "",
       requestId: request.id.toString(),
       state: request?.state,
@@ -57,8 +64,8 @@ export const transformPropertyRequestData = (data: PropertyRequestApi): property
       requestType: request?.property_type,
       category: request?.category,
       subType: request?.property_sub_type,
-      minBudget: (request?.budget_min ?? 0).toString(),
-      maxBudget: (request?.budget_max ?? 0).toString(),
+      minBudget: formatToNaira(request?.budget_min),
+      maxBudget: formatToNaira(request?.budget_max),
     })),
   };
 };

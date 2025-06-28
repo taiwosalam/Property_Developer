@@ -64,6 +64,7 @@ const DepositRequest = () => {
         filterOptionsMenu={depositRequestOptionsWithDropdown}
         hasGridListToggle={false}
       />
+
       <AutoResizingGrid gap={28} minWidth={400}>
         {DepositRequestData.map((details, index) => (
           <DepositRequestCard
@@ -77,3 +78,13 @@ const DepositRequest = () => {
 };
 
 export default DepositRequest;
+
+// REST PAGE CONTENT
+
+// No Caution Deposit Records Available
+
+// There are currently no caution deposit records linked to your properties. Once a deposit is recorded, the details will appear here. Caution deposits help you keep track of security deposits made by tenants, ensuring accurate management and easy reference.
+
+// This message will automatically disappear once caution deposit records are added.
+
+// Need assistance? Click your profile icon in the top right corner and select "Assistance & Support" for guidance on how to use this page.

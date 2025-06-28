@@ -66,7 +66,7 @@ export const transformCallbackRequestPageData = (
       return {
         id: request?.id,
         requestId: request?.request_id.toString(),
-        userName: request?.user?.name,
+        userName: request?.user?.name?.toLowerCase(),
         requestDate: request?.date,
         status: request?.status,
         pictureSrc: request?.user?.photo,
@@ -75,10 +75,8 @@ export const transformCallbackRequestPageData = (
         propertyAddress: request?.property_address,
         branch: request?.branch,
         accountOfficer: request?.account_officer ?? "___ ___",
-        resolvedBy: request?.resolved_by ?? "___ ___",
-        resolvedDateTime: request?.resolved_date
-          ? dayjs(request?.resolved_date).format("DD/MM/YYY  HH:MM a")
-          : "___ ___",
+        resolvedBy: request?.resolved_by?.toLowerCase() ?? "___ ___",
+        resolvedDateTime: request?.resolved_date || "___ ___",
         tier_id: request?.user?.tier,
       };
     }),

@@ -41,9 +41,11 @@ const PropertiesReport = () => {
     startDate: null,
     endDate: null,
   });
+
   const [branches, setBranches] = useState<BranchFilter[]>([]);
   const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
+
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
