@@ -20,7 +20,7 @@ const CalculationsComp = ({
         <div className="space">
           <div className="">
             {feeDetails.map((fee, index) => (
-              <div className="flex justify-between gap-2 items-center">
+              <div key={index} className="flex justify-between gap-2 items-center">
                 <p className="mb-2 text-black dark:text-darkText-2"> {fee.name} </p>
                 <p className="capitalize"> {fee.amount} </p>
               </div>

@@ -45,6 +45,7 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const newForm = useAddUnitStore((s) => s.newForm);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
   const {
     data: propertyData,
@@ -124,6 +125,8 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
           duplicate,
           setDuplicate,
           setSubmitLoading,
+          shouldRedirect,
+          setShouldRedirect,
         }}
       >
         <div className="pb-[100px]">
