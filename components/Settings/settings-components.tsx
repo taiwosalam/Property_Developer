@@ -685,3 +685,4 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
     </div>
   );
 };
+  

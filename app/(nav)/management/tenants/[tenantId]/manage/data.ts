@@ -15,6 +15,7 @@ import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 import { formatFee } from "../../../rent-unit/data";
 import { empty } from "@/app/config";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -141,7 +142,7 @@ export interface IndividualTenantAPIResponse {
 export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
-  console.log("tennaa", data)
+  // console.log("tennaa", data)
   const lastUpdated = data?.note?.last_updated_at
     ? dayjs(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
@@ -201,7 +202,7 @@ export const transformIndividualTenantAPIResponse = ({
   return {
     id: data?.id || "",
     picture: data?.picture || empty,
-    name: data?.name || "--- ---",
+    name: capitalizeWords(data?.name) || "--- ---",
     title: data.title || "",
     user_id: data?.user_id || "",
     email: data?.email || "",

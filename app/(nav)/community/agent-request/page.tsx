@@ -256,7 +256,7 @@ const PropertyRequest = () => {
             <EmptyList
               buttonText="+ Create New Property Request"
               buttonLink="/community/agent-request/my-properties-request/create"
-              title="The property request files are empty"
+              title="Property request files are empty"
               body={
                 <p>
                   Create a property request by clicking on the &quot;Create New

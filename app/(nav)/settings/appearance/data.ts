@@ -6,5 +6,6 @@ export const transformData = (data: any) => {
         mode: data.appearance.colorMode,
         font: data.appearance.fonts,
         color: data.appearance.dashboardColor,
+        zoom: data.appearance.zoom,
     };
 }
