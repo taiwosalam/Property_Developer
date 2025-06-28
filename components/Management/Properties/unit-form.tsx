@@ -21,7 +21,7 @@ import {
   editUnit as editUnitApi,
 } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
 import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
 import { useGlobalStore } from "@/store/general-store";
@@ -53,10 +53,11 @@ type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
 
 const UnitForm: React.FC<UnitFormProps> = (props) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const internalFormRef = useRef<HTMLFormElement>(null);
   const formRef = props.formRef || internalFormRef;
   const unitPicturesRef = useRef<HTMLDivElement>(null);
-  // const formRef = useRef<HTMLFormElement>(null);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
@@ -72,6 +73,16 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   const allowEditUnit = useGlobalStore((s) => s.allowEditUnit);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
+
+
+  const navigateBackOrToProperties = () => {
+    const page = searchParams.get("page");
+    if (page === "rent-unit") {
+      router.back();
+    } else {
+      router.push("/management/properties");
+    }
+  };
 
   const [state, setState] = useState<UnitFormState>(() => {
     if (props.empty) {
@@ -287,6 +298,8 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
           submitLoading,
           setSaveClick,
           resetForm,
+          shouldRedirect,
+          setShouldRedirect,
           ...(!props.empty
             ? {
                 isEditing: props.isEditing,

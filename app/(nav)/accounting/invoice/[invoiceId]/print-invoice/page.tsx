@@ -25,6 +25,7 @@ import { useCompanyBankDetails } from "@/hooks/useCompanyBankDetails";
 import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
 import ServerError from "@/components/Error/ServerError";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 const PreviewExpenses = () => {
   const router = useRouter();
@@ -56,10 +57,10 @@ const PreviewExpenses = () => {
   const UnitKeyValData = {
     "invoice id": pageData.invoice_id,
     "property name": pageData.property_name,
-    "Client name": pageData.client_name,
+    "Client name": capitalizeWords(pageData.client_name),
     date: pageData.invoice_date,
     "account officer": pageData.account_officer,
-    "unit id": pageData.unit_id,
+    "unit name": pageData.unit_name,
     "invoice type": pageData.invoice_type,
     status: pageData.status,
   };
@@ -67,7 +68,7 @@ const PreviewExpenses = () => {
   const NoUnitKeyValData = {
     "invoice id": pageData.invoice_id,
     "property name": pageData.property_name,
-    "client name": pageData.client_name,
+    "client name": capitalizeWords(pageData.client_name),
     date: pageData.invoice_date,
     status: pageData.status,
     "Auto Generate": pageData.auto_generate,
@@ -79,7 +80,7 @@ const PreviewExpenses = () => {
     "property name": "",
     date: "",
     "account officer": "",
-    "unit id": "",
+    "unit name": "",
     "invoice type": "",
     status: "",
   };

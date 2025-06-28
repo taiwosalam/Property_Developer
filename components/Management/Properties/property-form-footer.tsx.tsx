@@ -7,7 +7,7 @@ import DeletePropertyModal from "./delete-property-modal";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const PropertyFormFooter: React.FC<{
   editMode?: boolean;
@@ -16,10 +16,12 @@ const PropertyFormFooter: React.FC<{
   propertyId?: string;
   onAddUnit?: () => void;
 }> = ({ editMode, requestLoading, handleReset, propertyId, onAddUnit }) => {
+  const searchParams = useSearchParams();
   const { canSubmit, missingFields, handleInputChange } =
     useContext(FlowProgressContext);
   const { canDelete, addedUnits } = useAddUnitStore();
   const router = useRouter();
+
 
   const handleSave = () => {
     const hasUnuploadedUnits = addedUnits.some((unit) => unit.notYetUploaded);
@@ -27,7 +29,13 @@ const PropertyFormFooter: React.FC<{
       toast.error("Please update all units before saving");
       return;
     }
-    router.push("/management/properties");
+
+    const page = searchParams.get("page");
+    if (page === "rent-unit") {
+      router.back();
+    } else {
+      router.push("/management/properties");
+    }
   };
 
   const handleSubmitClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -93,7 +101,7 @@ const PropertyFormFooter: React.FC<{
                 onClick={onAddUnit}
                 disabled={!canSubmit || requestLoading}
               >
-               { requestLoading ? "Please wait..." : "Add Unit" } 
+                {requestLoading ? "Please wait..." : "Add Unit"}
               </Button>
               <Button
                 size="sm_medium"
@@ -101,7 +109,7 @@ const PropertyFormFooter: React.FC<{
                 onClick={handleSave}
                 disabled={!canSubmit || requestLoading}
               >
-                { requestLoading ? "Please wait..." : "Save" }
+                {requestLoading ? "Please wait..." : "Save"}
               </Button>
             </div>
           </>

@@ -90,7 +90,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const isAccountOfficer = role === "account";
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
-  const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
+  // const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
+  const [selectedLandlord, setSelectedLandlord] = useState<string | undefined>(
+    undefined
+  );
   const [selectedOfficer, setSelectedOfficer] = useState<string[]>([]);
   const [inventoryError, setInventoryError] = useState<string | null>(null);
   const [inventoryLoading, setInventoryLoading] = useState<boolean>(false);
@@ -183,7 +186,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }));
     resetImages();
     setSelectedCategory(null);
-    setSelectedLandlord([]);
+    // setSelectedLandlord([]);
+    // setSelectedLandlord("");
     // setGlobalStore("selectedLandlordId", "");
   };
 
@@ -262,7 +266,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const landlordOptions = useMemo(
     () =>
       landlordsData?.data?.map((landlord) => ({
-        value: landlord.id,
+        value: String(landlord.id),
         label: landlord.name,
         icon: landlord.picture,
       })) || [],
@@ -303,19 +307,67 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }
   }, [staffsData]);
 
-  // Set default landlord from selectedLandlordId
+  console.log("editMode", editMode);
+  console.log("landlordId prop", landlordId);
+  console.log("propertyDetails", propertyDetails);
+  console.log("landlordOptions", landlordOptions);
+  console.log("selectedLandlord", selectedLandlord);
+  console.log(
+    "SelectWithImage value",
+    landlordOptions.find((l) => String(l.value) === String(selectedLandlord))
+  );
+
   // useEffect(() => {
-  //   if (!editMode && landlordId && landlordOptions.length > 0) {
-  //     const defaultLandlord = landlordOptions.find(
-  //       (landlord) => landlord.value === landlordId
+  //   let newLandlord: string | undefined = undefined;
+  //   if (editMode && propertyDetails?.land_lord_id && landlordOptions.length) {
+  //     newLandlord = String(propertyDetails.land_lord_id);
+  //   } else if (!editMode && landlordId && landlordOptions.length) {
+  //     const exists = landlordOptions.some(
+  //       (l) => l.value === String(landlordId)
   //     );
-  //     if (defaultLandlord) {
-  //       setSelectedLandlord([landlordId]);
-  //     } else {
-  //       toast.warning("Selected landlord not found in available options.");
-  //     }
+  //     newLandlord = exists ? String(landlordId) : undefined;
   //   }
-  // }, [landlordId, landlordOptions, editMode, setGlobalStore]);
+  //   if (selectedLandlord !== newLandlord) {
+  //     setSelectedLandlord(newLandlord);
+  //   }
+  // }, [
+  //   editMode,
+  //   propertyDetails?.land_lord_id,
+  //   landlordId,
+  //   landlordOptions,
+  //   selectedLandlord,
+  // ]);
+
+  useEffect(() => {
+    // Check for landlordId from propertyDetails (edit) or from props (create)
+    const propertyLandlordId = propertyDetails?.land_lord_id ?? undefined;
+
+    let newLandlord: string | undefined = undefined;
+
+    if (
+      editMode &&
+      propertyLandlordId !== undefined &&
+      propertyLandlordId !== null &&
+      landlordOptions.length
+    ) {
+      newLandlord = String(propertyLandlordId);
+    } else if (!editMode && landlordId && landlordOptions.length) {
+      const exists = landlordOptions.some(
+        (l) => l.value === String(landlordId)
+      );
+      newLandlord = exists ? String(landlordId) : undefined;
+    }
+    // Only update if changed (prevents loop)
+    if (selectedLandlord !== newLandlord) {
+      setSelectedLandlord(newLandlord);
+    }
+  }, [
+    editMode,
+    propertyDetails,
+    landlordId,
+    landlordOptions,
+    selectedLandlord,
+  ]);
 
   useEffect(() => {
     if (editMode && propertyDetails) {
@@ -618,7 +670,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               </>
             )}
 
-            {/* {!isFacility && (
+            {!isFacility && (
               <SelectWithImage
                 options={landlordOptions}
                 id="land_lord_id"
@@ -626,19 +678,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 inputContainerClassName="bg-white"
                 resetKey={resetKey}
                 className="property-landlord-wrapper"
-                onChange={(value) => setSelectedLandlord([value])}
-                defaultValue={
-                  editMode && propertyDetails?.land_lord_id
-                    ? landlordOptions.find(
-                        (landlord) =>
-                          landlord.value === propertyDetails.land_lord_id
-                      )
-                    : selectedLandlordId && !editMode
-                    ? landlordOptions.find(
-                        (landlord) => landlord.value === selectedLandlordId
-                      )
-                    : undefined
-                }
+                value={landlordOptions.find(
+                  (l) => l.value === selectedLandlord
+                )}
+                onChange={(value) => setSelectedLandlord(value)} 
                 hiddenInputClassName="property-form-input"
                 placeholder={
                   landlordsLoading
@@ -647,44 +690,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     ? "Error loading landlords"
                     : "Select landlord"
                 }
-                // error={landlordsError}
               />
-            )} */}
-
-            <SelectWithImage
-              options={landlordOptions}
-              id="land_lord_id"
-              label="Landlord"
-              inputContainerClassName="bg-white"
-              resetKey={resetKey}
-              className="property-landlord-wrapper"
-              defaultValue={
-                editMode && propertyDetails?.land_lord_id
-                  ? landlordOptions.find(
-                      (landlord) =>
-                        String(landlord.value) ===
-                        String(propertyDetails.land_lord_id)
-                    )
-                  : landlordId
-                  ? landlordOptions.find(
-                      (landlord) =>
-                        String(landlord.value) === String(landlordId)
-                    )
-                  : undefined
-              }
-              // onChange={(option) =>
-              //   setSelectedLandlord(option ? [String(option.value)] : [])
-              // }
-              onChange={(value) => setSelectedLandlord([value])}
-              hiddenInputClassName="property-form-input"
-              placeholder={
-                landlordsLoading
-                  ? "Loading landlords..."
-                  : landlordsError
-                  ? "Error loading landlords"
-                  : "Select landlord"
-              }
-            />
+            )}
 
             {isDirector && (
               <Select

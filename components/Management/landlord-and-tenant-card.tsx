@@ -7,6 +7,7 @@ import {
   NoteBlinkingIcon,
 } from "@/public/icons/dashboard-cards/icons";
 import { Lock } from "lucide-react";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export interface UserCardProps {
   picture_url?: string | null;
@@ -58,7 +59,7 @@ const UserCard: React.FC<UserCardProps> = ({
       <div className="flex-1 flex flex-col items-start">
         <p className="flex items-center justify-center font-bold text-black dark:text-darkText-1 text-sm capitalize">
           <span className="text-ellipsis line-clamp-1 break-all">
-            {title ?? ""} {name}{" "}
+            {title ?? ""} {capitalizeWords(name)}{" "}
           </span>
           {badge_color && user_tag !== "web" && (
             <BadgeIcon color={badge_color} />

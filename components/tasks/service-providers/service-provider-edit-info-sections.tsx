@@ -259,7 +259,7 @@ export const ServiceProviderCompanyDetailsSection = () => {
             id="company_phone"
             label="phone number"
             required
-            inputClassName="!bg-neutral-2"
+            // inputClassName="!bg-neutral-2"
             defaultValue={defaultVal?.company_phone ?? ""}
           />
           <Input

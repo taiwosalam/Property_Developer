@@ -21,7 +21,11 @@ interface UnitFormContextType extends UnitFormState {
   unitData?: UnitDataObject;
   index?: number;
   clickedNo?: boolean;
-  setClickedNo?: (clicked: boolean) => void; 
+  setClickedNo?: (clicked: boolean) => void;
+
+  // Added types for shouldRedirect state
+  shouldRedirect: boolean;
+  setShouldRedirect: (shouldRedirect: boolean) => void;
 }
 
 export const UnitFormContext = createContext<UnitFormContextType | undefined>(
