@@ -123,19 +123,24 @@ export const transformUsersMessages = (
       role: c.role,
       tier: c.tier,
       title: c.title,
+      type: c.type,
       unread_count: c.unread_count,
       online: c.is_online === "online",
       last_seen: c.is_online,
-      // badgeColor: c.tier
-      //   ? tierColorMap[c.tier as keyof typeof tierColorMap]
-      //   : undefined,
-      badgeColor:
-        c.tier === 2 &&
-        ["director", "account", "staff", "manager"].includes(c.role)
-          ? "gray"
-          : c.tier
+      // badgeColor logic:
+      // - For "director", "account", "staff", "manager": only if tier === 2
+      // - For other roles: if tier exists, use tierColorMap
+      // - Else: undefined
+      badgeColor: (() => {
+        const specialRoles = ["director", "account", "staff", "manager"];
+        if (c.type?.toLowerCase() === "group") return undefined; // no badge for group chat
+        if (specialRoles.includes(c.role)) {
+          return c.tier === 2 ? tierColorMap[2] : undefined;
+        }
+        return c.tier
           ? tierColorMap[c.tier as keyof typeof tierColorMap]
-          : undefined,
+          : undefined;
+      })(),
     };
   });
 };

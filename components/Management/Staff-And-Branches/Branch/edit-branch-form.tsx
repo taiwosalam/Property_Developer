@@ -180,7 +180,7 @@ const EditBranchForm = ({
               inputSpaceClassName="bg-white dark:bg-darkText-primary"
               id="branch_description"
               defaultValue={somedata?.description}
-              label="branch description"
+              label="about branch"
             />
           </div>
         </div>

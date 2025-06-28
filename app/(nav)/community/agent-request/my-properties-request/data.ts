@@ -1,7 +1,6 @@
-
 import { empty } from "@/app/config";
 import { AgentCommunityRequestCardProps } from "@/components/tasks/CallBack/types";
-import api from "@/services/api";
+import api, { handleAxiosError } from "@/services/api";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 import { PropertyRequestDataType } from "../data";
@@ -56,13 +55,6 @@ export const createPropertyRequest = async (
     property_category: transformedData.property_category || "",
     property_type: transformedData.property_type || "",
     property_sub_type: transformedData.property_sub_type || "",
-    // target_audience: transformedData.target_audience
-    //   ? typeof transformedData.target_audience === "string"
-    //     ? transformedData.target_audience.split(",")
-    //     : Array.isArray(transformedData.target_audience)
-    //     ? transformedData.target_audience
-    //     : [transformedData.target_audience]
-    //   : [],
     state: transformedData.state || "",
     lga: transformedData.lga || "",
     min_budget: parseCurrency(transformedData.min_budget),
@@ -71,14 +63,12 @@ export const createPropertyRequest = async (
   };
 
   try {
-    const response = await api.post(
-      // "/agent-community/property-requests/create",
-      "/agent_requests",
-      formattedData
-    );
-    return response.status === 200 || response.status === 201;
+    const response = await api.post("/agent_requests", formattedData);
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
   } catch (error) {
-    console.error("Error creating property request:", error);
+    handleAxiosError(error);
     throw error;
   }
 };

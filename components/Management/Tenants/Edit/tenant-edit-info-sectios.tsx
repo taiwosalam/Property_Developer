@@ -148,7 +148,7 @@ export const TenantEditProfileInfoSection = () => {
             id="tenant_email"
             type="email"
             label="email"
-            disabled={!!tenant?.email}
+            // disabled={!!tenant?.email}
             defaultValue={tenant?.email}
             inputClassName="rounded-lg"
           />

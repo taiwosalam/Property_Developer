@@ -161,7 +161,7 @@ const EditRent = () => {
         ? 0
         : 1,
     };
-    
+
     try {
       setReqLoading(true);
       const success = await editRent(payload);
@@ -202,7 +202,7 @@ const EditRent = () => {
         ? 0
         : 1,
     };
-    console.log("payload part", payload)
+    console.log("payload part", payload);
     try {
       setReqLoading(true);
       const res = await addPartPayment(payload);
@@ -447,8 +447,12 @@ const EditRent = () => {
         />
       </section>
       <FixedFooter className="flex gap-4 justify-end">
-        <Button size="base_medium" className="py-2 px-6">
-          Save
+        <Button
+          onClick={() => router.push(`/management/rent-unit`)}
+          size="base_medium"
+          className="py-2 px-6"
+        >
+          Update
         </Button>
       </FixedFooter>
     </div>
