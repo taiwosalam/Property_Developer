@@ -128,11 +128,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
         {addedUnits.map((unit, index) => (
           <AddUnitFormCard key={index} data={unit} index={index} />
         ))}
-
-        {/* {showNewUnitForm && (
-          <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
-        )} */}
-
+        
         {showNewUnitForm && !closeUnitForm && (
           <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
         )}

@@ -90,7 +90,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const isAccountOfficer = role === "account";
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
-  const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
+  // const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
+  const [selectedLandlord, setSelectedLandlord] = useState<string | undefined>(
+    undefined
+  );
   const [selectedOfficer, setSelectedOfficer] = useState<string[]>([]);
   const [inventoryError, setInventoryError] = useState<string | null>(null);
   const [inventoryLoading, setInventoryLoading] = useState<boolean>(false);
@@ -183,7 +186,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }));
     resetImages();
     setSelectedCategory(null);
-    setSelectedLandlord([]);
+    // setSelectedLandlord([]);
+    // setSelectedLandlord("");
     // setGlobalStore("selectedLandlordId", "");
   };
 
@@ -303,6 +307,35 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }
   }, [staffsData]);
 
+  console.log("editMode", editMode);
+console.log("landlordId prop", landlordId);
+console.log("propertyDetails", propertyDetails);
+console.log("landlordOptions", landlordOptions);
+console.log("selectedLandlord", selectedLandlord);
+console.log("SelectWithImage value", landlordOptions.find(
+  (l) => String(l.value) === String(selectedLandlord)
+));
+
+
+
+useEffect(() => {
+  // If editing, prefer propertyDetails
+  if (editMode && propertyDetails?.land_lord_id && landlordOptions.length) {
+    console.log("Setting selectedLandlord from propertyDetails", propertyDetails.land_lord_id);
+    setSelectedLandlord(String(propertyDetails.land_lord_id));
+  }
+  // If creating, and landlordId is passed in the URL, use it
+  else if (!editMode && landlordId && landlordOptions.length) {
+    const exists = landlordOptions.find(
+      (l) => String(l.value) === String(landlordId)
+    );
+    console.log("Setting selectedLandlord from landlordId", exists ? landlordId : undefined, "exists", !!exists);
+    setSelectedLandlord(exists ? String(landlordId) : undefined);
+  } else {
+    console.log("No landlord to set");
+    setSelectedLandlord(undefined);
+  }
+}, [editMode, propertyDetails?.land_lord_id, landlordId, landlordOptions]);
   // Set default landlord from selectedLandlordId
   // useEffect(() => {
   //   if (!editMode && landlordId && landlordOptions.length > 0) {
@@ -658,24 +691,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               inputContainerClassName="bg-white"
               resetKey={resetKey}
               className="property-landlord-wrapper"
-              defaultValue={
-                editMode && propertyDetails?.land_lord_id
-                  ? landlordOptions.find(
-                      (landlord) =>
-                        String(landlord.value) ===
-                        String(propertyDetails.land_lord_id)
-                    )
-                  : landlordId
-                  ? landlordOptions.find(
-                      (landlord) =>
-                        String(landlord.value) === String(landlordId)
-                    )
-                  : undefined
+              value={
+                landlordOptions.find(
+                  (l) => String(l.value) === String(selectedLandlord)
+                ) || undefined
               }
-              // onChange={(option) =>
-              //   setSelectedLandlord(option ? [String(option.value)] : [])
-              // }
-              onChange={(value) => setSelectedLandlord([value])}
+              onChange={(value) => setSelectedLandlord(value)}
               hiddenInputClassName="property-form-input"
               placeholder={
                 landlordsLoading

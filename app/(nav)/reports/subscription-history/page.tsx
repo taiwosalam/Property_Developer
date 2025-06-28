@@ -169,6 +169,7 @@ const SubscriptionRecord = () => {
     ref: index === state.transactions.length - 1 ? lastRowRef : null,
   }));
 
+  console.log("laoding...", loading)
   if (isNetworkError) return <NetworkError />;
   if (enrollmentErr) return <ServerError error={enrollmentErr} />;
   if (loading && state.transactions.length === 0)

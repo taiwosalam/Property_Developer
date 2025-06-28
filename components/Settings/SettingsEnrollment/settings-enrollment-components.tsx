@@ -327,16 +327,18 @@ export const FeaturesToggle: React.FC<{
           </motion.div>
         </button>
       </div>
-      <DocumentCheckbox
-        darkText
-        name="auto_renew"
-        state={{
-          isChecked: autoRenew,
-          setIsChecked: setAutoRenew,
-        }}
-      >
-        Auto-Renewal
-      </DocumentCheckbox>
+      <div className="flex items-center justify-end w-full ml-10">
+        <DocumentCheckbox
+          darkText
+          name="auto_renew"
+          state={{
+            isChecked: autoRenew,
+            setIsChecked: setAutoRenew,
+          }}
+        >
+          Auto-Renewal
+        </DocumentCheckbox>
+      </div>
     </div>
   );
 };
