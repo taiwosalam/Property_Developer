@@ -352,10 +352,6 @@ const Header = () => {
                   transition={{ duration: 0.3 }}
                   className="flex items-center gap-2"
                 >
-                  {/* <NavIcon
-                    icon={<DropdownListIcon size={21} />}
-                    alt="dropdown list"
-                  /> */}
                   <NavSwitchUserSwitch
                     trigger={
                       <NavIcon
@@ -561,7 +557,7 @@ const Header = () => {
                   width={200}
                   height={200}
                   priority
-                  className="object-contain w-full h-full"
+                  className="object-contain w-1/2 h-full"
                 />
               )}
             </motion.div>

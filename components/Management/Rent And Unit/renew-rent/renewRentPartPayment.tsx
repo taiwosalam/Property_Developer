@@ -134,6 +134,14 @@ export const RenewRentAddPartPayment: React.FC<{
     { label: "Email Alert", key: "email_alert" },
   ];
 
+  const visibleCheckboxOptions = isWebUser
+  ? checkboxOptions.filter(
+      (option) =>
+        option.key !== "create_invoice" &&
+        option.key !== "mobile_notification"
+    )
+  : checkboxOptions;
+
   return (
     <div className="renew-rent-part-payment-wrapper">
       <div className="flex gap-1 flex-col">
@@ -187,7 +195,7 @@ export const RenewRentAddPartPayment: React.FC<{
           </div>
           <div className="flex items-center justify-between gap-4 mb-2">
             <div className="flex items-center gap-4 flex-wrap">
-              {checkboxOptions.map(({ label, key }) => (
+              {visibleCheckboxOptions.map(({ label, key }) => (
                 <Checkbox
                   sm
                   key={key}

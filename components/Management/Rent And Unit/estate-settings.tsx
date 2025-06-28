@@ -12,11 +12,13 @@ const EstateSettings = ({
   estateSettingsDta,
   gridThree,
   id,
+  noEdit,
 }: {
   title: string;
   estateSettingsDta: { label: string; value?: string }[];
   gridThree?: boolean;
   id: string;
+  noEdit?: boolean;
 }) => {
   const router = useRouter();
   return (
@@ -42,13 +44,15 @@ const EstateSettings = ({
           ))}
         </div>
         <div className="w-fit ml-auto">
-          <Button
-            size="base_medium"
-            className="py-2 px-6"
-            href={`/management/properties/${id}/edit-property?page=rent-unit`}
-          >
-            Edit
-          </Button>
+          {!noEdit && (
+            <Button
+              size="base_medium"
+              className="py-2 px-6"
+              href={`/management/properties/${id}/edit-property?page=rent-unit`}
+            >
+              Edit
+            </Button>
+          )}
           {/* <Modal>
             <ModalTrigger asChild>
               <Button size="base_medium" className="py-2 px-6">
