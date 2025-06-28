@@ -13,8 +13,7 @@ const CreateProperty = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const landlordId = searchParams.get("landlordId") || "";
-
+  const landlordId = searchParams.get("landlord") || "";
   const {
     setShouldRenderTour,
     setPersist,
@@ -69,7 +68,7 @@ const CreateProperty = () => {
         <CreateRentalPropertyForm
           handleSubmit={handleSubmit}
           formType="rental"
-          landlordId={Number(landlordId)} 
+          landlordId={landlordId} 
         />
       </div>
     </>

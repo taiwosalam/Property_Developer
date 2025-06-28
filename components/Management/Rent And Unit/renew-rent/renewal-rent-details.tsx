@@ -28,9 +28,9 @@ const RenewalRentDetails = () => {
   return (
     <div className="space-y-6 current-rent-details-wrapper">
       <RentSectionTitle>
-        {isRental ? "Current Rent" : "Fee Renewal Details"}
+        {isRental ? "Current Rent" : "Current Fee Details"}
       </RentSectionTitle>
-      <RentSectionContainer title={isRental ? "Rent Details" : "Fee"}>
+      <RentSectionContainer title={isRental ? "Rent Details" : "Current Fee"}>
         <div className="grid md:grid-cols-2 gap-4">
           {renewalRentDetailItems.map((item, index) => (
             <DetailItem
