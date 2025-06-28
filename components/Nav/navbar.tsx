@@ -55,6 +55,7 @@ import { debounce } from "@/utils/debounce";
 import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { saveCompanyStatusToCookie } from "@/utils/saveRole";
 import { pageSteps } from "@/tour/steps/page-steps";
+import { useApplyZoomFromLocalStorage } from "@/hooks/useZoom";
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
@@ -152,12 +153,13 @@ const Header = () => {
 
   useEffect(() => {
     if (appearance && !hasMounted.current) {
-      const { colorMode, navbar, fonts, dashboardColor } = appearance;
+      const { colorMode, navbar, fonts, dashboardColor, zoom } = appearance;
       saveLocalStorage("navbar", navbar);
       setColor(dashboardColor);
       applyFont(fonts);
       setTheme(colorMode);
       hasMounted.current = true;
+      saveLocalStorage("zoomLevel", zoom.toString());
     }
   }, [appearance, setColor, setTheme]);
 
@@ -227,6 +229,8 @@ const Header = () => {
       );
     }
   }, [data, setPersonalInfo]);
+  // APPLY ZOOM
+  useApplyZoomFromLocalStorage();
 
   const toggleTheme = () => {
     if (!hasMounted.current) return;
@@ -240,6 +244,7 @@ const Header = () => {
   };
 
   const isOnline = useOnlineStatus();
+
 
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
