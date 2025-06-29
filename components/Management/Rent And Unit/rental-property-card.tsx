@@ -13,6 +13,7 @@ import ImageSlider from "@/components/ImageSlider/image-slider";
 import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import { StatusDots } from "./status-dot";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -229,8 +230,8 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
                 Tenant‘s Name
               </span>
               <div className="flex items-center gap-1">
-                <span className="font-medium text-brand-primary">
-                  {NOT_OCCUPIED ? "--- ---" : tenant_name}
+                <span className="font-medium text-brand-primary capitalize">
+                  {NOT_OCCUPIED ? "--- ---" : capitalizeWords(tenant_name)}
                 </span>
                 {badge_color && !NOT_OCCUPIED && (
                   <BadgeIcon color={badge_color} />

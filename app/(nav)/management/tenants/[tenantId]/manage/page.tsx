@@ -50,6 +50,7 @@ import { useGlobalStore } from "@/store/general-store";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { saveLocalStorage } from "@/utils/local-storage";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -110,7 +111,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
     router.push(`/messages/${tenant?.id}`);
   };
 
-  console.log("tenant.is_flagged", tenant)
+
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
@@ -139,7 +140,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <div className="custom-flex-col">
                 <div className="flex items-center gap-2">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    {tenant.title} {tenant.name}
+                    {tenant.title} {capitalizeWords(tenant.name)}
                   </p>
                   {tenant.badge_color && (
                     <BadgeIcon color={tenant.badge_color} />

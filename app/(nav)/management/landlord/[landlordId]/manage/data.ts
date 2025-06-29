@@ -11,6 +11,7 @@ import api, { handleAxiosError } from "@/services/api";
 import dayjs from "dayjs";
 import { formatFee } from "../../../rent-unit/data";
 import { empty } from "@/app/config";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
@@ -135,7 +136,7 @@ export const transformIndividualLandlordAPIResponse = ({
   return {
     id: data.id,
     picture: data.picture || "",
-    name: data.name,
+    name: capitalizeWords(data.name),
     title: data.title || "",
     email: data.email,
     phone_number: `${data.phone.profile_phone ?? ""}${

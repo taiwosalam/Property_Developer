@@ -6,6 +6,7 @@ import {
 } from "./types";
 import { cleanPricingValue } from "@/utils/cleanPrice";
 import { formatNumber } from "@/utils/number-formatter";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export const PERIOD_OPTIONS = [
   { value: "1", label: "1 Month" },
@@ -279,7 +280,7 @@ export const transformEnrollmentHistory = (
 
     return {
       id: `${enrollment.id || idx + 1}`,
-      subscription_type: enrollment.subs_package || "--- ---",
+      subscription_type: capitalizeWords(enrollment.subs_package) || "--- ---",
       duration: enrollment.period || "--- ---",
       discount,
       price: `₦${formatNumber(parseFloat(enrollment.amount))}`,

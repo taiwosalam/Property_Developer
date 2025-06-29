@@ -14,6 +14,7 @@ import ReactPlayer from "react-player";
 import { toast } from "sonner";
 import BadgeIcon, { BadgeIconColors } from "../BadgeIcon/badge-icon";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 // ============= THREAD HEADER ======================
 export const ThreadHeader = ({
@@ -50,7 +51,7 @@ export const ThreadHeader = ({
           <div className="flex gap-2 items-center">
             <div className="flex items-center gap-1 max-w-[100%]">
               <p className="dark:text-white truncate capitalize">
-                {name || "--- ---"}
+                {capitalizeWords(name) || "--- ---"}
               </p>
               {isVerified && <BadgeIcon color={"gray"} />}
             </div>

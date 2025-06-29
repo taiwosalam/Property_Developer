@@ -10,6 +10,7 @@ import { formatNumber } from "@/utils/number-formatter";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { formatFee } from "../../management/rent-unit/data";
 import { DateRange } from "react-day-picker";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export const accountingInvoiceOptionsWithDropdown = [
   {
@@ -110,29 +111,6 @@ const cleanAmount = (amount: string | number | null | undefined): number => {
   return parsed;
 };
 
-// export const transformInvoiceData = (
-//   response: InvoiceListResponse
-// ): TransformedInvoiceData => {
-//   const { statistics, invoices } = response.data;
-//   // console.log("rece inveoice", invoices)
-//   const transformedInvoices = invoices.map((invoice) => ({
-//     ...invoice,
-//     status: formatStatus(invoice.status),
-//     client_name: invoice.client_name,
-//     payment_reason: invoice.reason ?? "",
-//     picture: invoice.client_picture,
-//     total_amount:
-//       formatFee(invoice.total_amount, invoice.currency || "naira") ?? "",
-//     badge_color: invoice.client_tier
-//       ? tierColorMap[invoice.client_tier as keyof typeof tierColorMap]
-//       : undefined,
-//     date: dayjs(invoice.invoice_date).format("MMM DD YYYY"),
-//     is_auto:
-//       invoice.is_auto !== undefined ? convertToBoolean(invoice.is_auto) : false,
-//   }));
-//   return { statistics, invoices: transformedInvoices };
-// };
-
 const convertToBoolean = (value: string | boolean): boolean => {
   if (typeof value === "boolean") {
     return value;
@@ -148,27 +126,6 @@ export const formatStatus = (status: string): string => {
     .join(" "); // Join with spaces
 };
 
-// Helper to determine otherCurrency based on invoices
-// export const getOtherCurrency = (
-//   invoices: InvoiceListResponse["data"]["invoices"]
-// ) => {
-//   const currencies = new Set(
-//     invoices
-//       .map((invoice) => invoice.currency)
-//       .filter(
-//         (currency): currency is "dollar" | "pound" =>
-//           !!currency && currency !== "naira"
-//       )
-//   );
-
-//   const hasDollar = currencies.has("dollar");
-//   const hasPound = currencies.has("pound");
-
-//   if (hasDollar && hasPound) return "$£"; // Both present
-//   if (hasDollar) return "$"; // Only dollar
-//   if (hasPound) return "£"; // Only pound
-//   return ""; // Neither present
-// };
 
 // Filter invoices by date range and currency
 const filterInvoices = (
@@ -201,65 +158,7 @@ const filterInvoices = (
 };
 
 
-// const calculateStatistics = (
-//   invoices: InvoiceListResponse["data"]["invoices"]
-// ): InvoiceStatistics => {
-//   const initialStats: InvoiceStatistics = {
-//     total_receipt_num: 0,
-//     total_paid_receipt_num: 0,
-//     total_pending_receipt_num: 0,
-//     total_receipt: "₦0.00",
-//     total_paid_receipt: "₦0.00",
-//     total_pending_receipt: "₦0.00",
-//     percentage_change_total: 0,
-//     percentage_change_paid: 0,
-//     percentage_change_pending: 0,
-//   };
 
-//   const stats = invoices.reduce((acc, invoice) => {
-//     const totalAmount = cleanAmount(invoice.total_amount);
-//     const amountPaid = cleanAmount(invoice.amount_paid);
-//     const balanceDue = cleanAmount(invoice.balance_due);
-
-//     acc.total_receipt_num += totalAmount;
-//     acc.total_paid_receipt_num += amountPaid;
-//     acc.total_pending_receipt_num += balanceDue;
-//     return acc;
-//   }, initialStats);
-
-//   // Format totals
-//   stats.total_receipt = formatFee(stats.total_receipt_num, "naira") ?? "₦0.00";
-//   stats.total_paid_receipt =
-//     formatFee(stats.total_paid_receipt_num, "naira") ?? "₦0.00";
-//   stats.total_pending_receipt =
-//     formatFee(stats.total_pending_receipt, "naira") ?? "₦0.00";
-
-//   // Calculate percentages
-//   stats.percentage_change_paid =
-//     stats.total_receipt_num > 0
-//       ? Number(
-//           Math.min(
-//             (stats.total_paid_receipt_num / stats.total_receipt_num) * 100,
-//             100
-//           ).toFixed(2)
-//         )
-//       : 0;
-//   stats.percentage_change_pending =
-//     stats.total_receipt_num > 0
-//       ? Number(
-//           Math.min(
-//             (stats.total_pending_receipt_num / stats.total_receipt_num) * 100,
-//             100
-//           ).toFixed(2)
-//         )
-//       : 0;
-//   stats.percentage_change_total = 0;
-
-//   return stats;
-// };
-
-
-// Calculate naira statistics
 const calculateStatistics = (
   invoices: InvoiceListResponse["data"]["invoices"]
 ): InvoiceStatistics => {
@@ -333,7 +232,7 @@ const transformSingleInvoice = (
   return {
     ...invoice,
     status: formatStatus(invoice.status),
-    client_name: invoice.client_name,
+    client_name: capitalizeWords(invoice?.client_name ?? ""),
     payment_reason: invoice.reason ?? "",
     picture: invoice.client_picture ?? undefined,
     total_amount:

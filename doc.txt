@@ -1,2639 +1,429 @@
-
-// import { KeyValueListProps } from "./types";
+// "use client";
+// import CustomTable from "@/components/Table/table";
+// import type { DataItem } from "@/components/Table/types";
+// import FilterBar from "@/components/FIlterBar/FilterBar";
+// import { useCallback, useEffect, useRef, useState } from "react";
+// import useFetch from "@/hooks/useFetch";
+// import CustomLoader from "@/components/Loader/CustomLoader";
+// import NetworkError from "@/components/Error/NetworkError";
+// import { BranchFilter, FilterResult, PropertyFilter } from "../tenants/types";
+// import { ReportsRequestParams } from "../tenants/data";
+// import { AxiosRequestConfig } from "axios";
+// import { BranchStaff } from "../../(messages-reviews)/messages/types";
+// import dayjs from "dayjs";
+// import SearchError from "@/components/SearchNotFound/SearchNotFound";
+// import { hasActiveFilters } from "../data/utils";
+// import EmptyList from "@/components/EmptyList/Empty-List";
+// import ServerError from "@/components/Error/ServerError";
+// import useAddressFromCoords from "@/hooks/useGeoCoding";
+// import { useGlobalStore } from "@/store/general-store";
+// import { useRouter, useSearchParams } from "next/navigation";
+// import { debounce } from "@/utils/debounce";
+// import { Activity } from "lucide-react";
+// import {
+//   DomainFields,
+//   enrollment_subscriptions,
+//   SponsorFields,
+// } from "../../settings/add-on/data";
+// import { usePersonalInfoStore } from "@/store/personal-info-store";
+// import { EnrollmentApiResponse } from "../../settings/subscription/types";
+// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+// import { transformEnrollmentHistory } from "./data";
 // import clsx from "clsx";
 
-// export const KeyValueList = <T extends object>({
-//   styles,
-//   data = {},
-//   chunkSize = 3,
-//   referenceObject,
-//   direction = "row",
-//   truncateLength, // Add truncateLength prop
-// }: KeyValueListProps<T>) => {
-//   const keys = Object.keys(referenceObject) as Array<keyof T>;
-
-//   // Helper function to truncate text
-//   const truncateText = (text: string, length?: number): string => {
-//     if (length === undefined || text.length <= length) {
-//       return text;
-//     }
-//     return text.slice(0, length) + "...";
-//   };
-
-//   const chunkArray = (arr: Array<keyof T>, size: number) =>
-//     arr.reduce(
-//       (acc, _, i) => (i % size === 0 ? [...acc, arr.slice(i, i + size)] : acc),
-//       [] as Array<Array<keyof T>>
-//     );
-
-//   const chunkedKeys = chunkArray(keys, chunkSize);
-
-//   return (
-//     <>
-//       {chunkedKeys.map((chunk, chunkIndex) => (
-//         <div
-//           key={chunkIndex}
-//           className={clsx("flex-1 text-base font-medium capitalize", {
-//             "flex gap-10": direction === "row",
-//             "custom-flex-col gap-6": direction === "column",
-//           })}
-//         >
-//           {direction === "column" ? (
-//             <>
-//               {chunk.map((key) => (
-//                 <div
-//                   key={`${chunkIndex}-${String(key)}`}
-//                   className="custom-flex-col gap-2"
-//                 >
-//                   <p
-//                     className="text-[#747474] dark:text-darkText-1 whitespace-nowrap"
-//                     style={styles?.[key]?.label}
-//                   >
-//                     {String(key).split("_").join(" ")}
-//                   </p>
-//                   <p
-//                     className="text-black dark:text-darkText-2 line-clamp-1"
-//                     style={styles?.[key]?.value}
-//                   >
-//                     {/* Apply truncation to the value */}
-//                     {data && data[key] !== undefined
-//                       ? truncateText(String(data[key]), truncateLength)
-//                       : "---"}
-//                   </p>
-//                 </div>
-//               ))}
-//             </>
-//           ) : (
-//             <>
-//               <div className="custom-flex-col gap-4">
-//                 {chunk.map((key) => (
-//                   <p
-//                     key={`${chunkIndex}-${String(key)}`}
-//                     className="text-[#747474] dark:text-darkText-1 whitespace-nowrap"
-//                     style={styles?.[key]?.label}
-//                   >
-//                     {String(key).split("_").join(" ")}
-//                   </p>
-//                 ))}
-//               </div>
-//               <div className="custom-flex-col gap-4">
-//                 {chunk.map((key) => (
-//                   <p
-//                     key={`${chunkIndex}-${String(key)}`}
-//                     className="text-black dark:text-darkText-2"
-//                     style={styles?.[key]?.value}
-//                   >
-//                     {/* Apply truncation to the value */}
-//                     {data && data[key] !== undefined
-//                       ? truncateText(String(data[key]), truncateLength)
-//                       : "---"}
-//                   </p>
-//                 ))}
-//               </div>
-//             </>
-//           )}
-//         </div>
-//       ))}
-//     </>
-//   );
-// };
-
-// export default KeyValueList;
-
-
-
-
-
-
-
-
-
-
-
-
-=========================== PROPERTY CARD BUTTON FILTERS ==================
-   {/* {actions
-          .filter((action) => {
-            const label =
-              typeof action.label === "function"
-                ? action.label(propertyType)
-                : action.label;
-
-            if (invoice_status === "pending") {
-              return label === "Pending";
-            }
-
-            // Define button visibility based on status
-            if (status === "vacant" || status === "relocate") {
-              return label === "Start Rent" || label === "Move In";
-            }
-            if (status === "occupied") {
-              // Exclude "Renew Rent" and "Renew Fee" for occupied status
-              return (
-                label !== "Start Rent" &&
-                label !== "Move In" &&
-                label !== "Renew Rent" &&
-                label !== "Renew Fee"
-              );
-            }
-
-            if (status === "expired") {
-              return (
-                label === "Renew Rent" ||
-                label === "Renew Fee" ||
-                // label === "Edit" ||
-                label === "Move Out" ||
-                label === "Relocate"
-              );
-            }
-            return false; // Default: hide all buttons if status is unknown
-          })
-          .filter((action) => {
-            const label =
-              typeof action.label === "function"
-                ? action.label(propertyType)
-                : action.label;
-
-            // Additional filtering based on propertyType
-            if (propertyType === "rental" && label === "Relocate") {
-              return false;
-            }
-            if (propertyType === "facility" && label === "Move Out") {
-              return false;
-            }
-            return true;
-          })
-          .map((action, i) => (
-            <ActionButton
-              unit_id={unitId}
-              invoice_id={invoice_id}
-              key={i}
-              propertyType={propertyType}
-              {...action}
-              route={
-                typeof action.route === "function"
-                  ? action.route(unitId, propertyType)
-                  : action.route
-              }
-              label={
-                typeof action.label === "function"
-                  ? action.label(propertyType)
-                  : action.label
-              }
-            />
-          ))} */}
-
-
-
-
-
-
-
-
-
-
-
-"use client";
-
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { useChatStore } from "@/store/message";
-import { groupMessagesByDay } from "../data";
-import Picture from "@/components/Picture/picture";
-import Messages from "@/components/Message/messages";
-import { empty } from "@/app/config";
-import { UsersProps } from "../types";
-import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
-import { useAuthStore } from "@/store/authStore";
-import Link from "next/link";
-import useConversationListener from "@/hooks/useConversationListen";
-import api from "@/services/api";
-import { useGlobalStore } from "@/store/general-store";
-
-interface Message {
-  id: number;
-  text: string | null;
-  senderId: number;
-  timestamp: string;
-  content_type: string;
-}
-
-const Chat = () => {
-  const router = useRouter();
-  const { data, setChatData } = useChatStore();
-  const { id } = useParams<{ id: string }>();
-  const user_id = useAuthStore((state) => state.user_id);
-  const users = data?.users?.users || [];
-  const messageUserData = useGlobalStore((s) => s.messageUserData);
-  const store_messages = data?.conversations || [];
-  const [conversations, setConversations] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [conversationId, setConversationId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchMessages = useCallback(async () => {
-    try {
-      setError(null);
-      const response = await api.get(`/messages/conversations/user/${id}`);
-      if (response.data.status === "success") {
-        const mappedMessages: Message[] = response.data.messages.map(
-          (msg: any) => ({
-            id: msg.id,
-            text: msg.content ?? null,
-            senderId: msg.sender_id,
-            timestamp: msg.updated_at || new Date().toISOString(),
-            content_type: msg.content_type,
-          })
-        );
-        setChatData("conversations", mappedMessages);
-        // Assume API returns conversation ID (adjust based on actual response)
-        setConversationId(response.data.conversation?.id?.toString() || null);
-      } else {
-        setError("Failed to load messages.");
-      }
-    } catch (error: any) {
-      console.error("API error:", error.message);
-      setError("Failed to load messages. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [id, setChatData]);
-
-  const handleNewMessage = useCallback(
-    (newMessage: Message) => {
-      const exists = store_messages.some(
-        (msg: any) => msg.id === newMessage.id
-      );
-      if (!exists) {
-        const updatedConversations = [...store_messages, newMessage].sort(
-          (a, b) =>
-            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-        );
-        setChatData("conversations", updatedConversations);
-      }
-    },
-    [store_messages, setChatData]
-  );
-
-  useEffect(() => {
-    if (!id) {
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    fetchMessages();
-
-    return () => {
-      setConversations([]);
-      setChatData("conversations", []);
-      setConversationId(null);
-    };
-  }, [id, fetchMessages, setChatData]);
-
-  useEffect(() => {
-    if (store_messages.length > 0) {
-      const groupedMessages = groupMessagesByDay(store_messages);
-      setConversations(groupedMessages);
-    }
-  }, [store_messages]);
-
-  useConversationListener(
-    id,
-    conversationId,
-    handleNewMessage,
-    (error: any) => {
-      console.error("Pusher failed:", error);
-      setError(
-        "Real-time updates unavailable. Messages may not update automatically."
-      );
-    }
-  );
-
-  const userId = Number(id);
-  const user =
-    messageUserData || users.find((u: UsersProps) => Number(u.id) === userId);
-
-  if (!user) {
-    router.replace("/messages");
-    return null;
-  }
-
-  if (isLoading) {
-    return <ChatSkeleton />;
-  }
-
-  return (
-    <>
-      <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
-        <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/messages")}>
-            <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
-          </button>
-          <Link
-            href={`/management/staff-branch/${user.branch_id}/branch-staff/${user?.staff_id}`}
-            className="flex items-center gap-4 text-left"
-          >
-            <Picture
-              src={user?.imageUrl || empty}
-              alt="profile picture"
-              containerClassName="custom-secondary-bg rounded-full"
-              size={32}
-              rounded
-              status={false}
-            />
-            <div className="custom-flex-col">
-              <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {user?.name}
-              </p>
-              <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
-                Tap here for contact info
-              </p>
-            </div>
-          </Link>
-        </div>
-      </div>
-      <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-        {error && <div className="text-red-500 text-center p-2">{error}</div>}
-        {conversations.length > 0 &&
-          conversations.map((group, index) => (
-            <Messages
-              key={index}
-              day={group.day}
-              messages={group.messages}
-              userId={user_id as string}
-            />
-          ))}
-      </div>
-    </>
-  );
-};
-
-export default Chat;
-
-
-
-
-
-
-  // Handlers
-  // const handleRenewRent = async () => {
-  //   if (!unitData?.unit_id || !unitData?.occupant?.id) {
-  //     toast.warning(
-  //       "Missing required information: unit or occupant not found."
-  //     );
-  //     return;
-  //   }
-  //   if (!selectedCheckboxOptions) {
-  //     toast.warning("Notification preferences not set.");
-  //     return;
-  //   }
-  //   if (!startDate) {
-  //     toast.warning("Start date is required.");
-  //     return;
-  //   }
-  //   if (dueDate && dueDate.isBefore(dayjs(startDate), "day")) {
-  //     toast.warning("Due date cannot be before the start date.");
-  //     return;
-  //   }
-
-  //   // If rent_agreement is true, open the agreement preview modal
-  //   if (selectedCheckboxOptions.rent_agreement) {
-  //     setIsAgreementModalOpen(true);
-  //     return;
-  //   }
-
-  //   // If rent_agreement is false, proceed directly
-  //   await submitRent(null);
-  // };
-
-  // const submitRent = async (doc_file: File | null) => {
-  //   const successMsg = isRental
-  //     ? "Rent Renewed Successfully"
-  //     : "Fee Renewed Successfully";
-  //   const failedMsg = isRental ? "Failed to renew rent" : "Failed to renew fee";
-
-  //   const payloadObj = {
-  //     unit_id: unitData.unit_id,
-  //     tenant_id: unitData.occupant.id,
-  //     start_date: dayjs(startDate).format("MM/DD/YYYY"),
-  //     payment_type: "full",
-  //     rent_type: "renew",
-  //     mobile_notification: selectedCheckboxOptions.mobile_notification ? 1 : 0,
-  //     email_alert: selectedCheckboxOptions.email_alert ? 1 : 0,
-  //     has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
-  //     sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
-  //     has_penalty: penaltyAmount > 0 ? 1 : 0,
-  //     penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
-  //     has_document: doc_file ? 1 : 0,
-  //     ...(doc_file && { doc_file }),
-  //   };
-
-  //   const payload = objectToFormData(payloadObj);
-
-  //   try {
-  //     setReqLoading(true);
-  //     const res = await startRent(payload);
-  //     if (res) {
-  //       toast.success(successMsg);
-  //       router.push("/management/rent-unit");
-  //     }
-  //   } catch (err) {
-  //     toast.error(failedMsg);
-  //   } finally {
-  //     setReqLoading(false);
-  //     setIsAgreementModalOpen(false);
-  //   }
-  // };
-
-
-  // useEffect(() => {
-  //   if (usersMessages) {
-  //     const transformed = transformUsersMessages(usersMessages).filter(
-  //       (msg) => msg.id !== loggedInUserId
-  //     );
-  //     setPageUsersMsg(transformed);
-  //     setChatData("users_messages", transformed);
-  //   }
-  // }, [usersMessages]);
-
-  // useEffect(() => {
-  //   if (usersData) {
-  //     setChatData("users", transformCompanyUsersData(usersData));
-  //   }
-  // }, [usersData]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"use client";
-
-import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { useChatStore } from "@/store/message";
-import { groupMessagesByDay } from "../data"; // The new grouping helper
-import Picture from "@/components/Picture/picture";
-import Messages from "@/components/Message/messages";
-import { empty } from "@/app/config";
-import { UsersProps } from "../types";
-import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
-import { useAuthStore } from "@/store/authStore";
-import { getLocalStorage } from "@/utils/local-storage";
-import Link from "next/link";
-import useConversationListener from "@/hooks/useConversationListen";
-import api from "@/services/api";
-import { useGlobalStore } from "@/store/general-store";
-
-interface Message {
-  id: number;
-  text: string | null;
-  senderId: number;
-  timestamp: string;
-  content_type: string;
-}
-
-const Chat = () => {
-  const router = useRouter();
-  const { data, setChatData } = useChatStore();
-  const { id } = useParams<{ id: string }>();
-  const user_id = useAuthStore((state) => state.user_id);
-  const users = data?.users?.users || [];
-  const messageUserData = useGlobalStore((s) => s.messageUserData);
-  const store_messages = data?.conversations || [];
-  const [conversations, setConversations] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPusherFailed, setIsPusherFailed] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch messages from API
-  const fetchMessages = useCallback(async () => {
-    try {
-      setError(null);
-      const response = await api.get(`/messages/conversations/user/${id}`);
-      console.log("API response:", response.data);
-      if (response.data.status === "success") {
-        const mappedMessages: Message[] = response.data.messages.map(
-          (msg: any) => ({
-            id: msg.id,
-            text: msg.content ?? null,
-            senderId: msg.sender_id,
-            // timestamp: `${msg.date} ${msg.timestamp}`,
-            timestamp: `${msg.updated_at} ${msg.timestamp}`,
-            content_type: msg.content_type,
-          })
-        );
-        setChatData("conversations", mappedMessages);
-      } else {
-        setError("Failed to load messages.");
-      }
-    } catch (error: any) {
-      console.error("API error:", error.response?.data || error.message);
-      setError("Failed to load messages. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [id, setChatData]);
-
-  // Handle new Pusher messages
-  const handleNewMessage = useCallback(
-    (newMessage: Message) => {
-      const updatedConversations = [...store_messages, newMessage].sort(
-        (a, b) => a.id - b.id
-      );
-      setChatData("conversations", updatedConversations);
-    },
-    [store_messages, setChatData]
-  );
-
-  // Initialize Pusher and fetch messages
-  useEffect(() => {
-    if (!id) {
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setConversations([]);
-    setChatData("conversations", []);
-    fetchMessages();
-
-    return () => {
-      setConversations([]);
-      setChatData("conversations", []);
-    };
-  }, [id, fetchMessages, setChatData]);
-
-  // Polling when Pusher fails
-  useEffect(() => {
-    let pollingInterval: NodeJS.Timeout | null = null;
-
-    if (isPusherFailed) {
-      console.log("Pusher failed, switching to polling every 30 seconds...");
-      pollingInterval = setInterval(() => {
-        fetchMessages();
-      }, 30000);
-    }
-
-    return () => {
-      if (pollingInterval) {
-        console.log("Stopping polling...");
-        clearInterval(pollingInterval);
-      }
-    };
-  }, [isPusherFailed, fetchMessages]);
-
-  // Update grouped conversations when messages change
-  useEffect(() => {
-    if (store_messages.length > 0) {
-      const groupedMessages = groupMessagesByDay(store_messages);
-      setConversations(groupedMessages);
-    }
-  }, [store_messages]);
-
-  // Pusher subscription
-  useConversationListener(id, handleNewMessage, (error: any) => {
-    console.error("Pusher connection failed:", error);
-    setIsPusherFailed(true);
-  });
-
-  // Find user
-  const userId = Number(id);
-  const user = messageUserData || users.find((u: UsersProps) => Number(u.id) === Number(userId));
-
-  if (!user) {
-    router.replace("/messages");
-    return null;
-  }
-
-  if (isLoading) {
-    return <ChatSkeleton />;
-  }
-
-  return (
-    <>
-      <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
-        <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/messages")}>
-            <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
-          </button>
-          <Link
-            href={`/management/staff-branch/${user.branch_id}/branch-staff/${user?.staff_id}`}
-            className="flex items-center gap-4 text-left"
-          >
-            <Picture
-              src={user?.imageUrl || empty}
-              alt="profile picture"
-              containerClassName="custom-secondary-bg rounded-full"
-              size={32}
-              rounded
-              status={false}
-            />
-            <div className="custom-flex-col">
-              <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {user?.name}
-              </p>
-              <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
-                Tap here for contact info
-              </p>
-            </div>
-          </Link>
-        </div>
-      </div>
-      <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-      {error && (
-          <div className="text-red-500 text-center p-2">{error}</div>
-        )}
-        {conversations.length > 0 &&
-          conversations.map((group, index) => (
-            <Messages
-              key={index}
-              day={group.day}
-              messages={group.messages}
-              userId={user_id as string}
-            />
-          ))}
-      </div>
-    </>
-  );
-};
-
-export default Chat;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useState, useEffect, useMemo } from "react";
-// import { RentSectionTitle } from "../rent-section-container";
-// import { FeeDetails } from "../rent-section-container";
-// import { FeeDetail } from "../types";
-// import { currencySymbols } from "@/utils/number-formatter";
-// import { useRenewRentContext } from "@/utils/renew-rent-context";
-// import { calculateOverduePeriods } from "@/app/(nav)/management/rent-unit/[id]/renew-rent/data";
-// import { calculateOwingAmountAndPeriods, getOwingFeeDetails } from "./data";
-// import { calculateRentPenalty } from "@/app/(nav)/management/rent-unit/data";
-// import { useOccupantStore } from "@/hooks/occupant-store";
-// import { RentPeriod } from "../data";
-
-// const OwingFee = ({ show = false }: { show?: boolean }) => {
-//   const { isRental, unitData, currency, due_date, start_date, isUpfrontPaymentChecked } =
-//     useRenewRentContext();
-
-//   console.log("unitDaya", unitData);
-//   console.log("due_date", due_date);
-//   // Zustand store
-//   const { penaltyAmount, setPenaltyAmount, setOverduePeriods, overduePeriods } = useOccupantStore();
-//   const [owingAmount, setOwingAmount] = useState<number>(0);
-//   // const [overduePeriods, setOverduePeriods] = useState<number>(0);
-
-//   const chargePenalty = unitData.chargePenalty;
-//   // const chargePenalty = true; //TODO: UNCOMMENT THE TOP
-//   const rent_penalty_setting = unitData.rent_penalty_setting;
-//   const feePeriod = unitData.fee_period;
-//   const rentAmount = Number(unitData.fee_amount);
-//   const renewalTenantTotalPrice = Number(unitData.renewalTenantTotalPrice) || 0;
-
-//   console.log("overduePeriods", overduePeriods)
-
-//   // useEffect(() => {
-//   //   if (due_date && unitData.fee_period && renewalTenantTotalPrice > 0) {
-
-//   //     // Calculate owing amount and periods
-//   //     const { overduePeriods, owingAmount } = calculateOwingAmountAndPeriods({
-//   //       start_date,
-//   //       due_date,
-//   //       feePeriod: feePeriod as RentPeriod,
-//   //       renewalTenantTotalPrice,
-//   //     });
-
-//   //     // Calculate penalty amount
-//   //     const periods = calculateOverduePeriods(
-//   //       due_date,
-//   //       unitData.fee_period as any
-//   //     );
-//   //     const calculatedOwing =
-//   //       periods * Number(unitData.renewalTenantTotalPrice);
-
-//   //     const penaltyAmount = calculateRentPenalty(
-//   //       chargePenalty,
-//   //       rent_penalty_setting,
-//   //       rentAmount,
-//   //       feePeriod as any,
-//   //       periods
-//   //     );
-//   //     setPenaltyAmount(penaltyAmount);
-//   //     setOwingAmount(calculatedOwing);
-//   //     // setOverduePeriods(periods);
-//   //     setOverduePeriods(overduePeriods);
-//   //   }
-//   // }, [
-//   //   due_date,
-//   //   unitData.fee_period,
-//   //   unitData.renewalTenantTotalPrice,
-//   //   chargePenalty,
-//   //   rent_penalty_setting,
-//   //   rentAmount,
-//   //   feePeriod,
-//   //   setPenaltyAmount,
-//   // ]);
-
-//   useEffect(() => {
-//     if (start_date && due_date && feePeriod && renewalTenantTotalPrice > 0) {
-//       // Calculate owing amount and periods
-//       const { overduePeriods, owingAmount } = calculateOwingAmountAndPeriods({
-//         start_date,
-//         due_date,
-//         feePeriod: feePeriod as RentPeriod,
-//         renewalTenantTotalPrice,
-//       });
-
-//       // Keep existing penalty calculation
-//       const calculatedPenalty = calculateRentPenalty(
-//         chargePenalty,
-//         rent_penalty_setting,
-//         rentAmount,
-//         feePeriod as RentPeriod,
-//         overduePeriods
-//       );
-
-//       console.log("overduePeriods", overduePeriods);
-//       console.log("owingAmount", owingAmount);
-//       console.log("penaltyAmount", calculatedPenalty);
-
-//       setOverduePeriods(overduePeriods);
-//       setOwingAmount(owingAmount);
-//       setPenaltyAmount(calculatedPenalty);
-//     } else {
-//       console.log("Missing data for owing calculation:", {
-//         start_date,
-//         due_date,
-//         feePeriod,
-//         renewalTenantTotalPrice,
-//       });
-//     }
-//   }, [
-//     start_date,
-//     due_date,
-//     feePeriod,
-//     renewalTenantTotalPrice,
-//     chargePenalty,
-//     rent_penalty_setting,
-//     rentAmount,
-//     setPenaltyAmount,
-//     setOverduePeriods,
-//   ]);
-
-//   const feeDetails = useMemo(
-//     () =>
-//       getOwingFeeDetails({
-//         isRental,
-//         currency: currency as keyof typeof currencySymbols,
-//         owingAmount,
-//         overduePeriods,
-//         unitData,
-//         penaltyAmount,
-//       }),
-//     [isRental, currency, owingAmount, overduePeriods, unitData, penaltyAmount]
-//   );
-
-//   console.log("penaltyAmount", penaltyAmount);
-//   console.log("feeDetails", feeDetails);
-
-//   // Render if show is true and either owingAmount or penaltyAmount is non-zero
-//   if (!show || (owingAmount <= 0 && penaltyAmount <= 0)) {
-//     console.log("OwingFee not rendered:", { show, owingAmount, penaltyAmount });
-//     return null;
-//   }
-
-//   // const feeDetails = useMemo(
-//   //   () =>
-//   //     getOwingFeeDetails({
-//   //       isRental,
-//   //       currency: currency as keyof typeof currencySymbols,
-//   //       owingAmount,
-//   //       overduePeriods,
-//   //       unitData,
-//   //       penaltyAmount,
-//   //     }),
-//   //   [isRental, currency, owingAmount, overduePeriods, unitData]
-//   // );
-
-//   console.log("penaltyAmount", penaltyAmount);
-//   console.log("feeDetails", feeDetails);
-//   // if (owingAmount <= 0 || !isUpfrontPaymentChecked) {
-//   //   return null;
-//   // }
-
-//   if (!show || owingAmount <= 0) {
-//     return null;
-//   }
-
-//   return (
-//     <div className="space-y-6">
-//       <RentSectionTitle>Outstanding Details</RentSectionTitle>
-//       <FeeDetails
-//         owing
-//         noEdit
-//         currency={currency}
-//         title={isRental ? "Breakdown" : "Breakdown"}
-//         feeDetails={feeDetails}
-//         total_package={
-//           Number(unitData.renewalTenantTotalPrice) + owingAmount + penaltyAmount
-//         }
-//         id={unitData.propertyId as string}
-//       />
-//     </div>
-//   );
-// };
-
-// export default OwingFee;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// "use client";
-// import React, { useEffect, useState } from "react";
-// // Imports
-// import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-// import useFetch from "@/hooks/useFetch";
-// import { transformDocumenArticleResponse } from "./data";
-// import { CheckboxOption, DocumentsAPIResponse } from "./types";
-// import DOMPurify from "dompurify";
-// import NetworkError from "../Error/NetworkError";
-// import CheckBoxLoader from "../Loader/CheckBoxLoader";
-// import { useRouter } from "next/navigation";
-// import { toast } from "sonner";
-
-// interface DocumentTenancyAgreementsProps {
-//   id: number;
-//   defaultOptions?: CheckboxOption[];
-//   onOptionsChange?: (options: CheckboxOption[]) => void;
+// interface EnrollmentQueryParams {
+//   page?: number;
 // }
 
-// const DocumentTenancyAgreements: React.FC<DocumentTenancyAgreementsProps> = ({
-//   id,
-//   onOptionsChange,
-//   defaultOptions = [],
-// }) => {
-//   const router = useRouter();
+// const SubscriptionRecord = () => {
+//   const searchParams = useSearchParams();
+//   const search = searchParams.get("b");
+//   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+//   const { company_id } = usePersonalInfoStore();
 
-//   const { data, loading, error, isNetworkError } =
-//     useFetch<DocumentsAPIResponse>(`/property-document/documents/${id}`);
+//   const [state, setState] = useState<{
+//     transactions: DataItem[];
+//     current_page: number;
+//     total_pages: number;
+//     hasMore: boolean;
+//   }>({
+//     transactions: [],
+//     current_page: 1,
+//     total_pages: 1,
+//     hasMore: false,
+//   });
 
-//   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
-//   const [selectedOptions, setSelectedOptions] = useState<CheckboxOption[]>([]);
+//   const [config, setConfig] = useState<AxiosRequestConfig | undefined>(
+//     undefined
+//   );
+//   const observer = useRef<IntersectionObserver | null>(null);
 
-//   // Set up options from API data
-//   // useEffect(() => {
-//   //   if (data) {
-//   //     const options = transformDocumenArticleResponse(data);
-//   //     setCheckboxOptions(options);
-
-//   //     // Initialize selected options based on defaultOptions if available
-//   //     if (defaultOptions && defaultOptions.length > 0) {
-//   //       // Find matching options from API data and default options
-//   //       const initialSelected = options.filter((option) =>
-//   //         defaultOptions.some((defaultOpt) => defaultOpt.value === option.value)
-//   //       );
-//   //       setSelectedOptions(initialSelected);
-
-//   //       if (onOptionsChange) {
-//   //         onOptionsChange(initialSelected);
-//   //       }
-//   //     }
-//   //   }
-//   // }, [data, defaultOptions]);
-
+//   // Only set config when company_id is available
 //   useEffect(() => {
-//     if (data) {
-//       const options = transformDocumenArticleResponse(data);
-//       // Only update checkboxOptions if different
-//       setCheckboxOptions((prev) => {
-//         const isSame =
-//           prev.length === options.length &&
-//           prev.every((opt, i) => opt.value === options[i]?.value);
-//         return isSame ? prev : options;
+//     if (company_id) {
+//       setConfig({
+//         params: { page: 1 } as EnrollmentQueryParams,
 //       });
+//     }
+//   }, [company_id]);
 
-//       // Initialize selected options based on defaultOptions
-//       if (defaultOptions.length > 0) {
-//         const initialSelected = options.filter((option) =>
-//           defaultOptions.some((defaultOpt) => defaultOpt.value === option.value)
-//         );
-//         setSelectedOptions((prev) => {
-//           const isSame =
-//             prev.length === initialSelected.length &&
-//             prev.every((opt, i) => opt.value === initialSelected[i]?.value);
-//           if (!isSame) {
-//             if (onOptionsChange) onOptionsChange(initialSelected);
-//             return initialSelected;
-//           }
-//           return prev;
+//   const {
+//     data: companyEnrollments,
+//     error: enrollmentErr,
+//     loading,
+//     silentLoading,
+//     isNetworkError,
+//     refetch: refetchEnrollments,
+//   } = useFetch<EnrollmentApiResponse>(
+//     company_id && config ? `/enrollments/${company_id}` : null,
+//     config
+//   );
+
+//   useRefetchOnEvent("refetchEnrollments", () =>
+//     company_id && config ? refetchEnrollments({ silent: true }) : null
+//   );
+
+//   // Transform and update state when new data is fetched
+//   useEffect(() => {
+//     if (!loading && companyEnrollments?.data?.enrollments) {
+//       const newData = transformEnrollmentHistory(
+//         companyEnrollments.data.enrollments,
+//         companyEnrollments.data.pagination
+//       );
+//       const newTransactions = newData.transactions;
+//       const currentTransactions = useGlobalStore.getState().subscriptions || [];
+
+//       if (
+//         JSON.stringify(currentTransactions) !== JSON.stringify(newTransactions)
+//       ) {
+//         setState((prevState) => {
+//           const combinedTransactions =
+//             newData.current_page === 1
+//               ? newData.transactions
+//               : [...prevState.transactions, ...newData.transactions];
+
+//           // Remove duplicates based on id
+//           const uniqueTransactions = combinedTransactions.filter(
+//             (transaction, index, self) =>
+//               index === self.findIndex((t) => t.id === transaction.id)
+//           );
+//           return {
+//             ...prevState,
+//             transactions: uniqueTransactions,
+//             current_page: newData.current_page,
+//             total_pages: newData.total_pages,
+//             hasMore: newData.hasMore,
+//           };
 //         });
+//         setGlobalStore("subscriptions", newTransactions);
 //       }
 //     }
-//   }, [data, defaultOptions, onOptionsChange]);
+//   }, [companyEnrollments, loading, setGlobalStore]);
 
-//   // Toggle the selected option when a DocumentCheckbox is clicked
-//   const handleOptionToggle = (option: CheckboxOption) => {
-//     setSelectedOptions((prev) => {
-//       const exists = prev.find((item) => item.value === option.value);
-//       if (exists) {
-//         const filtered = prev.filter((item) => item.value !== option.value);
-//         if (onOptionsChange) onOptionsChange(filtered);
-//         return filtered;
-//       } else {
-//         const newSelected = [...prev, option];
-//         if (onOptionsChange) onOptionsChange(newSelected);
-//         return newSelected;
-//       }
-//     });
-//   };
+//   // Fetch next page for infinite scroll
+//   const fetchNextPage = useCallback(() => {
+//     if (!state.hasMore || silentLoading || loading) {
+//       return;
+//     }
 
-//   // Check if an option is selected
-//   const isOptionSelected = (option: CheckboxOption) => {
-//     return selectedOptions.some((item) => item.value === option.value);
+//     const nextPage = state.current_page + 1;
+//     if (nextPage <= state.total_pages) {
+//       setConfig((prev) => ({
+//         ...prev,
+//         params: {
+//           ...(prev?.params || {}),
+//           page: nextPage,
+//         } as EnrollmentQueryParams,
+//       }));
+//     }
+//   }, [
+//     state.hasMore,
+//     silentLoading,
+//     loading,
+//     state.current_page,
+//     state.total_pages,
+//   ]);
+
+//   // Set up IntersectionObserver for infinite scroll
+//   const lastRowRef = useCallback(
+//     (node: HTMLElement | null) => {
+//       if (!node || loading) return;
+
+//       if (observer.current) observer.current.disconnect();
+
+//       observer.current = new IntersectionObserver(
+//         (entries) => {
+//           if (entries[0].isIntersecting && state.hasMore && !silentLoading) {
+//             fetchNextPage();
+//           }
+//         },
+//         {
+//           root: document.getElementById("table-container"),
+//           rootMargin: "100px",
+//           threshold: 0.1,
+//         }
+//       );
+
+//       observer.current.observe(node);
+//     },
+//     [fetchNextPage, state.hasMore, silentLoading, loading]
+//   );
+
+//   console.log("companyEnrollments", companyEnrollments);
+
+//   // Transform data for table rendering
+//   const transformedTableData = state.transactions.map((t, index) => ({
+//     ...t,
+//     status: (
+//       <span
+//         className={clsx("font-medium", {
+//           "text-status-success-3": t.status.toLowerCase() === "active",
+//           "text-status-error-primary":
+//             t.status.toLowerCase() === "inactive" ||
+//             t.status.toLowerCase() === "failed",
+//           "text-yellow-500": t.status.toLowerCase() === "pending",
+//         })}
+//       >
+//         {t.status}
+//       </span>
+//     ),
+//     ref: index === state.transactions.length - 1 ? lastRowRef : null,
+//   }));
+
+//   const handleExport = () => {
+//     if (!companyEnrollments || loading) return;
+//     setGlobalStore("subscriptions", state.transactions);
+//     // router.push("/reports/adds-on-domain/export");
 //   };
 
 //   if (isNetworkError) return <NetworkError />;
-//   if (error) return <div>{error}</div>;
-//   if (loading) return <CheckBoxLoader />;
+//   if (enrollmentErr) return <ServerError error={enrollmentErr} />;
+//   if (loading && state.transactions.length === 0)
+//     return <CustomLoader layout="page" view="table" />;
 
 //   return (
-//     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-//       {checkboxOptions.map((option) => (
-//         <DocumentCheckbox
-//           onClick={() => handleOptionToggle(option)}
-//           key={option.value}
-//           title={option.title}
-//           checked={isOptionSelected(option)}
-//         >
-//           <div
-//             dangerouslySetInnerHTML={{
-//               __html: DOMPurify.sanitize(option.description),
-//             }}
-//           />
-//         </DocumentCheckbox>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default DocumentTenancyAgreements;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import Link from "next/link";
-
-// // Images
-// import VerifiedIcon from "@/public/icons/verified.svg";
-
-// // Types
-// import type { MessageCardProps } from "./types";
-
-// // Imports
-// import clsx from "clsx";
-// import { empty } from "@/app/config";
-// import Picture from "../Picture/picture";
-// import { SectionSeparator } from "../Section/section-components";
-// import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
-// import { useGlobalStore } from "@/store/general-store";
-// import { useRouter } from "next/navigation";
-
-// const MessageCard: React.FC<MessageCardProps> = ({
-//   id,
-//   pfp = empty,
-//   desc,
-//   time,
-//   fullname,
-//   verified,
-//   highlight,
-//   messages = 0,
-//   onClick,
-//   content_type,
-// }) => {
-//   const router = useRouter();
-//   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-//   const IconComponent = getIconByContentType(content_type as string);
-
-//   const handleClick = () => {
-//     // Set messageUserData in the store
-//     setGlobalStore("messageUserData", {
-//       id: Number(id),
-//       branch_id: 1,
-//       position: "",
-//       name: fullname,
-//       imageUrl: pfp,
-//     });
-
-//     // Call the provided onClick if it exists
-//     if (onClick) {
-//       onClick();
-//     }
-
-//     // Navigate to the message route
-//     router.push(`/messages/${id}`);
-//   };
-
-//   const Children = () => (
-//     <>
-//       <div></div>
-//       <div className="flex items-center gap-4">
-//         <div className="flex items-center gap-2 flex-1">
-//           <Picture
-//             src={pfp || empty}
-//             alt="profile picture"
-//             size={60}
-//             rounded
-//             status={false}
-//             containerClassName="custom-secondary-bg rounded-full"
-//           />
-//           <div className="custom-flex-col gap-1 flex-1">
-//             <div className="flex items-center gap-[10px]">
-//               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-//                 {fullname}
-//               </p>
-//               {verified && (
-//                 // <Picture src={VerifiedIcon} alt="verified" size={16} />
-//               )}
-//             </div>
-//             {content_type === "text" ? (
-//               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
-//                 {desc}
-//               </p>
-//             ) : (
-//               <div className="flex gap-1 text-sm items-center text-brand-9">
-//                 {IconComponent && <IconComponent />}
-//                 {content_type}
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//         <div className="flex flex-col gap-2 justify-center items-center font-normal">
-//           <p className="text-text-disabled text-xs whitespace-nowrap">{time}</p>
-//           {!!messages && (
-//             <div className="w-4 h-4 pt-[1px] rounded-full flex items-center justify-center bg-highlight">
-//               <p className="text-white dark:text-black text-[10px] leading-[10px]">
-//                 {messages}
-//               </p>
-//             </div>
-//           )}
-//         </div>
-//       </div>
-//       <SectionSeparator />
-//     </>
-//   );
-
-//   return (
-//     <div
-//       role="button"
-//       tabIndex={0}
-//       onClick={handleClick}
-//       onKeyDown={(e) => {
-//         if (e.key === "Enter" || e.key === " ") {
-//           e.preventDefault();
-//           handleClick();
-//         }
-//       }}
-//       className={clsx(
-//         "custom-flex-col gap-4 cursor-pointer transition-colors duration-200",
-//         {
-//           "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-//           "hover:bg-neutral-1 dark:hover:bg-[#2A2B27]": !highlight, // Hover effect
-//         }
-//       )}
-//     >
-//       <Children />
-//     </div>
-//   );
-//   // return onClick ? (
-//   //   <button
-//   //     type="button"
-//   //     onClick={onClick}
-//   //     className={clsx("custom-flex-col gap-4", {
-//   //       "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-//   //     })}
-//   //   >
-//   //     <Children />
-//   //   </button>
-//   // ) : (
-//   //   <Link
-//   //     href={`/messages/${id}`}
-//   //     className={clsx("custom-flex-col gap-4", {
-//   //       "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-//   //     })}
-//   //   >
-//   //     <Children />
-//   //   </Link>
-//   // );
-// };
-
-// export default MessageCard;
-
-
-
-
-
-// const Chat = () => {
-//   const router = useRouter();
-//   const { data, setChatData } = useChatStore();
-//   const usersData = useChatStore((state) => state?.data?.users);
-//   const { id } = useParams<{ id: string }>();
-//   const user_id = useAuthStore((state) => state.user_id);
-//   const users = usersData?.users || [];
-//   const messageUserData = useGlobalStore((s) => s.messageUserData);
-//   const setGlobalInfoStore = useGlobalStore((s) => s.setGlobalInfoStore);
-//   const userId = Number(id);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const store_messages = useChatStore((state) => state?.data?.conversations);
-//   const [conversations, setConversations] = useState<any[]>([]);
-//   const users_Id = getLocalStorage("user_id");
-//   const [isPusherFailed, setIsPusherFailed] = useState(false);
-
-//   // Memoize the callback to prevent re-subscribing on every render.
-//   const handleNewMessage = useCallback(
-//     (newMessage: Message) => {
-//       console.log("Adding new message:", newMessage);
-//       const updatedConversations = [...(store_messages || []), newMessage].sort(
-//         (a, b) => a.id - b.id
-//       );
-//       setChatData("conversations", updatedConversations);
-//     },
-//     [store_messages, setChatData]
-//   );
-
-//   // Fetch messages from API
-//   const fetchMessages = useCallback(async () => {
-//     try {
-//       const response = await api.get(`/messages/conversations/user/${id}`);
-//       console.log("API response:", response.data);
-//       if (response.data.status === "success") {
-//         const mappedMessages: Message[] = response.data.messages.map(
-//           (msg: any) => ({
-//             id: msg.id,
-//             text: msg.content ?? null,
-//             senderId: msg.sender_id,
-//             timestamp: `${msg.date} ${msg.timestamp}`,
-//             content_type: msg.content_type,
-//           })
-//         );
-//         console.log("Mapped messages:", mappedMessages);
-//         setChatData("conversations", mappedMessages);
-//       }
-//     } catch (error: any) {
-//       console.error("API error:", error.response?.data || error.message);
-//     }
-//   }, [id, setChatData]);
-
-//   // Clear conversations and fetch messages when id changes
-//   useEffect(() => {
-//     setIsLoading(true);
-//     setConversations([]);
-//     setChatData("conversations", []);
-//     if (id) {
-//       fetchMessages();
-//     } else {
-//       setIsLoading(false);
-//     }
-//   }, [id, setChatData, fetchMessages]);
-
-//   // Initiate Pusher listener with error handling
-//   useConversationListener(id, handleNewMessage, (error: any) => {
-//     console.error("Pusher connection failed:", error);
-//     setIsPusherFailed(true); // Set failure state to trigger polling
-//   });
-
-//   // Polling logic when Pusher fails
-//   useEffect(() => {
-//     let pollingInterval: NodeJS.Timeout | null = null;
-
-//     if (isPusherFailed) {
-//       console.log("Switching to polling every 30 seconds...");
-//       pollingInterval = setInterval(() => {
-//         fetchMessages();
-//       }, 30000);
-//     }
-
-//     // Cleanup polling on unmount or when Pusher reconnects (optional)
-//     return () => {
-//       if (pollingInterval) {
-//         console.log("Stopping polling...");
-//         clearInterval(pollingInterval);
-//       }
-//     };
-//   }, [isPusherFailed, fetchMessages]);
-
-//   // Initial fetch and cleanup
-//   useEffect(() => {
-//     setConversations([]);
-//     setChatData("conversations", []);
-//     if (id) fetchMessages();
-//   }, [id, setChatData, fetchMessages]);
-
-//   // useEffect(() => {
-//   //   // Clear existing conversations
-//   //   setConversations([]);
-//   //   setChatData("conversations", []);
-//   //   const fetchMessages = async () => {
-//   //     try {
-//   //       const response = await api.get(`/messages/conversations/user/${id}`);
-//   //       console.log("API response:", response.data);
-//   //       if (response.data.status === "success") {
-//   //         const mappedMessages: Message[] = response.data.messages.map(
-//   //           (msg: any) => ({
-//   //             id: msg.id,
-//   //             text: msg.content ?? null,
-//   //             senderId: msg.sender_id,
-//   //             timestamp: `${msg.date} ${msg.timestamp}`,
-//   //             content_type: msg.content_type,
-//   //           })
-//   //         );
-//   //         console.log("Mapped messages:", mappedMessages);
-//   //         setChatData("conversations", mappedMessages);
-//   //       }
-//   //     } catch (error: any) {
-//   //       console.error("API error:", error.response?.data || error.message);
-//   //     }
-//   //   };
-//   //   if (id) fetchMessages();
-//   // }, [id, setChatData]);
-
-//   useEffect(() => {
-//     console.log("Store messages updated:", store_messages);
-//     if (store_messages && store_messages.length > 0) {
-//       const groupedMessages = groupMessagesByDay(store_messages);
-//       console.log("Grouped messages:", groupedMessages);
-//       setConversations(groupedMessages);
-//     }
-//   }, [store_messages]);
-
-//   useEffect(() => {
-//     if (usersData) {
-//       setIsLoading(false);
-//     }
-//   }, [usersData]);
-
-//   if (isLoading) {
-//     return <ChatSkeleton />;
-//   }
-
-
-//   // // If user not found, redirect to messages page.
-//   const findUser = users.find((user: UsersProps) => Number(user.id) === userId);
-
-//   const user = messageUserData || findUser;
-
-//   console.log("user data", user);
-//   if (!user) {
-//     router.replace("/messages");
-//     return null;
-//   }
-
-//   return (
-//     <>
-//       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
-//         <div className="flex items-center gap-3">
-//           <button onClick={() => router.push("/messages")}>
-//             <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
-//           </button>
-//           <Link
-//             href={`/management/staff-branch/${user.branch_id}/branch-staff/${user?.staff_id}`}
-//             className="flex items-center gap-4 text-left"
-//           >
-//             <Picture
-//               src={user?.imageUrl || empty}
-//               alt="profile picture"
-//               containerClassName="custom-secondary-bg rounded-full"
-//               size={32}
-//               rounded
-//               status={false}
-//             />
-//             <div className="custom-flex-col">
-//               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-//                 {user?.name}
-//               </p>
-//               <p className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal">
-//                 Tap here for contact info
-//               </p>
-//             </div>
-//           </Link>
-//         </div>
-//       </div>
-//       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-//         {conversations.length > 0 &&
-//           conversations.map((group, index) => (
-//             <Messages
-//               key={index}
-//               day={group.day}
-//               messages={group.messages}
-//               userId={user_id as string}
-//             />
-//           ))}
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Chat;
-
-
-
-
-
-
-
-
-
-
-
-
-// "use client";
-// import { useEffect, useState } from "react";
-// import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
-// import SettingsLegalDrawer, {
-//   Checkbox,
-// } from "../Settings/Modals/settings-legal-drawer";
-// import { Drawer } from "@mui/material";
-// import { useDrawerStore } from "@/store/drawerStore";
-// import { checkboxOptions, transformDocumentsResponse } from "./data";
-// import useFetch from "@/hooks/useFetch";
-// import CheckBoxLoader from "../Loader/CheckBoxLoader";
-// import OtherAgreement from "./other-agrement";
-// import TenancyAgreement from "./TenancyAgrrement";
-
-// const CreateTenancyAggrementModal = () => {
-//   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-//   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
-//   const [step, setStep] = useState<number>(0);
-
-//   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
-//   const { data, loading, error } = useFetch<DocumentsAPIResponse>(
-//     "/property-document/documents"
-//   );
-
-//   const IS_TENANCY_SELECTED =
-//     selectedLegalOption?.title === "Tenancy Agreement";
-
-//   useEffect(() => {
-//     if (data) {
-//       const options = transformDocumentsResponse(data);
-//       setCheckboxOptions(options);
-//     }
-//   }, [data]);
-
-//   // HANDLE CHECKBOX CHANGE
-//   const handleCheckboxChange = (value: string | number) => {
-//     setSelectedOption(value.toString());
-//     const selectedOption = checkboxOptions.find(
-//       (option) => option.id === value
-//     );
-//     if (selectedOption) {
-//       setSelectedLegalOption({
-//         title: selectedOption.title,
-//         description: selectedOption.description,
-//         amount: selectedOption.amount ?? 0,
-//         id: selectedOption.id ?? 0,
-//       });
-//     }
-//   };
-
-//   return (
-//     <>
-//       <LandlordTenantModalPreset
-//         {...(selectedOption
-//           ? { back: { handleBack: () => setSelectedOption(null) } }
-//           : {})}
-//         style={{ maxWidth: "714px", overflow: "visible" }}
-//         heading={
-//           selectedOption
-//             ? checkboxOptions.find((option) => option.value === selectedOption)
-//                 ?.title || ""
-//             : "Tenancy Legal Procedure"
-//         }
-//       >
-//         {selectedOption ? (
-//           <>{IS_TENANCY_SELECTED ? <TenancyAgreement /> : <OtherAgreement />}</>
-//         ) : (
-//           <div className="flex flex-col gap-1">
-//             <h2 className="text-text-primary text-[20px] font-bold dark:text-white text-base not-italic leading-[32px]">
-//               Engage legal counsel.
-//             </h2>
-//             <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium">
-//               The legal steps and processes involved in renting or leasing
-//               property, usually regulated by landlord-tenant laws and
-//               regulations. Please choose any options below that are most
-//               applicable to the property unit.
-//             </p>
-//           </div>
-//         )}
-
-//         {/* Render checkboxes only if no option is selected */}
-//         {loading ? (
-//           <CheckBoxLoader />
-//         ) : (
-//           !selectedOption && (
-//             <div className="flex flex-col gap-4 mt-4">
-//               {checkboxOptions.map((option) => (
-//                 <Checkbox
-//                   key={option.value}
-//                   title={option.title}
-//                   checked={selectedOption === option.value}
-//                   groupName="legal_process"
-//                   state={{
-//                     isChecked: selectedOption === option.value,
-//                     setIsChecked: () => {
-//                       handleCheckboxChange(option.id ?? 0);
-//                     },
-//                   }}
-//                   noCheckbox={true}
-//                 >
-//                   <p className="text-sm text-darkText-secondary capitalize text-text-disabled tracking-[0px]">
-//                     {option.description}
-//                   </p>
-//                 </Checkbox>
-//               ))}
-//             </div>
-//           )
-//         )}
-//       </LandlordTenantModalPreset>
-//     </>
-//   );
-// };
-
-// export default CreateTenancyAggrementModal;
-
-// // DRAWER COMPONENT FLOW
-// export const DrawerComponent = () => {
-//   const { isDrawerOpen, closeDrawer, selectedLegalOption } = useDrawerStore();
-//   return (
-//     <Drawer
-//       anchor="bottom"
-//       open={isDrawerOpen}
-//       onClose={closeDrawer}
-//       classes={{ paper: "custom-round-scrollbar" }}
-//       sx={{
-//         "& .MuiPaper-root": {
-//           borderTopLeftRadius: "32px",
-//           borderTopRightRadius: "32px",
-//           overflow: "auto",
-//           height: "500px",
-//         },
-//         zIndex: 1,
-//       }}
-//     >
-//       <SettingsLegalDrawer
-//         onClose={closeDrawer}
-//         noCheckbox={true}
-//         selectedLegalOption={selectedLegalOption}
+//     <div className="space-y-9">
+//       <FilterBar
+//         exports
+//         isDateTrue
+//         onBack={search ? true : false}
+//         pageTitle="Subscription History"
+//         aboutPageModalData={{
+//           title: "Subscription History",
+//           description:
+//             "This page contains a list of listing subscription history",
+//         }}
+//         searchInputPlaceholder="Search for subscriptions"
+//         handleFilterApply={() => {}}
+//         handleSearch={() => {}}
+//         hasGridListToggle={false}
+//         exportHref="/reports/subscription-history/export"
+//         xlsxData={state?.transactions}
+//         fileLabel={"Subscriptions"}
 //       />
-//     </Drawer>
+//       <section>
+//         {state.transactions.length === 0 ? (
+//           <EmptyList
+//             noButton
+//             title=" No Previous Subscription Record Found"
+//             body={
+//               <p>
+//                 You currently do not have any previous records associated with
+//                 this subscription plan. Once you subscribe, your subscription
+//                 history and related details will appear here for future
+//                 reference and tracking.
+//                 <br />
+//                 <br />
+//               </p>
+//             }
+//           />
+//         ) : (
+//           <CustomTable
+//             fields={enrollment_subscriptions.fields}
+//             data={transformedTableData}
+//             tableHeadClassName="h-[45px]"
+//           />
+//         )}
+//       </section>
+//     </div>
 //   );
 // };
 
+// export default SubscriptionRecord;
 
 
 
 
 
-"use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import clsx from "clsx";
-import BackButton from "@/components/BackButton/back-button";
-import FilterBar from "@/components/FIlterBar/FilterBar";
-import CustomTable from "@/components/Table/table";
-import {
-  walletTableFields,
-  computeStatsTotals,
-  determinePercentageDifference,
-  determineTrend,
-} from "../data";
-import {
-  initialPageData,
-  transactionHistoryFilterMenu,
-  transformAllTransactionsResponse,
-} from "./data";
-import TableLoading from "@/components/Loader/TableLoading";
-import useFetch from "@/hooks/useFetch";
-import type { AllTransactionsResponse, TransactionQueryParams } from "./types";
-import type { FilterResult } from "@/components/Management/Landlord/types";
-import { AxiosRequestConfig } from "axios";
-import dayjs from "dayjs";
-import NetworkError from "@/components/Error/NetworkError";
-import { getTransactionIcon } from "@/components/Wallet/icons";
-import { useGlobalStore } from "@/store/general-store";
-import ServerError from "@/components/Error/ServerError";
-import WalletAnalytics from "@/components/Wallet/wallet-analytics";
-import { DateRangeSelector } from "./components";
-import { useSearchParams } from "next/navigation";
 
-const TransactionHistory = () => {
-  const [state, setState] = useState(initialPageData);
-  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-  const branchWalletTransactions = useGlobalStore(
-    (s) => s.branchWalletTransactions
-  );
-  const timeRange = useGlobalStore((s) => s.timeRange);
-  const selectedDateRange = useGlobalStore((s) => s.selectedDateRange);
-  const filteredTransactions = useGlobalStore((s) => s.wallet_transactions);
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-    } as TransactionQueryParams,
-  });
-  const observer = useRef<IntersectionObserver | null>(null);
-  const isBranch = Number(useSearchParams().get("branch")) > 0;
 
-  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
-    options: [],
-    menuOptions: {},
-    startDate: null,
-    endDate: null,
-  });
 
-  const isFilterApplied = () => {
-    const { options, menuOptions, startDate, endDate } = appliedFilters;
-    return (
-      options.length > 0 ||
-      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
-      startDate !== null ||
-      endDate !== null
-    );
-  };
 
-  const {
-    data: apiData,
-    loading,
-    silentLoading,
-    error,
-    isNetworkError,
-  } = useFetch<AllTransactionsResponse>("transactions", config);
 
-  const TRANSACTIONS = isBranch ? branchWalletTransactions : state.transactions;
+=====FOOTER UNIT 
+  // const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   console.log("Save Clicked:", {
+  //     noForm,
+  //     newForm,
+  //     canSubmit,
+  //     addedUnitsLength: addedUnits.length,
+  //     hasNotYetUploaded: addedUnits.some((unit) => unit.notYetUploaded),
+  //     missingFields,
+  //   });
 
-  // Compute stats for filtered transactions
-  const currentTotals = computeStatsTotals(
-    TRANSACTIONS || [],
-    selectedDateRange
-  );
-  // const currentTotals = computeStatsTotals(
-  //   state.transactions,
-  //   selectedDateRange
-  // );
+  //   const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
 
-  // Compute totals for the previous period
-  const previousRange = (() => {
-    if (!selectedDateRange?.from || !selectedDateRange?.to) {
-      return undefined;
-    }
-    const fromDate = new Date(selectedDateRange.from);
-    const toDate = new Date(selectedDateRange.to);
-    const rangeDays =
-      Math.ceil(
-        (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
-      ) + 1;
-    const previousFrom = new Date(fromDate);
-    previousFrom.setDate(fromDate.getDate() - rangeDays);
-    const previousTo = new Date(fromDate);
-    previousTo.setDate(fromDate.getDate() - 1);
-    return { from: previousFrom, to: previousTo };
-  })();
-  // const previousTotals = computeStatsTotals(state.transactions, previousRange);
-  const previousTotals = computeStatsTotals(TRANSACTIONS || [], previousRange);
-
-  // Percentage differences and trends
-  const fundsPercent = determinePercentageDifference(
-    previousTotals.total_funds,
-    currentTotals.total_funds
-  );
-  const fundsUpDown = determineTrend(
-    currentTotals.total_funds,
-    previousTotals.total_funds
-  );
-
-  const debitPercent = determinePercentageDifference(
-    previousTotals.total_debit,
-    currentTotals.total_debit
-  );
-  const debitUpDown = determineTrend(
-    currentTotals.total_debit,
-    previousTotals.total_debit
-  );
-
-  const creditPercent = determinePercentageDifference(
-    previousTotals.total_credit,
-    currentTotals.total_credit
-  );
-  const creditUpDown = determineTrend(
-    currentTotals.total_credit,
-    previousTotals.total_credit
-  );
-
-  // Save stats and date range to global store
-  useEffect(() => {
-    setGlobalStore("wallet_stats", {
-      total_funds: currentTotals.total_funds,
-      total_debit: currentTotals.total_debit,
-      total_credit: currentTotals.total_credit,
-      funds_trend: {
-        from: `previous ${
-          timeRange === "90d"
-            ? "3 months"
-            : timeRange === "30d"
-            ? "30 days"
-            : timeRange === "7d"
-            ? "7 days"
-            : timeRange === "1d"
-            ? "day"
-            : "period"
-        }`,
-        type: fundsUpDown as "up" | "down" | "none",
-        percent: Number(fundsPercent),
-      },
-      debit_trend: {
-        from: `previous ${
-          timeRange === "90d"
-            ? "3 months"
-            : timeRange === "30d"
-            ? "30 days"
-            : timeRange === "7d"
-            ? "7 days"
-            : timeRange === "1d"
-            ? "day"
-            : "period"
-        }`,
-        type: debitUpDown as "up" | "down" | "none",
-        percent: Number(debitPercent),
-      },
-      credit_trend: {
-        from: `previous ${
-          timeRange === "90d"
-            ? "3 months"
-            : timeRange === "30d"
-            ? "30 days"
-            : timeRange === "7d"
-            ? "7 days"
-            : timeRange === "1d"
-            ? "day"
-            : "period"
-        }`,
-        type: creditUpDown as "up" | "down" | "none",
-        percent: Number(creditPercent),
-      },
-    });
-    setGlobalStore("wallet_date_range", { timeRange, selectedDateRange });
-  }, [
-    currentTotals,
-    fundsPercent,
-    fundsUpDown,
-    debitPercent,
-    debitUpDown,
-    creditPercent,
-    creditUpDown,
-    timeRange,
-    selectedDateRange,
-    setGlobalStore,
-  ]);
-
-  const fetchNextPage = useCallback(() => {
-    if (state.hasMore && !silentLoading) {
-      setConfig((prev) => ({
-        params: {
-          ...prev.params,
-          page: state.current_page + 1,
-        } as TransactionQueryParams,
-      }));
-    }
-  }, [state.hasMore, silentLoading, state.current_page]);
-
-  const lastRowRef = useCallback(
-    (node: HTMLElement | null) => {
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && state.hasMore) {
-          fetchNextPage();
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [fetchNextPage, state.hasMore]
-  );
-
-  useEffect(() => {
-    if (apiData) {
-      setState((prevState) => {
-        const newTransactions = transformAllTransactionsResponse(apiData);
-        const combinedTransactions = [
-          ...prevState.transactions,
-          ...newTransactions.transactions,
-        ];
-        const uniqueTransactions = combinedTransactions.filter(
-          (transaction, index, self) =>
-            index === self.findIndex((t) => t.id === transaction.id)
-        );
-
-        // Save unique transactions to global store
-        setGlobalStore("wallet_transactions", uniqueTransactions);
-
-        if (newTransactions.current_page === 1) {
-          return {
-            ...prevState,
-            ...newTransactions,
-            transactions: uniqueTransactions,
-          };
-        } else {
-          return {
-            ...prevState,
-            transactions: uniqueTransactions,
-            current_page: newTransactions.current_page,
-            total_pages: newTransactions.total_pages,
-            hasMore: newTransactions.hasMore,
-          };
-        }
-      });
-    }
-  }, [apiData, setGlobalStore]);
-
-  // const transformedWalletTableData = state.transactions.map((t, index) => ({
-  const transformedWalletTableData = (TRANSACTIONS || []).map((t, index) => ({
-    ...t,
-    amount: (
-      <span
-        className={clsx({
-          "text-status-success-3": t.type === "credit",
-          "text-status-error-primary": t.type === "debit",
-        })}
-      >
-        {`${t.type === "credit" ? "+" : t.type === "debit" ? "-" : ""}${
-          t.amount
-        }`}
-      </span>
-    ),
-    icon: (
-      <div
-        className={clsx(
-          "flex items-center justify-center w-9 h-9 rounded-full",
-          {
-            "bg-status-error-1 text-status-error-primary": t.type === "debit",
-            "bg-status-success-1 text-status-success-primary":
-              t.type === "credit" || t.type === "DVA",
-          }
-        )}
-      >
-        {getTransactionIcon(t.source, t.transaction_type)}
-      </div>
-    ),
-    ref: index === state.transactions.length - 1 ? lastRowRef : null,
-  }));
-
-  const handleFilterApply = (filters: FilterResult) => {
-    setAppliedFilters(filters);
-    const { menuOptions, startDate, endDate } = filters;
-    const queryParams: TransactionQueryParams = {
-      page: 1,
-    };
-    const status = menuOptions["Status"]?.[0];
-    const type = menuOptions["Type"]?.[0];
-    if (startDate) {
-      queryParams.from = dayjs(startDate).format("YYYY-MM-DD");
-    }
-    if (endDate) {
-      queryParams.to = dayjs(endDate).format("YYYY-MM-DD");
-    }
-    if (status) {
-      queryParams.status = status;
-    }
-    if (type) {
-      queryParams.type = type;
-    }
-    setConfig({
-      params: queryParams,
-    });
-  };
-
-  // Get display text for current timeRange
-  const getTimeRangeDisplayText = () => {
-    switch (timeRange) {
-      case "90d":
-        return "Last 3 months";
-      case "30d":
-        return "Last 30 days";
-      case "7d":
-        return "Last 7 days";
-      case "1d":
-        return "Yesterday";
-      case "custom":
-        return "Custom";
-      default:
-        return "Last 30 days";
-    }
-  };
-
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
-
-  return (
-    <div className="custom-flex-col gap-8">
-      <div className="flex justify-between items-center">
-        <FilterBar
-          pageTitle="Transaction History"
-          hasGridListToggle={false}
-          handleFilterApply={handleFilterApply}
-          hiddenSearchInput
-          exports
-          isDateTrue
-          exportHref="/wallet/audit-trail/export"
-          filterOptionsMenu={transactionHistoryFilterMenu}
-          appliedFilters={appliedFilters}
-          fileLabel={"Wallet Transactions"}
-          xlsxData={filteredTransactions}
-          onBack
-        />
-        {/* <DateRangeSelector /> */}
-      </div>
-      <div className="flex flex-col xl:flex-row gap-8">
-        <div className="custom-flex-col gap-10 flex-1">
-          <div className="flex flex-col lg:flex-row gap-6">
-            <WalletAnalytics
-              title="funds"
-              amount={currentTotals.total_funds}
-              trend={{
-                from: `previous ${
-                  timeRange === "90d"
-                    ? "3 months"
-                    : timeRange === "30d"
-                    ? "30 days"
-                    : timeRange === "7d"
-                    ? "7 days"
-                    : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
-                type: fundsUpDown as "up" | "down" | "none",
-                percent: Number(fundsPercent),
-              }}
-            />
-            <WalletAnalytics
-              title="debit"
-              amount={currentTotals.total_debit}
-              trend={{
-                from: `previous ${
-                  timeRange === "90d"
-                    ? "3 months"
-                    : timeRange === "30d"
-                    ? "30 days"
-                    : timeRange === "7d"
-                    ? "7 days"
-                    : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
-                type: debitUpDown as "up" | "down" | "none",
-                percent: Number(debitPercent),
-              }}
-            />
-            <WalletAnalytics
-              title="credit"
-              amount={currentTotals.total_credit}
-              trend={{
-                from: `previous ${
-                  timeRange === "90d"
-                    ? "3 months"
-                    : timeRange === "30d"
-                    ? "30 days"
-                    : timeRange === "7d"
-                    ? "7 days"
-                    : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
-                type: creditUpDown as "up" | "down" | "none",
-                percent: Number(creditPercent),
-              }}
-            />
-          </div>
-        </div>
-      </div>
-      {loading ? (
-        <TableLoading />
-      ) : (
-        <section>
-          <CustomTable
-            fields={walletTableFields}
-            data={transformedWalletTableData}
-            tableBodyCellSx={{
-              paddingTop: "12px",
-              paddingBottom: "12px",
-              fontSize: "16px",
-              whiteSpace: "nowrap",
-            }}
-            tableHeadCellSx={{
-              paddingTop: "14px",
-              paddingBottom: "14px",
-              fontSize: "16px",
-            }}
-          />
-          {silentLoading && (
-            <div className="flex items-center justify-center py-4">
-              <div className="loader" />
-            </div>
-          )}
-        </section>
-      )}
-    </div>
-  );
-};
-
-export default TransactionHistory;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"use client";
-
-import Link from "next/link";
-import Image from "next/image";
-import { Skeleton } from "@mui/material";
-import { empty } from "@/app/config";
-import { useTheme } from "next-themes";
-import useWindowWidth from "@/hooks/useWindowWidth";
-import Picture from "@/components/Picture/picture";
-import Button from "@/components/Form/Button/button";
-import {
-  Dropdown,
-  DropdownContent,
-  DropdownTrigger,
-} from "@/components/Dropdown/dropdown";
-import clsx from "clsx";
-import { getGreeting, truncateName } from "./data";
-import NavCreateNew from "./nav-create-new";
-import NavGlobalSearch from "./nav-global-search";
-import { NavIcon } from "@/components/Nav/nav-components";
-import NavSwitchUserSwitch from "./nav-switch-user-switch";
-import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
-import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
-import { useState, useEffect, useRef } from "react";
-import {
-  SearchIcon,
-  MailIcon,
-  BellIcon,
-  MoonIcon,
-  PlusBoldIcon,
-  SearchIconBold,
-  SunIcon,
-  DropdownListIcon,
-  SidebarIcon,
-  NavCloseIcon,
-} from "@/public/icons/icons";
-import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
-import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
-import { usePersonalInfoStore } from "@/store/personal-info-store";
-import useFetch from "@/hooks/useFetch";
-import { ProfileResponse } from "./data";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { getLocalStorage, saveLocalStorage } from "@/utils/local-storage";
-import { useThemeStoreSelectors } from "@/store/themeStore";
-import { applyFont } from "@/app/(onboarding)/auth/data";
-import { roundUptoNine } from "@/app/(nav)/(messages-reviews)/messages/data";
-import {
-  clearAllNotification,
-  NotificationApiResponse,
-  transformNotificationData,
-} from "@/app/(nav)/notifications/data";
-import { usePathname } from "next/navigation";
-import { debounce } from "@/utils/debounce";
-import { useOnlineStatus } from "@/hooks/useOnlineStatus";
-import { saveCompanyStatusToCookie } from "@/utils/saveRole";
-
-const NotificationBadge = ({
-  count,
-  color,
-}: {
-  count: number | string;
-  color: string;
-}) => {
-  if (typeof count === "string" && count.includes("+")) {
-    return (
-      <span
-        className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
-      >
-        {count}
-      </span>
-    );
-  }
-  const numericCount = typeof count === "string" ? parseInt(count, 10) : count;
-
-  if (!numericCount || numericCount <= 0) return null;
-
-  return (
-    <span
-      className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
-    >
-      {numericCount > 9 ? "9+" : numericCount}
-    </span>
-  );
-};
-
-const Header = () => {
-  const { isMobile } = useWindowWidth();
-  const hasMounted = useRef(false);
-  const isManualToggle = useRef(false);
-  const setColor = useThemeStoreSelectors.getState().setColor;
-  const { theme, setTheme } = useTheme();
-  const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
-
-  const pathname = usePathname();
-
-  const { company_id } = usePersonalInfoStore();
-  const unreadMessageCount =
-    usePersonalInfoStore((state) => state.unread_messages_count) || 0;
-  const notificationCount =
-    usePersonalInfoStore((state) => state.unread_notifications_count) || 0;
-  const loggedInUserDetails = getLocalStorage("additional_details");
-  const { company: loggedUserCompany, appearance } = loggedInUserDetails || {};
-  const setPersonalInfo = usePersonalInfoStore(
-    (state) => state.setPersonalInfo
-  );
-  const name = usePersonalInfoStore((state) => state.name);
-  const user_online_status = usePersonalInfoStore(
-    (state) => state.user_online_status
-  );
-  const profile_picture = usePersonalInfoStore(
-    (state) => state.profile_picture
-  );
-  const company_logo = usePersonalInfoStore((state) =>
-    theme === "light"
-      ? getLocalStorage("light_logo")
-      : getLocalStorage("dark_logo")
-      ? getLocalStorage("dark_logo")
-      : getLocalStorage("light_logo")
-  );
-
-  const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
-  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
-
-  const { data: companyData, refetch: companyRefetch } = useFetch<any>(
-    company_id ? `companies/${company_id}` : null
-  );
-  useRefetchOnEvent("refetchProfile", () => companyRefetch({ silent: true }));
-
-  /* NOTIFICATION LOGIC*/
-  const [notificationIds, setNotificationIds] = useState<string[]>([]);
-  const [notificationCounts, setNotificationCount] = useState(0);
-  const {
-    data: apiData,
-    silentLoading,
-    error,
-    refetch: refetchNotifications,
-  } = useFetch<NotificationApiResponse>(`/notifications`);
-
-  useEffect(() => {
-    if (apiData) {
-      const ids = apiData?.data?.length
-        ? apiData?.data?.map((item) => item.id)
-        : [];
-      setNotificationIds(ids);
-
-      const unreadCount = apiData?.data.filter(
-        (notification) => !notification.read_at
-      ).length;
-      setNotificationCount(unreadCount);
-
-      saveLocalStorage("notificationCount", unreadCount);
-    }
-  }, [apiData]);
-
-  const handleClearNotifications = async () => {
-    if (!notificationIds.length) return;
-
-    try {
-      const res = await clearAllNotification(notificationIds);
-
-      if (res) {
-        setNotificationCount(0);
-
-        if (pathname === "/notifications") {
-          saveLocalStorage("notificationCount", 0);
-        }
-        //refetchNotifications()
-      }
-    } catch (error) {}
-  };
-
-  useEffect(() => {
-    if (companyData?.data) {
-      setPersonalInfo("dark_logo", companyData.data.dark_logo);
-      saveLocalStorage("dark_logo", companyData?.data?.dark_logo);
-      saveLocalStorage("light_logo", companyData?.data?.company_logo);
-    }
-  }, [companyData, setPersonalInfo]);
-
-  useEffect(() => {
-    if (appearance && !hasMounted.current) {
-      const { colorMode, navbar, fonts, dashboardColor } = appearance;
-      saveLocalStorage("navbar", navbar);
-      setColor(dashboardColor);
-      applyFont(fonts);
-      setTheme(colorMode);
-      hasMounted.current = true;
-    }
-  }, [appearance, setColor, setTheme]);
-
-  useEffect(() => {
-    if (data?.data) {
-      const { user, company, profile, requestDemos, director } = data.data;
-
-      setPersonalInfo("user_id", user.userid);
-      setPersonalInfo("userId", user.id);
-      setPersonalInfo(
-        "name",
-        `${profile?.title ? profile.title + " " : ""}${user.name}`
-      );
-      setPersonalInfo("director_id", director?.id ? director?.id : null);
-      setPersonalInfo("full_name", user.name);
-      setPersonalInfo("user_email", user.email);
-      setPersonalInfo("user_online_status", user.user_online_status);
-      setPersonalInfo(
-        "unread_notifications_count",
-        user.unread_notifications_count
-      );
-      setPersonalInfo("unread_messages_count", user.unread_messages_count);
-      setPersonalInfo("title", profile?.title as string);
-      setPersonalInfo("profile_picture", director?.picture || profile.picture);
-      if (company) {
-        setPersonalInfo("company_id", company.company_id);
-        setPersonalInfo("company_logo", company.company_logo);
-        setPersonalInfo("company_name", company.company_name);
-        setPersonalInfo("company_state", company.state);
-        setPersonalInfo("company_status", company.company_status);
-        saveCompanyStatusToCookie(company.company_status); //INCASE LOGIN RESPONSE RETURNS INCORRECT COMPANY STATUS
-        setPersonalInfo("reject_reason", company.reject_reason);
-        setPersonalInfo("company_local_government", company.local_government);
-        setPersonalInfo(
-          "company_head_office_address",
-          company.head_office_address
-        );
-        setPersonalInfo("company_city", company.city);
-        setPersonalInfo("company_phone_number", company.phone_numbers);
-        setPersonalInfo("date_of_registration", company.date_of_registration);
-        setPersonalInfo("membership_number", company.membership_number);
-        setPersonalInfo("is_verified", company.is_verified);
-        setPersonalInfo("industry", company.industry);
-        setPersonalInfo(
-          "cac_registration_number",
-          company.cac_registration_number
-        );
-      }
-      setPersonalInfo(
-        "requestDemo",
-        Array.isArray(requestDemos) && requestDemos.length > 0
-      );
-    }
-  }, [data, setPersonalInfo]);
-
-  const toggleTheme = () => {
-    if (!hasMounted.current) return;
-    const primaryColor = getLocalStorage("primary-color");
-    if (primaryColor === "#000000") {
-      toast.error("Cannot use dark mode on the selected primary color");
-      setTheme("light");
-      return;
-    }
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
-
-  // useEffect(() => {
-  //   if (!hasMounted.current && appearance) {
-  //     const savedTheme = getLocalStorage("theme");
-  //     const { colorMode, navbar, fonts, dashboardColor } = appearance;
-  //     if (savedTheme) {
-  //       setTheme(savedTheme);
-  //     } else {
-  //       setTheme(colorMode);
-  //       saveLocalStorage("theme", colorMode);
-  //     }
-
-  //     saveLocalStorage("navbar", navbar);
-  //     setColor(dashboardColor);
-  //     applyFont(fonts);
-  //     hasMounted.current = true;
-  //   }
-  // }, [appearance, setColor]);
-
-  // const toggleTheme = () => {
-  //   if (!hasMounted.current) return;
-
-  //   const primaryColor = getLocalStorage("primary-color");
-  //   if (primaryColor === "#000000") {
-  //     toast.error("Cannot use dark mode on the selected primary color");
-  //     setTheme("light");
-  //     saveLocalStorage("theme", "light");
+  //   if (addedUnits.length > 0 && hasNotYetUploaded) {
+  //     toast.warning(
+  //       "There are units that have not been updated yet. Please update them to continue."
+  //     );
   //     return;
   //   }
 
-  //   const newTheme = theme === "dark" ? "light" : "dark";
-  //   setTheme(newTheme);
-  //   saveLocalStorage("theme", newTheme); // Persist theme choice
+  //   console.log("noForm", noForm);
+  //   if (!noForm || newForm || missingFields.length > 0) {
+  //     setSaveClick(true);
+  //     handleInputChange();
+  //     setSaveAfterValidation(true);
+  //     return;
+  //   }
+
+  //   if (addedUnits.length === 0 && !canSubmit) {
+  //     toast.success("Property has been added to your drafts.");
+  //     router.push("/management/properties");
+  //   } else if (canSubmit && addedUnits.length === 0) {
+  //     setSaveClick(true);
+  //     const form = document.getElementById(
+  //       "add-unit-form"
+  //     ) as HTMLFormElement | null;
+  //     form?.requestSubmit();
+  //     router.push("/management/properties");
+  //   } else {
+  //     router.push("/management/properties");
+  //   }
   // };
 
-  // Initialize theme on mount
+
+
 
   // useEffect(() => {
-  //   if (!hasMounted.current) {
-  //     const savedTheme = getLocalStorage("theme");
-  //     if (savedTheme) {
-  //       setTheme(savedTheme);
-  //     } else if (appearance?.colorMode) {
-  //       setTheme(appearance.colorMode);
-  //       saveLocalStorage("theme", appearance.colorMode);
+  //   if (checkSubmit) {
+  //     console.log("Validation Effect:", { canSubmit, noForm, missingFields });
+  //     if (!canSubmit && !noForm) {
+  //       toast.error(
+  //         `The following fields are required: ${missingFields.join(", ")}`
+  //       );
   //     } else {
-  //       setTheme("light"); // Default fallback
-  //       saveLocalStorage("theme", "light");
+  //       setFooterModalOpen(true);
   //     }
-  //     hasMounted.current = true;
-
-  //     // Update additional_details.appearance to sync with Appearance component
-  //     if (appearance) {
-  //       const additionalDetails = getLocalStorage("additional_details");
-  //       const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-  //       if (details.appearance) {
-  //         details.appearance.colorMode =
-  //           savedTheme || appearance.colorMode || "light";
-  //         saveLocalStorage("additional_details", JSON.stringify(details));
-  //       }
-  //     }
+  //     setCheckSubmit(false);
   //   }
-  // }, [appearance]); // Only depend on appearance
+  // }, [canSubmit, missingFields, checkSubmit, noForm]);
 
-  // // Sync appearance.colorMode with theme changes from Appearance component
   // useEffect(() => {
-  //   if (
-  //     hasMounted.current &&
-  //     appearance?.colorMode &&
-  //     !isManualToggle.current
-  //   ) {
-  //     const savedTheme = getLocalStorage("theme");
-  //     if (savedTheme !== appearance.colorMode) {
-  //       setTheme(appearance.colorMode);
-  //       saveLocalStorage("theme", appearance.colorMode);
+  //   if (saveAfterValidation) {
+  //     if (!canSubmit && !noForm) {
+  //       toast.error(
+  //         `The following fields are required: ${missingFields.join(", ")}`
+  //       );
+  //     } else {
+  //       setSaveClick(true);
+  //       const form = document.getElementById(
+  //         "add-unit-form"
+  //       ) as HTMLFormElement | null;
+  //       form?.requestSubmit();
   //     }
+  //     setSaveAfterValidation(false);
   //   }
-  // }, [appearance?.colorMode]);
+  // }, [saveAfterValidation, canSubmit, missingFields, noForm, setSaveClick]);
 
-  // // Debounced toggleTheme to prevent rapid calls
-  // const toggleTheme = debounce(() => {
-  //   if (!hasMounted.current) return;
-
-  //   isManualToggle.current = true; // Mark as manual toggle
-  //   const primaryColor = getLocalStorage("primary-color");
-  //   if (primaryColor === "#000000") {
-  //     toast.error("Cannot use dark mode on the selected primary color");
-  //     setTheme("light");
-  //     saveLocalStorage("theme", "light");
-
-  //     // Update additional_details.appearance
-  //     const additionalDetails = getLocalStorage("additional_details");
-  //     const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-  //     if (details.appearance) {
-  //       details.appearance.colorMode = "light";
-  //       saveLocalStorage("additional_details", JSON.stringify(details));
-  //     }
+  // const handleAddMoreClick = () => {
+  //   console.log("Add More Clicked:", { noForm, newForm, canSubmit });
+  //   if (!noForm) {
+  //     handleInputChange();
+  //     setCheckSubmit(true);
   //   } else {
-  //     const newTheme = theme === "dark" ? "light" : "dark";
-  //     setTheme(newTheme);
-  //     saveLocalStorage("theme", newTheme);
+  //     setFooterModalOpen(true);
+  //   }
+  // };
 
-  //     // Update additional_details.appearance
-  //     const additionalDetails = getLocalStorage("additional_details");
-  //     const details = additionalDetails ? JSON.parse(additionalDetails) : {};
-  //     if (details.appearance) {
-  //       details.appearance.colorMode = newTheme;
-  //       saveLocalStorage("additional_details", JSON.stringify(details));
+  // const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   console.log("Save Clicked:", {
+  //     noForm,
+  //     newForm,
+  //     canSubmit,
+  //     addedUnitsLength: addedUnits.length,
+  //     hasNotYetUploaded: addedUnits.some((unit) => unit.notYetUploaded),
+  //     missingFields,
+  //   });
+
+  //   const formInDom = document.getElementById(
+  //     "add-unit-form"
+  //   ) as HTMLFormElement | null;
+
+  //   // Check for unuploaded units
+  //   if (addedUnits.length > 0) {
+  //     const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
+  //     if (hasNotYetUploaded) {
+  //       console.log("Blocked: Units not yet uploaded");
+  //       toast.warning(
+  //         "There are units that have not been updated yet. Please update them to continue."
+  //       );
+  //       return;
   //     }
   //   }
 
-  //   // Reset manual toggle flag after a delay to allow appearance sync
-  //   setTimeout(() => {
-  //     isManualToggle.current = false;
-  //   }, 500);
-  // }, 300);
-
-  const isOnline = useOnlineStatus();
-
-  const lgIconsInteractionClasses =
-    "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
-
-  return (
-    <header
-      className={clsx(
-        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
-        loading && "skeleton"
-      )}
-    >
-      <div className="flex-1 h-full flex gap-6 items-center">
-        {/* Logo */}
-        <div className="hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden">
-          {loading ? (
-            <Skeleton
-              width="100%"
-              height="100%"
-              animation="wave"
-              sx={{ transform: "none" }}
-            />
-          ) : (
-            <Image
-              src={company_logo || empty}
-              alt="company logo"
-              fill
-              priority
-              sizes="auto"
-              className="object-contain"
-            />
-          )}
-        </div>
-
-        {/* Mobile & Tablet Icons */}
-        <div className="lg:hidden flex items-center gap-2 md:justify-between md:flex-1 ml-auto md:ml-0">
-          {/* Tablet Icons */}
-          <div className="hidden md:flex items-center gap-2 w-full justify-between">
-            <div className="flex items-center gap-2">
-              <NavIcon
-                icon={<DropdownListIcon size={21} />}
-                alt="dropdown list"
-              />
-              <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
-              <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
-            </div>
-            <div className="flex items-center gap-2">
-              <NavIcon
-                icon={<MailIcon size={21} />}
-                alt="messages"
-                href="/messages"
-              />
-              <NavIcon
-                icon={<BellIcon size={21} />}
-                alt="notifications"
-                href="/notifications"
-              />
-              <NavIcon
-                icon={
-                  theme === "dark" ? (
-                    <SunIcon size={21} />
-                  ) : (
-                    <MoonIcon size={21} />
-                  )
-                }
-                alt="theme-toggle"
-                onClick={toggleTheme}
-              />
-            </div>
-          </div>
-
-          {/* Mobile Toggle */}
-          <div className="flex md:hidden items-center gap-2">
-            <AnimatePresence mode="popLayout">
-              {mobileToggleOpen ? (
-                <motion.div
-                  key="open"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex items-center gap-2"
-                >
-                  <NavIcon
-                    icon={<DropdownListIcon size={21} />}
-                    alt="dropdown list"
-                  />
-                  <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
-                  <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
-                  <NavIcon
-                    icon={<MailIcon size={21} />}
-                    alt="messages"
-                    href="/messages"
-                  />
-                  <NavIcon
-                    icon={
-                      theme === "dark" ? (
-                        <SunIcon size={21} />
-                      ) : (
-                        <MoonIcon size={21} />
-                      )
-                    }
-                    alt="theme-toggle"
-                    onClick={toggleTheme}
-                  />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="closed"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <NavIcon
-                    icon={<BellIcon size={21} />}
-                    alt="notifications"
-                    href="/notifications"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <NavIcon
-              icon={
-                mobileToggleOpen ? <NavCloseIcon size={21} /> : <SidebarIcon />
-              }
-              alt="Toggle"
-              onClick={() => setMobileToggleOpen(!mobileToggleOpen)}
-            />
-          </div>
-        </div>
-
-        {/* Desktop Navigation */}
-        <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
-          <div className="flex-1 flex items-center gap-2">
-            <NavSwitchUserSwitch />
-            <Modal>
-              <ModalTrigger className="px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
-                <SearchIcon size={24} />
-                <span className="text-[#0a132ea6] dark:text-white text-base font-semibold">
-                  Search
-                </span>
-              </ModalTrigger>
-              <ModalContent>
-                <NavGlobalSearch />
-              </ModalContent>
-            </Modal>
-            <Modal>
-              <ModalTrigger asChild>
-                <Button
-                  size="base_medium"
-                  className="py-[10px] px-5 rounded-lg flex-1 max-w-fit"
-                >
-                  <span className="line-clamp-1 text-ellipsis">
-                    + Create New
-                  </span>
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <NavCreateNew />
-              </ModalContent>
-            </Modal>
-            <DrawerComponent />
-          </div>
-
-          <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
-            <div className="relative">
-              <Link
-                href="/messages"
-                aria-label="messages"
-                className={lgIconsInteractionClasses}
-              >
-                <MailIcon />
-                <NotificationBadge
-                  count={roundUptoNine(unreadMessageCount)}
-                  color="red"
-                />
-              </Link>
-            </div>
-            <div className="relative" onClick={handleClearNotifications}>
-              <Link
-                href="/notifications"
-                aria-label="notifications"
-                className={lgIconsInteractionClasses}
-              >
-                <BellIcon />
-                <NotificationBadge
-                  count={roundUptoNine(notificationCounts)}
-                  color="green"
-                />
-              </Link>
-            </div>
-            <button
-              type="button"
-              aria-label="theme-toggle"
-              onClick={toggleTheme}
-              className={lgIconsInteractionClasses}
-            >
-              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Profile Dropdown */}
-      <Dropdown>
-        <DropdownTrigger>
-          <div className="flex items-center gap-4">
-            <Picture
-              src={profile_picture || empty}
-              alt="profile picture"
-              status={isOnline}
-              size={isMobile ? 50 : 60}
-              rounded
-              containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
-            />
-            <div className="flex flex-col text-text-secondary capitalize">
-              <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
-                {getGreeting()},
-              </p>
-              <p className="text-xs md:text-base font-medium dark:text-white capitalize">
-                {truncateName(name ? name?.toLowerCase() : "", 50)}
-              </p>
-            </div>
-          </div>
-        </DropdownTrigger>
-        <DropdownContent
-          position={isMobile ? "left" : "right"}
-          className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize"
-        >
-          <NavProfileDropdown />
-        </DropdownContent>
-      </Dropdown>
-    </header>
-  );
-};
-
-export default Header;
+  //   // Check if a form exists (based on noForm, newForm, or missingFields)
+  //   if (!noForm || newForm || missingFields.length > 0) {
+  //     console.log("Form validation required:", { canSubmit, missingFields });
+  //     if (!canSubmit) {
+  //       console.log("Validation failed, showing toast");
+  //       toast.error(
+  //         `The following fields are required: ${missingFields.join(", ")}`
+  //       );
+  //       return;
+  //     }
+  //     console.log("Form valid, proceeding with submission");
+  //     setSaveClick(true);
+  //     const form = e.currentTarget.form;
+  //     setTimeout(() => {
+  //       form?.requestSubmit();
+  //     }, 0);
+  //   } else if (addedUnits.length === 0 && !canSubmit) {
+  //     console.log(
+  //       "No units added, redirecting to /management/properties with draft toast"
+  //     );
+  //     toast.success("Property has been added to your drafts.");
+  //     navigateBackOrToProperties();
+  //   } else if (canSubmit && addedUnits.length === 0) {
+  //     // if canSubmit is true and no units added, redirect after submission
+  //     console.log(
+  //       "Single unit submitted, redirecting to /management/properties"
+  //     );
+  //     setSaveClick(true);
+  //     const form = e.currentTarget.form;
+  //     setTimeout(() => {
+  //       form?.requestSubmit();
+  //     }, 0);
+  //     navigateBackOrToProperties();
+  //   } else if (canSubmit && addedUnits.length > 0 && formInDom) {
+  //     // if canSubmit is true and no units added, redirect after submission
+  //     console.log(
+  //       "Single unit submitted, redirecting to /management/properties"
+  //     );
+  //     setSaveClick(true);
+  //     const form = e.currentTarget.form;
+  //     setTimeout(() => {
+  //       form?.requestSubmit();
+  //     }, 0);
+  //     navigateBackOrToProperties();
+  //   } else {
+  //     console.log(
+  //       "No form, units added, redirecting to /management/properties"
+  //     );
+  //     navigateBackOrToProperties();
+  //   }
+  // };

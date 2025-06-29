@@ -174,7 +174,6 @@ const Enrollment = () => {
   // Handle select plan
   const handleSelectPlan = useCallback(
     async (plan: PropertyManagerSubsTransformedPlan) => {
-      console.log("plan", plan);
       const thisPlanKeyword = plan.planTitle?.split(" ")[0]?.toLowerCase();
       // Determine if it's an upgrade or extension
       const isExtend = currentPlanKeyword === thisPlanKeyword;

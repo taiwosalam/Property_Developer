@@ -50,6 +50,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const [clickedNo, setClickedNo] = useState(false);
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
   const resetForm = () => {
     setImages([]);
@@ -109,6 +110,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [showUnitForm, setAddUnitStore]);
 
+  console.log("add unit submitLoading", submitLoading)
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -142,6 +145,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           setSubmitLoading,
           clickedNo,
           setClickedNo,
+          shouldRedirect,
+          setShouldRedirect,
         }}
       >
         <div className="pb-[100px]">

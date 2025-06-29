@@ -24,7 +24,7 @@ export interface CreatePropertyFormProps {
   editMode?: boolean;
   propertyId?: string;
   onAddUnit?: () => void;
-  landlordId?: number;
+  landlordId?: string;
 }
 
 export interface StaffData {

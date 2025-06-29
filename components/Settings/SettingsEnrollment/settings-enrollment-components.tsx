@@ -12,6 +12,8 @@ import parse from "html-react-parser";
 import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
+import { useState } from "react";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -302,22 +304,44 @@ export const FeaturesToggle: React.FC<{
   showFeatures = false,
   getFeaturesText = () => "View Features",
   handleCardClick = () => {},
-}) => (
-  <div className="flex w-full px-6 py-3">
-    <button
-      className="text-brand-9 text-[18px] font-medium tracking-[0px] flex items-center gap-2"
-      onClick={handleCardClick}
-    >
-      {showFeatures ? getFeaturesText() : "View Features"}
-      <motion.div
-        animate={{ rotate: showFeatures ? 180 : 0 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-      >
-        <Image src={"/icons/up.svg"} alt="arrow-right" width={20} height={20} />
-      </motion.div>
-    </button>
-  </div>
-);
+}) => {
+  const [autoRenew, setAutoRenew] = useState(false);
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex w-full px-6 py-3">
+        <button
+          className="text-brand-9 text-[18px] font-medium tracking-[0px] flex items-center gap-2"
+          onClick={handleCardClick}
+        >
+          {showFeatures ? getFeaturesText() : "View Features"}
+          <motion.div
+            animate={{ rotate: showFeatures ? 180 : 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <Image
+              src={"/icons/up.svg"}
+              alt="arrow-right"
+              width={20}
+              height={20}
+            />
+          </motion.div>
+        </button>
+      </div>
+      <div className="flex items-center justify-end w-full ml-10">
+        <DocumentCheckbox
+          darkText
+          name="auto_renew"
+          state={{
+            isChecked: autoRenew,
+            setIsChecked: setAutoRenew,
+          }}
+        >
+          Auto-Renewal
+        </DocumentCheckbox>
+      </div>
+    </div>
+  );
+};
 
 export const FeaturesList: React.FC<{
   showFeatures?: boolean;
@@ -424,10 +448,12 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
     if (page === "modal" && changeStep) {
       onSelectPlan?.();
       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+      window.dispatchEvent(new Event("refetchEnrollments"));
       changeStep(3);
     } else if (!useModal && hasAction) {
       onSelect?.(); // Direct action for non-modal actionable scenarios
       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+      window.dispatchEvent(new Event("refetchEnrollments"));
     }
   };
 
@@ -435,7 +461,6 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
     (currentPlanKeyword === "professional" &&
       (thisPlanKeyword === "premium" || thisPlanKeyword === "basic")) ||
     (currentPlanKeyword === "premium" && thisPlanKeyword === "basic");
-
 
   const displayText =
     isDowngradeBlocked && hovered

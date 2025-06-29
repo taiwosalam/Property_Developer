@@ -18,6 +18,7 @@ export interface MessageCardProps {
   tier?: number;
   title?: string;
   role?: string;
+  type?: string;
 }
 
 export interface MessagesProps {

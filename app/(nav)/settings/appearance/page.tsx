@@ -41,7 +41,10 @@ const Appearance = () => {
     mode: "",
     font: "",
     color: "",
+    zoom: "",
   };
+
+  console.log("data", data);
 
   const [appearance, setAppearance] = useState(defaultAppearance);
 
@@ -62,7 +65,9 @@ const Appearance = () => {
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string | null>(appearance.color || primaryColor);
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    appearance.color || primaryColor
+  );
   let storedFont = appearance.font;
   // Zoom control
   const zoomLevel = useZoomStore((state) => state.zoomLevel);
@@ -84,6 +89,13 @@ const Appearance = () => {
     }
   }, [appearance.color]);
 
+  // Initialize zoomLevel from API ONCE (when data changes)
+  useEffect(() => {
+    if (appearance.zoom) {
+      setZoom(Number(appearance.zoom));
+    }
+  }, [appearance.zoom, setZoom]);
+
   // Zoom controls
   useEffect(() => {
     document.documentElement.style.fontSize = `${zoomLevel}%`;
@@ -102,7 +114,6 @@ const Appearance = () => {
     };
   }, []);
 
-
   const handleSelect = (type: keyof SelectedOptions, value: string) => {
     if (!value) return;
     setSelectedOption(type, value);
@@ -110,11 +121,11 @@ const Appearance = () => {
       case "theme":
         setAppearance({ ...appearance, theme: value });
         break;
-        case "view":
-          setAppearance({ ...appearance, view: value });
-          toast.success(`Management card view set to ${value}`);
-          break;
-          case "navbar":
+      case "view":
+        setAppearance({ ...appearance, view: value });
+        toast.success(`Management card view set to ${value}`);
+        break;
+      case "navbar":
         setAppearance({ ...appearance, navbar: value });
         saveLocalStorage("navbar", value);
         break;
@@ -165,7 +176,7 @@ const Appearance = () => {
     } else {
       setSelectedColor(color);
       setCustomColor(color);
-      console.log("selected color", color)
+      console.log("selected color", color);
     }
   };
 
@@ -206,130 +217,131 @@ const Appearance = () => {
   const handleUpdateTheme = async () => {
     const payload = {
       theme: appearance.theme,
-    }
+    };
     try {
-      setReqLoading(true)
-      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      setReqLoading(true);
+      const res = await updateSettings(objectToFormData(payload), "appearance");
       if (res && res.status === 200) {
         window.dispatchEvent(new Event("refetch-settings"));
         // toast.success("Theme updated successfully")
-        setNext(true)
+        setNext(true);
       }
     } catch (err) {
-      toast.error("Failed to Update Theme")
+      toast.error("Failed to Update Theme");
     } finally {
-      setReqLoading(false)
+      setReqLoading(false);
     }
-  }
+  };
 
   // MANAGEMENT CARD
   const handleUpdateCard = async () => {
     const payload = {
       card: appearance.view,
-    }
+    };
     try {
-      setReqLoading(true)
-      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      setReqLoading(true);
+      const res = await updateSettings(objectToFormData(payload), "appearance");
       if (res && res.status === 200) {
         window.dispatchEvent(new Event("refetch-settings"));
-        toast.success(`Card arrangement updated successfully`)
+        toast.success(`Card arrangement updated successfully`);
         // setNext(true)
       }
     } catch (err) {
-      toast.error("Failed to Update Card Arrangement")
+      toast.error("Failed to Update Card Arrangement");
     } finally {
-      setReqLoading(false)
+      setReqLoading(false);
     }
-  }
+  };
 
   // NAVBAR
   const handleUpdateNavbar = async () => {
     const payload = {
       navbar: appearance.navbar,
-    }
+    };
     try {
-      setReqLoading(true)
-      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      setReqLoading(true);
+      const res = await updateSettings(objectToFormData(payload), "appearance");
       if (res && res.status === 200) {
         window.dispatchEvent(new Event("refetch-settings"));
-        toast.success(`Navbar updated successfully`)
+        toast.success(`Navbar updated successfully`);
         localStorage.setItem("navbar", appearance.navbar);
         setAppearance((prev) => ({ ...prev, navbar: appearance.navbar }));
         // setNext(true)
       }
     } catch (err) {
-      toast.error("Failed to Update Navbar")
+      toast.error("Failed to Update Navbar");
     } finally {
-      setReqLoading(false)
+      setReqLoading(false);
     }
-  }
+  };
 
   // LIGHT / DARK MODE
   const handleUpdateMode = async () => {
     const payload = {
       colorMode: appearance.mode,
-    }
+    };
     try {
-      setReqLoading(true)
-      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      setReqLoading(true);
+      const res = await updateSettings(objectToFormData(payload), "appearance");
       if (res && res.status === 200) {
         window.dispatchEvent(new Event("refetch-settings"));
-        toast.success(`Mode updated successfully`)
+        toast.success(`Mode updated successfully`);
         // setNext(true)
       }
     } catch (err) {
-      toast.error("Failed to Update Mode")
+      toast.error("Failed to Update Mode");
     } finally {
-      setReqLoading(false)
+      setReqLoading(false);
     }
-  }
-
+  };
 
   // COLOR, FONT
   const handleUpdateScheme = async () => {
     const payload = {
       dashboardColor: selectedColor,
       fonts: appearance.font,
-      zoomLevel,
-    }
+      zoom: zoomLevel,
+    };
     try {
-      setReqLoading(true)
-      const res = await updateSettings(objectToFormData(payload), 'appearance')
+      setReqLoading(true);
+      const res = await updateSettings(objectToFormData(payload), "appearance");
+      console.log("res", res);
       if (res && res.status === 200) {
+        toast.success(`Scheme updated successfully`);
+        saveLocalStorage("zoomLevel", payload.zoom.toString());
         const additionalDetails = localStorage.getItem("additional_details");
         const details = additionalDetails ? JSON.parse(additionalDetails) : {};
         if (details.appearance) {
           details.appearance.dashboardColor = res.data.data.dashboardColor;
         }
-        // console.log("color res",details)
         details.dashboardColor = selectedColor;
         localStorage.setItem("additional_details", JSON.stringify(details));
         window.dispatchEvent(new Event("refetch-settings"));
-        toast.success(`Scheme updated successfully`)
-        // setNext(true)
       }
     } catch (err) {
-      toast.error("Failed to Update Scheme")
+      console.error("Failed to Update Scheme", error);
     } finally {
-      setReqLoading(false)
+      setReqLoading(false);
     }
-  }
+  };
 
   const updateZoom = async () => {
     try {
-      setReqLoading(true)
-      const res = await updateSettings(objectToFormData({zoomLevel}), 'zoom_moderation');
+      setReqLoading(true);
+      const res = await updateSettings(
+        objectToFormData({ zoomLevel }),
+        "zoom_moderation"
+      );
       if (res && res.status === 200) {
         window.dispatchEvent(new Event("refetch-settings"));
-        toast.success(`Zoom updated successfully`)
+        toast.success(`Zoom updated successfully`);
       }
     } catch (err) {
-      toast.error("Failed to Update Zoom")
+      toast.error("Failed to Update Zoom");
     } finally {
-      setReqLoading(false)
+      setReqLoading(false);
     }
-  }
-
+  };
 
   if (isLoading) {
     return (
@@ -338,7 +350,6 @@ const Appearance = () => {
       </div>
     );
   }
-
 
   return (
     <>
@@ -364,7 +375,7 @@ const Appearance = () => {
               <ThemeCard
                 img="/global/theme2.svg"
                 value="theme2"
-                onSelect={() => { }}
+                onSelect={() => {}}
                 isSelected={false}
                 className="opacity-50 cursor-not-allowed"
               />
@@ -377,7 +388,7 @@ const Appearance = () => {
               <ThemeCard
                 img="/global/theme3.svg"
                 value="theme3"
-                onSelect={() => { }}
+                onSelect={() => {}}
                 isSelected={false}
                 className="opacity-50 cursor-not-allowed"
               />
@@ -424,10 +435,10 @@ const Appearance = () => {
             />
           </div>
         </AuthForm>
-      </SettingsSection >
+      </SettingsSection>
 
       {/* NAVBAR DISPLAY SETTINGS */}
-      < SettingsSection title="Navbar Settings" >
+      <SettingsSection title="Navbar Settings">
         <SettingsSectionTitle
           title="Navbar"
           desc="Kindly select how you want your nav bar to be like"
@@ -456,10 +467,10 @@ const Appearance = () => {
             />
           </div>
         </AuthForm>
-      </SettingsSection >
+      </SettingsSection>
 
       {/* MODE - DARK/LIGHT MODE SETTINGS */}
-      < SettingsSection title="Mode" >
+      <SettingsSection title="Mode">
         <SettingsSectionTitle
           title="Color scheme"
           desc="Choose Light or Dark Mode Scheme."
@@ -478,7 +489,7 @@ const Appearance = () => {
               value="dark"
               onSelect={(value) => handleSelect("mode", value)}
               isSelected={appearance.mode === "dark"}
-            // isSelected={selectedMode === "dark"}
+              // isSelected={selectedMode === "dark"}
             />
           </div>
           <div className="flex justify-end mt-4">
@@ -490,10 +501,10 @@ const Appearance = () => {
             />
           </div>
         </AuthForm>
-      </SettingsSection >
+      </SettingsSection>
 
       {/* DASHBOARD COLOR SETTINGS */}
-      < SettingsSection title="Theme Font and Color Settings" >
+      <SettingsSection title="Theme Font and Color Settings">
         <SettingsSectionTitle
           title="Fonts Templates"
           desc="Choose Your Preferred Font Style for Your Company Profile Website"
@@ -590,7 +601,7 @@ const Appearance = () => {
             />
           </div>
         </AuthForm>
-      </SettingsSection >
+      </SettingsSection>
     </>
   );
 };

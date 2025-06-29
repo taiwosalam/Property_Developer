@@ -21,6 +21,7 @@ import { getSingleTenantData } from "@/utils/getData";
 import { Currency } from "@/utils/number-formatter";
 import { getLocalStorage } from "@/utils/local-storage";
 import { toast } from "sonner";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export const ProfileForm: React.FC<{
   occupants: { name: string; id: string; picture?: string }[];
@@ -58,10 +59,33 @@ export const ProfileForm: React.FC<{
     selectedOccupant,
     tenantLoading,
   } = useGlobalStore();
-  const defaultTenantId = getLocalStorage("selectedTenantId") || "";
-  const [selectedId, setSelectedId] = useState<string>(defaultTenantId || "");
+  // const defaultTenantId = getLocalStorage("selectedTenantId") || "";
+  // const [selectedId, setSelectedId] = useState<string>(defaultTenantId || "");
+  const defaultTenantId = String(getLocalStorage("selectedTenantId") || "");
+  const [selectedId, setSelectedId] = useState<string>("");
   const isWebUser = selectedOccupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = selectedOccupant?.userTag?.toLowerCase() === "mobile";
+
+  // 2. Set default when occupants are loaded and defaultTenantId is present in list
+  useEffect(() => {
+    if (occupants.length && defaultTenantId) {
+      const found = occupants.find((o) => String(o.id) === defaultTenantId);
+      if (found) {
+        setSelectedId(defaultTenantId);
+        setSelectedTenantId?.(defaultTenantId);
+      }
+    }
+  }, [occupants, defaultTenantId, setSelectedTenantId]);
+
+  // 3. Remove selection if current selection is not present in occupants
+  useEffect(() => {
+    if (!selectedId) return;
+    const exists = occupants.some((o) => String(o.id) === String(selectedId));
+    if (!exists) {
+      setSelectedId("");
+      setSelectedTenantId?.("");
+    }
+  }, [occupants, selectedId, setSelectedTenantId]);
 
   useEffect(() => {
     if (period) {
@@ -69,19 +93,19 @@ export const ProfileForm: React.FC<{
     }
   }, [period]);
 
-  // Validate defaultTenantId
-  useEffect(() => {
-    if (tenantsLoading || !defaultTenantId) return;
+  // // Validate defaultTenantId
+  // useEffect(() => {
+  //   if (tenantsLoading || !defaultTenantId) return;
 
-    const validTenant = occupants.find(
-      (occupant) => occupant.id === defaultTenantId
-    );
-    if (!validTenant) {
-      setSelectedId("");
-      setSelectedTenantId?.("");
-      // localStorage.removeItem("selectedTenantId");
-    }    
-  }, [defaultTenantId, occupants, setSelectedTenantId, tenantsLoading]);
+  //   const validTenant = occupants.find(
+  //     (occupant) => occupant.id === defaultTenantId
+  //   );
+  //   if (!validTenant) {
+  //     setSelectedId("");
+  //     setSelectedTenantId?.("");
+  //     // localStorage.removeItem("selectedTenantId");
+  //   }
+  // }, [defaultTenantId, occupants, setSelectedTenantId, tenantsLoading]);
 
   // Handle select id from dropdown
   // const handleSelectId = (id: string) => {
@@ -90,19 +114,17 @@ export const ProfileForm: React.FC<{
   //   setIsModalIdSelected(false);
   // };
 
-
   const handleSelectId = (id: string) => {
     // Clear previous data
     setGlobalInfoStore("selectedOccupant", null);
-    localStorage.removeItem("selectedTenantId");
-  
+    // localStorage.removeItem("selectedTenantId");
+
     // Update with new tenant
     setSelectedId(id);
     setSelectedTenantId?.(id);
     setIsModalIdSelected(false);
   };
 
-  
   // Callback function to receive the ID from AddOccupantWithId
   const handleTenantIdFromModal = (tenantId: string) => {
     setSelectedId(tenantId);
@@ -270,7 +292,7 @@ export const ProfileForm: React.FC<{
               id={`available_${isRental ? "tenant" : "occupant"}`}
               label={`Choose Available ${isRental ? "Tenant" : "Occupant"}`}
               options={occupants.map((occupant) => ({
-                label: occupant.name,
+                label: capitalizeWords(occupant.name),
                 value: occupant.id,
                 icon: occupant.picture || empty,
               }))}

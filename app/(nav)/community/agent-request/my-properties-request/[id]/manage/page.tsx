@@ -97,7 +97,7 @@ const ManageMyPropertyRequest = () => {
         await updatePropertyRequest(id as string, updatedData);
         toast.success("Property request updated successfully");
         router.push(
-          `/community/agent-request/my-properties-request/${id}/preview`
+          `/community/agent-request/my-properties-request`
         );
       } catch (error) {
         toast.error("Failed to update property request");
