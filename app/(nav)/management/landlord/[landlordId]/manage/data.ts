@@ -145,42 +145,42 @@ export const transformIndividualLandlordAPIResponse = ({
         : ""
     }`,
     // phone_number: data.phone === "" || !data.phone ? "" : data.phone,
-    gender: data.gender,
+    gender: data?.gender ?? "",
     notes: {
       last_updated: lastUpdated,
-      write_up: data.note.note,
+      write_up: data?.note?.note ?? "",
     },
     note: data?.note?.note !== null && data?.note?.note !== "",
-    owner_type: data.owner_type,
-    user_id: data.user_id,
-    badge_color: data.user_tier ? tierColorMap[data.user_tier] : undefined,
-    user_tag: data.agent.toLowerCase() === "mobile" ? "mobile" : "web",
+    owner_type: data?.owner_type ?? "",
+    user_id: data?.user_id ?? "",
+    badge_color: data?.user_tier ? tierColorMap[data?.user_tier] : undefined,
+    user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
     contact_address: {
-      address: data.address,
-      city: data.city,
-      state: data.state,
-      local_govt: data.local_government,
+      address: data?.address ?? "",
+      city: data?.city ?? "",
+      state: data?.state ?? "",
+      local_govt: data?.local_government ?? "",
     },
-    next_of_kin: data.next_of_kin,
-    bank_details: data.bank_details,
+    next_of_kin: data?.next_of_kin ?? "",
+    bank_details: data?.bank_details ?? "",
     others: {
-      employment: data.Others.occupation,
-      employment_type: data.Others.job_type,
-      family_type: data.Others.family_type,
+      employment: data?.Others?.occupation ?? "",
+      employment_type: data?.Others?.job_type ?? "",
+      family_type: data?.Others?.family_type ?? "",
     },
-    documents: data.documents.flatMap((doc) => {
+    documents: data?.documents?.flatMap((doc) => {
       return doc.files.map((file, index) => {
         if (typeof file === "string") {
           return {
             id: uuidv4(),
-            name: `${doc.type} ${index + 1}`,
+            name: `${doc?.type ?? ""} ${index + 1}`,
             link: file,
-            document_type: doc.type,
+            document_type: doc?.type ?? "",
           };
         } else {
           return {
             id: uuidv4(),
-            name: `${doc.type} ${index + 1}`,
+            name: `${doc?.type ?? ""} ${index + 1}`,
             date: moment(file.updated_at).format("DD/MM/YYYY"),
             link: file.url,
             document_type: doc.type,
@@ -188,28 +188,28 @@ export const transformIndividualLandlordAPIResponse = ({
         }
       });
     }),
-    properties_managed: data.properties.map((p) => {
-      const properties = p.properties;
-      const units = properties.units;
-      const totalReturns = units.reduce(
+    properties_managed: data?.properties?.map((p) => {
+      const properties = p?.properties;
+      const units = properties?.units;
+      const totalReturns = units?.reduce(
         (sum: number, unit: any) => sum + parseFloat(unit.fee_amount),
         0
       );
       const feePercentage =
-        properties.property_type === "rental"
-          ? properties.agency_fee
-          : properties.management_fee;
-      const imageObjects = properties.images;
+        properties?.property_type === "rental"
+          ? properties?.agency_fee
+          : properties?.management_fee;
+      const imageObjects = properties?.images;
       const images = imageObjects.map((image: any) => image.path);
       const defaultImage =
         imageObjects.find((image: any) => image.is_default)?.path || images[0];
 
       return {
-        id: properties.id.toString(),
-        property_name: properties.title,
+        id: properties?.id?.toString(),
+        property_name: properties?.title,
         images,
         default_image: defaultImage,
-        address: `${properties.full_address}, ${properties.city_area}, ${properties.local_government}, ${properties.state}`,
+        address: `${properties?.full_address}, ${properties?.city_area}, ${properties?.local_government}, ${properties?.state}`,
         total_units: units.length,
         total_income: (totalReturns * feePercentage) / 100,
         total_returns: totalReturns,
