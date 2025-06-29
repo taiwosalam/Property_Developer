@@ -27,6 +27,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import CardsLoading from "@/components/Loader/CardsLoading";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
@@ -71,10 +72,15 @@ const Examine = () => {
       const accountOfficer = menuOptions["Account Officer"] || [];
       const status = menuOptions["Status"] || [];
       const property = menuOptions["Property"] || [];
+      const branchIdsArray = menuOptions["Branch"] || [];
 
       const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
+
+      if (branchIdsArray.length > 0) {
+        queryParams.branch_ids = branchIdsArray.join(",");
+      }
       if (status.length > 0) queryParams.status = status.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (startDate)
@@ -112,6 +118,15 @@ const Examine = () => {
       label: property.title,
     })
   );
+
+  const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
   if (loading) return <PageCircleLoader />;
 
@@ -161,6 +176,14 @@ const Examine = () => {
                 {
                   label: "Property",
                   value: propertyOptions,
+                },
+              ]
+            : []),
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
                 },
               ]
             : []),

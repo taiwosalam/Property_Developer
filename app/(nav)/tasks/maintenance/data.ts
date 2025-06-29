@@ -202,4 +202,5 @@ export interface MaintenanceRequestParams {
   branch_id?: string;
   status?: string;
   is_active?: string;
+  branch_ids?: string;
 }

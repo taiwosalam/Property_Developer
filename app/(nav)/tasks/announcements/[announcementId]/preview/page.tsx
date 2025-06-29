@@ -102,7 +102,7 @@ const PreviewAnnouncement = () => {
 
           <AnnouncementInfo
             containerClassName="rounded-lg"
-            heading="summary"
+            heading="target audience"
             info={{
               branch: pageData?.summary?.branch_name,
               properties: pageData?.summary?.property_name,

@@ -10,10 +10,12 @@ export interface PropertyRequestData {
   state: string;
   lga: string;
   category: string;
+  request_type: string;
   property_sub_type: string;
   location: string;
   description: string;
   created_at: string;
+  updated_at: string;
 }
 
 export interface PropertyRequestApi {

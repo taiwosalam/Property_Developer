@@ -43,7 +43,7 @@ export interface AnnouncementDetailsPageData {
     property_name: string;
     branch_name: string;
   };
-  viewers: IAnnounceUserSummary[];
+  viewers: Array<string | null>;
   read_by: IAnnounceUserSummary[];
   delivered: IAnnounceUserSummary[];
 }
@@ -103,10 +103,10 @@ export const transformAnnouncementDetailsData = (
     ],
 
     summary: {
-      property_name: announcement?.summary?.property_name || "--- ---",
-      branch_name: announcement?.summary?.branch_name || "--- ---",
+      property_name: announcement?.summary?.property_name || "All",
+      branch_name: announcement?.summary?.branch_name || "All",
     },
-    viewers: [],
+    viewers: announcement?.viewers?.map((viewer) => viewer.profilePicture),
     read_by: [],
     delivered: [],
   };

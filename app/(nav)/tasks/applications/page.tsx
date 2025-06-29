@@ -139,7 +139,7 @@ const Applications = () => {
       <CustomLoader
         layout="page"
         statsCardCount={3}
-        pageTitle="Landlords/Landladies (Owners)"
+        pageTitle="Application"
       />
     );
 

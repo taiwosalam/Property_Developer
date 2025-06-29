@@ -2,12 +2,17 @@ import CommentsSection from "./comments-section";
 import { LikeIcon, DislikeIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import clsx from "clsx";
-import { CommentProps, IAnnounceUserSummary } from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
+import {
+  CommentProps,
+  IAnnounceUserSummary,
+} from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
 import { Comment } from "@/app/(nav)/tasks/announcements/types";
 import { CommentData } from "./comment";
 import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
 import { useState } from "react";
 import ThreadComments from "@/components/Community/ThreadComments";
+import { empty } from "@/app/config";
+import data from "@/app/(nav)/reports/landlord/page";
 
 const images = [
   "/empty/SampleProperty.jpeg",
@@ -23,14 +28,14 @@ interface AnnouncementPostProps {
     description: string;
     likes: number;
     dislikes: number;
-    viewers: IAnnounceUserSummary[];
+    viewers: (string | null)[];
     comments: CommentProps[];
   };
 }
 const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
   // Limit to first 3 images
   const maxImagesToShow = 3;
-  const excessImagesCount = images.length - maxImagesToShow;
+  const excessImagesCount = (data?.viewers?.length ?? 0) - maxImagesToShow;
   const [comment, setComment] = useState<any>([]);
 
   return (
@@ -50,27 +55,29 @@ const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
             <DislikeIcon />
             <span className="text-xs font-normal">{data?.dislikes}</span>
           </p>
-          <div className="flex items-center">
-            {images.slice(0, maxImagesToShow).map((i, index) => (
-              <Image
-                key={index}
-                src={i}
-                alt="image"
-                width={24}
-                height={24}
-                className={clsx(
-                  "w-6 h-6 border border-highlight rounded-full object-cover",
-                  index !== 0 && "-ml-3"
-                )}
-                style={{ zIndex: index }} // Control stacking
-              />
-            ))}
-            {excessImagesCount > 0 && (
-              <div className="bg-highlight h-6 pl-[14px] pr-[10px] -ml-3 rounded-[24px] text-[10px] text-text-invert font-semibold flex items-center justify-end">
-                +{excessImagesCount}
-              </div>
-            )}
-          </div>
+          {data && data.viewers.length > 0 && (
+            <div className="flex items-center">
+              {data?.viewers.slice(0, maxImagesToShow).map((i, index) => (
+                <Image
+                  key={index}
+                  src={i || empty}
+                  alt="image"
+                  width={24}
+                  height={24}
+                  className={clsx(
+                    "w-6 h-6 border border-highlight rounded-full object-cover",
+                    index !== 0 && "-ml-3"
+                  )}
+                  style={{ zIndex: index }} // Control stacking
+                />
+              ))}
+              {data?.viewers.length > 0 && (
+                <div className="bg-highlight h-6 pl-[14px] pr-[10px] -ml-3 rounded-[24px] text-[10px] text-text-invert font-semibold flex items-center justify-end">
+                  +{Math.min(data.viewers.length, maxImagesToShow)}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <PropertyRequestComments
@@ -79,7 +86,7 @@ const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
         comments={data?.comments || []}
         setComments={setComment}
       />
-       <ThreadComments comments={data?.comments || []} />
+      <ThreadComments comments={data?.comments || []} />
       {/* <CommentsSection comments={data?.comments || []} /> */}
     </div>
   );

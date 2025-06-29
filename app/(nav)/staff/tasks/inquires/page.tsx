@@ -26,6 +26,7 @@ const transformToCallBackRequestCardProps = (
       { label: "Account Officer", accessor: "accountOfficer" },
       { label: "Property Address", accessor: "propertyAddress" },
     ],
+    unitName: data.unitName ?? "", // Ensure unitName is present
     ...data,
   };
 };

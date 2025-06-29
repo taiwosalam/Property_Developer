@@ -11,6 +11,7 @@ export interface RequestCallBackCardDataType {
   pictureSrc: string;
   phoneNumber: string;
   propertyName: string;
+  unitName?: string;
   propertyAddress: string;
   branch: string;
   accountOfficer: string;
@@ -66,7 +67,7 @@ export const transformCallbackRequestPageData = (
       return {
         id: request?.id,
         requestId: request?.request_id.toString(),
-        userName: request?.user?.name?.toLowerCase(),
+        userName: request?.user?.name?.toLowerCase() || "___ ___",
         requestDate: request?.date,
         status: request?.status,
         pictureSrc: request?.user?.photo,
@@ -82,7 +83,7 @@ export const transformCallbackRequestPageData = (
     }),
     pagination: {
       current_page: data?.pagination?.current_page,
-      total: data?.pagination?.total,
+      total: data?.pagination?.total_pages,
     },
   };
 };

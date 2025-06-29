@@ -51,7 +51,10 @@ const Examine = () => {
         {Array(10)
           .fill(null)
           .map((_, index) => (
-            <ExamineCard key={index} />
+            <ExamineCard
+              key={index}
+              image={[{ path: "" }]} // Provide a default or mock image array
+            />
           ))}
       </AutoResizingGrid>
     </div>

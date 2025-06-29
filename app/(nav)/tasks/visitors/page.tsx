@@ -12,7 +12,7 @@ import {
 } from "./data";
 import { type VisitorRequestCardProps } from "@/components/tasks/CallBack/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import NetworkError from "@/components/Error/NetworkError";
@@ -30,6 +30,8 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { MaintenanceRequestParams } from "../maintenance/data";
+import { debounce } from "lodash";
 
 const transformToVisitorRequestCardProps = (
   data: VisitorRequestDataDataType
@@ -38,11 +40,11 @@ const transformToVisitorRequestCardProps = (
     cardType: "visitor",
     cardViewDetails: [
       { label: "Name of Visitor", accessor: "visitorName" },
-      { label: "Visotor Phone no", accessor: "visitorPhoneNumber" },
+      { label: "Visitor Phone no", accessor: "visitorPhoneNumber" },
       { label: "Secret Question", accessor: "secretQuestion" },
-      { label: "Purpose", accessor: "purpose" },
-      { label: "Property Name", accessor: "propertyName" },
       { label: "Branch", accessor: "branch" },
+      { label: "Property Name", accessor: "propertyName" },
+      { label: "Unit Name", accessor: "unitName" },
     ],
     id: Number(data.requestId),
     tier_id: 0,
@@ -57,7 +59,10 @@ const transformToVisitorRequestCardProps = (
     check_out_time: "",
     check_in_date: "",
     check_out_date: "",
-
+    decline_by: "",
+    decline_date: "",
+    decline_time: "",
+    reason: "",
     ...data,
   };
 };
@@ -96,6 +101,8 @@ const BookVisitorsPage = () => {
     endDate: null,
   });
 
+  console.log(pageData);
+
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
   const propertyOptions =
@@ -104,36 +111,27 @@ const BookVisitorsPage = () => {
       value: property.id.toString(),
     })) || [];
 
-  const handleFilterApply = (filters: FilterResult) => {
-    setAppliedFilters(filters);
-    const { menuOptions, startDate, endDate } = filters;
-    const statesArray = menuOptions["Status"] || [];
-    const agent = menuOptions["Landlord/Landlady Type"]?.[0];
-    const propertyIdsArray = menuOptions["Property"] || [];
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const status = menuOptions["Status"] || [];
+      const property = menuOptions["Property"] || [];
 
-    const queryParams: LandlordRequestParams = {
-      page: 1,
-      search: "",
-    };
-    if (statesArray.length > 0) {
-      queryParams.status = statesArray.join(",");
-    }
-    if (propertyIdsArray.length > 0) {
-      queryParams.property_ids = propertyIdsArray.join(",");
-    }
-    if (agent && agent !== "all") {
-      queryParams.agent = agent;
-    }
-    if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
-    }
-    if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
-    }
-    setConfig({
-      params: queryParams,
-    });
-  };
+      const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
+      if (status.length > 0) queryParams.status = status.join(",");
+      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
+  );
 
   const handlePageChange = (page: number) => {
     setConfig((prev) => ({
@@ -200,7 +198,7 @@ const BookVisitorsPage = () => {
             "This page contains a list of Book for Visitation on the platform.",
         }}
         searchInputPlaceholder="Search Visitor Request"
-        handleFilterApply={handleFilterApply}
+        handleFilterApply={handleAppliedFilter}
         isDateTrue
         dateLabel="Date"
         handleSearch={handleSearch}

@@ -9,6 +9,7 @@ import ModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import { empty } from "@/app/config";
 import React, { useState } from "react";
 import { CounterButton } from "@/components/Wallet/AddFunds/payment-method";
+import { getBadgeColor } from "@/lib/utils";
 
 interface BaseProps {
   type: "check-in" | "check-out" | "decline";
@@ -17,6 +18,7 @@ interface BaseProps {
   pictureSrc: string;
   userName: string;
   id: string | number;
+  tier_id?: number;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   loading: boolean;
 }
@@ -40,6 +42,7 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
     pictureSrc,
     userName,
     id,
+    tier_id,
     useCase,
     onSubmit,
     loading,
@@ -51,6 +54,8 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
   const handleDecrement = () => {
     setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
   };
+
+  const [reason, setReason] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -65,7 +70,6 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
 
   return (
     <ModalPreset
-    
       heading={
         type === "decline"
           ? `Decline ${useCase === "visitor" ? "Visitor" : "Vehicle"}`
@@ -91,10 +95,10 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
                 />
                 <div className="flex flex-col">
                   <p className="flex items-center">
-                    <span className="text-text-primary dark:text-white text-base font-medium">
+                    <span className="text-text-primary dark:text-white text-base font-medium capitalize">
                       {userName}
                     </span>
-                    {/* <BadgeIcon color="green" /> */}
+                    <BadgeIcon color={getBadgeColor(tier_id) ?? "gray"} />
                   </p>
                   <p className="flex items-center gap-1 text-sm font-normal">
                     <span className="text-text-tertiary dark:text-darkText-2">
@@ -167,10 +171,13 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               </>
             )}
           </div>
-          <div className="md:flex-1">
-            <p className="mb-[14px] text-text-primary dark:text-white text-lg lg:text-xl font-medium">
-              {type === "decline" ? "Reason" : "Inventory"}
-            </p>
+          <div className="md:flex-1 gap-1">
+            <div className="flex gap-1">
+              {type === "decline" && <p className="text-red-500">*</p>}
+              <p className="mb-[14px] text-text-primary dark:text-white text-lg lg:text-xl font-medium">
+                {type === "decline" ? "Reason" : "Inventory"}
+              </p>
+            </div>
             <p className="mb-4 text-text-tertiary dark:text-darkText-2 text-sm font-normal">
               {type === "decline"
                 ? useCase === "visitor"
@@ -180,10 +187,23 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
                 ? "Please make sure to document and record all items found with visitors, or with companions."
                 : "Please ensure that all items discovered with passengers or  in the car, including those in the boot space, are noted and recorded."}
             </p>
-            <TextArea
-              id={type === "decline" ? "reason" : "inventory"}
-              inputSpaceClassName="md:!h-[100px]"
+            <input
+              type="hidden"
+              value={reason}
+              name="reason"
+              id="reason"
+              aria-hidden
             />
+            <div className="w-full">
+              <TextArea
+                id={type === "decline" ? "reason" : "inventory"}
+                inputSpaceClassName="md:!h-[100px]"
+                value={reason}
+                className="w-full"
+                onChange={(e: string) => setReason(e)}
+              />
+            </div>
+
             <Button
               type="submit"
               aria-label="submit"
@@ -194,7 +214,9 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
               {loading
                 ? "Loading..."
                 : type === "check-in"
-                ? "Check In" : type === "decline" ? "Decline"
+                ? "Check In"
+                : type === "decline"
+                ? "Decline"
                 : "Check Out"}
             </Button>
           </div>

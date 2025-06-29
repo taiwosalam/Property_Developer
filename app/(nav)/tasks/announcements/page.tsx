@@ -68,11 +68,14 @@ const AnnouncementPage = () => {
       const accountOfficer = menuOptions["Account Officer"] || [];
       const status = menuOptions["Status"] || [];
       const property = menuOptions["Property"] || [];
+      const branches = menuOptions["Branch"] || [];
 
       const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
+      if (branches.length > 0) queryParams.branch_id = status.join(",");
+      
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -82,6 +85,14 @@ const AnnouncementPage = () => {
     }, 300),
     []
   );
+
+  const { data: branchesData } = useFetch<any>("/branches");
+
+  const branchOptions =
+    branchesData?.data.map((branch: { branch_name: string; id: number }) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
   const handlePageChange = (page: number) => {
     setConfig((prev) => ({
@@ -124,12 +135,12 @@ const AnnouncementPage = () => {
             colorScheme={1}
             total={0}
           />
-          <ManagementStatistcsCard
+          {/* <ManagementStatistcsCard
             title="Examine"
             newData={apiData?.total_examine_month ?? 0}
             total={apiData?.total_examine ?? 0}
             colorScheme={2}
-          />
+          /> */}
         </div>
         <Button
           href="/tasks/announcements/create-announcement"
@@ -157,6 +168,14 @@ const AnnouncementPage = () => {
                 {
                   label: "Property",
                   value: propertyOptions,
+                },
+              ]
+            : []),
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
                 },
               ]
             : []),
@@ -217,12 +236,19 @@ const AnnouncementPage = () => {
                     description={announcement.description}
                     id={announcement.company_id.toString()}
                     views={announcement.views_count}
+                    video={announcement.video_link}
                     newViews={announcement.views_count}
                     likes={announcement.likes_count}
                     dislikes={announcement.dislikes_count}
-                    imageUrls={announcement.images}
+                    imageUrls={announcement.images.map((img) => ({
+                      ...img,
+                      url: img.url,
+                    }))}
                     //mediaCount={announcement.image_urls.length}
-                    mediaCount={image_urls.flat().length}
+                    mediaCount={{
+                      image: image_urls.flat().length,
+                      video: announcement.video_link ? 1 : 0,
+                    }}
                     announcementId={announcement.id.toString()}
                   />
                 );
@@ -248,15 +274,22 @@ const AnnouncementPage = () => {
                   title={announcement.title}
                   date={formattedDate}
                   key={index}
+                  video={announcement.video_link}
                   description={announcement.description}
                   id={announcement.company_id.toString()}
                   views={announcement.views_count}
                   newViews={announcement.views_count}
                   likes={announcement.likes_count}
                   dislikes={announcement.dislikes_count}
-                  imageUrls={announcement.images}
+                  imageUrls={announcement.images.map((img) => ({
+                    ...img,
+                    url: img.url,
+                  }))}
                   //mediaCount={announcement.image_urls.length}
-                  mediaCount={image_urls.flat().length}
+                  mediaCount={{
+                    image: image_urls.flat().length,
+                    video: announcement.video_link ? 1 : 0,
+                  }}
                   announcementId={announcement.id.toString()}
                 />
               );

@@ -31,6 +31,7 @@ const transformToCallBackRequestCardProps = (
       { label: "Property Address", accessor: "propertyAddress" },
     ],
     ...data,
+    unitName: data.unitName ?? "", // Ensure unitName is always a string
   };
 };
 

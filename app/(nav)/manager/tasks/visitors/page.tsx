@@ -37,6 +37,10 @@ const transformToVisitorRequestCardProps = (
     check_out_time: "",
     check_in_date: "",
     check_out_date: "",
+    decline_by: "",
+    decline_date: "",
+    decline_time: "",
+    reason: "",
     ...data,
   };
 };

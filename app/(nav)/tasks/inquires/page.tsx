@@ -45,8 +45,10 @@ const transformToCallBackRequestCardProps = (
       { label: "Property Name", accessor: "propertyName" },
       { label: "Account Officer", accessor: "accountOfficer" },
       { label: "Property Address", accessor: "propertyAddress" },
+      { label: "Unit Name", accessor: "unitName" },
     ],
     ...data,
+    unitName: data.unitName ?? "___ ___",
   };
 };
 
@@ -208,6 +210,20 @@ const Inquires = () => {
                 },
               ]
             : []),
+          {
+            radio: true,
+            label: "Status",
+            value: [
+              {
+                label: "Pending",
+                value: "pending",
+              },
+              {
+                label: "Completed",
+                value: "completed",
+              },
+            ],
+          },
         ]}
         hasGridListToggle={false}
       />

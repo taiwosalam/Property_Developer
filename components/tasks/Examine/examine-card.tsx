@@ -8,6 +8,7 @@ import Picture from "@/components/Picture/picture";
 import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import Image from "next/image";
 
 interface ExamineCardProps {
   viewOnly?: boolean;
@@ -15,7 +16,7 @@ interface ExamineCardProps {
   title?: string;
   description?: string;
   examine_date?: string; // e.g., "20th January 2026"
-  image?: string[]; //
+  image?: Array<{ path: string }>; //
 }
 
 const ExamineCard: React.FC<ExamineCardProps> = ({
@@ -35,8 +36,18 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="h-[174px] flex items-center justify-center bg-[#00000033] dark:bg-darkText-1">
-        <Picture src={ExamineIcon} alt="examine" size={100} />
+      <div className="relative h-[174px] flex items-center justify-center bg-[#00000033] dark:bg-darkText-1">
+        {image && image.length > 0 ? (
+          <Image
+            src={image[0].path}
+            alt="examine"
+            fill
+            sizes="auto"
+            className="object-cover object-center w-full"
+          />
+        ) : (
+          <Picture src={ExamineIcon} alt="examine" size={100} />
+        )}
       </div>
       <div className="custom-flex-col gap-[22px] px-[18px]">
         <div className="custom-flex-col gap-2">

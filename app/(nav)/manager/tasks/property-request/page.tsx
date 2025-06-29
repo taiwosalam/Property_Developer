@@ -20,6 +20,9 @@ const transformToPropertyRequestCardProps = (
       { label: "Max Budget", accessor: "maxBudget" },
     ],
     ...data,
+    location: data.location ?? "",
+    createdAt: data.createdAt ?? "",
+    updatedAt: data.updatedAt ?? "",
   };
 };
 

@@ -1,5 +1,3 @@
-
-
 export type ExamineApiResponse = {
   status: "success";
   total_examine: number;
@@ -18,6 +16,5 @@ type ExamineItem = {
   title: string;
   description: string;
   examine_date: string; // e.g., "20th January 2026"
-  image: string[]; // Assuming it's an array of image URLs; adjust if structure differs
+  image: Array<{ path: string }>; // Assuming it's an array of image URLs; adjust if structure differs
 };
-

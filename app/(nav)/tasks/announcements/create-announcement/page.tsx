@@ -11,11 +11,12 @@ const CreateAnnouncement = () => {
   const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
+
     setIsSubmitting(true);
     try {
       const success = await createAnnouncement(formData);
       if (success) {
-        toast.success("Announcement created")
+        toast.success("Announcement created");
         router.push("/tasks/announcements");
       }
     } catch (error) {
@@ -27,7 +28,10 @@ const CreateAnnouncement = () => {
   return (
     <div className="space-y-7">
       <BackButton>Create Announcement</BackButton>
-      <CreateAnnouncementForm handleSubmit={handleSubmit} isLoading={isSubmitting}/>
+      <CreateAnnouncementForm
+        handleSubmit={handleSubmit}
+        isLoading={isSubmitting}
+      />
     </div>
   );
 };

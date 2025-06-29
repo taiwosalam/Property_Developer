@@ -11,6 +11,7 @@ export interface RequestCallBackCardDataType {
   accountOfficer: string;
   resolvedBy: string;
   resolvedDateTime: string;
+  unitName?: string;
 } //check with API
 
 export const inquiriesFilterOptionsWithDropdown = [

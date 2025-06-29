@@ -2,6 +2,8 @@ export interface PropertyRequestModalProps {
   state: string;
   lga: string;
   propertyType: string;
+  createdAt: string;
+  updatedAt: string;
   category: string;
   minBudget: string;
   maxBudget: string;
@@ -10,6 +12,7 @@ export interface PropertyRequestModalProps {
   userName: string;
   phoneNumber: string;
   description: string;
+  location?: string
 }
 
 export interface LabelValuePairProps {

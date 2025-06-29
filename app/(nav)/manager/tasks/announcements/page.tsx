@@ -75,8 +75,9 @@ const AnnouncementPage = () => {
               newViews={0}
               dislikes={0}
               imageUrls={announcement.image_urls}
-              mediaCount={announcement.image_urls.length}
+              mediaCount={{ image: announcement.image_urls.length, video: 0 }}
               announcementId={announcement.id}
+              video={null}
             />
           );
         })}

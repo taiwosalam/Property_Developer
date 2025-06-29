@@ -1,4 +1,5 @@
 import api, { handleAxiosError } from "@/services/api";
+import dayjs from "dayjs";
 
 export const VisitorRequestFilterOptionsWithDropdown = [
   {
@@ -23,6 +24,7 @@ export interface VisitorRequestDataDataType {
   secretAnswer: string;
   purpose: string;
   propertyName: string;
+  unitName?: string;
   branch: string;
 } //check with API
 
@@ -86,6 +88,7 @@ export const VisitorRequestData: VisitorRequestDataDataType[] = [
 ];
 
 export interface Visitor {
+  userId: number;
   userName: string;
   requestDate: string;
   tier_id: number;
@@ -98,6 +101,7 @@ export interface Visitor {
   secretAnswer: string;
   purpose: string;
   propertyName: string;
+  unitName: string;
   branch: string;
   checked_status: string;
   checked_in_by: string | null;
@@ -108,6 +112,10 @@ export interface Visitor {
   check_out_inventory: string;
   check_in_date: string | null;
   check_out_date: string | null;
+  decline_by: string | null;
+  decline_date: string | null;
+  decline_time: string | null;
+  reason: string | null;
   check_in_time: string | null;
   check_out_time: string | null;
 }
@@ -140,17 +148,26 @@ export const transformVisitorRequestData = (
     visitors: data?.data?.map((visitor) => {
       return {
         id: visitor.id,
+        userId: visitor.user_id,
         checked_status: visitor.status,
-        checked_in_by: visitor.check_in_by,
-        checked_out_by: visitor.check_out_by,
+        checked_in_by: visitor.check_in_by?.toLowerCase() || "",
+        checked_out_by: visitor.check_out_by?.toLocaleLowerCase() || "",
         check_out_companion: visitor.check_out_companion,
         check_in_companion: visitor.check_in_companion,
-        check_in_inventory: visitor.check_in_inventory,
+        check_in_inventory: visitor.check_in_inventory || "___ ___",
         check_out_inventory: visitor.check_out_inventory,
         check_in_date: visitor.check_in_date,
         check_out_date: visitor.check_out_date,
         check_in_time: visitor.check_in_time,
         check_out_time: visitor.check_out_time,
+        decline_by: visitor.decline_by?.toLowerCase() || "",
+        decline_date: visitor.decline_date
+          ? dayjs(visitor.decline_date).format("DD/MM/YYYY")
+          : "___ ___",
+        decline_time: visitor.decline_time
+          ? dayjs(visitor.decline_time).format("HH:MM A")
+          : "___ ___",
+        reason: visitor.reason,
         tier_id: visitor.user?.tier,
         userName: visitor.user?.name?.toLowerCase(),
         requestDate: visitor.request_date,
@@ -162,12 +179,15 @@ export const transformVisitorRequestData = (
         secretQuestion: visitor.secret_question,
         secretAnswer: visitor.secret_answer,
         purpose: visitor.purpose,
-        propertyName: visitor.user?.tenant?.units
-          ?.map((property) => property.property.title)
-          .join(""),
-        branch: visitor.user?.tenant?.units
-          ?.map((property) => property.property.branch_name)
-          .join(""),
+        unitName: "___ ___",
+        propertyName:
+          visitor.user?.tenant?.units
+            ?.map((property) => property.property.title)
+            .join("") || "___ ___",
+        branch:
+          visitor.user?.tenant?.units
+            ?.map((property) => property.property.branch_name)
+            .join("") || "___ ___",
       };
     }),
     pagination: {
@@ -196,7 +216,7 @@ export interface IDeclinePayload {
 
 export const handleDecline = async (id: string, data: IDeclinePayload) => {
   const payload = {
-    check_in_inventory: data.reason,
+    reason: data.reason,
     date: data.decline_date,
     time: data.decline_time,
   };

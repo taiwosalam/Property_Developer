@@ -116,7 +116,11 @@ type Announcements = {
   views_count: number;
   likes_count: number;
   dislikes_count: number;
-  images: any[]; 
+  images: Array<{
+    id: number;
+    url: string;
+    is_default: number;
+  }>; 
   poster: {
     name: string;
     profilePicture: string;
