@@ -206,6 +206,10 @@ const Visitors = () => {
       check_out_date: record.check_out_date,
       check_in_time: record.check_in_time,
       check_out_time: record.check_out_time,
+      decline_by: (record as any).decline_by ?? null,
+      decline_date: (record as any).decline_date ?? null,
+      decline_time: (record as any).decline_time ?? null,
+      reason: (record as any).reason ?? "",
     };
 
     console.log("Transformed data:", visitorData); // Debug log

@@ -11,6 +11,7 @@ import { MAX_FILE_SIZE_MB } from "@/data";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import useFetch from "@/hooks/useFetch";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { toast } from "sonner";
 
 const MAX_IMAGES = 4;
 const CreateAnnouncementForm: React.FC<{
@@ -121,10 +122,30 @@ const CreateAnnouncementForm: React.FC<{
   };
 
   const onFormSubmit = (formData: FormData) => {
+    const title = formData.get("title");
+    const description = formData.get("description");
+
+    if (!title) {
+      toast.warning("You need to provide a title");
+      return;
+    } else if (!description) {
+      toast.warning("You need to provide a description");
+      return;
+    } else if (String(description).trim().length < 30) {
+      toast.warning("Description must be at least 30 characters.");
+      return;
+    }
+
+    const videoLink = formData.get("video_link") as string;
+    if (imageFiles.length === 0 && (!videoLink || videoLink.trim() === "")) {
+      toast.error("Please upload at least one image or provide a video link.");
+      return;
+    }
     // Append image files to FormData
     imageFiles.forEach((file, index) => {
       formData.append(`images[${index}]`, file);
     });
+
     if (company_id) formData.append("company_id", company_id);
 
     // Call the parent handleSubmit with the updated FormData
@@ -221,7 +242,7 @@ const CreateAnnouncementForm: React.FC<{
             className="md:col-span-2"
             inputClassName="bg-white"
           />
-          <TextArea id="description" className="md:col-span-2" />
+          <TextArea id="description" className="md:col-span-2" label="Description"/>
         </div>
         <div className="lg:flex-1 space-y-4">
           <div className="grid gap-4 md:grid-cols-2">

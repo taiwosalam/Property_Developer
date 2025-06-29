@@ -15,6 +15,8 @@ import { postLikeOrDislike } from "@/app/(nav)/tasks/announcements/data";
 import { toast } from "sonner";
 import { useState } from "react";
 
+import ReactPlayer from "react-player";
+
 interface AnnouncementCardProps {
   title: string;
   description: string;
@@ -24,6 +26,7 @@ interface AnnouncementCardProps {
   newViews: number;
   likes?: number;
   dislikes: number;
+  video: string | null;
   imageUrls:
     | {
         id: number;
@@ -31,7 +34,10 @@ interface AnnouncementCardProps {
         is_default: number;
       }[]
     | string[];
-  mediaCount: number;
+  mediaCount: {
+    image: number;
+    video: number;
+  };
   announcementId: string;
   viewOnly?: boolean;
 }
@@ -49,6 +55,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   mediaCount,
   announcementId,
   viewOnly,
+  video,
 }) => {
   const { role, setRole } = useRole();
   const [isLiking, setIsLiking] = useState(false);
@@ -95,30 +102,47 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
       }}
     >
       <div className="relative rounded-t-lg w-full h-[170px] overflow-hidden">
-        <Image
-          src={
-            imageUrls.length
-              ? typeof imageUrls[0] === "string"
-                ? imageUrls[0]
-                : imageUrls[0]?.url
-              : empty
-          }
-          alt="sample"
-          fill
-          sizes="auto"
-          className="object-cover object-center"
-        />
+        {video && imageUrls && imageUrls.length === 0 ? (
+          <div className="imagWrapper overflow-hidden max-h-[195px]">
+            <ReactPlayer
+              url={video}
+              width="100%"
+              height="195px"
+              controls
+              className="object-cover"
+            />
+          </div>
+        ) : (
+          <Image
+            src={
+              imageUrls.length
+                ? typeof imageUrls[0] === "string"
+                  ? imageUrls[0]
+                  : imageUrls[0]?.url
+                : empty
+            }
+            alt="sample"
+            fill
+            sizes="auto"
+            className="object-cover object-center"
+          />
+        )}
 
         <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
-          <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
-            <VideoIcon />
-          </div>
-          <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
-            <CameraIcon />
-            <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
-              +{mediaCount}
-            </p>
-          </div>
+          {mediaCount.video !== 0 && (
+            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
+              <VideoIcon />
+            </div>
+          )}
+          {mediaCount.image !== 0 && (
+            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+              <CameraIcon />
+
+              <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
+                +{mediaCount.image}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

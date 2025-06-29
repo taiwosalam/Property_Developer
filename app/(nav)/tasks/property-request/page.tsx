@@ -39,11 +39,14 @@ const transformToPropertyRequestCardProps = (
       { label: "Location (State)", accessor: "state" },
       { label: "Local Government", accessor: "lga" },
       { label: "Property Type", accessor: "propertyType" },
-      { label: "Category", accessor: "category" },
+      { label: "Property Sub Type", accessor: "subType" },
       { label: "Min Budget", accessor: "minBudget" },
       { label: "Max Budget", accessor: "maxBudget" },
     ],
     ...data,
+    createdAt: data.createdAt ?? "",
+    updatedAt: data.updatedAt ?? "",
+    location: data.location ?? "",
   };
 };
 
@@ -100,7 +103,7 @@ const PropertyRequest = () => {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (statesArray.length > 0) {
-      queryParams.states = statesArray.join(",");
+      queryParams.state = statesArray.join(",");
     }
 
     setConfig({
@@ -144,7 +147,7 @@ const PropertyRequest = () => {
       </div>
       <FilterBar
         azFilter
-        pageTitle="Request"
+        pageTitle="Property Request"
         filterOptionsMenu={[
           {
             label: "State",

@@ -5,6 +5,9 @@ export interface PropertyRequestDataType {
   requestId: string;
   state: string;
   lga: string;
+  location?: string;
+  createdAt?: string;
+  updatedAt?: string;
   propertyType: string;
   description: string;
   phoneNumber: string;

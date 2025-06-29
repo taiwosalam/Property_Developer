@@ -61,6 +61,11 @@ const ManageExaminepage = () => {
   const handleExamineUpdate = async () => {
     if (!paramId) return;
 
+    if (notes && notes.trim().length < 30) {
+      toast.error("Please enter a note with at least 30 characters.");
+      return;
+    }
+
     // Build the checklist array
     const checklistArray = Object.entries(inspectionChecklist)
       .filter(([_, value]) => value)
@@ -241,7 +246,7 @@ const ManageExaminepage = () => {
                 <Select
                   id="condition"
                   label="Condition"
-                  options={["Good", "Bad"]}
+                  options={["Very Good", "Good", "Bad", "Poor", "Very Poor"]}
                   value={siteSummary["Condition"] || ""}
                   onChange={(value) =>
                     setSiteSummary((prev) => ({
@@ -289,7 +294,7 @@ const ManageExaminepage = () => {
                 <Select
                   id="compare"
                   label="Compare To Others"
-                  options={["Good", "Bad"]}
+                  options={["Very Good", "Good", "Bad", "Poor", "Very Poor"]}
                   value={siteSummary["Compare To Others"] || ""}
                   onChange={(value) =>
                     setSiteSummary((prev) => ({
@@ -308,7 +313,7 @@ const ManageExaminepage = () => {
                     id={item + index}
                     label={item}
                     placeholder="Select options"
-                    options={["Good", "Bad"]}
+                    options={["Very Good", "Good", "Bad", "Poor", "Very Poor"]}
                     value={inspectionChecklist[item] || ""}
                     onChange={(value) => {
                       setInspectionChecklist((prev) => ({
@@ -320,7 +325,13 @@ const ManageExaminepage = () => {
                 ))}
               </div>
             </SectionContainer>
-            <SectionContainer heading="Inspection Summary Notes">
+            <SectionContainer heading="">
+              <div className="flex gap-1">
+                <p className="text-red-600">*</p>
+                <h1 className="text-text-primary text-xl font-medium capitalize dark:text-[#f1f1fd]">
+                  Inspection Summary Notes
+                </h1>
+              </div>
               <TextArea
                 id="inspection_summary"
                 value={notes}

@@ -1,6 +1,7 @@
 export interface RequestCallBackCardDataType {
   userName: string;
   requestDate: string;
+  unitName?: string;
   requestId: string;
   status: "completed" | "pending";
   pictureSrc: string;

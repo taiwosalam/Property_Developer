@@ -1,6 +1,12 @@
 export interface VisitorRequestModalProps {
   props: {
-    status: "completed" | "pending" | "in-progress" | "decline" | "checked_in" | "cancelled";
+    status:
+      | "completed"
+      | "pending"
+      | "in-progress"
+      | "decline"
+      | "checked_in"
+      | "cancelled";
     pictureSrc: string;
     id: number;
     tier_id?: number;
@@ -20,6 +26,10 @@ export interface VisitorRequestModalProps {
     check_in_companion: string;
     check_in_inventory: string;
     check_out_inventory: string;
+    decline_by: string | null;
+    decline_date: string | null;
+    decline_time: string | null;
+    reason: string | null;
     check_in_date: string | null;
     check_out_date: string | null;
     check_in_time: string | null;

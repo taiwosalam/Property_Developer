@@ -1,5 +1,5 @@
 "use client";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { SectionSeparator } from "@/components/Section/section-components";
 import Select from "@/components/Form/Select/select";
 import Input from "@/components/Form/Input/input";
@@ -23,6 +23,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
 import clsx from "clsx";
+import FileInput from "@/components/Form/FileInput/file-input";
+import FileUploader from "@/components/FileUploader/FileUploader";
 
 const CreateMaintenace = () => {
   const router = useRouter();
@@ -38,6 +40,8 @@ const CreateMaintenace = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [announcement, setAnnouncement] = useState(false);
   const [calendarEvent, setCalendarEvent] = useState(false);
+
+  const [quotationFile, setQuotationFile] = useState<File | null>(null);
 
   const [quotation, setQuotation] = useState("");
 
@@ -127,10 +131,10 @@ const CreateMaintenace = () => {
   useEffect(() => {
     if (providerData && providerData?.data?.providers?.data.length > 0) {
       const providers = providerData?.data?.providers?.data?.map(
-        (provider: { id: number; company_name: string }) => {
+        (provider: { id: number; company_name: string; name: string }) => {
           return {
             id: provider.id,
-            name: provider.company_name,
+            name: `${provider.company_name} - ${provider.name}`,
           };
         }
       );
@@ -142,6 +146,21 @@ const CreateMaintenace = () => {
     // BACKEND ERROR: METHOD NOT ALLOWED
     //data.delete("unit[]");
 
+    const detail = data.get("detail");
+
+    if (String(detail).trim().length < 30) {
+      toast.error("Work detail must be at least 30 characters.");
+      return;
+    }
+
+    const quotationFile = data.get("quotation");
+
+    if (quotationFile) {
+      data.append("quotation_type", "file");
+    }
+    if (quotationFile) {
+      data.append("quotation_file", quotationFile);
+    }
     // Append each selected unit id as an array item
     selectedUnits.forEach((id) => {
       data.append("unit[]", id.toString());
@@ -164,8 +183,6 @@ const CreateMaintenace = () => {
       setIsLoading(false);
     }
   };
-
-  console.log(selectedProviderId);
 
   return (
     <div className="font-medium space-y-6">
@@ -335,6 +352,7 @@ const CreateMaintenace = () => {
             label="Start Date"
             onChange={handleStartDateChange}
             containerClassName="bg-white"
+            minDate={dayjs(new Date())}
           />
           <DateInput
             id="end_date"
@@ -351,13 +369,33 @@ const CreateMaintenace = () => {
             value={maintenanceCost}
           />
           <div className="col-span-full grid gap-4 md:gap-5 md:grid-cols-2">
-            <TextArea
-              value={quotation}
-              onChange={(value: string) => setQuotation(value)}
-              id="quotation"
-              label="Maintenance Quotation"
-              inputSpaceClassName="bg-white dark:bg-darkText-primary"
-            />
+            <div className="space-y-3">
+              <TextArea
+                value={quotation}
+                onChange={(value: string) => setQuotation(value)}
+                id="quotation"
+                label="Maintenance Quotation"
+                inputSpaceClassName="bg-white dark:bg-darkText-primary"
+              />
+              <FileUploader
+                id="quotation_file"
+                label="Upload Quotation File"
+                file={quotationFile}
+                onFileChange={setQuotationFile}
+              />
+              {quotationFile?.name && (
+                <button
+                  type="button"
+                  className="underline text-blue-600 ml-2"
+                  onClick={() => {
+                    const fileURL = URL.createObjectURL(quotationFile);
+                    window.open(fileURL, "_blank", "noopener,noreferrer");
+                  }}
+                >
+                  {"Click to preview"}
+                </button>
+              )}
+            </div>
             <TextArea
               id="detail"
               label="Work Details"
@@ -376,7 +414,7 @@ const CreateMaintenace = () => {
                   setIsChecked: setAnnouncement,
                 }}
               >
-                Create Announcement
+                Announce the event
               </DocumentCheckbox>
             </div>
             <div>

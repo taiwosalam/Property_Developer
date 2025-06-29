@@ -198,8 +198,9 @@ const eventToComponentMap = {
         likes={10}
         dislikes={10}
         imageUrls={[empty, empty, empty, empty]}
-        mediaCount={10}
+        mediaCount={{ image: 10, video: 0 }}
         announcementId="1"
+        video={null}
       />
     </div>
   ),

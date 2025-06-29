@@ -127,7 +127,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     } else return "nothing";
   };
 
-  //console.log(props.status);
+  console.log(cardType);
 
   return (
     <div
@@ -150,10 +150,14 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               <span className="text-base font-medium capitalize">
                 {truncateText(userName, 30)}
               </span>
-              {cardType === "visitor" ||
-                (cardType === "callback" && props?.tier_id && (
-                  <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
-                ))}
+
+               {cardType === "visitor" && props?.tier_id && (
+                <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
+              )}
+
+              {cardType === "callback" && props?.tier_id && (
+                <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
+              )}
               {cardType === "agent-community" && props?.tier === "2" && (
                 <BadgeIcon color={"gray"} />
               )}
@@ -256,9 +260,15 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           : cardType === "visitor"
           ? cardViewDetails.map(({ label, accessor }, index) => {
               const value =
-                accessor === "secretQuestion" || accessor === "purpose"
-                  ? "attached"
-                  : String(props[accessor]);
+                accessor === "secretQuestion" ||
+                accessor === "purpose" ||
+                accessor === "visitorName" ||
+                accessor === "visitorPhoneNumber" ||
+                accessor === "propertyName" ||
+                accessor === "unitName" ||
+                accessor === "branch"
+                  ? String(props[accessor])
+                  : "attached";
               return (
                 <UserDetailItems key={index} label={label} value={value} />
               );
@@ -286,17 +296,19 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           : null}
       </div>
       <div className="flex justify-end px-[18px]">
-        {(cardType === "deposit") && (
-          <button
-            type="button"
-            aria-label="Message"
-            className="mr-4"
-            onClick={goToMessage}
-          >
-            <ReplyIcon2 />
-          </button>
-        )}
-        {(cardType === "agent-community" || cardType === "property") ? (
+        {cardType === "deposit" ||
+          (cardType === "property" || cardType === "visitor" && (
+            <button
+              // onClick={() => router.push(`/messages/${props?.userId}`)}
+              onClick={goToMessage}
+              type="button"
+              aria-label="Message"
+              className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
+            >
+              Message
+            </button>
+          ))}
+        {cardType === "agent-community" ? (
           <div className="flex items-center gap-2">
             {!props.user && (
               <button
@@ -374,6 +386,9 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           ) : cardType === "property" ? (
             <PropertyRequestModal
               state={props.state}
+              location={props.location}
+              createdAt={props.createdAt}
+              updatedAt={props.updatedAt}
               lga={props.lga}
               propertyType={props.propertyType}
               category={props.category}

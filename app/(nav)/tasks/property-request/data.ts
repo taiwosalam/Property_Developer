@@ -9,6 +9,9 @@ export interface PropertyRequestDataType {
   requestId: string;
   state: string;
   lga: string;
+  location?: string;
+  createdAt?: string;
+  updatedAt?: string;
   propertyType: string;
   description: string;
   phoneNumber: string;
@@ -30,6 +33,7 @@ export interface propertyRequestPageData {
     requestId: string;
     state: string;
     lga: string;
+    location: string;
     propertyType: string;
     description: string;
     phoneNumber: string;
@@ -38,6 +42,8 @@ export interface propertyRequestPageData {
     subType: string;
     minBudget: string;
     maxBudget: string;
+    createdAt: string;
+    updatedAt: string;
   }[];
 }
 
@@ -56,14 +62,21 @@ export const transformPropertyRequestData = (
         : "",
       pictureSrc: request?.image ?? "",
       requestId: request.id.toString(),
-      state: request?.state,
-      lga: request?.lga,
+      state: request?.state || "--- ---",
+      lga: request?.lga || "--- ---",
+      location: request?.location || "--- ---",
       propertyType: request?.property_type,
       description: request?.description,
       phoneNumber: request?.phone,
-      requestType: request?.property_type,
+      requestType: request?.request_type,
       category: request?.category,
       subType: request?.property_sub_type,
+      createdAt: request?.created_at
+        ? dayjs(request?.created_at).format("DD/MM/YYYY")
+        : "--- ---",
+      updatedAt: request?.updated_at
+        ? dayjs(request?.updated_at).format("DD/MM/YYYY")
+        : "--- ---",
       minBudget: formatToNaira(request?.budget_min),
       maxBudget: formatToNaira(request?.budget_max),
     })),
@@ -80,6 +93,7 @@ export const PropertyRequestData: PropertyRequestDataType[] = [
     lga: "Mushin",
     propertyType: "Apartment",
     category: "For Rent",
+    location: "Lagos",
     subType: "Block of Flats",
     minBudget: "₦75,000,000",
     maxBudget: "₦200,000,000",

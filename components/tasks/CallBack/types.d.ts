@@ -26,6 +26,7 @@ export interface CallRequestCardProps extends RequestCardBaseProps {
   resolvedBy: string;
   resolvedDateTime: string;
   branch: string;
+  unitName: string;
   id?: number;
   tier_id?: number;
   cardViewDetails: {
@@ -36,7 +37,13 @@ export interface CallRequestCardProps extends RequestCardBaseProps {
 
 export interface VisitorRequestCardProps extends RequestCardBaseProps {
   cardType: "visitor";
-  status: "completed" | "pending" | "in-progress" | "decline" | "checked_in" | "cancelled";
+  status:
+    | "completed"
+    | "pending"
+    | "in-progress"
+    | "decline"
+    | "checked_in"
+    | "cancelled";
   visitorName: string;
   purpose: string;
   id: number;
@@ -46,6 +53,7 @@ export interface VisitorRequestCardProps extends RequestCardBaseProps {
   secretAnswer: string;
   purpose: string;
   propertyName: string;
+  unitName?: string;
   branch: string;
   checked_status: string;
   checked_in_by: string | null;
@@ -58,7 +66,10 @@ export interface VisitorRequestCardProps extends RequestCardBaseProps {
   check_out_date: string | null;
   check_in_time: string | null;
   check_out_time: string | null;
-
+  decline_by: string | null;
+  decline_date: string | null;
+  decline_time: string | null;
+  reason: string | null;
   cardViewDetails: {
     label: string;
     accessor: keyof VisitorRequestCardProps;
@@ -78,6 +89,10 @@ export interface PropertyRequestCardProps extends RequestCardBaseProps {
   requestType: string;
   description: string;
   phoneNumber: string;
+  location: string;
+  
+  createdAt: string;
+  updatedAt: string;
   cardViewDetails: {
     label: string;
     accessor: keyof PropertyRequestCardProps;

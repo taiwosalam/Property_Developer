@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import { number } from "zod";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import dayjs from "dayjs";
 
 const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
   next,
@@ -49,6 +50,13 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
 
   const handleCreateExamine = async (data: FormData) => {
     if (!company_id) return;
+
+    const notes = data.get("notes");
+
+    if (String(notes).trim().length < 30) {
+      toast.error("Notes must be at least 30 characters.");
+      return;
+    }
     data.append("company_id", company_id);
     try {
       setLoading(true);
@@ -221,17 +229,23 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
                 );
               }}
             />
-            <DateInput id="examine_date" label="Examine Date" />
+
+            <DateInput
+              id="examine_date"
+              label="Examine Date"
+              minDate={dayjs(new Date())}
+            />
             <TextArea
               id="note"
               label="Attach note:"
               className="md:col-span-2"
+              required
             />
           </div>
           <div className="flex justify-end">
             <DocumentCheckbox
               alignCheckboxCenter
-              title="Create announcement"
+              title="Announce the event"
               className="w-fit"
               name="create_announcement"
               state={{

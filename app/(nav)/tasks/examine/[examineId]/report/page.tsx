@@ -118,62 +118,76 @@ const ExamineReportpage = () => {
           </LandlordTenantInfoBox>
         </div>
 
-        <SectionContainer heading="Service connected to property">
-          {pageData && pageData?.services?.length > 0 ? (
+        {pageData && pageData?.services.length > 0 && (
+          <SectionContainer heading="Service connected to property">
             <AutoResizingGrid minWidth={220}>
               {pageData?.services?.map((service, index) => (
-                <span key={index}>{service}</span>
+                <span key={index}>{service ? service : ""}</span>
               ))}
             </AutoResizingGrid>
-          ) : (
-            "--- ---"
-          )}
-        </SectionContainer>
+          </SectionContainer>
+        )}
 
-        <SectionContainer heading="Site Summary">
-          <AutoResizingGrid minWidth={340}>
-            {[
-              "Age of Building",
-              "Construction Type",
-              "Roof",
-              "Condition",
-              "Extension/ Renovation",
-              "Out Buildings",
-              "Sub Floor",
-              "Site",
-              "Compare to others",
-            ].map((item, index) => (
-              <ExamineKeyValue
-                key={item + index}
-                itemKey={item}
-                value={summaryLookup[item] || "N/A"}
-              />
-            ))}
-          </AutoResizingGrid>
-        </SectionContainer>
-        <SectionContainer heading="Inspection Checklist">
-          <AutoResizingGrid minWidth={340}>
-            {inspectionCheckList.map((item, index) => (
-              <ExamineKeyValue
-                key={item + index}
-                itemKey={item}
-                value={checkListLookup[item] || "N/A"}
-              />
-            ))}
-          </AutoResizingGrid>
-        </SectionContainer>
-        <SectionContainer heading="Inspection Summary Note">
-          {pageData && (
+        {pageData && (
+          <SectionContainer heading="Site Summary">
+            <AutoResizingGrid minWidth={340}>
+              {[
+                "Age of Building",
+                "Construction Type",
+                "Roof",
+                "Condition",
+                "Extension/ Renovation",
+                "Out Buildings",
+                "Sub Floor",
+                "Site",
+                "Compare to others",
+              ]
+                .filter(
+                  (item) =>
+                    !!summaryLookup[item] && summaryLookup[item] !== "N/A"
+                )
+                .map((item, index) => (
+                  <ExamineKeyValue
+                    key={item + index}
+                    itemKey={item}
+                    value={summaryLookup[item]}
+                  />
+                ))}
+            </AutoResizingGrid>
+          </SectionContainer>
+        )}
+        {pageData &&
+          pageData.inspection_checklist &&
+          pageData.inspection_checklist.length > 0 && (
+            <SectionContainer heading="Inspection Checklist">
+              <AutoResizingGrid minWidth={340}>
+                {inspectionCheckList
+                  .filter(
+                    (item) =>
+                      !!checkListLookup[item] && checkListLookup[item] !== "N/A"
+                  )
+                  .map((item, index) => (
+                    <ExamineKeyValue
+                      key={item + index}
+                      itemKey={item}
+                      value={checkListLookup[item]}
+                    />
+                  ))}
+              </AutoResizingGrid>
+            </SectionContainer>
+          )}
+        {pageData && pageData?.summary_note && (
+          <SectionContainer heading="Inspection Summary Note">
             <div
               className="text-text-secondary dark:text-darkText-2 text-[16px] font-normal"
               dangerouslySetInnerHTML={{
                 __html: pageData?.summary_note ?? "--- ---",
               }}
             />
-          )}
-        </SectionContainer>
+          </SectionContainer>
+        )}
       </div>
-      <ExportPageFooter printRef={exportRef} noBack={false}/>
+      <ExportPageFooter printRef={exportRef} noBack={false} />
     </div>
   );
 };

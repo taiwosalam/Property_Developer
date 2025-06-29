@@ -53,6 +53,10 @@ type VisitorRequest = {
   check_in_time: string | null;
   check_in_inventory: string;
   check_in_by: string | null;
+  decline_by: string | null;
+  decline_date: string | null;
+  decline_time: string | null;
+  reason: string | null;
   check_out_by: string | null;
   check_in_companion: string;
   check_out_date: string | null;

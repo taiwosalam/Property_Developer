@@ -107,7 +107,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
     const formData = new FormData(e.currentTarget);
     const { date, time } = getCurrentDateTime();
 
-    const reason = formData.get("inventory") as string;
+    const reason = formData.get("reason") as string;
 
     if (!reason || reason.trim() === "") {
       toast.warning("Please provide a reason for declining this request.");
@@ -115,7 +115,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
     }
 
     const data: IDeclinePayload = {
-      reason: formData.get("inventory") as string,
+      reason: formData.get("reason") as string,
       decline_date: date,
       decline_time: time,
     };
@@ -148,7 +148,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
             <Picture size={50} src={props?.pictureSrc} rounded />
             <div className="text-base text-text-primary dark:text-white space-y-1">
               <p className="flex items-center">
-                <span>{props?.userName}</span>
+                <span className="capitalize">{props?.userName}</span>
                 {props?.tier_id && (
                   <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
                 )}
@@ -166,7 +166,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               <p className="text-text-tertiary min-w-[120px] dark:text-darkText-1">
                 Name of Visitor
               </p>
-              <p className="text-text-primary dark:text-darkText-2">
+              <p className="text-text-primary dark:text-darkText-2 capitalize">
                 {props?.visitorName}
               </p>
             </div>
@@ -208,11 +208,13 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-text-tertiary text-base dark:text-white">
-              Description:
+              Purpose of visit:
             </p>
-            <p className="text-text-primary dark:text-darkText-2">
-              {props?.purpose}
-            </p>
+            <TruncatedText>
+              <p className="text-text-primary dark:text-darkText-2">
+                {props?.purpose}
+              </p>
+            </TruncatedText>
           </div>
         </div>
         <div className="mb-9 text-sm">
@@ -228,8 +230,13 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                 By
               </p>
+              {props.checked_status === "cancelled" && (
+                <p className="text-text-primary dark:text-darkText-2 font-medium capitalize">
+                  {props?.decline_by}
+                </p>
+              )}
               <p className="text-text-primary dark:text-darkText-2 font-medium capitalize">
-                {props?.checked_in_by || "____ ____"}
+                {props?.checked_in_by}
               </p>
             </div>
             {props.status !== "cancelled" && (
@@ -238,7 +245,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                   Companion
                 </p>
                 <p className="text-text-primary dark:text-darkText-2 font-medium capitalize">
-                  {props?.check_in_companion || "___ ___"}
+                  {props?.check_in_companion || ""}
                 </p>
               </div>
             )}
@@ -247,9 +254,9 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 Date - Time
               </p>
               <p className="text-text-primary dark:text-darkText-2 font-medium">
-                {`${props?.check_in_date || "___ ___"} - ${
-                  props?.check_in_time || "___ ___"
-                }`}
+                {`${
+                  props?.check_in_date || props.decline_date || "___ ___"
+                } - ${props?.check_in_time || props.decline_time || "___ ___"}`}
               </p>
             </div>
           </div>
@@ -264,6 +271,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
             <TruncatedText lines={2}>
               {props.status !== "cancelled" && (
                 <div
+                  className="first-letter:capitalize"
                   dangerouslySetInnerHTML={{
                     __html: props?.check_in_inventory,
                   }}
@@ -277,9 +285,11 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
               <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                 Decline Reason
               </p>
-              <p className="text-text-primary dark:text-darkText-2 font-medium">
-                {"Reason for declined"}
-              </p>
+              <TruncatedText>
+                <div className="text-text-primary dark:text-darkText-2 font-medium" dangerouslySetInnerHTML={{__html: props?.reason || "___ ___"}}/>
+                  
+                
+              </TruncatedText>
             </div>
           )}
         </div>
@@ -353,7 +363,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
                 <p className="text-text-label dark:text-darkText-1 font-normal min-w-[90px] md:min-w-[unset]">
                   By
                 </p>
-                <p className="text-text-primary dark:text-darkText-2 font-medium">
+                <p className="text-text-primary dark:text-darkText-2 font-medium capitalize">
                   {props?.checked_out_by || "___ ___"}
                 </p>
               </div>
@@ -381,6 +391,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
             </p>
             <TruncatedText lines={2}>
               <div
+                className="first-letter:capitalize"
                 dangerouslySetInnerHTML={{ __html: props?.check_out_inventory }}
               />
             </TruncatedText>
@@ -410,6 +421,7 @@ const VisitorRequestModal: React.FC<VisitorRequestModalProps> = ({
         pictureSrc={props?.pictureSrc}
         userName={props?.userName}
         id={props?.id}
+        tier_id={props?.tier_id}
         requestDate={props?.requestDate}
       />
     );

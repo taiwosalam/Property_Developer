@@ -2,6 +2,7 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import { XIcon } from "@/public/icons/icons";
 import type { PropertyRequestModalProps, LabelValuePairProps } from "./types";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
@@ -28,12 +29,14 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
   userName,
   phoneNumber,
   description,
+  location,
+  createdAt,
+  updatedAt,
 }) => {
   return (
     <ModalPreset title="Property Request Details">
       <div className="space-y-2 text-base">
-        <LabelValuePair label="Location (State)" value={state} />
-        <LabelValuePair label="LGA" value={lga} />
+        <LabelValuePair label="Location" value={location ?? ""} />
         <LabelValuePair label="Category" value={category} />
         <LabelValuePair label="Property Type" value={propertyType} />
         <LabelValuePair label="Sub Type" value={subType} />
@@ -41,16 +44,20 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
           label="Budget Range"
           value={`${minBudget} - ${maxBudget}`}
         />
+        <LabelValuePair label="Date created" value={createdAt} />
+        <LabelValuePair label="Last Updated" value={updatedAt} />
         <div className="border-t border-brand-7 !my-5 -mx-6 border-dashed" />
         <p className="text-text-tertiary dark:text-white">Other Details:</p>
-        <LabelValuePair label="Request Type" value={requestType} />
+        {/* <LabelValuePair label="Request Type" value={requestType} /> */}
         <LabelValuePair label="Name" value={userName} />
         <LabelValuePair label="Phone" value={phoneNumber} />
         <div className="space-y-1">
-          <p className="text-text-tertiary dark:text-white">Description:</p>
-          <p className="text-text-secondary text-sm dark:text-darkText-2">
-            {description}
-          </p>
+          <p className="text-text-tertiary dark:text-white">Requirement:</p>
+          <TruncatedText>
+            <p className="text-text-secondary text-sm dark:text-darkText-2">
+              {description}
+            </p>
+          </TruncatedText>
         </div>
       </div>
     </ModalPreset>

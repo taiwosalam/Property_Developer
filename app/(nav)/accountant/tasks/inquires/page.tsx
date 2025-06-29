@@ -26,6 +26,7 @@ const transformToCallBackRequestCardProps = (
       { label: "Account Officer", accessor: "accountOfficer" },
       { label: "Property Address", accessor: "propertyAddress" },
     ],
+    unitName: data?.unitName ?? "", // Provide unitName from data or fallback to empty string
     ...data,
   };
 };
