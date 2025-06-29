@@ -369,7 +369,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           chartConfig={branchIdChartConfig}
           chartData={walletChartData}
         />
-        <BranchActivitiesCard className="lg:flex-1" />
+        <BranchActivitiesCard className="lg:flex-1" branchId={Number(branchId) ?? 0} />
       </div>
       <div className="custom-flex-col gap-10">
         <div className="flex justify-between">
