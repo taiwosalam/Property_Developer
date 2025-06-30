@@ -27,6 +27,7 @@ export interface UserCardProps {
 }
 
 const UserCard: React.FC<UserCardProps> = ({
+  id,
   email,
   title,
   phone_number,

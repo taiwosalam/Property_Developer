@@ -104,6 +104,7 @@ export const EditCurrentRent: React.FC<{
   setIsUpfrontPaymentChecked?: (checked: boolean) => void;
   isUpfrontPaymentChecked?: boolean;
   setSelectedCheckboxOptions?: any;
+  onAfterUpdateScrollToPrevious?: () => void;
 }> = ({
   isRental,
   total,
@@ -114,6 +115,7 @@ export const EditCurrentRent: React.FC<{
   setIsUpfrontPaymentChecked,
   isUpfrontPaymentChecked,
   setSelectedCheckboxOptions,
+  onAfterUpdateScrollToPrevious,
 }) => {
   const { occupant } = useOccupantStore();
 
@@ -135,10 +137,22 @@ export const EditCurrentRent: React.FC<{
     }
   };
 
+
   const handleUpdate = async () => {
     if (action) {
       await action();
-      // setModalIsOpen(true);
+      // Reset DateInput
+      setStartDate(null);
+      setStart_Date?.(null);
+
+      // Reset checkboxes
+      setSelectedOptions({
+        create_invoice: true,
+        mobile_notification: true,
+        sms_alert: true,
+        email_alert: true,
+      });
+      onAfterUpdateScrollToPrevious?.();
     }
   };
 
@@ -196,6 +210,12 @@ export const EditCurrentRent: React.FC<{
     { label: "Email Alert", key: "email_alert" },
   ];
 
+  const filteredCheckboxOptions = isWebUser
+    ? checkboxOptions.filter(
+        ({ key }) => key !== "create_invoice" && key !== "mobile_notification"
+      )
+    : checkboxOptions;
+
   // =============== CHECKBOX LOGICS ENDS ===========================//
   //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g upfront-payment-wrapper 😡🤬💀💀
   return (
@@ -242,21 +262,23 @@ export const EditCurrentRent: React.FC<{
             />
           </div>
           <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
-            {checkboxOptions.map(({ label, key }) => (
-              <Checkbox
-                sm
-                key={key}
-                checked={selectedOptions[key]}
-                onChange={handleCheckboxChange(key)}
-                disabled={
-                  (key === "mobile_notification" && isWebUser) ||
-                  (key === "create_invoice" &&
-                    (!isMobileUser || (currency !== "naira" && isMobileUser)))
-                }
-              >
-                {label}
-              </Checkbox>
-            ))}
+            <div className="flex gap-4">
+              {filteredCheckboxOptions.map(({ label, key }) => (
+                <Checkbox
+                  sm
+                  key={key}
+                  checked={selectedOptions[key]}
+                  onChange={handleCheckboxChange(key)}
+                  disabled={
+                    (key === "mobile_notification" && isWebUser) ||
+                    (key === "create_invoice" &&
+                      (!isMobileUser || (currency !== "naira" && isMobileUser)))
+                  }
+                >
+                  {label}
+                </Checkbox>
+              ))}
+            </div>
 
             <Button
               size="base_medium"
@@ -266,47 +288,50 @@ export const EditCurrentRent: React.FC<{
             >
               {loading ? "Please wait..." : "Update"}
             </Button>
-
-            {isWebUser ? (
-              <div className="custom-flex-col gap-1">
-                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                  {`Confirms that you have received payment for the 
-          ${isRental ? "rent" : "counting"}.`}
-                </p>
-                {nonNaira && (
-                  <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                    The property was listed in a currency other than Naira. You
-                    will need to handle all payments manually.
-                  </p>
-                )}
-              </div>
-            ) : (
-              <div className="custom-flex-col gap-1">
-                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                  {selectedOptions["create_invoice"]
-                    ? `Payment will be reflected once the ${
-                        isRental ? "tenant" : "occupant"
-                      } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
-                    : `Confirms that you have received payment for the ${
-                        isRental ? "rent" : "counting"
-                      }. ${
-                        currency === "naira"
-                          ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                              isRental ? "tenant" : "occupant"
-                            } to make the payment.`
-                          : ""
-                      }`}
-                </p>
-                {nonNaira && (
-                  <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                    The property was listed in a currency other than Naira. As a
-                    result, automatic payments and wallet transactions are not
-                    supported. You will need to handle all payments manually.
-                  </p>
-                )}
-              </div>
-            )}
           </div>
+          {isWebUser ? (
+            <div className="custom-flex-col gap-1">
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
+                {`Confirms that you have received payment for the 
+          ${isRental ? "rent" : "counting"}.`}
+              </p>
+              {nonNaira && (
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  <span className="text-red-500 text-lg">*</span>
+                  The property was listed in a currency other than Naira. You
+                  will need to handle all payments manually.
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="custom-flex-col gap-1">
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
+                {selectedOptions["create_invoice"]
+                  ? `Payment will be reflected once the ${
+                      isRental ? "tenant" : "occupant"
+                    } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
+                  : `Confirms that you have received payment for the ${
+                      isRental ? "rent" : "counting"
+                    }. ${
+                      currency === "naira"
+                        ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+                            isRental ? "tenant" : "occupant"
+                          } to make the payment.`
+                        : ""
+                    }`}
+              </p>
+              {nonNaira && (
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  <span className="text-red-500 text-lg">*</span>
+                  The property was listed in a currency other than Naira. As a
+                  result, automatic payments and wallet transactions are not
+                  supported. You will need to handle all payments manually.
+                </p>
+              )}
+            </div>
+          )}
           <div className="flex items-center justify-end">
             {/* <ModalTrigger asChild> */}
             {/* </ModalTrigger> */}
@@ -430,7 +455,6 @@ export const AddPartPayment: React.FC<{
     }));
   };
 
-
   // Update selectedOptions when userTag changes
   useEffect(() => {
     setSelectedOptions((prev) => ({
@@ -464,6 +488,12 @@ export const AddPartPayment: React.FC<{
     { label: "SMS Alert", key: "sms_alert" },
     { label: "Email Alert", key: "email_alert" },
   ];
+
+  const filteredCheckboxOptions = isWebUser
+    ? checkboxOptions.filter(
+        ({ key }) => key !== "create_invoice" && key !== "mobile_notification"
+      )
+    : checkboxOptions;
 
   //NB:😡🤬💀💀 DO NOT ALTER THE CLASSNAME FOR PARENT DIV AS THEY'RE FOR TOUR GUIDE e.g part-payment-wrapper 😡🤬💀💀
 
@@ -508,12 +538,13 @@ export const AddPartPayment: React.FC<{
               id="amount"
               placeholder=""
               label="Amount"
+              // value={formatNumber(prevAmt ?? 0)}
               formatNumber
-              // readOnly={isCompletePayment}
+              readOnly={isCompletePayment}
               onChange={handleAmount}
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
-              defaultValue={prevAmt ?? ""}
+              defaultValue={formatNumber(parseCurrency(prevAmt)) ?? 0}
             />
           </div>
           <div className="flex items-center justify-between gap-4 mb-2">
@@ -521,7 +552,7 @@ export const AddPartPayment: React.FC<{
               Create Invoice
             </Checkbox> */}
             <div className="flex items-center gap-4 flex-wrap">
-              {checkboxOptions.map(({ label, key }) => (
+              {filteredCheckboxOptions.map(({ label, key }) => (
                 <Checkbox
                   sm
                   key={key}
@@ -568,11 +599,13 @@ export const AddPartPayment: React.FC<{
           {isWebUser ? (
             <div className="custom-flex-col gap-1">
               <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
                 {`Confirms that you have received payment for the 
           ${isRental ? "rent" : "counting"}.`}
               </p>
               {nonNaira && (
                 <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  <span className="text-red-500 text-lg">*</span>
                   The property was listed in a currency other than Naira. You
                   will need to handle all payments manually.
                 </p>
@@ -581,6 +614,7 @@ export const AddPartPayment: React.FC<{
           ) : (
             <div className="custom-flex-col gap-1">
               <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
                 {selectedOptions["create_invoice"]
                   ? `Payment will be reflected once the ${
                       isRental ? "tenant" : "occupant"
@@ -597,6 +631,7 @@ export const AddPartPayment: React.FC<{
               </p>
               {nonNaira && (
                 <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  <span className="text-red-500 text-lg">*</span>
                   The property was listed in a currency other than Naira. As a
                   result, automatic payments and wallet transactions are not
                   supported. You will need to handle all payments manually.

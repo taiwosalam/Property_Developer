@@ -25,7 +25,7 @@ import {
   singleUnitApiResponse,
   transformUnitData,
 } from "../../data";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import NetworkError from "@/components/Error/NetworkError";
@@ -71,6 +71,7 @@ const EditRent = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [isUpfrontPaymentChecked, setIsUpfrontPaymentChecked] = useState(false);
   const [isCompletePayment, setIsCompletePayment] = useState(false);
+  const previousRecordsRef = useRef<HTMLDivElement>(null);
   const [unit_data, setUnit_data] = useState<initDataProps>(initData);
   const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
     useState<CheckBoxOptions>(defaultChecks);
@@ -140,6 +141,12 @@ const EditRent = () => {
   const IS_WEB_USER = unit_data?.occupant?.userTag?.toLowerCase() === "web";
 
   // console.log("PENDING_INVOICE_PAID_AMOUNT", PENDING_INVOICE_PAID_AMOUNT)
+
+  const handleScrollToPreviousRecords = () => {
+    if (previousRecordsRef.current) {
+      previousRecordsRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   // ADD UPFRONT RENT HANDLER
   const handleUpfrontRent = async () => {
@@ -362,6 +369,9 @@ const EditRent = () => {
                       setIsUpfrontPaymentChecked={setIsUpfrontPaymentChecked}
                       isUpfrontPaymentChecked={isUpfrontPaymentChecked}
                       setSelectedCheckboxOptions={setSelectedCheckboxOptions}
+                      onAfterUpdateScrollToPrevious={
+                        handleScrollToPreviousRecords
+                      }
                     />
 
                     <AddPartPayment
@@ -438,13 +448,15 @@ const EditRent = () => {
             />
           </div>
         </div>
-        <PreviousRentRecords
-          isRental={isRental}
-          current_records={unit_data.current_records as any}
-          unit_id={id as string}
-          currency={CURRENCY}
-          page="edit-rent"
-        />
+        <div ref={previousRecordsRef} className="previous-record">
+          <PreviousRentRecords
+            isRental={isRental}
+            current_records={unit_data.current_records as any}
+            unit_id={id as string}
+            currency={CURRENCY}
+            // page="edit-rent"
+          />
+        </div>
       </section>
       <FixedFooter className="flex gap-4 justify-end">
         <Button

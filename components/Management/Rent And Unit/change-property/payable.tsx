@@ -8,14 +8,13 @@ import {
 } from "@/utils/number-formatter";
 import { RentSectionTitle } from "../rent-section-container";
 import { getTotalPayable } from "./data";
+import { useEffect } from "react";
 
 export const ProceedPayAble: React.FC = () => {
   const { calculation, deduction, unitData, propertyType } = useOccupantStore();
   const { currentRentStats } = useGlobalStore();
+  const { setGlobalInfoStore } = useGlobalStore();
   const outstanding = currentRentStats?.outstanding || 0;
-
-  // Return null if unitData is not available
-  if (!unitData) return null;
 
   const isRental = propertyType === "rental";
   const currency = unitData?.currency || "naira";
@@ -38,11 +37,6 @@ export const ProceedPayAble: React.FC = () => {
     amount: totalPayable,
   };
 
-  // Determine payment status
-  const tenantOwes = detail.amount > 0; // Tenant owes company
-  const companyOwes = deduction && detail.amount < 0; // Company owes tenant
-  const noOneOwes = detail.amount === 0; // Neither owes
-
   // Subtitles
   const subtitles = {
     zero: "Based on the calculation and your selected option, there is no outstanding balance. Neither your company nor the client owes any refund or payment.",
@@ -51,6 +45,10 @@ export const ProceedPayAble: React.FC = () => {
     excess:
       "Based on the calculation and your selected option, your company owes the client a refund balance.",
   };
+  
+  const tenantOwes = detail.amount > 0; // Tenant owes company
+  const companyOwes = deduction && detail.amount < 0; // Company owes tenant
+  const noOneOwes = detail.amount === 0; // Neither owes
 
   const subtitle = noOneOwes
     ? subtitles.zero
@@ -58,6 +56,17 @@ export const ProceedPayAble: React.FC = () => {
     ? subtitles.refund
     : subtitles.excess;
 
+  // Save payment status desc & amount to general store
+  useEffect(() => {
+    setGlobalInfoStore("paymentStatus", {
+      desc: subtitle,
+      amount: detail.amount,
+    });
+  }, [subtitle, detail.amount, setGlobalInfoStore]);
+
+  // Return null if unitData is not available
+  if (!unitData) return null;
+  // Determine payment status
   // // Determine subtitle based on totalPayable and isExcess
   // const subtitle =
   //   detail.amount === 0
@@ -66,13 +75,15 @@ export const ProceedPayAble: React.FC = () => {
   //     ? subtitles.excess
   //     : subtitles.refund;
 
-   // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g payment-status-wrapper💀💀💀👿
+  // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g payment-status-wrapper💀💀💀👿
   return (
     <div className="payment-status-wrapper space-y-1">
       <RentSectionTitle>Payment Status</RentSectionTitle>
       <p className="text-sm">• {subtitle}</p>
       <div className="mt-2">
-        <p className="text-md font-semibold mt-3 text-text-secondary">Total</p>
+        <p className="text-md font-semibold mt-3 text-text-secondary dark:text-darkText-1">
+          Total
+        </p>
         <p className="text-lg lg:text-xl text-brand-9 font-bold">
           {currencySymbol}
           {formatNumber(Math.abs(detail.amount))}

@@ -15,7 +15,7 @@ import type { Field } from "@/components/Table/types";
 import api, { handleAxiosError } from "@/services/api";
 import { Task } from "@/components/dashboard/kanban/TaskCard";
 
-function getBackgroundColor(title: string): string {
+export function getBackgroundColor(title: string): string {
   let backgroundColor: string;
 
   switch (title) {

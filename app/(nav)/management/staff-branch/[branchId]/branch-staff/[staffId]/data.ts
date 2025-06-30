@@ -26,6 +26,12 @@ import {
 import dayjs from "dayjs";
 import { groupMessagesByDay } from "@/app/(nav)/(messages-reviews)/messages/data";
 import moment from "moment";
+import { getBackgroundColor } from "@/app/(nav)/dashboard/data";
+import {
+  BuildingIcon,
+  LandlordIcon,
+  TenantIcon,
+} from "@/public/icons/dashboard-cards/icons";
 
 export const sendVerifyStaffOTP = async () => {
   try {
@@ -409,72 +415,73 @@ export const transformStaffAPIResponse = (
         };
       }) || [],
     chats: [],
-    portfolio: {
-      properties:
-        res?.data?.properties?.map((p) => {
-          return {
-            id: p.id.toString(),
-            property_name: p.name,
-            address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
-            image: p.images?.[0]?.path || empty,
-          };
-        }) || [],
-      landlords:
-        res?.data?.landlords?.map((l) => {
-          return {
-            id: l.id.toString(),
-            name: l.name,
-            email: l.email,
-            phone: l.phone || "",
-            image: l.picture || empty,
-            badge_color: l.user_tier
-              ? tierColorMap[l.user_tier as keyof typeof tierColorMap]
-              : undefined,
-          };
-        }) || [],
-      tenants:
-        res?.data?.tenants?.map((t) => {
-          return {
-            id: t.id.toString(),
-            name: t.name,
-            email: t.email,
-            phone: t.phone,
-            image: t.picture || empty,
-            badge_color: t.user_tier
-              ? tierColorMap[t.user_tier as keyof typeof tierColorMap]
-              : undefined,
-          };
-        }) || [],
-    },
+    // portfolio: {
+    //   properties:
+    //     res?.data?.properties?.map((p) => {
+    //       return {
+    //         id: p.id.toString(),
+    //         property_name: p.name,
+    //         address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
+    //         image: p.images?.[0]?.path || empty,
+    //       };
+    //     }) || [],
+    //   landlords:
+    //     res?.data?.landlords?.map((l) => {
+    //       return {
+    //         id: l.id.toString(),
+    //         name: l.name,
+    //         email: l.email,
+    //         phone: l.phone || "",
+    //         image: l.picture || empty,
+    //         badge_color: l.user_tier
+    //           ? tierColorMap[l.user_tier as keyof typeof tierColorMap]
+    //           : undefined,
+    //       };
+    //     }) || [],
+    //   tenants:
+    //     res?.data?.tenants?.map((t) => {
+    //       return {
+    //         id: t.id.toString(),
+    //         name: t.name,
+    //         email: t.email,
+    //         phone: t.phone,
+    //         image: t.picture || empty,
+    //         badge_color: t.user_tier
+    //           ? tierColorMap[t.user_tier as keyof typeof tierColorMap]
+    //           : undefined,
+    //       };
+    //     }) || [],
+    // },
     messageUserData: {
       id: Number(res.data.user_id),
       name: res.data.name,
       position: "staff",
       imageUrl: res.data.picture ?? empty,
-      branch_id: 1, //TEST 
+      branch_id: 1, //TEST
     },
-    staffChats: res.messages?.map((chat): any => ({
-      pfp: chat.profile_picture || empty,
-      desc: chat.latest_message,
-      time: chat.latest_message_time,
-      fullname: chat.participant_name,
-      id: chat.participant_id.toString(),
-      messages: chat.unread_count, 
-      verified: chat.participant_type,
-      content_type: chat.latest_message_type,
-      unread_count: chat.unread_count,
-      last_seen: chat.participant_onlineStatus,
-      online: chat.participant_onlineStatus === "online",
-      groupedMessages: groupMessagesByDay(
-        chat.messages.map((msg:any) => ({
-          id: msg.id.toString(),
-          text: msg.content,
-          senderId: msg.sender_id.toString(),
-          timestamp: moment(msg.created_at).format("YYYY-MM-DD hh:mm A"),
-          content_type: msg.content_type,
-        }))
-      ),
-    })) || [],
+    staffChats:
+      res.messages?.map((chat): any => ({
+        pfp: chat.profile_picture || empty,
+        desc: chat.latest_message,
+        time: chat.latest_message_time,
+        fullname: chat.participant_name,
+        id: chat.participant_id.toString(),
+        messages: chat.unread_count,
+        verified: chat.participant_type,
+        content_type: chat.latest_message_type,
+        unread_count: chat.unread_count,
+        last_seen: chat.participant_onlineStatus,
+        online: chat.participant_onlineStatus === "online",
+        groupedMessages: groupMessagesByDay(
+          chat.messages.map((msg: any) => ({
+            id: msg.id.toString(),
+            text: msg.content,
+            senderId: msg.sender_id.toString(),
+            timestamp: moment(msg.created_at).format("YYYY-MM-DD hh:mm A"),
+            content_type: msg.content_type,
+          }))
+        ),
+      })) || [],
   };
 };
 
@@ -492,3 +499,31 @@ const getLastPathSegment = (url: string): string => {
     return "";
   }
 };
+
+// export const initialStaffPortfolioStats = [
+export const getStaffCardData = (staff: Record<string, any>) => [
+  {
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
+    icon: BuildingIcon,
+    value: 0,
+    subValue: 0,
+    link: `/management/staff-branch/${staff.branch_id}/branch-staff/${staff.id}/properties/`,
+  },
+  {
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
+    icon: LandlordIcon,
+    value: 0,
+    subValue: 0,
+    link: `/management/staff-branch/${staff.branch_id}/branch-staff/${staff.id}/landlords/`,
+  },
+  {
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
+    icon: TenantIcon,
+    value: 0,
+    subValue: 0,
+    link:  `/management/staff-branch/${staff.branch_id}/branch-staff/${staff.id}/tenants/`,
+  },
+];

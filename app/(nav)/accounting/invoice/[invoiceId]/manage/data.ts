@@ -10,26 +10,28 @@ export const transformInvoiceData = (data: InvoiceData): InvoicePageData => {
     account_officer: data.account_officer || "",
     unit_id: data.unit_id ? data.unit_id.toString() : "",
     unit_name: data.unit_name || "",
-    annual_fee: Number(data.annual_fee) || "",
-    service_charge: Number(data.service_charge) || "",
-    caution_fee: Number(data.caution_fee) || "",
-    agency_fee: Number(data.agency_fee) || "",
-    inspection_fee: Number(data.inspection_fee) || "",
-    total_package: Number(data.total_package) || "",
+    annual_fee: parseFloat(data.annual_fee) || "",
+    service_charge: parseFloat(data.service_charge) || "",
+    caution_fee: parseFloat(data.caution_fee) || "",
+    agency_fee: parseFloat(data.agency_fee) || "",
+    inspection_fee: parseFloat(data.inspection_fee) || "",
+    total_package: parseFloat(data.total_package) || "",
     details: data.details || "",
-    total_amount: Number(data.total_amount) || "",
+    total_amount: parseFloat(data.total_amount) || "",
     invoice_date: data.invoice_date || "",
     is_auto: data.is_auto === "true" || data.is_auto === true,
     currency: data.currency || "naira",
     auto_generate: data.auto_generate || "",
     invoice_type: data.type || "",
-    tenant_owed: Number(data.tenant_owed) || 0,
-    company_owed: Number(data.company_owed) || 0,
+    tenant_owed: parseFloat(String(data?.tenant_owed ?? 0)) || 0,
+    company_owed: parseFloat(String(data?.company_owed ?? 0)) || 0,
     branchBankDetails: {
       bank_name: data.bank_name || "",
       account_number: data.account_number || "",
       account_name: data.account_name || "",
     },
+    payment_status_desc: data.payment_status_desc ?? "",
+    payment_status_amount: data.payment_status_amount ?? "",
   };
 };
 
@@ -52,6 +54,8 @@ export const defaultInvoiceData: InvoicePageData = {
   total_amount: "",
   invoice_date: "",
   is_auto: false,
+  payment_status_amount: 0,
+  payment_status_desc: "",
 };
 
 export const updateInvoiceStatus = async (id: number, data: any) => {
