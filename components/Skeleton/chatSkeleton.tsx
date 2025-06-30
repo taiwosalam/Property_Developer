@@ -17,7 +17,7 @@ const ChatSkeleton = () => {
   
         {/* Messages Skeleton */}
         <div className="py-5 px-6 flex-1 overflow-auto bg-white dark:bg-black custom-flex-col gap-4">
-          {[...Array(5)].map((_, index) => (
+          {[...Array(8)].map((_, index) => (
             <div
               key={index}
               className={`flex ${index % 2 === 0 ? "justify-end" : "justify-start"}`}

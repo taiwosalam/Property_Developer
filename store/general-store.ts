@@ -119,6 +119,7 @@ interface GlobalStoreState {
   } | null;
 
   domainAvailable: boolean;
+  isGroupChat: boolean;
 
   openDocumentModal: boolean;
   selectedDocumentOption: OtherAgreementDocumentOption | null;
@@ -196,6 +197,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setUnitData: (data) => set({ unitData: data }),
   canSubmit: true,
   SelectedDirectorPics: false,
+  isGroupChat: false,
 
   branchWalletTransactions: null,
 

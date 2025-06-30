@@ -83,7 +83,7 @@ export const transformCompanyUsersData = (
 export const transformUsersMessages = (
   data: ConversationsAPIResponse | null | undefined
 ): PageMessages[] => {
-  console.log("data got", data);
+  // console.log("data got", data);
   if (!data || !data.conversations) return []; // Ensure data exists
 
   return data.conversations.map((c) => {
@@ -234,6 +234,90 @@ interface GroupedMessage {
   seen: boolean;
 }
 
+export interface NormalizedMessage {
+  id: number;
+  text: string | null;
+  senderId: number | string;
+  timestamp: string;
+  content_type: string;
+  sender?: {
+    fullname?: string;
+    picture?: string;
+    title?: string;
+  };
+}
+
+export type GroupChatAPIResponse = {
+  group_chat: any;
+  messages: any[];
+  unread_count: number;
+  pusher: any;
+};
+
+export type DirectChatAPIResponse = {
+  status: string;
+  messages: any[];
+};
+
+export const transformMessagesFromAPI = (
+  apiData: GroupChatAPIResponse | DirectChatAPIResponse,
+  isGroupChat: boolean
+): NormalizedMessage[] => {
+  let messagesRaw: any[] = [];
+
+  if (isGroupChat && "messages" in apiData) {
+    messagesRaw = apiData.messages;
+  } else if (!isGroupChat && "messages" in apiData) {
+    messagesRaw = apiData.messages;
+  }
+
+  return messagesRaw.map((msg) => {
+    const timestamp =
+      isGroupChat && msg.created_at
+        ? moment(msg.created_at).format("YYYY-MM-DD HH:mm:ss")
+        : msg.date && msg.timestamp
+        ? moment(`${msg.date} ${msg.timestamp}`).format("YYYY-MM-DD HH:mm:ss")
+        : "";
+
+    // Sender info for group chat
+    const sender =
+      isGroupChat && msg.sender
+        ? {
+            fullname: msg.sender.name ?? "",
+            picture: msg.sender.profile?.picture ?? "",
+            title: msg.sender.profile?.title ?? "",
+          }
+        : undefined;
+
+    return {
+      id: msg.id,
+      text: msg.content ?? null,
+      senderId: msg.sender_id,
+      timestamp,
+      content_type: msg.content_type,
+      sender,
+    } as NormalizedMessage;
+  });
+};
+
+export function isDirectChatResponse(obj: any): obj is DirectChatAPIResponse {
+  return (
+    !!obj &&
+    typeof obj === "object" &&
+    "status" in obj &&
+    Array.isArray(obj.messages)
+  );
+}
+
+export function isGroupChatResponse(obj: any): obj is GroupChatAPIResponse {
+  return (
+    !!obj &&
+    typeof obj === "object" &&
+    "group_chat" in obj &&
+    Array.isArray(obj.messages)
+  );
+}
+
 export const groupMessagesByDay = (
   data: Message[]
 ): { day: string; messages: GroupedMessage[] }[] => {
@@ -363,8 +447,21 @@ export const positionMap: Record<string, string> = {
 export const SendMessage = async (data: FormData, id: string) => {
   try {
     const res = await api.post(`/messages/${id}/send`, data);
-    if (res.status === 200) {
+    if (res.status === 200 || res.status === 201) {
       // console.log("response", res)
+      return true;
+    }
+  } catch (err) {
+    handleAxiosError(err);
+    return false;
+  }
+};
+
+// /group-chats/1/messages
+export const SendGroupMessage = async (data: FormData, id: string) => {
+  try {
+    const res = await api.post(`/group-chats/${id}/messages`, data);
+    if (res.status === 200 || res.status === 201) {
       return true;
     }
   } catch (err) {

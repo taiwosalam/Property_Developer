@@ -46,11 +46,7 @@ const MessagesPage = () => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <SelectChatUsersModal
-                      loading={isLoading}
-                      usersData={usersData?.users}
-                      filters={usersData?.filters}
-                    />
+                    <SelectChatUsersModal loading={isLoading} />
                   </ModalContent>
                 </Modal>
               </div>
