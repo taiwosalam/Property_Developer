@@ -53,7 +53,7 @@ export const RenewalRent = ({
     { label: "Mobile Notification", key: "mobile_notification" },
     { label: "SMS Alert", key: "sms_alert" },
     { label: "Email Alert", key: "email_alert" },
-    { label: "Rent Agreement", key: "rent_agreement" },
+    // { label: "Rent Agreement", key: "rent_agreement" },
   ];
 
   const visibleCheckboxOptions = isWebUser
@@ -149,27 +149,41 @@ export const RenewalRent = ({
           onChange={setStartDate}
         />
       </div>
-      <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
-        {visibleCheckboxOptions.map(({ label, key }) => (
-          <Checkbox
-            sm
-            key={key}
-            checked={checkboxStates[key as keyof CheckboxStates]}
-            onChange={handleCheckboxChange(key as keyof CheckboxStates)}
-            disabled={
-              (key === "mobile_notification" && isWebUser) ||
-              (key === "create_invoice" &&
-                (!isMobileUser ||
-                  (currency !== "naira" && isMobileUser) ||
-                  startDate?.isBefore(dayjs(), "day")))
-            }
-          >
-            {label}
-          </Checkbox>
-        ))}
+      <div className="custom-flex-col gap-2">
+        <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
+          <div className="flex gap-4">
+            {visibleCheckboxOptions.map(({ label, key }) => (
+              <Checkbox
+                sm
+                key={key}
+                checked={checkboxStates[key as keyof CheckboxStates]}
+                onChange={handleCheckboxChange(key as keyof CheckboxStates)}
+                disabled={
+                  (key === "mobile_notification" && isWebUser) ||
+                  (key === "create_invoice" &&
+                    (!isMobileUser ||
+                      (currency !== "naira" && isMobileUser) ||
+                      startDate?.isBefore(dayjs(), "day")))
+                }
+              >
+                {label}
+              </Checkbox>
+            ))}
+          </div>
 
+          <Button
+            size="base_medium"
+            className="py-2 px-6"
+            onClick={action}
+            type="button"
+            disabled={loading}
+          >
+            {loading ? "Please wait..." : "Update"}
+          </Button>
+        </div>
         {startDate?.isBefore(dayjs(), "day") ? (
           <div className="custom-flex-col gap-1">
+            <span className="text-red-500 text-lg">*</span>
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
               You have selected a past date for the occupant, which indicates
               that you are recording an outstanding rent balance for the client,
@@ -177,6 +191,7 @@ export const RenewalRent = ({
             </p>
             {nonNaira && (
               <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
                 Your property was listed in a currency other than Naira. As a
                 result, automatic payments and wallet transactions are not
                 supported. You will need to handle all payments manually.
@@ -186,11 +201,13 @@ export const RenewalRent = ({
         ) : isWebUser ? (
           <div className="custom-flex-col gap-1">
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+            <span className="text-red-500 text-lg">*</span>
               Confirms that you have received payment for the{" "}
               {isRental ? "rent" : "fee"} renewal.
             </p>
             {nonNaira && (
               <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
                 Your property was listed in a currency other than Naira. As a
                 result, automatic payments and wallet transactions are not
                 supported. You will need to handle all payments manually.
@@ -200,6 +217,7 @@ export const RenewalRent = ({
         ) : (
           <div className="custom-flex-col gap-1">
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              <span className="text-red-500 text-lg">*</span>
               {checkboxStates.create_invoice
                 ? `${isRental ? "Rent" : "Fee"} will commence upon ${
                     isRental ? "tenant" : "occupant"
@@ -216,6 +234,7 @@ export const RenewalRent = ({
             </p>
             {nonNaira && (
               <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
                 Your property was listed in a currency other than Naira. As a
                 result, automatic payments and wallet transactions are not
                 supported. You will need to handle all payments manually.
@@ -223,16 +242,6 @@ export const RenewalRent = ({
             )}
           </div>
         )}
-
-        <Button
-          size="base_medium"
-          className="py-2 px-6"
-          onClick={action}
-          type="button"
-          disabled={loading}
-        >
-          {loading ? "Please wait..." : "Update"}
-        </Button>
       </div>
     </div>
   );

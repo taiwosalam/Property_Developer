@@ -26,6 +26,7 @@ import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown";
 import ServerError from "@/components/Error/ServerError";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import SwitchUnitPaymentStatus from "@/components/Accounting/invoice/create-invoice/payment_status";
 
 const PreviewExpenses = () => {
   const router = useRouter();
@@ -164,6 +165,16 @@ const PreviewExpenses = () => {
             ) : (
               <Breakdown data={pageData} />
             )}
+            
+            {pageData.payment_status_desc && (
+              <>
+                <SwitchUnitPaymentStatus
+                  desc={pageData.payment_status_desc}
+                  amount={pageData.payment_status_amount || 0}
+                />
+              </>
+            )}
+
             <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
             <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
               <p className="text-[#747474]">total package</p>

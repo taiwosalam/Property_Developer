@@ -25,6 +25,7 @@ import StaffProfilePortfolio from "@/components/Management/Staff-And-Branches/Br
 import {
   activitiesTableData,
   getPortfolioData,
+  getStaffCardData,
   initialPageData,
   placeholder_portfolio_data,
   staffActivitiesTableFields,
@@ -45,6 +46,7 @@ import TruncatedText from "@/components/TruncatedText/truncated-text";
 import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { toast } from "sonner";
+import Card from "@/components/dashboard/card";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -128,6 +130,7 @@ const StaffProfile = () => {
 
   const sanitizedHTML = DOMPurify.sanitize(staff?.about_staff?.note || "");
 
+  const initialStaffPortfolioStats = getStaffCardData(staff)
   // console.log("staff data -", staff);
 
   if (loading) return <CustomLoader layout="profile" />;
@@ -241,6 +244,33 @@ const StaffProfile = () => {
           />
         </div>
       </div>
+
+      {/* STAFF PORTFOLIOS */}
+      <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
+        {`${staff?.title} ${staff?.name}`} Portfolios
+      </h1>
+      <div className="staff-portfolio-stats w-full flex py-1.5 xl:py-2 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
+        {initialStaffPortfolioStats.map((card, index) => (
+          <Link href={card.link} key={index} prefetch={false}>
+            <Card
+              title={card.title}
+              icon={<card.icon />}
+              value={card.value}
+              subvalue={card.subValue}
+              bg={card.bg}
+            />
+          </Link>
+        ))}
+      </div>
+
+      {/* STAFF CHATS */}
+      <div className="custom-flex-col gap-[18px]">
+        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
+          {`${staff?.title} ${staff?.name}`} Chat
+        </h2>
+        <StaffChat />
+      </div>
+      {/* STAFF ACTIVITIES */}
       <div className="custom-flex-col gap-[18px]">
         <div className="flex justify-between">
           <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
@@ -272,13 +302,8 @@ const StaffProfile = () => {
           />
         )}
       </div>
-      <div className="custom-flex-col gap-[18px]">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-          {`${staff?.title} ${staff?.name}`} Chat
-        </h2>
-        <StaffChat />
-      </div>
-      <div className="custom-flex-col gap-[18px]">
+
+      {/* <div className="custom-flex-col gap-[18px]">
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
           {`${staff?.title} ${staff?.name}`} Portfolios
         </h1>
@@ -287,7 +312,7 @@ const StaffProfile = () => {
             <StaffProfilePortfolio key={index} title={title} items={items} />
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

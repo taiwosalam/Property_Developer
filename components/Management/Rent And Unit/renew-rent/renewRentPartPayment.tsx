@@ -1,5 +1,5 @@
 import { useOccupantStore } from "@/hooks/occupant-store";
-import { Currency, currencySymbols } from "@/utils/number-formatter";
+import { Currency, currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 import { RentSectionTitle } from "../rent-section-container";
@@ -11,6 +11,7 @@ import Button from "@/components/Form/Button/button";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import OwingFee from "./owing-fee";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 
 export const RenewRentAddPartPayment: React.FC<{
   action?: () => void;
@@ -181,7 +182,7 @@ export const RenewRentAddPartPayment: React.FC<{
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
             //   value={prevAmt ?? ""}
-                defaultValue={prevAmt ?? ""}
+                defaultValue={formatNumber(parseCurrency(prevAmt)) ?? 0}
             />
             <DateInput
               id="date"
@@ -241,11 +242,13 @@ export const RenewRentAddPartPayment: React.FC<{
           </div>
           {isWebUser ? (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              <span className="text-red-500 text-lg">*</span>
               {`Confirms that you have received payment for the 
             ${isRental ? "rent" : "counting"}.`}
             </p>
           ) : (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+             <span className="text-red-500 text-lg">*</span>
               {selectedOptions["create_invoice"]
                 ? `Payment will be reflected once the ${
                     isRental ? "tenant" : "occupant"

@@ -279,6 +279,12 @@ export const ProfileForm: React.FC<{
       }
     : undefined;
 
+  const filteredCheckboxOptions = isWebUser
+    ? checkboxOptions.filter(
+        ({ key }) => key !== "create_invoice" && key !== "mobile_notification"
+      )
+    : checkboxOptions;
+
   // console.log("occupants", occupants);
   // console.log("tenantSelectDefaultValue", tenantSelectDefaultValue);
 
@@ -347,7 +353,7 @@ export const ProfileForm: React.FC<{
         />
       </div>
       <div className="checkbox-options flex items-center justify-start gap-4 flex-wrap">
-        {checkboxOptions.map(({ label, key }) => (
+        {filteredCheckboxOptions.map(({ label, key }) => (
           <Checkbox
             sm
             key={key}
@@ -368,12 +374,14 @@ export const ProfileForm: React.FC<{
       {startDate?.isBefore(dayjs(), "day") ? (
         <div className="custom-flex-col gap-1">
           <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+            <span className="text-red-500 text-lg">*</span>
             You have selected a past date for the occupant, which indicates that
             you are recording an outstanding rent balance for the client, not
             initiating a new rent payment.
           </p>
           {nonNaira && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              <span className="text-red-500 text-lg">*</span>
               The property was listed in a currency other than Naira. You will
               need to handle all payments manually.
             </p>
@@ -382,11 +390,13 @@ export const ProfileForm: React.FC<{
       ) : isWebUser ? (
         <div className="custom-flex-col gap-1">
           <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+            <span className="text-red-500 text-lg">*</span>{" "}
             {`Confirms that you have received payment for the 
           ${isRental ? "rent" : "management"}.`}
           </p>
           {nonNaira && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+              <span className="text-red-500 text-lg">*</span>
               The property was listed in a currency other than Naira. You will
               need to handle all payments manually.
             </p>
@@ -395,6 +405,7 @@ export const ProfileForm: React.FC<{
       ) : (
         <div className="custom-flex-col gap-1">
           <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+            <span className="text-red-500 text-lg">*</span>
             {selectedOptions["create_invoice"]
               ? `Payment will be reflected once the ${
                   isRental ? "tenant" : "occupant"
@@ -411,6 +422,7 @@ export const ProfileForm: React.FC<{
           </p>
           {nonNaira && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+               <span className="text-red-500 text-lg">*</span>
               The property was listed in a currency other than Naira. As a
               result, automatic payments and wallet transactions are not
               supported. You will need to handle all payments manually.

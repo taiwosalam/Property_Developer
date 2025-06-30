@@ -58,6 +58,7 @@ import { ProceedPayAble } from "../change-property/payable";
 import { extractBalanceDates } from "../change-property/data";
 import { AgreementPreview } from "@/components/Modal/tenant-document";
 import { useTourStore } from "@/store/tour-store";
+import FullPageLoader from "@/components/Loader/start-rent-loader";
 
 const PostProceedContent = ({
   selectedUnitId,
@@ -102,6 +103,7 @@ const PostProceedContent = ({
   const outstanding = currentRentStats?.outstanding || 0;
   const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const paymentStatus = useGlobalStore((s) => s.paymentStatus);
   const isUnit = page === "unit";
 
   // Set initial data in store
@@ -256,7 +258,7 @@ const PostProceedContent = ({
     }
     const IS_FACILITY = propertyType === "facility";
     // Open modal for all tenants
-    // setIsAgreementModalOpen(true); 
+    // setIsAgreementModalOpen(true);
     if (!IS_FACILITY && !isPastDate) {
       // Open modal for non-facility and non-past date cases
       setIsAgreementModalOpen(true);
@@ -275,6 +277,8 @@ const PostProceedContent = ({
       deduction: deduction ? 1 : 0,
       payment_date: startDate,
       has_document: isRental ? 1 : 0,
+      payment_status_desc: paymentStatus?.desc || "",
+      payment_status_amount: paymentStatus?.amount || 0,
       has_invoice: 1, //ADDED AS REQUEST BY MR-TAIWO
       ...(isRental ? { doc_file } : {}), // Only include doc_file for rental properties
     };
@@ -317,7 +321,14 @@ const PostProceedContent = ({
       </div>
     );
   }
-
+  if (reqLoading) {
+    return (
+      <FullPageLoader
+        text="Switching Unit..."
+        onClose={() => setReqLoading(false)} // For testing only
+      />
+    );
+  }
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
