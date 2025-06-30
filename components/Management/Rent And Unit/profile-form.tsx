@@ -207,6 +207,7 @@ export const ProfileForm: React.FC<{
     mobile_notification: true,
     sms_alert: true,
     email_alert: true,
+    rent_agreement: false,
   });
 
   const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
@@ -259,6 +260,7 @@ export const ProfileForm: React.FC<{
     { label: "Mobile Notification", key: "mobile_notification" },
     { label: "SMS Alert", key: "sms_alert" },
     { label: "Email Alert", key: "email_alert" },
+    { label: "Rent Agreement", key: "rent_agreement" },
   ];
 
   // Non-naira currency message

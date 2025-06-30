@@ -107,6 +107,9 @@ const StartRent = () => {
     }
   }, [allTenantData]);
 
+  const HAS_DOCUMENT = unit_data.property_document.document_id;
+  const AGREEMENT_CHECKED = selectedCheckboxOptions.rent_agreement;
+
   const handleStartRent = async () => {
     if (!unit_data?.unit_id || !selectedTenantId) {
       toast.error(
@@ -163,6 +166,14 @@ const StartRent = () => {
       ? "Failed to start Rent, Try Again!"
       : "Failed to Move Occupant In, Try Again!";
 
+    const IS_FACILITY = propertyType === "facility";
+    // Determine document inclusion
+    const shouldAttachDocument =
+      !IS_FACILITY &&
+      !isPastDate &&
+      !!selectedCheckboxOptions.rent_agreement &&
+      doc_file;
+
     const FacilityObj = {
       unit_id: unit_data.unit_id,
       tenant_id: selectedTenantId,
@@ -198,13 +209,16 @@ const StartRent = () => {
         : 1,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 1,
-      has_document: isPastDate ? 0 : 1, // NOW WHEN PAST DATE IS SELECTED, NO DOCUMENT IS REQUIRED
+      // has_document: isPastDate ? 0 : 1, // NOW WHEN PAST DATE IS SELECTED, NO DOCUMENT IS REQUIRED
       ...(isPastDate ? {} : { doc_file }),
-      // has_document: 1,
-      // doc_file: doc_file,
+      has_document: shouldAttachDocument ? 1 : 0,
+      // has_document: shouldAttachDocument || isPastDate ? 0 : 1,
+      // ...(shouldAttachDocument && doc_file ? { doc_file } : {}),
     };
 
-    const IS_FACILITY = propertyType === "facility";
+    if (shouldAttachDocument) {
+      RentalObj.doc_file = doc_file;
+    }
 
     // const payloadObj = IS_WEB_TENANT ? FacilityObj : RentalObj;
     const payloadObj = IS_FACILITY ? FacilityObj : RentalObj;
@@ -339,9 +353,9 @@ const StartRent = () => {
           tenantsLoading={allTenantsLoading}
         />
       </section>
-      <FixedFooter className={`start-rent-button flex justify-end gap-4`}>
-        {/* {isRental && IS_WEB_TENANT && !isPastDate && ( */}
-        {/* {isRental && !isPastDate && (
+
+      {/* {isRental && IS_WEB_TENANT && !isPastDate && ( */}
+      {/* {isRental && !isPastDate && (
           <Modal>
             <ModalTrigger asChild>
               <Button size="base_medium" className="py-2 px-6">
@@ -353,10 +367,16 @@ const StartRent = () => {
             </ModalContent>
           </Modal>
         )} */}
+      <FixedFooter className="start-rent-button flex gap-4">
+        {AGREEMENT_CHECKED && (
+          <Button size="base_medium" className="py-2 px-6">
+            {HAS_DOCUMENT ? "Manage Agreement" : "Create Agreement"}
+          </Button>
+        )}
 
         <Button
           size="base_medium"
-          className="py-2 px-6"
+          className="py-2 px-6 items-end ml-auto"
           disabled={reqLoading || pdfLoading}
           onClick={handleStartRent}
         >
