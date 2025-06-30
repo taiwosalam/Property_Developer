@@ -369,7 +369,15 @@ const StartRent = () => {
         )} */}
       <FixedFooter className="start-rent-button flex gap-4">
         {AGREEMENT_CHECKED && (
-          <Button size="base_medium" className="py-2 px-6">
+          <Button
+            href={
+              HAS_DOCUMENT
+                ? `/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`
+                : `/documents/`
+            }
+            size="base_medium"
+            className="py-2 px-6"
+          >
             {HAS_DOCUMENT ? "Manage Agreement" : "Create Agreement"}
           </Button>
         )}
