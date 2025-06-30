@@ -12,6 +12,7 @@ export interface UsersProps {
   branch_id?: string;
   online_status?: string;
   title?: string;
+  last_seen?: string;
   tier?: number;
 }
 
@@ -44,6 +45,7 @@ export interface PageMessages {
   tier: number;
   role: string;
   title: string;
+  type?: string;
 }
 [];
 

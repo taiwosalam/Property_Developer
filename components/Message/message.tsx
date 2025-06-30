@@ -20,6 +20,8 @@ const Message: React.FC<MessageProps> = ({
   content_type,
   type = "from user",
   noScroll,
+  chat_type="private",
+  sender,
 }) => {
   const { isMobile } = useWindowWidth();
   const messageRef = useRef<HTMLDivElement>(null);
@@ -41,6 +43,27 @@ const Message: React.FC<MessageProps> = ({
           "bg-status-caution-1 rounded-tl-none": type === "to user",
         })}
       >
+        {/* SENDER INFORMATION FOR GROUP CHAT */}
+         {chat_type === "group" && type === "to user" && sender && (
+          <div className="flex flex-col items-center mr-2">
+            {sender.picture && (
+              <Image
+                src={sender.picture}
+                width={24}
+                height={24}
+                alt={sender?.fullname ?? "sender"}
+                className="rounded-full mb-1"
+              />
+            )}
+            <span className="text-xs font-semibold">
+              {sender.fullname}
+            </span>
+            {sender.title && (
+              <span className="text-[10px] text-gray-400">{sender.title}</span>
+            )}
+          </div>
+        )}
+
         {/* Text Content */}
         {content_type === "text" && (
           <div

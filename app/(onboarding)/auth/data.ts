@@ -304,6 +304,7 @@ export const login = async (formData: Record<string, any>) => {
     };
     const company_status = additional_details.status;
 
+    console.log("subscription_status", subscription_status)
     // Save token to cookies
     Cookies.set("auth-token", token, {
       expires: 7,
@@ -315,7 +316,6 @@ export const login = async (formData: Record<string, any>) => {
       secure: true,
       sameSite: "Strict",
     });
-
     // SAVE TO ZUSTAND
     useAuthStore.getState().setAuthState("token", token);
     useAuthStore.getState().setAuthState("role", role);
@@ -332,7 +332,7 @@ export const login = async (formData: Record<string, any>) => {
     //💀⚡ SECURE USER - DO NOT TOUCH 💀⚡
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
     await saveClientRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (BROWSER COOKIE)
-    await saveCompanyStatusToCookie(company_status); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
+    // await saveCompanyStatusToCookie(company_status); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
 
     if (emailVerified) {
       toast.success(data?.message || "Login successful!");

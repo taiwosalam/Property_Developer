@@ -1,4 +1,3 @@
-// `/pages/api/set-role-cookie.ts`
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {

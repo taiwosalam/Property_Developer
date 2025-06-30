@@ -1,3 +1,4 @@
+import React, { useRef } from "react";
 import { cn } from "@/lib/utils";
 
 export const MessageInput = ({
@@ -17,24 +18,40 @@ export const MessageInput = ({
   disabled?: boolean;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
 }) => {
-  const handleKeyPressSend = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      const form = e.currentTarget.form;
-      if (form) form.requestSubmit();
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // Auto-expand height on every change (including Enter)
+  const handleChange: React.ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+    // Reset height to recalculate
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        Math.min(textareaRef.current.scrollHeight, 100) + "px";
     }
+    // Pass value up
+    if (onChange) onChange(e);
   };
+
+  // If you want Ctrl+Enter to submit, handle here (optional)
+  // const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  //   if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+  //     e.preventDefault();
+  //     const form = e.currentTarget.form;
+  //     if (form) form.requestSubmit();
+  //   }
+  // };
 
   return (
     <textarea
+      ref={textareaRef}
       name={name}
       id={id}
       value={value}
       placeholder={placeholder}
-      onKeyDown={handleKeyPressSend}
-      onChange={onChange}
+      // onKeyDown={handleKeyDown} // Uncomment if you want Ctrl+Enter submit
+      onChange={handleChange}
       className={cn(
-        "w-full px-2 py-1 border border-solid border-[#C1C2C366] bg-neutral-3 outline-brand-9 dark:bg-darkText-primary max-h-[80px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
+        "w-full px-2 py-1 border-none max-h-[100px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
         className
       )}
       disabled={disabled}

@@ -74,6 +74,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
       last_seen,
     });
 
+    setGlobalStore("isGroupChat", isGroupChat);
     if (onClick) {
       onClick();
     } else {

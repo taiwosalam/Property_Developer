@@ -26,6 +26,7 @@ export interface MessagesProps {
   messages?: any[];
   userId?: string | number;
   noScroll?: boolean;
+  chat_type?: "group" | "private";
 }
 
 export interface MessageProps {
@@ -35,6 +36,12 @@ export interface MessageProps {
   content_type?: string;
   type: "to user" | "from user";
   noScroll?: boolean;
+  chat_type?: "group" | "private";
+  sender?: {
+    fullname?: string;
+    picture?: string;
+    title?: string;
+  };
 }
 
 export interface UserDetailsResponse {
@@ -72,10 +79,10 @@ export interface UserDetails {
   current_subscription_expiry: string;
   tier: Tier;
   profile: UserProfile;
-  next_of_kin: any; 
-  guarantors: any[]; 
-  application: any; 
-  identity: any; 
+  next_of_kin: any;
+  guarantors: any[];
+  application: any;
+  identity: any;
   roles: UserRole[];
 }
 

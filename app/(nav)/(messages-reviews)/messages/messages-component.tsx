@@ -42,11 +42,7 @@ const NoMessage: React.FC<{ loading?: boolean }> = ({ loading }) => {
               </Button>
             </ModalTrigger>
             <ModalContent>
-              <SelectChatUsersModal
-                loading={loading}
-                usersData={usersData?.users}
-                filters={usersData?.filters}
-              />
+              <SelectChatUsersModal loading={loading} />
             </ModalContent>
           </Modal>
         </div>

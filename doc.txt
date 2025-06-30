@@ -1,255 +1,532 @@
 // "use client";
-// import CustomTable from "@/components/Table/table";
-// import type { DataItem } from "@/components/Table/types";
-// import FilterBar from "@/components/FIlterBar/FilterBar";
-// import { useCallback, useEffect, useRef, useState } from "react";
+
+// import { useParams } from "next/navigation";
+// import { useEffect, useRef, useState } from "react";
+
+// // Types
+// import type {
+//   CompanyUsersAPIResponse,
+//   ConversationsAPIResponse,
+//   MessagesLayoutProps,
+//   PageMessages,
+// } from "./types";
+
+// // Images
+// import ClipBlue from "@/public/icons/clip-blue.svg";
+// import MicrophoneBlue from "@/public/icons/microphone-blue.svg";
+// import SendIcon from "@/public/icons/send-msg.svg";
+// import PlayIcon from "@/public/icons/play-icon.svg";
+// import PauseIcon from "@/public/icons/pause-icon.svg";
+// import DeleteIcon from "@/public/icons/del.svg";
+
+// // Imports
+// import Input from "@/components/Form/Input/input";
+// import Picture from "@/components/Picture/picture";
+// import useWindowWidth from "@/hooks/useWindowWidth";
+// import Button from "@/components/Form/Button/button";
+// import MessageCard from "@/components/Message/message-card";
+// import { message_card_data } from "@/components/Message/data";
+// import FilterButton from "@/components/FilterButton/filter-button";
+// import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
 // import useFetch from "@/hooks/useFetch";
-// import CustomLoader from "@/components/Loader/CustomLoader";
-// import NetworkError from "@/components/Error/NetworkError";
-// import { BranchFilter, FilterResult, PropertyFilter } from "../tenants/types";
-// import { ReportsRequestParams } from "../tenants/data";
-// import { AxiosRequestConfig } from "axios";
-// import { BranchStaff } from "../../(messages-reviews)/messages/types";
-// import dayjs from "dayjs";
-// import SearchError from "@/components/SearchNotFound/SearchNotFound";
-// import { hasActiveFilters } from "../data/utils";
-// import EmptyList from "@/components/EmptyList/Empty-List";
-// import ServerError from "@/components/Error/ServerError";
-// import useAddressFromCoords from "@/hooks/useGeoCoding";
-// import { useGlobalStore } from "@/store/general-store";
-// import { useRouter, useSearchParams } from "next/navigation";
-// import { debounce } from "@/utils/debounce";
-// import { Activity } from "lucide-react";
 // import {
-//   DomainFields,
-//   enrollment_subscriptions,
-//   SponsorFields,
-// } from "../../settings/add-on/data";
-// import { usePersonalInfoStore } from "@/store/personal-info-store";
-// import { EnrollmentApiResponse } from "../../settings/subscription/types";
-// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-// import { transformEnrollmentHistory } from "./data";
+//   SendMessage,
+//   transformCompanyUsersData,
+//   transformUsersMessages,
+// } from "./data";
+// import { useChatStore } from "@/store/message";
+// import { AuthForm } from "@/components/Auth/auth-components";
 // import clsx from "clsx";
+// import { toast } from "sonner";
+// import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+// import MessageAttachment from "@/components/Message/message-attachment";
+// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+// import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
+// import WavesurferPlayer from "@wavesurfer/react";
+// import NoMessage from "./messages-component";
+// import {
+//   MessageVNPauseIcon,
+//   AudioStopIcon,
+//   MessageVNPlayIcon,
+//   PlayIconButton,
+//   PlusIcon,
+//   MessageAttachIcon,
+//   MessageMicIcon,
+//   MessageSendIcon,
+//   MessageDeleteIcon,
+// } from "@/public/icons/icons";
+// import SelectChatUsersModal from "@/components/Message/user-modal";
+// import { CommentTextArea } from "../../community/agent-forum/NewComment";
 
-// interface EnrollmentQueryParams {
-//   page?: number;
-// }
+// // Import the voice visualizer hook and component
+// import {
+//   useVoiceVisualizer,
+//   VoiceVisualizer,
+// } from "@hasma/react-voice-visualizer";
+// import { getLocalStorage } from "@/utils/local-storage";
+// import { MessageInput } from "@/components/Message/messageInput";
+// import { PauseCircleIcon, StopCircleIcon } from "lucide-react";
 
-// const SubscriptionRecord = () => {
-//   const searchParams = useSearchParams();
-//   const search = searchParams.get("b");
-//   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-//   const { company_id } = usePersonalInfoStore();
+// const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
+//   const { setChatData } = useChatStore();
+//   const { id } = useParams();
+//   const loggedInUserId = getLocalStorage("user_id");
+//   const { isCustom } = useWindowWidth(900);
+//   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+//   const [message, setMessage] = useState("");
+//   const [reqLoading, setReqLoading] = useState(false);
+//   const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>([]);
+//   const [filteredMessages, setFilteredMessages] = useState<PageMessages[]>([]); // state for filtered messages
+//   const [searchQuery, setSearchQuery] = useState(""); // state for search query
+//   const [selectedFilters, setSelectedFilters] = useState<string[]>([]); // state for selected filters
+//   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
+//   // We'll no longer use our own isRecording/audioBlob state for recording;
+//   // Instead, we use the voice visualizer hook.
+//   const [audioUrl, setAudioUrl] = useState<string>("");
+//   const [isPlaying, setIsPlaying] = useState(false);
+//   const users_data = useChatStore((state) => state?.data?.users);
 
-//   const [state, setState] = useState<{
-//     transactions: DataItem[];
-//     current_page: number;
-//     total_pages: number;
-//     hasMore: boolean;
-//   }>({
-//     transactions: [],
-//     current_page: 1,
-//     total_pages: 1,
-//     hasMore: false,
-//   });
-
-//   const [config, setConfig] = useState<AxiosRequestConfig | undefined>(
-//     undefined
-//   );
-//   const observer = useRef<IntersectionObserver | null>(null);
-
-//   // Only set config when company_id is available
-//   useEffect(() => {
-//     if (company_id) {
-//       setConfig({
-//         params: { page: 1 } as EnrollmentQueryParams,
-//       });
-//     }
-//   }, [company_id]);
-
-//   const {
-//     data: companyEnrollments,
-//     error: enrollmentErr,
-//     loading,
-//     silentLoading,
-//     isNetworkError,
-//     refetch: refetchEnrollments,
-//   } = useFetch<EnrollmentApiResponse>(
-//     company_id && config ? `/enrollments/${company_id}` : null,
-//     config
-//   );
-
-//   useRefetchOnEvent("refetchEnrollments", () =>
-//     company_id && config ? refetchEnrollments({ silent: true }) : null
-//   );
-
-//   // Transform and update state when new data is fetched
-//   useEffect(() => {
-//     if (!loading && companyEnrollments?.data?.enrollments) {
-//       const newData = transformEnrollmentHistory(
-//         companyEnrollments.data.enrollments,
-//         companyEnrollments.data.pagination
-//       );
-//       const newTransactions = newData.transactions;
-//       const currentTransactions = useGlobalStore.getState().subscriptions || [];
-
-//       if (
-//         JSON.stringify(currentTransactions) !== JSON.stringify(newTransactions)
-//       ) {
-//         setState((prevState) => {
-//           const combinedTransactions =
-//             newData.current_page === 1
-//               ? newData.transactions
-//               : [...prevState.transactions, ...newData.transactions];
-
-//           // Remove duplicates based on id
-//           const uniqueTransactions = combinedTransactions.filter(
-//             (transaction, index, self) =>
-//               index === self.findIndex((t) => t.id === transaction.id)
-//           );
-//           return {
-//             ...prevState,
-//             transactions: uniqueTransactions,
-//             current_page: newData.current_page,
-//             total_pages: newData.total_pages,
-//             hasMore: newData.hasMore,
-//           };
-//         });
-//         setGlobalStore("subscriptions", newTransactions);
-//       }
-//     }
-//   }, [companyEnrollments, loading, setGlobalStore]);
-
-//   // Fetch next page for infinite scroll
-//   const fetchNextPage = useCallback(() => {
-//     if (!state.hasMore || silentLoading || loading) {
-//       return;
-//     }
-
-//     const nextPage = state.current_page + 1;
-//     if (nextPage <= state.total_pages) {
-//       setConfig((prev) => ({
-//         ...prev,
-//         params: {
-//           ...(prev?.params || {}),
-//           page: nextPage,
-//         } as EnrollmentQueryParams,
-//       }));
-//     }
-//   }, [
-//     state.hasMore,
-//     silentLoading,
-//     loading,
-//     state.current_page,
-//     state.total_pages,
-//   ]);
-
-//   // Set up IntersectionObserver for infinite scroll
-//   const lastRowRef = useCallback(
-//     (node: HTMLElement | null) => {
-//       if (!node || loading) return;
-
-//       if (observer.current) observer.current.disconnect();
-
-//       observer.current = new IntersectionObserver(
-//         (entries) => {
-//           if (entries[0].isIntersecting && state.hasMore && !silentLoading) {
-//             fetchNextPage();
-//           }
-//         },
-//         {
-//           root: document.getElementById("table-container"),
-//           rootMargin: "100px",
-//           threshold: 0.1,
-//         }
-//       );
-
-//       observer.current.observe(node);
-//     },
-//     [fetchNextPage, state.hasMore, silentLoading, loading]
-//   );
-
-//   console.log("companyEnrollments", companyEnrollments);
-
-//   // Transform data for table rendering
-//   const transformedTableData = state.transactions.map((t, index) => ({
-//     ...t,
-//     status: (
-//       <span
-//         className={clsx("font-medium", {
-//           "text-status-success-3": t.status.toLowerCase() === "active",
-//           "text-status-error-primary":
-//             t.status.toLowerCase() === "inactive" ||
-//             t.status.toLowerCase() === "failed",
-//           "text-yellow-500": t.status.toLowerCase() === "pending",
-//         })}
-//       >
-//         {t.status}
-//       </span>
-//     ),
-//     ref: index === state.transactions.length - 1 ? lastRowRef : null,
-//   }));
-
-//   const handleExport = () => {
-//     if (!companyEnrollments || loading) return;
-//     setGlobalStore("subscriptions", state.transactions);
-//     // router.push("/reports/adds-on-domain/export");
+//   // Playback wavesurfer state (for playing the recorded audio)
+//   const [playbackWS, setPlaybackWS] = useState<any>(null);
+//   const onReady = (ws: any) => {
+//     setPlaybackWS(ws);
+//     setIsPlaying(false);
+//   };
+//   const onPlayPause = () => {
+//     playbackWS && playbackWS.playPause();
 //   };
 
-//   if (isNetworkError) return <NetworkError />;
-//   if (enrollmentErr) return <ServerError error={enrollmentErr} />;
-//   if (loading && state.transactions.length === 0)
-//     return <CustomLoader layout="page" view="table" />;
+//   // Voice Visualizer hook for recording.
+//   const voiceControls = useVoiceVisualizer();
+//   // voiceControls provides:
+//   // - recordedBlob
+//   // - isRecordingInProgress
+//   // - isPausedRecording
+//   // - startRecording, stopRecording, togglePauseResume
+//   // - audioRef (for the visualizer component)
+
+//   // When recordedBlob updates, create a URL for playback.
+//   useEffect(() => {
+//     if (voiceControls.recordedBlob) {
+//       const url = URL.createObjectURL(voiceControls.recordedBlob);
+//       setAudioUrl(url);
+//     } else {
+//       setAudioUrl("");
+//     }
+//   }, [voiceControls.recordedBlob]);
+
+//   useEffect(() => {
+//     setMessage(message);
+//   }, [message]);
+
+//   const handleMenuClose = () => {
+//     setAnchorEl(null);
+//   };
+
+//   const handleEmojiSelect = (emoji: string) => {
+//     setMessage((prev) => prev + emoji);
+//   };
+
+//   const handleMessageChange = (
+//     event: React.ChangeEvent<HTMLTextAreaElement>
+//   ) => {
+//     setMessage(event.target.value);
+//   };
+
+//   const {
+//     data: usersData,
+//     loading: loadingUsers,
+//     error,
+//   } = useFetch<CompanyUsersAPIResponse>("/company/users");
+
+//   const {
+//     data: usersMessages,
+//     loading: usersMsgLoading,
+//     error: usersMsgError,
+//     refetch,
+//   } = useFetch<ConversationsAPIResponse>("/messages");
+//   useRefetchOnEvent("refetch-users-msg", () => {
+//     refetch({ silent: true });
+//   });
+
+//   // Update messages and apply initial filtering
+//   useEffect(() => {
+//     if (usersMessages) {
+//       const transformed = transformUsersMessages(usersMessages).filter(
+//         (msg) => msg.id !== loggedInUserId
+//       );
+//       setPageUsersMsg(transformed);
+//       setChatData("users_messages", transformed);
+//       applyFilters(transformed, searchQuery, selectedFilters, selectedBranches);
+//     }
+//   }, [usersMessages, loggedInUserId, setChatData]);
+
+//   useEffect(() => {
+//     if (usersData) {
+//       setChatData("users", transformCompanyUsersData(usersData));
+//     }
+//   }, [usersData]);
+
+//   // Apply filters and search
+//   const applyFilters = (
+//     messages: PageMessages[],
+//     query: string,
+//     filters: string[],
+//     branches: string[]
+//   ) => {
+//     let filtered = [...messages];
+
+//     // Apply search filter
+//     if (query) {
+//       const lowerQuery = query.toLowerCase();
+//       filtered = filtered.filter(
+//         (msg) =>
+//           msg.fullname.toLowerCase().includes(lowerQuery) ||
+//           msg.desc.toLowerCase().includes(lowerQuery)
+//       );
+//     }
+
+//     // Apply category filters
+//     if (filters.length > 0) {
+//       filtered = filtered.filter((msg) => {
+//         if (filters.includes("Unread") && msg.unread_count === 0) {
+//           return false;
+//         }
+//         // Note: "Inbox" and "Groups" may require additional logic based on your data structure
+//         // For now, assume "Inbox" shows all user messages, and "Groups" is not implemented
+//         return true;
+//       });
+//     }
+
+//     // Apply branch filters
+//     if (branches.length > 0 && usersData) {
+//       const userIdsInBranches = usersData.data.users
+//         .filter((user) => branches.includes(user.branch_id))
+//         .map((user) => user.id);
+//       filtered = filtered.filter((msg) => userIdsInBranches.includes(msg.id));
+//     }
+//     console.log("filtered msg", filtered);
+//     setFilteredMessages(filtered);
+//   };
+
+//   // HANDLE SEARCH
+//   const handleSearchChange = (
+//     value: string,
+//     event?: React.ChangeEvent<HTMLInputElement>
+//   ) => {
+//     setSearchQuery(value);
+//     applyFilters(pageUsersMsg, value, selectedFilters, selectedBranches);
+//   };
+
+//   // Function to send a text message
+//   const handleSendMsg = async () => {
+//     const payload = {
+//       content: message,
+//       content_type: "text",
+//       receiver_type: "user",
+//     };
+//     try {
+//       setReqLoading(true);
+//       const res = await SendMessage(objectToFormData(payload), `${id}`);
+//       if (res) {
+//         setMessage("");
+//         window.dispatchEvent(new Event("refetch-users-msg"));
+//         window.dispatchEvent(new Event("refetchMessages"));
+//       }
+//     } catch (err) {
+//       toast.error("Failed to send msg");
+//     } finally {
+//       setReqLoading(false);
+//     }
+//   };
+
+//   // Function to send audio; uses audioUrl and the recordedBlob (set via voiceControls)
+//   const handleSendAudio = async () => {
+//     if (!voiceControls.recordedBlob) return;
+//     const audioFile = new File([voiceControls.recordedBlob], "voice-note.wav", {
+//       type: voiceControls.recordedBlob.type,
+//     });
+//     const payload = {
+//       content_file: audioFile,
+//       content_type: "audio",
+//       receiver_type: "user",
+//     };
+//     try {
+//       setReqLoading(true);
+//       const res = await SendMessage(objectToFormData(payload), `${id}`);
+//       if (res) {
+//         // Clear the recording data after sending
+//         setAudioUrl("");
+//         voiceControls.stopRecording();
+//         setMessage("");
+//         window.dispatchEvent(new Event("refetch-users-msg"));
+//         window.dispatchEvent(new Event("refetchMessages"));
+//       }
+//     } catch (err) {
+//       toast.error("Failed to send audio message");
+//     } finally {
+//       setReqLoading(false);
+//     }
+//   };
 
 //   return (
-//     <div className="space-y-9">
-//       <FilterBar
-//         exports
-//         isDateTrue
-//         onBack={search ? true : false}
-//         pageTitle="Subscription History"
-//         aboutPageModalData={{
-//           title: "Subscription History",
-//           description:
-//             "This page contains a list of listing subscription history",
-//         }}
-//         searchInputPlaceholder="Search for subscriptions"
-//         handleFilterApply={() => {}}
-//         handleSearch={() => {}}
-//         hasGridListToggle={false}
-//         exportHref="/reports/subscription-history/export"
-//         xlsxData={state?.transactions}
-//         fileLabel={"Subscriptions"}
-//       />
-//       <section>
-//         {state.transactions.length === 0 ? (
-//           <EmptyList
-//             noButton
-//             title=" No Previous Subscription Record Found"
-//             body={
-//               <p>
-//                 You currently do not have any previous records associated with
-//                 this subscription plan. Once you subscribe, your subscription
-//                 history and related details will appear here for future
-//                 reference and tracking.
-//                 <br />
-//                 <br />
-//               </p>
-//             }
-//           />
-//         ) : (
-//           <CustomTable
-//             fields={enrollment_subscriptions.fields}
-//             data={transformedTableData}
-//             tableHeadClassName="h-[45px]"
-//           />
-//         )}
-//       </section>
-//     </div>
+//     <>
+//       {isCustom && id ? null : (
+//         <div className="flex flex-1 p-4 pr-0">
+//           <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
+//             <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
+//               <div className="flex-1 relative">
+//                 <Input
+//                   id="search"
+//                   className="w-full"
+//                   placeholder="Search for messages"
+//                   leftIcon={"/icons/search-icon.svg"}
+//                   inputClassName="pr-[52px] border-transparent"
+//                   value={searchQuery}
+//                   onChange={handleSearchChange}
+//                 />
+//                 <div className="absolute top-1/2 right-0 -translate-y-1/2">
+//                   <FilterButton
+//                     noTitle
+//                     className="bg-transparent py-[10px] px-4"
+//                     onClick={(e) => setAnchorEl(e.currentTarget)}
+//                   />
+//                   <MessagesFilterMenu
+//                     anchorEl={anchorEl}
+//                     open={Boolean(anchorEl)}
+//                     onClose={handleMenuClose}
+//                     filterOptions={[
+//                       { label: "Inbox" },
+//                       { label: "Groups" },
+//                       { label: "Unread" },
+//                     ]}
+//                   />
+//                 </div>
+//               </div>
+//             </div>
+//             {filteredMessages.length === 0 ? (
+//               // <NoMessage loading={loadingUsers} />
+//               <></>
+//             ) : (
+//               <>
+//                 {usersMsgLoading ? (
+//                   <div className="custom-flex-col gap-2 relative z-[1] pb-4">
+//                     {[...Array(5)].map((_, idx) => (
+//                       <MessageCardSkeleton key={idx} />
+//                     ))}
+//                   </div>
+//                 ) : (
+//                   <div className="custom-flex-col relative z-[1] pb-4">
+//                     {filteredMessages.map((message, idx) => (
+//                       <MessageCard
+//                         key={idx}
+//                         {...message}
+//                         highlight={message.id === id}
+//                       />
+//                     ))}
+//                   </div>
+//                 )}
+//               </>
+//             )}
+//             {/* STICKY PLUS --> BE CAREFUL NOT TO REMOVE MAX-W-50PX FOR THE STICKY BUTTON., IT TOOK ME OVER 5 HRS DEBUG 😪😥*/}
+//             <div className="fixed bottom-20 z-[10] max-w-[50px]">
+//               <Modal>
+//                 <ModalTrigger asChild>
+//                   <button
+//                     onClick={() => {}}
+//                     className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+//                   >
+//                     <PlusIcon />
+//                   </button>
+//                 </ModalTrigger>
+//                 <ModalContent>
+//                   <SelectChatUsersModal
+//                     loading={usersMsgLoading}
+//                     usersData={users_data?.users}
+//                     filters={users_data?.filters}
+//                   />
+//                 </ModalContent>
+//               </Modal>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* MESSAGE FORM AND NO MESSAGE COMPONENT WHEN NC CONVERSATION GOING ON */}
+//       {(!isCustom || id) && (
+//         <div className="flex-1 overflow-hidden">
+//           {!id && (
+//             <div className="custom-flex-col w-full h-full">
+//               <NoMessage loading={loadingUsers} />
+//             </div>
+//           )}
+//           <div className="custom-flex-col w-full h-full">
+//             {children}
+//             {id && (
+//               <AuthForm onFormSubmit={() => {}}>
+//                 <div className="py-4 px-6 flex w-full items-center gap-4">
+//                   {!audioUrl && !voiceControls.isRecordingInProgress && (
+//                     <div className="flex w-full items-center gap-4">
+//                       <Modal>
+//                         <ModalTrigger asChild>
+//                           <button type="button" className="text-brand-9">
+//                             <MessageAttachIcon size={30} />
+//                           </button>
+//                         </ModalTrigger>
+//                         <ModalContent>
+//                           <MessageAttachment
+//                             onEmojiSelect={handleEmojiSelect}
+//                             id={id as string}
+//                           />
+//                         </ModalContent>
+//                       </Modal>
+//                       <MessageInput
+//                         name="chat"
+//                         id="chat"
+//                         placeholder="Type your message here"
+//                         className="w-full text-sm"
+//                         value={message}
+//                         onChange={handleMessageChange}
+//                       />
+//                     </div>
+//                   )}
+//                   {message ? (
+//                     <button
+//                       type="button"
+//                       className="text-brand-9"
+//                       onClick={handleSendMsg}
+//                     >
+//                       {reqLoading ? (
+//                         <div className="animate-spin h-5 w-5 border-2 border-brand-9 rounded-full" />
+//                       ) : (
+//                         <MessageSendIcon size={30} />
+//                       )}
+//                     </button>
+//                   ) : (
+//                     <>
+//                       {!audioUrl && !voiceControls.isRecordingInProgress && (
+//                         <button
+//                           type="button"
+//                           className="text-brand-9"
+//                           onClick={voiceControls.startRecording}
+//                         >
+//                           <MessageMicIcon size={30} />
+//                         </button>
+//                       )}
+//                       {voiceControls.isRecordingInProgress && (
+//                         <>
+//                           <div className="flex flex-col gap-2 w-full items-center justify-center mt-2">
+//                             <div
+//                               className="w-full mt-2"
+//                               // style={{ height: "100px" }}
+//                             >
+//                               <VoiceVisualizer
+//                                 ref={voiceControls.audioRef}
+//                                 controls={voiceControls}
+//                                 isControlPanelShown={false}
+//                                 isProgressIndicatorOnHoverShown={true}
+//                                 isProgressIndicatorTimeShown={true}
+//                                 height={50}
+//                                 width="100%"
+//                                 backgroundColor="transparent"
+//                                 mainBarColor="#2392f5"
+//                                 secondaryBarColor="#fe0095"
+//                                 speed={3}
+//                                 barWidth={3}
+//                                 gap={1}
+//                                 rounded={5}
+//                               />
+//                             </div>
+
+//                             <div className="flex items-center gap-1">
+//                               <button
+//                                 type="button"
+//                                 onClick={voiceControls.togglePauseResume}
+//                                 className="px-3 py-1 rounded text-brand-9 text-sm"
+//                               >
+//                                 {voiceControls.isPausedRecording ? (
+//                                   <MessageVNPlayIcon size={30} />
+//                                 ) : (
+//                                   <MessageVNPauseIcon size={30} />
+//                                 )}
+//                               </button>
+
+//                               <button
+//                                 type="button"
+//                                 onClick={() => {
+//                                   voiceControls.stopRecording();
+//                                   setAudioUrl("");
+//                                 }}
+//                                 className="rounded text-brand-9 text-sm"
+//                               >
+//                                 {/* <AudioStopIcon /> */}
+//                                 <StopCircleIcon size={30} />
+//                               </button>
+//                             </div>
+//                           </div>
+//                         </>
+//                       )}
+//                     </>
+//                   )}
+
+//                   {audioUrl && (
+//                     <div className="flex w-full items-center justify-end gap-2">
+//                       <button
+//                         className="text-brand-9"
+//                         type="button"
+//                         onClick={() => setAudioUrl("")}
+//                       >
+//                         <MessageDeleteIcon size={30} />
+//                       </button>
+//                       <WavesurferPlayer
+//                         height={40}
+//                         width={400}
+//                         waveColor="#e5e7eb"
+//                         progressColor="var(--primary-color)"
+//                         url={audioUrl}
+//                         onReady={onReady}
+//                         onPlay={() => setIsPlaying(true)}
+//                         onPause={() => setIsPlaying(false)}
+//                       />
+//                       <div className="flex gap-2">
+//                         <button
+//                           type="button"
+//                           className="text-brand-9"
+//                           onClick={onPlayPause}
+//                         >
+//                           {isPlaying ? (
+//                             <MessageVNPlayIcon size={30} />
+//                           ) : (
+//                             <MessageVNPlayIcon size={30} />
+//                           )}
+//                         </button>
+//                         <button
+//                           type="button"
+//                           onClick={handleSendAudio}
+//                           disabled={reqLoading}
+//                           className="text-brand-9"
+//                         >
+//                           {reqLoading ? (
+//                             <div className="w-5 h-5 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin"></div>
+//                           ) : (
+//                             <MessageSendIcon size={30} />
+//                           )}
+//                         </button>
+//                       </div>
+//                     </div>
+//                   )}
+//                 </div>
+//               </AuthForm>
+//             )}
+//           </div>
+//         </div>
+//       )}
+//     </>
 //   );
 // };
 
-// export default SubscriptionRecord;
+// export default MessagesLayout;
 
 
 
@@ -261,169 +538,301 @@
 
 
 
-=====FOOTER UNIT 
-  // const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   console.log("Save Clicked:", {
-  //     noForm,
-  //     newForm,
-  //     canSubmit,
-  //     addedUnitsLength: addedUnits.length,
-  //     hasNotYetUploaded: addedUnits.some((unit) => unit.notYetUploaded),
-  //     missingFields,
-  //   });
-
-  //   const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
-
-  //   if (addedUnits.length > 0 && hasNotYetUploaded) {
-  //     toast.warning(
-  //       "There are units that have not been updated yet. Please update them to continue."
-  //     );
-  //     return;
-  //   }
-
-  //   console.log("noForm", noForm);
-  //   if (!noForm || newForm || missingFields.length > 0) {
-  //     setSaveClick(true);
-  //     handleInputChange();
-  //     setSaveAfterValidation(true);
-  //     return;
-  //   }
-
-  //   if (addedUnits.length === 0 && !canSubmit) {
-  //     toast.success("Property has been added to your drafts.");
-  //     router.push("/management/properties");
-  //   } else if (canSubmit && addedUnits.length === 0) {
-  //     setSaveClick(true);
-  //     const form = document.getElementById(
-  //       "add-unit-form"
-  //     ) as HTMLFormElement | null;
-  //     form?.requestSubmit();
-  //     router.push("/management/properties");
-  //   } else {
-  //     router.push("/management/properties");
-  //   }
-  // };
 
 
 
 
-  // useEffect(() => {
-  //   if (checkSubmit) {
-  //     console.log("Validation Effect:", { canSubmit, noForm, missingFields });
-  //     if (!canSubmit && !noForm) {
-  //       toast.error(
-  //         `The following fields are required: ${missingFields.join(", ")}`
-  //       );
-  //     } else {
-  //       setFooterModalOpen(true);
-  //     }
-  //     setCheckSubmit(false);
-  //   }
-  // }, [canSubmit, missingFields, checkSubmit, noForm]);
 
-  // useEffect(() => {
-  //   if (saveAfterValidation) {
-  //     if (!canSubmit && !noForm) {
-  //       toast.error(
-  //         `The following fields are required: ${missingFields.join(", ")}`
-  //       );
-  //     } else {
-  //       setSaveClick(true);
-  //       const form = document.getElementById(
-  //         "add-unit-form"
-  //       ) as HTMLFormElement | null;
-  //       form?.requestSubmit();
-  //     }
-  //     setSaveAfterValidation(false);
-  //   }
-  // }, [saveAfterValidation, canSubmit, missingFields, noForm, setSaveClick]);
 
-  // const handleAddMoreClick = () => {
-  //   console.log("Add More Clicked:", { noForm, newForm, canSubmit });
-  //   if (!noForm) {
-  //     handleInputChange();
-  //     setCheckSubmit(true);
-  //   } else {
-  //     setFooterModalOpen(true);
-  //   }
-  // };
 
-  // const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   console.log("Save Clicked:", {
-  //     noForm,
-  //     newForm,
-  //     canSubmit,
-  //     addedUnitsLength: addedUnits.length,
-  //     hasNotYetUploaded: addedUnits.some((unit) => unit.notYetUploaded),
-  //     missingFields,
-  //   });
 
-  //   const formInDom = document.getElementById(
-  //     "add-unit-form"
-  //   ) as HTMLFormElement | null;
 
-  //   // Check for unuploaded units
-  //   if (addedUnits.length > 0) {
-  //     const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
-  //     if (hasNotYetUploaded) {
-  //       console.log("Blocked: Units not yet uploaded");
-  //       toast.warning(
-  //         "There are units that have not been updated yet. Please update them to continue."
-  //       );
-  //       return;
-  //     }
-  //   }
 
-  //   // Check if a form exists (based on noForm, newForm, or missingFields)
-  //   if (!noForm || newForm || missingFields.length > 0) {
-  //     console.log("Form validation required:", { canSubmit, missingFields });
-  //     if (!canSubmit) {
-  //       console.log("Validation failed, showing toast");
-  //       toast.error(
-  //         `The following fields are required: ${missingFields.join(", ")}`
-  //       );
-  //       return;
-  //     }
-  //     console.log("Form valid, proceeding with submission");
-  //     setSaveClick(true);
-  //     const form = e.currentTarget.form;
-  //     setTimeout(() => {
-  //       form?.requestSubmit();
-  //     }, 0);
-  //   } else if (addedUnits.length === 0 && !canSubmit) {
-  //     console.log(
-  //       "No units added, redirecting to /management/properties with draft toast"
-  //     );
-  //     toast.success("Property has been added to your drafts.");
-  //     navigateBackOrToProperties();
-  //   } else if (canSubmit && addedUnits.length === 0) {
-  //     // if canSubmit is true and no units added, redirect after submission
-  //     console.log(
-  //       "Single unit submitted, redirecting to /management/properties"
-  //     );
-  //     setSaveClick(true);
-  //     const form = e.currentTarget.form;
-  //     setTimeout(() => {
-  //       form?.requestSubmit();
-  //     }, 0);
-  //     navigateBackOrToProperties();
-  //   } else if (canSubmit && addedUnits.length > 0 && formInDom) {
-  //     // if canSubmit is true and no units added, redirect after submission
-  //     console.log(
-  //       "Single unit submitted, redirecting to /management/properties"
-  //     );
-  //     setSaveClick(true);
-  //     const form = e.currentTarget.form;
-  //     setTimeout(() => {
-  //       form?.requestSubmit();
-  //     }, 0);
-  //     navigateBackOrToProperties();
-  //   } else {
-  //     console.log(
-  //       "No form, units added, redirecting to /management/properties"
-  //     );
-  //     navigateBackOrToProperties();
-  //   }
-  // };
+
+
+
+
+
+// "use client";
+
+// import { useParams, useRouter } from "next/navigation";
+// import { useCallback, useEffect, useState } from "react";
+// import { useChatStore } from "@/store/message";
+// import { groupMessagesByDay, transformMessagesFromAPI } from "../data"; // The new grouping helper
+// import Picture from "@/components/Picture/picture";
+// import Messages from "@/components/Message/messages";
+// import { empty } from "@/app/config";
+// import { UsersProps } from "../types";
+// import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
+// import { useAuthStore } from "@/store/authStore";
+// import { getLocalStorage } from "@/utils/local-storage";
+// import Link from "next/link";
+// import useConversationListener from "@/hooks/useConversationListen";
+// import api from "@/services/api";
+// import { useGlobalStore } from "@/store/general-store";
+// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+// import { motion, AnimatePresence } from "framer-motion";
+// import MessageUserProfileModal from "@/components/Message/message-user-profile";
+// import { capitalizeWords } from "@/hooks/capitalize-words";
+// import { UserDetailsResponse } from "@/components/Message/types";
+// import { getCleanRoleName } from "@/components/Message/data";
+// import useFetch from "@/hooks/useFetch";
+// import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+
+// interface Message {
+//   id: number;
+//   text: string | null;
+//   senderId: number | string;
+//   timestamp: string;
+//   content_type: string;
+// }
+// interface MessagesApiResponse {
+//   status: string;
+//   messages: Array<{
+//     id: number;
+//     content: string | null;
+//     sender_id: string | number;
+//     date: string;
+//     timestamp: string;
+//     content_type: string;
+//     receiver?: any;
+//   }>;
+// }
+
+// const Chat = () => {
+//   const router = useRouter();
+//   const { data, setChatData } = useChatStore();
+//   const isGroupChat = useGlobalStore((s) => s.isGroupChat);
+//   const { id } = useParams<{ id: string }>();
+//   const user_id = useAuthStore((state) => state.user_id);
+//   const users = data?.users?.users || [];
+//   const messageUserData = useGlobalStore((s) => s.messageUserData);
+//   const store_messages = data?.conversations || [];
+//   const [conversations, setConversations] = useState<any[]>([]);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [isPusherFailed, setIsPusherFailed] = useState(true);
+//   // const [error, setError] = useState<string | null>(null);
+//   const [showContactInfo, setShowContactInfo] = useState(false);
+
+//   // USER TO CHAT DATA
+//   const {
+//     data: userProfile,
+//     error: userError,
+//     loading: loadingUser,
+//   } = useFetch<UserDetailsResponse>(`/all-users?identifier=${id}`);
+//   const userProfileData = userProfile?.data ?? null;
+
+//   const role = getCleanRoleName(userProfileData);
+//   const isAcct = role === "director" || role === "manager" || role === "staff";
+//   const showActBadge = isAcct && userProfileData?.tier_id === 2;
+
+//   const badgeColor =
+//     tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
+//     "gray";
+
+//   // FETCH MESSAGES
+//   // Use the correct endpoint
+//   const endpoint = isGroupChat
+//     ? `/group-chats/${id}`
+//     : `/messages/conversations/${id}`;
+
+//   // Fetch messages using useFetch
+//   const {
+//     data: apiData,
+//     loading,
+//     silentLoading,
+//     isNetworkError,
+//     error,
+//     refetch,
+//   } = useFetch<MessagesApiResponse>(endpoint);
+//   useRefetchOnEvent("refetchMessages", () => refetch({ silent: true }));
+
+//   // Fetch messages from API
+//   // const fetchMessages = useCallback(async () => {
+//   //   try {
+//   //     setError(null);
+//   //     const response = await api.get(`/messages/conversations/user/${id}`);
+//   //     if (response.data.status === "success") {
+//   //       const mappedMessages: Message[] = response.data.messages.map(
+//   //         (msg: any) => ({
+//   //           id: msg.id,
+//   //           text: msg.content ?? null,
+//   //           senderId: msg.sender_id,
+//   //           timestamp: `${msg.date} ${msg.timestamp}`,
+//   //           content_type: msg.content_type,
+//   //         })
+//   //       );
+//   //       // Store conversations and receiver (from the first message)
+//   //       setChatData("conversations", mappedMessages);
+//   //       if (response.data.messages.length > 0) {
+//   //         setChatData("receiver", response.data.messages[0].receiver);
+//   //       }
+//   //     } else {
+//   //       setError("Failed to load messages.");
+//   //     }
+//   //   } catch (error: any) {
+//   //     console.error("API error:", error.response?.data || error.message);
+//   //     setError("Failed to load messages. Please try again later.");
+//   //   } finally {
+//   //     setIsLoading(false);
+//   //   }
+//   // }, [id, setChatData]);
+
+//   // Handle new Pusher messages
+//   const handleNewMessage = useCallback(
+//     (newMessage: Message) => {
+//       const updatedConversations = [...store_messages, newMessage].sort(
+//         (a, b) => a.id - b.id
+//       );
+//       setChatData("conversations", updatedConversations);
+//     },
+//     [store_messages, setChatData]
+//   );
+
+//   console.log("apiData", apiData);
+
+//   useEffect(() => {
+//     if (apiData && (apiData.status === "success" || apiData.group_chat)) {
+//       // Detect group chat by endpoint or global store flag
+//       const normalizedMessages = transformMessagesFromAPI(apiData, isGroupChat);
+//       setChatData("conversations", normalizedMessages);
+
+//       // For direct chat, set receiver if available
+//       if (!isGroupChat && apiData.messages.length > 0) {
+//         setChatData("receiver", apiData.messages[0].receiver);
+//       }
+//       // (Optional) For group chat you could also set group info to store here
+//     }
+//   }, [apiData, setChatData, isGroupChat]);
+
+//   // Transform API data and update store
+//   // useEffect(() => {
+//   //   if (apiData && apiData.status === "success") {
+//   //     const mappedMessages: Message[] = apiData.messages.map((msg) => ({
+//   //       id: msg.id,
+//   //       text: msg.content ?? null,
+//   //       senderId: msg.sender_id,
+//   //       timestamp: `${msg.date} ${msg.timestamp}`,
+//   //       content_type: msg.content_type,
+//   //     }));
+//   //     setChatData("conversations", mappedMessages);
+//   //     if (apiData.messages.length > 0) {
+//   //       setChatData("receiver", apiData.messages[0].receiver);
+//   //     }
+//   //   }
+//   // }, [apiData, setChatData]);
+
+//   // Update grouped conversations when messages change
+//   useEffect(() => {
+//     if (store_messages.length > 0) {
+//       const groupedMessages = groupMessagesByDay(store_messages);
+//       setConversations(groupedMessages);
+//     }
+//   }, [store_messages]);
+
+//   // Pusher subscription
+//   // useConversationListener(id, handleNewMessage, (error: any) => {
+//   //   console.error("Pusher connection failed:", error);
+//   //   setIsPusherFailed(true);
+//   // });
+
+//   // Find user
+//   const userId = Number(id);
+//   const user =
+//     messageUserData ||
+//     users.find((u: UsersProps) => Number(u.id) === Number(userId));
+//   const isOnline = user?.last_seen?.toLowerCase() === "online";
+//   const showStatus = user?.last_seen?.toLowerCase() !== "offline";
+
+//   //SHOW CONTACT INFO
+//   useEffect(() => {
+//     if (showStatus) {
+//       const interval = setInterval(() => {
+//         setShowContactInfo((prev) => !prev);
+//       }, 30000);
+
+//       return () => clearInterval(interval); // Cleanup interval on component unmount
+//     }
+//   }, [showStatus]);
+
+//   if (!user) {
+//     router.replace("/messages");
+//     return null;
+//   }
+
+//   if (loading) {
+//     return <ChatSkeleton />;
+//   }
+
+//   return (
+//     <>
+//       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
+//         <div className="flex items-center gap-3">
+//           <button onClick={() => router.push("/messages")}>
+//             <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
+//           </button>
+//           <Modal>
+//             <ModalTrigger>
+//               <div className="flex items-center gap-4 text-left">
+//                 <Picture
+//                   src={user?.imageUrl || empty}
+//                   alt="profile picture"
+//                   containerClassName="custom-secondary-bg rounded-full"
+//                   size={35}
+//                   rounded
+//                   status={isOnline}
+//                 />
+//                 <div className="custom-flex-col">
+//                   <div className="flex items-center">
+//                     <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+//                       {capitalizeWords(user?.name ?? "")}
+//                     </p>
+//                     {showActBadge ? (
+//                       <BadgeIcon color="gray" />
+//                     ) : !isAcct ? (
+//                       <BadgeIcon color={badgeColor} />
+//                     ) : null}
+//                   </div>
+//                   <AnimatePresence mode="wait">
+//                     <motion.p
+//                       key={showContactInfo ? "contact" : "status"}
+//                       initial={{ opacity: 0, y: 4 }}
+//                       animate={{ opacity: 1, y: 0 }}
+//                       exit={{ opacity: 0, y: -4 }}
+//                       transition={{ duration: 0.3 }}
+//                       className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal"
+//                     >
+//                       {showContactInfo
+//                         ? user.last_seen
+//                         : "Tap here for contact info"}
+//                     </motion.p>
+//                   </AnimatePresence>
+//                 </div>
+//               </div>
+//             </ModalTrigger>
+//             <ModalContent>
+//               <MessageUserProfileModal id={Number(id)} />
+//             </ModalContent>
+//           </Modal>
+//         </div>
+//       </div>
+//       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
+//         {error && <div className="text-red-500 text-center p-2">{error}</div>}
+//         {conversations.length > 0 &&
+//           conversations.map((group, index) => (
+//             <Messages
+//               key={index}
+//               day={group.day}
+//               messages={group.messages}
+//               userId={user_id as string}
+//             />
+//           ))}
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Chat;
+
+

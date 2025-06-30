@@ -361,6 +361,7 @@ export const getRecentMessages = (data: any) => {
       count: m?.unread_count,
       content_type: m?.content_type,
       online: m?.online,
+      badgeColor: m.badgeColor,
     }));
 };
 

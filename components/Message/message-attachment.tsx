@@ -22,12 +22,12 @@ const MessageAttachment: React.FC<{
   const { activeStep, changeStep } = useStep(5);
 
   const options = [
-    {
-      name: "Emoji",
-      icon: <EmojiIcon />,
-      component: <EmojiComponent onEmojiSelect={onEmojiSelect} />,
-      heading: "Emoji",
-    },
+    // {
+    //   name: "Emoji",
+    //   icon: <EmojiIcon />,
+    //   component: <EmojiComponent onEmojiSelect={onEmojiSelect} />,
+    //   heading: "Emoji",
+    // },
     {
       name: "Image",
       icon: <GalleryIcon />,
