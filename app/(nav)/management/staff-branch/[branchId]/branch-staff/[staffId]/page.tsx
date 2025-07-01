@@ -131,7 +131,6 @@ const StaffProfile = () => {
   const sanitizedHTML = DOMPurify.sanitize(staff?.about_staff?.note || "");
 
   const initialStaffPortfolioStats = getStaffCardData(staff)
-  // console.log("staff data -", staff);
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
