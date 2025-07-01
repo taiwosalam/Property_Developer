@@ -1,6 +1,7 @@
 export interface PropertyRequestData {
   id: number;
   user_id: number;
+  tier: number;
   image: string | null;
   name: string;
   phone: string;

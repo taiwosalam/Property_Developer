@@ -105,11 +105,25 @@ const BookVisitorsPage = () => {
 
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
-  const propertyOptions =
-    propertiesData?.data.properties.data.map((property) => ({
-      label: property.title,
-      value: property.id.toString(),
-    })) || [];
+  const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
+    ? [
+        ...new Map(
+          propertiesData.data.properties.data
+            .filter(
+              (property: any) =>
+                typeof property.book_visitors === "boolean" &&
+                property.book_visitors
+            )
+            .map((property: any) => [
+              property.title, // Use property title as the unique key
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   const handleAppliedFilter = useCallback(
     debounce((filters: FilterResult) => {
@@ -123,7 +137,11 @@ const BookVisitorsPage = () => {
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (property.length > 0) {
+        property.forEach((id: string | number, idx: number) => {
+          (queryParams as any)[`property_ids[${idx}]`] = id;
+        });
+      }
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)

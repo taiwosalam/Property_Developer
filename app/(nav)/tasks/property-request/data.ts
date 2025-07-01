@@ -28,6 +28,7 @@ export interface propertyRequestPageData {
   requests: {
     userId: number;
     userName: string;
+    tier_id: number;
     requestDate: string;
     pictureSrc: string;
     requestId: string;
@@ -56,6 +57,7 @@ export const transformPropertyRequestData = (
 
     requests: data.data.map((request) => ({
       userId: request?.user_id,
+      tier_id: request?.tier,
       userName: request.name?.toLowerCase(),
       requestDate: request?.created_at
         ? dayjs(request.created_at).format("DD/MM/YYYY")

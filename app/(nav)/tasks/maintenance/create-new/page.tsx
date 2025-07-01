@@ -147,9 +147,15 @@ const CreateMaintenace = () => {
     //data.delete("unit[]");
 
     const detail = data.get("detail");
+    const cost = data.get("maintenance_cost");
 
     if (String(detail).trim().length < 30) {
       toast.error("Work detail must be at least 30 characters.");
+      return;
+    }
+
+    if (!String(cost).trim()) {
+      toast.error("Maintenance cost is required");
       return;
     }
 

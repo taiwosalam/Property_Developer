@@ -198,6 +198,7 @@ export interface MaintenanceRequestParams {
   account_officer_id?: string;
   start_date?: string;
   end_date?: string;
+  property_ids?: string;
   property_id?: string;
   branch_id?: string;
   status?: string;

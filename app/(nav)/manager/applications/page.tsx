@@ -48,9 +48,9 @@ const Applications = () => {
           filterOptionsMenu={DocumentssFilterOptionsWithDropdown}
         />
         <AutoResizingGrid minWidth={300} gap={32}>
-          <ApplicationCard status="flagged" type="staff" />
-          <ApplicationCard status="unflagged" type="guest" />
-          <ApplicationCard status="unflagged" type="staff" />
+          <ApplicationCard status="flagged" type="pending" />
+          <ApplicationCard status="unflagged" type="pending" />
+          <ApplicationCard status="unflagged" type="pending" />
         </AutoResizingGrid>
       </div>
     </div>

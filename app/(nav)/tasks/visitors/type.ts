@@ -23,6 +23,9 @@ type VisitorRequest = {
   id: number;
   request_id: string;
   user_id: number;
+  branch_name: string;
+  unit_name: string;
+  property_name: string;
   user: {
     id: number;
     encodedId: string;

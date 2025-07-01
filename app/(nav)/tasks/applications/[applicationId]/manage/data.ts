@@ -5,30 +5,30 @@ import { getBadgeColor } from "@/lib/utils";
 
 export interface IRentHistory {
   unitId: number;
-  dueDate: string;
-  unitDetails: string;
   unitName: string;
-  cautionDeposit: string;
-  tenantName: string;
-  totalPackage: string;
-  serviceCharge: string;
-  start_date: string;
-  tenantBadgeColor: string;
-  rent: string;
+  address: string;
+  propertyName: string;
+  rentAmount: string;
+  period: string;
+  moveOutDate: string;
+  propertyImages: Array<string>;
   propertyType: string;
-  unitStatus: "relocate" | "vacant" | "occupied" | "active" | "expired";
-  unitImages: string[];
+  managedBy: string;
 }
 export interface IApplicationDetails {
   property_details: {
+    application_date: string;
     property_title: string;
-    full_access: string;
+    address: string;
     landlord: string;
     description: string;
     state: string;
     branch: string;
     categories: string;
     rent: string;
+    total_package?: string;
+    unit_name?: string;
+    renewal_amount?: string;
     local_government: string;
     account_officer: string;
   };
@@ -45,6 +45,7 @@ export interface IApplicationDetails {
     birthday: string;
     religion: string;
     phone: string;
+    application_duration?: string;
     marital_status: string;
   };
   bank_details: {
@@ -106,8 +107,9 @@ export const transformApplicationDetailsPageData = (
   } = res;
   return {
     property_details: {
+      application_date,
       property_title: property_details?.property_title || "--- ---",
-      full_access: property_details?.full_access || "--- ---",
+      address: property_details?.address || "--- ---",
       landlord: property_details?.landlord || "--- ---",
       description: property_details?.description || "--- ---",
       state: property_details?.state || "--- ---",
@@ -168,42 +170,36 @@ export const transformApplicationDetailsPageData = (
       address: guarantors?.guarantor_2?.address || "--- ---",
     },
     current_rent:
-      rent_history?.current?.map((current) => ({
-        unitId: current?.id,
-        dueDate: current?.due_date || "--- ---",
-        unitDetails: current?.details || "--- ---",
+      rent_history?.previous?.map((current) => ({
+        unitId: current?.unit_id,
         unitName: current?.unit_name || "--- ---",
-        cautionDeposit: current?.cautionDeposit || "--- ---",
-        tenantName: user?.name,
-        totalPackage: current?.total_amount || "--- ---",
-        serviceCharge: current?.serviceCharge ?? "--- ---",
-        start_date: current?.start_date || "--- ---",
-        tenantBadgeColor: user?.tier_id
-          ? getBadgeColor(user?.tier_id) ?? "gray"
-          : "gray",
-        rent: current?.rent_amount || "--- ---",
+        address: "Property address",
+        propertyName: "Property Name",
+        rentAmount: current?.rent_amount || "--- ---",
+        period: "Period (yearly)",
+        moveOutDate: current?.due_date || "--- ---",
+        propertyImages:
+          current?.unitImages?.length > 0
+            ? current?.unitImages?.map((image) => image.path)
+            : [],
         propertyType: current?.propertyType,
-        unitStatus: "occupied",
-        unitImages: [],
+        managedBy: "Taiwo Salam & Co. (Managed by)",
       })) || [],
     previous_rent:
       rent_history?.previous?.map((current) => ({
-        unitId: current?.id,
-        dueDate: current?.due_date || "--- ---",
-        unitDetails: current?.details || "--- ---",
+        unitId: current?.unit_id,
         unitName: current?.unit_name || "--- ---",
-        cautionDeposit: current?.cautionDeposit || "--- ---",
-        tenantName: user?.name,
-        totalPackage: current?.total_amount || "--- ---",
-        serviceCharge: current?.serviceCharge ?? "--- ---",
-        start_date: current?.start_date || "--- ---",
-        tenantBadgeColor: user?.tier_id
-          ? getBadgeColor(user?.tier_id) ?? "gray"
-          : "gray",
-        rent: current?.rent_amount || "--- ---",
-        propertyType: current?.propertyType,
-        unitStatus: "occupied",
-        unitImages: [],
+        address: "Property address",
+        propertyName: "Property Name",
+        rentAmount: current?.rent_amount || "--- ---",
+        period: "Period (yearly)",
+        moveOutDate: current?.due_date || "--- ---",
+        propertyImages:
+          current?.unitImages?.length > 0
+            ? current?.unitImages?.map((image) => image.path)
+            : [],
+        propertyType: current?.propertyType || "--- ---",
+        managedBy: "Taiwo Salam & Co. (Managed by)",
       })) || [],
     experience: profile_details?.prior_experience || "--- ---",
     justification: profile_details?.rent_justification || "--- ---",

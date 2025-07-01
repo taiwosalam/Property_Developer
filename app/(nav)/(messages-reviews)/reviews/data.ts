@@ -29,6 +29,7 @@ type Review = {
   likes_count: number;
   dislikes_count: number;
   replies_count: number;
+  comments: any[];
   reply_comments: any[]; // Adjust this if the structure of a reply is known
   time_ago: string;
 };
@@ -48,7 +49,10 @@ export interface IReviewCard {
   neutral_count: number;
   reviews: {
     id: number;
+    comment_count: number;
     picture: string;
+    comments: any[];
+    created_at: string;
     fullname: string;
     review: string;
     user_like: boolean;
@@ -78,7 +82,10 @@ export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
     reviews: reviews.map((review) => {
       return {
         id: review.id,
+        comment_count: review?.comments_count || 0,
         user_dislike: review?.user_liked,
+        created_at: review?.created_at,
+        comments: review?.comments,
         user_like: review?.user_disliked,
         picture: review?.user?.profile_picture_url,
         fullname: review?.user?.name?.toLowerCase() || "",

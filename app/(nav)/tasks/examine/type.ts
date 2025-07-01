@@ -15,6 +15,7 @@ type ExamineItem = {
   id: number;
   title: string;
   description: string;
+  service: [] | null;
   examine_date: string; // e.g., "20th January 2026"
   image: Array<{ path: string }>; // Assuming it's an array of image URLs; adjust if structure differs
 };

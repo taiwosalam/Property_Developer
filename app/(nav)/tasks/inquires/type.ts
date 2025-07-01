@@ -30,6 +30,7 @@ type CallItem = {
   };
   property: string;
   branch: string;
+  unit_name: string;
   property_address: string;
   account_officer: string;
   status: "pending" | "completed"// you can replace with a full union if known

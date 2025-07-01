@@ -33,6 +33,7 @@ import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-requ
 import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "../maintenance/data";
 import { hasActiveFilters } from "../../reports/data/utils";
+import { IPropertyApi } from "../../settings/others/types";
 
 const transformToCallBackRequestCardProps = (
   data: RequestCallBackCardDataType
@@ -110,7 +111,11 @@ const Inquires = () => {
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (property.length > 0) {
+        property.forEach((id: string | number, idx: number) => {
+          (queryParams as any)[`property_ids[${idx}]`] = id;
+        });
+      }
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
@@ -144,14 +149,27 @@ const Inquires = () => {
     });
   };
 
-  const { data: propertyData } = useFetch<any>(`property/list`);
+  const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
-  const propertyOptions = propertyData?.data?.properties?.data?.map(
-    (property: { id: number; title: string }) => ({
-      value: property.id,
-      label: property.title,
-    })
-  );
+  const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
+    ? [
+        ...new Map(
+          propertiesData.data.properties.data
+            .filter(
+              (property: any) =>
+                typeof property.request_call_back === "boolean" &&
+                property.request_call_back
+            )
+            .map((property: any) => [
+              property.title, // Use property title as the unique key
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   if (loading)
     return (

@@ -9,6 +9,7 @@ export type TApplicationDetailsResponse = {
     property_details: {
       property_title: string;
       full_access: string;
+      address: string;
       landlord: string;
       description: string;
       state: string;
@@ -104,5 +105,7 @@ export type RentHistoryItem = {
   unit_id: number;
   unit_name: string;
   serviceCharge: null;
-  unitImages: string[];
+  unitImages: {
+    path: string;
+  }[];
 };

@@ -28,7 +28,7 @@ import { empty } from "@/app/config";
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   status,
-  type = "staff",
+  type,
   data,
 }) => {
   const [isOpened, setIsOpened] = useState(false);
@@ -123,8 +123,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
       className={clsx(
         "custom-flex-col gap-4 pb-4 rounded-2xl overflow-hidden border border-solid bg-white dark:bg-darkText-primary",
         {
-          "border-support-2": type == "staff",
-          "border-support-3": type == "guest",
+          "border-[#FACC15]": type === "pending",
+          "border-[#8B5CF6]": type === "evaluated",
+          "border-[#22C55E]": type === "approved",
+          "border-[#EF4444]": type === "rejected",
         }
       )}
     >

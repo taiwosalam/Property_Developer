@@ -1,5 +1,5 @@
 export interface ApplicationCardProps {
-  type?: "staff" | "guest" | "mobile";
+  type?: "pending" | "evaluated" | "approved" | "rejected" | "mobile";
   status: "flagged" | "unflagged";
 
   data?: {

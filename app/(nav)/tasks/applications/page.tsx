@@ -26,6 +26,7 @@ import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { ApplicationStatusItem } from "@/components/Listing/Property/property-listing-component";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
@@ -136,11 +137,7 @@ const Applications = () => {
 
   if (loading)
     return (
-      <CustomLoader
-        layout="page"
-        statsCardCount={3}
-        pageTitle="Application"
-      />
+      <CustomLoader layout="page" statsCardCount={3} pageTitle="Application" />
     );
 
   console.log(pageData?.applications);
@@ -197,6 +194,12 @@ const Applications = () => {
         />
 
         <section>
+          <div className="flex flex-wrap gap-4 justify-end pb-6">
+            <ApplicationStatusItem status="pending" />
+            <ApplicationStatusItem status="evaluated" />
+            <ApplicationStatusItem status="approved" />
+            <ApplicationStatusItem status="rejected" />
+          </div>
           {pageData?.applications?.length === 0 && !loading ? (
             !!config.params.search || hasActiveFilters(appliedFilters) ? (
               <SearchError />
@@ -228,7 +231,7 @@ const Applications = () => {
                     <ApplicationCard
                       key={item.id}
                       status={item?.flagged}
-                      type="mobile"
+                      type={item.application_status}
                       data={item}
                     />
                   ))
