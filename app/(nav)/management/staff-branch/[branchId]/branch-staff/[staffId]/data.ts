@@ -390,6 +390,7 @@ export const transformStaffAPIResponse = (
       status: yesNoToActiveInactive(res.data.status),
       badge_color: res.data.tier_id === 2 ? "gray" : undefined,
       online: res.data.online_status === "online",
+      statistic: res.data.statistic,
       // badge_color: res.data.tier_id
       //   ? staffTierColorMap[res.data.tier_id as keyof typeof staffTierColorMap]
       //   : undefined,
@@ -506,24 +507,24 @@ export const getStaffCardData = (staff: Record<string, any>) => [
     title: "Properties",
     bg: getBackgroundColor("properties"),
     icon: BuildingIcon,
-    value: 0,
-    subValue: 0,
+    value: staff?.statistic?.total_property || 0,
+    subValue: staff?.statistic?.total_month_property || 0,
     link: `/management/staff-branch/${staff.branch_id}/branch-staff/${staff.id}/properties/`,
   },
   {
     title: "Landlords",
     bg: getBackgroundColor("landlords"),
     icon: LandlordIcon,
-    value: 0,
-    subValue: 0,
+    value: staff?.statistic?.total_landlord || 0,
+    subValue: staff?.statistic?.total_month_landlord || 0,
     link: `/management/staff-branch/${staff.branch_id}/branch-staff/${staff.id}/landlords/`,
   },
   {
     title: "Tenants & Occupants",
     bg: getBackgroundColor("tenants & occupants"),
     icon: TenantIcon,
-    value: 0,
-    subValue: 0,
+    value: staff?.statistic?.total_tenant || 0,
+    subValue: staff?.statistic?.total_month_tenant || 0,
     link:  `/management/staff-branch/${staff.branch_id}/branch-staff/${staff.id}/tenants/`,
   },
 ];

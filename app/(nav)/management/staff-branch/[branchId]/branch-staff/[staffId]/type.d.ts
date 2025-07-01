@@ -31,8 +31,10 @@ export interface StaffAPIResponse {
     tier_id: 1 | 2 | 3 | 4 | 5;
     years_experience: string | number;
     online_status?: "online" | "offline";
+    statistic?: any;
   };
   activities: StaffActivitiies[];
+  statistic: any;
   messages: {
     participant_id: number;
     participant_type: string;
@@ -138,6 +140,7 @@ export interface StaffPageTypes {
     experience: number | string;
     badge_color?: BadgeIconColors;
     online?: boolean;
+    statistic?: any;
   };
   activities: StaffActivitiies[];
   chats: [];
