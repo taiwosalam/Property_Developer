@@ -18,8 +18,23 @@ export type ApplicationResponse = {
       email: string;
       user_type: string;
       phone: string;
-      flagged: boolean;
+      is_flagged: boolean;
     };
+    flags: {
+      is_flagged: boolean;
+      reason: string;
+      appeal_reason: string;
+      status: "cancelled" | "pending" | "evaluated" | "approved";
+      created_at: string;
+      flagger: {
+        name: string;
+        email: string;
+        tier_id: number;
+        phone: string;
+        picture: string | null;
+        company: string;
+      };
+    }[];
     unit: {
       name: string;
       period: string;
@@ -64,6 +79,18 @@ export interface IApplicationPageData {
     period_type: string;
     currency: string;
     flagged: "flagged" | "unflagged";
+    flag_details?: {
+      flagger_name: string;
+      email: string;
+      phone: string;
+      tier_id: number;
+      picture: string | null;
+      company_name: string;
+      is_flagged: boolean;
+      reason: string | null;
+      appeal_reason: string | null;
+      status: "rejected" | "pending" | "evaluated" | "approved";
+    }[];
   }[];
 }
 
@@ -76,7 +103,7 @@ const currencies: { [key: string]: string } = {
 export const transformApplicationData = (
   data: ApplicationResponse
 ): IApplicationPageData => {
-  const { data: res, stats, } = data;
+  const { data: res, stats } = data;
 
   return {
     total_application: stats?.total_applications,
@@ -90,13 +117,17 @@ export const transformApplicationData = (
       application_status:
         item?.application_status === "cancelled"
           ? "rejected"
-          : (item?.application_status as "pending" | "evaluated" | "approved" | "rejected"),
+          : (item?.application_status as
+              | "pending"
+              | "evaluated"
+              | "approved"
+              | "rejected"),
       images: item?.unit?.property_images?.map((image) => image.path) || [],
       full_name: item?.user?.name?.toLowerCase(),
       tier_id: item?.user?.tier_id,
       user_id: item?.user?.encodedId,
       photo: item?.user?.profile,
-      flagged: item?.user.flagged === true ? "flagged" : "unflagged",
+      flagged: item?.user.is_flagged === true ? "flagged" : "unflagged",
       user_type: item?.user?.user_type || "mobile",
       email: item?.user?.email,
       property_name: item?.unit.name,
@@ -111,6 +142,25 @@ export const transformApplicationData = (
         : "--- ---", //item?.unit?.fee_amount,
       period_type: item?.unit?.period, //item?.unit?.fee_period,
       currency: currencies[item?.unit?.currency],
+      flag_details: item?.flags.map((flag) => ({
+        flagger_name: flag.flagger.name?.toLowerCase(),
+        email: flag.flagger.email,
+        tier_id: flag.flagger?.tier_id,
+        phone: flag.flagger.phone,
+        company_name: flag.flagger.company,
+        picture: flag.flagger?.picture,
+        is_flagged: flag.is_flagged,
+        reason: flag.reason || "",
+        appeal_reason: flag.appeal_reason || "",
+        status:
+          flag.status === "cancelled"
+            ? "rejected"
+            : (flag.status as
+                | "pending"
+                | "evaluated"
+                | "approved"
+                | "rejected"),
+      })),
     })),
   };
 };

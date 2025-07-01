@@ -3,6 +3,9 @@
 // Images
 import Avatar3 from "@/public/empty/avatar-3.svg";
 
+import { useReactToPrint } from "react-to-print";
+import { useRef } from "react";
+
 // Imports
 import { secondaryFont } from "@/utils/fonts";
 import Picture from "@/components/Picture/picture";
@@ -30,7 +33,7 @@ import {
   transformApplicationDetailsPageData,
 } from "./data";
 import { property } from "lodash";
-import { getBadgeColor } from "@/lib/utils";
+import { formatToNaira, getBadgeColor } from "@/lib/utils";
 import { TApplicationDetailsResponse } from "./type";
 import { toast } from "sonner";
 import NetworkError from "@/components/Error/NetworkError";
@@ -39,6 +42,7 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { empty } from "@/app/config";
 import { Phone, Printer } from "lucide-react";
 import { ApplicationCardUnit } from "@/components/Management/Properties/application-card";
+import { IPropertyApi } from "@/app/(nav)/settings/others/types";
 
 const ManageApplication = () => {
   const isDarkMode = useDarkMode();
@@ -47,6 +51,9 @@ const ManageApplication = () => {
   const isFlagged = type === "flagged";
   const params = useParams();
   const paramId = params?.applicationId as string;
+
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
   const [managePageData, setManagePageData] =
     useState<IApplicationDetails | null>(null);
@@ -96,13 +103,13 @@ const ManageApplication = () => {
     bank_details,
     contact_details,
     experience,
-    guarantor1,
-    guarantor2,
+    guarantors,
     justification,
     next_of_kin,
     others,
     previous_rent,
     current_rent,
+    flag_details,
   } = managePageData ?? {};
 
   if (isNetworkError) <NetworkError />;
@@ -110,7 +117,10 @@ const ManageApplication = () => {
   if (loading) <PageCircleLoader />;
 
   return (
-    <div className="custom-flex-col gap-[88px] pb-[150px] lg:pb-[100px]">
+    <div
+      className="custom-flex-col gap-[88px] pb-[150px] lg:pb-[100px]"
+      ref={contentRef}
+    >
       <div className="custom-flex-col gap-6">
         <BackButton>Back</BackButton>
         <div
@@ -123,7 +133,10 @@ const ManageApplication = () => {
             </p>
 
             <div className="text-primary-navy dark:text-white text-xl font-bold">
-              <button className="flex gap-1 items-center">
+              <button
+                className="flex gap-1 items-center"
+                onClick={reactToPrintFn}
+              >
                 <Printer />
                 <p className="capitalize">Print application</p>
               </button>
@@ -136,13 +149,15 @@ const ManageApplication = () => {
               data={{
                 "property name": property_details?.property_title,
                 landlord: property_details?.landlord,
-                "full address": `${property_details?.local_government} ${property_details?.state}`,
-                "unit name": "Unit name",
+                "full address": `${property_details?.address}`,
+                "unit name": property_details?.unit_name,
                 "account officer": property_details?.account_officer,
-                "total package": "Total package",
+                "total package": formatToNaira(property_details?.total_package),
                 branch: property_details?.branch,
                 "application date": property_details?.application_date,
-                "renewal amount": "$12,000",
+                "renewal amount": formatToNaira(
+                  property_details?.renewal_amount
+                ),
 
                 //description: property_details?.description,
                 //state: property_details?.state,
@@ -167,63 +182,50 @@ const ManageApplication = () => {
           </div>
         </div>
 
-        <div
-          style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-          className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
-        >
-          <div className="flex justify-between items-center">
-            <p className="text-primary-navy dark:text-white text-xl font-bold">
-              Flag Details
-            </p>
-          </div>
+        {flag_details && flag_details.length > 0 && (
+          <div
+            style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+            className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
+          >
+            <div className="flex justify-between items-center">
+              <p className="text-primary-navy dark:text-white text-xl font-bold">
+                Flag Details
+              </p>
+            </div>
 
-          <SectionSeparator />
-          <div className="w-full">
-            <div className="flex justify-between py-1 w-full">
-              <div className="flex gap-3">
-                <div className="py-1">
-                  <p className="text-black dark:text-white text-xl font-bold">
-                    Ayodeji Abimbola
-                  </p>
-                  <p className="text-gray-500 dark:text-white">
-                    bimbola@mail.com
-                  </p>
-                  <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
-                    <Phone fill="currentColor" size={18} />
-                    <p>080976827682</p>
-                  </div>
-                  <button className="bg-opacity-40 text-brand-9 py-1 rounded-lg bg-brand-5 px-3 h-7 text-sm mt-1">
-                    Message
-                  </button>
-                </div>
-                <div className="max-w-3xl mt-2 text-red-500">
-                  <p>This tenants have been flagged for some dumb reason</p>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <div className="py-1">
-                  <p className="text-black dark:text-white text-xl font-bold">
-                    Ayodeji Abimbola
-                  </p>
-                  <p className="text-gray-500 dark:text-white">
-                    bimbola@mail.com
-                  </p>
-                  <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
-                    <Phone fill="currentColor" size={18} />
-                    <p>080976827682</p>
-                  </div>
-                  <button className="bg-opacity-40 text-brand-9 py-1 rounded-lg bg-brand-5 px-3 h-7 text-sm mt-1">
-                    Message
-                  </button>
-                </div>
-                <div className="max-w-3xl mt-2 text-red-500">
-                  <p>This tenants have been flagged for some dumb reason</p>
-                </div>
+            <SectionSeparator />
+            <div className="w-full">
+              <div className="flex justify-between py-1 w-full">
+                {flag_details?.map((flag, index) => {
+                  return (
+                    <div className="flex gap-8" key={index}>
+                      <div className="py-1">
+                        <p className="text-black dark:text-white text-xl font-bold capitalize">
+                          {flag?.flagger_name}
+                        </p>
+                        <p className="text-gray-500 dark:text-white">
+                          {flag?.email}
+                        </p>
+                        {flag.phone && (
+                          <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
+                            <Phone fill="currentColor" size={18} />
+                            <p>{flag.phone}</p>
+                          </div>
+                        )}
+                        <button className="bg-opacity-40 text-brand-9 py-1 rounded-lg bg-brand-5 px-3 h-7 text-sm mt-1">
+                          Message
+                        </button>
+                      </div>
+                      <div className="max-w-3xl mt-2 text-red-500 capitalize">
+                        <p>{flag?.reason}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-5">
           <div
@@ -283,7 +285,9 @@ const ManageApplication = () => {
             ) : (
               <p className="flex gap-4 items-center text-highlight text-base font-medium px-10">
                 <span className="text-brand-9">Applying for</span>
-                <span className="text-red-500">5 Years</span>
+                <span className="text-red-500">
+                  {profile_details?.application_duration}
+                </span>
               </p>
             )}
           </div>
@@ -300,7 +304,7 @@ const ManageApplication = () => {
             heading="bank details"
             info={{
               "bank name": bank_details?.bankName,
-              "account name": bank_details?.account_name,
+              "account name": bank_details?.account_name?.toLowerCase(),
               "bank account no": bank_details?.bank_account_no,
               "wallet ID": bank_details?.wallet_id,
             }}
@@ -311,7 +315,7 @@ const ManageApplication = () => {
               state: contact_details?.state,
               address: `${contact_details?.address} ${contact_details?.lga} ${contact_details?.city} ${contact_details?.state}`,
               "phone number 1": profile_details?.phone,
-              "phone number 2": "Phone number 1",
+              "phone number 2": "--- ---",
             }}
           />
           <LandlordTenantInfo
@@ -329,27 +333,24 @@ const ManageApplication = () => {
               occupation: others?.occupation,
               "employment type": others?.employment_type,
               "family type": others?.family_type,
-              xxxxxxxxxxxxx: "",
+              xxxxxxxxxxxxx: "xxxxxxxxxxxxxx",
             }}
           />
-          <LandlordTenantInfo
-            heading="Guarantor 1"
-            info={{
-              name: guarantor1?.name,
-              email: guarantor1?.email,
-              "phone number": guarantor1?.phone_number,
-              address: guarantor1?.address,
-            }}
-          />
-          <LandlordTenantInfo
-            heading="Guarantor 2"
-            info={{
-              name: guarantor2?.name,
-              email: guarantor2?.email,
-              "phone number": guarantor2?.phone_number,
-              address: guarantor2?.email,
-            }}
-          />
+          {guarantors?.map((guarantor, index) => {
+            return (
+              <LandlordTenantInfo
+                key={index}
+                heading={`Guarantor ${index + 1}`}
+                info={{
+                  name: guarantor?.name,
+                  email: guarantor?.email,
+                  "phone number": guarantor?.phone,
+                  address: guarantor?.address,
+                }}
+              />
+            );
+          })}
+
           <LandlordTenantInfoBox className="space-y-4">
             <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
               Proior Experience in Real Estate
@@ -381,19 +382,19 @@ const ManageApplication = () => {
               propertyName={rent.propertyName}
               rentAmount={rent.rentAmount}
               period={rent.period}
-              moveOutDate={rent.moveOutDate}
+              moveInDate={rent.moveInDate}
               propertyImages={rent.propertyImages}
               propertyType={rent.propertyType}
               managedBy={rent.managedBy}
+              prev={false}
+              unitData={rent?.unitData}
             />
           ))}
         </div>
       </LandlordTenantInfoSection>
-      {/* <LandlordTenantInfoSection title="Property">
-        <div className="opacity-40"><UnitItem /></div>
-      </LandlordTenantInfoSection> */}
+
       <LandlordTenantInfoSection title="Previous Rent">
-        <div className="opacity-40 space-y-3">
+        <div className="space-y-3">
           {previous_rent?.map((rent) => (
             <ApplicationCardUnit
               key={rent.unitId}
@@ -407,6 +408,8 @@ const ManageApplication = () => {
               propertyImages={rent.propertyImages}
               propertyType={rent.propertyType}
               managedBy={rent.managedBy}
+              prev={true}
+              unitData={rent?.unitData}
             />
           ))}
         </div>

@@ -26,6 +26,7 @@ type InspectionData = {
   id: number;
   inspection_type: "virtual_inspection" | "physical_inspection";
   inspection_date: string;
+  is_application: boolean;
   inspection_time: string;
   description: string;
   booked_by: string;
@@ -54,6 +55,7 @@ export type Inspection = {
   inspection_type: "physical_inspection" | "virtual_inspection";
   inspection_date: string;
   inspection_time: string;
+  is_application: boolean;
   tier: number;
   description: string;
   booked_by: string;
@@ -203,6 +205,7 @@ export interface InspectionPageType {
   current_page: number;
   card: {
     id: number;
+    is_application?: boolean;
     property_id: number;
     property_name: string;
     tier: number;

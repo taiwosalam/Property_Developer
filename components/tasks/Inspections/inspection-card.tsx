@@ -33,6 +33,8 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
   const [inspection, setInspection] = useState<TInspectionDetails | null>(null);
   const router = useRouter();
 
+  const [isOpen, setIsOpen] = useState(false);
+
   const goToMessage = () => {
     if (!data?.booked_by_id) {
       toast.warning("User ID not Found!");
@@ -114,14 +116,17 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
           >
             Message
           </button>
-          <Modal>
+          <Modal state={{
+            setIsOpen,
+            isOpen,
+          }}>
             <ModalTrigger asChild>
               <Button size="xs_normal" className="py-2 px-6">
                 more details
               </Button>
             </ModalTrigger>
             <ModalContent>
-              {inspection && <InspectionDetailModal data={inspection} />}
+              {inspection && <InspectionDetailModal data={inspection} setIsOpen={setIsOpen}/>}
             </ModalContent>
           </Modal>
         </div>

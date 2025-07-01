@@ -86,6 +86,10 @@ const TaskModal = ({
     if (!id) {
       return;
     }
+    if (!notes.length) {
+      toast.warning("Please attach a note");
+      return;
+    }
 
     try {
       setIsLoading(true);
@@ -162,9 +166,8 @@ const TaskModal = ({
                 Brief:
               </p>
               <TruncatedText>
-                 <span className="dark:text-darkText-2">{brief}</span>
+                <span className="dark:text-darkText-2">{brief}</span>
               </TruncatedText>
-             
             </div>
           </div>
         </div>
@@ -191,7 +194,7 @@ const TaskModal = ({
             {!statusChanger ? (
               <div className="space-y-2">
                 <Button
-                  disabled={isLoading || notes.length === 0}
+                  disabled={isLoading}
                   size="16_bold"
                   className="py-2 px-6 w-full"
                   //   className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
@@ -200,7 +203,7 @@ const TaskModal = ({
                   {isLoading ? "Please wait..." : "Approve Complaint"}
                 </Button>
                 <Button
-                  disabled={isLoading || notes.length === 0}
+                  disabled={isLoading}
                   size="16_bold"
                   variant="light_red"
                   className="py-2 px-6 w-full"

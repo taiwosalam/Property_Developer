@@ -11,6 +11,7 @@ import { boolean } from "zod";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { formatTime } from "../../notifications/data";
+import api, { handleAxiosError } from "@/services/api";
 
 dayjs.extend(advancedFormat);
 
@@ -63,6 +64,7 @@ export const formatToNaira = (amount: string | number): string => {
 
 export type TInspectionDetails = {
   id: number;
+  is_application?: boolean;
   property_name: string;
   total_package: string;
   fee_amount: string;
@@ -155,6 +157,8 @@ export const transformInspectionCard = (
         return {
           id: item?.id,
           property_id: item?.unit?.property_id,
+          is_application: item?.is_application,
+
           tier: item?.tier,
           property_name: item?.unit
             ? transformUnitDetails(item?.unit)
@@ -199,3 +203,17 @@ export interface FilterResult {
   startDate: string | null;
   endDate: string | null;
 }
+
+export const requestApplication = async (id: string) => {
+  try {
+    const res = await api.post(`inspections/approve/${id}`);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchInspection"));
+      return true;
+    }
+  } catch (error) {
+    console.error(error);
+    handleAxiosError(error);
+    return false;
+  }
+};

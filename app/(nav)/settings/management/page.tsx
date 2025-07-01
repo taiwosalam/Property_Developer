@@ -175,6 +175,15 @@ const Management = () => {
 
   // TENANT & OCCUPANT SCREENING LEVEL
   const handleUpdateScreeningLevel = async (data: Record<string, any>) => {
+    
+    const extractTierNumber = (val: string | number) => {
+      if (typeof val === "string" && val.toLowerCase().startsWith("tier")) {
+        const match = val.match(/\d+/);
+        return match ? Number(match[0]) : val;
+      }
+      return val;
+    };
+
     if (
       !data?.tenant_screening_level_type &&
       !data?.tenant_screening_level_type
@@ -182,9 +191,10 @@ const Management = () => {
       //toast.error("Please select a tenant screening level type");
       return;
     }
+
     const payload = {
-      tenant_screening_level: data.tenant_screening_level_type,
-      occupant_screening_level: data.occupant_screening_level_type,
+      tenant_screening_level: extractTierNumber(data.tenant_screening_level_type),
+      occupant_screening_level: extractTierNumber(data.occupant_screening_level_type),
     };
     try {
       setIsScreeningLevel(true);
@@ -311,14 +321,14 @@ const Management = () => {
                 <Select
                   id="tenant_screening_level_type"
                   label="tenant screening level type"
-                  defaultValue={`Tier ${screeningLevel?.tenant_screening_level}`}
+                  defaultValue={`Tier 1`}
                   options={tenant_occupant_options as unknown as string[]}
                   inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
                 />
                 <Select
                   id="occupant_screening_level_type"
                   label="occupant screening level type"
-                  defaultValue={`Tier ${screeningLevel?.occupant_screening_level}`}
+                  defaultValue={`Tier 1`}
                   options={tenant_occupant_options as unknown as string[]}
                   inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
                 />

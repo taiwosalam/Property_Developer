@@ -4,6 +4,7 @@ import Image from "next/image";
 import { empty } from "@/app/config";
 import { SectionSeparator } from "@/components/Section/section-components";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+import { transformUnitDetails } from "@/app/(nav)/listing/data";
 
 interface IApplicationCardUnit {
   unitId: number;
@@ -12,10 +13,21 @@ interface IApplicationCardUnit {
   propertyName: string;
   rentAmount: string;
   period: string;
-  moveOutDate: string;
+  moveOutDate?: string;
+  moveInDate?: string;
   propertyImages: Array<string>;
   propertyType: string;
   managedBy: string;
+  prev?: boolean;
+  unitData?: {
+    unit_name: string;
+    total_squ_area: string;
+    unit_preference: string;
+    unit_type: string;
+    unit_sub_type: string;
+    measurement: string;
+    bedroom: string;
+  };
 }
 export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
   unitName,
@@ -25,9 +37,12 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
   rentAmount,
   period,
   moveOutDate,
+  moveInDate,
   propertyImages,
   propertyType,
   managedBy,
+  prev,
+  unitData
 }) => {
   const [screenModal, setScreenModal] = useState(false);
 
@@ -49,21 +64,7 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
             <div>
               <p className="text-[#747474] dark:text-white">Unit Title</p>
               <p className="text-black dark:text-darkText-1 capitalize">
-                {unitName}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-[#747474] dark:text-white">Full Address</p>
-              <p className="text-black dark:text-darkText-1 capitalize">
-                {address}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-[#747474] dark:text-white">Unit Title</p>
-              <p className="text-black dark:text-darkText-1 capitalize">
-                {propertyName}
+                {unitData ? transformUnitDetails(unitData) : ""}
               </p>
             </div>
 
@@ -75,6 +76,13 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
             </div>
 
             <div>
+              <p className="text-[#747474] dark:text-white">Full Address</p>
+              <p className="text-black dark:text-darkText-1 capitalize">
+                {address}
+              </p>
+            </div>
+
+            <div>
               <p className="text-[#747474] dark:text-white">Period</p>
               <p className="text-black dark:text-darkText-1 capitalize">
                 {period}
@@ -82,30 +90,43 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
             </div>
 
             <div>
-              <p className="text-[#747474] dark:text-white">Move out Date</p>
-              <p className="text-black dark:text-darkText-1">{moveOutDate}</p>
+              <p className="text-[#747474] dark:text-white">Property Name</p>
+              <p className="text-black dark:text-darkText-1 capitalize">
+                {propertyName}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[#747474] dark:text-white">
+                {prev ? "Move out Date" : "Move in Date"}
+              </p>
+              <p className="text-black dark:text-darkText-1">
+                {prev ? moveOutDate : moveInDate}
+              </p>
             </div>
           </div>
 
           {/* Image */}
-          <div
-            role="button"
-            className="flex-shrink-0 w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
-            onClick={() => setScreenModal(true)}
-          >
-            {propertyImages.length > 1 && (
-              <div className="absolute z-[1] left-[50%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
-                <CameraIcon />
-                <p className="text-black font-medium text-[10px]">+{1}</p>
-              </div>
-            )}
-            <Image
-              src={propertyImages[0] || empty}
-              alt={"card"}
-              fill
-              className="object-cover object-center"
-            />
-          </div>
+          {propertyImages.length > 0 && (
+            <div
+              role="button"
+              className="flex-shrink-0 w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
+              onClick={() => setScreenModal(true)}
+            >
+              {propertyImages.length > 1 && (
+                <div className="absolute z-[1] left-[50%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+                  <CameraIcon />
+                  <p className="text-black font-medium text-[10px]">+{1}</p>
+                </div>
+              )}
+              <Image
+                src={propertyImages[0] || empty}
+                alt={"card"}
+                fill
+                className="object-cover object-center"
+              />
+            </div>
+          )}
         </div>
 
         <SectionSeparator className="my-4 h-[2px]" />

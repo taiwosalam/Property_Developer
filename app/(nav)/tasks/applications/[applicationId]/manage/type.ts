@@ -1,20 +1,26 @@
-
-
 export type TApplicationDetailsResponse = {
   status: "success";
   data: {
+    rent_history: {
+      current: RentHistoryItem[];
+      previous: RentHistoryItem[];
+    };
     application_id: number;
     application_date: string;
+    application_duration: string;
 
     property_details: {
       property_title: string;
-      full_access: string;
+      full_address: string;
       address: string;
       landlord: string;
+      unit_name: string;
       description: string;
       state: string;
       branch: string;
       categories: string;
+      total_package: string;
+      renew_total_package: string;
       rent: string;
       local_government: string;
       account_officer: string;
@@ -59,39 +65,46 @@ export type TApplicationDetailsResponse = {
       phone: string;
       relationship: string;
     };
-    guarantors: {
-      guarantor_1: {
-        name: string;
-        email: string;
-        phone_number: string;
-        address: string;
-      } | null;
-      guarantor_2: {
-        name: string;
-        email: string;
-        phone_number: string;
-        address: string;
-      } | null;
-    };
-    flag: {
+    guarantors:
+      | {
+          name: string;
+          email: string;
+          phone: string;
+          relationship: string;
+          address: string;
+          occupation: string;
+        }[]
+      | null;
+
+    flags: {
       is_flagged: boolean;
-      reason: null;
-      appeal_reason: null;
-      status: null;
+      reason: string;
+      appeal_reason: string;
+      status: "cancelled" | "pending" | "evaluated" | "approved";
+      created_at: string;
       flagger: {
-        flaggedBy: null;
+        name: string;
+        email: string;
+        phone: string;
+        picture: string | null;
+        company: string;
       };
-    };
-    rent_history: {
-      current: RentHistoryItem[];
-      previous: RentHistoryItem[];
-    };
+    }[];
   };
 };
 
 export type RentHistoryItem = {
   id: number;
+  property_address: string;
+  property_name: string;
   payment_date: string;
+  tenantName: string;
+  unit_type: string;
+  unit_sub_type: string;
+  unit_preference: string;
+  measurement: string;
+  total_area_sqm: string;
+  bedroom: string;
   amount_paid: string;
   total_amount: string;
   balance_due: string;
@@ -100,8 +113,11 @@ export type RentHistoryItem = {
   invoice_status: string;
   start_date: string;
   due_date: string;
+  move_out: string;
+  managedBy: string | null;
   cautionDeposit: string | null;
   propertyType: string;
+  period: string;
   unit_id: number;
   unit_name: string;
   serviceCharge: null;

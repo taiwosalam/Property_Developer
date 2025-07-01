@@ -28,6 +28,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../../reports/data/utils";
 import ServerError from "@/components/Error/ServerError";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const InspectionPage = () => {
   const [inspectionData, setInspectionData] =
@@ -108,7 +109,10 @@ const InspectionPage = () => {
     error,
     loading,
     silentLoading,
+    refetch,
   } = useFetch<InspectionDataApiResponse>(`inspections`, config);
+
+  useRefetchOnEvent("dispatchInspection", () => refetch({ silent: true }));
 
   const { data: propertyData } = useFetch<PropertyListResponse>(`property/all`);
 
@@ -155,9 +159,9 @@ const InspectionPage = () => {
     return <NetworkError />;
   }
   if (loading) {
-    return(
+    return (
       <AutoResizingGrid gap={28} minWidth={400}>
-         <PropertyrequestSkeletonLoader length={10} />
+        <PropertyrequestSkeletonLoader length={10} />
       </AutoResizingGrid>
     );
   }
