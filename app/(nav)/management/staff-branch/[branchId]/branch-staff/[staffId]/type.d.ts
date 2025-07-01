@@ -141,7 +141,7 @@ export interface StaffPageTypes {
   };
   activities: StaffActivitiies[];
   chats: [];
-  portfolio: {
+  portfolio?: {
     properties: {
       property_name: string;
       image: string[];

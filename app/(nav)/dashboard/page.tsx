@@ -160,7 +160,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (complaintData) {
       const transformData = transformComplaintsData(complaintData);
-      setPageData(transformData);
+    setPageData(transformData);
 
       const transformRecentComplaints =
         transformComplaintDashboard(complaintData);

@@ -28,6 +28,8 @@ export interface InvoiceData {
   account_name?: string;
   company_owed?: string;
   tenant_owed?: string;
+  payment_status_desc?: string;
+  payment_status_amount?: string | number;
 }
 
 export interface InvoiceResponse {
@@ -62,6 +64,8 @@ export interface InvoicePageData {
   branchBankDetails?: BranchBankDetailsObj;
   company_owed?: number;
   tenant_owed?: number;
+  payment_status_desc?: string;
+  payment_status_amount?: string | number;
 }
 
 

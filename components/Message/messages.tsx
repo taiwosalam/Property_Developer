@@ -3,10 +3,16 @@ import Message from "./message";
 import { MessagesProps } from "./types";
 import { getLocalStorage } from "@/utils/local-storage";
 
-const Messages: React.FC<MessagesProps> = ({ day, messages, userId, noScroll }) => {
+const Messages: React.FC<MessagesProps> = ({
+  day,
+  messages,
+  chat_type,
+  userId,
+  noScroll,
+}) => {
   const user_id = useAuthStore((state) => state.user_id);
-  const id = getLocalStorage("user_id")
-  
+  const id = getLocalStorage("user_id");
+
   return (
     <div className="custom-flex-col gap-8">
       {/* Day Label */}
@@ -29,6 +35,7 @@ const Messages: React.FC<MessagesProps> = ({ day, messages, userId, noScroll }) 
               text={m.text}
               seen={m.seen}
               noScroll={noScroll}
+              sender={m.sender}
             />
           );
         })}

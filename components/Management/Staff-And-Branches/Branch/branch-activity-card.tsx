@@ -1,3 +1,5 @@
+import { CalendarEventProps } from "@/components/Calendar/types";
+import useFetch from "@/hooks/useFetch";
 import {
   ActivitiesIcon,
   ArrowLeftIcon,
@@ -6,6 +8,9 @@ import {
 import clsx from "clsx";
 // import activitiesIcon from "@/public/icons/activities.svg";
 import Image from "next/image";
+import { useMemo, useState } from "react";
+import { ActivityDisplay, CalendarEventsApiResponse } from "../types";
+import { transformBranchActivities } from "../data";
 
 interface ActivityItemProps {
   label: string;
@@ -16,6 +21,7 @@ interface ActivityItemProps {
 
 interface BranchActivitiesCardProps {
   className?: string;
+  branchId?: number;
 }
 
 const ActivityItem: React.FC<ActivityItemProps> = ({
@@ -43,37 +49,37 @@ const ActivityItem: React.FC<ActivityItemProps> = ({
 
 const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
   className,
+  branchId,
 }) => {
-  const activities: any[] = [
-    // {
-    //   label: "Complain",
-    //   description:
-    //     "Adedeji to go on a site inspection by 12:30 pm at Akinyele, Ibadan.",
-    //   time: "",
-    //   color: "bg-teal-500",
-    // },
-    // {
-    //   label: "New Payment",
-    //   description:
-    //     "Adedeji to go on a site inspection by 12:30 pm at Akinyele, Ibadan.",
-    //   time: "",
-    //   color: "bg-orange-400",
-    // },
-    // {
-    //   label: "Inspection",
-    //   description:
-    //     "Adedeji to go on a site inspection by 12:30 pm at Akinyele, Ibadan.",
-    //   time: "",
-    //   color: "bg-green-500",
-    // },
-    // {
-    //   label: "Rent due",
-    //   description:
-    //     "Adedeji to go on a site inspection by 12:30 pm at Akinyele, Ibadan.",
-    //   time: "",
-    //   color: "bg-purple-500",
-    // },
-  ];
+  const PAGE_SIZE = 4;
+  const [page, setPage] = useState(0);
+  const {
+    data: calendarEventApiResponse,
+    loading,
+    error,
+    isNetworkError,
+  } = useFetch<CalendarEventsApiResponse>(
+    `/company/calender?branch_id=${branchId}`
+  );
+
+  const activities = useMemo(
+    () =>
+      calendarEventApiResponse?.data
+        ? transformBranchActivities(calendarEventApiResponse.data)
+        : [],
+    [calendarEventApiResponse]
+  );
+
+  console.log("calendarEventApiResponse", calendarEventApiResponse);
+
+  const pagedActivities = useMemo(
+    () => activities.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE),
+    [activities, page]
+  );
+
+  const handlePrev = () => setPage((p) => Math.max(0, p - 1));
+  const handleNext = () =>
+    setPage((p) => ((p + 1) * PAGE_SIZE < activities.length ? p + 1 : p));
 
   return (
     <div
@@ -95,28 +101,35 @@ const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
             25 January 2023
           </span> */}
         </div>
-        <div className="flex space-x-5 items-center text-text-tertiary">
-          <button>
+        <div className="flex space-x-5 items-center text-text-tertiary dark:text-white">
+          <button onClick={handlePrev} disabled={page === 0}>
             <ArrowLeftIcon />
           </button>
-          <button>
+          <button
+            onClick={handleNext}
+            disabled={(page + 1) * PAGE_SIZE >= activities.length}
+          >
             <ArrowRightIcon />
           </button>
         </div>
       </div>
 
       <div className="bg-white dark:bg-darkText-primary py-4 px-2 text-text-primary rounded-b-lg">
-        {activities.map((activity, index) => (
+        {pagedActivities.map((activity, index) => (
           <div key={index}>
             <ActivityItem
               label={activity.label}
-              description={activity.description.substring(0, 65).concat("...")}
+              description={
+                activity.description.length > 65
+                  ? activity.description.substring(0, 65).concat("...")
+                  : activity.description
+              }
               time={activity.time}
               color={activity.color}
             />
             <div
               className="h-[1px] w-full bg-text-disabled bg-opacity-60"
-              hidden={index === activities.length - 1}
+              hidden={index === pagedActivities.length - 1}
             />
           </div>
         ))}

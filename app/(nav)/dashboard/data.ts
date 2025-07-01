@@ -15,7 +15,7 @@ import type { Field } from "@/components/Table/types";
 import api, { handleAxiosError } from "@/services/api";
 import { Task } from "@/components/dashboard/kanban/TaskCard";
 
-function getBackgroundColor(title: string): string {
+export function getBackgroundColor(title: string): string {
   let backgroundColor: string;
 
   switch (title) {
@@ -361,6 +361,7 @@ export const getRecentMessages = (data: any) => {
       count: m?.unread_count,
       content_type: m?.content_type,
       online: m?.online,
+      badgeColor: m.badgeColor,
     }));
 };
 

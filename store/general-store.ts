@@ -30,14 +30,15 @@ import {
 } from "@/components/Settings/types";
 import { Transactions } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 import { OtherAgreementDocumentOption } from "@/components/Documents/other-agreement";
-import {
-  ProfileSettingsPageState,
-} from "@/app/(nav)/settings/company/data";
+import { ProfileSettingsPageState } from "@/app/(nav)/settings/company/data";
 import { StaffChatTypes } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/type";
 import { PropertyCardProps } from "@/components/Management/Properties/property-card";
 import { IVisitorsReportPageData } from "@/app/(nav)/reports/visitors/data";
 import { PropertyManagerSubsTransformedPlan } from "@/app/(nav)/settings/subscription/types";
-import { ICallbackRequest, ICallbackRequestPageData } from "@/app/(nav)/reports/call/data";
+import {
+  ICallbackRequest,
+  ICallbackRequestPageData,
+} from "@/app/(nav)/reports/call/data";
 import { DataItem } from "@/components/Table/types";
 
 interface GlobalStoreState {
@@ -61,7 +62,7 @@ interface GlobalStoreState {
   feature_history?: EnrollmentHistoryTable;
   campaign_history?: ICampaignTable[];
   sponsored_listing?: ISponsoredListing[];
-  callback_requests?: ICallbackRequest[]
+  callback_requests?: ICallbackRequest[];
 
   activities?: ActivityDataReport[];
   user_activities?: ActivityDataReport[];
@@ -98,7 +99,12 @@ interface GlobalStoreState {
   closeUnitForm: boolean;
   SelectedDirectorPics: boolean;
 
-  isValidDateRange: boolean,
+  paymentStatus: {
+    desc: string;
+    amount: number;
+  };
+
+  isValidDateRange: boolean;
   setIsValidDateRange: (isValid: boolean) => void;
 
   branchWalletTransactions: Transactions[] | null;
@@ -114,16 +120,17 @@ interface GlobalStoreState {
     id: number;
     imageUrl: string;
     name: string;
-    position: string; 
+    position: string;
     last_seen?: string;
   } | null;
 
   domainAvailable: boolean;
+  isGroupChat: boolean;
 
   openDocumentModal: boolean;
   selectedDocumentOption: OtherAgreementDocumentOption | null;
-  
-  profileSettingsData: ProfileSettingsPageState | null; 
+
+  profileSettingsData: ProfileSettingsPageState | null;
   selectedSubPlan: PropertyManagerSubsTransformedPlan | null;
   selectedLandlordId: string | null;
   selectedTenantId: string | null;
@@ -157,7 +164,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   landlords: [],
   tenants: [],
   units: [],
-  subscriptions:[],
+  subscriptions: [],
   activities: [],
   vehicle_records: [],
   rent: [],
@@ -187,7 +194,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   visitorsRequest: null,
   overduePeriods: null,
   staffChats: null,
-  
+
   // timeRange: "90d",
   selectedDateRange: undefined,
   unitData: null,
@@ -196,6 +203,11 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   setUnitData: (data) => set({ unitData: data }),
   canSubmit: true,
   SelectedDirectorPics: false,
+  isGroupChat: false,
+  paymentStatus: {
+    desc: "",
+    amount: 0,
+  },
 
   branchWalletTransactions: null,
 
