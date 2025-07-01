@@ -63,7 +63,7 @@ const MessagesSidebar = ({
           ))}
         </div>
       ) : (
-        <div className="custom-flex-col relative z-[1] pb-4">
+        <div className="custom-flex-col overflow-x-hidden relative z-[1] pb-4">
           {filteredMessages.map((message, idx) =>
             message.type === "group" ? (
               <MessageCard

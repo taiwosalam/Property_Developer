@@ -15,21 +15,41 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useSettings } from "@/hooks/settingsContext";
 import { sanitizeDomainInput } from "@/utils/sanitize-domain";
 
+const MAX_SMS_NAME_LENGTH = 11;
+
 const SettingsSMS = () => {
   const [loading, setLoading] = useState(false);
   const [next, setNext] = useState(false);
   const { data, isLoading, error } = useSettings();
-  const [name, setName] = useState(data?.sms_name);
+  const [name, setName] = useState<string>("");
 
   useEffect(() => {
-    if (data) {
-      const sanitizedName = sanitizeDomainInput(data.sms_name);
-      setName(sanitizedName.slice(0, 11));
+    if (data?.sms_name) {
+      const sanitizedName = sanitizeDomainInput(data.sms_name).slice(
+        0,
+        MAX_SMS_NAME_LENGTH
+      );
+      setName(sanitizedName);
     }
   }, [data]);
-  
-  const handleUpdateSMS = async (data: Record<string, string>) => {
-    const sanitizedName = sanitizeDomainInput(data.desired_name);
+
+  const handleInputChange = (value: string) => {
+    // Sanitize and trim to 11 chars
+    const sanitized = sanitizeDomainInput(value).slice(0, MAX_SMS_NAME_LENGTH);
+    setName(sanitized);
+  };
+
+  const handleUpdateSMS = async (formData: Record<string, string>) => {
+    const sanitizedName = sanitizeDomainInput(formData.desired_name).slice(
+      0,
+      MAX_SMS_NAME_LENGTH
+    );
+
+    if (!sanitizedName) {
+      toast.error("Name cannot be empty.");
+      return;
+    }
+
     const payload = {
       sms_name: sanitizedName,
     };
@@ -38,7 +58,6 @@ const SettingsSMS = () => {
       setLoading(true);
       const res = await updateSMSSettings(objectToFormData(payload));
       if (res) {
-        console.log(res);
         toast.success("SMS settings updated successfully");
         setNext(true);
       }
@@ -48,6 +67,7 @@ const SettingsSMS = () => {
       setLoading(false);
     }
   };
+
   return (
     <div>
       <SettingsSection title="Customized SMS name">
@@ -59,9 +79,12 @@ const SettingsSMS = () => {
                 id="desired_name"
                 label="input desired name"
                 className="w-[277px]"
-                maxLength={11}
+                maxLength={MAX_SMS_NAME_LENGTH}
+                name="desired_name"
+                value={name}
                 defaultValue={name}
-                onChange={(value) => setName(sanitizeDomainInput(value))}
+                onChange={handleInputChange}
+                // autoComplete="off"
               />
             </div>
             <SettingsUpdateButton

@@ -114,12 +114,12 @@ const ProfessionalPlanCard = ({
             </p>
             <div className="btns flex flex-col">
               <CounterButton
-                onClick={()=> {}}
+                onClick={() => {}}
                 icon="/icons/plus.svg"
                 alt="plus"
               />
               <CounterButton
-                onClick={()=> {}}
+                onClick={() => {}}
                 icon="/icons/minus.svg"
                 alt="minus"
               />
@@ -133,6 +133,8 @@ const ProfessionalPlanCard = ({
 
       {/* FEATURES */}
       <FeaturesToggle
+        planTitle=""
+        isFree={false}
         showFeatures={showFeatures}
         getFeaturesText={() => "Professional Features"}
         handleCardClick={() => setShowFeatures(!showFeatures)}

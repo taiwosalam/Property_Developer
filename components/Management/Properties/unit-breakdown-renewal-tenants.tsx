@@ -196,7 +196,7 @@ const UnitBreakdownRenewalTenant = () => {
         {shouldChargeTenantAgencyFee && (
           <Input
             id="renew_agency_fee"
-            label="Agency Fee"
+            label="Management Fee"
             inputClassName="bg-white"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             value={agencyFee}

@@ -51,6 +51,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { saveLocalStorage } from "@/utils/local-storage";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -110,7 +111,6 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
     if (!tenant.id) return toast.warning("Tenant User ID not Found!");
     router.push(`/messages/${tenant?.id}`);
   };
-
 
   return (
     <div className="custom-flex-col gap-6 lg:gap-10">
@@ -245,7 +245,9 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                   size="base_medium"
                   className="py-2 px-8"
                   onClick={() =>
-                    router.push(`/management/rent-unit/?is_active=vacant&tenant_id=${tenantId}`)
+                    router.push(
+                      `/management/rent-unit/?is_active=vacant&tenant_id=${tenantId}`
+                    )
                   }
                 >
                   Link New Unit
@@ -300,7 +302,13 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           </p>
         ) : (
           tenant?.current_rent?.map((rent, index) => (
-            <UnitItem key={index} {...rent} />
+            <UnitItem
+              key={index}
+              {...rent}
+              tenantId={tenant?.id}
+              cautionDeposit={String(rent.caution_deposit)}
+              tenantAgent={tenant?.user_tag}
+            />
           ))
         )}
       </LandlordTenantInfoSection>
@@ -385,7 +393,13 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             </p>
           ) : (
             tenant?.previous_rent?.map((rent, index) => (
-              <UnitItem key={index} {...rent} />
+              <UnitItem
+                key={index}
+                {...rent}
+                tenantId={tenant?.id}
+                cautionDeposit={String(rent.caution_deposit)}
+                tenantAgent={tenant?.user_tag}
+              />
             ))
           )}
         </div>

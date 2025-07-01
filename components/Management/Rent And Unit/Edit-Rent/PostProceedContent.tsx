@@ -10,6 +10,8 @@ import {
   calculateBalance,
   getEstateData,
   getPropertyEstateData,
+  defaultChecks,
+  CheckBoxOptions,
   // getEstateSettingsDta,
   // getPropertyEstateData,
 } from "@/components/Management/Rent And Unit/data";
@@ -60,6 +62,18 @@ import { AgreementPreview } from "@/components/Modal/tenant-document";
 import { useTourStore } from "@/store/tour-store";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
 
+type SwitchUnitPayload = {
+  new_unit_id: string | undefined;
+  calculation: number;
+  deduction: number;
+  payment_date: string | null;
+  has_document: number;
+  payment_status_desc: string;
+  payment_status_amount: number;
+  has_invoice: number;
+  doc_file?: File | null;
+};
+
 const PostProceedContent = ({
   selectedUnitId,
   page,
@@ -103,6 +117,8 @@ const PostProceedContent = ({
   const outstanding = currentRentStats?.outstanding || 0;
   const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [selectedCheckboxOptions, setSelectedCheckboxOptions] =
+    useState<CheckBoxOptions>(defaultChecks);
   const paymentStatus = useGlobalStore((s) => s.paymentStatus);
   const isUnit = page === "unit";
 
@@ -226,8 +242,6 @@ const PostProceedContent = ({
   const balanceLabel = isExcess ? "Client Excess" : "Refund Client";
   const showBalanceCard = totalPayable < 0 || isExcess;
 
-  console.log("propertyData", propertyData);
-
   const currentUnitAmt = formatFee(newUnitTotal, unitData?.currency || "naira");
 
   const rentalData = getRentalData(isUnit ? currentUnit : propertyData);
@@ -239,6 +253,10 @@ const PostProceedContent = ({
   const UnitPageEstateData = getEstateData(currentUnit);
   const estateData = isUnit ? UnitPageEstateData : PropertyPageEstateData;
   // const estateData = getEstateData(isUnit ? currentUnit : propertyData);
+
+  const HAS_DOCUMENT = unitData?.property_document?.document_id;
+  const IS_FACILITY = unitData?.propertyType === "facility";
+  const AGREEMENT_CHECKED = selectedCheckboxOptions.rent_agreement;
 
   const estateSettingsDta = getEstateSettingsData(
     isUnit ? currentUnit : propertyData
@@ -258,9 +276,15 @@ const PostProceedContent = ({
     }
     const IS_FACILITY = propertyType === "facility";
     // Open modal for all tenants
-    // setIsAgreementModalOpen(true);
-    if (!IS_FACILITY && !isPastDate) {
-      // Open modal for non-facility and non-past date cases
+    // // setIsAgreementModalOpen(true);
+    // if (!IS_FACILITY && !isPastDate) {
+    //   // Open modal for non-facility and non-past date cases
+    //   setIsAgreementModalOpen(true);
+    //   return;
+    // }
+
+    // Only open modal if not facility, not past date, and rent_agreement is true
+    if (!IS_FACILITY && !isPastDate && selectedCheckboxOptions.rent_agreement) {
       setIsAgreementModalOpen(true);
       return;
     }
@@ -271,17 +295,28 @@ const PostProceedContent = ({
 
   const submitSwitchUnit = async (doc_file: File | null) => {
     const id = balance[0].id;
-    const data = {
+    const IS_FACILITY = propertyType === "facility";
+    const shouldAttachDocument =
+      !IS_FACILITY &&
+      !isPastDate &&
+      !!selectedCheckboxOptions.rent_agreement &&
+      doc_file;
+
+    const data: SwitchUnitPayload = {
       new_unit_id: selectedUnitId,
       calculation: calculation ? 1 : 0,
       deduction: deduction ? 1 : 0,
       payment_date: startDate,
-      has_document: isRental ? 1 : 0,
+      has_document: shouldAttachDocument ? 1 : 0,
       payment_status_desc: paymentStatus?.desc || "",
       payment_status_amount: paymentStatus?.amount || 0,
       has_invoice: 1, //ADDED AS REQUEST BY MR-TAIWO
-      ...(isRental ? { doc_file } : {}), // Only include doc_file for rental properties
+      // ...(isRental ? { doc_file } : {}), // Only include doc_file for rental properties
     };
+
+    if (shouldAttachDocument) {
+      data.doc_file = doc_file;
+    }
 
     try {
       setReqLoading(true);
@@ -367,6 +402,9 @@ const PostProceedContent = ({
               rentPeriod="yearly"
               title={`Start ${isRental ? "Rent" : "Counting"}`}
               start
+              isUpfrontPaymentChecked
+              setSelectedCheckboxOptions={setSelectedCheckboxOptions}
+              unitData={unitData}
               setStart_Date={(date) => setStartDate(date)}
             />
           </div>
@@ -381,10 +419,24 @@ const PostProceedContent = ({
           noRefetch={true}
         />
       </section>
-      <FixedFooter className="flex items-center justify-end">
+      <FixedFooter className="flex gap-4">
+        {!IS_FACILITY && AGREEMENT_CHECKED && (
+          <Button
+            href={
+              HAS_DOCUMENT
+                ? `/documents/manage-tenancy-agreement?d=${unitData?.property_document?.document_id}`
+                : `/documents/`
+            }
+            size="base_medium"
+            className="py-2 px-6"
+          >
+            {HAS_DOCUMENT ? "Manage Agreement" : "Create Agreement"}
+          </Button>
+        )}
+
         <Button
           size="base_medium"
-          className="py-2 px-6"
+          className="py-2 px-6 items-end ml-auto"
           disabled={reqLoading}
           onClick={handleSwitchUnit}
         >
