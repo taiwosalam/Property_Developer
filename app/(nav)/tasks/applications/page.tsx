@@ -27,6 +27,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ApplicationStatusItem } from "@/components/Listing/Property/property-listing-component";
+import { IPropertyApi } from "../../settings/others/types";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
@@ -68,18 +69,36 @@ const Applications = () => {
     );
   };
 
+  const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
+
+  const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
+    ? [
+        ...new Map(
+          propertiesData.data.properties.data.map((property: any) => [
+            property.title, // Use property title as the unique key
+            {
+              label: property.title,
+              value: property.id.toString(),
+            },
+          ])
+        ).values(),
+      ]
+    : [];
+
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
-    const propertyArray = menuOptions["Property"] || [];
+    const property = menuOptions["Property"] || [];
     const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: LandlordRequestParams = {
       page: 1,
       search: "",
     };
-    if (propertyArray.length > 0) {
-      queryParams.states = propertyArray.join(",");
+    if (property.length > 0) {
+      property.forEach((id: string | number, idx: number) => {
+        (queryParams as any)[`property_ids[${idx}]`] = id;
+      });
     }
     if (branchIdsArray.length > 0) {
       queryParams.branch_ids = branchIdsArray.join(",");
@@ -126,8 +145,6 @@ const Applications = () => {
       value: branch.id,
     })) || [];
 
-  const propertyOptions = [];
-
   useEffect(() => {
     if (apiData) {
       const transData = transformApplicationData(apiData);
@@ -139,8 +156,6 @@ const Applications = () => {
     return (
       <CustomLoader layout="page" statsCardCount={3} pageTitle="Application" />
     );
-
-  console.log(pageData?.applications);
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -182,9 +197,19 @@ const Applications = () => {
           searchInputPlaceholder="Search application"
           dateLabel="Application Date"
           handleFilterApply={handleFilterApply}
+          handleSearch={handleSearch}
           onSort={handleSort}
           appliedFilters={appliedFilters}
-          filterOptionsMenu={[]}
+          filterOptionsMenu={[
+            ...(propertyOptions.length > 0
+              ? [
+                  {
+                    label: "Property",
+                    value: propertyOptions,
+                  },
+                ]
+              : []),
+          ]}
           // filterOptionsMenu={[
           //   ...(DocumentssFilterOptionsWithDropdown),
           //   ...(branchOptions)

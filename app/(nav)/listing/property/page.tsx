@@ -24,6 +24,14 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import { PropertyListResponse } from "../../tasks/inspections/type";
+import { IPropertyApi } from "../../settings/others/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { hasActiveFilters } from "../../reports/data/utils";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 
 const Property = () => {
   const [pageData, setPageData] = useState<PropertyPageState>(initialState);
@@ -94,6 +102,15 @@ const Property = () => {
     setPage(1);
   };
 
+  const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
+
   const {
     data: apiData,
     loading,
@@ -102,6 +119,27 @@ const Property = () => {
     error,
     refetch,
   } = useFetch<PropertyApiResponse | any>(endpoint, config);
+
+  const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
+
+  const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
+    ? [
+        ...new Map(
+          propertiesData.data.properties.data
+            .filter(
+              (property: any) =>
+                property.property_type === "rental" && property.units.length > 0
+            )
+            .map((property: any) => [
+              property.title, // Use property title as the unique key
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   useEffect(() => {
     if (apiData) {
@@ -163,11 +201,114 @@ const Property = () => {
           video: "",
         }}
         searchInputPlaceholder="Search"
-        handleFilterApply={() => {}}
+        handleFilterApply={handleFilterApply}
         isDateTrue={false}
-        filterOptionsMenu={listingPropertyFilter}
+        filterOptionsMenu={[
+          ...listingPropertyFilter,
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
+          ...(propertyOptions.length > 0
+            ? [
+                {
+                  label: "Property",
+                  value: propertyOptions,
+                },
+              ]
+            : []),
+        ]}
         hasGridListToggle={false}
       />
+
+      {loading || silentLoading ? (
+        <AutoResizingGrid gap={28} minWidth={400}>
+          <PropertyrequestSkeletonLoader length={10} />
+        </AutoResizingGrid>
+      ) : !pageData?.properties.length ? (
+        // Show empty state when no visitors exist
+        <EmptyList
+          noButton
+          title="Unpublished Properties & Incoming Transfer Requests"
+          body={
+            <p>
+              You currently have no unpublished properties or incoming property
+              transfer requests from other companies. Any property you create
+              without units will appear here.
+              <br />
+              You can choose to complete them from this page or delete them if
+              they&apos;re no longer needed.
+              <br />
+              <br />
+              If you intend to transfer any property and its units from your
+              company portfolio to another company, simply share the property ID
+              with them. Their transfer request will appear here for your
+              approval.
+              <br />
+            </p>
+          }
+        />
+      ) : !!config.params.search || hasActiveFilters(appliedFilters) ? (
+        // If we have data but search/filters return nothing, show search error
+        pageData.properties.length === 0 ? (
+          <SearchError />
+        ) : (
+          // Show filtered/searched results
+          <section>
+            <div className="custom-flex-col gap-8">
+              <div className="flex flex-wrap gap-4 justify-end">
+                {Object.entries(property_listing_status).map(
+                  ([key, value], idx) => (
+                    <PropertyListingStatusItem
+                      key={`${key}(${idx})`}
+                      text={key}
+                      color={value}
+                    />
+                  )
+                )}
+              </div>
+              {pageData.properties.map((property) => (
+                <PropertyListingCard
+                  key={property.id}
+                  data={property as any}
+                  status={property.status}
+                  propertyType={property.property_type as "rental" | "gated"}
+                />
+              ))}
+            </div>
+          </section>
+        )
+      ) : (
+        // Show all results when no search/filters active
+        <section>
+          <div className="custom-flex-col gap-8">
+            <div className="flex flex-wrap gap-4 justify-end">
+              {Object.entries(property_listing_status).map(
+                ([key, value], idx) => (
+                  <PropertyListingStatusItem
+                    key={`${key}(${idx})`}
+                    text={key}
+                    color={value}
+                  />
+                )
+              )}
+            </div>
+            {pageData.properties.map((property) => (
+              <PropertyListingCard
+                key={property.id}
+                data={property as any}
+                status={property.status}
+                propertyType={property.property_type as "rental" | "gated"}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="custom-flex-col gap-8">
         <div className="flex flex-wrap gap-4 justify-end">
           {Object.entries(property_listing_status).map(([key, value], idx) => (

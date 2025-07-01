@@ -7,22 +7,6 @@ import { toast } from "sonner";
 
 export const listingPropertyFilter: FilterOptionMenu[] = [
   {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
-  {
-    label: "branch",
-    value: [
-      { label: "branch 1", value: "branch1" },
-      { label: "branch 2", value: "branch2" },
-      { label: "branch 3", value: "branch3" },
-    ],
-  },
-  {
     label: "Status",
     radio: true,
     value: [
@@ -160,9 +144,8 @@ export const transformDraftUnitData = (
     ? response.data.invites
     : response.data;
 
-  console.log("Property data", propertyData);
   const transformedProperties: any = propertyData.data.map((p) => {
-    const status = p.invites.length > 0 ? "request" : "draft";
+    const status = p?.invites?.length > 0 ? "request" : "draft";
     const updatedAt = moment(p.updated_at);
     let lastUpdated;
     const now = moment();
@@ -171,15 +154,15 @@ export const transformDraftUnitData = (
     } else {
       lastUpdated = updatedAt.format("DD/MM/YYYY");
     }
-    const totalReturns = p.units.reduce((sum, unit) => {
+    const totalReturns = p?.units?.reduce((sum, unit) => {
       return sum + parseFloat(unit.fee_amount);
     }, 0);
     const feePercentage =
       p.property_type === "rental" ? p.agency_fee : p.management_fee;
-    const units = p.units.length;
+    const units = p.units?.length;
     return {
       id: p.id,
-      images: p.images.map((image) => image.path),
+      images: p.images?.map((image) => image.path),
       property_name: p.title,
       address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
       company_name: p.invites.map((name) => name.company.company_name),

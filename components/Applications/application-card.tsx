@@ -49,14 +49,11 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             <p className="text-black text-sm font-bold dark:text-white capitalize">
               {data?.full_name}
             </p>
-            {type == "mobile" ? (
-              <BadgeIcon
-                color={getBadgeColor(data?.tier_id) || "gray"}
-                noMargin
-              />
-            ) : (
-              <p className="text-support-3 text-xs font-bold italic">Guest</p>
-            )}
+
+            <BadgeIcon
+              color={getBadgeColor(data?.tier_id) || "gray"}
+              noMargin
+            />
           </div>
           {type == "mobile" ? (
             <p
@@ -170,7 +167,11 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
       )}
       <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
         <ModalContent>
-          <FlaggedApplicantAccountModal />
+          <FlaggedApplicantAccountModal
+            flag_details={data?.flag_details}
+            id={data?.id}
+            setIsOpen={setModalOpen}
+          />
         </ModalContent>
       </Modal>
     </div>

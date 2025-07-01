@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Imports
 import { ModalTrigger } from "@/components/Modal/modal";
@@ -13,6 +13,7 @@ import { CancelIcon } from "@/public/icons/icons";
 import { Inspection } from "@/app/(nav)/tasks/inspections/type";
 import {
   formatToNaira,
+  requestApplication,
   TInspectionDetails,
 } from "@/app/(nav)/tasks/inspections/data";
 import { formatTime } from "@/app/(nav)/notifications/data";
@@ -25,9 +26,14 @@ import { toast } from "sonner";
 
 interface InspectionDetailsModelProps {
   data: TInspectionDetails;
+  setIsOpen?: (val: boolean) => void;
 }
-const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
+const InspectionDetailModal = ({
+  data,
+  setIsOpen,
+}: InspectionDetailsModelProps) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const getBadgeColor = (tier?: number): BadgeIconColors => {
     if (!tier) return "blue";
@@ -40,6 +46,22 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
       router.push("/messages");
     }
     router.push(`/messages/${data.userId}`);
+  };
+
+  const handleRequestApplication = async () => {
+    if (!data?.id) return;
+    try {
+      setIsLoading(true);
+      const res = await requestApplication(data?.id.toString());
+      if (res) {
+        toast.success("Application request sent");
+        setIsOpen?.(false);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <div
@@ -114,9 +136,17 @@ const InspectionDetailModal = ({ data }: InspectionDetailsModelProps) => {
             </div>
           </div>
           <div className="flex gap-4 justify-end">
-            <Button variant="sky_blue" size="xs_normal" className="py-2 px-6">
-              Request Application
-            </Button>
+            {!data?.is_application && (
+              <Button
+                variant="sky_blue"
+                size="xs_normal"
+                className="py-2 px-6"
+                disabled={isLoading}
+                onClick={handleRequestApplication}
+              >
+                {isLoading ? "Please wait..." : "Request Application"}
+              </Button>
+            )}
             <Button
               size="xs_normal"
               className="py-2 px-6"

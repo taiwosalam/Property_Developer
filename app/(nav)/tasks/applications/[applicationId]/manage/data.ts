@@ -1,16 +1,26 @@
 import { property } from "lodash";
 import { RentHistoryItem, TApplicationDetailsResponse } from "./type";
 import api, { handleAxiosError } from "@/services/api";
-import { getBadgeColor } from "@/lib/utils";
+import { formatToNaira, getBadgeColor } from "@/lib/utils";
 
 export interface IRentHistory {
   unitId: number;
   unitName: string;
   address: string;
   propertyName: string;
+  unitData?: {
+    unit_name: string;
+    total_squ_area: string;
+    unit_preference: string;
+    unit_type: string;
+    unit_sub_type: string;
+    measurement: string;
+    bedroom: string;
+  };
   rentAmount: string;
   period: string;
-  moveOutDate: string;
+  moveOutDate?: string;
+  moveInDate?: string;
   propertyImages: Array<string>;
   propertyType: string;
   managedBy: string;
@@ -40,7 +50,6 @@ export interface IApplicationDetails {
     encodedId: string;
     photo: string;
     notes: string;
-    applied_duration: string;
     gender: "male" | "female";
     birthday: string;
     religion: string;
@@ -71,22 +80,29 @@ export interface IApplicationDetails {
     employment_type: string;
     family_type: string;
   };
-  guarantor1: {
-    name: string;
-    email: string;
-    phone_number: string;
-    address: string;
-  } | null;
-  guarantor2: {
-    name: string;
-    email: string;
-    phone_number: string;
-    address: string;
-  } | null;
+  guarantors:
+    | {
+        name: string;
+        email: string;
+        phone: string;
+        address: string;
+      }[]
+    | null;
   experience: string;
   justification: string;
   current_rent: IRentHistory[];
   previous_rent: IRentHistory[];
+  flag_details?: {
+    flagger_name: string;
+    email: string;
+    phone: string;
+    picture: string | null;
+    company_name: string;
+    is_flagged: boolean;
+    reason: string | null;
+    appeal_reason: string | null;
+    status: "rejected" | "pending" | "evaluated" | "approved";
+  }[];
 }
 export const transformApplicationDetailsPageData = (
   res: TApplicationDetailsResponse
@@ -95,13 +111,14 @@ export const transformApplicationDetailsPageData = (
     data: {
       application_date,
       application_id,
+      rent_history,
+      application_duration,
       user,
       profile_details,
       bank_details,
       next_of_kin,
       guarantors,
-      flag,
-      rent_history,
+      flags,
       property_details,
     },
   } = res;
@@ -109,10 +126,13 @@ export const transformApplicationDetailsPageData = (
     property_details: {
       application_date,
       property_title: property_details?.property_title || "--- ---",
-      address: property_details?.address || "--- ---",
+      address: property_details?.full_address || "--- ---",
       landlord: property_details?.landlord || "--- ---",
+      total_package: property_details?.total_package || "--- ---",
+      renewal_amount: property_details?.renew_total_package || "--- ---",
       description: property_details?.description || "--- ---",
       state: property_details?.state || "--- ---",
+      unit_name: property_details?.unit_name || "--- ---",
       branch: property_details?.branch || "--- ---",
       categories: property_details?.categories || "--- ---",
       rent: property_details?.rent || "--- ---",
@@ -122,11 +142,11 @@ export const transformApplicationDetailsPageData = (
     profile_details: {
       fullName: user?.name.toLowerCase() || "--- ---",
       tier_id: user?.tier_id,
+      application_duration,
       email: user?.email || "--- ---",
       user_tag: user?.type || "mobile",
       encodedId: user?.encodedId,
       notes: "Here's a note",
-      applied_duration: "7 years",
       photo: user?.profile,
       gender: profile_details?.gender,
       birthday: profile_details?.birthday || "--- ---",
@@ -152,57 +172,101 @@ export const transformApplicationDetailsPageData = (
       phone_number: next_of_kin?.phone || "--- ---",
       relationship: next_of_kin?.relationship || "--- ----",
     },
+    guarantors:
+      guarantors && guarantors?.length > 0
+        ? guarantors?.map((guarantor) => {
+            return {
+              name: guarantor?.name || "--- ---",
+              email: guarantor?.email || "--- ---",
+              address: guarantor?.address || "--- ---",
+              phone: guarantor?.phone || "--- ---",
+            };
+          })
+        : [],
     others: {
       occupation: profile_details?.occupation || "--- ---",
       employment_type: profile_details?.employment_type || "--- ---",
       family_type: profile_details?.family_type || "--- ---",
     },
-    guarantor1: {
-      name: guarantors?.guarantor_1?.name || "--- ---",
-      email: guarantors?.guarantor_1?.email || "--- ---",
-      phone_number: guarantors?.guarantor_1?.phone_number || "--- ---",
-      address: guarantors?.guarantor_1?.address || "--- ---",
-    },
-    guarantor2: {
-      name: guarantors?.guarantor_2?.name || "--- ---",
-      email: guarantors?.guarantor_2?.email || "--- ---",
-      phone_number: guarantors?.guarantor_2?.phone_number || "--- ---",
-      address: guarantors?.guarantor_2?.address || "--- ---",
-    },
+
     current_rent:
       rent_history?.previous?.map((current) => ({
         unitId: current?.unit_id,
+        unitData: {
+          unit_name: current?.unit_name,
+          unit_preference: current?.unit_preference,
+          total_squ_area: current?.total_area_sqm,
+          unit_sub_type: current?.unit_sub_type,
+          unit_type: current?.unit_type,
+          bedroom: current?.bedroom,
+          measurement: current?.measurement,
+        },
         unitName: current?.unit_name || "--- ---",
-        address: "Property address",
-        propertyName: "Property Name",
-        rentAmount: current?.rent_amount || "--- ---",
-        period: "Period (yearly)",
-        moveOutDate: current?.due_date || "--- ---",
+        address: current?.property_address || "--- ---",
+        propertyName: current?.property_name || "--- ---",
+        rentAmount: current?.rent_amount
+          ? formatToNaira(current?.rent_amount)
+          : "--- ---",
+        period: current?.period || "--- ---",
+        moveInDate: current?.start_date || "--- ---",
         propertyImages:
           current?.unitImages?.length > 0
             ? current?.unitImages?.map((image) => image.path)
             : [],
         propertyType: current?.propertyType,
-        managedBy: "Taiwo Salam & Co. (Managed by)",
+        managedBy: current?.managedBy || "--- ---",
       })) || [],
     previous_rent:
       rent_history?.previous?.map((current) => ({
         unitId: current?.unit_id,
+        unitData: {
+          unit_name: current?.unit_name,
+          unit_preference: current?.unit_preference,
+          total_squ_area: current?.total_area_sqm,
+          unit_sub_type: current?.unit_sub_type,
+          unit_type: current?.unit_type,
+          bedroom: current?.bedroom,
+          measurement: current?.measurement,
+        },
         unitName: current?.unit_name || "--- ---",
-        address: "Property address",
-        propertyName: "Property Name",
-        rentAmount: current?.rent_amount || "--- ---",
-        period: "Period (yearly)",
-        moveOutDate: current?.due_date || "--- ---",
+        address: current?.property_address,
+        propertyName: current?.property_name,
+        rentAmount: current?.rent_amount
+          ? formatToNaira(current?.rent_amount)
+          : "--- ---",
+        period: current?.period || "--- ---",
+        moveOutDate: current?.move_out || "--- ---",
         propertyImages:
           current?.unitImages?.length > 0
             ? current?.unitImages?.map((image) => image.path)
             : [],
         propertyType: current?.propertyType || "--- ---",
-        managedBy: "Taiwo Salam & Co. (Managed by)",
+        managedBy: current?.managedBy || "--- ---",
       })) || [],
     experience: profile_details?.prior_experience || "--- ---",
     justification: profile_details?.rent_justification || "--- ---",
+    flag_details: flags
+      .filter(
+        (flag) =>
+          flag?.status === "pending" ||
+          flag?.status === "evaluated" ||
+          flag?.status === "approved"
+      )
+      .map((flag) => ({
+        flagger_name: flag.flagger?.name.toLowerCase(),
+        email: flag?.flagger?.email,
+        phone: flag?.flagger?.phone,
+        picture: flag?.flagger?.picture,
+        company_name: flag?.flagger?.company,
+        is_flagged: flag.is_flagged,
+        reason: flag?.reason ?? null,
+        appeal_reason: flag?.appeal_reason ?? null,
+        status: flag?.status as
+          | "pending"
+          | "evaluated"
+          | "approved"
+          | "rejected",
+      })),
   };
 };
 

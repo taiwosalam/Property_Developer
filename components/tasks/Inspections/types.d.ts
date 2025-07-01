@@ -7,13 +7,14 @@ export interface InspectionDefaultExport {
 
 type Image = {
   src: string | StaticImageData;
-  isVideo?: boolean
+  isVideo?: boolean;
 };
 export interface InspectionCardProps {
-  type?: "physical" | "virtual"
+  type?: "physical" | "virtual";
   data?: {
     id: number;
     property_name: string;
+    is_application?: boolean;
     tier: number;
     total_package: string;
     fee_amount: string;
@@ -26,13 +27,12 @@ export interface InspectionCardProps {
     booked_by_id: number;
     inspection_date: string;
     inspection_time: string;
-  }
+  };
 }
 
 type Image = {
-  src: string | StaticImageData,
-  isVideo?: boolean
- 
+  src: string | StaticImageData;
+  isVideo?: boolean;
 };
 export interface InspectionCardInfoProps {
   className?: string;
@@ -48,7 +48,7 @@ export interface InspectionCardDetailProps {
   desc: string;
   title: string;
   verirified?: boolean;
-  tier?: number
+  tier?: number;
 }
 
 export interface InspectionCardTitleDescProps {

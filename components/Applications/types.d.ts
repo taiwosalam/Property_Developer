@@ -19,5 +19,18 @@ export interface ApplicationCardProps {
     yearly_amount: string;
     period_type: string;
     currency: string;
+
+    flag_details?: {
+      flagger_name: string;
+      email: string;
+      phone: string;
+      tier_id: number;
+      picture: string | null;
+      is_flagged: boolean;
+      reason: string | null;
+      company_name: string;
+      appeal_reason: string | null;
+      status: "rejected" | "pending" | "evaluated" | "approved";
+    }[];
   };
 }
