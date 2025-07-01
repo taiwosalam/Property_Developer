@@ -34,6 +34,9 @@ export interface UnitItemProps {
   invoice_status?: string;
   invoice_id?: number;
   partial_pending?: boolean;
+  tenantId?: number | string;
+  tenantAgent?: "web" | "mobile";
+  caution_deposit?: number;
 }
 
 const UnitItem: React.FC<UnitItemProps> = ({
@@ -43,6 +46,8 @@ const UnitItem: React.FC<UnitItemProps> = ({
   unitImages,
   unitStatus,
   unitDetails,
+  tenantId,
+  tenantAgent,
   rent,
   serviceCharge,
   tenantName,
@@ -54,14 +59,11 @@ const UnitItem: React.FC<UnitItemProps> = ({
   invoice_status,
   invoice_id,
   partial_pending,
- 
 }) => {
   const [screenModal, setScreenModal] = useState(false);
-  const isRental = propertyType.toLowerCase() === "rental"
+  const isRental = propertyType.toLowerCase() === "rental";
 
-  const startRentBtnText = isRental
-    ? "Add Tenant"
-    : "Assign Occupant";
+  const startRentBtnText = isRental ? "Add Tenant" : "Assign Occupant";
   const pendingPart =
     partial_pending || invoice_status?.trim().toLowerCase() === "pending";
   return (
@@ -246,6 +248,8 @@ const UnitItem: React.FC<UnitItemProps> = ({
             // Finally render the buttons
             .map((action, i) => (
               <ActionButton
+                tenantId={Number(tenantId) ?? 0}
+                tenantAgent={tenantAgent}
                 unit_id={unitId}
                 invoice_id={Number(invoice_id) ?? 0}
                 key={i}
@@ -254,7 +258,10 @@ const UnitItem: React.FC<UnitItemProps> = ({
                 startText={startRentBtnText}
                 route={
                   typeof action.route === "function"
-                    ? action.route(unitId, propertyType as "rental" | "facility")
+                    ? action.route(
+                        unitId,
+                        propertyType as "rental" | "facility"
+                      )
                     : action.route
                 }
                 label={

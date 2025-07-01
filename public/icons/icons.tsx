@@ -108,6 +108,23 @@ export const MessageSendIcon = ({ size = 24 }) => {
   );
 };
 
+// export const MessageAttachIcon = ({ size = 20 }) => {
+//   return (
+//     <svg
+//       width={size}
+//       height={size}
+//       viewBox="0 0 24 24"
+//       fill="none"
+//       xmlns="http://www.w3.org/2000/svg"
+//     >
+//       <path
+//         d="M5 19V5H12V12H19V13C19.7 13 20.37 13.13 21 13.35V9L15 3H5C3.89 3 3 3.89 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H13.35C13.13 20.37 13 19.7 13 19H5ZM14 4.5L19.5 10H14V4.5ZM23 18V20H20V23H18V20H15V18H18V15H20V18H23Z"
+//         fill="currentColor"
+//       />
+//     </svg>
+//   );
+// };
+
 export const MessageAttachIcon = ({ size = 20 }) => {
   return (
     <svg
@@ -118,8 +135,11 @@ export const MessageAttachIcon = ({ size = 20 }) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M5 19V5H12V12H19V13C19.7 13 20.37 13.13 21 13.35V9L15 3H5C3.89 3 3 3.89 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H13.35C13.13 20.37 13 19.7 13 19H5ZM14 4.5L19.5 10H14V4.5ZM23 18V20H20V23H18V20H15V18H18V15H20V18H23Z"
-        fill="currentColor"
+        d="M13.8791 8.37625L8.39309 13.8623C7.56709 14.6883 7.56709 16.0282 8.39309 16.8542C9.21909 17.6802 10.5591 17.6802 11.3851 16.8542L18.6171 9.62225C20.1321 8.10725 20.1321 5.65125 18.6171 4.13625C17.1021 2.62125 14.6461 2.62125 13.1311 4.13625L5.89909 11.3682C3.69509 13.5722 3.69509 17.1442 5.89909 19.3482C8.10309 21.5522 11.6751 21.5522 13.8791 19.3482L18.2681 14.9593"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

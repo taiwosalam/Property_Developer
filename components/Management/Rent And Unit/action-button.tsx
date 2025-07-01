@@ -14,7 +14,11 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   propertyType,
   invoice_id,
   startText,
+  tenantId,
+  tenantAgent,
+  cautionDeposit,
 }) => {
+  const isWebUser = tenantAgent?.toLowerCase() === "web";
   const commonStyles =
     "py-2 px-4 rounded-[20px] text-white text-xs font-medium cursor-pointer";
   // Evaluate color: if it's a function, call it with propertyType; otherwise, use it directly
@@ -44,7 +48,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
             className={commonStyles}
             style={{ backgroundColor: buttonColor }}
           >
-             {resolvedLabel}
+            {resolvedLabel}
           </button>
         </ModalTrigger>
         {modal === "Relocate" ? (
@@ -60,7 +64,12 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
           </ModalContent>
         ) : (
           <ModalContent>
-            <MoveOutModal unit_id={unit_id as string} />
+            <MoveOutModal
+              tenant_id={Number(tenantId)}
+              unit_id={unit_id as string}
+              tenantAgent={tenantAgent}
+              cautionDeposit={cautionDeposit ?? 0}
+            />
           </ModalContent>
         )}
       </Modal>

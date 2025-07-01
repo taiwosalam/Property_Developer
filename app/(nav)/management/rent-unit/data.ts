@@ -114,6 +114,8 @@ export const transformRentUnitApiResponse = (
     return "total_unit" in response.data;
   };
 
+  console.log("response", response)
+
   const unitData = isUnitApiResponse(response)
     ? (response.data.unit as any)
     : (response.data.unit as any);
@@ -144,6 +146,7 @@ export const transformRentUnitApiResponse = (
         : undefined,
       tenant_id: u.occupant.tenant_id,
       partial_pending: u.partial_pending ? true : false,
+      occupant: u.occupant,
     };
   });
   if (isUnitApiResponse(response)) {
@@ -329,6 +332,7 @@ export interface RentalPropertyCardProps {
   invoice_status?: string | null;
   invoice_id?: number | null;
   partial_pending?: boolean;
+  occupant?: any;
 }
 
 const allStates = getAllStates() || [];

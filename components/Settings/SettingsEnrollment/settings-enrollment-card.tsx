@@ -155,6 +155,8 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         showFeatures={showFeatures}
         getFeaturesText={getFeaturesText}
         handleCardClick={handleCardClick}
+        isFree={isFree}
+        planTitle={planTitle}
       />
       <FeaturesList showFeatures={showFeatures} features={features} />
       <SelectPlanButton

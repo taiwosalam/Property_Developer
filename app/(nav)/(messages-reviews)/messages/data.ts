@@ -223,6 +223,11 @@ interface Message {
   senderId: number;
   timestamp: string;
   content_type: string;
+  sender?: {
+    fullname: string;
+    picture: string;
+    title: string;
+  };
 }
 
 interface GroupedMessage {
@@ -232,6 +237,11 @@ interface GroupedMessage {
   time: string;
   content_type: string;
   seen: boolean;
+  sender: {
+    fullname: string;
+    picture: string;
+    title: string;
+  };
 }
 
 export interface NormalizedMessage {
@@ -279,12 +289,13 @@ export const transformMessagesFromAPI = (
         ? moment(`${msg.date} ${msg.timestamp}`).format("YYYY-MM-DD HH:mm:ss")
         : "";
 
+    console.log("Mesasasasasa", msg);
     // Sender info for group chat
     const sender =
       isGroupChat && msg.sender
         ? {
             fullname: msg.sender.name ?? "",
-            picture: msg.sender.profile?.picture ?? "",
+            picture: msg.sender.profile?.picture ?? empty,
             title: msg.sender.profile?.title ?? "",
           }
         : undefined;
@@ -351,16 +362,28 @@ export const groupMessagesByDay = (
       time: moment(message.timestamp, "YYYY-MM-DD hh:mm A").format("hh:mm A"),
       content_type: message.content_type,
       seen: false,
+      sender: {
+        fullname: message.sender?.fullname ?? "",
+        picture: message.sender?.picture ?? empty,
+        title: message.sender?.title ?? "",
+      },
     });
 
     return acc;
   }, {} as Record<string, { day: string; messages: GroupedMessage[] }>);
 
   const result = Object.values(groups);
-  console.log("groupMessagesByDay output:", result);
   return result;
 };
 
+export const blobToBase64 = (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
 // Keep existing SendMessage, transform functions
 // export const SendMessage = async (payload: FormData, id: string) => {
 //   try {

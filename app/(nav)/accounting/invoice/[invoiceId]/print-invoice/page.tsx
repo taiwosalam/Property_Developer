@@ -51,6 +51,7 @@ const PreviewExpenses = () => {
 
   const BANK_DETAILS = pageData.branchBankDetails;
 
+  console.log("BANK_DETAILS", BANK_DETAILS)
   const CURRENCY = pageData.currency || "naira"; //TODO: change to real currency from endpount
   const IS_PAID = pageData.status.toLowerCase() === "paid";
   const UNIT_ID = pageData.unit_id;
@@ -176,44 +177,38 @@ const PreviewExpenses = () => {
             )}
 
             <div className="w-full h-[2px] bg-opacity-20 bg-[#C0C2C8]" />
-            <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1">
+            <div className="flex-1 text-base font-medium capitalize custom-flex-col gap-1 mb-4">
               <p className="text-[#747474]">total package</p>
               <p className="text-brand-primary text-xl font-bold">
                 {formatFee(Number(pageData.total_package), CURRENCY)}
               </p>
             </div>
           </AccountingTitleSection>
-          {BANK_DETAILS?.account_name ||
-            (companyBankDetails.account_name && (
-              <>
-                <AccountingTitleSection title="Account Details">
-                  <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
-                    <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
-                      <KeyValueList
-                        data={{
-                          "account name":
-                            BANK_DETAILS?.account_name ||
-                            companyBankDetails.account_name,
-                          "account number":
-                            BANK_DETAILS?.account_number ||
-                            companyBankDetails.account_number,
-                          "bank name":
-                            BANK_DETAILS?.bank_name ||
-                            companyBankDetails.bank_name,
-                        }}
-                        chunkSize={1}
-                        direction="column"
-                        referenceObject={{
-                          "account number": "",
-                          "account name": "",
-                          "bank name": "",
-                        }}
-                      />
-                    </div>
-                  </div>
-                </AccountingTitleSection>
-              </>
-            ))}
+       {(BANK_DETAILS?.account_name || companyBankDetails.account_name) && (
+        <AccountingTitleSection title="Account Details">
+          <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
+            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+              <KeyValueList
+                data={{
+                  "account name":
+                    BANK_DETAILS?.account_name || companyBankDetails.account_name,
+                  "account number":
+                    BANK_DETAILS?.account_number || companyBankDetails.account_number,
+                  "bank name":
+                    BANK_DETAILS?.bank_name || companyBankDetails.bank_name,
+                }}
+                chunkSize={1}
+                direction="column"
+                referenceObject={{
+                  "account number": "",
+                  "account name": "",
+                  "bank name": "",
+                }}
+              />
+            </div>
+          </div>
+        </AccountingTitleSection>
+      )}
           <Signature />
         </div>
         <ExportPageFooter printRef={printRef} />

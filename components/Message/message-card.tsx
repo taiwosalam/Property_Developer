@@ -18,6 +18,7 @@ import BadgeIcon, { tierColorMap } from "../BadgeIcon/badge-icon";
 import useFetch from "@/hooks/useFetch";
 import { getCleanRoleName } from "./data";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import { truncateText } from "../tasks/vehicles-record/data";
 
 const MessageCard: React.FC<MessageCardProps> = ({
   id,
@@ -104,7 +105,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
             </div>
             {content_type === "text" ? (
               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
-                {desc}
+                {truncateText(desc, 30) || ""}
               </p>
             ) : (
               <div className="flex gap-1 text-sm items-center text-brand-9">

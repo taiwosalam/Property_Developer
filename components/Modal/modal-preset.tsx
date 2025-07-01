@@ -9,9 +9,11 @@ import Warning from "@/public/icons/warning.svg";
 import { ModalPresetProps } from "./types";
 import { modal_presets } from "./data";
 import clsx from "clsx";
+import { ArrowLeft } from "lucide-react";
 
 interface ExtendedModalPresetProps extends ModalPresetProps {
-  customWidth?: string; 
+  customWidth?: string;
+  back?: () => void;
 }
 
 const ModalPreset: React.FC<ExtendedModalPresetProps> = ({
@@ -20,6 +22,7 @@ const ModalPreset: React.FC<ExtendedModalPresetProps> = ({
   children,
   className,
   customWidth,
+  back,
 }) => {
   return (
     <div
@@ -30,6 +33,18 @@ const ModalPreset: React.FC<ExtendedModalPresetProps> = ({
         className // Allow additional custom classes
       )}
     >
+      <div className="flex items-start justify-start">
+        {back ? (
+          <button
+            onClick={back}
+            className="w-6 h-6 flex items-center justify-center"
+          >
+            <ArrowLeft size={18} color="currentColor" />
+          </button>
+        ) : (
+          <div></div>
+        )}
+      </div>
       <div className="flex justify-center">
         <div
           style={{ backgroundColor: modal_presets[type] }}

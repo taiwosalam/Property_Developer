@@ -109,9 +109,8 @@ export const getDashboardCardData = (data: Record<string, any>) => [
     icon: InquiriesIcon,
     value: data.data.inquiry_count,
     subValue: data.data.month_inquiry_count,
-    link: "/tasks/inquires",
+    link: "/tasks/inquires?status=pending",
   },
-
   {
     title: "Complaints",
     bg: getBackgroundColor("complaints"),

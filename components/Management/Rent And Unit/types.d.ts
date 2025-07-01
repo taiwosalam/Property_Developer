@@ -19,7 +19,10 @@ export interface ActionButtonProps {
   modal?: string;
   unit_id?: string;
   startText?: string;
+  tenantId: string | number;
+  tenantAgent?: 'web' | 'mobile';
   invoice_id?: number | null;
+  cautionDeposit?: number;
 }
 
 interface PropertyImageSliderProps {
