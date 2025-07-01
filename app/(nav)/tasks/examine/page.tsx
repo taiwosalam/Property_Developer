@@ -237,6 +237,7 @@ const Examine = () => {
                   description={examine.description}
                   examine_date={examine.examine_date}
                   image={examine.image}
+                  service={examine.service}
                 />
               ))}
             </AutoResizingGrid>
@@ -255,6 +256,7 @@ const Examine = () => {
                 description={examine.description}
                 examine_date={examine.examine_date}
                 image={examine.image}
+                service={examine.service}
               />
             ))}
           </AutoResizingGrid>

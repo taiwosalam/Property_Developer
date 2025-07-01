@@ -9,6 +9,7 @@ export type ApplicationResponse = {
     id: number;
     application_date: string;
     created_at: string;
+    application_status: "cancelled" | "pending" | "evaluated" | "approved";
     user: {
       name: string;
       encodedId: string;
@@ -45,6 +46,7 @@ export interface IApplicationPageData {
   web_application: number;
   month_web_application: number;
   applications: {
+    application_status: "rejected" | "pending" | "evaluated" | "approved";
     id: number;
     images: string[];
     full_name: string;
@@ -74,7 +76,7 @@ const currencies: { [key: string]: string } = {
 export const transformApplicationData = (
   data: ApplicationResponse
 ): IApplicationPageData => {
-  const { data: res, stats } = data;
+  const { data: res, stats, } = data;
 
   return {
     total_application: stats?.total_applications,
@@ -85,6 +87,10 @@ export const transformApplicationData = (
     month_web_application: 0,
     applications: res?.map((item) => ({
       id: item?.id,
+      application_status:
+        item?.application_status === "cancelled"
+          ? "rejected"
+          : (item?.application_status as "pending" | "evaluated" | "approved" | "rejected"),
       images: item?.unit?.property_images?.map((image) => image.path) || [],
       full_name: item?.user?.name?.toLowerCase(),
       tier_id: item?.user?.tier_id,

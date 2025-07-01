@@ -22,7 +22,12 @@ import BadgeIcon, {
   BadgeIconColors,
   tierColorMap,
 } from "../BadgeIcon/badge-icon";
-import { DislikeIcon, LikeIcon, ThumbsDown, ThumbsUp } from "@/public/icons/icons";
+import {
+  DislikeIcon,
+  LikeIcon,
+  ThumbsDown,
+  ThumbsUp,
+} from "@/public/icons/icons";
 import { toast } from "sonner";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useDarkMode from "@/hooks/useCheckDarkMode";
@@ -43,7 +48,7 @@ interface ReviewCardProp {
 }
 const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
   const { userId } = usePersonalInfoStore();
-    const isDarkMode = useDarkMode()
+  const isDarkMode = useDarkMode();
 
   const getBadgeColor = (tier?: number): BadgeIconColors | undefined => {
     if (!tier || tier === 0) return undefined;
@@ -53,14 +58,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
   const handlePostReaction = async (type: number) => {
     if (!props.id) return;
     try {
-      const res = await postReaction(props.id, type);
-      if (res) {
-        if (type === 1) {
-          toast.success(`Post liked`);
-        } else {
-          toast.success("Post dislike");
-        }
-      }
+      await postReaction(props.id, type);
     } catch (error) {
       console.log(error);
     }
@@ -111,31 +109,43 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
                 <button
                   className="flex items-center gap-1"
                   onClick={(e) => {
-                    handlePostReaction(1);
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                >
-                  <LikeIcon
-                             fill={`${props?.user_like ? "#E15B0F" : ""} `}
-                             stroke={`${props?.user_like ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
-                           />
-                  <p className="text-text-disabled">{props.up_vote}</p>
-                </button>
-
-                <button
-                  className="flex items-center gap-1"
-                  onClick={(e) => {
                     handlePostReaction(-1);
                     e.preventDefault();
                     e.stopPropagation();
                   }}
                 >
-                  <DislikeIcon
-                             fill={`${props?.user_dislike ? "#E15B0F" : "none"} `}
-                             stroke={`${props?.user_dislike ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
-                           />
+                  <LikeIcon
+                    fill={`${props?.user_like ? "#E15B0F" : ""} `}
+                    stroke={`${
+                      props?.user_like
+                        ? "#E15B0F"
+                        : isDarkMode
+                        ? "#FFF"
+                        : "#000"
+                    } `}
+                  />
                   <p className="text-text-disabled">{props.down_vote}</p>
+                </button>
+
+                <button
+                  className="flex items-center gap-1"
+                  onClick={(e) => {
+                    handlePostReaction(1);
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                >
+                  <DislikeIcon
+                    fill={`${props?.user_dislike ? "#E15B0F" : "none"} `}
+                    stroke={`${
+                      props?.user_dislike
+                        ? "#E15B0F"
+                        : isDarkMode
+                        ? "#FFF"
+                        : "#000"
+                    } `}
+                  />
+                  <p className="text-text-disabled">{props.up_vote}</p>
                 </button>
               </div>
             </div>

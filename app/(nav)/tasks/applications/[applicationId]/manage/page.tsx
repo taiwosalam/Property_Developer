@@ -37,6 +37,8 @@ import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { empty } from "@/app/config";
+import { Phone, Printer } from "lucide-react";
+import { ApplicationCardUnit } from "@/components/Management/Properties/application-card";
 
 const ManageApplication = () => {
   const isDarkMode = useDarkMode();
@@ -115,40 +117,114 @@ const ManageApplication = () => {
           style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
           className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
         >
-          <p className="text-primary-navy dark:text-white text-xl font-bold">
-            Property Details
-          </p>
+          <div className="flex justify-between items-center">
+            <p className="text-primary-navy dark:text-white text-xl font-bold">
+              Property Details
+            </p>
+
+            <div className="text-primary-navy dark:text-white text-xl font-bold">
+              <button className="flex gap-1 items-center">
+                <Printer />
+                <p className="capitalize">Print application</p>
+              </button>
+            </div>
+          </div>
+
           <SectionSeparator />
           <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{
-                "property title": property_details?.property_title,
-                "full address": property_details?.full_access,
+                "property name": property_details?.property_title,
                 landlord: property_details?.landlord,
+                "full address": `${property_details?.local_government} ${property_details?.state}`,
+                "unit name": "Unit name",
+                "account officer": property_details?.account_officer,
+                "total package": "Total package",
+                branch: property_details?.branch,
+                "application date": property_details?.application_date,
+                "renewal amount": "$12,000",
+
                 //description: property_details?.description,
                 //state: property_details?.state,
-                branch: property_details?.branch,
-                categories: property_details?.categories,
-                rent: property_details?.rent,
+                //branch: property_details?.branch,
+                //categories: property_details?.categories,
+                //rent: property_details?.rent,
                 //"local government": property_details?.local_government,
-                "account officer": property_details?.account_officer,
               }}
-              chunkSize={4}
+              chunkSize={3}
               referenceObject={{
-                "property title": "",
-                "full address": "",
+                "property name": "",
                 landlord: "",
-                //description: "",
-                //state: "",
-                branch: "",
-                categories: "",
-                rent: "",
-                //"local government": "",
+                "full address": "",
+                "unit name": "",
                 "account officer": "",
+                "total package": "",
+                branch: "",
+                "application date": "",
+                "renewal amount": "",
               }}
             />
           </div>
         </div>
+
+        <div
+          style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+          className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
+        >
+          <div className="flex justify-between items-center">
+            <p className="text-primary-navy dark:text-white text-xl font-bold">
+              Flag Details
+            </p>
+          </div>
+
+          <SectionSeparator />
+          <div className="w-full">
+            <div className="flex justify-between py-1 w-full">
+              <div className="flex gap-3">
+                <div className="py-1">
+                  <p className="text-black dark:text-white text-xl font-bold">
+                    Ayodeji Abimbola
+                  </p>
+                  <p className="text-gray-500 dark:text-white">
+                    bimbola@mail.com
+                  </p>
+                  <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
+                    <Phone fill="currentColor" size={18} />
+                    <p>080976827682</p>
+                  </div>
+                  <button className="bg-opacity-40 text-brand-9 py-1 rounded-lg bg-brand-5 px-3 h-7 text-sm mt-1">
+                    Message
+                  </button>
+                </div>
+                <div className="max-w-3xl mt-2 text-red-500">
+                  <p>This tenants have been flagged for some dumb reason</p>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="py-1">
+                  <p className="text-black dark:text-white text-xl font-bold">
+                    Ayodeji Abimbola
+                  </p>
+                  <p className="text-gray-500 dark:text-white">
+                    bimbola@mail.com
+                  </p>
+                  <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
+                    <Phone fill="currentColor" size={18} />
+                    <p>080976827682</p>
+                  </div>
+                  <button className="bg-opacity-40 text-brand-9 py-1 rounded-lg bg-brand-5 px-3 h-7 text-sm mt-1">
+                    Message
+                  </button>
+                </div>
+                <div className="max-w-3xl mt-2 text-red-500">
+                  <p>This tenants have been flagged for some dumb reason</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-5">
           <div
             className="custom-flex-col gap-5 pt-6 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden"
@@ -163,7 +239,7 @@ const ManageApplication = () => {
               />
               <div className="custom-flex-col gap-4">
                 <div className="custom-flex-col">
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
                     <p className="text-black dark:text-white text-xl font-bold capitalize">
                       {profile_details?.fullName}
                     </p>
@@ -206,17 +282,17 @@ const ManageApplication = () => {
               </div>
             ) : (
               <p className="flex gap-4 items-center text-highlight text-base font-medium px-10">
-                <span>Applying for</span>
-                <span>5 Years</span>
+                <span className="text-brand-9">Applying for</span>
+                <span className="text-red-500">5 Years</span>
               </p>
             )}
           </div>
           <LandlordTenantInfo
             info={{
+              status: "Status",
               gender: profile_details?.gender,
               birthday: profile_details?.birthday,
               religion: profile_details?.religion,
-              phone: profile_details?.phone,
               "marital status": profile_details?.marital_status,
             }}
           />
@@ -232,16 +308,16 @@ const ManageApplication = () => {
           <LandlordTenantInfo
             heading="Contact Address"
             info={{
-              address: contact_details?.address,
-              city: contact_details?.city,
               state: contact_details?.state,
-              "L.G": contact_details?.lga,
+              address: `${contact_details?.address} ${contact_details?.lga} ${contact_details?.city} ${contact_details?.state}`,
+              "phone number 1": profile_details?.phone,
+              "phone number 2": "Phone number 1",
             }}
           />
           <LandlordTenantInfo
             heading="Next of Kin"
             info={{
-              namme: next_of_kin?.name,
+              name: next_of_kin?.name,
               address: next_of_kin?.address,
               "phone number": next_of_kin?.phone_number,
               relationship: next_of_kin?.relationship,
@@ -295,32 +371,20 @@ const ManageApplication = () => {
         </div>
       </div>
       <LandlordTenantInfoSection title="Current Rent">
-        <div className="opacity-40 space-y-3">
+        <div className="space-y-3">
           {current_rent?.map((rent) => (
-            <UnitItem
+            <ApplicationCardUnit
               key={rent.unitId}
-              {...rent}
-              unitId={String(rent.unitId)}
-              tenantBadgeColor={
-                [
-                  "green",
-                  "black",
-                  "blue",
-                  "red",
-                  "yellow",
-                  "gray",
-                  "purple",
-                ].includes(rent.tenantBadgeColor)
-                  ? (rent.tenantBadgeColor as
-                      | "green"
-                      | "black"
-                      | "blue"
-                      | "red"
-                      | "yellow"
-                      | "gray"
-                      | "purple")
-                  : undefined
-              }
+              unitId={rent.unitId}
+              unitName={rent.unitName}
+              address={rent.address}
+              propertyName={rent.propertyName}
+              rentAmount={rent.rentAmount}
+              period={rent.period}
+              moveOutDate={rent.moveOutDate}
+              propertyImages={rent.propertyImages}
+              propertyType={rent.propertyType}
+              managedBy={rent.managedBy}
             />
           ))}
         </div>
@@ -331,30 +395,18 @@ const ManageApplication = () => {
       <LandlordTenantInfoSection title="Previous Rent">
         <div className="opacity-40 space-y-3">
           {previous_rent?.map((rent) => (
-            <UnitItem
+            <ApplicationCardUnit
               key={rent.unitId}
-              {...rent}
-              unitId={String(rent.unitId)}
-              tenantBadgeColor={
-                [
-                  "green",
-                  "black",
-                  "blue",
-                  "red",
-                  "yellow",
-                  "gray",
-                  "purple",
-                ].includes(rent.tenantBadgeColor)
-                  ? (rent.tenantBadgeColor as
-                      | "green"
-                      | "black"
-                      | "blue"
-                      | "red"
-                      | "yellow"
-                      | "gray"
-                      | "purple")
-                  : undefined
-              }
+              unitId={rent.unitId}
+              unitName={rent.unitName}
+              address={rent.address}
+              propertyName={rent.propertyName}
+              rentAmount={rent.rentAmount}
+              period={rent.period}
+              moveOutDate={rent.moveOutDate}
+              propertyImages={rent.propertyImages}
+              propertyType={rent.propertyType}
+              managedBy={rent.managedBy}
             />
           ))}
         </div>

@@ -51,7 +51,7 @@ const Examine = () => {
         {Array(10)
           .fill(null)
           .map((_, index) => (
-            <ExamineCard key={index} image={[]} />
+            <ExamineCard key={index} image={[]} service={null} />
           ))}
       </AutoResizingGrid>
     </div>

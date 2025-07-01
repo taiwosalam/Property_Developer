@@ -54,6 +54,7 @@ const Examine = () => {
             <ExamineCard
               key={index}
               image={[{ path: "" }]} // Provide a default or mock image array
+              service={[]} // Provide a default or mock service array
             />
           ))}
       </AutoResizingGrid>

@@ -79,6 +79,7 @@ export const transformCallbackRequestPageData = (
         resolvedBy: request?.resolved_by?.toLowerCase() ?? "___ ___",
         resolvedDateTime: request?.resolved_date || "___ ___",
         tier_id: request?.user?.tier,
+        unitName: request?.unit_name || "___ ___",
       };
     }),
     pagination: {

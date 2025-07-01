@@ -90,7 +90,7 @@ export interface PropertyRequestCardProps extends RequestCardBaseProps {
   description: string;
   phoneNumber: string;
   location: string;
-  
+  tier_id?: number;
   createdAt: string;
   updatedAt: string;
   cardViewDetails: {

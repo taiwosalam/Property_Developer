@@ -49,8 +49,14 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
   const [reviews, setReviews] = useState<IReviewCard | null>(null);
 
   const { isCustom } = useWindowWidth(900);
+  const [filter, setFilter] = useState<
+    "positive" | "neutral" | "negative" | "new" | "unreplied" | "all"
+  >("all");
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
+
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const { company_id } = usePersonalInfoStore();
   const [inputComment, setInputComment] = useState("");
@@ -94,13 +100,87 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
     }
   };
 
-  console.log(reviews);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Filter reviews based on selected filters
+  const filteredReviews =
+    reviews?.reviews.filter((review) => {
+      // If no filters selected, show all reviews
+      if (selectedFilters.length === 0) return true;
+
+      // Check if review matches any selected filter
+      return selectedFilters.some((filter) => {
+        if (filter === "Positive Review") return review.down_vote > 0;
+        if (filter === "Neutral Review")
+          return review.up_vote === 0 && review.down_vote === 0;
+        if (filter === "Negative Review") return review.up_vote > 0;
+        if (filter === "New Review") {
+          const sevenDaysAgo = new Date();
+          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+          const reviewDate = new Date(review.created_at);
+          return reviewDate >= sevenDaysAgo;
+        }
+        if (filter === "Un-replied Review") {
+          return review.comment_count === 0 || review?.comments?.length === 0;
+        }
+        return false;
+      });
+    }) || [];
+
+  // Filter reviews based on the selected filter
+  // const filteredReviews =
+  //   reviews?.reviews.filter((review) => {
+  //     if (filter === "positive") return review.down_vote > 0;
+  //     if (filter === "neutral")
+  //       return review.up_vote === 0 && review.down_vote === 0;
+  //     if (filter === "negative") return review.up_vote > 0;
+
+  //     if (filter === "new") {
+  //       // Filter reviews created within the last 7 days
+  //       const sevenDaysAgo = new Date();
+  //       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  //       const reviewDate = new Date(review.created_at);
+  //       return reviewDate >= sevenDaysAgo;
+  //     }
+  //     if (filter === "unreplied") {
+  //       // Filter reviews with no comments
+  //       return review.comment_count === 0 || review.comments.length === 0;
+  //     }
+  //     return true; // "all" filter shows all reviews
+  //   }) || [];
+
+  const handleFilterApply = (filters: string[]) => {
+    setSelectedFilters(filters);
+    setSelectedLabel(filters.length > 0 ? filters.join(", ") : null);
+    handleMenuClose();
+  };
+
+  // Toggle a single filter for icon tabs
+  const toggleFilter = (filter: string) => {
+    setSelectedFilters((prev) => {
+      const newFilters = prev.includes(filter)
+        ? prev.filter((f) => f !== filter) // Remove filter if already selected
+        : [
+            ...prev.filter(
+              (f) =>
+                ![
+                  "Positive Review",
+                  "Neutral Review",
+                  "Negative Review",
+                ].includes(f)
+            ),
+            filter,
+          ]; // Add filter, preserve non-icon filters
+      setSelectedLabel(newFilters.length > 0 ? newFilters.join(", ") : null); // Update label
+      return newFilters;
+    });
+  };
+
+  console.log(selectedFilters);
 
   useEffect(() => {
     scrollToBottom();
@@ -119,17 +199,69 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
               <div className="relative w-full">
                 <div className="flex flex-col-reverse md:flex-row gap-4 md:justify-between md:items-center w-full">
                   <div className="flex gap-2 items-center">
-                    <div className="p-2 flex items-center gap-2 cursor-pointer">
-                      <PositiveIcon size={28} />
-                      <p className="text-lg text-[#01BA4C]">{reviews?.total_like}</p>
+                    <div
+                      className={`flex items-center flex-col ${
+                        filter === "positive" ? "border rounded-md" : ""
+                      }`}
+                    >
+                      <div
+                        className={`p-2 flex items-center gap-2 cursor-pointer ${
+                          filter === "positive" ? "border" : ""
+                        }`}
+                        onClick={() => {
+                          setFilter("positive");
+                          toggleFilter("Positive Review");
+                        }}
+                      >
+                        <PositiveIcon size={28} />
+                        <p className="text-lg text-[#01BA4C]">
+                          {reviews?.total_dislike}
+                        </p>
+                      </div>
+                      <p className="text-xs text-[#01BA4C]">Neutral</p>
                     </div>
-                    <div className="p-2 flex gap-2 items-center rounded-md border cursor-pointer">
-                      <NeutralIcon size={29} />
-                      <p className="text-lg text-[#FFBB53]">{reviews?.neutral_count}</p>
+
+                    <div
+                      className={`flex items-center flex-col ${
+                        filter === "neutral" ? "border rounded-md" : ""
+                      }`}
+                    >
+                      <div
+                        className={`p-2 flex gap-2 items-center rounded-md cursor-pointer`}
+                        onClick={() => {
+                          setFilter("neutral");
+                          toggleFilter("Neutral Review");
+                        }}
+                      >
+                        <NeutralIcon size={29} />
+                        <p className="text-lg text-[#FFBB53]">
+                          {(reviews?.neutral_count ?? 0) < 0
+                            ? 0
+                            : reviews?.neutral_count ?? 0}
+                        </p>
+                      </div>
+                      <p className="text-xs text-[#FFBB53]">Neutral</p>
                     </div>
-                    <div className="p-2 flex gap-2 items-center cursor-pointer">
-                      <NegativeIcon size={28} />
-                      <p className="text-lg text-[#E9212E]">{reviews?.total_dislike}</p>
+
+                    <div
+                      className={`flex items-center flex-col ${
+                        filter === "negative" ? "border rounded-md" : ""
+                      }`}
+                    >
+                      <div
+                        className={`p-2 flex gap-2 items-center cursor-pointer `}
+                        onClick={() => {
+                          setFilter("negative");
+                          toggleFilter("Negative Review");
+                        }}
+                      >
+                        <NegativeIcon size={28} />
+
+                        <p className="text-lg text-[#E9212E]">
+                          {reviews?.total_like}
+                        </p>
+                      </div>
+                      <p className="text-xs text-[#E9212E]">Positive</p>
                     </div>
                   </div>
                   <Input
@@ -150,6 +282,8 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
+                    onFilterApply={handleFilterApply}
+                    setSelectedLabel={setSelectedLabel}
                     filterOptions={[
                       { label: "Positive Review", bgColor: "#01BA4C" },
                       { label: "Neutral Review", bgColor: "#FFBB53" },
@@ -170,19 +304,18 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
               </Button> */}
             </div>
             <div className="custom-flex-col relative z-[1] pb-4">
-              {reviews && reviews?.reviews.length > 0 ? (
-                reviews?.reviews
-                  .slice(0, 6)
-                  .map((review, idx) => (
-                    <ReviewCard
-                      key={idx}
-                      {...review}
-                      highlight={review.id.toString() === (id as string)}
-                    />
-                  ))
+              {filteredReviews?.length > 0 ? (
+                filteredReviews?.map((review, idx) => (
+                  <ReviewCard
+                    key={idx}
+                    {...review}
+                    highlight={review.id.toString() === (id as string)}
+                  />
+                ))
               ) : (
-                // <NoReviews />
-                <></>
+                <div className="text-slate-500 flex justify-center items-center mt-52">
+                  No reviews match the selected filter.
+                </div>
               )}
             </div>
           </div>
@@ -193,7 +326,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
           <div className="custom-flex-col h-full">
             <div className="flex-1 overflow-y-auto pb-6">
               {children}
-              <div ref={messagesEndRef}/>
+              <div ref={messagesEndRef} />
             </div>
             {id && (
               <div className="py-4 px-6 flex gap-3">

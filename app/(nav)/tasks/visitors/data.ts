@@ -179,15 +179,19 @@ export const transformVisitorRequestData = (
         secretQuestion: visitor.secret_question,
         secretAnswer: visitor.secret_answer,
         purpose: visitor.purpose,
-        unitName: "___ ___",
+        unitName: visitor?.unit_name || "___ ___",
         propertyName:
           visitor.user?.tenant?.units
             ?.map((property) => property.property.title)
-            .join("") || "___ ___",
+            .join("") ||
+          visitor.property_name ||
+          "___ ___",
         branch:
           visitor.user?.tenant?.units
             ?.map((property) => property.property.branch_name)
-            .join("") || "___ ___",
+            .join("") ||
+          visitor?.branch_name ||
+          "___ ___",
       };
     }),
     pagination: {

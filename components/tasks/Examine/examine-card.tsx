@@ -17,6 +17,7 @@ interface ExamineCardProps {
   description?: string;
   examine_date?: string; // e.g., "20th January 2026"
   image?: Array<{ path: string }>; //
+  service?: [] | null;
 }
 
 const ExamineCard: React.FC<ExamineCardProps> = ({
@@ -26,6 +27,7 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
   description,
   image,
   examine_date,
+  service,
 }) => {
   const router = useRouter();
   return (
@@ -65,8 +67,9 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
             <p className="text-neutral-4">{examine_date}</p>
           </div>
         </div>
-        {!viewOnly && (
-          <div className="flex gap-2 justify-end">
+
+        <div className="flex gap-2 justify-end">
+          {!service && (
             <Button
               size="xs_normal"
               variant="border"
@@ -77,6 +80,9 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
             >
               manage
             </Button>
+          )}
+
+          {service && service.length > 0 && (
             <Button
               size="xs_normal"
               className="py-2 px-6"
@@ -86,8 +92,8 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
             >
               report
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

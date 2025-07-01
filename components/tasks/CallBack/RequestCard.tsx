@@ -151,7 +151,10 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 {truncateText(userName, 30)}
               </span>
 
-               {cardType === "visitor" && props?.tier_id && (
+              {cardType === "visitor" && props?.tier_id && (
+                <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
+              )}
+              {cardType === "property" && props?.tier_id && (
                 <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
               )}
 
@@ -297,7 +300,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       </div>
       <div className="flex justify-end px-[18px]">
         {cardType === "deposit" ||
-          (cardType === "property" || cardType === "visitor" && (
+          cardType === "property" ||
+          (cardType === "visitor" && (
             <button
               // onClick={() => router.push(`/messages/${props?.userId}`)}
               onClick={goToMessage}
