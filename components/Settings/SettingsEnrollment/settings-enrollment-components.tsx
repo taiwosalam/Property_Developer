@@ -300,12 +300,26 @@ export const FeaturesToggle: React.FC<{
   showFeatures?: boolean;
   getFeaturesText?: () => string;
   handleCardClick?: () => void;
+  planTitle: string;
+  isFree: boolean;
 }> = ({
   showFeatures = false,
   getFeaturesText = () => "View Features",
   handleCardClick = () => {},
+  planTitle = "",
+  isFree = false,
 }) => {
   const [autoRenew, setAutoRenew] = useState(false);
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+
+  // Is this the current plan (except free)?
+  const isCurrentPlan =
+    currentPlan &&
+    planTitle &&
+    currentPlan.split(" ")[0].toLowerCase() ===
+      planTitle.split(" ")[0].toLowerCase();
+
+  const showAutoRenew = isCurrentPlan && !isFree;
   return (
     <div className="flex items-center justify-between">
       <div className="flex w-full px-6 py-3">
@@ -327,17 +341,19 @@ export const FeaturesToggle: React.FC<{
           </motion.div>
         </button>
       </div>
-      <div className="flex items-center justify-end w-full ml-10">
-        <DocumentCheckbox
-          darkText
-          name="auto_renew"
-          state={{
-            isChecked: autoRenew,
-            setIsChecked: setAutoRenew,
-          }}
-        >
-          Auto-Renewal
-        </DocumentCheckbox>
+      <div className="flex items-center justify-end w-full ml-20">
+        {showAutoRenew && (
+          <DocumentCheckbox
+            darkText
+            name="auto_renew"
+            state={{
+              isChecked: autoRenew,
+              setIsChecked: setAutoRenew,
+            }}
+          >
+            Auto-Renewal
+          </DocumentCheckbox>
+        )}
       </div>
     </div>
   );

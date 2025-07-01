@@ -13,6 +13,7 @@ const Messages: React.FC<MessagesProps> = ({
   const user_id = useAuthStore((state) => state.user_id);
   const id = getLocalStorage("user_id");
 
+  
   return (
     <div className="custom-flex-col gap-8">
       {/* Day Label */}
@@ -26,6 +27,7 @@ const Messages: React.FC<MessagesProps> = ({
       <div className="custom-flex-col gap-4">
         {messages?.map((m, index) => {
           const isFromUser = m.sender_id === id;
+          const prevSenderId = index > 0 ? messages[index - 1].sender_id : null;
           return (
             <Message
               key={index}
@@ -36,6 +38,8 @@ const Messages: React.FC<MessagesProps> = ({
               seen={m.seen}
               noScroll={noScroll}
               sender={m.sender}
+              chat_type={chat_type}
+              showSenderInfo={m.sender_id !== prevSenderId} 
             />
           );
         })}

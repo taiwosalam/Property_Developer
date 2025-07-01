@@ -115,7 +115,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     { label: "Keep with Landlord", value: "Landlord" },
     { label: "Keep it with Manager", value: "Company" },
     { label: "Escrow it", value: "Admin" },
-    { label: "None", value: "Null" },
+    { label: "None", value: "" },
   ];
 
   const {
@@ -681,7 +681,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 value={landlordOptions.find(
                   (l) => l.value === selectedLandlord
                 )}
-                onChange={(value) => setSelectedLandlord(value)} 
+                onChange={(value) => setSelectedLandlord(value)}
                 hiddenInputClassName="property-form-input"
                 placeholder={
                   landlordsLoading
@@ -855,6 +855,59 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   : "5%"
               }
             />
+
+            {formType === "facility" && (
+              <>
+                <Select
+                  id="who_to_charge_new_tenant"
+                  options={[
+                    {
+                      label: "Yes",
+                      value: "tenants",
+                    },
+                    {
+                      label: "No",
+                      value: "none",
+                    },
+                  ]}
+                  label="Enable Mgmt Fee – (New Occupant)"
+                  isSearchable={false}
+                  className="property-new-agency-fee-wrapper"
+                  inputContainerClassName="bg-white"
+                  resetKey={resetKey}
+                  requiredNoStar
+                  hiddenInputClassName="property-form-input"
+                  defaultValue={
+                    editMode ? propertySettings?.who_to_charge_new_tenant : ""
+                  }
+                />
+
+                <Select
+                  id="who_to_charge_renew_tenant"
+                  className="property-renew-agency-fee-wrapper"
+                  options={[
+                    {
+                      label: "Yes",
+                      value: "tenants",
+                    },
+                    {
+                      label: "No",
+                      value: "none",
+                    },
+                  ]}
+                  label="Enable Mgmt Fee – (Renewal Occupant)"
+                  isSearchable={false}
+                  inputContainerClassName="bg-white"
+                  resetKey={resetKey}
+                  requiredNoStar
+                  hiddenInputClassName="property-form-input"
+                  defaultValue={
+                    editMode ? propertySettings?.who_to_charge_renew_tenant : ""
+                  }
+                />
+              </>
+            )}
+
             {formType === "rental" && (
               <>
                 <Select
@@ -877,7 +930,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   id="who_to_charge_renew_tenant"
                   className="property-renew-agency-fee-wrapper"
                   options={["landlord", "tenants", "both", "none"]}
-                  label="Who to pay Agency Fee (Renewal Rent)"
+                  label="Management Fee (Renewal Rent)"
                   isSearchable={false}
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
@@ -1034,7 +1087,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             {formType === "rental" && (
               <>
                 <Select
-                  options={inventoryOptions}
+                  // options={inventoryOptions}
+                  options={[
+                    { label: "yes", value: "yes" },
+                    { label: "No", value: "no" },
+                  ]}
                   id="inventory_id"
                   defaultValue={
                     editMode

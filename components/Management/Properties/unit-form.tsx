@@ -74,7 +74,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
 
-
   const navigateBackOrToProperties = () => {
     const page = searchParams.get("page");
     if (page === "rent-unit") {
@@ -141,7 +140,16 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
 
   const handleSubmit = async (formData: Record<string, any>) => {
     if (!propertyId) return;
-    if (propertyType !== "facility" && state.images.length === 0) {
+    // if (propertyType !== "facility" && state.images.length === 0) {
+    //   toast.warning("Please add at least one picture");
+    //   return;
+    // }
+
+    // REQUIRE AT LEAST ONE PICTURE FOR RENTAL EDIT/CREATE
+    if (
+      propertyType !== "facility" &&
+      (!state.imageFiles || state.imageFiles.length === 0)
+    ) {
       toast.warning("Please add at least one picture");
       return;
     }
@@ -189,11 +197,11 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
         const unitData = await getUnitById(unitId);
         if (unitData) {
           if (duplicate?.val) {
-            addUnit(unitData, duplicate.count);
-            setDuplicate({
-              val: false,
-              count: 1,
-            });
+            // addUnit(unitData, duplicate.count);
+            // setDuplicate({
+            //   val: false,
+            //   count: 1,
+            // });
             props.hideEmptyForm();
           } else {
             addUnit(unitData);

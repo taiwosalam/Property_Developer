@@ -30,6 +30,8 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   badge_color,
   tenant_id,
   currency,
+  occupant,
+  invoice_id,
 }) => {
   const [isOpened, setIsOpened] = useState(false);
   const CURRENCY =
@@ -229,6 +231,10 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 unit_id={unitId}
                 key={i}
                 propertyType={propertyType}
+                invoice_id={invoice_id}
+                tenantId={Number(occupant.tenant_id) ?? 0}
+                cautionDeposit={Number(caution_deposit)}
+                tenantAgent={occupant.agent}
                 {...action}
                 route={
                   typeof action.route === "function"

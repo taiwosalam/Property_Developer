@@ -34,6 +34,7 @@ import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "../maintenance/data";
 import { hasActiveFilters } from "../../reports/data/utils";
 import { IPropertyApi } from "../../settings/others/types";
+import { useSearchParams } from "next/navigation";
 
 const transformToCallBackRequestCardProps = (
   data: RequestCallBackCardDataType
@@ -56,13 +57,33 @@ const transformToCallBackRequestCardProps = (
 const Inquires = () => {
   const [callRequestPageData, setCallRequestPageDate] =
     useState<ICallRequestPageData | null>(null);
+  const searchParams = useSearchParams();
+  const urlStatus = searchParams.get("status");
+
+  // const [config, setConfig] = useState<AxiosRequestConfig>({
+  //   params: {
+  //     page: 1,
+  //     search: "",
+  //   } as LandlordRequestParams,
+  // });
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: 1,
       search: "",
+      ...(urlStatus ? { status: urlStatus } : {}),
     } as LandlordRequestParams,
   });
+
+  // Optionally, keep config in sync if user navigates with a different status param
+  useEffect(() => {
+    if (urlStatus) {
+      setConfig((prev) => ({
+        ...prev,
+        params: { ...prev.params, status: urlStatus },
+      }));
+    }
+  }, [urlStatus]);
 
   const {
     data: apiData,

@@ -107,7 +107,7 @@ const StartRent = () => {
     }
   }, [allTenantData]);
 
-  const HAS_DOCUMENT = unit_data.property_document.document_id;
+  const HAS_DOCUMENT = unit_data?.property_document?.document_id;
   const AGREEMENT_CHECKED = selectedCheckboxOptions.rent_agreement;
 
   const handleStartRent = async () => {

@@ -9,6 +9,7 @@ import UploadMsgFile from "./msg-file-upload";
 import { SendMessage } from "@/app/(nav)/(messages-reviews)/messages/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
+import { useMessages } from "@/contexts/messageContext";
 
 export const MessageModalPreset = ({
   back,
@@ -51,28 +52,16 @@ export const MessageModalPreset = ({
 };
 
 export const MessageAudioComponent: React.FC<AudioProps> = ({ id }) => {
-  const [loading, setLoading] = useState(false);
+  const { handleSendAudio, reqLoading } = useMessages();
   const { setIsOpen } = useModal();
+
   const handleUpload = async (file: File) => {
     if (!file) return;
-    const payload = {
-      content_file: file,
-      content_type: "audio",
-      receiver_type: "user",
-    };
-    console.log("payload", payload);
-
     try {
-      setLoading(true);
-      const res = await SendMessage(objectToFormData(payload), `${id}`);
-      if (res) {
-        setIsOpen(false);
-        window.dispatchEvent(new Event("refetch-users-msg"));
-      }
-    } catch (err) {
+      await handleSendAudio(id, file);
+      setIsOpen(false);
+    } catch {
       toast.error("Failed to send audio message");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -102,27 +91,16 @@ export const EmojiComponent: React.FC<EmojiComponentProps> = ({
 };
 
 export const MessageGalleryComponent = ({ id }: { id: string }) => {
-  const [loading, setLoading] = useState(false);
+  const { handleSendImage, reqLoading } = useMessages();
   const { setIsOpen } = useModal();
 
   const handleUpload = async (file: File) => {
     if (!file) return;
-    const payload = {
-      content_file: file,
-      content_type: "file",
-      receiver_type: "user",
-    };
     try {
-      setLoading(true);
-      const res = await SendMessage(objectToFormData(payload), `${id}`);
-      if (res) {
-        setIsOpen(false);
-        window.dispatchEvent(new Event("refetch-users-msg"));
-      }
-    } catch (err) {
-      toast.error("Failed to send audio message");
-    } finally {
-      setLoading(false);
+      await handleSendImage(id, file);
+      setIsOpen(false);
+    } catch {
+      toast.error("Failed to send image");
     }
   };
 
@@ -134,27 +112,16 @@ export const MessageGalleryComponent = ({ id }: { id: string }) => {
 };
 
 export const MessageDocumentComponent = ({ id }: { id: string }) => {
-  const [loading, setLoading] = useState(false);
+  const { handleSendDocument, reqLoading } = useMessages();
   const { setIsOpen } = useModal();
 
   const handleUpload = async (file: File) => {
     if (!file) return;
-    const payload = {
-      content_file: file,
-      content_type: "file",
-      receiver_type: "user",
-    };
     try {
-      setLoading(true);
-      const res = await SendMessage(objectToFormData(payload), `${id}`);
-      if (res) {
-        setIsOpen(false);
-        window.dispatchEvent(new Event("refetch-users-msg"));
-      }
-    } catch (err) {
-      toast.error("Failed to send audio message");
-    } finally {
-      setLoading(false);
+      await handleSendDocument(id, file);
+      setIsOpen(false);
+    } catch {
+      toast.error("Failed to send document");
     }
   };
   return (

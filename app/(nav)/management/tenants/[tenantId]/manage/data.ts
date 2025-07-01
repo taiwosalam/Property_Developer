@@ -167,6 +167,7 @@ export const transformIndividualTenantAPIResponse = ({
     rent: CurrentRent | PreviousRent
   ): UnitItemProps => ({
     propertyType: rent?.property_type || "",
+    caution_deposit: Number(rent?.caution_deposit) || 0,
     unitId: rent?.unit_id?.toString() || "",
     unitImages: rent?.unit_image?.map((img) => img?.path || "") || [],
     unitDetails: `${rent?.unit_type || ""} - ${rent?.unit_sub_type || ""}`,

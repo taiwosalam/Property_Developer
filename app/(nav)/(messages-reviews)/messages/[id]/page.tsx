@@ -3,7 +3,14 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { useChatStore } from "@/store/message";
-import { DirectChatAPIResponse, GroupChatAPIResponse, groupMessagesByDay, isDirectChatResponse, isGroupChatResponse, transformMessagesFromAPI } from "../data";
+import {
+  DirectChatAPIResponse,
+  GroupChatAPIResponse,
+  groupMessagesByDay,
+  isDirectChatResponse,
+  isGroupChatResponse,
+  transformMessagesFromAPI,
+} from "../data";
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { empty } from "@/app/config";
@@ -98,14 +105,23 @@ const Chat = () => {
     error,
     refetch,
   } = useFetch<GroupChatAPIResponse | DirectChatAPIResponse>(endpoint);
-
   useRefetchOnEvent("refetchMessages", () => refetch({ silent: true }));
+
+  // Poll for new messages every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      window.dispatchEvent(new Event("refetchMessages"));
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   // TRANSFORM MESSAGES FROM API RESPONSE
   useEffect(() => {
     if (!apiData) return;
     if (isGroupChat && isGroupChatResponse(apiData)) {
       const normalizedMessages = transformMessagesFromAPI(apiData, true);
       setChatData("conversations", normalizedMessages);
+
       setIsLoading(false);
     } else if (!isGroupChat && isDirectChatResponse(apiData)) {
       const normalizedMessages = transformMessagesFromAPI(apiData, false);
@@ -191,7 +207,7 @@ const Chat = () => {
               day={group.day}
               messages={group.messages}
               userId={user_id as string}
-              chat_type={isGroupChat ? "group" : "private"} 
+              chat_type={isGroupChat ? "group" : "private"}
             />
           ))}
       </div>

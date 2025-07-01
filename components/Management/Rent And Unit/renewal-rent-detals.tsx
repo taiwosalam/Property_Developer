@@ -291,6 +291,7 @@ export const RenewalRent: React.FC<{
   due_date?: Dayjs | null;
   title?: string;
   start?: boolean;
+  unitData?: any;
   allowStartDateInput?: boolean;
   setStart_Date?: (date: string | null) => void;
   setDueDate?: (date: Dayjs | null) => void;
@@ -309,12 +310,13 @@ export const RenewalRent: React.FC<{
   setSelectedCheckboxOptions,
   occupant,
   isUpfrontPaymentChecked,
+  unitData
 }) => {
   const isWebUser = occupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = occupant?.userTag?.toLowerCase() === "mobile";
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [dueDate, setLocalDueDate] = useState<Dayjs | null>(null);
-
+  const nonNaira = unitData?.currency !== "naira";
   type CheckboxOption =
     | "Create Invoice"
     | "Mobile Notification"
@@ -338,7 +340,7 @@ export const RenewalRent: React.FC<{
       mobile_notification: true,
       sms_alert: true,
       email_alert: true,
-      rent_agreement: true,
+      rent_agreement: false,
     }
   );
 
@@ -470,7 +472,67 @@ export const RenewalRent: React.FC<{
             </Checkbox>
           ))}
 
-          {!isWebUser && (
+          {startDate?.isBefore(dayjs(), "day") ? (
+            <div className="custom-flex-col gap-1">
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
+                You have selected a past date for the occupant, which indicates
+                that you are recording an outstanding rent balance for the
+                client, not initiating a new rent payment.
+              </p>
+              {nonNaira && (
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  <span className="text-red-500 text-lg">*</span>
+                  The property was listed in a currency other than Naira. You
+                  will need to handle all payments manually.
+                </p>
+              )}
+            </div>
+          ) : isWebUser ? (
+            <div className="custom-flex-col gap-1">
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>{" "}
+                {`Confirms that you have received payment for the 
+          ${isRental ? "rent" : "management"}.`}
+              </p>
+              {nonNaira && (
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  <span className="text-red-500 text-lg">*</span>
+                  The property was listed in a currency other than Naira. You
+                  will need to handle all payments manually.
+                </p>
+              )}
+            </div>
+          ) : (
+            <div className="custom-flex-col gap-1">
+              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                <span className="text-red-500 text-lg">*</span>
+                {checkboxStates["create_invoice"]
+                  ? `Payment will be reflected once the ${
+                      isRental ? "tenant" : "occupant"
+                    } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
+                  : `Confirms that you have received payment for the ${
+                      isRental ? "rent" : "counting"
+                    }. ${
+                      unitData?.currency === "naira"
+                        ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
+                            isRental ? "tenant" : "occupant"
+                          } to make the payment.`
+                        : ""
+                    }`}
+              </p>
+              {nonNaira && (
+                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
+                  <span className="text-red-500 text-lg">*</span>
+                  The property was listed in a currency other than Naira. As a
+                  result, automatic payments and wallet transactions are not
+                  supported. You will need to handle all payments manually.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* {!isWebUser && (
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
               {start ? (
                 <>
@@ -496,7 +558,7 @@ export const RenewalRent: React.FC<{
                 </>
               )}
             </p>
-          )}
+          )} */}
         </div>
       )}
     </div>
@@ -630,8 +692,8 @@ export const PreviousRentRecords: React.FC<PreviousRentRecordsProps> = ({
           (record, index, self) =>
             index === self.findIndex((r) => r.id === record.id)
         );
-         // Reverse the records if page === 'edit-rent'
-         return page === 'edit-rent' ? unique.reverse() : unique;
+        // Reverse the records if page === 'edit-rent'
+        return page === "edit-rent" ? unique.reverse() : unique;
       });
       const newPagination = data.data.current_records.pagination;
       if (newPagination) {

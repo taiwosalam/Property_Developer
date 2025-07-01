@@ -16,6 +16,7 @@ import {
   SendGroupMessage,
   transformCompanyUsersData,
   transformUsersMessages,
+  blobToBase64,
 } from "@/app/(nav)/(messages-reviews)/messages/data";
 import { useGlobalStore } from "@/store/general-store";
 import {
@@ -45,9 +46,11 @@ type MessagesContextType = {
   handleSendMsg: (id: string) => Promise<void>;
   handleSendAudio: (
     id: string,
-    recordedBlob: Blob | null,
-    stopRecording: VoidFunction
+    blob: Blob | null,
+    stopRecording?: VoidFunction
   ) => Promise<void>;
+  handleSendImage: (id: string, file: File) => Promise<void>;
+  handleSendDocument: (id: string, file: File) => Promise<void>;
   applyFilters: (
     messages: PageMessages[],
     query: string,
@@ -98,7 +101,7 @@ export const MessagesProvider = ({
   useRefetchOnEvent("refetch-users-msg", () => {
     refetchUsersMsg({ silent: true });
   });
-  
+
   // Update messages and apply filters
   useEffect(() => {
     if (usersMessages) {
@@ -163,7 +166,7 @@ export const MessagesProvider = ({
     applyFilters,
   ]);
 
-  // Send message
+  // Send message handler
   const handleSendMsg = async (id: string) => {
     const payload = {
       content: message,
@@ -186,18 +189,23 @@ export const MessagesProvider = ({
     }
   };
 
-  // Send audio
+  // Send audio handler
   const handleSendAudio = async (
     id: string,
     recordedBlob: Blob | null,
-    stopRecording: VoidFunction
+    stopRecording?: VoidFunction
   ) => {
     if (!recordedBlob) return;
     const audioFile = new File([recordedBlob], "voice-note.wav", {
       type: recordedBlob.type,
     });
+  
+    const base64Audio = await blobToBase64(recordedBlob);
+  
     const payload = {
-      content_file: audioFile,
+      [isGroupChat ? "content" : "content_file"]: isGroupChat
+        ? base64Audio
+        : audioFile,
       content_type: "audio",
       receiver_type: isGroupChat ? "group" : "user",
     };
@@ -207,7 +215,7 @@ export const MessagesProvider = ({
       const res = await sendFn(objectToFormData(payload), `${id}`);
       if (res) {
         setAudioUrl("");
-        stopRecording();
+        if (stopRecording) stopRecording(); // safe call
         setMessage("");
         window.dispatchEvent(new Event("refetch-users-msg"));
         window.dispatchEvent(new Event("refetchMessages"));
@@ -218,6 +226,56 @@ export const MessagesProvider = ({
       setReqLoading(false);
     }
   };
+
+  // Send image handler
+  const handleSendImage = async (id: string, file: File) => {
+    if (!file) return;
+    try {
+      setReqLoading(true);
+      const base64Img = await blobToBase64(file);
+      const payload = {
+        [isGroupChat ? "content" : "content_file"]: isGroupChat ? base64Img : file,
+        content_type: "file",
+        receiver_type: isGroupChat ? "group" : "user",
+      };
+      const sendFn = isGroupChat ? SendGroupMessage : SendMessage;
+      const res = await sendFn(objectToFormData(payload), `${id}`);
+      if (res) {
+        window.dispatchEvent(new Event("refetch-users-msg"));
+        window.dispatchEvent(new Event("refetchMessages"));
+      }
+    } catch (err) {
+      toast.error("Failed to send image");
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+  // Send document handler
+  const handleSendDocument = async (id: string, file: File) => {
+    if (!file) return;
+    try {
+      setReqLoading(true);
+      const base64Doc = await blobToBase64(file);
+      const payload = {
+        [isGroupChat ? "content" : "content_file"]: isGroupChat ? base64Doc : file,
+        content_type: "file",
+        receiver_type: isGroupChat ? "group" : "user",
+      };
+      const sendFn = isGroupChat ? SendGroupMessage : SendMessage;
+      const res = await sendFn(objectToFormData(payload), `${id}`);
+      if (res) {
+        window.dispatchEvent(new Event("refetch-users-msg"));
+        window.dispatchEvent(new Event("refetchMessages"));
+      }
+    } catch (err) {
+      toast.error("Failed to send document");
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+  console.log("messages", filteredMessages)
 
   return (
     <MessagesContext.Provider
@@ -240,6 +298,8 @@ export const MessagesProvider = ({
         usersMsgLoading,
         handleSendMsg,
         handleSendAudio,
+        handleSendImage,
+        handleSendDocument,
         applyFilters,
         refetchUsersMsg,
       }}

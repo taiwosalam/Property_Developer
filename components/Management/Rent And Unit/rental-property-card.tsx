@@ -150,6 +150,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   invoice_status,
   invoice_id,
   partial_pending,
+  occupant,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isImgHovered, setImgIsHovered] = useState(false);
@@ -319,6 +320,9 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               unit_id={unitId}
               invoice_id={invoice_id}
               key={i}
+              tenantId={Number(occupant.tenant_id) ?? 0}
+              cautionDeposit={Number(caution_deposit)}
+              tenantAgent={occupant.agent}
               propertyType={propertyType}
               {...action}
               route={

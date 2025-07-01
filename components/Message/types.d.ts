@@ -37,6 +37,7 @@ export interface MessageProps {
   type: "to user" | "from user";
   noScroll?: boolean;
   chat_type?: "group" | "private";
+  showSenderInfo?: boolean 
   sender?: {
     fullname?: string;
     picture?: string;
