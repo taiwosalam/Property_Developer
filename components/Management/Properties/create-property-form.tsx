@@ -1087,12 +1087,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             {formType === "rental" && (
               <>
                 <Select
-                  // options={inventoryOptions}
                   options={[
                     { label: "yes", value: "yes" },
                     { label: "No", value: "no" },
                   ]}
-                  id="inventory_id"
+                  id="is_inventory"
                   defaultValue={
                     editMode
                       ? inventoryOptions.find(
