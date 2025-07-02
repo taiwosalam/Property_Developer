@@ -200,13 +200,13 @@ export const transformMessages = (data: any) => {
     .sort((a: any, b: any) => a.timestamp - b.timestamp);
 };
 
-interface Message {
-  id: number;
-  text: string | null;
-  senderId: number;
-  timestamp: string;
-  content_type: string;
-}
+// interface Message {
+//   id: number;
+//   text: string | null;
+//   senderId: number;
+//   timestamp: string;
+//   content_type: string;
+// }
 
 interface GroupedMessage {
   id: number;
@@ -217,7 +217,7 @@ interface GroupedMessage {
   seen: boolean;
 }
 
-interface Message {
+export interface NormalizedMessage {
   id: number;
   text: string | null;
   senderId: number;
@@ -229,6 +229,21 @@ interface Message {
     title: string;
   };
 }
+
+export interface Message {
+  id: number;
+  text: string | null;
+  senderId: number;
+  timestamp: string;
+  content_type: string;
+  sender?: {
+    fullname: string;
+    picture: string;
+    title: string;
+  };
+}
+
+
 
 interface GroupedMessage {
   id: number;
@@ -238,24 +253,12 @@ interface GroupedMessage {
   content_type: string;
   seen: boolean;
   sender: {
-    fullname: string;
-    picture: string;
-    title: string;
-  };
-}
-
-export interface NormalizedMessage {
-  id: number;
-  text: string | null;
-  senderId: number | string;
-  timestamp: string;
-  content_type: string;
-  sender?: {
     fullname?: string;
     picture?: string;
     title?: string;
   };
 }
+
 
 export type GroupChatAPIResponse = {
   group_chat: any;
@@ -269,19 +272,55 @@ export type DirectChatAPIResponse = {
   messages: any[];
 };
 
+// export const transformMessagesFromAPI = (
+//   apiData: GroupChatAPIResponse | DirectChatAPIResponse,
+//   isGroupChat: boolean
+// ): NormalizedMessage[] => {
+//   let messagesRaw: any[] = [];
+
+//   if (isGroupChat && "messages" in apiData) {
+//     messagesRaw = apiData.messages;
+//   } else if (!isGroupChat && "messages" in apiData) {
+//     messagesRaw = apiData.messages;
+//   }
+
+//   return messagesRaw.map((msg) => {
+//     const timestamp =
+//       isGroupChat && msg.created_at
+//         ? moment(msg.created_at).format("YYYY-MM-DD HH:mm:ss")
+//         : msg.date && msg.timestamp
+//         ? moment(`${msg.date} ${msg.timestamp}`).format("YYYY-MM-DD HH:mm:ss")
+//         : "";
+//     // Sender info for group chat
+//     const sender =
+//       isGroupChat && msg.sender
+//         ? {
+//             fullname: msg.sender.name ?? "",
+//             picture: msg.sender.profile?.picture ?? empty,
+//             title: msg.sender.profile?.title ?? "",
+//           }
+//         : undefined;
+
+//     return {
+//       id: msg.id,
+//       text: msg.content ?? null,
+//       senderId: msg.sender_id,
+//       timestamp,
+//       content_type: msg.content_type,
+//       sender,
+//     } as NormalizedMessage;
+//   });
+// };
+
 export const transformMessagesFromAPI = (
   apiData: GroupChatAPIResponse | DirectChatAPIResponse,
   isGroupChat: boolean
 ): NormalizedMessage[] => {
   let messagesRaw: any[] = [];
-
-  if (isGroupChat && "messages" in apiData) {
-    messagesRaw = apiData.messages;
-  } else if (!isGroupChat && "messages" in apiData) {
-    messagesRaw = apiData.messages;
-  }
+  if ("messages" in apiData) messagesRaw = apiData.messages;
 
   return messagesRaw.map((msg) => {
+    // Determine timestamp
     const timestamp =
       isGroupChat && msg.created_at
         ? moment(msg.created_at).format("YYYY-MM-DD HH:mm:ss")
@@ -289,7 +328,19 @@ export const transformMessagesFromAPI = (
         ? moment(`${msg.date} ${msg.timestamp}`).format("YYYY-MM-DD HH:mm:ss")
         : "";
 
-    console.log("Mesasasasasa", msg);
+    // Determine content_type
+    let content_type = "text";
+    if (
+      msg.content_type &&
+      msg.content_type !== "text" &&
+      typeof msg.content === "string"
+    ) {
+      content_type = getContentTypeFromExtension(msg.content);
+    } else if (msg.content_type && msg.content_type !== "text") {
+      // fallback to api content_type
+      content_type = msg.content_type;
+    }
+
     // Sender info for group chat
     const sender =
       isGroupChat && msg.sender
@@ -303,9 +354,9 @@ export const transformMessagesFromAPI = (
     return {
       id: msg.id,
       text: msg.content ?? null,
-      senderId: msg.sender_id,
+      senderId: Number(msg.sender_id), 
       timestamp,
-      content_type: msg.content_type,
+      content_type,
       sender,
     } as NormalizedMessage;
   });
@@ -332,7 +383,7 @@ export function isGroupChatResponse(obj: any): obj is GroupChatAPIResponse {
 export const groupMessagesByDay = (
   data: Message[]
 ): { day: string; messages: GroupedMessage[] }[] => {
-  console.log("groupMessagesByDay input:", data);
+  // console.log("groupMessagesByDay input:", data);
   if (!data || !data.length) return [];
 
   // Sort messages by timestamp
@@ -376,6 +427,19 @@ export const groupMessagesByDay = (
   return result;
 };
 
+// Helper to infer content type from file extension
+export const getContentTypeFromExtension = (filename: string): string => {
+  const ext = filename.split(".").pop()?.toLowerCase() || "";
+  if (["mp3", "wav", "ogg", "webm"].includes(ext)) return "audio";
+  if (["mp4", "avi", "mov", "webm"].includes(ext)) return "video";
+  if (["jpg", "jpeg", "png", "gif", "bmp", "webp"].includes(ext))
+    return "image";
+  if (["pdf", "doc", "docx", "txt", "xls", "xlsx", "ppt", "pptx"].includes(ext))
+    return "document";
+  if (ext) return "file";
+  return "text";
+};
+
 export const blobToBase64 = (blob: Blob): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -383,7 +447,8 @@ export const blobToBase64 = (blob: Blob): Promise<string> => {
     reader.onerror = reject;
     reader.readAsDataURL(blob);
   });
-}
+};
+
 // Keep existing SendMessage, transform functions
 // export const SendMessage = async (payload: FormData, id: string) => {
 //   try {

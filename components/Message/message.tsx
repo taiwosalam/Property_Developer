@@ -186,7 +186,7 @@ const Message: React.FC<MessageProps> = ({
                   })}
                 >
                   <FaFileAlt size={20} />
-                  <span>Download File</span>
+                  <span>Download File </span>
                 </a>
               )}
             </div>

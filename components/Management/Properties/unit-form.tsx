@@ -197,7 +197,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
         const unitData = await getUnitById(unitId);
         if (unitData) {
           if (duplicate?.val) {
-            // addUnit(unitData, duplicate.count);
+            addUnit(unitData, duplicate.count);
             // setDuplicate({
             //   val: false,
             //   count: 1,

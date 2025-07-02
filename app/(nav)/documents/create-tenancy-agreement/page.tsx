@@ -34,6 +34,10 @@ const CreateTenancyAggrement = () => {
   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
   const [next, setNext] = useState(false);
   const documentId = selectedLegalOption?.id ?? 0;
+  const startRentUnitId =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("return_to_start_rent_unit_id")
+      : null;
 
   const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
 
@@ -58,8 +62,27 @@ const CreateTenancyAggrement = () => {
     try {
       setReqLoading(true);
       const res = await createPropertyDocument(objectToFormData(payload));
+      // if (res) {
+      //   toast.success("Draft saved successfully");
+      //   if (type === "preview") {
+      //     router.push(`/documents/preview/?d=${documentId}&b=manage`);
+      //   } else {
+      //     router.push(`/documents`);
+      //   }
+      // }
       if (res) {
         toast.success("Draft saved successfully");
+        // Check if we should redirect back to Start Rent
+        const startRentUnitId = sessionStorage.getItem(
+          "return_to_start_rent_unit_id"
+        );
+        if (startRentUnitId) {
+          sessionStorage.removeItem("return_to_start_rent_unit_id");
+          router.push(
+            `/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`
+          );
+          return;
+        }
         if (type === "preview") {
           router.push(`/documents/preview/?d=${documentId}&b=manage`);
         } else {
@@ -124,34 +147,6 @@ const CreateTenancyAggrement = () => {
             />
           </div>
         </LandlordTenantInfoBox>
-        {/* <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
-          <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
-            Landlord/Landlady Details
-          </h2>
-          <SectionSeparator />
-          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
-            <KeyValueList
-              data={{
-                "Landlord/Landlady Name":
-                  propertyData?.landlord_info?.name || "--- ---",
-                "Landlord/Landlady ID": propertyData?.landlord_id || "--- ---",
-                "Landlord/Landlady Address": `${
-                  propertyData?.landlord_info?.address || "---"
-                } ${propertyData?.landlord_info?.city || "---"} ${
-                  propertyData?.landlord_info?.state || "---"
-                }`,
-                "account type": propertyData?.landlordData?.agent || "--- ---",
-              }}
-              chunkSize={2}
-              referenceObject={{
-                "Landlord/Landlady Name": "",
-                "Landlord/Landlady ID": "",
-                "Landlord/Landlady Address": "",
-                "account type": "",
-              }}
-            />
-          </div>
-        </LandlordTenantInfoBox> */}
       </div>
       <div className="custom-flex-col gap-8">
         <div className="custom-flex-col gap-4">
@@ -181,15 +176,17 @@ const CreateTenancyAggrement = () => {
           Back
         </Button>
         <div className="flex gap-6 ml-0">
-          <Button
-            onClick={() => handleSaveDraft("preview")}
-            size="base_bold"
-            variant="sky_blue"
-            disabled={reqLoading}
-            className="py-2 px-6"
-          >
-            {reqLoading ? "Please wait..." : "Preview"}
-          </Button>
+          {!startRentUnitId && (
+            <Button
+              onClick={() => handleSaveDraft("preview")}
+              size="base_bold"
+              variant="sky_blue"
+              disabled={reqLoading}
+              className="py-2 px-6"
+            >
+              {reqLoading ? "Please wait..." : "Preview"}
+            </Button>
+          )}
           <Button
             onClick={() => handleSaveDraft("create")}
             size="base_bold"

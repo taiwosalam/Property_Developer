@@ -90,6 +90,10 @@ const RenewRent = () => {
   const [isCompletePayment, setIsCompletePayment] = useState(false);
   const [hasPartPayment, setHasPartPayment] = useState(false);
 
+  // Document logic
+  const HAS_DOCUMENT = unitData?.property_document?.document_id;
+  const AGREEMENT_CHECKED = selectedCheckboxOptions.rent_agreement;
+
   // API fetch
   const endpoint = `/unit/${id}/view`;
   const {
@@ -199,7 +203,7 @@ const RenewRent = () => {
     }
 
     // For rentals, if rent_agreement is true, open the agreement preview modal
-    if (isRental && selectedCheckboxOptions.rent_agreement) {
+    if (isRental && AGREEMENT_CHECKED) {
       setIsAgreementModalOpen(true);
       return;
     }
@@ -213,6 +217,7 @@ const RenewRent = () => {
       ? "Rent Renewed Successfully"
       : "Fee Renewed Successfully";
     const failedMsg = isRental ? "Failed to renew rent" : "Failed to renew fee";
+    const shouldAttachDocument = isRental && AGREEMENT_CHECKED && doc_file;
 
     const payloadObj: any = {
       unit_id: unitData.unit_id,
@@ -234,7 +239,7 @@ const RenewRent = () => {
     };
 
     // Only include has_document and doc_file for rentals
-    if (isRental) {
+    if (isRental && shouldAttachDocument) {
       payloadObj.has_document = doc_file ? 1 : 0;
       if (doc_file) {
         payloadObj.doc_file = doc_file;
@@ -499,11 +504,24 @@ const RenewRent = () => {
           </div>
           <PreviousRentRecords />
         </section>
-        <FixedFooter className="flex items-center justify-end">
+        <FixedFooter className="flex gap-4">
+          {isRental && AGREEMENT_CHECKED && (
+            <Button
+              href={
+                HAS_DOCUMENT
+                  ? `/documents/manage-tenancy-agreement?d=${unitData.property_document.document_id}`
+                  : `/documents/`
+              }
+              size="base_medium"
+              className="py-2 px-6"
+            >
+              {HAS_DOCUMENT ? "Manage Agreement" : "Create Agreement"}
+            </Button>
+          )}
           {isCompletePayment ? (
             <Button
               size="base_medium"
-              className="py-2 px-6"
+              className="py-2 px-6 items-end ml-auto"
               disabled={reqLoading}
               onClick={() => router.push("/management/rent-unit")}
               // onClick={handlePartPayment}
@@ -514,7 +532,7 @@ const RenewRent = () => {
           ) : isUpfrontPaymentChecked ? (
             <Button
               size="base_medium"
-              className="py-2 px-6"
+              className="py-2 px-6 items-end ml-auto"
               disabled={reqLoading}
               onClick={() => router.push("/management/rent-unit")}
               // onClick={handleRenewRent}
@@ -529,7 +547,7 @@ const RenewRent = () => {
           ) : (
             <Button
               size="base_medium"
-              className="py-2 px-6"
+              className="py-2 px-6 items-end ml-auto"
               onClick={() => router.push("/management/rent-unit")}
               // disabled={reqLoading || !amt || !startDate}
               // onClick={handlePartPayment}

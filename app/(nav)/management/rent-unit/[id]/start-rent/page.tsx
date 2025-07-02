@@ -47,6 +47,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
 import { useTourStore } from "@/store/tour-store";
 import { getLocalStorage, removeLocalStorage } from "@/utils/local-storage";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -101,6 +102,11 @@ const StartRent = () => {
   }, [apiData, setGlobalStore]);
 
   useEffect(() => {
+    // Remove the session key on mount to avoid repeated redirects
+    sessionStorage.removeItem("return_to_start_rent_unit_id");
+  }, []);
+
+  useEffect(() => {
     if (allTenantData) {
       const transformedTenants = transformUnitsTenants(allTenantData);
       setTenants_data(transformedTenants);
@@ -140,21 +146,14 @@ const StartRent = () => {
 
     const IS_FACILITY = propertyType === "facility";
 
-    if (!IS_FACILITY && !isPastDate) {
-      // Open modal for non-facility and non-past date cases
+    // Only open modal if rent_agreement is checked
+    if (!IS_FACILITY && !isPastDate && selectedCheckboxOptions.rent_agreement) {
       setIsAgreementModalOpen(true);
       return;
     }
 
-    // if (!IS_WEB_TENANT) {
-    //   // Open modal for non-web tenants
-    //   setIsAgreementModalOpen(true);
-    //   return;
-    // }
-
-    // For web tenants, proceed without PDF
+    // For all other cases, proceed without modal
     await submitRent(null);
-    // setIsAgreementModalOpen(true);
     return;
   };
 
@@ -191,6 +190,7 @@ const StartRent = () => {
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 0,
       has_document: 0,
+      caution_fee: parseCurrency(unit_data?.caution_fee),
     };
 
     const RentalObj = {
@@ -212,6 +212,7 @@ const StartRent = () => {
       // has_document: isPastDate ? 0 : 1, // NOW WHEN PAST DATE IS SELECTED, NO DOCUMENT IS REQUIRED
       ...(isPastDate ? {} : { doc_file }),
       has_document: shouldAttachDocument ? 1 : 0,
+      caution_fee: parseCurrency(unit_data?.caution_fee),
       // has_document: shouldAttachDocument || isPastDate ? 0 : 1,
       // ...(shouldAttachDocument && doc_file ? { doc_file } : {}),
     };
@@ -279,6 +280,24 @@ const StartRent = () => {
     setPersist,
     isTourCompleted,
   ]);
+
+  const handleAgreementClick = () => {
+    if (unit_data?.unit_id) {
+      sessionStorage.setItem("return_to_start_rent_unit_id", unit_data.unit_id);
+    }
+    if (unit_data?.propertyId) {
+      // Save as string, use the correct property id field
+      sessionStorage.setItem(
+        "return_to_start_rent_property_id",
+        String(unit_data.propertyId)
+      );
+    }
+    router.push(
+      HAS_DOCUMENT
+        ? `/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`
+        : `/documents/`
+    );
+  };
 
   if (reqLoading || pdfLoading) {
     return (
@@ -354,29 +373,12 @@ const StartRent = () => {
         />
       </section>
 
-      {/* {isRental && IS_WEB_TENANT && !isPastDate && ( */}
-      {/* {isRental && !isPastDate && (
-          <Modal>
-            <ModalTrigger asChild>
-              <Button size="base_medium" className="py-2 px-6">
-                Agreement
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <AgreementPreview isWebTenant={IS_WEB_TENANT} />
-            </ModalContent>
-          </Modal>
-        )} */}
       <FixedFooter className="start-rent-button flex gap-4">
         {AGREEMENT_CHECKED && (
           <Button
-            href={
-              HAS_DOCUMENT
-                ? `/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`
-                : `/documents/`
-            }
             size="base_medium"
             className="py-2 px-6"
+            onClick={handleAgreementClick}
           >
             {HAS_DOCUMENT ? "Manage Agreement" : "Create Agreement"}
           </Button>

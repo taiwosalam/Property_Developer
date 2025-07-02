@@ -210,29 +210,29 @@ export const transformIndividualLandlordAPIResponse = ({
         images,
         default_image: defaultImage,
         address: `${properties?.full_address}, ${properties?.city_area}, ${properties?.local_government}, ${properties?.state}`,
-        total_units: units.length,
+        total_units: units?.length || 0,
         total_income: (totalReturns * feePercentage) / 100,
         total_returns: totalReturns,
-        property_type: properties.property_type, // Override for properties_managed
+        property_type: properties?.property_type || "rental", // Override for properties_managed
         total_unit_pictures: 2,
         hasVideo: true,
-        currency: properties.currency,
+        currency: properties?.currency || "naira",
         mobile_tenants: 0,
         web_tenants: 0,
         owing_units: 0,
         available_units: 0,
         viewOnly: false,
         isClickable: true,
-        branch: properties.branch.branch_name,
-        last_updated: moment(properties.updated_at).format("DD/MM/YYYY"),
+        branch: properties?.branch?.branch_name || "",
+        last_updated: moment(properties?.updated_at).format("DD/MM/YYYY") ?? "",
         accountOfficer: "", // Adjust if data is available
       };
     }),
-    previous_properties: data.previous_properties.map((p) => {
-      const properties = p.properties;
-      const units = properties.units;
-      const totalReturns = units.reduce(
-        (sum: number, unit: any) => sum + parseFloat(unit.fee_amount),
+    previous_properties: data?.previous_properties?.map((p) => {
+      const properties = p?.properties || [];
+      const units = properties?.units || [];
+      const totalReturns = units?.reduce(
+        (sum: number, unit: any) => sum + parseFloat(unit?.fee_amount || 0),
         0
       );
       const feePercentage =
@@ -249,7 +249,9 @@ export const transformIndividualLandlordAPIResponse = ({
         property_name: properties.title,
         images,
         default_image: defaultImage,
-        address: `${properties.full_address}, ${properties.city_area}, ${properties.local_government}, ${properties.state}`,
+        address: `${properties?.full_address || ""}, ${
+          properties?.city_area || ""
+        }, ${properties?.local_government || ""}, ${properties?.state || ""}`,
         total_units: units.length,
         total_income: (totalReturns * feePercentage) / 100,
         total_returns: totalReturns,
@@ -263,36 +265,36 @@ export const transformIndividualLandlordAPIResponse = ({
         available_units: 0,
         viewOnly: false,
         isClickable: false,
-        branch: properties.branch.branch_name,
-        last_updated: moment(properties.updated_at).format("DD/MM/YYYY"),
+        branch: properties?.branch?.branch_name || "",
+        last_updated: moment(properties?.updated_at).format("DD/MM/YYYY"),
         accountOfficer: "",
       };
     }),
-    statement: data.statement.map((s) => {
-      const amount = parseFloat(s.amount_paid);
+    statement: data?.statement?.map((s) => {
+      const amount = parseFloat(s?.amount_paid || 0);
       return {
-        id: s.id,
-        picture: s.payer_picture,
-        name: s.payer_name,
-        payment_id: s.payment_id,
-        details: s.details,
-        unit_name: s.unit_name,
+        id: s?.id || 0,
+        picture: s?.payer_picture || empty,
+        name: s?.payer_name || "",
+        payment_id: s?.payment_id || 0,
+        details: s?.details || "",
+        unit_name: s?.unit_name || "",
         credit:
-          amount > 0 ? formatFee(amount, s.currency || "naira") || "" : null,
+          amount > 0 ? formatFee(amount, s?.currency || "naira") || "" : null,
         debit:
-          amount < 0 ? formatFee(amount, s.currency || "naira") || "" : null,
+          amount < 0 ? formatFee(amount, s?.currency || "naira") || "" : null,
         // date: s.date ? dayjs(s.date).format("DD/MM/YYYY") : "--- ---",
-        date: s.date ? s.date : "--- ---",
-        badge_color: s.payer_tier
-          ? tierColorMap[s.payer_tier as keyof typeof tierColorMap]
+        date: s?.date ? s?.date : "--- ---",
+        badge_color: s?.payer_tier
+          ? tierColorMap[s?.payer_tier as keyof typeof tierColorMap]
           : null,
       };
     }),
     messageUserData: {
-      id: Number(data.user_id),
-      name: data.name,
+      id: Number(data?.user_id) || 0,
+      name: data?.name || "",
       position: "landlord",
-      imageUrl: data.picture ?? empty,
+      imageUrl: data?.picture ?? empty,
       branch_id: 1, //TEST
     },
   };

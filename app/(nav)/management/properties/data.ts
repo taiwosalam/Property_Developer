@@ -120,7 +120,7 @@ export interface PropertyDataObject {
   full_address: string;
   category: string;
   description: string;
-  inventory: any;
+  is_inventory: any;
   property_type: string;
   fee_period: string;
   updated_at: Date;

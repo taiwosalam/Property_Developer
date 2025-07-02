@@ -317,12 +317,13 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           // Finally render the buttons
           .map((action, i) => (
             <ActionButton
+            currency={currency}
               unit_id={unitId}
               invoice_id={invoice_id}
               key={i}
-              tenantId={Number(occupant.tenant_id) ?? 0}
+              tenantId={Number(occupant?.tenant_id) || 0}
               cautionDeposit={Number(caution_deposit)}
-              tenantAgent={occupant.agent}
+              tenantAgent={occupant?.agent || "web"}
               propertyType={propertyType}
               {...action}
               route={

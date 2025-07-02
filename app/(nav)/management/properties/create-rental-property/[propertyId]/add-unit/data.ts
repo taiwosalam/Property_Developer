@@ -28,7 +28,7 @@ export const transformPropertyData = (
       full_address: `${data.full_address}, ${data.city_area}, ${data.local_government}, ${data.state}`,
       category: data.category as Categories,
       description: data.description,
-      inventory: data.inventory,
+      is_inventory: mapNumericToYesNo(data.is_inventory),
       // images: data.images.map((img) => ({ path: img.path, id: img.id })),
       images: data.images
         .sort((a, b) => (a.is_default === 1 ? -1 : b.is_default === 1 ? 1 : 0))
@@ -61,6 +61,7 @@ export const transformPropertyData = (
       rent_penalty: mapNumericToYesNo(data.rent_penalty),
       fee_penalty: mapNumericToYesNo(data.fee_penalty),
       request_callback: mapNumericToYesNo(data.request_call_back),
+      is_inventory: mapNumericToYesNo(data.is_inventory),
       vehicle_record: mapNumericToYesNo(data.vehicle_record),
       currency: data.currency || undefined,
       coordinate: data.coordinate || undefined,

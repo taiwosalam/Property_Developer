@@ -73,7 +73,6 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
     }
   };
 
-  console.log(data);
 
   return (
     <div

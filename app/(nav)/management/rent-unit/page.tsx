@@ -77,7 +77,7 @@ const RentAndUnit = () => {
     month_active,
     month_expired,
     month_relocate,
-    unit: [],
+    unit,
   } = pageData;
 
   const [selectedView, setSelectedView] = useState<string | null>(
@@ -405,7 +405,7 @@ const RentAndUnit = () => {
         ]}
       />
       <section className="capitalize">
-        {pageData?.unit.length === 0 && !silentLoading ? (
+        {pageData?.unit?.length === 0 && !silentLoading ? (
           isFilterApplied() || search ? (
             <SearchError />
           ) : (
@@ -450,7 +450,7 @@ const RentAndUnit = () => {
                   {silentLoading ? (
                     <CardsLoading />
                   ) : (
-                    pageData?.unit.map((unit, index) => (
+                    pageData?.unit?.map((unit, index) => (
                       <RentalPropertyCard key={index} {...unit} />
                     ))
                   )}

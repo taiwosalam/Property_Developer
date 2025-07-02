@@ -200,15 +200,17 @@ export const MessagesProvider = ({
       type: recordedBlob.type,
     });
   
-    const base64Audio = await blobToBase64(recordedBlob);
+    // const base64Audio = await blobToBase64(recordedBlob);
   
     const payload = {
-      [isGroupChat ? "content" : "content_file"]: isGroupChat
-        ? base64Audio
+      [isGroupChat ? "file" : "content_file"]: isGroupChat
+        ? audioFile
         : audioFile,
       content_type: "audio",
       receiver_type: isGroupChat ? "group" : "user",
     };
+
+    console.log("typeof audioFile", typeof audioFile)
     try {
       setReqLoading(true);
       const sendFn = isGroupChat ? SendGroupMessage : SendMessage;
@@ -234,7 +236,7 @@ export const MessagesProvider = ({
       setReqLoading(true);
       const base64Img = await blobToBase64(file);
       const payload = {
-        [isGroupChat ? "content" : "content_file"]: isGroupChat ? base64Img : file,
+        [isGroupChat ? "file" : "content_file"]: isGroupChat ? file : file,
         content_type: "file",
         receiver_type: isGroupChat ? "group" : "user",
       };
@@ -275,7 +277,6 @@ export const MessagesProvider = ({
     }
   };
 
-  console.log("messages", filteredMessages)
 
   return (
     <MessagesContext.Provider

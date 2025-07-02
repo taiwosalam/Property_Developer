@@ -1,5 +1,9 @@
 import { useOccupantStore } from "@/hooks/occupant-store";
-import { Currency, currencySymbols, formatNumber } from "@/utils/number-formatter";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 import { RentSectionTitle } from "../rent-section-container";
@@ -12,6 +16,9 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import OwingFee from "./owing-fee";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
+import PaymentCheckBoxs from "../payment-checkbox";
+import PaymentConfirmationText from "../payment-checkbox-texts";
+import { useGlobalStore } from "@/store/general-store";
 
 export const RenewRentAddPartPayment: React.FC<{
   action?: () => void;
@@ -43,7 +50,7 @@ export const RenewRentAddPartPayment: React.FC<{
   disabled,
 }) => {
   const { occupant } = useOccupantStore();
-
+  const canSubmitRent = useGlobalStore((state) => state.canSubmitRent);
   const isWebUser = occupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = occupant?.userTag?.toLowerCase() === "mobile";
 
@@ -91,7 +98,8 @@ export const RenewRentAddPartPayment: React.FC<{
     email_alert: true,
   });
 
-  const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+  // TO USE THE PAYMENTCHECKBOX COMPONENT 👉: use (optionKey, checked) signature for toggling
+  const handleCheckboxChange = (optionKey: string, checked: boolean) => {
     if (optionKey === "mobile_notification" && isWebUser) {
       return; // Prevent changing this option for web users
     }
@@ -136,12 +144,12 @@ export const RenewRentAddPartPayment: React.FC<{
   ];
 
   const visibleCheckboxOptions = isWebUser
-  ? checkboxOptions.filter(
-      (option) =>
-        option.key !== "create_invoice" &&
-        option.key !== "mobile_notification"
-    )
-  : checkboxOptions;
+    ? checkboxOptions.filter(
+        (option) =>
+          option.key !== "create_invoice" &&
+          option.key !== "mobile_notification"
+      )
+    : checkboxOptions;
 
   return (
     <div className="renew-rent-part-payment-wrapper">
@@ -181,8 +189,8 @@ export const RenewRentAddPartPayment: React.FC<{
               onChange={handleAmount}
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
-            //   value={prevAmt ?? ""}
-                defaultValue={formatNumber(parseCurrency(prevAmt)) ?? 0}
+              //   value={prevAmt ?? ""}
+              defaultValue={formatNumber(parseCurrency(prevAmt)) ?? 0}
             />
             <DateInput
               id="date"
@@ -196,21 +204,14 @@ export const RenewRentAddPartPayment: React.FC<{
           </div>
           <div className="flex items-center justify-between gap-4 mb-2">
             <div className="flex items-center gap-4 flex-wrap">
-              {visibleCheckboxOptions.map(({ label, key }) => (
-                <Checkbox
-                  sm
-                  key={key}
-                  checked={selectedOptions[key]}
-                  onChange={handleCheckboxChange(key)}
-                  disabled={
-                    (key === "mobile_notification" && isWebUser) ||
-                    (key === "create_invoice" &&
-                      (!isMobileUser || (currency !== "naira" && isMobileUser)))
-                  }
-                >
-                  {label}
-                </Checkbox>
-              ))}
+              <PaymentCheckBoxs
+                options={visibleCheckboxOptions}
+                selectedOptions={selectedOptions}
+                onChange={handleCheckboxChange}
+                isWebUser={isWebUser}
+                isMobileUser={isMobileUser}
+                currency={currency}
+              />
             </div>
             {/* <ModalTrigger asChild> */}
             {!noBtn && (
@@ -219,7 +220,7 @@ export const RenewRentAddPartPayment: React.FC<{
                 className="py-2 px-6"
                 onClick={handleUpdate}
                 type="button"
-                disabled={loading}
+                disabled={loading || !canSubmitRent}
               >
                 {loading ? "Please wait..." : "Update"}
               </Button>
@@ -240,30 +241,14 @@ export const RenewRentAddPartPayment: React.FC<{
               </ModalContent>
             </Modal>
           </div>
-          {isWebUser ? (
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              <span className="text-red-500 text-lg">*</span>
-              {`Confirms that you have received payment for the 
-            ${isRental ? "rent" : "counting"}.`}
-            </p>
-          ) : (
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-             <span className="text-red-500 text-lg">*</span>
-              {selectedOptions["create_invoice"]
-                ? `Payment will be reflected once the ${
-                    isRental ? "tenant" : "occupant"
-                  } makes a payment towards the generated invoice.`
-                : `Confirms that you have received payment for the ${
-                    isRental ? "rent" : "counting"
-                  }. ${
-                    currency === "naira"
-                      ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                          isRental ? "tenant" : "occupant"
-                        } to make the payment.`
-                      : ""
-                  }`}
-            </p>
-          )}
+          {/* PAYMENT CONFIRMATION TEXTS */}
+          <PaymentConfirmationText
+            isWebUser={isWebUser}
+            isRental={!!isRental}
+            nonNaira={currency !== "naira"}
+            selectedOptions={selectedOptions}
+            currency={currency}
+          />
         </>
       )}
     </div>
