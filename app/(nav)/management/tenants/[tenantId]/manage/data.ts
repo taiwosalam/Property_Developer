@@ -73,7 +73,7 @@ export interface IndividualTenantAPIResponse {
     phone: {
       profile_phone: string | null;
       user_phone: string | null;
-    }
+    };
     tier_id?: 1 | 2 | 3 | 4 | 5;
     user_tier?: 1 | 2 | 3 | 4 | 5;
     picture?: string;
@@ -92,6 +92,11 @@ export interface IndividualTenantAPIResponse {
     city: string;
     birthday?: string;
     religion: string;
+    flags?: {
+      is_flagged: boolean;
+      reason: string;
+      flagged_by: string;
+    }[];
     marital_status: string;
     note: {
       last_updated_at: Date;
@@ -222,8 +227,21 @@ export const transformIndividualTenantAPIResponse = ({
       : "--- ---",
     religion: data.religion || "--- ---",
     marital_status: data.marital_status || "--- ---",
-    is_flagged: data.flag.is_flagged,
-    flag: data.flag,
+    // is_flagged: data.flag.is_flagged,
+    // flag: data?.flag,
+    is_flagged: Array.isArray(data.flags)
+      ? data.flags.some((f) => f.is_flagged)
+      : false,
+    flag:
+      Array.isArray(data.flags) && data.flags.length > 0
+        ? {
+            is_flagged:
+              data.flags.find((f) => f.is_flagged)?.is_flagged ?? false,
+            reason: data.flags.find((f) => f.is_flagged)?.reason ?? "",
+            flagged_by: data.flags.find((f) => f.is_flagged)?.flagged_by ?? "",
+          }
+        : undefined,
+
     contact_address: {
       address: data?.address || "",
       city: data?.city || "",

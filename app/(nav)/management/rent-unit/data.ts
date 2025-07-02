@@ -91,11 +91,17 @@ export interface UnitApiResponse {
       last_page: number;
       data: UnitDataObject[];
     };
+    data: {
+      current_page: number;
+      last_page: number;
+      data: UnitDataObject[];
+    };
   };
 }
 
 export interface UnitFilterResponse {
   data: {
+    data: UnitDataObject[];
     unit: UnitDataObject[];
     current_page: number;
     last_page: number;
@@ -108,26 +114,30 @@ export interface UnitFilterResponse {
 
 export const transformRentUnitApiResponse = (
   // response: UnitApiResponse
-  response: UnitApiResponse | UnitFilterResponse
+  response: UnitApiResponse | UnitFilterResponse,
+  isBranch?: boolean
 ): Partial<UnitPageState> => {
   const isUnitApiResponse = (response: any): response is UnitApiResponse => {
     return "total_unit" in response.data;
   };
 
+  console.log("isBranch", isBranch)
   console.log("response", response)
 
   const unitData = isUnitApiResponse(response)
     ? (response.data.unit as any)
     : (response.data.unit as any);
 
-  const transformedUnits: RentalPropertyCardProps[] = unitData.map((u: any) => {
+    const unitsArr = isBranch ? response.data.data : unitData;
+
+  const transformedUnits: RentalPropertyCardProps[] = unitsArr?.map((u: any) => {
     return {
       unitId: u?.id?.toString() || "0",
       currency: u.property.currency,
       unit_title: u?.property?.title || "--- ---",
       unit_type: u?.unit_type || "--- ---",
-      tenant_name: u.occupant.name !== null ? u.occupant.name : "--- ---", //TODO
-      expiry_date: u.occupant.expiry !== null ? u.occupant.expiry : "--- ---", //TODO
+      tenant_name: u?.occupant?.name !== null ? u?.occupant?.name : "--- ---", //TODO
+      expiry_date: u?.occupant?.expiry !== null ? u?.occupant?.expiry : "--- ---", //TODO
       rent: u?.fee_amount || "--- ---",
       caution_deposit: u?.caution_fee || "--- ---",
       service_charge: u?.service_charge || "--- ---",
@@ -141,12 +151,12 @@ export const transformRentUnitApiResponse = (
       fee_period: u.fee_period,
       propertyType: u.property.property_type as "rental" | "facility",
       address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
-      badge_color: u.occupant?.tier
-        ? tierColorMap[u.occupant?.tier as keyof typeof tierColorMap]
+      badge_color: u?.occupant?.tier
+        ? tierColorMap[u?.occupant?.tier as keyof typeof tierColorMap]
         : undefined,
-      tenant_id: u.occupant.tenant_id,
-      partial_pending: u.partial_pending ? true : false,
-      occupant: u.occupant,
+      tenant_id: u?.occupant?.tenant_id || 0,
+      partial_pending: u?.partial_pending ? true : false,
+      occupant: u?.occupant,
     };
   });
   if (isUnitApiResponse(response)) {

@@ -39,22 +39,6 @@ const ExpiredUnits = () => {
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
 
-  const {
-    total_unit,
-    total_occupied,
-    total_vacant,
-    total_active,
-    total_expired,
-    total_relocate,
-    month_unit,
-    month_occupied,
-    month_vacant,
-    month_active,
-    month_expired,
-    month_relocate,
-    unit: [],
-  } = pageData;
-
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
@@ -157,7 +141,7 @@ const ExpiredUnits = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
+      setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData, true) }));
       setState((prevState) => ({
         ...prevState,
       }));

@@ -41,21 +41,6 @@ const VacantUnits = () => {
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
 
-  const {
-    total_unit,
-    total_occupied,
-    total_vacant,
-    total_active,
-    total_expired,
-    total_relocate,
-    month_unit,
-    month_occupied,
-    month_vacant,
-    month_active,
-    month_expired,
-    month_relocate,
-    unit: [],
-  } = pageData;
 
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
@@ -158,7 +143,7 @@ const VacantUnits = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
+      setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData, true) }));
       setState((prevState) => ({
         ...prevState,
       }));
@@ -238,7 +223,7 @@ const VacantUnits = () => {
         ]}
       />
       <section className="capitalize">
-        {pageData?.unit.length === 0 && !silentLoading ? (
+        {pageData?.unit?.length === 0 && !silentLoading ? (
           isFilterApplied() || search ? (
             <div className="col-span-full text-center py-8 text-gray-500">
               No Search/Filter Result Found
@@ -260,7 +245,7 @@ const VacantUnits = () => {
             <section className="capitalize space-y-4 px-4 w-full">
               {view === "grid" || gridView ? (
                 <AutoResizingGrid minWidth={315}>
-                  {pageData?.unit.map((unit, index) => (
+                  {pageData?.unit?.map((unit, index) => (
                     <RentalPropertyCard
                       key={index}
                       {...unit}
@@ -269,7 +254,7 @@ const VacantUnits = () => {
                 </AutoResizingGrid>
               ) : (
                 <div className="space-y-4">
-                  {pageData?.unit.map((unit, index) => (
+                  {pageData?.unit?.map((unit, index) => (
                     <RentalPropertyListCard
                       key={index}
                       {...unit}
