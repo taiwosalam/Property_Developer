@@ -22,7 +22,7 @@ interface PropertyDetails {
   local_govt: string;
   city: string;
   full_address: string;
-  inventory?: any;
+  is_inventory?: any;
   branch_name?: string;
   branch_id?: string;
   account_officer?: string;
@@ -41,6 +41,7 @@ interface PropertySettings {
   who_to_charge_new_tenant?: string;
   who_to_charge_renew_tenant?: string;
   book_visitors?: "Yes" | "No";
+  is_inventory?: "Yes" | "No";
   VAT?: "Yes" | "No";
   caution_deposit?: string;
   group_chat?: "Yes" | "No";

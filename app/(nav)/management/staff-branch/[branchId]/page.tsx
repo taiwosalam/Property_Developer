@@ -284,7 +284,9 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
               title="Total Invoice Created"
               balance={Number(receipt_statistics?.total_receipt || 0)}
               percentage={
-                Number(receipt_statistics?.percentage_change_total) || 0
+                Number(
+                  Number(receipt_statistics?.percentage_change_total).toFixed(2)
+                ) || 0
               }
               trendDirection={
                 Number(receipt_statistics?.percentage_change_total) >= 0
@@ -297,7 +299,11 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             <AccountStatsCard
               title="Total Paid Invoice"
               balance={Number(receipt_statistics?.total_paid_receipt || 0)}
-              percentage={receipt_statistics?.percentage_change_paid || 0}
+              percentage={
+                Number(
+                  Number(receipt_statistics?.percentage_change_paid).toFixed(2)
+                ) || 0
+              }
               trendDirection={
                 Number(receipt_statistics?.percentage_change_paid) >= 0
                   ? "up"
@@ -310,7 +316,11 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
               title="Total Pending Invoice"
               balance={Number(receipt_statistics?.total_pending_receipt) || 0}
               percentage={
-                Number(receipt_statistics?.percentage_change_pending) || 0
+                Number(
+                  Number(receipt_statistics?.percentage_change_pending).toFixed(
+                    2
+                  )
+                ) || 0
               }
               trendDirection={
                 Number(receipt_statistics?.percentage_change_pending) >= 0
@@ -369,7 +379,10 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           chartConfig={branchIdChartConfig}
           chartData={walletChartData}
         />
-        <BranchActivitiesCard className="lg:flex-1" branchId={Number(branchId) ?? 0} />
+        <BranchActivitiesCard
+          className="lg:flex-1"
+          branchId={Number(branchId) ?? 0}
+        />
       </div>
       <div className="custom-flex-col gap-10">
         <div className="flex justify-between">
