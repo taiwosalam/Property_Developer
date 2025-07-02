@@ -151,23 +151,6 @@ const PropertyRequestComments = ({
         />
       )}
       <div className="mt-4">
-        {/* <CommunityComments 
-          slug={slug}
-          comments={comments}
-          setComments={setComments}/> */}
-        {/* {comments?.map((comment) => (
-          <Comment
-            key={comment.id}
-            {...comment}
-            handleLike={(commentId: string | number) =>
-              handleLike(id, commentId2)
-            }
-            handleDislike={(commentId: string | number) =>
-              handleDislike(id, commentId)
-            }
-            handleSubmit={handleSubmit}
-          />
-        ))} */}
       </div>
     </div>
   );

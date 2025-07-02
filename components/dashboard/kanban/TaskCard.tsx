@@ -161,6 +161,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     }
   };
 
+  console.log(task?.content?.userAvatars);
   return (
     <div className={`group ${styles}`}>
       <Card
@@ -249,7 +250,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <div className="flex gap-2.5 items-center">
               <MailIcon size={20} />
               <ClipIcon />
-              {/* <div className="flex itema-center">
+              <div className="flex itema-center">
                 {task?.content?.userAvatars?.map((avatar, index) => (
                   <Avatar
                     key={index}
@@ -275,7 +276,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                     <AvatarFallback>{avatar?.charAt(0)}</AvatarFallback>
                   </Avatar>
                 ))}
-              </div> */}
+              </div>
             </div>
 
             <p className="bg-[var(--secondary-color)] bg-opacity-10 text-xs rounded-md py-2 px-4">

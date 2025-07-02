@@ -25,13 +25,15 @@ import {
 } from "@/app/(nav)/tasks/inspections/data";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
-  const { data: inspectionData } = useFetch<InspectionDetailsApiResponse>(
-    `inspections/${data?.id}`
-  );
+  const { data: inspectionData, refetch } =
+    useFetch<InspectionDetailsApiResponse>(`inspections/${data?.id}`);
   const [inspection, setInspection] = useState<TInspectionDetails | null>(null);
   const router = useRouter();
+
+  useRefetchOnEvent("dispatchInspection", () => refetch({ silent: true }));
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -71,7 +73,6 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
           />
         )}
         <div className="py-2 px-[18px] bg-brand-1 flex justify-between text-base font-medium">
-          <p className="text-text-secondary">Inspection details</p>
           <p
             className={clsx("capitalize", {
               "text-support-2": data?.inspection_type === "virtual_inspection",
@@ -81,6 +82,19 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
             {data?.inspection_type === "physical_inspection"
               ? "Physical Inspection"
               : "Virtual Inspection"}
+          </p>
+
+          <p className="text-text-secondary">
+            Status:{" "}
+            <span
+              className={`${
+                inspection?.is_application
+                  ? "text-green-500"
+                  : "text-yellow-500"
+              }`}
+            >
+              {inspection?.is_application ? "Inspected" : "Pending"}
+            </span>
           </p>
         </div>
       </div>
@@ -116,17 +130,24 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
           >
             Message
           </button>
-          <Modal state={{
-            setIsOpen,
-            isOpen,
-          }}>
+          <Modal
+            state={{
+              setIsOpen,
+              isOpen,
+            }}
+          >
             <ModalTrigger asChild>
               <Button size="xs_normal" className="py-2 px-6">
                 more details
               </Button>
             </ModalTrigger>
             <ModalContent>
-              {inspection && <InspectionDetailModal data={inspection} setIsOpen={setIsOpen}/>}
+              {inspection && (
+                <InspectionDetailModal
+                  data={inspection}
+                  setIsOpen={setIsOpen}
+                />
+              )}
             </ModalContent>
           </Modal>
         </div>

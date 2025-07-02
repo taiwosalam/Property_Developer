@@ -80,13 +80,7 @@ type Comment = {
   updated_at: string;
 };
 
-
 /** ------------------------------------------- */
-
-
-
-
-
 
 /** GET ALL ANNOUNCEMENTS */
 interface AnnouncementApiResponse {
@@ -100,7 +94,7 @@ interface AnnouncementApiResponse {
     total: number;
     total_pages: number;
   };
-};
+}
 
 type Announcements = {
   id: number;
@@ -120,7 +114,7 @@ type Announcements = {
     id: number;
     url: string;
     is_default: number;
-  }>; 
+  }>;
   poster: {
     name: string;
     profilePicture: string;
@@ -129,10 +123,8 @@ type Announcements = {
   manager: {
     name: string;
   };
-  comments: any[]; 
+  comments: any[];
 };
-
-
 
 /** GET ANNOUNCEMENT BY ID */
 export type AnnouncementResponseDetails = {
@@ -158,13 +150,14 @@ type Announcement = {
   views_count: number;
   comments: any[]; // Replace with specific type if known
   comments_count: number;
+  my_like: boolean;
+  my_dislike: boolean;
   images: AnnouncementImage[];
   summary: {
     property_name: string | null;
     branch_name: string | null;
   };
-  viewers: Viewer[];
-  read_by: any[]; // Replace with specific type if needed
+  readByData: Viewer[]; // Replace with specific type if needed
   delivered: any[]; // Replace with specific type if needed
   poster: {
     name: string;
@@ -183,8 +176,9 @@ type AnnouncementImage = {
 };
 
 type Viewer = {
-  id: number;
   name: string;
-  profilePicture: string | null;
+  profile_picture: string;
+  title: string;
+  email_verified: true;
+  viewed_at: string;
 };
-

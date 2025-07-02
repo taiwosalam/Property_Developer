@@ -195,7 +195,7 @@ const ManageApplication = () => {
 
             <SectionSeparator />
             <div className="w-full">
-              <div className="flex justify-between py-1 w-full">
+              <div className="flex justify-around py-1 w-full">
                 {flag_details?.map((flag, index) => {
                   return (
                     <div className="flex gap-8" key={index}>

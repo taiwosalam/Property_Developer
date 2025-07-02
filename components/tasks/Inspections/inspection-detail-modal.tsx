@@ -40,6 +40,8 @@ const InspectionDetailModal = ({
     return tierColorMap[tier as keyof typeof tierColorMap] || "";
   };
 
+  console.log(data);
+
   const gotoMessage = () => {
     if (!data.userId) {
       toast.warning("User ID is missing");
@@ -56,6 +58,7 @@ const InspectionDetailModal = ({
       if (res) {
         toast.success("Application request sent");
         setIsOpen?.(false);
+        window.dispatchEvent(new Event("dispatchInspection"));
       }
     } catch (error) {
       console.error(error);
@@ -136,7 +139,7 @@ const InspectionDetailModal = ({
             </div>
           </div>
           <div className="flex gap-4 justify-end">
-            {!data?.is_application && (
+            {!data?.is_application ? (
               <Button
                 variant="sky_blue"
                 size="xs_normal"
@@ -144,7 +147,17 @@ const InspectionDetailModal = ({
                 disabled={isLoading}
                 onClick={handleRequestApplication}
               >
-                {isLoading ? "Please wait..." : "Request Application"}
+                {isLoading ? "Please wait..." : "Mark As Inspected"}
+              </Button>
+            ) : (
+              <Button
+                variant="sky_blue"
+                size="xs_normal"
+                className="py-2 px-6 cursor-default"
+                disabled={isLoading}
+                
+              >
+                {"Inspected"}
               </Button>
             )}
             <Button

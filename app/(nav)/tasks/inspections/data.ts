@@ -103,6 +103,7 @@ export const transformInspectionDetails = (
 
   return {
     id: inspections?.id ?? 0,
+    
     userId: inspections?.unit?.user_id,
     tier: inspections?.tier,
     property_name: inspections?.unit
@@ -137,6 +138,7 @@ export const transformInspectionDetails = (
     branch_name: inspections?.unit?.property?.branch?.branch_name || "___ ___",
     property: inspections?.property_name || "___ ___",
     description: inspections?.description || "___ ___",
+    is_application: inspections?.is_application,
   };
 };
 
@@ -206,7 +208,7 @@ export interface FilterResult {
 
 export const requestApplication = async (id: string) => {
   try {
-    const res = await api.post(`inspections/approve/${id}`);
+    const res = await api.patch(`inspections/approve/${id}`);
     if (res.status === 200 || res.status === 201) {
       window.dispatchEvent(new Event("dispatchInspection"));
       return true;

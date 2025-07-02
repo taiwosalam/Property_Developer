@@ -2,6 +2,9 @@ import dayjs from "dayjs";
 import { ComplaintDetailResponse } from "../../types";
 import api, { handleAxiosError } from "@/services/api";
 
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
+
 export interface IManageComplaints {
   aboutCard: {
     label: string;
@@ -9,6 +12,7 @@ export interface IManageComplaints {
   }[];
   description: string | null;
   tier_id: number;
+  branch_id: number;
   notes: {
     date: string;
     text: string;
@@ -30,6 +34,19 @@ export interface IManageComplaints {
     avatar: string;
     time: string;
   }[];
+  task_bar: {
+    progress: string;
+    text: string;
+    approve_by: string;
+    time: string;
+    date: string;
+  }[];
+  task: {
+    title: string;
+    approve_by: string;
+    time: string;
+    date: string;
+  };
 }
 
 export const transformComplaintManage = (
@@ -58,8 +75,19 @@ export const transformComplaintManage = (
         value: data?.complaint?.account_officer,
       },
     ],
+    task: {
+      approve_by: data?.complaint?.approved_by?.toLowerCase() || "--- ---",
+      title: data?.complaint?.title || "--- ---",
+      date: data?.complaint?.created_at
+        ? dayjs(data?.complaint?.created_at).format("DD/MM/YYYY")
+        : "--- ---",
+      time: data?.complaint?.created_at
+        ? dayjs.utc(data?.complaint?.created_at).local().format("hh:mm A")
+        : "--- ---",
+    },
     description: data?.complaint?.description,
     tier_id: data?.complaint?.tier,
+    branch_id: data?.complaint?.branch_id,
     notes:
       data?.complaint.notes &&
       data?.complaint?.notes?.map((note) => ({
@@ -75,7 +103,7 @@ export const transformComplaintManage = (
     })),
     progress: data?.complaint?.progress,
     updated_at: data?.complaint
-      ? dayjs(data?.complaint?.updated_at).format("MMMM D, YYYY")
+      ? dayjs(data?.complaint?.updated_at).format("DD/MM/YYYY")
       : "",
     comments: data?.complaint.comments.map((message) => ({
       id: message.id,
@@ -84,6 +112,13 @@ export const transformComplaintManage = (
       user: message.user.name,
       userId: message.user.id,
       avatar: message.user.picture,
+    })),
+    task_bar: data?.complaint?.task_bar?.map((task) => ({
+      progress: task?.progress,
+      approve_by: task?.approve_by,
+      date: task?.date,
+      time: task?.time,
+      text: task?.text,
     })),
   };
 };
@@ -156,6 +191,64 @@ export const sendTaskComment = async (id: string, content: string) => {
     }
   } catch (error) {
     console.log(error);
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+const PROGRESS_STATUS = 20;
+export const updateProgressStatus = async (id: string, statusText: string) => {
+  const payload = {
+    text: statusText,
+  };
+  try {
+    const res = await api.post(
+      `/complaints/${id}/update-progress?progress=${PROGRESS_STATUS}`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("manageComplain"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export interface IAssignTask {
+  id: string;
+  note: string;
+  assign_to: string;
+  assign_to_type: string;
+}
+export const assignTask = async ({
+  id,
+  note,
+  assign_to,
+  assign_to_type,
+}: IAssignTask) => {
+  const payload = {
+    note: note,
+    assign_to: assign_to,
+    assign_to_type: assign_to_type,
+  };
+  try {
+    const res = await api.post(`complaints/${id}/add-note`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("manageComplain"));
+      return true;
+    }
+  } catch (error) {
     handleAxiosError(error);
     return false;
   }
