@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, useEffect } from "react";
 import { RentSectionTitle } from "../rent-section-container";
 import { SectionSeparator } from "@/components/Section/section-components";
@@ -7,6 +9,9 @@ import dayjs, { Dayjs } from "dayjs";
 import { calculateDueDate, CheckBoxOptions } from "../data";
 import { useRenewRentContext } from "@/utils/renew-rent-context";
 import Button from "@/components/Form/Button/button";
+import { useGlobalStore } from "@/store/general-store";
+import PaymentConfirmationText from "../payment-checkbox-texts";
+import PaymentCheckBoxs from "../payment-checkbox";
 
 interface CheckboxStates {
   create_invoice: boolean;
@@ -37,23 +42,26 @@ export const RenewalRent = ({
     dueDate,
     isUpfrontPaymentChecked,
   } = useRenewRentContext();
+  const canSubmitRent = useGlobalStore((state) => state.canSubmitRent);
   const isWebUser = unitData?.occupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = unitData?.occupant?.userTag?.toLowerCase() === "mobile";
   const [localDueDate, setLocalDueDate] = useState<Dayjs | null>(null);
-  const [checkboxStates, setCheckboxStates] = useState<CheckboxStates>({
-    create_invoice: true,
-    mobile_notification: true,
-    sms_alert: true,
-    email_alert: true,
-    rent_agreement: true,
-  });
+  const [checkboxStates, setCheckboxStates] = useState<Record<string, boolean>>(
+    {
+      create_invoice: true,
+      mobile_notification: true,
+      sms_alert: true,
+      email_alert: true,
+      rent_agreement: true,
+    }
+  );
 
   const checkboxOptions = [
     { label: "Create Invoice", key: "create_invoice" },
     { label: "Mobile Notification", key: "mobile_notification" },
     { label: "SMS Alert", key: "sms_alert" },
     { label: "Email Alert", key: "email_alert" },
-    // { label: "Rent Agreement", key: "rent_agreement" },
+    { label: "Rent Agreement", key: "rent_agreement" },
   ];
 
   const visibleCheckboxOptions = isWebUser
@@ -63,6 +71,7 @@ export const RenewalRent = ({
           option.key !== "mobile_notification"
       )
     : checkboxOptions;
+
   // Update checkbox states based on user type and currency
   useEffect(() => {
     setCheckboxStates((prev) => ({
@@ -116,24 +125,29 @@ export const RenewalRent = ({
     });
   }, [checkboxStates, setSelectedCheckboxOptions]);
 
-  const handleCheckboxChange =
-    (optionKey: keyof CheckboxStates) => (checked: boolean) => {
-      if (optionKey === "mobile_notification" && isWebUser) return;
-      if (
-        optionKey === "create_invoice" &&
-        (!isMobileUser ||
-          (currency !== "naira" && isMobileUser) ||
-          startDate?.isBefore(dayjs(), "day"))
-      ) {
-        return;
-      }
-      setCheckboxStates((prev) => ({ ...prev, [optionKey]: checked }));
-    };
+  // To use the PaymentCheckBoxs component: use (optionKey, checked) signature for toggling
+  const handleCheckboxChange = (optionKey: string, checked: boolean) => {
+    if (optionKey === "mobile_notification" && isWebUser) {
+      return; // Prevent changing this option for web users
+    }
+    if (
+      optionKey === "create_invoice" &&
+      (!isMobileUser ||
+        (currency !== "naira" && isMobileUser) ||
+        startDate?.isBefore(dayjs(), "day"))
+    ) {
+      return;
+    }
+    setCheckboxStates((prev) => ({
+      ...prev,
+      [optionKey]: checked,
+    }));
+  };
 
   const nonNaira = currency !== "naira";
 
   if (!isUpfrontPaymentChecked) {
-    return null; // Or return a placeholder if needed
+    return null;
   }
 
   return (
@@ -143,7 +157,6 @@ export const RenewalRent = ({
         <DateInput
           id="payment_date"
           label="Payment Date"
-          // disablePast
           lastYear
           value={startDate}
           onChange={setStartDate}
@@ -152,96 +165,33 @@ export const RenewalRent = ({
       <div className="custom-flex-col gap-2">
         <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
           <div className="flex gap-4">
-            {visibleCheckboxOptions.map(({ label, key }) => (
-              <Checkbox
-                sm
-                key={key}
-                checked={checkboxStates[key as keyof CheckboxStates]}
-                onChange={handleCheckboxChange(key as keyof CheckboxStates)}
-                disabled={
-                  (key === "mobile_notification" && isWebUser) ||
-                  (key === "create_invoice" &&
-                    (!isMobileUser ||
-                      (currency !== "naira" && isMobileUser) ||
-                      startDate?.isBefore(dayjs(), "day")))
-                }
-              >
-                {label}
-              </Checkbox>
-            ))}
+            <PaymentCheckBoxs
+              options={visibleCheckboxOptions}
+              selectedOptions={checkboxStates}
+              onChange={handleCheckboxChange}
+              isWebUser={isWebUser}
+              isMobileUser={isMobileUser}
+              currency={currency}
+            />
           </div>
-
           <Button
             size="base_medium"
             className="py-2 px-6"
             onClick={action}
             type="button"
-            disabled={loading}
+            disabled={loading || !canSubmitRent}
           >
             {loading ? "Please wait..." : "Update"}
           </Button>
         </div>
-        {startDate?.isBefore(dayjs(), "day") ? (
-          <div className="custom-flex-col gap-1">
-            <span className="text-red-500 text-lg">*</span>
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              You have selected a past date for the occupant, which indicates
-              that you are recording an outstanding rent balance for the client,
-              not initiating a new rent payment.
-            </p>
-            {nonNaira && (
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                <span className="text-red-500 text-lg">*</span>
-                Your property was listed in a currency other than Naira. As a
-                result, automatic payments and wallet transactions are not
-                supported. You will need to handle all payments manually.
-              </p>
-            )}
-          </div>
-        ) : isWebUser ? (
-          <div className="custom-flex-col gap-1">
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-            <span className="text-red-500 text-lg">*</span>
-              Confirms that you have received payment for the{" "}
-              {isRental ? "rent" : "fee"} renewal.
-            </p>
-            {nonNaira && (
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                <span className="text-red-500 text-lg">*</span>
-                Your property was listed in a currency other than Naira. As a
-                result, automatic payments and wallet transactions are not
-                supported. You will need to handle all payments manually.
-              </p>
-            )}
-          </div>
-        ) : (
-          <div className="custom-flex-col gap-1">
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              <span className="text-red-500 text-lg">*</span>
-              {checkboxStates.create_invoice
-                ? `${isRental ? "Rent" : "Fee"} will commence upon ${
-                    isRental ? "tenant" : "occupant"
-                  } making payment for the generated invoice.`
-                : `Confirms that you have received payment for the ${
-                    isRental ? "rent" : "fee"
-                  } renewal.${
-                    currency === "naira"
-                      ? ` However, if you intend to receive the payment, you can click 'create invoice' for ${
-                          isRental ? "tenant" : "occupant"
-                        } to make the payment.`
-                      : ""
-                  }`}
-            </p>
-            {nonNaira && (
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                <span className="text-red-500 text-lg">*</span>
-                Your property was listed in a currency other than Naira. As a
-                result, automatic payments and wallet transactions are not
-                supported. You will need to handle all payments manually.
-              </p>
-            )}
-          </div>
-        )}
+        <PaymentConfirmationText
+          isWebUser={isWebUser}
+          isRental={isRental}
+          nonNaira={nonNaira}
+          selectedOptions={checkboxStates}
+          currency={currency}
+          startDate={startDate}
+        />
       </div>
     </div>
   );

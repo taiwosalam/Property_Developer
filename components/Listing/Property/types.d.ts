@@ -10,7 +10,8 @@ export interface PropertyListingCardDataProps {
   branch: string;
   address: string;
   last_updated: string;
-  account_officer: string;
+  // account_officer: string;
+  account_manager: string;
   state: string;
   local_government: string;
   total_unit: string;

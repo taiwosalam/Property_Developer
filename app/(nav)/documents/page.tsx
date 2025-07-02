@@ -152,22 +152,6 @@ const Documents = () => {
             <CreateTenancyAggrementModal />
           </ModalContent>
         </Modal>
-        {/* ALREADY IN ROOT LAYOUT */}
-        {/* <Modal
-          state={{
-            isOpen: openDocumentModal,
-            setIsOpen: (isOpen) =>
-              setGlobalInfoStore("openDocumentModal", Boolean(isOpen)),
-          }}
-        >
-          <ModalContent>
-            {selectedDocumentOption ? (
-              <OtherAgreementDocument selectedOption={selectedDocumentOption} />
-            ) : (
-              <div>No document selected</div>
-            )}
-          </ModalContent>
-        </Modal> */}
         <DrawerComponent />
       </div>
       <div className="custom-flex-col gap-6">

@@ -126,6 +126,7 @@ interface GlobalStoreState {
 
   domainAvailable: boolean;
   isGroupChat: boolean;
+  canSubmitRent: boolean;
 
   openDocumentModal: boolean;
   selectedDocumentOption: OtherAgreementDocumentOption | null;
@@ -227,6 +228,8 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   hasRestrictedWords: false,
   allowEditUnit: false,
   closeUnitForm: false,
+
+  canSubmitRent: false,
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {

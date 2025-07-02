@@ -31,8 +31,16 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const VehilceRecords = () => {
   const storedView = useView();
-  const [pageData, setPageData] = useState<initialPageState>(initialData);
-
+  const [pageData, setPageData] = useState<initialPageState>(() => {
+    const savedPage = sessionStorage.getItem("vehicles_record_page");
+    return {
+      ...initialData,
+      stats: {
+        ...initialData.stats,
+        current_page: savedPage ? parseInt(savedPage, 10) : 1,
+      },
+    };
+  });
   const {
     properties_this_month,
     total_properties,
@@ -50,6 +58,11 @@ const VehilceRecords = () => {
     endDate: null,
   });
 
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("vehicles_record_page", current_page.toString());
+  }, [current_page]);
+
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
     return (
@@ -62,7 +75,7 @@ const VehilceRecords = () => {
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
-      page: 1,
+      page: current_page,
       search: "",
       sort: "asc",
     } as VehicleRecordParams,
@@ -70,22 +83,81 @@ const VehilceRecords = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort: order },
+      params: { ...config.params, sort: order, page: 1 },
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      stats: {
+        ...prevData.stats,
+        current_page: 1,
+      },
+    }));
+    sessionStorage.setItem("vehicles_record_page", "1");
   };
 
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      stats: {
+        ...prevData.stats,
+        current_page: page,
+      },
+    }));
+    sessionStorage.setItem("vehicles_record_page", page.toString());
   };
 
   const handleSearch = async (query: string) => {
-    // console.log("searching...")
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, page: 1 },
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      stats: {
+        ...prevData.stats,
+        current_page: 1,
+      },
+    }));
+    sessionStorage.setItem("vehicles_record_page", "1");
   };
+
+  // const handleFilterApply = (filters: FilterResult) => {
+  //   setAppliedFilters(filters);
+  //   const { menuOptions, startDate, endDate, options } = filters;
+  //   const statesArray = menuOptions["State"] || [];
+
+  //   const queryParams: VehicleRecordParams = {
+  //     page: 1,
+  //     sort: "asc",
+  //     search: "",
+  //   };
+  //   options.forEach((option) => {
+  //     if (option === "all") {
+  //       queryParams.all = "all";
+  //     } else if (option === "rental") {
+  //       queryParams.property_type = "rental";
+  //     } else if (option === "facility") {
+  //       queryParams.property_type = "facility";
+  //     }
+  //   });
+
+  //   if (startDate) {
+  //     queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
+  //   }
+  //   if (endDate) {
+  //     queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
+  //   }
+  //   setConfig({
+  //     params: queryParams,
+  //   });
+  //   setPageData((prevData) => ({
+  //     ...prevData,
+  //     current_page: 1,
+  //   }));
+  //   sessionStorage.setItem("vehicles_record_page", "1");
+  // };
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
@@ -116,8 +188,14 @@ const VehilceRecords = () => {
     setConfig({
       params: queryParams,
     });
-
-    console.log({ menuOptions, startDate, endDate, options });
+    setPageData((prevData) => ({
+      ...prevData,
+      stats: {
+        ...prevData.stats,
+        current_page: 1,
+      },
+    }));
+    sessionStorage.setItem("vehicles_record_page", "1");
   };
 
   const {

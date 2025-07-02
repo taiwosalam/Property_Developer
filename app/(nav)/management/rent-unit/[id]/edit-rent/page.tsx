@@ -150,13 +150,19 @@ const EditRent = () => {
 
   // ADD UPFRONT RENT HANDLER
   const handleUpfrontRent = async () => {
+    const amount = parseCurrency(unit_data.renewalTenantTotalPrice);
     if (!unitBalance || unitBalance.length === 0) {
       toast.error("No unit balance available");
       return;
     }
+
+    if (amount <= 0) {
+      return toast.warning("Please enter a valid amount");
+    }
+
     const payload = {
       unit_id: id,
-      amount: unit_data.renewalTenantTotalPrice,
+      amount,
       rent_id: unitBalance?.data[0]?.id,
       payment_date: startDate,
       tenant_id: unit_data.occupant.id,
@@ -185,6 +191,8 @@ const EditRent = () => {
 
   // ADD PART PAYMENT HANDLER
   const handlePartPayment = async () => {
+    const amount = parseCurrency(amt);
+
     if (!unitBalance || unitBalance.length === 0) {
       toast.error("No unit balance available");
       return;
@@ -194,9 +202,13 @@ const EditRent = () => {
       return toast.warning("Please select a payment date");
     }
 
+    if (amount <= 0) {
+      return toast.warning("Please enter a valid amount");
+    }
+
     const payload = {
       unit_id: id,
-      amount: parseCurrency(amt),
+      amount,
       rent_id: unitBalance?.data[0]?.id,
       payment_date: startDate,
       tenant_id: unit_data?.occupant?.id,

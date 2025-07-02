@@ -38,6 +38,8 @@ import { useGlobalStore } from "@/store/general-store";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 import { isValidAmount, parseAmount } from "./data";
 import { toast } from "sonner";
+import PaymentCheckBoxs from "../payment-checkbox";
+import PaymentConfirmationText from "../payment-checkbox-texts";
 
 export const RentDetails: React.FC<{
   isRental: boolean;
@@ -118,9 +120,10 @@ export const EditCurrentRent: React.FC<{
   onAfterUpdateScrollToPrevious,
 }) => {
   const { occupant } = useOccupantStore();
-
   const isWebUser = occupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = occupant?.userTag?.toLowerCase() === "mobile";
+  const setGlobalStore = useGlobalStore((state) => state.setGlobalInfoStore);
+  const canSubmitRent = useGlobalStore((state) => state.canSubmitRent);
   const CURRENCY_SYMBOL =
     currencySymbols[currency as keyof typeof currencySymbols] ||
     currencySymbols["naira"];
@@ -136,7 +139,6 @@ export const EditCurrentRent: React.FC<{
       setStart_Date(date?.format("YYYY-MM-DD") || null);
     }
   };
-
 
   const handleUpdate = async () => {
     if (action) {
@@ -166,7 +168,8 @@ export const EditCurrentRent: React.FC<{
     email_alert: true,
   });
 
-  const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+  // TO USE THE PAYMENTCHECKBOX COMPONENT 👉: use (optionKey, checked) signature for toggling
+  const handleCheckboxChange = (optionKey: string, checked: boolean) => {
     if (optionKey === "mobile_notification" && isWebUser) {
       return; // Prevent changing this option for web users
     }
@@ -263,78 +266,34 @@ export const EditCurrentRent: React.FC<{
           </div>
           <div className="flex items-center justify-between gap-4 flex-wrap mb-4">
             <div className="flex gap-4">
-              {filteredCheckboxOptions.map(({ label, key }) => (
-                <Checkbox
-                  sm
-                  key={key}
-                  checked={selectedOptions[key]}
-                  onChange={handleCheckboxChange(key)}
-                  disabled={
-                    (key === "mobile_notification" && isWebUser) ||
-                    (key === "create_invoice" &&
-                      (!isMobileUser || (currency !== "naira" && isMobileUser)))
-                  }
-                >
-                  {label}
-                </Checkbox>
-              ))}
+              <PaymentCheckBoxs
+                options={filteredCheckboxOptions}
+                selectedOptions={selectedOptions}
+                onChange={handleCheckboxChange}
+                isWebUser={isWebUser}
+                isMobileUser={isMobileUser}
+                currency={currency}
+              />
             </div>
 
             <Button
               size="base_medium"
               className="py-2 px-6"
               onClick={handleUpdate}
-              disabled={loading}
+              disabled={loading || !canSubmitRent}
             >
               {loading ? "Please wait..." : "Update"}
             </Button>
           </div>
-          {isWebUser ? (
-            <div className="custom-flex-col gap-1">
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                <span className="text-red-500 text-lg">*</span>
-                {`Confirms that you have received payment for the 
-          ${isRental ? "rent" : "counting"}.`}
-              </p>
-              {nonNaira && (
-                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                  <span className="text-red-500 text-lg">*</span>
-                  The property was listed in a currency other than Naira. You
-                  will need to handle all payments manually.
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="custom-flex-col gap-1">
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                <span className="text-red-500 text-lg">*</span>
-                {selectedOptions["create_invoice"]
-                  ? `Payment will be reflected once the ${
-                      isRental ? "tenant" : "occupant"
-                    } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
-                  : `Confirms that you have received payment for the ${
-                      isRental ? "rent" : "counting"
-                    }. ${
-                      currency === "naira"
-                        ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                            isRental ? "tenant" : "occupant"
-                          } to make the payment.`
-                        : ""
-                    }`}
-              </p>
-              {nonNaira && (
-                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                  <span className="text-red-500 text-lg">*</span>
-                  The property was listed in a currency other than Naira. As a
-                  result, automatic payments and wallet transactions are not
-                  supported. You will need to handle all payments manually.
-                </p>
-              )}
-            </div>
-          )}
+          {/* PAYMENT CONFIRMATION TEXTS */}
+          <PaymentConfirmationText
+            isWebUser={isWebUser}
+            isRental={!!isRental}
+            nonNaira={nonNaira}
+            selectedOptions={selectedOptions}
+            currency={currency}
+          />
           <div className="flex items-center justify-end">
-            {/* <ModalTrigger asChild> */}
-            {/* </ModalTrigger> */}
             <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
               <ModalContent>
                 <ModalPreset type="success" className="w-full">
@@ -385,7 +344,7 @@ export const AddPartPayment: React.FC<{
   prevAmt,
 }) => {
   const { occupant } = useOccupantStore();
-
+  const canSubmitRent = useGlobalStore((state) => state.canSubmitRent);
   const isWebUser = occupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = occupant?.userTag?.toLowerCase() === "mobile";
   // Non-naira currency message
@@ -442,7 +401,8 @@ export const AddPartPayment: React.FC<{
     email_alert: true,
   });
 
-  const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+  // TO USE THE PAYMENTCHECKBOX COMPONENT 👉: use (optionKey, checked) signature for toggling
+  const handleCheckboxChange = (optionKey: string, checked: boolean) => {
     if (optionKey === "mobile_notification" && isWebUser) {
       return; // Prevent changing this option for web users
     }
@@ -506,7 +466,6 @@ export const AddPartPayment: React.FC<{
           </RentSectionTitle>
           {!isCompletePayment && (
             <Checkbox
-              // disabled={isUpfrontPaymentChecked}
               radio
               checked={!isUpfrontPaymentChecked}
               onChange={() =>
@@ -538,44 +497,32 @@ export const AddPartPayment: React.FC<{
               id="amount"
               placeholder=""
               label="Amount"
-              // value={formatNumber(prevAmt ?? 0)}
               formatNumber
               readOnly={isCompletePayment}
               onChange={handleAmount}
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
-              defaultValue={formatNumber(parseCurrency(prevAmt)) ?? 0}
+              defaultValue={formatNumber(parseCurrency(prevAmt))}
             />
           </div>
           <div className="flex items-center justify-between gap-4 mb-2">
-            {/* <Checkbox sm checked={createInvoice} onChange={setCreateInvoice}>
-              Create Invoice
-            </Checkbox> */}
             <div className="flex items-center gap-4 flex-wrap">
-              {filteredCheckboxOptions.map(({ label, key }) => (
-                <Checkbox
-                  sm
-                  key={key}
-                  checked={selectedOptions[key]}
-                  onChange={handleCheckboxChange(key)}
-                  disabled={
-                    (key === "mobile_notification" && isWebUser) ||
-                    (key === "create_invoice" &&
-                      (!isMobileUser || (currency !== "naira" && isMobileUser)))
-                  }
-                >
-                  {label}
-                </Checkbox>
-              ))}
+              <PaymentCheckBoxs
+                options={filteredCheckboxOptions}
+                selectedOptions={selectedOptions}
+                onChange={handleCheckboxChange}
+                isWebUser={isWebUser}
+                isMobileUser={isMobileUser}
+                currency={currency}
+              />
             </div>
-            {/* <ModalTrigger asChild> */}
             {!noBtn && (
               <Button
                 size="base_medium"
                 className="py-2 px-6"
                 onClick={handleUpdate}
                 type="button"
-                disabled={loading}
+                disabled={loading || !canSubmitRent}
               >
                 {loading ? "Please wait..." : "Update"}
               </Button>
@@ -596,49 +543,14 @@ export const AddPartPayment: React.FC<{
               </ModalContent>
             </Modal>
           </div>
-          {isWebUser ? (
-            <div className="custom-flex-col gap-1">
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                <span className="text-red-500 text-lg">*</span>
-                {`Confirms that you have received payment for the 
-          ${isRental ? "rent" : "counting"}.`}
-              </p>
-              {nonNaira && (
-                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                  <span className="text-red-500 text-lg">*</span>
-                  The property was listed in a currency other than Naira. You
-                  will need to handle all payments manually.
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="custom-flex-col gap-1">
-              <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                <span className="text-red-500 text-lg">*</span>
-                {selectedOptions["create_invoice"]
-                  ? `Payment will be reflected once the ${
-                      isRental ? "tenant" : "occupant"
-                    } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
-                  : `Confirms that you have received payment for the ${
-                      isRental ? "rent" : "counting"
-                    }. ${
-                      currency === "naira"
-                        ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                            isRental ? "tenant" : "occupant"
-                          } to make the payment.`
-                        : ""
-                    }`}
-              </p>
-              {nonNaira && (
-                <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-                  <span className="text-red-500 text-lg">*</span>
-                  The property was listed in a currency other than Naira. As a
-                  result, automatic payments and wallet transactions are not
-                  supported. You will need to handle all payments manually.
-                </p>
-              )}
-            </div>
-          )}
+          {/* PAYMENT CONFIRMATION TEXTS */}
+          <PaymentConfirmationText
+            isWebUser={isWebUser}
+            isRental={!!isRental}
+            nonNaira={nonNaira}
+            selectedOptions={selectedOptions}
+            currency={currency}
+          />
         </>
       )}
     </div>

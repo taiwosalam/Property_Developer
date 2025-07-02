@@ -44,7 +44,7 @@ const Units = () => {
 
   const [state, setState] = useState<RentAndUnitState>({
     total_pages: 1,
-    current_page: 1,
+    current_page: parseInt(sessionStorage.getItem("units_page") || "1", 10),
     last_page: 1,
   });
 
@@ -67,9 +67,16 @@ const Units = () => {
 
   const { menuOptions, startDate, endDate } = appliedFilters;
   const branchIdsArray = menuOptions["Branch"] || [];
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(
+    parseInt(sessionStorage.getItem("units_page") || "1", 10)
+  );
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("units_page", page.toString());
+  }, [page]);
 
   // const endpoint =
   //   isFilterApplied() || search || sort
@@ -98,21 +105,27 @@ const Units = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setSort(order);
+    setPage(1);
+    sessionStorage.setItem("units_page", "1");
   };
 
   const handleSearch = (query: string) => {
     setSearch(query);
+    setPage(1);
+    sessionStorage.setItem("units_page", "1");
   };
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     setPage(1);
+    sessionStorage.setItem("units_page", "1");
   };
 
   // Added a ref to the top of the content section
   const contentTopRef = useRef<HTMLDivElement>(null);
-  const handlePageChange = (page: number) => {
-    setPage(page);
+  const handlePageChange = (pageNumber: number) => {
+    setPage(pageNumber);
+    sessionStorage.setItem("units_page", pageNumber.toString());
     // Scroll to the top where properties card start
     if (contentTopRef.current) {
       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
@@ -127,8 +140,6 @@ const Units = () => {
     error,
     refetch,
   } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
-
-
 
   // console.log("apiData", apiData)
   useEffect(() => {
@@ -185,7 +196,7 @@ const Units = () => {
 
   const propertyOptions =
     propertyData?.data
-      .filter(p => p.property_type === 'rental')
+      .filter((p) => p.property_type === "rental")
       .map((p) => ({
         value: p.id.toString(),
         label: p.title,
@@ -197,8 +208,8 @@ const Units = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-  if(error) return <ServerError error={error}/>
-  
+  if (error) return <ServerError error={error} />;
+
   return (
     <div className="custom-flex-col gap-9">
       <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
