@@ -200,13 +200,13 @@ export const transformMessages = (data: any) => {
     .sort((a: any, b: any) => a.timestamp - b.timestamp);
 };
 
-interface Message {
-  id: number;
-  text: string | null;
-  senderId: number;
-  timestamp: string;
-  content_type: string;
-}
+// interface Message {
+//   id: number;
+//   text: string | null;
+//   senderId: number;
+//   timestamp: string;
+//   content_type: string;
+// }
 
 interface GroupedMessage {
   id: number;
@@ -217,7 +217,7 @@ interface GroupedMessage {
   seen: boolean;
 }
 
-interface Message {
+export interface NormalizedMessage {
   id: number;
   text: string | null;
   senderId: number;
@@ -229,6 +229,21 @@ interface Message {
     title: string;
   };
 }
+
+export interface Message {
+  id: number;
+  text: string | null;
+  senderId: number;
+  timestamp: string;
+  content_type: string;
+  sender?: {
+    fullname: string;
+    picture: string;
+    title: string;
+  };
+}
+
+
 
 interface GroupedMessage {
   id: number;
@@ -238,24 +253,12 @@ interface GroupedMessage {
   content_type: string;
   seen: boolean;
   sender: {
-    fullname: string;
-    picture: string;
-    title: string;
-  };
-}
-
-export interface NormalizedMessage {
-  id: number;
-  text: string | null;
-  senderId: number | string;
-  timestamp: string;
-  content_type: string;
-  sender?: {
     fullname?: string;
     picture?: string;
     title?: string;
   };
 }
+
 
 export type GroupChatAPIResponse = {
   group_chat: any;
@@ -351,7 +354,7 @@ export const transformMessagesFromAPI = (
     return {
       id: msg.id,
       text: msg.content ?? null,
-      senderId: msg.sender_id,
+      senderId: Number(msg.sender_id), 
       timestamp,
       content_type,
       sender,
