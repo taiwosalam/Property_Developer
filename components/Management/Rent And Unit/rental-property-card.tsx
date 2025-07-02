@@ -317,6 +317,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           // Finally render the buttons
           .map((action, i) => (
             <ActionButton
+            currency={currency}
               unit_id={unitId}
               invoice_id={invoice_id}
               key={i}

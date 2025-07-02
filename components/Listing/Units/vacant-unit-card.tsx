@@ -273,7 +273,7 @@ const VacantUnitCard = ({
           </Link>
           <Link
             href={`/management/rent-unit/${unit_data.unitId}/start-rent?type=${unit_data.propertyType}&id=${unit_data.unitId}`}
-            className="flex gap-2 font-bold"
+            className="flex gap-2 font-normal"
           >
             <StartRentIcon size={24} />
             <p>Link Tenant</p>

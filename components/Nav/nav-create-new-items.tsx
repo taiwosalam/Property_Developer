@@ -41,8 +41,8 @@ export const create_new_items: CreateNewItemsProps = [
     content: [
       { label: "examine", modal: <CreateExamineModal /> },
       { label: "maintenance", link: "/tasks/maintenance/create-new" },
-      { label: "event", modal: <CreateReminderMOdal /> },
-      { label: "task", modal: <CreateReminderMOdal /> },
+      // { label: "event", modal: <CreateReminderMOdal /> },
+      // { label: "task", modal: <CreateReminderMOdal /> },
       { label: "reminder", modal: <CreateReminderMOdal /> },
       {
         label: "announcement",

@@ -17,6 +17,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   tenantId,
   tenantAgent,
   cautionDeposit,
+  currency,
 }) => {
   const isWebUser = tenantAgent?.toLowerCase() === "web";
   const commonStyles =
@@ -69,6 +70,7 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
               unit_id={unit_id as string}
               tenantAgent={tenantAgent}
               cautionDeposit={cautionDeposit ?? 0}
+              currency={currency}
             />
           </ModalContent>
         )}

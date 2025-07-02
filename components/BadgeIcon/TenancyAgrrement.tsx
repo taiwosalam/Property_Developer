@@ -2,7 +2,7 @@
 
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 import useFetch from "@/hooks/useFetch";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "../Form/Select/select";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -12,6 +12,20 @@ import Button from "../Form/Button/button";
 const TenancyAgreement = () => {
   const router = useRouter();
   const [selectedProperty, setSelectedProperty] = useState("");
+
+  // On mount, check for property id in session storage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const propertyId = sessionStorage.getItem(
+        "return_to_start_rent_property_id"
+      );
+      if (propertyId) {
+        setSelectedProperty(propertyId);
+        // Optionally, remove after using so it doesn't persist
+        sessionStorage.removeItem("return_to_start_rent_property_id");
+      }
+    }
+  }, []);
 
   const {
     data: propertyData,
@@ -32,6 +46,10 @@ const TenancyAgreement = () => {
     router.push(`/documents/create-tenancy-agreement/?p=${selectedProperty}`);
   };
 
+  const defaultSelectedOption = propertyOptions.find(
+    (option) => String(option.value) === String(selectedProperty)
+  );
+
   return (
     <>
       <div className="flex flex-wrap gap-4 items-center justify-center z-[1000] mt-4">
@@ -49,6 +67,7 @@ const TenancyAgreement = () => {
               : "Select properties"
           }
           error={propertyError}
+          defaultValue={defaultSelectedOption}
           onChange={setSelectedProperty}
         />
       </div>

@@ -176,7 +176,8 @@ export const transformDraftUnitData = (
       branch: p.branch?.branch_name,
       total_returns: totalReturns,
       total_income: (totalReturns * feePercentage) / 100,
-      account_officer: "Nil",
+      // account_officer: "Nil",
+      account_manager: "Nil",
       status: status,
     };
   });
