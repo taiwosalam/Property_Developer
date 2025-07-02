@@ -111,7 +111,7 @@ const Chat = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       window.dispatchEvent(new Event("refetchMessages"));
-    }, 5000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -216,3 +216,4 @@ const Chat = () => {
 };
 
 export default Chat;
+

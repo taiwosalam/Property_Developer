@@ -97,6 +97,7 @@ export interface TenantApiResponse {
       note: {
         note: string | null;
       };
+      is_flagged: boolean;
       flag: {
         is_flagged: boolean;
         flagged_by: string;
@@ -148,7 +149,7 @@ export const transformTenantApiResponse = (
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
       note: tenant.note.note !== null && tenant.note.note !== "",
-      flagged: tenant.flag.is_flagged,
+      flagged: tenant?.is_flagged,
       badge_color: tenant.user_tier
         ? tierColorMap[tenant.user_tier]
         : undefined,
