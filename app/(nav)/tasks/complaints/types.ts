@@ -8,6 +8,10 @@ interface Complaint {
   tier_id: number;
   name: string;
   picture: string;
+  comment_users: {
+    profile_picture: string;
+    name: string;
+  }[];
   property_name: string;
   status: string;
   progress: number;
@@ -85,6 +89,7 @@ interface ComplaintDetail {
   property_lga: string;
   property_city: string;
   property_address: string;
+  branch_id: number;
   branch_name: string;
   account_officer: string | null;
   status: string;
@@ -93,6 +98,13 @@ interface ComplaintDetail {
   rejected_by: string | null;
   processed_by: string | null;
   progress: number;
+  task_bar: {
+    progress: string;
+    text: string;
+    approve_by: string;
+    time: string;
+    date: string;
+  }[];
   notes: {
     date: string;
     text: string;

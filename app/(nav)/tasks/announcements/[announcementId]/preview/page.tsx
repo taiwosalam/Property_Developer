@@ -20,6 +20,8 @@ import {
   AnnouncementDetailsPageData,
   transformAnnouncementDetailsData,
 } from "./data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import dayjs from "dayjs";
 
 const images = [
   { src: "/empty/SampleProperty.jpeg", isVideo: false },
@@ -44,7 +46,10 @@ const PreviewAnnouncement = () => {
     silentLoading,
     error,
     isNetworkError,
+    refetch,
   } = useFetch<AnnouncementResponseDetails>(`announcements/${announcementId}`);
+
+  useRefetchOnEvent("announcementDispatch", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
@@ -91,6 +96,8 @@ const PreviewAnnouncement = () => {
               dislikes: pageData?.dislikes || 0,
               viewers: pageData?.viewers || [],
               description: pageData?.description || "",
+              my_like: pageData?.my_like ?? false,
+              my_dislike: pageData?.my_dislike ?? false,
             }}
           />
         </div>
@@ -108,7 +115,21 @@ const PreviewAnnouncement = () => {
               properties: pageData?.summary?.property_name,
             }}
           />
-          <ReadBy />
+          <ReadBy
+            readBy={
+              pageData?.read_by
+                ? pageData.read_by.map((user) => ({
+                    ...user,
+                    name: user.user_name, // adjust property names as needed
+                    tier: user.tier_id, // adjust property names as needed
+                    dateTime: `${dayjs(user?.date).format(
+                      "DD/MM/YYYY"
+                    )} ${dayjs(user?.time).format("hh:mm A")}`,
+                    image: user.image ?? "", // ensure image is always a string
+                  }))
+                : undefined
+            }
+          />
         </div>
       </div>
     </div>

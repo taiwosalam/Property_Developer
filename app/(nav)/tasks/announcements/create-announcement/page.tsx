@@ -1,17 +1,19 @@
 "use client";
 import CreateAnnouncementForm from "@/components/tasks/announcements/create-announcement-form";
-import { createAnnouncement } from "../data";
+import { createAnnouncement, updateAnnouncement } from "../data";
 import BackButton from "@/components/BackButton/back-button";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const CreateAnnouncement = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (formData: FormData) => {
+  const {announcementId } = useParams();
+  const paramId = announcementId as string;
 
+  const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
     try {
       const success = await createAnnouncement(formData);
@@ -25,11 +27,12 @@ const CreateAnnouncement = () => {
     }
   };
 
+
   return (
     <div className="space-y-7">
       <BackButton>Create Announcement</BackButton>
       <CreateAnnouncementForm
-        handleSubmit={handleSubmit}
+        handleSubmit={  handleSubmit}
         isLoading={isSubmitting}
       />
     </div>
