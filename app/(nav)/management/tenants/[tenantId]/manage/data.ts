@@ -158,12 +158,9 @@ export const transformIndividualTenantAPIResponse = ({
       "S/N": (index + 1).toString(),
       unit_name: stmt?.unit_name || "--- ---",
       amount_paid: stmt?.amount_paid
-        ? `${formatFee(stmt.amount_paid, stmt.currency || "naira")}`
+        ? `${formatFee(stmt?.amount_paid, stmt?.currency || "naira")}`
         : "--- ---",
-      payment_date: stmt?.payment_date
-        ? // ? moment(stmt.payment_date, "YYYY-MM-DD").format("DD/MM/YYYY")
-          stmt.payment_date
-        : "",
+      payment_date: stmt?.payment_date ? stmt?.payment_date : "",
       start_date: stmt?.start_date ? stmt.start_date : "",
       end_date: stmt?.end_date ? stmt.end_date : "",
     })) || [];

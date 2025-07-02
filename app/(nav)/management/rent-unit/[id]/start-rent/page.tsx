@@ -47,6 +47,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
 import { useTourStore } from "@/store/tour-store";
 import { getLocalStorage, removeLocalStorage } from "@/utils/local-storage";
+import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -100,6 +101,8 @@ const StartRent = () => {
     }
   }, [apiData, setGlobalStore]);
 
+  console.log("unit_data", unit_data)
+
   useEffect(() => {
     if (allTenantData) {
       const transformedTenants = transformUnitsTenants(allTenantData);
@@ -109,6 +112,54 @@ const StartRent = () => {
 
   const HAS_DOCUMENT = unit_data?.property_document?.document_id;
   const AGREEMENT_CHECKED = selectedCheckboxOptions.rent_agreement;
+
+  // const handleStartRent = async () => {
+  //   if (!unit_data?.unit_id || !selectedTenantId) {
+  //     toast.error(
+  //       `Missing required information: Unit or ${
+  //         isRental ? "Tenant" : "Occupant"
+  //       } not selected.`
+  //     );
+  //     return;
+  //   }
+
+  //   if (!startDate) {
+  //     toast.warning("Start date not selected.");
+  //     return;
+  //   }
+
+  //   if (!selectedCheckboxOptions) {
+  //     toast.error("Notification preferences not set.");
+  //     return;
+  //   }
+
+  //   if (dueDate && dueDate.isBefore(dayjs(), "day")) {
+  //     toast.warning("End date cannot be in the past.");
+  //     return;
+  //   }
+
+  //   const IS_WEB_TENANT =
+  //     selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
+
+  //   const IS_FACILITY = propertyType === "facility";
+
+  //   if (!IS_FACILITY && !isPastDate) {
+  //     // Open modal for non-facility and non-past date cases
+  //     setIsAgreementModalOpen(true);
+  //     return;
+  //   }
+
+  //   // if (!IS_WEB_TENANT) {
+  //   //   // Open modal for non-web tenants
+  //   //   setIsAgreementModalOpen(true);
+  //   //   return;
+  //   // }
+
+  //   // For web tenants, proceed without PDF
+  //   await submitRent(null);
+  //   // setIsAgreementModalOpen(true);
+  //   return;
+  // };
 
   const handleStartRent = async () => {
     if (!unit_data?.unit_id || !selectedTenantId) {
@@ -140,21 +191,14 @@ const StartRent = () => {
 
     const IS_FACILITY = propertyType === "facility";
 
-    if (!IS_FACILITY && !isPastDate) {
-      // Open modal for non-facility and non-past date cases
+    // Only open modal if rent_agreement is checked
+    if (!IS_FACILITY && !isPastDate && selectedCheckboxOptions.rent_agreement) {
       setIsAgreementModalOpen(true);
       return;
     }
 
-    // if (!IS_WEB_TENANT) {
-    //   // Open modal for non-web tenants
-    //   setIsAgreementModalOpen(true);
-    //   return;
-    // }
-
-    // For web tenants, proceed without PDF
+    // For all other cases, proceed without modal
     await submitRent(null);
-    // setIsAgreementModalOpen(true);
     return;
   };
 
@@ -191,6 +235,7 @@ const StartRent = () => {
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
       is_mobile_user: 0,
       has_document: 0,
+      caution_fee: parseCurrency(unit_data?.caution_fee),
     };
 
     const RentalObj = {
@@ -212,6 +257,7 @@ const StartRent = () => {
       // has_document: isPastDate ? 0 : 1, // NOW WHEN PAST DATE IS SELECTED, NO DOCUMENT IS REQUIRED
       ...(isPastDate ? {} : { doc_file }),
       has_document: shouldAttachDocument ? 1 : 0,
+      caution_fee: parseCurrency(unit_data?.caution_fee),
       // has_document: shouldAttachDocument || isPastDate ? 0 : 1,
       // ...(shouldAttachDocument && doc_file ? { doc_file } : {}),
     };

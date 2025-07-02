@@ -121,7 +121,7 @@ const BranchActivitiesCard: React.FC<BranchActivitiesCardProps> = ({
               label={activity.label}
               description={
                 activity.description.length > 65
-                  ? activity.description.substring(0, 65).concat("...")
+                  ? activity.description.substring(0, 85).concat("...")
                   : activity.description
               }
               time={activity.time}

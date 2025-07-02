@@ -53,7 +53,7 @@ export const transformPropertyFormData = (
     video_link: data.video_link,
     property_type: data.property_type,
     branch_id: data.branch_id,
-    inventory_id: data.inventory_id,
+    is_inventory: data.is_inventory,
     landlord_id: data.land_lord_id,
     // land_lord_id: landlord_id,
     company_id,
