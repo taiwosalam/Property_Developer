@@ -26,21 +26,21 @@ export const transformTeamDetails = (
 ): IChatDetailsPage => {
   return {
     about: {
-      id: data?.group_chat?.id,
-      group_name: data?.group_chat?.name,
-      description: data?.group_chat?.description,
+      id: data?.group_chat?.id || 0,
+      group_name: data?.group_chat?.name || "",
+      description: data?.group_chat?.description || "",
       created_at: data?.group_chat?.created_at
         ? dayjs(data?.group_chat?.created_at).format("DD/MM/YYYY hh:mmA")
         : "___ ___",
       total_members: data?.group_chat.users.length,
-      total_active: 30,
-      picture: data?.group_chat?.picture || null,
+      total_active: 0,
+      picture: data?.group_chat?.picture || empty,
     },
     group_members: data?.group_chat.users.map((user) => ({
       id: user.id,
       picture: user.profile?.picture || null,
       fullname: user?.name,
-      role: "director",
+      role: "user",
     })),
   };
 };

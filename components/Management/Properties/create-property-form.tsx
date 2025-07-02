@@ -311,56 +311,52 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   }, [staffsData]);
 
   // useEffect(() => {
+  //   // Check for landlordId from propertyDetails (edit) or from props (create)
+  //   const propertyLandlordId = propertyDetails?.land_lord_id ?? undefined;
+
   //   let newLandlord: string | undefined = undefined;
-  //   if (editMode && propertyDetails?.land_lord_id && landlordOptions.length) {
-  //     newLandlord = String(propertyDetails.land_lord_id);
+
+  //   if (
+  //     editMode &&
+  //     propertyLandlordId !== undefined &&
+  //     propertyLandlordId !== null &&
+  //     landlordOptions.length
+  //   ) {
+  //     newLandlord = String(propertyLandlordId);
   //   } else if (!editMode && landlordId && landlordOptions.length) {
   //     const exists = landlordOptions.some(
   //       (l) => l.value === String(landlordId)
   //     );
   //     newLandlord = exists ? String(landlordId) : undefined;
   //   }
+  //   // Only update if changed (prevents loop)
   //   if (selectedLandlord !== newLandlord) {
   //     setSelectedLandlord(newLandlord);
   //   }
   // }, [
   //   editMode,
-  //   propertyDetails?.land_lord_id,
+  //   propertyDetails,
   //   landlordId,
   //   landlordOptions,
   //   selectedLandlord,
   // ]);
 
   useEffect(() => {
-    // Check for landlordId from propertyDetails (edit) or from props (create)
-    const propertyLandlordId = propertyDetails?.land_lord_id ?? undefined;
-
     let newLandlord: string | undefined = undefined;
-
     if (
       editMode &&
-      propertyLandlordId !== undefined &&
-      propertyLandlordId !== null &&
+      propertyDetails?.land_lord_id != null &&
       landlordOptions.length
     ) {
-      newLandlord = String(propertyLandlordId);
+      newLandlord = String(propertyDetails.land_lord_id);
     } else if (!editMode && landlordId && landlordOptions.length) {
       const exists = landlordOptions.some(
         (l) => l.value === String(landlordId)
       );
       newLandlord = exists ? String(landlordId) : undefined;
     }
-    // Only update if changed (prevents loop)
-    if (selectedLandlord !== newLandlord) {
-      setSelectedLandlord(newLandlord);
-    }
-  }, [
-    editMode,
-    propertyDetails,
-    landlordId,
-    landlordOptions,
-    selectedLandlord,
-  ]);
+    setSelectedLandlord(newLandlord);
+  }, [editMode, propertyDetails, landlordId, landlordOptions]);
 
   useEffect(() => {
     if (editMode && propertyDetails) {
@@ -1084,20 +1080,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   options={["yes", "no"]}
                   id="is_inventory"
                   defaultValue={
-                    editMode ? propertySettings?.is_inventory : "yes"
+                    editMode ? propertySettings?.is_inventory : "no"
                   }
                   label="Inventory"
                   inputContainerClassName="bg-white"
                   resetKey={resetKey}
                   className="property-inventory-wrapper"
                   hiddenInputClassName="property-form-input"
-                  placeholder={
-                    inventoryLoading
-                      ? "Loading inventories..."
-                      : inventoryError
-                      ? "Error loading inventories"
-                      : "Select inventory"
-                  }
                 />
               </>
             )}

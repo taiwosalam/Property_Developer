@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { empty } from "@/app/config";
 import parse from "html-react-parser";
+import TruncatedText from "../TruncatedText/truncated-text";
 
 interface IGroupDetails {
   about?: {
@@ -49,7 +50,7 @@ const GroupDetails = ({ about }: IGroupDetails) => {
               {about?.total_members} Members
             </p>
             <div className="w-1 h-1 rounded-full bg-status-success-3"></div>
-            <p className="text-status-success-3 dark:text-status-success-2 text-xs font-medium">
+            <p className="text-text-disabled text-xs font-medium">
               {about?.total_active} Online
             </p>
           </div>
@@ -61,9 +62,11 @@ const GroupDetails = ({ about }: IGroupDetails) => {
           </h3>
         </div>
         <div className="flex gap-2 w-full justify-between">
-          <span className="text-text-primary dark:text-white text-xs font-medium">
-            {parse(about?.description || "")}
-          </span>
+          <TruncatedText lines={5} as="p">
+            <span className="text-text-primary dark:text-white text-xs font-medium">
+              {parse(about?.description || "")}
+            </span>
+          </TruncatedText>
         </div>
       </div>
     </div>
