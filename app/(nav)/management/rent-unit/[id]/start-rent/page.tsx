@@ -116,6 +116,9 @@ const StartRent = () => {
 
   const HAS_DOCUMENT = unit_data?.property_document?.document_id;
   const AGREEMENT_CHECKED = selectedCheckboxOptions.rent_agreement;
+  const TENANT_SCREENING_LEVEL = unit_data.tenant_screening_level;
+  const OCCUPANT_SCREENING_LEVEL = unit_data.occupant_screening_level;
+
 
   const handleStartRent = async () => {
     if (!unit_data?.unit_id || !selectedTenantId) {
@@ -308,6 +311,7 @@ const StartRent = () => {
       />
     );
   }
+  
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
