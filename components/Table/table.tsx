@@ -13,7 +13,7 @@ import {
   Avatar,
 } from "@mui/material";
 
-import { ReactNode } from "react";
+import { ReactNode, RefObject } from "react";
 import { VerticalEllipsisIcon } from "@/public/icons/icons";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
@@ -107,6 +107,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableHeadCellSx,
   tableBodyCellSx,
   onActionClick,
+  lastRowRef
 }) => {
   const isDarkMode = useDarkMode();
 
@@ -165,8 +166,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
           {data.map((x, index) => (
             <TableRow
               key={getUniqueKey(x)}
+              ref={index === data.length - 1 ? lastRowRef : null}
               // key={`${field.id}-${Date.now()}`}
-              ref={x.ref}
+              //ref={x.ref}
               onClick={handleSelect ? (e) => handleSelect(x, e) : undefined}
               className="cursor-pointer"
               sx={{

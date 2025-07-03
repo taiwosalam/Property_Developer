@@ -28,11 +28,7 @@ export const createAnnouncement = async (formData: FormData) => {
 
 export const updateAnnouncement = async (formData: FormData, id: string) => {
   try {
-    const res = await api.patch(`/announcements/${id}`, formData, {
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
+    const res = await api.post(`/announcements/${id}`, formData);
     if (res.status === 200 || res.status === 201) {
       window.dispatchEvent(new Event("dispatchAnnouncement"));
       return true;
@@ -60,7 +56,7 @@ export const postLikeOrDislike = async (id: string, route: string) => {
   try {
     const res = await api.post(`announcements/${id}/${route}`);
     if (res.status === 200 || res.status === 201) {
-       window.dispatchEvent(new Event("dispatchAnnouncement"));
+      window.dispatchEvent(new Event("dispatchAnnouncement"));
       return true;
     }
   } catch (error) {

@@ -53,8 +53,6 @@ const AnnouncementPage = () => {
   } = useFetch<AnnouncementApiResponse>(`/announcements`, config);
   useRefetchOnEvent("dispatchAnnouncement", () => refetch({ silent: true }));
 
-  const [isLiking, setIsLiking] = useState(false);
-
   useEffect(() => {
     if (apiData) {
       setAnnouncements(apiData?.data);
@@ -75,7 +73,7 @@ const AnnouncementPage = () => {
         queryParams.account_officer_id = accountOfficer.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
       if (branches.length > 0) queryParams.branch_id = status.join(",");
-      
+
       if (property.length > 0) queryParams.property_ids = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -131,9 +129,9 @@ const AnnouncementPage = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Announcement"
-            newData={0}
+            newData={apiData?.total_announcement || 0}
             colorScheme={1}
-            total={0}
+            total={apiData?.total_announcement_month || 0}
           />
           {/* <ManagementStatistcsCard
             title="Examine"

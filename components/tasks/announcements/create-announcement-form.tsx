@@ -19,6 +19,7 @@ import {
 } from "@/app/(nav)/tasks/announcements/data";
 
 const MAX_IMAGES = 4;
+
 const CreateAnnouncementForm: React.FC<{
   handleSubmit: (data: any) => void;
   editMode?: boolean;
@@ -181,12 +182,18 @@ const CreateAnnouncementForm: React.FC<{
 
   const handleUpdate = async (formData: FormData) => {
     if (company_id) formData.append("company_id", company_id);
-    setIsSubmitting(true);
+    formData.append("_method", "PATCH");
+
+    imageFiles.forEach((file, index) => {
+      formData.append(`images[${index}]`, file);
+    });
+
     try {
+      setIsSubmitting(true);
       const success = await updateAnnouncement(formData, paramId);
       if (success) {
         toast.success("Announcement updated");
-        router.push(`/announcements/${paramId}/preview`);
+        router.push(`/tasks/announcements/${paramId}/preview`);
       }
     } catch (error) {
     } finally {

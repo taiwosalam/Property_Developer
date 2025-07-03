@@ -196,8 +196,11 @@ export interface InspectionRequestParams {
   search?: string;
   sort_order?: "asc" | "desc";
   start_date?: string;
+  from?: string;
+  to?: string;
   end_date?: string;
   property_ids?: string;
+  property_id?: string;
 }
 export interface FilterResult {
   options: string[];
