@@ -41,14 +41,13 @@ export const getRentalData = (unit_data: any) => [
   },
   { label: "Branch", value: unit_data?.branchName ?? "--- ---" },
   {
-    label: "Account Officer",
+    label: "Account Manager",
     value: unit_data?.accountOfficer ?? "--- ---",
   },
   { label: "Landlord", value: unit_data?.landlord_name ?? "--- ---" }, // TODO
   { label: "Category", value: unit_data?.categories ?? "--- ---" },
   { label: "Unit ID", value: unit_data?.unit_id ?? "--- ---" },
 ];
-
 
 export const getEstateData = (unit_data: any) => [
   { label: "Property Name", value: unit_data?.title ?? "--- ---" },
@@ -62,7 +61,7 @@ export const getEstateData = (unit_data: any) => [
   },
   { label: "Branch", value: unit_data?.branchName ?? "--- ---" },
   {
-    label: "Account Officer",
+    label: "Account Manager",
     value: unit_data?.accountOfficer ?? "--- ---",
   },
   { label: "Description", value: unit_data?.description ?? "--- ---" },
@@ -79,12 +78,18 @@ export const getPropertySettingsData = (unit_data: any) => [
   { label: "Agency Fee", value: `${unit_data?.agency_fee ?? "--- ---"}%` },
   { label: "Period", value: unit_data?.fee_period ?? "--- ---" },
   {
-    label: "Who to charge New Rent",
-    value: unit_data?.whoToCharge ?? "--- ---",
+    label: "Charge Agency Fee",
+    value:
+      unit_data?.whoToCharge?.toLowerCase() === "both"
+        ? "Landlord & Tenant"
+        : unit_data?.whoToCharge ?? "--- ---",
   },
   {
-    label: "Who to charge New Renew",
-    value: unit_data?.whoToChargeRenew ?? "--- ---",
+    label: "Charge Management Fee",
+    value:
+      unit_data?.whoToChargeRenew?.toLowerCase() === "both"
+        ? "Landlord & Tenant"
+        : unit_data?.whoToChargeRenew ?? "--- ---",
   },
   { label: "Caution Deposit", value: unit_data?.caution_deposit ?? "--- ---" },
   { label: "Currency", value: unit_data?.currency ?? "--- ---" },

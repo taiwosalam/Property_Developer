@@ -27,6 +27,7 @@ import { getCleanRoleName } from "@/components/Message/data";
 import useFetch from "@/hooks/useFetch";
 import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { ChevronLeftIcon } from "lucide-react";
 
 const useUserProfile = (id: string | number) => {
   const { data, loading } = useFetch<UserDetailsResponse>(
@@ -158,8 +159,8 @@ const Chat = () => {
       {/* Header */}
       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/messages")}>
-            <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
+          <button onClick={() => router.push("/messages")} className="text-black dark:text-white">
+            <ChevronLeftIcon size={20} />
           </button>
           <Modal>
             <ModalTrigger>

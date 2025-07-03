@@ -60,6 +60,8 @@ const AddTenantModal = () => {
     const success = await addTenant(data);
     if (success) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
 
@@ -67,16 +69,20 @@ const AddTenantModal = () => {
     const success = await inviteTenantEmail(data);
     if (success) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
 
   const handleAddTenantWithEmmailOrID = async (data: any) => {
     const payload = {
-      identifier: data
-    }
+      identifier: data,
+    };
     const success = await addTenantWithEmail(objectToFormData(payload));
     if (success) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
 
@@ -86,6 +92,8 @@ const AddTenantModal = () => {
     const status = await multipleInviteTenants(formData);
     if (status) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
 
@@ -95,6 +103,8 @@ const AddTenantModal = () => {
     const status = await multipleCreateTenants(formData);
     if (status) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
 
@@ -147,7 +157,8 @@ const AddTenantModal = () => {
       ),
     },
     "add-user-with-email": {
-      heading: formStep === 3 ? "Adding Warning!" : "Add Landlord/Landlady with Email",
+      heading:
+        formStep === 3 ? "Adding Warning!" : "Add Landlord/Landlady with Email",
       content: (
         <InvitationForm
           method="id"
