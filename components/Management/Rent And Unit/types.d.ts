@@ -81,6 +81,7 @@ export interface Occupant {
   family_type?: string;
   state: string;
   lg: string;
+  tier?: number;
   nextOfKin?: NextOfKin;
   badgeColor?: BadgeIconColors;
 }

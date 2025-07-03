@@ -868,7 +868,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   requiredNoStar
                   hiddenInputClassName="property-form-input"
                   defaultValue={
-                    editMode ? propertySettings?.who_to_charge_new_tenant : ""
+                    editMode
+                      ? propertySettings?.who_to_charge_new_tenant
+                      : formType === "facility"
+                      ? "no"
+                      : "yes"
                   }
                 />
 
@@ -892,7 +896,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   requiredNoStar
                   hiddenInputClassName="property-form-input"
                   defaultValue={
-                    editMode ? propertySettings?.who_to_charge_renew_tenant : ""
+                    editMode
+                      ? propertySettings?.who_to_charge_renew_tenant
+                      : formType === "facility"
+                      ? "no"
+                      : "yes"
                   }
                 />
               </>
@@ -995,8 +1003,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 editMode
                   ? propertySettings?.group_chat
                   : formType === "rental"
-                  ? "no"
-                  : "yes"
+                  ? "yes"
+                  : "no"
               }
             />
             <Select
@@ -1014,7 +1022,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   ? propertySettings?.rent_penalty
                   : editMode && formType === "facility"
                   ? propertySettings?.fee_penalty
-                  : "no"
+                  : "yes"
               }
             />
             <Select
@@ -1028,7 +1036,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               requiredNoStar
               hiddenInputClassName="property-form-input"
               defaultValue={
-                editMode ? propertySettings?.request_callback : "no"
+                editMode ? propertySettings?.request_callback : "yes"
               }
             />
             <Select

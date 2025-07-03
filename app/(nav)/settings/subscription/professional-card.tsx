@@ -13,14 +13,14 @@ import { CounterButton } from "@/components/Wallet/AddFunds/payment-method";
 import { useState } from "react";
 
 const features = [
-  "Unlimited Property Creations",
   "All plan Benefits",
+  "Unlimited Access",
+  "Unlimited Creations",
   "Customize Request",
-  "unlimited Access",
   "Custom Domain",
-  "No Maximum Creation",
+  "Cloud Based Storage",
   "Whitelabel/SAAS Options",
-  "24/7 Support Training",
+  "24/7 Support & Training",
 ];
 
 interface ProfessionalCardProps {

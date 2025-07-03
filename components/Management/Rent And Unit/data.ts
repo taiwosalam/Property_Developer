@@ -40,6 +40,7 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
       data.state || "__"
     }`,
     city: data.city || "--- ---",
+    tier: data.user_tier || "--- ---",
     state: data.state || "--- ---",
     lg: data.local_government || "--- ---",
     occupation: data.Others.occupation || "--- ---",

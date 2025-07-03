@@ -60,13 +60,51 @@ export const ProfileForm: React.FC<{
     rentEndDate,
     selectedOccupant,
     tenantLoading,
+    unitData,
   } = useGlobalStore();
   // const defaultTenantId = getLocalStorage("selectedTenantId") || "";
   // const [selectedId, setSelectedId] = useState<string>(defaultTenantId || "");
   const defaultTenantId = String(getLocalStorage("selectedTenantId") || "");
   const [selectedId, setSelectedId] = useState<string>("");
+  const [tierError, setTierError] = useState<string | null>(null);
   const isWebUser = selectedOccupant?.userTag?.toLowerCase() === "web";
   const isMobileUser = selectedOccupant?.userTag?.toLowerCase() === "mobile";
+  const TENANT_SCREENING_LEVEL = unitData?.tenant_screening_level;
+  const OCCUPANT_SCREENING_LEVEL = unitData?.occupant_screening_level;
+
+  console.log("occipants here", occupants);
+  console.log("selectedOccupant", selectedOccupant);
+
+  useEffect(() => {
+    if (!selectedOccupant || !isMobileUser) {
+      setTierError(null);
+      return;
+    }
+
+    const requiredLevel = isRental
+      ? TENANT_SCREENING_LEVEL
+      : OCCUPANT_SCREENING_LEVEL;
+    const occupantTier = selectedOccupant?.tier;
+
+    if (
+      requiredLevel !== undefined &&
+      occupantTier !== undefined &&
+      occupantTier < requiredLevel
+    ) {
+      setTierError(
+        "The client’s current profile tier does not align with your company’s access requirements. Let them know to upgrade their profile."
+      );
+      setGlobalInfoStore("canSubmitRent", false)
+    } else {
+      setTierError(null);
+    }
+  }, [
+    selectedOccupant,
+    isMobileUser,
+    isRental,
+    TENANT_SCREENING_LEVEL,
+    OCCUPANT_SCREENING_LEVEL,
+  ]);
 
   // 2. Set default when occupants are loaded and defaultTenantId is present in list
   useEffect(() => {
@@ -95,26 +133,6 @@ export const ProfileForm: React.FC<{
     }
   }, [period]);
 
-  // // Validate defaultTenantId
-  // useEffect(() => {
-  //   if (tenantsLoading || !defaultTenantId) return;
-
-  //   const validTenant = occupants.find(
-  //     (occupant) => occupant.id === defaultTenantId
-  //   );
-  //   if (!validTenant) {
-  //     setSelectedId("");
-  //     setSelectedTenantId?.("");
-  //     // localStorage.removeItem("selectedTenantId");
-  //   }
-  // }, [defaultTenantId, occupants, setSelectedTenantId, tenantsLoading]);
-
-  // Handle select id from dropdown
-  // const handleSelectId = (id: string) => {
-  //   setSelectedId(id);
-  //   setSelectedTenantId(id);
-  //   setIsModalIdSelected(false);
-  // };
 
   const handleSelectId = (id: string) => {
     // Clear previous data
@@ -212,18 +230,6 @@ export const ProfileForm: React.FC<{
     rent_agreement: false,
   });
 
-  // const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
-  //   if (optionKey === "mobile_notification" && isWebUser) {
-  //     return; // Prevent changing this option
-  //   }
-  //   if (optionKey === "create_invoice" && !isMobileUser) {
-  //     return; // Prevent changes for mobile users
-  //   }
-  //   setSelectedOptions((prev) => ({
-  //     ...prev,
-  //     [optionKey]: checked,
-  //   }));
-  // };
 
   // TO USE THE PAYMENTCHECKBOX COMPONENT 👉: use (optionKey, checked) signature for toggling
   const handleCheckboxChange = (optionKey: string, checked: boolean) => {
@@ -325,6 +331,7 @@ export const ProfileForm: React.FC<{
               // defaultValue={defaultTenantId || undefined}
               defaultValue={tenantSelectDefaultValue}
               disabled={disableInput}
+              error={tierError}
             />
           </div>
           <div className="select-tenant-using-id">
