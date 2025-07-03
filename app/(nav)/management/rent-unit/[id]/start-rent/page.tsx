@@ -53,6 +53,7 @@ const StartRent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const canSubmitRent = useGlobalStore((state) => state.canSubmitRent);
   const { selectedOccupant, isPastDate } = useGlobalStore();
   const { setShouldRenderTour, setPersist, isTourCompleted } = useTourStore();
   const id = searchParams.get("id");
@@ -387,7 +388,7 @@ const StartRent = () => {
         <Button
           size="base_medium"
           className="py-2 px-6 items-end ml-auto"
-          disabled={reqLoading || pdfLoading}
+          disabled={reqLoading || pdfLoading || !canSubmitRent}
           onClick={handleStartRent}
         >
           {reqLoading || pdfLoading

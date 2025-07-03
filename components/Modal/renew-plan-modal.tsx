@@ -191,11 +191,11 @@ export const RenewSubPlanModal = ({
                 onSelect={() => handleSelectPlan(plan)}
               />
             ))}
+      </div>
         <ProfessionalPlanCard
           showFeatures={showFeatures}
           setShowFeatures={setShowFeatures}
         />
-      </div>
     </div>
   );
 };

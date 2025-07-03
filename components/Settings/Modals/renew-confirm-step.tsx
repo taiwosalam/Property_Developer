@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import InsufficientBalance from "./insufficient-balance";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
 import parse from "html-react-parser";
+import { useRouter } from "next/navigation";
 
 interface ISponsorModalProps {
   cost: number;
@@ -31,6 +32,7 @@ const RenewSubConfirmModal = ({
   loading,
   message = "By confirming, you authorize this charge and acknowledge that the amount will be deducted from your wallet balance.",
 }: ISponsorModalProps) => {
+  const router = useRouter();
   const company_wallet = usePersonalInfoStore((state) => state.company_wallet);
   const COMPANY_WALLET_BALANCE = company_wallet?.wallet_balance ?? 0;
   const [step, setStep] = React.useState(1);
@@ -57,6 +59,7 @@ const RenewSubConfirmModal = ({
     }
     if (onSubmit) {
       await onSubmit();
+      router.push(`/settings/subscription`);
     }
   };
 

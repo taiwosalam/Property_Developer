@@ -7,6 +7,7 @@ import { empty } from "@/app/config";
 import { useTheme } from "next-themes";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import Picture from "@/components/Picture/picture";
+import Cookies from "js-cookie";
 import Button from "@/components/Form/Button/button";
 import {
   Dropdown,
@@ -177,6 +178,8 @@ const Header = () => {
         currentExpiryDate,
       } = data.data;
 
+      const subscription_status = isSubscriptionExpired ? "expired" : "active";
+
       setPersonalInfo("user_id", user.userid);
       setPersonalInfo("userId", user.id);
       setPersonalInfo(
@@ -227,6 +230,11 @@ const Header = () => {
         "requestDemo",
         Array.isArray(requestDemos) && requestDemos.length > 0
       );
+      Cookies.set("subscription_status", subscription_status, {
+        expires: 7,
+        secure: true,
+        sameSite: "Strict",
+      });
     }
   }, [data, setPersonalInfo]);
   // APPLY ZOOM
@@ -244,7 +252,6 @@ const Header = () => {
   };
 
   const isOnline = useOnlineStatus();
-
 
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
