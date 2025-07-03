@@ -279,9 +279,9 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().reset();
     // console.log("Login response", data)
     const token = data.access_token;
-    const subscription_status = data.subscription_expired
-      ? "expired"
-      : "active";
+    // const subscription_status = data.subscription_expired
+    //   ? "expired"
+    //   : "active";
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
     const role = data.data.details.role[0];
@@ -304,18 +304,18 @@ export const login = async (formData: Record<string, any>) => {
     };
     const company_status = additional_details.status;
 
-    console.log("subscription_status", subscription_status)
+    // console.log("subscription_status", subscription_status)
     // Save token to cookies
     Cookies.set("auth-token", token, {
       expires: 7,
       secure: true,
       sameSite: "Strict",
     });
-    Cookies.set("subscription_status", subscription_status, {
-      expires: 7,
-      secure: true,
-      sameSite: "Strict",
-    });
+    // Cookies.set("subscription_status", subscription_status, {
+    //   expires: 7,
+    //   secure: true,
+    //   sameSite: "Strict",
+    // });
     // SAVE TO ZUSTAND
     useAuthStore.getState().setAuthState("token", token);
     useAuthStore.getState().setAuthState("role", role);

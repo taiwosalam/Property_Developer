@@ -77,6 +77,7 @@ const SponsorModal = ({
           setIsOpen(false);
           window.dispatchEvent(new Event("refetchSubscriptionPlan"));
           window.dispatchEvent(new Event("refetchEnrollments"));
+          window.location.reload();
         }
       }
     } catch (error) {

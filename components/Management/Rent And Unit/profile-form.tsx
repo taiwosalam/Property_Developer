@@ -22,6 +22,8 @@ import { Currency } from "@/utils/number-formatter";
 import { getLocalStorage } from "@/utils/local-storage";
 import { toast } from "sonner";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import PaymentCheckBoxs from "./payment-checkbox";
+import PaymentConfirmationText from "./payment-checkbox-texts";
 
 export const ProfileForm: React.FC<{
   occupants: { name: string; id: string; picture?: string }[];
@@ -210,12 +212,26 @@ export const ProfileForm: React.FC<{
     rent_agreement: false,
   });
 
-  const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+  // const handleCheckboxChange = (optionKey: string) => (checked: boolean) => {
+  //   if (optionKey === "mobile_notification" && isWebUser) {
+  //     return; // Prevent changing this option
+  //   }
+  //   if (optionKey === "create_invoice" && !isMobileUser) {
+  //     return; // Prevent changes for mobile users
+  //   }
+  //   setSelectedOptions((prev) => ({
+  //     ...prev,
+  //     [optionKey]: checked,
+  //   }));
+  // };
+
+  // TO USE THE PAYMENTCHECKBOX COMPONENT 👉: use (optionKey, checked) signature for toggling
+  const handleCheckboxChange = (optionKey: string, checked: boolean) => {
     if (optionKey === "mobile_notification" && isWebUser) {
-      return; // Prevent changing this option
+      return; // Prevent changing this option for web users
     }
     if (optionKey === "create_invoice" && !isMobileUser) {
-      return; // Prevent changes for mobile users
+      return; // Prevent changes for non-mobile users
     }
     setSelectedOptions((prev) => ({
       ...prev,
@@ -355,83 +371,24 @@ export const ProfileForm: React.FC<{
         />
       </div>
       <div className="checkbox-options flex items-center justify-start gap-4 flex-wrap">
-        {filteredCheckboxOptions.map(({ label, key }) => (
-          <Checkbox
-            sm
-            key={key}
-            checked={selectedOptions[key]}
-            onChange={handleCheckboxChange(key)}
-            disabled={
-              (key === "mobile_notification" && isWebUser) ||
-              (key === "create_invoice" &&
-                (!isMobileUser ||
-                  (currency !== "naira" && isMobileUser) ||
-                  startDate?.isBefore(dayjs(), "day")))
-            }
-          >
-            {label}
-          </Checkbox>
-        ))}
+        <PaymentCheckBoxs
+          options={filteredCheckboxOptions}
+          selectedOptions={selectedOptions}
+          onChange={handleCheckboxChange}
+          isWebUser={isWebUser}
+          isMobileUser={isMobileUser}
+          currency={currency}
+        />
       </div>
-      {startDate?.isBefore(dayjs(), "day") ? (
-        <div className="custom-flex-col gap-1">
-          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-            <span className="text-red-500 text-lg">*</span>
-            You have selected a past date for the occupant, which indicates that
-            you are recording an outstanding rent balance for the client, not
-            initiating a new rent payment.
-          </p>
-          {nonNaira && (
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              <span className="text-red-500 text-lg">*</span>
-              The property was listed in a currency other than Naira. You will
-              need to handle all payments manually.
-            </p>
-          )}
-        </div>
-      ) : isWebUser ? (
-        <div className="custom-flex-col gap-1">
-          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-            <span className="text-red-500 text-lg">*</span>{" "}
-            {`Confirms that you have received payment for the 
-          ${isRental ? "rent" : "management"}.`}
-          </p>
-          {nonNaira && (
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-              <span className="text-red-500 text-lg">*</span>
-              The property was listed in a currency other than Naira. You will
-              need to handle all payments manually.
-            </p>
-          )}
-        </div>
-      ) : (
-        <div className="custom-flex-col gap-1">
-          <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-            <span className="text-red-500 text-lg">*</span>
-            {selectedOptions["create_invoice"]
-              ? `Payment will be reflected once the ${
-                  isRental ? "tenant" : "occupant"
-                } makes a payment towards the generated invoice. If you've already received the payment manually, you can uncheck 'Create Invoice' to reflect the rent immediately.`
-              : `Confirms that you have received payment for the ${
-                  isRental ? "rent" : "counting"
-                }. ${
-                  currency === "naira"
-                    ? ` However, if you intend to receive the payment, you can click 'Create Invoice' for ${
-                        isRental ? "tenant" : "occupant"
-                      } to make the payment.`
-                    : ""
-                }`}
-          </p>
-          {nonNaira && (
-            <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-               <span className="text-red-500 text-lg">*</span>
-              The property was listed in a currency other than Naira. As a
-              result, automatic payments and wallet transactions are not
-              supported. You will need to handle all payments manually.
-            </p>
-          )}
-        </div>
-      )}
+      {/* PAYMENT CONFIRMATION TEXTS */}
+      <PaymentConfirmationText
+        isWebUser={isWebUser}
+        isRental={!!isRental}
+        nonNaira={nonNaira}
+        selectedOptions={selectedOptions}
+        currency={currency}
+        startDate={startDate}
+      />
     </div>
   );
 };

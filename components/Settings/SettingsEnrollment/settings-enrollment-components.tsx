@@ -341,7 +341,7 @@ export const FeaturesToggle: React.FC<{
           </motion.div>
         </button>
       </div>
-      <div className="flex items-center justify-end w-full ml-20">
+      <div className="flex items-center justify-end w-full">
         {showAutoRenew && (
           <DocumentCheckbox
             darkText
@@ -460,14 +460,16 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
 
   const notMessage = buttonText === "Extend Plan";
 
-  const handleSelectPlan = () => {
+  const handleSelectPlan = async () => {
     if (page === "modal" && changeStep) {
-      onSelectPlan?.();
+      await onSelectPlan?.();
       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
       window.dispatchEvent(new Event("refetchEnrollments"));
+      // window.location.reload();
       changeStep(3);
     } else if (!useModal && hasAction) {
-      onSelect?.(); // Direct action for non-modal actionable scenarios
+      await onSelect?.(); // Direct action for non-modal actionable scenarios
+      // window.location.reload();
       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
       window.dispatchEvent(new Event("refetchEnrollments"));
     }
