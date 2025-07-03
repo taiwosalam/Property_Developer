@@ -85,8 +85,8 @@ type Comment = {
 /** GET ALL ANNOUNCEMENTS */
 interface AnnouncementApiResponse {
   status: "success";
-  total_examine: number;
-  total_examine_month: number;
+  total_announcement: number;
+  total_announcement_month: number;
   data: Announcements[];
   pagination: {
     current_page: number;
@@ -129,8 +129,8 @@ type Announcements = {
 /** GET ANNOUNCEMENT BY ID */
 export type AnnouncementResponseDetails = {
   message: string;
-  total_announcements_this_month: number;
-  total_announcements_overall: number;
+  total_announcement: number;
+  total_announcements_month: number;
   announcement: Announcement;
 };
 

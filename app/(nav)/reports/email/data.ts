@@ -1,3 +1,4 @@
+import { EmailRecord } from "@/components/reports/email-modal";
 import type { Field } from "@/components/Table/types";
 import dayjs from "dayjs";
 
@@ -70,6 +71,7 @@ export interface EmailPageData {
     last_page: number;
   };
   emails: {
+    email_id: number;
     user_id: number;
     branch: string;
     client_name: string;
@@ -88,6 +90,7 @@ export const transformEmailReport = (
       last_page: data.data.pagination.last_page || 0,
     },
     emails: data?.data?.emails?.map((email) => ({
+      email_id: email?.id,
       user_id: email?.user_id,
       branch: "___ ___",
       client_name: email?.client_name || "",
@@ -96,5 +99,40 @@ export const transformEmailReport = (
         ? dayjs(email.time, "HH:mm").format("hh:mm A")
         : "___ ___",
     })),
+  };
+};
+
+export interface IEmailByIdResponse {
+  message: string;
+  status: string;
+  data: {
+    id: number;
+    status: string;
+    date: string;
+    time: string;
+    recipient: string;
+    sender: string;
+    user_id: number;
+    client_name: string;
+    body: string;
+    subject: string;
+  };
+}
+
+export const transformEmailById = (res: IEmailByIdResponse): EmailRecord => {
+  const { data } = res;
+  return {
+    id: data?.id.toString(),
+    date: data?.date,
+    time: data?.time
+      ? dayjs(data?.time, "HH:mm:ss").format("hh:mm A")
+      : "--- ---",
+    from: data?.sender,
+    to: data?.recipient,
+    headline: data?.subject,
+    message: data?.body,
+    user_id: data?.user_id.toString(),
+    client_name: data?.client_name,
+    branch: "Branch Name",
   };
 };

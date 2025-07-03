@@ -28,7 +28,10 @@ export type TApplicationDetailsResponse = {
     user: {
       name: string;
       type: "web" | "mobile";
-      phone: string;
+      phone: {
+        profile_phone: string;
+        user_phone: string;
+      };
       email: string;
       encodedId: string;
       tier_id: number;

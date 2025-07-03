@@ -23,6 +23,7 @@ export interface CustomTableProps {
   fields: Field[];
   displayTableHead?: boolean;
   className?: string;
+   lastRowRef?: RefObject<HTMLTableRowElement>;
   handleSelect?: (item: DataItem, e?: React.MouseEvent<HTMLElement>) => void;
   onActionClick?: (item: DataItem, e?: React.MouseEvent<HTMLElement>) => void;
   actionButtonIcon?: ReactNode;

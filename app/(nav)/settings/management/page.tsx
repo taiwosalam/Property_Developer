@@ -39,7 +39,7 @@ const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
   "partner configuration (branch manager)": "manager",
   "colleague configuration (account officer)": "account",
-  "staff configuration (other staff)": "staff",
+  "staff configuration (other staff) Configuration": "staff",
   "Users Configuration (Landlord, Occupant & Tenants)": "user",
 };
 
@@ -97,6 +97,8 @@ const Management = () => {
   useRefetchOnEvent("refetchManagementSettings", () =>
     refetch({ silent: true })
   );
+
+  //console.log(manaConfigData);
 
   // Sync selectedPermissions with backend data when manaConfigData changes
   useEffect(() => {
@@ -175,7 +177,6 @@ const Management = () => {
 
   // TENANT & OCCUPANT SCREENING LEVEL
   const handleUpdateScreeningLevel = async (data: Record<string, any>) => {
-    
     const extractTierNumber = (val: string | number) => {
       if (typeof val === "string" && val.toLowerCase().startsWith("tier")) {
         const match = val.match(/\d+/);
@@ -193,8 +194,12 @@ const Management = () => {
     }
 
     const payload = {
-      tenant_screening_level: extractTierNumber(data.tenant_screening_level_type),
-      occupant_screening_level: extractTierNumber(data.occupant_screening_level_type),
+      tenant_screening_level: extractTierNumber(
+        data.tenant_screening_level_type
+      ),
+      occupant_screening_level: extractTierNumber(
+        data.occupant_screening_level_type
+      ),
     };
     try {
       setIsScreeningLevel(true);

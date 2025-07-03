@@ -68,6 +68,8 @@ export interface IApplicationDetails {
     city: string;
     state: string;
     lga: string;
+    phone1: string;
+    phone2: string;
   };
   next_of_kin: {
     name: string;
@@ -159,6 +161,9 @@ export const transformApplicationDetailsPageData = (
       city: profile_details?.city || "--- ---",
       state: profile_details?.state || "--- ---",
       lga: profile_details?.lga || "--- ---",
+      phone1: user?.phone?.profile_phone || "--- ---",
+      phone2: user?.phone?.user_phone || "--- ---",
+      
     },
     bank_details: {
       bankName: bank_details?.bank_name || "--- ---",

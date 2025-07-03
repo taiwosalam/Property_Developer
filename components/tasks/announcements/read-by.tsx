@@ -1,6 +1,7 @@
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { empty } from "@/app/config";
 import Image from "next/image";
+import { getBadgeColor } from "@/lib/utils";
 
 interface IPersonProps {
   image?: string;
@@ -24,7 +25,7 @@ const Person = ({ image, name, dateTime, tier }: IPersonProps) => {
           <span className="text-ellipsis line-clamp-1 text-base text-text-primary dark:text-darkText-1 font-medium capitalize pl-2 ">
             {name}
           </span>
-          <BadgeIcon color="blue" />
+          <BadgeIcon color={getBadgeColor(tier) ?? "gray"} />
         </p>
       </div>
       <p className="text-xs text-text-label font-medium">{dateTime}</p>

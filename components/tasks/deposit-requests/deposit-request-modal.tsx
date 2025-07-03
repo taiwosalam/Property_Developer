@@ -7,14 +7,19 @@ import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import {
+  depositChecklist,
+  handleCautionDeposit,
+  IDepositPayload,
+} from "@/app/(nav)/tasks/deposits/data";
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
     <div className="flex justify-between font-medium">
-      <p className="text-text-tertiary dark:text-darkText-1 text-base">
+      <p className="text-text-tertiary dark:text-darkText-1 text-base capitalize">
         {label}
       </p>
-      <p className="text-text-secondary text-sm text-right dark:text-darkText-2">
+      <p className="text-text-secondary text-sm text-right dark:text-darkText-2 capitalize">
         {value}
       </p>
     </div>
@@ -53,6 +58,25 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
     </div>
   );
 
+  const handleDepositRequest = async () => {
+    if (!requestId) return;
+
+
+    const payload: IDepositPayload = {
+      caution_deposits_details: ["string"],
+      refunded_amount: 200,
+      status: "pending",
+      request: "admin"
+
+    }
+
+    try {
+      //const res = await handleCautionDeposit();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <ModalPreset title="Caution Deposit Request">
       <div className="pb-[45px] text-base">
@@ -70,17 +94,17 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
             Caution Deposits Details:
           </p>
           <div className="space-y-2 relative">
-            <Checkbox
-              className={commonClasses}
-              checked
-              hoverContent={<HoverContent />}
-            >
-              Check Inventory
-            </Checkbox>
-            <Checkbox className={commonClasses}>Request for Examine</Checkbox>
-            <Checkbox className={commonClasses}>
-              Request for Maintenance
-            </Checkbox>
+            {depositChecklist.map((deposit, index) => (
+              <Checkbox
+                key={index}
+                id={deposit}
+                className={commonClasses}
+                //checked
+                hoverContent={<HoverContent />}
+              >
+                {deposit}
+              </Checkbox>
+            ))}
           </div>
           <div className="space-y-5">
             <Checkbox

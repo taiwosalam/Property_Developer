@@ -70,6 +70,8 @@ export interface CommentData {
   likes?: number;
   dislikes?: number;
   my_like?: boolean;
+  likes_count?: number;
+  dislikes_count?: number;
   my_dislike?: boolean;
   user_liked: boolean;
   user_disliked: boolean;
@@ -89,10 +91,10 @@ export const transformComment = (
     ? Number(comment?.user?.tier)
     : 0,
   text: comment.content,
-  likes: comment.likes ?? 0,
+  likes: comment.likes || comment?.likes_count || 0,
   user_liked: comment.user_liked ?? comment?.my_like ?? false,
   user_disliked: comment.user_disliked ?? comment?.my_dislike ?? false,
-  dislikes: comment.dislikes ?? 0,
+  dislikes: comment.dislikes || comment?.dislikes_count || 0,
   replies: comment.replies?.map((reply) => transformComment(reply, slug)) ?? [],
   slug, // Include slug for all comments
 });

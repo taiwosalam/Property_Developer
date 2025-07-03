@@ -19,7 +19,10 @@ import api from "@/services/api";
 
 import { toast } from "sonner";
 import { ChevronDownIcon, ChevronUpIcon, Loader2 } from "lucide-react";
-import { sendAnnouncementReply, toggleAnnouncementReaction } from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
+import {
+  sendAnnouncementReply,
+  toggleAnnouncementReaction,
+} from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
 
 export interface CommentProps {
   id: string | number;
@@ -155,7 +158,9 @@ const AnnouncementComment: React.FC<CommentProps> = ({
               fill={`${user_disliked ? "#E15B0F" : "none"} `}
               stroke={`${user_disliked ? "#E15B0F" : "#000"} `}
             />
-            <span className="text-xs font-normal">{dislikes}</span>
+            <span className="text-xs font-normal text-[#010A23]">
+              {dislikes}
+            </span>
           </p>
         </button>
       </div>
