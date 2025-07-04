@@ -46,9 +46,6 @@ const TeamChatCard: React.FC<MessageCardProps> = ({
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                 {fullname}
               </p>
-              {/* {verified && (
-                <Picture src={VerifiedIcon} alt="verified" size={16} />
-              )} */}
             </div>
             {content_type === "text" ? (
               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
