@@ -52,7 +52,7 @@ const PropertyDetails = ({ heading }: { heading: string }) => {
             </p>
           </div>
           <div>
-            <p className="text-[#747474]">Account Officer</p>
+            <p className="text-[#747474]">Account Manager</p>
             <p className="text-black dark:text-darkText-1 font-medium capitalize">
               {propertyDetails?.account_officer}
             </p>

@@ -201,7 +201,7 @@ const PaymentConfirmationText: React.FC<PaymentConfirmationTextProps> = ({
           {selectedOptions?.["create_invoice"]
             ? `${isRental ? "Rent" : "Fee"} will commence upon ${
                 isRental ? "tenant" : "occupant"
-              } making payment for the generated invoice.`
+              } making payment for the generated invoice. If payment has already been received, you can click 'Create Invoice' to begin the rent immediately.`
             : `Confirms that you have received payment for the ${
                 isRental ? "rent" : "fee"
               } renewal.${

@@ -11,6 +11,7 @@ import Button from "../Form/Button/button";
 
 const TenancyAgreement = () => {
   const router = useRouter();
+  const [isCreateMode, setIsCreateMode] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState("");
 
   // On mount, check for property id in session storage
@@ -21,7 +22,7 @@ const TenancyAgreement = () => {
       );
       if (propertyId) {
         setSelectedProperty(propertyId);
-        // Optionally, remove after using so it doesn't persist
+        setIsCreateMode(true);
         sessionStorage.removeItem("return_to_start_rent_property_id");
       }
     }
@@ -76,7 +77,7 @@ const TenancyAgreement = () => {
           className="bg-brand-9 px-12 py-3 rounded-md text-white"
           onClick={handleProceed}
         >
-          Add
+           { isCreateMode ? "Create" : "Add" }
         </Button>
       </div>
     </>

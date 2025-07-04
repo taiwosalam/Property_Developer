@@ -92,7 +92,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
           <div className="flex items-center gap-6 justify-between">
             <div className="flex flex-1">
               <KeyValueList
-                chunkSize={5}
+                chunkSize={4}
                 data={data as any}
                 referenceObject={property_listing_data}
               />

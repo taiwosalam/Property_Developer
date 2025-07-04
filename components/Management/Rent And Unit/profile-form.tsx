@@ -72,9 +72,6 @@ export const ProfileForm: React.FC<{
   const TENANT_SCREENING_LEVEL = unitData?.tenant_screening_level;
   const OCCUPANT_SCREENING_LEVEL = unitData?.occupant_screening_level;
 
-  console.log("occipants here", occupants);
-  console.log("selectedOccupant", selectedOccupant);
-
   useEffect(() => {
     if (!selectedOccupant || !isMobileUser) {
       setTierError(null);
@@ -279,9 +276,9 @@ export const ProfileForm: React.FC<{
 
   const checkboxOptions = [
     { label: "Create Invoice", key: "create_invoice" },
-    { label: "Mobile Notification", key: "mobile_notification" },
+    // { label: "Mobile Notification", key: "mobile_notification" },
     { label: "SMS Alert", key: "sms_alert" },
-    { label: "Email Alert", key: "email_alert" },
+    // { label: "Email Alert", key: "email_alert" },
     { label: "Rent Agreement", key: "rent_agreement" },
   ];
 

@@ -17,12 +17,14 @@ const UnitBreakdownRenewalTenant = () => {
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
-  const agencyFeePercentage = Number(propertySettings?.agency_fee || 0);
 
   const shouldChargeTenantAgencyFee =
     propertySettings?.who_to_charge_renew_tenant?.toLowerCase() === "tenants" ||
     propertySettings?.who_to_charge_renew_tenant?.toLowerCase() === "both";
   const IS_RENTAL = propertyType === "rental";
+  const agencyFeePercentage = IS_RENTAL
+    ? Number(propertySettings?.agency_fee || 0)
+    : Number(propertySettings?.management_fee || 0);
   const [otherChargesInput, setOtherChargesInput] = useState(
     !!parseFloat(unitData?.renew_other_charge || "0")
   );
@@ -42,7 +44,9 @@ const UnitBreakdownRenewalTenant = () => {
         ? formatNumber(parseFloat(unitData.renew_other_charge))
         : "",
       securityFee: unitData?.security_fee
-        ? formatNumber(parseFloat((unitData.renew_security_fee || '0').toString()))
+        ? formatNumber(
+            parseFloat((unitData.renew_security_fee || "0").toString())
+          )
         : "",
       // Initialize VAT to "0"
       vat: unitData?.renew_vat
@@ -159,7 +163,7 @@ const UnitBreakdownRenewalTenant = () => {
           required
           id="renew_fee_period"
           options={rentPeriods}
-          label= {IS_RENTAL ? "Rent Period" : "Fee Period"}
+          label={IS_RENTAL ? "Rent Period" : "Fee Period"}
           inputContainerClassName="bg-white"
           hiddenInputClassName="unit-form-input"
           resetKey={formResetKey}
@@ -168,7 +172,7 @@ const UnitBreakdownRenewalTenant = () => {
         <Input
           id="renew_fee_amount"
           required
-          label= {IS_RENTAL ? "Rent Amount" : "Fee Amount"}
+          label={IS_RENTAL ? "Rent Amount" : "Fee Amount"}
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={rentAmount}
@@ -196,6 +200,7 @@ const UnitBreakdownRenewalTenant = () => {
         {shouldChargeTenantAgencyFee && (
           <Input
             id="renew_agency_fee"
+            // label={IS_RENTAL ? "Management Fee" : "Agency Fee"}
             label="Management Fee"
             inputClassName="bg-white"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}

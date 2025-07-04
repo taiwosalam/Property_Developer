@@ -58,6 +58,7 @@ type MessagesContextType = {
     branches: string[]
   ) => void;
   refetchUsersMsg: () => void;
+  pageUsersMsg: PageMessages[];
 };
 
 const MessagesContext = createContext<MessagesContextType | undefined>(
@@ -121,6 +122,7 @@ export const MessagesProvider = ({
     }
   }, [usersData, setChatData]);
 
+  // Robust filter logic
   const applyFilters = useCallback(
     (
       messages: PageMessages[],
@@ -129,6 +131,8 @@ export const MessagesProvider = ({
       branches: string[]
     ) => {
       let filtered = [...messages];
+
+      // Search first
       if (query) {
         const lowerQuery = query.toLowerCase();
         filtered = filtered.filter(
@@ -137,19 +141,26 @@ export const MessagesProvider = ({
             (msg.desc?.toLowerCase() ?? "").includes(lowerQuery)
         );
       }
+
+      // Robust multi-filter logic
       if (filters.length > 0) {
         filtered = filtered.filter((msg) => {
-          if (filters.includes("Unread") && msg.unread_count === 0)
-            return false;
-          return true;
+          const isInbox = filters.includes("Inbox") && msg.type !== "group";
+          const isGroups = filters.includes("Groups") && msg.type === "group";
+          const isUnread =
+            filters.includes("Unread") && (msg.unread_count ?? 0) > 0;
+          return isInbox || isGroups || isUnread;
         });
       }
+
+      // Branch filter (applies to result of above)
       if (branches.length > 0 && usersData) {
         const userIdsInBranches = usersData.data.users
           .filter((user: any) => branches.includes(user.branch_id))
           .map((user: any) => user.id);
         filtered = filtered.filter((msg) => userIdsInBranches.includes(msg.id));
       }
+
       setFilteredMessages(filtered);
     },
     [usersData]
@@ -199,9 +210,7 @@ export const MessagesProvider = ({
     const audioFile = new File([recordedBlob], "voice-note.wav", {
       type: recordedBlob.type,
     });
-  
-    // const base64Audio = await blobToBase64(recordedBlob);
-  
+
     const payload = {
       [isGroupChat ? "file" : "content_file"]: isGroupChat
         ? audioFile
@@ -210,7 +219,6 @@ export const MessagesProvider = ({
       receiver_type: isGroupChat ? "group" : "user",
     };
 
-    console.log("typeof audioFile", typeof audioFile)
     try {
       setReqLoading(true);
       const sendFn = isGroupChat ? SendGroupMessage : SendMessage;
@@ -260,7 +268,9 @@ export const MessagesProvider = ({
       setReqLoading(true);
       const base64Doc = await blobToBase64(file);
       const payload = {
-        [isGroupChat ? "content" : "content_file"]: isGroupChat ? base64Doc : file,
+        [isGroupChat ? "content" : "content_file"]: isGroupChat
+          ? base64Doc
+          : file,
         content_type: "file",
         receiver_type: isGroupChat ? "group" : "user",
       };
@@ -276,7 +286,6 @@ export const MessagesProvider = ({
       setReqLoading(false);
     }
   };
-
 
   return (
     <MessagesContext.Provider
@@ -303,6 +312,7 @@ export const MessagesProvider = ({
         handleSendDocument,
         applyFilters,
         refetchUsersMsg,
+        pageUsersMsg,
       }}
     >
       {children}

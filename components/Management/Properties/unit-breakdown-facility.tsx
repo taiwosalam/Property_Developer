@@ -1,3 +1,4 @@
+
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import { rentPeriods } from "@/data";
@@ -14,6 +15,10 @@ import { useUnitForm } from "./unit-form-context";
 const UnitBreakdownFacility = () => {
   const { formResetKey, unitData } = useUnitForm();
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
+  const agencyFeePercentage = parseFloat(
+    String(propertySettings?.management_fee  || "0")
+  );
+
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
   const [otherChargesInput, setOtherChargesInput] = useState(
@@ -25,6 +30,9 @@ const UnitBreakdownFacility = () => {
       rentAmount: unitData?.fee_amount
         ? formatNumber(parseFloat(unitData.fee_amount))
         : "", // Empty string if null/undefined
+      agencyFee: unitData?.agency_fee
+        ? formatNumber(parseFloat(unitData.agency_fee))
+        : "",
       securityFee: unitData?.security_fee
         ? formatNumber(parseFloat(unitData.security_fee))
         : "",
@@ -43,6 +51,7 @@ const UnitBreakdownFacility = () => {
     };
   }, [
     unitData?.fee_amount,
+    unitData?.agency_fee,
     unitData?.security_fee,
     unitData?.service_charge,
     unitData?.other_charge,
@@ -53,6 +62,7 @@ const UnitBreakdownFacility = () => {
   const [formValues, setFormValues] = useState(initialFormValues);
   const {
     rentAmount,
+    agencyFee,
     securityFee,
     serviceCharge,
     otherCharges,
@@ -84,6 +94,7 @@ const UnitBreakdownFacility = () => {
   // Calculate VAT
   useEffect(() => {
     const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
+    const agencyFeeValue = (rentAmountValue * agencyFeePercentage) / 100;
     const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
     const rentTenPercent = rentAmountValue * 0.1;
     const calculatedVAT = shouldCalculateVAT ? rentTenPercent * 0.075 : 0;
@@ -91,13 +102,15 @@ const UnitBreakdownFacility = () => {
     setFormValues((prevValues) => ({
       ...prevValues,
       vat: formatNumber(calculatedVAT.toFixed(2)),
+      agencyFee: formatNumber(agencyFeeValue.toFixed(2)),
     }));
-  }, [rentAmount, propertySettings?.VAT]);
+  }, [rentAmount, propertySettings, agencyFeePercentage]);
 
   // Calculate Total Package
   useEffect(() => {
     const total =
       (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
+      (parseFloat(agencyFee.replace(/,/g, "")) || 0) +
       (parseFloat(securityFee.replace(/,/g, "")) || 0) +
       (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
       (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
@@ -107,7 +120,7 @@ const UnitBreakdownFacility = () => {
       ...prevValues,
       totalPackage: formatNumber(total.toFixed(2)),
     }));
-  }, [rentAmount, securityFee, serviceCharge, otherCharges, vat]);
+  }, [rentAmount, securityFee, serviceCharge, otherCharges, vat, agencyFee]);
 
   // Reset form when formResetKey changes
   useEffect(() => {
@@ -142,6 +155,15 @@ const UnitBreakdownFacility = () => {
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
+          type="text"
+        />
+        <Input
+          id="agency_fee"
+          label="Management Fee"
+          inputClassName="bg-white"
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          value={agencyFee}
+          readOnly
           type="text"
         />
         <Input

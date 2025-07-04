@@ -26,6 +26,8 @@ interface MessagesFilterMenuProps extends MenuProps {
   filterOptions: FilterOption[];
   onFilterApply?: any;
   setSelectedLabel?: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedFilters?: string[]; 
+  setSelectedFilters?: React.Dispatch<React.SetStateAction<string[]>>; 
 }
 
 const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
@@ -51,7 +53,7 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
   };
 
   const commonClasses =
-    "flex items-center justify-between bg-neutral-3 rounded-[3px] py-2 px-4 w-full";
+    "flex items-center justify-between bg-neutral-3 dark:bg-darkText-primary rounded-[3px] py-2 px-4 w-full";
 
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
@@ -200,7 +202,7 @@ const Step1Menu: React.FC<{
         <button
           type="button"
           className={`${commonClasses} ${
-            selectedFilters.includes(option.label) ? "!bg-[#bfb3b3]" : ""
+            selectedFilters.includes(option.label) ? "!bg-[#bfb3b3] dark:!border dark:!border-gray-600 dark:!bg-darkText-primary" : ""
           }`}
           key={index}
           onClick={() => handleFilterToggle(option.label)}

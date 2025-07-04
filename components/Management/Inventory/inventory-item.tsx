@@ -42,19 +42,27 @@ interface AddPictureModalProps {
   video?: string;
 }
 
-const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
+const InventoryItem: React.FC<
+  InventoryItemProps & { index: number; resetTrigger?: number }
+> = ({
   data,
   edit,
   index,
   inventoryFiles,
   setInventoryFiles,
   video,
+  resetTrigger,
 }) => {
   const initialImages = data?.images || [];
   const isDarkMode = useDarkMode();
   const [screenModal, setScreenModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [count, setCount] = useState<string | number>(data?.quantity || data?.unit || 1);
+  const [count, setCount] = useState<string | number>(
+    data?.quantity || data?.unit || 1
+  );
+
+  const [description, setDescription] = useState("");
+  const [condition, setCondition] = useState("");
 
   const maxNumberOfImages = 6;
   const {
@@ -71,27 +79,74 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
     initialImages: initialImages,
   });
 
+  // Sync count, description, and condition with data props
+  useEffect(() => {
+    if (data) {
+      setCount(data.quantity || data.unit || 1);
+      setDescription(data.description || "");
+      setCondition(data.condition || "");
+    }
+  }, [data]);
+
+  // Reset state when resetTrigger changes
+  useEffect(() => {
+    setDescription("");
+    setCount(1);
+    setCondition("");
+    resetImages();
+    setInventoryFiles((prev) => {
+      const updatedFiles = [...prev];
+      updatedFiles[index] = [];
+      return updatedFiles;
+    });
+  }, [resetTrigger, index, setInventoryFiles]);
+
   useEffect(() => {
     if (inventoryFiles?.length === 0 && setInventoryFiles) {
-      // Set inventoryFiles to initialImages when the user hasn't uploaded any images yet
-      setInventoryFiles((prevState: File[][]) => {
+      // TODO: Fix TypeScript error by using proper (File | string)[][] type
+      setInventoryFiles((prevState: any) => {
         const updatedFiles = [...prevState];
-        updatedFiles[index] = initialImages as unknown as File[]; // Set initial images for the specific index
+        updatedFiles[index] = initialImages as unknown as File[];
         return updatedFiles;
       });
     }
-  }, [initialImages, inventoryFiles, index]);
-
-  // Use imageFiles (from useMultipleImageUpload) when user interacts with the image input
+  }, [initialImages, inventoryFiles, index, setInventoryFiles]);
+  
   useEffect(() => {
     if (imageFiles?.length > 0 && setInventoryFiles) {
-      setInventoryFiles((prevState: File[][]) => {
+      // TODO: Fix TypeScript error by using proper (File | string)[][] type
+      setInventoryFiles((prevState: any) => {
         const updatedFiles = [...prevState];
-        updatedFiles[index] = imageFiles as unknown as File[]; // Update the images for the specific index
+        updatedFiles[index] = imageFiles as unknown as File[];
         return updatedFiles;
       });
     }
   }, [imageFiles, index, setInventoryFiles]);
+
+  
+
+  // useEffect(() => {
+  //   if (inventoryFiles?.length === 0 && setInventoryFiles) {
+  //     // Set inventoryFiles to initialImages when the user hasn't uploaded any images yet
+  //     setInventoryFiles((prevState: File[][]) => {
+  //       const updatedFiles = [...prevState];
+  //       updatedFiles[index] = initialImages as unknown as File[]; // Set initial images for the specific index
+  //       return updatedFiles;
+  //     });
+  //   }
+  // }, [initialImages, inventoryFiles, index]);
+
+
+  // Use imageFiles (from useMultipleImageUpload) when user interacts with the image input
+  // useEffect(() => {
+  //   if (imageFiles?.length > 0 && setInventoryFiles) {
+  //     setInventoryFiles((prevState: File[][]) => {
+  //       const updatedFiles = [...prevState];
+  //       updatedFiles[index] = imageFiles as unknown as File[]; // Update the images for the specific index
+  //       return updatedFiles;
+  //     });
+  //   }
+  // }, [imageFiles, index, setInventoryFiles]);
 
   const handleSave = () => {
     setOpenModal(false);
@@ -117,7 +172,6 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
   const handleDecrement = () => {
     setCount((prevCount) => Math.max(1, Number(prevCount) - 1));
   };
-
 
   const input_styles: CSSProperties = {
     backgroundColor: isDarkMode ? "#020617" : "white",
@@ -145,7 +199,7 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
                   defaultValue={data?.name || data?.description || ""}
                 />
               ) : (
-                <InventoryField>
+                <InventoryField heading={"Inventory Name"}>
                   {data?.name || data?.description || "---"}
                 </InventoryField>
               )}
@@ -220,23 +274,26 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
                   className="object-cover"
                 />
               )}
-              {!edit && <div
-                className="absolute top-2 right-2 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5 cursor-pointer"
-                onClick={() => setScreenModal(true)}
-              >
-                <CameraIcon />
-                <p className="text-black font-medium text-[10px] cursor-pointer">
-                  +{images.length}
-                </p>
-              </div>}
+              {!edit && (
+                <div
+                  className="absolute top-2 right-2 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5 cursor-pointer"
+                  onClick={() => setScreenModal(true)}
+                >
+                  <CameraIcon />
+                  <p className="text-black font-medium text-[10px] cursor-pointer">
+                    +{images.length}
+                  </p>
+                </div>
+              )}
             </div>
             {/* NOT EDIT MODE END */}
             {edit && (
               <div
-                className={`absolute inset-0 flex ${images.length === 0
+                className={`absolute inset-0 flex ${
+                  images.length === 0
                     ? "items-center justify-center"
                     : "flex-col items-end justify-between mr-4 my-4"
-                  }`}
+                }`}
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}
               >
                 {edit && images.length > 0 && (
@@ -258,6 +315,9 @@ const InventoryItem: React.FC<InventoryItemProps & { index: number }> = ({
                         <p className="text-brand-9 text-sm font-semibold">
                           Add picture
                         </p>
+                        <Button size="sm_medium" className="px-6 py-1 mt-2">
+                          Select
+                        </Button>
                       </div>
                     ) : (
                       <div className="flex gap-2 justify-end items-end">

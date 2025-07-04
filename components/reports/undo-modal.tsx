@@ -86,7 +86,7 @@ const eventToComponentMap = {
           created_at: "2021-01-01",
           last_edited: "2021-01-01",
           inventory_id: "1",
-          property_name: "Property 1",
+          // property_name: "Property 1",
         }}
         viewOnly={true}
       />

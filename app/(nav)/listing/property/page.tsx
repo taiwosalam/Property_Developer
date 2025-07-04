@@ -33,6 +33,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 import Pagination from "@/components/Pagination/pagination";
+import CardsLoading from "@/components/Loader/CardsLoading";
 
 const Property = () => {
   const [pageData, setPageData] = useState<PropertyPageState>(initialState);
@@ -136,7 +137,8 @@ const Property = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<PropertyApiResponse | any>(endpoint, config);
+  } = useFetch<PropertyApiResponse | any>("/property/invite/lists", config);
+  // } = useFetch<PropertyApiResponse | any>(endpoint, config);
 
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
@@ -161,11 +163,11 @@ const Property = () => {
 
   useEffect(() => {
     if (apiData) {
-      console.log("apuii data", apiData)
       setPageData((x) => ({ ...x, ...transformDraftUnitData(apiData) }));
       setState((prevState) => ({
         ...prevState,
-        total_pages: apiData.data?.invites?.total_pages || prevState.total_pages,
+        total_pages:
+          apiData.data?.invites?.total_pages || prevState.total_pages,
         last_page: apiData.meta?.last_page || prevState.last_page,
         current_page: page,
       }));
@@ -251,9 +253,9 @@ const Property = () => {
       />
 
       {loading || silentLoading ? (
-        <AutoResizingGrid gap={28} minWidth={400}>
-          <PropertyrequestSkeletonLoader length={10} />
-        </AutoResizingGrid>
+        <div className="flex flex-col gap-5">
+          <CardsLoading length={10} />;
+        </div>
       ) : !pageData?.properties.length ? (
         // Show empty state when no visitors exist
         <EmptyList
@@ -334,30 +336,10 @@ const Property = () => {
         </section>
       )}
 
-      <div className="custom-flex-col gap-8">
-        <div className="flex flex-wrap gap-4 justify-end">
-          {Object.entries(property_listing_status).map(([key, value], idx) => (
-            <PropertyListingStatusItem
-              key={`${key}(${idx})`}
-              text={key}
-              color={value}
-            />
-          ))}
-        </div>
-        {pageData.properties.map((property) => (
-          <PropertyListingCard
-            key={property.id}
-            data={property as any}
-            status={property.status}
-            propertyType={property.property_type as "rental" | "gated"}
-          />
-        ))}
-      </div>
-
       {/* Pagination component */}
       <Pagination
-        totalPages={state.last_page}
-        currentPage={state.current_page}
+        totalPages={pageData.last_page}
+        currentPage={pageData.current_page}
         onPageChange={handlePageChange}
       />
     </div>
