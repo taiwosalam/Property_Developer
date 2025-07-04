@@ -3,6 +3,8 @@ export interface PropertyRequestModalProps {
   lga: string;
   propertyType: string;
   createdAt: string;
+  userId?: number;
+  pictureSrc?: string;
   updatedAt: string;
   category: string;
   minBudget: string;

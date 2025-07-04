@@ -192,7 +192,7 @@ const Documents = () => {
             ) : (
               <EmptyList
                 title="No Lease/Rent Agreement Template Created Yet"
-                buttonText="Create Document"
+                noButton
                 modalContent={<CreateTenancyAggrementModal />}
                 body={
                   <p>
@@ -215,12 +215,7 @@ const Documents = () => {
                     ready-to-use lease or rent agreement based on the saved
                     template.
                     <br />
-                    Once you save a drafted agreement, this notice will
-                    disappear.
-                    <br />
-                    To learn more or get help setting up your property agreement
-                    template, click your profile icon at the top left and select
-                    Assistance & Support.
+                   
                   </p>
                 }
               />

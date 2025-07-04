@@ -202,8 +202,7 @@ const Disbursement = () => {
           ) : (
             <section>
               <EmptyList
-                buttonText="+ new disbursement"
-                buttonLink="/accounting/disbursement/create-disbursement"
+                noButton
                 title="You do not have any disbursements yet"
                 body={
                   <p>

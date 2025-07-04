@@ -30,7 +30,6 @@ export interface CalendarEventProps {
   title: string;
   type: keyof typeof calendar_event_tags;
   originalType?: keyof typeof calendar_event_tags;
-
   startTime?: string; 
   endTime?: string;
 }

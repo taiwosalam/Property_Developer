@@ -397,7 +397,6 @@ const Vat = () => {
               trendDirection={percentage_change_total < 0 ? "down" : "up"}
               trendColor={percentage_change_total < 0 ? "red" : "green"}
             />
-           
           </AutoResizingGrid>
         </div>
       </div>
@@ -406,6 +405,7 @@ const Vat = () => {
           <SearchError />
         ) : (
           <EmptyList
+            noButton
             title="No VAT yet"
             body={
               <p>
@@ -419,9 +419,6 @@ const Vat = () => {
                 depending on your setup.
                 <br />
                 <br />
-                For more information on how VAT is handled in this system, click
-                your profile picture at the top right of the dashboard and
-                select Assistance & Support.
               </p>
             }
           />

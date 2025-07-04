@@ -164,7 +164,7 @@ const Tenants = () => {
       }
     }
   };
-  
+
   const handleSearch = async (query: string) => {
     setConfig({
       params: { ...config.params, search: query, page: 1 },
@@ -386,7 +386,7 @@ const Tenants = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Create New"
+              //buttonText="+ Create New"
               modalContent={<AddTenantModal />}
               title="The tenants and occupants profile files are empty."
               body={
@@ -399,9 +399,6 @@ const Tenants = () => {
                   add profiles to this page, this guide will no longer show.
                   <br />
                   <br />
-                  To Learn more about this page later, click your profile
-                  picture at the top right of the dashboard and select
-                  Assistance & Support.
                   <br />
                   <br />
                   Occupants and tenants can be onboarded manually which creates

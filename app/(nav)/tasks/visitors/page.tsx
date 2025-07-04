@@ -250,15 +250,6 @@ const BookVisitorsPage = () => {
               request, the details will appear here. Visitor requests help you
               manage and approve visits to your properties, ensuring smooth
               scheduling and security.
-              <br />
-              <br />
-              This message will automatically disappear once visitor requests
-              are received.
-              <br />
-              <br />
-              Need assistance? Click your profile icon in the top right corner
-              and select &quot;Assistance & Support&quot; for guidance on how to
-              use this page page.
             </p>
           }
         />

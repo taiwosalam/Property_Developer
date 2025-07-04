@@ -36,7 +36,9 @@ export const calendar_event_tags = {
   complaints: "#2DD4BF",
   "due rent": "#E9212E",
   maintenance: "#0033C4",
+  examines: "#301414",
   "multiple event": "#8C62FF",
+  applications: "#e20be6",
 } as const;
 
 export class Calendar implements CalendarClassData {
