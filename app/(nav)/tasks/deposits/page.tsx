@@ -28,6 +28,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { IPropertyApi } from "../../settings/others/types";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const transformToDepositRequestCardProps = (
   data: DepositRequestDataType
@@ -112,7 +113,9 @@ const DepositRequest = () => {
     silentLoading,
     error,
     isNetworkError,
+    refetch,
   } = useFetch<ICautionApiResponse>(`cautions-deposit/company`, config);
+  useRefetchOnEvent("dispatchDeposit", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (cautionData) {
@@ -263,13 +266,11 @@ const DepositRequest = () => {
         )}
       </section>
 
-      {pageData && pageData.deposit.length > 0 && (
-        <Pagination
-          totalPages={pageData?.pagination?.total_page}
-          currentPage={pageData?.pagination?.current_page}
-          onPageChange={handlePageChanger}
-        />
-      )}
+      <Pagination
+        totalPages={pageData?.pagination?.last_page || 0}
+        currentPage={pageData?.pagination?.current_page || 0}
+        onPageChange={handlePageChanger}
+      />
     </div>
   );
 };
