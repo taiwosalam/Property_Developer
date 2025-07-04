@@ -211,16 +211,13 @@ const Call = () => {
               title="No Request Callback Available Yet"
               body={
                 <p>
-                  At the moment, there are no tenant/occupant profiles available
-                  for export. Once profile records are added to the system, they
-                  will appear here and be available for download or export.
+                  There are currently no callback requests to export. This
+                  section will automatically populate once tenants or occupants
+                  submit callback requests through the platform. As soon as new
+                  requests are received, they will appear here and be available
+                  for review or follow-up.
                   <br />
                   <br />
-                  <p>
-                    This section will automatically populate with all available
-                    data as soon as new tenant or occupant profiles are created
-                    or imported into the platform.
-                  </p>
                 </p>
               }
             />

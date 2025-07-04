@@ -282,15 +282,6 @@ const Inquires = () => {
               submitted, the details will appear here. Call back requests help
               you stay connected by allowing clients or tenants to ask for a
               call at a convenient time to discuss any property-related matters.
-              <br />
-              <br />
-              This message will automatically disappear once call back requests
-              are received.
-              <br />
-              <br />
-              Need assistance? Click your profile icon in the top right corner
-              and select &quot;Assistance & Support&quot; for help on using this
-              page.
             </p>
           }
         />

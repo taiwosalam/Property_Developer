@@ -8,10 +8,16 @@ import { Modal, ModalContent } from "@/components/Modal/modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { reportsSmsFilterOptionsWithDropdown, smsTableFields } from "./data";
 import useFetch from "@/hooks/useFetch";
+import EmptyList from "@/components/EmptyList/Empty-List";
 
 const SMSReport = () => {
   const [smsData, setSMSData] = useState();
-  const { data: apiData, loading, error, isNetworkError } = useFetch('/record/sms');
+  const {
+    data: apiData,
+    loading,
+    error,
+    isNetworkError,
+  } = useFetch("/record/sms");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedSMS, setSelectedSMS] = useState<SMSRecord | null>(null);
 
@@ -20,7 +26,7 @@ const SMSReport = () => {
     setModalOpen(true);
   };
 
- /// console.log(apiData);
+  /// console.log(apiData);
 
   const generateTableData = (numItems: number) => {
     return Array.from({ length: numItems }, (_, index) => ({
@@ -60,12 +66,32 @@ const SMSReport = () => {
         hasGridListToggle={false}
         exportHref="/reports/sms/export"
       />
-      <CustomTable
-        fields={smsTableFields}
-        data={tableData}
-        tableHeadClassName="h-[45px]"
-        handleSelect={handleTableItemClick}
-      />
+      {[].length > 0 ? (
+        <CustomTable
+          fields={smsTableFields}
+          data={tableData}
+          tableHeadClassName="h-[45px]"
+          handleSelect={handleTableItemClick}
+        />
+      ) : (
+        <section>
+          <EmptyList
+            noButton
+            title="No SMS Information Available Yet"
+            body={
+              <p>
+                There are currently no SMS records to export. This section will
+                automatically update with SMS messages sent to your company
+                users using your company name. These messages are typically
+                triggered by rent-related activities or other actions carried
+                out through the platform. Once activity begins, all relevant SMS
+                logs will appear here.
+              </p>
+            }
+          />
+        </section>
+      )}
+
       <Modal
         state={{
           isOpen: modalOpen,

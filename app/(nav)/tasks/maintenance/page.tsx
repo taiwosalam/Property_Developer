@@ -187,14 +187,6 @@ const Maintenance = () => {
               informed about upcoming repairs or renovations, including the
               expected start date and estimated completion time.
               <br />
-              <br />
-              This message will automatically disappear once maintenance records
-              are added.
-              <br />
-              <br />
-              Need assistance? Click your profile icon in the top right corner
-              and select &quot;Assistance & Support&quot; for help on using this
-              page.
             </p>
           }
         />

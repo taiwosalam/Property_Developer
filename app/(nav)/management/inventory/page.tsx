@@ -307,7 +307,7 @@ const Inventory = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ create new"
+              noButton
               buttonLink="/management/inventory/create-inventory"
               title="You have not created any inventory yet"
               body={
@@ -318,9 +318,6 @@ const Inventory = () => {
                   records by clicking on the &quot;Create New&quot; button.
                   <br />
                   <br />
-                  To Learn more about this page later, click your profile
-                  picture at the top right of the dashboard and select
-                  Assistance & Support.
                 </p>
               }
             />

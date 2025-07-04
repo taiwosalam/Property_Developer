@@ -313,6 +313,18 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               Message
             </button>
           ))}
+
+        {cardType === "property" && (
+          <button
+            // onClick={() => router.push(`/messages/${props?.userId}`)}
+            onClick={goToMessage}
+            type="button"
+            aria-label="Message"
+            className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
+          >
+            Message
+          </button>
+        )}
         {cardType === "agent-community" ? (
           <div className="flex items-center gap-2">
             {!props.user && (
@@ -395,6 +407,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               createdAt={props.createdAt}
               updatedAt={props.updatedAt}
               lga={props.lga}
+              userId={props?.userId}
+              pictureSrc={props?.pictureSrc}
               propertyType={props.propertyType}
               category={props.category}
               minBudget={props.minBudget}

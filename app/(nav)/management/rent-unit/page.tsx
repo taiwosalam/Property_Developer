@@ -1,4 +1,3 @@
-
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
@@ -107,7 +106,6 @@ const RentAndUnit = () => {
       localStorage.removeItem("selectedTenantId");
     }
   }, []);
-  
 
   const [appliedFilters, setAppliedFilters] =
     useState<FilterResult>(initialFilters);
@@ -427,9 +425,6 @@ const RentAndUnit = () => {
                   under the main property.
                   <br />
                   <br />
-                  To learn more about this page later, click your profile
-                  picture at the top right of the dashboard and select
-                  Assistance & Support
                 </p>
               }
             />

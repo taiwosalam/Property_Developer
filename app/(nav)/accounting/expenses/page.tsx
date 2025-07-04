@@ -383,21 +383,18 @@ const AccountingExpensesPage = () => {
         ) : (
           <section>
             <EmptyList
-              buttonText="+ Create New Expense"
-              buttonLink="/accounting/expenses/create-expenses"
+              noButton
               title="You do not have any expenses yet!"
               body={
                 <p>
                   Create an expense by clicking on the &apos;Create New
-                  Expense&apos; button. 
+                  Expense&apos; button.
                   <br />
                   <br />
-                  It keeps a record of all expenses made
-                  on a particular unit or property.
+                  It keeps a record of all expenses made on a particular unit or
+                  property.
                   <br />
                   <br />
-                  To learn more about this page, click on your profile and visit
-                  the Assistance & Support section.
                 </p>
               }
             />

@@ -313,7 +313,7 @@ const StaffAndBranches = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ create branch"
+              noButton
               modalContent={<CreateBranchModal branches={branches} />}
               title="No branches or staff have been added yet."
               body={
@@ -325,9 +325,6 @@ const StaffAndBranches = () => {
                   staff accounts and branches created.
                   <br />
                   <br />
-                  To learn more about this page later, click your profile
-                  picture at the top right of the dashboard and select
-                  Assistance & Support.
                 </p>
               }
             />

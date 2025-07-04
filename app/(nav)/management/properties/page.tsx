@@ -112,7 +112,7 @@ const Properties = () => {
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
-       page: current_page,
+        page: current_page,
         date_from: appliedFilters.startDate
           ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
           : undefined,
@@ -316,7 +316,7 @@ const Properties = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Add Property"
+              noButton
               modalContent={<AddPropertyModal isOpen={isModalOpen} />}
               title="You have not created any properties yet"
               body={

@@ -131,6 +131,8 @@ const ManageCalendar = () => {
   const nextWeek = () => setCurrentDate((prev) => addWeeks(prev, 1));
   const prevWeek = () => setCurrentDate((prev) => subWeeks(prev, 1));
 
+  //console.log(calendarEvents)
+
   const { activities, eventsByDate } = useMemo(() => {
     // Group events by date for multiple event detection
     const eventsByDate = calendarEvents?.reduce((acc, event) => {
@@ -156,7 +158,7 @@ const ManageCalendar = () => {
 
           return {
             ...event,
-            type: "multiple event" as const,
+            type: event.type ? event.type : "multiple event" as const,
             eventCount: eventsOnDay.length,
             originalType: event.type,
             title: `${event.type} (Part of multiple events: ${allEventTypes})`,
@@ -167,7 +169,7 @@ const ManageCalendar = () => {
       });
 
     return { activities, eventsByDate };
-  }, [activeDate, calendarEvents]);
+  }, [activeDate, calendarEvents, calendarEvents]);
 
   return (
     <EventCalendarContext.Provider
@@ -182,10 +184,17 @@ const ManageCalendar = () => {
       <div className="custom-flex-col gap-6 pb-10">
         <div className="sticky top-[150px] z-10 bg-neutral-2 dark:bg-darkText-primary flex gap-6 items-center justify-between flex-wrap py-3 dark:border-none border-t border-b border-solid border-[#EAECF0]">
           <div className="flex items-center gap-4 text-black text-xl font-medium capitalize">
-            <button className="dark:text-white" onClick={handleBack} type="button" aria-label="Go Back">
+            <button
+              className="dark:text-white"
+              onClick={handleBack}
+              type="button"
+              aria-label="Go Back"
+            >
               <ChevronLeft />
             </button>
-            <button onClick={goToToday} className="dark:text-white text-black">Today</button>
+            <button onClick={goToToday} className="dark:text-white text-black">
+              Today
+            </button>
             <div className="flex items-center gap-3">
               <button
                 onClick={

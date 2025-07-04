@@ -372,11 +372,11 @@ const ServiceProviders = () => {
               <SearchError />
             ) : (
               <EmptyList
-                buttonText="+ Create Service Provider"
+                //buttonText="+ Create Service Provider"
                 modalContent={<AddServiceProviderModal />}
                 title="You have not created any service providers yet"
                 body={
-                  <p className="tracking-wider capitalize">
+                  <p className="">
                     No service provider records found means there are currently
                     no registered or available service providers in the system.
                     Service providers refer to artisans and skilled workers
@@ -395,11 +395,7 @@ const ServiceProviders = () => {
                     professionals when needed.
                     <br />
                     <br />
-                    <p>
-                      To Learn more about this page later, click your profile
-                      picture at the top right of the dashboard and select
-                      Assistance & Support.
-                    </p>
+                   
                     <br />
                     <br />
                   </p>

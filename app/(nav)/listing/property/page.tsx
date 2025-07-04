@@ -287,17 +287,19 @@ const Property = () => {
           // Show filtered/searched results
           <section>
             <div className="custom-flex-col gap-8">
-              <div className="flex flex-wrap gap-4 justify-end">
-                {Object.entries(property_listing_status).map(
-                  ([key, value], idx) => (
-                    <PropertyListingStatusItem
-                      key={`${key}(${idx})`}
-                      text={key}
-                      color={value}
-                    />
-                  )
-                )}
-              </div>
+              {pageData?.properties.length > 0 && (
+                <div className="flex flex-wrap gap-4 justify-end">
+                  {Object.entries(property_listing_status).map(
+                    ([key, value], idx) => (
+                      <PropertyListingStatusItem
+                        key={`${key}(${idx})`}
+                        text={key}
+                        color={value}
+                      />
+                    )
+                  )}
+                </div>
+              )}
               {pageData.properties.map((property) => (
                 <PropertyListingCard
                   key={property.id}

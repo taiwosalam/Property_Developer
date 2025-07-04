@@ -243,17 +243,11 @@ const EmailReport = () => {
               title="No Emails Available Yet"
               body={
                 <p>
-                  At the moment, there are no landlord or landlady profiles
-                  available for export. Once profile records are added to the
-                  system, they will appear here and be available for download or
-                  export.
-                  <br />
-                  <br />
-                  <p>
-                    This section will automatically populate with all available
-                    data as soon as new landlord or landlady profiles are
-                    created or imported into the platform.
-                  </p>
+                  There are currently no email records to export. This section
+                  will automatically populate with emails sent to your company
+                  users using your company details once there is activities such
+                  as rent-related actions begin on the platform. Please check
+                  back later.
                 </p>
               }
             />
