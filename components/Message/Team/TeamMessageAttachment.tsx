@@ -23,12 +23,6 @@ const TeamMessageAttachment: React.FC<{
 
   const options = [
     {
-      name: "Emoji",
-      icon: <EmojiIcon />,
-      component: <EmojiComponent onEmojiSelect={onEmojiSelect} />,
-      heading: "Emoji",
-    },
-    {
       name: "Image",
       icon: <GalleryIcon />,
       component: <MessageGalleryComponent id={id} />,

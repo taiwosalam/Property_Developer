@@ -1,207 +1,349 @@
+// "use client";
+
+// import React, { useEffect, useState, useRef } from "react";
+// import { useParams, useRouter } from "next/navigation";
+// import { useAuthStore } from "@/store/authStore";
+// import useFetch from "@/hooks/useFetch";
+// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+// import Picture from "@/components/Picture/picture";
+// import Messages from "@/components/Message/messages";
+// import { TeamChatGroupDetailsModal } from "../GroupDetailsModal";
+// import { NewMemberComp } from "../NewMemberModal";
+// import { ChevronLeftIcon } from "lucide-react";
+// import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
+// import avatarIcon from "@/public/empty/avatar-2.svg";
+// import { IChatDetailsPage, transformTeamDetails } from "./data";
+// import {
+//   transformMessagesFromAPI,
+//   groupMessagesByDay,
+// } from "@/app/(nav)/(messages-reviews)/messages/data";
+// import Pusher from "pusher-js";
+// import { GroupChatDetailsResponse } from "./types";
+// import { empty } from "@/app/config";
+// import { MessageChat } from "../types";
+
+// const Chat = () => {
+//   const router = useRouter();
+//   const { id } = useParams<{ id: string }>();
+//   const user_id = useAuthStore((state) => state.user_id);
+
+//   const rhizome = useRef<string | null>(null);
+//   const [pageData, setPageData] = useState<null | IChatDetailsPage>(null);
+//   const [groupedConversations, setGroupedConversations] = useState<any[]>([]);
+
+//   const {
+//     data: apiData,
+//     loading,
+//     error,
+//     refetch,
+//   } = useFetch<GroupChatDetailsResponse>(`/group-chats/${id}`);
+
+//   // Pusher setup for real-time messages
+//   useEffect(() => {
+//     const pusher = new Pusher(`${process.env.NEXT_PUBLIC_PUSHER_APP_KEY}`, {
+//       cluster: `${process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER}`,
+//     });
+//     const channel = pusher.subscribe(`presence-group-chat.${id}`);
+//     channel.bind("new-message", (data: MessageChat) => {
+//       setGroupedConversations((prev) => {
+//         const normalizedMessage = transformMessagesFromAPI(
+//           {
+//             group_chat: {
+//               messages: [data],
+//               unread_count: 0,
+//               pusher: null,
+//             },
+//           },
+//           true
+//         )[0];
+//         const newConversations = groupMessagesByDay([
+//           ...prev.flatMap((g) => g.messages),
+//           normalizedMessage,
+//         ]);
+//         return newConversations;
+//       });
+//     });
+//     return () => {
+//       channel.unbind_all();
+//       channel.unsubscribe();
+//       pusher.disconnect();
+//     };
+//   }, [id]);
+
+//   // Fetch and transform group chat details
+//   useEffect(() => {
+//     if (apiData && apiData.group_chat) {
+//       const transDetailsData = transformTeamDetails(apiData);
+//       setPageData(transDetailsData);
+//       const normalizedMessages = transformMessagesFromAPI(apiData, true);
+//       setGroupedConversations(groupMessagesByDay(normalizedMessages));
+//       rhizome.current = id;
+//     }
+//   }, [apiData, id]);
+
+//   // Poll for new messages every 10 seconds
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       refetch({ silent: true });
+//     }, 10000);
+//     return () => clearInterval(interval);
+//   }, [refetch]);
+
+//   // Refetch on custom event
+//   useRefetchOnEvent("refetch_team_message", () => {
+//     refetch({ silent: true });
+//   });
+
+//   // UI Guards
+//   if (loading) {
+//     return <ChatSkeleton />;
+//   }
+
+//   // if (error || !apiData?.group_chat) {
+//   //   router.replace("/community/team-chat");
+//   //   return null;
+//   // }
+
+//   const groupDetails = pageData?.about ?? {
+//     id: 0,
+//     group_name: "",
+//     description: "",
+//     created_at: "",
+//     total_members: 0,
+//     total_active: 0,
+//     picture: null,
+//   };
+
+//   return (
+//     <>
+//       {/* Header */}
+//       <div className="py-4 px-6 bg-neutral-2 dark:bg-darkText-primary">
+//         <div className="flex items-center gap-3">
+//           <button
+//             onClick={() => router.push("/community/team-chat")}
+//             className="text-black dark:text-white"
+//           >
+//             <ChevronLeftIcon size={20} />
+//           </button>
+//           <Modal>
+//             <ModalTrigger asChild>
+//               <div className="flex items-center gap-4 text-left">
+//                 <Picture
+//                   src={groupDetails.picture || empty}
+//                   alt="group picture"
+//                   containerClassName="custom-secondary-bg rounded-full"
+//                   size={35}
+//                   rounded
+//                   status
+//                 />
+//                 <div className="custom-flex-col">
+//                   <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+//                     {groupDetails.group_name ?? ""}
+//                   </p>
+//                 </div>
+//               </div>
+//             </ModalTrigger>
+//             <ModalContent>
+//               <TeamChatGroupDetailsModal
+//                 about={groupDetails}
+//                 group_members={pageData?.group_members ?? []}
+//               />
+//             </ModalContent>
+//           </Modal>
+//           <NewMemberComp />
+//         </div>
+//       </div>
+
+//       {/* Messages */}
+//       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
+//         {groupedConversations.length > 0 ? (
+//           groupedConversations.map((group, index) => (
+//             <Messages
+//               key={index}
+//               day={group.day}
+//               messages={group.messages}
+//               userId={user_id as string}
+//               chat_type="group"
+//             />
+//           ))
+//         ) : (
+//           <div className="text-center text-gray-400 py-10">
+//             No messages yet.
+//           </div>
+//         )}
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Chat;
+
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-
-// Images
-import ChevronLeft from "@/public/icons/chevron-left.svg";
-
-// Imports
+import { useAuthStore } from "@/store/authStore";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
-import { formatDate, team_chat_data, transformMessageData } from "../data";
-import { ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { Modal } from "@/components/Modal/modal";
 import { TeamChatGroupDetailsModal } from "../GroupDetailsModal";
-import { useTeamChatStore } from "@/store/teamChatStore";
 import { NewMemberComp } from "../NewMemberModal";
-import { Chevron } from "@/public/icons/icons";
-import DeleteModal from "../DeleteModal";
-import useFetch from "@/hooks/useFetch";
-import Image from "next/image";
-import avatarIcon from "@/public/empty/avatar-2.svg";
-import { TeamChatHeaderSkeleton } from "@/components/Skeleton/member-card-skeleton";
-import { GroupChatResponse, MessageChat, MessageChats } from "../types";
-import { GroupChatDetailsResponse } from "./types";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { ChevronLeftIcon } from "lucide-react";
 import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
-import { groupMessagesByDay } from "@/app/(nav)/(messages-reviews)/messages/data";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import advancedFormat from "dayjs/plugin/advancedFormat";
-import { useAuthStore } from "@/store/authStore";
-import NoMessage from "@/app/(nav)/(messages-reviews)/messages/messages-component";
+import avatarIcon from "@/public/empty/avatar-2.svg";
 import { IChatDetailsPage, transformTeamDetails } from "./data";
+import {
+  transformMessagesFromAPI,
+  groupMessagesByDay,
+} from "@/app/(nav)/(messages-reviews)/messages/data";
 import Pusher from "pusher-js";
-dayjs.extend(relativeTime);
-dayjs.extend(advancedFormat);
+import { GroupChatDetailsResponse } from "./types";
+import { empty } from "@/app/config";
+import { MessageChat } from "../types";
 
 const Chat = () => {
   const router = useRouter();
-  const { id } = useParams();
-  const [pageData, setPageData] = useState<null | IChatDetailsPage>(null);
-
-  const [chatMessages, setChatMessages] = useState<MessageChat[] | null>(null);
-  const [conversations, setConversations] = useState<any[]>([]);
+  const { id } = useParams<{ id: string }>();
   const user_id = useAuthStore((state) => state.user_id);
 
-  const [messages, setMessages] = useState<any[]>([]);
-
-  useEffect(() => {
-    // Initialize Pusher
-    const pusher = new Pusher(`${process.env.NEXT_PUBLIC_PUSHER_APP_KEY}`, {
-      // Replace with your Pusher App Key
-      cluster: `${process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER}`, // Replace with your Pusher App Cluster
-    });
-
-    // Subscribe to the channel
-    const channel = pusher.subscribe(`presence-group-chat.${id.toString()}`);
-
-    // Bind to the 'new-message' event
-    channel.bind("new-message", (data: any) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
-    });
-
-    // Unsubscribe when the component unmounts
-    return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-    };
-  }, [id.toString()]); // Re-run the effect when the groupId changes
-
-  // ... (rest of your component)
+  const rhizome = useRef<string | null>(null);
+  const [pageData, setPageData] = useState<null | IChatDetailsPage>(null);
+  const [groupedConversations, setGroupedConversations] = useState<any[]>([]);
 
   const {
     data: apiData,
     loading,
-    silentLoading,
+    error,
     refetch,
-  } = useFetch<GroupChatDetailsResponse>(`group-chats/${id}`);
+  } = useFetch<GroupChatDetailsResponse>(`/group-chats/${id}`);
 
+  // Pusher setup for real-time messages
   useEffect(() => {
-    if (apiData) {
+    const pusher = new Pusher(`${process.env.NEXT_PUBLIC_PUSHER_APP_KEY}`, {
+      cluster: `${process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER}`,
+    });
+    const channel = pusher.subscribe(`presence-group-chat.${id}`);
+    // channel.bind("new-message", (data: MessageChat) => {
+    //   setGroupedConversations((prev) => {
+    //     const normalizedMessage = transformMessagesFromAPI(
+    //       {
+    //         group_chat: { messages: [data] },
+    //         unread_count: 0,
+    //         pusher: null,
+    //       },
+    //       true
+    //     )[0];
+    //     const newConversations = groupMessagesByDay([
+    //       ...prev.flatMap((g) => g.messages),
+    //       normalizedMessage,
+    //     ]);
+    //     return newConversations;
+    //   });
+    // });
+    return () => {
+      channel.unbind_all();
+      channel.unsubscribe();
+      pusher.disconnect();
+    };
+  }, [id]);
+
+  // Fetch and transform group chat details
+  useEffect(() => {
+    if (apiData && apiData.group_chat) {
       const transDetailsData = transformTeamDetails(apiData);
       setPageData(transDetailsData);
+      const normalizedMessages = transformMessagesFromAPI(apiData, true);
+      setGroupedConversations(groupMessagesByDay(normalizedMessages));
+      rhizome.current = id;
     }
-  }, [apiData]);
+  }, [apiData, id]);
 
-  const groupDetails = apiData?.group_chat;
-
+  // Poll for new messages every 10 seconds
   useEffect(() => {
-    if (apiData) {
-      setChatMessages(apiData?.group_chat?.chats);
-    }
-  }, [apiData]);
+    const interval = setInterval(() => {
+      refetch({ silent: true });
+    }, 10000);
+    return () => clearInterval(interval);
+  }, [refetch]);
 
-  useRefetchOnEvent("refetchTeam", () => {
+  // Refetch on custom event
+  useRefetchOnEvent("refetch_team_message", () => {
     refetch({ silent: true });
   });
 
-  useEffect(() => {
-  if (!id) return;
-
-  const interval = setInterval(() => {
-    refetch({ silent: true });
-  }, 3000);
-
-  const handleRefetch = () => {
-    refetch({ silent: true });
-  };
-  window.addEventListener("refetchTeam", handleRefetch);
-
-  return () => {
-    clearInterval(interval);
-    window.removeEventListener("refetchTeam", handleRefetch);
-  };
-}, [id, refetch]);
-
-  useEffect(() => {
-    const groupedMessagesArray = chatMessages
-      ? Object.entries(
-          chatMessages.reduce((acc: { [key: string]: any[] }, message) => {
-            const formattedDate = formatDate(message.created_at);
-            //const dateKey = dayjs(message.created_at).format("YYYY-MM-DD"); // Group by date
-            if (!acc[formattedDate]) acc[formattedDate] = [];
-            acc[formattedDate].push(message);
-            return acc;
-          }, {})
-        )
-          .map(([date, messages]) => ({
-            day: date,
-            messages,
-          }))
-          .reverse()
-      : [];
-    setConversations(groupedMessagesArray);
-  }, [chatMessages]);
-
+  // UI Guards
   if (loading) {
     return <ChatSkeleton />;
   }
 
+  const groupDetails = pageData?.about ?? {
+    id: 0,
+    group_name: "",
+    description: "",
+    created_at: "",
+    total_members: 0,
+    total_active: 0,
+    picture: null,
+  };
+
   return (
     <>
+      {/* Header */}
       <div className="py-4 px-6 bg-neutral-2 dark:bg-darkText-primary">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/community/team-chat")}
-            className="text-dark dark:text-white"
+            className="text-black dark:text-white"
           >
-            <Chevron size={20} />
+            <ChevronLeftIcon size={20} />
           </button>
-          {loading ? (
-            <TeamChatHeaderSkeleton />
-          ) : (
-            <button className="flex items-center gap-4 text-left">
-              <Modal>
-                <ModalTrigger asChild>
-                  <div className="flex gap-2 items-center">
-                    {groupDetails?.picture ? (
-                      <Picture
-                        src={groupDetails?.picture}
-                        alt="profile picture"
-                        size={32}
-                        rounded
-                        status
-                      />
-                    ) : (
-                      <Picture src={avatarIcon} size={32} rounded status />
-                    )}
-                    <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                      {groupDetails?.name ?? ""}
-                    </p>
-                  </div>
-                </ModalTrigger>
-                <ModalContent>
-                  {pageData?.about && (
-                    <TeamChatGroupDetailsModal
-                      about={pageData.about}
-                      group_members={pageData?.group_members}
-                    />
-                  )}
-                </ModalContent>
-              </Modal>
-            </button>
-          )}
+          <Modal>
+            <ModalTrigger asChild>
+              <div className="flex items-center gap-4 text-left">
+                <Picture
+                  src={groupDetails.picture || empty}
+                  alt="group picture"
+                  containerClassName="custom-secondary-bg rounded-full"
+                  size={35}
+                  rounded
+                  status
+                />
+                <div className="custom-flex-col">
+                  <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+                    {groupDetails.group_name ?? ""}
+                  </p>
+                </div>
+              </div>
+            </ModalTrigger>
+            <ModalContent>
+              <TeamChatGroupDetailsModal
+                about={groupDetails}
+                group_members={pageData?.group_members ?? []}
+              />
+            </ModalContent>
+          </Modal>
           <NewMemberComp />
         </div>
       </div>
+
+      {/* Messages */}
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-        {conversations.length > 0 ? (
-          conversations.map((group, index) => {
-            return (
-              <Messages
-                key={index}
-                day={group.day}
-                messages={transformMessageData(group.messages)}
-                userId={user_id as string}
-              />
-            );
-          })
+        {groupedConversations.length > 0 ? (
+          groupedConversations.map((group, index) => (
+            <Messages
+              key={index}
+              day={group.day}
+              messages={group.messages}
+              userId={user_id as string}
+              chat_type="group"
+            />
+          ))
         ) : (
-          <div className="flex justify-center items-center my-auto mx-auto">
-            <h2>No messages yet</h2>
+          <div className="text-center text-gray-400 py-10">
+            No messages yet.
           </div>
         )}
       </div>

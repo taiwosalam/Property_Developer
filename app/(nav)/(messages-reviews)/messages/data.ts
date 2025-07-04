@@ -127,6 +127,7 @@ export const transformUsersMessages = (
       unread_count: c.unread_count,
       online: c.is_online === "online",
       last_seen: c.is_online,
+      created_at: "",
       // badgeColor logic:
       // - For "director", "account", "staff", "manager": only if tier === 2
       // - For other roles: if tier exists, use tierColorMap
