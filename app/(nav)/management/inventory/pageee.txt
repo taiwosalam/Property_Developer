@@ -29,7 +29,6 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import useStaffRoles from "@/hooks/getStaffs";
 import { inventoryFIltersOptionsWithDropdown } from "./data";
 import ServerError from "@/components/Error/ServerError";
-import CustomLoader from "@/components/Loader/CustomLoader";
 
 //  Expected structure of apiData
 interface InventoryApiData {
@@ -194,6 +193,7 @@ const Inventory = () => {
 
   useEffect(() => {
     if (apiData) {
+      console.log("apiData", apiData);
       setState((x) => ({
         ...x,
         inventoryPageData: {
@@ -250,7 +250,9 @@ const Inventory = () => {
 
   if (loading)
     return (
-      <CustomLoader layout="page" pageTitle="Inventory" statsCardCount={3} />
+      <div className="min-h-[80vh] flex justify-center items-center">
+        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
+      </div>
     );
 
   if (isNetworkError) return <NetworkError />;
@@ -261,12 +263,31 @@ const Inventory = () => {
       <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title="Total Records"
+            title="Total Inventory"
             newData={new_inventory_this_month}
             total={total_inventory}
             colorScheme={1}
           />
+          <ManagementStatistcsCard
+            title="Used Inventory"
+            newData={month_used_inventory}
+            total={used_inventory}
+            colorScheme={2}
+          />
+          <ManagementStatistcsCard
+            title="Un-use Inventory"
+            newData={month_unused_inventory}
+            total={unused_inventory}
+            colorScheme={3}
+          />
         </div>
+
+        <Button
+          href="/management/inventory/create-inventory"
+          className="page-header-button"
+        >
+          + create new
+        </Button>
       </div>
       <FilterBar
         azFilter
@@ -274,7 +295,12 @@ const Inventory = () => {
         setGridView={setGridView}
         setListView={setListView}
         pageTitle="Inventory"
-        searchInputPlaceholder="Search"
+        aboutPageModalData={{
+          title: "Inventory",
+          description:
+            "This page contains a list of inventory on the platform.",
+        }}
+        searchInputPlaceholder="Search inventory"
         handleFilterApply={handleFilterApply}
         isDateTrue
         filterOptionsMenu={[

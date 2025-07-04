@@ -58,9 +58,9 @@ export const RenewalRent = ({
 
   const checkboxOptions = [
     { label: "Create Invoice", key: "create_invoice" },
-    { label: "Mobile Notification", key: "mobile_notification" },
+    // { label: "Mobile Notification", key: "mobile_notification" },
     { label: "SMS Alert", key: "sms_alert" },
-    { label: "Email Alert", key: "email_alert" },
+    // { label: "Email Alert", key: "email_alert" },
     { label: "Rent Agreement", key: "rent_agreement" },
   ];
 

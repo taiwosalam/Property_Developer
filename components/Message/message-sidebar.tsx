@@ -20,7 +20,18 @@ const MessagesSidebar = ({
     filteredMessages,
     usersMsgLoading,
     usersData,
+    selectedFilters,
+    pageUsersMsg,
+    setSelectedFilters,
   } = useMessages();
+
+  const handleFilterApply = (filters: string[]) => {
+    setSelectedFilters(filters);
+  };
+
+  const inboxCount = pageUsersMsg.filter((msg:any) => msg.type !== "group").length;
+  const groupsCount = pageUsersMsg.filter((msg:any) => msg.type === "group").length;
+  const unreadCount = pageUsersMsg.filter((msg:any) => msg.unread_count > 0).length;
 
   return (
     <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
@@ -45,10 +56,11 @@ const MessagesSidebar = ({
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
+              onFilterApply={handleFilterApply}
               filterOptions={[
-                { label: "Inbox" },
-                { label: "Groups" },
-                { label: "Unread" },
+                { label: "Inbox", value: inboxCount || 0 },
+                { label: "Groups", value: groupsCount || 0 },
+                { label: "Unread", value: unreadCount || 0  },
               ]}
             />
           </div>

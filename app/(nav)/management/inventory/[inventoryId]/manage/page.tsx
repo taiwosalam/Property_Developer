@@ -12,15 +12,31 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import Select from "@/components/Form/Select/select";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import useFetch from "@/hooks/useFetch";
-import { useParams } from "next/dist/client/components/navigation";
+import {
+  useParams,
+  useSearchParams,
+} from "next/dist/client/components/navigation";
 import { deleteInventory, getBranches, updateInventory } from "../../data";
 import { getBranch } from "@/components/Management/Inventory/data";
-import { DeleteInventoryModal, DeleteInventoryModalSuccess } from "@/components/Modal/delete-inventory";
+import {
+  DeleteInventoryModal,
+  DeleteInventoryModalSuccess,
+} from "@/components/Modal/delete-inventory";
 import { toast } from "sonner";
 import { ManageInventorySkeleton } from "@/components/Skeleton/manageInventory";
 import { handleAxiosError } from "@/services/api";
 import { useRouter } from "next/navigation";
-import { FetchData, InventoryData } from "@/components/Management/Inventory/types";
+import ServerError from "@/components/Error/ServerError";
+import NetworkError from "@/components/Error/NetworkError";
+import KeyValueList from "@/components/KeyValueList/key-value-list";
+import { InventoryFetchData } from "../types";
+
+interface InventoryData {
+  status: string;
+  total_inventory: number;
+  unit_name: string;
+  property_title: string;
+}
 
 // TODO: Ts err
 const ManageInventory = () => {
@@ -30,35 +46,40 @@ const ManageInventory = () => {
     padding: "12px 14px",
     backgroundColor: isDarkMode ? "#020617" : "white",
   };
-
-  const { inventoryId } = useParams();
+  const { inventoryId } = useParams(); //NB: THIS IS UNIT ID
+  const INVENTORY_ID = useSearchParams().get("inventoryId");
+  const PROPERTY_ID = useSearchParams().get("propertyId");
   const [inventoryItems, setInventoryItems] = useState<any>([]);
   const [moreInventory, setMoreInventory] = useState<number>(0);
   const [branch, setBranch] = useState<any>(null);
-  const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
+  const [inventoryData, setInventoryData] = useState<InventoryData>({
+    status: "",
+    total_inventory: 0,
+    unit_name: "",
+    property_title: "",
+  });
   const [allBranches, setAllBranches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [deleteInventoryModal, setDeleteInventoryModal] = useState<boolean>(false);
-  const [deleteInventorySuccessModal, setDeleteInventorySuccessModal] = useState<boolean>(false);
+  const [deleteInventoryModal, setDeleteInventoryModal] =
+    useState<boolean>(false);
+  const [deleteInventorySuccessModal, setDeleteInventorySuccessModal] =
+    useState<boolean>(false);
   const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const { data, loading, error } = useFetch<FetchData>(`/inventory/${inventoryId}`);
+  const { data, loading, error, isNetworkError } = useFetch<InventoryFetchData>(
+    `/inventory/unit/${inventoryId}`
+  );
 
   useEffect(() => {
     const fetchBranchData = async () => {
       if (data) {
         const { data: apiData } = data;
         const updatedInventoryData: InventoryData = {
-          title: apiData.title || "",
-          inventory_id: apiData.id || "",
-          created_date: apiData.created_date || "",
-          edited_date: apiData.updated_at || "",
-          property_name: apiData.property_name || "",
-          branch_name: apiData.branch_name || "",
-          account_officer: apiData.account_officer || "",
-          branch_id: apiData.branch_id || "",
-          video: apiData.video || "",
+          status: apiData?.status || "--- ---",
+          total_inventory: apiData?.total_inventory || 0,
+          unit_name: apiData?.unit_name || "--- --",
+          property_title: apiData?.property_title || "--- --",
         };
         setInventoryData(updatedInventoryData);
         setInventoryItems(apiData.items);
@@ -82,20 +103,20 @@ const ManageInventory = () => {
   const handleAddMoreInventory = () => {
     setMoreInventory((prev) => prev + 1);
   };
-  
+
   const handleUpdateInventory = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const formData = new FormData(event.currentTarget);
       const totalItems = inventoryItems.length + moreInventory;
-  
+
       // Create an array for all items
       const allItems = [];
-  
+
       // Process existing items
       for (let i = 0; i < inventoryItems.length; i++) {
         const existingItem = inventoryItems[i];
@@ -105,17 +126,26 @@ const ManageInventory = () => {
         const images = inventoryFiles[i]
           ? inventoryFiles[i].filter((file: any) => file instanceof File)
           : [];
-  
+
         allItems.push({
           id: existingItem?.id || undefined,
-          description: formData.get(`item-name-${i}`) as string || existingItem?.description || "",
-          unit: formData.get(`quantity-${i}`) as string || existingItem?.unit || "",
-          condition: formData.get(`condition-${i}`) as string || existingItem?.condition || "",
+          description:
+            (formData.get(`item-name-${i}`) as string) ||
+            existingItem?.description ||
+            "",
+          unit:
+            (formData.get(`quantity-${i}`) as string) ||
+            existingItem?.unit ||
+            "",
+          condition:
+            (formData.get(`condition-${i}`) as string) ||
+            existingItem?.condition ||
+            "",
           retain_media: retainMedia,
           images,
         });
       }
-  
+
       // Process new items
       for (let i = inventoryItems.length; i < totalItems; i++) {
         const description = formData.get(`item-name-${i}`) as string;
@@ -127,7 +157,7 @@ const ManageInventory = () => {
         const images = inventoryFiles[i]
           ? inventoryFiles[i].filter((file: any) => file instanceof File)
           : [];
-  
+
         allItems.push({
           id: undefined, // New items won't have an ID yet
           description: description || "",
@@ -137,59 +167,73 @@ const ManageInventory = () => {
           images,
         });
       }
-  
+
       // Create FormData object
       const payload = new FormData();
-      payload.append("title", formData.get("inventory-title") as string);
+      // payload.append("title", formData.get("inventory-title") as string);
+      // payload.append("branch_id", formData.get("branch-name") as string);
       payload.append("video", formData.get("video-link") as string);
-      payload.append("branch_id", formData.get("branch-name") as string);
-      
+
       // Append all items to the payload
       allItems.forEach((item, index) => {
-        payload.append(`items[${index}][id]`, item.id || '');
+        payload.append(`items[${index}][id]`, item.id || "");
         payload.append(`items[${index}][description]`, item.description);
         payload.append(`items[${index}][unit]`, item.unit);
         payload.append(`items[${index}][condition]`, item.condition);
-        item.retain_media.forEach((media:string, mediaIndex: number) => {
+        item.retain_media.forEach((media: string, mediaIndex: number) => {
           payload.append(`items[${index}][retain_media][${mediaIndex}]`, media);
         });
-        item.images.forEach((image:string, imageIndex:number) => {
+        item.images.forEach((image: string, imageIndex: number) => {
           payload.append(`items[${index}][images][${imageIndex}]`, image);
         });
       });
-  
+
       // console.log("Payload for API:", payload);
-  
-      const success = await updateInventory(payload, inventoryId as string);
+
+      const success = await updateInventory(
+        payload,
+        Number(INVENTORY_ID),
+        Number(inventoryId)
+      );
       if (success) {
         toast.success("Inventory updated successfully!");
-        router.push(`/management/inventory/${inventoryId}`);
+        router.push(`/management/inventory/${PROPERTY_ID}`);
       }
     } catch (error) {
       console.error("Error updating inventory:", error);
-      handleAxiosError(error);
+      toast.error("Failed to update inventory.");
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   const handleDeleteInventory = async () => {
-    setIsDeleting(true)
+    setIsDeleting(true);
     try {
       const success = await deleteInventory(inventoryId as string);
       if (success) {
         setDeleteInventoryModal(false);
         setDeleteInventorySuccessModal(true);
         setTimeout(() => {
-          window.location.href = '/management/inventory';
+          window.location.href = "/management/inventory";
         }, 1500);
       }
     } catch (error) {
       console.error("Error deleting inventory:", error);
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
   };
+
+  const InventoryRefObj = {
+    status: "",
+    total_inventory: 0,
+    unit_name: "",
+    property_title: "",
+  };
+
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10 min-h-[80vh] pb-[150px] lg:pb-[100px]">
@@ -200,44 +244,13 @@ const ManageInventory = () => {
           <div className="custom-flex-col gap-4">
             <BackButton>Manage Inventory</BackButton>
             <div className="custom-flex-col gap-6">
-              <div className="flex flex-col md:flex-row gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
                 <Input
-                  id="inventory-title"
-                  defaultValue={inventoryData?.title || ""}
-                  className="flex-1 dark:bg-darkText-primary dark:text-darkText-1"
-                  style={input_styles}
-                />
-                <Input
-                  id="video-link"
+                  id="video_link"
+                  name="video_link"
                   placeholder="Video Link"
-                  defaultValue={inventoryData?.video || ""}
-                  className="flex-1"
+                  className="w-full"
                   style={input_styles}
-                />
-                <Select
-                  id="branch-name"
-                  placeholder="Branch Name"
-                  options={
-                    allBranches.map((branch) => ({
-                      label: branch.branch_name,
-                      value: String(branch.id),
-                    })) || []
-                  }
-                  value={
-                    inventoryData?.branch_name
-                      ? {
-                        label: inventoryData.branch_name,
-                        value: String(
-                          allBranches.find(
-                            (branch) =>
-                              branch.branch_name === inventoryData.branch_name
-                          )?.id
-                        ),
-                      }
-                      : undefined
-                  }
-                  isSearchable={false}
-                  className="bg-white dark:bg-darkText-primary flex-1"
                 />
               </div>
               <div
@@ -247,26 +260,30 @@ const ManageInventory = () => {
                     "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
                 }}
               >
-                <p className="text-brand-10 dark:text-white text-base font-medium">
-                  Details
-                </p>
+                <p className="text-brand-9 text-lg font-semibold">Details</p>
                 <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
-                  <InventoryListInfo data={inventoryData || {}} chunkSize={2} />
+                  <KeyValueList
+                    referenceObject={InventoryRefObj}
+                    data={inventoryData}
+                    chunkSize={2}
+                  />
                 </div>
               </div>
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
-            {[...Array(inventoryItems.length + moreInventory)].map((_, index) => (
-              <InventoryItem
-                key={index}
-                edit
-                index={index} // Use the current index for the item
-                inventoryFiles={inventoryFiles}
-                setInventoryFiles={setInventoryFiles}
-                data={inventoryItems[index] || {}} // Pass existing item data if available
-              />
-            ))}
+            {[...Array(inventoryItems.length + moreInventory)].map(
+              (_, index) => (
+                <InventoryItem
+                  key={index}
+                  edit
+                  index={index} // Use the current index for the item
+                  inventoryFiles={inventoryFiles}
+                  setInventoryFiles={setInventoryFiles}
+                  data={inventoryItems[index] || {}} // Pass existing item data if available
+                />
+              )
+            )}
           </div>
           <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
             <Modal
@@ -278,9 +295,8 @@ const ManageInventory = () => {
               <ModalTrigger asChild>
                 <Button
                   size="sm_medium"
-                  variant="blank"
-                  type="button"
-                  className="py-2 px-7 text-status-error-primary bg-status-error-1"
+                  variant="light_red"
+                  className="py-2 px-7"
                 >
                   delete inventory
                 </Button>
@@ -305,10 +321,10 @@ const ManageInventory = () => {
             <div className="flex gap-6">
               <Button
                 size="sm_medium"
-                variant="blank"
+                variant="border"
                 onClick={handleAddMoreInventory}
                 type="button"
-                className="py-2 px-7 text-brand-9 bg-brand-1"
+                className="py-2 px-7"
               >
                 Add more to inventory
               </Button>

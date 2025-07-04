@@ -3,18 +3,24 @@ import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { convertFileToBase64 } from "../data";
 
-export const createInventory = async (formData: FormData) => {
+export const createInventory = async (
+  formData: FormData,
+  inventoryID: number,
+  unitId: number
+) => {
   try {
-    console.log("Starting createInventory function");
-
     // Log all entries in formData
     Array.from(formData.entries()).forEach(([key, value]) => {
       console.log(`${key}:`, value);
     });
 
-    const response = await api.post("/inventory", formData);
-
-    return response.status === 200 || response.status === 201;
+    const response = await api.post(
+      `/inventory/${inventoryID}/${unitId}`,
+      formData
+    );
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
   } catch (error) {
     console.error("Error in createInventory:", error);
     handleAxiosError(error);
@@ -22,9 +28,16 @@ export const createInventory = async (formData: FormData) => {
   }
 };
 
-export const updateInventory = async (formData: FormData, id: string) => {
+export const updateInventory = async (
+  formData: FormData,
+  InventoryId: number,
+  unitId: number
+) => {
   try {
-    const response = await api.post(`/inventory/${id}`, formData);
+    const response = await api.post(
+      `/inventory/${InventoryId}/${unitId}`,
+      formData
+    );
     return response.status === 200 || response.status === 201;
   } catch (error) {
     handleAxiosError(error);
@@ -62,8 +75,6 @@ export const getBranches = async () => {
     return [];
   }
 };
-
-
 
 export const inventoryFIltersOptionsWithDropdown = [
   {
