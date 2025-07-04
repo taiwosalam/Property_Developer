@@ -18,7 +18,7 @@ export interface DepositRequestDataType {
   userName: string;
   tier_id?: number;
   requestDate: string;
-  status: "pending" | "completed";
+  status: "pending" | "completed" | "progress";
   pictureSrc: string;
   requestId: string;
   propertyName: string;
@@ -26,6 +26,21 @@ export interface DepositRequestDataType {
   unitDetails: string;
   amount: string;
   branch: string;
+  request_from?: string;
+  is_inventory?: boolean;
+  is_examine?: boolean;
+  is_maintain?: boolean;
+  inventory_at?: string | null;
+  examined_at?: string | null;
+  maintain_at?: string | null;
+  rejected_at?: string | null;
+  inventory_by?: string | null;
+  examine_by?: string | null;
+  maintain_by?: string | null;
+  created_at?: string | null;
+  refunded_amount?: string | null;
+  resolved_by?: string | null;
+  resolved_date?: string | null;
 } // Check with backend if this is the correct data type
 
 export const DepositRequestData: DepositRequestDataType[] = [
@@ -91,7 +106,7 @@ export const transformCautionDeposit = (
         ? dayjs(d.created_at).format("DD/MM/YYYY hh:mm A")
         : "--- ---",
       status: d.status,
-      pictureSrc: d.user?.profile?.picture,
+      pictureSrc: d.user?.picture,
       tier_id: d.user?.tier_id,
       requestId: String(d.id),
       propertyName: d.property_name,
@@ -99,6 +114,23 @@ export const transformCautionDeposit = (
       unitDetails: d.caution_deposits_details || d.unit_name,
       amount: d.deposit_amount ? formatToNaira(d.deposit_amount) : "--- ---",
       branch: d.branch_name,
+      is_inventory: d.is_inventory,
+      request_from: d.request_from?.toLowerCase(),
+      is_examine: d.is_examine,
+      is_maintain: d.is_maintain,
+      maintain_at: d.maintain_at,
+      inventory_at: d.inventory_at,
+      examined_at: d.examined_at,
+      rejected_at: d.rejected_at,
+      inventory_by: d.inventory_by,
+      examine_by: d.examine_by,
+      maintain_by: d.maintain_by,
+      created_at: d.created_at,
+      refunded_amount: d.refunded_amount
+        ? formatToNaira(d.refunded_amount)
+        : "--- ---",
+      resolved_by: "--- ---",
+      resolved_date: "--- ---",
     })),
     pagination: {
       total_page: data?.pagination?.total,
@@ -108,20 +140,22 @@ export const transformCautionDeposit = (
   };
 };
 export interface IDepositPayload {
-  caution_deposits_details?: string[];
-  refunded_amount: number;
+  refunded_amount?: number;
   status?: string;
-  request?: string;
+  is_inventory?: boolean;
+  is_examine?: boolean;
+  is_maintain?: boolean;
 }
-export const handleCautionDeposit = async (
+export const updateCautionDeposit = async (
   depositId: string,
   data: IDepositPayload
 ) => {
   const payload = {
-    caution_deposits_details: data?.caution_deposits_details,
     refunded_amount: data?.refunded_amount,
     status: data?.status,
-    request_from: data?.request,
+    is_examine: data?.is_examine,
+    is_maintain: data?.is_maintain,
+    is_inventory: data?.is_inventory,
   };
 
   try {
@@ -135,7 +169,6 @@ export const handleCautionDeposit = async (
       }
     );
     if (res.status === 200 || res.status === 201) {
-      window.dispatchEvent(new Event("dispatchDeposit"));
       return true;
     }
   } catch (error) {

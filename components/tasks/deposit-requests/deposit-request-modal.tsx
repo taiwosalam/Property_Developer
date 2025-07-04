@@ -9,9 +9,14 @@ import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import {
   depositChecklist,
-  handleCautionDeposit,
+  updateCautionDeposit,
   IDepositPayload,
 } from "@/app/(nav)/tasks/deposits/data";
+import { toast } from "sonner";
+import dayjs from "dayjs";
+
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
@@ -33,48 +38,203 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   unitDetails,
   branch,
   amount,
+  is_examine,
+  is_inventory,
+  is_maintain,
+  inventory_at,
+  inventory_by,
+  examine_by,
+  rejected_at,
+  maintain_by,
+  examined_at,
+  maintain_at,
+  created_at,
+  status,
+  request_from,
+  refunded_amount,
+  resolved_by,
+  resolved_date,
 }) => {
   const [isEscrowChecked, setIsEscrowChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const commonClasses =
     "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center w-full";
 
-  const HoverContent = () => (
-    <div className="w-[250px] absolute bottom-full right-[12px] z-10 bg-brand-10 py-2 px-4 space-y-[10px] text-white text-sm font-normal">
-      <p className="flex gap-2">
-        <span>Approved by:</span>
-        <span>John Doe</span>
-      </p>
-      <p className="flex gap-2">
-        <span>Date:</span>
-        <span>12/12/12</span>
-      </p>
-      <p className="flex gap-2">
-        <span>Time:</span>
-        <span>08:23 PM</span>
-      </p>
-      <div className="!m-0 absolute right-2 top-full text-brand-10">
-        <PointerDownSVG />
+  const HoverContent = ({ field }: { field: keyof typeof checkboxStates }) => {
+    const details = {
+      is_inventory: { by: inventory_by, at: inventory_at },
+      is_examine: { by: examine_by, at: examined_at },
+      is_maintain: { by: maintain_by, at: maintain_at },
+    };
+
+    const { by, at } = details[field];
+
+    // Only render if the checkbox is checked
+    if (!checkboxStates[field]) return null;
+
+    const formattedTime = dayjs(at).format("hh:mm A");
+    const formattedDate = dayjs(at).format("DD/MM/YYYY");
+
+    return (
+      <div className="w-[250px] absolute bottom-full right-[12px] z-10 bg-brand-10 py-2 px-4 space-y-[10px] text-white text-sm font-normal">
+        <p className="flex gap-2">
+          <span>Approved by:</span>
+          <span className="capitalize">{by || "Unknown"}</span>
+        </p>
+        <p className="flex gap-2">
+          <span>Date:</span>
+          <span>{formattedDate}</span>
+        </p>
+        <p className="flex gap-2">
+          <span>Time:</span>
+          <span>{formattedTime}</span>
+        </p>
+        <div className="!m-0 absolute right-2 top-full text-brand-10">
+          <PointerDownSVG />
+        </div>
       </div>
-    </div>
+    );
+  };
+
+  const [refundAmount, setRefundAmount] = useState<number | undefined>(
+    undefined
   );
+  const [checkboxStates, setCheckboxStates] = useState({
+    is_inventory: is_inventory || false,
+    is_examine: is_examine || false,
+    is_maintain: is_maintain || false,
+  });
+
+  const formattedRefundAmount =
+    refundAmount !== undefined
+      ? refundAmount.toLocaleString("en-NG", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        })
+      : "";
+
+  const handleRefundAmountChange = (value: string) => {
+    // Remove non-numeric characters (e.g., commas, currency symbols)
+    const numericValue = value.replace(/[^0-9]/g, "");
+    // Convert to number or undefined if empty
+    setRefundAmount(numericValue ? Number(numericValue) : undefined);
+  };
+
+  const handleCheckboxChange = async (field: keyof typeof checkboxStates) => {
+    const newCheckedState = !checkboxStates[field];
+
+    // Update local state
+    const newCheckboxStates = {
+      ...checkboxStates,
+      [field]: newCheckedState,
+    };
+    setCheckboxStates(newCheckboxStates);
+
+    // Count how many checkboxes are true
+    const trueCount = Object.values(newCheckboxStates).filter(Boolean).length;
+
+    // Prepare payload for PATCH request
+    const payload: { [key: string]: any } = {
+      [field]: newCheckedState,
+    };
+
+    // Determine status based on checkbox states
+    // if (trueCount === 3) {
+    //   payload.status = "completed";
+    // } else if (trueCount >= 1) {
+    //   payload.status = "progress";
+    // }
+
+    payload.status = "progress";
+
+    try {
+      const success = await updateCautionDeposit(requestId, payload);
+      if (!success) {
+        // Revert state on failure
+        setCheckboxStates((prev) => ({
+          ...prev,
+          [field]: !newCheckedState,
+        }));
+        toast.error("Failed to update deposit status");
+      } else {
+        toast.success("Deposit status updated successfully");
+      }
+    } catch (error) {
+      console.error("PATCH request failed:", error);
+      // Revert state on error
+      setCheckboxStates((prev) => ({
+        ...prev,
+        [field]: !newCheckedState,
+      }));
+      toast.error("Failed to update deposit status");
+    }
+  };
 
   const handleDepositRequest = async () => {
     if (!requestId) return;
 
+    const allCheckboxesChecked = Object.values(checkboxStates).every(Boolean);
+    if (!allCheckboxesChecked) {
+      toast.warning(
+        "All checkboxes must be checked before requesting a refund"
+      );
+      return;
+    }
 
-    const payload: IDepositPayload = {
-      caution_deposits_details: ["string"],
-      refunded_amount: 200,
-      status: "pending",
-      request: "admin"
-
+    if (!refundAmount) {
+      toast.warning("You need to provide refund amount");
+      return;
     }
 
     try {
-      //const res = await handleCautionDeposit();
+      setIsLoading(true);
+      const payload = {
+        refunded_amount: refundAmount,
+        //status: isEscrowChecked ? "pending" : "completed",
+        status: request_from === "company" ? "completed" : "approved",
+      };
+      const success = await updateCautionDeposit(requestId, payload);
+      if (success) {
+        window.dispatchEvent(new Event("dispatchDeposit"));
+        toast.success("Updated successfully");
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Refund request failed:", error);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  // Map checklist items to payload fields and dynamic labels
+  const checklistMapping: Record<
+    string,
+    { field: keyof typeof checkboxStates; label: string }
+  > = {
+    "check inventory": {
+      field: "is_inventory",
+      label:
+        checkboxStates.is_inventory &&
+        (status === "completed" || status === "progress")
+          ? "Checked inventory"
+          : "check inventory",
+    },
+    "request for examine": {
+      field: "is_examine",
+      label:
+        checkboxStates.is_examine &&
+        (status === "completed" || status === "progress")
+          ? "Done with examine"
+          : "request for examine",
+    },
+    "request for maintenance": {
+      field: "is_maintain",
+      label:
+        checkboxStates.is_maintain &&
+        (status === "completed" || status === "progress")
+          ? "Done with maintenance"
+          : "request for maintenance",
+    },
   };
 
   return (
@@ -87,9 +247,32 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
           <LabelValuePair label="Unit Details" value={unitDetails} />
           <LabelValuePair label="Branch" value={branch} />
           <LabelValuePair label="Deposit Amount" value={amount} />
+
+          {status === "completed" && (
+            <div className="space-y-2">
+              <LabelValuePair
+                label="Amount Refunded"
+                value={refunded_amount || "--- ---"}
+              />
+              <LabelValuePair
+                label="Resolved By"
+                value={resolved_by || "--- ---"}
+              />
+              <LabelValuePair
+                label="Resolved Date"
+                value={resolved_by || "--- ---"}
+              />
+            </div>
+          )}
         </div>
         <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
-        <form className="space-y-4">
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleDepositRequest();
+          }}
+        >
           <p className="text-text-tertiary dark:text-white">
             Caution Deposits Details:
           </p>
@@ -98,34 +281,57 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
               <Checkbox
                 key={index}
                 id={deposit}
+                name={checklistMapping[deposit].field}
                 className={commonClasses}
-                //checked
-                hoverContent={<HoverContent />}
+                checked={checkboxStates[checklistMapping[deposit].field]}
+                onChange={() =>
+                  handleCheckboxChange(checklistMapping[deposit].field)
+                }
+                hoverContent={
+                  <HoverContent field={checklistMapping[deposit].field} />
+                }
               >
-                {deposit}
+                {checklistMapping[deposit].label}
               </Checkbox>
             ))}
           </div>
-          <div className="space-y-5">
-            <Checkbox
-              sm
-              checked={isEscrowChecked}
-              onChange={setIsEscrowChecked}
-            >
-              Request from OurProperty Administrator Escrow
-            </Checkbox>
-            <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between">
-              <Input
-                id="refund_amount"
-                label="Amount to be Refunded"
-                CURRENCY_SYMBOL="₦"
-                formatNumber
-              />
-              <Button type="submit" size="xs_normal" className="py-2 px-6">
-                {isEscrowChecked ? "Request Refund" : "Refund Now"}
-              </Button>
+          {status !== "completed" && (
+            <div className="space-y-5">
+              <div className="flex gap-1 items-center">
+                <p className="text-red-500">*</p>
+                <p className="text-text-tertiary dark:text-white">
+                  Caution deposit held in escrow by the{" "}
+                  {request_from === "company"
+                    ? "Management Company"
+                    : request_from === "landlord"
+                    ? "Landlord/Landlady"
+                    : request_from === "escrow"
+                    ? "Administrator"
+                    : "Management Company"}
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between">
+                <Input
+                  id="refund_amount"
+                  label="Amount to be Refunded"
+                  CURRENCY_SYMBOL="₦"
+                  formatNumber
+                  value={formattedRefundAmount}
+                  onChange={handleRefundAmountChange}
+                  disabled={isLoading}
+                />
+                <Button
+                  type="submit"
+                  size="xs_normal"
+                  className="py-2 px-6"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Please wait..." : "Refund Now"}
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </form>
       </div>
     </ModalPreset>

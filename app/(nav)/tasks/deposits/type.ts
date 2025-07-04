@@ -22,28 +22,43 @@ export type ICautionApiResponse = {
 
 type DepositRequest = {
   id: number;
-  user_id: number;
-  property_name: string;
   user: {
     id: number;
     name: string;
     tier_id: number;
-    profile: {
-      picture: string;
-    };
+    picture: string;
   };
+  inventory: {
+    id: null;
+    title: null;
+    video: null;
+    attributes: null;
+  };
+  user_id: number;
+  property_name: string;
   state: string;
   user_name: string;
   profile_picture: string;
   tier_id: number;
   unit_name: string;
+  is_inventory: false;
+  is_examine: false;
+  is_maintain: false;
+  inventory_at: null;
+  examined_at: null;
+  maintain_at: null;
+  rejected_at: null;
+  inventory_by: null;
+  examine_by: null;
+  maintain_by: null;
   branch_name: string;
   company_id: number;
   deposit_amount: string;
   caution_deposits_details: string;
   request_from: string;
   refunded_amount: string;
-  status: "pending" | "completed";
+  status: "pending" | "completed" | "progress";
   created_at: string;
   updated_at: string;
+ 
 };
