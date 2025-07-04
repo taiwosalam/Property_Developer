@@ -25,16 +25,16 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
   // const [branchName, setBranchName ] = useState<string | null>(null);
   const images =
     data?.property_image?.map((img) => ({
-      src: img?.path || ClipboardCheck,
+      src: img?.path || empty,
       isVideo: false,
     })) || [];
 
-  const previewImg = images[0]?.src || ClipboardCheck;
+  const previewImg = images[0]?.src || empty;
   const inventoryData: InventoryCardDataProps = {
     inventory_id: data.id || "--- ---",
     created_date: dayjs(data.created_at).format("MMM DD, YYYY") || "--- ---",
     last_edited: dayjs(data.updated_at).format("MMM DD, YYYY") || "--- ---",
-    property_name: data.property_name || "--- ---",
+    total_unit: data.total_unit || 0,
     branch_name: data.branch_name || "--- ---",
     account_officer: data?.account_officer?.name || "--- ---",
   };
@@ -52,19 +52,18 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
       <p className="px-2 text-brand-10 text-base font-bold"> {data.title}</p>
       <SectionSeparator />
       <div className="pb-[18px] overflow-x-auto custom-round-scrollbar">
-        <div className="flex items-center min-w-[800px]">
-          <div className="flex-1 flex justify-start">
+        <div className="flex items-center min-w-[800px] w-full">
+          <div className="w-[80%] flex justify-start gap-[80px]">
             <div
               onClick={() => setIsOpened(true)}
               style={{ backgroundColor: "#CCCCCC" }}
-              className="p-8 rounded-lg dark:bg-white cursor-pointer"
+              className="rounded-lg dark:bg-white cursor-pointer w-[100px] h-[100px]"
             >
-              <Image
+              <Picture
+                className="w-full h-full object-cover"
                 src={previewImg as string}
                 alt="clipboard with check mark"
-                width={60}
-                height={60}
-                className="w-full h-full object-cover"
+                size={100}
               />
               <PopupImageModal
                 isOpen={isOpened}
@@ -83,28 +82,32 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
                 </div>
               )}
             </div>
+            <div className="custom-flex-col flex-1 gap-2">
+              <div className="flex w-full">
+                <KeyValueList
+                  referenceObject={inventoryData}
+                  data={inventoryData}
+                  chunkSize={3}
+                />
+              </div>
+            </div>
           </div>
-          <KeyValueList
-            referenceObject={inventoryData}
-            data={inventoryData}
-            chunkSize={3}
-          />
-          <div className="flex-1 flex flex-col gap-4 items-end">
+          <div className="w-[20%] flex flex-col gap-4 self-end items-end">
             <Button
               variant="border"
               size="xs_medium"
               className="py-2 px-10"
-              href={`/management/inventory/${data.id}/manage`}
+              href={`/management/inventory/${data.property_id}`}
             >
               manage
             </Button>
-            <Button
+            {/* <Button
               size="xs_medium"
               className="py-2 px-10"
               href={`/management/inventory/${data.id}/preview`}
             >
               preview
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

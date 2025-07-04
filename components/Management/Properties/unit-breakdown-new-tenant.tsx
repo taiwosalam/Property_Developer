@@ -17,6 +17,7 @@ const UnitBreakdownNewTenant = () => {
   const agencyFeePercentage = parseFloat(
     String(propertySettings?.agency_fee || "0")
   );
+
   const { formResetKey, unitData } = useUnitForm();
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];

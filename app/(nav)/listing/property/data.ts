@@ -4,6 +4,7 @@ import api, { handleAxiosError } from "@/services/api";
 import axios from "axios";
 import moment from "moment";
 import { toast } from "sonner";
+import { formatFee } from "../../management/rent-unit/data";
 
 export const listingPropertyFilter: FilterOptionMenu[] = [
   {
@@ -144,6 +145,8 @@ export const transformDraftUnitData = (
     ? response.data.invites
     : response.data;
 
+  console.log("propertyData", propertyData);
+
   const transformedProperties: any = propertyData.data.map((p) => {
     const status = p?.invites?.length > 0 ? "request" : "draft";
     const updatedAt = moment(p.updated_at);
@@ -165,26 +168,29 @@ export const transformDraftUnitData = (
       images: p.images?.map((image) => image.path),
       property_name: p.title,
       address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
-      company_name: p.invites.map((name) => name.company.company_name),
-      inviteId: p.invites.map((id) => id.id),
-      state: p.state,
-      local_government: p.local_government,
+      company_name: p?.invites?.map((name) => name?.company?.company_name),
+      inviteId: p?.invites?.map((id) => id?.id),
+      state: p?.state,
+      local_government: p?.local_government,
       total_unit: units,
       last_updated: lastUpdated,
-      hasVideo: !!p.video_link,
-      property_type: p.property_type,
-      branch: p.branch?.branch_name,
-      total_returns: totalReturns,
-      total_income: (totalReturns * feePercentage) / 100,
+      hasVideo: !!p?.video_link || "",
+      property_type: p?.property_type,
+      branch: p.branch?.branch_name || "",
+      total_returns: formatFee(totalReturns, p?.currency || "naira"),
+      // total_income: formatFee(
+      //   (totalReturns * feePercentage) / 100,
+      //   p.currency || "naira"
+      // ),
       // account_officer: "Nil",
-      account_manager: "Nil",
+      account_manager:  "Nil",
       status: status,
     };
   });
 
   // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {
-    // console.log("isUnitApiResponse", response)
+    console.log("isUnitApiResponse", response)
     return {
       current_page: response.data.invites.current_page,
       last_page: response.data.invites.last_page,
@@ -198,8 +204,8 @@ export const transformDraftUnitData = (
     };
   } else {
     return {
-      current_page: response.data.current_page,
-      last_page: response.data.last_page,
+      current_page: propertyData.current_page,
+      last_page: propertyData.last_page,
       properties: transformedProperties,
     };
   }
