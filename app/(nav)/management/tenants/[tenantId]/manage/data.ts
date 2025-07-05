@@ -16,6 +16,7 @@ import dayjs from "dayjs";
 import { formatFee } from "../../../rent-unit/data";
 import { empty } from "@/app/config";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import { transformUnitDetails } from "@/app/(nav)/listing/data";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -170,9 +171,11 @@ export const transformIndividualTenantAPIResponse = ({
   ): UnitItemProps => ({
     propertyType: rent?.property_type || "",
     caution_deposit: Number(rent?.caution_deposit) || 0,
+    property_name: rent?.property_name || "",
     unitId: rent?.unit_id?.toString() || "",
     unitImages: rent?.unit_image?.map((img) => img?.path || "") || [],
-    unitDetails: `${rent?.unit_type || ""} - ${rent?.unit_sub_type || ""}`,
+    // unitDetails: `${rent?.unit_type || ""} - ${rent?.unit_sub_type || ""}`,
+    unitDetails: transformUnitDetails(rent),
     unitStatus: rent?.unit_status as keyof typeof UnitStatusColors,
     unitName: rent?.unit_name || "",
     rent: rent?.rent_amount
