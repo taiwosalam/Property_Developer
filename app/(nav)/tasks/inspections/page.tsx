@@ -103,6 +103,7 @@ const InspectionPage = () => {
       params: { ...config.params, search: query },
     });
   };
+
   const {
     data: apiData,
     isNetworkError,
@@ -158,13 +159,11 @@ const InspectionPage = () => {
   if (isNetworkError) {
     return <NetworkError />;
   }
-  if (loading) {
+
+  if (loading)
     return (
-      <AutoResizingGrid gap={28} minWidth={400}>
-        <PropertyrequestSkeletonLoader length={10} />
-      </AutoResizingGrid>
+      <CustomLoader layout="page" pageTitle="Inspection" statsCardCount={3} />
     );
-  }
   if (error) {
     <ServerError error={error} />;
   }
@@ -207,16 +206,20 @@ const InspectionPage = () => {
         filterOptionsMenu={propertyFilterOptionMenu}
         hasGridListToggle={false}
       />
+
       <section ref={eleScrollIn}>
-        {inspectionData?.card.length === 0 && !loading ? (
+        {loading || silentLoading ? (
+          <AutoResizingGrid minWidth={505} gap={32}>
+            <PropertyrequestSkeletonLoader length={10} />
+          </AutoResizingGrid>
+        ) : inspectionData?.card.length === 0 ? (
           !!config.params?.search || hasActiveFilters(appliedFilter) ? (
             <SearchError />
           ) : (
             <div className="col-span-full text-left py-8 text-gray-500">
               <EmptyList
                 noButton
-                title="No Inspection Records Yet
-"
+                title="No Inspection Records Yet"
                 body={
                   <p className="">
                     Currently, there are no inspection records linked to your
@@ -233,9 +236,9 @@ const InspectionPage = () => {
         ) : (
           <AutoResizingGrid minWidth={505} gap={32}>
             {inspectionData &&
-              inspectionData?.card.map((item) => {
-                return <InspectionCard key={item?.id} data={item} />;
-              })}
+              inspectionData?.card.map((item) => (
+                <InspectionCard key={item?.id} data={item} />
+              ))}
           </AutoResizingGrid>
         )}
       </section>

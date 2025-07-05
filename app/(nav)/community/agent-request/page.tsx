@@ -27,6 +27,7 @@ import { PropertyRequestParams } from "../agent-forum/type";
 //import { RequestCardSkeleton } from "../agent-community/components";
 import ServerError from "@/components/Error/ServerError";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
+import PropertyRequestPageLoader from "@/components/Loader/property-request-page-loader";
 
 interface PropertyRequestApiData {
   data: PropertyRequestDataType[];
@@ -190,9 +191,10 @@ const PropertyRequest = () => {
 
   if (loading)
     return (
-      <div className="min-h-[80vh] flex justify-center items-center">
-        <div className="animate-spin w-8 h-8 border-4 border-brand-9 border-t-transparent rounded-full"></div>
-      </div>
+      <PropertyRequestPageLoader
+        pageTitle="Property Request"
+        statCardsLength={1}
+      />
     );
 
   if (isNetworkError) return <NetworkError />;

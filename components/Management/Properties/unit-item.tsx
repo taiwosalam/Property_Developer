@@ -17,6 +17,8 @@ export interface UnitItemProps {
   propertyType: string;
   // propertyType: "rental" | "facility";
   unitId: string;
+  property_name?: string;
+  noActionBtn?: boolean;
   unitImages: string[];
   unitDetails: string;
   unitStatus: keyof typeof UnitStatusColors;
@@ -37,6 +39,7 @@ export interface UnitItemProps {
   tenantId?: number | string;
   tenantAgent?: "web" | "mobile";
   caution_deposit?: number;
+  page?: "tenant-profile" | "others";
 }
 
 const UnitItem: React.FC<UnitItemProps> = ({
@@ -59,6 +62,9 @@ const UnitItem: React.FC<UnitItemProps> = ({
   invoice_status,
   invoice_id,
   partial_pending,
+  noActionBtn,
+  page,
+  property_name,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const isRental = propertyType.toLowerCase() === "rental";
@@ -82,10 +88,12 @@ const UnitItem: React.FC<UnitItemProps> = ({
       <div className="flex items-center justify-between">
         <h4 className="text-brand-10 text-base font-bold">Unit ID: {unitId}</h4>
         <div className="flex items-center justify-between gap-2">
-          <div
-            className="w-5 h-5 rounded-full"
-            style={{ backgroundColor: UnitStatusColors[unitStatus] }}
-          />
+          {!noActionBtn && (
+            <div
+              className="w-5 h-5 rounded-full"
+              style={{ backgroundColor: UnitStatusColors[unitStatus] }}
+            />
+          )}
         </div>
       </div>
       {/* <hr className="my-4 " /> */}
@@ -93,7 +101,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
       <div className="flex items-center gap-2 justify-between overflow-y-auto custom-round-scrollbar pb-2">
         <div className="min-w-[400px] flex-1 text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
           <div>
-            <p className="text-[#747474] dark:text-white">Unit Details</p>
+            <p className="text-[#747474] dark:text-white">Unit Title</p>
             <p className="text-black dark:text-darkText-1 capitalize">
               {unitDetails}
             </p>
@@ -138,7 +146,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
               </p>
             </div>
           )}
-          {tenantName && (
+          {tenantName && page !== "tenant-profile" && (
             <div>
               <p className="text-[#747474] dark:text-white">
                 Tenant&apos;s Name
@@ -146,6 +154,17 @@ const UnitItem: React.FC<UnitItemProps> = ({
               <p className="text-black dark:text-darkText-1 underline underline-offset-4 flex items-center">
                 {tenantName}{" "}
                 {tenantBadgeColor && <BadgeIcon color={tenantBadgeColor} />}
+              </p>
+            </div>
+          )}
+
+          {property_name && page === "tenant-profile" && (
+            <div>
+              <p className="text-[#747474] dark:text-white">
+                Property Name
+              </p>
+              <p className="text-black dark:text-darkText-1 flex items-center">
+                {property_name}
               </p>
             </div>
           )}
@@ -188,90 +207,92 @@ const UnitItem: React.FC<UnitItemProps> = ({
             propertyType={propertyType as "facility" | "rental"}
           />
         </div>
-        <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
-          {actions
-            // First: skip all other logic if invoice_status is not 'pending' but action is "Pending"
-            .filter((action) => {
-              const label =
-                typeof action.label === "function"
-                  ? action.label(propertyType as "rental" | "facility")
-                  : action.label;
-
-              // Only allow Pending button if invoice_status is "pending"
-              if (label === "Pending") {
-                return invoice_status?.trim().toLowerCase() === "pending";
-              }
-
-              // Hide all other buttons if invoice_status is "pending"
-              if (invoice_status?.trim().toLowerCase() === "pending") {
-                return false;
-              }
-
-              // Define button visibility based on status
-              if (unitStatus === "vacant" || unitStatus === "relocate") {
-                return label === "Start Rent" || label === "Move In";
-              }
-              if (unitStatus === "occupied") {
-                return (
-                  label !== "Start Rent" &&
-                  label !== "Move In" &&
-                  label !== "Renew Rent" &&
-                  label !== "Renew Fee"
-                );
-              }
-              if (unitStatus === "expired") {
-                return (
-                  label === "Renew Rent" ||
-                  label === "Renew Fee" ||
-                  label === "Move Out" ||
-                  label === "Relocate"
-                );
-              }
-              return false;
-            })
-
-            // Then filter based on propertyType logic
-            .filter((action) => {
-              const label =
-                typeof action.label === "function"
-                  ? action.label(propertyType as "rental" | "facility")
-                  : action.label;
-
-              if (propertyType === "rental" && label === "Relocate")
-                return false;
-              if (propertyType === "facility" && label === "Move Out")
-                return false;
-
-              return true;
-            })
-
-            // Finally render the buttons
-            .map((action, i) => (
-              <ActionButton
-                tenantId={Number(tenantId) ?? 0}
-                tenantAgent={tenantAgent}
-                unit_id={unitId}
-                invoice_id={Number(invoice_id) ?? 0}
-                key={i}
-                propertyType={propertyType as "rental" | "facility"}
-                {...action}
-                startText={startRentBtnText}
-                route={
-                  typeof action.route === "function"
-                    ? action.route(
-                        unitId,
-                        propertyType as "rental" | "facility"
-                      )
-                    : action.route
-                }
-                label={
+        {!noActionBtn && (
+          <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
+            {actions
+              // First: skip all other logic if invoice_status is not 'pending' but action is "Pending"
+              .filter((action) => {
+                const label =
                   typeof action.label === "function"
                     ? action.label(propertyType as "rental" | "facility")
-                    : action.label
+                    : action.label;
+
+                // Only allow Pending button if invoice_status is "pending"
+                if (label === "Pending") {
+                  return invoice_status?.trim().toLowerCase() === "pending";
                 }
-              />
-            ))}
-        </div>
+
+                // Hide all other buttons if invoice_status is "pending"
+                if (invoice_status?.trim().toLowerCase() === "pending") {
+                  return false;
+                }
+
+                // Define button visibility based on status
+                if (unitStatus === "vacant" || unitStatus === "relocate") {
+                  return label === "Start Rent" || label === "Move In";
+                }
+                if (unitStatus === "occupied") {
+                  return (
+                    label !== "Start Rent" &&
+                    label !== "Move In" &&
+                    label !== "Renew Rent" &&
+                    label !== "Renew Fee"
+                  );
+                }
+                if (unitStatus === "expired") {
+                  return (
+                    label === "Renew Rent" ||
+                    label === "Renew Fee" ||
+                    label === "Move Out" ||
+                    label === "Relocate"
+                  );
+                }
+                return false;
+              })
+
+              // Then filter based on propertyType logic
+              .filter((action) => {
+                const label =
+                  typeof action.label === "function"
+                    ? action.label(propertyType as "rental" | "facility")
+                    : action.label;
+
+                if (propertyType === "rental" && label === "Relocate")
+                  return false;
+                if (propertyType === "facility" && label === "Move Out")
+                  return false;
+
+                return true;
+              })
+
+              // Finally render the buttons
+              .map((action, i) => (
+                <ActionButton
+                  tenantId={Number(tenantId) ?? 0}
+                  tenantAgent={tenantAgent}
+                  unit_id={unitId}
+                  invoice_id={Number(invoice_id) ?? 0}
+                  key={i}
+                  propertyType={propertyType as "rental" | "facility"}
+                  {...action}
+                  startText={startRentBtnText}
+                  route={
+                    typeof action.route === "function"
+                      ? action.route(
+                          unitId,
+                          propertyType as "rental" | "facility"
+                        )
+                      : action.route
+                  }
+                  label={
+                    typeof action.label === "function"
+                      ? action.label(propertyType as "rental" | "facility")
+                      : action.label
+                  }
+                />
+              ))}
+          </div>
+        )}
       </div>
     </div>
   );

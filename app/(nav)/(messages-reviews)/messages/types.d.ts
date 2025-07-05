@@ -91,3 +91,67 @@ export type BranchStaff = {
     name: string;
   };
 };
+
+// ======================================
+export interface MessageChat {
+  id: number;
+  group_chat_id: number;
+  content: string;
+  user_id: number;
+  reply_to: number | null;
+  created_at: string;
+  updated_at: string;
+  user: {
+    id: number;
+    name: string;
+    avatar?: string;
+  };
+}
+
+export interface TeamChatResponseData {
+  group_chats: {
+    id: number;
+    group_name: string;
+    description: string;
+    created_at: string;
+    total_members: number;
+    total_active: number;
+    picture: string | null;
+  }[];
+}
+
+export interface GroupChatDetailsResponse {
+  group_chat: {
+    id: number;
+    group_name: string;
+    description: string;
+    created_at: string;
+    total_members: number;
+    total_active: number;
+    picture: string | null;
+    chats: MessageChat[];
+  };
+}
+
+export interface PageMessages {
+  id: string;
+  pfp: string; // Updated to string
+  desc: string;
+  time: string;
+  fullname: string;
+  verified: boolean;
+  messages: number;
+  content_type: string;
+  tier: number;
+  title: string;
+  role: string;
+  total_members?: number;
+  total_active?: number;
+  created_at: string;
+  members?: {
+    id: number;
+    picture: string | null;
+    fullname: string;
+    role: string;
+  }[];
+}

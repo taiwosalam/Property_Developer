@@ -23,7 +23,7 @@ export interface Details {
     property_for_rent: number;
     hospitality_property: number;
     completed_transaction: number;
-    total_review: number;
+    total_reviews: number;
     total_branches: number;
     total_staff: number;
     total_unit_managing: number;
@@ -68,7 +68,7 @@ export interface CompanySummaryTypes {
   social_handles: SocialHandles;
   total_branches: number;
   total_property: number;
-  total_review: number;
+  total_reviews: number;
   total_staff: number;
   total_unit: number;
 }

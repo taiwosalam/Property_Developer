@@ -129,7 +129,10 @@ const PropertyRequest = () => {
     });
   };
 
-  if (loading) return <PageCircleLoader />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Property Request" statsCardCount={3} />
+    );
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;

@@ -12,7 +12,7 @@ import { SectionSeparator } from "@/components/Section/section-components";
 import { MessageCardProps } from "@/components/Message/types";
 import Image from "next/image";
 
-import avatarIcon from "@/public/empty/avatar-2.svg"
+import avatarIcon from "@/public/empty/avatar-2.svg";
 import { getIconByContentType } from "../../(messages-reviews)/messages/data";
 
 const TeamChatCard: React.FC<MessageCardProps> = ({
@@ -40,15 +40,17 @@ const TeamChatCard: React.FC<MessageCardProps> = ({
       <div></div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
-         { pfp ? <Picture src={empty} alt="profile picture" size={60} rounded status /> : <Picture src={avatarIcon} size={60} rounded status/>}
+            <Picture
+              src={ pfp || empty}
+              alt="profile picture"
+              size={60}
+              rounded
+            />
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                 {fullname}
               </p>
-              {/* {verified && (
-                <Picture src={VerifiedIcon} alt="verified" size={16} />
-              )} */}
             </div>
             {content_type === "text" ? (
               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
@@ -59,8 +61,7 @@ const TeamChatCard: React.FC<MessageCardProps> = ({
                 {IconComponent && <IconComponent />}
                 {content_type}
               </div>
-            )
-            }
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center font-normal">

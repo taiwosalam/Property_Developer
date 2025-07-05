@@ -138,14 +138,148 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     "negotiation",
   ];
 
+  // const handleSubmit = async (formData: Record<string, any>) => {
+  //   if (!propertyId) return;
+  //   // if (propertyType !== "facility" && state.images.length === 0) {
+  //   //   toast.warning("Please add at least one picture");
+  //   //   return;
+  //   // }
+
+  //   // REQUIRE AT LEAST ONE PICTURE FOR RENTAL EDIT/CREATE
+  //   if (
+  //     propertyType !== "facility" &&
+  //     (!state.imageFiles || state.imageFiles.length === 0)
+  //   ) {
+  //     toast.warning("Please add at least one picture");
+  //     return;
+  //   }
+
+  //   // Validate that numeric fields contain digits
+  //   const hasNoDigits = (str: string) => !/\d/.test(str);
+  //   if (
+  //     (formData.number_of && hasNoDigits(formData.number_of)) ||
+  //     (formData.total_area_sqm && hasNoDigits(formData.total_area_sqm))
+  //   ) {
+  //     toast.warning("Please enter valid measurement values");
+  //     return;
+  //   }
+
+  //   setSubmitLoading(true);
+  //   if (setParentSubmitLoading) setParentSubmitLoading(true);
+  //   convertYesNoToBoolean(formData, yesNoFields);
+
+  //   // Transform the form data into the API payload
+  //   const transformedData = transformUnitFormData(
+  //     formData,
+  //     state.imageFiles,
+  //     propertyId,
+  //     props.empty ? [] : props.data.images // Pass original images when editing
+  //   );
+
+  //   if (props.empty) {
+  //     // Handle creation of a new unit
+  //     if (!propertyId) {
+  //       toast.error("Property ID is missing.");
+  //       setSubmitLoading(false);
+  //       if (setParentSubmitLoading) setParentSubmitLoading(false);
+  //       return;
+  //     }
+  //     const unitId = await createUnit(propertyId, transformedData);
+  //     if (unitId) {
+  //       if (saveClick) {
+  //         setSubmitLoading(false);
+  //         if (setParentSubmitLoading) setParentSubmitLoading(false);
+  //         resetForm();
+  //         formRef.current?.reset();
+  //         router.push("/management/properties/");
+  //         return;
+  //       }
+  //       const unitData = await getUnitById(unitId);
+  //       if (unitData) {
+  //         if (duplicate?.val) {
+  //           addUnit(unitData, duplicate.count);
+  //           // setDuplicate({
+  //           //   val: false,
+  //           //   count: 1,
+  //           // });
+  //           props.hideEmptyForm();
+  //         } else {
+  //           addUnit(unitData);
+  //         }
+  //         formRef.current?.reset();
+  //         resetForm();
+  //         if (clickedNo) {
+  //           setTimeout(() => {
+  //             setClickedNo?.(false);
+  //           }, 0);
+  //         }
+  //       }
+  //     }
+  //   } else {
+  //     if (props.data.notYetUploaded) {
+  //       if (!propertyId) {
+  //         toast.error("Property ID is missing.");
+  //         setSubmitLoading(false);
+  //         if (setParentSubmitLoading) setParentSubmitLoading(false);
+  //         return;
+  //       }
+  //       // Handle creation of a unit that hasn’t been uploaded yet
+  //       const unitId = await createUnit(propertyId, transformedData);
+  //       if (unitId) {
+  //         const unitData = await getUnitById(unitId);
+  //         if (unitData) {
+  //           editUnit(props.index, unitData);
+  //         }
+  //       }
+  //     } else {
+  //       // Handle editing an existing unit
+  //       const { newImages, retainedImages } = state.imageFiles.reduce<{
+  //         newImages: File[];
+  //         retainedImages: string[];
+  //       }>(
+  //         (acc, image) => {
+  //           if (image instanceof File) {
+  //             // New images uploaded during this edit
+  //             acc.newImages.push(image);
+  //           } else if (typeof image === "string") {
+  //             // Existing images to retain (match by path)
+  //             const matchingImage = props.data.images.find(
+  //               (img) => img.path === image
+  //             );
+  //             if (matchingImage) {
+  //               acc.retainedImages.push(matchingImage.id);
+  //             }
+  //           }
+  //           return acc;
+  //         },
+  //         { newImages: [], retainedImages: [] }
+  //       );
+
+  //       const editUnitPayload = {
+  //         ...transformedData,
+  //         images: newImages, // New images to upload
+  //         retain_images: retainedImages, // IDs of images to keep
+  //       };
+
+  //       const unitId = await editUnitApi(props.data.id, editUnitPayload);
+  //       if (unitId) {
+  //         window.dispatchEvent(new Event("refetchSingleProperty"));
+  //         const unitData = await getUnitById(unitId);
+  //         if (unitData) {
+  //           editUnit(props.index, unitData);
+  //         }
+  //       }
+  //     }
+  //     props.setIsEditing(false);
+  //   }
+
+  //   setSubmitLoading(false);
+  //   if (setParentSubmitLoading) setParentSubmitLoading(false);
+  // };
+  // SCOLL TO PICTURES
+
   const handleSubmit = async (formData: Record<string, any>) => {
     if (!propertyId) return;
-    // if (propertyType !== "facility" && state.images.length === 0) {
-    //   toast.warning("Please add at least one picture");
-    //   return;
-    // }
-
-    // REQUIRE AT LEAST ONE PICTURE FOR RENTAL EDIT/CREATE
     if (
       propertyType !== "facility" &&
       (!state.imageFiles || state.imageFiles.length === 0)
@@ -154,7 +288,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       return;
     }
 
-    // Validate that numeric fields contain digits
+    // Validate numeric fields
     const hasNoDigits = (str: string) => !/\d/.test(str);
     if (
       (formData.number_of && hasNoDigits(formData.number_of)) ||
@@ -168,115 +302,109 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     if (setParentSubmitLoading) setParentSubmitLoading(true);
     convertYesNoToBoolean(formData, yesNoFields);
 
-    // Transform the form data into the API payload
     const transformedData = transformUnitFormData(
       formData,
       state.imageFiles,
       propertyId,
-      props.empty ? [] : props.data.images // Pass original images when editing
+      props.empty ? [] : props.data.images
     );
 
-    if (props.empty) {
-      // Handle creation of a new unit
-      if (!propertyId) {
-        toast.error("Property ID is missing.");
-        setSubmitLoading(false);
-        if (setParentSubmitLoading) setParentSubmitLoading(false);
-        return;
-      }
-      const unitId = await createUnit(propertyId, transformedData);
-      if (unitId) {
-        if (saveClick) {
-          setSubmitLoading(false);
-          if (setParentSubmitLoading) setParentSubmitLoading(false);
-          resetForm();
-          formRef.current?.reset();
-          router.push("/management/properties/");
-          return;
-        }
-        const unitData = await getUnitById(unitId);
-        if (unitData) {
-          if (duplicate?.val) {
-            addUnit(unitData, duplicate.count);
-            // setDuplicate({
-            //   val: false,
-            //   count: 1,
-            // });
-            props.hideEmptyForm();
-          } else {
-            addUnit(unitData);
-          }
-          formRef.current?.reset();
-          resetForm();
-          if (clickedNo) {
-            setTimeout(() => {
-              setClickedNo?.(false);
-            }, 0);
-          }
-        }
-      }
-    } else {
-      if (props.data.notYetUploaded) {
+    try {
+      if (props.empty) {
+        // Handle creation of a new unit
         if (!propertyId) {
           toast.error("Property ID is missing.");
-          setSubmitLoading(false);
-          if (setParentSubmitLoading) setParentSubmitLoading(false);
           return;
         }
-        // Handle creation of a unit that hasn’t been uploaded yet
         const unitId = await createUnit(propertyId, transformedData);
         if (unitId) {
+          if (saveClick) {
+            const unitData = await getUnitById(unitId);
+            if (unitData) {
+              setShouldRedirect(true); // Set redirect only after success
+              resetForm();
+              formRef.current?.reset();
+              return;
+            }
+          }
           const unitData = await getUnitById(unitId);
           if (unitData) {
-            editUnit(props.index, unitData);
+            if (duplicate?.val) {
+              addUnit(unitData, duplicate.count);
+              props.hideEmptyForm();
+            } else {
+              addUnit(unitData);
+            }
+            formRef.current?.reset();
+            resetForm();
+            if (clickedNo) {
+              setTimeout(() => {
+                setClickedNo?.(false);
+              }, 0);
+            }
           }
         }
       } else {
-        // Handle editing an existing unit
-        const { newImages, retainedImages } = state.imageFiles.reduce<{
-          newImages: File[];
-          retainedImages: string[];
-        }>(
-          (acc, image) => {
-            if (image instanceof File) {
-              // New images uploaded during this edit
-              acc.newImages.push(image);
-            } else if (typeof image === "string") {
-              // Existing images to retain (match by path)
-              const matchingImage = props.data.images.find(
-                (img) => img.path === image
-              );
-              if (matchingImage) {
-                acc.retainedImages.push(matchingImage.id);
-              }
+        if (props.data.notYetUploaded) {
+          if (!propertyId) {
+            toast.error("Property ID is missing.");
+            return;
+          }
+          const unitId = await createUnit(propertyId, transformedData);
+          if (unitId) {
+            const unitData = await getUnitById(unitId);
+            if (unitData) {
+              editUnit(props.index, unitData);
+              setShouldRedirect(true); // Set redirect only after success
             }
-            return acc;
-          },
-          { newImages: [], retainedImages: [] }
-        );
+          }
+        } else {
+          const { newImages, retainedImages } = state.imageFiles.reduce<{
+            newImages: File[];
+            retainedImages: string[];
+          }>(
+            (acc, image) => {
+              if (image instanceof File) {
+                acc.newImages.push(image);
+              } else if (typeof image === "string") {
+                const matchingImage = props.data.images.find(
+                  (img) => img.path === image
+                );
+                if (matchingImage) {
+                  acc.retainedImages.push(matchingImage.id);
+                }
+              }
+              return acc;
+            },
+            { newImages: [], retainedImages: [] }
+          );
 
-        const editUnitPayload = {
-          ...transformedData,
-          images: newImages, // New images to upload
-          retain_images: retainedImages, // IDs of images to keep
-        };
+          const editUnitPayload = {
+            ...transformedData,
+            images: newImages,
+            retain_images: retainedImages,
+          };
 
-        const unitId = await editUnitApi(props.data.id, editUnitPayload);
-        if (unitId) {
-          window.dispatchEvent(new Event("refetchSingleProperty"));
-          const unitData = await getUnitById(unitId);
-          if (unitData) {
-            editUnit(props.index, unitData);
+          const unitId = await editUnitApi(props.data.id, editUnitPayload);
+          if (unitId) {
+            window.dispatchEvent(new Event("refetchSingleProperty"));
+            const unitData = await getUnitById(unitId);
+            if (unitData) {
+              editUnit(props.index, unitData);
+              setShouldRedirect(true); // Set redirect only after success
+            }
           }
         }
+        props.setIsEditing(false);
       }
-      props.setIsEditing(false);
+    } catch (error) {
+      toast.error("An error occurred while saving the unit.");
+    } finally {
+      setSubmitLoading(false);
+      if (setParentSubmitLoading) setParentSubmitLoading(false);
     }
-
-    setSubmitLoading(false);
-    if (setParentSubmitLoading) setParentSubmitLoading(false);
   };
-  // SCOLL TO PICTURES
+
   useEffect(() => {
     if (unitPicturesRef.current) {
       unitPicturesRef.current.scrollIntoView({

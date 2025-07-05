@@ -275,7 +275,6 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           </div>
         </LandlordTenantInfoBox>
 
-        {/* {tenant?.user_tag === "mobile" && ( */}
         {IS_MOBILE && (
           <LandlordTenantInfo
             info={{
@@ -288,30 +287,12 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           />
         )}
 
-        {/* // )} */}
-
+        {/* STATEMENTS */}
         {Object.keys(otherData).map((key, idx) => (
           <LandlordTenantInfo key={idx} heading={key} info={otherData[key]} />
         ))}
         {tenant?.user_tag === "web" && <NotesInfoBox notes={tenant.notes} />}
       </div>
-      <LandlordTenantInfoSection title="current rent">
-        {tenant?.current_rent?.length === 0 ? (
-          <p className="text-center text-gray-500 text-md py-4">
-            Tenant does not have any rent yet!
-          </p>
-        ) : (
-          tenant?.current_rent?.map((rent, index) => (
-            <UnitItem
-              key={index}
-              {...rent}
-              tenantId={tenant?.id}
-              cautionDeposit={String(rent.caution_deposit)}
-              tenantAgent={tenant?.user_tag}
-            />
-          ))
-        )}
-      </LandlordTenantInfoSection>
       <SectionContainer
         heading="Statement"
         {...((tenant?.statement?.length ?? 0) > 0 && {
@@ -332,6 +313,27 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           />
         )}
       </SectionContainer>
+
+      {/* CURRENT RENTS */}
+      <LandlordTenantInfoSection title="current rent">
+        {tenant?.current_rent?.length === 0 ? (
+          <p className="text-center text-gray-500 text-md py-4">
+            Tenant does not have any rent yet!
+          </p>
+        ) : (
+          tenant?.current_rent?.map((rent, index) => (
+            <UnitItem
+              key={index}
+              {...rent}
+              tenantId={tenant?.id}
+              page="tenant-profile"
+              cautionDeposit={String(rent.caution_deposit)}
+              tenantAgent={tenant?.user_tag}
+            />
+          ))
+        )}
+      </LandlordTenantInfoSection>
+
       {tenant?.user_tag === "mobile" && (
         <TenantEditContext.Provider value={{ data: tenant }}>
           <TenantEditAttachmentSection />
@@ -386,7 +388,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
       </LandlordTenantInfoSection>
 
       <LandlordTenantInfoSection title="previous rent">
-        <div className="opacity-40 pointer-events-none">
+        <div className="pointer-events-none custom-flex-col gap-4">
           {tenant?.previous_rent?.length === 0 ? (
             <p className="text-center text-gray-500 text-lg py-4">
               Tenant does not have any previous rent yet
@@ -396,9 +398,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <UnitItem
                 key={index}
                 {...rent}
+                noActionBtn
                 tenantId={tenant?.id}
                 cautionDeposit={String(rent.caution_deposit)}
                 tenantAgent={tenant?.user_tag}
+                page="tenant-profile"
               />
             ))
           )}

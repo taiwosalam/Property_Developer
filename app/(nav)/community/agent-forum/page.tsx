@@ -28,6 +28,7 @@ import { transformToThreadCardProps } from "./data";
 import ServerError from "@/components/Error/ServerError";
 import { ThreadSkeletonLoader } from "./components";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import PropertyRequestPageLoader from "@/components/Loader/property-request-page-loader";
 
 interface ThreadApiResponse {
   data: any[];
@@ -193,13 +194,18 @@ const AgentCommunityPage = () => {
   // THREADS DATA FORMATTED FOR THREADCARD
   const threads = transformToThreadCardProps(data);
 
-  if (loading) return <PageCircleLoader />;
+  if (loading)
+    return (
+      <PropertyRequestPageLoader
+        threadCard
+        pageTitle="Agent Community"
+        statCardsLength={1}
+      />
+    );
 
   if (isNetworkError) return <NetworkError />;
 
   if (error) return <ServerError error={error} />;
-  const alreadylod = true;
-  console.log("isLikeDislikeLoading", isLikeDislikeLoading);
   return (
     <div className="space-y-7">
       <div className="flex gap-5 flex-wrap items-center justify-between">

@@ -55,7 +55,7 @@ export interface CompanySummary {
   total_staff: number;
   total_property: number;
   total_unit: number;
-  total_review: number;
+  total_reviews: number;
   contact_details: {
     phone_numbers: string[];
   };
@@ -79,7 +79,7 @@ export interface CompanySummary {
     property_for_rent: number;
     hospitality_property: number;
     completed_transaction: number;
-    total_review: number;
+    total_reviews: number;
     total_branches: number;
     total_staff: number;
     total_unit_managing: number;

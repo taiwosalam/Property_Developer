@@ -27,6 +27,7 @@ import {
   getPropertyTenants,
   parseFormattedNumber,
   PropertyTenantResponse,
+  PropertyTenantsApiResponse,
 } from "./data";
 import SelectWithImage from "@/components/Form/Select/select-with-image";
 import { AuthForm } from "@/components/Auth/auth-components";
@@ -43,7 +44,7 @@ const CreateInvoicePage = () => {
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false);
   const [tenantLoading, setTenantLoading] = useState(false);
-  const [tenantsData, setTenantsData] = useState<PropertyTenantResponse | null>(
+  const [tenantsData, setTenantsData] = useState<PropertyTenantsApiResponse | null>(
     null
   );
   const [tenantsError, setTenantsError] = useState<string | null>(null);
@@ -105,11 +106,12 @@ const CreateInvoicePage = () => {
   }, [selectedProperty]);
 
   const TENANT_OPTIONS =
-    tenantsData?.data.map((t) => ({
+    tenantsData?.tenants.map((t) => ({
       value: t.id,
       label: t.name,
       icon: t.picture,
     })) || [];
+
 
   const { data, loading, error, isNetworkError } =
     useFetch<SinglePropertyResponse>(

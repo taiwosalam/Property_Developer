@@ -81,8 +81,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const selectedLandlordId = useGlobalStore((s) => s.selectedLandlordId);
 
-  console.log("propertyDetails", propertyDetails);
-  console.log("propertySettings", propertySettings);
+  
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
@@ -276,6 +275,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     [landlordsData]
   );
 
+  console.log("landlordsData", landlordsData)
   const inventoryOptions =
     branchData?.inventory?.data?.data?.map((inventory: any) => ({
       value: inventory.id,

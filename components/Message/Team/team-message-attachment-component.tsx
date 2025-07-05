@@ -157,7 +157,7 @@ export const MessageDocumentComponent = ({ id }: { id: string }) => {
     if (!file) return;
     const payload = {
       content: null,
-      content_type: "document",
+      content_type: "file",
       file: file,
       //receiver_type: "user"
     };

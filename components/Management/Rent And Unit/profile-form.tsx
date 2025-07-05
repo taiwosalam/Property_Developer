@@ -279,7 +279,7 @@ export const ProfileForm: React.FC<{
     // { label: "Mobile Notification", key: "mobile_notification" },
     { label: "SMS Alert", key: "sms_alert" },
     // { label: "Email Alert", key: "email_alert" },
-    { label: "Rent Agreement", key: "rent_agreement" },
+    ...(isRental ? [{ label: "Rent Agreement", key: "rent_agreement" }] : []),
   ];
 
   // Non-naira currency message
@@ -387,7 +387,7 @@ export const ProfileForm: React.FC<{
       {/* PAYMENT CONFIRMATION TEXTS */}
       <PaymentConfirmationText
         isWebUser={isWebUser}
-        isRental={!!isRental}
+        isRental={isRental}
         nonNaira={nonNaira}
         selectedOptions={selectedOptions}
         currency={currency}
