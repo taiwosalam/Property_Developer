@@ -218,7 +218,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                           {reviews?.total_dislike}
                         </p>
                       </div>
-                      <p className="text-xs text-[#01BA4C]">Neutral</p>
+                      <p className="text-xs text-[#01BA4C]">Positive</p>
                     </div>
 
                     <div
@@ -237,7 +237,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                         <p className="text-lg text-[#FFBB53]">
                           {(reviews?.neutral_count ?? 0) < 0
                             ? 0
-                            : reviews?.neutral_count ?? 0}
+                            : reviews?.neutral_count ?? null}
                         </p>
                       </div>
                       <p className="text-xs text-[#FFBB53]">Neutral</p>
@@ -261,7 +261,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                           {reviews?.total_like}
                         </p>
                       </div>
-                      <p className="text-xs text-[#E9212E]">Positive</p>
+                      <p className="text-xs text-[#E9212E]">Negative</p>
                     </div>
                   </div>
                   <Input

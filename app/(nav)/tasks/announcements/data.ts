@@ -26,11 +26,37 @@ export const createAnnouncement = async (formData: FormData) => {
   }
 };
 
+export const updateAnnouncement = async (formData: FormData, id: string) => {
+  try {
+    const res = await api.post(`/announcements/${id}`, formData);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchAnnouncement"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const deleteAnnouncement = async (id: string) => {
+  try {
+    const res = await api.delete(`/announcements/${id}`);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchAnnouncement"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const postLikeOrDislike = async (id: string, route: string) => {
   try {
     const res = await api.post(`announcements/${id}/${route}`);
     if (res.status === 200 || res.status === 201) {
-       window.dispatchEvent(new Event("dispatchAnnouncement"));
+      window.dispatchEvent(new Event("dispatchAnnouncement"));
       return true;
     }
   } catch (error) {

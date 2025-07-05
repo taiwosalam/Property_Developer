@@ -3,6 +3,10 @@ import { XIcon } from "@/public/icons/icons";
 import type { PropertyRequestModalProps, LabelValuePairProps } from "./types";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { empty } from "@/app/config";
+import { useGlobalStore } from "@/store/general-store";
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
   return (
@@ -32,7 +36,34 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
   location,
   createdAt,
   updatedAt,
+  userId,
+  pictureSrc
 }) => {
+  const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
+
+
+  const goToMessage = () => {
+    if (!userId) {
+      toast.warning("User ID not Found!");
+      return;
+    }
+
+    // Set the user data in the global store
+    const newMessageUserData = {
+      branch_id: 0,
+      id: userId,
+      imageUrl: pictureSrc || empty,
+      name: userName || "Unknown User",
+      position: "agent",
+    };
+    setGlobalStore("messageUserData", newMessageUserData);
+
+    // Redirect to the messaging page
+    router.push(`/messages/${userId}`);
+  };
+
   return (
     <ModalPreset title="Property Request Details">
       <div className="space-y-2 text-base">
@@ -59,6 +90,16 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
             </p>
           </TruncatedText>
         </div>
+
+        <button
+          // onClick={() => router.push(`/messages/${props?.userId}`)}
+          onClick={goToMessage}
+          type="button"
+          aria-label="Message"
+          className=" flex justify-end ml-auto border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1 bg-brand-9 text-white mt-4"
+        >
+          Message
+        </button>
       </div>
     </ModalPreset>
   );

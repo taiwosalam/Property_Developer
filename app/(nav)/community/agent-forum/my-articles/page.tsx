@@ -24,6 +24,7 @@ import ThreadCard from "@/components/Community/ThreadCard";
 import ServerError from "@/components/Error/ServerError";
 import { ThreadSkeletonLoader } from "../components";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import PropertyRequestPageLoader from "@/components/Loader/property-request-page-loader";
 
 interface ThreadApiResponse {
   data: any[];
@@ -180,7 +181,15 @@ const MyArticlePage = () => {
 
   const threads = transformToThreadCardProps(data);
 
-  if (loading) return <PageCircleLoader />;
+  if (loading)
+    return (
+      <PropertyRequestPageLoader
+        threadCard
+        pageTitle="My Articles"
+        statCardsLength={1}
+      />
+    );
+
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 

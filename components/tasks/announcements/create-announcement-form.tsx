@@ -12,14 +12,28 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import useFetch from "@/hooks/useFetch";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { toast } from "sonner";
+import { useParams, useRouter } from "next/navigation";
+import {
+  deleteAnnouncement,
+  updateAnnouncement,
+} from "@/app/(nav)/tasks/announcements/data";
 
 const MAX_IMAGES = 4;
+
 const CreateAnnouncementForm: React.FC<{
   handleSubmit: (data: any) => void;
   editMode?: boolean;
   isLoading?: boolean;
 }> = ({ handleSubmit, editMode = false, isLoading }) => {
   const { company_id } = usePersonalInfoStore();
+  const { announcementId } = useParams();
+
+  const {
+    data: announcementData,
+    silentLoading: silentLoadingAnnouncement,
+    loading: loadingAnnouncement,
+    error,
+  } = useFetch<any>(`/announcements/${announcementId}`);
 
   const [selectedBranch, setSelectedBranch] = useState<{
     id: number;
@@ -80,6 +94,15 @@ const CreateAnnouncementForm: React.FC<{
 
   const [imageFiles, setImageFiles] = useState<File[]>([]); // Store actual File objects
   const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Store Base64 for previews
+
+  useEffect(() => {
+    if (announcementData && editMode) {
+      const defaultImage = announcementData?.announcement?.images?.map(
+        (image: { url: string }) => image.url
+      ) as string[];
+      setImagePreviews(defaultImage);
+    }
+  }, [announcementData]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let files = Array.from(e.target.files || []);
@@ -152,10 +175,50 @@ const CreateAnnouncementForm: React.FC<{
     handleSubmit(formData);
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  const paramId = announcementId as string;
+
+  const handleUpdate = async (formData: FormData) => {
+    if (company_id) formData.append("company_id", company_id);
+    formData.append("_method", "PATCH");
+
+    imageFiles.forEach((file, index) => {
+      formData.append(`images[${index}]`, file);
+    });
+
+    try {
+      setIsSubmitting(true);
+      const success = await updateAnnouncement(formData, paramId);
+      if (success) {
+        toast.success("Announcement updated");
+        router.push(`/tasks/announcements/${paramId}/preview`);
+      }
+    } catch (error) {
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteAnnouncement = async () => {
+    setIsSubmitting(true);
+    try {
+      const success = await deleteAnnouncement(paramId);
+      if (success) {
+        toast.success("Announcement deleted");
+        router.push("/tasks/announcements");
+      }
+    } catch (error) {
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <AuthForm
       returnType="form-data"
-      onFormSubmit={onFormSubmit}
+      onFormSubmit={editMode ? handleUpdate : onFormSubmit}
       setValidationErrors={() => {}}
     >
       <div className="flex flex-col gap-y-5 gap-x-[40px] lg:flex-row lg:items-start pb-[200px]">
@@ -241,13 +304,21 @@ const CreateAnnouncementForm: React.FC<{
             placeholder="Add title"
             className="md:col-span-2"
             inputClassName="bg-white"
+            defaultValue={editMode ? announcementData?.announcement?.title : ""}
           />
-          <TextArea id="description" className="md:col-span-2" label="Description"/>
+          <TextArea
+            id="description"
+            className="md:col-span-2"
+            label="Description"
+            defaultValue={
+              editMode ? announcementData?.announcement?.description : ""
+            }
+          />
         </div>
         <div className="lg:flex-1 space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
-            {imagePreviews.length > 0 &&
-              imagePreviews.map((src, index) => (
+            {imagePreviews?.length > 0 &&
+              imagePreviews?.map((src, index) => (
                 <div
                   key={index}
                   className="relative overflow-hidden rounded-lg w-full h-[110px]"
@@ -275,7 +346,7 @@ const CreateAnnouncementForm: React.FC<{
                   </button>
                 </div>
               ))}
-            {imagePreviews.length < MAX_IMAGES && (
+            {imagePreviews?.length < MAX_IMAGES && (
               <label
                 htmlFor="upload"
                 className="px-4 w-full h-[110px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262] dark:text-darkText-1"
@@ -301,26 +372,32 @@ const CreateAnnouncementForm: React.FC<{
             type="url"
             placeholder="https://www.youtube.com/video"
             inputClassName="bg-white"
+            defaultValue={
+              editMode ? announcementData?.announcement?.video_link : ""
+            }
           />
         </div>
       </div>
       <FixedFooter className="flex items-center justify-end gap-4">
         {editMode && (
           <Button
+            disabled={isLoading}
+            onClick={handleDeleteAnnouncement}
             variant="light_red"
             size="custom"
             className="py-2 px-8 font-bold text-sm lg:text-base"
           >
-            Delete Announcement
+            {isLoading ? "Please wait..." : "Delete Announcement"}
           </Button>
         )}
         {editMode ? (
           <Button
+            disabled={isSubmitting}
             type="submit"
             size="custom"
             className="py-2 px-8 font-bold text-sm lg:text-base"
           >
-            Update Announcement
+            {isSubmitting ? "Please wait..." : "Update Announcement"}
           </Button>
         ) : (
           <Button

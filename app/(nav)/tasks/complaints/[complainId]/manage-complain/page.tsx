@@ -56,7 +56,7 @@ const ManageComplain = () => {
       <div className="w-full lg:w-3/5 lg:h-full space-y-10">
         <AboutTaskCard
           aboutCard={pageData?.aboutCard || []}
-          description={pageData?.description|| ""}
+          description={pageData?.description || ""}
           tier_id={pageData?.tier_id}
         />
         <ComplaintsCalendar
@@ -72,16 +72,25 @@ const ManageComplain = () => {
         <TaskStatusProgress
           percentage={pageData?.progress || 0}
           date={pageData?.updated_at}
+          task_bar={{ task_bar: pageData?.task_bar || [] }}
+          task={pageData?.task}
+
         />
       </div>
       <div className="w-full lg:w-2/5 lg:h-full">
         <div className="h-full space-y-10">
           <AttchedImagesGrid images={pageData?.images || []} />
-          <AssignTaskCard />
-          <MessagesFromTask comments={pageData?.comments?.map(comment => ({
-            ...comment,
-            isOwnMessage: userId === comment.userId  // Set this based on your logic to determine if message is from current user
-          })) || []}/>
+          {typeof pageData?.branch_id === "number" && (
+            <AssignTaskCard branchId={pageData.branch_id} />
+          )}
+          <MessagesFromTask
+            comments={
+              pageData?.comments?.map((comment) => ({
+                ...comment,
+                isOwnMessage: userId === comment.userId, // Set this based on your logic to determine if message is from current user
+              })) || []
+            }
+          />
           <Notes notes={pageData?.notes ?? []} />
         </div>
       </div>

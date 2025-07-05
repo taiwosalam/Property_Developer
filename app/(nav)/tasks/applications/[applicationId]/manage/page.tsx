@@ -151,7 +151,7 @@ const ManageApplication = () => {
                 landlord: property_details?.landlord,
                 "full address": `${property_details?.address}`,
                 "unit name": property_details?.unit_name,
-                "account officer": property_details?.account_officer,
+                "account manager": property_details?.account_officer,
                 "total package": formatToNaira(property_details?.total_package),
                 branch: property_details?.branch,
                 "application date": property_details?.application_date,
@@ -172,7 +172,7 @@ const ManageApplication = () => {
                 landlord: "",
                 "full address": "",
                 "unit name": "",
-                "account officer": "",
+                "account manager": "",
                 "total package": "",
                 branch: "",
                 "application date": "",
@@ -195,7 +195,7 @@ const ManageApplication = () => {
 
             <SectionSeparator />
             <div className="w-full">
-              <div className="flex justify-between py-1 w-full">
+              <div className="flex justify-around py-1 w-full">
                 {flag_details?.map((flag, index) => {
                   return (
                     <div className="flex gap-8" key={index}>
@@ -208,7 +208,7 @@ const ManageApplication = () => {
                         </p>
                         {flag.phone && (
                           <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
-                            <Phone fill="currentColor" size={18} />
+                            <Phone fill="currentColor" size={18} strokeWidth={0.75}/>
                             <p>{flag.phone}</p>
                           </div>
                         )}
@@ -314,8 +314,8 @@ const ManageApplication = () => {
             info={{
               state: contact_details?.state,
               address: `${contact_details?.address} ${contact_details?.lga} ${contact_details?.city} ${contact_details?.state}`,
-              "phone number 1": profile_details?.phone,
-              "phone number 2": "--- ---",
+              "phone number 1": contact_details?.phone1 || "--- ---",
+              "phone number 2": contact_details?.phone2 || "--- ---",
             }}
           />
           <LandlordTenantInfo

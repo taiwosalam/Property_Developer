@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import clsx from "clsx";
 import PopupVideoModal from "@/components/VideoPlayer/PopupVideoModal";
+import ReactPlayer from "react-player";
 interface AttachedImagesGridProps {
   images: { src: string; isVideo: boolean }[];
 }
@@ -14,6 +15,7 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
   const [showImages, setShowImages] = useState(true);
   const [screenModal, setScreenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [hasError, setHasError] = useState(false);
 
   const [videoModal, setVideoModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
@@ -97,11 +99,37 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
                 )}
                 {image.isVideo && (
                   <div
-                    className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-10"
+                    className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
                     onClick={() => openModal(index)}
                     role="button"
                   >
-                    <PlayIconButton2 />
+                    <ReactPlayer
+                      controls={false}
+                      //onDisablePIP={}
+                      url={videoUrl}
+                      width="100%"
+                      height="100%"
+                      light={true} // Show thumbnail only
+                      playIcon={
+                        <div className="flex items-center justify-center w-full h-full">
+                          {/* Custom play button (optional) */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-16 w-16 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M8 5v14l11-7L8 5z"
+                            />
+                          </svg>
+                        </div>
+                      }
+                    />
                   </div>
                 )}
               </div>

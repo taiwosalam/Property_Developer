@@ -186,7 +186,7 @@ export const transformPropertyRequestResponse = (
       total_staff: company_summary.details.total_staff,
       total_property: company_summary.total_property,
       total_unit: company_summary.details.total_unit,
-      total_review: company_summary.details.total_reviews,
+      total_reviews: company_summary.details.total_reviews,
       contact_details: {
         phone_numbers: company_summary.contact_details.phone_numbers,
       },
@@ -210,7 +210,7 @@ export const transformPropertyRequestResponse = (
         property_for_rent: company_summary.details.property_for_rent,
         hospitality_property: company_summary.details.hospitality_property,
         completed_transaction: company_summary.details.completed_transaction,
-        total_review: company_summary.details.total_reviews,
+        total_reviews: company_summary.details.total_reviews,
         total_branches: company_summary.details.total_branches,
         total_staff: company_summary.details.total_staff,
         total_unit_managing: company_summary.details.total_unit_managing,

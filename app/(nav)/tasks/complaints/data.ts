@@ -76,7 +76,10 @@ export const transformComplaintsData = (
       content: {
         messageCount: 10,
         linkCount: 8,
-        userAvatars: complaint?.complaint_images,
+        userAvatars:
+          complaint?.comment_users.length > 0
+            ? complaint?.comment_users?.map((image) => image.profile_picture)
+            : [],
         date: complaint?.created_at
           ? dayjs(complaint?.created_at).format("DD MMMM YYYY")
           : "___ ___",

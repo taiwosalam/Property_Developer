@@ -204,7 +204,7 @@ const Units = () => {
 
   if (loading)
     return (
-      <CustomLoader layout="page" statsCardCount={3} pageTitle="Vacant Units" />
+      <CustomLoader layout="page" statsCardCount={3} pageTitle="Listing Units" />
     );
 
   if (isNetworkError) return <NetworkError />;

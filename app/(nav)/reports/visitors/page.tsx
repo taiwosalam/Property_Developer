@@ -81,16 +81,16 @@ const Visitors = () => {
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
-    useEffect(() => {
-      if (apiData) setBranches(apiDataBranch.data);
-      if (staff) {
-        const filterStaff = staff.data.filter(
-          (staff: any) => staff.staff_role === "account officer"
-        );
-        setBranchAccountOfficers(filterStaff);
-      }
-      if (property) setPropertyList(property.data);
-    }, [apiDataBranch, staff, property]);
+  useEffect(() => {
+    if (apiData) setBranches(apiDataBranch.data);
+    if (staff) {
+      const filterStaff = staff.data.filter(
+        (staff: any) => staff.staff_role === "account officer"
+      );
+      setBranchAccountOfficers(filterStaff);
+    }
+    if (property) setPropertyList(property.data);
+  }, [apiDataBranch, staff, property]);
 
   const reportTenantFilterOption = [
     {
@@ -168,7 +168,6 @@ const Visitors = () => {
       if (JSON.stringify(currentProperties) !== JSON.stringify(newProperties)) {
         setPageData(transformedData);
         setVisitorRequestStore("visitorsRequest", newProperties);
-      
       }
     }
   }, [apiData, loading, setVisitorRequestStore]);
@@ -275,19 +274,13 @@ const Visitors = () => {
           ) : (
             <EmptyList
               noButton
-              title="No Property Data Available Yet"
+              title="No Visitor Requests Available Yet"
               body={
                 <p>
-                  Currently, there is no property data available for export.
-                  Once data is added to the system, they will be displayed here
-                  and ready for download or export.
-                  <br />
-                  <br />
-                  <p>
-                    This section will automatically update to show all available
-                    property records as they are created or imported into the
-                    platform.
-                  </p>
+                  There are currently no visitor requests to export. This
+                  section will automatically populate once visitors submit
+                  requests through the platform. As new visitor records are
+                  added, they will appear here for your review and action.
                 </p>
               }
             />

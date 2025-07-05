@@ -15,6 +15,37 @@ export interface PropertyTenantResponse {
   data: PropertyTenant[];
 }
 
+export interface PropertyTenantsApiResponse {
+  status: "success" | "error"; 
+  tenants: Tenant[];
+  message: string;
+}
+
+export interface Tenant {
+  id: number;
+  name: string;
+  email: string;
+  phone: {
+    profile_phone: string;
+    user_phone: string;
+  };
+  picture: string;
+  title: string | null;
+  user_id: number;
+  profile_id: number;
+  branch_id: number | null;
+  company_id: number;
+  is_active: boolean;
+  flags: TenantFlag[];
+  is_flagged: boolean;
+}
+
+export interface TenantFlag {
+  is_flagged: boolean;
+  reason: string | null;
+  flagged_by: string;
+}
+
 export const createInvoice = async (data: any) => {
   try {
     const res = await api.post("/invoice", data);
@@ -46,7 +77,7 @@ export const parseFormattedNumber = (
 
 export const getPropertyTenants = async (id: number) => {
   try {
-    const res = await api.get(`all-tenants/${id}`);
+    const res = await api.get(`all-tenant/${id}`);
     if (res.status === 200) {
       return res.data;
     }

@@ -16,13 +16,13 @@ import user1 from "@/public/empty/user1.svg";
 import user2 from "@/public/empty/user2.svg";
 import user3 from "@/public/empty/user3.svg";
 import api from "@/services/api";
-import {
-  sendMyPropertyRequestCommentReply,
-  togglePropertyRequestLike,
-  togglePropertyRequestLikeComments,
-} from "../../../my-articles/data";
+
 import { toast } from "sonner";
 import { ChevronDownIcon, ChevronUpIcon, Loader2 } from "lucide-react";
+import {
+  sendAnnouncementReply,
+  toggleAnnouncementReaction,
+} from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
 
 export interface CommentProps {
   id: string | number;
@@ -38,7 +38,7 @@ export interface CommentProps {
   user_disliked?: boolean;
 }
 
-const Comment: React.FC<CommentProps> = ({
+const AnnouncementComment: React.FC<CommentProps> = ({
   id,
   name,
   text,
@@ -73,14 +73,14 @@ const Comment: React.FC<CommentProps> = ({
     if (!slug || !content.trim()) {
       return;
     }
+    const commentId = id?.toString();
 
     try {
       setIsSending(true);
-      await sendMyPropertyRequestCommentReply(slug, content, id);
+      await sendAnnouncementReply(commentId, content);
       setContent("");
       setShowInput(false);
     } catch (error) {
-      
     } finally {
       setIsSending(false);
     }
@@ -89,12 +89,11 @@ const Comment: React.FC<CommentProps> = ({
   const handleToggleLike = async (type: string) => {
     try {
       setIsLike(true);
-      const res = await togglePropertyRequestLikeComments(id as string, type);
+      const res = await toggleAnnouncementReaction(id as string, type);
       if (res) {
         setReactionType(type);
       }
     } catch (error) {
-      
     } finally {
       setIsLike(false);
     }
@@ -159,7 +158,9 @@ const Comment: React.FC<CommentProps> = ({
               fill={`${user_disliked ? "#E15B0F" : "none"} `}
               stroke={`${user_disliked ? "#E15B0F" : "#000"} `}
             />
-            <span className="text-xs font-normal">{dislikes}</span>
+            <span className="text-xs font-normal text-[#010A23]">
+              {dislikes}
+            </span>
           </p>
         </button>
       </div>
@@ -226,7 +227,7 @@ const Comment: React.FC<CommentProps> = ({
             (replies.length > 0 && (
               <div className="relative ml-10 pl-5 border-l border-neutral-300">
                 {replies.map((r) => (
-                  <Comment key={r.id} {...r} slug={slug} />
+                  <AnnouncementComment key={r.id} {...r} slug={slug} />
                 ))}
               </div>
             ))}
@@ -236,4 +237,4 @@ const Comment: React.FC<CommentProps> = ({
   );
 };
 
-export default Comment;
+export default AnnouncementComment;

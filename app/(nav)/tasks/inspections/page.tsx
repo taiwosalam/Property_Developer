@@ -226,16 +226,8 @@ const InspectionPage = () => {
                     property listings. Once a potential client submits an
                     inspection request, the details will appear here, allowing
                     you to view and book appointments. <br /> <br />
-                    <p>
-                      This message will automatically disappear once inspection
-                      data becomes available.
-                    </p>{" "}
-                    <br /> <br />
-                    <p>
-                      Need help? Click on your profile icon at the top right
-                      corner and select "Assistance & Support" to learn more
-                      about how this page works.
-                    </p>
+                   
+                    <br /> 
                   </p>
                 }
               />

@@ -26,6 +26,7 @@ import { FilterResult, InspectionRequestParams } from "../inspections/data";
 import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "../maintenance/data";
 import dayjs from "dayjs";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
@@ -53,8 +54,6 @@ const AnnouncementPage = () => {
   } = useFetch<AnnouncementApiResponse>(`/announcements`, config);
   useRefetchOnEvent("dispatchAnnouncement", () => refetch({ silent: true }));
 
-  const [isLiking, setIsLiking] = useState(false);
-
   useEffect(() => {
     if (apiData) {
       setAnnouncements(apiData?.data);
@@ -75,7 +74,7 @@ const AnnouncementPage = () => {
         queryParams.account_officer_id = accountOfficer.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
       if (branches.length > 0) queryParams.branch_id = status.join(",");
-      
+
       if (property.length > 0) queryParams.property_ids = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -121,7 +120,10 @@ const AnnouncementPage = () => {
     })
   );
 
-  if (loading) <CardsLoading />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Announcement" statsCardCount={1} />
+    );
   if (error) <ServerError error={error} />;
   if (isNetworkError) <NetworkError />;
 
@@ -131,9 +133,9 @@ const AnnouncementPage = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Announcement"
-            newData={0}
+            newData={apiData?.total_announcement_month || 0}
             colorScheme={1}
-            total={0}
+            total={apiData?.total_announcement || 0}
           />
           {/* <ManagementStatistcsCard
             title="Examine"
@@ -199,15 +201,6 @@ const AnnouncementPage = () => {
               keep everyone informed about important updates, events, or changes
               related to the properties you manage. They can also be used to
               share company news on the domain website.
-              <br />
-              <br />
-              This message will automatically disappear once announcements
-              records are added.
-              <br />
-              <br />
-              Need assistance? Click your profile icon in the top right corner
-              and select &quot;Assistance & Support&quot; for help on using this
-              page.
             </p>
           }
         />

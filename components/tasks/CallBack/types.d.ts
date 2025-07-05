@@ -101,12 +101,27 @@ export interface PropertyRequestCardProps extends RequestCardBaseProps {
 
 export interface DepositRequestCardProps extends RequestCardBaseProps {
   cardType: "deposit";
-  status: "completed" | "pending";
+  status: "completed" | "pending" | "progress";
   propertyName: string;
   unitDetails: string;
   state: string;
   amount: string;
   branch: string;
+  request_from?: string;
+  is_inventory?: boolean;
+  is_examine?: boolean;
+  is_maintain?: boolean;
+  inventory_at?: string | null;
+  examined_at?: string | null;
+  maintain_at?: string | null;
+  rejected_at?: string | null;
+  inventory_by?: string | null;
+  examine_by?: string | null;
+  maintain_by?: string | null;
+  created_at?: string | null;
+  refunded_amount?: string | null;
+  resolved_by?: string | null;
+  resolved_date?: string | null;
   cardViewDetails: {
     label: string;
     accessor: keyof DepositRequestCardProps;

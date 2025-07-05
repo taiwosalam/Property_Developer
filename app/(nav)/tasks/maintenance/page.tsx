@@ -197,7 +197,7 @@ const Maintenance = () => {
                 <br />
                 <br />
                 Need assistance? Click your profile icon in the top right corner
-                and select "Assistance & Support" for help on using this page.
+                and select &apos;Assistance & Support&apos; for help on using this page.
               </p>
             }
           />

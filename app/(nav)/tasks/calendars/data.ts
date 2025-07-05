@@ -33,6 +33,8 @@ type CalendarEventType =
   | "inspections"
   | "complaints"
   | "due rent"
+  | "examines"
+  | "applications"
   | "maintenance"
   | "multiple event";
 
@@ -42,6 +44,8 @@ const isValidEventType = (type: string): type is CalendarEventType => {
     "inspections",
     "complaints",
     "due rent",
+    "examines",
+    "applications",
     "maintenance",
     "multiple event",
   ].includes(type);

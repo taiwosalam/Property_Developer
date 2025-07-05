@@ -141,7 +141,8 @@ const Notes = ({ notes }: NoteProps) => {
               Created by:
             </span>{" "}
             <span className="text-brand-9 capitalize">
-              {currentNote?.note_by}. {currentNote?.date} ({currentNote?.time})
+              {currentNote?.note_by?.toLowerCase()}. {currentNote?.date} (
+              {currentNote?.time})
             </span>
           </p>
           <hr className="my-2 border-t border-dashed border-brand-9" />

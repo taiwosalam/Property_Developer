@@ -190,15 +190,16 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 : props.status === "pending" || props.status === "inactive"
                 ? "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
                 : props.status === "in-progress" ||
-                  props.status === "checked_in"
+                  props.status === "checked_in" ||
+                  props.status === "progress"
                 ? "bg-[rgba(140,98,255,0.19)] border-[rgba(140,98,255,0.19)] text-[#9747FF]"
                 : props.status === "decline" || props.status === "cancelled"
                 ? "bg-[rgba(233,33,46,0.10)] border-[rgba(233,33,46,0.10)] text-status-error-primary"
                 : ""
             )}
           >
-            {props.status === "checked_in"
-              ? "In Progress"
+            {props.status === "checked_in" || props.status === "progress"
+              ? "In-Progress"
               : props.status === "cancelled"
               ? "Declined"
               : props.status}
@@ -312,6 +313,18 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               Message
             </button>
           ))}
+
+        {cardType === "property" && (
+          <button
+            // onClick={() => router.push(`/messages/${props?.userId}`)}
+            onClick={goToMessage}
+            type="button"
+            aria-label="Message"
+            className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
+          >
+            Message
+          </button>
+        )}
         {cardType === "agent-community" ? (
           <div className="flex items-center gap-2">
             {!props.user && (
@@ -394,6 +407,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               createdAt={props.createdAt}
               updatedAt={props.updatedAt}
               lga={props.lga}
+              userId={props?.userId}
+              pictureSrc={props?.pictureSrc}
               propertyType={props.propertyType}
               category={props.category}
               minBudget={props.minBudget}
@@ -412,6 +427,22 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               unitDetails={props.unitDetails}
               branch={props.branch}
               amount={props.amount}
+              status={props?.status}
+              is_examine={props?.is_examine}
+              is_inventory={props?.is_inventory}
+              is_maintain={props?.is_maintain}
+              maintain_at={props?.maintain_at}
+              examine_by={props?.examine_by}
+              rejected_at={props?.rejected_at}
+              created_at={props?.created_at}
+              request_from={props?.request_from}
+              examined_at={props?.examined_at}
+              maintain_by={props?.maintain_by}
+              inventory_at={props?.inventory_at}
+              inventory_by={props?.inventory_by}
+              refunded_amount={props?.refunded_amount}
+              resolved_by={props?.resolved_by}
+              resolved_date={props?.resolved_date}
             />
           ) : null}
         </ModalContent>
