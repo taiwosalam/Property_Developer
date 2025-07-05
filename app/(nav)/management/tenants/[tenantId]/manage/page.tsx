@@ -326,6 +326,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               key={index}
               {...rent}
               tenantId={tenant?.id}
+              page="tenant-profile"
               cautionDeposit={String(rent.caution_deposit)}
               tenantAgent={tenant?.user_tag}
             />
@@ -387,7 +388,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
       </LandlordTenantInfoSection>
 
       <LandlordTenantInfoSection title="previous rent">
-        <div className="opacity-40 pointer-events-none">
+        <div className="pointer-events-none custom-flex-col gap-4">
           {tenant?.previous_rent?.length === 0 ? (
             <p className="text-center text-gray-500 text-lg py-4">
               Tenant does not have any previous rent yet
@@ -397,9 +398,11 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <UnitItem
                 key={index}
                 {...rent}
+                noActionBtn
                 tenantId={tenant?.id}
                 cautionDeposit={String(rent.caution_deposit)}
                 tenantAgent={tenant?.user_tag}
+                page="tenant-profile"
               />
             ))
           )}
