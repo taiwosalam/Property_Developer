@@ -66,19 +66,15 @@ export interface IReviewCard {
 }
 export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
   const { data: reviews } = data;
+
+  const total_like = reviews.filter((r) => r.thumbs_up_count > 0).length;
+  const total_dislike = reviews.filter((r) => r.thumbs_down_count > 0).length;
+  const neutral_count = reviews.filter((r) => r.neutral_count > 0).length;
+
   return {
-    total_like: reviews.reduce(
-      (sum, review) => sum + (review.thumbs_up_count || 0),
-      0
-    ),
-    total_dislike: reviews.reduce(
-      (sum, review) => sum + (review.thumbs_down_count || 0),
-      0
-    ),
-    neutral_count: reviews.reduce(
-      (sum, review) => sum + (review.neutral_count || 0),
-      0
-    ),
+    total_like,
+    total_dislike,
+    neutral_count,
     reviews: reviews.map((review) => {
       return {
         id: review.id,
@@ -92,7 +88,7 @@ export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
         review: review?.review || "",
         up_vote: review?.thumbs_up_count || 0,
         down_vote: review?.thumbs_down_count || 0,
-        reply_count: review?.replies_count || 0,
+        reply_count: review?.comments.length || 0,
         tier_id: review?.user?.tier_id,
         timestamp: review?.time_ago,
       };

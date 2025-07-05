@@ -67,10 +67,16 @@ const ComplaintsPage = () => {
 
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
   const propertyOptions =
-    propertiesData?.data.properties.data.map((property) => ({
-      label: property.title,
-      value: property.id.toString(),
-    })) || [];
+    propertiesData?.data.properties.data
+      // Filter for unique property titles
+      .filter(
+        (property, index, self) =>
+          self.findIndex((p) => p.title === property.title) === index
+      )
+      .map((property) => ({
+        label: property.title,
+        value: property.id.toString(),
+      })) || [];
 
   const { data: tenantsData } = useFetch<any>("/tenants");
 
@@ -219,7 +225,7 @@ const ComplaintsPage = () => {
       </div>
       <FilterBar
         hasGridListToggle={false}
-        azFilter
+        //azFilter
         pageTitle="Complains"
         aboutPageModalData={{
           title: "Complains",
@@ -229,7 +235,7 @@ const ComplaintsPage = () => {
         searchInputPlaceholder="Search for Task"
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
-        onSort={handleSort}
+        //onSort={handleSort}
         appliedFilters={appliedFilters}
         isDateTrue
         filterOptionsMenu={[

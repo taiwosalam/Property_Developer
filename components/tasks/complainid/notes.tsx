@@ -14,6 +14,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
 interface NoteProps {
+  taskStatus?: boolean
   notes?: {
     date: string;
     text: string;
@@ -23,7 +24,7 @@ interface NoteProps {
   }[];
 }
 
-const Notes = ({ notes }: NoteProps) => {
+const Notes = ({ notes, taskStatus }: NoteProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -156,6 +157,7 @@ const Notes = ({ notes }: NoteProps) => {
           </TruncatedText>
           <div className="flex items-center justify-between mt-6">
             <Button
+              disabled={taskStatus}
               size="xs_medium"
               className="px-4 py-2"
               onClick={handleEditClick}

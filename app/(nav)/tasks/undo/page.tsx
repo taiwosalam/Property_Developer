@@ -27,7 +27,11 @@ import { error } from "console";
 import dayjs from "dayjs";
 import { BranchStaff } from "../../(messages-reviews)/messages/types";
 import data from "../../reports/landlord/page";
-import { FilterResult, BranchFilter, PropertyFilter } from "../../reports/tenants/types";
+import {
+  FilterResult,
+  BranchFilter,
+  PropertyFilter,
+} from "../../reports/tenants/types";
 import { transformUnitListData } from "../../reports/units/types";
 import Link from "next/link";
 import TableMenu from "@/components/Table/table-menu";
@@ -199,9 +203,9 @@ const Undo = () => {
   if (loading)
     return <CustomLoader layout="page" pageTitle="Undo Report" view="table" />;
   if (isNetworkError) return <NetworkError />;
-   if (error) {
-      return <ServerError error={error} />;
-    }
+  if (error) {
+    return <ServerError error={error} />;
+  }
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
@@ -246,11 +250,7 @@ const Undo = () => {
                     There are currently no deleted records available for
                     restoration or permanent deletion. Once any data is removed
                     from the system, it will automatically appear here for your
-                    review and action. <br /> <br />
-                    <p>
-                      This section will display all deleted data as soon as such
-                      records become available.
-                    </p>
+                    review and action.
                   </p>
                 }
               />

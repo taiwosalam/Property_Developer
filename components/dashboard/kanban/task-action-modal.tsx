@@ -20,6 +20,7 @@ interface ComplaintData {
   senderVerified: boolean;
   complaintTitle: string;
   propertyName: string;
+  unitName?: string;
   propertyAddress: string;
   accountOfficer: string;
   branch: string;
@@ -42,6 +43,7 @@ const TaskModal = ({
     senderVerified,
     complaintTitle,
     propertyName,
+    unitName,
     propertyAddress,
     accountOfficer,
     branch,
@@ -140,6 +142,12 @@ const TaskModal = ({
                 Property Name:
               </p>
               <span className="dark:text-darkText-2">{propertyName}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-text-tertiary dark:text-darkText-1 w-[140px] line-clamp-2">
+                Unit Name:
+              </p>
+              <span className="dark:text-darkText-2 capitalize">{unitName}</span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary dark:text-darkText-1 w-[140px]">

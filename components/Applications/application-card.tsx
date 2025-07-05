@@ -73,7 +73,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
       <div className="custom-flex-col gap-4">
         <div className="custom-flex-col gap-1">
           <p
-            className={`text-text-quaternary dark:text-white text-base font-bold ${secondaryFont.className}`}
+            className={`text-text-quaternary dark:text-white text-base font-bold capitalize ${secondaryFont.className}`}
           >
             {data?.property_name}
           </p>

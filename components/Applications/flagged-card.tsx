@@ -48,28 +48,31 @@ export const FlaggedCard = ({ ...props }: IFaggerCard) => {
                 {props?.email}
               </p>
 
-              <p className="font-semibold text-xs text-[#8D8D8D] dark:text-darkText-2 text-ellipsis line-clamp-1 py-2">
-                {props?.phone}
-              </p>
-              <button className="bg-opacity-40 text-brand-9 py-1 rounded-lg bg-brand-5 px-3 h-6 text-sm flex justify-center items-center">
+              <div className="flex items-center gap-2">
+                <p className="font-semibold text-xs text-[#8D8D8D] dark:text-darkText-2 text-ellipsis line-clamp-1 py-2">
+                  {props?.phone}
+                </p>
+              </div>
+
+              <button className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-6 text-sm flex justify-center items-center">
                 Message
               </button>
             </div>
           </div>
 
           <div className="border-l border-slate-300 flex-1">
-            <div className="pl-4">
-              <p className="text-red-500 dark:bg-red-200 py-2 capitalize">
+            <div className="pl-4 flex flex-col justify-between h-full gap-1">
+              <p className="text-red-500 dark:bg-red-200 capitalize">
                 {props?.reason}
               </p>
-              <p className="text-blue-600">
+              {/* <p className="text-blue-600">
                 Kindly advice the applicant to resolve any outstanding issues
                 with their previous manager in order to lift the flag on their
                 account.
-              </p>
+              </p> */}
 
-              <div className="pb-2">
-                <p className="text-lg text-black dark:text-slate-300 font-bold py-2">
+              <div className="">
+                <p className="text-lg text-black dark:text-slate-300 font-bold">
                   {props?.company_name}
                 </p>
               </div>

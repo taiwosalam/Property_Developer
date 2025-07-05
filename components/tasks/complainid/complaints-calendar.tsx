@@ -23,8 +23,9 @@ import { createReminder } from "@/app/(nav)/tasks/complaints/[complainId]/manage
 const ComplaintsCalendar: React.FC<{
   header: string;
   buttonText: string;
+  taskStatus?: boolean,
   //   modalContent: React.ReactNode;
-}> = ({ header, buttonText }) => {
+}> = ({ header, buttonText, taskStatus }) => {
   const today = new Date();
   const [activeDate, setActiveDate] = useState(today);
   const [currentDate, setCurrentDate] = useState(startOfMonth(today));
@@ -75,6 +76,7 @@ const ComplaintsCalendar: React.FC<{
           <ComplaintsCalendarFooter
             activeDate={activeDate}
             buttonText={buttonText}
+            taskStatus={taskStatus}
             // modalContent={modalContent}
           />
         </div>

@@ -110,6 +110,7 @@ export const transformComplaintDetails = (
     senderVerified: data?.complaint.tier ? true : false,
     complaintTitle: data?.complaint?.title,
     propertyName: data?.complaint?.property_title,
+    unitName: data?.complaint?.unit_name,
     propertyAddress: `${data?.complaint?.property_address} ${data?.complaint?.property_lga} ${data?.complaint?.property_state}`,
     accountOfficer: data?.complaint?.account_officer ?? "___ ___",
     branch: data?.complaint?.branch_name,

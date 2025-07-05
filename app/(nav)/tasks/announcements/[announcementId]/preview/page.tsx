@@ -58,6 +58,8 @@ const PreviewAnnouncement = () => {
     }
   }, [apiData]);
 
+  
+
   if (error) <ServerError error={error} />;
   if (loading) <PageCircleLoader />;
   if (isNetworkError) <NetworkError />;

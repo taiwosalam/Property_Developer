@@ -53,11 +53,13 @@ const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
       setIsLike(true);
       await toggleAnnouncementLike(paramId, type);
     } catch (error) {
-      console.log(error);
+      
     } finally {
       setIsLike(false);
     }
   };
+
+  
 
   return (
     <div>

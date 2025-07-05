@@ -275,15 +275,17 @@ const Units = () => {
         appliedFilters={appliedFilters}
       />
       <section className="custom-flex-col gap-8">
-        <div className="flex flex-wrap gap-4 justify-end">
-          {Object.entries(unit_listing_status).map(([key, value], idx) => (
-            <PropertyListingStatusItem
-              key={`${key}(${idx})`}
-              text={key}
-              color={value}
-            />
-          ))}
-        </div>
+        {pageData && pageData?.unit.length > 0 && (
+          <div className="flex flex-wrap gap-4 justify-end">
+            {Object.entries(unit_listing_status).map(([key, value], idx) => (
+              <PropertyListingStatusItem
+                key={`${key}(${idx})`}
+                text={key}
+                color={value}
+              />
+            ))}
+          </div>
+        )}
         {pageData.unit.length === 0 && !silentLoading ? (
           isFilterApplied() || search ? (
             <SearchError />

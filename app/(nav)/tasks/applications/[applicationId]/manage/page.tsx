@@ -212,7 +212,7 @@ const ManageApplication = () => {
                             <p>{flag.phone}</p>
                           </div>
                         )}
-                        <button className="bg-opacity-40 text-brand-9 py-1 rounded-lg bg-brand-5 px-3 h-7 text-sm mt-1">
+                        <button className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-7 text-sm mt-1">
                           Message
                         </button>
                       </div>
@@ -431,15 +431,15 @@ const ManageApplication = () => {
         <div className="flex gap-6">
           <Button
             size="base_bold"
-            variant="sky_blue"
+            //variant="sky_blue"
             className="py-2 px-8"
             disabled={isFlagged}
           >
             start rent
           </Button>
-          <Button size="base_bold" className="py-2 px-8" disabled={isFlagged}>
+          {/* <Button size="base_bold" className="py-2 px-8" disabled={isFlagged}>
             create invoice
-          </Button>
+          </Button> */}
         </div>
       </FixedFooter>
     </div>

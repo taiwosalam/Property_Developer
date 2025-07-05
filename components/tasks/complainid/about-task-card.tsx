@@ -58,7 +58,7 @@ const AboutTaskCard = ({ description, aboutCard, tier_id }: AboutTaskCardProps) 
                 "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
             }}
           >
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               {aboutCard?.map((detail, index) => (
                 <DetailItem
                   key={index}
@@ -106,7 +106,7 @@ const DetailItem = ({
       <p className="text-sm text-[16px] font-normal  text-text-secondary dark:text-darkText-1 capitalize">
         {typeof value === "string" ? value.toLowerCase() : value}
       </p>
-      {label === "Complaints sent by" ? (
+      {label === "Complainant" ? (
         <BadgeIcon color={getBadgeColor(tier_id) || "gray"} />
       ) : (
         ""

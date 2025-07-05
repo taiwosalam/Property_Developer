@@ -13,6 +13,7 @@ interface Complaint {
     name: string;
   }[];
   property_name: string;
+  unit_name: string;
   status: string;
   progress: number;
   created_at: string;
@@ -79,6 +80,7 @@ export interface ComplaintsPageData {
 interface ComplaintDetail {
   id: number;
   title: string;
+  unit_name: string;
   brief: string;
   description: string | null;
   complaint_by: string;
@@ -141,6 +143,7 @@ export interface ComplaintDetailsPageData {
   senderVerified: boolean;
   complaintTitle: string;
   propertyName: string;
+  unitName?: string;
   propertyAddress: string;
   accountOfficer: string;
   branch: string;

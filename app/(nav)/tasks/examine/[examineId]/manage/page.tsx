@@ -157,43 +157,43 @@ const ManageExaminepage = () => {
     <div>
       <div className="flex flex-col gap-8 pb-24">
         <BackButton>Examine Title (Rent Increase)</BackButton>
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-1 gap-8">
           <LandlordTenantInfoBox
-            className={`${commonBoxClassName}`}
+            className={`${commonBoxClassName} w-full`}
             style={commonBoxStyle}
           >
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                Inspected Date:
-              </p>
-              <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-                {examinePageData?.date}
-              </p>
+            <div className="flex justify-between items-center px-4">
+              <div className="flex-col items-center justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Inspected Date:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {examinePageData?.date}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Added Guest:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {examinePageData?.added_guest}
+                </p>
+              </div>
+
+              <div className="py-3">
+                <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
+                  Description
+                </p>
+                {examinePageData?.description && (
+                  <div
+                    className="text-sm font-medium text-text-secondary dark:text-darkText-2"
+                    dangerouslySetInnerHTML={{
+                      __html: examinePageData?.description,
+                    }}
+                  />
+                )}
+              </div>
             </div>
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                Added Guest:
-              </p>
-              <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-                {examinePageData?.added_guest}
-              </p>
-            </div>
-          </LandlordTenantInfoBox>
-          <LandlordTenantInfoBox
-            className={`${commonBoxClassName}`}
-            style={commonBoxStyle}
-          >
-            <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
-              Description
-            </p>
-            {examinePageData?.description && (
-              <div
-                className="text-sm font-medium text-text-secondary dark:text-darkText-2"
-                dangerouslySetInnerHTML={{
-                  __html: examinePageData?.description,
-                }}
-              />
-            )}
           </LandlordTenantInfoBox>
         </div>
         <section>

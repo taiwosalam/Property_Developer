@@ -225,12 +225,6 @@ const DepositRequest = () => {
                   This message will automatically disappear once caution deposit
                   records are added.
                 </p>{" "}
-                <br /> <br />
-                <p>
-                  Need assistance? Click your profile icon in the top right
-                  corner and select &quot;Assistance & Support&quot; for
-                  guidance on how to use this page.
-                </p>
               </p>
             }
           />

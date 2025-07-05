@@ -51,7 +51,7 @@ const FlaggedApplicantAccountModal = ({
 
   return (
     <LandlordTenantModalPreset
-      heading="Applicant Account Is Flagged"
+      heading="Applicant Account Is Flagged by;"
       style={{ maxWidth: "900px" }}
     >
       <div className="custom-flex-col gap-6">
@@ -63,6 +63,13 @@ const FlaggedApplicantAccountModal = ({
               ))}
             </div>
           </div>
+        </div>
+
+        <div className="mx-auto">
+          <p className="text-blue-600 text-center max-w-lg mx-auto font-semibold">
+            Kindly advice the applicant to resolve any outstanding issues with
+            their previous manager in order to lift the flag on their account.
+          </p>
         </div>
         <div className="flex gap-4 justify-end">
           <Button

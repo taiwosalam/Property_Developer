@@ -161,7 +161,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     }
   };
 
-  console.log(task?.content?.userAvatars);
   return (
     <div className={`group ${styles}`}>
       <Card
