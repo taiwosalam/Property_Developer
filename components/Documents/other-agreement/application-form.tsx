@@ -16,7 +16,7 @@ export const LabeledLine = ({
   width?: string;
 }) => (
   <div className={`flex items-center gap-1 ${width}`}>
-    <span className="whitespace-nowrap">{label}</span>
+    <span className="whitespace-nowrap text-black">{label}</span>
     <span className="border-b border-black flex-1 min-w-[80px]">&nbsp;</span>
   </div>
 );
@@ -154,11 +154,11 @@ export const AgreementTableHeader: React.FC<TableHeaderProps> = ({
       <table className="w-full">
         <thead>
           <tr>
-            <th className="font-bold text-xl uppercase text-left pr-8">S/N</th>
+            <th className="font-bold text-xl uppercase text-left text-black pr-8">S/N</th>
             {titles.map((title, index) => (
               <th
                 key={index}
-                className="font-bold text-xl uppercase border-4 border-brand-9 bg-gray-100 text-left py-2 px-4"
+                className="font-bold text-xl uppercase border-4 border-brand-9 text-black bg-gray-100 text-left py-2 px-4"
               >
                 {title}
               </th>

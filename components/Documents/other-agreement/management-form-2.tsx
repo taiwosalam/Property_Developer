@@ -27,7 +27,7 @@ export const LabeledLine = ({
   width?: string;
 }) => (
   <div className={`flex items-center gap-1 ${width}`}>
-    <span className="whitespace-nowrap">{label}</span>
+    <span className="whitespace-nowrap text-black">{label}</span>
     <span className="border-b border-black flex-1 min-w-[80px]">&nbsp;</span>
   </div>
 );
@@ -36,7 +36,7 @@ const TickBox = ({ text }: { text: string }) => {
   return (
     <div className="flex gap-2 items-center">
       <div className="border h-4 w-4 border-black" />
-      <span className="capitalize"> {text} </span>
+      <span className="capitalize text-black"> {text} </span>
     </div>
   );
 };
@@ -45,7 +45,7 @@ export const ManagemenApplicationForm2 = () => {
   return (
     <div className="w-full">
       <div className="flex flex-col w-full gap-2">
-        <p>If yes, name of current manager or agency and company name: </p>
+        <p className="text-black">If yes, name of current manager or agency and company name: </p>
         <LabeledLine label="" width="w-[100%]" />
       </div>
 

@@ -126,31 +126,6 @@ export const TeamChatProvider = ({
     }
   };
 
-  // const handleSendAudio = async (
-  //   id: string,
-  //   recordedBlob: Blob | null,
-  //   stopRecording?: VoidFunction
-  // ) => {
-  //   if (!recordedBlob) return;
-  //   const audioFile = new File([recordedBlob], "voice-note.wav", {
-  //     type: recordedBlob.type,
-  //   });
-  //   const payload = { file: audioFile };
-  //   try {
-  //     setReqLoading(true);
-  //     const res = await sendTeamMessage(id, objectToFormData(payload), "audio");
-  //     if (res) {
-  //       setAudioUrl("");
-  //       if (stopRecording) stopRecording();
-  //       window.dispatchEvent(new Event("refetch_team_message"));
-  //     }
-  //   } catch (err) {
-  //     toast.error("Failed to send audio message");
-  //   } finally {
-  //     setReqLoading(false);
-  //   }
-  // };
-
   // Send audio handler from msg
   const handleSendAudio = async (
     id: string,
