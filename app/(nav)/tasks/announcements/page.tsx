@@ -26,6 +26,7 @@ import { FilterResult, InspectionRequestParams } from "../inspections/data";
 import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "../maintenance/data";
 import dayjs from "dayjs";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
@@ -119,7 +120,10 @@ const AnnouncementPage = () => {
     })
   );
 
-  if (loading) <CardsLoading />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Announcement" statsCardCount={1} />
+    );
   if (error) <ServerError error={error} />;
   if (isNetworkError) <NetworkError />;
 

@@ -1,4 +1,10 @@
-import { Mail, MapIcon, PhoneIcon, WebsiteIcon } from "@/public/icons/icons";
+import {
+  Mail,
+  MapIcon,
+  PhoneIcon,
+  VerifiedCompanyDiamond,
+  WebsiteIcon,
+} from "@/public/icons/icons";
 import Image from "next/image";
 import {
   CompanySummarySkeleton,
@@ -8,6 +14,7 @@ import { CompanySummaryTypes } from "./types";
 import Link from "next/link";
 import { empty } from "@/app/config";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 const CompanySummary = ({
   loading,
@@ -36,6 +43,7 @@ const CompanySummary = ({
     socialHandles,
     stats,
     dark_logo,
+    company_is_verified,
   } = formatCompanySummary(companySummary);
 
   const COMPANY_LOGO = isDarkMode ? dark_logo : logo;
@@ -57,9 +65,16 @@ const CompanySummary = ({
             className="h-full w-full object-contain"
           />
         </div>
-        <h3 className="mt-2 text-xl font-bold text-black dark:text-white">
-          {name}
-        </h3>
+        <div className="flex gap-2 mt-4">
+          <h3 className="text-xl font-bold text-black dark:text-white">
+            {capitalizeWords(name)}
+          </h3>
+          {company_is_verified && (
+            <span className="text-[#C1C2C3]">
+              <VerifiedCompanyDiamond size={20} />
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Services (only show if services exist) */}

@@ -244,7 +244,7 @@ export const RenewRentAddPartPayment: React.FC<{
           {/* PAYMENT CONFIRMATION TEXTS */}
           <PaymentConfirmationText
             isWebUser={isWebUser}
-            isRental={!!isRental}
+            isRental={isRental ?? false}
             nonNaira={currency !== "naira"}
             selectedOptions={selectedOptions}
             currency={currency}

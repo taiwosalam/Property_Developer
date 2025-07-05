@@ -136,7 +136,7 @@ export const transformUsersMessages = (
         const specialRoles = ["director", "account", "staff", "manager"];
         if (c.type?.toLowerCase() === "group") return undefined; // no badge for group chat
         if (specialRoles.includes(c.role)) {
-          return c.tier === 2 ? tierColorMap[2] : undefined;
+          return c.tier === 2 ? "gray" : undefined;
         }
         return c.tier
           ? tierColorMap[c.tier as keyof typeof tierColorMap]

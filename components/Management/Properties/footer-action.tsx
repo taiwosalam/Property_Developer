@@ -4,6 +4,7 @@ import { useGlobalStore } from "@/store/general-store";
 import { useUnitForm } from "./unit-form-context";
 import { useContext } from "react";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import { useAddUnitStore } from "@/store/add-unit-store";
 
 const DynamicFooterActions = () => {
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
@@ -13,10 +14,12 @@ const DynamicFooterActions = () => {
   const { canSubmit, missingFields, handleInputChange } =
     useContext(FlowProgressContext);
   const { submitLoading, setIsEditing, resetForm } = useUnitForm();
+  const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
 
   return (
     <div className="my-4">
-      {allowEditUnit && (
+      {allowEditUnit && !hasNotYetUploaded && (
         <div className="flex gap-4 justify-end edit-unit-action-btns">
           <Button
             size="sm_medium"

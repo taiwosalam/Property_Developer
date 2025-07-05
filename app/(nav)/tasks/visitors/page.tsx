@@ -179,7 +179,14 @@ const BookVisitorsPage = () => {
     ],
   };
 
-  if (loading) return <PageCircleLoader />;
+  if (loading)
+    return (
+      <CustomLoader
+        layout="page"
+        pageTitle="Book for Visitation"
+        statsCardCount={3}
+      />
+    );
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;

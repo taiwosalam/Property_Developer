@@ -132,9 +132,13 @@ const PaymentConfirmationText: React.FC<PaymentConfirmationTextProps> = ({
             onChange={() => setGlobalStore("canSubmitRent", !canSubmitRent)}
           />
           <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
-            You have selected a past date for the occupant, which indicates that
-            you are recording an outstanding rent balance for the client, not
-            initiating a new rent payment.
+            {`You have selected a past date for the ${
+              isRental ? "Tenant" : "Occupant"
+            }, which indicates
+            that you are recording an outstanding ${
+              isRental ? "rent" : "Fee"
+            } balance for the client,
+            not initiating a new ${isRental ? "rent" : "Fee"} payment.`}
           </p>
         </div>
         {nonNaira && (
@@ -201,7 +205,9 @@ const PaymentConfirmationText: React.FC<PaymentConfirmationTextProps> = ({
           {selectedOptions?.["create_invoice"]
             ? `${isRental ? "Rent" : "Fee"} will commence upon ${
                 isRental ? "tenant" : "occupant"
-              } making payment for the generated invoice. If payment has already been received, you can click 'Create Invoice' to begin the rent immediately.`
+              } making payment for the generated invoice. If payment has already been received, you can click 'Create Invoice' to begin the ${
+                isRental ? "rent" : "Fee"
+              } immediately.`
             : `Confirms that you have received payment for the ${
                 isRental ? "rent" : "fee"
               } renewal.${

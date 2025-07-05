@@ -25,6 +25,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import PageLoader from "next/dist/client/page-loader";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import CalendarSkeletonLoader from "@/components/Loader/calendar-page-loader";
 
 const CalendarPage = () => {
   const [fetchedTabelData, setFetchedTableData] = useState([]);
@@ -68,7 +69,7 @@ const CalendarPage = () => {
   };
 
   if (loading) {
-    return <PageCircleLoader />;
+    return <CalendarSkeletonLoader />;
   }
 
   if (isNetworkError) return <NetworkError />;
@@ -88,7 +89,6 @@ const CalendarPage = () => {
         >
           See all{" "}
           <span>
-            {" "}
             <ChevronRight />{" "}
           </span>
         </Link>
@@ -103,11 +103,6 @@ const CalendarPage = () => {
           }}
         />
       </div>
-      {/* <Pagination
-        totalPages={eventTable?.total_pages || 0}
-        currentPage={eventTable?.current_page || 0}
-        onPageChange={handlePageChange}
-      /> */}
     </div>
   );
 };

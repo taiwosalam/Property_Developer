@@ -29,6 +29,7 @@ import { IPropertyApi } from "../../settings/others/types";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import PropertyRequestPageLoader from "@/components/Loader/property-request-page-loader";
 
 const transformToDepositRequestCardProps = (
   data: DepositRequestDataType
@@ -144,13 +145,7 @@ const DepositRequest = () => {
     return <NetworkError />;
   }
   if (loading) {
-    return (
-      <div className="">
-        <AutoResizingGrid gap={28} minWidth={400}>
-          <PropertyrequestSkeletonLoader length={10} />
-        </AutoResizingGrid>{" "}
-      </div>
-    );
+    return <PropertyRequestPageLoader pageTitle="Caution Deposit Request" />;
   }
   if (error) {
     <ServerError error={error} />;

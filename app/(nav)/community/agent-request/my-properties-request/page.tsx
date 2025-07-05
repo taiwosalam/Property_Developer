@@ -22,6 +22,7 @@ import { PropertyRequestParams } from "../../agent-forum/type";
 import { transformToAgentCommunityCardProps } from "./data";
 import PropertyRequestCard from "@/components/tasks/CallBack/RequestCard";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import PropertyRequestPageLoader from "@/components/Loader/property-request-page-loader";
 
 interface ApiPropertyRequest {
   id: number;
@@ -164,7 +165,13 @@ const MyPropertiesRequestPage = () => {
     router.push("/community/agent-request/my-properties-request/create");
   };
 
-  if (loading) return <PageCircleLoader />;
+  if (loading)
+    return (
+      <PropertyRequestPageLoader
+        pageTitle="My Property Request"
+        statCardsLength={1}
+      />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 

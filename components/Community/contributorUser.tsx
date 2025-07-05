@@ -8,6 +8,7 @@ import Button from "../Form/Button/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { formatPhoneNumbersToString } from "@/utils/format-phone-numbers-tostring";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 interface Contributor {
   name?: string;
@@ -88,7 +89,9 @@ const ContributorUser = ({
         <div className="userDetails flex flex-col gap-1">
           <div className="flex gap-1 items-center">
             <p className="dark:text-white text-black text-[20px] font-bold capitalize">
-              {`${title || ""} ${name || "--- ---"}`}
+              {`${capitalizeWords(title || "")} ${
+                capitalizeWords(name || "")
+              }`}
             </p>
             {tier && tier > 1 && <BadgeIcon color={"gray"} />}
           </div>

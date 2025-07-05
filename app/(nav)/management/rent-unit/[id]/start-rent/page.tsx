@@ -48,6 +48,7 @@ import FullPageLoader from "@/components/Loader/start-rent-loader";
 import { useTourStore } from "@/store/tour-store";
 import { getLocalStorage, removeLocalStorage } from "@/utils/local-storage";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
+import CreateTenancyAggrementModal from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -118,7 +119,6 @@ const StartRent = () => {
   const AGREEMENT_CHECKED = selectedCheckboxOptions.rent_agreement;
   const TENANT_SCREENING_LEVEL = unit_data.tenant_screening_level;
   const OCCUPANT_SCREENING_LEVEL = unit_data.occupant_screening_level;
-
 
   const handleStartRent = async () => {
     if (!unit_data?.unit_id || !selectedTenantId) {
@@ -285,6 +285,18 @@ const StartRent = () => {
     isTourCompleted,
   ]);
 
+  useEffect(() => {
+    if (unit_data?.unit_id) {
+      sessionStorage.setItem("return_to_start_rent_unit_id", unit_data.unit_id);
+    }
+    if (unit_data?.propertyId) {
+      sessionStorage.setItem(
+        "return_to_start_rent_property_id",
+        String(unit_data.propertyId)
+      );
+    }
+  }, [unit_data?.unit_id, unit_data?.propertyId]);
+
   const handleAgreementClick = () => {
     if (unit_data?.unit_id) {
       sessionStorage.setItem("return_to_start_rent_unit_id", unit_data.unit_id);
@@ -311,7 +323,7 @@ const StartRent = () => {
       />
     );
   }
-  
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -379,14 +391,29 @@ const StartRent = () => {
       </section>
 
       <FixedFooter className="start-rent-button flex gap-4">
-        {AGREEMENT_CHECKED && (
-          <Button
-            size="base_medium"
-            className="py-2 px-6"
-            onClick={handleAgreementClick}
-          >
-            {HAS_DOCUMENT ? "Manage Agreement" : "Create Agreement"}
-          </Button>
+        {AGREEMENT_CHECKED && isRental && (
+          <>
+            {HAS_DOCUMENT ? (
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                onClick={handleAgreementClick}
+              >
+                Manage Agreement
+              </Button>
+            ) : (
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button size="base_medium" className="py-2 px-6">
+                    Create Agreement
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+                </ModalContent>
+              </Modal>
+            )}
+          </>
         )}
 
         <Button

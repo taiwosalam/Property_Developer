@@ -20,6 +20,8 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   const { images, setImages, isEditing, formResetKey } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const maxImages = propertyType === "facility" ? 5 : 14;
+  const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
 
   const { canSubmit, missingFields, handleInputChange } =
     useContext(FlowProgressContext);
@@ -84,7 +86,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
           {propertyType === "rental" && <span className="text-red-500">*</span>}
           Unit Pictures
         </h4>
-        {allowEditUnit && (
+        {allowEditUnit && !hasNotYetUploaded && (
           <div className="flex gap-4 justify-end edit-unit-action-btns">
             <Button
               size="sm_medium"

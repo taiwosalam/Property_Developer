@@ -250,6 +250,7 @@ interface FormattedCompanySummary {
   logo: string;
   dark_logo: string;
   name: string;
+  company_is_verified: boolean;
   services: string[];
   address: string;
   email: string;
@@ -278,6 +279,7 @@ export const formatCompanySummary = (
     services,
     social_handles,
     dark_logo,
+    company_is_verified,
   } = companySummary;
 
   // Format services: Flatten all service arrays into a single array
@@ -366,7 +368,7 @@ export const formatCompanySummary = (
       value: details?.hospitality_property || 0,
     },
     { label: "Total Unit Managing", value: details.total_unit_managing || 0 },
-    { label: "Total Reviews", value: details.total_review || 0 },
+    { label: "Total Reviews", value: details.total_reviews || 0 },
     {
       label: "Completed Transaction",
       value: details?.completed_transaction || 0,
@@ -384,6 +386,7 @@ export const formatCompanySummary = (
     services: availableServices,
     address: address,
     email: email || "--- ---",
+    company_is_verified,
     phoneNumber: formatPhoneNumbers(contact_details?.phone_numbers),
     website: social_handles?.website || null,
     socialHandles,

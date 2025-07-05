@@ -28,6 +28,7 @@ import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
@@ -128,7 +129,10 @@ const Examine = () => {
       value: branch.id,
     })) || [];
 
-  if (loading) return <PageCircleLoader />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Examine" statsCardCount={3} />
+    );
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -191,36 +195,40 @@ const Examine = () => {
         hasGridListToggle={false}
       />
 
-      {loading || silentLoading ? (
-        <AutoResizingGrid gap={28} minWidth={400}>
-          <CardsLoading />
-        </AutoResizingGrid>
-      ) : !examineData?.data?.length ? (
-        // Show empty state when no visitors exist
-        <EmptyList
-          noButton
-          title="No Examine Records Available"
-          body={
-            <p>
-              Currently, there are no examine records linked to any properties.
-              Once you create an examine record, the details will appear here.
-              Examine allows you to maintain records, review, and schedule
-              property rental inspections to assess the status of usage. It
-              helps ensure that properties under your management are in good
-              condition, with tenants maintaining the property as intended.
-              <br />
-              <br />
-            </p>
-          }
-        />
-      ) : !!config.params.search || hasActiveFilters(appliedFilters) ? (
-        // If we have data but search/filters return nothing, show search error
-        examineData?.data?.length === 0 ? (
-          <SearchError />
-        ) : (
-          // Show filtered/searched results
-          <section>
-            <AutoResizingGrid gap={28} minWidth={350}>
+      <section>
+        {loading || silentLoading ? (
+          <AutoResizingGrid gap={32} minWidth={350}>
+            <CardsLoading length={10} />
+          </AutoResizingGrid>
+        ) : !examineData?.data?.length ? (
+          <EmptyList
+            noButton
+            title="No Examine Records Available"
+            body={
+              <p>
+                Currently, there are no examine records linked to any
+                properties. Once you create an examine record, the details will
+                appear here. Examine allows you to maintain records, review, and
+                schedule property rental inspections to assess the status of
+                usage. It helps ensure that properties under your management are
+                in good condition, with tenants maintaining the property as
+                intended.
+                <br />
+                <br />
+                This message will automatically disappear once examine records
+                are added.
+                <br />
+                <br />
+                Need assistance? Click your profile icon in the top right corner
+                and select &apos;Assistance & Support&apos; for help on using this page.
+              </p>
+            }
+          />
+        ) : !!config.params.search || hasActiveFilters(appliedFilters) ? (
+          examineData?.data?.length === 0 ? (
+            <SearchError />
+          ) : (
+            <AutoResizingGrid gap={32} minWidth={350}>
               {examineData?.data?.map((examine, index) => (
                 <ExamineCard
                   key={examine.id}
@@ -234,11 +242,8 @@ const Examine = () => {
                 />
               ))}
             </AutoResizingGrid>
-          </section>
-        )
-      ) : (
-        // Show all results when no search/filters active
-        <section>
+          )
+        ) : (
           <AutoResizingGrid gap={32} minWidth={350}>
             {examineData?.data.map((examine, index) => (
               <ExamineCard
@@ -253,8 +258,8 @@ const Examine = () => {
               />
             ))}
           </AutoResizingGrid>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   );
 };

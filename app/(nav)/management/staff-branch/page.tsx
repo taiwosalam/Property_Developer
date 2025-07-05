@@ -71,6 +71,21 @@ const StaffAndBranches = () => {
     setView(storedView);
   }, [storedView]);
 
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("branches_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: "",
+      } as BranchRequestParams,
+    };
+  });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("branches_page", current_page.toString());
+  }, [current_page]);
+
   // When view changes, reset page to 1 and clear branch list,
   // then trigger a refetch (similar to the Landlord page)
   useEffect(() => {
@@ -134,31 +149,21 @@ const StaffAndBranches = () => {
     router.push(`/management/staff-branch/${item.id}`);
   };
 
-  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
-    const savedPage = sessionStorage.getItem("branches_page");
-    return {
-      params: {
-        page: savedPage ? parseInt(savedPage, 10) : 1,
-        search: "",
-      } as BranchRequestParams,
-    };
-  });
-
-  // Save page number to sessionStorage whenever it changes
-  useEffect(() => {
-    sessionStorage.setItem("branches_page", current_page.toString());
-  }, [current_page]);
-
   // Manual page change (Pagination) triggers scroll only in grid view.
   const handlePageChange = (page: number) => {
     setConfig({ params: { ...config.params, page } });
+    setPageData((prevData) => ({
+      ...prevData,
+      current_page: page,
+    }));
+    sessionStorage.setItem("branches_page", page.toString());
     if (view === "grid" && contentTopRef.current) {
       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const handleSearch = async (query: string) => {
-    setConfig({ params: { ...config.params, search: query } });
+  const handleSearch = (query: string) => {
+    setConfig({ params: { ...config.params, search: query, page: 1 } });
     setPageData((prevData) => ({
       ...prevData,
       branches: [],
@@ -168,7 +173,13 @@ const StaffAndBranches = () => {
   };
 
   const handleSort = (order: "asc" | "desc") => {
-    setConfig({ params: { ...config.params, sort_order: order } });
+    setConfig({ params: { ...config.params, sort_order: order, page: 1 } });
+    setPageData((prevData) => ({
+      ...prevData,
+      branches: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("branches_page", "1");
   };
 
   const {
@@ -212,6 +223,11 @@ const StaffAndBranches = () => {
           setConfig((prev) => ({
             params: { ...prev.params, page: current_page + 1 },
           }));
+          setPageData((prevData) => ({
+            ...prevData,
+            current_page: current_page + 1,
+          }));
+          sessionStorage.setItem("branches_page", (current_page + 1).toString());
         }
       });
       if (node) observer.current.observe(node);

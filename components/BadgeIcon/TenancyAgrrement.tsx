@@ -53,7 +53,7 @@ const TenancyAgreement = () => {
 
   return (
     <>
-      <div className="flex flex-wrap gap-4 items-center justify-center z-[1000] mt-4">
+      <div className="flex flex-wrap gap-4 items-center justify-center overflow-visible z-[1000] mt-4">
         <Select
           options={propertyOptions}
           id="property"

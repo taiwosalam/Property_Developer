@@ -507,7 +507,8 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
           {showProfessionalMessage && (
             <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
               <p className="text-white text-center px-4 py-2 rounded">
-                Sorry, this website template isn&apos;t available on the free plan.
+                Sorry, this website template isn&apos;t available on the free
+                plan.
               </p>
             </div>
           )}
@@ -644,13 +645,13 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
 }) => {
   return (
     <div className="flex gap-2 mt-4">
-      <button
+      {/* <button
         onClick={resetZoom}
         type="button"
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         <ResetZoomIcon />
-      </button>
+      </button> */}
       <button
         type="button"
         onClick={increaseZoom}
@@ -658,13 +659,7 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
       >
         <ZoomPlusIcon />
       </button>
-      <button
-        type="button"
-        onClick={decreaseZoom}
-        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
-      >
-        <ZoomMinusIcon />
-      </button>
+
       <div className="flex items-center justify-center max-w-[120px] rounded-md border border-text-label border-dashed px-4">
         <input
           type="number"
@@ -672,17 +667,24 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
           onChange={(e) => setZoom(parseInt(e.target.value))}
           className="focus:outline-none dark:bg-darkText-primary w-full flex items-center justify-center"
         />
-        <span className="text-black text-center w-full flex items-start justify-start">
+        <span className="text-black dark:text-white text-center w-full flex items-start justify-start">
           %
         </span>
       </div>
+
       <button
+        type="button"
+        onClick={decreaseZoom}
+        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+      >
+        <ZoomMinusIcon />
+      </button>
+      {/* <button
         onClick={toggleFullscreen}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         {fullScreen ? <ActiveFullScreenIcon /> : <F11MinusIcon />}
-      </button>
+      </button> */}
     </div>
   );
 };
-  
