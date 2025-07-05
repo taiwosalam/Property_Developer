@@ -59,7 +59,7 @@ const AgreementLayout = ({ children }: AgreementLayoutProps) => {
         <AgreementSidebarInfo />
         <div className="relative flex w-[90%] min-h-[65vh]">
           {/* Background */}
-          <AgreementBackground stroke="var(--secondary-color)" />
+          <AgreementBackground stroke="var(--secondary-color)" opacity={0.4} />
 
           {/* Foreground content */}
           <div className="relative z-10 w-full">{children}</div>
@@ -68,7 +68,7 @@ const AgreementLayout = ({ children }: AgreementLayoutProps) => {
 
       {/* FOOTER */}
       <div className="mt-8 flex items-center justify-center w-full">
-        <h2 className="text-center uppercase text-3xl font-bold mx-auto">
+        <h2 className="text-center text-black uppercase text-3xl font-bold mx-auto">
           {currentCompanyData?.companyData?.company_name || ""}
         </h2>
       </div>

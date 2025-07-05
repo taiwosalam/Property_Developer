@@ -4385,7 +4385,7 @@ export const EmptyViewsStatisticIcon = ({ size = 60 }) => {
   );
 };
 
-const AgreementBackground = ({ stroke = "#EDEDED" }: { stroke?: string }) => (
+const AgreementBackground = ({ stroke = "#EDEDED", opacity = 0.3 }: { stroke?: string; opacity?: number; }) => (
   <svg
     width="100%"
     height="100%"
@@ -4398,22 +4398,27 @@ const AgreementBackground = ({ stroke = "#EDEDED" }: { stroke?: string }) => (
     <path
       d="M173.317 0.5H518.753L691.504 324.5L518.753 648.5H173.317L0.566406 324.5L173.317 0.5Z"
       stroke={stroke}
+      strokeOpacity={opacity}
     />
     <path
       d="M989.962 0.5H1335.4L1508.15 324.5L1335.4 648.5H989.962L817.211 324.5L989.962 0.5Z"
       stroke={stroke}
+      strokeOpacity={opacity}
     />
     <path
       d="M989.962 784.5H1335.4L1508.15 1108.5L1335.4 1432.5H989.962L817.211 1108.5L989.962 784.5Z"
       stroke={stroke}
+      strokeOpacity={opacity}
     />
     <path
       d="M173.317 784.5H518.753L691.504 1108.5L518.753 1432.5H173.317L0.566406 1108.5L173.317 784.5Z"
       stroke={stroke}
+      strokeOpacity={opacity}
     />
     <path
       d="M537.347 296.5H985.209L1209.17 716.5L985.209 1136.5H537.347L313.383 716.5L537.347 296.5Z"
       stroke={stroke}
+      strokeOpacity={opacity}
     />
   </svg>
 );

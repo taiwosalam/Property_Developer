@@ -11,7 +11,7 @@ const HeadText = ({ title }: { title: string }) => {
 const SubHead = ({ title }: { title: string }) => {
   return (
     <div>
-      <h2 className="capitalize mt-3 font-bold text-md">{title}</h2>
+      <h2 className="capitalize mt-3 font-bold text-md text-black">{title}</h2>
     </div>
   );
 };
@@ -24,7 +24,7 @@ export const LabeledLine = ({
   width?: string;
 }) => (
   <div className={`flex items-center gap-1 ${width}`}>
-    <span className="whitespace-nowrap">{label}</span>
+    <span className="whitespace-nowrap text-black">{label}</span>
     <span className="border-b border-black flex-1 min-w-[80px]">&nbsp;</span>
   </div>
 );
@@ -33,7 +33,7 @@ const TickBox = ({ text }: { text: string }) => {
   return (
     <div className="flex gap-2 items-center">
       <div className="border h-4 w-4 border-black" />
-      <span className="capitalize"> {text} </span>
+      <span className="capitalize text-black"> {text} </span>
     </div>
   );
 };
@@ -67,16 +67,16 @@ export const ManagemenApplicationForm3 = () => {
 
       {/* ATTACHMENTS */}
       <div>
-        <p>Please attach the following: </p>
-        <p>Proof of Ownership (e.g., Title Document, Deed of Assignment) </p>
-        <p>
+        <p className="text-black">Please attach the following: </p>
+        <p className="text-black">Proof of Ownership (e.g., Title Document, Deed of Assignment) </p>
+        <p className="text-black">
           Valid ID (National ID, Driver’s License, Voter’s Card, or
           International Passport)
         </p>
-        <p>Passport Photograph</p>
+        <p className="text-black">Passport Photograph</p>
 
         <SubHead title="Declaration:" />
-        <p>
+        <p className="text-black">
           I confirm that the information provided above is accurate and I hereby
           request property management services as specified.
         </p>

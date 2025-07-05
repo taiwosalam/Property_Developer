@@ -101,17 +101,6 @@ const SelectMembersStep: React.FC<SelectMembersStepProps> = ({
                 onClick={() => handleCheckboxClick(member.id)}
                 className="flex items-center gap-2"
               >
-                {/* <Image
-                  src={
-                    selectedMembers.includes(member.id)
-                      ? CheckboxChecked
-                      : CheckboxDefault
-                  }
-                  alt="checkbox"
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                /> */}
                 <Picture
                   src={
                     selectedMembers.includes(member.id)
@@ -122,13 +111,6 @@ const SelectMembersStep: React.FC<SelectMembersStepProps> = ({
                   size={24}
                 />
               </button>
-              {/* <Image
-                src={member.profile_picture || avatarIcon}
-                alt="profile"
-                width={40}
-                height={40}
-                className="rounded-full w-10 h-10 object-cover"
-              /> */}
               <Picture
                 src={member.profile_picture || empty}
                 alt="profile"

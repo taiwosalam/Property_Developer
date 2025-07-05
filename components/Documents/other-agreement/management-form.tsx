@@ -16,7 +16,7 @@ export const LabeledLine = ({
   width?: string;
 }) => (
   <div className={`flex items-center gap-1 ${width}`}>
-    <span className="whitespace-nowrap">{label}</span>
+    <span className="whitespace-nowrap text-black">{label}</span>
     <span className="border-b border-black flex-1 min-w-[80px]">&nbsp;</span>
   </div>
 );
@@ -25,7 +25,7 @@ const TickBox = ({ text }: { text: string }) => {
   return (
     <div className="flex gap-2 items-center">
       <div className="border h-4 w-4 border-black" />
-      <span className="capitalize"> {text} </span>
+      <span className="capitalize text-black"> {text} </span>
     </div>
   );
 };
