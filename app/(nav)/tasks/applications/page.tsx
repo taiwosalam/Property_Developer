@@ -219,12 +219,14 @@ const Applications = () => {
         />
 
         <section>
-          <div className="flex flex-wrap gap-4 justify-end pb-6">
-            <ApplicationStatusItem status="pending" />
-            <ApplicationStatusItem status="evaluated" />
-            <ApplicationStatusItem status="approved" />
-            <ApplicationStatusItem status="rejected" />
-          </div>
+          {pageData && pageData?.applications?.length > 0 && (
+            <div className="flex flex-wrap gap-4 justify-end pb-6">
+              <ApplicationStatusItem status="pending" />
+              <ApplicationStatusItem status="evaluated" />
+              <ApplicationStatusItem status="approved" />
+              <ApplicationStatusItem status="rejected" />
+            </div>
+          )}
           {pageData?.applications?.length === 0 && !loading ? (
             !!config.params.search || hasActiveFilters(appliedFilters) ? (
               <SearchError />

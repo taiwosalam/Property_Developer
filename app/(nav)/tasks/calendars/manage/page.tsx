@@ -93,6 +93,8 @@ const ManageCalendar = () => {
     }
   }, [calendarEventApiResponse]);
 
+  //console.log(calendarEvents);
+
   // Constants
   const data = new Calendar({
     month: getMonth(currentDate),
@@ -131,8 +133,6 @@ const ManageCalendar = () => {
   const nextWeek = () => setCurrentDate((prev) => addWeeks(prev, 1));
   const prevWeek = () => setCurrentDate((prev) => subWeeks(prev, 1));
 
-  //console.log(calendarEvents)
-
   const { activities, eventsByDate } = useMemo(() => {
     // Group events by date for multiple event detection
     const eventsByDate = calendarEvents?.reduce((acc, event) => {
@@ -158,7 +158,7 @@ const ManageCalendar = () => {
 
           return {
             ...event,
-            type: event.type ? event.type : "multiple event" as const,
+            type: event.type ? event.type : ("multiple event" as const),
             eventCount: eventsOnDay.length,
             originalType: event.type,
             title: `${event.type} (Part of multiple events: ${allEventTypes})`,
@@ -170,6 +170,8 @@ const ManageCalendar = () => {
 
     return { activities, eventsByDate };
   }, [activeDate, calendarEvents, calendarEvents]);
+
+  console.log(activities);
 
   return (
     <EventCalendarContext.Provider

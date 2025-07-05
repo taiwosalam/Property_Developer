@@ -27,6 +27,7 @@ import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "../maintenance/data";
 import dayjs from "dayjs";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import Pagination from "@/components/Pagination/pagination";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
@@ -226,6 +227,7 @@ const AnnouncementPage = () => {
                     title={announcement.title}
                     date={formattedDate}
                     key={index}
+                    poster={announcement?.poster.profilePicture}
                     description={announcement.description}
                     id={announcement.company_id.toString()}
                     views={announcement.views_count}
@@ -290,6 +292,12 @@ const AnnouncementPage = () => {
           </AutoResizingGrid>
         </section>
       )}
+
+      <Pagination
+        totalPages={apiData?.pagination?.total_pages || 0}
+        currentPage={apiData?.pagination?.current_page || 0}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

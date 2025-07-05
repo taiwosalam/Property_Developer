@@ -93,7 +93,7 @@ export const transformEmailReport = (
       email_id: email?.id,
       user_id: email?.user_id,
       branch: "___ ___",
-      client_name: email?.client_name || "",
+      client_name: email?.client_name?.toLowerCase() || "",
       date: email?.date || "___ ___",
       time: email?.time
         ? dayjs(email.time, "HH:mm").format("hh:mm A")

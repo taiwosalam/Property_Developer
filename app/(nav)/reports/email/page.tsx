@@ -30,6 +30,8 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { hasActiveFilters } from "../data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { Loader2 } from "lucide-react";
+import TableMenu from "@/components/Table/table-menu";
+import { MenuItem } from "@mui/material";
 
 const EmailReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -199,6 +201,28 @@ const EmailReport = () => {
     }
   }, [emailIdData]);
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setSelectedItemId(String(item.id));
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItemId(null);
+  };
+
+  async function handleDeleteItem(item: string) {
+    //await deleteUndoItem(item);
+  }
+
+  async function restoreTrashItem(item: string) {
+    //await restoreItem(item);
+  }
+
   if (loading && config.params.page === 1)
     return <CustomLoader layout="page" pageTitle="Email" view="table" />;
   if (isNetworkError) return <NetworkError />;
@@ -260,7 +284,40 @@ const EmailReport = () => {
               tableHeadClassName="h-[45px]"
               handleSelect={handleTableItemClick}
               lastRowRef={lastRowRef}
+              onActionClick={(item, e) => {
+                handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+              }}
             />
+            <TableMenu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleMenuClose} disableRipple>
+                <button
+                  onClick={() =>
+                    selectedItemId && restoreTrashItem(selectedItemId)
+                  }
+                  className="w-full text-left"
+                >
+                  Restore
+                </button>
+              </MenuItem>
+              <MenuItem
+                onClick={handleMenuClose}
+                disableRipple
+                className="bg-red-200"
+              >
+                <button
+                  onClick={() =>
+                    selectedItemId && handleDeleteItem(selectedItemId)
+                  }
+                  className="w-full text-left"
+                >
+                  Delete
+                </button>
+              </MenuItem>
+            </TableMenu>
             {isFetchingMore && (
               <div className="flex justify-center py-4">
                 <Loader2 className="animate-spin text-brand-9" />

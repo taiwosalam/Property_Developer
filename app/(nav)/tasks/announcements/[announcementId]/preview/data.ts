@@ -128,7 +128,7 @@ export const transformAnnouncementDetailsData = (
       property_name: announcement?.summary?.property_name || "All",
       branch_name: announcement?.summary?.branch_name || "All",
     },
-    viewers: announcement?.readByData?.map((viewer) => viewer.profile_picture),
+    viewers: announcement?.comments?.map((user) => user?.user?.profile_picture),
     read_by: announcement?.readByData?.map((read, index) => ({
       user_id: index + 1,
       user_name: read?.name,

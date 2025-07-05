@@ -13,6 +13,7 @@ export interface IManageComplaints {
   description: string | null;
   tier_id: number;
   branch_id: number;
+  status: boolean;
   notes: {
     date: string;
     text: string;
@@ -55,6 +56,10 @@ export const transformComplaintManage = (
   return {
     aboutCard: [
       {
+        label: "Title",
+        value: data?.complaint?.title,
+      },
+      {
         label: "Complaints sent by",
         value: data?.complaint.complaint_by,
       },
@@ -63,16 +68,22 @@ export const transformComplaintManage = (
         value: data?.complaint?.id.toString(),
       },
       {
+        label: "Unit Name",
+        value: data?.complaint?.unit_name,
+      },
+      {
         label: "Property Name",
         value: data?.complaint?.property_title,
       },
-      {
-        label: "Property Address",
-        value: data?.complaint?.property_address,
-      },
+
       {
         label: "Account Officer",
         value: data?.complaint?.account_officer,
+      },
+
+      {
+        label: "Property Address",
+        value: data?.complaint?.property_address,
       },
     ],
     task: {
@@ -86,6 +97,11 @@ export const transformComplaintManage = (
         : "--- ---",
     },
     description: data?.complaint?.description,
+    status:
+      data?.complaint?.status?.toLowerCase() === "rejected" ||
+      data?.complaint?.status?.toLowerCase() === "completed"
+        ? true
+        : false,
     tier_id: data?.complaint?.tier,
     branch_id: data?.complaint?.branch_id,
     notes:

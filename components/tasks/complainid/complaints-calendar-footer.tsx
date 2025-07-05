@@ -8,8 +8,9 @@ import CreateReminderModal from "./create-reminder-modal";
 const ComplaintsCalendarFooter: React.FC<{
   activeDate: Date;
   buttonText: string;
+  taskStatus?: boolean;
   //   modalContent: React.ReactNode;
-}> = ({ activeDate, buttonText }) => {
+}> = ({ activeDate, buttonText, taskStatus }) => {
   const formattedDate = format(activeDate, "EEEE, dd MMMM yyyy");
 
   const [isOpen, setIsOpen] = useState(false);
@@ -27,13 +28,20 @@ const ComplaintsCalendarFooter: React.FC<{
         }}
       >
         <ModalTrigger asChild>
-          <Button size="xs_normal" className="py-2 px-3">
+          <Button
+            size="xs_normal"
+            className="py-2 px-3"
+            disabled={taskStatus}
+          >
             {buttonText}
           </Button>
         </ModalTrigger>
         <ModalContent>
           {buttonText === "Set Reminder" ? (
-            <CreateReminderModal activeDate={activeDate}  setIsOpen={setIsOpen}/>
+            <CreateReminderModal
+              activeDate={activeDate}
+              setIsOpen={setIsOpen}
+            />
           ) : buttonText === "Create Task" ? (
             <CreateTaskModal activeDate={activeDate} />
           ) : null}

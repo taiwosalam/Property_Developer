@@ -372,6 +372,7 @@ const ServiceProviders = () => {
               <SearchError />
             ) : (
               <EmptyList
+                noButton
                 //buttonText="+ Create Service Provider"
                 modalContent={<AddServiceProviderModal />}
                 title="You have not created any service providers yet"
@@ -395,7 +396,6 @@ const ServiceProviders = () => {
                     professionals when needed.
                     <br />
                     <br />
-                   
                     <br />
                     <br />
                   </p>

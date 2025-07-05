@@ -51,7 +51,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
   const handleCreateExamine = async (data: FormData) => {
     if (!company_id) return;
 
-    const notes = data.get("notes");
+    const notes = data.get("note");
 
     if (String(notes).trim().length < 30) {
       toast.error("Notes must be at least 30 characters.");

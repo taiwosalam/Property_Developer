@@ -52,8 +52,8 @@ const ManageComplain = () => {
   }, [manageData]);
 
   return (
-    <section className="w-full lg:flex lg:items-start lg:gap-x-10">
-      <div className="w-full lg:w-3/5 lg:h-full space-y-10">
+    <section className="w-full lg:flex lg:items-start lg:gap-x-10 h-screen">
+      <div className="w-full lg:w-3/5 lg:h-full space-y-10 overflow-y-scroll hide-scrollbar">
         <AboutTaskCard
           aboutCard={pageData?.aboutCard || []}
           description={pageData?.description || ""}
@@ -62,26 +62,30 @@ const ManageComplain = () => {
         <ComplaintsCalendar
           header="Create Reminders"
           buttonText="Set Reminder"
+          taskStatus={pageData?.status}
           // modalContent={<CreateReminderModal />}
         />
-        <ComplaintsCalendar
+        {/* <ComplaintsCalendar
           header="Create Task"
           buttonText="Create Task"
           // modalContent={<CreateTaskModal />}
-        />
+        /> */}
         <TaskStatusProgress
           percentage={pageData?.progress || 0}
           date={pageData?.updated_at}
           task_bar={{ task_bar: pageData?.task_bar || [] }}
           task={pageData?.task}
-
+          taskStatus={pageData?.status}
         />
       </div>
-      <div className="w-full lg:w-2/5 lg:h-full">
+      <div className="w-full lg:w-2/5 h-full overflow-y-scroll p-6 space-y-6 hide-scrollbar">
         <div className="h-full space-y-10">
           <AttchedImagesGrid images={pageData?.images || []} />
           {typeof pageData?.branch_id === "number" && (
-            <AssignTaskCard branchId={pageData.branch_id} />
+            <AssignTaskCard
+              branchId={pageData.branch_id}
+              taskStatus={pageData?.status}
+            />
           )}
           <MessagesFromTask
             comments={
@@ -91,7 +95,7 @@ const ManageComplain = () => {
               })) || []
             }
           />
-          <Notes notes={pageData?.notes ?? []} />
+          <Notes notes={pageData?.notes ?? []} taskStatus={pageData?.status} />
         </div>
       </div>
     </section>

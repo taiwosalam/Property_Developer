@@ -15,6 +15,7 @@ interface ITask {
 }
 interface TaskStatusProgressProps {
   percentage?: number;
+  taskStatus?: boolean
   date?: string;
   task_bar?: ITask;
   task?: {
@@ -29,6 +30,7 @@ const TaskStatusProgress = ({
   date,
   task_bar,
   task,
+  taskStatus
 }: TaskStatusProgressProps) => {
   // updateProgressStatus
   return (
@@ -69,7 +71,7 @@ const TaskStatusProgress = ({
       />
       <Modal>
         <ModalTrigger className="flex justify-end items-end ml-auto">
-          <Button size="xs_medium" className="px-4 py-2 block ml-auto">
+          <Button size="xs_medium" className="px-4 py-2 block ml-auto" disabled={taskStatus}>
             Edit Status bar
           </Button>
         </ModalTrigger>

@@ -59,8 +59,8 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
             src: image,
           }))}
         />
-        <div className="flex items-center gap-2 justify-between overflow-y-auto custom-round-scrollbar pb-2">
-          <div className="min-w-[400px] flex-1 text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
+        <div className="flex gap-2 justify-between items-center overflow-y-auto custom-round-scrollbar pb-2">
+          <div className="min-w-[400px] flex-1 text-sm md:text-base grid grid-cols-3 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
             <div>
               <p className="text-[#747474] dark:text-white">Unit Title</p>
               <p className="text-black dark:text-darkText-1 capitalize">
@@ -131,7 +131,7 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
 
         <SectionSeparator className="my-4 h-[2px]" />
         <div className="flex justify-between items-center flex-wrap ">
-          <button className="property-type bg-opacity-40 text-brand-9 py-1 capitalize rounded-lg bg-brand-5 px-3 h-7 text-sm mt-1">
+          <button className="property-type bg-opacity-40 text-brand-9 py-1 capitalize rounded-xl bg-brand-5 px-3 h-7 text-sm mt-1">
             {propertyType}
           </button>
 

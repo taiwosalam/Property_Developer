@@ -25,7 +25,7 @@ export interface TrashRecord {
     deleted_at: string;
     created_at: string;
     updated_at: string;
-  }[]
+  }[];
 }
 
 export interface UndoTableData {
@@ -58,7 +58,7 @@ export const transformUndoData = (data: TrashRecordsResponse) => {
       trashable_type: getLastText(record.trashable_type) as string,
       category: record.category,
       branch: formatTextCell(record.branch_name),
-      deleted_by: record.user_name,
+      deleted_by: record.user_name?.toLowerCase() || "___ ___",
       date_deleted: dayjs(record.deleted_at).format("DD/MM/YYYY"),
       time: dayjs(record.deleted_at).format("hh:mm A"),
     })),

@@ -22,8 +22,9 @@ interface StateType {
 
 interface IAssignTaskProps {
   branchId?: number;
+  taskStatus?: boolean;
 }
-const AssignTaskCard = ({ branchId }: IAssignTaskProps) => {
+const AssignTaskCard = ({ branchId, taskStatus }: IAssignTaskProps) => {
   const myClasses =
     "border border-[#C1C2C366] rounded-lg py-[11px] px-[18px] text-xs md:text-sm font-medium hover:border-[#00000099] transition-colors duration-300 ease-in-out";
 
@@ -166,6 +167,7 @@ const AssignTaskCard = ({ branchId }: IAssignTaskProps) => {
       {proceedTask === "assign" ? (
         <div className="bg-white dark:bg-darkText-primary rounded-b-lg font-medium text-text-secondary px-4 py-6 custom-flex-col gap-2">
           <Select
+            disabled={taskStatus}
             id="staff-select"
             isSearchable={false}
             options={taskStaff || []}
@@ -175,6 +177,7 @@ const AssignTaskCard = ({ branchId }: IAssignTaskProps) => {
             onChange={(staff) => handleStaffSelection(staff)}
           />
           <Select
+            disabled={taskStatus}
             id="provider-select"
             isSearchable={false}
             options={taskProviders || []}
@@ -184,6 +187,7 @@ const AssignTaskCard = ({ branchId }: IAssignTaskProps) => {
             onChange={(provider) => handleProviderSelection(provider)}
           />
           <button
+            disabled={taskStatus}
             className={clsx(myClasses, "flex justify-between")}
             onClick={handleLandlordClick}
           >
@@ -196,6 +200,7 @@ const AssignTaskCard = ({ branchId }: IAssignTaskProps) => {
           </button>
 
           <Button
+            disabled={taskStatus}
             size="sm_medium"
             onClick={() => {
               setProceed("note");

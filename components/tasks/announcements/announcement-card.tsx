@@ -20,6 +20,7 @@ import ReactPlayer from "react-player";
 interface AnnouncementCardProps {
   title: string;
   description: string;
+  poster?: string;
   id: string;
   date: string;
   views: number;
@@ -56,6 +57,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   announcementId,
   viewOnly,
   video,
+  poster,
 }) => {
   const { role, setRole } = useRole();
   const [isLiking, setIsLiking] = useState(false);
@@ -115,7 +117,9 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
         ) : (
           <Image
             src={
-              imageUrls.length
+              poster
+                ? poster
+                : imageUrls.length
                 ? typeof imageUrls[0] === "string"
                   ? imageUrls[0]
                   : imageUrls[0]?.url
@@ -149,7 +153,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
       <div className="p-4 font-medium">
         <p className="mb-1 text-black dark:text-white text-base">{title}</p>
         <div
-          className="mb-2 text-xs text-text-tertiary dark:text-darkText-2 line-clamp-3 text-ellipsis"
+          className="mb-2 text-xs text-text-tertiary dark:text-darkText-2 line-clamp-2 text-ellipsis"
           dangerouslySetInnerHTML={{ __html: description }}
         />
 
