@@ -31,6 +31,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../../reports/data/utils";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { debounce } from "lodash";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const Maintenance = () => {
   const [maintenanceData, setMaintenanceData] =
@@ -118,7 +119,10 @@ const Maintenance = () => {
     }
   }, [apiData]);
 
-  if (loading) return <PageCircleLoader />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Maintenance" statsCardCount={3} />
+    );
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -170,42 +174,38 @@ const Maintenance = () => {
         ]}
       />
 
-      {loading || silentLoading ? (
-        <AutoResizingGrid gap={28} minWidth={400}>
-          <PropertyrequestSkeletonLoader length={10} />
-        </AutoResizingGrid>
-      ) : !maintenanceData?.data?.length ? (
-        // Show empty state when no visitors exist
-        <EmptyList
-          noButton
-          title="No Maintenance Records Available"
-          body={
-            <p>
-              At the moment, there are no maintenance records linked to any
-              properties. Once you create a maintenance record, the details will
-              be displayed here. Maintenance helps keep everyone involved
-              informed about upcoming repairs or renovations, including the
-              expected start date and estimated completion time.
-              <br />
-              <br />
-              This message will automatically disappear once maintenance records
-              are added.
-              <br />
-              <br />
-              Need assistance? Click your profile icon in the top right corner
-              and select &quot;Assistance & Support&quot; for help on using this
-              page.
-            </p>
-          }
-        />
-      ) : !!config.params.search || hasActiveFilters(appliedFilters) ? (
-        // If we have data but search/filters return nothing, show search error
-        maintenanceData?.data?.length === 0 ? (
-          <SearchError />
-        ) : (
-          // Show filtered/searched results
-          <section>
-            <AutoResizingGrid gap={28} minWidth={380}>
+      <section>
+        {loading || silentLoading ? (
+          <AutoResizingGrid gap={32} minWidth={380}>
+            <CardsLoading length={10} />
+          </AutoResizingGrid>
+        ) : !maintenanceData?.data?.length ? (
+          <EmptyList
+            noButton
+            title="No Maintenance Records Available"
+            body={
+              <p>
+                At the moment, there are no maintenance records linked to any
+                properties. Once you create a maintenance record, the details
+                will be displayed here. Maintenance helps keep everyone involved
+                informed about upcoming repairs or renovations, including the
+                expected start date and estimated completion time.
+                <br />
+                <br />
+                This message will automatically disappear once maintenance
+                records are added.
+                <br />
+                <br />
+                Need assistance? Click your profile icon in the top right corner
+                and select "Assistance & Support" for help on using this page.
+              </p>
+            }
+          />
+        ) : !!config.params.search || hasActiveFilters(appliedFilters) ? (
+          maintenanceData?.data?.length === 0 ? (
+            <SearchError />
+          ) : (
+            <AutoResizingGrid gap={32} minWidth={380}>
               {maintenanceData?.data?.map((details, index) => (
                 <MaintenanceCard
                   key={index}
@@ -214,11 +214,8 @@ const Maintenance = () => {
                 />
               ))}
             </AutoResizingGrid>
-          </section>
-        )
-      ) : (
-        // Show all results when no search/filters active
-        <section>
+          )
+        ) : (
           <AutoResizingGrid gap={32} minWidth={380}>
             {maintenanceData?.data.map((details, index) => (
               <MaintenanceCard
@@ -228,8 +225,8 @@ const Maintenance = () => {
               />
             ))}
           </AutoResizingGrid>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   );
 };

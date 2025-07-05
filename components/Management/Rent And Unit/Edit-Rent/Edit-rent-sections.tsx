@@ -288,7 +288,7 @@ export const EditCurrentRent: React.FC<{
           {/* PAYMENT CONFIRMATION TEXTS */}
           <PaymentConfirmationText
             isWebUser={isWebUser}
-            isRental={!!isRental}
+            isRental={isRental}
             nonNaira={nonNaira}
             selectedOptions={selectedOptions}
             currency={currency}
@@ -546,7 +546,7 @@ export const AddPartPayment: React.FC<{
           {/* PAYMENT CONFIRMATION TEXTS */}
           <PaymentConfirmationText
             isWebUser={isWebUser}
-            isRental={!!isRental}
+            isRental={isRental ?? false}
             nonNaira={nonNaira}
             selectedOptions={selectedOptions}
             currency={currency}
