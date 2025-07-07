@@ -27,6 +27,7 @@ export type ApplicationResponse = {
       status: "cancelled" | "pending" | "evaluated" | "approved";
       created_at: string;
       flagger: {
+        user_id: number;
         name: string;
         email: string;
         tier_id: number;
@@ -44,6 +45,8 @@ export type ApplicationResponse = {
         path: string;
       }[];
       total_package: string;
+      renew_total_package: string;
+      renew_fee_period: string;
       renew_fee_amount: string;
       property_address: string;
       property_state: string;
@@ -76,11 +79,13 @@ export interface IApplicationPageData {
     date: string;
     total_package: string;
     yearly_amount: string;
+    renew_fee_period: string;
     period_type: string;
     currency: string;
     flagged: "flagged" | "unflagged";
     flag_details?: {
       flagger_name: string;
+      flagger_id: number;
       email: string;
       phone: string;
       tier_id: number;
@@ -126,23 +131,26 @@ export const transformApplicationData = (
       full_name: item?.user?.name?.toLowerCase(),
       tier_id: item?.user?.tier_id,
       user_id: item?.user?.encodedId,
+      
       photo: item?.user?.profile,
       flagged: item?.user.is_flagged === true ? "flagged" : "unflagged",
       user_type: item?.user?.user_type || "mobile",
       email: item?.user?.email,
       property_name: item?.unit.name,
+      renew_fee_period: item?.unit?.renew_fee_period,
       address: item?.unit?.property_address,
       phone_number: item?.user?.phone,
       date: item?.application_date,
-      total_package: item?.unit?.total_package
-        ? Math.round(Number(item?.unit?.total_package)).toLocaleString()
+      total_package: item?.unit?.renew_total_package
+        ? Math.round(Number(item?.unit?.renew_total_package)).toLocaleString()
         : "--- ---",
-      yearly_amount: item?.unit?.renew_fee_amount
-        ? Math.round(Number(item?.unit?.renew_fee_amount)).toLocaleString()
+      yearly_amount: item?.unit?.renew_total_package
+        ? Math.round(Number(item?.unit?.renew_total_package)).toLocaleString()
         : "--- ---", //item?.unit?.fee_amount,
       period_type: item?.unit?.period, //item?.unit?.fee_period,
       currency: currencies[item?.unit?.currency],
       flag_details: item?.flags.map((flag) => ({
+        flagger_id: flag?.flagger?.user_id,
         flagger_name: flag.flagger.name?.toLowerCase(),
         email: flag.flagger.email,
         tier_id: flag.flagger?.tier_id,

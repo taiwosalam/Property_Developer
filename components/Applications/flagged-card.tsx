@@ -4,8 +4,12 @@ import { Separator } from "../ui/separator";
 import { SectionSeparator } from "../Section/section-components";
 import { getBadgeColor } from "@/lib/utils";
 import BadgeIcon from "../BadgeIcon/badge-icon";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useGlobalStore } from "@/store/general-store";
 
 interface IFaggerCard {
+  flagger_id: number;
   flagger_name: string;
   tier_id: number;
   email: string;
@@ -18,6 +22,29 @@ interface IFaggerCard {
   status: "rejected" | "pending" | "evaluated" | "approved";
 }
 export const FlaggedCard = ({ ...props }: IFaggerCard) => {
+  const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
+  const goToMessage = () => {
+    if (!props?.flagger_id) {
+      toast.warning("User ID not Found!");
+      return;
+    }
+
+    // Set the user data in the global store
+    const newMessageUserData = {
+      branch_id: 0,
+      id: props?.flagger_id,
+      imageUrl: props?.picture || empty,
+      name: props?.flagger_name || "Unknown User",
+      position: "agent",
+    };
+    setGlobalStore("messageUserData", newMessageUserData);
+
+    // Redirect to the messaging page
+    router.push(`/messages/${props?.flagger_id}`);
+  };
+  
   return (
     <>
       <div
@@ -54,7 +81,10 @@ export const FlaggedCard = ({ ...props }: IFaggerCard) => {
                 </p>
               </div>
 
-              <button className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-6 text-sm flex justify-center items-center">
+              <button
+                className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-6 text-sm flex justify-center items-center"
+                onClick={goToMessage}
+              >
                 Message
               </button>
             </div>

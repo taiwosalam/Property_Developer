@@ -19,8 +19,10 @@ export interface ApplicationCardProps {
     yearly_amount: string;
     period_type: string;
     currency: string;
+    renew_fee_period: string;
 
     flag_details?: {
+      flagger_id: number;
       flagger_name: string;
       email: string;
       phone: string;

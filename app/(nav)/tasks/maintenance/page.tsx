@@ -32,6 +32,8 @@ import { hasActiveFilters } from "../../reports/data/utils";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { debounce } from "lodash";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import Pagination from "@/components/Pagination/pagination";
+import { IPropertyApi } from "../../settings/others/types";
 
 const Maintenance = () => {
   const [maintenanceData, setMaintenanceData] =
@@ -84,14 +86,19 @@ const Maintenance = () => {
     []
   );
 
-  const { data: propertyData } = useFetch<any>(`property/list`);
+  const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
-  const propertyOptions = propertyData?.data?.properties?.data?.map(
-    (property: { id: number; title: string }) => ({
-      value: property.id,
-      label: property.title,
-    })
-  );
+  const propertyOptions =
+    propertiesData?.data.properties.data
+      // Filter for unique property titles
+      .filter(
+        (property, index, self) =>
+          self.findIndex((p) => p.title === property.title) === index
+      )
+      .map((property) => ({
+        label: property.title,
+        value: property.id.toString(),
+      })) || [];
 
   const handlePageChange = (page: number) => {
     setConfig((prev) => ({
@@ -197,7 +204,8 @@ const Maintenance = () => {
                 <br />
                 <br />
                 Need assistance? Click your profile icon in the top right corner
-                and select &apos;Assistance & Support&apos; for help on using this page.
+                and select &apos;Assistance & Support&apos; for help on using
+                this page.
               </p>
             }
           />
@@ -227,6 +235,14 @@ const Maintenance = () => {
           </AutoResizingGrid>
         )}
       </section>
+
+      <div>
+        <Pagination
+          onPageChange={handlePageChange}
+          totalPages={maintenanceData?.pagination?.total_pages || 0}
+          currentPage={maintenanceData?.pagination?.current_page || 0}
+        />
+      </div>
     </div>
   );
 };
