@@ -1,11 +1,14 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { SearchIcon } from "@/public/icons/icons";
+import { PlusIcon, SearchIcon } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import { TeamMessageCardSkeleton } from "@/components/Skeleton/member-card-skeleton";
 import { useTeamChat } from "@/contexts/teamChatContext";
 import TeamChatCard from "@/app/(nav)/community/team-chat/TeamChartCard";
+import CreateGroupModal from "@/app/(nav)/community/team-chat/create-group-modal";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import { UserPlusIcon } from "lucide-react";
 
 const TeamChatSidebar = () => {
   const {
@@ -21,7 +24,7 @@ const TeamChatSidebar = () => {
   const paramId = params.id;
 
   return (
-    <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
+    <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
       <div className="flex gap-4 items-center w-full justify-between sticky top-0 z-50 bg-white dark:bg-darkText-primary pb-2">
         {!isSearch && (
           <div className="flex items-center gap-2 w-full">
@@ -65,6 +68,23 @@ const TeamChatSidebar = () => {
             />
           ))
         )}
+      </div>
+
+      {/* Floating action button */}
+      <div className="fixed bottom-20 z-[10] max-w-[50px]">
+        <Modal>
+          <ModalTrigger asChild>
+            <button
+              onClick={() => {}}
+              className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+            >
+              <PlusIcon />
+            </button>
+          </ModalTrigger>
+          <ModalContent>
+            <CreateGroupModal create />
+          </ModalContent>
+        </Modal>
       </div>
     </div>
   );

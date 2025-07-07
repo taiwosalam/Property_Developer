@@ -153,6 +153,10 @@ export type LandlordPageData = {
     badge_color: BadgeIconColors | null;
   }>;
   messageUserData: messageUserDataTypes;
+  propertyOptions?: {
+    label: string;
+    value: string;
+  }[]
 };
 
 export interface messageUserDataTypes {

@@ -26,7 +26,7 @@ import {
   TeamChatUsersResponse,
   UsersResponse,
 } from "./types";
-import { Modal, ModalContent } from "@/components/Modal/modal";
+import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
 import SelectChatUsersModal from "@/components/Message/user-modal";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { boolean } from "zod";
@@ -41,6 +41,8 @@ import { useParams } from "next/navigation";
 import { IMemberList, transformTeamMemberData } from "./team.data";
 import { empty } from "@/app/config";
 import TextArea from "@/components/Form/TextArea/textarea";
+import Picture from "@/components/Picture/picture";
+import { useTeamChat } from "@/contexts/teamChatContext";
 
 const style = {
   position: "absolute",
@@ -51,7 +53,7 @@ const style = {
 };
 
 interface MemberComponentProps {
-  title: string;
+  title?: string;
   group?: boolean;
   handleClose?: () => void;
   nextStep?: () => void;
@@ -73,7 +75,8 @@ const MemberComponent = ({
   };
 
   let selectedCount: number = 0;
-  const { closeAddMember } = useTeamChatStore();
+  const { setIsOpen } = useModal()
+  const { setDetailsStep } = useTeamChat();
   const [isGroupDesc, setIsGroupDesc] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -187,7 +190,8 @@ const MemberComponent = ({
         .then((res) => {
           if (res) {
             window.dispatchEvent(new Event("refetch_team_chat"));
-            if (handleClose) handleClose();
+            // if (handleClose) handleClose();
+            setIsOpen(false);
           }
         })
         .catch((err) => console.error(err));
@@ -195,22 +199,10 @@ const MemberComponent = ({
   };
 
   return (
-    <>
+    <div className="w-full rounded-md bg-white overflow-y-auto custom-round-scrollbar">
       <div className="sticky top-0 z-[2] bg-white dark:bg-darkText-primary mt-0 py-3 px-4">
-        <button
-          type="button"
-          className="flex items-center gap-2"
-          onClick={handleClose}
-        >
-          <span>
-            <ChevronLeftIcon size={30} />
-          </span>
-          <h2 className="text-text-primary dark:text-white text-lg font-medium">
-            {title}
-          </h2>
-        </button>
         {!isGroupDesc && (
-          <div className="searchWrapper flex items-center justify-between mt-2 gap-1 border border-text-disabled rounded-md p-1 w-full h-[50px]">
+          <div className="searchWrapper flex items-center justify-between -mt-2 gap-1 border border-text-disabled rounded-md p-1 w-full h-[35px]">
             <div className="flex items-center gap-1 w-full">
               <SearchIcon size={25} />
               <input
@@ -249,14 +241,17 @@ const MemberComponent = ({
         )}
         {selectedCount > 0 && !isGroupDesc && (
           <div className="flex items-center justify-between gap-2 mt-2">
-            <button
+            <Button
               onClick={cancel}
               type="button"
-              className="bg-text-disabled text-sm text-white w-1/2 py-2 rounded-md"
+              // className="bg-text-disabled text-sm text-white w-1/2 py-2 rounded-md"
+              variant="border"
+              size="base_medium"
+              className="px-8 py-1 w-full"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => {
                 if (group) {
                   openGroupDesc();
@@ -265,10 +260,13 @@ const MemberComponent = ({
                 }
               }}
               type="button"
-              className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
+              // className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
+              variant="default"
+              size="base_medium"
+              className="px-8 py-1 w-full"
             >
               {group ? "Next" : "Add"} {selectedCount}
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -297,12 +295,18 @@ const MemberComponent = ({
                   </button>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Image
+                  {/* <Image
                     src={item?.profile_picture || empty}
                     alt="profile"
                     width={40}
                     height={40}
                     className="rounded-full w-10 h-10 object-cover"
+                  /> */}
+                  <Picture
+                    src={item?.profile_picture || empty}
+                    alt="profile"
+                    size={24}
+                    rounded
                   />
                 </div>
                 <div className="flex flex-col">
@@ -412,7 +416,7 @@ const MemberComponent = ({
           </AuthForm>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -133,6 +133,23 @@ export const transformIndividualLandlordAPIResponse = ({
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
 
+  // Map propertyOptions from properties and previous_properties
+  const propertyOptions = [
+    ...(data?.properties?.map((p) => ({
+      label: p.properties?.title || "",
+      value: p.properties?.id?.toString() || "",
+    })) || []),
+    ...(data?.previous_properties?.map((p) => ({
+      label: p.properties?.title || "",
+      value: p.properties?.id?.toString() || "",
+    })) || []),
+  ].filter(
+    (property, index, self) =>
+      property.label &&
+      property.value &&
+      index === self.findIndex((p) => p.value === property.value)
+  ); // Remove duplicates based on property_id
+
   return {
     id: data.id,
     picture: data.picture || "",
@@ -290,6 +307,7 @@ export const transformIndividualLandlordAPIResponse = ({
           : null,
       };
     }),
+    propertyOptions,
     messageUserData: {
       id: Number(data?.user_id) || 0,
       name: data?.name || "",

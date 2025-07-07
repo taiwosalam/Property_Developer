@@ -10,9 +10,16 @@ import React, {
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
-import { IMemberList, transformTeamMemberData } from "@/app/(nav)/community/team-chat/team.data";
+import {
+  IMemberList,
+  transformTeamMemberData,
+} from "@/app/(nav)/community/team-chat/team.data";
 import { TeamChatUsersResponse } from "@/app/(nav)/community/team-chat/types";
-import { addUserToGroup, createNewTeamChat } from "@/app/(nav)/community/team-chat/data";
+import {
+  addUserToGroup,
+  createNewTeamChat,
+} from "@/app/(nav)/community/team-chat/data";
+import { handleAxiosError } from "@/services/api";
 
 interface CreateGroupContextType {
   searchTerm: string;
@@ -32,6 +39,11 @@ interface CreateGroupContextType {
   handleSubmitCreateGroup: (formData: FormData) => Promise<void>;
   handleAddMembersToGroup: (groupId: string) => Promise<void>;
   resetForm: () => void;
+  filteredMembers: Array<any>;
+  filterRole: string[];
+  setFilterRole: (role: string[]) => void;
+  onFilterApply: (role: string | string[]) => void;
+  filterCounts: Record<string, number>;
 }
 
 const CreateGroupContext = createContext<CreateGroupContextType | undefined>(
@@ -57,6 +69,7 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [filterRole, setFilterRole] = useState<string[]>([]);
 
   const { data: teamMemberData, loading } =
     useFetch<TeamChatUsersResponse>("/company/users");
@@ -67,6 +80,48 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
       setTeamMembers(transformTeam);
     }
   }, [teamMemberData]);
+
+  // Compute filtered members based on searchTerm and filterRole
+  const filteredMembers = React.useMemo(() => {
+    if (!teamMembers?.members) return [];
+    return teamMembers.members.filter((member) => {
+      const matchesSearch = member.username
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const role = member.role?.toLowerCase();
+      const selectedRoles = filterRole.map((r) => r.toLowerCase());
+      const hasAll = selectedRoles.includes("all");
+      const matchesRole =
+        filterRole.length === 0 || hasAll || selectedRoles.includes(role);
+      return matchesSearch && matchesRole;
+    });
+  }, [teamMembers, searchTerm, filterRole]);
+
+  // Compute counts for each role
+  const filterCounts = React.useMemo(() => {
+    const counts: Record<string, number> = {
+      All: 0,
+      Directors: 0,
+      Staff: 0,
+      Managers: 0,
+      // Add more roles as needed
+    };
+    if (!teamMembers?.members) return counts;
+    counts["All"] = teamMembers.members.length;
+    teamMembers.members.forEach((member) => {
+      const role = member.role?.toLowerCase();
+      if (role === "director") counts["Directors"]++;
+      if (role === "staff") counts["Staff"]++;
+      if (role === "manager") counts["Managers"]++;
+      // Add more roles as needed
+    });
+    return counts;
+  }, [teamMembers]);
+
+  // Filter apply handler
+  const onFilterApply = (role: string | string[]) => {
+    setFilterRole(Array.isArray(role) ? role : [role]);
+  };
 
   const handleCheckboxClick = (memberId: number) => {
     setSelectedMembers((prev) =>
@@ -103,9 +158,7 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
         window.dispatchEvent(new Event("refetchTeamChat"));
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create group"
-      );
+      handleAxiosError(error);
     } finally {
       setIsCreating(false);
     }
@@ -123,7 +176,7 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
           window.dispatchEvent(new Event("refetch_team_chat"));
         }
       } catch (err) {
-        toast.error("Failed to add members");
+        handleAxiosError(err);
       }
     }
   };
@@ -153,6 +206,11 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
     handleSubmitCreateGroup,
     handleAddMembersToGroup,
     resetForm,
+    filteredMembers,
+    filterRole,
+    setFilterRole,
+    onFilterApply,
+    filterCounts,
   };
 
   return (

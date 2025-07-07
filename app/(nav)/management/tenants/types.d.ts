@@ -140,4 +140,8 @@ export interface TenantData {
   statement?: Statement[];
   note?: boolean;
   messageUserData?: messageUserDataTypes;
+  unitOptions?: {
+    label: string;
+    value: string;
+  }[];
 }

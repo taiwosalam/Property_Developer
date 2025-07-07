@@ -14,5 +14,6 @@ export async function saveClientRoleToCookie(role: string): Promise<void> {
     httpOnly: false, // Accessible on the client-side
     sameSite: 'strict',
     expires: 7, // Optional: Expire in 7 days
+    path: "/",
   });
 }
