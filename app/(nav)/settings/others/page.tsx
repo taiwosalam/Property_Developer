@@ -617,6 +617,18 @@ const Others = () => {
     selectedLGA: "",
   });
 
+  const [isOwner, setIsOwner] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+
+  const { data: userProfile } = useFetch<any>(`user/profile`);
+
+  useEffect(() => {
+    if (userProfile) {
+      setIsOwner(userProfile?.data?.user?.is_owner);
+      setIsActive(userProfile?.data?.user?.is_active);
+    }
+  }, [userProfile]);
+
   const handleFormChange = (field: string, value: string) => {
     if (field === "avatar") {
       setSelectedAvatar((prev) => value as string | null);
@@ -652,7 +664,7 @@ const Others = () => {
           )}
           formData={formData}
           onFormChange={handleFormChange}
-          is_active={false}
+          is_active={isActive}
         />
       ),
     },
@@ -826,15 +838,6 @@ const Others = () => {
       [id]: step,
     }));
   };
-
-  const [isOwner, setIsOwner] = useState(false);
-  const { data: userProfile } = useFetch<any>(`user/profile`);
-
-  useEffect(() => {
-    if (userProfile) {
-      setIsOwner(userProfile?.data?.user?.is_owner);
-    }
-  }, [userProfile]);
 
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
 

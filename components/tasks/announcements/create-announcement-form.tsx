@@ -226,7 +226,7 @@ const CreateAnnouncementForm: React.FC<{
           {!editMode && (
             <Fragment>
               <Select
-                id="branch"
+                id="branch_d"
                 label="Branch"
                 disabled={silentLoading || loading}
                 placeholder={
@@ -262,7 +262,7 @@ const CreateAnnouncementForm: React.FC<{
                 inputContainerClassName="bg-white"
               />
               <Select
-                id="property"
+                id="property_id"
                 label="Property"
                 disabled={!selectedBranch || propertySilent}
                 placeholder={

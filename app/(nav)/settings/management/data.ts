@@ -44,11 +44,9 @@ export const staffConfigurations = [
         "Can manage inspections",
         "Can create and manage announcement",
         "Can add and manage tenants/occupants",
-        "Can view and reply property reviews",
         "Can view call request",
       ],
       [
-        "Can add and manage tenants/occupants",
         "Can add/delete branch staff",
         "Can add and manage landlords/landlady",
         "Can view complaints",
@@ -58,6 +56,7 @@ export const staffConfigurations = [
         "Can approve and refund caution deposit",
         "Can manage reminder",
         "Can view property request",
+        "Can view and reply property reviews",
       ],
     ],
   },
@@ -77,6 +76,7 @@ export const staffConfigurations = [
         "Can create branch inventory",
         "Can reply assigned messages",
         "Can check in and manage vehicle records",
+        "Can manage assign tenants/occupants",
       ],
       [
         "Can manage assigned landlord/landlady",
@@ -104,6 +104,7 @@ export const staffConfigurations = [
         "Can reply to inspections",
         "Can view service provider",
         "Can manage inspections",
+        "Can view call request",
       ],
       [
         "Can check in visitors",
@@ -112,6 +113,7 @@ export const staffConfigurations = [
         "Can reply assign messages",
         "Can check calendars",
         "Can check in vehicle records",
+        "Can view complaints",
         "Can view and reply assigned messages",
       ],
     ],

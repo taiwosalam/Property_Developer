@@ -83,7 +83,7 @@ export const transformComplaintsData = (
         date: complaint?.created_at
           ? dayjs(complaint?.created_at).format("DD MMMM YYYY")
           : "___ ___",
-        status: complaint?.status.toLowerCase(),
+        status: complaint?.status?.toLowerCase(),
         progress: complaint?.progress,
       },
       name: complaint?.name?.toLowerCase(),
