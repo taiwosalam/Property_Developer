@@ -81,7 +81,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const selectedLandlordId = useGlobalStore((s) => s.selectedLandlordId);
 
-  
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
@@ -275,7 +274,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     [landlordsData]
   );
 
-  console.log("landlordsData", landlordsData)
+  console.log("landlordsData", landlordsData);
   const inventoryOptions =
     branchData?.inventory?.data?.data?.map((inventory: any) => ({
       value: inventory.id,
@@ -309,37 +308,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       });
     }
   }, [staffsData]);
-
-  // useEffect(() => {
-  //   // Check for landlordId from propertyDetails (edit) or from props (create)
-  //   const propertyLandlordId = propertyDetails?.land_lord_id ?? undefined;
-
-  //   let newLandlord: string | undefined = undefined;
-
-  //   if (
-  //     editMode &&
-  //     propertyLandlordId !== undefined &&
-  //     propertyLandlordId !== null &&
-  //     landlordOptions.length
-  //   ) {
-  //     newLandlord = String(propertyLandlordId);
-  //   } else if (!editMode && landlordId && landlordOptions.length) {
-  //     const exists = landlordOptions.some(
-  //       (l) => l.value === String(landlordId)
-  //     );
-  //     newLandlord = exists ? String(landlordId) : undefined;
-  //   }
-  //   // Only update if changed (prevents loop)
-  //   if (selectedLandlord !== newLandlord) {
-  //     setSelectedLandlord(newLandlord);
-  //   }
-  // }, [
-  //   editMode,
-  //   propertyDetails,
-  //   landlordId,
-  //   landlordOptions,
-  //   selectedLandlord,
-  // ]);
 
   useEffect(() => {
     let newLandlord: string | undefined = undefined;
@@ -407,6 +375,23 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
+
+  const selectedLandlordAgent = useMemo(() => {
+    if (!selectedLandlord || !landlordsData?.data) return null;
+    const landlord = landlordsData.data.find(
+      (l) => String(l.id) === String(selectedLandlord)
+    );
+    return landlord?.agent || null;
+  }, [selectedLandlord, landlordsData]);
+
+  const filteredCautionDepositOptions = useMemo(() => {
+    // Only show "Keep with Landlord" if agent is "Mobile"
+    if (selectedLandlordAgent?.toLowerCase() === "mobile") {
+      return CautionDepositOptions;
+    }
+    // Otherwise, filter out "Keep with Landlord"
+    return CautionDepositOptions.filter((opt) => opt.value !== "Landlord");
+  }, [selectedLandlordAgent]);
 
   if (requestLoading) {
     return <FullPageLoader text="Submitting..." />;
@@ -941,7 +926,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   }
                 />
                 <Select
-                  options={CautionDepositOptions}
+                  options={filteredCautionDepositOptions}
                   isSearchable={false}
                   id="caution_deposit"
                   className="property-caution-deposit-wrapper"

@@ -96,7 +96,7 @@ export const TenantEditProfileInfoSection = () => {
     if (data.tenant_email !== tenant?.email) {
       (payload as any).email = data.tenant_email;
     }
-    
+
     cleanPhoneNumber(payload);
     if (!payload.phone_number) {
       payload.phone_number = "";
@@ -668,16 +668,27 @@ export const TenantEditAttachmentSection = () => {
   return (
     <LandlordTenantInfoEditSection title="attachment">
       <LandlordTenantInfoEditGrid>
-        <div className="space-y-5">
-          <Select
-            id="document_type"
-            label="document type"
-            placeholder="Select options"
-            options={["invoice", "receipt", "agreement", "other document"]}
-            value={documentType}
-            onChange={(value) => setDocumentType(value)}
-            inputContainerClassName="bg-neutral-2"
-          />
+        <div className="space-y-5 col-span-full">
+          <div className="flex gap-2 w-full">
+            <Select
+              id="document_type"
+              label="document type"
+              placeholder="Select options"
+              options={["invoice", "receipt", "agreement", "other document"]}
+              value={documentType}
+              onChange={(value) => setDocumentType(value)}
+              className="w-full"
+            />
+            <Select
+              id="unit"
+              label="unit"
+              placeholder="Select options"
+              options={tenant?.unitOptions || []}
+              // value={documentType}
+              // onChange={(value) => setDocumentType(value)}
+              className="w-full"
+            />
+          </div>
           <div>
             <p className="text-base font-medium">Browse *</p>
             <Button

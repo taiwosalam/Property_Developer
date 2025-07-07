@@ -310,6 +310,7 @@ export const login = async (formData: Record<string, any>) => {
       expires: 7,
       secure: true,
       sameSite: "Strict",
+      path: "/",
     });
     // Cookies.set("subscription_status", subscription_status, {
     //   expires: 7,

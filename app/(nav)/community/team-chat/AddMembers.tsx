@@ -2,7 +2,12 @@
 import { removeGroupMember, team_chat_members_data } from "./data";
 import { FilterIcons, SearchIcon, TrashIcon } from "@/public/icons/icons";
 import { useEffect, useState } from "react";
-import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
+import {
+  Modal,
+  ModalContent,
+  ModalTrigger,
+  useModal,
+} from "@/components/Modal/modal";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import Image from "next/image";
 import Avatar1 from "@/public/empty/avatar-1.svg";
@@ -16,6 +21,9 @@ import { useAuthStore } from "@/store/authStore";
 import MemberComponent from "./Member";
 import { GroupChatResponse, User } from "./types";
 import { toast } from "sonner";
+import { useTeamChat } from "@/contexts/teamChatContext";
+import Picture from "@/components/Picture/picture";
+import { empty } from "@/app/config";
 // import TrashIcon from "@/public/icons/trash.svg";
 
 interface AddMembersProps {
@@ -31,6 +39,7 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
   const { id } = useParams();
   const { setIsOpen } = useModal();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const { setDetailsStep } = useTeamChat();
 
   const filteredMembers = (group_members ?? []).filter((member) =>
     member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
@@ -65,8 +74,8 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
   };
 
   return (
-    <div className="transition-all duration-300 ease-in-out">
-      <div className="sticky top-0 z-[2] bg-white dark:bg-darkText-primary p-4">
+    <div className="transition-all duration-300 ease-in-out relative">
+      <div className="sticky top-0 z-[2 bg-white dark:bg-darkText-primary p-4">
         <div className="searchWrapper flex items-center gap-1 border border-text-disabled rounded-md p-1 w-full">
           <SearchIcon size={20} />
           <input
@@ -84,7 +93,7 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
           <button
             type="button"
             className="text-brand-9 text-xs sm:text-sm font-medium"
-            onClick={addMember}
+            onClick={() => setDetailsStep("members")}
           >
             + Add New Member
           </button>
@@ -98,12 +107,11 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
           >
             <div className="flex items-center gap-2 w-3/4">
               <div className="imgWrapper h-10 w-10 relative overflow-hidden">
-                <Image
-                  src={item.picture || Avatar1}
+                <Picture
+                  src={item?.picture || empty}
                   alt="profile"
-                  width={100}
-                  height={100}
-                  className="rounded-full w-full h-full object-contain"
+                  size={40}
+                  rounded
                 />
               </div>
               <div className="flex flex-col">

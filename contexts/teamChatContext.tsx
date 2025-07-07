@@ -44,6 +44,8 @@ type TeamChatContextType = {
     stopRecording?: VoidFunction
   ) => Promise<void>;
   refetch: (options?: { silent: boolean }) => void;
+  detailsStep: "detail" | "members";
+  setDetailsStep: (step: "detail" | "members") => void;
 };
 
 const TeamChatContext = createContext<TeamChatContextType | undefined>(
@@ -72,6 +74,9 @@ export const TeamChatProvider = ({
   const [reqLoading, setReqLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [groupedMessages, setGroupedMessages] = useState<any[]>([]);
+  const [detailsStep, setDetailsStep] = useState<"detail" | "members">(
+    "detail"
+  );
 
   const {
     data: teamData,
@@ -182,6 +187,8 @@ export const TeamChatProvider = ({
         handleSendMsg,
         handleSendAudio,
         refetch,
+        detailsStep,
+        setDetailsStep,
       }}
     >
       {children}

@@ -86,11 +86,19 @@ const ExpiredSubscriptionModal: React.FC = () => {
       setReqLoading(true);
       const res = await actionFn(payload);
       if (res) {
-        toast.success("Subscription updated successfully here");
+        toast.success("Subscription updated successfully");
         window.dispatchEvent(new Event("fetch-profile"));
         window.dispatchEvent(new Event("refetchSubscriptionPlan"));
         window.dispatchEvent(new Event("refetchEnrollments"));
-        router.push(`/settings/subscription`);
+        Cookies.set("subscription_status", "active", {
+          expires: 7,
+          secure: true,
+          sameSite: "Strict",
+          path: "/",
+        });
+        setTimeout(() => {
+          router.push(`/settings/subscription`);
+        }, 200); // 200ms delay to ensure cookie is set
         setIsOpen(false);
       }
     } catch (error) {

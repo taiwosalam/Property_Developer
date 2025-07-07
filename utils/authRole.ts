@@ -29,10 +29,11 @@ export async function updateSession(request: NextRequest) {
   parsed.expires = new Date(Date.now() + 10 * 1000);
   const res = NextResponse.next();
   res.cookies.set({
-    name: 'role',
+    name: "role",
     value: await encrypt(parsed),
     httpOnly: true,
     expires: parsed.expires,
+    path: "/",
   });
   return res;
 }

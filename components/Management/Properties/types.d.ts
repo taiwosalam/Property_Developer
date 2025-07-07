@@ -63,6 +63,7 @@ export interface AllLandlordsResponse {
     id: string;
     name: string;
     picture: string;
+    agent?: string;
   }[];
 }
 export interface AllBranchesResponse {

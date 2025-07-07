@@ -234,6 +234,7 @@ const Header = () => {
         expires: 7,
         secure: true,
         sameSite: "Strict",
+        path: "/",
       });
     }
   }, [data, setPersonalInfo]);

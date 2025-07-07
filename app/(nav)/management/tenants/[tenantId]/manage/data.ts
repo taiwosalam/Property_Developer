@@ -149,6 +149,22 @@ export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
   // console.log("tennaa", data)
+  const unitOptions = [
+    ...(data?.current_rent?.map((rent) => ({
+      label: rent.unit_name || "",
+      value: rent.unit_id?.toString() || "",
+    })) || []),
+    ...(data?.previous_rent?.map((rent) => ({
+      label: rent.unit_name || "",
+      value: rent.unit_id?.toString() || "",
+    })) || []),
+  ].filter(
+    (unit, index, self) =>
+      unit.label &&
+      unit.value &&
+      index === self.findIndex((u) => u.value === unit.value)
+  );
+
   const lastUpdated = data?.note?.last_updated_at
     ? dayjs(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
@@ -302,6 +318,7 @@ export const transformIndividualTenantAPIResponse = ({
       imageUrl: data.picture ?? empty,
       branch_id: 1, //TEST
     },
+    unitOptions,
   };
 };
 

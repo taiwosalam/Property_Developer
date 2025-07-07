@@ -386,7 +386,6 @@ const Tenants = () => {
             <SearchError />
           ) : (
             <EmptyList
-             
               noButton
               modalContent={<AddTenantModal />}
               title="The tenants and occupants profile files are empty."

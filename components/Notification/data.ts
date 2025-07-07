@@ -41,7 +41,7 @@ export const notification_links: Record<string, string> = {
   invoice: "/wallet",
   profile: "/settings/company",
   setting: "/settings",
-  listing: "/listings/units",
+  listing: "/listing/units",
   location: "/settings",
   subscription: "/settings/subscription",
   "wallet transaction notification": "/wallet",

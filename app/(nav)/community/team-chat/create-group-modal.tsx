@@ -6,27 +6,49 @@ import SelectMembersStep from "./SelectMembersStep";
 import SuccessStep from "./SuccessStep";
 import { CreateGroupProvider } from "@/contexts/createGroup";
 import GroupDetailsStep from "./GroupDetailSteps";
+import { useModal } from "@/components/Modal/modal";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 interface CreateGroupModalProps {
   isOpen?: boolean;
   onClose?: () => void;
+  create?: boolean;
 }
 
-const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ onClose }) => {
+const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
+  onClose,
+  create,
+}) => {
   const { activeStep, changeStep } = useStep(3);
+  const { setIsOpen } = useModal();
+  const { isMobile } = useWindowWidth();
 
   const handleCloseModal = () => {
     // changeStep("reset");
-    onClose?.();
+    // onClose?.();
+    setIsOpen(false);
   };
 
   return (
     <CreateGroupProvider>
-      <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary rounded-xl max-h-[70vh] lg:min-w-[35%] min-w-[50%] overflow-y-auto custom-round-scrollbar px-4">
+      <LandlordTenantModalPreset
+        noPaddingTop
+        style={{
+          width: isMobile ? "100%" : "35%",
+        }}
+        back={
+          activeStep !== 1
+            ? { handleBack: () => changeStep("prev") }
+            : undefined
+        }
+        heading="Create New Group"
+      >
         {activeStep === 1 && (
           <SelectMembersStep
             onClose={handleCloseModal}
             onNext={() => changeStep("next")}
+            create={create}
           />
         )}
         {activeStep === 2 && (
@@ -36,7 +58,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ onClose }) => {
           />
         )}
         {activeStep === 3 && <SuccessStep onClose={handleCloseModal} />}
-      </div>
+      </LandlordTenantModalPreset>
     </CreateGroupProvider>
   );
 };
