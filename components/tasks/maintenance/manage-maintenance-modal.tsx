@@ -15,7 +15,14 @@ import {
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { toast } from "sonner";
 
+type IStatus =
+  | "not started"
+  | "ongoing"
+  | "completed"
+  | "pending"
+  | "in_progress";
 interface MaintenanceModalProps {
+  status: "not started" | "ongoing" | "completed" | "pending" | "in_progress";
   maintenanceId: number;
   property_name: string;
   created_at: string;
@@ -60,10 +67,21 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
   const handleUpdate = async () => {
     if (!props?.maintenanceId) return;
     if (!startDate || !endDate) return; // Ensure dates are not null
+
+    const costInt = Number(maintenanceCost.toString().replace(/[^0-9.]/g, ""));
+    const status: IStatus =
+      props?.status === "not started" ? "in_progress" : "completed";
+
+    if (!costInt || costInt === 0) {
+      toast.error("Maintenance cost is required");
+      return;
+    }
+
     const data = {
       start_date: startDate.toDate(),
       end_date: endDate.toDate(),
-      cost: maintenanceCost,
+      cost: costInt,
+      status,
     };
     try {
       setIsUpdating(true);
@@ -95,6 +113,8 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
       setIsDeleting(false);
     }
   };
+
+  console.log(props?.status);
 
   return (
     <ModalPreset title="Manage Maintenance">
@@ -175,26 +195,30 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
             />
           </div>
         </div>
-        <div className="space-y-3">
-          <p className="text-text-tertiary dark:text-white text-base">
-            Maintenance Quotation:
-          </p>
-          <div
-            className="px-4 py-6 rounded-lg"
-            style={{
-              boxShadow:
-                "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
-            }}
-          >
+        {props.quotation?.length > 0 && (
+          <div className="space-y-3">
+            <p className="text-text-tertiary dark:text-white text-base">
+              Maintenance Quotation:
+            </p>
+
             <div
-              className="text-text-secondary dark:text-darkText-2 text-sm"
-              dangerouslySetInnerHTML={{ __html: props.quotation }}
-            />
+              className="px-4 py-6 rounded-lg"
+              style={{
+                boxShadow:
+                  "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
+              }}
+            >
+              <div
+                className="text-text-secondary dark:text-darkText-2 text-sm"
+                dangerouslySetInnerHTML={{ __html: props.quotation }}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <DateInput
+            disabled={props?.status !== "pending"}
             id="start_date"
             label="Start Date"
             labelclassName="!text-sm"
@@ -204,6 +228,7 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
           />
           <DateInput
             id="end_date"
+            disabled={props?.status !== "pending"}
             // containerClassName="bg-white"
             onChange={handleEndDateChange}
             labelclassName="!text-sm"
@@ -212,6 +237,7 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
             value={endDate}
           />
           <Input
+            required
             id="maintenance_cost"
             label="Maintenance Cost"
             labelclassName="!text-sm"
@@ -231,14 +257,22 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
             >
               {isDeleting ? "Please wait..." : "Delete"}
             </Button>
-            <Button
-              disabled={isUpdating}
-              size="xs_normal"
-              className="py-2 px-8"
-              onClick={handleUpdate}
-            >
-              {isUpdating ? "Please wait..." : "Update"}
-            </Button>
+            {props?.status !== "completed" && (
+              <Button
+                disabled={isUpdating}
+                size="xs_normal"
+                className="py-2 px-8"
+                onClick={handleUpdate}
+              >
+                {isUpdating
+                  ? "Please wait..."
+                  : props?.status === "not started"
+                  ? "start"
+                  : props?.status === "ongoing"
+                  ? "Complete"
+                  : "Update"}
+              </Button>
+            )}
           </div>
         </div>
       </div>

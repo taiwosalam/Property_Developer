@@ -43,6 +43,13 @@ import { empty } from "@/app/config";
 import { Phone, Printer } from "lucide-react";
 import { ApplicationCardUnit } from "@/components/Management/Properties/application-card";
 import { IPropertyApi } from "@/app/(nav)/settings/others/types";
+import { useGlobalStore } from "@/store/general-store";
+
+interface IMessageFlagger {
+  id: number;
+  name: string;
+  pictureSrc: string | null;
+}
 
 const ManageApplication = () => {
   const isDarkMode = useDarkMode();
@@ -60,6 +67,8 @@ const ManageApplication = () => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   const {
     data: apiData,
@@ -111,6 +120,46 @@ const ManageApplication = () => {
     current_rent,
     flag_details,
   } = managePageData ?? {};
+
+  const messageFlagger = ({ id, name, pictureSrc }: IMessageFlagger) => {
+    if (!id) {
+      toast.warning("User ID not Found!");
+      return;
+    }
+
+    // Set the user data in the global store
+    const newMessageUserData = {
+      branch_id: 0,
+      id,
+      imageUrl: pictureSrc || empty,
+      name: name || "Unknown User",
+      position: "agent",
+    };
+    setGlobalStore("messageUserData", newMessageUserData);
+
+    // Redirect to the messaging page
+    router.push(`/messages/${profile_details?.user_id}`);
+  };
+
+  const goToMessage = () => {
+    if (!profile_details?.user_id) {
+      toast.warning("User ID not Found!");
+      return;
+    }
+
+    // Set the user data in the global store
+    const newMessageUserData = {
+      branch_id: 0,
+      id: profile_details?.user_id,
+      imageUrl: profile_details?.photo || empty,
+      name: profile_details?.fullName || "Unknown User",
+      position: "agent",
+    };
+    setGlobalStore("messageUserData", newMessageUserData);
+
+    // Redirect to the messaging page
+    router.push(`/messages/${profile_details?.user_id}`);
+  };
 
   if (isNetworkError) <NetworkError />;
   if (error) <ServerError error={error} />;
@@ -182,7 +231,7 @@ const ManageApplication = () => {
           </div>
         </div>
 
-        {flag_details && flag_details.length > 0 && (
+        {profile_details?.is_flagged && (
           <div
             style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
             className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
@@ -208,11 +257,24 @@ const ManageApplication = () => {
                         </p>
                         {flag.phone && (
                           <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
-                            <Phone fill="currentColor" size={18} strokeWidth={0.75}/>
+                            <Phone
+                              fill="currentColor"
+                              size={18}
+                              strokeWidth={0.75}
+                            />
                             <p>{flag.phone}</p>
                           </div>
                         )}
-                        <button className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-7 text-sm mt-1">
+                        <button
+                          className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-7 text-sm mt-1"
+                          onClick={() =>
+                            messageFlagger({
+                              id: flag?.user_id,
+                              name: flag?.flagger_name,
+                              pictureSrc: flag?.picture,
+                            })
+                          }
+                        >
                           Message
                         </button>
                       </div>
@@ -264,6 +326,12 @@ const ManageApplication = () => {
                 <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
                   ID: {profile_details?.encodedId}
                 </p>
+
+                <div>
+                  <Button size="sm" onClick={goToMessage}>
+                    Message
+                  </Button>
+                </div>
               </div>
             </div>
             {isFlagged ? (

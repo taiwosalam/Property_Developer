@@ -9,9 +9,9 @@ export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
     label: "Status",
     value: [
       { label: "all", value: "all" },
-      { label: "Pending", value: "Pending" },
-      { label: "Ongoing", value: "Ongoing" },
-      { label: "Completed", value: "Completed" },
+      { label: "Pending", value: "pending" },
+      { label: "Ongoing", value: "in_progress" },
+      { label: "Completed", value: "completed" },
     ],
   },
 ];
@@ -36,19 +36,21 @@ export const getALLMaintenance = async () => {};
 
 export const getMaintenanceById = async (id: string) => {};
 
-interface UpdateMetainanceData {
+interface UpdateMaintenanceData {
   start_date: Date;
   end_date: Date;
-  cost: string;
+  cost: number;
+  status: "not started" | "ongoing" | "completed" | "pending" | "in_progress";
 }
 export const updateMaintenance = async (
   id: number,
-  data: UpdateMetainanceData //change to formdata later
+  data: UpdateMaintenanceData //change to formdata later
 ) => {
   const payload = {
     start_date: data?.start_date,
     end_date: data?.end_date,
     cost: data?.cost,
+    status: data?.status,
   };
   try {
     const res = await api.patch(`maintenance/${id}`, payload, {
@@ -114,7 +116,12 @@ export interface IMaintenanceCard {
   data: {
     card: {
       maintenanceId: string;
-      status: "not started" | "ongoing" | "completed" | "pending";
+      status:
+        | "not started"
+        | "ongoing"
+        | "completed"
+        | "pending"
+        | "in_progress";
       propertyName: string;
       dateCreated: string;
       serviceProvider: string;
@@ -125,6 +132,12 @@ export interface IMaintenanceCard {
     };
     modal: {
       maintenanceId: number;
+      status:
+        | "not started"
+        | "ongoing"
+        | "completed"
+        | "pending"
+        | "in_progress";
       property_name: string;
       created_at: string;
       priority: "high" | "critical" | "low" | "very low" | "medium";
@@ -138,6 +151,10 @@ export interface IMaintenanceCard {
       units: string;
     };
   }[];
+  pagination: {
+    current_page: number;
+    total_pages: number;
+  };
 }
 export const transformMaintenanceCard = (
   apiData: MaintenanceApiResponse
@@ -152,11 +169,12 @@ export const transformMaintenanceCard = (
       return {
         card: {
           maintenanceId: item?.id.toString(),
-
           status:
             item?.status && item?.status === "pending"
               ? "not started"
-              : item?.status,
+              : item?.status === "in_progress"
+              ? "ongoing"
+              : "completed",
           propertyName: item?.property.title,
           dateCreated: item?.created_at
             ? dayjs(item?.created_at).format("DD/MM/YYYY")
@@ -169,6 +187,12 @@ export const transformMaintenanceCard = (
         },
         modal: {
           maintenanceId: item?.id,
+          status:
+            item?.status && item?.status === "pending"
+              ? "not started"
+              : item?.status === "in_progress"
+              ? "ongoing"
+              : "completed",
           units:
             item?.unit && item.unit.length > 0
               ? item.unit.join(",")
@@ -188,6 +212,10 @@ export const transformMaintenanceCard = (
         },
       };
     }),
+    pagination: {
+      current_page: data?.current_page,
+      total_pages: data?.last_page,
+    }
   };
 };
 

@@ -73,6 +73,7 @@ export default function CustomDatePicker({
       <div
         className={clsx(
           "text-xs md:text-sm font-normal dark:bg-darkText-primary dark:hover:border-darkText-1",
+          disabled && "cursor-not-allowed opacity-30",
           containerClassName
         )}
       >

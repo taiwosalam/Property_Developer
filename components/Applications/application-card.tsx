@@ -95,18 +95,18 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
               <p className="dark:text-white">{data?.date}</p>
             </div>
           </div>
-          <div className={`custom-flex-col ${secondaryFont.className}`}>
+          <div className={`custom-flex-col ${secondaryFont.className} text-right`}>
             <p className="text-brand-primary text-2xl font-bold">
               {(data?.currency ?? "") + data?.total_package}
             </p>
             <p className="text-text-label dark:text-white text-xs font-semibold">
               Total Package
             </p>
-            <p className="text-text-disabled text-base font-medium">
+            <p className="text-text-disabled text-base font-medium capitalize">
               <span className="text-highlight">
                 {(data?.currency ?? "") + data?.yearly_amount}
               </span>{" "}
-              / Yearly
+              / {data?.renew_fee_period}
             </p>
           </div>
         </div>
