@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeftIcon } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTeamChatStore } from "@/store/teamChatStore";
 import { PlusIcon, SearchIcon } from "@/public/icons/icons";
 import {
@@ -43,14 +43,8 @@ import { empty } from "@/app/config";
 import TextArea from "@/components/Form/TextArea/textarea";
 import Picture from "@/components/Picture/picture";
 import { useTeamChat } from "@/contexts/teamChatContext";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-};
+import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
+import { create } from "domain";
 
 interface MemberComponentProps {
   title?: string;
@@ -68,28 +62,22 @@ const MemberComponent = ({
   step,
   setStep,
 }: MemberComponentProps) => {
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  let selectedCount: number = 0;
-  const { setIsOpen } = useModal()
+  const { setIsOpen } = useModal();
   const { setDetailsStep } = useTeamChat();
   const [isGroupDesc, setIsGroupDesc] = useState(false);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterRole, setFilterRole] = useState<string[]>(["All"]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [reqLoading, setReqLoading] = useState(false);
 
+  // Fetch team members
   const [teamMembers, setTeamMembers] = useState<IMemberList | null>(null);
-
-  const {
-    data: teamMemberData,
-    error,
-    loading,
-    isNetworkError,
-    silentLoading,
-  } = useFetch<TeamChatUsersResponse>("/company/users");
-
+  const { data: teamMemberData, loading } =
+    useFetch<TeamChatUsersResponse>("/company/users");
   useEffect(() => {
     if (teamMemberData) {
       const transformTeam = transformTeamMemberData(teamMemberData);
@@ -97,21 +85,54 @@ const MemberComponent = ({
     }
   }, [teamMemberData]);
 
-  const searchMembers = teamMembers?.members
-    ? teamMembers.members.filter((member) =>
-        member.username.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
+  // Filtering logic
+  const filterCounts = (() => {
+    const counts: Record<string, number> = {
+      All: 0,
+      Director: 0,
+      Staff: 0,
+      Manager: 0,
+    };
+    if (!teamMembers?.members) return counts;
+    counts.All = teamMembers.members.length;
+    teamMembers.members.forEach((member) => {
+      const role = member.role?.toLowerCase();
+      if (role === "director") counts.Director++;
+      if (role === "staff") counts.Staff++;
+      if (role === "manager") counts.Manager++;
+    });
+    return counts;
+  })();
 
-  const [checkedStates, setCheckedStates] = useState<boolean[]>(
-    Array(team_chat_members_data.length).fill(false)
-  );
-  const [selectedMembersState, setSelectedMembers] = useState<number[]>([]);
+  const onFilterApply = (role: string | string[]) => {
+    setFilterRole(Array.isArray(role) ? role : [role]);
+  };
 
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null); // State for uploaded image
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // Create a ref for the file input
+  const filteredMembers = (() => {
+    if (!teamMembers?.members) return [];
+    return teamMembers.members.filter((member) => {
+      const matchesSearch = member.username
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const role = member.role?.toLowerCase();
+      const selectedRoles = filterRole.map((r) => r.toLowerCase());
+      const hasAll = selectedRoles.includes("all");
+      const matchesRole =
+        filterRole.length === 0 || hasAll || selectedRoles.includes(role);
+      return matchesSearch && matchesRole;
+    });
+  })();
 
-  // Function to handle image upload
+  // Selection logic
+  const handleCheckboxClick = (memberId: number) => {
+    setSelectedMembers((prev) =>
+      prev.includes(memberId)
+        ? prev.filter((id) => id !== memberId)
+        : [...prev, memberId]
+    );
+  };
+
+  // Image upload
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -123,42 +144,18 @@ const MemberComponent = ({
     }
   };
 
-  // Handle the click event to toggle the checkbox state
-  const handleCheckboxClick = (index: number) => {
-    const newCheckedStates = [...checkedStates];
-    newCheckedStates[index] = !newCheckedStates[index];
-
-    const newSelectedMembers = searchMembers
-      ?.filter((_, idx) => newCheckedStates[idx])
-      .map((member) => member.id);
-    setCheckedStates(newCheckedStates);
-    setSelectedMembers(newSelectedMembers || []);
-  };
-
-  // Calculate the number of selected checkboxes
-  selectedCount = checkedStates.filter((checked) => checked).length;
-
-  const openGroupDesc = () => {
-    setIsGroupDesc(true);
-  };
-
-  const cancel = () => {
-    selectedCount = 0;
-    setCheckedStates(Array(team_chat_members_data.length).fill(false));
-    setSelectedMembers([]);
-  };
+  // Group creation logic
   const params = useParams();
   const paramId = params?.id;
-
-  const [isCreating, setIsCreating] = useState(false);
-  const [createResponse, setCreateResponse] = useState<
-    GroupChatResponse | undefined
-  >(undefined);
   const [groupId, setGroupId] = useState(paramId ?? "");
 
   const handleSubmitCreateGroup = async (formData: FormData) => {
+    if (selectedMembers.length === 0) {
+      toast.error("Please select at least one member");
+      return;
+    }
     setIsCreating(true);
-    selectedMembersState.forEach((userId) =>
+    selectedMembers.forEach((userId) =>
       formData.append("user_ids[]", userId.toString())
     );
     formData.append("is_private", "1");
@@ -167,8 +164,6 @@ const MemberComponent = ({
       if (groupResponse) {
         handleClose?.();
         window.dispatchEvent(new Event("refetchTeamChat"));
-        //setStep?.("next") use this when you want a success modal
-        //setCreateResponse(groupResponse.data);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -179,241 +174,235 @@ const MemberComponent = ({
     }
   };
 
-  const addNewUserToGroup = () => {
-    if (groupId && selectedMembersState.length > 0) {
+  const addNewUserToGroup = async () => {
+    if (groupId && selectedMembers.length > 0) {
       const userFormData = new FormData();
-      selectedMembersState.forEach((userId) => {
-        userFormData.append("user_ids[]", String(userId));
-      });
-
-      addUserToGroup(groupId as string, userFormData)
-        .then((res) => {
-          if (res) {
-            window.dispatchEvent(new Event("refetch_team_chat"));
-            // if (handleClose) handleClose();
-            setIsOpen(false);
-          }
-        })
-        .catch((err) => console.error(err));
+      selectedMembers.forEach((userId) =>
+        userFormData.append("user_ids[]", String(userId))
+      );
+      try {
+        setReqLoading(true);
+        const response = await addUserToGroup(groupId as string, userFormData);
+        if (response) {
+          window.dispatchEvent(new Event("refetch_team_chat"));
+          setIsOpen(false);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setReqLoading(false);
+      }
     }
   };
 
-  return (
-    <div className="w-full rounded-md bg-white overflow-y-auto custom-round-scrollbar">
-      <div className="sticky top-0 z-[2] bg-white dark:bg-darkText-primary mt-0 py-3 px-4">
-        {!isGroupDesc && (
-          <div className="searchWrapper flex items-center justify-between -mt-2 gap-1 border border-text-disabled rounded-md p-1 w-full h-[35px]">
-            <div className="flex items-center gap-1 w-full">
-              <SearchIcon size={25} />
-              <input
-                type="text"
-                placeholder="Search Name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="text-sm w-full dark:text-white dark:bg-darkText-primary focus:outline-none"
-              />
-            </div>
+  // Reset
+  const cancel = () => {
+    setSelectedMembers([]);
+    setSearchTerm("");
+    setUploadedImage(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
-            <div>
-              <div onClick={handleOpen}>
-                {/*
-              <ChildModal />*/}
+  const selectedCount = selectedMembers.length;
+
+  return (
+    <div className="relative">
+      <div className="w-full rounded-md bg-white overflow-y-auto custom-round-scrollbar">
+        <div className="sticky top-0 z-[2] bg-white dark:bg-black mt-0 py-3 pb-2">
+          {!isGroupDesc && (
+            <div className="flex-1 relative">
+              <Input
+                id="search"
+                className="w-full"
+                placeholder="Search for messages"
+                leftIcon={"/icons/search-icon.svg"}
+                inputClassName="pr-[52px] border-transparent"
+                value={searchTerm}
+                onChange={setSearchTerm}
+              />
+              <div className="absolute top-1/2 right-0 -translate-y-1/2">
+                <FilterButton
+                  noTitle
+                  className="bg-transparent py-[10px] px-4"
+                  onClick={(e) => setAnchorEl(e.currentTarget)}
+                />
+                <MessagesFilterMenu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={() => setAnchorEl(null)}
+                  onFilterApply={onFilterApply}
+                  filterOptions={[
+                    {
+                      label: "Director",
+                      value: filterCounts["Director"] || 0,
+                    },
+                    { label: "Staff", value: filterCounts["Staff"] || 0 },
+                    { label: "Manager", value: filterCounts["Manager"] || 0 },
+                    { label: "All", value: filterCounts["All"] || 0 },
+                  ]}
+                />
               </div>
-              <Modal
-                state={{
-                  isOpen: false,
-                  setIsOpen: setOpen,
-                }}
-                // onClose={handleClose}
-                // closeAfterTransition
-                // aria-labelledby="modal-modal-title"
-                // aria-describedby="modal-modal-description"
-              >
-                <p></p>
-                {/* <Box sx={style}>
-                <div className="w-full h-full flex items-center justify-center">
-                  <FilterModal isDateTrue handleFilterApply={() => {}} />
-                </div>
-              </Box> */}
-              </Modal>
             </div>
+          )}
+        </div>
+
+        {!isGroupDesc && (
+          <div className="flex flex-col w-full gap-2 px-4">
+            {loading ? (
+              <TeamChatMemberSkeleton count={4} />
+            ) : filteredMembers && filteredMembers.length > 0 ? (
+              filteredMembers.map((item) => (
+                <div key={item.id} className="flex items-center gap-2">
+                  <div className="checkbox">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => handleCheckboxClick(item.id)}
+                      type="button"
+                    >
+                      <Image
+                        src={
+                          selectedMembers.includes(item.id)
+                            ? CheckboxChecked
+                            : CheckboxDefault
+                        }
+                        alt="checkbox"
+                        width={24}
+                        height={24}
+                        className="w-6 h-6"
+                      />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Picture
+                      src={item?.profile_picture || empty}
+                      alt="profile"
+                      size={24}
+                      rounded
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-text-primary dark:text-white text-sm font-medium capitalize">
+                      {item.username}
+                    </p>
+                    <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal capitalize">
+                      {item.role}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No user found</p>
+            )}
           </div>
         )}
-        {selectedCount > 0 && !isGroupDesc && (
-          <div className="flex items-center justify-between gap-2 mt-2">
-            <Button
-              onClick={cancel}
-              type="button"
-              // className="bg-text-disabled text-sm text-white w-1/2 py-2 rounded-md"
-              variant="border"
-              size="base_medium"
-              className="px-8 py-1 w-full"
+        {isGroupDesc && (
+          <div className="text-text-primary text-sm font-medium px-4 pb-4 relative">
+            <AuthForm
+              returnType="form-data"
+              onFormSubmit={handleSubmitCreateGroup}
             >
-              Cancel
-            </Button>
+              <div className="flex flex-col gap-1">
+                <p className="dark:text-white">Group Name</p>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="Group Name"
+                  className="border border-text-disabled dark:bg-darkText-primary rounded-md px-2 py-3 w-full"
+                />
+              </div>
+              <div className="flex flex-col mt-4 gap-1">
+                <p className="dark:text-white">Group Description</p>
+                <div className="w-full">
+                  <TextArea id="description" placeholder="Group Description" />
+                </div>
+              </div>
+              <div className="flex flex-col items-start gap-2 mt-2">
+                <p className="text-text-disabled">
+                  Formats are .jpg, .gif and .png only 5MB max
+                </p>
+                {uploadedImage ? (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef?.current?.click()}
+                  >
+                    <input
+                      type="file"
+                      id="picture"
+                      name="picture"
+                      className="hidden"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                    />
+                    <Image
+                      src={uploadedImage}
+                      alt="Uploaded Group"
+                      width={85}
+                      height={85}
+                      className="rounded-md object-cover"
+                    />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="bg-[#F4F4F9] dark:bg-darkText-primary border border-dashed border-text-label text-sm text-text-label w-2/4 h-[85px] rounded-md flex flex-col items-center justify-center gap-2"
+                    onClick={() => fileInputRef?.current?.click()} // Trigger file input click
+                  >
+                    <input
+                      id="picture"
+                      name="picture"
+                      type="file"
+                      className="hidden"
+                      ref={fileInputRef}
+                      onChange={handleImageUpload}
+                    />
+                    <PlusIcon />
+                    Add Image
+                  </button>
+                )}
+              </div>
+              <div className="btns flex items-center justify-between gap-2 mt-6">
+                <button
+                  onClick={handleClose}
+                  type="button"
+                  className="text-sm text-white bg-text-disabled w-1/2 py-2 rounded-md"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isCreating}
+                  className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
+                >
+                  {isCreating ? "Creating..." : "Create"}
+                </button>
+              </div>
+            </AuthForm>
+          </div>
+        )}
+      </div>
+      {/* STICKY BUTTON */}
+      {selectedCount > 0 && !isGroupDesc && (
+        <div className="sticky bottom-4 left-0 right-0 h-[35px]">
+          <div className="flex items-center justify-between gap-2 mt-2">
             <Button
               onClick={() => {
                 if (group) {
-                  openGroupDesc();
+                  setIsGroupDesc(true);
                 } else {
                   addNewUserToGroup();
                 }
               }}
               type="button"
-              // className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
               variant="default"
               size="base_medium"
-              className="px-8 py-1 w-full"
+              disabled={reqLoading}
+              className="px-8 py-1 ml-auto"
             >
-              {group ? "Next" : "Add"} {selectedCount}
+              {reqLoading ? "Adding..." : group ? "Next" : "Add"}{" "}
+              {selectedCount}
             </Button>
           </div>
-        )}
-      </div>
-      {!isGroupDesc && (
-        <div className="flex flex-col w-full gap-2 px-4">
-          {loading ? (
-            <TeamChatMemberSkeleton count={4} />
-          ) : searchMembers && searchMembers?.length > 0 ? (
-            searchMembers?.map((item, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <div className="checkbox">
-                  <button
-                    className="flex items-center gap-2"
-                    onClick={() => handleCheckboxClick(index)}
-                    type="button"
-                  >
-                    <Image
-                      src={
-                        checkedStates[index] ? CheckboxChecked : CheckboxDefault
-                      }
-                      alt="checkbox"
-                      width={24}
-                      height={24}
-                      className="w-6 h-6"
-                    />
-                  </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* <Image
-                    src={item?.profile_picture || empty}
-                    alt="profile"
-                    width={40}
-                    height={40}
-                    className="rounded-full w-10 h-10 object-cover"
-                  /> */}
-                  <Picture
-                    src={item?.profile_picture || empty}
-                    alt="profile"
-                    size={24}
-                    rounded
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-text-primary dark:text-white text-sm font-medium capitalize">
-                    {item.username}
-                  </p>
-                  <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal capitalize">
-                    {item.role}
-                  </p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>No user found</p>
-          )}
-        </div>
-      )}
-      {isGroupDesc && (
-        <div className="text-text-primary text-sm font-medium px-4 pb-4 relative">
-          <AuthForm
-            returnType="form-data"
-            onFormSubmit={handleSubmitCreateGroup}
-          >
-            <div className="flex flex-col gap-1">
-              <p className="dark:text-white">Group Name</p>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Group Name"
-                className="border border-text-disabled dark:bg-darkText-primary rounded-md px-2 py-3 w-full"
-              />
-            </div>
-            <div className="flex flex-col mt-4 gap-1">
-              <p className="dark:text-white">Group Description</p>
-              <div className="w-full">
-                {/* <input
-                  type="text"
-                  id="description"
-                  name="description"
-                  placeholder="Group Description"
-                  className="border border-text-disabled dark:bg-darkText-primary rounded-md px-2 py-3 w-full"
-                /> */}
-                <TextArea id="description" placeholder="Group Description" />
-              </div>
-            </div>
-            <div className="flex flex-col items-start gap-2 mt-2">
-              <p className="text-text-disabled">
-                Formats are .jpg, .gif and .png only 5MB max
-              </p>
-              {uploadedImage ? (
-                <button
-                  type="button"
-                  onClick={() => fileInputRef?.current?.click()}
-                >
-                  <input
-                    type="file"
-                    id="picture"
-                    name="picture"
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                  />
-                  <Image
-                    src={uploadedImage}
-                    alt="Uploaded Group"
-                    width={85}
-                    height={85}
-                    className="rounded-md object-cover"
-                  />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="bg-[#F4F4F9] dark:bg-darkText-primary border border-dashed border-text-label text-sm text-text-label w-2/4 h-[85px] rounded-md flex flex-col items-center justify-center gap-2"
-                  onClick={() => fileInputRef?.current?.click()} // Trigger file input click
-                >
-                  <input
-                    id="picture"
-                    name="picture"
-                    type="file"
-                    className="hidden"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                  />
-                  <PlusIcon />
-                  Add Image
-                </button>
-              )}
-            </div>
-            <div className="btns flex items-center justify-between gap-2 mt-6">
-              <button
-                onClick={handleClose}
-                type="button"
-                className="text-sm text-white bg-text-disabled w-1/2 py-2 rounded-md"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isCreating}
-                className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
-              >
-                {isCreating ? "Creating..." : "Create"}
-              </button>
-            </div>
-          </AuthForm>
         </div>
       )}
     </div>

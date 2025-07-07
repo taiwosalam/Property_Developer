@@ -138,7 +138,7 @@ const SelectMembersStep: React.FC<SelectMembersStepProps> = ({
         )}
       </div>
       {selectedMembers.length > 0 && (
-        <div className="sticky bottom-0 left-0 right-0 border-t border-text-disabled bg-white dark:bg-darkText-primary h-[35px]">
+        <div className="sticky bottom-0 left-0 right-0 bg-white dark:bg-darkText-primary h-[35px]">
           <div className="flex items-center justify-between gap-2 mt-2">
             {/* <Button
               type="button"
@@ -152,7 +152,7 @@ const SelectMembersStep: React.FC<SelectMembersStepProps> = ({
             <Button
               type="button"
               size="sm_medium"
-              className="px-8 py-2 w-full"
+              className="px-8 py-2 ml-auto"
               onClick={
                 create
                   ? handleNext

@@ -9,6 +9,9 @@ import TeamChatCard from "@/app/(nav)/community/team-chat/TeamChartCard";
 import CreateGroupModal from "@/app/(nav)/community/team-chat/create-group-modal";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import { UserPlusIcon } from "lucide-react";
+import FilterButton from "../FilterButton/filter-button";
+import MessagesFilterMenu from "../Message/messages-filter-menu";
+import { useState } from "react";
 
 const TeamChatSidebar = () => {
   const {
@@ -19,42 +22,52 @@ const TeamChatSidebar = () => {
     setSearchTerm,
     filteredMemberList,
     silentLoading,
+    filterCounts,
+    filterRole,
+    onFilterApply,
   } = useTeamChat();
   const params = useParams();
   const paramId = params.id;
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
   return (
     <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
-      <div className="flex gap-4 items-center w-full justify-between sticky top-0 z-50 bg-white dark:bg-darkText-primary pb-2">
-        {!isSearch && (
-          <div className="flex items-center gap-2 w-full">
-            <h2 className="text-lg font-semibold">Groups</h2>
-            <div className="flex items-center justify-center text-sm rounded-full w-6 h-6 text-white bg-brand-9">
-              {teamChatPageData ? teamChatPageData.group_count : 0}
-            </div>
-          </div>
-        )}
-        {isSearch && (
-          <div className="flex w-full bg-darkText-primary gap-2 items-center justify-between rounded-lg transition-all duration-300 ease-in-out">
-            <Input
-              id="search"
-              type="text"
-              placeholder="Search"
-              className="w-full"
-              value={searchTerm}
-              onChange={setSearchTerm}
+
+      {/* sticky search and filter */}
+      <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
+        <div className="flex-1 relative">
+          <Input
+            id="search"
+            className="w-full"
+            placeholder="Search for messages"
+            leftIcon={"/icons/search-icon.svg"}
+            inputClassName="pr-[52px] border-transparent"
+            value={searchTerm}
+            onChange={(val) => setSearchTerm(val)}
+          />
+          <div className="absolute top-1/2 right-0 -translate-y-1/2">
+            <FilterButton
+              noTitle
+              className="bg-transparent py-[10px] px-4"
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+            />
+            <MessagesFilterMenu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={() => setAnchorEl(null)}
+              onFilterApply={onFilterApply}
+              filterOptions={[
+                  { label: "Unread", value: filterCounts["Unread"] || 0 },
+                { label: "All", value: filterCounts["All"] || 0 },
+              ]}
             />
           </div>
-        )}
-        <button className="flex" onClick={() => setIsSearch(!isSearch)}>
-          {teamChatPageData && teamChatPageData.team.length > 0 ? (
-            <SearchIcon size={35} />
-          ) : (
-            ""
-          )}
-        </button>
+        </div>
       </div>
-      <div className="custom-flex-col overflow-x-hidden relative z-20 pb-4">
+
+      {/* Team Chat List */}
+      <div className="custom-flex-col overflow-x-hidden relative pb-4">
         {silentLoading ? (
           <TeamMessageCardSkeleton count={10} />
         ) : (

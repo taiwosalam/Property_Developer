@@ -20,6 +20,7 @@ import {
   createNewTeamChat,
 } from "@/app/(nav)/community/team-chat/data";
 import { handleAxiosError } from "@/services/api";
+import { useModal } from "@/components/Modal/modal";
 
 interface CreateGroupContextType {
   searchTerm: string;
@@ -70,7 +71,7 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [filterRole, setFilterRole] = useState<string[]>([]);
-
+  const { setIsOpen } = useModal();
   const { data: teamMemberData, loading } =
     useFetch<TeamChatUsersResponse>("/company/users");
 
@@ -156,6 +157,7 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
       const groupResponse = await createNewTeamChat(formData);
       if (groupResponse) {
         window.dispatchEvent(new Event("refetchTeamChat"));
+        setIsOpen(false);
       }
     } catch (error) {
       handleAxiosError(error);
