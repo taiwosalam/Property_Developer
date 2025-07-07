@@ -84,7 +84,7 @@ export const LandlordEditProfileInfoSection = () => {
       first_name: data.landlord_firstname,
       last_name: data.landlord_lastname,
       // title: data.title,
-      // email: data.landlord_email, 
+      // email: data.landlord_email,
       phone_number: data.landlord_phone,
       state: data.landlord_state,
       local_government: data.landlord_local_government,
@@ -94,8 +94,8 @@ export const LandlordEditProfileInfoSection = () => {
       gender: data.gender,
     };
 
-     // Add email only if different from default
-     if (data.landlord_email !== landlord?.email) {
+    // Add email only if different from default
+    if (data.landlord_email !== landlord?.email) {
       (payload as any).email = data.landlord_email;
     }
 
@@ -591,6 +591,7 @@ export const LandlordEditAttachmentInfoSection = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
+  const [property, setProperty] = useState("");
   const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
   // const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
   const [urlsToRemove, setUrlsToRemove] = useState<
@@ -675,22 +676,35 @@ export const LandlordEditAttachmentInfoSection = () => {
   return (
     <LandlordTenantInfoEditSection title="attachment">
       <LandlordTenantInfoEditGrid>
-        <div className="space-y-5">
-          <Select
-            id="document_type"
-            label="document type"
-            placeholder="Select options"
-            options={[
-              "invoice",
-              "receipt",
-              "agreement",
-              "others",
-              // { label: "other document", value: "others" },
-            ]}
-            value={documentType}
-            onChange={(value) => setDocumentType(value)}
-            inputContainerClassName="bg-neutral-2"
-          />
+        <div className="space-y-5 col-span-full">
+          <div className="flex gap-2">
+            <Select
+              id="document_type"
+              label="document type"
+              placeholder="Select options"
+              options={[
+                "invoice",
+                "receipt",
+                "agreement",
+                "others",
+                // { label: "other document", value: "others" },
+              ]}
+              value={documentType}
+              onChange={(value) => setDocumentType(value)}
+              // inputContainerClassName="bg-neutral-2"
+              className="w-full"
+            />
+            <Select
+              id="property"
+              label="property"
+              placeholder="Select options"
+              options={landlord?.propertyOptions || []}
+              // value={property}
+              onChange={(value) => setProperty(value)}
+              // inputContainerClassName="bg-neutral-2"
+              className="w-full"
+            />
+          </div>
           <div>
             <p className="text-base font-medium">Browse *</p>
             <Button

@@ -34,7 +34,7 @@ export const team_chat_data: MessageCardProps[] = [
     messages: 5,
     verified: true,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
@@ -47,7 +47,7 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "Accounting Department",
     verified: true,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
@@ -60,7 +60,7 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "Lounge & Drinks",
     messages: 2,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
@@ -73,7 +73,7 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "Cleaning & Laundering",
     verified: false,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
@@ -86,7 +86,7 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "All Staff",
     messages: 3,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
@@ -100,7 +100,7 @@ export const team_chat_data: MessageCardProps[] = [
     messages: 1,
     verified: true,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
@@ -111,7 +111,7 @@ export const team_chat_data: MessageCardProps[] = [
     desc: "Let me know if you need any further assistance. I'm here to help with anything you might need.",
     time: "7:00 PM",
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     fullname: "Maintenance Department",
     groupDesc:
@@ -125,7 +125,7 @@ export const team_chat_data: MessageCardProps[] = [
     fullname: "Frontend Dev",
     verified: false,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     groupDesc:
       "Whirlwind Wanderers: A gathering of eclectic souls journeying through realms of adventure, discovery, and boundless curiosity.",
@@ -134,7 +134,7 @@ export const team_chat_data: MessageCardProps[] = [
     id: "9",
     pfp: Avatar1,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     desc: "Would you like to join us for dinner tonight? We're planning to go to a new restaurant that just opened downtown. It would be great to catch up with you!",
     time: "9:05 PM",
@@ -147,7 +147,7 @@ export const team_chat_data: MessageCardProps[] = [
     id: "10",
     pfp: Avatar2,
     tier: 1,
-    title:"",
+    title: "",
     role: "",
     desc: "Please review the attached file. It's important that we get this finalized before the end of the day.",
     time: "10:30 PM",
@@ -252,15 +252,14 @@ export const deleteMember = async (groupId: string, userId: string) => {
 
 export const updateGroupNameOrDescription = async (
   groupId: number,
-  name: string,
-  description: string,
-  picture: string
+  data: FormData
 ) => {
-  const endpoint = `group-chats/${groupId}?description=${description}&name=${name}&picture=${picture}`;
   try {
-    const response = await api.put(endpoint);
+    const response = await api.post(`group-chats/${groupId}`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     if (response.status === 201 || response.status === 200) {
-      toast.success("Name & description updated");
+      toast.success("Updated successfully");
       window.dispatchEvent(new Event("refetchTeamChat"));
       return response;
     }

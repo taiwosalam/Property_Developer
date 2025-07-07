@@ -26,7 +26,7 @@ const TeamChatContent: React.FC<MessagesLayoutProps> = ({ children }) => {
 
   return (
     <>
-      <TeamChatHeader />
+      {/* <TeamChatHeader /> */}
       <div className="flex bg-white dark:bg-darkText-primary h-[70vh] relative">
         {/* Sidebar only on large screens */}
         {!isCustom && (

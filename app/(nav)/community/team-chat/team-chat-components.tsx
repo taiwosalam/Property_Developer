@@ -24,7 +24,7 @@ export const TeamChatHeader = () => {
           </Button>
         </ModalTrigger>
         <ModalContent>
-          <CreateGroupModal />
+          <CreateGroupModal create />
         </ModalContent>
       </Modal>
     </div>

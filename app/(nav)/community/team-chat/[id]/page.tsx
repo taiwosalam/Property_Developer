@@ -22,6 +22,10 @@ import Pusher from "pusher-js";
 import { GroupChatDetailsResponse } from "./types";
 import { empty } from "@/app/config";
 import { MessageChat } from "../types";
+import { useTeamChat } from "@/contexts/teamChatContext";
+import AddMembers from "../AddMembers";
+import MemberComponent from "../Member";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 
 const Chat = () => {
   const router = useRouter();
@@ -31,6 +35,7 @@ const Chat = () => {
   const rhizome = useRef<string | null>(null);
   const [pageData, setPageData] = useState<null | IChatDetailsPage>(null);
   const [groupedConversations, setGroupedConversations] = useState<any[]>([]);
+  const { detailsStep, setDetailsStep } = useTeamChat();
 
   const {
     data: apiData,
@@ -138,10 +143,27 @@ const Chat = () => {
               </div>
             </ModalTrigger>
             <ModalContent>
-              <TeamChatGroupDetailsModal
-                about={groupDetails}
-                group_members={pageData?.group_members ?? []}
-              />
+              <LandlordTenantModalPreset
+                noPaddingTop
+                heading={
+                  detailsStep === "detail" ? "Group Details" : "Add New Member"
+                }
+                style={{ height: "70vh", position: "relative" }}
+                back={
+                  detailsStep !== "detail"
+                    ? { handleBack: () => setDetailsStep("detail") }
+                    : undefined
+                }
+              >
+                {detailsStep === "detail" ? (
+                  <TeamChatGroupDetailsModal
+                    about={groupDetails}
+                    group_members={pageData?.group_members ?? []}
+                  />
+                ) : (
+                  <MemberComponent />
+                )}
+              </LandlordTenantModalPreset>
             </ModalContent>
           </Modal>
           <NewMemberComp />

@@ -25,7 +25,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
     branch_name: data.branch_name || "--- ---",
     account_officer: data?.account_officer?.name || "--- ---",
     imgSrc: previewImg,
-    total_unit: data.total_unit || 0,
+    total_unit: data?.total_unit || 0,
   };
 
   return (

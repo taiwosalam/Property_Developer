@@ -28,17 +28,7 @@ const GroupDetailsStep: React.FC<GroupDetailsStepProps> = ({
   } = useCreateGroup();
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="sticky top-0 z-[2] bg-white dark:bg-darkText-primary py-3">
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={onBack}>
-            <ChevronLeftIcon size={30} />
-          </button>
-          <h2 className="text-text-primary dark:text-white text-lg font-medium">
-            Group Details
-          </h2>
-        </div>
-      </div>
+    <div className="flex flex-col gap-4 py-3 bg-white dark:bg-darkText-primary">
       <AuthForm returnType="form-data" onFormSubmit={handleSubmitCreateGroup}>
         <div className="flex flex-col gap-1">
           <p className="dark:text-white">Group Name</p>
@@ -47,16 +37,13 @@ const GroupDetailsStep: React.FC<GroupDetailsStepProps> = ({
             id="name"
             name="name"
             placeholder="Group Name"
-            className="border border-text-disabled dark:bg-darkText-primary rounded-md px-2 py-3 w-full"
           />
         </div>
         <div className="flex flex-col gap-1 mt-4">
           <p className="dark:text-white">Group Description</p>
           <TextArea
             id="description"
-            // name="description"
             placeholder="Group Description"
-            className="border border-text-disabled dark:bg-darkText-primary rounded-md px-2 py-3 w-full"
           />
         </div>
         <div className="flex flex-col items-start gap-2 mt-2">
@@ -103,7 +90,10 @@ const GroupDetailsStep: React.FC<GroupDetailsStepProps> = ({
         <div className="flex items-center justify-between gap-2 mt-6">
           <Button
             type="button"
-            className="bg-text-disabled text-sm text-white w-1/2 py-2 rounded-md"
+            variant="border"
+            size="base_medium"
+            className="px-8 py-2 w-full"
+            // className="bg-text-disabled text-sm text-white w-1/2 py-2 rounded-md"
             onClick={onClose}
           >
             Cancel
@@ -111,7 +101,10 @@ const GroupDetailsStep: React.FC<GroupDetailsStepProps> = ({
           <Button
             type="submit"
             disabled={isCreating}
-            className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
+            variant="default"
+            size="base_medium"
+            className="px-8 py-2 w-full"
+            // className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
           >
             {isCreating ? "Creating..." : "Create"}
           </Button>

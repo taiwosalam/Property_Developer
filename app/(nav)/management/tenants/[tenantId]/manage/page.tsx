@@ -81,7 +81,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         setGlobalStore("messageUserData", newMessageUserData || null);
       }
     }
-  }, [setGlobalStore, tenant, saveLocalStorage]);
+  }, [setGlobalStore, tenant]);
 
   if (loading) return <CustomLoader layout="profile" />;
   if (error) return <ServerError error={error} />;
