@@ -133,7 +133,7 @@ const Chat = () => {
                   containerClassName="custom-secondary-bg rounded-full"
                   size={35}
                   rounded
-                  status
+                  // status
                 />
                 <div className="custom-flex-col">
                   <p className="text-text-primary dark:text-white text-base font-medium capitalize">
@@ -148,7 +148,11 @@ const Chat = () => {
                 heading={
                   detailsStep === "detail" ? "Group Details" : "Add New Member"
                 }
-                style={{ height: "70vh", position: "relative" }}
+                style={{ 
+                  height: "70vh", 
+                  position: "relative",
+                  width: detailsStep !== "detail" ? "35%" : undefined
+                }}
                 back={
                   detailsStep !== "detail"
                     ? { handleBack: () => setDetailsStep("detail") }

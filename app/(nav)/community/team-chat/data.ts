@@ -192,7 +192,8 @@ export const addUserToGroup = async (groupId: string, data: FormData) => {
     if (response.status === 200 || response.status === 201) {
       window.dispatchEvent(new Event("refetch_team_chat"));
       toast.success("Member added successfully");
-      return response;
+      return true;
+      // return response;
     }
   } catch (error) {
     handleAxiosError(error);

@@ -46,6 +46,9 @@ type TeamChatContextType = {
   refetch: (options?: { silent: boolean }) => void;
   detailsStep: "detail" | "members";
   setDetailsStep: (step: "detail" | "members") => void;
+  filterCounts: Record<string, number>;
+  filterRole: string[];
+  onFilterApply: (role: string | string[]) => void;
 };
 
 const TeamChatContext = createContext<TeamChatContextType | undefined>(
@@ -77,6 +80,58 @@ export const TeamChatProvider = ({
   const [detailsStep, setDetailsStep] = useState<"detail" | "members">(
     "detail"
   );
+  const [filterRole, setFilterRole] = useState<string[]>([]);
+
+  console.log("message", message);
+  // Compute filter counts for each role
+  const filterCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      Directors: 0,
+      Staff: 0,
+      "Account Officers": 0,
+      Landlords: 0,
+      Tenants: 0,
+      All: 0,
+    };
+    if (teamChatPageData?.team) {
+      teamChatPageData.team.forEach((member) => {
+        const role = member.role;
+        if (role === "Director" || role === "Directors") counts.Directors++;
+        else if (role === "Staff") counts.Staff++;
+        else if (role === "Account Officer" || role === "Account Officers")
+          counts["Account Officers"]++;
+        else if (role === "Landlord" || role === "Landlords")
+          counts.Landlords++;
+        else if (role === "Tenant" || role === "Tenants") counts.Tenants++;
+        counts.All++;
+      });
+    }
+    return counts;
+  }, [teamChatPageData?.team]);
+
+  // Role-based and search filtering
+  const filteredMemberList = useMemo(() => {
+    if (!teamChatPageData?.team || teamChatPageData.team.length === 0) {
+      return [];
+    }
+    return teamChatPageData.team.filter((member) => {
+      const matchesSearch = member.fullname
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase().trim());
+      const role = member.role?.toLowerCase();
+      const selectedRoles = filterRole.map((r) => r.toLowerCase());
+      const hasAll = selectedRoles.includes("all");
+      const matchesRole =
+        filterRole.length === 0 || hasAll || selectedRoles.includes(role);
+      return matchesSearch && matchesRole;
+    });
+  }, [teamChatPageData?.team, searchTerm, filterRole]);
+
+  // Handler for filter menu
+  const onFilterApply = (role: string | string[]) => {
+    if (Array.isArray(role)) setFilterRole(role);
+    else setFilterRole([role]);
+  };
 
   const {
     data: teamData,
@@ -103,18 +158,6 @@ export const TeamChatProvider = ({
       setGroupId(paramId);
     }
   }, [paramId]);
-
-  const filteredMemberList = useMemo(() => {
-    if (!teamChatPageData?.team || teamChatPageData.team.length === 0) {
-      return [];
-    }
-    if (!searchTerm.trim()) {
-      return teamChatPageData.team;
-    }
-    return teamChatPageData.team.filter((team) =>
-      team.fullname.toLowerCase().includes(searchTerm.toLowerCase().trim())
-    );
-  }, [teamChatPageData?.team, searchTerm]);
 
   const handleSendMsg = async (id: string) => {
     try {
@@ -189,6 +232,9 @@ export const TeamChatProvider = ({
         refetch,
         detailsStep,
         setDetailsStep,
+        filterCounts,
+        filterRole,
+        onFilterApply,
       }}
     >
       {children}
