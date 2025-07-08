@@ -28,6 +28,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
 import {
+  becomeTenant,
   IApplicationDetails,
   rejectApplication,
   transformApplicationDetailsPageData,
@@ -50,6 +51,7 @@ interface IMessageFlagger {
   name: string;
   pictureSrc: string | null;
 }
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 
 const ManageApplication = () => {
   const isDarkMode = useDarkMode();
@@ -58,6 +60,7 @@ const ManageApplication = () => {
   const isFlagged = type === "flagged";
   const params = useParams();
   const paramId = params?.applicationId as string;
+  const [reqLoading, setReqLoading] = useState(false);
 
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
@@ -159,6 +162,39 @@ const ManageApplication = () => {
 
     // Redirect to the messaging page
     router.push(`/messages/${profile_details?.user_id}`);
+  };
+
+
+  const handleStartRent = async () => {
+    const mailAddress = profile_details?.email;
+    const unitID = property_details?.unit_id;
+    if (!mailAddress) {
+      toast.warning("No valid identifier found");
+      return;
+    }
+    if (!unitID) {
+      toast.warning("No Valid Unit ID Found");
+      return;
+    }
+
+    try {
+      setReqLoading(true);
+      const payload = {
+        identifier: mailAddress,
+      };
+      const res = await becomeTenant(objectToFormData(payload));
+      if (res) {
+        const tenantId = res.data.id;
+        localStorage.setItem("selectedTenantId", tenantId.toString());
+        router.push(
+          `/management/rent-unit/${unitID}/start-rent?type=rental&id=${unitID}`
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setReqLoading(false);
+    }
   };
 
   if (isNetworkError) <NetworkError />;
@@ -499,11 +535,11 @@ const ManageApplication = () => {
         <div className="flex gap-6">
           <Button
             size="base_bold"
-            //variant="sky_blue"
             className="py-2 px-8"
-            disabled={isFlagged}
+            onClick={handleStartRent}
+            disabled={isFlagged || reqLoading}
           >
-            start rent
+            {reqLoading ? "Please wait" : "start rent"}
           </Button>
           {/* <Button size="base_bold" className="py-2 px-8" disabled={isFlagged}>
             create invoice

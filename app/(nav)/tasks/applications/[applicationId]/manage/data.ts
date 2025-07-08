@@ -33,6 +33,7 @@ export interface IApplicationDetails {
     landlord: string;
     description: string;
     state: string;
+    unit_id: number;
     branch: string;
     categories: string;
     rent: string;
@@ -112,6 +113,7 @@ export interface IApplicationDetails {
 export const transformApplicationDetailsPageData = (
   res: TApplicationDetailsResponse
 ): IApplicationDetails => {
+  console.log("res to transform", res);
   const {
     data: {
       application_date,
@@ -138,6 +140,7 @@ export const transformApplicationDetailsPageData = (
       description: property_details?.description || "--- ---",
       state: property_details?.state || "--- ---",
       unit_name: property_details?.unit_name || "--- ---",
+      unit_id: property_details?.unit_id || 0,
       branch: property_details?.branch || "--- ---",
       categories: property_details?.categories || "--- ---",
       rent: property_details?.rent || "--- ---",
@@ -262,12 +265,12 @@ export const transformApplicationDetailsPageData = (
           flag?.status === "approved"
       )
       .map((flag) => ({
+        flagger_name: flag.flagger?.name?.toLowerCase() || "",
+        email: flag?.flagger?.email || "",
+        phone: flag?.flagger?.phone || "",
+        picture: flag?.flagger?.picture || "",
+        company_name: flag?.flagger?.company || "",
         user_id: flag?.flagger?.user_id,
-        flagger_name: flag.flagger?.name.toLowerCase(),
-        email: flag?.flagger?.email,
-        phone: flag?.flagger?.phone,
-        picture: flag?.flagger?.picture,
-        company_name: flag?.flagger?.company,
         is_flagged: flag.is_flagged,
         reason: flag?.reason ?? null,
         appeal_reason: flag?.appeal_reason ?? null,
@@ -293,3 +296,17 @@ export const rejectApplication = async (id: string) => {
     return false;
   }
 };
+
+export const becomeTenant = async (formData: FormData) => {
+  try {
+    const res = await api.post(`/tenant-create/email`, formData);
+    if (res.status === 201 || res.status === 200) {
+      return res.data;
+    }
+  } catch (error: any) {
+    handleAxiosError(error);
+    return null;
+  }
+};
+
+

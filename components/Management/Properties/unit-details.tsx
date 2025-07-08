@@ -128,6 +128,7 @@ const UnitDetails = () => {
         <Input
           className="unit-name-wrapper"
           id="unit_name"
+          autoComplete="off"
           label="Unit Number or Name"
           inputClassName="bg-white rounded-[8px] unit-form-input"
           required={!isRental}

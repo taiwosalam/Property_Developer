@@ -31,7 +31,7 @@ export const TeamChatGroupDetailsModal = ({
   const { setDetailsStep } = useTeamChat();
   const [side, setSide] = useState<"about" | "members">("about");
   const activeStyle =
-    "text-white bg-brand-9 text-xs sm:text-sm sm:p-1 px-2 dark:bg-[#3C3D37] transition-all duration-300 ease-in-out w-full py-1 rounded-lg";
+    "text-white bg-brand-9 text-xs sm:text-sm sm:p-1 px-2 dark:bg-[#3C3D37] transition-all duration-300 ease-in-out w-full py-2 rounded-lg";
   const inactiveStyle =
     "text-black dark:text-white text-xs sm:text-sm bg-transparent transition-all duration-300 ease-in-out";
 

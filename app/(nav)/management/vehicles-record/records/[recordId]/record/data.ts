@@ -141,7 +141,7 @@ export const transformSingleVehicleRecordApiResponse = (
   checkInsOutData: checkInsOutData;
 } => {
   const vehicleRecord = response.data.vehicle_record;
-  console.log("vehicle", vehicleRecord);
+  // console.log("response", response);
 
   // Check if vehicleRecord exists
   if (!vehicleRecord) {

@@ -33,6 +33,7 @@ import CreateGroupModal from "./create-group-modal";
 import FilterButton from "@/components/FilterButton/filter-button";
 import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
 import Input from "@/components/Form/Input/input";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 // import TrashIcon from "@/public/icons/trash.svg";
 
 interface AddMembersProps {
@@ -127,7 +128,7 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
               </div>
               <div className="flex flex-col">
                 <p className="text-text-primary dark:text-white text-sm font-medium">
-                  {item.fullname}
+                  {capitalizeWords(item.fullname || "")}
                 </p>
                 <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal">
                   {item?.role}

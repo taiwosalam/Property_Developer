@@ -181,6 +181,7 @@ const UnitBreakdownNewTenant = () => {
           value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="service_charge"
@@ -190,6 +191,7 @@ const UnitBreakdownNewTenant = () => {
           value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="agency_fee"
@@ -199,6 +201,7 @@ const UnitBreakdownNewTenant = () => {
           value={agencyFee}
           readOnly
           type="text"
+          autoComplete="off"
         />
         <Input
           id="legal_fee"
@@ -208,6 +211,7 @@ const UnitBreakdownNewTenant = () => {
           value={legalFee}
           onChange={(value) => handleInputChange("legalFee", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="caution_fee"
@@ -217,6 +221,7 @@ const UnitBreakdownNewTenant = () => {
           value={cautionFee}
           onChange={(value) => handleInputChange("cautionFee", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="inspection_fee"
@@ -226,6 +231,7 @@ const UnitBreakdownNewTenant = () => {
           value={inspectionFee}
           onChange={(value) => handleInputChange("inspectionFee", value)}
           type="text"
+          autoComplete="off"
         />
         {/* Only display VAT input if VAT is enabled */}
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
@@ -237,6 +243,7 @@ const UnitBreakdownNewTenant = () => {
             value={vat}
             readOnly
             type="text"
+            autoComplete="off"
           />
         )}
 
@@ -248,6 +255,7 @@ const UnitBreakdownNewTenant = () => {
           value={otherCharges}
           onChange={(value) => handleInputChange("otherCharges", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           required
@@ -258,7 +266,8 @@ const UnitBreakdownNewTenant = () => {
           value={totalPackage}
           readOnly
           type="text"
-        />
+          autoComplete="off"
+          />
 
         <Select
           required
