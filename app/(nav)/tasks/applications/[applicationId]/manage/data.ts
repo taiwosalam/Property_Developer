@@ -44,7 +44,9 @@ export interface IApplicationDetails {
     account_officer: string;
   };
   profile_details: {
+    user_id: number;
     fullName: string;
+    is_flagged: boolean | null;
     tier_id: number;
     email: string;
     user_tag: "mobile" | "web";
@@ -96,6 +98,7 @@ export interface IApplicationDetails {
   current_rent: IRentHistory[];
   previous_rent: IRentHistory[];
   flag_details?: {
+    user_id: number;
     flagger_name: string;
     email: string;
     phone: string;
@@ -145,6 +148,8 @@ export const transformApplicationDetailsPageData = (
       account_officer: property_details?.account_officer || "--- ---",
     },
     profile_details: {
+      user_id: user?.user_id,
+      is_flagged: user?.is_flagged,
       fullName: user?.name.toLowerCase() || "--- ---",
       tier_id: user?.tier_id,
       application_duration,
@@ -220,7 +225,7 @@ export const transformApplicationDetailsPageData = (
           current?.unitImages?.length > 0
             ? current?.unitImages?.map((image) => image.path)
             : [],
-        propertyType: current?.propertyType,
+        propertyType: current?.propertyType?.toLowerCase(),
         managedBy: current?.managedBy || "--- ---",
       })) || [],
     previous_rent:
@@ -260,11 +265,20 @@ export const transformApplicationDetailsPageData = (
           flag?.status === "approved"
       )
       .map((flag) => ({
+<<<<<<< HEAD
         flagger_name: flag.flagger?.name?.toLowerCase() || "",
         email: flag?.flagger?.email || "",
         phone: flag?.flagger?.phone || "",
         picture: flag?.flagger?.picture || "",
         company_name: flag?.flagger?.company || "",
+=======
+        user_id: flag?.flagger?.user_id,
+        flagger_name: flag.flagger?.name.toLowerCase(),
+        email: flag?.flagger?.email,
+        phone: flag?.flagger?.phone,
+        picture: flag?.flagger?.picture,
+        company_name: flag?.flagger?.company,
+>>>>>>> 87fa637fd343d2635acad8796f66405345429e43
         is_flagged: flag.is_flagged,
         reason: flag?.reason ?? null,
         appeal_reason: flag?.appeal_reason ?? null,

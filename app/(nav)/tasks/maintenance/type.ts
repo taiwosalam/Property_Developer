@@ -47,7 +47,7 @@ type MaintenanceRequest = {
   cost: string;
   quotation: string;
   quotation_type: string;
-  status: "not started" | "ongoing" | "completed" | "pending";
+  status: "not started" | "ongoing" | "completed" | "pending" | "in_progress";
   start_date: string;
   end_date: string;
   completed_at: string | null;

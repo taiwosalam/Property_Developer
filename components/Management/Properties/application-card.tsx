@@ -42,7 +42,7 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
   propertyType,
   managedBy,
   prev,
-  unitData
+  unitData,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
 
@@ -64,7 +64,9 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
             <div>
               <p className="text-[#747474] dark:text-white">Unit Title</p>
               <p className="text-black dark:text-darkText-1 capitalize">
-                {unitData ? transformUnitDetails(unitData) : ""}
+                {unitData
+                  ? `${propertyName} - ${transformUnitDetails(unitData)}`
+                  : ""}
               </p>
             </div>
 
@@ -131,8 +133,14 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
 
         <SectionSeparator className="my-4 h-[2px]" />
         <div className="flex justify-between items-center flex-wrap ">
-          <button className="property-type bg-opacity-40 text-brand-9 py-1 capitalize rounded-xl bg-brand-5 px-3 h-7 text-sm mt-1">
-            {propertyType}
+          <button
+            className={`property-type bg-opacity-40 text-brand-9 py-1 capitalize rounded-xl bg-brand-5 px-4 h-7 text-sm mt-1 ${
+              propertyType === "rental"
+                ? "bg-status-success-primary/25 text-status-success-2"
+                : ""
+            }`}
+          >
+            {propertyType + " Property"}
           </button>
 
           <p className="text-[#343434] dark:text-white font-semibold mt-3 sm:mt-0 capitalize">

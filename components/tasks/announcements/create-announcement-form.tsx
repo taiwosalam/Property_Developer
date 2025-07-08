@@ -226,7 +226,7 @@ const CreateAnnouncementForm: React.FC<{
           {!editMode && (
             <Fragment>
               <Select
-                id="branch_d"
+                id="branch_id"
                 label="Branch"
                 disabled={silentLoading || loading}
                 placeholder={

@@ -7,7 +7,7 @@ import { useState } from "react";
 interface MaintenanceCardProps {
   card: {
     maintenanceId: string;
-    status: "not started" | "ongoing" | "completed" | "pending";
+    status: "not started" | "ongoing" | "completed" | "pending" | "in_progress";
     propertyName: string;
     dateCreated: string;
     serviceProvider: string;
@@ -19,6 +19,7 @@ interface MaintenanceCardProps {
   modal: {
     maintenanceId: number;
     property_name: string;
+    status: "not started" | "ongoing" | "completed" | "pending" | "in_progress";
     created_at: string;
     priority: "high" | "critical" | "low" | "very low" | "medium";
     service_type: string;

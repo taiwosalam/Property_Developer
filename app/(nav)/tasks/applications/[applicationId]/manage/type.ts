@@ -27,6 +27,7 @@ export type TApplicationDetailsResponse = {
       account_officer: string;
     };
     user: {
+      user_id: number;
       name: string;
       type: "web" | "mobile";
       phone: {
@@ -87,6 +88,7 @@ export type TApplicationDetailsResponse = {
       status: "cancelled" | "pending" | "evaluated" | "approved";
       created_at: string;
       flagger: {
+        user_id: number;
         name: string;
         email: string;
         phone: string;

@@ -12,6 +12,7 @@ interface IFlaggedModal {
   id?: number;
   setIsOpen?: (val: boolean) => void;
   flag_details?: {
+    flagger_id: number;
     flagger_name: string;
     email: string;
     phone: string;

@@ -26,6 +26,7 @@ export const staffConfigurations = [
         "Edit Services",
         "Manage Subscription Settings",
         "Full Wallet Access",
+        "Activate Add-on",
       ],
     ],
   },
