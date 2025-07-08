@@ -80,16 +80,18 @@ const SelectMembersStep: React.FC<SelectMembersStepProps> = ({
               onFilterApply={onFilterApply}
               filterOptions={[
                 {
-                  label: "Directors",
-                  value: filterCounts["Directors"] || 0,
+                  label: "Director",
+                  value: filterCounts["Director"] || 0,
                 },
                 { label: "Staff", value: filterCounts["Staff"] || 0 },
                 {
                   label: "Account Officers",
                   value: filterCounts["Account Officers"] || 0,
                 },
-                { label: "Landlords", value: filterCounts["Landlords"] || 0 },
-                { label: "Tenants", value: filterCounts["Tenants"] || 0 },
+                {
+                  label: "Account Manager",
+                  value: filterCounts["Account Manager"] || 0,
+                },
                 { label: "All", value: filterCounts["All"] || 0 },
               ]}
             />
@@ -138,7 +140,7 @@ const SelectMembersStep: React.FC<SelectMembersStepProps> = ({
         )}
       </div>
       {selectedMembers.length > 0 && (
-        <div className="sticky bottom-0 left-0 right-0 border-t border-text-disabled bg-white dark:bg-darkText-primary h-[35px]">
+        <div className="sticky bottom-0 left-0 right-0 bg-white dark:bg-darkText-primary h-[35px]">
           <div className="flex items-center justify-between gap-2 mt-2">
             {/* <Button
               type="button"
@@ -152,7 +154,7 @@ const SelectMembersStep: React.FC<SelectMembersStepProps> = ({
             <Button
               type="button"
               size="sm_medium"
-              className="px-8 py-2 w-full"
+              className="px-8 py-2 ml-auto"
               onClick={
                 create
                   ? handleNext

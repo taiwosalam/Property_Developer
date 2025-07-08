@@ -147,6 +147,7 @@ export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {
   requestType: string;
   description: string;
   phoneNumber: string;
+  slug?: string;
   user?: boolean;
   status?: "active" | "inactive";
   cardViewDetails: {

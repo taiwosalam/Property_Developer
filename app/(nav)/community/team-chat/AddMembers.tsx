@@ -1,6 +1,11 @@
 "use client";
 import { removeGroupMember, team_chat_members_data } from "./data";
-import { FilterIcons, SearchIcon, TrashIcon } from "@/public/icons/icons";
+import {
+  FilterIcons,
+  PlusIcon,
+  SearchIcon,
+  TrashIcon,
+} from "@/public/icons/icons";
 import { useEffect, useState } from "react";
 import {
   Modal,
@@ -24,6 +29,11 @@ import { toast } from "sonner";
 import { useTeamChat } from "@/contexts/teamChatContext";
 import Picture from "@/components/Picture/picture";
 import { empty } from "@/app/config";
+import CreateGroupModal from "./create-group-modal";
+import FilterButton from "@/components/FilterButton/filter-button";
+import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
+import Input from "@/components/Form/Input/input";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 // import TrashIcon from "@/public/icons/trash.svg";
 
 interface AddMembersProps {
@@ -37,29 +47,17 @@ interface AddMembersProps {
 }
 const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
   const { id } = useParams();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
   const { setIsOpen } = useModal();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { setDetailsStep } = useTeamChat();
+  const { setDetailsStep, onFilterApply, filterCounts } = useTeamChat();
 
+  console.log("group_members", group_members);
+  
   const filteredMembers = (group_members ?? []).filter((member) =>
     member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const {
-    isAddMember,
-    openAddMember,
-    closeAddMember,
-    isDeleteMember,
-    openDeleteMember,
-    closeDeleteMember,
-    setUserNameToDelete,
-  } = useTeamChatStore();
-
-  const addMember = () => {
-    setIsOpen(false);
-    openAddMember();
-    console.log("isAddMember is", isAddMember);
-  };
 
   const deleteMemberFromList = async (userId: number) => {
     if (!userId) return;
@@ -75,30 +73,44 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
 
   return (
     <div className="transition-all duration-300 ease-in-out relative">
-      <div className="sticky top-0 z-[2 bg-white dark:bg-darkText-primary p-4">
-        <div className="searchWrapper flex items-center gap-1 border border-text-disabled rounded-md p-1 w-full">
-          <SearchIcon size={20} />
-          <input
-            type="text"
-            placeholder="Search members"
+      {/* sticky search and filter */}
+      <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
+        <div className="flex-1 relative">
+          <Input
+            id="search"
+            className="w-full"
+            placeholder="Search for messages"
+            leftIcon={"/icons/search-icon.svg"}
+            inputClassName="pr-[52px] border-transparent"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-sm w-full focus:outline-none dark:bg-darkText-primary"
+            onChange={(val) => setSearchTerm(val)}
           />
-        </div>
-        <div className="membersWrapper flex items-center justify-between mt-2">
-          <p className="text-text-primary dark:text-white text-xs sm:text-sm font-medium">
-            Members
-          </p>
-          <button
-            type="button"
-            className="text-brand-9 text-xs sm:text-sm font-medium"
-            onClick={() => setDetailsStep("members")}
-          >
-            + Add New Member
-          </button>
+          <div className="absolute top-1/2 right-0 -translate-y-1/2">
+            <FilterButton
+              noTitle
+              className="bg-transparent py-[10px] px-4"
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+            />
+            <MessagesFilterMenu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={() => setAnchorEl(null)}
+              onFilterApply={onFilterApply}
+              filterOptions={[
+                {
+                  label: "Director",
+                  value: filterCounts["Director"] || 0,
+                },
+                { label: "Staff", value: filterCounts["Staff"] || 0 },
+                { label: "Manager", value: filterCounts["Manager"] || 0 },
+                { label: "All", value: filterCounts["All"] || 0 },
+              ]}
+            />
+          </div>
         </div>
       </div>
+
+      {/* members list */}
       {filteredMembers && filteredMembers.length > 0 ? (
         filteredMembers.map((item, index) => (
           <div
@@ -116,7 +128,7 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
               </div>
               <div className="flex flex-col">
                 <p className="text-text-primary dark:text-white text-sm font-medium">
-                  {item.fullname}
+                  {capitalizeWords(item.fullname || "")}
                 </p>
                 <p className="text-text-quaternary dark:text-text-disabled text-xs font-normal">
                   {item?.role}
@@ -134,7 +146,7 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
           </div>
         ))
       ) : (
-        <p>No member in this group yet</p>
+        <p>No Member in this group yet</p>
       )}
     </div>
   );

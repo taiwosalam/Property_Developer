@@ -83,7 +83,7 @@ export const transformCompanyUsersData = (
 export const transformUsersMessages = (
   data: ConversationsAPIResponse | null | undefined
 ): PageMessages[] => {
-  // console.log("data got", data);
+  console.log("data got", data);
   if (!data || !data.conversations) return []; // Ensure data exists
 
   return data.conversations.map((c) => {
@@ -132,15 +132,40 @@ export const transformUsersMessages = (
       // - For "director", "account", "staff", "manager": only if tier === 2
       // - For other roles: if tier exists, use tierColorMap
       // - Else: undefined
+      // badgeColor: (() => {
+      //   const specialRoles = [
+      //     "director",
+      //     "account",
+      //     "staff",
+      //     "manager",
+      //     "super-admin",
+      //   ];
+      //   if (c.type?.toLowerCase() === "group") return undefined; // no badge for group chat
+      //   if (specialRoles.includes(c.role)) {
+      //     return c.tier === 2 ? "gray" : undefined;
+      //   }
+      //   return c.tier
+      //     ? tierColorMap[c.tier as keyof typeof tierColorMap]
+      //     : undefined;
+      // })(),
+
       badgeColor: (() => {
-        const specialRoles = ["director", "account", "staff", "manager"];
-        if (c.type?.toLowerCase() === "group") return undefined; // no badge for group chat
+        const specialRoles = [
+          "director",
+          "account",
+          "staff",
+          "manager",
+          "super-admin",
+        ];
+        if (c.type?.toLowerCase() === "group") return undefined;
         if (specialRoles.includes(c.role)) {
-          return c.tier === 2 ? "gray" : undefined;
+          const color = c.tier === 2 ? "gray" : undefined;
+          return color;
         }
-        return c.tier
+        const color = c.tier
           ? tierColorMap[c.tier as keyof typeof tierColorMap]
           : undefined;
+        return color;
       })(),
     };
   });
@@ -244,8 +269,6 @@ export interface Message {
   };
 }
 
-
-
 interface GroupedMessage {
   id: number;
   text: string | null;
@@ -259,7 +282,6 @@ interface GroupedMessage {
     title?: string;
   };
 }
-
 
 export type GroupChatAPIResponse = {
   group_chat: any;
@@ -355,7 +377,7 @@ export const transformMessagesFromAPI = (
     return {
       id: msg.id,
       text: msg.content ?? null,
-      senderId: Number(msg.sender_id), 
+      senderId: Number(msg.sender_id),
       timestamp,
       content_type,
       sender,

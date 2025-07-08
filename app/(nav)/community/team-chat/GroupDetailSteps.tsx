@@ -88,7 +88,7 @@ const GroupDetailsStep: React.FC<GroupDetailsStepProps> = ({
           )}
         </div>
         <div className="flex items-center justify-between gap-2 mt-6">
-          <Button
+          {/* <Button
             type="button"
             variant="border"
             size="base_medium"
@@ -97,13 +97,13 @@ const GroupDetailsStep: React.FC<GroupDetailsStepProps> = ({
             onClick={onClose}
           >
             Cancel
-          </Button>
+          </Button> */}
           <Button
             type="submit"
             disabled={isCreating}
             variant="default"
             size="base_medium"
-            className="px-8 py-2 w-full"
+            className="px-8 py-2 ml-auto"
             // className="bg-brand-9 text-sm text-white w-1/2 py-2 rounded-md"
           >
             {isCreating ? "Creating..." : "Create"}

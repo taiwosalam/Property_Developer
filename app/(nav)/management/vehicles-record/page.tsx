@@ -123,42 +123,7 @@ const VehilceRecords = () => {
     sessionStorage.setItem("vehicles_record_page", "1");
   };
 
-  // const handleFilterApply = (filters: FilterResult) => {
-  //   setAppliedFilters(filters);
-  //   const { menuOptions, startDate, endDate, options } = filters;
-  //   const statesArray = menuOptions["State"] || [];
-
-  //   const queryParams: VehicleRecordParams = {
-  //     page: 1,
-  //     sort: "asc",
-  //     search: "",
-  //   };
-  //   options.forEach((option) => {
-  //     if (option === "all") {
-  //       queryParams.all = "all";
-  //     } else if (option === "rental") {
-  //       queryParams.property_type = "rental";
-  //     } else if (option === "facility") {
-  //       queryParams.property_type = "facility";
-  //     }
-  //   });
-
-  //   if (startDate) {
-  //     queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
-  //   }
-  //   if (endDate) {
-  //     queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD HH:mm:ss");
-  //   }
-  //   setConfig({
-  //     params: queryParams,
-  //   });
-  //   setPageData((prevData) => ({
-  //     ...prevData,
-  //     current_page: 1,
-  //   }));
-  //   sessionStorage.setItem("vehicles_record_page", "1");
-  // };
-
+  
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate, options } = filters;

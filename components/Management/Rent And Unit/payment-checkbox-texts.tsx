@@ -121,6 +121,11 @@ const PaymentConfirmationText: React.FC<PaymentConfirmationTextProps> = ({
   const canSubmitRent = useGlobalStore((state) => state.canSubmitRent);
   const setGlobalStore = useGlobalStore((state) => state.setGlobalInfoStore);
 
+  // Always reset canSubmitRent to false on mount
+  React.useEffect(() => {
+    setGlobalStore("canSubmitRent", false);
+  }, [setGlobalStore]);
+
   // If date is in the past
   if (startDate?.isBefore(dayjs(), "day")) {
     return (
@@ -219,6 +224,8 @@ const PaymentConfirmationText: React.FC<PaymentConfirmationTextProps> = ({
               }`}
         </p>
       </div>
+
+      {/* NON NAIRA */}
       {nonNaira && (
         <div className="flex items-start gap-2">
           <Checkbox

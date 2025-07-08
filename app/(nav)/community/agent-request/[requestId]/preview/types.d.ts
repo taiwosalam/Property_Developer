@@ -9,7 +9,7 @@ export interface PropertyRequest {
   propertyType: string;
   propertySubType: string | null;
   state: string;
-  user_liked: boolean,
+  user_liked: boolean;
   user_disliked: boolean;
   lga: string;
   agent: string;
@@ -84,7 +84,6 @@ export interface CompanySummary {
     total_staff: number;
     total_unit_managing: number;
     completed_transaction: number;
-
   };
   social_handles: {
     facebook: string | null;
@@ -114,7 +113,7 @@ export interface CommentData {
 
 export interface PropertyRequestResponse {
   message: string;
-  data: {
+  post: {
     AgentRequest: any;
     contributor: any;
     company_summary: any;
@@ -126,6 +125,7 @@ export interface PropertyRequestResponse {
     }[];
     comments: CommentData[];
   };
+  similar_posts: any[];
 }
 
 export interface CommentProps {
@@ -153,4 +153,5 @@ export interface TransformedPropertyRequestData {
     viewed_at: string;
   }[];
   comments: CommentProps[];
+  similarPosts: any[];
 }

@@ -7,8 +7,8 @@ import { type BadgeIconColors } from "../BadgeIcon/badge-icon";
 export interface cardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   icon: React.ReactNode;
-  value: number;
-  subvalue: number;
+  value: string;
+  subvalue: string;
   bg: string;
 }
 

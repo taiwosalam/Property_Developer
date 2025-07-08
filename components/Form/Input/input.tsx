@@ -44,6 +44,7 @@ const Input: React.FC<InputProps> = ({
   name,
   prefix,
   endAdornment,
+  autoComplete = "on",
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -116,6 +117,7 @@ const Input: React.FC<InputProps> = ({
           readOnly={readOnly}
           disabled={disabled}
           placeholder={placeholder}
+          autoComplete={autoComplete}
           defaultValue={defaultValue ? defaultValue : undefined}
           minLength={minLength}
           // Add min and max attributes for number type

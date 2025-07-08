@@ -20,6 +20,7 @@ import {
   createNewTeamChat,
 } from "@/app/(nav)/community/team-chat/data";
 import { handleAxiosError } from "@/services/api";
+import { useModal } from "@/components/Modal/modal";
 
 interface CreateGroupContextType {
   searchTerm: string;
@@ -70,7 +71,7 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [filterRole, setFilterRole] = useState<string[]>([]);
-
+  const { setIsOpen } = useModal();
   const { data: teamMemberData, loading } =
     useFetch<TeamChatUsersResponse>("/company/users");
 
@@ -97,22 +98,25 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, [teamMembers, searchTerm, filterRole]);
 
+  console.log("teamMembers", teamMembers);
   // Compute counts for each role
   const filterCounts = React.useMemo(() => {
     const counts: Record<string, number> = {
       All: 0,
-      Directors: 0,
+      Director: 0,
       Staff: 0,
-      Managers: 0,
+      "Account Manager": 0,
+      "Account Officers": 0,
       // Add more roles as needed
     };
     if (!teamMembers?.members) return counts;
     counts["All"] = teamMembers.members.length;
     teamMembers.members.forEach((member) => {
       const role = member.role?.toLowerCase();
-      if (role === "director") counts["Directors"]++;
+      if (role === "director") counts["Director"]++;
       if (role === "staff") counts["Staff"]++;
-      if (role === "manager") counts["Managers"]++;
+      if (role === "manager") counts["Account Manager"]++;
+      if (role === "account officers") counts["Account Officers"]++;
       // Add more roles as needed
     });
     return counts;
@@ -156,6 +160,7 @@ export const CreateGroupProvider: React.FC<{ children: React.ReactNode }> = ({
       const groupResponse = await createNewTeamChat(formData);
       if (groupResponse) {
         window.dispatchEvent(new Event("refetchTeamChat"));
+        setIsOpen(false);
       }
     } catch (error) {
       handleAxiosError(error);

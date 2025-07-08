@@ -89,6 +89,7 @@ export const deleteTenant = async (id: string) => {
 interface UploadFilePayload {
   type: string;
   files: File[];
+  unit_id?: number;
 }
 
 interface RemoveFilePayload {
@@ -97,7 +98,8 @@ interface RemoveFilePayload {
 
 export const uploadDocuments = async (
   documents: TenantData["documents"],
-  tenantId: string
+  tenantId: string,
+  unitId?: number
 ) => {
   const documentsWithFiles = documents.filter((doc) => doc.file);
   if (documentsWithFiles.length === 0) return true;
@@ -116,7 +118,11 @@ export const uploadDocuments = async (
 
   // Send each document type to the API
   for (const [type, files] of Object.entries(documentsByType)) {
-    const payload: UploadFilePayload = { type, files };
+    const payload: UploadFilePayload = {
+      type,
+      files,
+      unit_id: unitId,
+    };
     try {
       await api.post(`/tenant/${tenantId}/attach-documents`, payload);
     } catch (error) {

@@ -115,7 +115,7 @@ const Dashboard = () => {
       setPageUsersMsg(transformed);
       setChatData("users_messages", transformed);
     }
-  }, [usersMessages]);
+  }, [usersMessages, setChatData]);
 
   // Open modal if company status is "pending" or "rejected"
   useEffect(() => {
@@ -178,11 +178,11 @@ const Dashboard = () => {
     // Set persist to false for NavTour and DashboardTour
     setPersist(false);
     const hasNoProperties = dashboardStats.some(
-      (stat) => stat.title === "Properties" && stat.value === 0
+      (stat) => stat.title === "Properties" && stat.value === "0"
     );
 
     const hasNoVacantUnits = dashboardStats.some(
-      (stat) => stat.title === "Vacant Unit" && stat.value === 0
+      (stat) => stat.title === "Vacant Unit" && stat.value === "0"
     );
     const shouldRunTour =
       company_status === "approved" && hasNoProperties && hasNoVacantUnits;

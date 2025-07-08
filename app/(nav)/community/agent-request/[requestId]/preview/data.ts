@@ -7,6 +7,8 @@ import {
   TransformedPropertyRequestData,
 } from "./types";
 import dayjs from "dayjs";
+import { formatNumber } from "@/utils/number-formatter";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 export const calculateYearsInIndustry = (dateString: string) => {
   if (!dateString) return null;
@@ -141,8 +143,10 @@ export const transformComment = (
 export const transformPropertyRequestResponse = (
   response: PropertyRequestResponse
 ): TransformedPropertyRequestData => {
+  console.log("response", response);
+  const { post, similar_posts } = response;
   const { AgentRequest, contributor, company_summary, readByData, comments } =
-    response.data;
+    post;
   return {
     agentRequest: {
       id: AgentRequest.id,
@@ -234,7 +238,37 @@ export const transformPropertyRequestResponse = (
     comments: comments.map((comment) =>
       transformComment(comment, AgentRequest.slug)
     ),
+    // similar posts
+    similarPosts: similar_posts.map((p) => ({
+      id: p.AgentRequest.id || 0,
+      cardType: "agent-community",
+      userName: `${capitalizeWords(p?.contributor?.title || "")} ${capitalizeWords(p?.contributor?.name || "")}`,
+      requestDate: p?.AgentRequest?.created_at || "--- ---",
+      pictureSrc: p?.contributor?.picture || empty,
+      requestId: p.AgentRequest.id,
+      state: p.AgentRequest.state,
+      lga: p.AgentRequest.lga,
+      propertyType: p.AgentRequest.property_type,
+      expiredDate:
+        dayjs(p.AgentRequest.end_date).format("MMM DD YYYY") || "__,__,__",
+      minBudget: `₦${formatNumber(p?.AgentRequest?.min_budget)}` || "--- ---",
+      maxBudget: `₦${formatNumber(p?.AgentRequest?.max_budget)}` || "--- ---",
+      subType: p.AgentRequest.property_sub_type,
+      requestType: p.AgentRequest.request_type,
+      description: p.AgentRequest.description,
+      category: p.AgentRequest.property_category,
+      targetAudience: p.AgentRequest.target_audience,
+      propertyTitle: p.AgentRequest.title,
+      userTitle: p?.contributor?.professional_title,
+      slug: p.AgentRequest.slug,
+      cardViewDetails: [
+        { label: "Location(state)", accessor: "state" },
+        { label: "Local Government", accessor: "lga" },
+        { label: "Property Type", accessor: "propertyType" },
+        { label: "Expired Date", accessor: "expiredDate" },
+        { label: "Min Budget", accessor: "minBudget" },
+        { label: "Max Budget", accessor: "maxBudget" },
+      ],
+    })),
   };
 };
-
-

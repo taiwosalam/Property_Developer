@@ -47,8 +47,8 @@ const Dashboard = () => {
                 <Card
                   title={card.title}
                   icon={<card.icon />}
-                  value={card.value}
-                  subvalue={card.subValue}
+                  value={card.value.toString()}
+                  subvalue={card.subValue.toString()}
                   bg={card.bg}
                 />
               </Link>

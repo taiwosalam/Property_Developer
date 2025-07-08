@@ -16,6 +16,7 @@ export type TApplicationDetailsResponse = {
       landlord: string;
       unit_name: string;
       description: string;
+      unit_id: number;
       state: string;
       branch: string;
       categories: string;

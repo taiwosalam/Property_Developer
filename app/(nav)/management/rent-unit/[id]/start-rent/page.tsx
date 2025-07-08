@@ -235,6 +235,7 @@ const StartRent = () => {
       if (res) {
         toast.success(successMsg);
         router.push("/management/rent-unit");
+        localStorage.removeItem("selectedTenantId");
       }
     } catch (err) {
       toast.error(failedMsg);

@@ -91,7 +91,7 @@ export const ProfileForm: React.FC<{
       setTierError(
         "The client’s current profile tier does not align with your company’s access requirements. Let them know to upgrade their profile."
       );
-      setGlobalInfoStore("canSubmitRent", false)
+      setGlobalInfoStore("canSubmitRent", false);
     } else {
       setTierError(null);
     }
@@ -101,6 +101,8 @@ export const ProfileForm: React.FC<{
     isRental,
     TENANT_SCREENING_LEVEL,
     OCCUPANT_SCREENING_LEVEL,
+    unitData,
+    setGlobalInfoStore,
   ]);
 
   // 2. Set default when occupants are loaded and defaultTenantId is present in list
@@ -129,7 +131,6 @@ export const ProfileForm: React.FC<{
       setRentPeriod(period);
     }
   }, [period]);
-
 
   const handleSelectId = (id: string) => {
     // Clear previous data
@@ -226,7 +227,6 @@ export const ProfileForm: React.FC<{
     email_alert: true,
     rent_agreement: false,
   });
-
 
   // TO USE THE PAYMENTCHECKBOX COMPONENT 👉: use (optionKey, checked) signature for toggling
   const handleCheckboxChange = (optionKey: string, checked: boolean) => {

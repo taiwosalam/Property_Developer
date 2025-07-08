@@ -64,22 +64,6 @@ const RentAndUnit = () => {
 
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
 
-  const {
-    total_unit,
-    total_occupied,
-    total_vacant,
-    total_active,
-    total_expired,
-    total_relocate,
-    month_unit,
-    month_occupied,
-    month_vacant,
-    month_active,
-    month_expired,
-    month_relocate,
-    unit,
-  } = pageData;
-
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
@@ -102,7 +86,9 @@ const RentAndUnit = () => {
 
   useEffect(() => {
     const tenantIdFromUrl = searchParams.get("tenant_id");
-    if (!tenantIdFromUrl) {
+    if (tenantIdFromUrl && tenantIdFromUrl.trim() !== "") {
+      localStorage.setItem("selectedTenantId", tenantIdFromUrl);
+    } else {
       localStorage.removeItem("selectedTenantId");
     }
   }, []);
@@ -326,6 +312,7 @@ const RentAndUnit = () => {
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
+  console.log("pageData", pageData);
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
