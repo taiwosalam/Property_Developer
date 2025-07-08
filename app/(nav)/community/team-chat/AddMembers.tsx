@@ -52,6 +52,8 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const { setDetailsStep, onFilterApply, filterCounts } = useTeamChat();
 
+  console.log("group_members", group_members);
+  
   const filteredMembers = (group_members ?? []).filter((member) =>
     member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
   );

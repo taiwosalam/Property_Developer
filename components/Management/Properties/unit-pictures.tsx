@@ -17,6 +17,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   const allowEditUnit = useGlobalStore((s) => s.allowEditUnit);
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+    const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
   const { images, setImages, isEditing, formResetKey } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const maxImages = propertyType === "facility" ? 5 : 14;
@@ -93,10 +94,11 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
               variant="light_red"
               className="py-1 px-8"
               onClick={() => {
+                setAddUnitStore("newForm", false);
                 setGlobalStore("closeUnitForm", true);
               }}
             >
-              Close
+              Remove
             </Button>
             <Button
               type="button"

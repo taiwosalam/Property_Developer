@@ -654,10 +654,10 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
       </button> */}
       <button
         type="button"
-        onClick={increaseZoom}
+        onClick={decreaseZoom}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
-        <ZoomPlusIcon />
+        <ZoomMinusIcon />
       </button>
 
       <div className="flex items-center justify-center max-w-[120px] rounded-md border border-text-label border-dashed px-4">
@@ -674,11 +674,12 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
 
       <button
         type="button"
-        onClick={decreaseZoom}
+        onClick={increaseZoom}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
-        <ZoomMinusIcon />
+        <ZoomPlusIcon />
       </button>
+
       {/* <button
         onClick={toggleFullscreen}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"

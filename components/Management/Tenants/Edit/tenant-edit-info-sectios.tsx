@@ -589,6 +589,7 @@ export const TenantEditAttachmentSection = () => {
   const [documents, setDocuments] = useState<TenantData["documents"]>([]);
   const [reqLoading, setReqLoading] = useState(false);
   const [documentType, setDocumentType] = useState("");
+  const [unit, setUnit] = useState<number | null>(null);
   const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
   // const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
   const [urlsToRemove, setUrlsToRemove] = useState<
@@ -645,7 +646,11 @@ export const TenantEditAttachmentSection = () => {
       urlsToRemove.length > 0
         ? await removeDocuments(urlsToRemove, tenant.id)
         : true;
-    const uploadSuccess = await uploadDocuments(documents, tenant.id);
+    const uploadSuccess = await uploadDocuments(
+      documents,
+      tenant.id,
+      unit || undefined
+    );
     if (removeSuccess && uploadSuccess) {
       toast.success("Documents updated successfully");
       window.dispatchEvent(new Event("tenant-updated"));
@@ -685,7 +690,7 @@ export const TenantEditAttachmentSection = () => {
               placeholder="Select options"
               options={tenant?.unitOptions || []}
               // value={documentType}
-              // onChange={(value) => setDocumentType(value)}
+              onChange={(value) => setUnit(Number(value))}
               className="w-full"
             />
           </div>

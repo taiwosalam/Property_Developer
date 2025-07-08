@@ -61,7 +61,6 @@ const ManageTenancyAgreement = () => {
 
   const handleOptionsChange = (options: CheckboxOption[]) => {
     setCheckboxOptions(options);
-    console.log("options", options);
   };
 
   const handleUpdateDocument = async (type: "update" | "preview") => {
@@ -84,6 +83,18 @@ const ManageTenancyAgreement = () => {
       );
       if (res) {
         toast.success("Document updated successfully");
+        // Check if we should redirect back to Start Rent
+        const startRentUnitId =
+          typeof window !== "undefined"
+            ? sessionStorage.getItem("return_to_start_rent_unit_id")
+            : null;
+        if (startRentUnitId) {
+          sessionStorage.removeItem("return_to_start_rent_unit_id");
+          router.push(
+            `/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`
+          );
+          return;
+        }
         if (type === "preview")
           router.push(`/documents/preview/?d=${documentId}`);
         else {

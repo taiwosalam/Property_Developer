@@ -81,24 +81,11 @@ const FooterModal = ({
     setAddUnitStore("newForm", false);
   };
 
-  // const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   const form = e.currentTarget.form;
-
-  //   // 🟢 Just set duplicate intent and submit, do NOT duplicate here!
-  //   setDuplicate?.({ val: true, count });
-  //   setIsOpen(false);
-  //   setTimeout(() => {
-  //     form?.requestSubmit();
-  //   }, 0);
-
-  //   setAddUnitStore("newForm", false);
-  // };
-
   const handleNoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const formInDom = document.getElementById(
       "add-unit-form"
     ) as HTMLFormElement | null;
+    setAddUnitStore("newForm", true);
     if (noForm) {
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();

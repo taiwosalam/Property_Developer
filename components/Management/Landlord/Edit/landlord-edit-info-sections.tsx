@@ -591,7 +591,7 @@ export const LandlordEditAttachmentInfoSection = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
   const [documentType, setDocumentType] = useState("");
-  const [property, setProperty] = useState("");
+  const [property, setProperty] = useState<number | null>(null);
   const acceptedExtensions = ["pdf", "doc", "docx", "jpg", "png", "jpeg"];
   // const [urlsToRemove, setUrlsToRemove] = useState<string[]>([]);
   const [urlsToRemove, setUrlsToRemove] = useState<
@@ -656,7 +656,11 @@ export const LandlordEditAttachmentInfoSection = () => {
       urlsToRemove.length > 0
         ? await removeDocuments(urlsToRemove, landlord.id)
         : true;
-    const uploadSuccess = await uploadDocuments(documents, landlord.id);
+    const uploadSuccess = await uploadDocuments(
+      documents,
+      landlord.id,
+      property || undefined
+    );
     if (removeSuccess && uploadSuccess) {
       toast.success("Documents updated successfully");
       window.dispatchEvent(new Event("landlord-updated"));
@@ -700,7 +704,7 @@ export const LandlordEditAttachmentInfoSection = () => {
               placeholder="Select options"
               options={landlord?.propertyOptions || []}
               // value={property}
-              onChange={(value) => setProperty(value)}
+              onChange={(value) => setProperty(Number(value))}
               // inputContainerClassName="bg-neutral-2"
               className="w-full"
             />

@@ -133,7 +133,13 @@ export const transformUsersMessages = (
       // - For other roles: if tier exists, use tierColorMap
       // - Else: undefined
       badgeColor: (() => {
-        const specialRoles = ["director", "account", "staff", "manager"];
+        const specialRoles = [
+          "director",
+          "account",
+          "staff",
+          "manager",
+          "super-admin",
+        ];
         if (c.type?.toLowerCase() === "group") return undefined; // no badge for group chat
         if (specialRoles.includes(c.role)) {
           return c.tier === 2 ? "gray" : undefined;

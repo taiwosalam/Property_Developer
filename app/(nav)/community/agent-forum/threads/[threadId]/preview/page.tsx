@@ -19,16 +19,29 @@ import PreviewThreadArticle from "@/components/Community/PreviewArticle";
 import { ThreadResponse, transformApiData } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import { ThreadCardProps } from "../../../type";
+import ThreadCard from "@/components/Community/ThreadCard";
 
 const ThreadPreview = () => {
   const router = useRouter();
   const { threadId } = useParams();
   const slug = threadId as string;
-  const [post, setPost] = useState<any>(null);
-  const [companySummary, setCompanySummary] = useState<any>(null);
-  const [contributors, setContributors] = useState<any>(null);
-  const [comments, setComments] = useState<CommentData[]>([]);
-  const [targetAudience, setTargetAudience] = useState<string>("");
+  const [pageData, setPageData] = useState<{
+    post: any;
+    companySummary: any;
+    contributors: any;
+    comments: CommentData[];
+    targetAudience: string;
+    similarPosts: ThreadCardProps[];
+  }>({
+    post: null,
+    companySummary: null,
+    contributors: null,
+    comments: [],
+    targetAudience: "",
+    similarPosts: [],
+  });
   const {
     data,
     error,
@@ -42,11 +55,14 @@ const ThreadPreview = () => {
   useEffect(() => {
     if (data) {
       const transformedData = transformApiData(data);
-      setPost(transformedData.post);
-      setCompanySummary(transformedData.companySummary);
-      setContributors(transformedData.contributors);
-      setComments(transformedData.comments);
-      setTargetAudience(transformedData.targetAudience);
+      setPageData({
+        post: transformedData.post,
+        companySummary: transformedData.companySummary,
+        contributors: transformedData.contributors,
+        comments: transformedData.comments,
+        targetAudience: transformedData.targetAudience,
+        similarPosts: transformedData.similarPosts,
+      }); 
     }
   }, [data]);
 
@@ -69,7 +85,7 @@ const ThreadPreview = () => {
             <div className="h-7 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
           ) : (
             <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-              {post?.title}
+              {pageData.post?.title}
             </h1>
           )}
         </div>
@@ -86,10 +102,10 @@ const ThreadPreview = () => {
           <div className="slider h-[250px] md:h-[300px] lg:h-[350px] w-full relative px-[20px] md:px-[35px]">
             {loading ? (
               <div className="w-full h-full bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
-            ) : post?.media?.length > 0 ? (
+            ) : pageData.post?.media?.length > 0 ? (
               <CommunitySlider
-                images={post?.media}
-                video_link={post?.video_link}
+                images={pageData.post?.media}
+                video_link={pageData.post?.video_link}
                 thread
               />
             ) : (
@@ -98,24 +114,51 @@ const ThreadPreview = () => {
               </div>
             )}
           </div>
-          <PreviewThreadArticle post={post} slug={slug} comments={comments} />
+          <PreviewThreadArticle
+            post={pageData.post}
+            slug={slug}
+            comments={pageData.comments}
+          />
           <CommunityComments
             slug={slug}
-            comments={comments}
-            setComments={setComments}
+            comments={pageData.comments}
+            setComments={(comments) =>
+              setPageData((prev) => ({
+                ...prev,
+                comments:
+                  typeof comments === "function"
+                    ? comments(prev.comments)
+                    : comments,
+              }))
+            }
           />
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <ContributorDetails
             title="Contributor Details"
             loading={loading}
-            post={post}
-            contributors={contributors}
-            targetAudience={targetAudience}
+            post={pageData.post}
+            contributors={pageData.contributors}
+            targetAudience={pageData.targetAudience}
           />
-          <CompanySummary loading={loading} companySummary={companySummary} />
+          <CompanySummary
+            loading={loading}
+            companySummary={pageData.companySummary}
+          />
         </div>
       </div>
+
+      {/* SIMILAR POSTS */}
+      {pageData.similarPosts.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-lg font-bold mb-5">Similar Posts</h2>
+          <AutoResizingGrid minWidth={300}>
+            {pageData.similarPosts.map((post, index) => (
+              <ThreadCard key={index} {...post} />
+            ))}
+          </AutoResizingGrid>
+        </div>
+      )}
     </div>
   );
 };

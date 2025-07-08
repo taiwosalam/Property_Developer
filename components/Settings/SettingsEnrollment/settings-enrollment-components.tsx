@@ -14,6 +14,8 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import { useState } from "react";
+import { toggleAutoRenewPlan } from "@/app/(nav)/settings/subscription/data";
+import { toast } from "sonner";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -312,6 +314,22 @@ export const FeaturesToggle: React.FC<{
   const [autoRenew, setAutoRenew] = useState(false);
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
 
+  const handleToggleAutoRenew = async () => {
+    setAutoRenew(!autoRenew);
+    const payload = {
+      auto_renew: autoRenew ? 0 : 1,
+    };
+    const SUCCESS_MESSAGE = autoRenew
+      ? "Auto-Renewal disabled"
+      : "Auto-Renewal enabled";
+    const res = await toggleAutoRenewPlan(payload);
+    if (res) {
+      toast.success(SUCCESS_MESSAGE);
+    } else {
+      console.error("Failed to toggle Auto-Renewal");
+    }
+  };
+
   // Is this the current plan (except free)?
   const isCurrentPlan =
     currentPlan &&
@@ -348,7 +366,7 @@ export const FeaturesToggle: React.FC<{
             name="auto_renew"
             state={{
               isChecked: autoRenew,
-              setIsChecked: setAutoRenew,
+              setIsChecked: handleToggleAutoRenew,
             }}
           >
             Auto-Renewal

@@ -119,6 +119,7 @@ export const deleteLandlord = async (id: string) => {
 interface UploadFilePayload {
   type: string;
   files: File[];
+  property_id?: number;
 }
 
 interface RemoveFilePayload {
@@ -127,7 +128,8 @@ interface RemoveFilePayload {
 
 export const uploadDocuments = async (
   documents: LandlordPageData["documents"],
-  landlordId: string
+  landlordId: string,
+  propertyId?: number
 ) => {
   const documentsWithFiles = documents.filter((doc) => doc.file);
   if (documentsWithFiles.length === 0) return true;
@@ -146,7 +148,7 @@ export const uploadDocuments = async (
 
   // Send each document type to the API
   for (const [type, files] of Object.entries(documentsByType)) {
-    const payload: UploadFilePayload = { type, files };
+    const payload: UploadFilePayload = { type, files, property_id: propertyId };
     try {
       await api.post(`/landlords/${landlordId}/attach-documents`, payload);
     } catch (error) {

@@ -29,7 +29,7 @@ const DynamicFooterActions = () => {
               setGlobalStore("closeUnitForm", true);
             }}
           >
-            Close
+            Remove
           </Button>
           <Button
             type="button"
