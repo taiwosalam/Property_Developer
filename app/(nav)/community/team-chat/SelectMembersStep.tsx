@@ -80,16 +80,18 @@ const SelectMembersStep: React.FC<SelectMembersStepProps> = ({
               onFilterApply={onFilterApply}
               filterOptions={[
                 {
-                  label: "Directors",
-                  value: filterCounts["Directors"] || 0,
+                  label: "Director",
+                  value: filterCounts["Director"] || 0,
                 },
                 { label: "Staff", value: filterCounts["Staff"] || 0 },
                 {
                   label: "Account Officers",
                   value: filterCounts["Account Officers"] || 0,
                 },
-                { label: "Landlords", value: filterCounts["Landlords"] || 0 },
-                { label: "Tenants", value: filterCounts["Tenants"] || 0 },
+                {
+                  label: "Account Manager",
+                  value: filterCounts["Account Manager"] || 0,
+                },
                 { label: "All", value: filterCounts["All"] || 0 },
               ]}
             />

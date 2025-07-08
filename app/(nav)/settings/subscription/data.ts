@@ -28,6 +28,18 @@ export const PERIOD_OPTIONS = [
   { value: "17", label: "Lifetime" },
 ];
 
+// /property-manager-subscription/toggle-auto-renew
+export const toggleAutoRenewPlan = async (payload: any) => {
+  try {
+    const res = await api.post(`/property-manager-subscription/toggle-auto-renew`, payload);
+    if (res.status === 200 || res.status === 201) return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to Auto Renew");
+    return false;
+  } 
+};
+
+
 export const activatePlan = async (payload: any) => {
   try {
     const res = await api.post(`/property-manager-subscription`, payload);

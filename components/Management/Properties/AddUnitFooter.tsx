@@ -71,7 +71,6 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
   };
 
   useEffect(() => {
-    console.log("canSubmit", canSubmit);
     if (checkSubmit) {
       if (!canSubmit && !noForm) {
         toast.error(

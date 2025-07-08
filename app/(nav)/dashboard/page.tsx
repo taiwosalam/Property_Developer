@@ -115,7 +115,7 @@ const Dashboard = () => {
       setPageUsersMsg(transformed);
       setChatData("users_messages", transformed);
     }
-  }, [usersMessages]);
+  }, [usersMessages, setChatData]);
 
   // Open modal if company status is "pending" or "rejected"
   useEffect(() => {
