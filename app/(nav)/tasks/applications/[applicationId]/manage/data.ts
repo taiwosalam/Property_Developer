@@ -265,20 +265,12 @@ export const transformApplicationDetailsPageData = (
           flag?.status === "approved"
       )
       .map((flag) => ({
-<<<<<<< HEAD
         flagger_name: flag.flagger?.name?.toLowerCase() || "",
         email: flag?.flagger?.email || "",
         phone: flag?.flagger?.phone || "",
         picture: flag?.flagger?.picture || "",
         company_name: flag?.flagger?.company || "",
-=======
         user_id: flag?.flagger?.user_id,
-        flagger_name: flag.flagger?.name.toLowerCase(),
-        email: flag?.flagger?.email,
-        phone: flag?.flagger?.phone,
-        picture: flag?.flagger?.picture,
-        company_name: flag?.flagger?.company,
->>>>>>> 87fa637fd343d2635acad8796f66405345429e43
         is_flagged: flag.is_flagged,
         reason: flag?.reason ?? null,
         appeal_reason: flag?.appeal_reason ?? null,
