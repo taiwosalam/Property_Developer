@@ -147,7 +147,7 @@ export const transformApplicationDetailsPageData = (
     profile_details: {
       user_id: user?.user_id,
       is_flagged: user?.is_flagged,
-      fullName: user?.name.toLowerCase() || "--- ---",
+      fullName: user?.name?.toLowerCase() || "--- ---",
       tier_id: user?.tier_id,
       application_duration,
       email: user?.email || "--- ---",
@@ -263,13 +263,13 @@ export const transformApplicationDetailsPageData = (
       )
       .map((flag) => ({
         user_id: flag?.flagger?.user_id,
-        flagger_name: flag.flagger?.name.toLowerCase(),
-        email: flag?.flagger?.email,
-        phone: flag?.flagger?.phone,
+        flagger_name: flag.flagger?.name?.toLowerCase() || "--- ---",
+        email: flag?.flagger?.email || "--- ---",
+        phone: flag?.flagger?.phone || "--- ---",
         picture: flag?.flagger?.picture,
-        company_name: flag?.flagger?.company,
+        company_name: flag?.flagger?.company || "--- ---",
         is_flagged: flag.is_flagged,
-        reason: flag?.reason ?? null,
+        reason: flag?.reason || "--- ---",
         appeal_reason: flag?.appeal_reason ?? null,
         status: flag?.status as
           | "pending"

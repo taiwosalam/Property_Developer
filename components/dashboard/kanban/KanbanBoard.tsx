@@ -25,6 +25,13 @@ import { hasDraggableData } from "./utils";
 import { coordinateGetter } from "./multipleContainersKeyboardPreset";
 import { LoadingSpinner } from "@/app/(nav)/tasks/complaints/pending-scroll";
 import { Loader2 } from "lucide-react";
+import {
+  approveAndProcessComplaint,
+  rejectComplaint,
+} from "@/app/(nav)/tasks/complaints/data";
+import { toast } from "sonner";
+import { Modal, ModalContent } from "@/components/Modal/modal";
+import TaskModal from "./task-action-modal";
 
 const defaultCols = [
   {
@@ -32,7 +39,7 @@ const defaultCols = [
     title: "Processing",
   },
   {
-    id: "approved" as const,
+    id: "completed" as const,
     title: "Completed",
   },
   {
@@ -78,6 +85,12 @@ export function KanbanBoard({
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
+  // Inside your KanbanBoard component, add these state variables
+  const [statusChangeModalOpen, setStatusChangeModalOpen] = useState(false);
+  const [currentTaskForStatusChange, setCurrentTaskForStatusChange] =
+    useState<Task | null>(null);
+  const [targetStatus, setTargetStatus] = useState<ColumnId | null>(null);
+
   // Pagination state for each column
   const [columnPagination, setColumnPagination] = useState<
     Record<ColumnId, ColumnPagination>
@@ -118,6 +131,76 @@ export function KanbanBoard({
       column,
     };
   }
+
+  const handleStatusChange = async (
+    note: string,
+    tasksStatus?: "completed" | "rejected" | "processing" | "approved"
+  ) => {
+    console.log("handleStatusChange called:", {
+      currentTaskForStatusChange,
+      targetStatus,
+      note,
+    });
+    if (!currentTaskForStatusChange || !targetStatus) {
+      console.error("Missing task or status:", {
+        currentTaskForStatusChange,
+        targetStatus,
+      });
+      toast.error("Something went wrong!!");
+      return;
+    }
+
+    if (
+      (currentTaskForStatusChange.columnId === "completed" ||
+        currentTaskForStatusChange.columnId === "rejected") &&
+      (tasksStatus === "processing" || targetStatus === "processing")
+    ) {
+      console.error("Cannot move to processing from approved or rejected");
+      toast.error("Cannot move completed or rejected tasks to Processing");
+      return;
+    }
+
+    try {
+      let response;
+      const taskId = currentTaskForStatusChange?.id?.toString();
+
+      switch (targetStatus) {
+        case "completed": // Changed from "completed" to match column id
+          response = await approveAndProcessComplaint(note, {
+            id: taskId,
+            route: "complete",
+          });
+          break;
+        case "rejected":
+          response = await rejectComplaint(note, taskId);
+          break;
+        case "processing":
+          response = await approveAndProcessComplaint(note, {
+            id: taskId,
+            route: "process",
+          });
+          break;
+        default:
+          console.error("Invalid targetStatus:", targetStatus);
+          toast.error("Invalid status selected");
+          return;
+      }
+
+      console.log("API response:", response);
+      if (response) {
+        window.dispatchEvent(new Event("refetchComplaints"));
+        setStatusChangeModalOpen(false);
+        setCurrentTaskForStatusChange(null);
+        setTargetStatus(null);
+      } else {
+        throw new Error(`No response from ${targetStatus} API`);
+      }
+    } catch (error) {
+      console.error(`Error updating status to ${targetStatus}:`, error);
+      toast.error(`Failed to update complaint to ${targetStatus}`);
+    }
+  };
+  console.log(targetStatus);
 
   // Update tasks when new data comes in (append, don't replace)
   useEffect(() => {
@@ -189,7 +272,6 @@ export function KanbanBoard({
       try {
         await onLoadMore(columnId, currentPagination.page + 1);
       } catch (error) {
-        console.error(`Error loading more data for ${columnId}:`, error);
         // Reset loading state on error
         setColumnPagination((prev) => ({
           ...prev,
@@ -448,11 +530,50 @@ export function KanbanBoard({
                   )}
                 />
               )}
-              {activeTask && <TaskCard task={activeTask} isOverlay />}
+              {activeTask && (
+                <TaskCard
+                  task={activeTask}
+                  isOverlay
+                  taskStatus={targetStatus}
+                  onConfirm={handleStatusChange}
+                />
+              )}
             </DragOverlay>,
             document.body
           )}
       </DndContext>
+
+      {/* Render modal in KanbanBoard */}
+      {statusChangeModalOpen && currentTaskForStatusChange && (
+        <Modal
+          state={{
+            isOpen: statusChangeModalOpen,
+            setIsOpen: setStatusChangeModalOpen,
+          }}
+        >
+          <ModalContent>
+            <TaskModal
+              onConfirm={handleStatusChange}
+              statusChanger={true}
+              complaintData={{
+                id: Number(currentTaskForStatusChange.id),
+                senderName: currentTaskForStatusChange.name,
+                senderVerified: true, // Adjust based on your data
+                complaintTitle: currentTaskForStatusChange.title,
+                propertyName: "", // Populate if available
+                unitName: "",
+                propertyAddress: "",
+                accountOfficer: "",
+                branch: "",
+                brief: currentTaskForStatusChange.message,
+                tier: currentTaskForStatusChange.tier || 0,
+              }}
+              setModalOpen={setStatusChangeModalOpen}
+              destinationColumn={targetStatus}
+            />
+          </ModalContent>
+        </Modal>
+      )}
     </>
   );
 
@@ -514,6 +635,7 @@ export function KanbanBoard({
 
     const isActiveATask = activeData?.type === "Task";
     const isOverATask = overData?.type === "Task";
+    const isOverAColumn = overData?.type === "Column";
 
     if (!isActiveATask) return;
 
@@ -524,11 +646,27 @@ export function KanbanBoard({
         const overIndex = tasks.findIndex((t) => t.id === overId);
         const activeTask = tasks[activeIndex];
         const overTask = tasks[overIndex];
+
         if (
           activeTask &&
           overTask &&
           activeTask.columnId !== overTask.columnId
         ) {
+          // Prevent moving from "approved" or "rejected" to "processing"
+          if (
+            (activeTask.columnId === "completed" ||
+              activeTask.columnId === "rejected") &&
+            overTask.columnId === "processing"
+          ) {
+            toast.error(
+              "Cannot move completed or rejected tasks to Processing"
+            );
+            return tasks; // No state change
+          }
+
+          setCurrentTaskForStatusChange(activeTask);
+          setTargetStatus(overTask.columnId as ColumnId);
+          setStatusChangeModalOpen(true);
           activeTask.columnId = overTask.columnId;
           return arrayMove(tasks, activeIndex, overIndex - 1);
         }
@@ -537,14 +675,31 @@ export function KanbanBoard({
       });
     }
 
-    const isOverAColumn = overData?.type === "Column";
-
     // Im dropping a Task over a column
     if (isActiveATask && isOverAColumn) {
       setTasks((tasks) => {
         const activeIndex = tasks.findIndex((t) => t.id === activeId);
         const activeTask = tasks[activeIndex];
         if (activeTask) {
+          // Prevent moving from "approved" or "rejected" to "processing"
+          if (
+            (activeTask.columnId === "approved" ||
+              activeTask.columnId === "rejected") &&
+            overId === "processing"
+          ) {
+            toast.error(
+              "Cannot move completed or rejected tasks to Processing"
+            );
+            return tasks; // No state change
+          }
+
+          console.log("Drag over column:", {
+            activeTaskId: activeTask.id,
+            targetColumn: overId,
+          });
+          setCurrentTaskForStatusChange(activeTask);
+          setTargetStatus(overId as ColumnId);
+          setStatusChangeModalOpen(true);
           activeTask.columnId = overId as ColumnId;
           return arrayMove(tasks, activeIndex, activeIndex);
         }

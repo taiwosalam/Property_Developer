@@ -154,6 +154,9 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               {cardType === "visitor" && props?.tier_id && (
                 <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
               )}
+              {cardType === "deposit" && props?.tier_id && (
+                <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
+              )}
               {cardType === "property" && props?.tier_id && (
                 <BadgeIcon color={getBadgeColor(props?.tier_id) || "gray"} />
               )}
