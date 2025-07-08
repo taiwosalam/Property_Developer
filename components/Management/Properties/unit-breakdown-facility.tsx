@@ -156,6 +156,7 @@ const UnitBreakdownFacility = () => {
           value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="agency_fee"
@@ -165,6 +166,7 @@ const UnitBreakdownFacility = () => {
           value={agencyFee}
           readOnly
           type="text"
+          autoComplete="off"
         />
         <Input
           id="security_fee"
@@ -174,6 +176,7 @@ const UnitBreakdownFacility = () => {
           value={securityFee}
           onChange={(value) => handleInputChange("securityFee", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="service_charge"
@@ -183,6 +186,7 @@ const UnitBreakdownFacility = () => {
           value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
+          autoComplete="off"
         />
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input
@@ -193,6 +197,7 @@ const UnitBreakdownFacility = () => {
             value={vat}
             readOnly
             type="text"
+            autoComplete="off"
           />
         )}
         <Input
@@ -203,6 +208,7 @@ const UnitBreakdownFacility = () => {
           value={otherCharges}
           onChange={(value) => handleInputChange("otherCharges", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           required
@@ -213,6 +219,7 @@ const UnitBreakdownFacility = () => {
           value={totalPackage}
           readOnly
           type="text"
+          autoComplete="off"
         />
       </div>
     </div>

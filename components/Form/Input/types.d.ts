@@ -46,4 +46,5 @@ export interface InputProps {
   prefix?: string | React.ReactNode;
   startAdornment?: string | React.ReactNode;
   endAdornment?: string | React.ReactNode;
+  autoComplete?: "off" | "on";
 }

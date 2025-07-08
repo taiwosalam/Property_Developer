@@ -64,6 +64,8 @@ const UnitBreakdownRenewalTenant = () => {
     unitData?.renew_vat,
     unitData?.renew_total_package,
     unitData?.renew_security_fee,
+    unitData?.renew_fee_period,
+    unitData?.security_fee,
   ]);
 
   const [formValues, setFormValues] = useState(initialFormValues);
@@ -178,6 +180,7 @@ const UnitBreakdownRenewalTenant = () => {
           value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="renew_service_charge"
@@ -187,6 +190,7 @@ const UnitBreakdownRenewalTenant = () => {
           value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="renew_security_fee"
@@ -196,6 +200,7 @@ const UnitBreakdownRenewalTenant = () => {
           value={securityFee}
           onChange={(value) => handleInputChange("securityFee", value)}
           type="text"
+          autoComplete="off"
         />
         {shouldChargeTenantAgencyFee && (
           <Input
@@ -207,6 +212,7 @@ const UnitBreakdownRenewalTenant = () => {
             value={agencyFee}
             readOnly
             type="text"
+            autoComplete="off"
           />
         )}
         {/* Only display VAT input if VAT is enabled */}
@@ -219,6 +225,7 @@ const UnitBreakdownRenewalTenant = () => {
             value={vat}
             readOnly
             type="text"
+            autoComplete="off"
           />
         )}
         <Input
@@ -229,6 +236,7 @@ const UnitBreakdownRenewalTenant = () => {
           value={otherCharges}
           onChange={(value) => handleInputChange("otherCharges", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           required
@@ -239,6 +247,7 @@ const UnitBreakdownRenewalTenant = () => {
           value={totalPackage}
           readOnly
           type="text"
+          autoComplete="off"
         />
       </div>
     </div>

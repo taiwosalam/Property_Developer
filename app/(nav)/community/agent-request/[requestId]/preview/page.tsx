@@ -26,6 +26,8 @@ import { CompanySummaryTypes } from "@/components/Community/types";
 import { transformPropertyRequestResponse } from "./data";
 import BackButton from "@/components/BackButton/back-button";
 import ThreadComments from "@/components/Community/ThreadComments";
+import RequestCard from "@/components/tasks/CallBack/RequestCard";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 const PreviewPage = () => {
   const router = useRouter();
   const { requestId } = useParams();
@@ -42,7 +44,7 @@ const PreviewPage = () => {
   const [commentThread, setCommentThread] = useState<CommentProps[] | null>(
     null
   );
-
+  const [similarPosts, setSimilarPosts] = useState<any[]>([]);
   const { data, loading, error, isNetworkError, refetch } =
     useFetch<PropertyRequestResponse>(`/agent_requests/${requestId}`);
   useRefetchOnEvent("refetchComments", () => refetch({ silent: true }));
@@ -55,6 +57,7 @@ const PreviewPage = () => {
       setReadBy(transformedData.readByData);
       setCommentThread(transformedData.comments);
       setCompanySummary(transformedData.companySummary);
+      setSimilarPosts(transformedData.similarPosts);
     }
   }, [data]);
 
@@ -86,7 +89,7 @@ const PreviewPage = () => {
             comments={commentThread || []}
             readByData={readBy}
             // slug={agentRequest?.slug ?? ""}
-          /> 
+          />
           <PropertyRequestComments
             id={requestId as string}
             slug={agentRequest?.slug ?? ""}
@@ -105,6 +108,18 @@ const PreviewPage = () => {
           {companySummary && <CompanySummary companySummary={companySummary} />}
         </div>
       </div>
+
+      {/* similar posts */}
+      {similarPosts.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-2xl font-bold mb-4">Similar Posts</h2>
+          <AutoResizingGrid gap={28} minWidth={400}>
+            {similarPosts.map((post, index) => (
+              <RequestCard key={index} {...post} />
+            ))}
+          </AutoResizingGrid>
+        </div>
+      )}
     </div>
   );
 };

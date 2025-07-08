@@ -34,7 +34,7 @@ export const getPropertyRequests = (
     data.map((request: any) => ({
       requestId: request.propertyRequest.id,
       userId: request?.user?.id,
-      slug: request?.user?.slug,
+      slug: request?.propertyRequest?.slug,
       tier: request?.user?.tier,
       userName: `${request?.user?.title || ""} ${request.user?.name || "--- ---"}`,
       requestDate: formatDate(request.propertyRequest.created_at) || "--- ---",

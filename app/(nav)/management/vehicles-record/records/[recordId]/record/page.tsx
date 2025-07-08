@@ -192,6 +192,8 @@ const RecordPage = () => {
     vehicle_type,
   } = vehicleDetails;
 
+  console.log("userData", userData);
+
   const handleCheckIn = async (event: React.FormEvent) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;

@@ -185,7 +185,8 @@ const MemberComponent = ({
         const response = await addUserToGroup(groupId as string, userFormData);
         if (response) {
           window.dispatchEvent(new Event("refetch_team_chat"));
-          setIsOpen(false);
+          setDetailsStep("detail");
+          // setIsOpen(false);
         }
       } catch (error) {
         console.error(error);

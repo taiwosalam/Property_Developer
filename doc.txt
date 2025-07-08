@@ -1,107 +1,124 @@
-// "use client";
+"use client";
+import clsx from "clsx";
+import { useState } from "react";
+import { XIcon } from "@/public/icons/icons";
+import { ModalTrigger } from "@/components/Modal/modal";
+import Input from "@/components/Form/Input/input";
+import Select from "@/components/Form/Select/select";
+import InputTextarea from "@/components/Form/InputTextarea/inputTextarea";
+import Label from "@/components/Form/Label/label";
+import Button from "@/components/Form/Button/button";
+import DateInput from "@/components/Form/DateInput/date-input";
+import TextArea from "@/components/Form/TextArea/textarea";
+// import { SectionSeparator } from "@/components/Section/section-components";
 
-// import Link from "next/link";
+const CreateReminderMOdal = () => {
+  const allTabs = ["event", "task", "reminder", "examine"] as const;
+  type Tab = (typeof allTabs)[number];
+  const [activeTab, setActiveTab] = useState<Tab>(allTabs[0]);
+  return (
+    <form className="w-[95vw] max-w-[460px] max-h-[90vh] overflow-y-auto custom-round-scrollbar rounded-lg border border-[rgba(193,194,195,0.40)] dark:border-darkText-2 bg-white  dark:bg-darkkText-primary font-medium">
+      {/* Header */}
+      <div className="text-center text-text-secondary pt-10 rounded-t-lg bg-white dark:bg-[#3c3d37] k sticky z-[1] top-0 flex flex-col gap-5">
+        <ModalTrigger asChild close>
+          <button className="absolute top-2 right-4" aria-label="Close">
+            <XIcon />
+          </button>
+        </ModalTrigger>
+        <p className="text-base dark:text-white">Create</p>
+        <div className="flex items-center justify-between gap-4 max-w-[85%] mx-auto">
+          {allTabs.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              className={clsx(
+                "capitalize text-xs px-4 py-1",
+                {
+                  "bg-brand-2 rounded-[4px] text-brand-primary dark:text-black":
+                    activeTab === tab,
+                },
+                {
+                  "text-text-secondary dark:text-white": activeTab !== tab,
+                }
+              )}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+        {/* <SectionSeparator /> */}
+      </div>
+      {/* Body */}
+      <div className="px-[18px] pt-4 pb-8 bg-white dark:bg-black space-y-4">
+        <Input id="title" placeholder="Add title" inputClassName="bg-white" />
+        {activeTab !== "examine" && (
+          <>
+            <div className="space-y-1">
+              <Label id="'">Date Picked:</Label>
+              <p className="text-text-secondary text-sm font-medium">
+                8 January 2024
+              </p>
+            </div>
+            {activeTab !== "reminder" && (
+              <Select id="guest" label="Add Guest" options={[]} />
+            )}
+          </>
+        )}
+        {activeTab === "examine" && (
+          <div className="grid md:grid-cols-2 gap-x-6 gap-y-4">
+            <Select id="branch" label="Branch" options={[]} />
+            <Select id="property" label="Property" options={[]} />
+            <Select id="account_officer" label="Account Officer" options={[]} />
+            <DateInput id="examine_date" label="Examine Date" />
+          </div>
+        )}
+        <TextArea label="Attach note:" id="note" placeholder="Type here" />
+        {activeTab === "examine" && (
+          <label className="flex items-center gap-2 text-sm text-text-secondary w-fit ml-auto !mb-8">
+            <input
+              type="checkbox"
+              className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
+            />
+            <span>Create announcement</span>
+          </label>
+        )}
+        <Button type="submit" size="sm_medium" className="w-full py-2 px-8">
+          Add to Calendar
+        </Button>
+      </div>
+    </form>
+  );
+};
 
-// // Types
-// import type { NavCreateNewColumnProps } from "./types";
+export default CreateReminderMOdal;
 
-// // Imports
-// import SVG from "../SVG/svg";
-// import { useModal } from "../Modal/modal";
-// import useDarkMode from "@/hooks/useCheckDarkMode";
-// import { toast } from "sonner";
-// import { unavailableFeatures } from "./nav-create-new-items";
 
-// const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
-//   data = [],
-//   handleModalTrigger,
-// }) => {
-//   const { setIsOpen } = useModal();
-//   const isDarkMode = useDarkMode();
 
-//   // const options = ["management", "tasks", "accounting", "documents"];
-//   const options = ["management", "tasks", "accounting", "documents"];
-//   const content = data.filter((item) =>
-//     options.includes(item.label.toLowerCase())
-//   );
-//   const class_styles = "flex items-center gap-4";
-//   const icon = (
-//     <SVG
-//       type="horizontal_line"
-//       className="w-[30px] flex justify-center"
-//       color={isDarkMode ? "#fff" : "#050901"}
-//     />
-//   );
 
-//   const closeCreateNewModal = () => {
-//     setIsOpen(false);
-//   };
 
-//   // Handler to check if feature is available before triggering action
-//   const handleAction = (label: string, action: () => void) => {
-//     if (unavailableFeatures.includes(label.toLowerCase())) {
-//       toast.warning(`${label} feature is not available yet. Coming soon!`);
-//     } else {
-//       action();
-//     }
-//   };
 
-//   return (
-//     <div className="flex gap-10 w-full overflow-auto custom-round-scrollbar">
-//       {content.map(({ type, label, content }, index) => (
-//         <div key={index} className="custom-flex-col text-base font-medium">
-//           <div className="flex items-center gap-2">
-//             <SVG
-//               type={type}
-//               color={isDarkMode ? "#fff" : "#050901"}
-//               className="w-[30px] flex justify-center"
-//             />
-//             <p className="text-text-primary dark:text-white capitalize">
-//               {label}
-//             </p>
-//           </div>
-//           {content?.map(({ label, link, modal }, idx) => (
-//             <div key={idx} className="py-3 px-5">
-//               {link ? (
-//                 <Link
-//                   href={link}
-//                   className={class_styles}
-//                   onClick={(e) => {
-//                     handleAction(label, () => {
-//                       closeCreateNewModal();
-//                     });
-//                     if (unavailableFeatures.includes(label.toLowerCase())) {
-//                       e.preventDefault();
-//                     }
-//                   }}
-//                   // onClick={closeCreateNewModal}
-//                 >
-//                   {icon}
-//                   <p className="text-text-secondary dark:text-darkText-1 capitalize">
-//                     {label}
-//                   </p>
-//                 </Link>
-//               ) : (
-//                 <button
-//                   type="button"
-//                   className={class_styles}
-//                   onClick={() =>
-//                     handleAction(label, () => handleModalTrigger(modal))
-//                   }
-//                   // onClick={() => handleModalTrigger(modal)}
-//                 >
-//                   {icon}
-//                   <p className="text-text-secondary dark:text-darkText-1 capitalize">
-//                     {label}
-//                   </p>
-//                 </button>
-//               )}
-//             </div>
-//           ))}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
 
-// export default NavCreateNewColumn;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <WalletModalPreset title="Create Reminder">
+      <AuthForm onFormSubmit={() => {}}>
+        <div className="custom-flex-col gap-10">
+          <Input id="title" placeholder="Add title" inputClassName="bg-white" />
+        </div>
+      </AuthForm>
+    </WalletModalPreset>

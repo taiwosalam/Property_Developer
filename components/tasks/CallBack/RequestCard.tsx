@@ -355,7 +355,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             <Link
               href={`/community/agent-request/${
                 props.user ? "my-properties-request/" : ""
-              }${requestId}/preview`}
+              }${props.slug}/preview`}
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
             >
               Preview

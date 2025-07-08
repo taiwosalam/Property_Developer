@@ -121,8 +121,6 @@ export const transformRentUnitApiResponse = (
     return "total_unit" in response.data;
   };
 
-  console.log("isBranch", isBranch)
-  console.log("response", response)
 
   const unitData = isUnitApiResponse(response)
     ? (response.data.unit as any)
@@ -166,7 +164,7 @@ export const transformRentUnitApiResponse = (
       total_occupied: response.data.total_occupied,
       total_vacant: response.data.total_vacant,
       total_active: response.data.total_active,
-      total_expired: response.data.month_expired,
+      total_expired: response.data.total_expired,
       total_relocate: response.data.total_relocate,
       month_unit: response.data.month_unit,
       month_occupied: response.data.month_occupied,
