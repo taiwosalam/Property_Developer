@@ -103,9 +103,11 @@ export interface DepositRequestCardProps extends RequestCardBaseProps {
   cardType: "deposit";
   status: "completed" | "pending" | "progress";
   propertyName: string;
+  accountOfficer?: string
   unitDetails: string;
   state: string;
   amount: string;
+  tier_id?: number;
   branch: string;
   request_from?: string;
   is_inventory?: boolean;

@@ -42,6 +42,7 @@ const transformToDepositRequestCardProps = (
       { label: "Unit Details", accessor: "unitDetails" },
       { label: "Amount", accessor: "amount" },
       { label: "Branch", accessor: "branch" },
+      { label: "Account Manager", accessor: "accountOfficer" },
     ],
     ...data,
   };
