@@ -6,13 +6,15 @@ import TableLoading from "@/components/Loader/TableLoading";
 import useFetch from "@/hooks/useFetch";
 import React, { useRef } from "react";
 import {
-  IndividualTenantAPIResponse,
+  // IndividualTenantAPIResponse,
   statementTableFields,
   transformIndividualTenantAPIResponse,
 } from "../manage/data";
 import { useParams } from "next/navigation";
 import CustomTable from "@/components/Table/table";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { IndividualTenantAPIResponse } from "../manage/types";
+
 
 const TenantExport = () => {
   const { tenantId } = useParams();

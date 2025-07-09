@@ -36,7 +36,9 @@ export interface PersonalDataProps {
   local_government: string;
   city: string;
   address: string;
-  phone_number: string;
+  phone_number: {
+    profile_phone: string;
+  };
   avatar?: string;
 }
 
@@ -88,6 +90,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     local_government: editMode ? props.data.local_government : "",
     city: editMode ? props.data.city : "",
   });
+
 
   const {
     preview,
@@ -183,10 +186,10 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
 
           {editMode ? (
             <Input
-              label="Phone Number"
+              label="Phone Number here"
               id="phone"
               inputClassName="rounded-lg"
-              defaultValue={props.data.phone_number}
+              defaultValue={props.data.phone_number.profile_phone}
               readOnly
             />
           ) : (

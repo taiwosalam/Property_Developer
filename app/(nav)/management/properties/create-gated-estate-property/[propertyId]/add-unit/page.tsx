@@ -18,6 +18,7 @@ import { UnitTypeKey } from "@/data";
 import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
 import AddUnitFooter from "@/components/Management/Properties/AddUnitFooter";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
+import { useGlobalStore } from "@/store/general-store";
 
 const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
@@ -33,6 +34,7 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const [saveClick, setSaveClick] = useState(false);
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const [showUnitForm, setShowUnitForm] = useState(true);
+  const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
 
   const resetForm = () => {
     setImages([]);
@@ -90,6 +92,8 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   }, [showUnitForm, setAddUnitStore]);
 
   // useCustomBackNavigation({ customBackPath });
+
+  const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -151,10 +155,9 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
               </>
             )}
 
-            {/* {!hideEmptyForm && (
-              <UnitForm empty hideEmptyForm={() => setHideEmptyForm(true)} />
-            )} */}
-            {(addedUnits.length === 0 || showUnitForm) && (
+            
+            {/* {(addedUnits.length === 0 || showUnitForm) && ( */}
+            {SHOW_UNIT_FORM && (
               <div>
                 <UnitForm
                   empty

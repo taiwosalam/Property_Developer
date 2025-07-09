@@ -1,4 +1,4 @@
-import { IndividualTenantAPIResponse } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
+
 import api, { handleAxiosError } from "@/services/api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
