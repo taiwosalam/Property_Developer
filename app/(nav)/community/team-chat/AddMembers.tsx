@@ -34,7 +34,6 @@ import FilterButton from "@/components/FilterButton/filter-button";
 import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
 import Input from "@/components/Form/Input/input";
 import { capitalizeWords } from "@/hooks/capitalize-words";
-// import TrashIcon from "@/public/icons/trash.svg";
 
 interface AddMembersProps {
   groupId: number;
@@ -45,19 +44,36 @@ interface AddMembersProps {
     role: string;
   }[];
 }
+
 const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
   const { id } = useParams();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
   const { setIsOpen } = useModal();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { setDetailsStep, onFilterApply, filterCounts } = useTeamChat();
+  const { setDetailsStep, onFilterApply, filterRole, filterCounts } = useTeamChat();
 
   console.log("group_members", group_members);
-  
-  const filteredMembers = (group_members ?? []).filter((member) =>
-    member.fullname.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+
+  // Label to role mapping
+  const labelToRoleMap: Record<string, string> = {
+    Director: "director",
+    "Other Staff": "staff",
+    "Account Manager": "account",
+    "Branch Manager": "manager",
+    All: "All",
+  };
+
+  // Filtering logic
+  const filteredMembers = (group_members ?? []).filter((member) => {
+    const matchesSearch = member.fullname
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const role = member.role?.toLowerCase();
+    const selectedRoles = filterRole.map((label) => labelToRoleMap[label]?.toLowerCase() || "");
+    const hasAll = selectedRoles.includes("all");
+    const matchesRole = filterRole.length === 0 || hasAll || selectedRoles.includes(role);
+    return matchesSearch && matchesRole;
+  });
 
   const deleteMemberFromList = async (userId: number) => {
     if (!userId) return;
@@ -97,12 +113,10 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
               onClose={() => setAnchorEl(null)}
               onFilterApply={onFilterApply}
               filterOptions={[
-                {
-                  label: "Director",
-                  value: filterCounts["Director"] || 0,
-                },
-                { label: "Staff", value: filterCounts["Staff"] || 0 },
-                { label: "Manager", value: filterCounts["Manager"] || 0 },
+                { label: "Director", value: filterCounts["director"] || 0 },
+                { label: "Other Staff", value: filterCounts["staff"] || 0 },
+                { label: "Account Manager", value: filterCounts["account"] || 0 },
+                { label: "Branch Manager", value: filterCounts["manager"] || 0 },
                 { label: "All", value: filterCounts["All"] || 0 },
               ]}
             />
@@ -139,7 +153,6 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
               type="button"
               className="w-1/4 flex justify-end"
               onClick={() => deleteMemberFromList(item?.id)}
-              //onClick={() => openDeleteMember()}
             >
               <TrashIcon size={16} />
             </button>

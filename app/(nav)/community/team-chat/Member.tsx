@@ -9,10 +9,8 @@ import {
   createNewTeamChat,
   team_chat_members_data,
 } from "./data";
-import FilterModal from "@/components/Management/Landlord/filters-modal";
 import FilterButton from "@/components/FilterButton/filter-button";
 import Avatar1 from "@/public/empty/avatar-1.svg";
-//import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import CheckboxDefault from "@/public/icons/checkbox-default.svg";
 import CheckboxChecked from "@/public/icons/checkbox-checked.svg";
@@ -29,7 +27,6 @@ import {
 import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
 import SelectChatUsersModal from "@/components/Message/user-modal";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { boolean } from "zod";
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import { AxiosResponse } from "axios";
@@ -44,7 +41,6 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import Picture from "@/components/Picture/picture";
 import { useTeamChat } from "@/contexts/teamChatContext";
 import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
-import { create } from "domain";
 
 interface MemberComponentProps {
   title?: string;
@@ -54,6 +50,7 @@ interface MemberComponentProps {
   setStep?: (value: number) => void;
   step?: number;
 }
+
 const MemberComponent = ({
   title,
   group,
@@ -85,29 +82,42 @@ const MemberComponent = ({
     }
   }, [teamMemberData]);
 
-  // Filtering logic
+  // Filter counts logic
   const filterCounts = (() => {
     const counts: Record<string, number> = {
       All: 0,
-      Director: 0,
-      Staff: 0,
-      Manager: 0,
+      director: 0,
+      staff: 0,
+      account: 0,
+      manager: 0,
     };
     if (!teamMembers?.members) return counts;
     counts.All = teamMembers.members.length;
     teamMembers.members.forEach((member) => {
       const role = member.role?.toLowerCase();
-      if (role === "director") counts.Director++;
-      if (role === "staff") counts.Staff++;
-      if (role === "manager") counts.Manager++;
+      if (role === "director") counts.director++;
+      if (role === "staff") counts.staff++;
+      if (role === "account") counts.account++;
+      if (role === "manager") counts.manager++;
     });
     return counts;
   })();
 
+  // Label to role mapping
+  const labelToRoleMap: Record<string, string> = {
+    Director: "director",
+    "Other Staff": "staff",
+    "Account Manager": "account",
+    "Branch Manager": "manager",
+    All: "All",
+  };
+
+  // Filter apply handler
   const onFilterApply = (role: string | string[]) => {
     setFilterRole(Array.isArray(role) ? role : [role]);
   };
 
+  // Filtering logic
   const filteredMembers = (() => {
     if (!teamMembers?.members) return [];
     return teamMembers.members.filter((member) => {
@@ -115,7 +125,7 @@ const MemberComponent = ({
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
       const role = member.role?.toLowerCase();
-      const selectedRoles = filterRole.map((r) => r.toLowerCase());
+      const selectedRoles = filterRole.map((label) => labelToRoleMap[label]?.toLowerCase() || "");
       const hasAll = selectedRoles.includes("all");
       const matchesRole =
         filterRole.length === 0 || hasAll || selectedRoles.includes(role);
@@ -186,7 +196,6 @@ const MemberComponent = ({
         if (response) {
           window.dispatchEvent(new Event("refetch_team_chat"));
           setDetailsStep("detail");
-          // setIsOpen(false);
         }
       } catch (error) {
         console.error(error);
@@ -233,12 +242,10 @@ const MemberComponent = ({
                   onClose={() => setAnchorEl(null)}
                   onFilterApply={onFilterApply}
                   filterOptions={[
-                    {
-                      label: "Director",
-                      value: filterCounts["Director"] || 0,
-                    },
-                    { label: "Staff", value: filterCounts["Staff"] || 0 },
-                    { label: "Manager", value: filterCounts["Manager"] || 0 },
+                    { label: "Director", value: filterCounts["director"] || 0 },
+                    { label: "Other Staff", value: filterCounts["staff"] || 0 },
+                    { label: "Account Manager", value: filterCounts["account"] || 0 },
+                    { label: "Branch Manager", value: filterCounts["manager"] || 0 },
                     { label: "All", value: filterCounts["All"] || 0 },
                   ]}
                 />
@@ -347,7 +354,7 @@ const MemberComponent = ({
                   <button
                     type="button"
                     className="bg-[#F4F4F9] dark:bg-darkText-primary border border-dashed border-text-label text-sm text-text-label w-2/4 h-[85px] rounded-md flex flex-col items-center justify-center gap-2"
-                    onClick={() => fileInputRef?.current?.click()} // Trigger file input click
+                    onClick={() => fileInputRef?.current?.click()}
                   >
                     <input
                       id="picture"
@@ -382,10 +389,9 @@ const MemberComponent = ({
           </div>
         )}
       </div>
-      {/* STICKY BUTTON */}
       {selectedCount > 0 && !isGroupDesc && (
         <div className="sticky bottom-4 left-0 right-0 h-[35px]">
-          <div className="flex items-center justify-between gap-2 mt-2">
+         -dest  <div className="flex items-center justify-between gap-2 mt-2">
             <Button
               onClick={() => {
                 if (group) {
@@ -400,8 +406,7 @@ const MemberComponent = ({
               disabled={reqLoading}
               className="px-8 py-1 ml-auto"
             >
-              {reqLoading ? "Adding..." : group ? "Next" : "Add"}{" "}
-              {selectedCount}
+              {reqLoading ? "Adding..." : group ? "Next" : "Add"} {selectedCount}
             </Button>
           </div>
         </div>

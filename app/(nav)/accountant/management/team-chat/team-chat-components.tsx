@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import MemberComponent from "./Member";
 import useStep from "@/hooks/useStep";
-import { updateGroupNameOrDescription } from "@/app/(nav)/community/team-chat/data";
+import { deleteGroupChat, updateGroupNameOrDescription } from "@/app/(nav)/community/team-chat/data";
 import parse from "html-react-parser";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import { AuthForm } from "@/components/Auth/auth-components";
@@ -22,10 +22,13 @@ import { empty } from "@/app/config";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { DeleteIconOrange } from "@/public/icons/icons";
 import Picture from "@/components/Picture/picture";
-import CameraCircle from "@/public/icons/camera-circle.svg";
+import { CameraIcon } from "@/public/icons/icons";
 import Input from "@/components/Form/Input/input";
 import TextArea from "@/components/Form/TextArea/textarea";
 import { useModal } from "@/components/Modal/modal";
+import CameraCircle from "@/public/icons/camera-circle.svg";
+import { toast } from "sonner";
+
 
 export const TeamChatHeader = () => {
   const [open, setOpen] = useState(false);
@@ -103,6 +106,21 @@ export const About = ({ about }: IAboutTeamChat) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      setReqLoading(true);
+      const res = await deleteGroupChat(about?.id || 0);
+      if (res) {
+        toast.success("Group deleted successfully");
+        router.push("/community/team-chat");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
   return (
     <div className="p-4 transition-all duration-300 ease-in-out">
       <AuthForm onFormSubmit={updateNameOrDescription}>
@@ -157,7 +175,7 @@ export const About = ({ about }: IAboutTeamChat) => {
 
         {/* Group Image & submit button*/}
         <div className="flex justify-between items-center mt-1">
-          <div className="flex items-end gap-3">
+          <div className="flex items-end gap-3 relative">
             <label htmlFor="picture" className="cursor-pointer relative">
               <Picture
                 src={preview ?? about?.picture ?? empty}
@@ -165,6 +183,13 @@ export const About = ({ about }: IAboutTeamChat) => {
                 size={70}
                 rounded
               />
+              {/* Camera overlay */}
+              <div
+                style={{ height: '100%', bottom: 0 }}
+                className="absolute text-white left-0 w-full flex items-center justify-center bg-black/20 cursor-pointer rounded-full"
+              >
+                <CameraIcon width={24} height={24} />
+              </div>
               <input
                 type="file"
                 id="picture"
@@ -176,7 +201,18 @@ export const About = ({ about }: IAboutTeamChat) => {
               />
             </label>
           </div>
-          <div className="self-end">
+            
+          <div className="self-end gap-4 flex">
+          <Button
+              type="button"
+              size="base_medium"
+              className="px-8 py-2"
+              variant="light_red"
+              disabled={reqLoading}
+              onClick={handleDelete}
+            >
+              {reqLoading ? "Please wait..." : "Delete"}
+            </Button>
             <Button
               type="submit"
               size="base_medium"

@@ -25,7 +25,7 @@ import CustomTable from "@/components/Table/table";
 import {
   statementTableFields,
   statementTableData,
-  IndividualTenantAPIResponse,
+  // IndividualTenantAPIResponse,
   transformIndividualTenantAPIResponse,
 } from "./data";
 import { TenantEditAttachmentSection } from "@/components/Management/Tenants/Edit/tenant-edit-info-sectios";
@@ -51,7 +51,8 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import { saveLocalStorage } from "@/utils/local-storage";
 import { capitalizeWords } from "@/hooks/capitalize-words";
-import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
+import { IndividualTenantAPIResponse } from "./types";
+
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -287,12 +288,13 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           />
         )}
 
-        {/* STATEMENTS */}
         {Object.keys(otherData).map((key, idx) => (
           <LandlordTenantInfo key={idx} heading={key} info={otherData[key]} />
         ))}
         {tenant?.user_tag === "web" && <NotesInfoBox notes={tenant.notes} />}
       </div>
+
+      {/* STATEMENTS */}
       <SectionContainer
         heading="Statement"
         {...((tenant?.statement?.length ?? 0) > 0 && {
@@ -315,7 +317,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
       </SectionContainer>
 
       {/* CURRENT RENTS */}
-      <LandlordTenantInfoSection title="current rent">
+      {/* <LandlordTenantInfoSection title="current rent">
         {tenant?.current_rent?.length === 0 ? (
           <p className="text-center text-gray-500 text-md py-4">
             Tenant does not have any rent yet!
@@ -332,14 +334,86 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             />
           ))
         )}
+      </LandlordTenantInfoSection> */}
+
+      {/* CURRENT RENTS */}
+      <LandlordTenantInfoSection title="current rent">
+        {tenant?.current_rent?.length === 0 ? (
+          <p className="text-center text-gray-500 text-md py-4">
+            Tenant does not have any rent yet!
+          </p>
+        ) : (
+          tenant?.current_rent?.map((rent, index) => (
+            <div key={index} className="custom-flex-col gap-4">
+              <UnitItem
+                {...rent}
+                tenantId={tenant?.id}
+                page="tenant-profile"
+                cautionDeposit={String(rent.caution_deposit)}
+                tenantAgent={tenant?.user_tag}
+              />
+              {/* Documents for Current Rent */}
+              {rent.documents && rent.documents.length > 0 ? (
+                <>
+                  {Object.entries(groupDocumentsByType(rent.documents)).map(
+                    ([documentType, documents]) => {
+                      if (documentType === "others") return null;
+                      return (
+                        <LandlordTenantInfoSection
+                          minimized
+                          title={`${documentType} documents`}
+                          key={`${rent.unitId}-${documentType}`}
+                        >
+                          <div className="flex flex-wrap gap-4">
+                            {documents.map((document) => (
+                              <LandlordTenantInfoDocument
+                                key={document.id}
+                                {...document}
+                              />
+                            ))}
+                          </div>
+                        </LandlordTenantInfoSection>
+                      );
+                    }
+                  )}
+                  {groupDocumentsByType(rent.documents)?.["others"] && (
+                    <LandlordTenantInfoSection
+                      minimized
+                      title="other documents"
+                      key={`${rent.unitId}-other-documents`}
+                    >
+                      <div className="flex flex-wrap gap-4">
+                        {groupDocumentsByType(rent.documents)["others"].map(
+                          (document) => (
+                            <LandlordTenantInfoDocument
+                              key={document.id}
+                              {...document}
+                            />
+                          )
+                        )}
+                      </div>
+                    </LandlordTenantInfoSection>
+                  )}
+                </>
+              ) : (
+                <p className="text-center text-gray-500 text-md py-4">
+                  No documents available for this unit
+                </p>
+              )}
+            </div>
+          ))
+        )}
       </LandlordTenantInfoSection>
+
 
       {tenant?.user_tag === "mobile" && (
         <TenantEditContext.Provider value={{ data: tenant }}>
           <TenantEditAttachmentSection />
         </TenantEditContext.Provider>
       )}
-      <LandlordTenantInfoSection title="shared documents">
+
+      {/* Shared Documents */}
+      {/* <LandlordTenantInfoSection title="shared documents">
         {tenant?.documents?.length === 0 ? (
           <div className="flex justify-center items-center h-32 text-neutral-500">
             Tenant does not have any document yet
@@ -385,9 +459,9 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             )}
           </>
         )}
-      </LandlordTenantInfoSection>
+      </LandlordTenantInfoSection> */}
 
-      <LandlordTenantInfoSection title="previous rent">
+      {/* <LandlordTenantInfoSection title="previous rent">
         <div className="pointer-events-none custom-flex-col gap-4">
           {tenant?.previous_rent?.length === 0 ? (
             <p className="text-center text-gray-500 text-lg py-4">
@@ -404,6 +478,79 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 tenantAgent={tenant?.user_tag}
                 page="tenant-profile"
               />
+            ))
+          )}
+        </div>
+      </LandlordTenantInfoSection> */}
+
+
+      {/* PREVIOUS RENTS */}
+      <LandlordTenantInfoSection title="previous rent">
+        <div className="pointer-events-none custom-flex-col gap-4">
+          {tenant?.previous_rent?.length === 0 ? (
+            <p className="text-center text-gray-500 text-lg py-4">
+              Tenant does not have any previous rent yet
+            </p>
+          ) : (
+            tenant?.previous_rent?.map((rent, index) => (
+              <div key={index} className="custom-flex-col gap-4">
+                <UnitItem
+                  {...rent}
+                  noActionBtn
+                  tenantId={tenant?.id}
+                  cautionDeposit={String(rent.caution_deposit)}
+                  tenantAgent={tenant?.user_tag}
+                  page="tenant-profile"
+                />
+                {/* Documents for Previous Rent */}
+                {rent.documents && rent.documents.length > 0 ? (
+                  <>
+                    {Object.entries(groupDocumentsByType(rent.documents)).map(
+                      ([documentType, documents]) => {
+                        if (documentType === "others") return null;
+                        return (
+                          <LandlordTenantInfoSection
+                            minimized
+                            title={`${documentType} documents`}
+                            key={`${rent.unitId}-${documentType}`}
+                          >
+                            <div className="flex flex-wrap gap-4">
+                              {documents.map((document) => (
+                                <LandlordTenantInfoDocument
+                                  key={document.id}
+                                  {...document}
+                                />
+                              ))}
+                            </div>
+                          </LandlordTenantInfoSection>
+                        );
+                      }
+                    )}
+                    {groupDocumentsByType(rent.documents)?.["others"] && (
+                      <LandlordTenantInfoSection
+                        minimized
+                        title="other documents"
+                        key={`${rent.unitId}-other-documents`}
+                      >
+                        <div className="flex flex-wrap gap-4">
+                          {groupDocumentsByType(rent.documents)["others"].map(
+                            (document) => (
+                              <LandlordTenantInfoDocument
+                                key={document.id}
+                                {...document}
+                              />
+                            )
+                          )}
+                        </div>
+                      </LandlordTenantInfoSection>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-center text-gray-500 text-md py-4">
+                    No documents available for this unit
+                  </p>
+                )}
+              </div>
             ))
           )}
         </div>

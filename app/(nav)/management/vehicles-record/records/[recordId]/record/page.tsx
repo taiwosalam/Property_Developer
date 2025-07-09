@@ -319,7 +319,7 @@ const RecordPage = () => {
                       Edit
                     </Button>
                   </ModalTrigger>
-                  <ModalContent>
+                  {/* <ModalContent>
                     <EditPersonalDetailsFormModal
                       data={{
                         id: vehicleDetails.id,
@@ -334,7 +334,7 @@ const RecordPage = () => {
                       isOpen={updateUserModal}
                       setIsOpen={setUpdateUserModal}
                     />
-                  </ModalContent>
+                  </ModalContent> */}
                 </Modal>
                 <Modal>
                   <ModalTrigger asChild>

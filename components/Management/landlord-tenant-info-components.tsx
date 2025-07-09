@@ -55,18 +55,18 @@ export const LandlordTenantInfo: React.FC<{
       {separator && (
         <div className="w-full border border-dashed border-brand-9 opacity-40" />
       )}
-      <div className="flex gap-10 text-sm lg:text-base font-normal capitalize">
-        <div className="custom-flex-col gap-4">
+      <div className="flex gap-10 text-sm lg:text-base font-normal">
+        <div className="custom-flex-col gap-4 capitalize">
           {Object.keys(info).map((key, idx) => (
             <p key={idx} className="text-[#747474] dark:text-darkText-1">
-              {key.split("_").join(" ")}:
+              {key === "email" ? key : key.split("_").join(" ")}:
             </p>
           ))}
         </div>
         <div className="custom-flex-col gap-4">
           {Object.values(info).map((value, idx) => (
             <p key={idx} className="text-black dark:text-darkText-2">
-              {typeof value === 'string' ? value.split('_').join(' ') : '___'}
+              {typeof value === "string" ? value.split("_").join(" ") : "___"}
             </p>
           ))}
         </div>
@@ -74,6 +74,7 @@ export const LandlordTenantInfo: React.FC<{
     </div>
   </LandlordTenantInfoBox>
 );
+
 
 export const LandlordTenantInfoSection: React.FC<{
   title: string;

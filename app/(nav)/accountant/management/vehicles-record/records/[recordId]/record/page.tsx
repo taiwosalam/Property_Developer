@@ -281,7 +281,7 @@ const RecordPage = () => {
                       Edit
                     </Button>
                   </ModalTrigger>
-                  <ModalContent>
+                  {/* <ModalContent>
                     <EditPersonalDetailsFormModal
                       data={{
                         id: vehicleDetails.id,
@@ -296,7 +296,7 @@ const RecordPage = () => {
                       isOpen={updateUserModal}
                       setIsOpen={setUpdateUserModal}
                     />
-                  </ModalContent>
+                  </ModalContent> */}
                 </Modal>
                 <Button size="base_medium" className="py-2 px-8">
                   Update with ID

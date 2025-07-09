@@ -1,8 +1,9 @@
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
 import { BranchDependentData } from "./types";
-import { IndividualTenantAPIResponse } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
+// import { IndividualTenantAPIResponse } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
 import { TenantApiResponse } from "@/components/tasks/vehicles-record/types";
+import { IndividualTenantAPIResponse } from "@/app/(nav)/management/tenants/[tenantId]/manage/types";
 
 export const getTenant = async (id: string) => {
   try {
