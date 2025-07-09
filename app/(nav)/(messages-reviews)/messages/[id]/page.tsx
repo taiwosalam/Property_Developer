@@ -74,12 +74,31 @@ const Chat = () => {
   const { profile: userProfileData, loading: loadingUser } = useUserProfile(id);
 
   // Compose role/badge logic
+  // const role = getCleanRoleName(userProfileData);
+  // const isAcct = role === "director" || role === "manager" || role === "staff";
+  // const showActBadge = isAcct && userProfileData?.tier_id === 2;
+  // const badgeColor =
+  //   tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
+  //   "gray";
+
+  // Compose role/badge logic
   const role = getCleanRoleName(userProfileData);
-  const isAcct = role === "director" || role === "manager" || role === "staff";
-  const showActBadge = isAcct && userProfileData?.tier_id === 2;
-  const badgeColor =
-    tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
-    "gray";
+  const specialRoles = [
+    "director",
+    "account",
+    "staff",
+    "manager",
+    "super-admin",
+  ];
+  const badgeColor = (() => {
+    if (isGroupChat) return undefined;
+    if (specialRoles.includes(role)) {
+      return userProfileData?.tier_id === 2 ? "gray" : undefined;
+    }
+    return userProfileData?.tier_id
+      ? tierColorMap[userProfileData.tier_id as keyof typeof tierColorMap]
+      : undefined;
+  })();
 
   // Contact status cycling
   const showContactInfo = useShowContactInfo(user);
@@ -159,7 +178,10 @@ const Chat = () => {
       {/* Header */}
       <div className="py-4 px-6 bg-neutral-2 dark:bg-black">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/messages")} className="text-black dark:text-white">
+          <button
+            onClick={() => router.push("/messages")}
+            className="text-black dark:text-white"
+          >
             <ChevronLeftIcon size={20} />
           </button>
           <Modal>
@@ -178,12 +200,9 @@ const Chat = () => {
                     <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                       {capitalizeWords(user?.name ?? "")}
                     </p>
-                    {!isGroupChat &&
-                      (showActBadge ? (
-                        <BadgeIcon color="gray" />
-                      ) : !isAcct ? (
-                        <BadgeIcon color={badgeColor} />
-                      ) : null)}
+                    {!isGroupChat && badgeColor && (
+                      <BadgeIcon color={badgeColor} />
+                    )}
                   </div>
                   <AnimatePresence mode="wait">
                     <motion.p

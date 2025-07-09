@@ -21,6 +21,8 @@ interface UnitFormContextType extends UnitFormState {
   unitData?: UnitDataObject;
   index?: number;
   clickedNo?: boolean;
+  formSubmitted?: boolean;
+  setFormSubmitted?: (formSubmitted: boolean) => void;
   setClickedNo?: (clicked: boolean) => void;
 
   // Added types for shouldRedirect state
