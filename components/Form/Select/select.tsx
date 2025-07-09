@@ -90,7 +90,6 @@ const Select: React.FC<SelectProps> = ({
           ?.includes(searchTerm?.toLowerCase());
       }
     });
-    console.log(`Filtered options: ${filtered.length} items`);
     return filtered;
   };
 
@@ -269,9 +268,6 @@ const Select: React.FC<SelectProps> = ({
           )}
           onClick={() => {
             if (!disabled) setState((x) => ({ ...x, isOpen: !x.isOpen }));
-            console.log(
-              `Dropdown toggled, isOpen: ${!disabled ? !isOpen : isOpen}`
-            );
           }}
         >
           {isSearchable && (

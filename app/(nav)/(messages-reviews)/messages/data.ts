@@ -472,82 +472,12 @@ export const blobToBase64 = (blob: Blob): Promise<string> => {
   });
 };
 
-// Keep existing SendMessage, transform functions
-// export const SendMessage = async (payload: FormData, id: string) => {
-//   try {
-//     const response = await api.post(`/messages/${id}`, payload);
-//     console.log("SendMessage response:", response.data);
-//     return response.data;
-//   } catch (error: any) {
-//     console.error("SendMessage error:", error.response?.data || error.message);
-//     throw error;
-//   }
-// };
 
-// export const groupMessagesByDay = (data: any[]) => {
-//   // console.log("data", data)
-//   if (!data || !data.length) return [];
-
-//   // Sort messages by timestamp in ascending order.
-//   const sorted = [...data].sort(
-//     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-//   );
-
-//   // Reduce the sorted messages into groups based on day.
-//   const groups = sorted.reduce((acc, message) => {
-//     // Use 'YYYY-MM-DD' for grouping.
-//     const dayKey = moment(message.timestamp).format("YYYY-MM-DD");
-//     // Use calendar format for display (e.g., "Today", "Yesterday", etc.).
-//     const displayDay = moment(message.timestamp).calendar();
-
-//     if (!acc[dayKey]) {
-//       acc[dayKey] = { day: displayDay, messages: [] };
-//     }
-
-//     // Determine the appropriate content type.
-//     let finalContentType = message.content_type;
-//     let contentDisplay = message.content;
-
-//     if (message.content_type !== "text") {
-//       // If it's a file, check the file extension.
-//       if (message.content_type === "file") {
-//         const extension = message.content.split(".").pop()?.toLowerCase() || "";
-//         if (["mp3", "wav", "ogg"].includes(extension)) {
-//           finalContentType = "audio";
-//         } else if (["mp4", "webm", "avi", "mov"].includes(extension)) {
-//           finalContentType = "video";
-//         } else if (["jpg", "jpeg", "png", "gif", "bmp"].includes(extension)) {
-//           finalContentType = "image";
-//         } else if (["pdf", "doc", "docx", "txt"].includes(extension)) {
-//           finalContentType = "document";
-//         } else {
-//           // Fallback for unrecognized file types.
-//           finalContentType = "file";
-//         }
-//       }
-//     }
-
-//     // Push the transformed message details.
-//     acc[dayKey].messages.push({
-//       id: message.id,
-//       text: contentDisplay,
-//       sender_id: Number(message.sender_id),
-//       time: moment(message.timestamp).format("hh:mm A"),
-//       content_type: finalContentType,
-//       seen: message.read_at,
-//     });
-
-//     return acc;
-//   }, {} as Record<string, { day: string; messages: any[] }>);
-
-//   // Convert the groups object into an array.
-//   return Object.values(groups);
-// };
 
 export const positionMap: Record<string, string> = {
   "Branch Manager": "manager",
-  "Account Officer": "account",
-  Staff: "staff",
+  "Account Manager": "account",
+  "Other Staff": "staff",
   Director: "director",
   "Landlord/Landlady": "landlord",
   "Tenant/Occupants": "tenant",

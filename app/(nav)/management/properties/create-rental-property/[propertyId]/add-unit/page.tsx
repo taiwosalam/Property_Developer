@@ -119,7 +119,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   if (dataNotFound)
     return <div className="text-red-500">Property Data not found</div>;
 
-  const SHOW_UNIT_FORM = (addedUnits.length > 0 && !closeUnitForm) || newForm;
+  const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
 
   console.log("SHOW_UNIT_FORM", SHOW_UNIT_FORM);
 

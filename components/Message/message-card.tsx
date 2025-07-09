@@ -45,24 +45,25 @@ const MessageCard: React.FC<MessageCardProps> = ({
   const isGroupChat = type?.toLowerCase() === "group";
   const isOnline = last_seen?.toLowerCase() === "online";
 
-  // Only show badge for:
-  // - Not group chat
-  // - If role is in special roles array and tier is 2
-  // - OR if not in special roles array but tier is defined (custom tier badge)
-  const specialRoles = ["director", "account", "staff", "manager"];
-
+  // Badge color logic:
+  // - No badge for group chats
+  // - For special roles (director, account, staff, manager, super-admin) with tier 2: gray badge
+  // - For non-special roles with a tier: use tierColorMap
+  // - Otherwise, no badge
   let badgeColor: string | undefined;
   if (!isGroupChat) {
+    const specialRoles = [
+      "director",
+      "account",
+      "staff",
+      "manager",
+      "super-admin",
+    ];
     if (specialRoles.includes(role ?? "")) {
-      if (tier === 2) {
-        badgeColor = tierColorMap[2];
-      }
-      // else badgeColor remains undefined (do not show badge)
+      badgeColor = tier === 2 ? "gray" : undefined;
     } else if (tier && tierColorMap[tier as keyof typeof tierColorMap]) {
-      // other roles but with a tier (map their tier as badge)
       badgeColor = tierColorMap[tier as keyof typeof tierColorMap];
     }
-    // else, badgeColor remains undefined (no badge)
   }
 
   const handleClick = () => {
@@ -101,7 +102,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                 {capitalizeWords(fullname)}
               </p>
-              {!isGroupChat && badgeColor && <BadgeIcon color={badgeColor as any} />}
+              {!isGroupChat && badgeColor && (
+                <BadgeIcon color={badgeColor as any} />
+              )}
             </div>
             {content_type === "text" ? (
               <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
