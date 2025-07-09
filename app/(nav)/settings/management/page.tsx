@@ -62,6 +62,10 @@ const Management = () => {
   });
   const [userPlan, setUserPlan] = useState<string>("");
 
+  const { data: settingsData } = useFetch<any>(`company/settings`);
+
+  
+
   const { data: planData } = useFetch<ApiResponseUserPlan>(
     "/property-manager-subscription/active"
   );
@@ -97,8 +101,6 @@ const Management = () => {
   useRefetchOnEvent("refetchManagementSettings", () =>
     refetch({ silent: true })
   );
-
-  //console.log(manaConfigData);
 
   // Sync selectedPermissions with backend data when manaConfigData changes
   useEffect(() => {
@@ -326,14 +328,14 @@ const Management = () => {
                 <Select
                   id="tenant_screening_level_type"
                   label="tenant screening level type"
-                  defaultValue={`Tier 1`}
+                  defaultValue={`Tier ${screeningLevel?.tenant_screening_level}`}
                   options={tenant_occupant_options as unknown as string[]}
                   inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
                 />
                 <Select
                   id="occupant_screening_level_type"
                   label="occupant screening level type"
-                  defaultValue={`Tier 1`}
+                  defaultValue={`Tier ${screeningLevel?.occupant_screening_level}`}
                   options={tenant_occupant_options as unknown as string[]}
                   inputContainerClassName="bg-neutral-2 w-full sm:w-[277px]"
                 />

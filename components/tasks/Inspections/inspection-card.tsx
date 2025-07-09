@@ -26,6 +26,8 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { useGlobalStore } from "@/store/general-store";
+import { empty } from "@/app/config";
 
 const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
   const { data: inspectionData, refetch } =
@@ -36,14 +38,7 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
   useRefetchOnEvent("dispatchInspection", () => refetch({ silent: true }));
 
   const [isOpen, setIsOpen] = useState(false);
-
-  const goToMessage = () => {
-    if (!data?.booked_by_id) {
-      toast.warning("User ID not Found!");
-      return;
-    }
-    router.push(`/messages/${data?.booked_by_id}`);
-  };
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   useEffect(() => {
     if (inspectionData) {
@@ -51,6 +46,26 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
       setInspection(transformedData);
     }
   }, [inspectionData]);
+
+  const goToMessage = () => {
+    if (!data?.user_id) {
+      toast.warning("User ID not Found!");
+      return;
+    }
+
+    // Set the user data in the global store
+    const newMessageUserData = {
+      branch_id: 0,
+      id: data?.user_id,
+      imageUrl:  empty,
+      name: data?.user_name || "Unknown User",
+      position: "agent",
+    };
+    setGlobalStore("messageUserData", newMessageUserData);
+
+    // Redirect to the messaging page
+    router.push(`/messages/${data?.user_id}`);
+  };
 
   return (
     <div

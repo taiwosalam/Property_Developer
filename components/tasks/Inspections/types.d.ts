@@ -13,6 +13,9 @@ export interface InspectionCardProps {
   type?: "physical" | "virtual";
   data?: {
     id: number;
+    user_id?: number;
+    profile_picture: string;
+    user_name?: string;
     property_name: string;
     is_application?: boolean;
     tier: number;

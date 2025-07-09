@@ -216,11 +216,7 @@ const DepositRequest = () => {
                 properties. Once a deposit is recorded, the details will appear
                 here. Caution deposits help you keep track of security deposits
                 made by tenants, ensuring accurate management and easy
-                reference. <br /> <br />
-                <p>
-                  This message will automatically disappear once caution deposit
-                  records are added.
-                </p>{" "}
+                reference. 
               </p>
             }
           />

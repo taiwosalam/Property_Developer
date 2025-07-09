@@ -16,6 +16,8 @@ const CalendarActivities: React.FC<CalendarActivitiesProps> = ({
     setIsOpen(false);
   };
 
+  console.log(events);
+
   return (
     <div
       className={`w-full h-full overflow-auto bg-white dark:bg-darkText-primary rounded-lg custom-flex-col gap-[18px]`}
@@ -33,14 +35,14 @@ const CalendarActivities: React.FC<CalendarActivitiesProps> = ({
           </p>
         </div>
         <button onClick={closeModal} className="text-xs items-start">
-          <X size={19}/>
+          <X size={19} />
         </button>
       </div>
       <div className="w-full pb-[18px] px-[18px] flex-1 overflow-y-auto custom-round-scrollbar">
         <div className="custom-flex-col gap-2">
           {!!events.length ? (
             events.map((event, index) => (
-              <CalendarActivity key={`${event.type}-${index}`} {...event} />
+              <CalendarActivity key={`${event.originalType}-${index}`} {...event} />
             ))
           ) : (
             <p className="text-text-tertiary">No activities</p>

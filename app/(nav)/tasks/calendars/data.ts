@@ -63,6 +63,7 @@ export const transformCalendarEvents = (
       date: new Date(event.date),
       desc: event.description,
       title: event.type,
+      //originalType: event.type,
       type: eventType, // Now properly typed as CalendarEventType
     };
   });

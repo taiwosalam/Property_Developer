@@ -94,7 +94,7 @@ const ManageApplication = () => {
   const handleRejectApplication = async () => {
     try {
       setIsLoading(true);
-      const res = await rejectApplication(paramId);
+      const res = await rejectApplication(paramId, "reject");
       if (res) {
         toast.success("Application rejected");
         router.push("/tasks/applications");
@@ -122,6 +122,7 @@ const ManageApplication = () => {
     previous_rent,
     current_rent,
     flag_details,
+    hasFlag,
   } = managePageData ?? {};
 
   const messageFlagger = ({ id, name, pictureSrc }: IMessageFlagger) => {
@@ -163,7 +164,6 @@ const ManageApplication = () => {
     // Redirect to the messaging page
     router.push(`/messages/${profile_details?.user_id}`);
   };
-
 
   const handleStartRent = async () => {
     const mailAddress = profile_details?.email;
@@ -267,7 +267,7 @@ const ManageApplication = () => {
           </div>
         </div>
 
-        {profile_details?.is_flagged && (
+        {hasFlag && (
           <div
             style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
             className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
@@ -475,49 +475,53 @@ const ManageApplication = () => {
           </LandlordTenantInfoBox>
         </div>
       </div>
-      <LandlordTenantInfoSection title="Current Rent">
-        <div className="space-y-3">
-          {current_rent?.map((rent) => (
-            <ApplicationCardUnit
-              key={rent.unitId}
-              unitId={rent.unitId}
-              unitName={rent.unitName}
-              address={rent.address}
-              propertyName={rent.propertyName}
-              rentAmount={rent.rentAmount}
-              period={rent.period}
-              moveInDate={rent.moveInDate}
-              propertyImages={rent.propertyImages}
-              propertyType={rent.propertyType}
-              managedBy={rent.managedBy}
-              prev={false}
-              unitData={rent?.unitData}
-            />
-          ))}
-        </div>
-      </LandlordTenantInfoSection>
+      {current_rent && current_rent.length > 0 && (
+        <LandlordTenantInfoSection title="Current Rent">
+          <div className="space-y-3">
+            {current_rent?.map((rent) => (
+              <ApplicationCardUnit
+                key={rent.unitId}
+                unitId={rent.unitId}
+                unitName={rent.unitName}
+                address={rent.address}
+                propertyName={rent.propertyName}
+                rentAmount={rent.rentAmount}
+                period={rent.period}
+                moveInDate={rent.moveInDate}
+                propertyImages={rent.propertyImages}
+                propertyType={rent.propertyType}
+                managedBy={rent.managedBy}
+                prev={false}
+                unitData={rent?.unitData}
+              />
+            ))}
+          </div>
+        </LandlordTenantInfoSection>
+      )}
 
-      <LandlordTenantInfoSection title="Previous Rent">
-        <div className="space-y-3">
-          {previous_rent?.map((rent) => (
-            <ApplicationCardUnit
-              key={rent.unitId}
-              unitId={rent.unitId}
-              unitName={rent.unitName}
-              address={rent.address}
-              propertyName={rent.propertyName}
-              rentAmount={rent.rentAmount}
-              period={rent.period}
-              moveOutDate={rent.moveOutDate}
-              propertyImages={rent.propertyImages}
-              propertyType={rent.propertyType}
-              managedBy={rent.managedBy}
-              prev={true}
-              unitData={rent?.unitData}
-            />
-          ))}
-        </div>
-      </LandlordTenantInfoSection>
+      {previous_rent && previous_rent?.length > 0 && (
+        <LandlordTenantInfoSection title="Previous Rent">
+          <div className="space-y-3">
+            {previous_rent?.map((rent) => (
+              <ApplicationCardUnit
+                key={rent.unitId}
+                unitId={rent.unitId}
+                unitName={rent.unitName}
+                address={rent.address}
+                propertyName={rent.propertyName}
+                rentAmount={rent.rentAmount}
+                period={rent.period}
+                moveOutDate={rent.moveOutDate}
+                propertyImages={rent.propertyImages}
+                propertyType={rent.propertyType}
+                managedBy={rent.managedBy}
+                prev={true}
+                unitData={rent?.unitData}
+              />
+            ))}
+          </div>
+        </LandlordTenantInfoSection>
+      )}
       {/* <LandlordTenantInfoSection title="Previous Property">
         <div className="opacity-40">{/* <UnitItem /> </div>
       </LandlordTenantInfoSection> */}

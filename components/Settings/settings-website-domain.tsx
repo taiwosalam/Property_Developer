@@ -68,7 +68,7 @@ const SettingsWebsiteDomain = () => {
     useFetch<CompanySettingsResponse>("/company/settings");
   useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
 
-  console.log(companySettings);
+  
 
   const isOwner =
     customDomain &&
@@ -210,8 +210,6 @@ const SettingsWebsiteDomain = () => {
         return "";
     }
   };
-
-  console.log(domainDetails);
 
   return (
     <div>

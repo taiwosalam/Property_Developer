@@ -205,6 +205,9 @@ export interface InspectionPageType {
   current_page: number;
   card: {
     id: number;
+    user_id?: number;
+    profile_picture: string;
+    user_name?: string;
     is_application?: boolean;
     property_id: number;
     property_name: string;

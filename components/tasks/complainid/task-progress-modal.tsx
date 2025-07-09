@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { LabelValuePairProps } from "../property-requests/types";
 import { PointerDownSVG } from "@/public/icons/icons";
 import { DepositRequestModalProps } from "../deposit-requests/types";
@@ -66,19 +66,24 @@ interface ITaskProgressModal {
     date: string;
     time: string;
   };
+  setIsOpen?: (val: boolean) => void;
 }
 const TaskProgressModal: React.FC<ITaskProgressModal> = ({
   task_bar,
   task,
+  setIsOpen,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const param = useParams();
-  const id = param.complainId;
+  const id = param.complainId as string;
 
   const [checkedTasks, setCheckedTasks] = useState<string[]>(
     task_bar.map((bar) => bar.text)
   );
+
+  // Track the most recently checked task
+  const [lastCheckedTask, setLastCheckedTask] = useState<string | null>(null);
 
   const commonClasses =
     "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center w-full";
@@ -111,19 +116,85 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
     </div>
   );
 
+  // Handle checkbox changes with useCallback for stability
+  const handleCheckboxChange = useCallback(
+    (taskValue: string, checked: boolean) => {
+      setCheckedTasks((prev) => {
+        if (checked) {
+          // Add task if not already checked
+          if (!prev.includes(taskValue)) {
+            setLastCheckedTask(taskValue);
+            return [...prev, taskValue];
+          }
+          return prev;
+        } else {
+          // Allow unchecking only if task is not in task_bar
+          if (!task_bar.some((bar) => bar.text === taskValue)) {
+            const newCheckedTasks = prev.filter((val) => val !== taskValue);
+            // Update lastCheckedTask if the unchecked task was the last checked
+            if (taskValue === lastCheckedTask) {
+              // Set to the most recently checked task still in checkedTasks
+              const remainingTasks = newCheckedTasks.filter(
+                (val) => !task_bar.some((bar) => bar.text === val)
+              );
+              setLastCheckedTask(
+                remainingTasks[remainingTasks.length - 1] || null
+              );
+            }
+            return newCheckedTasks;
+          }
+          return prev;
+        }
+      });
+    },
+    [task_bar, lastCheckedTask]
+  );
+
+  const getTaskToSubmit = () => {
+    return lastCheckedTask;
+  };
+
+  // Handle form submission
   const handleUpdateStatusProgress = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+    const taskToSubmit = getTaskToSubmit();
+    if (!taskToSubmit) {
+      toast.error("Please check a task before submitting.");
+      return;
+    }
     try {
       setIsLoading(true);
-      const res = await updateProgressStatus(id as string, checkedTasks[0]);
+      const res = await updateProgressStatus(id, taskToSubmit);
       if (res) {
-        toast.success("Status updated");
+        toast.success(`Status updated: ${taskToSubmit}`);
+        // Clear lastCheckedTask after successful submission
+        setLastCheckedTask(null);
+        setIsOpen?.(false);
       }
     } catch (error) {
+      toast.error("Failed to update status");
     } finally {
       setIsLoading(false);
     }
   };
+
+  //Sync checkedTasks with task_bar when it changes
+  useEffect(() => {
+    // Only update checkedTasks if task_bar has new completed tasks
+    setCheckedTasks((prev) => {
+      const backendTasks = task_bar.map((bar) => bar.text);
+      // Preserve locally checked tasks that aren't yet in task_bar
+      const newCheckedTasks = [...new Set([...prev, ...backendTasks])];
+      return newCheckedTasks;
+    });
+    // Reset lastCheckedTask if it's already in task_bar
+    if (
+      lastCheckedTask &&
+      task_bar.some((bar) => bar.text === lastCheckedTask)
+    ) {
+      setLastCheckedTask(null);
+    }
+  }, [task_bar, lastCheckedTask]);
 
   return (
     <ModalPreset title="Task bar">
@@ -141,8 +212,9 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
         <form className="space-y-4">
           <div>
             <p className="text-green-500 text-lg">{""}</p>
-            <p className="text-text-tertiary dark:text-white">
-              Caution Deposits Details:
+            <p className="text-black dark:text-white">Processing stage</p>
+            <p className="text-text-tertiary">
+              Kindly check the box if you are done with a particular task
             </p>
           </div>
 
@@ -151,6 +223,9 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
               const matchedTaskBar = task_bar.find(
                 (bar) => bar.text === task.value
               );
+              const isChecked = checkedTasks.includes(task.value);
+              const isDisabled =
+                !isChecked && task_bar.some((bar) => bar.text === task.value); // Disable if already checked in backend
               return (
                 <Checkbox
                   key={task.value}
@@ -164,26 +239,11 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
                       />
                     )
                   }
-                  checked={checkedTasks.includes(task.value)}
-                //   onChange={(checked: boolean) => { // this ensures no data is added twice
-                //     setCheckedTasks((prev) =>
-                //       checked
-                //         ? prev.includes(task.value)
-                //           ? prev
-                //           : [...prev, task.value]
-                //         : prev.filter((val) => val !== task.value)
-                //     );
-                //   }}
-                  onChange={(checked: boolean) => {
-                    setCheckedTasks(
-                      (prev) =>
-                        checked
-                          ? prev.includes(task.value)
-                            ? prev
-                            : [...prev, task.value]
-                          : prev // Prevent unchecking
-                    );
-                  }}
+                  checked={isChecked}
+                  onChange={(checked: boolean) =>
+                    handleCheckboxChange(task.value, checked)
+                  }
+                  disabled={isDisabled}
                 >
                   {task.label}
                 </Checkbox>
@@ -192,7 +252,7 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
           </div>
           <div className="space-y-5 w-full">
             <Button
-              disabled={isLoading}
+              disabled={isLoading || !lastCheckedTask}
               type="submit"
               size="xs_normal"
               className="py-2 px-6 w-full"

@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { formatTime } from "../../notifications/data";
 import api, { handleAxiosError } from "@/services/api";
+import { empty } from "@/app/config";
 
 dayjs.extend(advancedFormat);
 
@@ -158,6 +159,9 @@ export const transformInspectionCard = (
       data?.inspections.map((item) => {
         return {
           id: item?.id,
+          user_id: item?.unit?.user_id,
+          profile_picture: empty,
+          user_name: item?.booked_by,
           property_id: item?.unit?.property_id,
           is_application: item?.is_application,
 

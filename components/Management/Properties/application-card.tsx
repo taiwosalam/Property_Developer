@@ -64,9 +64,7 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
             <div>
               <p className="text-[#747474] dark:text-white">Unit Title</p>
               <p className="text-black dark:text-darkText-1 capitalize">
-                {unitData
-                  ? `${propertyName} - ${transformUnitDetails(unitData)}`
-                  : ""}
+                {unitData ? `${transformUnitDetails(unitData)}` : "--- ---"}
               </p>
             </div>
 

@@ -97,6 +97,7 @@ export interface IApplicationDetails {
   justification: string;
   current_rent: IRentHistory[];
   previous_rent: IRentHistory[];
+  hasFlag: boolean;
   flag_details?: {
     user_id: number;
     flagger_name: string;
@@ -134,7 +135,7 @@ export const transformApplicationDetailsPageData = (
       application_date,
       property_title: property_details?.property_title || "--- ---",
       address: property_details?.full_address || "--- ---",
-      landlord: property_details?.landlord || "--- ---",
+      landlord: property_details?.landlord?.toLowerCase() || "--- ---",
       total_package: property_details?.total_package || "--- ---",
       renewal_amount: property_details?.renew_total_package || "--- ---",
       description: property_details?.description || "--- ---",
@@ -152,7 +153,7 @@ export const transformApplicationDetailsPageData = (
       is_flagged: user?.is_flagged,
       fullName: user?.name?.toLowerCase() || "--- ---",
       tier_id: user?.tier_id,
-      application_duration,
+      application_duration: application_duration ?? "--- ---",
       email: user?.email || "--- ---",
       user_tag: user?.type || "mobile",
       encodedId: user?.encodedId,
@@ -257,6 +258,7 @@ export const transformApplicationDetailsPageData = (
       })) || [],
     experience: profile_details?.prior_experience || "--- ---",
     justification: profile_details?.rent_justification || "--- ---",
+    hasFlag: flags.some((flag) => flag.is_flagged),
     flag_details: flags
       .filter(
         (flag) =>
@@ -283,9 +285,9 @@ export const transformApplicationDetailsPageData = (
   };
 };
 
-export const rejectApplication = async (id: string) => {
+export const rejectApplication = async (id: string, path: string) => {
   try {
-    const res = await api.post(`property-applications/${id}/reject`);
+    const res = await api.post(`property-applications/${id}/${path}`);
     if (res.status === 200 || res.status === 201) {
       window.dispatchEvent(new Event("dispatchApplication"));
       return true;
@@ -308,5 +310,3 @@ export const becomeTenant = async (formData: FormData) => {
     return null;
   }
 };
-
-
