@@ -83,61 +83,6 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
     }
   }, [canSubmit, missingFields, checkSubmit, noForm]);
 
-  // const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   handleInputChange();
-  //   const formInDom = document.getElementById(
-  //     "add-unit-form"
-  //   ) as HTMLFormElement | null;
-
-  //   // **ALWAYS show missing fields toast if form is in DOM and canSubmit is false**
-  //   if (formInDom && !canSubmit) {
-  //     toast.error(
-  //       `The following fields are required: ${missingFields.join(", ")}`
-  //     );
-  //     return;
-  //   }
-
-  //   // Check for unuploaded units
-  //   if (addedUnits.length > 0) {
-  //     const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
-  //     if (hasNotYetUploaded) {
-  //       toast.warning(
-  //         "There are units that have not been updated yet. Please update them to continue."
-  //       );
-  //       return;
-  //     }
-  //   }
-
-  //   // If form is in DOM and canSubmit, submit and set redirect flag
-  //   if (formInDom && canSubmit) {
-  //     setSaveClick(true);
-  //     setShouldRedirect(true);
-  //     formInDom.requestSubmit();
-  //     return;
-  //   }
-
-  //   // If can't submit, show errors
-  //   if (!canSubmit && !noForm) {
-  //     toast.error(
-  //       `The following fields are required: ${missingFields.join(", ")}`
-  //     );
-  //     return;
-  //   }
-
-  //   // If no form (e.g., noForm prop), just redirect as fallback
-  //   if (!formInDom) {
-  //     if (addedUnits.length === 0) {
-  //       toast.success("Property has been added to your drafts.");
-  //       navigateBackOrToProperties();
-  //       return;
-  //     }
-  //     navigateBackOrToProperties();
-  //     return;
-  //   }
-  // };
-
-
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     handleInputChange();
