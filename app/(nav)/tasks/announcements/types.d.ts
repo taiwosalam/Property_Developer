@@ -108,6 +108,7 @@ type Announcements = {
   created_at: string;
   updated_at: string;
   views_count: number;
+  views_count_today: number,
   likes_count: number;
   dislikes_count: number;
   images: Array<{

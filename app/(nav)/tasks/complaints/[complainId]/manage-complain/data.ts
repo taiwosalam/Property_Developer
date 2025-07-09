@@ -212,7 +212,7 @@ export const sendTaskComment = async (id: string, content: string) => {
   }
 };
 
-const PROGRESS_STATUS = 20;
+const PROGRESS_STATUS = 16.7;
 export const updateProgressStatus = async (id: string, statusText: string) => {
   const payload = {
     text: statusText,

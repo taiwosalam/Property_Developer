@@ -149,13 +149,13 @@ const CreateAnnouncementForm: React.FC<{
     const description = formData.get("description");
 
     if (!title) {
-      toast.warning("You need to provide a title");
+      toast.error("You need to provide a title");
       return;
     } else if (!description) {
-      toast.warning("You need to provide a description");
+      toast.error("You need to provide a description");
       return;
     } else if (String(description).trim().length < 30) {
-      toast.warning("Description must be at least 30 characters.");
+      toast.error("Description must be at least 30 characters.");
       return;
     }
 
@@ -183,6 +183,26 @@ const CreateAnnouncementForm: React.FC<{
   const handleUpdate = async (formData: FormData) => {
     if (company_id) formData.append("company_id", company_id);
     formData.append("_method", "PATCH");
+    const description = formData.get("description");
+
+    const title = formData.get("title");
+
+    if (!title) {
+      toast.error("You need to provide a title");
+      return;
+    } else if (!description) {
+      toast.error("You need to provide a description");
+      return;
+    } else if (String(description).trim().length < 40) {
+      toast.error("Description must be at least 30 characters.");
+      return;
+    }
+
+    const videoLink = formData.get("video_link") as string;
+    if (imagePreviews.length === 0 && (!videoLink || videoLink.trim() === "")) {
+      toast.error("Please upload at least one image or provide a video link.");
+      return;
+    }
 
     imageFiles.forEach((file, index) => {
       formData.append(`images[${index}]`, file);
@@ -193,7 +213,7 @@ const CreateAnnouncementForm: React.FC<{
       const success = await updateAnnouncement(formData, paramId);
       if (success) {
         toast.success("Announcement updated");
-        router.push(`/tasks/announcements/${paramId}/preview`);
+        router.push(`/tasks/announcements`);
       }
     } catch (error) {
     } finally {

@@ -227,24 +227,24 @@ const AnnouncementPage = () => {
                     title={announcement.title}
                     date={formattedDate}
                     key={index}
-                    poster={announcement?.poster.profilePicture}
-                    description={announcement.description}
-                    id={announcement.company_id.toString()}
-                    views={announcement.views_count}
-                    video={announcement.video_link}
-                    newViews={announcement.views_count}
-                    likes={announcement.likes_count}
-                    dislikes={announcement.dislikes_count}
-                    imageUrls={announcement.images.map((img) => ({
+                    poster={announcement?.poster?.profilePicture}
+                    description={announcement?.description}
+                    id={announcement.company_id?.toString()}
+                    views={announcement?.views_count}
+                    video={announcement?.video_link}
+                    newViews={announcement?.views_count_today}
+                    likes={announcement?.likes_count}
+                    dislikes={announcement?.dislikes_count}
+                    imageUrls={announcement?.images?.map((img) => ({
                       ...img,
                       url: img.url,
                     }))}
                     //mediaCount={announcement.image_urls.length}
                     mediaCount={{
-                      image: image_urls.flat().length,
-                      video: announcement.video_link ? 1 : 0,
+                      image: image_urls?.flat().length,
+                      video: announcement?.video_link ? 1 : 0,
                     }}
-                    announcementId={announcement.id.toString()}
+                    announcementId={announcement?.id?.toString()}
                   />
                 );
               })}

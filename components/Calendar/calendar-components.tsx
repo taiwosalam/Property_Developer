@@ -46,7 +46,8 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
       "relative w-8 h-8 m-auto rounded-sm flex items-center justify-center",
       {
         "opacity-50": !isCurrentMonth,
-        "bg-white dark:bg-darkText-primary border border-darkText-2": isToday && isCurrentMonth,
+        "bg-white dark:bg-darkText-primary border border-darkText-2":
+          isToday && isCurrentMonth,
         "outline outline-2 custom-primary-outline-color": isActive,
       }
     )}
@@ -115,10 +116,19 @@ export const CalendarActivity: React.FC<CalendarEventProps> = ({
   <div className="flex gap-4">
     <div
       className="w-1"
-      style={{ backgroundColor: calendar_event_tags[originalType || type] }}
+      style={{
+        backgroundColor:
+          calendar_event_tags[
+            originalType as keyof typeof calendar_event_tags
+          ] ||
+          calendar_event_tags[type as keyof typeof calendar_event_tags] ||
+          "#000000", // fallback color
+      }}
     />
     <p className="p-1 text-text-primary text-sm font-normal">
-      <span className="capitalize font-bold dark:text-white">{originalType || type}</span> 
+      <span className="capitalize font-bold dark:text-white">
+        {originalType || type}
+      </span>
       <span className="dark:text-darkText-2"> || {desc}</span>
     </p>
   </div>

@@ -32,16 +32,24 @@ const FlaggedApplicantAccountModal = ({
 }: IFlaggedModal) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRejectApplication = async () => {
+  const handleRejectApplication = async (path: string) => {
     if (!id) {
       return;
     }
     try {
       setIsLoading(true);
-      const res = await rejectApplication(id.toString());
-      if (res) {
-        toast.success("Application rejected");
-        setIsOpen?.(false);
+      if (path === "reject") {
+        const res = await rejectApplication(id.toString(), "reject");
+        if (res) {
+          toast.success("Application rejected");
+          setIsOpen?.(false);
+        }
+      } else {
+        const res = await rejectApplication(id.toString(), "evaluate");
+        if (res) {
+          //toast.success("Application evaluate");
+          setIsOpen?.(false);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -53,7 +61,7 @@ const FlaggedApplicantAccountModal = ({
   return (
     <LandlordTenantModalPreset
       heading="Applicant Account Is Flagged by;"
-      style={{ maxWidth: "900px" }}
+      style={{ maxWidth: "950px" }}
     >
       <div className="custom-flex-col gap-6">
         <div className="custom-flex-col gap-8">
@@ -66,29 +74,34 @@ const FlaggedApplicantAccountModal = ({
           </div>
         </div>
 
-        <div className="mx-auto">
-          <p className="text-blue-600 text-center max-w-lg mx-auto font-semibold">
-            Kindly advice the applicant to resolve any outstanding issues with
-            their previous manager in order to lift the flag on their account.
-          </p>
-        </div>
-        <div className="flex gap-4 justify-end">
-          <Button
-            size="base_bold"
-            variant="light_red"
-            className="py-2 px-8"
-            disabled={isLoading}
-            onClick={handleRejectApplication}
-          >
-            {isLoading ? "please wait..." : "reject application"}
-          </Button>
-          <Button
-            size="base_bold"
-            className="py-2 px-8"
-            href={`/tasks/applications/${id}/manage`}
-          >
-            skip
-          </Button>
+        <div className="flex flex-wrap gap-6 justify-between items-start mt-4">
+          <div className="w-full lg:w-auto mx-auto">
+            <p className="text-blue-600 text-center max-w-lg mx-auto font-semibold">
+              Kindly advise the applicant to resolve any outstanding issues with
+              their previous manager in order to lift the flag on their account.
+            </p>
+          </div>
+
+          <div className="w-full flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4 lg:w-auto">
+            <Button
+              size="base_bold"
+              variant="light_red"
+              className="py-2 px-8"
+              disabled={isLoading}
+              onClick={() => handleRejectApplication("reject")}
+            >
+              {isLoading ? "please wait..." : "reject application"}
+            </Button>
+
+            <Button
+              size="base_bold"
+              className="py-2 px-8"
+              href={`/tasks/applications/${id}/manage`}
+              onClick={() => handleRejectApplication("evaluate")}
+            >
+              skip
+            </Button>
+          </div>
         </div>
       </div>
     </LandlordTenantModalPreset>

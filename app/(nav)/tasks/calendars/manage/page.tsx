@@ -132,7 +132,6 @@ const ManageCalendar = () => {
   // Move by 1 week
   const nextWeek = () => setCurrentDate((prev) => addWeeks(prev, 1));
   const prevWeek = () => setCurrentDate((prev) => subWeeks(prev, 1));
-
   const { activities, eventsByDate } = useMemo(() => {
     // Group events by date for multiple event detection
     const eventsByDate = calendarEvents?.reduce((acc, event) => {
@@ -158,20 +157,21 @@ const ManageCalendar = () => {
 
           return {
             ...event,
-            type: event.type ? event.type : ("multiple event" as const),
+            originalType: event.title, // Preserve original type
             eventCount: eventsOnDay.length,
-            originalType: event.type,
-            title: `${event.type} (Part of multiple events: ${allEventTypes})`,
-            desc: `${event.desc}`,
+            isMultiple: true, // Flag for multiple events
+            title: `${event.title} (Part of ${eventsOnDay.length} events: ${allEventTypes})`, // Keep original title
           };
         }
-        return event;
+        return {
+          ...event,
+          originalType: event.title, // Ensure originalType is always set
+          isMultiple: false,
+        };
       });
 
     return { activities, eventsByDate };
-  }, [activeDate, calendarEvents, calendarEvents]);
-
-  console.log(activities);
+  }, [activeDate, calendarEvents]);
 
   return (
     <EventCalendarContext.Provider

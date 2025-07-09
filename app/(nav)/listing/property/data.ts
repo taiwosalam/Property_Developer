@@ -53,6 +53,7 @@ export interface PropertyDataProps {
   branch_id: number;
   inventory_id: number;
   land_lord_id: number;
+  account_officer: string;
   user_id: number;
   company_id: number;
   agency_fee: number;
@@ -183,7 +184,7 @@ export const transformDraftUnitData = (
       //   p.currency || "naira"
       // ),
       // account_officer: "Nil",
-      account_manager:  "Nil",
+      account_manager: p.account_officer ||  "--- ---",
       status: status,
     };
   });

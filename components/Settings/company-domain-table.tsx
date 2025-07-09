@@ -71,7 +71,7 @@ export const CompanySettingsDomainTable = ({ data }: DomainTable) => {
           <SectionTitle>
             <div className="py-4">
               <h2 className="text-base">Custom Domain</h2>
-              <p className="py-2 text-sm text-slate-">
+              <p className="py-2 text-sm text-slate-600">
                 Manage a custom domain of your choice to showcase your company
                 profile and promote your property listings portfolio to a global
                 audience.

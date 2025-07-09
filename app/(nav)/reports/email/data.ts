@@ -24,7 +24,7 @@ export const reportsEmailFilterOptionsWithDropdown = [
 export const emailTablefields: Field[] = [
   { id: "0", label: "S/N", accessor: "S/N" },
   { id: "1", label: "User ID", accessor: "user_id" },
-  { id: "3", label: "Branch", accessor: "branch" },
+  //{ id: "3", label: "Branch", accessor: "branch" },
   {
     id: "2",
     label: "Client Name",
@@ -36,6 +36,7 @@ export const emailTablefields: Field[] = [
     accessor: "date",
   },
   { id: "8", label: "Time", accessor: "time" },
+  { id: "9", label: "", accessor: "action" },
 ];
 
 export interface IEmail {

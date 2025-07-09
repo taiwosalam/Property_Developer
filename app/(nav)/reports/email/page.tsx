@@ -32,6 +32,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { Loader2 } from "lucide-react";
 import TableMenu from "@/components/Table/table-menu";
 import { MenuItem } from "@mui/material";
+import { EmailModalSkeleton } from "@/components/reports/email-modal-skeleton";
 
 const EmailReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -190,7 +191,11 @@ const EmailReport = () => {
     }
   }, [selectedEmailId]);
 
-  const { data: emailIdData } = useFetch<IEmailByIdResponse>(
+  const {
+    data: emailIdData,
+    silentLoading,
+    loading: emailLoading,
+  } = useFetch<IEmailByIdResponse>(
     selectedSMS ? `report/emails/${selectedSMS?.email_id}` : null
   );
 
@@ -284,40 +289,13 @@ const EmailReport = () => {
               tableHeadClassName="h-[45px]"
               handleSelect={handleTableItemClick}
               lastRowRef={lastRowRef}
-              onActionClick={(item, e) => {
-                handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
-              }}
+              // onActionClick={(item, e) => {
+              //   handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+              // }}
             />
-            <TableMenu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem onClick={handleMenuClose} disableRipple>
-                <button
-                  onClick={() =>
-                    selectedItemId && restoreTrashItem(selectedItemId)
-                  }
-                  className="w-full text-left"
-                >
-                  Restore
-                </button>
-              </MenuItem>
-              <MenuItem
-                onClick={handleMenuClose}
-                disableRipple
-                className="bg-red-200"
-              >
-                <button
-                  onClick={() =>
-                    selectedItemId && handleDeleteItem(selectedItemId)
-                  }
-                  className="w-full text-left"
-                >
-                  Delete
-                </button>
-              </MenuItem>
-            </TableMenu>
+           
+
+
             {isFetchingMore && (
               <div className="flex justify-center py-4">
                 <Loader2 className="animate-spin text-brand-9" />
@@ -341,7 +319,11 @@ const EmailReport = () => {
         }}
       >
         <ModalContent>
-          <EmailModal {...(selectedEmailDetails as EmailRecord)} />
+          {silentLoading ? (
+            <EmailModalSkeleton />
+          ) : (
+            <EmailModal {...(selectedEmailDetails as EmailRecord)} />
+          )}
         </ModalContent>
       </Modal>
     </div>

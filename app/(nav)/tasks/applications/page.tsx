@@ -28,6 +28,8 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ApplicationStatusItem } from "@/components/Listing/Property/property-listing-component";
 import { IPropertyApi } from "../../settings/others/types";
+import { rejectApplication } from "./[applicationId]/manage/data";
+import { toast } from "sonner";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
@@ -152,6 +154,23 @@ const Applications = () => {
     }
   }, [apiData]);
 
+  const handleEvaluation = async (
+    id: string,
+    flagged: "flagged" | "unflagged"
+  ) => {
+    if (flagged === "flagged") {
+      return;
+    }
+    try {
+      const res = await rejectApplication(id, "evaluate");
+      if (res) {
+       // toast.success("Application evaluated");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (loading)
     return (
       <CustomLoader layout="page" statsCardCount={3} pageTitle="Application" />
@@ -255,12 +274,19 @@ const Applications = () => {
             >
               {pageData && pageData?.applications?.length > 0
                 ? pageData?.applications.map((item) => (
-                    <ApplicationCard
+                    <div
                       key={item.id}
-                      status={item?.flagged}
-                      type={item.application_status}
-                      data={item}
-                    />
+                      className="w-full"
+                      onClick={() =>
+                        handleEvaluation(item?.id?.toString(), item?.flagged)
+                      }
+                    >
+                      <ApplicationCard
+                        status={item?.flagged}
+                        type={item.application_status}
+                        data={item}
+                      />
+                    </div>
                   ))
                 : "No Application Yet"}
             </AutoResizingGrid>
