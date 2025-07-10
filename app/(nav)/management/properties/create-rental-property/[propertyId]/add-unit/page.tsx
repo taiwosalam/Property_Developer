@@ -127,6 +127,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     return <div className="text-red-500">Property Data not found</div>;
 
 
+  console.log("SHOW_UNIT_FORM", SHOW_UNIT_FORM);
+
   return (
     <FlowProgress
       steps={1}

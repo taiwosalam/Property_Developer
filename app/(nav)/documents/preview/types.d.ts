@@ -31,6 +31,7 @@ export interface LawFirmInfoProps {
 export interface Party {
   name: string;
   address: string;
+  signature?: string;
 }
 
 export interface AttestationProps {
