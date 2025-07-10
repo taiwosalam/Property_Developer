@@ -62,8 +62,8 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
   };
 
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const newForm = useAddUnitStore((s) => s.newForm);
 
   const {
     data: propertyData,
@@ -88,6 +88,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
       setAddUnitStore("propertyDetails", transformedData.propertyDetails);
       setAddUnitStore("propertySettings", transformedData.propertySettings);
       setAddUnitStore("addedUnits", transformedData.addedUnits);
+      setAddUnitStore("newForm", showNewUnitForm);
     }
   }, [propertyData, setAddUnitStore]);
 
@@ -96,6 +97,18 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
       setAddUnitStore("editMode", true);
     }
   }, [showNewUnitForm, setAddUnitStore]);
+
+
+  const SHOW_UNIT_FORM = newForm || showNewUnitForm || (addedUnits.length === 0 && !closeUnitForm);
+  
+  // Reset closeUnitForm when user explicitly wants to show the form
+  // useEffect(() => {
+  //   if (newForm || showNewUnitForm) {
+  //     const setGlobalStore = useGlobalStore.getState().setGlobalInfoStore;
+  //     setGlobalStore("closeUnitForm", false);
+  //   }
+  // }, [newForm, showNewUnitForm]);
+
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -128,10 +141,16 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
         {addedUnits.map((unit, index) => (
           <AddUnitFormCard key={index} data={unit} index={index} />
         ))}
-        
-        {showNewUnitForm && !closeUnitForm && (
-          <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
+
+        {SHOW_UNIT_FORM && (
+          <div>
+            <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
+          </div>
         )}
+
+        {/* {showNewUnitForm && !closeUnitForm && (
+          <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
+        )} */}
       </div>
     </div>
   );

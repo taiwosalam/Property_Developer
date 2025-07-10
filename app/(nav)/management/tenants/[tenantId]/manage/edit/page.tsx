@@ -23,13 +23,13 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import type { TenantData } from "../../../types";
 import {
   transformIndividualTenantAPIResponse,
-  type IndividualTenantAPIResponse,
 } from "../data";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { deleteTenant } from "./data";
 import { useRouter } from "next/navigation";
 import ServerError from "@/components/Error/ServerError";
+import { IndividualTenantAPIResponse } from "../types";
 
 const EditTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;

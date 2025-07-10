@@ -96,10 +96,9 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
-  console.log("newForm", newForm);
+  
 
   useEffect(() => {
-    console.log("newForm", newForm);
     if (newForm) {
       setShowUnitForm(true);
     } else {
@@ -113,15 +112,18 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [showUnitForm, setAddUnitStore]);
 
+
+  const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
+
+
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
   if (dataNotFound)
     return <div className="text-red-500">Property Data not found</div>;
 
-  const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
 
-  console.log("SHOW_UNIT_FORM", SHOW_UNIT_FORM);
+
 
   return (
     <FlowProgress
@@ -184,7 +186,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
           </div>
 
           {/* {addedUnits.length > 0 && <AddUnitFooter noForm={true} />} */}
-          {addedUnits.length > 0 && <AddUnitFooter noForm={!showUnitForm} />}
+          {addedUnits.length > 0 && <AddUnitFooter noForm={true} />}
         </div>
       </UnitFormContext.Provider>
     </FlowProgress>

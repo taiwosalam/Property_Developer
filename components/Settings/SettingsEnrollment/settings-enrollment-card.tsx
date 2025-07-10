@@ -37,6 +37,7 @@ interface SettingsEnrollmentCardProps {
   page?: "modal" | "settings";
   changeStep?: (step: FormSteps | number) => void;
   expiry_date?: string;
+  autoRenew?: boolean;
 }
 
 const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
@@ -63,6 +64,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   page,
   changeStep,
   expiry_date,
+  autoRenew,
 }) => {
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
@@ -157,6 +159,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         handleCardClick={handleCardClick}
         isFree={isFree}
         planTitle={planTitle}
+        autoRenew={autoRenew}
       />
       <FeaturesList showFeatures={showFeatures} features={features} />
       <SelectPlanButton
@@ -166,7 +169,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         onSelectPlan={page === "modal" ? onSelect : (onSelectPlan as any)}
         page={page}
         changeStep={changeStep}
-        hovered={isHovered} 
+        hovered={isHovered}
       />
     </div>
   );

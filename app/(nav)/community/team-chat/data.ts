@@ -270,6 +270,20 @@ export const updateGroupNameOrDescription = async (
   }
 };
 
+// group-chats/3
+export const deleteGroupChat = async (groupId: number) => {
+  try {
+    const response = await api.delete(`group-chats/${groupId}`);
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchTeamChat"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const updateGroupAvatar = async (data: FormData) => {
   try {
     const response = await api.post(`group-chat/create`, data);

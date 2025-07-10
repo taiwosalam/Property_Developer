@@ -265,7 +265,7 @@ const SettingsSignature = () => {
       const res = await createSignatureProfiles(formData);
       if (res) {
         toast.success("Signature created successfully");
-        setNext(true);
+        // setNext(true);
         window.dispatchEvent(new Event("refetchSignatures"));
       }
     } catch (error) {
@@ -275,7 +275,6 @@ const SettingsSignature = () => {
     }
   };
 
-  console.log(inputFields);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (

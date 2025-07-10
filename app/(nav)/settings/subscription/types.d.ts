@@ -63,6 +63,7 @@ export interface EnrollmentApiResponse {
     current_plan_id: number;
     expire_date: string;
     total_enrollment_amount: string;
+    auto_renew: number;
     enrollment_count: number;
     last_enrollment_amount: string;
     enrollments: {

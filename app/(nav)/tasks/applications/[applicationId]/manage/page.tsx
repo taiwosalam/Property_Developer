@@ -186,6 +186,13 @@ const ManageApplication = () => {
       const payload = {
         identifier: mailAddress,
       };
+      // Approve application
+      const approveRes = await rejectApplication(paramId, "approval");
+      if (!approveRes) {
+        toast.error("Failed to approve application");
+        return;
+      }
+      // become tenant
       const res = await becomeTenant(objectToFormData(payload));
       if (res) {
         const tenantId = res.data.id;
