@@ -38,28 +38,42 @@ interface AnnouncementPostProps {
     my_dislike: boolean;
   };
 }
+
+const maxImagesToShow = 3;
+
 const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
-  // Limit to first 3 images
-  const maxImagesToShow = 3;
-  const excessImagesCount = (data?.viewers?.length ?? 0) - maxImagesToShow;
   const [comment, setComment] = useState<any>([]);
   const [isLike, setIsLike] = useState(false);
 
   const { announcementId } = useParams();
   const paramId = announcementId as string;
 
+  // Get unique, non-null user images from comments
+  const uniqueUserImages = Array.from(
+    new Map(
+      (data?.comments || [])
+        .filter((comment) => comment.image != null) // Exclude null or undefined images
+        .map((comment) => [comment.image, comment.image as string]) // Map to [image, image] pairs
+    ).values()
+  ).slice(0, maxImagesToShow);
+
+  const uniqueCommenterCount = new Set(
+    (data?.comments || [])
+      .filter((comment) => comment.image != null)
+      .map((comment) => comment.image)
+  ).size;
+
+  const excessImagesCount = Math.max(uniqueCommenterCount - maxImagesToShow, 0);
+
   const handleToggleLike = async (type: string) => {
     try {
       setIsLike(true);
       await toggleAnnouncementLike(paramId, type);
     } catch (error) {
-      
     } finally {
       setIsLike(false);
     }
   };
-
-  
 
   return (
     <div>
@@ -94,23 +108,23 @@ const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
           </button>
           {data && data.viewers.length > 0 && (
             <div className="flex items-center">
-              {data?.viewers.slice(0, maxImagesToShow).map((i, index) => (
+              {uniqueUserImages.map((image, index) => (
                 <Image
                   key={index}
-                  src={i || empty}
-                  alt="image"
+                  src={image || empty}
+                  alt="user avatar"
                   width={24}
                   height={24}
                   className={clsx(
                     "w-6 h-6 border border-brand-9 rounded-full object-cover",
                     index !== 0 && "-ml-3"
                   )}
-                  style={{ zIndex: index }} // Control stacking
+                  style={{ zIndex: index }} // control stacking
                 />
               ))}
-              {data?.viewers.length > 0 && (
+              {excessImagesCount > 0 && (
                 <div className="bg-brand-9 h-6 pl-[14px] pr-[10px] -ml-3 rounded-[24px] text-[10px] text-text-invert font-semibold flex items-center justify-end">
-                  +{Math.min(data.viewers.length, maxImagesToShow)}
+                  +{excessImagesCount}
                 </div>
               )}
             </div>

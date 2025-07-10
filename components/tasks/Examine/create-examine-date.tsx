@@ -53,8 +53,8 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
 
     const notes = data.get("note");
 
-    if (String(notes).trim().length < 30) {
-      toast.error("Notes must be at least 30 characters.");
+    if (String(notes).trim().length < 200) {
+      toast.error("Notes must be at least 200 characters.");
       return;
     }
     data.append("company_id", company_id);
@@ -90,7 +90,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
       );
       const accountOfficers = propertyData.data?.branch?.staffs.filter(
         (staff: { id: number; name: string; staff_role: string }) =>
-          staff.staff_role === "account officer"
+          staff.staff_role === "staff"
       );
       const officersOptions = accountOfficers?.map(
         (staff: { id: number; name: string }) => {
@@ -149,11 +149,14 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
               name="account_officer_id"
             />
             <Input
+              required
+              label="Title"
               id="title"
               placeholder="Add Title"
               className="md:col-span-2"
             />
             <Select
+              required
               id=""
               label="Branch"
               disabled={branchSilentLoading}
@@ -177,6 +180,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
               }}
             />
             <Select
+              required
               disabled={!selectedBranchId || propertySilentLoading}
               placeholder={
                 propertySilentLoading ? "Please wait..." : "Select options"
@@ -201,12 +205,13 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
               }}
             />
             <Select
+              required
               disabled={!selectedBranchId || !selectedPropertyId}
               placeholder={
                 propertySilentLoading ? "Please wait..." : "Select options"
               }
               id=""
-              label="account officer"
+              label="assign staff"
               options={
                 accountOfficerOptions.length > 0
                   ? accountOfficerOptions.map((staff) => staff.name)
@@ -231,6 +236,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
             />
 
             <DateInput
+              required
               id="examine_date"
               label="Examine Date"
               minDate={dayjs(new Date())}

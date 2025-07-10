@@ -38,6 +38,7 @@ export type ApplicationResponse = {
     }[];
     unit: {
       name: string;
+      property_title: string;
       period: string;
       currency: string;
       property_images: {
@@ -138,7 +139,7 @@ export const transformApplicationData = (
         : "unflagged",
       user_type: item?.user?.user_type || "mobile",
       email: item?.user?.email,
-      property_name: item?.unit.name,
+      property_name: `${item?.unit.name} - ${item?.unit?.property_title}`,
       renew_fee_period: item?.unit?.renew_fee_period,
       address: item?.unit?.property_address,
       phone_number: item?.user?.phone,

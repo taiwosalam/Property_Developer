@@ -57,7 +57,7 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
             <p className="text-black dark:text-white text-base pb-1">{title}</p>
             {description && (
               <div
-                className="text-text-tertiary dark:text-darkText-1 text-sm line-clamp-1"
+                className="text-text-tertiary dark:text-darkText-1 text-sm line-clamp-3"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}

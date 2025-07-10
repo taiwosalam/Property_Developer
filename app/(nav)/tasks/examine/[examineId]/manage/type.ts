@@ -27,6 +27,7 @@ interface ResponseData {
   examine_date: string;
   company: Company;
   added_guest: string;
+  assign_staff: string;
   image: Image[];
   service: string[];
   inspection_checklist: InspectionChecklistItem[];

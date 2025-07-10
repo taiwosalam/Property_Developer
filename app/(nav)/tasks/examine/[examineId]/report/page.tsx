@@ -95,6 +95,14 @@ const ExamineReportpage = () => {
             </div>
             <div className="flex items-start justify-between gap-2">
               <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                Assigned Staff:
+              </p>
+              <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
+                {pageData?.assign_staff}
+              </p>
+            </div>
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
                 Added Guest:
               </p>
               <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">

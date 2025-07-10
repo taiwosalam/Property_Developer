@@ -35,7 +35,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleCardClick = () => {
-    if (status == "flagged") {
+    if (status === "flagged" && type !== "rejected") {
       setModalOpen(true);
     }
   };
@@ -55,31 +55,24 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
               noMargin
             />
           </div>
-          {type == "mobile" ? (
-            <p
-              className={`text-black text-xs font-normal ${secondaryFont.className} dark:text-white`}
-            >
-              User ID: {data?.user_id}
-            </p>
-          ) : (
-            <p
-              className={`text-black dark:text-darkText-1 text-xs font-normal ${secondaryFont.className}`}
-            >
-              {data?.email}
-            </p>
-          )}
+
+          <p
+            className={`text-black dark:text-darkText-1 text-xs font-normal ${secondaryFont.className}`}
+          >
+            {data?.email}
+          </p>
         </div>
       </div>
       <div className="custom-flex-col gap-4">
         <div className="custom-flex-col gap-1">
           <p
-            className={`text-text-quaternary dark:text-white text-base font-bold capitalize ${secondaryFont.className}`}
+            className={`text-text-quaternary dark:text-white text-base font-bold capitalize truncate ${secondaryFont.className}`}
           >
             {data?.property_name}
           </p>
           <div className="flex items-center gap-1">
             <Picture src={LocationIcon} alt="location" width={12} height={16} />
-            <p className="text-text-disabled text-xs font-normal capitalize">
+            <p className="text-text-disabled text-xs font-normal capitalize truncate">
               {data?.address}
             </p>
           </div>
@@ -95,18 +88,22 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
               <p className="dark:text-white">{data?.date}</p>
             </div>
           </div>
-          <div className={`custom-flex-col ${secondaryFont.className} text-right`}>
-            <p className="text-brand-primary text-2xl font-bold">
+          <div
+            className={`custom-flex-col ${secondaryFont.className} text-right`}
+          >
+            <p className="text-brand-primary text-2xl font-bold truncate max-w-[200px]">
               {(data?.currency ?? "") + data?.total_package}
             </p>
             <p className="text-text-label dark:text-white text-xs font-semibold">
               Total Package
             </p>
-            <p className="text-text-disabled text-base font-medium capitalize">
+            <p className="text-text-disabled text-base font-medium capitalize truncate  max-w-[150px]">
               <span className="text-highlight">
-                {(data?.currency ?? "") + data?.yearly_amount}
+                {(data?.currency ?? "") +
+                  data?.yearly_amount +
+                  "000000000000000"}
               </span>{" "}
-              / {data?.renew_fee_period}
+              / <span className="">{data?.renew_fee_period}</span>
             </p>
           </div>
         </div>
@@ -118,7 +115,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
     <div
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.03)" }}
       className={clsx(
-        "custom-flex-col gap-4 pb-4 rounded-2xl overflow-hidden border border-solid bg-white dark:bg-darkText-primary",
+        "custom-flex-col gap-4 pb-4 rounded-2xl overflow-hidden border-2 border-solid bg-white dark:bg-darkText-primary",
         {
           "border-[#FACC15]": type === "pending",
           "border-[#8B5CF6]": type === "evaluated",
@@ -149,7 +146,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           onClose={() => setIsOpened(false)}
         />
       </div>
-      {status === "flagged" ? (
+      {status === "flagged" &&
+      type !== "rejected" &&
+      type !== "evaluated" &&
+      type !== "approved" ? (
         <div
           role="button"
           onClick={handleCardClick}
@@ -171,6 +171,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             flag_details={data?.flag_details}
             id={data?.id}
             setIsOpen={setModalOpen}
+            type={type}
           />
         </ModalContent>
       </Modal>

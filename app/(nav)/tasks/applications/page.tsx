@@ -156,15 +156,16 @@ const Applications = () => {
 
   const handleEvaluation = async (
     id: string,
-    flagged: "flagged" | "unflagged"
+    flagged: "flagged" | "unflagged",
+    status: "evaluated" | "rejected" | "pending" | "approved"
   ) => {
-    if (flagged === "flagged") {
+    if (flagged === "flagged" || status === "evaluated") {
       return;
     }
     try {
       const res = await rejectApplication(id, "evaluate");
       if (res) {
-       // toast.success("Application evaluated");
+        // toast.success("Application evaluated");
       }
     } catch (error) {
       console.log(error);
@@ -278,7 +279,11 @@ const Applications = () => {
                       key={item.id}
                       className="w-full"
                       onClick={() =>
-                        handleEvaluation(item?.id?.toString(), item?.flagged)
+                        handleEvaluation(
+                          item?.id?.toString(),
+                          item?.flagged,
+                          item?.application_status
+                        )
                       }
                     >
                       <ApplicationCard

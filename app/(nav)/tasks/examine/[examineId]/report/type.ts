@@ -16,6 +16,7 @@ export type ExamineReportApiResponse = {
       phone: string;
     };
     added_guest: string;
+    assign_staff: string;
     image: {
       path: string;
     }[];
