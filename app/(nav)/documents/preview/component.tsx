@@ -173,8 +173,6 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
   witness,
   lawFirm,
 }) => {
-  console.log("landlord", landlord);
-  console.log("tenant", tenant);
   return (
     <div>
       <div className="flex flex-col items-start mt-8 font-bold fixedText-color">
@@ -187,9 +185,22 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
         </p>
       </div>
       <div className="mt-10 fixedText-color flex flex-col gap-1">
-        <p>
-          -----------------------------------------------------------------------------
-        </p>
+        {/* TENANT SIGNATURE */}
+        <>
+          {tenant?.signature ? (
+            <div className="w-[150px] h-[50px]">
+              <Image
+                alt="tenant signature"
+                src={tenant?.signature}
+                width={100}
+                height={100}
+                className="w-full h-full object-contain"
+              />
+            </div>
+          ) : (
+            <p>-----------------------------------------------------------------------------</p>
+          )}
+        </>
         <p className="uppercase text-[25px] fixedText-color font-bold tracking-wide">
           {tenant?.name}
         </p>
@@ -199,9 +210,19 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
       </div>
 
       <div className="mt-6 flex flex-col fixedText-color gap-1">
-        <p>
-          -----------------------------------------------------------------------------
-        </p>
+        <>
+          {landlord?.signature ? (
+            <Image
+              alt="landlord signature"
+              src={landlord?.signature}
+              width={100}
+              height={100}
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <p>-----------------------------------------------------------------------------</p>
+          )}
+        </>
         <p className="uppercase text-[25px] font-bold fixedText-color tracking-wide">
           {landlord?.name}
         </p>

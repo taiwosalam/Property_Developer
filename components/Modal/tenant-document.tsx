@@ -13,8 +13,6 @@ import {
   WitnessSignatureDate,
 } from "@/app/(nav)/documents/preview/component";
 import {
-  // witnessLandlord,
-  // witnessTenant,
   witness,
 } from "@/app/(nav)/documents/preview/data";
 import Button from "../Form/Button/button";
@@ -165,8 +163,6 @@ export const AgreementPreview = ({
           <WitnessSignatureDate
             landlord={attestation.landlord}
             tenant={attestation.tenant}
-            // landlord={witnessLandlord}
-            // tenant={witnessTenant}
             witness={witness}
             lawFirm={lawFirm}
           />

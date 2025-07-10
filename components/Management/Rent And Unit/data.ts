@@ -46,6 +46,7 @@ export const transformTenantData = (res: TenantResponse): Occupant => {
     occupation: data.Others.occupation || "--- ---",
     religion: data.religion || "--- ---", //TODO - Add religion
     nextOfKin: data.next_of_kin || {},
+    tenant_signature: data.signature || "",
     badgeColor: data.user_tier
       ? tierColorMap[data?.user_tier as keyof typeof tierColorMap]
       : undefined,

@@ -316,25 +316,12 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
         )}
       </SectionContainer>
 
-      {/* CURRENT RENTS */}
-      {/* <LandlordTenantInfoSection title="current rent">
-        {tenant?.current_rent?.length === 0 ? (
-          <p className="text-center text-gray-500 text-md py-4">
-            Tenant does not have any rent yet!
-          </p>
-        ) : (
-          tenant?.current_rent?.map((rent, index) => (
-            <UnitItem
-              key={index}
-              {...rent}
-              tenantId={tenant?.id}
-              page="tenant-profile"
-              cautionDeposit={String(rent.caution_deposit)}
-              tenantAgent={tenant?.user_tag}
-            />
-          ))
-        )}
-      </LandlordTenantInfoSection> */}
+      {/* Edit attachment */}
+      {tenant?.user_tag === "mobile" && (
+        <TenantEditContext.Provider value={{ data: tenant }}>
+          <TenantEditAttachmentSection noDefault />
+        </TenantEditContext.Provider>
+      )}
 
       {/* CURRENT RENTS */}
       <LandlordTenantInfoSection title="current rent">
@@ -404,85 +391,6 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
           ))
         )}
       </LandlordTenantInfoSection>
-
-
-      {tenant?.user_tag === "mobile" && (
-        <TenantEditContext.Provider value={{ data: tenant }}>
-          <TenantEditAttachmentSection />
-        </TenantEditContext.Provider>
-      )}
-
-      {/* Shared Documents */}
-      {/* <LandlordTenantInfoSection title="shared documents">
-        {tenant?.documents?.length === 0 ? (
-          <div className="flex justify-center items-center h-32 text-neutral-500">
-            Tenant does not have any document yet
-          </div>
-        ) : (
-          <>
-            {Object.entries(groupedDocuments).map(
-              ([documentType, documents]) => {
-                if (documentType === "others") return null;
-                return (
-                  <LandlordTenantInfoSection
-                    minimized
-                    title={documentType}
-                    key={documentType}
-                  >
-                    <div className="flex flex-wrap gap-4">
-                      {documents?.map((document) => (
-                        <LandlordTenantInfoDocument
-                          key={document.id}
-                          {...document}
-                        />
-                      ))}
-                    </div>
-                  </LandlordTenantInfoSection>
-                );
-              }
-            )}
-            {groupedDocuments?.["others"] && (
-              <LandlordTenantInfoSection
-                minimized
-                title="other documents"
-                key="other document"
-              >
-                <div className="flex flex-wrap gap-4">
-                  {groupedDocuments?.["others"]?.map((document) => (
-                    <LandlordTenantInfoDocument
-                      key={document.id}
-                      {...document}
-                    />
-                  ))}
-                </div>
-              </LandlordTenantInfoSection>
-            )}
-          </>
-        )}
-      </LandlordTenantInfoSection> */}
-
-      {/* <LandlordTenantInfoSection title="previous rent">
-        <div className="pointer-events-none custom-flex-col gap-4">
-          {tenant?.previous_rent?.length === 0 ? (
-            <p className="text-center text-gray-500 text-lg py-4">
-              Tenant does not have any previous rent yet
-            </p>
-          ) : (
-            tenant?.previous_rent?.map((rent, index) => (
-              <UnitItem
-                key={index}
-                {...rent}
-                noActionBtn
-                tenantId={tenant?.id}
-                cautionDeposit={String(rent.caution_deposit)}
-                tenantAgent={tenant?.user_tag}
-                page="tenant-profile"
-              />
-            ))
-          )}
-        </div>
-      </LandlordTenantInfoSection> */}
-
 
       {/* PREVIOUS RENTS */}
       <LandlordTenantInfoSection title="previous rent">

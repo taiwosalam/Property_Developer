@@ -83,6 +83,7 @@ export interface Occupant {
   lg: string;
   tier?: number;
   nextOfKin?: NextOfKin;
+  tenant_signature?: string;
   badgeColor?: BadgeIconColors;
 }
 
@@ -158,6 +159,7 @@ interface TenantData {
   Others: Others;
   next_of_kin: NextOfKin;
   note: Note;
+  signature?: string;
   marital_status: string;
   religion?: string;
   documents: any[]; // You can replace 'any' with a specific type if needed

@@ -59,6 +59,7 @@ export interface PropertiesManaged {
   branch: string;
   last_updated: string;
   accountOfficer: string;
+  documents: any[];
 };
 
 export interface PreviousProperties {
@@ -83,6 +84,7 @@ export interface PreviousProperties {
   branch: string;
   last_updated: string;
   accountOfficer: string;
+  documents: any[];
 };
 
 // interface PropertyManaged {
