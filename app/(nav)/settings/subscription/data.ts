@@ -302,6 +302,7 @@ export const transformEnrollmentHistory = (
       start_date: enrollment.date ? enrollment.date : "--- ---",
       due_date: enrollment.expire_date || "--- ---",
       status: enrollment.status || "--- ---",
+      // auto_renew: enrollment.auto_renew || 0,
     };
   });
 };

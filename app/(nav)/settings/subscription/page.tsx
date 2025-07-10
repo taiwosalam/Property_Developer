@@ -36,6 +36,7 @@ const Enrollment = () => {
   const { company_id } = usePersonalInfoStore();
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+  const [autoRenew, setAutoRenew] = useState(false);
   const [pageData, setPageData] = useState<
     PropertyManagerSubsTransformedPlan[]
   >([]);
@@ -54,6 +55,13 @@ const Enrollment = () => {
   useRefetchOnEvent("refetchEnrollments", () =>
     refetchEnrollments({ silent: true })
   );
+
+  useEffect(() => {
+    if (companyEnrollments?.data) {
+      console.log(companyEnrollments.data.auto_renew);
+      setAutoRenew(companyEnrollments.data.auto_renew === 1);
+    }
+  }, [companyEnrollments]);
 
   const enrollments_subs = companyEnrollments
     ? transformEnrollmentHistory(companyEnrollments.data.enrollments)
@@ -246,6 +254,7 @@ const Enrollment = () => {
                   <SettingsEnrollmentCard
                     key={plan.id}
                     {...plan}
+                    autoRenew={autoRenew}
                     expiry_date={ACTIVE_PLAN_EXPIRY_DATE}
                     showFeatures={showFeatures}
                     setShowFeatures={setShowFeatures}

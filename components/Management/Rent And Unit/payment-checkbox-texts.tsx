@@ -148,11 +148,11 @@ const PaymentConfirmationText: React.FC<PaymentConfirmationTextProps> = ({
         </div>
         {nonNaira && (
           <div className="flex items-start gap-2">
-            <Checkbox
+            {/* <Checkbox
               radio
               checked={canSubmitRent}
               onChange={() => setGlobalStore("canSubmitRent", !canSubmitRent)}
-            />
+            /> */}
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
               Your property was listed in a currency other than Naira. As a
               result, automatic payments and wallet transactions are not
@@ -181,11 +181,11 @@ const PaymentConfirmationText: React.FC<PaymentConfirmationTextProps> = ({
         </div>
         {nonNaira && (
           <div className="flex items-start gap-2">
-            <Checkbox
+            {/* <Checkbox
               radio
               checked={canSubmitRent}
               onChange={() => setGlobalStore("canSubmitRent", !canSubmitRent)}
-            />
+            /> */}
             <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
               Your property was listed in a currency other than Naira. As a
               result, automatic payments and wallet transactions are not
@@ -228,11 +228,11 @@ const PaymentConfirmationText: React.FC<PaymentConfirmationTextProps> = ({
       {/* NON NAIRA */}
       {nonNaira && (
         <div className="flex items-start gap-2">
-          <Checkbox
+          {/* <Checkbox
             radio
             checked={canSubmitRent}
             onChange={() => setGlobalStore("canSubmitRent", !canSubmitRent)}
-          />
+          /> */}
           <p className="text-sm font-normal text-text-secondary dark:text-darkText-1 w-fit mr-auto">
             Your property was listed in a currency other than Naira. As a
             result, automatic payments and wallet transactions are not

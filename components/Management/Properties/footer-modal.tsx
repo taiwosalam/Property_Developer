@@ -45,18 +45,18 @@ const FooterModal = ({
 
       setTimeout(() => {
         form?.requestSubmit(); // Submit the form first
-        setTimeout(() => {
-          const lastUnit = addedUnits[addedUnits.length - 1];
-          for (let i = 0; i < count; i++) {
-            const newUnit = {
-              ...lastUnit,
-              id: `temp-${Date.now()}-${i}`,
-              notYetUploaded: true,
-            };
-            addUnit(newUnit);
-          }
-          setIsOpen(false);
-        }, 500); // Delay duplication slightly to ensure form submission completes
+        // setTimeout(() => {
+        //   const lastUnit = addedUnits[addedUnits.length - 1];
+        //   for (let i = 0; i < count; i++) {
+        //     const newUnit = {
+        //       ...lastUnit,
+        //       id: `temp-${Date.now()}-${i}`,
+        //       notYetUploaded: true,
+        //     };
+        //     addUnit(newUnit);
+        //   }
+        //   setIsOpen(false);
+        // }, 500); // Delay duplication slightly to ensure form submission completes
       }, 0);
     } else if (addedUnits.length > 0) {
       // Regular duplication logic
