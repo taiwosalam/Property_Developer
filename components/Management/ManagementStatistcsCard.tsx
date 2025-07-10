@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { formatNumber } from "@/utils/number-formatter";
 
 interface DonutChartProps {
   oldValue: number;
@@ -138,7 +139,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
           {/* Bottom section with total and "This month" */}
           <div className="flex justify-between items-end">
             <p className="text-[32px] font-bold text-text-label dark:text-darkText-1">
-              {total}
+              {formatNumber(total)}
             </p>
             <p className="font-normal text-xs text-neutral-6 dark:text-darkText-2 whitespace-nowrap">
               This month

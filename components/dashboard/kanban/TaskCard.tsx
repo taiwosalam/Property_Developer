@@ -57,6 +57,9 @@ interface TaskCardProps {
   statusChanger?: boolean;
   viewOnly?: boolean;
   styles?: string;
+  taskStatus?: string | null;
+  onConfirm?: (note: string, status?: "completed" | "rejected" | "processing") => void;
+  onClick?: () => void;
 }
 
 export type TaskType = "Task";
@@ -74,6 +77,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   statusChanger,
   viewOnly,
   styles,
+  taskStatus,
+  onConfirm,
+  onClick,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const wasRecentlyDragged = useRef(false);
@@ -132,7 +138,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const bg =
     task.content.status === "processing"
       ? "#FDB82C"
-      : task.content.status === "approved"
+      : task.content.status === "completed"
       ? "#01BA4C"
       : "#E9212E";
 
@@ -154,11 +160,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   const handleCardClick = () => {
     if (viewOnly) return;
+    if (noDrag && onClick) {
+      onClick();
+    }
     if (!isDragging && !wasRecentlyDragged.current && noDrag) {
       setModalOpen(true);
     } else {
       router.push(`/tasks/complaints/${task?.id}/manage-complain/`);
     }
+  };
+
+  const handleSubmit = (notes: string) => {
+    onConfirm?.(notes);
+    setModalOpen(false);
   };
 
   return (
@@ -230,14 +244,18 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   className="text-text-tertiary dark-text-darkText-1 font-normal"
                   hidden={isNew}
                 >
-                  {task.content.progress || 30}/100%
+                  {task?.content?.status === "completed"
+                    ? 100
+                    : task.content.progress}
+                  /100%
                 </p>
               )}
             </div>
             <div className="py-2">
               <Progress
                 value={
-                  task?.content?.status === "rejected"
+                  task?.content?.status === "rejected" ||
+                  task?.content?.status === "completed"
                     ? 100
                     : task?.content?.progress
                 }
@@ -285,17 +303,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </CardContent>
       </Card>
 
-      {cardData && (
+      {/* {cardData && (
         <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
           <ModalContent>
             <TaskModal
+              onConfirm={handleSubmit}
               statusChanger={statusChanger}
               complaintData={cardData}
               setModalOpen={setModalOpen}
+              targetStatus={taskStatus}
             />
           </ModalContent>
         </Modal>
-      )}
+      )} */}
     </div>
   );
 };

@@ -12,6 +12,7 @@ import { UnitStatusColors } from "./property-preview";
 import { actions } from "../Rent And Unit/data";
 import { ActionButton } from "../Rent And Unit/action-button";
 import { empty } from "@/app/config";
+import { AttachedDocument } from "@/app/(nav)/management/tenants/types";
 
 export interface UnitItemProps {
   propertyType: string;
@@ -40,6 +41,7 @@ export interface UnitItemProps {
   tenantAgent?: "web" | "mobile";
   caution_deposit?: number;
   page?: "tenant-profile" | "others";
+  documents?: AttachedDocument[];
 }
 
 const UnitItem: React.FC<UnitItemProps> = ({

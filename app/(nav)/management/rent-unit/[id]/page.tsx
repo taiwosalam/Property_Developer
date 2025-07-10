@@ -111,7 +111,7 @@ const UnitPreviewPage = () => {
           <h1 className="text-lg md:text-xl lg:text-2xl font-bold capitalize">
             {unit_data.unit_name}
           </h1>
-          <p className="text-sm text-text-label font-normal flex items-center gap-1 capitalize">
+          <p className="text-sm text-text-label font-normal flex itmems-center gap-1 capitalize">
             <LocationIcon />
             {unit_data.address}
           </p>

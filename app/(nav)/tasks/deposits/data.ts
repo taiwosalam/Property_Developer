@@ -22,6 +22,7 @@ export interface DepositRequestDataType {
   pictureSrc: string;
   requestId: string;
   propertyName: string;
+  accountOfficer?: string;
   state: string;
   unitDetails: string;
   amount: string;
@@ -107,10 +108,12 @@ export const transformCautionDeposit = (
         : "--- ---",
       status: d.status,
       pictureSrc: d.user?.picture,
+      accountOfficer: d.accountOfficer || "--- ---",
       tier_id: d.user?.tier_id,
       requestId: String(d.id),
       propertyName: d.property_name,
       state: d.state,
+
       unitDetails: d.caution_deposits_details || d.unit_name,
       amount: d.deposit_amount ? formatToNaira(d.deposit_amount) : "--- ---",
       branch: d.branch_name,

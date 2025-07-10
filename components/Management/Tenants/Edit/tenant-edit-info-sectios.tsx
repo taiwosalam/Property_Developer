@@ -584,7 +584,7 @@ export const TenantEditBankDetailsSection = () => {
   );
 };
 
-export const TenantEditAttachmentSection = () => {
+export const TenantEditAttachmentSection = ({ noDefault }: { noDefault?: boolean }) => {
   const { data: tenant } = useTenantEditContext();
   const [documents, setDocuments] = useState<TenantData["documents"]>([]);
   const [reqLoading, setReqLoading] = useState(false);
@@ -662,11 +662,11 @@ export const TenantEditAttachmentSection = () => {
   };
 
   useEffect(() => {
-    if (tenant?.documents) {
+    if (tenant?.documents && !noDefault) {
       // Initialize documents state with the tenant's documents
       setDocuments(tenant.documents);
     }
-  }, [tenant?.documents]);
+  }, [tenant?.documents, noDefault]);
 
   // Group documents for display
   const groupedDocuments = groupDocumentsByType(documents);
@@ -749,7 +749,7 @@ export const TenantEditAttachmentSection = () => {
               </div>
             </div>
           ))}
-          {documents.length === 0 && (
+          {!noDefault && documents.length === 0 && (
             <div className="flex justify-center items-center h-32 text-neutral-500">
               No documents available
             </div>

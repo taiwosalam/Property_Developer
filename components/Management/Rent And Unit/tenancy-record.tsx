@@ -39,8 +39,7 @@ const TenancyRecord = ({
   renewalPackage,
   tenant,
   unit_id,
-  // documents,
-  unit_documents,
+  documents, // Use documents prop instead of unit_documents
   currency,
   index,
   move_in,
@@ -58,20 +57,16 @@ const TenancyRecord = ({
   renew_total_package?: string;
   renewalPackage?: string;
   tenant?: any;
-  // documents?: any[];
-  unit_documents?: any[];
+  documents?: any[]; // Updated to include documents prop
   currency?: Currency;
   index?: number;
 }) => {
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
-  // const transformedDocs = transformDocuments(documents || []);
-  const transformedDocs = transformDocuments(unit_documents || []);
+  const transformedDocs = transformDocuments(documents || []); // Use documents instead of unit_documents
   const groupedDocuments = groupDocumentsByType(transformedDocs);
   const CURRENCY =
     currencySymbols[currency as keyof typeof currencySymbols] ||
     currencySymbols["naira"];
-
-  console.log("grouped doc", groupedDocuments);
 
   // Initialize records and pagination from the tenant prop
   const [records, setRecords] = useState<any[]>(tenant?.rents || []);
@@ -153,8 +148,7 @@ const TenancyRecord = ({
   const tableData = records.map((record, index) => ({
     "S/N": index + 1,
     payment_date: record.payment_date
-      // ? dayjs(record.payment_date).format("MMM D, YYYY")
-      ?   record.payment_date
+      ? record.payment_date
       : "",
     amount_paid: record.amount_paid
       ? `${CURRENCY} ${formatNumber(record.amount_paid)}`
@@ -216,12 +210,11 @@ const TenancyRecord = ({
             }
             style={{ width: "130px" }}
           />
-          {/* <DetailItem
-            label="Period/Duration"
-            value={period}
+          <DetailItem
+            label="Email"
+            value={email}
             style={{ width: "130px" }}
-          /> */}
-          <DetailItem label="Email" value={email} style={{ width: "130px" }} />
+          />
           <DetailItem
             label="Renewal Rent"
             value={
@@ -249,19 +242,6 @@ const TenancyRecord = ({
             value={dayjs(move_out).format("MMM DD YYYY")}
             style={{ width: "130px" }}
           />
-          {/* <DetailItem
-            label="Renewal Package"
-            value={
-              renew_total_package
-                ? `${
-                    currencySymbols[
-                      currency as keyof typeof currencySymbols
-                    ] || "₦"
-                  }${formatNumber(parseFloat(renew_total_package))}`
-                : undefined
-            }
-            style={{ width: "130px" }}
-          /> */}
         </div>
         <Picture
           containerClassName="flex-shrink-0 custom-secondary-bg rounded-md"
@@ -315,16 +295,39 @@ const TenancyRecord = ({
               <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
                 Shared Documents
               </h4>
-              {Object?.entries(groupedDocuments || {}).map(
-                ([documentType, documents]) => {
-                  if (documentType === "others") return null; // Skip "other document" for now
-                  return (
-                    <div key={documentType} className="space-y-[6px]">
-                      <h6 className="text-text-secondary text-base font-medium capitalize">
-                        {documentType}
+              {Object.keys(groupedDocuments).length === 0 ? (
+                <p className="text-center text-gray-500 text-md py-4">
+                  No documents available for this tenant
+                </p>
+              ) : (
+                <>
+                  {Object.entries(groupedDocuments).map(
+                    ([documentType, documents]) => {
+                      if (documentType === "others") return null; // Skip "other document" for now
+                      return (
+                        <div key={documentType} className="space-y-[6px]">
+                          <h6 className="text-text-secondary text-base font-medium capitalize">
+                            {documentType} Documents
+                          </h6>
+                          <div className="flex flex-wrap gap-4">
+                            {documents?.map((document) => (
+                              <LandlordTenantInfoDocument
+                                key={document.id}
+                                {...document}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                  )}
+                  {groupedDocuments?.["others"] && (
+                    <div className="space-y-[6px]">
+                      <h6 className="text-text-secondary text-base font-medium">
+                        Other Documents
                       </h6>
                       <div className="flex flex-wrap gap-4">
-                        {documents?.map((document) => (
+                        {groupedDocuments?.["others"].map((document) => (
                           <LandlordTenantInfoDocument
                             key={document.id}
                             {...document}
@@ -332,23 +335,8 @@ const TenancyRecord = ({
                         ))}
                       </div>
                     </div>
-                  );
-                }
-              )}
-              {groupedDocuments?.["others"] && (
-                <div className="space-y-[6px]">
-                  <h6 className="text-text-secondary text-base font-medium">
-                    Other Documents
-                  </h6>
-                  <div className="flex flex-wrap gap-4">
-                    {groupedDocuments?.["others"].map((document) => (
-                      <LandlordTenantInfoDocument
-                        key={document.id}
-                        {...document}
-                      />
-                    ))}
-                  </div>
-                </div>
+                  )}
+                </>
               )}
             </div>
             {/* CLOSE BUTTON */}

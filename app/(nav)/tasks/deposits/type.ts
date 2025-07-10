@@ -39,6 +39,7 @@ type DepositRequest = {
   state: string;
   user_name: string;
   profile_picture: string;
+  accountOfficer: string;
   tier_id: number;
   unit_name: string;
   is_inventory: false;

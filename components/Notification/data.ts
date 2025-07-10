@@ -29,8 +29,10 @@ export const notification_icons: Record<string, StaticImageData | any> = {
   "wallet transaction": NotificationPayment,
   "rent and unit": NotificationProperty,
   "agent community": NotificationService,
+  "new request published": NotificationService,
   "property draft": NotificationProperty,
-  "property request": NotificationPropertyRequest,
+  "new property request": NotificationPropertyRequest,
+  "new post published": NotificationService,
 };
 
 
@@ -46,7 +48,7 @@ export const notification_links: Record<string, string> = {
   subscription: "/settings/subscription",
   "wallet transaction notification": "/wallet",
   "rent and unit notification": "/management/rent-unit",
-  "agent community notification": "/community/agent-forum",
+  "agent community": "/community/agent-forum",
   "property draft notification": "/listing/property",
   "property request notification": "/community/agent-request",
   "invoice notification": "/accounting/invoice",

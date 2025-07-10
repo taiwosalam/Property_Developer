@@ -150,7 +150,7 @@ export const transformApplicationDetailsPageData = (
     profile_details: {
       user_id: user?.user_id,
       is_flagged: user?.is_flagged,
-      fullName: user?.name.toLowerCase() || "--- ---",
+      fullName: user?.name?.toLowerCase() || "--- ---",
       tier_id: user?.tier_id,
       application_duration,
       email: user?.email || "--- ---",
@@ -272,7 +272,7 @@ export const transformApplicationDetailsPageData = (
         company_name: flag?.flagger?.company || "",
         user_id: flag?.flagger?.user_id,
         is_flagged: flag.is_flagged,
-        reason: flag?.reason ?? null,
+        reason: flag?.reason || "--- ---",
         appeal_reason: flag?.appeal_reason ?? null,
         status: flag?.status as
           | "pending"

@@ -131,9 +131,11 @@ export const transformApplicationData = (
       full_name: item?.user?.name?.toLowerCase(),
       tier_id: item?.user?.tier_id,
       user_id: item?.user?.encodedId,
-      
+
       photo: item?.user?.profile,
-      flagged: item?.user.is_flagged === true ? "flagged" : "unflagged",
+      flagged: item?.flags.some((flag) => flag.is_flagged)
+        ? "flagged"
+        : "unflagged",
       user_type: item?.user?.user_type || "mobile",
       email: item?.user?.email,
       property_name: item?.unit.name,
@@ -142,10 +144,10 @@ export const transformApplicationData = (
       phone_number: item?.user?.phone,
       date: item?.application_date,
       total_package: item?.unit?.renew_total_package
-        ? Math.round(Number(item?.unit?.renew_total_package)).toLocaleString()
+        ? Math.round(Number(item?.unit?.renew_total_package))?.toLocaleString()
         : "--- ---",
       yearly_amount: item?.unit?.renew_total_package
-        ? Math.round(Number(item?.unit?.renew_total_package)).toLocaleString()
+        ? Math.round(Number(item?.unit?.renew_total_package))?.toLocaleString()
         : "--- ---", //item?.unit?.fee_amount,
       period_type: item?.unit?.period, //item?.unit?.fee_period,
       currency: currencies[item?.unit?.currency],

@@ -41,6 +41,8 @@ export const useAgreementData = () => {
       }
 
       const selectedTenant = occupant || selectedOccupant;
+
+      console.log("selectedTenant", selectedTenant);
       try {
         const transformed = transformDocumentData(
           { document: unitData.property_document },
