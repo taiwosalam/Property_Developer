@@ -128,6 +128,8 @@ const AnnouncementPage = () => {
   if (error) <ServerError error={error} />;
   if (isNetworkError) <NetworkError />;
 
+
+
   return (
     <div className="space-y-9">
       <div className="page-header-container">
@@ -273,7 +275,7 @@ const AnnouncementPage = () => {
                   description={announcement.description}
                   id={announcement.company_id.toString()}
                   views={announcement.views_count}
-                  newViews={announcement.views_count}
+                  newViews={announcement?.views_count_today}
                   likes={announcement.likes_count}
                   dislikes={announcement.dislikes_count}
                   imageUrls={announcement.images.map((img) => ({

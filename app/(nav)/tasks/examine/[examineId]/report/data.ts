@@ -4,6 +4,7 @@ export interface IExamineReportPageData {
   id: number;
   inspection_date: string;
   guest: string;
+  assign_staff: string;
   description: string;
   services: string[];
   inspection_checklist: {
@@ -24,6 +25,7 @@ export const transformExamineReportPageData = (
     inspection_date: data?.examine_date || "___ ___",
     description: data?.description || "___ ___",
     guest: data?.added_guest || "___ ___",
+    assign_staff: data?.assign_staff || "___ ___",
     services:
       data?.service?.length > 0
         ? data?.service?.map((service) => (service ? service : "N/A"))

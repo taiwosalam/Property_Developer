@@ -8,6 +8,8 @@ import { createReminder } from "@/app/(nav)/tasks/complaints/[complainId]/manage
 import { toast } from "sonner";
 import { Data } from "@dnd-kit/core";
 import { useParams } from "next/navigation";
+import DateInput from "@/components/Form/DateInput/date-input";
+import dayjs, { Dayjs } from "dayjs";
 
 interface CreateModalProps {
   activeDate: Date;
@@ -18,6 +20,12 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
   setIsOpen,
 }) => {
   const formattedDate = format(activeDate, "dd, MMMM yyyy");
+
+  const [reminderDate, setReminderDate] = useState<Dayjs | null>(null);
+
+  const handleDateChange = (date?: Dayjs | null) => {
+    setReminderDate(date || null);
+  };
 
   const [inputTitle, setInputTitle] = useState("");
   const [textAreaNote, setTextAreaNote] = useState("");
@@ -33,11 +41,13 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
     setTextAreaNote(value);
   };
 
+  console.log(reminderDate);
+
   const handleCreateReminder = async () => {
     const params = {
       title: inputTitle,
       note: textAreaNote,
-      date: activeDate,
+      date: reminderDate,
       id,
     };
 
@@ -68,8 +78,14 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
           onChange={handleInputTitle}
         />
         <div className="space-y-1 text-sm font-medium">
-          <p className="text-text-tertiary">Date Picked:</p>
-          <p className="text-text-secondary">{formattedDate}</p>
+          <DateInput
+            id="reminder_date"
+            label="Reminder date"
+            value={reminderDate}
+            //minDate={dayjs(new Date())}
+            disablePast
+            onChange={handleDateChange}
+          />
         </div>
         <TextArea
           id="note"

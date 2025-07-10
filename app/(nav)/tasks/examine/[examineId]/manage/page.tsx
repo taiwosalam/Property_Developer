@@ -61,7 +61,7 @@ const ManageExaminepage = () => {
   const handleExamineUpdate = async () => {
     if (!paramId) return;
 
-    if (notes && notes.trim().length < 30) {
+    if (notes && notes.trim().length < 204) {
       toast.error("Please enter a note with at least 30 characters.");
       return;
     }
@@ -155,20 +155,28 @@ const ManageExaminepage = () => {
   const commonBoxClassName = "py-6 px-4 rounded-lg space-y-2";
   return (
     <div>
-      <div className="flex flex-col gap-8 pb-24">
+      <div className="flex flex-col gap-8">
         <BackButton>Examine Title (Rent Increase)</BackButton>
         <div className="grid md:grid-cols-1 gap-8">
           <LandlordTenantInfoBox
-            className={`${commonBoxClassName} w-full`}
+            className={`min-h-0 ${commonBoxClassName} w-full`}
             style={commonBoxStyle}
           >
-            <div className="flex justify-between items-center px-4">
+            <div className="flex justify-between px-4">
               <div className="flex-col items-center justify-between gap-2">
                 <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
                   Inspected Date:
                 </p>
                 <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
                   {examinePageData?.date}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Assigned Staff:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {examinePageData?.assign_staff}
                 </p>
               </div>
               <div className="flex-col items-start justify-between gap-2">
@@ -180,13 +188,13 @@ const ManageExaminepage = () => {
                 </p>
               </div>
 
-              <div className="py-3">
+              <div className="pb-3 max-w-lg">
                 <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
-                  Description
+                  Description;
                 </p>
                 {examinePageData?.description && (
                   <div
-                    className="text-sm font-medium text-text-secondary dark:text-darkText-2"
+                    className="text-sm font-medium text-text-secondary dark:text-darkText-2 break-words whitespace-normal overflow-wrap-anywhere"
                     dangerouslySetInnerHTML={{
                       __html: examinePageData?.description,
                     }}

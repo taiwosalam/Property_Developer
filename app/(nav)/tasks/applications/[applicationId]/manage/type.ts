@@ -70,6 +70,20 @@ export type TApplicationDetailsResponse = {
       phone: string;
       relationship: string;
     };
+    business_Profile: {
+      business_logo: string;
+      business_description: string;
+      business_name: string;
+      business_email: string;
+      business_address: string;
+      business_phone: string;
+      facebook: string;
+      x: string;
+      instagram: string;
+      youtube: string;
+      tiktok: string;
+      website: string;
+    };
     guarantors:
       | {
           name: string;

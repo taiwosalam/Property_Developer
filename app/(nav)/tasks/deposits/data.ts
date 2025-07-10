@@ -16,6 +16,7 @@ export const depositRequestOptionsWithDropdown = [
 
 export interface DepositRequestDataType {
   userName: string;
+  userId?: number;
   tier_id?: number;
   requestDate: string;
   status: "pending" | "completed" | "progress";
@@ -106,14 +107,14 @@ export const transformCautionDeposit = (
       requestDate: d.created_at
         ? dayjs(d.created_at).format("DD/MM/YYYY hh:mm A")
         : "--- ---",
-      status: d.status,
+      status: d.status && d.status?.toLowerCase() === "approved" ? "completed" : d.status,
       pictureSrc: d.user?.picture,
       accountOfficer: d.accountOfficer || "--- ---",
       tier_id: d.user?.tier_id,
       requestId: String(d.id),
       propertyName: d.property_name,
       state: d.state,
-
+      userId: d.user?.id,
       unitDetails: d.caution_deposits_details || d.unit_name,
       amount: d.deposit_amount ? formatToNaira(d.deposit_amount) : "--- ---",
       branch: d.branch_name,
@@ -172,6 +173,7 @@ export const updateCautionDeposit = async (
       }
     );
     if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchDeposit"));
       return true;
     }
   } catch (error) {

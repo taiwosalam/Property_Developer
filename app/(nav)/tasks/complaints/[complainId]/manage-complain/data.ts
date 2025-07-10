@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { ComplaintDetailResponse } from "../../types";
 import api, { handleAxiosError } from "@/services/api";
 
@@ -142,7 +142,7 @@ export const transformComplaintManage = (
 interface ITaskReminder {
   title: string;
   note: string;
-  date: Date;
+  date: Dayjs | null;
   id: string;
 }
 export const createReminder = async ({
@@ -151,9 +151,14 @@ export const createReminder = async ({
   date,
   id,
 }: ITaskReminder) => {
-  const endpoint = `complaints/${id}/reminder?title=${title}&note=${note}&reminder_date=${date}`;
+  const payload = {
+    title,
+    note,
+    reminder_date: date,
+  };
+  const endpoint = `complaints/${id}/reminder`;
   try {
-    const res = await api.post(endpoint);
+    const res = await api.post(endpoint, payload);
     if (res) {
       window.dispatchEvent(new Event("manageComplain"));
       return true;
@@ -212,14 +217,18 @@ export const sendTaskComment = async (id: string, content: string) => {
   }
 };
 
-const PROGRESS_STATUS = 16.7;
-export const updateProgressStatus = async (id: string, statusText: string) => {
+//const PROGRESS_STATUS = 16.7;
+export const updateProgressStatus = async (
+  id: string,
+  statusText: string,
+  progress: number
+) => {
   const payload = {
     text: statusText,
   };
   try {
     const res = await api.post(
-      `/complaints/${id}/update-progress?progress=${PROGRESS_STATUS}`,
+      `/complaints/${id}/update-progress?progress=${progress}`,
       payload,
       {
         headers: {

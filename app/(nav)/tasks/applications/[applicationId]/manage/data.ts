@@ -80,6 +80,20 @@ export interface IApplicationDetails {
     phone_number: string;
     relationship: string;
   };
+  business_profile: {
+    business_logo: string;
+    business_description: string;
+    business_name: string;
+    business_email: string;
+    business_address: string;
+    business_phone: string;
+    facebook: string;
+    x: string;
+    instagram: string;
+    youtube: string;
+    tiktok: string;
+    website: string;
+  };
   others: {
     occupation: string;
     employment_type: string;
@@ -125,6 +139,7 @@ export const transformApplicationDetailsPageData = (
       profile_details,
       bank_details,
       next_of_kin,
+      business_Profile,
       guarantors,
       flags,
       property_details,
@@ -147,6 +162,20 @@ export const transformApplicationDetailsPageData = (
       rent: property_details?.rent || "--- ---",
       local_government: property_details?.local_government || "--- ---",
       account_officer: property_details?.account_officer || "--- ---",
+    },
+    business_profile: {
+      business_address: business_Profile?.business_address,
+      business_logo: business_Profile?.business_logo,
+      business_description: business_Profile?.business_description,
+      business_email: business_Profile?.business_email,
+      business_name: business_Profile?.business_name,
+      business_phone: business_Profile?.business_phone,
+      facebook: business_Profile?.facebook,
+      x: business_Profile?.x,
+      instagram: business_Profile?.instagram,
+      youtube: business_Profile?.youtube,
+      tiktok: business_Profile?.tiktok,
+      website: business_Profile?.website,
     },
     profile_details: {
       user_id: user?.user_id,

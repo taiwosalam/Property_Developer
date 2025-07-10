@@ -13,30 +13,12 @@ import { toast } from "sonner";
 import { string } from "zod";
 
 const assignTaskCheckList = [
-  {
-    label: "Assign Task",
-    value: "Assign task",
-  },
-  {
-    label: "Task Inspection",
-    value: "Task inspection",
-  },
-  {
-    label: "Create Maintenance",
-    value: "Create maintenance",
-  },
-  {
-    label: "Task Perfection",
-    value: "Task perfection",
-  },
-  {
-    label: "Rechecking of Task",
-    value: "Rechecking of task",
-  },
-  {
-    label: "Close Task",
-    value: "Close task",
-  },
+  { label: "Assign Task", value: "Assign task", progress: 16.7 },
+  { label: "Task Inspection", value: "Task inspection", progress: 33.4 },
+  { label: "Create Maintenance", value: "Create maintenance", progress: 50.1 },
+  { label: "Task Perfection", value: "Task perfection", progress: 66.8 },
+  { label: "Rechecking of Task", value: "Rechecking of task", progress: 83.5 },
+  { label: "Close Task", value: "Close task", progress: 100 },
 ];
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
@@ -150,8 +132,12 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
     [task_bar, lastCheckedTask]
   );
 
+  console.log(checkedTasks);
+
   const getTaskToSubmit = () => {
-    return lastCheckedTask;
+    if (!lastCheckedTask) return null;
+    const task = assignTaskCheckList.find((t) => t.value === lastCheckedTask);
+    return task ? { task: task.value, progress: task.progress } : null;
   };
 
   // Handle form submission
@@ -164,7 +150,11 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
     }
     try {
       setIsLoading(true);
-      const res = await updateProgressStatus(id, taskToSubmit);
+      const res = await updateProgressStatus(
+        id,
+        taskToSubmit.task,
+        taskToSubmit.progress
+      );
       if (res) {
         toast.success(`Status updated: ${taskToSubmit}`);
         // Clear lastCheckedTask after successful submission

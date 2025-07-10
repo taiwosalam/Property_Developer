@@ -52,6 +52,7 @@ export interface IExaminePageData {
   id: number;
   date: string;
   added_guest: string;
+  assign_staff: string;
   description: string;
   inspection_summary_notes: string;
   inspection_checklist: {
@@ -70,10 +71,11 @@ export const transformExamineManageData = (
   const { data } = res;
   return {
     id: data?.id,
-    date: data?.examine_date,
-    added_guest: data?.added_guest,
-    description: data?.description,
-    inspection_summary_notes: data?.inspection_summary_note,
+    date: data?.examine_date || "--- ---",
+    added_guest: data?.added_guest || "--- ---",
+    assign_staff: data?.assign_staff || "--- ---",
+    description: data?.description || "--- ---",
+    inspection_summary_notes: data?.inspection_summary_note || "--- ---",
     inspection_checklist: data?.inspection_checklist?.map((checklist) => ({
       ...checklist,
     })),

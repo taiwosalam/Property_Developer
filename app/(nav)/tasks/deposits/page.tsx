@@ -38,11 +38,11 @@ const transformToDepositRequestCardProps = (
     cardType: "deposit",
     cardViewDetails: [
       { label: "Property Name", accessor: "propertyName" },
-      { label: "Location (State)", accessor: "state" },
       { label: "Unit Details", accessor: "unitDetails" },
       { label: "Amount", accessor: "amount" },
       { label: "Branch", accessor: "branch" },
       { label: "Account Manager", accessor: "accountOfficer" },
+      { label: "Location (State)", accessor: "state" },
     ],
     ...data,
   };
@@ -145,7 +145,7 @@ const DepositRequest = () => {
   if (isNetworkError) {
     return <NetworkError />;
   }
-  if (loading) {
+  if (silentLoading) {
     return <PropertyRequestPageLoader pageTitle="Caution Deposit Request" />;
   }
   if (error) {
@@ -216,7 +216,7 @@ const DepositRequest = () => {
                 properties. Once a deposit is recorded, the details will appear
                 here. Caution deposits help you keep track of security deposits
                 made by tenants, ensuring accurate management and easy
-                reference. 
+                reference.
               </p>
             }
           />

@@ -107,26 +107,25 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
           </div>
 
           {/* Image */}
-          {propertyImages.length > 0 && (
-            <div
-              role="button"
-              className="flex-shrink-0 w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
-              onClick={() => setScreenModal(true)}
-            >
-              {propertyImages.length > 1 && (
-                <div className="absolute z-[1] left-[50%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
-                  <CameraIcon />
-                  <p className="text-black font-medium text-[10px]">+{1}</p>
-                </div>
-              )}
-              <Image
-                src={propertyImages[0] || empty}
-                alt={"card"}
-                fill
-                className="object-cover object-center"
-              />
-            </div>
-          )}
+
+          <div
+            role="button"
+            className="flex-shrink-0 w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
+            onClick={() => setScreenModal(true)}
+          >
+            {propertyImages.length > 1 && (
+              <div className="absolute z-[1] left-[50%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+                <CameraIcon />
+                <p className="text-black font-medium text-[10px]">+{1}</p>
+              </div>
+            )}
+            <Image
+              src={propertyImages[0] || empty}
+              alt={"card"}
+              fill
+              className="object-cover object-center"
+            />
+          </div>
         </div>
 
         <SectionSeparator className="my-4 h-[2px]" />

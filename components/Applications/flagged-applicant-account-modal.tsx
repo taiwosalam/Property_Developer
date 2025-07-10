@@ -10,6 +10,7 @@ import { rejectApplication } from "@/app/(nav)/tasks/applications/[applicationId
 
 interface IFlaggedModal {
   id?: number;
+  type?: "pending" | "evaluated" | "approved" | "rejected" | "mobile";
   setIsOpen?: (val: boolean) => void;
   flag_details?: {
     flagger_id: number;
@@ -29,10 +30,14 @@ const FlaggedApplicantAccountModal = ({
   flag_details,
   id,
   setIsOpen,
+  type,
 }: IFlaggedModal) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRejectApplication = async (path: string) => {
+  const handleRejectApplication = async (
+    path: string,
+    appStatus?: "evaluated" | "rejected" | "pending" | "approved" | "mobile"
+  ) => {
     if (!id) {
       return;
     }
@@ -45,6 +50,9 @@ const FlaggedApplicantAccountModal = ({
           setIsOpen?.(false);
         }
       } else {
+        if (appStatus === "evaluated" || appStatus === "rejected") {
+          return;
+        }
         const res = await rejectApplication(id.toString(), "evaluate");
         if (res) {
           //toast.success("Application evaluate");
@@ -97,7 +105,7 @@ const FlaggedApplicantAccountModal = ({
               size="base_bold"
               className="py-2 px-8"
               href={`/tasks/applications/${id}/manage`}
-              onClick={() => handleRejectApplication("evaluate")}
+              onClick={() => handleRejectApplication("evaluate", type)}
             >
               skip
             </Button>
