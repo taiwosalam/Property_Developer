@@ -50,15 +50,27 @@ const DynamicFooterActions = () => {
     if (formInDom && canSubmit) {
       setSaveClick(true);
       formInDom.requestSubmit();
-      // if (formSubmitted) {
-      //   setAddUnitStore("newForm", false);
-      //   setGlobalStore("closeUnitForm", true);
-      // }
       return;
     }
   };
 
-  console.log("formSubmitted", formSubmitted);
+  const handleRemoveClick = () => {
+    // Always remove the form when Remove is clicked
+    setAddUnitStore("newForm", false);
+    setGlobalStore("closeUnitForm", true);
+    setGlobalStore("allowEditUnit", false);
+    
+    // Reset form if it exists
+    const formInDom = document.getElementById(
+      "add-unit-form"
+    ) as HTMLFormElement | null;
+    if (formInDom) {
+      formInDom.reset();
+    }
+    
+    // Reset form state
+    resetForm();
+  };
 
   return (
     <div className="my-4">
@@ -68,10 +80,7 @@ const DynamicFooterActions = () => {
             size="sm_medium"
             variant="light_red"
             className="py-1 px-8"
-            onClick={() => {
-              setAddUnitStore("newForm", false);
-              setGlobalStore("closeUnitForm", true);
-            }}
+            onClick={handleRemoveClick}
           >
             Remove
           </Button>

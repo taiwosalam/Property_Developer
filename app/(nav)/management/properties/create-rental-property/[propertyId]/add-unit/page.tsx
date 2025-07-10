@@ -96,10 +96,9 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
-  console.log("newForm", newForm);
+  
 
   useEffect(() => {
-    console.log("newForm", newForm);
     if (newForm) {
       setShowUnitForm(true);
     } else {
@@ -116,9 +115,6 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
 
   const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
 
-  console.log("SHOW_UNIT_FORM", SHOW_UNIT_FORM);
-  console.log("newForm", newForm);
-
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -127,7 +123,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     return <div className="text-red-500">Property Data not found</div>;
 
 
-  console.log("SHOW_UNIT_FORM", SHOW_UNIT_FORM);
+
 
   return (
     <FlowProgress

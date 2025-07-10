@@ -13,7 +13,7 @@ import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { toggleAutoRenewPlan } from "@/app/(nav)/settings/subscription/data";
 import { toast } from "sonner";
 
@@ -304,22 +304,29 @@ export const FeaturesToggle: React.FC<{
   handleCardClick?: () => void;
   planTitle: string;
   isFree: boolean;
+  autoRenew?: boolean;
 }> = ({
   showFeatures = false,
   getFeaturesText = () => "View Features",
   handleCardClick = () => {},
   planTitle = "",
   isFree = false,
+  autoRenew = false,
 }) => {
-  const [autoRenew, setAutoRenew] = useState(false);
+  const [autoRenewState, setAutoRenewState] = useState(autoRenew);
   const [isToggling, setIsToggling] = useState(false);
   const clickProcessed = useRef(false);
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
 
+  // Update local state when prop changes
+  useEffect(() => {
+    setAutoRenewState(autoRenew);
+  }, [autoRenew]);
+
   // const handleToggleAutoRenew = async () => {
   //   setAutoRenew(!autoRenew);
   //   const payload = {
-  //     auto_renew: autoRenew ? 0 : 1,
+  //     auto_renew: autoRenew ? 0 : 1, 
   //   };
   //   const SUCCESS_MESSAGE = autoRenew
   //     ? "Auto-Renewal disabled"
@@ -338,8 +345,8 @@ export const FeaturesToggle: React.FC<{
     if (isToggling || clickProcessed.current) return;
     clickProcessed.current = true; // Mark click as processed
     setIsToggling(true);
-    const newAutoRenew = !autoRenew;
-    setAutoRenew(newAutoRenew);
+    const newAutoRenew = !autoRenewState;
+    setAutoRenewState(newAutoRenew);
     const payload = {
       auto_renew: newAutoRenew ? 1 : 0,
     };
@@ -357,6 +364,7 @@ export const FeaturesToggle: React.FC<{
       console.error("Error toggling Auto-Renewal:", error);
     } finally {
       setIsToggling(false);
+      window.dispatchEvent(new Event("refetchEnrollments"));
       clickProcessed.current = false; // Reset for next click
     }
   };
@@ -395,7 +403,7 @@ export const FeaturesToggle: React.FC<{
             darkText
             name="auto_renew"
             state={{
-              isChecked: autoRenew,
+              isChecked: autoRenewState,
               setIsChecked: handleToggleAutoRenew,
             }}
           >
