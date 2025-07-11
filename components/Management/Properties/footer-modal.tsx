@@ -38,6 +38,9 @@ const FooterModal = ({
   const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const form = e.currentTarget.form;
+    const formInDom = document.getElementById(
+      "add-unit-form"
+    ) as HTMLFormElement | null;
 
     if (editMode && addedUnits.length > 0) {
       // If in edit mode and there are added units, submit first, then duplicate
@@ -45,18 +48,21 @@ const FooterModal = ({
 
       setTimeout(() => {
         form?.requestSubmit(); // Submit the form first
-        // setTimeout(() => {
-        //   const lastUnit = addedUnits[addedUnits.length - 1];
-        //   for (let i = 0; i < count; i++) {
-        //     const newUnit = {
-        //       ...lastUnit,
-        //       id: `temp-${Date.now()}-${i}`,
-        //       notYetUploaded: true,
-        //     };
-        //     addUnit(newUnit);
-        //   }
-        //   setIsOpen(false);
-        // }, 500); // Delay duplication slightly to ensure form submission completes
+        // if no form and there's addedunit, then user click no, just duplicate the last unit
+        if (!form) {
+          setTimeout(() => {
+            const lastUnit = addedUnits[addedUnits.length - 1];
+            for (let i = 0; i < count; i++) {
+              const newUnit = {
+                ...lastUnit,
+                id: `temp-${Date.now()}-${i}`,
+                notYetUploaded: true,
+              };
+              addUnit(newUnit);
+            }
+            setIsOpen(false);
+          }, 500); // Delay duplication slightly to ensure form submission completes
+        }
       }, 0);
     } else if (addedUnits.length > 0) {
       // Regular duplication logic
@@ -90,9 +96,13 @@ const FooterModal = ({
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();
       setAddUnitStore("newForm", true);
+      setGlobalStore("closeUnitForm", false);
+      setGlobalStore("allowEditUnit", true);
       setClickedNo?.(true);
       if (formInDom) {
-        setGlobalStore("allowEditUnit", true);
+        setAddUnitStore("newForm", true);
+      setGlobalStore("closeUnitForm", false); 
+    setGlobalStore("allowEditUnit", true);
         formInDom.reset();
       }
     } else {
@@ -100,6 +110,8 @@ const FooterModal = ({
       setIsOpen(false);
       e.currentTarget.form?.requestSubmit();
       if (formInDom) {
+        setAddUnitStore("newForm", true);
+        setGlobalStore("closeUnitForm", false); 
         setGlobalStore("allowEditUnit", true);
         formInDom.reset();
       }

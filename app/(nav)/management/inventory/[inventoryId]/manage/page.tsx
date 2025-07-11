@@ -66,6 +66,7 @@ const ManageInventory = () => {
     useState<boolean>(false);
   const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [video, setVideo] = useState<string>("");
 
   const { data, loading, error, isNetworkError } = useFetch<InventoryFetchData>(
     `/inventory/unit/${inventoryId}`
@@ -83,6 +84,7 @@ const ManageInventory = () => {
         };
         setInventoryData(updatedInventoryData);
         setInventoryItems(apiData.items);
+        setVideo(apiData.video);
       }
     };
 
@@ -232,6 +234,7 @@ const ManageInventory = () => {
     property_title: "",
   };
 
+
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -250,6 +253,7 @@ const ManageInventory = () => {
                   name="video_link"
                   placeholder="Video Link"
                   className="w-full"
+                  defaultValue={video}
                   style={input_styles}
                 />
               </div>

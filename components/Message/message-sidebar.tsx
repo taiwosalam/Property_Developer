@@ -40,7 +40,7 @@ const MessagesSidebar = ({
           <Input
             id="search"
             className="w-full"
-            placeholder="Search for messages"
+            placeholder="Search for messages..."
             leftIcon={"/icons/search-icon.svg"}
             inputClassName="pr-[52px] border-transparent"
             value={searchQuery}

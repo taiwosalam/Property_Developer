@@ -225,7 +225,7 @@ const MessageUserProfileModal: React.FC<MessageUserProfileModalProps> = ({
 
   // --- Render guards ---
   if (loading) return <MessageUserProfileSkeleton />;
-  if (isNetworkError) return <NetworkError />;
+  if (isNetworkError) return <div className="text-red-500"> Network Error </div>
   if (error) return <div className="text-red-500">{error}</div>;
 
   // --- Render ---

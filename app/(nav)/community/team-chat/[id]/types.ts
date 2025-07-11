@@ -36,6 +36,7 @@ type GroupChatUser = {
   email: string;
   is_verified: boolean;
   pivot: Pivot;
+  roles: any;
   profile: {
     picture: string | null;
     user_id: number;
