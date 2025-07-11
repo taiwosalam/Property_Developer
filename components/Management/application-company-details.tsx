@@ -4,6 +4,7 @@ import TruncatedText from "../TruncatedText/truncated-text";
 import Button from "../Form/Button/button";
 import Picture from "../Picture/picture";
 import Image from "next/image";
+import { empty } from "@/app/config";
 
 interface ICompanyApplicantModal {
   business_logo: string;
@@ -46,12 +47,12 @@ const CompanyApplicantModal = ({ ...props }: ICompanyApplicantModal) => {
         <div className="flex items-start gap-6 mb-8">
           <div className="flex-shrink-0 w-1/3 relative">
             <Image
-              src={business_logo}
+              src={business_logo || empty}
               alt="Business logo"
               width={100}
               height={100}
-              fill
-              className="w-full h-full"
+              //fill
+              className="w-full h-1/2"
             />
           </div>
 

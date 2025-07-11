@@ -132,8 +132,6 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
     [task_bar, lastCheckedTask]
   );
 
-  console.log(checkedTasks);
-
   const getTaskToSubmit = () => {
     if (!lastCheckedTask) return null;
     const task = assignTaskCheckList.find((t) => t.value === lastCheckedTask);
@@ -156,7 +154,7 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
         taskToSubmit.progress
       );
       if (res) {
-        toast.success(`Status updated: ${taskToSubmit}`);
+        toast.success(`Status updated: ${taskToSubmit?.task}`);
         // Clear lastCheckedTask after successful submission
         setLastCheckedTask(null);
         setIsOpen?.(false);

@@ -61,7 +61,7 @@ const TaskStatusProgress = ({
           >
             {`${
               percentage === 100 ? "Completed" : "Processing"
-            } (${percentage}% done)`}
+            } (${Math.round(percentage)}% done)`}
           </p>
         </div>
         <div className="space-y-1">

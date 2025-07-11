@@ -53,7 +53,7 @@ export interface PropertyDataProps {
   branch_id: number;
   inventory_id: number;
   land_lord_id: number;
-  account_officer: string;
+  account_officer: any[];
   user_id: number;
   company_id: number;
   agency_fee: number;
@@ -146,8 +146,6 @@ export const transformDraftUnitData = (
     ? response.data.invites
     : response.data;
 
-  console.log("propertyData", propertyData);
-
   const transformedProperties: any = propertyData.data.map((p) => {
     const status = p?.invites?.length > 0 ? "request" : "draft";
     const updatedAt = moment(p.updated_at);
@@ -184,7 +182,7 @@ export const transformDraftUnitData = (
       //   p.currency || "naira"
       // ),
       // account_officer: "Nil",
-      account_manager: p.account_officer ||  "--- ---",
+      account_manager: p.account_officer.length > 0 ? p.account_officer[0]?.user?.name  :  "--- ---",
       status: status,
     };
   });

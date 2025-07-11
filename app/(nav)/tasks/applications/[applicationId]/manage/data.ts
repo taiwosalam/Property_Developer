@@ -26,6 +26,7 @@ export interface IRentHistory {
   managedBy: string;
 }
 export interface IApplicationDetails {
+  application_status: "pending" | "evaluated" | "approved" | "rejected";
   property_details: {
     application_date: string;
     property_title: string;
@@ -133,6 +134,7 @@ export const transformApplicationDetailsPageData = (
     data: {
       application_date,
       application_id,
+      application_status,
       rent_history,
       application_duration,
       user,
@@ -146,6 +148,7 @@ export const transformApplicationDetailsPageData = (
     },
   } = res;
   return {
+    application_status,
     property_details: {
       application_date,
       property_title: property_details?.property_title || "--- ---",
@@ -164,18 +167,18 @@ export const transformApplicationDetailsPageData = (
       account_officer: property_details?.account_officer || "--- ---",
     },
     business_profile: {
-      business_address: business_Profile?.business_address,
+      business_address: business_Profile?.business_address || "--- ---",
       business_logo: business_Profile?.business_logo,
-      business_description: business_Profile?.business_description,
-      business_email: business_Profile?.business_email,
-      business_name: business_Profile?.business_name,
-      business_phone: business_Profile?.business_phone,
-      facebook: business_Profile?.facebook,
-      x: business_Profile?.x,
-      instagram: business_Profile?.instagram,
-      youtube: business_Profile?.youtube,
-      tiktok: business_Profile?.tiktok,
-      website: business_Profile?.website,
+      business_description: business_Profile?.business_description || "--- ---",
+      business_email: business_Profile?.business_email || "--- ---",
+      business_name: business_Profile?.business_name || "--- ---",
+      business_phone: business_Profile?.business_phone || "--- ---",
+      facebook: business_Profile?.facebook || "--- ---",
+      x: business_Profile?.x || "--- ---",
+      instagram: business_Profile?.instagram || "--- ---",
+      youtube: business_Profile?.youtube || "--- ---",
+      tiktok: business_Profile?.tiktok || "--- ---",
+      website: business_Profile?.website || "--- ---",
     },
     profile_details: {
       user_id: user?.user_id,

@@ -1,4 +1,5 @@
 // Types
+import { useCalendar } from "./calendar-context";
 import { calendar_event_tags, calendar_week_days } from "./data";
 
 // Imports
