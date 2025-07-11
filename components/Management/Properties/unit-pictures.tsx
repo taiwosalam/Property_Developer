@@ -18,11 +18,11 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-  const { images, setImages, isEditing, formResetKey } = useUnitForm();
+  const { images, setImages, isEditing, formResetKey, notYetUploaded } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const maxImages = propertyType === "facility" ? 5 : 14;
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
-  const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
+  // const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
 
   const { canSubmit, missingFields, handleInputChange } =
     useContext(FlowProgressContext);
@@ -74,6 +74,8 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
     form?.requestSubmit();
   };
 
+  console.log("added units", addedUnits)
+
   return (
     <div
       ref={ref}
@@ -87,7 +89,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
           {propertyType === "rental" && <span className="text-red-500">*</span>}
           Unit Pictures
         </h4>
-        {allowEditUnit && !hasNotYetUploaded && (
+        {!notYetUploaded && (
           <div className="flex gap-4 justify-end edit-unit-action-btns">
             <Button
               size="sm_medium"

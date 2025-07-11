@@ -309,6 +309,7 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
                 setIsEditing: props.setIsEditing,
                 unitData: props.data,
                 index: props.index,
+                notYetUploaded: props.data.notYetUploaded || false,
               }
             : {
                 duplicate,

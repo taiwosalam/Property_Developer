@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { Modal, ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { TeamChatGroupDetailsModal } from "../GroupDetailsModal";
@@ -31,11 +31,19 @@ const Chat = () => {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const user_id = useAuthStore((state) => state.user_id);
-
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const rhizome = useRef<string | null>(null);
   const [pageData, setPageData] = useState<null | IChatDetailsPage>(null);
   const [groupedConversations, setGroupedConversations] = useState<any[]>([]);
   const { detailsStep, setDetailsStep } = useTeamChat();
+
+
+  // Reset detailsStep when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setDetailsStep("detail");
+    }
+  }, [isOpen, setDetailsStep]);
 
   const {
     data: apiData,
@@ -125,7 +133,7 @@ const Chat = () => {
           >
             <ChevronLeftIcon size={20} />
           </button>
-          <Modal>
+          <Modal state={{ isOpen, setIsOpen }}>
             <ModalTrigger asChild>
               <div className="flex items-center gap-4 text-left">
                 <Picture
@@ -148,8 +156,8 @@ const Chat = () => {
                 heading={
                   detailsStep === "detail" ? "Group Details" : "Add New Member"
                 }
-                style={{ 
-                  height: "70vh", 
+                style={{
+                  height: "70vh",
                   position: "relative",
                   width: detailsStep !== "detail" ? "35%" : undefined
                 }}

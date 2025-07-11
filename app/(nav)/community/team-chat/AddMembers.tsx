@@ -1,39 +1,17 @@
 "use client";
-import { removeGroupMember, team_chat_members_data } from "./data";
-import {
-  FilterIcons,
-  PlusIcon,
-  SearchIcon,
-  TrashIcon,
-} from "@/public/icons/icons";
-import { useEffect, useState } from "react";
-import {
-  Modal,
-  ModalContent,
-  ModalTrigger,
-  useModal,
-} from "@/components/Modal/modal";
-import { useTeamChatStore } from "@/store/teamChatStore";
-import Image from "next/image";
-import Avatar1 from "@/public/empty/avatar-1.svg";
-import DeleteModal from "./DeleteModal";
-import useFetch from "@/hooks/useFetch";
-import { useParams } from "next/navigation";
-import { TeamMessageCardSkeleton } from "@/components/Skeleton/member-card-skeleton";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { useAuthStore } from "@/store/authStore";
-import MemberComponent from "./Member";
-import { GroupChatResponse, User } from "./types";
-import { toast } from "sonner";
+import { removeGroupMember } from "./data";
+import { FilterIcons, PlusIcon, SearchIcon, TrashIcon } from "@/public/icons/icons";
+import { useState } from "react";
+import { Modal, ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
 import { useTeamChat } from "@/contexts/teamChatContext";
 import Picture from "@/components/Picture/picture";
 import { empty } from "@/app/config";
-import CreateGroupModal from "./create-group-modal";
 import FilterButton from "@/components/FilterButton/filter-button";
 import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
 import Input from "@/components/Form/Input/input";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import { toast } from "sonner";
+import { useParams } from "next/navigation";
 
 interface AddMembersProps {
   groupId: number;
@@ -50,17 +28,27 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { setIsOpen } = useModal();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { setDetailsStep, onFilterApply, filterRole, filterCounts } = useTeamChat();
+  const { setDetailsStep, onFilterApply, filterRole } = useTeamChat();
 
-  console.log("group_members", group_members);
+  // Compute filterCounts based on group_members
+  const filterCounts = group_members.reduce(
+    (counts, member) => {
+      const role = member.role?.toLowerCase();
+      if (role === "director") counts.director++;
+      else if (role === "staff") counts.staff++;
+      else if (role === "manager") counts.manager++;
+      counts.all++;
+      return counts;
+    },
+    { director: 0, staff: 0, manager: 0, all: 0 }
+  );
 
   // Label to role mapping
   const labelToRoleMap: Record<string, string> = {
     Director: "director",
-    "Other Staff": "staff",
-    "Account Manager": "account",
-    "Branch Manager": "manager",
-    All: "All",
+    "Other Staff": "staff", // Fixed to match filterOptions label
+    "Account Manager": "manager",
+    All: "all",
   };
 
   // Filtering logic
@@ -81,15 +69,17 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
       const res = await removeGroupMember(groupId, userId);
       if (res) {
         toast.success("Deleted successful");
+        window.dispatchEvent(new Event("refetch_team_message")); // Trigger refetch to update group_members
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error("Failed to delete member");
     }
   };
 
   return (
     <div className="transition-all duration-300 ease-in-out relative">
-      {/* sticky search and filter */}
+      {/* Sticky search and filter */}
       <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
         <div className="flex-1 relative">
           <Input
@@ -113,18 +103,17 @@ const AddMembers = ({ group_members, groupId }: AddMembersProps) => {
               onClose={() => setAnchorEl(null)}
               onFilterApply={onFilterApply}
               filterOptions={[
-                { label: "Director", value: filterCounts["director"] || 0 },
-                { label: "Other Staff", value: filterCounts["staff"] || 0 },
-                { label: "Account Manager", value: filterCounts["account"] || 0 },
-                { label: "Branch Manager", value: filterCounts["manager"] || 0 },
-                { label: "All", value: filterCounts["All"] || 0 },
+                { label: "Director", value: filterCounts.director },
+                { label: "Other Staff", value: filterCounts.staff },
+                { label: "Account Manager", value: filterCounts.manager },
+                { label: "All", value: filterCounts.all },
               ]}
             />
           </div>
         </div>
       </div>
 
-      {/* members list */}
+      {/* Members list */}
       {filteredMembers && filteredMembers.length > 0 ? (
         filteredMembers.map((item, index) => (
           <div
