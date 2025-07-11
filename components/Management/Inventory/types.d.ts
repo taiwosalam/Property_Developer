@@ -10,7 +10,7 @@ export interface InventoryCardDataProps {
   updated_at?: string;
   // property_name: string;
   branch_name: string;
-  account_manager: any;
+  account_manager?: any;
   account_officer?: any;
   branch_id?: string;
   title?: string;
