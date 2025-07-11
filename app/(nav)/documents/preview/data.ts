@@ -217,11 +217,12 @@ const formatContent = (content: string, currency: string): string => {
 // 1. Transform Parties (Landlord and Tenant Names)
 const transformParties = (
   document: any,
-  selectedOccupant?: Occupant
+  selectedOccupant?: Occupant,
+  unitData?: any
 ): DocumentPreviewData["parties"] => {
   const landlordName =
     // document.landlord_name ||
-    document.property?.landlord?.profile?.name || "--- ---";
+    document.property?.landlord?.profile?.name || unitData?.landlord_name ||  "--- ---";
   const tenantName = selectedOccupant?.name || "--- ---";
   return { landlord: landlordName, tenant: tenantName };
 };
@@ -313,25 +314,25 @@ const transformAttestation = (
   property?: any,
   rentStartDate?: string
 ): DocumentPreviewData["attestation"] => {
-  const date = rentStartDate || "--- ---";
+  const date = rentStartDate || "";
   const landlord = {
     name: landlordName,
-    address: `${document?.property?.landlord?.profile?.address || "--- ---"}, ${
-      document?.property?.landlord?.profile?.lga || "--- ---"
-    }, ${document?.property?.landlord?.profile?.city || "--- ---"}, ${
-      document?.property?.landlord?.profile?.state || "--- ---"
+    address: `${document?.property?.landlord?.profile?.address || ""}, ${
+      document?.property?.landlord?.profile?.lga || ""
+    }, ${document?.property?.landlord?.profile?.city || ""}, ${
+      document?.property?.landlord?.profile?.state || ""
     }`,
-    signature: document?.property?.landlord?.signature,
+    signature: document?.property?.landlord?.signature || unitData?.landlord_signature,
   };
   const tenant = {
     name: tenantName,
     address: selectedOccupant?.address
-      ? `${selectedOccupant.address || "--- ---"}, ${
-          selectedOccupant.city || "--- ---"
-        }, ${selectedOccupant.lg || "--- ---"}, ${
-          selectedOccupant.state || "--- ---"
+      ? `${selectedOccupant.address || ""}, ${
+          selectedOccupant.city || ""
+        }, ${selectedOccupant.lg || ""}, ${
+          selectedOccupant.state || ""
         }`
-      : unitData?.address || "--- ---",
+      : unitData?.address || "",
     signature: selectedOccupant?.tenant_signature,
   };
   return { date, landlord, tenant };
@@ -478,7 +479,7 @@ export const transformDocumentData = (
   const currency = unitData?.currency || property?.currency || "naira";
   const chargePenalty = property.rent_penalty !== 0;
 
-  const parties = transformParties(document, selectedOccupant);
+  const parties = transformParties(document, selectedOccupant, unitData);
   const propertyDescription = transformPropertyDescription(unitData, property);
   const attorney = transformAttorney(templateDocument);
   const lawFirm = transformLawFirm(templateDocument);

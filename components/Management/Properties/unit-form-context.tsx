@@ -28,6 +28,7 @@ interface UnitFormContextType extends UnitFormState {
   // Added types for shouldRedirect state
   shouldRedirect: boolean;
   setShouldRedirect: (shouldRedirect: boolean) => void;
+  notYetUploaded?: boolean;
 }
 
 export const UnitFormContext = createContext<UnitFormContextType | undefined>(

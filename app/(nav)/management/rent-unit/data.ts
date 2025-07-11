@@ -1038,6 +1038,7 @@ export const transformUnitData = (response: any) => {
     bedrooms: data?.bedroom || "",
     bathrooms: data?.bathroom || "",
     landlord_name: data?.landlord?.name || "",
+    landlord_signature: data?.landlord?.signature || "",
     toilets: data?.toilet || "",
     tenant_name: data?.user?.name || "",
     unit_features: data?.facilities || "",

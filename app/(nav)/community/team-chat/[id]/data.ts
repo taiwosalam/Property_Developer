@@ -21,6 +21,8 @@ export interface IChatDetailsPage {
     role: string;
   }[];
 }
+
+
 export const transformTeamDetails = (
   data: GroupChatDetailsResponse
 ): IChatDetailsPage => {
@@ -40,7 +42,7 @@ export const transformTeamDetails = (
       id: user.id,
       picture: user.profile?.picture || null,
       fullname: user?.name,
-      role: "user",
+      role: user.roles[0]?.name.replace(/(_\d+)?$/, "") || "user",
     })),
   };
 };

@@ -27,7 +27,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertyType = useAddUnitStore((s) => s.propertyType);
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
-  const [allowEdit, setAllowEdit] = useState(false);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const router = useRouter();
 
   const handleSubmit = async (
@@ -88,27 +88,20 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
       setAddUnitStore("propertyDetails", transformedData.propertyDetails);
       setAddUnitStore("propertySettings", transformedData.propertySettings);
       setAddUnitStore("addedUnits", transformedData.addedUnits);
-      setAddUnitStore("newForm", showNewUnitForm);
+      // Removed setAddUnitStore("newForm", showNewUnitForm) to avoid overwriting newForm
     }
   }, [propertyData, setAddUnitStore]);
 
   useEffect(() => {
-    if (showNewUnitForm) {
-      setAddUnitStore("editMode", true);
+    console.log("newForm:", newForm, "showNewUnitForm:", showNewUnitForm, "closeUnitForm:", closeUnitForm);
+    if (newForm || showNewUnitForm) {
+      setGlobalStore("closeUnitForm", false);
     }
-  }, [showNewUnitForm, setAddUnitStore]);
+  }, [newForm, showNewUnitForm, setGlobalStore]);
 
 
-  const SHOW_UNIT_FORM = newForm || showNewUnitForm || (addedUnits.length === 0 && !closeUnitForm);
-  
-  // Reset closeUnitForm when user explicitly wants to show the form
-  // useEffect(() => {
-  //   if (newForm || showNewUnitForm) {
-  //     const setGlobalStore = useGlobalStore.getState().setGlobalInfoStore;
-  //     setGlobalStore("closeUnitForm", false);
-  //   }
-  // }, [newForm, showNewUnitForm]);
-
+  // SHOW_UNIT_FORM constant
+  const SHOW_UNIT_FORM = !closeUnitForm && (newForm || showNewUnitForm || addedUnits.length === 0);
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -128,6 +121,7 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
         propertyId={propertyId}
         onAddUnit={() => {
           setShowNewUnitForm(true);
+          setGlobalStore("closeUnitForm", false); // Explicitly reset closeUnitForm
           setTimeout(() => {
             window.scrollTo({
               top: document.documentElement.scrollHeight,
@@ -147,10 +141,6 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
             <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
           </div>
         )}
-
-        {/* {showNewUnitForm && !closeUnitForm && (
-          <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
-        )} */}
       </div>
     </div>
   );

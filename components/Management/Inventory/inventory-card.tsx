@@ -23,7 +23,10 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
     created_date: dayjs(data.created_at).format("MMM DD, YYYY") || "__,__,__",
     last_edited: dayjs(data.updated_at).format("MMM DD, YYYY") || "__,__,__",
     branch_name: data.branch_name || "--- ---",
-    account_officer: data?.account_officer?.name || "--- ---",
+    account_manager:
+      data?.account_officer?.name === "N/A"
+        ? "--- ---"
+        : data?.account_officer?.name || "--- ---",
     imgSrc: previewImg,
     total_unit: data?.total_unit || 0,
   };

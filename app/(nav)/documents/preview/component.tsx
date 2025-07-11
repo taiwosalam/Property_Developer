@@ -210,7 +210,7 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
       </div>
 
       <div className="mt-6 flex flex-col fixedText-color gap-1">
-        <>
+      <div className="w-[150px] h-[50px]">
           {landlord?.signature ? (
             <Image
               alt="landlord signature"
@@ -222,7 +222,7 @@ export const WitnessSignatureDate: React.FC<WitnessSignatureDateProps> = ({
           ) : (
             <p>-----------------------------------------------------------------------------</p>
           )}
-        </>
+        </div>
         <p className="uppercase text-[25px] font-bold fixedText-color tracking-wide">
           {landlord?.name}
         </p>

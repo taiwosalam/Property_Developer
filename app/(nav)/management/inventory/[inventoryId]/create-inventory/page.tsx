@@ -62,12 +62,12 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
 
     try {
       const payload = new FormData();
-      payload.append("video_link", formData.get("video_link") as string);
+      payload.append("video", formData.get("video_link") as string);
 
       inventoryData.forEach((item, index) => {
         if (Array.isArray(item.image)) {
           item.image.forEach((img: File, imageIndex: number) => {
-            payload.append(`items[${index}][image][${imageIndex}]`, img);
+            payload.append(`items[${index}][images][${imageIndex}]`, img);
           });
         }
         payload.append(

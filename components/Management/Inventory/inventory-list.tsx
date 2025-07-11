@@ -36,7 +36,10 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
     last_edited: dayjs(data.updated_at).format("MMM DD, YYYY") || "--- ---",
     total_unit: data.total_unit || 0,
     branch_name: data.branch_name || "--- ---",
-    account_officer: data?.account_officer?.name || "--- ---",
+    account_manager:
+      data?.account_officer?.name === "N/A"
+        ? "--- ---"
+        : data?.account_officer?.name || "--- ---",
   };
 
   // Ensure data is not null or undefined
