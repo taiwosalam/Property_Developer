@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
+// Dynamically import ReactPlayer with SSR disabled
+const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
 // Imports
 import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
@@ -16,6 +19,9 @@ import ServerError from "@/components/Error/ServerError";
 import NetworkError from "@/components/Error/NetworkError";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { InventoryFetchData } from "../types";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+
 
 interface InventoryData {
   status: string;
@@ -41,6 +47,9 @@ const PreviewInventory = () => {
   );
   const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
   const [video, setVideo] = useState<string>("");
+
+  const DummyvideoLink = 'https://www.youtube.com/watch?v=mzB1VGEGcSU&list=PLaDVm6FOJoQzC1zUZZlbadW03Gyt-34-G'
+
 
   useEffect(() => {
     const fetchBranchData = async () => {
@@ -93,6 +102,41 @@ const PreviewInventory = () => {
                 data={inventoryData}
                 chunkSize={2}
               />
+              {video && <div className="flex flex-col gap-2 self-end justify-end">
+                <Modal>
+                  <ModalTrigger>
+                    <Button size="sm" className="py-1 px-4">
+                      View Video
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <LandlordTenantModalPreset heading="Inventory Video">
+                      <div className="h-[400px] relative w-full">
+                        <ReactPlayer
+                          url={video}
+                          controls
+                          width="100%"
+                          height="100%"
+                          className="object-cover object-center"
+                          config={{
+                            youtube: {
+                              playerVars: {
+                                rel: 0,
+                                modestbranding: 1,
+                                disablekb: 1,
+                                fs: 0,
+                                showinfo: 0,
+                                iv_load_policy: 3,
+                                origin: typeof window !== "undefined" ? window.location.origin : "",
+                              },
+                            },
+                          }}
+                        />
+                      </div>
+                    </LandlordTenantModalPreset>
+                  </ModalContent>
+                </Modal>
+              </div>}
             </div>
           </div>
         </div>

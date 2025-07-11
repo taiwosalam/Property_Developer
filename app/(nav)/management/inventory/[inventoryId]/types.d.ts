@@ -83,6 +83,7 @@ export interface Unit {
   updated_at: string;
   images: UnitImage[];
   total_inventory: number;
+  occupant: any;
   property: PropertyDetails;
 }
 
@@ -122,7 +123,7 @@ export interface InventoryData {
   edited_date: string;
   property_name: string;
   branch_name: string;
-  account_officer: string;
+  account_manager: string;
   branch_id: string;
   video: string;
 }
@@ -131,7 +132,7 @@ export interface InventoryUnitData {
   unitName: string;
   unitId: string;
   unitDetails: string;
-  status: "vacant" | "occupied";
+  status: "vacant" | "occupied" | "relocate";
   images: string[];
   total_inventory: number;
   inventoryId: number;
