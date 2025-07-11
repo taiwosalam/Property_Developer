@@ -115,6 +115,20 @@ interface ComplaintDetail {
     note_by: string;
   }[];
   comments: ComplaintComment[];
+  reminders: IReminder[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface IReminder {
+  id: number;
+  company_id: number;
+  branch_id: number | null;
+  complaint_id: string;
+  user_id: number;
+  title: string;
+  note: string;
+  reminder_date: string;
   created_at: string;
   updated_at: string;
 }

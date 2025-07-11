@@ -46,7 +46,6 @@ const ManageComplain = () => {
   useEffect(() => {
     if (manageData) {
       const transData = transformComplaintManage(manageData);
-
       setPageData(transData);
     }
   }, [manageData]);
@@ -63,6 +62,7 @@ const ManageComplain = () => {
           header="Create Reminders"
           buttonText="Set Reminder"
           taskStatus={pageData?.status}
+          reminders={pageData?.reminders || []}
           // modalContent={<CreateReminderModal />}
         />
         {/* <ComplaintsCalendar

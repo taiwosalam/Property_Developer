@@ -112,12 +112,10 @@ const ComplaintsPage = () => {
           params: {
             ...config.params,
             page: page,
-            status: "pending", // Add this if your API supports status filtering
+            status: "pending",
           },
         };
 
-        // You might need to create a separate API call or modify your existing one
-        // to handle pending-specific requests
         setConfig(pendingConfig);
         setPendingComplaintsPage(page);
       } catch (error) {
@@ -240,6 +238,8 @@ const ComplaintsPage = () => {
       toast.error(`Failed to update complaint status`);
     }
   };
+
+  console.log(pageData?.complaints)
 
   if (loading) {
     return (

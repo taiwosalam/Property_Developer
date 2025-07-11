@@ -95,6 +95,9 @@ const ManageApplication = () => {
   }, [apiData]);
 
   const handleRejectApplication = async () => {
+    if (application_status !== "rejected") {
+      return;
+    }
     try {
       setIsLoading(true);
       const res = await rejectApplication(paramId, "reject");
@@ -113,6 +116,7 @@ const ManageApplication = () => {
   // Example: const { property_details } = managePageData ?? {};
 
   const {
+    application_status,
     profile_details,
     property_details,
     bank_details,
@@ -211,6 +215,20 @@ const ManageApplication = () => {
 
   const handleOpenModal = () => {
     setIsOpen(true);
+  };
+
+  const statusStyles = {
+    pending: { label: "Pending", color: "#FACC15" },
+    evaluated: { label: "Evaluated", color: "#8B5CF6" },
+    approved: { label: "Approved", color: "#22C55E" },
+    rejected: { label: "Rejected", color: "#EF4444" },
+  };
+
+  const defaultStatus = { label: "Unknown", color: "#6B7280" };
+
+  const getStatusStyle = (status: string | undefined) => {
+    if (!status) return defaultStatus;
+    return statusStyles[status as keyof typeof statusStyles] || defaultStatus;
   };
 
   if (isNetworkError) <NetworkError />;
@@ -431,7 +449,16 @@ const ManageApplication = () => {
             </div>
             <LandlordTenantInfo
               info={{
-                status: "Status",
+                status: (
+                  <p
+                    className="text-purple-600 first-letter:uppercase font-semibold"
+                    style={{
+                      color: getStatusStyle(application_status).color,
+                    }}
+                  >
+                    {application_status}
+                  </p>
+                ),
                 gender: profile_details?.gender,
                 birthday: profile_details?.birthday,
                 religion: profile_details?.religion,
@@ -565,10 +592,20 @@ const ManageApplication = () => {
             aria-disabled={isLoading}
             variant="light_red"
             size="base_bold"
-            className="py-2 px-8"
+            className={`py-2 px-8 ${
+              application_status === "evaluated"
+                ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
+                : ""
+            }`}
             disabled={isFlagged || isLoading}
           >
-            {isLoading ? "Please wait" : "reject application"}
+            {isLoading
+              ? "Please wait"
+              : application_status === "rejected"
+              ? "Rejected"
+              : application_status === "evaluated"
+              ? "Application evaluated"
+              : "reject application"}
           </Button>
           <div className="flex gap-6">
             <Button

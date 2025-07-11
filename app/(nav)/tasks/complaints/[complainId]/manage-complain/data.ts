@@ -35,6 +35,13 @@ export interface IManageComplaints {
     avatar: string;
     time: string;
   }[];
+  reminders: {
+    date: Date,
+    desc: string;
+    title: string;
+    type: "reminder";
+    created_at?: string;
+  }[];
   task_bar: {
     progress: string;
     text: string;
@@ -129,6 +136,15 @@ export const transformComplaintManage = (
       userId: message.user.id,
       avatar: message.user.picture,
     })),
+    reminders: data?.complaint?.reminders.map((r) => (
+      {
+        date: new Date(r.reminder_date),
+        desc: r.note,
+        title: r.title,
+        type: "reminder",
+        created_at: r.created_at ? dayjs(r.created_at).format("hh:mm A") : ""
+      }
+    )),
     task_bar: data?.complaint?.task_bar?.map((task) => ({
       progress: task?.progress,
       approve_by: task?.approve_by,
@@ -277,4 +293,10 @@ export const assignTask = async ({
     handleAxiosError(error);
     return false;
   }
+};
+
+export const transformReminderCalendarEvent = () => {
+  return {
+
+  };
 };

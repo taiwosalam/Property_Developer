@@ -39,6 +39,7 @@ export const calendar_event_tags = {
   examines: "#301414",
   "multiple event": "#8C62FF",
   applications: "#e20be6",
+  "reminder": "#301414"
 } as const;
 
 export class Calendar implements CalendarClassData {

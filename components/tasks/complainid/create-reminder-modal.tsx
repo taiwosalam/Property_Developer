@@ -82,8 +82,8 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
             id="reminder_date"
             label="Reminder date"
             value={reminderDate}
-            //minDate={dayjs(new Date())}
-            disablePast
+            minDate={dayjs(new Date())}
+            //disablePast
             onChange={handleDateChange}
           />
         </div>

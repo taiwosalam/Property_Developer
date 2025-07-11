@@ -8,6 +8,7 @@ export type TApplicationDetailsResponse = {
     application_id: number;
     application_date: string;
     application_duration: string;
+    application_status: "pending" | "evaluated" | "approved" | "rejected";
 
     property_details: {
       property_title: string;

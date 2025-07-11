@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import clsx from "clsx";
 import { cn } from "@/lib/utils";
 import { CSSProperties } from "react";
@@ -42,7 +42,7 @@ export const LandlordTenantInfoBox: React.FC<{
 export const LandlordTenantInfo: React.FC<{
   heading?: string;
   separator?: boolean;
-  info: Record<string, string | null | undefined>;
+  info: Record<string, string | null | undefined | React.ReactElement>;
   containerClassName?: string;
 }> = ({ info, heading, separator, containerClassName }) => (
   <LandlordTenantInfoBox className={containerClassName}>
@@ -64,17 +64,34 @@ export const LandlordTenantInfo: React.FC<{
           ))}
         </div>
         <div className="custom-flex-col gap-4">
-          {Object.values(info).map((value, idx) => (
-            <p key={idx} className="text-black dark:text-darkText-2">
-              {typeof value === "string" ? value.split("_").join(" ") : "___"}
-            </p>
-          ))}
+          {Object.values(info).map((value, idx) => {
+            // Check if value is email or website format
+            const isEmailOrWebsite =
+              typeof value === "string" &&
+              (value.includes("@") ||
+                value.startsWith("http") ||
+                value.startsWith("www."));
+
+            return (
+              <div
+                key={idx}
+                className={`text-black dark:text-darkText-2 ${
+                  isEmailOrWebsite ? "lowercase" : "first-letter:uppercase"
+                }`}
+              >
+                {React.isValidElement(value)
+                  ? value
+                  : typeof value === "string"
+                  ? value.split("_").join(" ")
+                  : "___"}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   </LandlordTenantInfoBox>
 );
-
 
 export const LandlordTenantInfoSection: React.FC<{
   title: string;
@@ -193,7 +210,7 @@ export const LandlordTenantInfoDocument: React.FC<AttachedDocumentCard> = ({
         )}
       </div>
       <div className="p-4 bg-brand-primary text-white text-sm lg:text-base font-medium">
-      {/* whitespace-nowrap overflow-hidden text-ellipsis  */}
+        {/* whitespace-nowrap overflow-hidden text-ellipsis  */}
         <p className="w-full capitalize text-xs line-clamp-2 text-ellipsis">
           {name}
         </p>

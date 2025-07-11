@@ -71,6 +71,7 @@ export const transformComplaintsData = (
     total_rejected: Number(data?.total_rejected) || 0,
     total_month_rejected: Number(data?.total_month_rejected) || 0,
     complaints: data?.complaints?.map((complaint) => ({
+      //const complaintStatus = complaint?.status?.toLowerCase();
       id: complaint.id,
       columnId: complaint?.status?.toLowerCase(),
       content: {
