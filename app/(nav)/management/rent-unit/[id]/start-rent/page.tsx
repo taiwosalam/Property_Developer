@@ -286,6 +286,8 @@ const StartRent = () => {
     isTourCompleted,
   ]);
 
+  console.log("Unit data hee", unit_data)
+
   useEffect(() => {
     if (unit_data?.unit_id) {
       sessionStorage.setItem("return_to_start_rent_unit_id", unit_data.unit_id);
@@ -312,7 +314,7 @@ const StartRent = () => {
     router.push(
       HAS_DOCUMENT
         ? `/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`
-        : `/documents/`
+        : `/documents/create-tenancy-agreement/?p=${unit_data.propertyId}`
     );
   };
 
@@ -403,16 +405,16 @@ const StartRent = () => {
                 Manage Agreement
               </Button>
             ) : (
-              <Modal>
-                <ModalTrigger asChild>
+              // <Modal>
+              //   <ModalTrigger asChild>
                   <Button size="base_medium" className="py-2 px-6">
                     Create Agreement
                   </Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
-                </ModalContent>
-              </Modal>
+              //   </ModalTrigger>
+              //   <ModalContent>
+              //     <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+              //   </ModalContent>
+              // </Modal>
             )}
           </>
         )}
