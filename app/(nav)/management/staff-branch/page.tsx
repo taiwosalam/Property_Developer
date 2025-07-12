@@ -35,6 +35,7 @@ import dayjs from "dayjs";
 import { toast } from "sonner";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ServerError from "@/components/Error/ServerError";
+import { useTourStore } from "@/store/tour-store";
 
 const allStates = getAllStates();
 
@@ -227,7 +228,10 @@ const StaffAndBranches = () => {
             ...prevData,
             current_page: current_page + 1,
           }));
-          sessionStorage.setItem("branches_page", (current_page + 1).toString());
+          sessionStorage.setItem(
+            "branches_page",
+            (current_page + 1).toString()
+          );
         }
       });
       if (node) observer.current.observe(node);
@@ -246,6 +250,7 @@ const StaffAndBranches = () => {
               : undefined,
         }))
       : branches;
+
 
   // Show full-page loader only on the very first load.
   if (loading && current_page === 1)

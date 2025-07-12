@@ -9,6 +9,9 @@ import {
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useEffect, useState } from "react";
 import { useUnitForm } from "./unit-form-context";
+import { ExclamationMark } from "@/public/icons/icons";
+import { useTourStore } from "@/store/tour-store";
+import { usePathname } from "next/navigation";
 
 const UnitDetails = () => {
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
@@ -112,6 +115,13 @@ const UnitDetails = () => {
     }
   }, [selectedUnitType, propertyDetails?.category]);
 
+  const { goToStep, restartTour } = useTourStore();
+  const pathname = usePathname();
+
+  const handleGoToTourStep = (stepIndex: number) => {
+    goToStep(stepIndex, pathname);
+  };
+
   const displayUnitName =
     unitData && unitData.notYetUploaded
       ? `${unitData?.unit_name} (Unit ${(index ?? 0) + 1})`
@@ -119,10 +129,22 @@ const UnitDetails = () => {
 
   return (
     <div>
-      <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
-        {isRental && <span className="text-status-error-primary">*</span>}
-        Unit Details
-      </h4>
+      <div className="flex items-center gap-2">
+        <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+          {isRental && <span className="text-status-error-primary">*</span>}
+          Unit Details
+        </h4>
+
+        <button
+          onClick={() => {
+           handleGoToTourStep(5)
+          }}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Input

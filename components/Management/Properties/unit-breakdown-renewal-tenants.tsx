@@ -3,13 +3,15 @@ import Select from "@/components/Form/Select/select";
 import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useState, useEffect, useMemo } from "react";
-import { DeleteIconX } from "@/public/icons/icons";
+import { DeleteIconX, ExclamationMark } from "@/public/icons/icons";
 import {
   formatCostInputValue,
   currencySymbols,
   formatNumber,
 } from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
+import { useTourStore } from "@/store/tour-store";
+import { usePathname } from "next/navigation";
 
 const UnitBreakdownRenewalTenant = () => {
   const { formResetKey, unitData } = useUnitForm();
@@ -153,12 +155,30 @@ const UnitBreakdownRenewalTenant = () => {
     }
   }, [formResetKey, initialFormValues, unitData?.renew_other_charge]);
 
+  const { goToStep, restartTour } = useTourStore();
+  const pathname = usePathname();
+
+  const handleGoToTourStep = (stepIndex: number) => {
+    goToStep(stepIndex, pathname);
+  };
+
   return (
     <div className="unit-fee-breakdown-renew-tenant">
-      <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-        Unit Fee Breakdown -{" "}
-        {IS_RENTAL ? " Renewal Tenants" : " Renewal Occupants"}
-      </h4>
+      <div className="flex items-center gap-2">
+        <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
+          Unit Fee Breakdown -{" "}
+          {IS_RENTAL ? " Renewal Tenants" : " Renewal Occupants"}
+        </h4>
+        <button
+          onClick={() => {
+            handleGoToTourStep(11);
+          }}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select

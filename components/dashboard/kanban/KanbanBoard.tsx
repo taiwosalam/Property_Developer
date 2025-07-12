@@ -582,6 +582,7 @@ export function KanbanBoard({
     const data = event.active.data.current;
     if (data?.type === "Column") {
       setActiveColumn(data.column);
+      //setStatusChangeModalOpen(true);
       return;
     }
 
@@ -666,7 +667,7 @@ export function KanbanBoard({
 
           setCurrentTaskForStatusChange(activeTask);
           setTargetStatus(overTask.columnId as ColumnId);
-          setStatusChangeModalOpen(true);
+          //setStatusChangeModalOpen(true);
           activeTask.columnId = overTask.columnId;
           return arrayMove(tasks, activeIndex, overIndex - 1);
         }

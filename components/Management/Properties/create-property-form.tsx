@@ -85,7 +85,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     property_form_state_data
   );
   const { role, setRole } = useRole();
-  const { goToStep, restartTour } = useTourStore();
+  const {
+    goToStep,
+    restartTour,
+    isTourCompleted,
+    persist,
+    setShouldRenderTour,
+    setPersist,
+  } = useTourStore();
   const pathname = usePathname();
   const isDirector = role === "director";
   const isAccountOfficer = role === "account";
@@ -371,6 +378,17 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   };
 
   useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("EditPropertyTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
+  useEffect(() => {
     if (scrollTargetRef.current) {
       scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -499,7 +517,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 : "Estate/Facility Details"}
             </p>
             <button
-              onClick={() => handleGoToTourStep(8)}
+              onClick={() => {
+                if (formType === "rental") {
+                  handleGoToTourStep(8);
+                } else if (formType === "facility") {
+                  handleGoToTourStep(3);
+                }
+              }}
               type="button"
               className="text-orange-normal"
             >
@@ -548,12 +572,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               options={getAllStates()}
               label="State"
               value={selectedState}
-              className="property-state-wrapper "
+              className="property-state-wrapper"
               inputContainerClassName="bg-white"
               onChange={(state) => setPropertyState({ state })}
               required
               hiddenInputClassName="property-form-input"
             />
+
             <Select
               options={getLocalGovernments(selectedState)}
               id="local_government"
@@ -573,7 +598,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               onChange={(city) => setPropertyState({ city })}
               inputContainerClassName="bg-white"
               required
-              hiddenInputClassName="property-form-input"
+              hiddenInputClassName="property-form-input address-wrapper"
             />
             <RestrictInput
               id="full_address"
@@ -753,7 +778,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 disabled={branchData.staff.loading}
                 variant="default"
                 maxCount={1}
-                className="bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
+                className="property-staff-wrapper bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
               />
             </div>
             <TextArea
@@ -789,7 +814,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 : "Estate/Facility Settings"}
             </p>
             <button
-              onClick={() => handleGoToTourStep(4)}
+              onClick={() => {
+                if (formType === "rental") {
+                  handleGoToTourStep(4);
+                } else if (formType === "facility") {
+                  handleGoToTourStep(11);
+                }
+              }}
               type="button"
               className="text-orange-normal"
             >

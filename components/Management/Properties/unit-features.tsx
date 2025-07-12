@@ -7,6 +7,9 @@ import { useUnitForm } from "./unit-form-context";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
+import { usePathname } from "next/navigation";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const UnitFeatures = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
@@ -29,6 +32,9 @@ const UnitFeatures = () => {
       ? unitFacilities.lands
       : unitFacilities.buildings;
 
+  const { goToStep, restartTour } = useTourStore();
+  const pathname = usePathname();
+
   useEffect(() => {
     if (formResetKey !== 0) {
       setSelectedAreaUnit(unitData?.measurement || "");
@@ -42,11 +48,27 @@ const UnitFeatures = () => {
 
   const isRental = propertyType === "rental";
 
+  const handleGoToTourStep = (stepIndex: number) => {
+    goToStep(stepIndex, pathname);
+  };
+
   return (
     <div className="unit-features-wrapper">
-      <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-        Units Features
-      </h4>
+      <div className="flex items-center gap-2">
+        <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
+          Units Features
+        </h4>
+
+        <button
+          onClick={() => {
+            handleGoToTourStep(9);
+          }}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 mb-4 md:mb-5">
         <Select

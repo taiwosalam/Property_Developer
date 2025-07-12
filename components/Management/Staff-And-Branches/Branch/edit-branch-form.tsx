@@ -41,7 +41,6 @@ const EditBranchForm = ({
     placeholder: CameraCircle,
   });
 
-
   const [successModalOpen, setSuccessModalOpen] = useState(false);
 
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
@@ -130,15 +129,16 @@ const EditBranchForm = ({
                 id="branch_name"
                 label="branch title"
                 placeholder="Write Here"
-                inputClassName="bg-white"
+                inputClassName="branch-title-input bg-white"
                 defaultValue={somedata?.branch_name}
               />
+
               <Select
                 id="state"
                 isSearchable
                 label="state"
                 options={getAllStates()}
-                inputContainerClassName="bg-white"
+                inputContainerClassName="state-lga-selection bg-white"
                 value={address.state}
                 onChange={(value) => handleAddressChange("state", value)}
               />
@@ -147,15 +147,16 @@ const EditBranchForm = ({
                 isSearchable
                 label="local government"
                 options={getLocalGovernments(address.state)}
-                inputContainerClassName="bg-white"
+                inputContainerClassName="state-lga-selection bg-white"
                 value={address.local_govt}
                 onChange={(value) => handleAddressChange("local_govt", value)}
               />
+
               <Select
                 id="city"
                 label="city"
                 placeholder="Select options"
-                inputContainerClassName="bg-white"
+                inputContainerClassName="city-street-input bg-white"
                 value={address.city}
                 onChange={(value) => handleAddressChange("city", value)}
                 options={getCities(address.state, address.local_govt)}
@@ -164,27 +165,27 @@ const EditBranchForm = ({
                 id="branch_address"
                 label="Branch Full Address"
                 placeholder="Enter Address"
-                inputClassName="bg-white"
+                inputClassName="city-street-input bg-white"
                 defaultValue={somedata?.address}
               />
               <Select
                 id="branch_wallet"
                 label="Activate branch wallet"
                 options={["yes", "no"]}
-                inputContainerClassName="bg-white"
+                inputContainerClassName="wallet-selection-toggle bg-white"
                 defaultValue={somedata?.wallet}
               />
             </div>
 
             <TextArea
-              inputSpaceClassName="bg-white dark:bg-darkText-primary"
+              inputSpaceClassName="about-branch-textarea bg-white dark:bg-darkText-primary"
               id="branch_description"
               defaultValue={somedata?.description}
               label="about branch"
             />
           </div>
         </div>
-        <div className="custom-flex-col gap-3">
+        <div className="custom-flex-col gap-3 branch-picture-upload">
           <p className="text-black dark:text-white text-base font-normal">
             Upload Branch picture or choose from options.
           </p>

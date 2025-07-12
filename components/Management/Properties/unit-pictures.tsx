@@ -147,7 +147,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
               {images.length < maxImages && (
                 <label
                   htmlFor="unit_pictures"
-                  className="flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262]"
+                  className="unit-picture-wrapper flex-shrink-0 w-[285px] h-[155px] rounded-lg border-2 border-dashed border-[#626262] bg-white dark:bg-darkText-primary flex flex-col items-center justify-center cursor-pointer text-[#626262]"
                 >
                   <PlusIcon />
                   <span className="text-black dark:text-white text-base font-normal mt-2">

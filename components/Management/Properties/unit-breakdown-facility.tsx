@@ -1,22 +1,23 @@
-
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useState, useEffect, useMemo } from "react";
-import { DeleteIconX } from "@/public/icons/icons";
+import { DeleteIconX, ExclamationMark } from "@/public/icons/icons";
 import {
   formatNumber,
   currencySymbols,
   formatCostInputValue,
 } from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
+import { usePathname } from "next/navigation";
+import { useTourStore } from "@/store/tour-store";
 
 const UnitBreakdownFacility = () => {
   const { formResetKey, unitData } = useUnitForm();
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const agencyFeePercentage = parseFloat(
-    String(propertySettings?.management_fee  || "0")
+    String(propertySettings?.management_fee || "0")
   );
 
   const CURRENCY_SYMBOL =
@@ -130,11 +131,29 @@ const UnitBreakdownFacility = () => {
     }
   }, [formResetKey, initialFormValues, unitData?.other_charge]);
 
+   const { goToStep, restartTour } = useTourStore();
+    const pathname = usePathname();
+    
+   const handleGoToTourStep = (stepIndex: number) => {
+    goToStep(stepIndex, pathname);
+  };
+
   return (
     <div className="unit-fee-breakdown-new-tenant">
-      <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-        Unit Fee Breakdown
-      </h4>
+      <div className="flex gap-2 items-center">
+        <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
+          Unit Fee Breakdown
+        </h4>
+        <button
+          onClick={() => {
+            handleGoToTourStep(10);
+          }}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select

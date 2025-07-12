@@ -15,7 +15,7 @@ import ExportPageHeader from "@/components/reports/export-page-header";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { DeleteIconX } from "@/public/icons/icons";
+import { DeleteIconX, ExclamationMark } from "@/public/icons/icons";
 import { currencySymbols } from "@/utils/number-formatter";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import useFetch from "@/hooks/useFetch";
@@ -29,7 +29,8 @@ import { toast } from "sonner";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { createDisbursement } from "../data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useTourStore } from "@/store/tour-store";
 
 const paymentModes = [
   { label: "Bank Transfer", value: "bank transfer" },
@@ -50,7 +51,7 @@ const CreateDisbursement = () => {
     error: propertiesError,
     loading: propertiesLoading,
   } = useFetch<PropertyListResponse>("/property/all");
-  
+
   const propertiesWithUnits =
     propertyOptionData?.data.filter(
       (p) => Array.isArray(p.units) && p.units.length > 0
@@ -159,16 +160,49 @@ const CreateDisbursement = () => {
     }
   };
 
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("CreateDisbursementTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   return (
     <section className="space-y-7 pb-20">
       <AuthForm onFormSubmit={handleCreateDisbursement}>
-        <BackButton>Create New Disbursement</BackButton>
+        <div className="flex gap-2 items-center">
+          <BackButton>Create New Disbursement</BackButton>
+          <BackButton>Edit Branch</BackButton>
+          <button
+            onClick={() => restartTour(pathname)}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
+
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
             <Select
               required
               id="property"
               label="property"
+              className="property-selection"
               onChange={setSelectedPropertyId}
               options={propertyOptions}
               disabled={propertiesLoading}
@@ -194,11 +228,11 @@ const CreateDisbursement = () => {
             id="description"
             label="Disbursement Description"
             required
-            className="lg:max-w-[50%]"
+            className="expense-details-form lg:max-w-[50%]"
           />
         </div>
 
-        <div className="space-y-6">
+        <div className="expense-details-form space-y-6 ">
           <div className="flex gap-1 flex-col mt-4">
             <div className="flex gap-2">
               <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
@@ -316,7 +350,7 @@ const CreateDisbursement = () => {
         </div>
 
         {displayedPayments.length > 0 && (
-          <div className="space-y-6">
+          <div className="payment-overview-section space-y-6">
             <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
               Payment Added
             </h3>

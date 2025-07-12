@@ -8,7 +8,7 @@ import Button from "@/components/Form/Button/button";
 import { dashboardCardData } from "@/app/(nav)/dashboard/data";
 import NotificationCard from "@/components/dashboard/notification-card";
 import { DashboardChart } from "@/components/dashboard/chart";
-import { LocationIcon } from "@/public/icons/icons";
+import { ExclamationMark, LocationIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { branchIdChartConfig } from "./data";
 import AccountStatsCard from "@/components/Accounting/account-stats-card";
@@ -33,6 +33,8 @@ import clsx from "clsx";
 import { getTransactionIcon } from "@/components/Wallet/icons";
 import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
+import { useTourStore } from "@/store/tour-store";
+import { usePathname } from "next/navigation";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -230,6 +232,27 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     }
   }, [selectedDateRange]);
 
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("branchDetailsTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   if (loading) return <CustomLoader layout="dasboard" />;
 
   if (isNetworkError) return <NetworkError />;
@@ -241,22 +264,32 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     <div className="custom-flex-col gap-6">
       <div className="w-full gap-2 flex items-center justify-between flex-wrap">
         <BackButton reducePaddingTop as="div" className="items-start">
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            {branchData.branch_name}
-          </h1>
+          <div className="flex gap-2 items-center">
+            <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
+              {branchData.branch_name}
+            </h1>
+            <button
+              onClick={() => restartTour(pathname)}
+              type="button"
+              className="text-orange-normal"
+            >
+              <ExclamationMark />
+            </button>
+          </div>
+
           <div className="text-text-disabled flex items-center space-x-1">
             <LocationIcon />
             <p className="text-sm font-medium">{branchData.address}</p>
           </div>
         </BackButton>
 
-        <div className="flex items-center justify-between gap-2 ml-auto flex-wrap">
+        <div className=" flex items-center justify-between gap-2 ml-auto flex-wrap">
           <Modal>
             <ModalTrigger asChild>
               <Button
                 type="button"
                 variant="border"
-                className="page-header-button"
+                className="create-staff-button page-header-button"
               >
                 + create staff
               </Button>
@@ -270,7 +303,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
           </Modal>
           <Button
             type="button"
-            className="page-header-button"
+            className="edit-branch-button page-header-button"
             href={`/management/staff-branch/${branchId}/edit-branch`}
           >
             Edit Branch
@@ -278,7 +311,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         </div>
       </div>
       <div className="flex flex-col-reverse md:flex-row md:justify-between gap-x-8 gap-y-4 md:items-start">
-        <div className="md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
+        <div className="invoice-summary-section md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
           <AutoResizingGrid gap={12} minWidth={230}>
             <AccountStatsCard
               title="Total Invoice Created"
@@ -332,7 +365,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             />
           </AutoResizingGrid>
         </div>
-        <div className="md:flex-1 space-y-7">
+        <div className="branch-wallet-card md:flex-1 space-y-7">
           <Link
             href={"/wallet"}
             className="max-w-full flex items-center justify-between flex-wrap gap-2"
@@ -350,7 +383,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         </div>
       </div>
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 lg:items-start">
-        <div className="overflow-x-auto flex lg:w-[68%] md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
+        <div className="branch-summary-card overflow-x-auto flex lg:w-[68%] md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
           {updatedDashboardCardData.map((card, index) => (
             <Link href={card.link} key={index} prefetch={false}>
               <Card
@@ -363,28 +396,30 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             </Link>
           ))}
         </div>
+
         <NotificationCard
           sectionHeader="Staffs"
           seeAllLink={`/management/staff-branch/${branchId}/branch-staff`}
           notifications={branchData.staffs}
           branchId={branchId}
-          className="md:flex-1 lg:h-[380px]"
+          className="md:flex-1 lg:h-[380px] staff-summary-card"
         />
       </div>
       <div className="flex flex-col lg:flex-row gap-x-8 gap-y-4 items-start">
         <DashboardChart
           chartTitle="Wallet Analysis"
           visibleRange
-          className="hidden md:block md:w-full lg:w-[68%]"
+          className="wallet-analysis-card hidden md:block md:w-full lg:w-[68%]"
           chartConfig={branchIdChartConfig}
           chartData={walletChartData}
         />
+
         <BranchActivitiesCard
-          className="lg:flex-1"
+          className="branch-activities-card lg:flex-1"
           branchId={Number(branchId) ?? 0}
         />
       </div>
-      <div className="custom-flex-col gap-10">
+      <div className="recent-transactions-section custom-flex-col gap-10">
         <div className="flex justify-between">
           <h2 className="text-text-primary dark:text-white text-xl font-medium">
             Recent Transaction
