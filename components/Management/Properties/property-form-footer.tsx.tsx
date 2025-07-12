@@ -22,7 +22,6 @@ const PropertyFormFooter: React.FC<{
   const { canDelete, addedUnits } = useAddUnitStore();
   const router = useRouter();
 
-
   const handleSave = () => {
     const hasUnuploadedUnits = addedUnits.some((unit) => unit.notYetUploaded);
     if (hasUnuploadedUnits) {
@@ -57,7 +56,7 @@ const PropertyFormFooter: React.FC<{
       {editMode && (
         <Button
           size="sm_medium"
-          className="py-2 px-6 block ml-auto mt-5"
+          className="property-update-button-wrapper py-2 px-6 block ml-auto mt-5"
           type="button"
           disabled={!canSubmit || requestLoading}
           onClick={handleSubmitClick}
@@ -92,7 +91,7 @@ const PropertyFormFooter: React.FC<{
             ) : (
               <div></div>
             )}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 footer-action">
               <Button
                 type="button"
                 size="sm_medium"
@@ -105,7 +104,7 @@ const PropertyFormFooter: React.FC<{
               </Button>
               <Button
                 size="sm_medium"
-                className="py-2 px-6"
+                className="property-save-button-wrapper py-2 px-6"
                 onClick={handleSave}
                 disabled={!canSubmit || requestLoading}
               >

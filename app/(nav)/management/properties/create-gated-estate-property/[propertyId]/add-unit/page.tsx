@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import PropertyDetails from "@/components/Management/Properties/property-details";
 import PropertySettings from "@/components/Management/Properties/property-settings";
@@ -19,6 +19,8 @@ import { UnitFormContext } from "@/components/Management/Properties/unit-form-co
 import AddUnitFooter from "@/components/Management/Properties/AddUnitFooter";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import { useGlobalStore } from "@/store/general-store";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
@@ -48,6 +50,7 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const newForm = useAddUnitStore((s) => s.newForm);
   const [shouldRedirect, setShouldRedirect] = useState(false);
+  const pathname = usePathname();
 
   const {
     data: propertyData,
@@ -77,6 +80,14 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
   useEffect(() => {
     if (newForm) {
       setShowUnitForm(true);
@@ -90,6 +101,17 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
       setAddUnitStore("editMode", true);
     }
   }, [showUnitForm, setAddUnitStore]);
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("AddGatedEstateUnitTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
   // useCustomBackNavigation({ customBackPath });
 
@@ -134,15 +156,35 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
         }}
       >
         <div className="pb-[100px]">
-          <BackButton customBackPath={customBackPath}>Add Units</BackButton>
-          <PageProgressBar
-            breakpoints={[25, 50, 75]}
-            percentage={37}
-            className="mb-[52px]"
-          />
+          <div className="flex gap-2 items-center">
+            <BackButton customBackPath={customBackPath} className="py-2">
+              Add Units
+            </BackButton>
+            <button
+              onClick={() => restartTour(pathname)}
+              type="button"
+              className="text-orange-normal"
+            >
+              <ExclamationMark />
+            </button>
+          </div>
+          <div className="progress-overview-wrapper">
+            <PageProgressBar
+              breakpoints={[25, 50, 75]}
+              percentage={37}
+              className="mb-[52px]"
+            />
+          </div>
+
           <div className="space-y-6 lg:space-y-8">
-            <PropertyDetails heading="Estate/Facility Details" />
-            <PropertySettings heading="Estate/Facility Settings" />
+            <div className="property-details-wrapper">
+              <PropertyDetails heading="Estate/Facility Details" />
+            </div>
+
+            <div className="property-settings-wrapper">
+              <PropertySettings heading="Estate/Facility Settings" />
+            </div>
+
             {addedUnits.length > 0 && (
               <>
                 <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
@@ -155,14 +197,10 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
               </>
             )}
 
-            
             {/* {(addedUnits.length === 0 || showUnitForm) && ( */}
             {SHOW_UNIT_FORM && (
               <div>
-                <UnitForm
-                  empty
-                  hideEmptyForm={() => setShowUnitForm(false)}
-                />
+                <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
               </div>
             )}
           </div>

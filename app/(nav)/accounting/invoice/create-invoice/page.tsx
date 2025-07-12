@@ -13,7 +13,7 @@ import { empty } from "@/app/config";
 import { useEffect, useState } from "react";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import {
   SinglePropertyResponse,
@@ -35,6 +35,8 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { currencySymbols } from "@/utils/number-formatter";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
+import { ExclamationMark } from "@/public/icons/icons";
+import { useTourStore } from "@/store/tour-store";
 
 const CreateInvoicePage = () => {
   const searchParams = useSearchParams();
@@ -44,9 +46,8 @@ const CreateInvoicePage = () => {
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false);
   const [tenantLoading, setTenantLoading] = useState(false);
-  const [tenantsData, setTenantsData] = useState<PropertyTenantsApiResponse | null>(
-    null
-  );
+  const [tenantsData, setTenantsData] =
+    useState<PropertyTenantsApiResponse | null>(null);
   const [tenantsError, setTenantsError] = useState<string | null>(null);
 
   const handleGenerateInvoiceCheckboxChange = (checked: boolean) => {
@@ -112,20 +113,32 @@ const CreateInvoicePage = () => {
       icon: t.picture,
     })) || [];
 
-
   const { data, loading, error, isNetworkError } =
     useFetch<SinglePropertyResponse>(
       selectedProperty ? `property/${selectedProperty}/view` : null
     );
   const propertyData = data ? transformSinglePropertyData(data) : null;
 
-  if (loading) {
-    return (
-      <div className="custom-flex-col gap-2">
-        <CardsLoading length={5} />
-      </div>
-    );
-  }
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("CreateInvoiceTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
   const AUTO_OPTIONS = [
     { value: "once", label: "Once" },
@@ -160,6 +173,13 @@ const CreateInvoicePage = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="custom-flex-col gap-2">
+        <CardsLoading length={5} />
+      </div>
+    );
+  }
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -169,18 +189,30 @@ const CreateInvoicePage = () => {
 
   return (
     <section className="space-y-7 pb-20">
-      <BackButton>Create New Invoice</BackButton>
+      <div className="flex gap-2 items-center">
+        <BackButton>Create New Invoice</BackButton>
+        <button
+          onClick={() => restartTour(pathname)}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
+
       {/* <ExportPageHeader /> */}
       <AuthForm
         onFormSubmit={handleCreateInvoice}
         className="custom-flex-col gap-4"
       >
         <div className="flex flex-col gap-4">
-          <Details
-            property_id={propertyData?.id}
-            property_name={propertyData?.property_name}
-            account_officer={propertyData?.account_officer}
-          />
+          <div className="property-card">
+            <Details
+              property_id={propertyData?.id}
+              property_name={propertyData?.property_name}
+              account_officer={propertyData?.account_officer}
+            />
+          </div>
           <div className="grid md:grid-cols-2 gap-4">
             <Select
               id="property"
@@ -201,6 +233,7 @@ const CreateInvoicePage = () => {
               id="tenant_name"
               options={TENANT_OPTIONS}
               label="Tenant/Occupant"
+              className="tenant-unit-selection"
               disabled={isSelectDisabled || tenantLoading}
               resetKey={selectedProperty}
               placeholder={
@@ -216,7 +249,7 @@ const CreateInvoicePage = () => {
             />
 
             <Checkbox
-              className="self-end items-start text-left"
+              className="generate-invoice-checkbox self-end items-start text-left"
               checked={isSelectDisabled}
               onChange={handleGenerateInvoiceCheckboxChange}
             >
@@ -225,6 +258,7 @@ const CreateInvoicePage = () => {
             </Checkbox>
             <Select
               id="auto_generate"
+              className="auto-regenerate-type"
               options={AUTO_OPTIONS}
               label="Auto Generate"
               placeholder="Select Options"
@@ -236,7 +270,7 @@ const CreateInvoicePage = () => {
               type="text"
               id="amount"
               label="Amount"
-              className="w-full"
+              className=" w-full"
               // CURRENCY_SYMBOL={CURRENCY}
               formatNumber
               value={paymentAmount}
@@ -249,7 +283,7 @@ const CreateInvoicePage = () => {
             id="description"
             label="Description"
             required
-            className="lg:max-w-[50%]"
+            className="invoice-description-textarea lg:max-w-[50%]"
           />
         </div>
 
@@ -260,7 +294,7 @@ const CreateInvoicePage = () => {
           <Button
             disabled={reqLoading}
             type="submit"
-            className="py-2 px-8"
+            className="create-invoice-button py-2 px-8"
             size="base_medium"
           >
             {reqLoading ? "Please wait..." : "Create Invoice"}

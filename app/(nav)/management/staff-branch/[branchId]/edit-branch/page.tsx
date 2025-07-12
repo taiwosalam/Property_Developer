@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 // Imports
 import Button from "@/components/Form/Button/button";
@@ -26,7 +26,9 @@ import ServerError from "@/components/Error/ServerError";
 import { updateBranch } from "./data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import BranchBankSettings from "@/components/Settings/branch-bank";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const EditBranch = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -77,6 +79,27 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
     }
   };
 
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("EditBranchTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   if (loading) return <PageCircleLoader />;
 
   if (error) return <ServerError error={error} />;
@@ -85,7 +108,17 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
     <div className="custom-flex-col gap-10">
       <div className="flex flex-col gap-8 mb-[150px]">
         <div className="flex gap-8 flex-col md:flex-row justify-between flex-wrap">
-          <BackButton>Edit Branch</BackButton>
+          <div className="flex gap-2 items-center">
+            <BackButton>Edit Branch</BackButton>
+            <button
+              onClick={() => restartTour(pathname)}
+              type="button"
+              className="text-orange-normal"
+            >
+              <ExclamationMark />
+            </button>
+          </div>
+
           <div className="flex gap-3">
             {branchData &&
               (branchData?.isActive ? (
@@ -94,7 +127,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
                     <Button
                       type="button"
                       size="sm_medium"
-                      className="py-2 px-8 border-status-caution-2 text-status-error-2"
+                      className="lock-branch-button py-2 px-8 border-status-caution-2 text-status-error-2"
                       variant="blank"
                     >
                       Lock Branch !
@@ -141,7 +174,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
               type="button"
               variant="light_red"
               size="sm_medium"
-              className="py-2 px-4 sm:px-8 text-xs sm:text-sm"
+              className="delete-branch-button py-2 px-4 sm:px-8 text-xs sm:text-sm"
             >
               Delete Branch
             </Button>
@@ -156,7 +189,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
         <Button
           type="submit"
           size="sm_medium"
-          className="py-2 px-8"
+          className="update-branch-button py-2 px-8"
           form="edit-branch-form"
           disabled={updateRequestLoading}
         >

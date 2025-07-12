@@ -89,7 +89,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
     const formInDom = document.getElementById(
       "add-unit-form"
     ) as HTMLFormElement | null;
-  
+
     // Show missing fields toast if form is in DOM and canSubmit is false
     if (formInDom && !canSubmit) {
       toast.error(
@@ -97,7 +97,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
       );
       return;
     }
-  
+
     // Check for unuploaded units
     if (addedUnits.length > 0) {
       const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
@@ -108,14 +108,14 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
         return;
       }
     }
-  
+
     // If form is in DOM and canSubmit, trigger submission
     if (formInDom && canSubmit) {
       setSaveClick(true);
       formInDom.requestSubmit();
       return;
     }
-  
+
     // If no form (e.g., noForm prop), redirect as fallback
     if (!formInDom) {
       if (addedUnits.length === 0) {
@@ -128,7 +128,6 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
     }
   };
 
-  
   return (
     <FixedFooter className="unit-footer-actions flex items-center justify-end gap-10">
       <Modal state={{ isOpen: footerModalOpen, setIsOpen: setFooterModalOpen }}>
@@ -136,25 +135,27 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
           <FooterModal noForm={noForm} />
         </ModalContent>
       </Modal>
-      <Button
-        size="base_medium"
-        className="py-2 px-6"
-        disabled={submitLoading}
-        form="add-unit-form"
-        onClick={handleAddMoreClick}
-      >
-        {submitLoading ? "Adding..." : "Add More Unit"}
-      </Button>
-      <Button
-        form="add-unit-form"
-        type="button"
-        size="base_medium"
-        className="py-2 px-6"
-        disabled={submitLoading}
-        onClick={handleSaveClick}
-      >
-        {submitLoading ? "Saving..." : "Save"}
-      </Button>
+      <div className="unit-action-buttons flex items-center gap-10">
+        <Button
+          size="base_medium"
+          className="py-2 px-6"
+          disabled={submitLoading}
+          form="add-unit-form"
+          onClick={handleAddMoreClick}
+        >
+          {submitLoading ? "Adding..." : "Add More Unit"}
+        </Button>
+        <Button
+          form="add-unit-form"
+          type="button"
+          size="base_medium"
+          className="py-2 px-6"
+          disabled={submitLoading}
+          onClick={handleSaveClick}
+        >
+          {submitLoading ? "Saving..." : "Save"}
+        </Button>
+      </div>
     </FixedFooter>
   );
 };

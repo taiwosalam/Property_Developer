@@ -10,6 +10,13 @@ import { renewRentSteps } from "./renew-steps";
 import { createPropertySteps } from "./create-property";
 import { addUnitSteps } from "./add-unit-steps";
 import { setupSteps } from "./setup-steps";
+import { editPropertySteps } from "./manage-facility";
+import { createFacilitySteps } from "./create-facility";
+import { addFacilityUnit } from "./facility-add-unit";
+import { branchManagementSteps } from "./branch-step";
+import { editBranchSteps } from "./edit-branch-steps";
+import { createInvoiceSteps } from "./create-invoice-steps";
+import { createDisbursementSteps } from "./create-disburstment";
 
 export interface PageTourConfig {
   steps: TourStep[];
@@ -82,6 +89,48 @@ export const pageSteps: Record<string, PageTourConfig> = {
       /^\/management\/properties\/create-rental-property\/[^\/]+\/add-unit$/.test(
         pathname
       ),
+  },
+  "/management/properties/edit-property": {
+    steps: editPropertySteps,
+    tourKey: "EditPropertyTour",
+    match: (pathname: string) =>
+      /^\/management\/properties\/[^\/]+\/edit-property$/.test(pathname),
+  },
+  "/management/properties/create-gated-estate-property": {
+    steps: createFacilitySteps,
+    tourKey: "CreateGatedEstatePropertyTour",
+    match: (pathname: string) =>
+      pathname === "/management/properties/create-gated-estate-property",
+  },
+  "/management/properties/create-gated-estate-property/add-unit": {
+    steps: addFacilityUnit,
+    tourKey: "AddGatedEstateUnitTour",
+    match: (pathname: string) =>
+      /^\/management\/properties\/create-gated-estate-property\/[^\/]+\/add-unit$/.test(
+        pathname
+      ),
+  },
+  "/management/staff-branch": {
+    steps: branchManagementSteps,
+    tourKey: "branchDetailsTour",
+    match: (pathname: string) =>
+      /^\/management\/staff-branch\/[^\/]+$/.test(pathname),
+  },
+  "/management/staff-branch/edit-branch": {
+    steps: editBranchSteps,
+    tourKey: "EditBranchTour",
+    match: (pathname: string) =>
+      /^\/management\/staff-branch\/[^\/]+\/edit-branch$/.test(pathname),
+  },
+  "/accounting/invoice/create-invoice": {
+    steps: createInvoiceSteps,
+    tourKey: "CreateInvoiceTour",
+    match: (pathname: string) => pathname === "/accounting/invoice/create-invoice",
+  },
+   "/accounting/disbursement/create-disbursement": {
+    steps: createDisbursementSteps,
+    tourKey: "CreateDisbursementTour",
+    match: (pathname: string) => pathname === "/accounting/disbursement/create-disbursement",
   },
   "/setup": {
     steps: setupSteps,
