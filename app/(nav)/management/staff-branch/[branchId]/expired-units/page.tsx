@@ -84,7 +84,7 @@ const ExpiredUnits = () => {
   const endpoint =
     isFilterApplied() || search || sort
       ? "/unit/filter"
-      : `/branch/${branch.branch_id}/vacant_units`;
+      : `/branch/${branch.branch_id}/expired_units`;
 
   const config: AxiosRequestConfig = useMemo(() => {
     return {
@@ -169,7 +169,7 @@ const ExpiredUnits = () => {
 
   if (loading)
     return (
-      <CustomLoader layout="page" statsCardCount={3} pageTitle="Rent & Units" />
+      <CustomLoader layout="page" statsCardCount={3} pageTitle="Expired Units" />
     );
 
   if (isNetworkError) return <NetworkError />;

@@ -212,18 +212,7 @@ const Units = () => {
     label: property.title,
   }));
 
-  
-  // const propertyOptions =
-  //   propertyData?.data
-  //     .filter(
-  //       (property, index, self) =>
-  //         self.findIndex((p) => p.title === property.title) === index
-  //     )
-  //     .filter((p) => p.property_type === "rental" && p.units.length > 0)
-  //     .map((p) => ({
-  //       value: p.id.toString(),
-  //       label: p.title,
-  //     })) || [];
+
 
   if (loading)
     return (

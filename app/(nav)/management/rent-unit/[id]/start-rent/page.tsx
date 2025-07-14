@@ -286,7 +286,6 @@ const StartRent = () => {
     isTourCompleted,
   ]);
 
-  console.log("Unit data hee", unit_data)
 
   useEffect(() => {
     if (unit_data?.unit_id) {
@@ -322,7 +321,7 @@ const StartRent = () => {
     return (
       <FullPageLoader
         text="Submitting rent..."
-        onClose={() => setReqLoading(false)} // For testing only
+        onClose={() => setReqLoading(false)} 
       />
     );
   }

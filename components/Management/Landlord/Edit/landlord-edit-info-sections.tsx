@@ -586,7 +586,7 @@ export const LandlordEditOthersInfoSection = () => {
   );
 };
 
-export const LandlordEditAttachmentInfoSection = () => {
+export const LandlordEditAttachmentInfoSection = ({ noDefault }: { noDefault?: boolean }) => {
   const { data: landlord } = useLandlordEditContext();
   const [reqLoading, setReqLoading] = useState(false);
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
@@ -599,11 +599,11 @@ export const LandlordEditAttachmentInfoSection = () => {
   >([]);
 
   useEffect(() => {
-    if (landlord?.documents) {
+    if (landlord?.documents && !noDefault) {
       // Initialize documents state with the landlord's documents
       setDocuments(landlord.documents);
     }
-  }, [landlord?.documents]);
+  }, [landlord?.documents, noDefault]);
 
   const { fileInputRef, handleFileChange, resetFiles } = useMultipleFileUpload({
     maxFileSizeMB: MAX_FILE_SIZE_MB,
@@ -765,7 +765,7 @@ export const LandlordEditAttachmentInfoSection = () => {
               </div>
             </div>
           ))}
-          {documents.length === 0 && (
+          {documents.length === 0 && !noDefault && (
             <div className="flex justify-center items-center h-32 text-neutral-500">
               No documents available
             </div>
