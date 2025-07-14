@@ -169,6 +169,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         onSelectPlan={page === "modal" ? onSelect : (onSelectPlan as any)}
         page={page}
         changeStep={changeStep}
+        expiry_date={expiry_date}
         hovered={isHovered}
       />
     </div>
