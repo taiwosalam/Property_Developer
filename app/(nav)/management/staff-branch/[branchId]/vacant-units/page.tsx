@@ -146,6 +146,8 @@ const VacantUnits = () => {
       setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData, true) }));
       setState((prevState) => ({
         ...prevState,
+        current_page: apiData.data.current_page || 1,
+        last_page: apiData.data.last_page || 1,
       }));
     }
   }, [apiData]);
@@ -174,7 +176,7 @@ const VacantUnits = () => {
       <CustomLoader
         layout="page"
         statsCardCount={3}
-        pageTitle="Rent & Units"
+        pageTitle="Vacant Units"
       />
     );
 

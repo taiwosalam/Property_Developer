@@ -47,10 +47,12 @@ import TableLoading from "@/components/Loader/TableLoading";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { parseHTML } from "@/utils/parse-html";
 import clsx from "clsx";
+import { useParams } from "next/navigation";
 
 const BranchInvoicePage = () => {
   const isDarkMode = useDarkMode();
   const { branch } = useBranchStore();
+  const { branchId } = useParams();
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
@@ -89,7 +91,7 @@ const BranchInvoicePage = () => {
 
   // Fetch branch invoices
   const { data, error, loading, isNetworkError, silentLoading } =
-    useFetch<InvoiceListResponse>("/invoice/list", config);
+    useFetch<InvoiceListResponse>("/invoice/list?branch_id=" + branch.branch_id, config);
 
   // Transform and store data for table/cards
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
