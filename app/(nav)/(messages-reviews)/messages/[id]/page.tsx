@@ -74,14 +74,6 @@ const Chat = () => {
   const { profile: userProfileData, loading: loadingUser } = useUserProfile(id);
 
   // Compose role/badge logic
-  // const role = getCleanRoleName(userProfileData);
-  // const isAcct = role === "director" || role === "manager" || role === "staff";
-  // const showActBadge = isAcct && userProfileData?.tier_id === 2;
-  // const badgeColor =
-  //   tierColorMap[userProfileData?.tier_id as keyof typeof tierColorMap] ||
-  //   "gray";
-
-  // Compose role/badge logic
   const role = getCleanRoleName(userProfileData);
   const specialRoles = [
     "director",

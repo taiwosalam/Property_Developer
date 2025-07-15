@@ -163,7 +163,7 @@ const EditBranchForm = ({
               />
               <Input
                 id="branch_address"
-                label="Branch Full Address"
+                label="Street Name/Building Number"
                 placeholder="Enter Address"
                 inputClassName="city-street-input bg-white"
                 defaultValue={somedata?.address}

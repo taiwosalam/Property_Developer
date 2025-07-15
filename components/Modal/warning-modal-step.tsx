@@ -2,6 +2,7 @@ import Button from "../Form/Button/button";
 import { XIcon } from "@/public/icons/icons";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import {
+  EnrollmentApiResponse,
   PropertyManagerSubsApiResponseTypes,
   PropertyManagerSubsTransformedPlan,
 } from "@/app/(nav)/settings/subscription/types";
@@ -89,6 +90,7 @@ export const WarningStep2 = ({
   const [showFeatures, setShowFeatures] = useState(false);
   const { company_id } = usePersonalInfoStore();
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const [autoRenew, setAutoRenew] = useState(false);
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
   const [pageData, setPageData] = useState<
     PropertyManagerSubsTransformedPlan[]
@@ -98,6 +100,22 @@ export const WarningStep2 = ({
       "/property-manager-subscription-plan"
     );
   useRefetchOnEvent("refetchSubscriptionPlan", () => refetch({ silent: true }));
+
+  const {
+    data: companyEnrollments,
+    error: enrollmentErr,
+    loading: enrollmentLoading,
+    refetch: refetchEnrollments,
+  } = useFetch<EnrollmentApiResponse>(`/enrollments/${company_id}`);
+  useRefetchOnEvent("refetchEnrollments", () =>
+    refetchEnrollments({ silent: true })
+  );
+
+  useEffect(() => {
+    if (companyEnrollments?.data) {
+      setAutoRenew(companyEnrollments.data.auto_renew === 1);
+    }
+  }, [companyEnrollments]);
 
   // Transform API data and set pageData
   useEffect(() => {
@@ -249,6 +267,7 @@ export const WarningStep2 = ({
     <ProfessionalPlanCard
         showFeatures={showFeatures}
         setShowFeatures={setShowFeatures}
+        autoRenew={autoRenew}
       />
     </div>
   );

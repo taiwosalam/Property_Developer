@@ -94,7 +94,7 @@ const MessagesSidebar = ({
         </div>
       )}
       {/* Floating action button */}
-      <div className="fixed bottom-20 z-[10] max-w-[50px]">
+      <div className="fixed bottom-[120px] z-[10] max-w-[50px]">
         <Modal>
           <ModalTrigger asChild>
             <button

@@ -27,11 +27,13 @@ const features = [
 interface ProfessionalCardProps {
   showFeatures: boolean;
   setShowFeatures: (showFeatures: boolean) => void;
+  autoRenew: boolean;
 }
 
 const ProfessionalPlanCard = ({
   showFeatures,
   setShowFeatures,
+  autoRenew,
 }: ProfessionalCardProps) => {
   const [selectedBilling, setSelectedBilling] = useState<
     "annually" | "monthly" | null
@@ -151,6 +153,7 @@ const ProfessionalPlanCard = ({
         showFeatures={showFeatures}
         getFeaturesText={() => "Professional Features"}
         handleCardClick={() => setShowFeatures(!showFeatures)}
+        autoRenew={autoRenew}
       />
       <FeaturesList showFeatures={showFeatures} features={features} />
 
