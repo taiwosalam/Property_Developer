@@ -239,8 +239,6 @@ const ComplaintsPage = () => {
     }
   };
 
-  console.log(pageData?.complaints)
-
   if (loading) {
     return (
       <CustomLoader layout="page" statsCardCount={3} pageTitle="Complaints" />
@@ -336,36 +334,38 @@ const ComplaintsPage = () => {
             <SearchError />
           ) : (
             <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 gap-4 flex items-center overflow-x-scroll no-scrollbar">
-              {pageData.complaints?.map((complaint, index) => (
-                <TaskCard
-                  styles="min-w-[352.66px]"
-                  statusChanger={false}
-                  noDrag
-                  isNew
-                  key={complaint.id || index}
-                  task={{
-                    id: complaint.id,
-                    columnId: complaint.columnId,
-                    content: {
-                      messageCount: complaint.content?.messageCount,
-                      linkCount: complaint.content?.linkCount,
-                      userAvatars: complaint.content.userAvatars,
-                      date: complaint?.content?.date,
-                      status: complaint?.content?.status,
-                      progress: complaint?.content?.progress,
-                    },
-                    name: complaint?.name,
-                    title: complaint?.title,
-                    message: complaint?.message,
-                    tier: complaint?.tier,
-                    avatarSrc: complaint?.avatarSrc ?? "/empty/avatar.png",
-                  }}
-                  onClick={() => {
-                    setSelectedPendingTask(complaint);
-                    setPendingModalOpen(true);
-                  }}
-                />
-              ))}
+              {pageData.complaints
+                ?.filter((task) => task?.content?.status === "pending")
+                .map((complaint, index) => (
+                  <TaskCard
+                    styles="min-w-[352.66px]"
+                    statusChanger={false}
+                    noDrag
+                    isNew
+                    key={complaint.id || index}
+                    task={{
+                      id: complaint.id,
+                      columnId: complaint.columnId,
+                      content: {
+                        messageCount: complaint.content?.messageCount,
+                        linkCount: complaint.content?.linkCount,
+                        userAvatars: complaint.content.userAvatars,
+                        date: complaint?.content?.date,
+                        status: complaint?.content?.status,
+                        progress: complaint?.content?.progress,
+                      },
+                      name: complaint?.name,
+                      title: complaint?.title,
+                      message: complaint?.message,
+                      tier: complaint?.tier,
+                      avatarSrc: complaint?.avatarSrc ?? "/empty/avatar.png",
+                    }}
+                    onClick={() => {
+                      setSelectedPendingTask(complaint);
+                      setPendingModalOpen(true);
+                    }}
+                  />
+                ))}
             </div>
           )
         ) : (
@@ -388,7 +388,7 @@ const ComplaintsPage = () => {
               complaintData={{
                 id: Number(selectedPendingTask.id),
                 senderName: selectedPendingTask.name,
-                senderVerified: true, 
+                senderVerified: true,
                 complaintTitle: selectedPendingTask.title,
                 propertyName: "",
                 unitName: "",
@@ -401,7 +401,7 @@ const ComplaintsPage = () => {
               statusChanger={false}
               setModalOpen={setPendingModalOpen}
               onConfirm={handlePendingStatusChange}
-              showApproveRejectButtons 
+              showApproveRejectButtons
             />
           </ModalContent>
         </Modal>

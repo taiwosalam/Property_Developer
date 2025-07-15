@@ -13,8 +13,8 @@ import TextArea from "@/components/Form/TextArea/textarea";
 import { useEffect, useState } from "react";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { DeleteIconX } from "@/public/icons/icons";
-import { useRouter, useSearchParams } from "next/navigation";
+import { DeleteIconX, ExclamationMark } from "@/public/icons/icons";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import {
   SinglePropertyResponse,
@@ -32,6 +32,7 @@ import { AuthForm } from "@/components/Auth/auth-components";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { createExpense } from "../data";
+import { useTourStore } from "@/store/tour-store";
 
 const CreateExpensePage = () => {
   const router = useRouter();
@@ -154,10 +155,39 @@ const CreateExpensePage = () => {
     }
   };
 
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("CreateExpensesTou")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   return (
     <section className="space-y-7 pb-[100px]">
       <AuthForm onFormSubmit={handleCreateExpense}>
-        <BackButton>Create New Expense</BackButton>
+        <div className="flex gap-2 items-center">
+          <BackButton>Create New Expense</BackButton>
+          <button
+            onClick={() => restartTour(pathname)}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
         <div className="space-y-8">
           <div className="grid grid-cols-1 mt-4 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
             <Select
@@ -174,6 +204,7 @@ const CreateExpensePage = () => {
                   : "Select property"
               }
               error={propertiesError}
+              className="property-selection-dropdown"
             />
             <MultiSelectObj
               id="units"
@@ -181,7 +212,7 @@ const CreateExpensePage = () => {
               onValueChange={setUnitsSelecetd}
               resetKey={Number(selectedPropertyId) || 0}
               label="Unit Name"
-              className="max-w-[300px]"
+              className="unit-selection-dropdown max-w-[300px]"
               disabled={loadingUnits}
               placeholder={
                 loadingUnits
@@ -194,14 +225,18 @@ const CreateExpensePage = () => {
           </div>
 
           <div className="max-w-[968px]">
-            <TextArea id="expenses_description" label="Expenses Description" />
+            <TextArea
+              id="expenses_description"
+              label="Expenses Description"
+              className="expenses-details-form"
+            />
           </div>
         </div>
         <div className="space-y-6">
           <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
             Add Expenses
           </h1>
-          <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
+          <div className="expense-title-input bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-[968px]">
               <Input
                 type="text"
@@ -221,7 +256,7 @@ const CreateExpensePage = () => {
                 onChange={(v) => setPaymentAmount(v)}
               />
             </div>
-            <div className="flex items-center justify-end">
+            <div className="add-payment-button flex items-center justify-end">
               <Button
                 type="button"
                 className="py-2 px-8"
@@ -296,7 +331,7 @@ const CreateExpensePage = () => {
             disabled={reqLoading}
             type="submit"
             size="sm_normal"
-            className="py-2 px-8"
+            className="create-button py-2 px-8"
           >
             {reqLoading ? "Please wait..." : "Create"}
           </Button>

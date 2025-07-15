@@ -58,7 +58,10 @@ interface TaskCardProps {
   viewOnly?: boolean;
   styles?: string;
   taskStatus?: string | null;
-  onConfirm?: (note: string, status?: "completed" | "rejected" | "processing") => void;
+  onConfirm?: (
+    note: string,
+    status?: "completed" | "rejected" | "processing"
+  ) => void;
   onClick?: () => void;
 }
 
@@ -303,7 +306,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </CardContent>
       </Card>
 
-      {/* {cardData && (
+      {cardData && task?.content?.status === "pending" && (
         <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
           <ModalContent>
             <TaskModal
@@ -312,10 +315,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               complaintData={cardData}
               setModalOpen={setModalOpen}
               targetStatus={taskStatus}
+              showApproveRejectButtons={
+                task?.content?.status === "pending" ? true : false
+              }
             />
           </ModalContent>
         </Modal>
-      )} */}
+      )}
     </div>
   );
 };

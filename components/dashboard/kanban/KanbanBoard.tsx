@@ -582,7 +582,7 @@ export function KanbanBoard({
     const data = event.active.data.current;
     if (data?.type === "Column") {
       setActiveColumn(data.column);
-      //setStatusChangeModalOpen(true);
+      setStatusChangeModalOpen(true);
       return;
     }
 

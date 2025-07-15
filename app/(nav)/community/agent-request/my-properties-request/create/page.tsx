@@ -1,8 +1,8 @@
 "use client";
 
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import {
   PropertyRequestFirstSection,
   PropertyRequestSecondSection,
@@ -15,6 +15,8 @@ import { createPropertyRequest } from "../data";
 import BackButton from "@/components/BackButton/back-button";
 import Button from "@/components/Form/Button/button";
 import { useGlobalStore } from "@/store/general-store";
+import { ExclamationMark } from "@/public/icons/icons";
+import { useTourStore } from "@/store/tour-store";
 
 const placeholderText =
   "Please provide details about the type of property you're looking for. Kindly note that you are fully responsible for all content you post. Only real estate-related posts and genuine property requests are allowed. Irrelevant or unrelated content may be removed.";
@@ -46,12 +48,40 @@ const CreateMyPropertyRequest = () => {
     }
   };
 
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("CreateFacilityTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   return (
     <>
       <AuthForm onFormSubmit={handleCreateClick} returnType="form-data">
-        <div className="wra mb-16">
-          <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+        <div className="mb-16">
+          <div className="flex gap-2 items-center">
             <BackButton>Create Property Request</BackButton>
+
+            <button
+              onClick={() => restartTour(pathname)}
+              type="button"
+              className="text-orange-normal"
+            >
+              <ExclamationMark />
+            </button>
           </div>
 
           <div className="body w-full flex flex-col lg:flex-row justify-between mt-10 gap-10">
@@ -72,7 +102,7 @@ const CreateMyPropertyRequest = () => {
               !getGlobalInfoStore("canSubmit") ||
               !getGlobalInfoStore("isValidDateRange")
             }
-            className="py-2 px-8"
+            className="create-button py-2 px-8"
           >
             {isCreating ? "Creating..." : "Create"}
           </Button>

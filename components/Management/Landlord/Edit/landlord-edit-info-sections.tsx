@@ -127,103 +127,107 @@ export const LandlordEditProfileInfoSection = () => {
   }, [landlord?.contact_address]);
 
   return (
-    <LandlordTenantInfoEditSection title="profile">
-      <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
-        <LandlordTenantInfoEditGrid>
-          <Input
-            id="landlord_firstname"
-            label="first name"
-            required
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.name.split(" ")[0]}
-          />
-          <Input
-            id="landlord_lastname"
-            label="last name"
-            required
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.name.split(" ")[1]}
-          />
+    <div className="profile-section">
+      <LandlordTenantInfoEditSection title="profile">
+        <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
+          <LandlordTenantInfoEditGrid>
+            <Input
+              id="landlord_firstname"
+              label="first name"
+              required
+              inputClassName="rounded-lg"
+              defaultValue={landlord?.name.split(" ")[0]}
+            />
+            <Input
+              id="landlord_lastname"
+              label="last name"
+              required
+              inputClassName="rounded-lg"
+              defaultValue={landlord?.name.split(" ")[1]}
+            />
 
-          <Input
-            id="landlord_email"
-            type="email"
-            label="email"
-            // disabled={!!landlord?.email}
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.email}
-          />
-          <PhoneNumberInput
-            id="landlord_phone"
-            label="phone number"
-            inputContainerClassName="bg-neutral-2"
-            defaultValue={landlord?.phone_number}
-          />
-          <Select
-            id="landlord_state"
-            label="state"
-            options={getAllStates()}
-            placeholder="Select options"
-            inputContainerClassName="bg-neutral-2"
-            value={address.state}
-            onChange={(value) => handleAddressChange(value, "state")}
-          />
-          <Select
-            id="landlord_local_government"
-            label="local government"
-            placeholder="Select options"
-            options={getLocalGovernments(address.state)}
-            inputContainerClassName="bg-neutral-2"
-            value={address.local_government}
-            onChange={(value) => handleAddressChange(value, "local_government")}
-          />
-          <Select
-            id="landlord_city"
-            label="city"
-            placeholder="Select options"
-            options={getCities(address.state, address.local_government)}
-            inputContainerClassName="bg-neutral-2"
-            value={address.city}
-            allowCustom={true}
-            onChange={(value) => handleAddressChange(value, "city")}
-          />
-          <Input
-            id="landlord_address"
-            label="address"
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.contact_address.address}
-          />
-          <Select
-            id="owner_type"
-            label="owner type"
-            isSearchable={false}
-            placeholder="Select options"
-            options={landlordTypes}
-            inputContainerClassName="bg-neutral-2"
-            defaultValue={landlord?.owner_type}
-          />
-          <Select
-            id="gender"
-            label="gender"
-            isSearchable={false}
-            placeholder="Select options"
-            inputContainerClassName="bg-neutral-2"
-            options={genderTypes}
-            defaultValue={landlord?.gender}
-          />
-          <div className="md:col-span-2 flex justify-end">
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              type="submit"
-              disabled={reqLoading}
-            >
-              {reqLoading ? "updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+            <Input
+              id="landlord_email"
+              type="email"
+              label="email"
+              // disabled={!!landlord?.email}
+              inputClassName="rounded-lg"
+              defaultValue={landlord?.email}
+            />
+            <PhoneNumberInput
+              id="landlord_phone"
+              label="phone number"
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={landlord?.phone_number}
+            />
+            <Select
+              id="landlord_state"
+              label="state"
+              options={getAllStates()}
+              placeholder="Select options"
+              inputContainerClassName="bg-neutral-2"
+              value={address.state}
+              onChange={(value) => handleAddressChange(value, "state")}
+            />
+            <Select
+              id="landlord_local_government"
+              label="local government"
+              placeholder="Select options"
+              options={getLocalGovernments(address.state)}
+              inputContainerClassName="bg-neutral-2"
+              value={address.local_government}
+              onChange={(value) =>
+                handleAddressChange(value, "local_government")
+              }
+            />
+            <Select
+              id="landlord_city"
+              label="city"
+              placeholder="Select options"
+              options={getCities(address.state, address.local_government)}
+              inputContainerClassName="bg-neutral-2"
+              value={address.city}
+              allowCustom={true}
+              onChange={(value) => handleAddressChange(value, "city")}
+            />
+            <Input
+              id="landlord_address"
+              label="address"
+              inputClassName="rounded-lg"
+              defaultValue={landlord?.contact_address.address}
+            />
+            <Select
+              id="owner_type"
+              label="owner type"
+              isSearchable={false}
+              placeholder="Select options"
+              options={landlordTypes}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={landlord?.owner_type}
+            />
+            <Select
+              id="gender"
+              label="gender"
+              isSearchable={false}
+              placeholder="Select options"
+              inputContainerClassName="bg-neutral-2"
+              options={genderTypes}
+              defaultValue={landlord?.gender}
+            />
+            <div className="md:col-span-2 flex justify-end">
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                type="submit"
+                disabled={reqLoading}
+              >
+                {reqLoading ? "updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -256,58 +260,60 @@ export const LandlordEditNextOfKinInfoSection = () => {
     }
   };
   return (
-    <LandlordTenantInfoEditSection title="Next of Kin">
-      <AuthForm onFormSubmit={handleUpdateNextOfKin} skipValidation>
-        <LandlordTenantInfoEditGrid>
-          <Input
-            id="next_of_kin_fullname"
-            label="full name"
-            required
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.next_of_kin.name}
-          />
-          <Input
-            id="next_of_kin_email"
-            type="email"
-            label="email"
-            required
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.next_of_kin.email}
-          />
-          <PhoneNumberInput
-            id="next_of_kin_phone_number"
-            label="phone number"
-            required
-            inputContainerClassName="bg-neutral-2"
-            defaultValue={landlord?.next_of_kin.phone || ""}
-          />
-          <Select
-            id="next_of_kin_relationship"
-            label="relationship"
-            placeholder="Select options"
-            options={nextOfKinRelationships}
-            inputContainerClassName="bg-neutral-2"
-            defaultValue={landlord?.next_of_kin.relationship || ""}
-          />
-          <Input
-            id="next_of_kin_address"
-            label="address"
-            inputClassName="rounded-lg"
-            defaultValue={landlord?.next_of_kin.address}
-          />
-          <div className="flex items-end justify-end">
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              disabled={reqLoading}
-              type="submit"
-            >
-              {reqLoading ? "updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+    <div className="next-of-kin-form">
+      <LandlordTenantInfoEditSection title="Next of Kin">
+        <AuthForm onFormSubmit={handleUpdateNextOfKin} skipValidation>
+          <LandlordTenantInfoEditGrid>
+            <Input
+              id="next_of_kin_fullname"
+              label="full name"
+              required
+              inputClassName="rounded-lg"
+              defaultValue={landlord?.next_of_kin.name}
+            />
+            <Input
+              id="next_of_kin_email"
+              type="email"
+              label="email"
+              required
+              inputClassName="rounded-lg"
+              defaultValue={landlord?.next_of_kin.email}
+            />
+            <PhoneNumberInput
+              id="next_of_kin_phone_number"
+              label="phone number"
+              required
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={landlord?.next_of_kin.phone || ""}
+            />
+            <Select
+              id="next_of_kin_relationship"
+              label="relationship"
+              placeholder="Select options"
+              options={nextOfKinRelationships}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={landlord?.next_of_kin.relationship || ""}
+            />
+            <Input
+              id="next_of_kin_address"
+              label="address"
+              inputClassName="rounded-lg"
+              defaultValue={landlord?.next_of_kin.address}
+            />
+            <div className="flex items-end justify-end">
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                disabled={reqLoading}
+                type="submit"
+              >
+                {reqLoading ? "updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -440,71 +446,73 @@ export const LandlordEditBankDetailsInfoSection = () => {
   };
 
   return (
-    <LandlordTenantInfoEditSection title="Bank Details">
-      <AuthForm
-        onFormSubmit={handleUpdateBankDetails}
-        skipValidation
-        returnType="form-data"
-      >
-        <LandlordTenantInfoEditGrid>
-          <Select
-            id="bank_name"
-            label="bank name"
-            options={
-              bankList?.data.map((bank) => ({
-                value: bank.bank_code,
-                label: bank.bank_name,
-              })) || []
-            }
-            placeholder={
-              bankListLoading
-                ? "Loading bank list..."
-                : bankListError
-                ? "Error loading bank list"
-                : "Select bank"
-            }
-            value={bankName}
-            error={bankListError}
-            onChange={(value) => {
-              setBankCode(value);
-              setIsVerified(false);
-              setAccountName("");
-              const selectedBank = bankList?.data.find(
-                (bank) => String(bank.bank_code) === value
-              );
-              setBankName(selectedBank?.bank_name || "");
-            }}
-          />
-          <Input
-            id="account_number"
-            label="account number"
-            inputClassName="rounded-lg"
-            value={accountNumber}
-            maxLength={10}
-            onChange={handleAccountNumberChange}
-            disabled={!bankCode}
-          />
-          <Input
-            id="account_name"
-            label="account name"
-            inputClassName="rounded-lg"
-            value={accountName}
-            placeholder={lookupLoading ? "Looking up account" : ""}
-            readOnly
-          />
-          <div className="flex items-end justify-end">
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              disabled={!isVerified || reqLoading}
-              type="submit"
-            >
-              {reqLoading ? "updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+    <div className="bank-details-form">
+      <LandlordTenantInfoEditSection title="Bank Details">
+        <AuthForm
+          onFormSubmit={handleUpdateBankDetails}
+          skipValidation
+          returnType="form-data"
+        >
+          <LandlordTenantInfoEditGrid>
+            <Select
+              id="bank_name"
+              label="bank name"
+              options={
+                bankList?.data.map((bank) => ({
+                  value: bank.bank_code,
+                  label: bank.bank_name,
+                })) || []
+              }
+              placeholder={
+                bankListLoading
+                  ? "Loading bank list..."
+                  : bankListError
+                  ? "Error loading bank list"
+                  : "Select bank"
+              }
+              value={bankName}
+              error={bankListError}
+              onChange={(value) => {
+                setBankCode(value);
+                setIsVerified(false);
+                setAccountName("");
+                const selectedBank = bankList?.data.find(
+                  (bank) => String(bank.bank_code) === value
+                );
+                setBankName(selectedBank?.bank_name || "");
+              }}
+            />
+            <Input
+              id="account_number"
+              label="account number"
+              inputClassName="rounded-lg"
+              value={accountNumber}
+              maxLength={10}
+              onChange={handleAccountNumberChange}
+              disabled={!bankCode}
+            />
+            <Input
+              id="account_name"
+              label="account name"
+              inputClassName="rounded-lg"
+              value={accountName}
+              placeholder={lookupLoading ? "Looking up account" : ""}
+              readOnly
+            />
+            <div className="flex items-end justify-end">
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                disabled={!isVerified || reqLoading}
+                type="submit"
+              >
+                {reqLoading ? "updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -532,57 +540,59 @@ export const LandlordEditOthersInfoSection = () => {
   }, [landlord?.others]);
 
   return (
-    <LandlordTenantInfoEditSection title="Others">
-      <AuthForm
-        onFormSubmit={handleUpdateOthers}
-        skipValidation
-        returnType="form-data"
-      >
-        <LandlordTenantInfoEditGrid>
-          <Select
-            id="occupation"
-            label="employment"
-            inputContainerClassName="bg-neutral-2"
-            options={employmentOptions}
-            value={employment || ""}
-            onChange={(value) => setEmployment(value)}
-          />
-          {employment && employment.toLowerCase() === "employed" && (
+    <div className="other-details-form">
+      <LandlordTenantInfoEditSection title="Others">
+        <AuthForm
+          onFormSubmit={handleUpdateOthers}
+          skipValidation
+          returnType="form-data"
+        >
+          <LandlordTenantInfoEditGrid>
             <Select
-              id="job_type"
-              label="employment type"
-              options={employmentTypeOptions}
+              id="occupation"
+              label="employment"
               inputContainerClassName="bg-neutral-2"
-              defaultValue={landlord?.others?.employment_type || ""}
+              options={employmentOptions}
+              value={employment || ""}
+              onChange={(value) => setEmployment(value)}
             />
-          )}
-          <Select
-            id="family_type"
-            label="family type"
-            inputContainerClassName="bg-neutral-2"
-            options={familyTypes}
-            defaultValue={landlord?.others?.family_type || ""}
-          />
-          <div
-            className={clsx(
-              "flex items-end justify-end",
-              (!employment ||
-                (employment && employment.toLowerCase()) !== "employed") &&
-                "md:col-span-2"
+            {employment && employment.toLowerCase() === "employed" && (
+              <Select
+                id="job_type"
+                label="employment type"
+                options={employmentTypeOptions}
+                inputContainerClassName="bg-neutral-2"
+                defaultValue={landlord?.others?.employment_type || ""}
+              />
             )}
-          >
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              disabled={reqLoading}
-              type="submit"
+            <Select
+              id="family_type"
+              label="family type"
+              inputContainerClassName="bg-neutral-2"
+              options={familyTypes}
+              defaultValue={landlord?.others?.family_type || ""}
+            />
+            <div
+              className={clsx(
+                "flex items-end justify-end",
+                (!employment ||
+                  (employment && employment.toLowerCase()) !== "employed") &&
+                  "md:col-span-2"
+              )}
             >
-              {reqLoading ? "updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                disabled={reqLoading}
+                type="submit"
+              >
+                {reqLoading ? "updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -678,57 +688,58 @@ export const LandlordEditAttachmentInfoSection = ({ noDefault }: { noDefault?: b
   const groupedDocuments = groupDocumentsByType(documents);
 
   return (
-    <LandlordTenantInfoEditSection title="attachment">
-      <LandlordTenantInfoEditGrid>
-        <div className="space-y-5 col-span-full">
-          <div className="flex gap-2">
-            <Select
-              id="document_type"
-              label="document type"
-              placeholder="Select options"
-              options={[
-                "invoice",
-                "receipt",
-                "agreement",
-                "others",
-                // { label: "other document", value: "others" },
-              ]}
-              value={documentType}
-              onChange={(value) => setDocumentType(value)}
-              // inputContainerClassName="bg-neutral-2"
-              className="w-full"
-            />
-            <Select
-              id="property"
-              label="property"
-              placeholder="Select options"
-              options={landlord?.propertyOptions || []}
-              // value={property}
-              onChange={(value) => setProperty(Number(value))}
-              // inputContainerClassName="bg-neutral-2"
-              className="w-full"
-            />
+    <div className="attachment-section">
+      <LandlordTenantInfoEditSection title="attachment">
+        <LandlordTenantInfoEditGrid>
+          <div className="space-y-5 col-span-full">
+            <div className="flex gap-2">
+              <Select
+                id="document_type"
+                label="document type"
+                placeholder="Select options"
+                options={[
+                  "invoice",
+                  "receipt",
+                  "agreement",
+                  "others",
+                  // { label: "other document", value: "others" },
+                ]}
+                value={documentType}
+                onChange={(value) => setDocumentType(value)}
+                // inputContainerClassName="bg-neutral-2"
+                className="w-full"
+              />
+              <Select
+                id="property"
+                label="property"
+                placeholder="Select options"
+                options={landlord?.propertyOptions || []}
+                // value={property}
+                onChange={(value) => setProperty(Number(value))}
+                // inputContainerClassName="bg-neutral-2"
+                className="w-full"
+              />
+            </div>
+            <div>
+              <p className="text-base font-medium">Browse *</p>
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                onClick={handleChooseFileClick}
+              >
+                Choose File
+              </Button>
+            </div>
           </div>
-          <div>
-            <p className="text-base font-medium">Browse *</p>
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              onClick={handleChooseFileClick}
-            >
-              Choose File
-            </Button>
-          </div>
-        </div>
-        <input
-          type="file"
-          onChange={handleFileChange}
-          className="hidden"
-          ref={fileInputRef}
-          accept={acceptedExtensions.join(",")}
-          multiple
-        />
-        {/* <div className="flex flex-wrap gap-4 col-span-full">
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="hidden"
+            ref={fileInputRef}
+            accept={acceptedExtensions.join(",")}
+            multiple
+          />
+          {/* <div className="flex flex-wrap gap-4 col-span-full">
           {documents?.map((document) => (
             <div key={document.id} className="relative w-fit">
               <LandlordTenantInfoDocument {...document} />
@@ -765,23 +776,24 @@ export const LandlordEditAttachmentInfoSection = ({ noDefault }: { noDefault?: b
               </div>
             </div>
           ))}
-          {documents.length === 0 && !noDefault && (
+          {documents.length === 0 && (
             <div className="flex justify-center items-center h-32 text-neutral-500">
               No documents available
             </div>
           )}
         </div>
 
-        <Button
-          size="base_medium"
-          className="col-span-full w-fit ml-auto py-2 px-6"
-          onClick={handleUpdateButtonClick}
-          disabled={reqLoading}
-        >
-          {reqLoading ? "updating..." : "update"}
-        </Button>
-      </LandlordTenantInfoEditGrid>
-    </LandlordTenantInfoEditSection>
+          <Button
+            size="base_medium"
+            className="update-button col-span-full w-fit ml-auto py-2 px-6"
+            onClick={handleUpdateButtonClick}
+            disabled={reqLoading}
+          >
+            {reqLoading ? "updating..." : "update"}
+          </Button>
+        </LandlordTenantInfoEditGrid>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -809,27 +821,29 @@ export const LandlordEditNoteInfoSection = () => {
   }, [data?.notes?.write_up]);
 
   return (
-    <LandlordTenantInfoEditSection
-      title="add note"
-      style={{ position: "relative" }}
-    >
-      <button
-        type="button"
-        className="absolute top-5 right-5 !w-[unset]"
-        onClick={() => setNote("")}
+    <div className="add-note-textarea">
+      <LandlordTenantInfoEditSection
+        title="add note"
+        style={{ position: "relative" }}
       >
-        Clear
-      </button>
-      <TextArea id="note" value={note} onChange={(value) => setNote(value)} />
-      <Button
-        size="base_medium"
-        className="!w-fit ml-auto py-2 px-6"
-        onClick={handleUpdateNote}
-        disabled={reqLoading}
-      >
-        {reqLoading ? "updating..." : "update"}
-      </Button>
-    </LandlordTenantInfoEditSection>
+        <button
+          type="button"
+          className="absolute top-5 right-5 !w-[unset]"
+          onClick={() => setNote("")}
+        >
+          Clear
+        </button>
+        <TextArea id="note" value={note} onChange={(value) => setNote(value)} />
+        <Button
+          size="base_medium"
+          className="!w-fit ml-auto py-2 px-6"
+          onClick={handleUpdateNote}
+          disabled={reqLoading}
+        >
+          {reqLoading ? "updating..." : "update"}
+        </Button>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 

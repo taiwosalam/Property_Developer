@@ -1,8 +1,8 @@
 "use client";
 
 import { ChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import {
   PropertyRequestFirstSection,
   StateAndLocalGovt,
@@ -16,6 +16,8 @@ import { handleAxiosError } from "@/services/api";
 import Select from "@/components/Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { useGlobalStore } from "@/store/general-store";
+import { ExclamationMark } from "@/public/icons/icons";
+import { useTourStore } from "@/store/tour-store";
 
 const CreateArticle = () => {
   const router = useRouter();
@@ -69,11 +71,30 @@ const CreateArticle = () => {
     }
   };
 
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("CreateAgentContributionTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   return (
     <>
       <div className="wra mb-16">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-1 mb-1">
+          <div className="flex items-center gap-2 mb-1">
             <button
               type="button"
               aria-label="Go Back"
@@ -85,6 +106,14 @@ const CreateArticle = () => {
             <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
               Create Article
             </h1>
+
+            <button
+              onClick={() => restartTour(pathname)}
+              type="button"
+              className="text-orange-normal"
+            >
+              <ExclamationMark />
+            </button>
           </div>
         </div>
         <AuthForm
@@ -109,7 +138,7 @@ const CreateArticle = () => {
             <button
               type="submit"
               disabled={isCreating || !getGlobalInfoStore("canSubmit")}
-              className="py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
+              className="create-button py-2 px-7 bg-brand-9 text-white rounded-[4px] text-sm font-medium"
             >
               {isCreating ? "Creating..." : "Create"}
             </button>
@@ -145,23 +174,25 @@ const SecondSection = ({
   return (
     <div className="bg-white dark:bg-darkText-primary p-4 rounded-lg flex flex-col gap-4">
       <AddPhotoAndVideo onFilesChange={(files) => setImageFiles(files)} />
-      <Select
-        options={stateOptions}
-        id="state"
-        label="Target Audience"
-        value={address.state}
-        onChange={(value) => handleAddressChange("state", value)}
-        required
-      />
+      <div className="target-audience-selection space-y-5">
+        <Select
+          options={stateOptions}
+          id="state"
+          label="Target Audience"
+          value={address.state}
+          onChange={(value) => handleAddressChange("state", value)}
+          required
+        />
 
-      <Select
-        options={getLocalGovernments(address.state)}
-        id="lga"
-        label="local government"
-        onChange={(value) => handleAddressChange("lga", value)}
-        value={address.lga}
-        required
-      />
+        <Select
+          options={getLocalGovernments(address.state)}
+          id="lga"
+          label="local government"
+          onChange={(value) => handleAddressChange("lga", value)}
+          value={address.lga}
+          required
+        />
+      </div>
     </div>
   );
 };

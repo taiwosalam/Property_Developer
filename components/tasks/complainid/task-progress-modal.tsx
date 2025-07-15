@@ -49,11 +49,13 @@ interface ITaskProgressModal {
     time: string;
   };
   setIsOpen?: (val: boolean) => void;
+  percentage: number;
 }
 const TaskProgressModal: React.FC<ITaskProgressModal> = ({
   task_bar,
   task,
   setIsOpen,
+  percentage,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -199,8 +201,11 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
         <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
         <form className="space-y-4">
           <div>
-            <p className="text-green-500 text-lg">{""}</p>
-            <p className="text-black dark:text-white">Processing stage</p>
+            {percentage === 100 ? (
+              <p className="text-green-500 text-lg">{"Completed"}</p>
+            ) : (
+              <p className="text-black dark:text-white">Processing stage</p>
+            )}
             <p className="text-text-tertiary">
               Kindly check the box if you are done with a particular task
             </p>
