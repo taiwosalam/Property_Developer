@@ -106,12 +106,6 @@ const TaskModal = ({
   const handleSubmit = async (
     status?: "processing" | "rejected" | "completed" | "approved"
   ) => {
-    console.log("TaskModal handleSubmit:", {
-      notes,
-      destinationColumn,
-      status,
-      id,
-    });
     if (!notes.trim()) {
       setError("Please provide a note");
       toast.warning("Please provide a note");
@@ -137,102 +131,7 @@ const TaskModal = ({
     if (destinationColumn === "processing") return "Process Complaint";
     return "Change Status";
   };
-
-  const handleStatusChange = async () => {
-    if (!id || !destinationColumn) {
-      toast.error("Invalid complaint or destination");
-      return;
-    }
-    if (notes.length < 1) {
-      toast.warning("Please provide a note");
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      let success = false;
-      if (destinationColumn === "approved") {
-        const payload: IChangeComplainStatus = {
-          id: id.toString(),
-          route: "complete", // Adjust based on your API's route for completing complaints
-        };
-        const data = await approveAndProcessComplaint(notes, payload);
-        success = !!data;
-      } else if (destinationColumn === "rejected") {
-        const data = await rejectComplaint(notes, id.toString());
-        success = !!data;
-      } else if (destinationColumn === "processing") {
-        const payload: IChangeComplainStatus = {
-          id: id.toString(),
-          route: "process",
-        };
-        const data = await approveAndProcessComplaint(notes, payload);
-        success = !!data;
-      }
-
-      if (success) {
-        toast.success("Complaint status changed");
-        setModalOpen?.(false);
-      } else {
-        throw new Error("Failed to update complaint status");
-      }
-    } catch (error) {
-      setError("Failed to update status. Please try again.");
-      toast.error("Failed to update complaint status");
-      // Note: Revert logic should be handled in KanbanBoard if needed
-      onRequestFailure?.();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleApproveOrProcessComplaint = async (route: string) => {
-    if (!id) {
-      return;
-    }
-    if (notes.length < 1) {
-      toast.warning("Please provide a note");
-      return;
-    }
-    const payload: IChangeComplainStatus = {
-      id: id.toString(),
-      route,
-    };
-    try {
-      setIsLoading(true);
-      const data = await approveAndProcessComplaint(notes, payload);
-      if (data) {
-        toast.success("Complaint status changed");
-        setModalOpen?.(false);
-      }
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const handleRejectComplaint = async () => {
-    if (!id) {
-      return;
-    }
-    if (!notes.length) {
-      toast.warning("Please attach a note");
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const data = await rejectComplaint(notes, id.toString());
-      if (data) {
-        toast.success("Complaint status changed");
-        setModalOpen?.(false);
-      }
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
-  };
+ 
 
   return (
     <div className="bg-white dark:bg-darkText-primary dark:shadow-2xl rounded-lg shadow-lg w-full xl:max-w-5xl px-9 max-w-[90%] max-h-[500px] overflow-y-scroll no-scrollbar">

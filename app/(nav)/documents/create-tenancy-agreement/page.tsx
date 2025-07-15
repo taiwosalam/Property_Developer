@@ -11,14 +11,14 @@ import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-i
 import DocumentTenancyAgreements from "@/components/Documents/document-tenancy-agreements";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useDrawerStore } from "@/store/drawerStore";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import {
   SinglePropertyResponse,
   transformSinglePropertyData,
 } from "../../management/properties/[id]/data";
 import NetworkError from "@/components/Error/NetworkError";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { transformArticlesForPayload } from "@/components/Documents/data";
 import { TenancyAgreementPayload } from "@/components/Documents/types";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
@@ -26,6 +26,8 @@ import { toast } from "sonner";
 import { createPropertyDocument } from "../data";
 import { property } from "lodash";
 import CardsLoading from "@/components/Loader/CardsLoading";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const CreateTenancyAggrement = () => {
   const router = useRouter();
@@ -96,6 +98,26 @@ const CreateTenancyAggrement = () => {
     }
   };
 
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("CreateTenancyAgreementTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   // console.log("here bro", propertyData);
   if (loading) {
     return (
@@ -112,9 +134,19 @@ const CreateTenancyAggrement = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-6">
-        <BackButton customBackPath="/documents">
-          Create Tenancy Agreement
-        </BackButton>
+        <div className="flex gap-2 items-center">
+          <BackButton customBackPath="/documents">
+            Create Tenancy Agreement
+          </BackButton>
+
+          <button
+            onClick={() => restartTour(pathname)}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
           <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
             Property Details
@@ -148,7 +180,7 @@ const CreateTenancyAggrement = () => {
           </div>
         </LandlordTenantInfoBox>
       </div>
-      <div className="custom-flex-col gap-8">
+      <div className="toggle-section custom-flex-col gap-8">
         <div className="custom-flex-col gap-4">
           <div className="custom-flex-col gap-1">
             <h2 className="text-primary-navy dark:text-darkText-1 text-xl font-bold">
@@ -175,7 +207,7 @@ const CreateTenancyAggrement = () => {
         >
           Back
         </Button>
-        <div className="flex gap-6 ml-0">
+        <div className="create-preview-button flex gap-6 ml-0">
           {!startRentUnitId && (
             <Button
               onClick={() => handleSaveDraft("preview")}

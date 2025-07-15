@@ -12,7 +12,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import useFetch from "@/hooks/useFetch";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { toast } from "sonner";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   deleteAnnouncement,
   updateAnnouncement,
@@ -248,6 +248,7 @@ const CreateAnnouncementForm: React.FC<{
               <Select
                 id="branch_id"
                 label="Branch"
+                className="branch-selection-dropdown"
                 disabled={silentLoading || loading}
                 placeholder={
                   loading ? "Please wait..." : "Send to all Branches"
@@ -284,6 +285,7 @@ const CreateAnnouncementForm: React.FC<{
               <Select
                 id="property_id"
                 label="Property"
+                className="property-selection-dropdown"
                 disabled={!selectedBranch || propertySilent}
                 placeholder={
                   propertyLoading ? "Please wait..." : "Send to all Properties"
@@ -322,20 +324,20 @@ const CreateAnnouncementForm: React.FC<{
             id="title"
             label="Title"
             placeholder="Add title"
-            className="md:col-span-2"
+            className="title-input md:col-span-2"
             inputClassName="bg-white"
             defaultValue={editMode ? announcementData?.announcement?.title : ""}
           />
           <TextArea
             id="description"
-            className="md:col-span-2"
+            className="description-textarea md:col-span-2"
             label="Description"
             defaultValue={
               editMode ? announcementData?.announcement?.description : ""
             }
           />
         </div>
-        <div className="lg:flex-1 space-y-4">
+        <div className="media-upload-section lg:flex-1 space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             {imagePreviews?.length > 0 &&
               imagePreviews?.map((src, index) => (
@@ -424,7 +426,7 @@ const CreateAnnouncementForm: React.FC<{
             disabled={isLoading}
             type="submit"
             size="custom"
-            className="py-2 px-8 font-bold text-sm lg:text-base"
+            className="create-button py-2 px-8 font-bold text-sm lg:text-base"
           >
             {isLoading ? "Please wait..." : "Create Announcement"}
           </Button>

@@ -216,6 +216,7 @@ const CreateInvoicePage = () => {
           <div className="grid md:grid-cols-2 gap-4">
             <Select
               id="property"
+              className="property-selection-dropdown"
               label={`Choose Property`}
               options={propertyOptions}
               disabled={propertyLoading}
@@ -270,7 +271,7 @@ const CreateInvoicePage = () => {
               type="text"
               id="amount"
               label="Amount"
-              className=" w-full"
+              className="amount-input w-full"
               // CURRENCY_SYMBOL={CURRENCY}
               formatNumber
               value={paymentAmount}

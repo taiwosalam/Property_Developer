@@ -59,9 +59,9 @@ const TaskStatusProgress = ({
                 : "text-status-caution-2"
             )}
           >
-            {`${
-              percentage === 100 ? "Completed" : "Processing"
-            } (${Math.round(percentage)}% done)`}
+            {`${percentage === 100 ? "Completed" : "Processing"} (${Math.round(
+              percentage
+            )}% done)`}
           </p>
         </div>
         <div className="space-y-1">
@@ -94,6 +94,7 @@ const TaskStatusProgress = ({
             task_bar={task_bar?.task_bar || []}
             task={task}
             setIsOpen={setIsOpen}
+            percentage={percentage}
           />
         </ModalContent>
       </Modal>

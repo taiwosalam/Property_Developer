@@ -23,10 +23,12 @@ import {
   LandlordEditNoteInfoSection,
   LandlordEditAvatarInfoSection,
 } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { deleteLandlord } from "./data";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
@@ -46,6 +48,26 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
     }
   }, [data]);
 
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("editLandlordSteps")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Landlord" />;
   if (error) return <div>{error}</div>;
@@ -54,7 +76,16 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
   return (
     <LandlordEditContext.Provider value={{ data: landlordData }}>
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
-        <BackButton>Edit Landlord</BackButton>
+        <div className="flex gap-2 items-center">
+          <BackButton>Edit Landlord</BackButton>
+          <button
+            onClick={() => restartTour(pathname)}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
         <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
           {/* Left Side */}
           <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
@@ -78,7 +109,7 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
             <ModalTrigger asChild>
               <Button
                 size="base_medium"
-                className="py-2 px-6"
+                className="delete-button py-2 px-6"
                 variant="light_red"
               >
                 delete account
@@ -95,7 +126,7 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
 
           <Button
             size="base_medium"
-            className="py-2 px-6"
+            className="save-button py-2 px-6"
             onClick={() => {
               // router.push(`/management/landlord/${landlordId}`);
               router.push(`/management/landlord`);

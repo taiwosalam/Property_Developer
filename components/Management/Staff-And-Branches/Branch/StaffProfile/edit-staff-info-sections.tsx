@@ -92,8 +92,8 @@ export const StaffEditProfileInfoSection = () => {
           <Select
             isSearchable={false}
             id="personal_title"
-            label="personal title / qualifiction"
-            inputContainerClassName="bg-neutral-2"
+            label="personal title / qualification"
+            inputContainerClassName="personal-title-dropdown bg-neutral-2"
             options={titles}
             defaultValue={staff?.personal_title}
           />
@@ -101,10 +101,11 @@ export const StaffEditProfileInfoSection = () => {
             isSearchable={false}
             id="real_estate_title"
             label="real estate title"
-            inputContainerClassName="bg-neutral-2"
+            inputContainerClassName="real-estate-title-dropdown bg-neutral-2"
             options={industryOptions}
             defaultValue={staff?.real_estate_title}
           />
+
           <Input
             id="fullname"
             label="full name"
@@ -118,6 +119,7 @@ export const StaffEditProfileInfoSection = () => {
             disabled
             defaultValue={staff?.email}
           />
+
           {/* <Select
             id="years_experience"
             label="years of experience"
@@ -129,7 +131,7 @@ export const StaffEditProfileInfoSection = () => {
           <DateInput
             id="years_experience"
             label="years of experience (since)"
-            inputClassName="setup-f required"
+            inputClassName=".experience-year-dropdown setup-f required"
             disableFuture
             defaultValue={
               staff?.experience ? dayjs(staff?.experience) : undefined
@@ -140,13 +142,14 @@ export const StaffEditProfileInfoSection = () => {
             label="gender"
             isSearchable={false}
             options={genderTypes}
-            inputContainerClassName="bg-neutral-2"
+            inputContainerClassName="gender-dropdown bg-neutral-2"
             defaultValue={staff?.gender}
           />
           <PhoneNumberInput
             id="phone_number"
             label="phone number"
             required
+            className="phone-number-input"
             defaultValue={staff?.phone_number}
           />
 
@@ -231,9 +234,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
         );
         if (status) {
           window.dispatchEvent(new Event("staff-updated"));
-          router.push(
-            `/management/staff-branch/${data.select_new_branch}`
-          );
+          router.push(`/management/staff-branch/${data.select_new_branch}`);
         }
       } finally {
         setMoving(false);
@@ -242,52 +243,54 @@ export const StaffEditMoveToAnotherBranchSection = () => {
   };
 
   return (
-    <LandlordTenantInfoEditSection title={`move ${name} to another branch`}>
-      <AuthForm onFormSubmit={handleMoveStaff} skipValidation>
-        <LandlordTenantInfoEditGrid>
-          <Select
-            id="current_position"
-            label="Current Role"
-            inputContainerClassName="bg-neutral-2"
-            options={[]}
-            defaultValue={position}
-            disabled
-          />
-          <Select
-            id="select_new_branch"
-            label="select new branch"
-            inputContainerClassName="bg-neutral-2"
-            options={branchOptions}
-            placeholder={
-              branchesLoading
-                ? "Loading branches..."
-                : branchesError
-                ? "Error loading branches"
-                : "Select branch"
-            }
-            //   defaultValue={staff?.real_estate_title}
-          />
-          <Select
-            id="transfer_current_position_to"
-            label="transfer current role to"
-            options={staffOptions}
-            inputContainerClassName="bg-neutral-2"
-          />
-          <Select
-            id="select_new_branch_position"
-            label="select new branch role"
-            inputContainerClassName="bg-neutral-2"
-            options={["manager", "account officer", "staff"]}
-            //   defaultValue={staff?.real_estate_title}
-          />
-          <div className="md:col-span-2 flex justify-end">
-            <Button type="submit" size="base_medium" className="py-2 px-6">
-              {moving ? "Updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+    <div className="move-staff-section">
+      <LandlordTenantInfoEditSection title={`move ${name} to another branch`}>
+        <AuthForm onFormSubmit={handleMoveStaff} skipValidation>
+          <LandlordTenantInfoEditGrid>
+            <Select
+              id="current_position"
+              label="Current Role"
+              inputContainerClassName="bg-neutral-2"
+              options={[]}
+              defaultValue={position}
+              disabled
+            />
+            <Select
+              id="select_new_branch"
+              label="select new branch"
+              inputContainerClassName="bg-neutral-2"
+              options={branchOptions}
+              placeholder={
+                branchesLoading
+                  ? "Loading branches..."
+                  : branchesError
+                  ? "Error loading branches"
+                  : "Select branch"
+              }
+              //   defaultValue={staff?.real_estate_title}
+            />
+            <Select
+              id="transfer_current_position_to"
+              label="transfer current role to"
+              options={staffOptions}
+              inputContainerClassName="bg-neutral-2"
+            />
+            <Select
+              id="select_new_branch_position"
+              label="select new branch role"
+              inputContainerClassName="bg-neutral-2"
+              options={["manager", "account officer", "staff"]}
+              //   defaultValue={staff?.real_estate_title}
+            />
+            <div className="md:col-span-2 flex justify-end">
+              <Button type="submit" size="base_medium" className="py-2 px-6">
+                {moving ? "Updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -349,31 +352,33 @@ export const StaffEditChangePositionSection = () => {
   };
 
   return (
-    <LandlordTenantInfoEditSection title={`change ${name} role`}>
-      <AuthForm onFormSubmit={handleUpdateStaffPosition} skipValidation>
-        <LandlordTenantInfoEditGrid>
-          <Select
-            id="assign_current_position_to"
-            label="assign current role to"
-            inputContainerClassName="bg-neutral-2"
-            options={staffOptions}
-          />
-          <Select
-            id="new_position"
-            label="new role"
-            inputContainerClassName="bg-neutral-2"
-            options={positionOptions}
-            //   defaultValue={staff?.real_estate_title}
-          />
+    <div className="change-role-section">
+      <LandlordTenantInfoEditSection title={`change ${name} role`}>
+        <AuthForm onFormSubmit={handleUpdateStaffPosition} skipValidation>
+          <LandlordTenantInfoEditGrid>
+            <Select
+              id="assign_current_position_to"
+              label="assign current role to"
+              inputContainerClassName="bg-neutral-2"
+              options={staffOptions}
+            />
+            <Select
+              id="new_position"
+              label="new role"
+              inputContainerClassName="bg-neutral-2"
+              options={positionOptions}
+              //   defaultValue={staff?.real_estate_title}
+            />
 
-          <div className="md:col-span-2 flex justify-end">
-            <Button type="submit" size="base_medium" className="py-2 px-6">
-              {updating ? "Updating..." : "Update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+            <div className="md:col-span-2 flex justify-end">
+              <Button type="submit" size="base_medium" className="py-2 px-6">
+                {updating ? "Updating..." : "Update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -409,7 +414,11 @@ export const StaffEditAboutSection = () => {
   };
 
   return (
-    <AuthForm onFormSubmit={handleUpdateAboutStaff} skipValidation>
+    <AuthForm
+      onFormSubmit={handleUpdateAboutStaff}
+      skipValidation
+      className="about-staff-textarea"
+    >
       <LandlordTenantInfoEditSection
         title="about staff"
         style={{ position: "relative" }}
@@ -425,11 +434,12 @@ export const StaffEditAboutSection = () => {
           id="note"
           value={about}
           onChange={(value) => setAbout(value)}
+          className="about-staff-textarea"
         />
         <Button
           type="submit"
           size="base_medium"
-          className="!w-fit ml-auto py-2 px-6"
+          className="update-button !w-fit ml-auto py-2 px-6"
         >
           {updating ? "Updating..." : "Update"}
         </Button>
@@ -483,36 +493,38 @@ export const StaffLockAccountSection = () => {
   console.log("inactive", inactive);
 
   return (
-    <LandlordTenantInfoEditSection title={`lock ${name} account`}>
-      <div className="space-y-4">
-        <p>
-          This will prevent account users from accessing the account. Access
-          cannot be regained until the account is unlocked from your end
-        </p>
-        <div className="flex justify-end">
-          <Button
-            size="base_medium"
-            className="py-2 px-6 w-fit"
-            variant={inactive ? "default" : "red"}
-            disabled={loading}
-            onClick={handleLockClicked}
-          >
-            {loading ? "Please wait..." : inactive ? "Unlock" : "lock"}
-          </Button>
-          <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
-            <ModalContent>
-              <LockOTPModal
-                action={handleLockAccount}
-                otp={otp}
-                setOtp={setOtp}
-                loading={isLocking}
-                next={next}
-              />
-            </ModalContent>
-          </Modal>
+    <div className="lock-account-toggle">
+      <LandlordTenantInfoEditSection title={`lock ${name} account`}>
+        <div className="space-y-4">
+          <p>
+            This will prevent account users from accessing the account. Access
+            cannot be regained until the account is unlocked from your end
+          </p>
+          <div className="flex justify-end">
+            <Button
+              size="base_medium"
+              className="py-2 px-6 w-fit"
+              variant={inactive ? "default" : "red"}
+              disabled={loading}
+              onClick={handleLockClicked}
+            >
+              {loading ? "Please wait..." : inactive ? "Unlock" : "lock"}
+            </Button>
+            <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
+              <ModalContent>
+                <LockOTPModal
+                  action={handleLockAccount}
+                  otp={otp}
+                  setOtp={setOtp}
+                  loading={isLocking}
+                  next={next}
+                />
+              </ModalContent>
+            </Modal>
+          </div>
         </div>
-      </div>
-    </LandlordTenantInfoEditSection>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -583,6 +595,7 @@ export const StaffEditAvatarInfoSection = () => {
       onFormSubmit={handleUpdatePicture}
       skipValidation
       returnType="form-data"
+      className="profile-picture-upload"
     >
       <LandlordTenantInfoEditSection title="Edit Picture">
         <input type="hidden" name="avatar" value={selectedAvatar} />
