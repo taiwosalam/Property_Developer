@@ -325,7 +325,7 @@ const Inventory = () => {
         ) : (
           <>
             {view === "grid" ? (
-              <AutoResizingGrid minWidth={284}>
+              <AutoResizingGrid minWidth={350}>
                 {silentLoading ? (
                   <CardsLoading />
                 ) : (

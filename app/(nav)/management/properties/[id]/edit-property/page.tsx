@@ -116,14 +116,6 @@ const EditProperty = ({ params }: { params: { id: string } }) => {
   }, [propertyData, setAddUnitStore]);
 
   useEffect(() => {
-    console.log(
-      "newForm:",
-      newForm,
-      "showNewUnitForm:",
-      showNewUnitForm,
-      "closeUnitForm:",
-      closeUnitForm
-    );
     if (newForm || showNewUnitForm) {
       setGlobalStore("closeUnitForm", false);
     }

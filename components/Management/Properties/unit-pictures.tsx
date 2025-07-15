@@ -74,7 +74,6 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
     form?.requestSubmit();
   };
 
-  console.log("added units", addedUnits)
 
   return (
     <div
