@@ -15,6 +15,7 @@ import Link from "next/link";
 import { empty } from "@/app/config";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import BadgeIcon from "../BadgeIcon/badge-icon";
 
 const CompanySummary = ({
   loading,
@@ -65,15 +66,11 @@ const CompanySummary = ({
             className="h-full w-full object-contain"
           />
         </div>
-        <div className="flex gap-2 mt-4">
+        <div className="flex items-center mt-4">
           <h3 className="text-xl font-bold text-black dark:text-white">
             {capitalizeWords(name)}
           </h3>
-          {company_is_verified && (
-            <span className="text-[#C1C2C3]">
-              <VerifiedCompanyDiamond size={20} />
-            </span>
-          )}
+          {company_is_verified && <BadgeIcon color="gray" />}
         </div>
       </div>
 

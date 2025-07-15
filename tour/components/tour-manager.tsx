@@ -331,24 +331,3 @@ const CustomTour: React.FC = () => {
 };
 
 export default CustomTour;
-
-// // CUSTOM NAVIGATION
-
-// // const { goToStep, restartTour } = useTourStore();
-// // const pathname = usePathname();
-
-// // return (
-// //   <div>
-// //     <button
-// //       onClick={() => goToStep(2)}
-// //       className="px-4 py-2 bg-blue-500 text-white rounded"
-// //     >
-// //       Go to Step 2
-// //     </button>
-// //     <button
-// //       onClick={() => restartTour(pathname)}
-// //       className="px-4 py-2 bg-green-500 text-white rounded ml-2"
-// //     >
-// //       Restart Tour
-// //     </button>
-// //   </div>

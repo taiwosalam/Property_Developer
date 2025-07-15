@@ -85,6 +85,9 @@ export interface UserDetails {
   application: any;
   identity: any;
   roles: UserRole[];
+  director: {
+    profile_picture: string | null;
+  };
 }
 
 export interface Tier {

@@ -3,6 +3,7 @@ import {
   transformPropertyManagerSubsApiData,
 } from "@/app/(nav)/settings/subscription/data";
 import {
+  EnrollmentApiResponse,
   PropertyManagerSubsApiResponseTypes,
   PropertyManagerSubsTransformedPlan,
 } from "@/app/(nav)/settings/subscription/types";
@@ -34,6 +35,7 @@ export const RenewSubPlanModal = ({
   const [showFeatures, setShowFeatures] = useState(false);
   const { company_id } = usePersonalInfoStore();
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const [autoRenew, setAutoRenew] = useState(false);
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
   const [pageData, setPageData] = useState<
     PropertyManagerSubsTransformedPlan[]
@@ -54,6 +56,23 @@ export const RenewSubPlanModal = ({
     }
   }, [data]);
 
+  const {
+    data: companyEnrollments,
+    error: enrollmentErr,
+    loading: enrollmentLoading,
+    refetch: refetchEnrollments,
+  } = useFetch<EnrollmentApiResponse>(`/enrollments/${company_id}`);
+  useRefetchOnEvent("refetchEnrollments", () =>
+    refetchEnrollments({ silent: true })
+  );
+
+  useEffect(() => {
+    if (companyEnrollments?.data) {
+      setAutoRenew(companyEnrollments.data.auto_renew === 1);
+    }
+  }, [companyEnrollments]);
+
+  // --- Handle Billing Type Change ---
   const handleBillingTypeChange = useCallback(
     (planId: number, type: "monthly" | "yearly") => {
       setPageData((prevData) =>
@@ -194,6 +213,7 @@ export const RenewSubPlanModal = ({
         <ProfessionalPlanCard
           showFeatures={showFeatures}
           setShowFeatures={setShowFeatures}
+          autoRenew={autoRenew}
         />
       </div>
     </div>

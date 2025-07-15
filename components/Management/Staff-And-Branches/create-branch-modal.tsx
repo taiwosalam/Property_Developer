@@ -167,7 +167,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
             />
 
             <RestrictInput
-              label="Street/Office Number"
+              label="Street Name/Building Number"
               id="branch_address"
               placeholder="Write here"
               inputClassName="rounded-[8px]"

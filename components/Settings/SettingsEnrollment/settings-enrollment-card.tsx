@@ -72,14 +72,6 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
   const [isHovered, setIsHovered] = useState(false);
 
-  // const handleBillingTypeChange = (type: "monthly" | "yearly") => {
-  //   if (!isFree) {
-  //     if (type === "yearly") {
-  //       decrementQuantity();
-  //     }
-  //     onBillingTypeChange(type);
-  //   }
-  // };
 
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     onBillingTypeChange(type); // Trigger parent handler for all plans

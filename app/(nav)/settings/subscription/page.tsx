@@ -58,7 +58,6 @@ const Enrollment = () => {
 
   useEffect(() => {
     if (companyEnrollments?.data) {
-      console.log(companyEnrollments.data.auto_renew);
       setAutoRenew(companyEnrollments.data.auto_renew === 1);
     }
   }, [companyEnrollments]);
@@ -275,6 +274,7 @@ const Enrollment = () => {
             <ProfessionalPlanCard
               showFeatures={showFeatures}
               setShowFeatures={setShowFeatures}
+              autoRenew={autoRenew}
             />
           )}
         </div>
