@@ -35,37 +35,71 @@ const FooterModal = ({
   useOutsideClick(popupRef, () => setCountPopup(false));
 
   // THIS DUPLICATES THE DUPLICATE UNIT
-  const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  // const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   const form = e.currentTarget.form;
+  //   const formInDom = document.getElementById(
+  //     "add-unit-form"
+  //   ) as HTMLFormElement | null;
+
+  //   console.log("addedUnits", addedUnits);
+  //   console.log("editMode", editMode);
+  //   if (editMode && addedUnits.length > 0) {
+  //     // If in edit mode and there are added units, submit first, then duplicate
+  //     setDuplicate?.({ val: true, count });
+
+  //     setTimeout(() => {
+  //       form?.requestSubmit(); // Submit the form first
+  //       console.log("submitti")
+  //       // if no form and there's addedunit, then user click no, just duplicate the last unit
+  //       if (!form) {
+  //         setTimeout(() => {
+  //           const lastUnit = addedUnits[addedUnits.length - 1];
+  //           for (let i = 0; i < count; i++) {
+  //             const newUnit = {
+  //               ...lastUnit,
+  //               id: `temp-${Date.now()}-${i}`,
+  //               notYetUploaded: true,
+  //             };
+  //             addUnit(newUnit);
+  //           }
+  //           setIsOpen(false);
+  //         }, 500); // Delay duplication slightly to ensure form submission completes
+  //       }
+  //     }, 0);
+  //   } else if (addedUnits.length > 0) {
+  //     // Regular duplication logic
+  //     const lastUnit = addedUnits[addedUnits.length - 1];
+  //     for (let i = 0; i < count; i++) {
+  //       const newUnit = {
+  //         ...lastUnit,
+  //         id: `temp-${Date.now()}-${i}`,
+  //         notYetUploaded: true,
+  //       };
+  //       addUnit(newUnit);
+  //     }
+  //     setIsOpen(false);
+  //   } else {
+  //     // Submit the form when no added units exist
+  //     setDuplicate?.({ val: true, count });
+  //     setTimeout(() => {
+  //       setIsOpen(false);
+  //       form?.requestSubmit();
+  //     }, 0);
+  //   }
+  //   setAddUnitStore("newForm", false);
+  // };
+
+
+  const handleAddClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const form = e.currentTarget.form;
-    const formInDom = document.getElementById(
-      "add-unit-form"
-    ) as HTMLFormElement | null;
-
-    if (editMode && addedUnits.length > 0) {
-      // If in edit mode and there are added units, submit first, then duplicate
-      setDuplicate?.({ val: true, count });
-
-      setTimeout(() => {
-        form?.requestSubmit(); // Submit the form first
-        // if no form and there's addedunit, then user click no, just duplicate the last unit
-        if (!form) {
-          setTimeout(() => {
-            const lastUnit = addedUnits[addedUnits.length - 1];
-            for (let i = 0; i < count; i++) {
-              const newUnit = {
-                ...lastUnit,
-                id: `temp-${Date.now()}-${i}`,
-                notYetUploaded: true,
-              };
-              addUnit(newUnit);
-            }
-            setIsOpen(false);
-          }, 500); // Delay duplication slightly to ensure form submission completes
-        }
-      }, 0);
-    } else if (addedUnits.length > 0) {
-      // Regular duplication logic
+    const form = e.currentTarget.form || document.getElementById("add-unit-form") as HTMLFormElement | null;
+  
+    // Helper function to duplicate the last unit
+    const duplicateLastUnit = () => {
+      if (addedUnits.length === 0) {
+        return;
+      }
       const lastUnit = addedUnits[addedUnits.length - 1];
       for (let i = 0; i < count; i++) {
         const newUnit = {
@@ -76,16 +110,38 @@ const FooterModal = ({
         addUnit(newUnit);
       }
       setIsOpen(false);
-    } else {
-      // Submit the form when no added units exist
+    };
+  
+    if (form) {
+      // Form exists: submit the form
+      try {
+        await new Promise<void>((resolve, reject) => {
+          const handleSubmit = () => {
+            form.removeEventListener("submit", handleSubmit);
+            resolve();
+          };
+          form.addEventListener("submit", handleSubmit);
+          form.requestSubmit();
+        });
+  
+        // After successful submission, duplicate form 
+        setDuplicate?.({ val: true, count });
+        if (addedUnits.length > 0) {
+          duplicateLastUnit();
+        }
+      } catch (error) {
+        console.error("Form submission failed:", error);
+      }
+    } else if (addedUnits.length > 0) {
+      // No form but units exist: duplicate the last unit
       setDuplicate?.({ val: true, count });
-      setTimeout(() => {
-        setIsOpen(false);
-        form?.requestSubmit();
-      }, 0);
+      duplicateLastUnit();
+    } else {
+      // No form and no units: close modal
+      setIsOpen(false);
     }
-    setAddUnitStore("newForm", false);
   };
+
 
   const handleNoClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const formInDom = document.getElementById(
@@ -101,8 +157,9 @@ const FooterModal = ({
       setClickedNo?.(true);
       if (formInDom) {
         setAddUnitStore("newForm", true);
-      setGlobalStore("closeUnitForm", false); 
-    setGlobalStore("allowEditUnit", true);
+        setGlobalStore("closeUnitForm", false); 
+        setGlobalStore("allowEditUnit", true);
+        setClickedNo?.(true);
         formInDom.reset();
       }
     } else {
