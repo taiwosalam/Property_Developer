@@ -15,7 +15,7 @@ export const vehicleRecordFIltersOptionsWithDropdown = [
       // { label: "No Record", value: "no record" },
       { label: "Check In", value: "check-in" },
       { label: "Check Out", value: "check-out" },
-      { label: "Pending", value: "pending" },
+      // { label: "Pending", value: "pending" },
     ],
   },
 ];

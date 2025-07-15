@@ -61,6 +61,8 @@ export interface UnitPageState {
   month_published_vacant?: number;
   unpublished_vacant?: number;
   month_unpublished_vacant?: number;
+  last_page?: number;
+  current_page?: number;
   unit: RentalPropertyCardProps[];
 }
 
@@ -82,6 +84,8 @@ export interface UnitApiResponse {
     month_published_vacant?: number;
     unpublished_vacant?: number;
     month_unpublished_vacant?: number;
+    current_page: number;
+    last_page: number;
     pagination: {
       current_page: number;
       total_pages: number;
@@ -120,6 +124,7 @@ export const transformRentUnitApiResponse = (
   const isUnitApiResponse = (response: any): response is UnitApiResponse => {
     return "total_unit" in response.data;
   };
+
 
 
   const unitData = isUnitApiResponse(response)
@@ -180,6 +185,8 @@ export const transformRentUnitApiResponse = (
   } else {
     return {
       unit: transformedUnits,
+      last_page: response.data.last_page || 1,
+      current_page: response.data.current_page || 1,
     };
   }
 };

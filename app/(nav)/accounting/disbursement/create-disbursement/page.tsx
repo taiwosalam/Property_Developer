@@ -285,6 +285,59 @@ const CreateDisbursement = () => {
           )}
         </div>
 
+        {displayedPayments.length > 0 && isAddPaymentChecked && (
+          <div className="payment-overview-section space-y-6 mt-4">
+            <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
+              Payment Added
+            </h3>
+
+            <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
+              <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
+                {displayedPayments.map((payment, index) => (
+                  <div key={index} className="flex flex-col gap-4">
+                    <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
+                      {payment.title}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
+                        {new Intl.NumberFormat("en-NG", {
+                          style: "currency",
+                          currency: "NGN",
+                        }).format(payment.amount)}
+                      </p>
+                      <Modal>
+                        <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                          <DeleteIconX />
+                        </ModalTrigger>
+                        <ModalContent>
+                          <DeleteItemWarningModal
+                            item={payment.title}
+                            amount={payment.amount}
+                            handleDelete={() => handleDeletePayment(index)}
+                            useCase="invoices"
+                          />
+                        </ModalContent>
+                      </Modal>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <SectionSeparator />
+              <div className="flex flex-col gap-4">
+                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
+                  Total Disbursement
+                </p>
+                <p className="font-bold text-xl text-brand-9">
+                  {new Intl.NumberFormat("en-NG", {
+                    style: "currency",
+                    currency: "NGN",
+                  }).format(totalAmount)}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="space-y-6">
           <div className="add-unit-disbursement-button flex gap-1 flex-col">
             <div className="flex gap-2">
@@ -349,8 +402,8 @@ const CreateDisbursement = () => {
           )}
         </div>
 
-        {displayedPayments.length > 0 && (
-          <div className="payment-overview-section space-y-6">
+        {displayedPayments.length > 0 && !isAddPaymentChecked && (
+          <div className="payment-overview-section space-y-6 mt-4">
             <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
               Payment Added
             </h3>

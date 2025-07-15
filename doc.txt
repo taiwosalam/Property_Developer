@@ -1,124 +1,148 @@
-"use client";
-import clsx from "clsx";
-import { useState } from "react";
-import { XIcon } from "@/public/icons/icons";
-import { ModalTrigger } from "@/components/Modal/modal";
-import Input from "@/components/Form/Input/input";
-import Select from "@/components/Form/Select/select";
-import InputTextarea from "@/components/Form/InputTextarea/inputTextarea";
-import Label from "@/components/Form/Label/label";
-import Button from "@/components/Form/Button/button";
-import DateInput from "@/components/Form/DateInput/date-input";
-import TextArea from "@/components/Form/TextArea/textarea";
-// import { SectionSeparator } from "@/components/Section/section-components";
+// interface SelectPlanButtonProps {
+//   isFree?: boolean;
+//   price: string;
+//   planTitle: string;
+//   onSelectPlan?: () => Promise<boolean | undefined>;
+//   onSelect?: () => void;
+//   page?: "modal" | "settings";
+//   changeStep?: (step: FormSteps | number) => void;
+//   hovered?: boolean;
+// }
 
-const CreateReminderMOdal = () => {
-  const allTabs = ["event", "task", "reminder", "examine"] as const;
-  type Tab = (typeof allTabs)[number];
-  const [activeTab, setActiveTab] = useState<Tab>(allTabs[0]);
-  return (
-    <form className="w-[95vw] max-w-[460px] max-h-[90vh] overflow-y-auto custom-round-scrollbar rounded-lg border border-[rgba(193,194,195,0.40)] dark:border-darkText-2 bg-white  dark:bg-darkkText-primary font-medium">
-      {/* Header */}
-      <div className="text-center text-text-secondary pt-10 rounded-t-lg bg-white dark:bg-[#3c3d37] k sticky z-[1] top-0 flex flex-col gap-5">
-        <ModalTrigger asChild close>
-          <button className="absolute top-2 right-4" aria-label="Close">
-            <XIcon />
-          </button>
-        </ModalTrigger>
-        <p className="text-base dark:text-white">Create</p>
-        <div className="flex items-center justify-between gap-4 max-w-[85%] mx-auto">
-          {allTabs.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              className={clsx(
-                "capitalize text-xs px-4 py-1",
-                {
-                  "bg-brand-2 rounded-[4px] text-brand-primary dark:text-black":
-                    activeTab === tab,
-                },
-                {
-                  "text-text-secondary dark:text-white": activeTab !== tab,
-                }
-              )}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-        {/* <SectionSeparator /> */}
-      </div>
-      {/* Body */}
-      <div className="px-[18px] pt-4 pb-8 bg-white dark:bg-black space-y-4">
-        <Input id="title" placeholder="Add title" inputClassName="bg-white" />
-        {activeTab !== "examine" && (
-          <>
-            <div className="space-y-1">
-              <Label id="'">Date Picked:</Label>
-              <p className="text-text-secondary text-sm font-medium">
-                8 January 2024
-              </p>
-            </div>
-            {activeTab !== "reminder" && (
-              <Select id="guest" label="Add Guest" options={[]} />
-            )}
-          </>
-        )}
-        {activeTab === "examine" && (
-          <div className="grid md:grid-cols-2 gap-x-6 gap-y-4">
-            <Select id="branch" label="Branch" options={[]} />
-            <Select id="property" label="Property" options={[]} />
-            <Select id="account_officer" label="Account Officer" options={[]} />
-            <DateInput id="examine_date" label="Examine Date" />
-          </div>
-        )}
-        <TextArea label="Attach note:" id="note" placeholder="Type here" />
-        {activeTab === "examine" && (
-          <label className="flex items-center gap-2 text-sm text-text-secondary w-fit ml-auto !mb-8">
-            <input
-              type="checkbox"
-              className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
-            />
-            <span>Create announcement</span>
-          </label>
-        )}
-        <Button type="submit" size="sm_medium" className="w-full py-2 px-8">
-          Add to Calendar
-        </Button>
-      </div>
-    </form>
-  );
-};
+// export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
+//   isFree = false,
+//   price,
+//   planTitle,
+//   onSelectPlan,
+//   onSelect,
+//   page,
+//   changeStep,
+//   hovered,
+// }) => {
+//   const subCost = parseFormattedNumber(price);
+//   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+//   const currentExpiryDate = usePersonalInfoStore(
+//     (state) => state.currentExpiryDate
+//   );
 
-export default CreateReminderMOdal;
+//   const isExpired = currentExpiryDate
+//     ? dayjs(currentExpiryDate).isSameOrBefore(dayjs(), "day")
+//     : false;
+
+//   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+//   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
+//   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
+
+//   console.log("currentPlanKeyword", currentPlanKeyword);
+
+//   // Determine button text based on plan context
+//   const buttonText = (() => {
+//     if (isCurrentPlan) {
+//       if (currentPlanKeyword === "free") return "Current Plan";
+//       return "Extend Plan"; // For Basic or Premium, if it's the current plan
+//     }
+//     if (currentPlanKeyword === "free") {
+//       return "Upgrade Plan"; // Free plan users see "Upgrade" for Basic/Premium
+//     }
+//     if (currentPlanKeyword === "basic" && thisPlanKeyword === "premium") {
+//       return "Upgrade Plan"; // Basic plan users see "Upgrade" for Premium
+//     }
+//     if (currentPlanKeyword === "premium") {
+//       return thisPlanKeyword === "premium" ? "Extend Plan" : "Basic Plan"; // Premium users see "Extend" for Premium, "Basic Plan" for others
+//     }
+//     return "Select Plan"; // Fallback
+//   })();
+
+//   // Determine if the button should have an action
+//   const hasAction = (() => {
+//     if (isFree && isCurrentPlan) return false; // No action for free plan when current
+//     if (currentPlanKeyword === "premium" && thisPlanKeyword === "basic") {
+//       return false; // No action for Premium-to-Basic downgrade
+//     }
+//     return true; // Action for upgrades or extending plans
+//   })();
+
+//   // Determine if the modal should be used (only for actionable cases when not in modal page)
+//   const useModal = page !== "modal" && hasAction && !isFree;
+
+//   const notMessage = buttonText === "Extend Plan";
+
+//   const handleSelectPlan = async () => {
+//     if (page === "modal" && changeStep) {
+//       await onSelectPlan?.();
+//       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+//       window.dispatchEvent(new Event("refetchEnrollments"));
+//       // window.location.reload();
+//       changeStep(3);
+//     } else if (!useModal && hasAction) {
+//       await onSelect?.(); // Direct action for non-modal actionable scenarios
+//       // window.location.reload();
+//       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+//       window.dispatchEvent(new Event("refetchEnrollments"));
+//     }
+//   };
+
+//   const isDowngradeBlocked =
+//     (currentPlanKeyword === "professional" &&
+//       (thisPlanKeyword === "premium" || thisPlanKeyword === "basic")) ||
+//     (currentPlanKeyword === "premium" && thisPlanKeyword === "basic");
+
+//   const displayText =
+//     isDowngradeBlocked && hovered
+//       ? "Plan cannot be downgraded"
+//       : isExpired && hovered && isCurrentPlan
+//       ? "Renew Plan"
+//       : !hovered && isCurrentPlan
+//       ? "Current Plan"
+//       : buttonText;
+
+//   return (
+//     <div className="px-6 pb-4 flex justify-end">
+//       <div
+//         className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
+//           isFree ? "bg-brand-9 bg-opacity-40" : "bg-brand-9"
+//         }`}
+//       >
+//         {page === "modal" ? (
+//           <button
+//             className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
+//             onClick={hasAction ? handleSelectPlan : undefined} // No action for non-actionable cases
+//           >
+//             {displayText}
+//           </button>
+//         ) : useModal ? (
+//           <Modal>
+//             <ModalTrigger asChild className="w-full text-white">
+//               <button
+//                 className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
+//                 onClick={handleSelectPlan}
+//               >
+//                 {displayText}
+//               </button>
+//             </ModalTrigger>
+//             <ModalContent>
+//               <SponsorModal
+//                 page="subscription"
+//                 count={10}
+//                 cost={subCost ?? 0}
+//                 message={!notMessage}
+//                 onSubmit={onSelectPlan}
+//                 onSelect={onSelect}
+//               />
+//             </ModalContent>
+//           </Modal>
+//         ) : (
+//           <button
+//             className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
+//             onClick={hasAction ? handleSelectPlan : undefined} // No action for non-actionable cases
+//           >
+//             {displayText}
+//           </button>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <WalletModalPreset title="Create Reminder">
-      <AuthForm onFormSubmit={() => {}}>
-        <div className="custom-flex-col gap-10">
-          <Input id="title" placeholder="Add title" inputClassName="bg-white" />
-        </div>
-      </AuthForm>
-    </WalletModalPreset>

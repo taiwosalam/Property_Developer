@@ -38,27 +38,37 @@ export const PlanHeader: React.FC<{
   const currentExpiryDate = usePersonalInfoStore(
     (state) => state.currentExpiryDate
   );
+
   const getBgColor = () => {
     if (isFree) return "bg-[#38BDF8] bg-opacity-40";
     if (planTitle.toLowerCase() === "basic plan") return "bg-brand-9";
     if (planTitle.toLowerCase() === "premium plan") return "bg-[#8C62FF]";
+    if (planTitle.toLowerCase() === "professional plan") return "bg-[#01ba4c]";
     return "bg-brand-9"; // Default fallback color
   };
 
   // Format expiry date and determine status
-  const parsedExpiryDate = expiry_date
-    ? dayjs(expiry_date, "DD/MM/YYYY")
-    : dayjs(currentExpiryDate);
+  let formattedExpiryDate: string;
+  let statusText: string;
 
-  const formattedExpiryDate = parsedExpiryDate.isValid()
-    ? parsedExpiryDate.format("MMMM D, YYYY")
-    : "";
-
-  const isExpired = parsedExpiryDate.isValid()
-    ? parsedExpiryDate.isSameOrBefore(dayjs(), "day")
-    : false;
-
-  const statusText = isExpired ? "Expired since" : "Active till";
+  if (expiry_date === "Lifetime") {
+    formattedExpiryDate = "Lifetime";
+    statusText = "Active for";
+  } else {
+    // Try parsing with multiple formats
+    const parsedExpiryDate = expiry_date
+      ? dayjs(expiry_date, ["YYYY-MM-DD", "DD/MM/YYYY"], true)
+      : dayjs(currentExpiryDate, ["YYYY-MM-DD", "DD/MM/YYYY"], true);
+    
+    formattedExpiryDate = parsedExpiryDate.isValid()
+      ? parsedExpiryDate.format("MMMM D, YYYY")
+      : "";
+    statusText =
+      parsedExpiryDate.isValid() &&
+      parsedExpiryDate.isSameOrBefore(dayjs(), "day")
+        ? "Expired since"
+        : "Active till";
+  }
 
   const upperTitle = planTitle.toUpperCase();
   const freeTitle = "FREE PLAN (Active until upgraded)";
@@ -326,7 +336,7 @@ export const FeaturesToggle: React.FC<{
   // const handleToggleAutoRenew = async () => {
   //   setAutoRenew(!autoRenew);
   //   const payload = {
-  //     auto_renew: autoRenew ? 0 : 1, 
+  //     auto_renew: autoRenew ? 0 : 1,
   //   };
   //   const SUCCESS_MESSAGE = autoRenew
   //     ? "Auto-Renewal disabled"
@@ -458,6 +468,7 @@ interface SelectPlanButtonProps {
   page?: "modal" | "settings";
   changeStep?: (step: FormSteps | number) => void;
   hovered?: boolean;
+  expiry_date?: string; // Add expiry_date prop
 }
 
 export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
@@ -469,6 +480,7 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   page,
   changeStep,
   hovered,
+  expiry_date, // Add expiry_date prop
 }) => {
   const subCost = parseFormattedNumber(price);
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
@@ -484,10 +496,33 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
 
+  // Plan rank mapping (higher number = higher rank)
+  const planRank: { [key: string]: number } = {
+    free: 0,
+    basic: 1,
+    premium: 2,
+    professional: 3,
+  };
+
+  // Determine if the current plan is lifetime
+  const isCurrentPlanLifetime = expiry_date === "Lifetime" && isCurrentPlan;
+
+  // Determine if the button should be disabled
+  const isDowngradeBlocked =
+    (currentPlanKeyword &&
+      thisPlanKeyword &&
+      planRank[currentPlanKeyword] > planRank[thisPlanKeyword]) ||
+    (currentPlanKeyword === "premium" && thisPlanKeyword === "basic");
+
+  const isButtonDisabled =
+    (isCurrentPlanLifetime && planRank[currentPlanKeyword] >= planRank[thisPlanKeyword]) ||
+    isDowngradeBlocked;
+
   // Determine button text based on plan context
   const buttonText = (() => {
     if (isCurrentPlan) {
       if (currentPlanKeyword === "free") return "Current Plan";
+      if (expiry_date === "Lifetime") return "Current Plan"; // Lifetime plans can't be extended
       return "Extend Plan"; // For Basic or Premium, if it's the current plan
     }
     if (currentPlanKeyword === "free") {
@@ -503,13 +538,7 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   })();
 
   // Determine if the button should have an action
-  const hasAction = (() => {
-    if (isFree && isCurrentPlan) return false; // No action for free plan when current
-    if (currentPlanKeyword === "premium" && thisPlanKeyword === "basic") {
-      return false; // No action for Premium-to-Basic downgrade
-    }
-    return true; // Action for upgrades or extending plans
-  })();
+  const hasAction = !isButtonDisabled;
 
   // Determine if the modal should be used (only for actionable cases when not in modal page)
   const useModal = page !== "modal" && hasAction && !isFree;
@@ -517,29 +546,23 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   const notMessage = buttonText === "Extend Plan";
 
   const handleSelectPlan = async () => {
+    if (!hasAction) return; // Prevent action if button is disabled
     if (page === "modal" && changeStep) {
       await onSelectPlan?.();
       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
       window.dispatchEvent(new Event("refetchEnrollments"));
-      // window.location.reload();
       changeStep(3);
-    } else if (!useModal && hasAction) {
+    } else if (!useModal) {
       await onSelect?.(); // Direct action for non-modal actionable scenarios
-      // window.location.reload();
       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
       window.dispatchEvent(new Event("refetchEnrollments"));
     }
   };
 
-  const isDowngradeBlocked =
-    (currentPlanKeyword === "professional" &&
-      (thisPlanKeyword === "premium" || thisPlanKeyword === "basic")) ||
-    (currentPlanKeyword === "premium" && thisPlanKeyword === "basic");
-
   const displayText =
     isDowngradeBlocked && hovered
       ? "Plan cannot be downgraded"
-      : isExpired && hovered && isCurrentPlan
+      : isExpired && hovered && isCurrentPlan && expiry_date !== "Lifetime"
       ? "Renew Plan"
       : !hovered && isCurrentPlan
       ? "Current Plan"
@@ -550,12 +573,13 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
       <div
         className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
           isFree ? "bg-brand-9 bg-opacity-40" : "bg-brand-9"
-        }`}
+        } ${isButtonDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
       >
         {page === "modal" ? (
           <button
             className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
-            onClick={hasAction ? handleSelectPlan : undefined} // No action for non-actionable cases
+            onClick={hasAction ? handleSelectPlan : undefined}
+            disabled={isButtonDisabled}
           >
             {displayText}
           </button>
@@ -564,7 +588,8 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
             <ModalTrigger asChild className="w-full text-white">
               <button
                 className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
-                onClick={handleSelectPlan}
+                onClick={hasAction ? handleSelectPlan : undefined}
+                disabled={isButtonDisabled}
               >
                 {displayText}
               </button>
@@ -583,7 +608,8 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
         ) : (
           <button
             className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
-            onClick={hasAction ? handleSelectPlan : undefined} // No action for non-actionable cases
+            onClick={hasAction ? handleSelectPlan : undefined}
+            disabled={isButtonDisabled}
           >
             {displayText}
           </button>

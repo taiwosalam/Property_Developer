@@ -348,8 +348,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               occupation: landlordData.others.employment,
               ...(landlordData.others.employment &&
                 landlordData.others.employment.toLowerCase() === "employed" && {
-                employment_title: landlordData.others.employment_type,
-              }),
+                  employment_title: landlordData.others.employment_type,
+                }),
               family_type: landlordData.others.family_type,
               landlord_type: landlordData.owner_type,
               ...(!IS_MOBILE && {
@@ -383,9 +383,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 occupation: landlordData.others.employment,
                 ...(landlordData.others.employment &&
                   landlordData.others.employment.toLowerCase() ===
-                  "employed" && {
-                  employment_title: landlordData.others.employment_type,
-                }),
+                    "employed" && {
+                    employment_title: landlordData.others.employment_type,
+                  }),
                 family_type: landlordData.others.family_type,
                 // xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
               }}
@@ -393,6 +393,13 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           </>
         )}
       </div>
+
+      {/* Edit attachment */}
+      {landlordData?.user_tag === "mobile" && (
+        <LandlordEditContext.Provider value={{ data: landlordData }}>
+          <LandlordEditAttachmentInfoSection noDefault />
+        </LandlordEditContext.Provider>
+      )}
 
       {/* Property Managed */}
       <LandlordTenantInfoSection title="Property Managed">
@@ -431,12 +438,79 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         )}
       </SectionContainer>
 
-      {/* Edit attachment */}
-      {landlordData?.user_tag === "mobile" && (
-        <LandlordEditContext.Provider value={{ data: landlordData }}>
-          <LandlordEditAttachmentInfoSection />
-        </LandlordEditContext.Provider>
-      )}
+      {/* Shared Documents */}
+      <div>
+        {[
+          ...(landlordData?.properties_managed ?? []),
+          ...(landlordData?.previous_properties ?? []),
+        ].length === 0 ? (
+          <div className="flex justify-center items-center h-32 text-neutral-500">
+            No documents available for any properties
+          </div>
+        ) : (
+          <>
+            {[
+              ...(landlordData?.properties_managed ?? []),
+              ...(landlordData?.previous_properties ?? []),
+            ].map((property) => (
+              <LandlordTenantInfoSection
+                title={`Shared Documents for ${property.property_name}`}
+                key={property.id}
+              >
+                {property.documents?.length > 0 ? (
+                  <>
+                    <div className="mb-5">
+                      {Object.entries(
+                        groupDocumentsByType(property.documents)
+                      ).map(([documentType, documents]) => {
+                        if (documentType === "others") return null;
+                        return (
+                          <LandlordTenantInfoSection
+                            minimized
+                            title={`${documentType} documents`}
+                            key={`${property.id}-${documentType}`}
+                          >
+                            <div className="flex overflow-x-auto custom-round-scrollbar gap-4">
+                              {documents.map((document) => (
+                                <LandlordTenantInfoDocument
+                                  key={document.id}
+                                  {...document}
+                                />
+                              ))}
+                            </div>
+                          </LandlordTenantInfoSection>
+                        );
+                      })}
+                    </div>
+                    {groupDocumentsByType(property.documents)?.["others"] && (
+                      <LandlordTenantInfoSection
+                        minimized
+                        title="other documents"
+                        key={`${property.id}-other-documents`}
+                      >
+                        <div className="flex flex-wrap gap-4">
+                          {groupDocumentsByType(property.documents)[
+                            "others"
+                          ].map((document) => (
+                            <LandlordTenantInfoDocument
+                              key={document.id}
+                              {...document}
+                            />
+                          ))}
+                        </div>
+                      </LandlordTenantInfoSection>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-center text-gray-500 text-md py-4">
+                    No documents available for this property
+                  </p>
+                )}
+              </LandlordTenantInfoSection>
+            ))}
+          </>
+        )}
+      </div>
 
       {/* Previous Property */}
       <LandlordTenantInfoSection title="previous property">
@@ -452,74 +526,6 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           </AutoResizingGrid>
         )}
       </LandlordTenantInfoSection>
-
-      {/* Shared Documents */}
-      <div>
-        {[...(landlordData?.properties_managed ?? []), ...(landlordData?.previous_properties ?? [])].length === 0 ? (
-          <div className="flex justify-center items-center h-32 text-neutral-500">
-            No documents available for any properties
-          </div>
-        ) : (
-          <>
-            {[...(landlordData?.properties_managed ?? []), ...(landlordData?.previous_properties ?? [])].map((property) => (
-              <LandlordTenantInfoSection
-                title={`Shared Documents for ${property.property_name}`}
-                key={property.id}
-              >
-                {property.documents?.length > 0 ? (
-                  <>
-                    <div className="mb-5">
-                      {Object.entries(groupDocumentsByType(property.documents)).map(
-                        ([documentType, documents]) => {
-                          if (documentType === "others") return null;
-                          return (
-                            <LandlordTenantInfoSection
-                              minimized
-                              title={`${documentType} documents`}
-                              key={`${property.id}-${documentType}`}
-                            >
-                              <div className="flex overflow-x-auto custom-round-scrollbar gap-4">
-                                {documents.map((document) => (
-                                  <LandlordTenantInfoDocument
-                                    key={document.id}
-                                    {...document}
-                                  />
-                                ))}
-                              </div>
-                            </LandlordTenantInfoSection>
-                          );
-                        }
-                      )}
-                    </div>
-                    {groupDocumentsByType(property.documents)?.["others"] && (
-                      <LandlordTenantInfoSection
-                        minimized
-                        title="other documents"
-                        key={`${property.id}-other-documents`}
-                      >
-                        <div className="flex flex-wrap gap-4">
-                          {groupDocumentsByType(property.documents)["others"].map(
-                            (document) => (
-                              <LandlordTenantInfoDocument
-                                key={document.id}
-                                {...document}
-                              />
-                            )
-                          )}
-                        </div>
-                      </LandlordTenantInfoSection>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-center text-gray-500 text-md py-4">
-                    No documents available for this property
-                  </p>
-                )}
-              </LandlordTenantInfoSection>
-            ))}
-          </>
-        )}
-      </div>
     </div>
   );
 };

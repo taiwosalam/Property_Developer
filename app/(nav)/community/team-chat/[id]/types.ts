@@ -15,6 +15,9 @@ type GroupChat = {
   created_by: number;
   description: string;
   picture: string | null;
+  director: {
+    profile_picture: string | null;
+  };
   settings: {
     allow_invites: boolean;
     member_privacy: 'members' | string;

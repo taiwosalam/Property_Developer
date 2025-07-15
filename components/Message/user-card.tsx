@@ -69,7 +69,7 @@ const MessageUserCard = ({
       <div className="flex flex-col">
         <div className="flex items-centerr">
           <p className="text-text-primary dark:text-white text-lg font-medium capitalize">
-            {title} {capitalizeWords(name)}
+            {capitalizeWords(title)} {capitalizeWords(name)}
           </p>
           {showActBadge ? (
             <BadgeIcon color="gray" />

@@ -223,6 +223,7 @@ const MessageUserProfileModal: React.FC<MessageUserProfileModalProps> = ({
     };
   }, [apiData, isGroupChat]);
 
+
   // --- Render guards ---
   if (loading) return <MessageUserProfileSkeleton />;
   if (isNetworkError) return <div className="text-red-500"> Network Error </div>
@@ -242,7 +243,7 @@ const MessageUserProfileModal: React.FC<MessageUserProfileModalProps> = ({
         <div className="flex gap-1 items-center justify-center gap-4">
           <div className="imwrapper h-[100px] w-[100px]">
             <Image
-              src={profileData?.profile?.picture ?? empty}
+              src={ profileData?.director?.profile_picture || profileData?.profile?.picture || empty}
               alt="user profile"
               width={100}
               height={100}
@@ -252,7 +253,7 @@ const MessageUserProfileModal: React.FC<MessageUserProfileModalProps> = ({
           <div className="flex flex-col">
             <div className="flex items-center">
               <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                {profileData?.profile?.title} {truncateText(fullname ?? "", 40)}
+                {capitalizeWords(profileData?.profile?.title || "")} {truncateText(fullname ?? "", 40)}
               </p>
               {showActBadge ? (
                 <BadgeIcon color="gray" />

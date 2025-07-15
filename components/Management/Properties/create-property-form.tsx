@@ -281,7 +281,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     [landlordsData]
   );
 
-  console.log("landlordsData", landlordsData);
+  // console.log("landlordsData", landlordsData);
   const inventoryOptions =
     branchData?.inventory?.data?.data?.map((inventory: any) => ({
       value: inventory.id,
