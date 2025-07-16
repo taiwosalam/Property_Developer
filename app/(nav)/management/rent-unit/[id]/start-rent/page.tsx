@@ -404,16 +404,16 @@ const StartRent = () => {
                 Manage Agreement
               </Button>
             ) : (
-              // <Modal>
-              //   <ModalTrigger asChild>
+              <Modal>
+                <ModalTrigger asChild>
                   <Button size="base_medium" className="py-2 px-6">
                     Create Agreement
                   </Button>
-              //   </ModalTrigger>
-              //   <ModalContent>
-              //     <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
-              //   </ModalContent>
-              // </Modal>
+                </ModalTrigger>
+                <ModalContent>
+                  <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+                </ModalContent>
+              </Modal>
             )}
           </>
         )}
