@@ -8,6 +8,7 @@ export interface IRentHistory {
   unitName: string;
   address: string;
   propertyName: string;
+  currency: string;
   unitData?: {
     unit_name: string;
     total_squ_area: string;
@@ -126,6 +127,13 @@ export interface IApplicationDetails {
     status: "rejected" | "pending" | "evaluated" | "approved";
   }[];
 }
+
+const currencies: { [key: string]: string } = {
+  naira: "₦",
+  dollar: "$",
+  pound: "£",
+};
+
 export const transformApplicationDetailsPageData = (
   res: TApplicationDetailsResponse
 ): IApplicationDetails => {
@@ -237,6 +245,7 @@ export const transformApplicationDetailsPageData = (
     current_rent:
       rent_history?.previous?.map((current) => ({
         unitId: current?.unit_id,
+        currency: currencies[current?.currency],
         unitData: {
           unit_name: current?.unit_name,
           unit_preference: current?.unit_preference,
@@ -250,7 +259,7 @@ export const transformApplicationDetailsPageData = (
         address: current?.property_address || "--- ---",
         propertyName: current?.property_name || "--- ---",
         rentAmount: current?.rent_amount
-          ? formatToNaira(current?.rent_amount)
+          ? Math.round(Number(current?.rent_amount))?.toLocaleString()
           : "--- ---",
         period: current?.period || "--- ---",
         moveInDate: current?.start_date || "--- ---",
@@ -264,6 +273,7 @@ export const transformApplicationDetailsPageData = (
     previous_rent:
       rent_history?.previous?.map((current) => ({
         unitId: current?.unit_id,
+        currency: currencies[current?.currency],
         unitData: {
           unit_name: current?.unit_name,
           unit_preference: current?.unit_preference,
@@ -277,7 +287,7 @@ export const transformApplicationDetailsPageData = (
         address: current?.property_address,
         propertyName: current?.property_name,
         rentAmount: current?.rent_amount
-          ? formatToNaira(current?.rent_amount)
+          ? Math.round(Number(current?.rent_amount)).toLocaleString()
           : "--- ---",
         period: current?.period || "--- ---",
         moveOutDate: current?.move_out || "--- ---",

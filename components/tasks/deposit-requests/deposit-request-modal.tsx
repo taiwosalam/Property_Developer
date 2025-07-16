@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import dayjs from "dayjs";
 
 import utc from "dayjs/plugin/utc";
+import { parseCurrencyToNumber } from "@/lib/utils";
 dayjs.extend(utc);
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
@@ -57,6 +58,13 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
 }) => {
   const [isEscrowChecked, setIsEscrowChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // New state to track which checkboxes are locked (successfully updated)
+  const [lockedCheckboxes, setLockedCheckboxes] = useState({
+    is_inventory: is_inventory || false,
+    is_examine: is_examine || false,
+    is_maintain: is_maintain || false,
+  });
 
   const commonClasses =
     "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center w-full";
@@ -122,6 +130,14 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   };
 
   const handleCheckboxChange = async (field: keyof typeof checkboxStates) => {
+    // Prevent changes if the checkbox is already locked
+    if (lockedCheckboxes[field]) {
+      toast.warning(
+        "This checkbox has already been updated and cannot be changed."
+      );
+      return;
+    }
+
     const newCheckedState = !checkboxStates[field];
 
     // Update local state
@@ -131,22 +147,10 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
     };
     setCheckboxStates(newCheckboxStates);
 
-    // Count how many checkboxes are true
-    const trueCount = Object.values(newCheckboxStates).filter(Boolean).length;
-
-    // Prepare payload for PATCH request
     const payload: { [key: string]: any } = {
       [field]: newCheckedState,
+      status: "progress",
     };
-
-    // Determine status based on checkbox states
-    // if (trueCount === 3) {
-    //   payload.status = "completed";
-    // } else if (trueCount >= 1) {
-    //   payload.status = "progress";
-    // }
-
-    payload.status = "progress";
 
     try {
       const success = await updateCautionDeposit(requestId, payload);
@@ -158,10 +162,14 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
         }));
         toast.error("Failed to update deposit status");
       } else {
+        // Lock the checkbox on successful update
+        setLockedCheckboxes((prev) => ({
+          ...prev,
+          [field]: newCheckedState,
+        }));
         toast.success("Deposit status updated successfully");
       }
     } catch (error) {
-      console.error("PATCH request failed:", error);
       // Revert state on error
       setCheckboxStates((prev) => ({
         ...prev,
@@ -187,6 +195,12 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
       return;
     }
 
+    const depositAmount = parseCurrencyToNumber(amount);
+    if (refundAmount > depositAmount) {
+      toast.error("Refund amount is more than the deposit amount");
+      return;
+    }
+
     try {
       setIsLoading(true);
       const payload = {
@@ -200,7 +214,6 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
         toast.success("Updated successfully");
       }
     } catch (error) {
-      console.error("Refund request failed:", error);
     } finally {
       setIsLoading(false);
     }
@@ -260,7 +273,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
               />
               <LabelValuePair
                 label="Resolved Date"
-                value={resolved_by || "--- ---"}
+                value={resolved_date || "--- ---"}
               />
             </div>
           )}

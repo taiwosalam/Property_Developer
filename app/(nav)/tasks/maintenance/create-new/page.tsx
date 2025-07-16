@@ -51,6 +51,7 @@ const CreateMaintenace = () => {
     id: number;
     branch_name: string;
   } | null>(null);
+  
   const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(
     null
@@ -161,11 +162,13 @@ const CreateMaintenace = () => {
 
     const quotationFile = data.get("quotation");
 
+    console.log(quotationFile);
+
     if (quotationFile) {
       data.append("quotation_type", "file");
     }
     if (quotationFile) {
-      data.append("quotation_file", quotationFile);
+      data.append("quotation", quotationFile);
     }
     // Append each selected unit id as an array item
     selectedUnits.forEach((id) => {
@@ -189,6 +192,8 @@ const CreateMaintenace = () => {
       setIsLoading(false);
     }
   };
+
+  //console.log(quotationFile);
 
   return (
     <div className="font-medium space-y-6">
@@ -224,6 +229,7 @@ const CreateMaintenace = () => {
             name="unit_id"
           /> */}
           <Select
+            required
             id=""
             label="Branch"
             disabled={branchSilentLoading}
@@ -247,6 +253,7 @@ const CreateMaintenace = () => {
             }}
           />
           <Select
+            required
             disabled={!selectedBranchId || propertySilentLoading}
             placeholder={
               propertySilentLoading ? "Please wait..." : "Select options"
@@ -273,6 +280,7 @@ const CreateMaintenace = () => {
           />
 
           <MultiSelectObj
+            required
             className={`${clsx({
               "opacity-70": !selectedPropertyId || unitSilentLoading,
             })}`}
@@ -288,6 +296,7 @@ const CreateMaintenace = () => {
             }
           />
           <Select
+            required
             id="priority"
             label="Priority"
             options={priorityLevelsOption.map((level) => {
@@ -300,6 +309,7 @@ const CreateMaintenace = () => {
             inputContainerClassName="bg-white capitalize"
           />
           <Input
+            required
             type="text"
             id="requested_by"
             label="Requested By"
@@ -313,6 +323,7 @@ const CreateMaintenace = () => {
             inputContainerClassName="bg-white"
           /> */}
           <Select
+            required
             id="maintenance_type"
             label="Maintenance Type"
             options={maintenanceTypes}
@@ -323,8 +334,8 @@ const CreateMaintenace = () => {
             value={selectedProviderId ?? ""}
             type="hidden"
             aria-hidden
-            id="service_provider"
-            name="service_provider"
+            id="service_provider_id"
+            name="service_provider_id"
           />
           <Select
             id=""
@@ -354,6 +365,7 @@ const CreateMaintenace = () => {
         <SectionSeparator className="!mt-4 !mb-6" />
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <DateInput
+            required
             id="start_date"
             label="Start Date"
             onChange={handleStartDateChange}
@@ -361,12 +373,14 @@ const CreateMaintenace = () => {
             minDate={dayjs(new Date())}
           />
           <DateInput
+            required
             id="end_date"
             label="End Date"
             minDate={startDate || undefined}
             containerClassName="bg-white"
           />
           <Input
+            required
             id="maintenance_cost"
             label="Maintenance Cost"
             CURRENCY_SYMBOL={currencySymbol}
@@ -384,10 +398,11 @@ const CreateMaintenace = () => {
                 inputSpaceClassName="bg-white dark:bg-darkText-primary"
               />
               <FileUploader
-                id="quotation_file"
+                id="quotation"
                 label="Upload Quotation File"
                 file={quotationFile}
                 onFileChange={setQuotationFile}
+                disabled={quotation.length > 19}
               />
               {quotationFile?.name && (
                 <button
@@ -403,6 +418,7 @@ const CreateMaintenace = () => {
               )}
             </div>
             <TextArea
+              required
               id="detail"
               label="Work Details"
               inputSpaceClassName="bg-white dark:bg-darkText-primary"

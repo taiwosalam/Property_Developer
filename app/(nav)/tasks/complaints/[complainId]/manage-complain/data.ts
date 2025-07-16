@@ -67,7 +67,7 @@ export const transformComplaintManage = (
         value: data?.complaint?.title,
       },
       {
-        label: "Complaints sent by",
+        label: "Complainant",
         value: data?.complaint.complaint_by,
       },
       {
@@ -84,7 +84,7 @@ export const transformComplaintManage = (
       },
 
       {
-        label: "Account Officer",
+        label: "Account Manager",
         value: data?.complaint?.account_officer,
       },
 

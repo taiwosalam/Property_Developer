@@ -139,6 +139,10 @@ export interface IMaintenanceCard {
         | "pending"
         | "in_progress";
       property_name: string;
+      branch_name: string;
+      requested_by: string;
+      maintenance_type: string;
+      quotationFile?: string; 
       created_at: string;
       priority: "high" | "critical" | "low" | "very low" | "medium";
       service_type: string;
@@ -187,6 +191,9 @@ export const transformMaintenanceCard = (
         },
         modal: {
           maintenanceId: item?.id,
+          requested_by: item?.requested_by || "___ ___",
+          branch_name: item?.branch.branch_name || "___ ___",
+          maintenance_type: item?.maintenance_type || "___ ___",
           status:
             item?.status && item?.status === "pending"
               ? "not started"

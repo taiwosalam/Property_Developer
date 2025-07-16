@@ -30,6 +30,7 @@ import {
 } from "@/app/(nav)/tasks/complaints/types";
 import { transformComplaintDetails } from "@/app/(nav)/tasks/complaints/data";
 import { getBadgeColor } from "@/lib/utils";
+import { empty } from "@/app/config";
 
 export interface Task {
   id: UniqueIdentifier;
@@ -267,10 +268,23 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             </div>
           </div>
           <div className="flex gap-2 justify-between">
-            <div className="flex gap-2.5 items-center">
-              <MailIcon size={20} />
-              <ClipIcon />
-              <div className="flex itema-center">
+            <div className="flex gap-4 items-center py-2">
+              <div className="relative">
+                <MailIcon size={20} />
+                {/* Mail badge with green background */}
+                <div className="absolute -top-2 -right-2 bg-green-700 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
+                  3
+                </div>
+              </div>
+              <div className="relative">
+                <ClipIcon />
+                {/* Clip badge with red background */}
+                <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
+                  5
+                </div>
+              </div>
+
+              <div className="flex item-center">
                 {task?.content?.userAvatars?.map((avatar, index) => (
                   <Avatar
                     key={index}
@@ -289,11 +303,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                     }}
                   >
                     <AvatarImage
-                      src={avatar}
+                      src={avatar || empty}
                       alt="Avatar"
                       className="rounded-full h-full w-full flex items-center"
                     />
-                    <AvatarFallback>{avatar?.charAt(0)}</AvatarFallback>
+                   
                   </Avatar>
                 ))}
               </div>

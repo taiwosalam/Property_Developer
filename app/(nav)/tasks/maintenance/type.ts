@@ -35,7 +35,7 @@ export type MaintenanceApiResponse = {
 
 type MaintenanceRequest = {
   id: number;
-  requested_by: number;
+  requested_by: string;
   branch_id: number;
   property_id: number;
   unit_id: number;

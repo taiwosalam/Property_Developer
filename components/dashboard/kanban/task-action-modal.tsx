@@ -16,7 +16,10 @@ import { toast } from "sonner";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { ColumnId } from "./KanbanBoard";
 import useFetch from "@/hooks/useFetch";
-import { ComplaintDetailResponse, ComplaintDetailsPageData } from "@/app/(nav)/tasks/complaints/types";
+import {
+  ComplaintDetailResponse,
+  ComplaintDetailsPageData,
+} from "@/app/(nav)/tasks/complaints/types";
 
 interface ComplaintData {
   id: number;
@@ -131,7 +134,6 @@ const TaskModal = ({
     if (destinationColumn === "processing") return "Process Complaint";
     return "Change Status";
   };
- 
 
   return (
     <div className="bg-white dark:bg-darkText-primary dark:shadow-2xl rounded-lg shadow-lg w-full xl:max-w-5xl px-9 max-w-[90%] max-h-[500px] overflow-y-scroll no-scrollbar">
@@ -161,13 +163,17 @@ const TaskModal = ({
               <p className="text-text-tertiary dark:text-darkText-1 text-sm w-[140px] line-clamp-2">
                 Complaint Title:
               </p>
-              <span className="dark:text-darkText-2">{cardData?.complaintTitle}</span>
+              <span className="dark:text-darkText-2">
+                {cardData?.complaintTitle}
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary dark:text-darkText-1 w-[140px] line-clamp-2">
                 Property Name:
               </p>
-              <span className="dark:text-darkText-2">{cardData?.propertyName}</span>
+              <span className="dark:text-darkText-2">
+                {cardData?.propertyName}
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary dark:text-darkText-1 w-[140px] line-clamp-2">
@@ -189,7 +195,9 @@ const TaskModal = ({
               <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">
                 Account Officer:
               </p>
-              <span className="dark:text-darkText-2">{cardData?.accountOfficer}</span>
+              <span className="dark:text-darkText-2">
+                {cardData?.accountOfficer}
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">
@@ -210,7 +218,7 @@ const TaskModal = ({
 
         {/* Right side - Action section */}
         <div className="md:w-1/2 md:pl-6 my-6">
-          <p className="font-medium text-[16px] text-center">
+          <p className="font-medium text-[16px] text-center text-text-tertiary dark:text-darkText-1">
             {statusChanger
               ? "Change the status of this complaint"
               : `Update complaint to ${destinationColumn || "new status"}`}

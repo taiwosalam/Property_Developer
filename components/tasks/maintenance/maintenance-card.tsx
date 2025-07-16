@@ -30,6 +30,9 @@ interface MaintenanceCardProps {
     end_date: string;
     cost: string;
     units: string;
+    requested_by: string;
+    branch_name: string;
+    maintenance_type: string;
   };
 }
 

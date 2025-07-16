@@ -55,6 +55,8 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import CompanyApplicantModal from "@/components/Management/application-company-details";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import { PrintContent } from "@/components/reports/print-content";
 
 const ManageApplication = () => {
   const isDarkMode = useDarkMode();
@@ -231,382 +233,387 @@ const ManageApplication = () => {
     return statusStyles[status as keyof typeof statusStyles] || defaultStatus;
   };
 
+  if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) <NetworkError />;
   if (error) <ServerError error={error} />;
-  if (loading) <PageCircleLoader />;
 
   return (
     <>
-      <div
-        className="custom-flex-col gap-[88px] pb-[150px] lg:pb-[100px]"
-        ref={contentRef}
-      >
-        <div className="custom-flex-col gap-6">
-          <BackButton>Back</BackButton>
-          <div
-            style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-            className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
-          >
-            <div className="flex justify-between items-center">
-              <p className="text-primary-navy dark:text-white text-xl font-bold">
-                Property Details
-              </p>
-
-              <div className="text-primary-navy dark:text-white text-xl font-bold">
-                <button
-                  className="flex gap-1 items-center"
-                  onClick={reactToPrintFn}
-                >
-                  <Printer />
-                  <p className="capitalize">Print application</p>
-                </button>
-              </div>
-            </div>
-
-            <SectionSeparator />
-            <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
-              <KeyValueList
-                data={{
-                  "property name": property_details?.property_title,
-                  landlord: property_details?.landlord,
-                  "full address": `${property_details?.address}`,
-                  "unit name": property_details?.unit_name,
-                  "account manager": property_details?.account_officer,
-                  "total package": formatToNaira(
-                    property_details?.total_package
-                  ),
-                  branch: property_details?.branch,
-                  "application date": property_details?.application_date,
-                  "renewal amount": formatToNaira(
-                    property_details?.renewal_amount
-                  ),
-
-                  //description: property_details?.description,
-                  //state: property_details?.state,
-                  //branch: property_details?.branch,
-                  //categories: property_details?.categories,
-                  //rent: property_details?.rent,
-                  //"local government": property_details?.local_government,
-                }}
-                chunkSize={3}
-                referenceObject={{
-                  "property name": "",
-                  landlord: "",
-                  "full address": "",
-                  "unit name": "",
-                  "account manager": "",
-                  "total package": "",
-                  branch: "",
-                  "application date": "",
-                  "renewal amount": "",
-                }}
-              />
-            </div>
-          </div>
-
-          {hasFlag && (
+      <div className="custom-flex-col gap-[88px] pb-[150px] lg:pb-[100px]">
+        <div ref={contentRef}>
+          <div className="custom-flex-col gap-6">
+            <BackButton>Back</BackButton>
             <div
               style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
               className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
             >
               <div className="flex justify-between items-center">
                 <p className="text-primary-navy dark:text-white text-xl font-bold">
-                  Flag Details
+                  Property Details
                 </p>
+
+                <div className="text-primary-navy dark:text-white text-xl font-bold flex items-center gap-4">
+                  <PrintContent
+                    printRef={contentRef}
+                    buttonText="Print application"
+                  />
+                </div>
               </div>
 
               <SectionSeparator />
-              <div className="w-full">
-                <div className="flex justify-around py-1 w-full">
-                  {flag_details?.map((flag, index) => {
-                    return (
-                      <div className="flex gap-8" key={index}>
-                        <div className="py-1">
-                          <p className="text-black dark:text-white text-xl font-bold capitalize">
-                            {flag?.flagger_name}
-                          </p>
-                          <p className="text-gray-500 dark:text-white">
-                            {flag?.email}
-                          </p>
-                          {flag.phone && (
-                            <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
-                              <Phone
-                                fill="currentColor"
-                                size={18}
-                                strokeWidth={0.75}
-                              />
-                              <p>{flag.phone}</p>
-                            </div>
-                          )}
-                          <button
-                            className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-7 text-sm mt-1"
-                            onClick={() =>
-                              messageFlagger({
-                                id: flag?.user_id,
-                                name: flag?.flagger_name,
-                                pictureSrc: flag?.picture,
-                              })
-                            }
-                          >
-                            Message
-                          </button>
-                        </div>
-                        <div className="max-w-3xl mt-2 text-red-500 capitalize">
-                          <p>{flag?.reason}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
+              <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+                <KeyValueList
+                  data={{
+                    "property name": property_details?.property_title,
+                    landlord: property_details?.landlord,
+                    "full address": `${property_details?.address}`,
+                    "unit name": property_details?.unit_name,
+                    "account manager": property_details?.account_officer,
+                    "total package": formatToNaira(
+                      property_details?.total_package
+                    ),
+                    branch: property_details?.branch,
+                    "application date": property_details?.application_date,
+                    "renewal amount": formatToNaira(
+                      property_details?.renewal_amount
+                    ),
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-5">
-            <div
-              className="custom-flex-col gap-5 pt-6 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden group"
-              style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
-            >
-              <div className="flex items-center px-10 gap-5">
-                <Picture
-                  src={profile_details?.photo || empty}
-                  alt="profile picture"
-                  size={120}
-                  rounded
-                />
-                <div className="custom-flex-col gap-4">
-                  <div className="custom-flex-col">
-                    <div className="flex gap-2 items-center">
-                      <p className="text-black dark:text-white text-xl font-bold capitalize">
-                        {profile_details?.fullName}
-                      </p>
-                      <BadgeIcon
-                        color={
-                          getBadgeColor(profile_details?.tier_id) || "gray"
-                        }
-                      />
-                    </div>
-                    <p
-                      style={{
-                        color: isDarkMode ? "white" : "rgba(21, 21, 21, 0.70)",
-                      }}
-                      className={`text-sm dark:text-white font-normal ${secondaryFont.className}`}
-                    >
-                      {profile_details?.email}
-                    </p>
-                  </div>
-                  <div className="flex">
-                    <UserTag type="mobile" />
-                  </div>
-                  <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                    ID: {profile_details?.encodedId}
-                  </p>
-
-                  <div>
-                    <Button size="sm" onClick={goToMessage}>
-                      Message
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              {isFlagged ? (
-                <div
-                  className="py-3 px-6 rounded-2xl"
-                  style={{
-                    backgroundColor: isDarkMode
-                      ? "#3C3D37"
-                      : "var(--background-color, #fde9ea80)",
+                    //description: property_details?.description,
+                    //state: property_details?.state,
+                    //branch: property_details?.branch,
+                    //categories: property_details?.categories,
+                    //rent: property_details?.rent,
+                    //"local government": property_details?.local_government,
                   }}
-                >
-                  <p className="text-status-error-2 text-xs font-medium">
-                    The tenant has been flagged for owing rent and causing
-                    damages by{" "}
-                    <span className="font-bold">David & Co Limited</span>.
-                    Please instruct the applicant to settle with their previous
-                    manager so that they can unflag the account using their ID.
+                  chunkSize={3}
+                  referenceObject={{
+                    "property name": "",
+                    landlord: "",
+                    "full address": "",
+                    "unit name": "",
+                    "account manager": "",
+                    "total package": "",
+                    branch: "",
+                    "application date": "",
+                    "renewal amount": "",
+                  }}
+                />
+              </div>
+            </div>
+
+            {hasFlag && (
+              <div
+                style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+                className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
+              >
+                <div className="flex justify-between items-center">
+                  <p className="text-primary-navy dark:text-white text-xl font-bold">
+                    Flag Details
                   </p>
                 </div>
-              ) : (
-                <div className="flex justify-between">
-                  <p className="flex gap-4 items-center text-highlight text-base font-medium px-10">
-                    <span className="text-brand-9">Applying for</span>
-                    <span className="text-red-500">
-                      {profile_details?.application_duration}
-                    </span>
-                  </p>
 
-                  <div>
-                    <Button
-                      onClick={handleOpenModal}
-                      variant="blank"
-                      className="underline font-semibold invisible group-hover:visible text-brand-9"
-                    >
-                      {"Preview Company Profile > >"}
-                    </Button>
+                <SectionSeparator />
+                <div className="w-full">
+                  <div className="flex justify-around py-1 w-full">
+                    {flag_details?.map((flag, index) => {
+                      return (
+                        <div className="flex gap-8" key={index}>
+                          <div className="py-1">
+                            <p className="text-black dark:text-white text-xl font-bold capitalize">
+                              {flag?.flagger_name}
+                            </p>
+                            <p className="text-gray-500 dark:text-white">
+                              {flag?.email}
+                            </p>
+                            {flag.phone && (
+                              <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
+                                <Phone
+                                  fill="currentColor"
+                                  size={18}
+                                  strokeWidth={0.75}
+                                />
+                                <p>{flag.phone}</p>
+                              </div>
+                            )}
+                            <button
+                              className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-7 text-sm mt-1"
+                              onClick={() =>
+                                messageFlagger({
+                                  id: flag?.user_id,
+                                  name: flag?.flagger_name,
+                                  pictureSrc: flag?.picture,
+                                })
+                              }
+                            >
+                              Message
+                            </button>
+                          </div>
+                          <div className="max-w-3xl mt-2 text-red-500 capitalize">
+                            <p>{flag?.reason}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-              )}
-            </div>
-            <LandlordTenantInfo
-              info={{
-                status: (
-                  <p
-                    className="text-purple-600 first-letter:uppercase font-semibold"
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-5">
+              <div
+                className="custom-flex-col gap-5 pt-6 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden group"
+                style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+              >
+                <div className="flex items-center px-10 gap-5">
+                  <Picture
+                    src={profile_details?.photo || empty}
+                    alt="profile picture"
+                    size={120}
+                    rounded
+                  />
+                  <div className="custom-flex-col gap-4">
+                    <div className="custom-flex-col">
+                      <div className="flex gap-2 items-center">
+                        <p className="text-black dark:text-white text-xl font-bold capitalize">
+                          {profile_details?.fullName}
+                        </p>
+                        <BadgeIcon
+                          color={
+                            getBadgeColor(profile_details?.tier_id) || "gray"
+                          }
+                        />
+                      </div>
+                      <p
+                        style={{
+                          color: isDarkMode
+                            ? "white"
+                            : "rgba(21, 21, 21, 0.70)",
+                        }}
+                        className={`text-sm dark:text-white font-normal ${secondaryFont.className}`}
+                      >
+                        {profile_details?.email}
+                      </p>
+                    </div>
+                    <div className="flex">
+                      <UserTag type="mobile" />
+                    </div>
+                    <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
+                      ID: {profile_details?.encodedId}
+                    </p>
+
+                    <div>
+                      <Button size="sm" onClick={goToMessage}>
+                        Message
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                {isFlagged ? (
+                  <div
+                    className="py-3 px-6 rounded-2xl"
                     style={{
-                      color: getStatusStyle(application_status).color,
+                      backgroundColor: isDarkMode
+                        ? "#3C3D37"
+                        : "var(--background-color, #fde9ea80)",
                     }}
                   >
-                    {application_status}
-                  </p>
-                ),
-                gender: profile_details?.gender,
-                birthday: profile_details?.birthday,
-                religion: profile_details?.religion,
-                "marital status": profile_details?.marital_status,
-              }}
-            />
-            <LandlordTenantInfo
-              heading="bank details"
-              info={{
-                "bank name": bank_details?.bankName,
-                "account name": bank_details?.account_name?.toLowerCase(),
-                "bank account no": bank_details?.bank_account_no,
-                "wallet ID": bank_details?.wallet_id,
-              }}
-            />
-            <LandlordTenantInfo
-              heading="Contact Address"
-              info={{
-                state: contact_details?.state,
-                address: `${contact_details?.address} ${contact_details?.lga} ${contact_details?.city} ${contact_details?.state}`,
-                "phone number 1": contact_details?.phone1 || "--- ---",
-                "phone number 2": contact_details?.phone2 || "--- ---",
-              }}
-            />
-            <LandlordTenantInfo
-              heading="Next of Kin"
-              info={{
-                name: next_of_kin?.name,
-                address: next_of_kin?.address,
-                "phone number": next_of_kin?.phone_number,
-                relationship: next_of_kin?.relationship,
-              }}
-            />
-            <LandlordTenantInfo
-              heading="others"
-              info={{
-                occupation: others?.occupation,
-                "employment type": others?.employment_type,
-                "family type": others?.family_type,
-                xxxxxxxxxxxxx: "xxxxxxxxxxxxxx",
-              }}
-            />
-            {guarantors?.map((guarantor, index) => {
-              return (
-                <LandlordTenantInfo
-                  key={index}
-                  heading={`Guarantor ${index + 1}`}
-                  info={{
-                    name: guarantor?.name,
-                    email: guarantor?.email,
-                    "phone number": guarantor?.phone,
-                    address: guarantor?.address,
-                  }}
-                />
-              );
-            })}
+                    <p className="text-status-error-2 text-xs font-medium">
+                      The tenant has been flagged for owing rent and causing
+                      damages by{" "}
+                      <span className="font-bold">David & Co Limited</span>.
+                      Please instruct the applicant to settle with their
+                      previous manager so that they can unflag the account using
+                      their ID.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex justify-between">
+                    <p className="flex gap-4 items-center text-highlight text-base font-medium px-10">
+                      <span className="text-brand-9">Applying for</span>
+                      <span className="text-red-500">
+                        {profile_details?.application_duration}
+                      </span>
+                    </p>
 
-            <LandlordTenantInfoBox className="space-y-4">
-              <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                Proior Experience in Real Estate
-              </h3>
-              <div
-                className="text-black dark:text-darkText-2 text-base font-normal"
-                dangerouslySetInnerHTML={{ __html: experience ?? "" }}
+                    <div>
+                      <Button
+                        onClick={handleOpenModal}
+                        variant="blank"
+                        className="underline font-semibold invisible group-hover:visible text-brand-9"
+                      >
+                        {"Preview Company Profile > >"}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <LandlordTenantInfo
+                info={{
+                  status: (
+                    <p
+                      className="text-purple-600 first-letter:uppercase font-semibold"
+                      style={{
+                        color: getStatusStyle(application_status).color,
+                      }}
+                    >
+                      {application_status}
+                    </p>
+                  ),
+                  gender: profile_details?.gender,
+                  birthday: profile_details?.birthday,
+                  religion: profile_details?.religion,
+                  "marital status": profile_details?.marital_status,
+                }}
               />
-            </LandlordTenantInfoBox>
-            <LandlordTenantInfoBox className="space-y-4">
-              <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                Jusification for clearing next rent
-              </h3>
-              <div
-                className="text-black dark:text-darkText-2 text-base font-normal"
-                dangerouslySetInnerHTML={{ __html: justification ?? "" }}
+              <LandlordTenantInfo
+                heading="bank details"
+                info={{
+                  "bank name": bank_details?.bankName,
+                  "account name": bank_details?.account_name?.toLowerCase(),
+                  "bank account no": bank_details?.bank_account_no,
+                  "wallet ID": bank_details?.wallet_id,
+                }}
               />
-            </LandlordTenantInfoBox>
+              <LandlordTenantInfo
+                heading="Contact Address"
+                info={{
+                  state: contact_details?.state,
+                  address: `${contact_details?.address} ${contact_details?.lga} ${contact_details?.city} ${contact_details?.state}`,
+                  "phone number 1": contact_details?.phone1 || "--- ---",
+                  "phone number 2": contact_details?.phone2 || "--- ---",
+                }}
+              />
+              <LandlordTenantInfo
+                heading="Next of Kin"
+                info={{
+                  name: next_of_kin?.name,
+                  address: next_of_kin?.address,
+                  "phone number": next_of_kin?.phone_number,
+                  relationship: next_of_kin?.relationship,
+                }}
+              />
+              <LandlordTenantInfo
+                heading="others"
+                info={{
+                  occupation: others?.occupation,
+                  "employment type": others?.employment_type,
+                  "family type": others?.family_type,
+                  xxxxxxxxxxxxx: "xxxxxxxxxxxxxx",
+                }}
+              />
+              {guarantors?.map((guarantor, index) => {
+                return (
+                  <LandlordTenantInfo
+                    key={index}
+                    heading={`Guarantor ${index + 1}`}
+                    info={{
+                      name: guarantor?.name,
+                      email: guarantor?.email,
+                      "phone number": guarantor?.phone,
+                      address: guarantor?.address,
+                    }}
+                  />
+                );
+              })}
+
+              <LandlordTenantInfoBox className="space-y-4">
+                <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+                  Proior Experience in Real Estate
+                </h3>
+                <div
+                  className="text-black dark:text-darkText-2 text-base font-normal"
+                  dangerouslySetInnerHTML={{ __html: experience ?? "" }}
+                />
+              </LandlordTenantInfoBox>
+              <LandlordTenantInfoBox className="space-y-4">
+                <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
+                  Jusification for clearing next rent
+                </h3>
+                <div
+                  className="text-black dark:text-darkText-2 text-base font-normal"
+                  dangerouslySetInnerHTML={{ __html: justification ?? "" }}
+                />
+              </LandlordTenantInfoBox>
+            </div>
           </div>
-        </div>
-        {current_rent && current_rent.length > 0 && (
-          <LandlordTenantInfoSection title="Current Rent">
-            <div className="space-y-3">
-              {current_rent?.map((rent, index) => (
-                <ApplicationCardUnit
-                  key={index}
-                  unitId={rent.unitId}
-                  unitName={rent.unitName}
-                  address={rent.address}
-                  propertyName={rent.propertyName}
-                  rentAmount={rent.rentAmount}
-                  period={rent.period}
-                  moveInDate={rent.moveInDate}
-                  propertyImages={rent.propertyImages}
-                  propertyType={rent.propertyType}
-                  managedBy={rent.managedBy}
-                  prev={false}
-                  unitData={rent?.unitData}
-                />
-              ))}
-            </div>
-          </LandlordTenantInfoSection>
-        )}
+          {current_rent && current_rent.length > 0 && (
+            <LandlordTenantInfoSection title="Current Rent">
+              <div className="space-y-3">
+                {current_rent?.map((rent, index) => (
+                  <ApplicationCardUnit
+                    key={index}
+                    unitId={rent.unitId}
+                    unitName={rent.unitName}
+                    currency={rent.currency}
+                    address={rent.address}
+                    propertyName={rent.propertyName}
+                    rentAmount={rent.rentAmount}
+                    period={rent.period}
+                    moveInDate={rent.moveInDate}
+                    propertyImages={rent.propertyImages}
+                    propertyType={rent.propertyType}
+                    managedBy={rent.managedBy}
+                    prev={false}
+                    unitData={rent?.unitData}
+                  />
+                ))}
+              </div>
+            </LandlordTenantInfoSection>
+          )}
 
-        {previous_rent && previous_rent?.length > 0 && (
-          <LandlordTenantInfoSection title="Previous Rent">
-            <div className="space-y-3">
-              {previous_rent?.map((rent, index) => (
-                <ApplicationCardUnit
-                  key={index}
-                  unitId={rent.unitId}
-                  unitName={rent.unitName}
-                  address={rent.address}
-                  propertyName={rent.propertyName}
-                  rentAmount={rent.rentAmount}
-                  period={rent.period}
-                  moveOutDate={rent.moveOutDate}
-                  propertyImages={rent.propertyImages}
-                  propertyType={rent.propertyType}
-                  managedBy={rent.managedBy}
-                  prev={true}
-                  unitData={rent?.unitData}
-                />
-              ))}
-            </div>
-          </LandlordTenantInfoSection>
-        )}
+          {previous_rent && previous_rent?.length > 0 && (
+            <LandlordTenantInfoSection title="Previous Rent">
+              <div className="space-y-3">
+                {previous_rent?.map((rent, index) => (
+                  <ApplicationCardUnit
+                    key={index}
+                    unitId={rent.unitId}
+                    unitName={rent.unitName}
+                    currency={rent?.currency}
+                    address={rent.address}
+                    propertyName={rent.propertyName}
+                    rentAmount={rent.rentAmount}
+                    period={rent.period}
+                    moveOutDate={rent.moveOutDate}
+                    propertyImages={rent.propertyImages}
+                    propertyType={rent.propertyType}
+                    managedBy={rent.managedBy}
+                    prev={true}
+                    unitData={rent?.unitData}
+                  />
+                ))}
+              </div>
+            </LandlordTenantInfoSection>
+          )}
+        </div>
         {/* <LandlordTenantInfoSection title="Previous Property">
         <div className="opacity-40">{/* <UnitItem /> </div>
       </LandlordTenantInfoSection> */}
         <FixedFooter className="flex gap-6 flex-wrap items-center justify-between">
-          <Button
-            onClick={handleRejectApplication}
-            aria-disabled={isLoading}
-            variant="light_red"
-            size="base_bold"
-            className={`py-2 px-8 ${
-              application_status === "evaluated"
-                ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
-                : ""
-            }`}
-            disabled={isFlagged || isLoading}
-          >
-            {isLoading
-              ? "Please wait"
-              : application_status === "rejected"
-              ? "Rejected"
-              : application_status === "evaluated"
-              ? "Application evaluated"
-              : "reject application"}
-          </Button>
+          {
+            <Button
+              onClick={handleRejectApplication}
+              aria-disabled={isLoading}
+              variant="light_red"
+              size="base_bold"
+              className={`py-2 px-8 ${
+                application_status === "evaluated"
+                  ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
+                  : application_status === "approved" ? "bg-green-500/20 text-green-700" : ""
+              }`}
+              disabled={isFlagged || isLoading}
+            >
+              {isLoading
+                ? "Please wait"
+                : application_status === "rejected"
+                ? "Rejected"
+                : application_status === "evaluated"
+                ? "Application evaluated"
+                : application_status === "approved"
+                ? "Application approved"
+                : "reject application"}
+            </Button>
+          }
           <div className="flex gap-6">
             <Button
               size="base_bold"

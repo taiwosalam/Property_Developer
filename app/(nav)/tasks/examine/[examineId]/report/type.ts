@@ -1,5 +1,3 @@
-
-
 export type ExamineReportApiResponse = {
   status: "success";
   data: {
@@ -7,6 +5,8 @@ export type ExamineReportApiResponse = {
     title: string;
     description: string;
     examine_date: string;
+    property_name: string;
+    branch_name: string;
     company: {
       name: string;
       logo: string;

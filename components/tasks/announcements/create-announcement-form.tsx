@@ -27,6 +27,7 @@ const CreateAnnouncementForm: React.FC<{
 }> = ({ handleSubmit, editMode = false, isLoading }) => {
   const { company_id } = usePersonalInfoStore();
   const { announcementId } = useParams();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     data: announcementData,
@@ -222,8 +223,8 @@ const CreateAnnouncementForm: React.FC<{
   };
 
   const handleDeleteAnnouncement = async () => {
-    setIsSubmitting(true);
     try {
+      setIsDeleting(true);
       const success = await deleteAnnouncement(paramId);
       if (success) {
         toast.success("Announcement deleted");
@@ -231,7 +232,7 @@ const CreateAnnouncementForm: React.FC<{
       }
     } catch (error) {
     } finally {
-      setIsSubmitting(false);
+      setIsDeleting(false);
     }
   };
 
@@ -403,13 +404,13 @@ const CreateAnnouncementForm: React.FC<{
       <FixedFooter className="flex items-center justify-end gap-4">
         {editMode && (
           <Button
-            disabled={isLoading}
+            disabled={isDeleting}
             onClick={handleDeleteAnnouncement}
             variant="light_red"
             size="custom"
             className="py-2 px-8 font-bold text-sm lg:text-base"
           >
-            {isLoading ? "Please wait..." : "Delete Announcement"}
+            {isDeleting ? "Please wait..." : "Delete Announcement"}
           </Button>
         )}
         {editMode ? (

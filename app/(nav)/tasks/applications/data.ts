@@ -147,8 +147,8 @@ export const transformApplicationData = (
       total_package: item?.unit?.renew_total_package
         ? Math.round(Number(item?.unit?.renew_total_package))?.toLocaleString()
         : "--- ---",
-      yearly_amount: item?.unit?.renew_total_package
-        ? Math.round(Number(item?.unit?.renew_total_package))?.toLocaleString()
+      yearly_amount: item?.unit?.renew_fee_amount
+        ? Math.round(Number(item?.unit?.renew_fee_amount))?.toLocaleString()
         : "--- ---", //item?.unit?.fee_amount,
       period_type: item?.unit?.period, //item?.unit?.fee_period,
       currency: currencies[item?.unit?.currency],
