@@ -104,7 +104,7 @@ export const transformInspectionDetails = (
 
   return {
     id: inspections?.id ?? 0,
-    
+
     userId: inspections?.unit?.user_id,
     tier: inspections?.tier,
     property_name: inspections?.unit
@@ -160,11 +160,10 @@ export const transformInspectionCard = (
         return {
           id: item?.id,
           user_id: item?.unit?.user_id,
-          profile_picture: empty,
+          profile_picture: item?.picture || empty,
           user_name: item?.booked_by,
           property_id: item?.unit?.property_id,
           is_application: item?.is_application,
-
           tier: item?.tier,
           property_name: item?.unit
             ? transformUnitDetails(item?.unit)

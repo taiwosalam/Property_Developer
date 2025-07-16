@@ -44,6 +44,11 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
   console.log(reminderDate);
 
   const handleCreateReminder = async () => {
+
+    if(!reminderDate){
+      toast.error("Please select a reminder date");
+      return;
+    }
     const params = {
       title: inputTitle,
       note: textAreaNote,

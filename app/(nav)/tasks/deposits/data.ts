@@ -107,7 +107,10 @@ export const transformCautionDeposit = (
       requestDate: d.created_at
         ? dayjs(d.created_at).format("DD/MM/YYYY hh:mm A")
         : "--- ---",
-      status: d.status && d.status?.toLowerCase() === "approved" ? "completed" : d.status,
+      status:
+        d.status && d.status?.toLowerCase() === "approved"
+          ? "completed"
+          : d.status,
       pictureSrc: d.user?.picture,
       accountOfficer: d.accountOfficer || "--- ---",
       tier_id: d.user?.tier_id,
@@ -133,8 +136,10 @@ export const transformCautionDeposit = (
       refunded_amount: d.refunded_amount
         ? formatToNaira(d.refunded_amount)
         : "--- ---",
-      resolved_by: "--- ---",
-      resolved_date: "--- ---",
+      resolved_by: d.maintain_by,
+      resolved_date: d.created_at
+        ? dayjs(d.updated_at).format("DD/MM/YYYY hh:mm A")
+        : "--- ---",
     })),
     pagination: {
       total_page: data?.pagination?.total,

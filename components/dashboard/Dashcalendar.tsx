@@ -93,14 +93,17 @@ const DashboarddCalendar = () => {
 
           return {
             ...event,
-            type: "multiple event" as const,
+            originalType: event.title, // Preserve original type
             eventCount: eventsOnDay.length,
-            originalType: event.type,
-            title: `${event.type} (Part of multiple events: ${allEventTypes})`,
-            desc: `${event.desc}`,
+            isMultiple: true, // Flag for multiple events
+            title: `${event.title} (Part of ${eventsOnDay.length} events: ${allEventTypes})`, // Keep original title
           };
         }
-        return event;
+        return {
+          ...event,
+          originalType: event.title, // Ensure originalType is always set
+          isMultiple: false,
+        };
       });
 
     return { activities, eventsByDate };

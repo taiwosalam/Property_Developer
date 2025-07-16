@@ -14,6 +14,7 @@ import {
 } from "@/app/(nav)/tasks/maintenance/data";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { toast } from "sonner";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 type IStatus =
   | "not started"
@@ -35,6 +36,9 @@ interface MaintenanceModalProps {
   end_date: string;
   cost: string;
   units: string;
+  requested_by: string;
+  branch_name: string;
+  maintenance_type: string;
 
   setIsOpen?: (open: boolean) => void;
 }
@@ -174,6 +178,30 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
               {props?.units}
             </p>
           </div>
+           <div>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">
+              Requested By:
+            </p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2 capitalize">
+              {props?.requested_by}
+            </p>
+          </div>
+          <div>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">
+              Branch Name:
+            </p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2 capitalize">
+              {props?.branch_name}
+            </p>
+          </div>
+          <div>
+            <p className="text-text-tertiary text-base dark:text-darkText-1">
+              Maintenance Type:
+            </p>
+            <p className="text-text-secondary text-sm dark:text-darkText-2 capitalize">
+              {props?.maintenance_type}
+            </p>
+          </div>
         </div>
 
         <hr className="!my-4 border-t border-dashed border-brand-7 opacity-50 -mx-6  " />
@@ -189,10 +217,12 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
                 "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
             }}
           >
-            <div
-              className="text-text-secondary dark:text-darkText-2 text-sm"
-              dangerouslySetInnerHTML={{ __html: props.work_details }}
-            />
+            <TruncatedText>
+              <div
+                className="text-text-secondary dark:text-darkText-2 text-sm"
+                dangerouslySetInnerHTML={{ __html: props.work_details }}
+              />
+            </TruncatedText>
           </div>
         </div>
         {props.quotation?.length > 0 && (
@@ -208,10 +238,12 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
                   "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
               }}
             >
-              <div
-                className="text-text-secondary dark:text-darkText-2 text-sm"
-                dangerouslySetInnerHTML={{ __html: props.quotation }}
-              />
+              <TruncatedText>
+                <div
+                  className="text-text-secondary dark:text-darkText-2 text-sm"
+                  dangerouslySetInnerHTML={{ __html: props.quotation }}
+                />
+              </TruncatedText>
             </div>
           </div>
         )}

@@ -189,7 +189,7 @@ const Applications = () => {
           total={pageData?.total_application || 0}
           colorScheme={1}
         />
-        <ManagementStatistcsCard
+        {/* <ManagementStatistcsCard
           title="Mobile Application"
           newData={pageData?.month_mobile_application || 0}
           total={pageData?.mobile_application || 0}
@@ -200,7 +200,7 @@ const Applications = () => {
           newData={pageData?.month_web_application || 0}
           total={pageData?.web_application || 0}
           colorScheme={3}
-        />
+        /> */}
       </div>
       <div className="custom-flex-col gap-5">
         <FilterBar

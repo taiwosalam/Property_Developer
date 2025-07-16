@@ -58,6 +58,7 @@ export type Inspection = {
   is_application: boolean;
   tier: number;
   description: string;
+  picture: string;
   booked_by: string;
   image: string | null;
   booked_by_id: number;

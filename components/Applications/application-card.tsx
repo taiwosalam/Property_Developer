@@ -100,8 +100,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             <p className="text-text-disabled text-base font-medium capitalize truncate  max-w-[150px]">
               <span className="text-highlight">
                 {(data?.currency ?? "") +
-                  data?.yearly_amount +
-                  "000000000000000"}
+                  data?.yearly_amount}
               </span>{" "}
               / <span className="">{data?.renew_fee_period}</span>
             </p>
