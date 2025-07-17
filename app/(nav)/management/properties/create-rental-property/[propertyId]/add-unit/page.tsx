@@ -13,13 +13,14 @@ import BackButton from "@/components/BackButton/back-button";
 import { SinglePropertyResponse } from "../../../[id]/data";
 import NetworkError from "@/components/Error/NetworkError";
 import { transformPropertyData } from "./data";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import AddUnitFooter from "@/components/Management/Properties/AddUnitFooter";
 import { UnitFormContext } from "@/components/Management/Properties/unit-form-context";
 import { UnitTypeKey } from "@/data";
 import FlowProgress from "@/components/FlowProgress/flow-progress";
 import { useTourStore } from "@/store/tour-store";
 import { useGlobalStore } from "@/store/general-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
@@ -27,7 +28,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const router = useRouter();
   const [dataNotFound, setDataNotFound] = useState(false);
   const [showUnitForm, setShowUnitForm] = useState(true);
-  const { setShouldRenderTour, setPersist, isTourCompleted } = useTourStore();
+  const { setShouldRenderTour, setPersist, isTourCompleted, restartTour } =
+    useTourStore();
 
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
@@ -96,8 +98,6 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [propertyData, setAddUnitStore, router, propertyId]);
 
-  
-
   useEffect(() => {
     if (newForm) {
       setShowUnitForm(true);
@@ -112,18 +112,15 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [showUnitForm, setAddUnitStore]);
 
-
   const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
 
+  const pathname = usePathname();
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
   if (dataNotFound)
     return <div className="text-red-500">Property Data not found</div>;
-
-
-
 
   return (
     <FlowProgress
@@ -157,7 +154,17 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
         }}
       >
         <div className="pb-[100px]">
-          <BackButton customBackPath={customBackPath}>Add Units</BackButton>
+          <div className="flex items-center gap-2 pb-4">
+            <BackButton customBackPath={customBackPath}>Add Units</BackButton>
+            <button
+              onClick={() => restartTour(pathname)}
+              type="button"
+              className="text-orange-normal"
+            >
+              <ExclamationMark />
+            </button>
+          </div>
+
           <PageProgressBar
             breakpoints={[25, 50, 75]}
             percentage={37}

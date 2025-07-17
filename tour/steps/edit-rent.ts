@@ -15,7 +15,7 @@ export const editRentSteps: TourStep[] = [
     placement: "right",
     title: "Back Button",
     content:
-      "Click here to return to the previous page.<br />Use this if you need to exit the Edit Rent process without saving changes.",
+      "Click here to return to the previous page.<br/>Use this if you need to exit the Edit Rent process without saving changes.",
   },
   {
     target: ".estate-details-wrapper",

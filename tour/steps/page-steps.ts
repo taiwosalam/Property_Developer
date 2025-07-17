@@ -25,6 +25,7 @@ import { createAgentContributionSteps } from "./create-agent-forum";
 import { createTenancyAgreementSteps } from "./create-document";
 import { createPropertyRequestSteps } from "./property-request-steps";
 import { createExpensesSteps } from "./create-expenses";
+import { createInventorySteps } from "./create-inventory-steps";
 
 export interface PageTourConfig {
   steps: TourStep[];
@@ -195,6 +196,18 @@ export const pageSteps: Record<string, PageTourConfig> = {
     steps: createExpensesSteps,
     tourKey: "CreateExpensesTour",
     match: (pathname: string) => pathname === "/accounting/expenses/create-expenses",
+  },
+   "/management/inventory/:propertyId/create-inventory": {
+    steps: createInventorySteps,
+    tourKey: "CreateInventoryTour",
+    match: (pathname: string) =>
+      /^\/management\/inventory\/[^\/]+\/create-inventory(\?unitId=\d+)?$/.test(pathname),
+  },
+  "/management/inventory/:inventoryId/manage": {
+    steps: createInventorySteps,
+    tourKey: "ManageInventoryTour",
+    match: (pathname: string) =>
+      /^\/management\/inventory\/[^\/]+\/manage(\?inventoryId=\d+&propertyId=\d+)?$/.test(pathname),
   },
 
   "/setup": {

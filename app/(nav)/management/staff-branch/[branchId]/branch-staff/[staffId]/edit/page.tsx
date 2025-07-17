@@ -150,7 +150,7 @@ const EditStaffProfile = () => {
 
           <Button
             size="base_medium"
-            className="py-2 px-6"
+            className="save-button py-2 px-6"
             onClick={() => router.back()}
           >
             save

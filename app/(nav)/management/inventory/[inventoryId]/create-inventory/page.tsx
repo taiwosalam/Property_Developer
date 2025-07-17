@@ -7,12 +7,14 @@ import BackButton from "@/components/BackButton/back-button";
 import InventoryItem from "@/components/Management/Inventory/inventory-item";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { handleAxiosError } from "@/services/api";
 import { createInventory, getBranches } from "../../data";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { InventoryApiResponse } from "../types";
 import useFetch from "@/hooks/useFetch";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
   const isDarkMode = useDarkMode();
@@ -24,8 +26,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
   const [inventoryItems, setInventoryItems] = useState<number>(2);
   const [inventoryFiles, setInventoryFiles] = useState<File[][]>([]);
   const [showRemoveButton, setShowRemoveButton] = useState(false);
-  const [resetTrigger, setResetTrigger] = useState(0); 
-
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   const input_styles: CSSProperties = {
     padding: "12px 14px",
@@ -118,16 +119,47 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
     toast.info("Form cleared");
   };
 
+  const pathname = usePathname();
+
+  // Tour implementation
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("CreateInventoryTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
-      <BackButton>Create Inventory</BackButton>
+      <div className="flex items-center gap-2">
+        <BackButton>Create Inventory</BackButton>
+        <button
+          onClick={() => restartTour(pathname)}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
       <form onSubmit={handleAddInventory}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
           <Input
             id="video_link"
             name="video_link"
             placeholder="Video Link"
-            className="w-full"
+            className="video-link-input w-full"
             style={input_styles}
           />
         </div>
@@ -135,7 +167,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
           {[...Array(inventoryItems)].map((_, index) => (
             <InventoryItem
-            key={`${index}-${resetTrigger}`}
+              key={`${index}-${resetTrigger}`}
               edit
               index={index}
               resetTrigger={resetTrigger}
@@ -151,7 +183,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
               type="button"
               variant="border"
               size="sm_medium"
-              className="py-2 px-8"
+              className="delete-inventory-button py-2 px-8"
               onClick={handleClearAll}
             >
               Clear All
@@ -162,7 +194,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
                 <Button
                   size="sm_medium"
                   variant="blank"
-                  className="py-2 px-8 text-brand-9 bg-brand-1"
+                  className="delete-inventory-button py-2 px-8 text-brand-9 bg-brand-1"
                   onClick={handleRemoveInventory}
                 >
                   Remove Record
@@ -172,7 +204,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
                 <Button
                   size="sm_medium"
                   variant="border"
-                  className="py-2 px-8"
+                  className="add-more-button py-2 px-8"
                   onClick={() => {
                     handleAddMoreInventory();
                   }}
@@ -183,7 +215,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
               <Button
                 type="submit"
                 size="sm_medium"
-                className="py-2 px-8"
+                className="update-inventory-button py-2 px-8"
                 disabled={isLoading}
               >
                 {isLoading ? "Please wait..." : "Create"}

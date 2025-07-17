@@ -89,22 +89,26 @@ export const StaffEditProfileInfoSection = () => {
     <LandlordTenantInfoEditSection title="profile">
       <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
         <LandlordTenantInfoEditGrid>
-          <Select
-            isSearchable={false}
-            id="personal_title"
-            label="personal title / qualification"
-            inputContainerClassName="personal-title-dropdown bg-neutral-2"
-            options={titles}
-            defaultValue={staff?.personal_title}
-          />
-          <Select
-            isSearchable={false}
-            id="real_estate_title"
-            label="real estate title"
-            inputContainerClassName="real-estate-title-dropdown bg-neutral-2"
-            options={industryOptions}
-            defaultValue={staff?.real_estate_title}
-          />
+          <div className="personal-title-dropdown">
+            <Select
+              isSearchable={false}
+              id="personal_title"
+              label="personal title / qualification"
+              inputContainerClassName="bg-neutral-2"
+              options={titles}
+              defaultValue={staff?.personal_title}
+            />
+          </div>
+          <div className="real-estate-title-dropdown">
+            <Select
+              isSearchable={false}
+              id="real_estate_title"
+              label="real estate title"
+              inputContainerClassName="bg-neutral-2"
+              options={industryOptions}
+              defaultValue={staff?.real_estate_title}
+            />
+          </div>
 
           <Input
             id="fullname"
@@ -137,14 +141,16 @@ export const StaffEditProfileInfoSection = () => {
               staff?.experience ? dayjs(staff?.experience) : undefined
             }
           />
-          <Select
-            id="gender"
-            label="gender"
-            isSearchable={false}
-            options={genderTypes}
-            inputContainerClassName="gender-dropdown bg-neutral-2"
-            defaultValue={staff?.gender}
-          />
+          <div className="gender-dropdown">
+            <Select
+              id="gender"
+              label="gender"
+              isSearchable={false}
+              options={genderTypes}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={staff?.gender}
+            />
+          </div>
           <PhoneNumberInput
             id="phone_number"
             label="phone number"

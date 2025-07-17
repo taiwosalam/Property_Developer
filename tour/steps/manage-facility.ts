@@ -95,7 +95,7 @@ export const editPropertySteps: TourStep[] = [
   {
     target: ".property-penalty-wrapper",
     placement: "bottom",
-    title: "FeePenalty Option",
+    title: "Fee Penalty Option",
     content:
       "Enable or disable late payment penalties.<br/><br/>Yes: Apply charges when rent is overdue.<br/>No: Disable penalties for flexible payment handling.",
   },

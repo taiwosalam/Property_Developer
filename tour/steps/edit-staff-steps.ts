@@ -52,14 +52,14 @@ export const editStaffSteps: TourStep[] = [
   },
   {
     target: ".about-staff-textarea",
-    placement: "bottom",
+    placement: "top",
     title: "📝 About Staff",
     content:
       "Provide a brief <b>biography or description</b> of the staff member, highlighting key details such as their: Professional background and experience, Specialized skills or certifications, Role and responsibilities within the branch",
   },
   {
     target: ".move-staff-section",
-    placement: "bottom",
+    placement: "top",
     title: "🔄 Move Staff to Another Branch",
     content:
       "Use this section to transfer a staff member from their current branch to a different location. <br/><br/><b>Choose the new branch</b> to which they will be assigned.<br/>(Optional) <b>Assign a successor:</b> select a new staff member to take over their current role.<br/><b>Choose the new role</b> for the transferred staff member in their destination branch.",
@@ -90,13 +90,20 @@ export const editStaffSteps: TourStep[] = [
     placement: "left",
     title: "🔄 Update Button",
     content:
-      "Click this button to <b>save and apply any changes</b> made to the current record, whether you're updating staff profile, about staff, changing roles or moving staff to another branch.<br/><br/><i>🏷️ Tip: Use it after editing any selections to ensure your changes are saved and visible across the platform.</i>",
+      "Click this button to <b>save and apply any changes</b> made to the current record, whether you're updating staff profile, about staff, changing roles or moving staff to another branch.<br/><br/><i>🏷️ Tip:</i> Use it after editing any selections to ensure your changes are saved and visible across the platform.",
   },
   {
     target: ".delete-account-button",
     placement: "right",
     title: "🗑️ Delete Account",
     content:
-      "Click this button to <b>permanently remove the staff account</b> and all its associated data from the system.<br/><br/>⚠️ <b>Warning: <br/><ol><li>This action cannot be undone.</li><li>All your personal profile, settings, and history will be irreversibly deleted.</li><li>You will lose access to any subscribed services or past records.</li></ol><br/>Please ensure you truly want to delete your account before proceeding.",
+      "Click this button to <b>permanently remove the staff account</b> and all its associated data from the system.<br/><br/>⚠️ <b>Warning:</b> <br/>This action <b>cannot be undone.</b> <br/>All your personal profile, settings, and history will be irreversibly deleted.<br/>You will lose access to any subscribed services or past records.<br/><br/>Please ensure you truly want to delete your account before proceeding.",
+  },
+  {
+    target: ".save-button",
+    placement: "left",
+    title: "💾 Update/Save Button",
+    content: `Click this button to <b>store and confirm</b> the information you’ve entered or updated. <br/><br/>
+✅ Make sure you’ve completed all edits in the section before clicking <b>Save</b>, as this action will finalize and record your changes.`,
   },
 ];
