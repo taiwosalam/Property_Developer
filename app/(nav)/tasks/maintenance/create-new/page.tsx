@@ -51,7 +51,7 @@ const CreateMaintenace = () => {
     id: number;
     branch_name: string;
   } | null>(null);
-  
+
   const [selectedBranchId, setSelectedBranchId] = useState<number | null>(null);
   const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(
     null
@@ -162,8 +162,6 @@ const CreateMaintenace = () => {
 
     const quotationFile = data.get("quotation");
 
-    console.log(quotationFile);
-
     if (quotationFile) {
       data.append("quotation_type", "file");
     }
@@ -185,15 +183,13 @@ const CreateMaintenace = () => {
       const response = await createMaintenance(data);
       if (response) {
         toast.success("Maintenance created");
-        router.push("/tasks/maintenance");
+        //router.push("/tasks/maintenance");
       }
     } catch (error) {
     } finally {
       setIsLoading(false);
     }
   };
-
-  //console.log(quotationFile);
 
   return (
     <div className="font-medium space-y-6">

@@ -51,7 +51,7 @@ interface TaskModalProps {
   showApproveRejectButtons?: boolean;
 }
 
-const TaskModal = ({
+const PendingTaskModal = ({
   complaintData,
   statusChanger,
   setModalOpen,
@@ -59,9 +59,7 @@ const TaskModal = ({
   onRequestFailure,
   onConfirm,
   targetStatus,
-  showApproveRejectButtons,
 }: TaskModalProps) => {
-  const pathname = usePathname();
   const {
     senderName,
     senderVerified,
@@ -89,33 +87,41 @@ const TaskModal = ({
     setError(null);
   }, [id]);
 
-  const handleSubmit = async (
-    status?: "processing" | "rejected" | "completed" | "approved"
+  const handlePendingStatusChange = async (
+    note: string,
+    status?: "approved" | "rejected" | "processing" | "completed"
   ) => {
-    if (!notes.trim()) {
-      setError("Please provide a note");
-      toast.warning("Please provide a note");
+    if (!id) {
+      toast.error("No complaint selected");
       return;
     }
 
-    setIsLoading(true);
     try {
-      await onConfirm(notes, status);
-      setModalOpen?.(false);
-    } catch (err) {
-      console.error("TaskModal error:", err);
-      setError("Failed to update status. Please try again.");
-      toast.error("Failed to update complaint status");
+      setIsLoading(true);
+      if (status === "approved") {
+        const response = await approveAndProcessComplaint(note, {
+          id: id?.toString(),
+          route: "process",
+        });
+        if (response && setModalOpen) {
+          toast.success("Complaint status updated");
+          window.dispatchEvent(new Event("refetchComplaints")); // Trigger data refresh
+          setModalOpen(false);
+        }
+      } else if (status === "rejected") {
+        const response = await rejectComplaint(note, id?.toString());
+        if (response && setModalOpen) {
+          toast.success("Complaint status updated");
+          window.dispatchEvent(new Event("refetchComplaints")); // Trigger data refresh
+          setModalOpen(false);
+        }
+      }
+    } catch (error) {
+      console.error(`Error updating status to ${status}:`, error);
+      toast.error(`Failed to update complaint status`);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const getButtonLabel = () => {
-    if (destinationColumn === "completed") return "Complete Complaint";
-    if (destinationColumn === "rejected") return "Reject Complaint";
-    if (destinationColumn === "processing") return "Process Complaint";
-    return "Change Status";
   };
 
   return (
@@ -146,17 +152,13 @@ const TaskModal = ({
               <p className="text-text-tertiary dark:text-darkText-1 text-sm w-[140px] line-clamp-2">
                 Complaint Title:
               </p>
-              <span className="dark:text-darkText-2">
-                {complaintTitle}
-              </span>
+              <span className="dark:text-darkText-2">{complaintTitle}</span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary dark:text-darkText-1 w-[140px] line-clamp-2">
                 Property Name:
               </p>
-              <span className="dark:text-darkText-2">
-                {propertyName}
-              </span>
+              <span className="dark:text-darkText-2">{propertyName}</span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary dark:text-darkText-1 w-[140px] line-clamp-2">
@@ -178,9 +180,7 @@ const TaskModal = ({
               <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">
                 Account Officer:
               </p>
-              <span className="dark:text-darkText-2">
-                {accountOfficer}
-              </span>
+              <span className="dark:text-darkText-2">{accountOfficer}</span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">
@@ -223,36 +223,25 @@ const TaskModal = ({
           </div>
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           <div className="mt-4 space-y-2">
-            {showApproveRejectButtons ? (
-              <>
-                <Button
-                  disabled={isLoading}
-                  size="16_bold"
-                  className="py-2 px-6 w-full bg-blue-600 text-white hover:bg-blue-700"
-                  onClick={() => handleSubmit("approved")}
-                >
-                  {isLoading ? "Please wait..." : "Approve Complaint"}
-                </Button>
-                <Button
-                  disabled={isLoading}
-                  size="16_bold"
-                  variant="light_red"
-                  className="py-2 px-6 w-full"
-                  onClick={() => handleSubmit("rejected")}
-                >
-                  {isLoading ? "Please wait..." : "Reject Complaint"}
-                </Button>
-              </>
-            ) : (
+            <>
               <Button
                 disabled={isLoading}
                 size="16_bold"
-                className="py-2 px-6 w-full"
-                onClick={() => handleSubmit()}
+                className="py-2 px-6 w-full bg-brand-9 text-white"
+                onClick={() => handlePendingStatusChange(notes, "approved")}
               >
-                {isLoading ? "Please wait..." : getButtonLabel()}
+                {isLoading ? "Please wait..." : "Approve Complaint"}
               </Button>
-            )}
+              <Button
+                disabled={isLoading}
+                size="16_bold"
+                variant="light_red"
+                className="py-2 px-6 w-full"
+                onClick={() => handlePendingStatusChange(notes, "rejected")}
+              >
+                {isLoading ? "Please wait..." : "Reject Complaint"}
+              </Button>
+            </>
           </div>
         </div>
       </div>
@@ -260,4 +249,4 @@ const TaskModal = ({
   );
 };
 
-export default TaskModal;
+export default PendingTaskModal;
