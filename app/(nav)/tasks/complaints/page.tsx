@@ -203,42 +203,6 @@ const ComplaintsPage = () => {
     }));
   }, [appliedFilters]);
 
-  const handlePendingStatusChange = async (
-    note: string,
-    status?: "approved" | "rejected" | "processing" | "completed"
-  ) => {
-    if (!selectedPendingTask) {
-      toast.error("No task selected");
-      return;
-    }
-
-    try {
-      let response;
-      const taskId = selectedPendingTask.id.toString();
-
-      if (status === "approved") {
-        response = await approveAndProcessComplaint(note, {
-          id: taskId,
-          route: "process",
-        });
-      } else if (status === "rejected") {
-        response = await rejectComplaint(note, taskId);
-      }
-
-      if (response) {
-        toast.success("Complaint status updated");
-        window.dispatchEvent(new Event("refetchComplaints")); // Trigger data refresh
-        setPendingModalOpen(false);
-        setSelectedPendingTask(null);
-      } else {
-        throw new Error(`Failed to update status to ${status}`);
-      }
-    } catch (error) {
-      console.error(`Error updating status to ${status}:`, error);
-      toast.error(`Failed to update complaint status`);
-    }
-  };
-
   if (loading) {
     return (
       <CustomLoader layout="page" statsCardCount={3} pageTitle="Complaints" />
@@ -377,35 +341,6 @@ const ComplaintsPage = () => {
           />
         )}
       </SectionContainer>
-
-      {/* Modal for pending tasks */}
-      {pendingModalOpen && selectedPendingTask && (
-        <Modal
-          state={{ isOpen: pendingModalOpen, setIsOpen: setPendingModalOpen }}
-        >
-          <ModalContent>
-            <TaskModal
-              complaintData={{
-                id: Number(selectedPendingTask.id),
-                senderName: selectedPendingTask.name,
-                senderVerified: true,
-                complaintTitle: selectedPendingTask.title,
-                propertyName: "",
-                unitName: "",
-                propertyAddress: "",
-                accountOfficer: "",
-                branch: "",
-                brief: selectedPendingTask.message,
-                tier: selectedPendingTask.tier || 0,
-              }}
-              statusChanger={false}
-              setModalOpen={setPendingModalOpen}
-              onConfirm={handlePendingStatusChange}
-              showApproveRejectButtons
-            />
-          </ModalContent>
-        </Modal>
-      )}
 
       {!isMobile && (
         <SectionContainer

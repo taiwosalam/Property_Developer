@@ -225,7 +225,7 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
             </TruncatedText>
           </div>
         </div>
-        {props.quotation?.length > 0 && (
+        {props.quotation?.length > 11 && (
           <div className="space-y-3">
             <p className="text-text-tertiary dark:text-white text-base">
               Maintenance Quotation:
