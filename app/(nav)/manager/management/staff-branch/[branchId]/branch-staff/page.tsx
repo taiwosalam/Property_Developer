@@ -94,12 +94,6 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     if (position) {
       queryParams.staff_positiion = position;
     }
-    // if (startDate) {
-    //   queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
-    // }
-    // if (endDate) {
-    //   queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
-    // }
     setConfig({
       params: queryParams,
     });
@@ -115,7 +109,6 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   } = useFetch<StaffListResponse>(`staffs?branch_id=${branchId}`, config);
 
   useEffect(() => {
-    console.log("apiData", apiData);
     if (apiData) {
       setState((x) => ({
         ...x,

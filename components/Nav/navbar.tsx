@@ -176,6 +176,7 @@ const Header = () => {
         director,
         company_wallet,
         currentExpiryDate,
+        branch,
       } = data.data;
 
       const subscription_status = isSubscriptionExpired ? "expired" : "active";
@@ -221,6 +222,7 @@ const Header = () => {
         setPersonalInfo("isSubscriptionExpired", isSubscriptionExpired);
         setPersonalInfo("currentPlan", currentPlan);
         setPersonalInfo("currentExpiryDate", currentExpiryDate);
+        setPersonalInfo("branch", branch);
         setPersonalInfo(
           "cac_registration_number",
           company.cac_registration_number

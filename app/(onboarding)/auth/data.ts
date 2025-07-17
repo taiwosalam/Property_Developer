@@ -134,6 +134,24 @@ export const getProfileDropdownItems = (role: string | null) => {
   }
 };
 
+
+export const getSettingsSecurityPath = (role: string | null) => {
+  switch (role) {
+    case "director":
+      return "/settings/security";
+    case "staff":
+      return "/staff/settings/security";
+    case "landlord":
+      return "/user/settings/security";
+    case "account":
+      return "/accountant/settings/security";
+    case "manager":
+      return "/manager/settings/security";
+    default:
+      return null;
+  }
+};
+
 export const getSettingsLinks = (role: string | null) => {
   switch (role) {
     case "director":
@@ -183,7 +201,6 @@ export const getRentalPropertyCreatePath = (
     `${prefix}/management/properties/create-rental-property${
       landlordId ? `?landlord=${landlordId}` : ""
     }`;
-
   switch (role) {
     case "director":
       return basePath();

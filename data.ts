@@ -49840,6 +49840,8 @@ export const userRoutes = [
 ];
 export const staffRoutes = [
   "/messages",
+  "/notifications",
+  "/community",
   "/auth/forgot-password",
   "/staff/dashboard",
   "/staff/management/landlord",
@@ -49901,6 +49903,8 @@ export const staffRoutes = [
 ];
 export const accountRoutes = [
   "/messages",
+  "/notifications",
+  "/community",
   "/accountant/dashboard",
   "/auth/forgot-password",
   "/accountant/dashboard",
