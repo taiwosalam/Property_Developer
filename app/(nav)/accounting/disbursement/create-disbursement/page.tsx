@@ -456,14 +456,14 @@ const CreateDisbursement = () => {
         )}
 
         <FixedFooter className="flex items-center justify-end gap-4">
-          <Button
+          {/* <Button
             type="button"
             className="py-2 px-8"
             size="base_medium"
             variant="sky_blue"
           >
             Cancel
-          </Button>
+          </Button> */}
           <Button type="submit" className="py-2 px-8" size="base_medium">
             {reqLoading ? "Please wait..." : "Create"}
           </Button>

@@ -18,10 +18,11 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-  const { images, setImages, isEditing, formResetKey, notYetUploaded } = useUnitForm();
+  const { images, setImages, isEditing, formResetKey, notYetUploaded, unitData } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const maxImages = propertyType === "facility" ? 5 : 14;
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
+  const newForm = useAddUnitStore((s) => s.newForm);
   // const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
 
   const { canSubmit, missingFields, handleInputChange } =
@@ -74,7 +75,21 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
     form?.requestSubmit();
   };
 
+  console.log("isEditing", isEditing);
+  console.log("newForm", newForm);
+  console.log("addedUnits", addedUnits);
+  console.log("unitData.id", unitData?.id)
 
+  // Check if the current form's ID matches any unit in addedUnits
+  const isExistingUnit = unitData?.id && addedUnits.some((unit) => unit.id === unitData.id);
+
+  // Show buttons if:
+  // 1. notYetUploaded is true (unsaved unit)
+  // 2. newForm is true (blank form)
+  // 3. unitData is undefined or unitData.id is undefined (new form with no unit data)
+  // 4. The form's ID does NOT match any unit in addedUnits
+  const shouldShowButtons = (notYetUploaded || newForm || !unitData || !unitData.id) && !isExistingUnit;
+  
   return (
     <div
       ref={ref}
@@ -88,7 +103,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
           {propertyType === "rental" && <span className="text-red-500">*</span>}
           Unit Pictures
         </h4>
-        {!notYetUploaded && (
+        {shouldShowButtons && (
           <div className="flex gap-4 justify-end edit-unit-action-btns">
             <Button
               size="sm_medium"
