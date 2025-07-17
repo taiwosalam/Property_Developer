@@ -22,13 +22,25 @@ import { InventoryFetchData } from "../types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 
-
 interface InventoryData {
   status: string;
   total_inventory: number;
   unit_name: string;
   property_title: string;
 }
+
+// Helper function to validate video URL
+const isValidVideoUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    const videoUrlPattern =
+      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|vimeo\.com|dailymotion\.com|wistia\.com|vid\.yard|twitch\.tv|vidyard\.com)\/.+$/i;
+    const videoFilePattern = /\.(mp4|webm|ogg|mov|avi|wmv|flv|mkv)$/i;
+    return videoUrlPattern.test(url) || videoFilePattern.test(url);
+  } catch (error) {
+    return false;
+  }
+};
 
 //  Type for the data object
 const PreviewInventory = () => {
@@ -47,9 +59,6 @@ const PreviewInventory = () => {
   );
   const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
   const [video, setVideo] = useState<string>("");
-
-  const DummyvideoLink = 'https://www.youtube.com/watch?v=mzB1VGEGcSU&list=PLaDVm6FOJoQzC1zUZZlbadW03Gyt-34-G'
-
 
   useEffect(() => {
     const fetchBranchData = async () => {
@@ -71,10 +80,10 @@ const PreviewInventory = () => {
   }, [data]);
 
   const InventoryRefObj = {
-    "status": "",
-    "total_inventory": 0,
-    "unit_name": "",
-    "property_title": "",
+    status: "",
+    total_inventory: 0,
+    unit_name: "",
+    property_title: "",
   };
 
   if (isNetworkError) return <NetworkError />;
@@ -93,50 +102,53 @@ const PreviewInventory = () => {
                 "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
             }}
           >
-            <p className="text-brand-9 text-lg font-semibold">
-              Details
-            </p>
+            <p className="text-brand-9 text-lg font-semibold">Details</p>
             <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center">
               <KeyValueList
                 referenceObject={InventoryRefObj}
                 data={inventoryData}
                 chunkSize={2}
               />
-              {video && <div className="flex flex-col gap-2 self-end justify-end">
-                <Modal>
-                  <ModalTrigger>
-                    <Button size="sm" className="py-1 px-4">
-                      View Video
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <LandlordTenantModalPreset heading="Inventory Video">
-                      <div className="h-[400px] relative w-full">
-                        <ReactPlayer
-                          url={video}
-                          controls
-                          width="100%"
-                          height="100%"
-                          className="object-cover object-center"
-                          config={{
-                            youtube: {
-                              playerVars: {
-                                rel: 0,
-                                modestbranding: 1,
-                                disablekb: 1,
-                                fs: 0,
-                                showinfo: 0,
-                                iv_load_policy: 3,
-                                origin: typeof window !== "undefined" ? window.location.origin : "",
+              {video && isValidVideoUrl(video) && (
+                <div className="flex flex-col gap-2 self-end justify-end">
+                  <Modal>
+                    <ModalTrigger>
+                      <Button size="sm" className="py-1 px-4">
+                        View Video
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <LandlordTenantModalPreset heading="Inventory Video">
+                        <div className="h-[400px] relative w-full">
+                          <ReactPlayer
+                            url={video}
+                            controls
+                            width="100%"
+                            height="100%"
+                            className="object-cover object-center"
+                            config={{
+                              youtube: {
+                                playerVars: {
+                                  rel: 0,
+                                  modestbranding: 1,
+                                  disablekb: 1,
+                                  fs: 0,
+                                  showinfo: 0,
+                                  iv_load_policy: 3,
+                                  origin:
+                                    typeof window !== "undefined"
+                                      ? window.location.origin
+                                      : "",
+                                },
                               },
-                            },
-                          }}
-                        />
-                      </div>
-                    </LandlordTenantModalPreset>
-                  </ModalContent>
-                </Modal>
-              </div>}
+                            }}
+                          />
+                        </div>
+                      </LandlordTenantModalPreset>
+                    </ModalContent>
+                  </Modal>
+                </div>
+              )}
             </div>
           </div>
         </div>
