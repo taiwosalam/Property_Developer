@@ -26,6 +26,8 @@ interface ResponseData {
   description: string;
   examine_date: string;
   company: Company;
+  property_name: string;
+  branch_name: string;
   added_guest: string;
   assign_staff: string;
   image: Image[];

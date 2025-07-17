@@ -24,6 +24,7 @@ import {
 import { IExaminePageData } from "./data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { toast } from "sonner";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 const ManageExaminepage = () => {
   const [examinePageData, setExaminePageData] =
@@ -181,24 +182,34 @@ const ManageExaminepage = () => {
               </div>
               <div className="flex-col items-start justify-between gap-2">
                 <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                  Added Guest:
+                  Property Name:
                 </p>
                 <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
-                  {examinePageData?.added_guest}
+                  {examinePageData?.property_name}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Branch Name:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {examinePageData?.branch_name}
                 </p>
               </div>
 
               <div className="pb-3 max-w-lg">
                 <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
-                  Description;
+                  Attached Note:
                 </p>
                 {examinePageData?.description && (
-                  <div
-                    className="text-sm font-medium text-text-secondary dark:text-darkText-2 break-words whitespace-normal overflow-wrap-anywhere"
-                    dangerouslySetInnerHTML={{
-                      __html: examinePageData?.description,
-                    }}
-                  />
+                  <TruncatedText>
+                    <div
+                      className="text-sm font-medium text-text-secondary dark:text-darkText-2 break-words whitespace-normal overflow-wrap-anywhere"
+                      dangerouslySetInnerHTML={{
+                        __html: examinePageData?.description,
+                      }}
+                    />
+                  </TruncatedText>
                 )}
               </div>
             </div>
@@ -334,17 +345,19 @@ const ManageExaminepage = () => {
               </div>
             </SectionContainer>
             <SectionContainer heading="">
-              <div className="flex gap-1">
-                <p className="text-red-600">*</p>
-                <h1 className="text-text-primary text-xl font-medium capitalize dark:text-[#f1f1fd]">
-                  Inspection Summary Notes
-                </h1>
+              <div className="pb-24">
+                <div className="flex gap-1">
+                  <p className="text-red-600">*</p>
+                  <h1 className="text-text-primary pb-3 text-xl font-medium capitalize dark:text-[#f1f1fd]">
+                    Inspection Summary Notes
+                  </h1>
+                </div>
+                <TextArea
+                  id="inspection_summary"
+                  value={notes}
+                  onChange={(value) => setNotes(value)}
+                />
               </div>
-              <TextArea
-                id="inspection_summary"
-                value={notes}
-                onChange={(value) => setNotes(value)}
-              />
             </SectionContainer>
             <FixedFooter className="flex items-center justify-between">
               <div className="flex items-center gap-4">

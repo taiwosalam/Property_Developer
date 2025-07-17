@@ -17,6 +17,14 @@ import { branchManagementSteps } from "./branch-step";
 import { editBranchSteps } from "./edit-branch-steps";
 import { createInvoiceSteps } from "./create-invoice-steps";
 import { createDisbursementSteps } from "./create-disburstment";
+import { editStaffSteps } from "./edit-staff-steps";
+import { editLandlordSteps } from "./edit-landlord-steps";
+import { editTenantSteps } from "./edit-tenants-steps";
+import { createAnnouncementSteps } from "./create-announcement";
+import { createAgentContributionSteps } from "./create-agent-forum";
+import { createTenancyAgreementSteps } from "./create-document";
+import { createPropertyRequestSteps } from "./property-request-steps";
+import { createExpensesSteps } from "./create-expenses";
 
 export interface PageTourConfig {
   steps: TourStep[];
@@ -113,6 +121,10 @@ export const pageSteps: Record<string, PageTourConfig> = {
   "/management/staff-branch": {
     steps: branchManagementSteps,
     tourKey: "branchDetailsTour",
+    //  condition: () => {
+    //   const tenants = useGlobalStore.getState().getGlobalInfoStore("bra");
+    //   return !tenants || tenants.length === 0;
+    // },
     match: (pathname: string) =>
       /^\/management\/staff-branch\/[^\/]+$/.test(pathname),
   },
@@ -125,13 +137,66 @@ export const pageSteps: Record<string, PageTourConfig> = {
   "/accounting/invoice/create-invoice": {
     steps: createInvoiceSteps,
     tourKey: "CreateInvoiceTour",
-    match: (pathname: string) => pathname === "/accounting/invoice/create-invoice",
+    match: (pathname: string) =>
+      pathname === "/accounting/invoice/create-invoice",
   },
-   "/accounting/disbursement/create-disbursement": {
+  "/accounting/disbursement/create-disbursement": {
     steps: createDisbursementSteps,
     tourKey: "CreateDisbursementTour",
-    match: (pathname: string) => pathname === "/accounting/disbursement/create-disbursement",
+    match: (pathname: string) =>
+      pathname === "/accounting/disbursement/create-disbursement",
   },
+  "/management/staff-branch/branch-staff/edit": {
+    steps: editStaffSteps,
+    tourKey: "EditStaffTour",
+    match: (pathname: string) =>
+      /^\/management\/staff-branch\/[^\/]+\/branch-staff\/[^\/]+\/edit$/.test(
+        pathname
+      ),
+  },
+  "/management/landlord/manage/edit": {
+    steps: editLandlordSteps,
+    tourKey: "EditLandlordTour",
+    match: (pathname: string) =>
+      /^\/management\/landlord\/[^\/]+\/manage\/edit$/.test(pathname),
+  },
+
+  "/management/tenants/manage/edit": {
+    steps: editTenantSteps,
+    tourKey: "EditTenantTour",
+    match: (pathname: string) =>
+      /^\/management\/tenants\/[^\/]+\/manage\/edit$/.test(pathname),
+  },
+  "/tasks/announcements/create-announcement": {
+    steps: createAnnouncementSteps,
+    tourKey: "CreateAnnouncementTour",
+    match: (pathname: string) =>
+      pathname === "/tasks/announcements/create-announcement",
+  },
+  "/community/agent-forum/my-articles/create": {
+    steps: createAgentContributionSteps,
+    tourKey: "CreateAgentContributionTour",
+    match: (pathname: string) =>
+      pathname === "/community/agent-forum/my-articles/create",
+  },
+  "/documents/create-tenancy-agreement": {
+    steps: createTenancyAgreementSteps,
+    tourKey: "CreateTenancyAgreementTour",
+    match: (pathname: string) =>
+      /^\/documents\/create-tenancy-agreement(\?p=\d+)?$/.test(pathname),
+  },
+  "/community/agent-request/my-properties-request/create": {
+    steps: createPropertyRequestSteps,
+    tourKey: "CreatePropertyRequestTour",
+    match: (pathname: string) =>
+      pathname === "/community/agent-request/my-properties-request/create",
+  },
+   "/accounting/expenses/create-expenses": {
+    steps: createExpensesSteps,
+    tourKey: "CreateExpensesTour",
+    match: (pathname: string) => pathname === "/accounting/expenses/create-expenses",
+  },
+
   "/setup": {
     steps: setupSteps,
     tourKey: "SetupTour",

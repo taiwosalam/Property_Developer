@@ -17,6 +17,7 @@ import { ExamineReportApiResponse } from "./type";
 import { IExamineReportPageData, transformExamineReportPageData } from "./data";
 import { useEffect, useRef, useState } from "react";
 import ExportPageFooter from "@/components/reports/export-page-footer";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 const ExamineReportpage = () => {
   const params = useParams();
@@ -80,49 +81,61 @@ const ExamineReportpage = () => {
         <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
           Property Inspection Report
         </h1>
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-1 gap-8">
           <LandlordTenantInfoBox
-            className={`${commonBoxClassName}`}
+            className={`min-h-0 ${commonBoxClassName} w-full`}
             style={commonBoxStyle}
           >
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                Inspected Date:
-              </p>
-              <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-                {pageData?.inspection_date}
-              </p>
+            <div className="flex justify-between px-4">
+              <div className="flex-col items-center justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Inspected Date:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {pageData?.inspection_date}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Assigned Staff:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {pageData?.assign_staff}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Property Name:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {pageData?.property_name}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Branch Name:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {pageData?.branch_name}
+                </p>
+              </div>
+
+              <div className="pb-3 max-w-lg">
+                <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
+                  Attached Note:
+                </p>
+                {pageData?.description && (
+                  <TruncatedText>
+                    <div
+                      className="text-sm font-medium text-text-secondary dark:text-darkText-2 break-words whitespace-normal overflow-wrap-anywhere"
+                      dangerouslySetInnerHTML={{
+                        __html: pageData?.description,
+                      }}
+                    />
+                  </TruncatedText>
+                )}
+              </div>
             </div>
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                Assigned Staff:
-              </p>
-              <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-                {pageData?.assign_staff}
-              </p>
-            </div>
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                Added Guest:
-              </p>
-              <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-                {pageData?.guest}
-              </p>
-            </div>
-          </LandlordTenantInfoBox>
-          <LandlordTenantInfoBox
-            className={`${commonBoxClassName}`}
-            style={commonBoxStyle}
-          >
-            <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
-              Description
-            </p>
-            {pageData?.description && (
-              <div
-                className="text-sm font-medium text-text-secondary dark:text-darkText-2"
-                dangerouslySetInnerHTML={{ __html: pageData.description }}
-              />
-            )}
           </LandlordTenantInfoBox>
         </div>
 

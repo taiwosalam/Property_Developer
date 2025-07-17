@@ -184,9 +184,9 @@ const CreateDisbursement = () => {
   return (
     <section className="space-y-7 pb-20">
       <AuthForm onFormSubmit={handleCreateDisbursement}>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center pb-4">
           <BackButton>Create New Disbursement</BackButton>
-          <BackButton>Edit Branch</BackButton>
+
           <button
             onClick={() => restartTour(pathname)}
             type="button"
@@ -202,7 +202,7 @@ const CreateDisbursement = () => {
               required
               id="property"
               label="property"
-              className="property-selection"
+              className="property-selection-dropdown"
               onChange={setSelectedPropertyId}
               options={propertyOptions}
               disabled={propertiesLoading}
@@ -220,7 +220,7 @@ const CreateDisbursement = () => {
               label="disbursement mode"
               placeholder="Select Options"
               options={paymentModes}
-              className="self-end"
+              className="disbursement-method-dropdown self-end"
               inputContainerClassName="bg-white"
             />
           </div>
@@ -233,7 +233,7 @@ const CreateDisbursement = () => {
         </div>
 
         <div className="expense-details-form space-y-6 ">
-          <div className="flex gap-1 flex-col mt-4">
+          <div className="add-property-disbursement-button flex gap-1 flex-col mt-4">
             <div className="flex gap-2">
               <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
                 Add Property Disbursement
@@ -339,7 +339,7 @@ const CreateDisbursement = () => {
         )}
 
         <div className="space-y-6">
-          <div className="flex gap-1 flex-col">
+          <div className="add-unit-disbursement-button flex gap-1 flex-col">
             <div className="flex gap-2">
               <h3 className="text-[#092C4C] font-bold text-xl dark:text-white">
                 Add Unit Disbursement
@@ -456,15 +456,19 @@ const CreateDisbursement = () => {
         )}
 
         <FixedFooter className="flex items-center justify-end gap-4">
-          {/* <Button
+           <Button
             type="button"
             className="py-2 px-8"
             size="base_medium"
             variant="sky_blue"
           >
             Cancel
-          </Button> */}
-          <Button type="submit" className="py-2 px-8" size="base_medium">
+          </Button>
+          <Button
+            type="submit"
+            className="create-button py-2 px-8"
+            size="base_medium"
+          >
             {reqLoading ? "Please wait..." : "Create"}
           </Button>
         </FixedFooter>

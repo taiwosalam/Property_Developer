@@ -10,10 +10,12 @@ import VerifiedIcon from "@/public/icons/verified.svg";
 import Picture from "../Picture/picture";
 import { SectionSeparator } from "../Section/section-components";
 import { ReviewProps } from "./types";
-import BadgeIcon, { BadgeIconColors, tierColorMap } from "../BadgeIcon/badge-icon";
+import BadgeIcon, {
+  BadgeIconColors,
+  tierColorMap,
+} from "../BadgeIcon/badge-icon";
 import { postReaction } from "@/app/(nav)/(messages-reviews)/reviews/data";
 import { toast } from "sonner";
-
 
 const Review: React.FC<ReviewProps> = ({
   id,
@@ -30,18 +32,16 @@ const Review: React.FC<ReviewProps> = ({
   };
 
   const handlePostReaction = async (type: number) => {
-    if(!id) return;
-    try{
-      
+    if (!id) return;
+    try {
       const res = await postReaction(id, type);
-      if(res){
+      if (res) {
         toast.success(`Post ${type}`);
       }
-
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <div className="flex gap-1">
@@ -56,14 +56,10 @@ const Review: React.FC<ReviewProps> = ({
               {fullname}
             </p>
             {getBadgeColor(tier_id) && (
-              <BadgeIcon
-                color={getBadgeColor(tier_id) as BadgeIconColors}
-              />
+              <BadgeIcon color={getBadgeColor(tier_id) as BadgeIconColors} />
             )}
           </div>
-          <p className="text-text-disabled text-xs">
-            {desc}
-          </p>
+          <p className="text-text-disabled text-xs">{desc}</p>
         </div>
         <div className="flex items-center justify-between text-[10px] font-medium">
           {main ? (
@@ -76,11 +72,17 @@ const Review: React.FC<ReviewProps> = ({
                   <Picture src={Comment} alt="reply" size={16} />
                   <p className="text-text-secondary">Reply</p>
                 </button>
-                <button className="flex gap-1"  onClick={() => handlePostReaction(-1)}>
+                <button
+                  className="flex gap-1"
+                  onClick={() => handlePostReaction(-1)}
+                >
                   <Picture src={Dislike} alt="dislike" size={16} />
                   <p className="text-text-disabled">0</p>
                 </button>
-                <button className="flex gap-1"  onClick={() => handlePostReaction(1)}>
+                <button
+                  className="flex gap-1"
+                  onClick={() => handlePostReaction(1)}
+                >
                   <Picture src={Dislike} alt="dislike" size={16} />
                   <p className="text-text-disabled">0</p>
                 </button>

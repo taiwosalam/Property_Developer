@@ -5,6 +5,8 @@ export interface IExamineReportPageData {
   inspection_date: string;
   guest: string;
   assign_staff: string;
+  property_name: string;
+  branch_name: string;
   description: string;
   services: string[];
   inspection_checklist: {
@@ -24,6 +26,8 @@ export const transformExamineReportPageData = (
     id: data?.id,
     inspection_date: data?.examine_date || "___ ___",
     description: data?.description || "___ ___",
+    branch_name: data?.branch_name || "___ ___",
+    property_name: data?.property_name || "___ ___",
     guest: data?.added_guest || "___ ___",
     assign_staff: data?.assign_staff || "___ ___",
     services:

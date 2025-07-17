@@ -84,16 +84,13 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
         toast.success("Resolved successfully");
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setIsResolving(false);
     }
-    // console.log("Resolve button clicked");
+    //
   };
 
-  const handlePreview = () => {
-    console.log("Preview button clicked");
-  };
+  const handlePreview = () => {};
 
   const handleButtonClick = () => {
     if (cardType === "callback") {
@@ -126,8 +123,6 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       return "Preview";
     } else return "nothing";
   };
-
-  console.log(cardType);
 
   return (
     <div
@@ -317,17 +312,18 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             </button>
           ))}
 
-        {cardType === "property" || cardType === "deposit" && (
-          <button
-            // onClick={() => router.push(`/messages/${props?.userId}`)}
-            onClick={goToMessage}
-            type="button"
-            aria-label="Message"
-            className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
-          >
-            Message
-          </button>
-        )}
+        {cardType === "property" ||
+          (cardType === "deposit" && (
+            <button
+              // onClick={() => router.push(`/messages/${props?.userId}`)}
+              onClick={goToMessage}
+              type="button"
+              aria-label="Message"
+              className="mr-4 border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1"
+            >
+              Message
+            </button>
+          ))}
         {cardType === "agent-community" ? (
           <div className="flex items-center gap-2">
             {!props.user && (

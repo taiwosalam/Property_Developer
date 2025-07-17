@@ -122,7 +122,7 @@ const PreviewAnnouncement = () => {
               pageData?.read_by
                 ? pageData.read_by.map((user) => ({
                     ...user,
-                    name: user.user_name, // adjust property names as needed
+                    name: user.user_name?.toLowerCase(), // adjust property names as needed
                     tier: user.tier_id, // adjust property names as needed
                     dateTime: `${dayjs(user?.date).format(
                       "DD/MM/YYYY"

@@ -71,16 +71,18 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
 
           return {
             ...event,
-            type: "multiple event" as const,
+            originalType: event.title, // Preserve original type
             eventCount: eventsOnDay.length,
-            originalType: event.type,
-            title: `${event.type} (Part of multiple events: ${allEventTypes})`,
-            desc: `${event.desc}`,
+            isMultiple: true, // Flag for multiple events
+            title: `${event.title} (Part of ${eventsOnDay.length} events: ${allEventTypes})`, // Keep original title
           };
         }
-        return event;
+        return {
+          ...event,
+          originalType: event.title, // Ensure originalType is always set
+          isMultiple: false,
+        };
       });
-
     return { activities, eventsByDate };
   }, [activeDate, events]);
 
@@ -161,7 +163,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
           </div>
         </div>
         <div style={{ maxHeight: "460px" }} className="lg:w-[40%]">
-          <CalendarActivities date={activeDate} events={activities ?? []}/>
+          <CalendarActivities date={activeDate} events={activities ?? []} />
         </div>
       </div>
     </CalendarContext.Provider>

@@ -127,102 +127,104 @@ export const TenantEditProfileInfoSection = () => {
   }, [tenant?.contact_address]);
 
   return (
-    <LandlordTenantInfoEditSection title="profile">
-      <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
-        <LandlordTenantInfoEditGrid>
-          <Input
-            id="tenant_firstname"
-            label="first name"
-            defaultValue={tenant?.name.split(" ")[0]}
-            required
-            inputClassName="rounded-lg"
-          />
-          <Input
-            id="tenant_lastname"
-            label="last name"
-            defaultValue={tenant?.name.split(" ")[1]}
-            required
-            inputClassName="rounded-lg"
-          />
-          <Input
-            id="tenant_email"
-            type="email"
-            label="email"
-            // disabled={!!tenant?.email}
-            defaultValue={tenant?.email}
-            inputClassName="rounded-lg"
-          />
-          <PhoneNumberInput
-            id="tenant_phone_number"
-            label="phone number"
-            defaultValue={tenant?.phone_number}
-            inputContainerClassName="bg-neutral-2"
-          />
-          <Select
-            id="tenant_state"
-            label="state"
-            options={states}
-            placeholder="Select options"
-            inputContainerClassName="bg-neutral-2"
-            value={address.state}
-            onChange={(value) => handleAddressChange("state", value)}
-          />
-          <Select
-            id="tenant_local_government"
-            label="local government"
-            placeholder="Select options"
-            inputContainerClassName="bg-neutral-2 dark:!bg-darkText-primary"
-            options={getLocalGovernments(address.state)}
-            value={address.local_govt}
-            onChange={(value) => handleAddressChange("local_govt", value)}
-          />
-          <Select
-            id="tenant_city"
-            label="city"
-            placeholder="Select options"
-            options={getCities(address.state, address.local_govt)}
-            value={address.city}
-            onChange={(value) => handleAddressChange("city", value)}
-            allowCustom
-            inputContainerClassName="bg-neutral-2"
-          />
-          <Input
-            id="tenant_address"
-            label="address"
-            inputClassName="rounded-lg"
-            defaultValue={tenant?.contact_address.address}
-          />
-          <Select
-            id="tenant_type"
-            label="tenant type"
-            isSearchable={false}
-            placeholder="Select options"
-            options={tenantTypes}
-            defaultValue={tenant?.tenant_type}
-            inputContainerClassName="bg-neutral-2"
-          />
-          <Select
-            id="gender"
-            label="gender"
-            isSearchable={false}
-            placeholder="Select options"
-            options={genderTypes}
-            inputContainerClassName="bg-neutral-2"
-            defaultValue={tenant?.gender || ""}
-          />
-          <div className="md:col-span-2 flex items-end justify-end">
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              disabled={reqLoading}
-              type="submit"
-            >
-              {reqLoading ? "updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+    <div className="tenant-profile-section">
+      <LandlordTenantInfoEditSection title="profile">
+        <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
+          <LandlordTenantInfoEditGrid>
+            <Input
+              id="tenant_firstname"
+              label="first name"
+              defaultValue={tenant?.name.split(" ")[0]}
+              required
+              inputClassName="rounded-lg"
+            />
+            <Input
+              id="tenant_lastname"
+              label="last name"
+              defaultValue={tenant?.name.split(" ")[1]}
+              required
+              inputClassName="rounded-lg"
+            />
+            <Input
+              id="tenant_email"
+              type="email"
+              label="email"
+              // disabled={!!tenant?.email}
+              defaultValue={tenant?.email}
+              inputClassName="rounded-lg"
+            />
+            <PhoneNumberInput
+              id="tenant_phone_number"
+              label="phone number"
+              defaultValue={tenant?.phone_number}
+              inputContainerClassName="bg-neutral-2"
+            />
+            <Select
+              id="tenant_state"
+              label="state"
+              options={states}
+              placeholder="Select options"
+              inputContainerClassName="bg-neutral-2"
+              value={address.state}
+              onChange={(value) => handleAddressChange("state", value)}
+            />
+            <Select
+              id="tenant_local_government"
+              label="local government"
+              placeholder="Select options"
+              inputContainerClassName="bg-neutral-2 dark:!bg-darkText-primary"
+              options={getLocalGovernments(address.state)}
+              value={address.local_govt}
+              onChange={(value) => handleAddressChange("local_govt", value)}
+            />
+            <Select
+              id="tenant_city"
+              label="city"
+              placeholder="Select options"
+              options={getCities(address.state, address.local_govt)}
+              value={address.city}
+              onChange={(value) => handleAddressChange("city", value)}
+              allowCustom
+              inputContainerClassName="bg-neutral-2"
+            />
+            <Input
+              id="tenant_address"
+              label="address"
+              inputClassName="rounded-lg"
+              defaultValue={tenant?.contact_address.address}
+            />
+            <Select
+              id="tenant_type"
+              label="tenant type"
+              isSearchable={false}
+              placeholder="Select options"
+              options={tenantTypes}
+              defaultValue={tenant?.tenant_type}
+              inputContainerClassName="bg-neutral-2"
+            />
+            <Select
+              id="gender"
+              label="gender"
+              isSearchable={false}
+              placeholder="Select options"
+              options={genderTypes}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={tenant?.gender || ""}
+            />
+            <div className="md:col-span-2 flex items-end justify-end">
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                disabled={reqLoading}
+                type="submit"
+              >
+                {reqLoading ? "updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -257,55 +259,57 @@ export const TenantEditNextOfKinInfoSection = () => {
   };
 
   return (
-    <LandlordTenantInfoEditSection title="Next of Kin">
-      <AuthForm onFormSubmit={handleUpdateNextOfKin} skipValidation>
-        <LandlordTenantInfoEditGrid>
-          <Input
-            id="next_of_kin_fullname"
-            label="full name"
-            defaultValue={tenant?.next_of_kin.name}
-            inputClassName="rounded-lg"
-          />
-          <Input
-            id="next_of_kin_email"
-            type="email"
-            label="email"
-            defaultValue={tenant?.next_of_kin.email}
-            inputClassName="rounded-lg"
-          />
-          <PhoneNumberInput
-            id="next_of_kin_phone_number"
-            label="phone number"
-            defaultValue={tenant?.next_of_kin.phone || ""}
-            inputContainerClassName="bg-neutral-2"
-          />
-          <Select
-            id="next_of_kin_relationship"
-            label="relationship"
-            placeholder="Select options"
-            options={nextOfKinRelationships}
-            defaultValue={tenant?.next_of_kin.relationship || ""}
-            inputContainerClassName="bg-neutral-2 dark:bg-darkText-primary"
-          />
-          <Input
-            id="next_of_kin_address"
-            label="address"
-            defaultValue={tenant?.next_of_kin.address}
-            inputClassName="rounded-lg"
-          />
-          <div className="flex items-end justify-end">
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              disabled={reqLoading}
-              type="submit"
-            >
-              {reqLoading ? "updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+    <div className="next-of-kin-form">
+      <LandlordTenantInfoEditSection title="Next of Kin">
+        <AuthForm onFormSubmit={handleUpdateNextOfKin} skipValidation>
+          <LandlordTenantInfoEditGrid>
+            <Input
+              id="next_of_kin_fullname"
+              label="full name"
+              defaultValue={tenant?.next_of_kin.name}
+              inputClassName="rounded-lg"
+            />
+            <Input
+              id="next_of_kin_email"
+              type="email"
+              label="email"
+              defaultValue={tenant?.next_of_kin.email}
+              inputClassName="rounded-lg"
+            />
+            <PhoneNumberInput
+              id="next_of_kin_phone_number"
+              label="phone number"
+              defaultValue={tenant?.next_of_kin.phone || ""}
+              inputContainerClassName="bg-neutral-2"
+            />
+            <Select
+              id="next_of_kin_relationship"
+              label="relationship"
+              placeholder="Select options"
+              options={nextOfKinRelationships}
+              defaultValue={tenant?.next_of_kin.relationship || ""}
+              inputContainerClassName="bg-neutral-2 dark:bg-darkText-primary"
+            />
+            <Input
+              id="next_of_kin_address"
+              label="address"
+              defaultValue={tenant?.next_of_kin.address}
+              inputClassName="rounded-lg"
+            />
+            <div className="flex items-end justify-end">
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                disabled={reqLoading}
+                type="submit"
+              >
+                {reqLoading ? "updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -411,6 +415,7 @@ export const TenantEditOthersInfoSection = () => {
   }, [tenant?.others]);
 
   return (
+    <div className="other-details-form">
     <LandlordTenantInfoEditSection title="Others">
       <AuthForm
         onFormSubmit={handleUpdateOthers}
@@ -462,6 +467,7 @@ export const TenantEditOthersInfoSection = () => {
         </LandlordTenantInfoEditGrid>
       </AuthForm>
     </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -515,6 +521,7 @@ export const TenantEditBankDetailsSection = () => {
   };
 
   return (
+    <div className="bank-details-form">
     <LandlordTenantInfoEditSection title="Bank Details">
       <AuthForm
         onFormSubmit={handleUpdateBankDetails}
@@ -581,10 +588,15 @@ export const TenantEditBankDetailsSection = () => {
         </LandlordTenantInfoEditGrid>
       </AuthForm>
     </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
-export const TenantEditAttachmentSection = ({ noDefault }: { noDefault?: boolean }) => {
+export const TenantEditAttachmentSection = ({
+  noDefault,
+}: {
+  noDefault?: boolean;
+}) => {
   const { data: tenant } = useTenantEditContext();
   const [documents, setDocuments] = useState<TenantData["documents"]>([]);
   const [reqLoading, setReqLoading] = useState(false);
@@ -671,6 +683,7 @@ export const TenantEditAttachmentSection = ({ noDefault }: { noDefault?: boolean
   // Group documents for display
   const groupedDocuments = groupDocumentsByType(documents);
   return (
+    <div className="attachment-section">
     <LandlordTenantInfoEditSection title="attachment">
       <LandlordTenantInfoEditGrid>
         <div className="space-y-5 col-span-full">
@@ -757,7 +770,7 @@ export const TenantEditAttachmentSection = ({ noDefault }: { noDefault?: boolean
         </div>
         <Button
           size="base_medium"
-          className="col-span-full w-fit ml-auto py-2 px-6"
+          className="update-button col-span-full w-fit ml-auto py-2 px-6"
           onClick={handleUpdateButtonClick}
           disabled={reqLoading}
         >
@@ -765,6 +778,7 @@ export const TenantEditAttachmentSection = ({ noDefault }: { noDefault?: boolean
         </Button>
       </LandlordTenantInfoEditGrid>
     </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -791,6 +805,7 @@ export const TenantEditNoteSection = () => {
     setNote(data?.notes?.write_up || "");
   }, [data?.notes?.write_up]);
   return (
+    <div className="add-note-section">
     <LandlordTenantInfoEditSection
       title="add note"
       style={{ position: "relative" }}
@@ -812,6 +827,7 @@ export const TenantEditNoteSection = () => {
         {reqLoading ? "updating..." : "update"}
       </Button>
     </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 

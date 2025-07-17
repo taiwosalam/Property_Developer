@@ -122,3 +122,20 @@ function getCurrencySymbol(currency: SupportedCurrency): string {
       return "₦";
   }
 }
+
+export function parseCurrencyToNumber(
+  value: string | null | undefined
+): number {
+  if (!value) return 0;
+
+  // Remove anything that's not a digit or dot
+  const cleanValue = value.replace(/[^0-9.]/g, "");
+
+  // Handle edge case: multiple dots (e.g., malformed "10.000.50")
+  const parts = cleanValue.split(".");
+  const normalized =
+    parts.length > 2 ? parts[0] + "." + parts.slice(1).join("") : cleanValue;
+
+  const parsed = parseFloat(normalized);
+  return isNaN(parsed) ? 0 : parsed;
+}

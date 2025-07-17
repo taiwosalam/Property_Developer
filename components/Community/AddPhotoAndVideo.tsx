@@ -39,9 +39,6 @@ const AddPhotoAndVideo = ({
     }
   }, [data, editing, setRetainMedia]);
 
-  // console.log(imagePreviews);
-  console.log('retainMedia', retainMedia);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let files = Array.from(e.target.files || []);
     files = files.slice(0, MAX_IMAGES - imagePreviews.length);
@@ -101,7 +98,7 @@ const AddPhotoAndVideo = ({
   };
 
   return (
-    <div className="lg:flex-1 space-y-4">
+    <div className="media-upload-section lg:flex-1 space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
         {imagePreviews.map((src, index) => (
           <div

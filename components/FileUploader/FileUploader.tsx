@@ -6,6 +6,7 @@ interface FileUploadProps {
   label?: string;
   onFileChange: (file: File | null) => void;
   file: File | null;
+  disabled?: boolean;
 }
 
 const getFileIcon = (file: File | null) => {
@@ -17,7 +18,7 @@ const getFileIcon = (file: File | null) => {
   return <span role="img" aria-label="file">📁</span>;
 };
 
-const FileUploader: React.FC<FileUploadProps> = ({ id, label, onFileChange, file }) => {
+const FileUploader: React.FC<FileUploadProps> = ({ id, label, onFileChange, file, disabled }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -27,7 +28,8 @@ const FileUploader: React.FC<FileUploadProps> = ({ id, label, onFileChange, file
         id={id}
         type="file"
         ref={inputRef}
-        className="hidden"
+        className={`${disabled ? "opacity-40 cursor-not-allowed" : "opacity-100"} hidden`}
+        disabled={disabled}
         onChange={e => {
           const selectedFile = e.target.files && e.target.files[0] ? e.target.files[0] : null;
           onFileChange(selectedFile);

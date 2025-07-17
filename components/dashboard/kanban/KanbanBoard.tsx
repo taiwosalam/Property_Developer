@@ -28,10 +28,16 @@ import { Loader2 } from "lucide-react";
 import {
   approveAndProcessComplaint,
   rejectComplaint,
+  transformComplaintDetails,
 } from "@/app/(nav)/tasks/complaints/data";
 import { toast } from "sonner";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import TaskModal from "./task-action-modal";
+import useFetch from "@/hooks/useFetch";
+import {
+  ComplaintDetailResponse,
+  ComplaintDetailsPageData,
+} from "@/app/(nav)/tasks/complaints/types";
 
 const defaultCols = [
   {
@@ -90,6 +96,24 @@ export function KanbanBoard({
   const [currentTaskForStatusChange, setCurrentTaskForStatusChange] =
     useState<Task | null>(null);
   const [targetStatus, setTargetStatus] = useState<ColumnId | null>(null);
+  const [cardData, setCardData] = useState<ComplaintDetailsPageData | null>(
+    null
+  );
+
+  const complaintId = currentTaskForStatusChange?.id;
+
+  const {
+    data: complaintDataResponse,
+    loading,
+    error: fetchError,
+  } = useFetch<ComplaintDetailResponse>(`complaint/${complaintId}`);
+
+  useEffect(() => {
+    if (complaintDataResponse) {
+      const transformDetails = transformComplaintDetails(complaintDataResponse);
+      setCardData(transformDetails);
+    }
+  }, [complaintDataResponse]);
 
   // Pagination state for each column
   const [columnPagination, setColumnPagination] = useState<
@@ -155,7 +179,6 @@ export function KanbanBoard({
         currentTaskForStatusChange.columnId === "rejected") &&
       (tasksStatus === "processing" || targetStatus === "processing")
     ) {
-      console.error("Cannot move to processing from approved or rejected");
       toast.error("Cannot move completed or rejected tasks to Processing");
       return;
     }
@@ -196,11 +219,11 @@ export function KanbanBoard({
         throw new Error(`No response from ${targetStatus} API`);
       }
     } catch (error) {
+      window.dispatchEvent(new Event("refetchComplaints"));
       console.error(`Error updating status to ${targetStatus}:`, error);
       toast.error(`Failed to update complaint to ${targetStatus}`);
     }
   };
-  console.log(targetStatus);
 
   // Update tasks when new data comes in (append, don't replace)
   useEffect(() => {
@@ -543,8 +566,7 @@ export function KanbanBoard({
           )}
       </DndContext>
 
-      {/* Render modal in KanbanBoard */}
-      {statusChangeModalOpen && currentTaskForStatusChange && (
+      {
         <Modal
           state={{
             isOpen: statusChangeModalOpen,
@@ -556,24 +578,24 @@ export function KanbanBoard({
               onConfirm={handleStatusChange}
               statusChanger={true}
               complaintData={{
-                id: Number(currentTaskForStatusChange.id),
-                senderName: currentTaskForStatusChange.name,
-                senderVerified: true, // Adjust based on your data
-                complaintTitle: currentTaskForStatusChange.title,
-                propertyName: "", // Populate if available
-                unitName: "",
-                propertyAddress: "",
-                accountOfficer: "",
-                branch: "",
-                brief: currentTaskForStatusChange.message,
-                tier: currentTaskForStatusChange.tier || 0,
+                id: cardData?.id || 0,
+                senderName: cardData?.senderName || "___ ___",
+                senderVerified: true,
+                complaintTitle: cardData?.complaintTitle || "___ ___",
+                propertyName: cardData?.propertyName || "___ ___",
+                unitName: cardData?.unitName || "___ ___",
+                propertyAddress: cardData?.propertyAddress || "___ ___",
+                accountOfficer: cardData?.accountOfficer || "___ ___",
+                branch: cardData?.branch || "___ ___",
+                brief: cardData?.brief || "___ ___",
+                tier: cardData?.tier || 0,
               }}
               setModalOpen={setStatusChangeModalOpen}
               destinationColumn={targetStatus}
             />
           </ModalContent>
         </Modal>
-      )}
+      }
     </>
   );
 
@@ -582,7 +604,7 @@ export function KanbanBoard({
     const data = event.active.data.current;
     if (data?.type === "Column") {
       setActiveColumn(data.column);
-      //setStatusChangeModalOpen(true);
+      setStatusChangeModalOpen(true);
       return;
     }
 
@@ -618,6 +640,7 @@ export function KanbanBoard({
 
       return arrayMove(columns, activeColumnIndex, overColumnIndex);
     });
+    setStatusChangeModalOpen(true);
   }
 
   function onDragOver(event: DragOverEvent) {
@@ -684,7 +707,7 @@ export function KanbanBoard({
         if (activeTask) {
           // Prevent moving from "approved" or "rejected" to "processing"
           if (
-            (activeTask.columnId === "approved" ||
+            (activeTask.columnId === "completed" ||
               activeTask.columnId === "rejected") &&
             overId === "processing"
           ) {
@@ -694,10 +717,6 @@ export function KanbanBoard({
             return tasks; // No state change
           }
 
-          console.log("Drag over column:", {
-            activeTaskId: activeTask.id,
-            targetColumn: overId,
-          });
           setCurrentTaskForStatusChange(activeTask);
           setTargetStatus(overId as ColumnId);
           setStatusChangeModalOpen(true);

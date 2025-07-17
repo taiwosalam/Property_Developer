@@ -14,7 +14,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import Button from "@/components/Form/Button/button";
 import { StaffEditContext } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-edit-context";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import useBranchStore from "@/store/branch-store";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
@@ -31,6 +31,8 @@ import { deleteStaff } from "./data";
 import { useRouter } from "next/navigation";
 import ServerError from "@/components/Error/ServerError";
 import SettingsBank from "@/components/Settings/settings-bank";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -75,6 +77,26 @@ const EditStaffProfile = () => {
     }
   };
 
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("EditStaffTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;
   if (isNetworkError) return <NetworkError />;
@@ -84,7 +106,16 @@ const EditStaffProfile = () => {
   return (
     <StaffEditContext.Provider value={{ data: pageData }}>
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
-        <BackButton>Edit Staff</BackButton>
+        <div className="flex gap-2 items-center">
+          <BackButton>Edit Staff</BackButton>
+          <button
+            onClick={() => restartTour(pathname)}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
         <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
           <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
             <StaffEditProfileInfoSection />
@@ -102,7 +133,8 @@ const EditStaffProfile = () => {
             <ModalTrigger asChild>
               <Button
                 size="base_medium"
-                className="py-2 px-6"
+                className="delete-account-button
+                py-2 px-6"
                 variant="light_red"
               >
                 delete account

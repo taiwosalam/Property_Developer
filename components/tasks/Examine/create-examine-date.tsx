@@ -66,7 +66,6 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
         setIsOpen?.(false);
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -119,8 +118,6 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
       setBranchOptions(branches);
     }
   }, [branchData]);
-
-  console.log(selectedAccountOfficerId);
 
   return (
     <WalletModalPreset title="Create Examine Date">
@@ -268,7 +265,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
             className="py-2 px-8"
             style={{ textTransform: "none" }}
           >
-            {loading ? "Please wait..." : "Add to Calendar"}
+            {loading ? "Please wait..." : "Create Examine"}
           </Button>
         </div>
       </AuthForm>

@@ -142,6 +142,7 @@ export type RentHistoryItem = {
   unit_id: number;
   unit_name: string;
   serviceCharge: null;
+  currency: string;
   unitImages: {
     path: string;
   }[];

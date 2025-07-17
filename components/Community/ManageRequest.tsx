@@ -33,7 +33,7 @@ export const PropertyRequestFirstSection = ({
   placeholderText,
   desc,
   loading,
-  noMaxTitle
+  noMaxTitle,
 }: {
   data?: any;
   desc?: string;
@@ -75,7 +75,7 @@ export const PropertyRequestFirstSection = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4">
+      <div className="title-input flex flex-col gap-4">
         <label htmlFor="title"> Title </label>
         <input
           type="text"
@@ -92,7 +92,7 @@ export const PropertyRequestFirstSection = ({
         id="content"
         label=""
         placeholder={desc ? desc : placeholderText}
-        className="w-full mt-4 min-h-[200px]"
+        className="description-textarea w-full mt-4 min-h-[200px]"
         value={data?.content || data?.description || ""}
         restrictedWords={RESTRICTED_ARTICLES_WORDS}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
@@ -178,74 +178,83 @@ export const PropertyRequestSecondSection = ({
 
   return (
     <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-      <h3 className="text-black dark:text-white font-semibold mb-2">
-        Request Type
-      </h3>
-      <PropertyRequestUnitType data={data} />
-      <div className="budget flex flex-col gap-2">
-        <h3 className="text-black dark:text-white font-semibold mb-2">
-          Client Budget
-        </h3>
+      <div className="">
+        <div className="property-type-selection">
+          <h3 className="text-black dark:text-white font-semibold mb-2">
+            Request Type
+          </h3>
+          <PropertyRequestUnitType data={data} />
+        </div>
+        <div className="client-budget-selection flex flex-col gap-2">
+          <h3 className="text-black dark:text-white font-semibold my-4">
+            Client Budget
+          </h3>
 
-        <Input
-          required
-          id=""
-          placeholder=""
-          label="Minimum Budget"
-          formatNumber
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          inputClassName="bg-white"
-          onChange={(value: string) => handleMinChange(value)}
-          value={minBudget ? minBudget.toLocaleString() : ""}
-        />
-        <input
-          id="min_budget"
-          type="hidden"
-          name="min_budget"
-          defaultValue={minBudget ? minBudget.toString() : ""}
-        />
+          <div className="space-y-4">
+            <Input
+              required
+              id=""
+              placeholder=""
+              label="Minimum Budget"
+              formatNumber
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+              inputClassName="bg-white"
+              onChange={(value: string) => handleMinChange(value)}
+              value={minBudget ? minBudget.toLocaleString() : ""}
+            />
+            <input
+              id="min_budget"
+              type="hidden"
+              name="min_budget"
+              defaultValue={minBudget ? minBudget.toString() : ""}
+            />
 
-        <Input
-          required
-          id=""
-          placeholder=""
-          label="Maximum Budget"
-          //formatNumber
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          inputClassName="bg-white"
-          onChange={(value: string) => handleMaxChange(value)}
-          value={maxBudget ? maxBudget.toLocaleString() : ""}
-        />
-        <input
-          id="max_budget"
-          type="hidden"
-          name="max_budget"
-          defaultValue={maxBudget ? maxBudget.toString() : ""}
-        />
+            <Input
+              required
+              id=""
+              placeholder=""
+              label="Maximum Budget"
+              //formatNumber
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+              inputClassName="bg-white"
+              onChange={(value: string) => handleMaxChange(value)}
+              value={maxBudget ? maxBudget.toLocaleString() : ""}
+            />
+            <input
+              id="max_budget"
+              type="hidden"
+              name="max_budget"
+              defaultValue={maxBudget ? maxBudget.toString() : ""}
+            />
+          </div>
+        </div>
       </div>
       <div className="flex flex-col gap-2">
-        <h3 className="text-black dark:text-white font-semibold mb-2">
-          Location
-        </h3>
-        <Select
-          options={stateOptions}
-          id="state"
-          label="state"
-          value={data?.state || address.state}
-          onChange={(value) => handleAddressChange("state", value)}
-          required
-        />
+        <div className="location-selection space-y-4">
+          <h3 className="text-black dark:text-white font-semibold mb-2">
+            Location
+          </h3>
 
-        <Select
-          options={getLocalGovernments(address.state)}
-          id="lga"
-          label="local government"
-          onChange={(value) => handleAddressChange("lga", value)}
-          value={data?.lga || address.lga}
-          required
-        />
+          <Select
+            options={stateOptions}
+            id="state"
+            label="state"
+            value={data?.state || address.state}
+            onChange={(value) => handleAddressChange("state", value)}
+            required
+          />
+
+          <Select
+            options={getLocalGovernments(address.state)}
+            id="lga"
+            label="local government"
+            onChange={(value) => handleAddressChange("lga", value)}
+            value={data?.lga || address.lga}
+            required
+          />
+        </div>
         {/* <StateAndLocalGovt data={data} /> */}
-        <div className="flex flex-col gap-2 mt-2">
+        <div className="date-validation-selection flex flex-col gap-2 mt-2">
           <h3 className="text-black dark:text-white font-semibold mb-2">
             Valid Till
           </h3>

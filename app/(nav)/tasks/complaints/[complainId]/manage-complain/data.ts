@@ -36,7 +36,7 @@ export interface IManageComplaints {
     time: string;
   }[];
   reminders: {
-    date: Date,
+    date: Date;
     desc: string;
     title: string;
     type: "reminder";
@@ -67,7 +67,7 @@ export const transformComplaintManage = (
         value: data?.complaint?.title,
       },
       {
-        label: "Complaints sent by",
+        label: "Complainant",
         value: data?.complaint.complaint_by,
       },
       {
@@ -84,7 +84,7 @@ export const transformComplaintManage = (
       },
 
       {
-        label: "Account Officer",
+        label: "Account Manager",
         value: data?.complaint?.account_officer,
       },
 
@@ -124,7 +124,11 @@ export const transformComplaintManage = (
       src: media,
       isVideo: false,
     })),
-    progress: data?.complaint?.progress,
+    progress:
+      data?.complaint?.progress ||
+      data?.complaint?.status?.toLowerCase() === "completed"
+        ? 100
+        : data?.complaint?.progress,
     updated_at: data?.complaint
       ? dayjs(data?.complaint?.updated_at).format("DD/MM/YYYY")
       : "",
@@ -136,15 +140,13 @@ export const transformComplaintManage = (
       userId: message.user.id,
       avatar: message.user.picture,
     })),
-    reminders: data?.complaint?.reminders.map((r) => (
-      {
-        date: new Date(r.reminder_date),
-        desc: r.note,
-        title: r.title,
-        type: "reminder",
-        created_at: r.created_at ? dayjs(r.created_at).format("hh:mm A") : ""
-      }
-    )),
+    reminders: data?.complaint?.reminders.map((r) => ({
+      date: new Date(r.reminder_date),
+      desc: r.note,
+      title: r.title,
+      type: "reminder",
+      created_at: r.created_at ? dayjs(r.created_at).format("hh:mm A") : "",
+    })),
     task_bar: data?.complaint?.task_bar?.map((task) => ({
       progress: task?.progress,
       approve_by: task?.approve_by,
@@ -296,7 +298,5 @@ export const assignTask = async ({
 };
 
 export const transformReminderCalendarEvent = () => {
-  return {
-
-  };
+  return {};
 };

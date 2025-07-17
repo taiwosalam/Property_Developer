@@ -19,6 +19,7 @@ interface IApplicationCardUnit {
   propertyType: string;
   managedBy: string;
   prev?: boolean;
+  currency: string;
   unitData?: {
     unit_name: string;
     total_squ_area: string;
@@ -43,6 +44,7 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
   managedBy,
   prev,
   unitData,
+  currency
 }) => {
   const [screenModal, setScreenModal] = useState(false);
 
@@ -71,7 +73,7 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
             <div>
               <p className="text-[#747474] dark:text-white">Rent</p>
               <p className="text-black dark:text-darkText-1 capitalize">
-                {rentAmount}
+                {currency}{rentAmount}
               </p>
             </div>
 
