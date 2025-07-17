@@ -34,7 +34,7 @@ export const createInvoiceSteps: TourStep[] = [
     placement: "bottom",
     title: "Generate Invoice Overview",
     content:
-      "The “<b>Generate Invoice<b/>” action will automatically create invoices for every unit within the selected property. It will issue a payable notification to all tenant or occupant accounts linked via the mobile app. This option is ideal for applying the same invoice type across all units - such as bulk billing, estate-wide fees, or general fee collection. Ensure all settings are accurate before proceeding, as this action will uniformly apply to every unit in the property.",
+      "The <b>“Generate Invoice”</b> action will automatically create invoices for every unit within the selected property. It will issue a payable notification to all tenant or occupant accounts linked via the mobile app. This option is ideal for applying the same invoice type across all units - such as bulk billing, estate-wide fees, or general fee collection. Ensure all settings are accurate before proceeding, as this action will uniformly apply to every unit in the property.",
   },
   {
     target: ".auto-regenerate-type",
@@ -48,7 +48,7 @@ export const createInvoiceSteps: TourStep[] = [
     placement: "bottom",
     title: "Amount Input",
     content:
-      "Enter the <b>exact amount<b/> to be invoiced for the selected tenant or occupant: Input should reflect the <b>total value</b> of the service or charge being billed.",
+      "Enter the <b>exact amount</b> to be invoiced for the selected tenant or occupant: Input should reflect the <b>total value</b> of the service or charge being billed.",
   },
   {
     target: ".invoice-description-textarea",

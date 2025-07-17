@@ -194,7 +194,7 @@ const InventoryItem: React.FC<
                   id={`item-name-${index}`}
                   name={`item-name-${index}`}
                   label="Inventory name/Unit"
-                  className="flex-1"
+                  className="inventory-name-input flex-1"
                   style={input_styles}
                   defaultValue={data?.name || data?.description || ""}
                 />
@@ -214,7 +214,7 @@ const InventoryItem: React.FC<
                       name={`quantity-${index}`}
                       value={count}
                       onChange={(e) => setCount(Number(e.target.value))}
-                      className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
+                      className="quantity-input w-2/3 px-2 py-2 border-transparent focus:outline-none"
                     />
                     <div className="btn flex flex-col items-end justify-end">
                       <CounterButton
@@ -234,7 +234,7 @@ const InventoryItem: React.FC<
                     name={`condition-${index}`}
                     placeholder="Condition"
                     options={inventory_conditions}
-                    className="flex-1"
+                    className="inventory-condition-selector flex-1"
                     isSearchable={false}
                     defaultValue={data?.condition}
                   />
@@ -289,7 +289,7 @@ const InventoryItem: React.FC<
             {/* NOT EDIT MODE END */}
             {edit && (
               <div
-                className={`absolute inset-0 flex ${
+                className={`inventory-pictures-upload absolute inset-0 flex ${
                   images.length === 0
                     ? "items-center justify-center"
                     : "flex-col items-end justify-between mr-4 my-4"

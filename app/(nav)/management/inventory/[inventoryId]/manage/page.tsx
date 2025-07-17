@@ -14,6 +14,7 @@ import useDarkMode from "@/hooks/useCheckDarkMode";
 import useFetch from "@/hooks/useFetch";
 import {
   useParams,
+  usePathname,
   useSearchParams,
 } from "next/dist/client/components/navigation";
 import { deleteInventory, getBranches, updateInventory } from "../../data";
@@ -30,6 +31,8 @@ import ServerError from "@/components/Error/ServerError";
 import NetworkError from "@/components/Error/NetworkError";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { InventoryFetchData } from "../types";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 interface InventoryData {
   status: string;
@@ -234,6 +237,25 @@ const ManageInventory = () => {
     property_title: "",
   };
 
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("CreateInventoryTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -245,14 +267,23 @@ const ManageInventory = () => {
       ) : (
         <form onSubmit={handleUpdateInventory}>
           <div className="custom-flex-col gap-4">
-            <BackButton>Manage Inventory</BackButton>
+            <div className="flex items-center gap-2">
+              <BackButton>Manage Inventory</BackButton>
+              <button
+                onClick={() => restartTour(pathname)}
+                type="button"
+                className="text-orange-normal"
+              >
+                <ExclamationMark />
+              </button>
+            </div>
             <div className="custom-flex-col gap-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
                 <Input
                   id="video_link"
                   name="video_link"
                   placeholder="Video Link"
-                  className="w-full"
+                  className="video-link-input w-full"
                   defaultValue={video}
                   style={input_styles}
                 />
@@ -300,7 +331,7 @@ const ManageInventory = () => {
                 <Button
                   size="sm_medium"
                   variant="light_red"
-                  className="py-2 px-7"
+                  className="delete-inventory-button py-2 px-7"
                 >
                   delete inventory
                 </Button>
@@ -328,11 +359,15 @@ const ManageInventory = () => {
                 variant="border"
                 onClick={handleAddMoreInventory}
                 type="button"
-                className="py-2 px-7"
+                className="add-more-button py-2 px-7"
               >
                 Add more to inventory
               </Button>
-              <Button size="sm_medium" className="py-2 px-7" type="submit">
+              <Button
+                size="sm_medium"
+                className="update-inventory-button py-2 px-7"
+                type="submit"
+              >
                 {isLoading ? "Updating..." : "Update"}
               </Button>
             </div>

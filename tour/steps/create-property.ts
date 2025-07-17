@@ -4,7 +4,7 @@ export const createPropertySteps: TourStep[] = [
   {
     target: "body",
     content:
-      "This walkthrough will help you create Property details, Unit details, property listing, and Management detail,  step-by-step, ensuring all necessary details are included for efficient property management. You can skip at any time if you're already familiar.",
+      "This walkthrough will help you create Property details, Unit details, property listing, and Management detail, step-by-step, ensuring all necessary details are included for efficient property management. You can skip at any time if you're already familiar.",
     placement: "center",
     title: "Start Here? Take a Quick Tour!",
     disableBeacon: true,
@@ -181,15 +181,17 @@ export const createPropertySteps: TourStep[] = [
     target: ".property-inventory-wrapper",
     placement: "top",
     title: "Inventory Overview",
-    content:
-      "Attach specific inventory records to the property for accurate tracking of items included within the unit. To create new inventory records, navigate to <b>Management > Inventory.</b> <br />Managing inventory ensures you keep a detailed log of all assets provided to tenants or occupants - such as furniture, appliances, or fixtures. This improves accountability, supports maintenance planning, and is especially important for furnished properties or shared facilities.",
+    content: `Use this section to <b>activate inventory tracking</b> for each unit within the selected property. This allows you to record and monitor all items provided in the space such as furniture, appliances, and fixtures for better asset management.<br/><br/>
+              <b>Yes:</b> Enable inventory tracking for all units in the property. This ensures detailed documentation and accountability for every item included.<br/><br/>
+              <b>No:</b> Disable inventory tracking for this property. Inventory records will not be required or displayed for its units.
+                `,
   },
   {
     target: ".create-property-form-footer",
-    placement: "top",
+    placement: "left",
     title: "Action Button Overview",
     content:
-      "The Clear Field button resets all fields on the form, deleting any data you've entered so far.<br />The Add Unit button finalizes the creation of the property record and redirects you to the next page where you can begin adding units under that property <br /><b>Note:</b> A property must have at least one unit to be published. Properties created without units will be saved as pending and can be found under <b>Listing > Property Draft/Request.</b>",
+      "The Clear Field button resets all fields on the form, deleting any data you've entered so far.<br />The Add Unit button finalizes the creation of the property record and redirects you to the next page where you can begin adding units under that property <br/><br/><b>Note:</b> A property must have at least one unit to be published. Properties created without units will be saved as pending and can be found under <b>Listing > Property Draft/Request.</b>",
   },
   {
     target: "body",

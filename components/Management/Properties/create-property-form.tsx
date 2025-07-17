@@ -518,10 +518,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </p>
             <button
               onClick={() => {
-                if (formType === "rental") {
-                  handleGoToTourStep(8);
-                } else if (formType === "facility") {
+                if (formType === "rental" && !editMode) {
+                  handleGoToTourStep(4);
+                } else if (formType === "facility" && !editMode) {
                   handleGoToTourStep(3);
+                } else if (formType === "rental" && editMode) {
+                  handleGoToTourStep(2);
+                } else if (formType === "facility" && editMode) {
+                  handleGoToTourStep(2);
                 }
               }}
               type="button"
@@ -815,10 +819,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
             </p>
             <button
               onClick={() => {
-                if (formType === "rental") {
-                  handleGoToTourStep(4);
-                } else if (formType === "facility") {
+                if (formType === "rental" && !editMode) {
+                  handleGoToTourStep(14);
+                } else if (formType === "facility" && !editMode) {
                   handleGoToTourStep(11);
+                } else if (formType === "rental" && editMode) {
+                  handleGoToTourStep(10);
+                } else if(formType === "facility" && editMode){
+                  handleGoToTourStep(10);
                 }
               }}
               type="button"
@@ -1117,7 +1125,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
           </div>
         </div>
 
-        <div className="create-property-form-footer">
+        <div className="">
           <PropertyFormFooter
             editMode={editMode}
             handleReset={handleReset}

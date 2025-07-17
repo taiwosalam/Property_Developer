@@ -35,7 +35,7 @@ export const editBranchSteps: TourStep[] = [
     placement: "bottom",
     title: "🏙️ City & Street Details",
     content:
-      "<b>City:</b> Select the <b>city or town<b/> where the branch is located. <br/> <b>Street Name/Number:</b> Enter only the <b>office number, building name, or street</b> (e.g., 12 Allen Avenue, Plot 4B, Admiralty Way).<br/><br/>📌 <i>Note: Please do not enter the full address here — the system will automatically generate the complete address using your selected state, LGA, and city.</i>",
+      "<b>City:</b> Select the <b>city or town<b/> where the branch is located. <br/> <b>Street Name/Number:</b> Enter only the <b>office number, building name, or street</b> (e.g., <i>12 Allen Avenue, Plot 4B, Admiralty Way</i>).<br/><br/>📌 <i>Note: Please do not enter the full address here — the system will automatically generate the complete address using your selected state, LGA, and city.</i>",
   },
   {
     target: ".wallet-selection-toggle",

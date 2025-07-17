@@ -114,25 +114,27 @@ const PropertyFormFooter: React.FC<{
           </>
         ) : (
           <>
-            <Button
-              type="reset"
-              variant="sky_blue"
-              size="base_medium"
-              className="py-2 px-6"
-              onClick={handleReset}
-            >
-              Clear Fields
-            </Button>
-            <Button
-              type="button"
-              disabled={!canSubmit || requestLoading}
-              size="base_medium"
-              className="py-2 px-6"
-              onClick={handleSubmitClick}
-              // form="create-property-form"
-            >
-              {requestLoading ? "Please Wait..." : "Add Unit"}
-            </Button>
+            <div className="create-property-form-footer flex items-center gap-10">
+              <Button
+                type="reset"
+                variant="sky_blue"
+                size="base_medium"
+                className="py-2 px-6"
+                onClick={handleReset}
+              >
+                Clear Fields
+              </Button>
+              <Button
+                type="button"
+                disabled={!canSubmit || requestLoading}
+                size="base_medium"
+                className="py-2 px-6"
+                onClick={handleSubmitClick}
+                // form="create-property-form"
+              >
+                {requestLoading ? "Please Wait..." : "Add Unit"}
+              </Button>
+            </div>
           </>
         )}
       </FixedFooter>

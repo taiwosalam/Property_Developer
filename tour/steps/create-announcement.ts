@@ -20,7 +20,7 @@ export const createAnnouncementSteps: TourStep[] = [
     placement: "bottom",
     title: "🏠 Property Selection",
     content:
-      "Use this field to <b>select a specific property or unit</b> where the announcement should be sent. The dropdown list will automatically show properties based <b>on the branch you selected</br>. <br/><br/>This ensures that only <b>tenants or occupants</b> connected to that property receive the message.<br/><br/>📌 <b>Note:</b> If no property is selected, the announcement will be sent to <b>all properties within the selected branch only</b>",
+      "Use this field to <b>select a specific property or unit</b> where the announcement should be sent. The dropdown list will automatically show properties based on the <b>branch you selected.</b> <br/><br/>This ensures that only <b>tenants or occupants</b> connected to that property receive the message.<br/><br/>📌 <b>Note:</b> If no property is selected, the announcement will be sent to <b>all properties within the selected branch only.</b>",
   },
   {
     target: ".title-input",
