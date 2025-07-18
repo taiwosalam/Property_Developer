@@ -134,8 +134,6 @@ export const manager_nav_items: NavItemsProps = [
         href: "/manager/management/service-providers",
       },
       { label: "vehicles record", href: "/manager/management/vehicles-record" },
-      { label: "team chat", href: "/manager/management/team-chat" },
-      { label: "agent community", href: "/management/agent-community" },
     ],
   },
   {

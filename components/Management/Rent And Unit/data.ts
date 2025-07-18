@@ -61,14 +61,26 @@ export const activeStatuses = [
   "relocate",
 ];
 
-type Action = {
-  // color: string;
+
+
+
+export type Action = {
   color: string | ((propertyType: string) => string);
   label: string | ((propertyType: "rental" | "facility") => string);
   route?:
     | string
-    | ((id: string, propertyType: "rental" | "facility") => string);
+    | ((id: string, propertyType: "rental" | "facility", page?: string) => string);
   modal?: string;
+};
+
+// External function to determine route prefix based on page
+const getRoutePrefix = (page?: string): string => {
+  switch (page) {
+    case "manager":
+      return "/manager/management";
+    default:
+      return "/management";
+  }
 };
 
 export const actions: Action[] = [
@@ -76,24 +88,22 @@ export const actions: Action[] = [
     color: "#FF9800",
     label: (propertyType) =>
       propertyType === "rental" ? "Start Rent" : "Move In",
-    route: (id, propertyType) =>
-      `/management/rent-unit/${id}/start-rent?type=${propertyType}&id=${id}`,
+    route: (id, propertyType, page) =>
+      `${getRoutePrefix(page)}/rent-unit/${id}/start-rent?type=${propertyType}&id=${id}`,
   },
-
   {
     color: "#4CAF50",
     label: (propertyType) =>
       propertyType === "rental" ? "Renew Rent" : "Renew Fee",
-    route: (id, propertyType) =>
-      `/management/rent-unit/${id}/renew-rent?type=${propertyType}&id=${id}`,
+    route: (id, propertyType, page) =>
+      `${getRoutePrefix(page)}/rent-unit/${id}/renew-rent?type=${propertyType}&id=${id}`,
   },
   {
-    // color: "#60A5FA",
     color: (propertyType) =>
       propertyType === "rental" ? "#4CAF50" : "#0033C4",
     label: "Edit",
-    route: (id, propertyType) =>
-      `/management/rent-unit/${id}/edit-rent?type=${propertyType}&id=${id}`,
+    route: (id, propertyType, page) =>
+      `${getRoutePrefix(page)}/rent-unit/${id}/edit-rent?type=${propertyType}&id=${id}`,
   },
   {
     color: "#E9212E",
@@ -112,6 +122,8 @@ export const actions: Action[] = [
   },
 ];
 
+
+
 export interface CheckBoxOptions {
   mobile_notification: boolean;
   email_alert: boolean;
@@ -129,7 +141,7 @@ export const defaultChecks: CheckBoxOptions = {
 };
 
 export const getEstateData = (estate_data: any) => {
-  console.log("You see it here", estate_data)
+  console.log("You see it here", estate_data);
   if (!estate_data) {
     return [
       { label: "Property Title", value: "-- --" },
