@@ -24,7 +24,6 @@ export const transformSinglePropertyData = (
     (staff) => staff.staff_role === "account officer"
   );
 
-
   return {
     id: data.id,
     video_link: data.video_link,

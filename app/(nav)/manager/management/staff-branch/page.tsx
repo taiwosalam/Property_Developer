@@ -403,6 +403,7 @@ const BranchStaffPage = () => {
   const { branch } = usePersonalInfoStore();
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
+  const companyVerified = usePersonalInfoStore((state) => state.is_verified);
   const BRANCH_ID = branch?.branch_id || 0;
   const router = useRouter();
 
@@ -686,8 +687,8 @@ const BranchStaffPage = () => {
               title="The branch staff is empty"
               body={
                 <p>
-                  You can create a staff by clicking on the "Create Staff"
-                  button.
+                  You can create a staff by clicking on the &apos;Create
+                  Staff&apos; button.
                 </p>
               }
             />
@@ -700,7 +701,7 @@ const BranchStaffPage = () => {
                 href={`/manager/management/staff-branch/${BRANCH_ID}/branch-staff/${staff.id}`}
               >
                 <UserCard
-                  badge_color={staff.badge_color}
+                  badge_color={companyVerified ? "gray" : undefined}
                   email={staff.email}
                   name={staff.name}
                   phone_number={staff.phone_number}

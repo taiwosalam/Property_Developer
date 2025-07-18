@@ -305,7 +305,7 @@ const Properties = () => {
               title="You have not created any properties yet"
               body={
                 <p>
-                  You can create a property by clicking on the "Add Property"
+                  You can create a property by clicking on the &apos;Add Property&apos;
                   button. You can create two types of properties: rental and
                   facility properties. Rental properties are mainly tailored for
                   managing properties for rent, including landlord and tenant
