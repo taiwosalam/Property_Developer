@@ -74,6 +74,7 @@ interface KanbanBoardProps {
   onLoadMore?: (columnId: ColumnId, page: number) => Promise<void>;
   loading?: boolean;
   silentLoading?: boolean;
+  //setTaskStatus?: (prevState: ColumnId | null) => void
 }
 
 export function KanbanBoard({
@@ -101,7 +102,6 @@ export function KanbanBoard({
   );
 
   const complaintId = currentTaskForStatusChange?.id;
-
   const {
     data: complaintDataResponse,
     loading,
@@ -160,16 +160,7 @@ export function KanbanBoard({
     note: string,
     tasksStatus?: "completed" | "rejected" | "processing" | "approved"
   ) => {
-    console.log("handleStatusChange called:", {
-      currentTaskForStatusChange,
-      targetStatus,
-      note,
-    });
     if (!currentTaskForStatusChange || !targetStatus) {
-      console.error("Missing task or status:", {
-        currentTaskForStatusChange,
-        targetStatus,
-      });
       toast.error("Something went wrong!!");
       return;
     }
@@ -204,12 +195,10 @@ export function KanbanBoard({
           });
           break;
         default:
-          console.error("Invalid targetStatus:", targetStatus);
           toast.error("Invalid status selected");
           return;
       }
 
-      console.log("API response:", response);
       if (response) {
         window.dispatchEvent(new Event("refetchComplaints"));
         setStatusChangeModalOpen(false);
@@ -220,8 +209,9 @@ export function KanbanBoard({
       }
     } catch (error) {
       window.dispatchEvent(new Event("refetchComplaints"));
-      console.error(`Error updating status to ${targetStatus}:`, error);
-      toast.error(`Failed to update complaint to ${targetStatus}`);
+      setStatusChangeModalOpen(false);
+
+      //toast.error(`Failed to update complaint to ${targetStatus}`);
     }
   };
 
@@ -590,7 +580,7 @@ export function KanbanBoard({
                 brief: cardData?.brief || "___ ___",
                 tier: cardData?.tier || 0,
               }}
-              setModalOpen={setStatusChangeModalOpen}
+              //setModalOpen={setStatusChangeModalOpen}
               destinationColumn={targetStatus}
             />
           </ModalContent>
@@ -604,7 +594,7 @@ export function KanbanBoard({
     const data = event.active.data.current;
     if (data?.type === "Column") {
       setActiveColumn(data.column);
-      setStatusChangeModalOpen(true);
+      //setStatusChangeModalOpen(true);
       return;
     }
 
@@ -617,8 +607,42 @@ export function KanbanBoard({
   function onDragEnd(event: DragEndEvent) {
     setActiveColumn(null);
     setActiveTask(null);
+    // SAMPLE
 
     const { active, over } = event;
+
+    if (!active || !over) return;
+
+    const activeData = active.data.current;
+    const overData = over.data.current;
+
+    if (!activeData || !overData) return;
+
+    // Task being dragged
+    const draggedTask = activeData.task;
+
+    // From which column the task came
+    const fromColumn = draggedTask.columnId;
+
+    let toColumn: ColumnId | null = null;
+
+    // CASE 1: Dropped on another task
+    if (overData.type === "Task") {
+      const targetTask = overData.task;
+      toColumn = targetTask.columnId;
+    }
+
+    // CASE 2: Dropped directly on a column
+    if (overData.type === "Column") {
+      toColumn = over.id as ColumnId; // Assuming over.id is the column id
+    }
+
+    if (toColumn !== "processing") {
+      setTimeout(() => {
+        setStatusChangeModalOpen(true);
+      }, 1000);
+    }
+
     if (!over) return;
 
     const activeId = active.id;
@@ -626,21 +650,79 @@ export function KanbanBoard({
 
     if (!hasDraggableData(active)) return;
 
-    const activeData = active.data.current;
-
     if (activeId === overId) return;
 
     const isActiveAColumn = activeData?.type === "Column";
-    if (!isActiveAColumn) return;
+    const isActiveATask = activeData?.type === "Task";
+    const isOverATask = over.data.current?.type === "Task";
+    const isOverAColumn = over.data.current?.type === "Column";
 
-    setColumns((columns) => {
-      const activeColumnIndex = columns.findIndex((col) => col.id === activeId);
+    if (isActiveAColumn) {
+      setColumns((columns) => {
+        const activeColumnIndex = columns.findIndex(
+          (col) => col.id === activeId
+        );
+        const overColumnIndex = columns.findIndex((col) => col.id === overId);
+        return arrayMove(columns, activeColumnIndex, overColumnIndex);
+      });
+    }
 
-      const overColumnIndex = columns.findIndex((col) => col.id === overId);
+    if (isActiveATask) {
+      setTasks((tasks) => {
+        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+        const activeTask = tasks[activeIndex];
 
-      return arrayMove(columns, activeColumnIndex, overColumnIndex);
-    });
-    setStatusChangeModalOpen(true);
+        if (isOverATask) {
+          const overIndex = tasks.findIndex((t) => t.id === overId);
+          const overTask = tasks[overIndex];
+
+          if (
+            activeTask &&
+            overTask &&
+            activeTask.columnId !== overTask.columnId
+          ) {
+            if (
+              (activeTask.columnId === "completed" ||
+                activeTask.columnId === "rejected") &&
+              overTask.columnId === "processing"
+            ) {
+              toast.error(
+                "Cannot move completed or rejected tasks to Processing"
+              );
+              return tasks;
+            }
+            setCurrentTaskForStatusChange(activeTask);
+            setTargetStatus(overTask.columnId as ColumnId);
+            activeTask.columnId = overTask.columnId;
+            return arrayMove(tasks, activeIndex, overIndex - 1);
+          }
+          return arrayMove(tasks, activeIndex, overIndex);
+        }
+
+        if (isOverAColumn) {
+          if (
+            activeTask &&
+            (activeTask.columnId === "completed" ||
+              activeTask.columnId === "rejected") &&
+            overId === "processing"
+          ) {
+            toast.error(
+              "Cannot move completed or rejected tasks to Processing"
+            );
+            return tasks;
+          }
+          setCurrentTaskForStatusChange(activeTask);
+          setTargetStatus(overId as ColumnId);
+
+          if (activeTask) {
+            activeTask.columnId = overId as ColumnId;
+            return arrayMove(tasks, activeIndex, activeIndex);
+          }
+        }
+        return tasks;
+      });
+    }
+    pickedUpTaskColumn.current = null;
   }
 
   function onDragOver(event: DragOverEvent) {
@@ -688,13 +770,12 @@ export function KanbanBoard({
             return tasks; // No state change
           }
 
-          setCurrentTaskForStatusChange(activeTask);
-          setTargetStatus(overTask.columnId as ColumnId);
+          //setCurrentTaskForStatusChange(activeTask);
+          //setTargetStatus(overTask.columnId as ColumnId);
           //setStatusChangeModalOpen(true);
           activeTask.columnId = overTask.columnId;
           return arrayMove(tasks, activeIndex, overIndex - 1);
         }
-
         return arrayMove(tasks, activeIndex, overIndex);
       });
     }
@@ -719,7 +800,7 @@ export function KanbanBoard({
 
           setCurrentTaskForStatusChange(activeTask);
           setTargetStatus(overId as ColumnId);
-          setStatusChangeModalOpen(true);
+          //setStatusChangeModalOpen(true);
           activeTask.columnId = overId as ColumnId;
           return arrayMove(tasks, activeIndex, activeIndex);
         }
