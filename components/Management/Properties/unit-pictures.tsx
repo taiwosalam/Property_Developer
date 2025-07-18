@@ -75,10 +75,6 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
     form?.requestSubmit();
   };
 
-  console.log("isEditing", isEditing);
-  console.log("newForm", newForm);
-  console.log("addedUnits", addedUnits);
-  console.log("unitData.id", unitData?.id)
 
   // Check if the current form's ID matches any unit in addedUnits
   const isExistingUnit = unitData?.id && addedUnits.some((unit) => unit.id === unitData.id);

@@ -37,7 +37,16 @@ interface PersonalInfoStoreState {
   isSubscriptionExpired: boolean;
   currentPlan: string;
   currentExpiryDate: string;
-
+  branch: {
+    branch_id: number | null;
+    branch_name: string | null;
+    picture: string | null;
+    branch_desc: string | null;
+    branch_address: string | null;
+    state: string | null;
+    local_government: string | null;
+    city: string | null;
+  };
   setPersonalInfo: <
     K extends keyof Omit<PersonalInfoStoreState, "setPersonalInfo">
   >(
@@ -83,6 +92,17 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
   is_owner: false,
   industry: null,
   cac_registration_number: null,
+
+  branch: {
+    branch_id: null,
+    branch_name: null,
+    picture: null,
+    branch_desc: null,
+    branch_address: null,
+    state: null,
+    local_government: null,
+    city: null,
+  },
 
   isSubscriptionExpired: false,
   currentPlan: "",

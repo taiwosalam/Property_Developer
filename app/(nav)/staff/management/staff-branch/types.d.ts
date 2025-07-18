@@ -6,6 +6,7 @@ interface Staff {
   staff_role?: string;
   phone_number?: string;
   gender?: string;
+  tier?: number;
   picture: string | null;
 }
 
