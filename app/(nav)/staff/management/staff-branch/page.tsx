@@ -36,7 +36,6 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import { getLocalStorage } from "@/utils/local-storage";
 
 const BranchStaffPage = () => {
-  const loggedInUserDetails = getLocalStorage("additional_details");
   const branch = usePersonalInfoStore((state) => state.branch);
   const router = useRouter();
   const companyVerified = usePersonalInfoStore((state) => state.is_verified);

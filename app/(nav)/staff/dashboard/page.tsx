@@ -16,9 +16,11 @@ import Link from "next/link";
 import { useWalletStore } from "@/store/wallet-store";
 import clsx from "clsx";
 import DashboarddCalendar from "@/components/dashboard/Dashcalendar";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
+  const branch = usePersonalInfoStore((state) => state.branch);
   const recentTransactions = useWalletStore(
     (state) => state.recentTransactions
   );

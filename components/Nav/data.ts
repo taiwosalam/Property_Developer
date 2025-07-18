@@ -241,8 +241,6 @@ export const account_nav_items: NavItemsProps = [
         label: "service providers",
         href: "/accountant/management/service-providers",
       },
-      { label: "team chat", href: "/accountant/management/team-chat" },
-      { label: "agent community", href: "/management/agent-community" },
     ],
   },
   {
@@ -250,9 +248,9 @@ export const account_nav_items: NavItemsProps = [
     label: "community",
     href: "/applications",
     content: [
-      { label: "team chat", href: "/team-chat" },
-      { label: "agent forum", href: "/agent-forum" },
-      { label: "agent request", href: "/agent-request" },
+      { label: "team chat", href: "/community/team-chat" },
+      { label: "agent forum", href: "/community/agent-forum" },
+      { label: "agent request", href: "/community/agent-request" },
     ],
   },
   {

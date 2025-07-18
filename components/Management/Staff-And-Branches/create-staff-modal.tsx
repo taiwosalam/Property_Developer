@@ -88,7 +88,8 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
 
   const STAFF_ROLE_OPTIONS = [
     ...(hasManager ? [] : [{ value: "manager", label: "branch manager" }]),
-    { value: "account_officer", label: "account officer" },
+    // { value: "account_officer", label: "account officer" },
+    { value: "account officer", label: "account officer" },
     { value: "staff", label: "Other Staff" },
   ];
 
