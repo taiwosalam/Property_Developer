@@ -7,7 +7,11 @@ import { getGreeting, truncateName } from "./data";
 import Picture from "../Picture/picture";
 import { LogoutIcon } from "@/public/icons/icons";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import { getProfileDropdownItems, logout } from "@/app/(onboarding)/auth/data";
+import {
+  getProfileDropdownItems,
+  getSettingsSecurityPath,
+  logout,
+} from "@/app/(onboarding)/auth/data";
 import { profile_actions } from "@/components/Nav/options";
 import { SectionSeparator } from "../Section/section-components";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
@@ -17,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import Cookies from "js-cookie";
 import { useRole } from "@/hooks/roleContext";
+import { useDropdownContext } from "../Dropdown/dropdown-context";
 
 const NavProfileDropdown = () => {
   const router = useRouter();
@@ -24,10 +29,15 @@ const NavProfileDropdown = () => {
   const { isMobile } = useWindowWidth();
   const name = usePersonalInfoStore((state) => state.name);
   const userId = usePersonalInfoStore((state) => state.user_id);
+  const { setIsOpen } = useDropdownContext();
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture
   );
   const [requestLoading, setRequestLoading] = useState(false);
+
+  const handleItemClick = () => {
+    setIsOpen(false);
+  };
 
   const actions = getProfileDropdownItems(role) || "";
 
@@ -45,12 +55,17 @@ const NavProfileDropdown = () => {
       }
     }
     setRequestLoading(false);
+    handleItemClick();
   };
 
   return (
     <>
       <div className="custom-flex-col hover:bg-gray-200 dark:hover:bg-[#3c3d37]">
-        <Link href={"/settings/security"} className="flex items-center gap-4 p-4">
+        <Link
+          href={getSettingsSecurityPath(role) || "#"}
+          className="flex items-center gap-4 p-4"
+          onClick={handleItemClick}
+        >
           <Picture
             src={profile_picture || Avatar}
             alt="profile picture"
@@ -77,12 +92,13 @@ const NavProfileDropdown = () => {
               href={link.href}
               className={class_styles}
               target={link.target || "_self"}
+              onClick={handleItemClick}
             >
               {label}
             </Link>
           ) : modal ? (
             <Modal key={index}>
-              <ModalTrigger className={class_styles}>{label}</ModalTrigger>
+              <ModalTrigger className={class_styles} onClick={handleItemClick}>{label}</ModalTrigger>
               <ModalContent>{modal}</ModalContent>
             </Modal>
           ) : null

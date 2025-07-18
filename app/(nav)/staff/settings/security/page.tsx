@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import SettingsSignature from "@/components/Settings/settings-signature";
 import SettingsBank from "@/components/Settings/settings-bank";
+import ProfileSettings from "@/components/shared/profile/profile-settings";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
@@ -84,6 +85,7 @@ const Security = () => {
 
   return (
     <>
+      <ProfileSettings />
       <SettingsPasswordSection />
     </>
   );

@@ -32,6 +32,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   currency,
   occupant,
   invoice_id,
+  page,
 }) => {
   const [isOpened, setIsOpened] = useState(false);
   const CURRENCY =
@@ -238,7 +239,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 {...action}
                 route={
                   typeof action.route === "function"
-                    ? action.route(unitId, propertyType)
+                    ? action.route(unitId, propertyType, page)
                     : action.route
                 }
                 label={

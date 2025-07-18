@@ -47,9 +47,6 @@ const states = getAllStates();
 const Landlord = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
-  // const [pageData, setPageData] = useState<LandlordsPageData>(
-  //   initialLandlordsPageData
-  // );
 
   const [pageData, setPageData] = useState<LandlordsPageData>(() => {
     const savedPage = sessionStorage.getItem("landlord_page");
@@ -364,12 +361,6 @@ const Landlord = () => {
         setGridView={() => setView("grid")}
         setListView={() => setView("list")}
         pageTitle="Landlords/Landladies (Owners)"
-        aboutPageModalData={{
-          title: fetchedLandlordHelpInfo?.slug || "",
-          description: fetchedLandlordHelpInfo?.description || "",
-          video: fetchedLandlordHelpInfo?.acf.video_link || "",
-          readingLink: fetchedLandlordHelpInfo?.link || "",
-        }}
         searchInputPlaceholder="Search for Landlords"
         handleFilterApply={handleFilterApply}
         isDateTrue

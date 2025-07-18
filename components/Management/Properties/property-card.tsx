@@ -30,6 +30,7 @@ export interface PropertyCardProps {
   isClickable?: boolean;
   viewOnly?: boolean;
   default_image?: string;
+  isManagerPage?: boolean;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -53,6 +54,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   currency,
   isClickable,
   viewOnly,
+  isManagerPage,
   default_image,
 }) => {
   const isRental = property_type === "rental";
@@ -67,6 +69,20 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       setIsModalActive(false);
     }
   });
+
+  const baseRoute = isManagerPage ? "/manager/management" : "/management";
+
+  const getRoute = (action: "edit" | "preview") => {
+    switch (action) {
+      case "edit":
+        return `${baseRoute}/properties/${id}/edit-property`;
+      case "preview":
+        return `${baseRoute}/properties/${id}`;
+      default:
+        return "#";
+    }
+  };
+
   return (
     <div
       className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
@@ -87,14 +103,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <Button
               size="base_bold"
               className="py-2 px-8"
-              href={`/management/properties/${id}/edit-property`}
+              // href={`/management/properties/${id}/edit-property`}
+              href={getRoute("edit")}
             >
               Manage
             </Button>
             <Button
               size="base_bold"
               className="py-2 px-8"
-              href={`/management/properties/${id}`}
+              // href={`/management/properties/${id}`}
+              href={getRoute("preview")}
             >
               Preview
             </Button>
@@ -109,7 +127,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           className="h-[200px] rounded-t-2xl"
         >
           <div className="absolute z-50 right-2 top-3">
-            <PropertyTag propertyType={property_type} sm/>
+            <PropertyTag propertyType={property_type} sm />
           </div>
           <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
             {total_unit_pictures && (
@@ -153,7 +171,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           </span>
         </p>
         <div className="flex flex-wrap justify-end items-end mt-1">
-         
           <div className="text-right">
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${symbol}${formatNumber(
               total_returns

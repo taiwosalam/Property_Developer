@@ -128,14 +128,12 @@ export const manager_nav_items: NavItemsProps = [
       { label: "branch Staff", href: "/manager/management/staff-branch" },
       { label: "inventory", href: "/manager/management/inventory" },
       { label: "properties", href: "/manager/management/properties" },
-      { label: "rent & unit", href: "/manager/management/rent-unit" },
+      { label: "rent & mgmt", href: "/manager/management/rent-unit" },
       {
         label: "service providers",
         href: "/manager/management/service-providers",
       },
       { label: "vehicles record", href: "/manager/management/vehicles-record" },
-      { label: "team chat", href: "/manager/management/team-chat" },
-      { label: "agent community", href: "/management/agent-community" },
     ],
   },
   {
@@ -161,6 +159,16 @@ export const manager_nav_items: NavItemsProps = [
       { label: "units", href: "/manager/listing/units" },
       { label: "statistics", href: "/manager/listing/statistics" },
       { label: "Property Draft/Request", href: "/manager/listing/property" },
+    ],
+  },
+  {
+    type: "task",
+    label: "community",
+    href: "/applications",
+    content: [
+      { label: "team chat", href: "/community/team-chat" },
+      { label: "agent forum", href: "/community/agent-forum" },
+      { label: "agent request", href: "/community/agent-request" },
     ],
   },
   {
@@ -231,8 +239,16 @@ export const account_nav_items: NavItemsProps = [
         label: "service providers",
         href: "/accountant/management/service-providers",
       },
-      { label: "team chat", href: "/accountant/management/team-chat" },
-      { label: "agent community", href: "/management/agent-community" },
+    ],
+  },
+  {
+    type: "task",
+    label: "community",
+    href: "/applications",
+    content: [
+      { label: "team chat", href: "/community/team-chat" },
+      { label: "agent forum", href: "/community/agent-forum" },
+      { label: "agent request", href: "/community/agent-request" },
     ],
   },
   {
@@ -289,8 +305,16 @@ export const staff_nav_items: NavItemsProps = [
         label: "service providers",
         href: "/staff/management/service-providers",
       },
-      { label: "team chat", href: "/staff/management/team-chat" },
-      { label: "agent community", href: "/management/agent-community" },
+    ],
+  },
+  {
+    type: "task",
+    label: "community",
+    href: "/community",
+    content: [
+      { label: "team chat", href: "/community/team-chat" },
+      { label: "agent forum", href: "/community/agent-forum" },
+      { label: "agent request", href: "/community/agent-request" },
     ],
   },
   {
@@ -519,6 +543,16 @@ export interface ProfileResponse {
     profile: {
       picture: string | null;
       title: string;
+    };
+    branch: {
+      branch_id: number | null;
+      branch_name: string | null;
+      picture: string | null;
+      branch_desc: string | null;
+      branch_address: string | null;
+      state: string | null;
+      local_government: string | null;
+      city: string | null;
     };
     requestDemos: any[];
     isSubscriptionExpired: boolean;
