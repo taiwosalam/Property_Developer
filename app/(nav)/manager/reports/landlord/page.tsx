@@ -7,8 +7,10 @@ import {
   landlordsReportTableFields,
   landlordsReportTableData,
 } from "./data";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const LandlordsReport = () => {
+  const { company_id } = usePersonalInfoStore();
   return (
     <div className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">

@@ -128,7 +128,7 @@ export const manager_nav_items: NavItemsProps = [
       { label: "branch Staff", href: "/manager/management/staff-branch" },
       { label: "inventory", href: "/manager/management/inventory" },
       { label: "properties", href: "/manager/management/properties" },
-      { label: "rent & unit", href: "/manager/management/rent-unit" },
+      { label: "rent & mgmt", href: "/manager/management/rent-unit" },
       {
         label: "service providers",
         href: "/manager/management/service-providers",
@@ -168,9 +168,9 @@ export const manager_nav_items: NavItemsProps = [
     label: "community",
     href: "/applications",
     content: [
-      { label: "team chat", href: "/team-chat" },
-      { label: "agent forum", href: "/agent-forum" },
-      { label: "agent request", href: "/agent-request" },
+      { label: "team chat", href: "/community/team-chat" },
+      { label: "agent forum", href: "/community/agent-forum" },
+      { label: "agent request", href: "/community/agent-request" },
     ],
   },
   {

@@ -9,6 +9,7 @@ interface TenantCardProps {
   user_tag: "mobile" | "web";
   picture_url: string;
   badge_color?: BadgeIconColors;
+  note?: boolean;
 }
 
 export const defaultTenantPageData: TenantPageData = {
