@@ -348,6 +348,7 @@ export interface RentalPropertyCardProps {
   invoice_id?: number | null;
   partial_pending?: boolean;
   occupant?: any;
+  page?: "manager" | "account" | "staff";
 }
 
 const allStates = getAllStates() || [];

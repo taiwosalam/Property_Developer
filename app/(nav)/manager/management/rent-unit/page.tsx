@@ -886,7 +886,7 @@ const RentAndUnit = () => {
                     <CardsLoading />
                   ) : (
                     pageData?.unit?.map((unit, index) => (
-                      <RentalPropertyCard key={index} {...unit} />
+                      <RentalPropertyCard page="manager" key={index} {...unit} />
                     ))
                   )}
                 </AutoResizingGrid>
@@ -896,7 +896,7 @@ const RentAndUnit = () => {
                     <CardsLoading />
                   ) : (
                     pageData?.unit.map((unit, index) => (
-                      <RentalPropertyListCard key={index} {...unit} />
+                      <RentalPropertyListCard page="manager" key={index} {...unit} />
                     ))
                   )}
                 </div>

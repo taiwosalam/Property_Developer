@@ -151,6 +151,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   invoice_id,
   partial_pending,
   occupant,
+  page
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isImgHovered, setImgIsHovered] = useState(false);
@@ -328,7 +329,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               {...action}
               route={
                 typeof action.route === "function"
-                  ? action.route(unitId, propertyType)
+                  ? action.route(unitId, propertyType, page)
                   : action.route
               }
               label={
