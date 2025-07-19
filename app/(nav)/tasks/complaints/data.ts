@@ -75,7 +75,7 @@ export const transformComplaintsData = (
       id: complaint.id,
       columnId: complaint?.status?.toLowerCase(),
       content: {
-        messageCount: 10,
+        messageCount: complaint?.comment_count || 0,
         linkCount: 8,
         userAvatars:
           complaint?.comment_users.length > 0
@@ -91,7 +91,9 @@ export const transformComplaintsData = (
       title: complaint?.title,
       message: complaint?.description,
       avatarSrc: complaint?.picture,
+      comment_count: complaint?.comment_count || 0,
       tier: complaint?.tier_id,
+
     })),
     pagination: {
       total: data?.pagination.total,
