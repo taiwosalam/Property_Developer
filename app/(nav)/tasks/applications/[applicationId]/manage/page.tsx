@@ -152,7 +152,7 @@ const ManageApplication = () => {
     setGlobalStore("messageUserData", newMessageUserData);
 
     // Redirect to the messaging page
-    router.push(`/messages/${profile_details?.user_id}`);
+    router.push(`/messages/${id}`);
   };
 
   const goToMessage = () => {

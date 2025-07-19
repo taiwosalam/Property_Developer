@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { ModalTrigger } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
 import TextArea from "@/components/Form/TextArea/textarea";
@@ -20,6 +20,8 @@ import {
   ComplaintDetailResponse,
   ComplaintDetailsPageData,
 } from "@/app/(nav)/tasks/complaints/types";
+import { useSortable } from "@dnd-kit/sortable";
+import { TaskDragData } from "./TaskCard";
 
 interface ComplaintData {
   id: number;
@@ -119,7 +121,8 @@ const TaskModal = ({
   };
 
   return (
-    <div className="bg-white dark:bg-darkText-primary dark:shadow-2xl rounded-lg shadow-lg w-full xl:max-w-5xl px-9 max-w-[90%] max-h-[500px] overflow-y-scroll no-scrollbar">
+    <div
+      className="bg-white dark:bg-darkText-primary dark:shadow-2xl rounded-lg shadow-lg w-full xl:max-w-5xl px-9 max-w-[90%] max-h-[500px] overflow-y-scroll no-scrollbar">
       <div className="flex flex-col md:flex-row md:gap-6">
         {/* Left side - Complaint details */}
         <div className="md:w-1/2 my-10">
@@ -146,17 +149,13 @@ const TaskModal = ({
               <p className="text-text-tertiary dark:text-darkText-1 text-sm w-[140px] line-clamp-2">
                 Complaint Title:
               </p>
-              <span className="dark:text-darkText-2">
-                {complaintTitle}
-              </span>
+              <span className="dark:text-darkText-2">{complaintTitle}</span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary dark:text-darkText-1 w-[140px] line-clamp-2">
                 Property Name:
               </p>
-              <span className="dark:text-darkText-2">
-                {propertyName}
-              </span>
+              <span className="dark:text-darkText-2">{propertyName}</span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary dark:text-darkText-1 w-[140px] line-clamp-2">
@@ -178,9 +177,7 @@ const TaskModal = ({
               <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">
                 Account Officer:
               </p>
-              <span className="dark:text-darkText-2">
-                {accountOfficer}
-              </span>
+              <span className="dark:text-darkText-2">{accountOfficer}</span>
             </div>
             <div className="flex justify-between items-center">
               <p className="text-text-tertiary  dark:text-darkText-1 w-[140px]">

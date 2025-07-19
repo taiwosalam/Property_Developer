@@ -48,7 +48,7 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
   }, [inspectionData]);
 
   const goToMessage = () => {
-    if (!data?.user_id) {
+    if (!data?.booked_by_id) {
       toast.warning("User ID not Found!");
       return;
     }
@@ -56,7 +56,7 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
     // Set the user data in the global store
     const newMessageUserData = {
       branch_id: 0,
-      id: data?.user_id,
+      id: data?.booked_by_id,
       imageUrl:  data?.profile_picture,
       name: data?.user_name || "Unknown User",
       position: "agent",
@@ -64,7 +64,7 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
     setGlobalStore("messageUserData", newMessageUserData);
 
     // Redirect to the messaging page
-    router.push(`/messages/${data?.user_id}`);
+    router.push(`/messages/${data?.booked_by_id}`);
   };
 
   return (
