@@ -27,6 +27,7 @@ export interface PropertyListingCardProps {
   propertyType: PropertyType;
   status: PropertyListingStatus;
   data: Partial<Record<PropertyListingCardDataProps>>;
+  page?: "manager" | "account";
 }
 
 export interface PropertyListingLabelIDProps {

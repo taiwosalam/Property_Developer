@@ -151,48 +151,47 @@ export interface VehicleRecordApiResponse {
 export const transformVehicleRecordApiResponse = (
   response: VehicleRecordApiResponse
 ): VehicleRecordPageData => {
-  console.log("response", response);
-  const vehicle_records = response.data.vehicle_records;
+  const vehicle_records = response?.data?.vehicle_records;
   return {
-    check_ins: response.data.stats.check_ins.total,
-    check_ins_pending: response.data.stats.pending.total,
-    check_ins_this_month: response.data.stats.check_ins.this_month,
-    check_outs: response.data.stats.check_outs.total,
-    check_outs_pending: response.data.stats.pending.total,
-    check_outs_this_month: response.data.stats.check_outs.this_month,
+    check_ins: response?.data?.stats?.check_ins?.total || 0,
+    check_ins_pending: response?.data?.stats?.pending?.total || 0,
+    check_ins_this_month: response?.data?.stats?.check_ins?.this_month || 0,
+    check_outs: response?.data?.stats?.check_outs?.total || 0,
+    check_outs_pending: response?.data?.stats?.pending?.total || 0,
+    check_outs_this_month: response?.data?.stats?.check_outs?.this_month || 0,
     vehicle_records: {
       last_page: 0,
-      data: vehicle_records.map((record) => ({ 
-          id: record.vehicle_record.id,
-          vehicle_brand: record.vehicle_record.vehicle_brand,
-          user_id: record.vehicle_record.user_id,
-          property_id: record.vehicle_record.property_id,
-          plate_number: record.vehicle_record.plate_number,
-          created_at: record.vehicle_record.created_at,
-          updated_at: record.vehicle_record.updated_at,
-          pictureSrc: record.vehicle_record.avatar || "",
-          city: record.vehicle_record.city,
-          address: record.vehicle_record.address,
-          phone: record.vehicle_record.phone,
-          lga: record.vehicle_record.lga,
-          state: record.vehicle_record.state,
-          name: record.vehicle_record.name,
-          model: record.vehicle_record.model,
+      data: vehicle_records?.map((record) => ({ 
+          id: record?.vehicle_record?.id,
+          vehicle_brand: record?.vehicle_record?.vehicle_brand,
+          user_id: record?.vehicle_record?.user_id,
+          property_id: record?.vehicle_record?.property_id,
+          plate_number: record?.vehicle_record?.plate_number,
+          created_at: record?.vehicle_record?.created_at,
+          updated_at: record?.vehicle_record?.updated_at,
+          pictureSrc: record?.vehicle_record?.avatar || "",
+          city: record?.vehicle_record?.city,
+          address: record?.vehicle_record?.address,
+          phone: record?.vehicle_record?.phone,
+          lga: record?.vehicle_record?.lga,
+          state: record?.vehicle_record?.state,
+          name: record?.vehicle_record?.name,
+          model: record?.vehicle_record?.model,
           // status: !record.vehicle_record.latest_check_in
           //   ? "no_record"
           //   : Object.keys(record.vehicle_record.latest_check_in).length === 0
           //     ? "completed"
           //     : "pending",
-          status: record.vehicle_record?.check_ins[0]?.status === undefined ? "no_record" : record.vehicle_record?.check_ins[0]?.status,
-          category: record.vehicle_record.visitor_category,
-          registrationDate: dayjs(record.vehicle_record.created_at).format("MMM DD YYYY"),
-          visitor_category: record.vehicle_record.visitor_category,
-          vehicle_state: record.vehicle_record.vehicle_state,
-          vehicle_type: record.vehicle_record.vehicle_type,
-          manufacture_year: record.vehicle_record.manufacture_year,
-          last_update: dayjs(record.vehicle_record.updated_at).format("MMM DD YYYY"),
+          status: record?.vehicle_record?.check_ins[0]?.status === undefined ? "no_record" : record?.vehicle_record?.check_ins[0]?.status,
+          category: record?.vehicle_record?.visitor_category,
+          registrationDate: dayjs(record?.vehicle_record?.created_at).format("MMM DD YYYY"),
+          visitor_category: record?.vehicle_record?.visitor_category,
+          vehicle_state: record?.vehicle_record?.vehicle_state,
+          vehicle_type: record?.vehicle_record?.vehicle_type,
+          manufacture_year: record?.vehicle_record?.manufacture_year,
+          last_update: dayjs(record?.vehicle_record?.updated_at).format("MMM DD YYYY"),
           latest_check_in: {
-            ...record.vehicle_record.check_ins[0],
+            ...record?.vehicle_record?.check_ins[0],
           },
       })),
       current_page: 0,

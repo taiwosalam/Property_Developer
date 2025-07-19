@@ -36,6 +36,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   data,
   status,
   propertyType,
+  page,
 }) => {
   const button_props: ButtonProps = {
     size: "sm_medium",
@@ -73,6 +74,29 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
     }
   };
 
+  // switch case for route
+  const getContinueRoute = () => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/properties/${data.id}/edit-property`;
+      case "account":
+        return `/account/management/properties/${data.id}/edit-property`;
+      default:
+        return `/management/properties/${data.id}/edit-property`;
+    }
+  };
+
+  // switch case for preview route
+  const getPreviewRoute = () => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/properties/${data.id}`;
+      case "account":
+        return `/account/management/properties/${data.id}`;
+      default:
+        return `/management/properties/${data.id}`;
+    }
+  };
 
   return (
     <div
@@ -187,7 +211,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   </Button>
                   <Button
                     {...button_props}
-                    href={`/management/properties/${data.id}/edit-property`}
+                    href={getContinueRoute()}
                   >
                     continue
                   </Button>
@@ -210,15 +234,13 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   </Button>
                   <Modal state={{ isOpen, setIsOpen }}>
                     <ModalContent>
-                      <ListingFlow inviteId={data?.inviteId[0]}/>
+                      <ListingFlow inviteId={data?.inviteId?.[0]}/>
                     </ModalContent>
                   </Modal>
                   <Button
                     variant="border"
                     {...button_props}
-                    onClick={() =>
-                      router.push(`/management/properties/${data.id}`)
-                    }
+                    onClick={() => router.push(getPreviewRoute())}
                   >
                     preview
                   </Button>

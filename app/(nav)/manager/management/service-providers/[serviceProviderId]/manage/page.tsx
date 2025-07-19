@@ -214,7 +214,7 @@ const ManageServiceProvider = () => {
                         await deleteServiceProvider(paramId as string)
                       }
                       afterAction={() =>
-                        router.push("/management/service-providers")
+                        router.push("/manager/management/service-providers")
                       }
                     />
                   </ModalContent>
@@ -234,7 +234,7 @@ const ManageServiceProvider = () => {
                   <Button
                     size="base_medium"
                     className="py-2 px-8"
-                    href={`/management/service-providers/${paramId}/manage/edit`}
+                    href={`/manager/management/service-providers/${paramId}/manage/edit`}
                   >
                     Manage
                   </Button>
