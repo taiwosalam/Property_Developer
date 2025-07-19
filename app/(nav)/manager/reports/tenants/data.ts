@@ -10,6 +10,14 @@ export const reportsTenantsFilterOptionsWithDropdown = [
     ],
   },
   {
+    label: "Branch",
+    value: [
+      { label: "Branch 1", value: "Branch1" },
+      { label: "Branch 2", value: "Branch2" },
+      { label: "Branch 3", value: "Branch3" },
+    ],
+  },
+  {
     label: "Property",
     value: [
       { label: "Property 1", value: "Property1" },
@@ -33,3 +41,72 @@ export const tenantsReportTableFields: Field[] = [
   { id: "5", label: "Telephone", accessor: "telephone" },
   { id: "6", label: "Status", accessor: "status" },
 ];
+
+interface Tenant {
+  tenant_id: number;
+  name: string;
+  gender: string;
+  address: string;
+  lga: string;
+  city: string;
+  state: string;
+  telephone: string;
+  status: string;
+}
+
+interface Data {
+  total_tenants: number;
+  monthly_tenants: number;
+  tenants: Tenant[];
+}
+
+export interface TenantListResponse {
+  status: string;
+  message: string;
+  data: Data;
+}
+
+export interface ITenantListReport {
+  id: number | string;
+  name: string;
+  gender: string;
+  address: string;
+  telephone: string;
+  status: string;
+}
+export interface TenantReport {
+  total_tenants: number;
+  monthly_tenants: number;
+  tenants: ITenantListReport[];
+}
+
+export const transformTenantData = (
+  data: TenantListResponse
+): TenantReport => ({
+  total_tenants: data.data.total_tenants,
+  monthly_tenants: data.data.monthly_tenants,
+  tenants: data.data.tenants.map((tenant) => ({
+    id: tenant.tenant_id || "__ __",
+    name: tenant.name || "__ __",
+    gender: tenant.gender || "__ __",
+    address:
+      [tenant.address, tenant.lga, tenant.city, tenant.state]
+        .filter(Boolean)
+        .join(", ") || "__ __",
+    telephone: tenant.telephone || "__ __",
+    status: tenant.status || "__ __",
+  })),
+});
+
+export interface ReportsRequestParams {
+  page?: number;
+  search?: string;
+  sort_order?: "asc" | "desc";
+  account_officer_id?: string;
+  start_date?: string;
+  end_date?: string;
+  property_id?: string;
+  branch_id?: string;
+  status?: string;
+  is_active?: string;
+}

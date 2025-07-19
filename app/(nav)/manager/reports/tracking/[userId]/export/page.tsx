@@ -6,31 +6,79 @@ import CustomTable from "@/components/Table/table";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { empty } from "@/app/config";
 import { trackingTableFields } from "../../data";
+import {
+  transformUserActivityData,
+  UserActivityResponse,
+  UserActivityTable,
+} from "../types";
+import { useParams } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import { useEffect, useRef, useState } from "react";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
+
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import ServerError from "@/components/Error/ServerError";
+import { useGlobalStore } from "@/store/general-store";
+
+dayjs.extend(advancedFormat);
 
 const UserActivitiesExportPage = () => {
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: index + 1,
-      username: `User ${index + 1}`,
-      page_visited: `Landlord Page ${index + 1}`,
-      action_taken: `Login successful ${index + 1}`,
-      ip_address: `IP ${index + 1}`,
-      location: `Location ${index + 1}`,
-      date: "12/12/12",
-      time: "3:20pm",
-    }));
-  };
-  const tableData = generateTableData(10);
+  const exportRef = useRef<HTMLDivElement>(null);
+  const [fullContent, setFullContent] = useState(false);
+
+  const [userActivity, setUserActivity] = useState<UserActivityTable>({
+    name: "",
+    activities: [],
+  });
+  const { userId } = useParams();
+  const {
+    data: activityData,
+    loading,
+    isNetworkError,
+    error,
+  } = useFetch<UserActivityResponse>(`report/activities/${userId}`);
+
+  const filteredActivities = useGlobalStore((s) => s.user_activities)
+
+  useEffect(() => {
+    if (activityData) {
+      setUserActivity(transformUserActivityData(activityData));
+    }
+  }, [activityData]);
+
+  const { name, activities } = userActivity;
+
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Tracking Report" view="table" />
+    );
+  if (isNetworkError) return <NetworkError />;
+  if (error) {
+    return <ServerError error={error} />;
+  }
   return (
     <div className="space-y-9 pb-[100px]">
-      <BackButton as="p">Barrister Ademola Adedeji</BackButton>
-      <ExportPageHeader />
-      <h1 className="text-center text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium">
-        Summary
-      </h1>
-      <CustomTable fields={trackingTableFields} data={tableData} />
-      <Signature />
-      <ExportPageFooter />
+      <BackButton as="p">{name}</BackButton>
+      <div ref={exportRef}>
+        <ExportPageHeader />
+        <div className="space-y-3">
+          <h1 className="text-center text-black text-lg md:text-xl lg:text-2xl font-medium">
+            Summary{" "}
+            <span className="px-2">{`(${dayjs().format(
+              "Do MMMM YYYY"
+            )})`}</span>
+          </h1>
+        </div>
+        <CustomTable
+          fields={trackingTableFields}
+          data={filteredActivities || []}
+          className={`${fullContent && "max-h-none"}`}
+        />
+        <Signature />
+      </div>
+      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} fullContent={fullContent}/>
     </div>
   );
 };

@@ -45,9 +45,9 @@ const states = getAllStates();
 const Tenants = () => {
   const storedView = useView();
   const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
   const contentTopRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<string | null>(storedView);
-  const BRANCH_ID = branch?.branch_id || 0;
 
   const [pageData, setPageData] = useState<TenantPageData>(() => {
     const savedPage = sessionStorage.getItem("tenant_page");
@@ -110,7 +110,6 @@ const Tenants = () => {
     const { menuOptions, startDate, endDate } = filters;
     const statesArray = menuOptions["State"] || [];
     const agent = menuOptions["Tenant Type"]?.[0];
-    const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: TenantRequestParams = {
       page: 1,
@@ -118,9 +117,6 @@ const Tenants = () => {
     };
     if (statesArray.length > 0) {
       queryParams.states = statesArray.join(",");
-    }
-    if (branchIdsArray.length > 0) {
-      queryParams.branch_ids = branchIdsArray.join(",");
     }
     if (agent && agent !== "all") {
       queryParams.agent = agent;
@@ -178,7 +174,7 @@ const Tenants = () => {
   };
 
   // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl = BRANCH_ID && BRANCH_ID !== 0 ? `tenants?branch_ids=${BRANCH_ID}` : null;
+  const fetchUrl = BRANCH_ID && BRANCH_ID !== 0 ? `tenants?branch_ids[]=${BRANCH_ID}` : null;
 
   const {
     data: apiData,
