@@ -37,13 +37,27 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useFetch from "@/hooks/useFetch";
 import { useGlobalStore } from "@/store/general-store";
 
+// Function to determine route prefix based on page
+const getRoutePrefix = (page?: "manager" | "account"): string => {
+  switch (page) {
+    case "manager":
+      return "/manager/management";
+    case "account":
+      return "/account/management";
+    default:
+      return "/management";
+  }
+};
+
 const VacantUnitCard = ({
   status,
   unit_data,
   availableSponsors,
+  page,
 }: {
   unit_data: any;
   availableSponsors?: number;
+  page?: "manager" | "account";
   status:
     | "published"
     | "unpublished"
@@ -245,9 +259,8 @@ const VacantUnitCard = ({
               />
             </ModalContent>
           </Modal>
-
           <Link
-            href={`/management/rent-unit/${unit_data.unitId}`}
+            href={`${getRoutePrefix(page)}/rent-unit/${unit_data.unitId}`}
             className="flex items-center gap-2"
           >
             <PreviewEyeIcon />
@@ -265,14 +278,18 @@ const VacantUnitCard = ({
             </Link>
           )}
           <Link
-            href={`/management/properties/${unit_data.property_id}/edit-property`}
+            href={`${getRoutePrefix(page)}/properties/${
+              unit_data.property_id
+            }/edit-property`}
             className="flex gap-2"
           >
             <EditPencilIcon />
             <p>Edit</p>
           </Link>
           <Link
-            href={`/management/rent-unit/${unit_data.unitId}/start-rent?type=${unit_data.propertyType}&id=${unit_data.unitId}`}
+            href={`${getRoutePrefix(page)}/rent-unit/${
+              unit_data.unitId
+            }/start-rent?type=${unit_data.propertyType}&id=${unit_data.unitId}`}
             className="flex gap-2 font-normal"
           >
             <StartRentIcon size={24} />

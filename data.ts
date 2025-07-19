@@ -49972,7 +49972,7 @@ export const managerRoutes = [
   "/manager/management/landlord",
   "/manager/management/tenants",
   "/manager/management/occupants",
-  "/manager/management/staff-branch",
+  "/manager/management/branch-staff",
   "/manager/management/inventory",
   "/manager/management/inventory/create-inventory",
   "/manager/management/properties",

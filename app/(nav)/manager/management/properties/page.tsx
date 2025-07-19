@@ -39,8 +39,8 @@ import ServerError from "@/components/Error/ServerError";
 const Properties = () => {
   const storedView = useView();
   const { branch } = usePersonalInfoStore();
-  const [view, setView] = useState<string | null>(storedView);
   const BRANCH_ID = branch?.branch_id || 0;
+  const [view, setView] = useState<string | null>(storedView);
 
   const { setShouldRenderTour, isTourCompleted } = useTourStore();
   const setGlobalInfoStore = useGlobalStore(

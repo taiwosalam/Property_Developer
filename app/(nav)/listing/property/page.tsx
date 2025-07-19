@@ -25,7 +25,6 @@ import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
-import { PropertyListResponse } from "../../tasks/inspections/type";
 import { IPropertyApi } from "../../settings/others/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../../reports/data/utils";
@@ -34,6 +33,7 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 import Pagination from "@/components/Pagination/pagination";
 import CardsLoading from "@/components/Loader/CardsLoading";
+import ServerError from "@/components/Error/ServerError";
 
 const Property = () => {
   const [pageData, setPageData] = useState<PropertyPageState>(initialState);
@@ -131,14 +131,13 @@ const Property = () => {
     })) || [];
 
   const {
-    data: apiData,
+    data: apiData, 
     loading,
     silentLoading,
     isNetworkError,
     error,
     refetch,
   } = useFetch<PropertyApiResponse | any>("/property/invite/lists", config);
-  // } = useFetch<PropertyApiResponse | any>(endpoint, config);
 
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
@@ -189,7 +188,7 @@ const Property = () => {
   if (isNetworkError) return <NetworkError />;
 
   if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+    return <ServerError error={error} />
 
   return (
     <div className="custom-flex-col gap-9">
