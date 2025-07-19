@@ -176,7 +176,7 @@ export const manager_nav_items: NavItemsProps = [
     type: "menu_board",
     label: "accounting",
     content: [
-      { label: "invoice", href: "/manager/accounting/invoices" },
+      { label: "invoice", href: "/manager/accounting/invoice" },
       // { label: "receipts", href: "/manager/accounting/receipts" },
       { label: "expenses", href: "/manager/accounting/expenses" },
       { label: "disbursement", href: "/manager/accounting/disbursement" },

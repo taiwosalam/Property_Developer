@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-const CreateInvoiceModal = () => {
+const CreateInvoiceModal = ({ page }: { page?: "manager" | "account" }) => {
   const router = useRouter();
   const [selectedProperty, setSelectedProperty] = useState<number>(0);
   const {
@@ -28,7 +28,11 @@ const CreateInvoiceModal = () => {
 
   const handleProceed = () => {
     if (!selectedProperty) return toast.warning("Please select a property");
-    router.push(`/accounting/invoice/create-invoice?p=${selectedProperty}`);
+    if (page === "manager") {
+      router.push(`/manager/accounting/invoice/create-invoice?p=${selectedProperty}`);
+    } else {
+      router.push(`/accounting/invoice/create-invoice?p=${selectedProperty}`);
+    }
   };
 
   console.log("propertyData", propertyData);
