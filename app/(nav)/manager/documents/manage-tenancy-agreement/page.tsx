@@ -91,14 +91,14 @@ const ManageTenancyAgreement = () => {
         if (startRentUnitId) {
           sessionStorage.removeItem("return_to_start_rent_unit_id");
           router.push(
-            `/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`
+            `/manager/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`
           );
           return;
         }
         if (type === "preview")
-          router.push(`/documents/preview/?d=${documentId}`);
+          router.push(`/manager/documents/preview/?d=${documentId}`);
         else {
-          router.push(`/documents`);
+          router.push(`/manager/documents`);
         }
       }
     } catch (err) {
@@ -125,7 +125,7 @@ const ManageTenancyAgreement = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-6">
-        <BackButton customBackPath="/documents">
+        <BackButton customBackPath="/manager/documents">
           Manage Tenancy Agreement
         </BackButton>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
