@@ -29,11 +29,15 @@ import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const TrackingReport = () => {
   const router = useRouter();
   const [pageData, setPageData] = useState<ActivityTable[]>([]);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -41,7 +45,6 @@ const TrackingReport = () => {
     startDate: null,
     endDate: null,
   });
-  const [branches, setBranches] = useState<BranchFilter[]>([]);
   const [branchAccountOfficers, setBranchAccountOfficers] = useState<
     BranchStaff[]
   >([]);
@@ -59,7 +62,6 @@ const TrackingReport = () => {
   } = useAddressFromCoords(lat, lng);
 
   useEffect(() => {
-    if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -75,13 +77,6 @@ const TrackingReport = () => {
       value: branchAccountOfficers.map((staff: any) => ({
         label: staff.user.name,
         value: staff.user.id.toString(),
-      })),
-    },
-    {
-      label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
       })),
     },
     {
@@ -110,13 +105,10 @@ const TrackingReport = () => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
       const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
       const property = menuOptions["Property"] || [];
-
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -127,8 +119,14 @@ const TrackingReport = () => {
     []
   );
 
+   // Conditionally set the URL only if BRANCH_ID is valid
+   const fetchUrl =
+   BRANCH_ID && BRANCH_ID !== 0
+     ? `/report/activities?branch_id=${BRANCH_ID}`
+     : null;
+
   const { data, loading, error, isNetworkError } =
-    useFetch<ActivityApiResponse>("report/activities", config);
+    useFetch<ActivityApiResponse>(fetchUrl, config);
 
   useEffect(() => {
     if (!loading && data) {

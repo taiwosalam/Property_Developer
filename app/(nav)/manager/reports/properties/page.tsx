@@ -24,10 +24,14 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
-import { debounce } from "lodash"
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { debounce } from "lodash";
 
 const PropertiesReport = () => {
   const router = useRouter();
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+
   const [pageData, setPageData] = useState<TransformedPropertyData>({
     total_properties: 0,
     monthly_properties: 0,
@@ -42,17 +46,16 @@ const PropertiesReport = () => {
     endDate: null,
   });
 
-  const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
 
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
-
   useEffect(() => {
-    if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -68,13 +71,6 @@ const PropertiesReport = () => {
       value: branchAccountOfficers.map((staff: any) => ({
         label: staff.user.name,
         value: staff.user.id.toString(),
-      })),
-    },
-    {
-      label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
       })),
     },
     {
@@ -103,46 +99,52 @@ const PropertiesReport = () => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
       const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
-      const property = menuOptions["Property"] || [];
 
+      const property = menuOptions["Property"] || [];
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
-      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
   );
 
-  const { data, loading, error, isNetworkError } = useFetch<PropertyApiResponse>(
-    "/report/properties",
-    config
-  );
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/report/properties?branch_id=${BRANCH_ID}`
+      : null;
 
+  const { data, loading, error, isNetworkError } =
+    useFetch<PropertyApiResponse>(fetchUrl, config);
 
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformPropertyData(data);
-      console.log("API data:", data);
-      console.log("Transformed data:", transformedData);
       const newProperties = transformedData.properties;
       const currentProperties = useGlobalStore.getState().properties;
       if (JSON.stringify(currentProperties) !== JSON.stringify(newProperties)) {
         setPageData(transformedData);
         setPropertiesStore("properties", newProperties);
-        console.log("Store after update:", useGlobalStore.getState().properties);
+        console.log(
+          "Store after update:",
+          useGlobalStore.getState().properties
+        );
       }
     }
-    
   }, [data, loading, setPropertiesStore]);
 
-  const { properties, monthly_properties, total_properties } = pageData
+  const { properties, monthly_properties, total_properties } = pageData;
 
-
-  if (loading) return <CustomLoader layout="page" pageTitle="Properties Report" view="table" />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Properties Report" view="table" />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -163,7 +165,8 @@ const PropertiesReport = () => {
         pageTitle="Properties Report"
         aboutPageModalData={{
           title: "Properties Report",
-          description: "This page contains a list of Properties Report on the platform.",
+          description:
+            "This page contains a list of Properties Report on the platform.",
         }}
         searchInputPlaceholder="Search for Properties Report"
         handleFilterApply={handleAppliedFilter}
@@ -187,10 +190,14 @@ const PropertiesReport = () => {
               body={
                 <p>
                   Currently, there is no property data available for export.
-                  Once data is added to the system, they will be displayed here and ready for download or export.
-                  <br /><br />
+                  Once data is added to the system, they will be displayed here
+                  and ready for download or export.
+                  <br />
+                  <br />
                   <p>
-                    This section will automatically update to show all available property records as they are created or imported into the platform.
+                    This section will automatically update to show all available
+                    property records as they are created or imported into the
+                    platform.
                   </p>
                 </p>
               }

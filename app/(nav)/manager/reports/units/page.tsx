@@ -28,9 +28,13 @@ import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "lodash";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const UnitsReport = () => {
   const router = useRouter();
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+
   const [pageData, setPageData] = useState<UnitsReportType>({
     total_unit: 0,
     monthly_unit: 0,
@@ -45,8 +49,9 @@ const UnitsReport = () => {
     startDate: null,
     endDate: null,
   });
-  const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
@@ -57,7 +62,7 @@ const UnitsReport = () => {
   }, [filteredUnits]);
 
   useEffect(() => {
-    if (apiData) setBranches(apiData.data);
+   
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -74,13 +79,6 @@ const UnitsReport = () => {
       value: branchAccountOfficers.map((staff: any) => ({
         label: staff.user.name,
         value: staff.user.id.toString(),
-      })),
-    },
-    {
-      label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
       })),
     },
     {
@@ -121,19 +119,28 @@ const UnitsReport = () => {
       const status = menuOptions["Status"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
       if (branch.length > 0) queryParams.branch_id = branch.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
-      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
   );
 
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/report/units?branch_id=${BRANCH_ID}`
+      : null;
+
   const { data, loading, error, isNetworkError } = useFetch<UnitListResponse>(
-    "/report/units",
+    fetchUrl,
     config
   );
 
@@ -155,7 +162,8 @@ const UnitsReport = () => {
     router.push("/reports/units/export");
   };
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Units Report" view="table" />;
+  if (loading)
+    return <CustomLoader layout="page" pageTitle="Units Report" view="table" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -199,10 +207,15 @@ const UnitsReport = () => {
               title="No Unit Data Available Yet"
               body={
                 <p>
-                  There is currently no unit data available for export. Once unit records are added to the system, they will automatically appear here and be available for download or export.
-                  <br /><br />
+                  There is currently no unit data available for export. Once
+                  unit records are added to the system, they will automatically
+                  appear here and be available for download or export.
+                  <br />
+                  <br />
                   <p>
-                    This section will be updated in real-time as new unit profiles are created, allowing you to easily manage and export your data when needed.
+                    This section will be updated in real-time as new unit
+                    profiles are created, allowing you to easily manage and
+                    export your data when needed.
                   </p>
                 </p>
               }
