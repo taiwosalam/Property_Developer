@@ -25,6 +25,7 @@ interface MaintenanceCardProps {
     service_type: string;
     service_provider: string;
     work_details: string;
+    quotation_type: "file" | "text";
     quotation: string;
     start_date: string;
     end_date: string;

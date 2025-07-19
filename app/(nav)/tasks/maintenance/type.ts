@@ -46,7 +46,7 @@ type MaintenanceRequest = {
   requester: Requester;
   cost: string;
   quotation: string;
-  quotation_type: string;
+  quotation_type: "file" | "text";
   status: "not started" | "ongoing" | "completed" | "pending" | "in_progress";
   start_date: string;
   end_date: string;

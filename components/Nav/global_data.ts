@@ -260,7 +260,7 @@ export const transformGlobalSearchPageData = (
   return {
     query: query,
     results: {
-      users: results.users.map((user) => ({
+      users: results && results.users ? results.users.map((user) => ({
         id: user?.id,
         type: "users",
         title: user.name?.toLowerCase() || "Unknown User",
@@ -269,57 +269,77 @@ export const transformGlobalSearchPageData = (
         icon: "people",
         isVerified: user.is_verified || false,
         tier_id: user.tier_id,
-      })),
-      landlords: results?.landlords?.map((landlord) => ({
-        id: landlord?.profile_id,
-        type: landlord?.profile?.type,
-        subtitle: landlord?.profile?.email,
-        extra: "",
-        icon: "people",
-        isVerified: false,
-        title: landlord?.profile?.name,
-      })),
-      tenants: results?.tenants?.map((tenant) => ({
-        id: tenant?.profile_id,
-        type: tenant?.profile?.type,
-        subtitle: tenant?.profile?.email,
-        extra: "",
-        icon: "people",
-        isVerified: false,
-        title: tenant?.profile?.name,
-      })),
-      properties: results.properties.map((property) => ({
-        id: property?.id,
-        type: "properties",
-        title: property.title || "Unknown Property",
-        subtitle: property.full_address || "No address",
-        extra: property.category || "No category",
-        icon: "people",
-      })),
-      units: results.units.map((unit) => ({
-        id: unit?.id,
-        type: "units",
-        title: unit.unit_name || "Unknown Unit",
-        subtitle: unit.unit_type || "No type",
-        extra: `₦${unit.total_package || "0"}`,
-        icon: "chart",
-      })),
-      agentCommunities: results.agentCommunities.map((community) => ({
-        id: community?.id,
-        type: "Agent Community",
-        title: community.title || "Unknown Community",
-        subtitle: community.description || "No description",
-        extra: "Community",
-        icon: "task",
-      })),
-      agentRequests: results.agentRequests.map((request) => ({
-        id: request?.id,
-        type: "Agent Requests",
-        title: request.title || "Unknown Request",
-        subtitle: request.description || "No description",
-        extra: "Request",
-        icon: "task",
-      })),
+      })) : [],
+      landlords:
+        results && results.landlords && results.landlords.length > 0
+          ? results?.landlords?.map((landlord) => ({
+              id: landlord?.profile_id,
+              type: landlord?.profile?.type,
+              subtitle: landlord?.profile?.email,
+              extra: "",
+              icon: "people",
+              isVerified: false,
+              title: landlord?.profile?.name,
+            }))
+          : [],
+      tenants:
+        results && results.tenants && results.tenants.length > 0
+          ? results?.tenants?.map((tenant) => ({
+              id: tenant?.profile_id,
+              type: tenant?.profile?.type,
+              subtitle: tenant?.profile?.email,
+              extra: "",
+              icon: "people",
+              isVerified: false,
+              title: tenant?.profile?.name,
+            }))
+          : [],
+      properties:
+        results && results.properties && results.properties.length > 0
+          ? results.properties.map((property) => ({
+              id: property?.id,
+              type: "properties",
+              title: property.title || "Unknown Property",
+              subtitle: property.full_address || "No address",
+              extra: property.category || "No category",
+              icon: "people",
+            }))
+          : [],
+      units:
+        results && results.units && results.units.length > 0
+          ? results.units.map((unit) => ({
+              id: unit?.id,
+              type: "units",
+              title: unit.unit_name || "Unknown Unit",
+              subtitle: unit.unit_type || "No type",
+              extra: `₦${unit.total_package || "0"}`,
+              icon: "chart",
+            }))
+          : [],
+      agentCommunities:
+        results &&
+        results.agentCommunities &&
+        results.agentCommunities.length > 0
+          ? results.agentCommunities.map((community) => ({
+              id: community?.id,
+              type: "Agent Community",
+              title: community.title || "Unknown Community",
+              subtitle: community.description || "No description",
+              extra: "Community",
+              icon: "task",
+            }))
+          : [],
+      agentRequests:
+        results && results.agentRequests && results.agentRequests.length > 0
+          ? results.agentRequests.map((request) => ({
+              id: request?.id,
+              type: "Agent Requests",
+              title: request.title || "Unknown Request",
+              subtitle: request.description || "No description",
+              extra: "Request",
+              icon: "task",
+            }))
+          : [],
       // wallets: results.wallets.map((wallet) => ({
       //   id: wallet?.i
       //   type: "wallets",

@@ -32,6 +32,7 @@ interface MaintenanceModalProps {
   service_provider: string;
   work_details: string;
   quotation: string;
+  quotation_type: "text" | "file";
   start_date: string;
   end_date: string;
   cost: string;
@@ -118,8 +119,6 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
     }
   };
 
-  console.log(props?.status);
-
   return (
     <ModalPreset title="Manage Maintenance">
       <div className="space-y-[10px]">
@@ -178,7 +177,7 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
               {props?.units}
             </p>
           </div>
-           <div>
+          <div>
             <p className="text-text-tertiary text-base dark:text-darkText-1">
               Requested By:
             </p>
@@ -225,7 +224,7 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
             </TruncatedText>
           </div>
         </div>
-        {props.quotation?.length > 11 && (
+        {props?.quotation_type === "text" && props.quotation?.length > 11 ? (
           <div className="space-y-3">
             <p className="text-text-tertiary dark:text-white text-base">
               Maintenance Quotation:
@@ -244,6 +243,25 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
                   dangerouslySetInnerHTML={{ __html: props.quotation }}
                 />
               </TruncatedText>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p className="text-text-tertiary dark:text-white text-base">
+              Maintenance Quotation:
+            </p>
+            <div
+              className="py-6 rounded-lg"
+           
+            >
+              <a
+                href={props.quotation}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-9 underline  text-sm"
+              >
+                {"Quotation File"}
+              </a>
             </div>
           </div>
         )}

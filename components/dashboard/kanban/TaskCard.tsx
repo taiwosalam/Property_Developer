@@ -273,9 +273,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               <div className="relative">
                 <MailIcon size={20} />
                 {/* Mail badge with green background */}
-                {/* <div className="absolute -top-2 -right-2 bg-green-700 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
-                  3
-                </div> */}
+                {task?.content?.messageCount > 0 && (
+                  <div className="absolute -top-2 -right-2 bg-green-700 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
+                    {task.content.messageCount}
+                  </div>
+                )}
               </div>
               <div className="relative">
                 <ClipIcon />
