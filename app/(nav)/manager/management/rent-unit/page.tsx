@@ -744,13 +744,13 @@ const RentAndUnit = () => {
     })) || [];
 
   // Render an error message if BRANCH_ID is invalid
-  if (!BRANCH_ID || BRANCH_ID === 0) {
-    return (
-      <div className="text-base text-red-500 font-medium">
-        Invalid branch ID. Please select a valid branch.
-      </div>
-    );
-  }
+  // if (!BRANCH_ID || BRANCH_ID === 0) {
+  //   return (
+  //     <div className="text-base text-red-500 font-medium">
+  //       Invalid branch ID. Please select a valid branch.
+  //     </div>
+  //   );
+  // }
 
   if (loading)
     return (

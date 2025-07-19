@@ -127,8 +127,6 @@ const TenantsReport = () => {
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformTenantData(data);
-      console.log("API data:", data);
-      console.log("Transformed data:", transformedData);
       const newTenants = transformedData.tenants;
       const currentTenants = useGlobalStore.getState().tenants;
       if (JSON.stringify(currentTenants) !== JSON.stringify(newTenants)) {
