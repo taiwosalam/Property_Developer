@@ -56,6 +56,7 @@ import { parseHTML } from "@/utils/parse-html";
 import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 
 const AccountingInvoicePage = () => {
   const isDarkMode = useDarkMode();
@@ -176,8 +177,14 @@ const AccountingInvoicePage = () => {
     setSearch(query);
   };
 
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/invoice/list?branch_id=${BRANCH_ID}`
+      : null;
+
   const { data, error, loading, isNetworkError, silentLoading } =
-    useFetch<InvoiceListResponse>("/invoice/list", config);
+    useFetch<InvoiceListResponse>(fetchUrl, config);
 
   useEffect(() => {
     if (data) {
@@ -341,6 +348,18 @@ const AccountingInvoicePage = () => {
         return "Last 30 days"; // Fallback for any unexpected value
     }
   }, [invoiceTimeRange, selectedDateRange]);
+
+  // Render an error message if BRANCH_ID is invalid
+  if (!BRANCH_ID || BRANCH_ID === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <PageCircleLoader />
+        <div className="text-base text-red-500 font-medium">
+          Invalid branch ID. Please select a valid branch.
+        </div>
+      </div>
+    );
+  }
 
   if (loading)
     return <CustomLoader layout="page" view="table" pageTitle="Invoices" />;
@@ -512,7 +531,10 @@ const AccountingInvoicePage = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <ExportButton type="pdf" href="/manager/accounting/invoice/export" />
+                <ExportButton
+                  type="pdf"
+                  href="/manager/accounting/invoice/export"
+                />
                 <ExportButton
                   fileLabel="Invoice"
                   data={transformedInvoiceTableData}

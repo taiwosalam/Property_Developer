@@ -12,7 +12,18 @@ const DocumentCard = ({
   total_unit,
   created_date,
   last_updated,
+  page,
 }: Document) => {
+  // switch case for route
+  const getRoute = () => {
+    switch (page) {
+      case 'manager':
+        return `/manager/documents/manage-tenancy-agreement/?d=${document_id}`;
+      case 'account':
+        return `/documents/manage-tenancy-agreement/?d=${document_id}`;
+    }
+  };
+
   return (
     <div
       className="pt-6 px-[18px] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col gap-6"
@@ -58,7 +69,7 @@ const DocumentCard = ({
           </div>
           <div className="flex justify-end">
             <Button
-              href={`/documents/manage-tenancy-agreement/?d=${document_id}`}
+              href={getRoute()}
               size="xs_normal"
               className="py-2 px-7"
             >

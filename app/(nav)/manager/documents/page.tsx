@@ -213,7 +213,7 @@ const Documents = () => {
                   <CardsLoading />
                 ) : (
                   transformedDocuments.map((doc) => (
-                    <DocumentCard key={doc.document_id} {...doc} />
+                    <DocumentCard key={doc.document_id} {...doc} page="manager" />
                   ))
                 )}
               </AutoResizingGrid>
