@@ -412,7 +412,7 @@ const ServiceProviders = () => {
                     service_providers.map((provider) => (
                       <Link
                         key={provider.id}
-                        href={`/management/service-providers/${provider.id}/manage`}
+                        href={`/manager/management/service-providers/${provider.id}/manage`}
                       >
                         <ServiceProviderCard
                           name={provider.name}

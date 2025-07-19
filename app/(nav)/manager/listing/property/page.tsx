@@ -26,6 +26,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { hasActiveFilters } from "../../reports/data/utils";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
@@ -33,9 +34,11 @@ import Pagination from "@/components/Pagination/pagination";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import ServerError from "@/components/Error/ServerError";
 import { IPropertyApi } from "@/app/(nav)/settings/others/types";
-import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const Property = () => {
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
   const [pageData, setPageData] = useState<PropertyPageState>(initialState);
 
   const [state, setState] = useState<DraftPropertyState>({
@@ -121,14 +124,11 @@ const Property = () => {
     sessionStorage.setItem("property_page", pageNumber.toString());
   };
 
-  const { data: branchesData } =
-    useFetch<AllBranchesResponse>("/branches/select");
-
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/property/invite/lists?branch_id=${BRANCH_ID}`
+      : null;
 
   const {
     data: apiData,
@@ -137,7 +137,7 @@ const Property = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<PropertyApiResponse | any>("/property/invite/lists", config);
+  } = useFetch<PropertyApiResponse | any>(fetchUrl, config);
 
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
@@ -175,6 +175,16 @@ const Property = () => {
 
   // Listen for the refetch event
   useRefetchOnEvent("refetchPropertyDraft", () => refetch({ silent: true }));
+
+  // TODO: FIX THIS WITH SOMETHING LIKE LOADING
+  // Render an error message if BRANCH_ID is invalid
+  // if (!BRANCH_ID || BRANCH_ID === 0) {
+  //   return (
+  //     <div className="text-base text-red-500 font-medium">
+  //       Invalid branch ID. Please select a valid branch.
+  //     </div>
+  //   );
+  // }
 
   if (loading)
     return (
@@ -230,14 +240,6 @@ const Property = () => {
         isDateTrue
         filterOptionsMenu={[
           ...listingPropertyFilter,
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-            : []),
           ...(propertyOptions.length > 0
             ? [
                 {
@@ -304,6 +306,7 @@ const Property = () => {
                   data={property as any}
                   status={property.status}
                   propertyType={property.property_type as "rental" | "gated"}
+                  page="manager"
                 />
               ))}
             </div>
@@ -330,6 +333,7 @@ const Property = () => {
                 data={property as any}
                 status={property.status}
                 propertyType={property.property_type as "rental" | "gated"}
+                page="manager"
               />
             ))}
           </div>

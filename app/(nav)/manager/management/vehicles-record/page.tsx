@@ -250,7 +250,7 @@ const VehilceRecords = () => {
               {silentLoading ? (
                 <CardsLoading />
               ) : (
-                pageData.data.map((p, index) => <VehicleCard key={index} data={p} />)
+                pageData.data.map((p, index) => <VehicleCard key={index} data={p} page="manager" />)
               )}
             </AutoResizingGrid>
 
