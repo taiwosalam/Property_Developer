@@ -17,9 +17,11 @@ import { useDrawerStore } from "@/store/drawerStore";
 const AddFundsModal = ({
   branch,
   doc,
+  page,
 }: {
   branch?: boolean;
   doc?: boolean;
+  page?: "manager" | "account";
 }) => {
   const { branch: branch_details } = useBranchStore();
   const { sub_wallet } = useWalletStore();
@@ -27,6 +29,7 @@ const AddFundsModal = ({
   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
   const company_name = usePersonalInfoStore((state) => state.company_name);
 
+  console.log("branch_details", branch_details);
   const [activeStep, setActiveStep] =
     useState<WalletSendFundsOptions>("send funds menu");
   // State to hold payment details

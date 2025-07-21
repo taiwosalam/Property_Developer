@@ -10,6 +10,7 @@ import {
   staffTierColorMap,
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
+import { empty } from "@/app/config";
 
 export const branchIdChartConfig = {
   totalfunds: {
@@ -51,7 +52,7 @@ export const transformSingleBranchAPIResponse = (
   } = response;
   return {
     branch_name: branch.branch_name,
-    picture: branch.picture,
+    picture: branch.picture || empty,
     address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
     properties: {
       total: branch.properties_count,
@@ -87,7 +88,7 @@ export const transformSingleBranchAPIResponse = (
     receipt_statistics: branch.receipt_statistic,
     staffs: branch.staffs.slice(0, 5).map((s: any) => {
       return {
-        avatarSrc: s.picture,
+        avatarSrc: s.picture || empty,
         name: `${s.title ? s.title + " " : ""}${s.name}`,
         position: s.staff_role,
         staff_ID: s.id,

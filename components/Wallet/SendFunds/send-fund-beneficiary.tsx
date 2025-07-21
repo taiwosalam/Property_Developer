@@ -45,6 +45,7 @@ const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   const isAlreadyBeneficiary = beneficiaries.some(
     (beneficiary) => beneficiary.wallet_id === wallet_id
   );
+
   const handleClickSend = async () => {
     if (activeStep === "send funds") {
       if (!description) {

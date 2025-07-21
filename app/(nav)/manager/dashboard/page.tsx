@@ -3,7 +3,6 @@
 // Imports
 import Card from "@/components/dashboard/card";
 import {
-  dashboardCardData,
   dashboardListingsChartConfig,
   dashboardListingsChartData,
   dashboardPerformanceChartConfig,
@@ -15,6 +14,7 @@ import {
   complaintsData,
   transformDashboardData,
   BranchDashboardResponse,
+  dashboardCardData,
 } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
 import NotificationCard from "@/components/dashboard/notification-card";
@@ -32,103 +32,268 @@ import { useAuthStore } from "@/store/authStore";
 import { getLocalStorage } from "@/utils/local-storage";
 import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
-import { initialDashboardStats } from "../../dashboard/data";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import {
+  SingleBranchResponseType,
+  Stats,
+} from "../../management/staff-branch/[branchId]/types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import {
+  branchIdChartConfig,
+  transformSingleBranchAPIResponse,
+} from "../../management/staff-branch/[branchId]/data";
+import { useGlobalStore } from "@/store/general-store";
+import useBranchStore from "@/store/branch-store";
+import { getTransactionIcon } from "@/components/Wallet/icons";
+import clsx from "clsx";
+import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
+import {
+  ConversationsAPIResponse,
+  PageMessages,
+} from "../../(messages-reviews)/messages/types";
+import { transformUsersMessages } from "../../(messages-reviews)/messages/data";
+import { useChatStore } from "@/store/message";
+import { getRecentMessages } from "../../dashboard/data";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
-  const [branchId, setBranchId] = useState("");
-  const walletId = useWalletStore((state) => state.walletId);
-  // const additional_details = useAuthStore((state) => state.additional_details);
-  const loggedInUserDetails = getLocalStorage("additional_details");
-  const [branchResponse, setBranchResponse] = useState<any | null>(null);
-
-  const { data: userProfile } = useFetch<{
-    data: { branch: { branch_id: number } };
-  }>(`/user/profile`);
-
-  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
-
-  const recentTransactions = useWalletStore(
-    (state) => state.recentTransactions
-  );
-
-  const transactions = useWalletStore((state) => state.transactions);
-
-  useEffect(() => {
-    if (userProfile) {
-      setBranchId(userProfile.data.branch.branch_id.toString());
-    }
-  }, [userProfile]);
-
-  const { data: apiData } = useFetch<BranchDashboardResponse>(
-    `branch-data/dashboard/${branchId}`
-  );
-
-  useEffect(() => {
-    if (apiData) {
-      setDashboardStats(dashboardCardData(apiData?.data));
-      const transformData = transformDashboardData(apiData);
-      setBranchResponse(transformData);
-    }
-  }, [apiData]);
-
-  const dashboardPerformanceChartData = transactions.map((t) => ({
-    date: t.date,
-    totalfunds: t.amount,
-    credit: t.type === "credit" ? t.amount : 0,
-    debit: t.type === "debit" ? t.amount : 0,
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+  const { setChatData } = useChatStore();
+  const setWalletStore = useWalletStore((s) => s.setWalletStore);
+  const { setGlobalInfoStore } = useGlobalStore((s) => ({
+    setGlobalInfoStore: s.setGlobalInfoStore,
   }));
+  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
+
+  const { data, error, loading, isNetworkError, refetch } =
+    useFetch<SingleBranchResponseType>(`branch/${BRANCH_ID}`);
+  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
+
+  const branchData = data ? transformSingleBranchAPIResponse(data) : null;
+  const {
+    branch_wallet,
+    transactions,
+    recent_transactions,
+    receipt_statistics,
+  } = branchData || {};
+
+  const yesNoToActiveInactive = (yesNo: string): boolean => {
+    return yesNo === "Yes" ? true : false;
+  };
+
+  setWalletStore("sub_wallet", {
+    status: branch_wallet !== null ? "active" : "inactive",
+    wallet_id:
+      branch_wallet !== null
+        ? Number(branchData?.branch_wallet?.wallet_id)
+        : undefined,
+    is_active:
+      branch_wallet !== null &&
+      yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
+  });
+
+  const updatedDashboardCardData = dashboardCardData.map((card) => {
+    let stats: Stats | undefined;
+    let link = "";
+    switch (card.title) {
+      case "Properties":
+        stats = branchData?.properties;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/properties`;
+        break;
+      case "Landlords":
+        stats = branchData?.landlords;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/landlords`;
+        break;
+      case "Tenants & Occupants":
+        stats = branchData?.tenants;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/tenants`;
+        break;
+      case "Vacant Unit":
+        stats = branchData?.vacant_units;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/vacant-units`;
+        break;
+      case "Expired":
+        stats = branchData?.expired;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/expired-units`;
+        break;
+      case "Invoices":
+        stats = branchData?.invoices;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/invoices`;
+        break;
+      case "Inquiries":
+        stats = branchData?.inquiries;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/inquiries`;
+        break;
+      case "Complaints":
+        stats = branchData?.complaints;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/complaints`;
+        break;
+      case "Listings":
+        stats = branchData?.listings;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/listings`;
+        break;
+      default:
+        break;
+    }
+
+    return {
+      ...card,
+      link,
+      value: stats ? stats.total : card.value,
+      subValue: stats ? stats.new_this_month : card.subValue,
+    };
+  });
+
+  const transformedWalletTableData =
+    transactions &&
+    transactions.map((t: any) => ({
+      ...t,
+      amount: (
+        <span
+          className={clsx({
+            "text-status-success-3":
+              t.transaction_type === "funding" ||
+              t.transaction_type === "transfer_in",
+            "text-status-error-primary":
+              t.transaction_type === "debit" ||
+              t.transaction_type === "transfer_out",
+          })}
+        >
+          {`${
+            t.transaction_type === "funding" ||
+            t.transaction_type === "transfer_in"
+              ? "+"
+              : t.transaction_type === "debit" ||
+                t.transaction_type === "transfer_out"
+              ? "-"
+              : ""
+          }${t.amount}`}
+        </span>
+      ),
+      icon: (
+        <div
+          className={clsx(
+            "flex items-center justify-center w-9 h-9 rounded-full",
+            {
+              "bg-status-error-1 text-status-error-primary":
+                t.transaction_type === "debit" ||
+                t.transaction_type === "transfer_out",
+              "bg-status-success-1 text-status-success-primary":
+                t.transaction_type === "funding" ||
+                t.transaction_type === "transfer_in",
+            }
+          )}
+        >
+          {getTransactionIcon(t.source as string, t.transaction_type)}
+        </div>
+      ),
+    }));
+
+  const walletChartData =
+    recent_transactions &&
+    recent_transactions.map((t: any) => ({
+      date: t.date,
+      totalfunds: t.amount,
+      credit:
+        t.transaction_type === "funding" || t.transaction_type === "transfer_in"
+          ? t.amount
+          : 0,
+      debit:
+        t.transaction_type === "debit" || t.transaction_type === "transfer_out"
+          ? t.amount
+          : 0,
+    }));
+
+  // SAVE BRANCH WALLET TRANSACTIONS TO STORE
+  useEffect(() => {
+    if (transactions) {
+      const currentTransactions =
+        useGlobalStore.getState()?.branchWalletTransactions;
+      if (
+        JSON.stringify(currentTransactions) !== JSON.stringify(transactions)
+      ) {
+        setGlobalInfoStore("branchWalletTransactions", transactions);
+      }
+    }
+  }, [transactions, setGlobalInfoStore]);
+
+  // Recent messages
+  const {
+    data: usersMessages,
+    loading: usersMsgLoading,
+    error: usersMsgError,
+    refetch: refetchMsg,
+    isNetworkError: MsgNetworkError,
+  } = useFetch<ConversationsAPIResponse>("/messages");
+  useRefetchOnEvent("refetch-users-msg", () => {
+    refetchMsg({ silent: true });
+  });
+
+  useEffect(() => {
+    if (usersMessages) {
+      const transformed = transformUsersMessages(usersMessages);
+      setPageUsersMsg(transformed);
+      setChatData("users_messages", transformed);
+    }
+  }, [usersMessages, setChatData]);
 
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
         <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
           <div className="w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
-            {dashboardStats &&
-              dashboardStats.map((card: any, index: number) => (
-                <Link href={card.link} key={index} prefetch={false}>
-                  <Card
-                    title={card.title}
-                    icon={<card.icon />}
-                    value={card.value}
-                    subvalue={card.subValue}
-                    bg={card.bg}
-                  />
-                </Link>
-              ))}
+            {updatedDashboardCardData.map((card, index) => (
+              <Link href={card.link} key={index} prefetch={false}>
+                <Card
+                  title={card.title}
+                  icon={<card.icon />}
+                  value={card.value.toString()}
+                  subvalue={card.subValue.toString()}
+                  bg={card.bg}
+                />
+              </Link>
+            ))}
           </div>
 
           {/* Chart */}
           <div className="hidden md:block space-y-10">
             <div className="w-full h-fit">
               <DashboardChart
-                chartTitle="Analysis"
+                chartTitle="Wallet Analysis"
                 visibleRange
-                chartConfig={dashboardPerformanceChartConfig}
-                chartData={dashboardPerformanceChartData}
+                className="wallet-analysis-card"
+                chartConfig={branchIdChartConfig}
+                chartData={walletChartData}
               />
             </div>
-            <div className="w-full h-fit">
+            <div className="listing-performance-chart w-full h-fit">
               <DashboardChart
-                chartTitle="listings"
+                chartTitle="listing Performance"
                 visibleRange
                 chartConfig={dashboardListingsChartConfig}
-                chartData={dashboardListingsChartData}
+                chartData={[]}
               />
             </div>
           </div>
         </div>
 
         <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
-          <WalletBalanceCard />
-          <DashboarddCalendar />
-          <NotificationCard
-            className="h-[358px]"
-            seeAllLink="/messages"
-            sectionHeader="Recent Messages"
-            notifications={recentMessagesData}
+          <BranchBalanceCard
+            mainBalance={Number(branch_wallet?.balance_total || 0)}
+            cautionDeposit={Number(branch_wallet?.escrow_balance || 0)}
+            className="max-w-full"
+            page="manager"
           />
+          <DashboarddCalendar />
+          <div className="recent-messages-card">
+            <NotificationCard
+              className="h-[358px]"
+              seeAllLink="/messages"
+              sectionHeader="Recent Messages"
+              notifications={getRecentMessages(pageUsersMsg)}
+            />
+          </div>
           <NotificationCard
             className="h-[358px]"
             sectionHeader="Complaints"
@@ -138,7 +303,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <SectionContainer heading="Recent invoice" href="/accounting/invoice">
+      {/* <SectionContainer heading="Recent invoice" href="/manager/accounting/invoice">
         {branchResponse && branchResponse?.data?.invoices.length > 0 ? (
           <CustomTable
             data={branchResponse?.data.invoices}
@@ -154,7 +319,7 @@ const Dashboard = () => {
         ) : (
           <p className="text-center py-20 text-slate-400">No recent invoices</p>
         )}
-      </SectionContainer>
+      </SectionContainer> */}
       <SectionContainer heading="Recent Complains" href="/tasks/complaints">
         <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(6)

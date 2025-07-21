@@ -127,35 +127,43 @@ const PreviewExpenses = () => {
                 <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
                   <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
                     <KeyValueList
-                      data={{
-                        "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
-                        "non refundable agency fee": formatFee(
-                          pageData.agency_fee,
-                          CURRENCY
-                        ),
-                        "service charge": formatFee(
-                          pageData.service_charge,
-                          CURRENCY
-                        ),
-                        "refundable caution fee": formatFee(
-                          pageData.caution_fee,
-                          CURRENCY
-                        ),
-                        "non refundable legal fee": "",
-                        "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
-                        "Company Owe": formatFee(
-                          pageData.company_owed,
-                          CURRENCY
-                        ),
-                      }}
+                     data={{
+                      "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
+                      "agency fee": formatFee(
+                        pageData.agency_fee,
+                        CURRENCY
+                      ),
+                      "service charge": formatFee(
+                        pageData.service_charge,
+                        CURRENCY
+                      ),
+                      "inspection fee": formatFee(pageData.inspection_fee, CURRENCY),
+                      "caution fee": formatFee(
+                        pageData.caution_fee,
+                        CURRENCY
+                      ),
+                      "management fee": formatFee(pageData.management_fee, CURRENCY),
+                      "other charge": formatFee(pageData.other_charge, CURRENCY),
+                      "legal fee": formatFee(pageData.legal_fee, CURRENCY),
+                      "vat": formatFee(pageData.vat_amount, CURRENCY),
+                      "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
+                      "Company Owe": formatFee(
+                        pageData.company_owed,
+                        CURRENCY
+                      ),
+                    }}
                       chunkSize={2}
                       direction="column"
                       referenceObject={{
                         "Annual fee": "",
-                        "non refundable agency fee": "",
+                        "agency fee": "",
                         "service charge": "",
-                        "non refundable legal fee": "",
-                        "refundable caution fee": "",
+                        "inspection fee": "",
+                        "legal fee": "",
+                        "caution fee": "",
+                        "vat": "",
+                        "other charge": "",
+                        "management fee": "",
                         "Tenant Owe": "",
                         "Company Owe": "",
                       }}
