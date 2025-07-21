@@ -166,6 +166,17 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   const NOT_OCCUPIED =
     status.toLowerCase() === "relocate" || status.toLowerCase() === "vacant";
 
+  const getManageLink = () => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/rent-unit/${unitId}`;
+      case "account":
+        return `/account/management/rent-unit/${unitId}`;
+      default:
+        return `/management/rent-unit/${unitId}`;
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">
       <div
@@ -194,7 +205,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
         className="p-2 pb-4 border-b border-[#C0C2C8] space-y-3 cursor-pointer transition-all duration-500"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() => router.push(`/management/rent-unit/${unitId}`)}
+        onClick={() => router.push(getManageLink())}
       >
         <div className="relative">
           <div className="flex items-center justify-between">

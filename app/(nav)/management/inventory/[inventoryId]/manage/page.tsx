@@ -177,7 +177,7 @@ const ManageInventory = () => {
       const payload = new FormData();
       // payload.append("title", formData.get("inventory-title") as string);
       // payload.append("branch_id", formData.get("branch-name") as string);
-      payload.append("video", formData.get("video-link") as string);
+      payload.append("video", formData.get("video_link") as string);
 
       // Append all items to the payload
       allItems.forEach((item, index) => {

@@ -11,7 +11,11 @@ import dayjs from "dayjs";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import { CameraIcon } from "@/public/icons/icons";
 
-const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
+const InventoryCard: React.FC<InventoryCardProps> = ({
+  data,
+  viewOnly,
+  page,
+}) => {
   const images =
     data?.property_image?.map((img) =>
       img?.path ? img.path : ClipboardCheck
@@ -29,6 +33,17 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
         : data?.account_officer?.name || "--- ---",
     imgSrc: previewImg,
     total_unit: data?.total_unit || 0,
+  };
+
+  const getManageLink = () => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/inventory/${data.property_id}`;
+      case "account":
+        return `/account/management/inventory/${data.property_id}`;
+      default:
+        return `/management/inventory/${data.property_id}`;
+    }
   };
 
   return (
@@ -69,7 +84,9 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
                     <p className="text-text-tertiary dark:text-darkText-1 text-base">
                       {field.split("_").join(" ")}
                     </p>
-                    <p className="text-text-secondary dark:text-darkText-1 text-sm">{value}</p>
+                    <p className="text-text-secondary dark:text-darkText-1 text-sm">
+                      {value}
+                    </p>
                   </div>
                 );
               })}
@@ -77,7 +94,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({ data, viewOnly }) => {
           {!viewOnly && (
             <div className="flex gap-2 justify-end">
               <Button
-                href={`/management/inventory/${data.property_id}`}
+                href={getManageLink()}
                 variant="border"
                 size="xs_medium"
                 className="py-2 px-7"
