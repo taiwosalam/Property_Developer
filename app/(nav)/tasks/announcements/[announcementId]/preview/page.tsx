@@ -22,16 +22,9 @@ import {
 } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import dayjs from "dayjs";
+import AnnouncementSkeleton from "@/components/Loader/announcement-preview";
 
-const images = [
-  { src: "/empty/SampleProperty.jpeg", isVideo: false },
-  { src: "/empty/SampleProperty2.jpeg", isVideo: true },
-  { src: "/empty/SampleProperty3.jpeg", isVideo: false },
-  { src: "/empty/SampleProperty4.png", isVideo: false },
-  { src: "/empty/SampleProperty5.jpg", isVideo: false },
-  { src: "/empty/SampleProperty6.jpg", isVideo: false },
-  { src: "/empty/SampleProperty.jpeg", isVideo: false },
-];
+
 const PreviewAnnouncement = () => {
   const router = useRouter();
   const { announcementId } = useParams();
@@ -59,9 +52,13 @@ const PreviewAnnouncement = () => {
   }, [apiData]);
 
   
+// Show skeleton if loading or silentLoading is true, or if delay hasn't completed
+  if ((loading) && !error && !isNetworkError) {
+    return <AnnouncementSkeleton />;
+  }
 
   if (error) <ServerError error={error} />;
-  if (loading) <PageCircleLoader />;
+  //if (loading || silentLoading || !isDelayed) <AnnouncementSkeleton />;
   if (isNetworkError) <NetworkError />;
 
   return (
@@ -76,7 +73,7 @@ const PreviewAnnouncement = () => {
           >
             <ChevronLeft />
           </button>
-          <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
+          <h1 className="text-black dark:text-white capitalize font-bold text-lg lg:text-xl">
             {pageData?.title}
           </h1>
         </div>

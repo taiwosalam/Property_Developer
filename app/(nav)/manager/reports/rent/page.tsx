@@ -24,9 +24,13 @@ import { useRouter } from "next/navigation";
 import { debounce } from "lodash";
 import { AxiosRequestConfig } from "axios";
 import { ReportsRequestParams } from "../tenants/data";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const RentReport = () => {
   const router = useRouter();
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+
   const [pageData, setPageData] = useState<RentReportData>({
     total_rents: 0,
     current_month_rents: 0,
@@ -41,15 +45,15 @@ const RentReport = () => {
     startDate: null,
     endDate: null,
   });
-  const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
+
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
-  const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
   useEffect(() => {
-    if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -57,7 +61,7 @@ const RentReport = () => {
       setBranchAccountOfficers(filterStaff);
     }
     if (property) setPropertyList(property.data);
-  }, [apiData, staff, property]);
+  }, [staff, property]);
 
   const filterStatus = ["expired", "active", "relocate", "vacant"];
   const reportTenantFilterOption = [
@@ -66,13 +70,6 @@ const RentReport = () => {
       value: branchAccountOfficers.map((staff: any) => ({
         label: staff.user.name,
         value: staff.user.id.toString(),
-      })),
-    },
-    {
-      label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
       })),
     },
     {
@@ -113,19 +110,28 @@ const RentReport = () => {
       const status = menuOptions["Status"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
       if (branch.length > 0) queryParams.branch_id = branch.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
-      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
   );
 
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/report/rents?branch_id=${BRANCH_ID}`
+      : null;
+
   const { data, loading, error, isNetworkError } = useFetch<RentListResponse>(
-    "report/rents",
+    fetchUrl,
     config
   );
 
@@ -145,7 +151,8 @@ const RentReport = () => {
     if (isNetworkError) console.error("Network error");
   }, [data, loading, setGlobalStore]);
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Rent Report" view="table" />;
+  if (loading)
+    return <CustomLoader layout="page" pageTitle="Rent Report" view="table" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -166,7 +173,8 @@ const RentReport = () => {
         pageTitle="Rent / Due Roll"
         aboutPageModalData={{
           title: "Rent / Due Roll",
-          description: "This page contains a list of Rent / Due Roll on the platform.",
+          description:
+            "This page contains a list of Rent / Due Roll on the platform.",
         }}
         searchInputPlaceholder="Search for Rent Roll"
         handleFilterApply={handleAppliedFilter}
@@ -189,11 +197,15 @@ const RentReport = () => {
               title="No Rent Report Data Available Yet"
               body={
                 <p>
-                  Currently, there are no rent report records available for export.
-                  Once rent report data is added to the system, it will appear here and be available for download or export.
-                  <br /><br />
+                  Currently, there are no rent report records available for
+                  export. Once rent report data is added to the system, it will
+                  appear here and be available for download or export.
+                  <br />
+                  <br />
                   <p>
-                    This section will automatically update to display all available rent reports as soon as they are generated or imported into the platform.
+                    This section will automatically update to display all
+                    available rent reports as soon as they are generated or
+                    imported into the platform.
                   </p>
                 </p>
               }

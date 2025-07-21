@@ -50017,13 +50017,14 @@ export const managerRoutes = [
   "/manager/reports/adds-on-featured",
   "/manager/reports/adds-on-domain",
   "/manager/reports/subscription-history",
-  "/reports/calendar-event",
+  "/manager/reports/calendar-event",
   "/manager/wallet",
   "/manager/tasks/applications",
   "/manager/documents",
   "/manager/settings",
   "/manager/settings/profile",
   "/agent-community",
+  "/notifications",
 ];
 export const directorRoutes = ["/dashboard", "/wallet", "/auth/sign-in"];
 

@@ -23,6 +23,7 @@ export type TApplicationDetailsResponse = {
       categories: string;
       total_package: string;
       renew_total_package: string;
+      property_currency: string;
       rent: string;
       local_government: string;
       account_officer: string;

@@ -45,9 +45,17 @@ const AddsOnCampaignRecord = () => {
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const filteredCampaign = useGlobalStore((s) => s.campaign_history);
 
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+
   const [campaignTable, setCampaignTable] = useState<ICampaignTable[] | null>(
     null
   );
+
+  const fetchUrl =
+    company_id && BRANCH_ID && BRANCH_ID !== 0
+      ? `/campaigns/${company_id}?branch_id=${BRANCH_ID}`
+      : null;
 
   const {
     data: campaignData,
@@ -56,7 +64,7 @@ const AddsOnCampaignRecord = () => {
     isNetworkError,
     error,
   } = useFetch<CampaignHistoryResponse>(
-    company_id ? `campaigns/${company_id}` : null,
+   fetchUrl,
     config
   );
   useRefetchOnEvent("companyCampaign", () => refetch({ silent: true }));

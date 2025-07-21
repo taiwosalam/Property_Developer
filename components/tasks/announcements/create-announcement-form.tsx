@@ -35,19 +35,19 @@ const CreateAnnouncementForm: React.FC<{
     loading: loadingAnnouncement,
     error,
   } = useFetch<any>(`/announcements/${announcementId}`);
-
-  const [selectedBranch, setSelectedBranch] = useState<{
-    id: number;
-    branch_name: string;
-  } | null>(null);
   const [branches, setBranches] = useState<
     { id: number; branch_name: string }[]
   >([]);
   const [properties, setProperties] = useState<{ id: number; title: string }[]>(
     []
   );
+
+  const [selectedBranch, setSelectedBranch] = useState<{
+    id: number | null;
+    branch_name: string;
+  } | null>(null);
   const [selectedProperty, setSelectedProperty] = useState<{
-    id: number;
+    id: number | null;
     title: string;
   } | null>(null);
 
@@ -236,6 +236,44 @@ const CreateAnnouncementForm: React.FC<{
     }
   };
 
+  useEffect(() => {
+    if (editMode && branchData) {
+      const branchIdName = branchData?.data.map((branch) => ({
+        id: branch.id,
+        branch_name: branch.branch_name,
+      }));
+      setBranches(branchIdName);
+
+      // Set selected branch from announcement data if not already set
+      if (announcementData?.announcement?.branch_id && !selectedBranch) {
+        const foundBranch = branchIdName.find(
+          (b) => b.id === announcementData.announcement.branch_id
+        );
+        if (foundBranch) setSelectedBranch(foundBranch);
+      }
+    }
+  }, [editMode, branchData, announcementData]);
+
+  useEffect(() => {
+    if (editMode && propertyData) {
+      const propertyIdTitle = propertyData.data.branch.properties.map(
+        (property) => ({
+          id: property.id,
+          title: property.title,
+        })
+      );
+      setProperties(propertyIdTitle);
+
+      // Set selected property from announcement data if not already set
+      if (announcementData?.announcement?.property_id && !selectedProperty) {
+        const foundProperty = propertyIdTitle.find(
+          (p) => p.id === announcementData.announcement.property_id
+        );
+        if (foundProperty) setSelectedProperty(foundProperty);
+      }
+    }
+  }, [editMode, propertyData, announcementData]);
+
   return (
     <AuthForm
       returnType="form-data"
@@ -244,7 +282,7 @@ const CreateAnnouncementForm: React.FC<{
     >
       <div className="flex flex-col gap-y-5 gap-x-[40px] lg:flex-row lg:items-start pb-[200px]">
         <div className="grid gap-x-4 gap-y-5 md:grid-cols-2 lg:w-[63%]">
-          {!editMode && (
+          {
             <Fragment>
               <Select
                 id="branch_id"
@@ -261,9 +299,9 @@ const CreateAnnouncementForm: React.FC<{
                   };
                 })}
                 value={
-                  selectedBranch
+                  selectedBranch && selectedBranch.id !== null
                     ? {
-                        value: selectedBranch.id,
+                        value: selectedBranch.id.toString(),
                         label: selectedBranch.branch_name,
                       }
                     : ""
@@ -298,7 +336,7 @@ const CreateAnnouncementForm: React.FC<{
                   };
                 })}
                 value={
-                  selectedProperty
+                  selectedProperty && selectedProperty.id !== null
                     ? {
                         value: selectedProperty.id.toString(),
                         label: selectedProperty.title,
@@ -320,7 +358,7 @@ const CreateAnnouncementForm: React.FC<{
                 inputContainerClassName="bg-white"
               />
             </Fragment>
-          )}
+          }
           <Input
             id="title"
             label="Title"

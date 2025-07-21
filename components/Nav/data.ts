@@ -201,11 +201,11 @@ export const manager_nav_items: NavItemsProps = [
       { label: "visitors request", href: "/manager/reports/visitors" },
       { label: "vehicles record", href: "/manager/reports/vehicles-record" },
       { label: "calendar", href: "/manager/reports/calendar-event" },
-      { label: "subscription history", href: "/manager/reports/subscription-history" },
-      { label: "add-on sponsor", href: "/manager/reports/adds-on-sponsor" },
-      { label: "add-on sms", href: "/manager/reports/adds-on-sms" },
-      { label: "add-on campaign", href: "/manager/reports/adds-on-campaign" },
-      { label: "add-on feature", href: "/manager/reports/adds-on-feature" }
+      // { label: "subscription history", href: "/manager/reports/subscription-history" },
+      // { label: "add-on sponsor", href: "/manager/reports/adds-on-sponsor" },
+      // { label: "add-on sms", href: "/manager/reports/adds-on-sms" },
+      // { label: "add-on campaign", href: "/manager/reports/adds-on-campaign" },
+      // { label: "add-on feature", href: "/manager/reports/adds-on-feature" }
     ],
   },
   { type: "empty_wallet", label: "wallet", href: "/manager/wallet" },

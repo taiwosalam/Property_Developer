@@ -58,6 +58,12 @@ interface Data {
   total_tenants: number;
   monthly_tenants: number;
   tenants: Tenant[];
+  pagination: {
+    total: number;
+    current_page: number;
+    per_page: number;
+    last_page: number;
+  };
 }
 
 export interface TenantListResponse {
@@ -78,6 +84,11 @@ export interface TenantReport {
   total_tenants: number;
   monthly_tenants: number;
   tenants: ITenantListReport[];
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  }
 }
 
 export const transformTenantData = (
@@ -96,6 +107,11 @@ export const transformTenantData = (
     telephone: tenant.telephone || "__ __",
     status: tenant.status || "__ __",
   })),
+  pagination: {
+    total: data?.data?.pagination?.total || 0,
+    current_page: data?.data?.pagination?.current_page || 0,
+    last_page: data?.data?.pagination?.last_page || 0,
+  }
 });
 
 export interface ReportsRequestParams {

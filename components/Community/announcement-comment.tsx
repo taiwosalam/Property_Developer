@@ -119,7 +119,7 @@ const AnnouncementComment: React.FC<CommentProps> = ({
             src={image || empty}
             alt="user-real-info-from-props"
             fill
-            className="object-cover"
+            className="object-cover bg-brand-9/70"
           />
         </div>
         <div className="space-y-1">

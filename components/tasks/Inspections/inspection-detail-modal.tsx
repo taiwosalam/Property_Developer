@@ -56,7 +56,7 @@ const InspectionDetailModal = ({
       setIsLoading(true);
       const res = await requestApplication(data?.id.toString());
       if (res) {
-        toast.success("Application request sent");
+        toast.success("Inspection marked as inspected successfully.");
         setIsOpen?.(false);
         window.dispatchEvent(new Event("dispatchInspection"));
       }

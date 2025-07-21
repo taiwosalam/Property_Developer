@@ -79,7 +79,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
           </div>
           <div className="flex items-center justify-between">
             <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
-              Account Officer
+              Account Manager
             </p>
             <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
               {accountOfficer}
