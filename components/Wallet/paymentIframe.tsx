@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { checkPaymentStatus } from "./data";
 import { toast } from "sonner";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 interface PaymentIframeProps {
   paymentUrl: string;
   reference: string;
   onPaymentConfirmed: () => void;
   onClose: () => void;
+  page?: "manager" | "account";
 }
 
 const PaymentIframe: React.FC<PaymentIframeProps> = ({
@@ -14,16 +16,28 @@ const PaymentIframe: React.FC<PaymentIframeProps> = ({
   reference,
   onPaymentConfirmed,
   onClose,
+  page,
 }) => {
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
   useEffect(() => {
     if (!reference) return;
     const polling = setInterval(async () => {
       try {
-        const res = await checkPaymentStatus(reference);
+        if (page === "manager" && (!BRANCH_ID || BRANCH_ID === 0)) {
+          toast.error("Cannot find a valid branch ID");
+          return;
+        }
+        const param = page === "manager" ? `branch=${BRANCH_ID}` : "";
+        const res = await checkPaymentStatus(reference, param);
         if (res) {
           clearInterval(polling);
-          window.dispatchEvent(new Event("refetch-wallet"));
-          window.dispatchEvent(new Event("/wallets/dashboard"));
+          if (page === "manager") {
+            window.dispatchEvent(new Event("refetch-branch-data"));
+          } else {
+            window.dispatchEvent(new Event("refetch-wallet"));
+            window.dispatchEvent(new Event("/wallets/dashboard"));
+          }
           onPaymentConfirmed(); // Notify parent that payment is confirmed
         }
       } catch (error) {

@@ -75,7 +75,10 @@ export async function middleware(req: NextRequest) {
   // Role-based route restrictions for non-'user' roles
   const allowedRoutes =
     roleBasedRoutes[role as keyof typeof roleBasedRoutes] || [];
-  if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {
+  const isAllowed = allowedRoutes.some((route) =>
+    currentPath.startsWith(route)
+  );
+  if (!isAllowed) {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 

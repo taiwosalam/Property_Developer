@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // Images
 import { ExclamationMark } from "@/public/icons/icons";
@@ -26,25 +26,184 @@ import {
   accountingVatOptionsWithDropdown,
   vatTableFields,
   vatTableData,
+  VATPageState,
+  initialVATPageState,
+  VATFilterParams,
+  VATAPIResponse,
+  transformVATAPIResponse,
+  getOtherCurrencyFromVats,
 } from "./data";
 import { useRouter } from "next/navigation";
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
 import ExportButton from "@/components/reports/export-button";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
+import { AxiosRequestConfig } from "axios";
+import useFetch from "@/hooks/useFetch";
+import NetworkError from "@/components/Error/NetworkError";
+import { PropertyListResponse } from "../../management/rent-unit/[id]/edit-rent/type";
+import useStaffRoles from "@/hooks/getStaffs";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import TableLoading from "@/components/Loader/TableLoading";
+import { useGlobalStore } from "@/store/general-store";
+import ServerError from "@/components/Error/ServerError";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { getOtherCurrency } from "../invoice/data";
+import TableMenu from "@/components/Table/table-menu";
+import { MenuItem } from "@mui/material";
+import Link from "next/link";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const Vat = () => {
   const router = useRouter();
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
+  const [pageData, setPageData] = useState<VATPageState>(initialVATPageState);
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const {
+    total_paid_vat,
+    total_pending_vat,
+    total_vat_created,
+    percentage_change_paid,
+    percentage_change_pending,
+    percentage_change_total,
+    vats,
+  } = pageData;
+
+  const isFilterApplied = useCallback(() => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  }, [appliedFilters]);
+
+  const [search, setSearch] = useState("");
+  const config: AxiosRequestConfig = useMemo(() => {
+    // Determine date_from and date_to, prioritizing selectedDateRange
+    const dateFrom = selectedDateRange?.from
+      ? dayjs(selectedDateRange.from).format("YYYY-MM-DD")
+      : appliedFilters.startDate
+      ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+      : undefined;
+    const dateTo = selectedDateRange?.to
+      ? dayjs(selectedDateRange.to).format("YYYY-MM-DD")
+      : appliedFilters.endDate
+      ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+      : undefined;
+
+    return {
+      params: {
+        from_date: dateFrom,
+        to_date: dateTo,
+        search: search,
+        account_officer: appliedFilters.menuOptions["Account Officer"] || [],
+        property_ids: appliedFilters.menuOptions["Property"] || [],
+        date_filter: "custom",
+      } as VATFilterParams,
+    };
+  }, [appliedFilters, search, selectedDateRange]); // Add selectedDateRange as dependency
+
+  const handleSearch = (query: string) => {
+    setSearch(query);
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    // If FilterModal sets dates, clear selectedDateRange to avoid conflicts
+    if (filters.startDate || filters.endDate) {
+      setSelectedDateRange(undefined);
+    }
+  };
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0 ? `/vat/list?branch_id=${BRANCH_ID}` : null;
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+  } = useFetch<VATAPIResponse>(fetchUrl, config);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformedVat = transformVATAPIResponse(apiData);
+      const newVat = transformedVat.vats;
+      const currentVat = useGlobalStore.getState()?.accounting_vat;
+      if (JSON.stringify(currentVat) !== JSON.stringify(newVat)) {
+        setGlobalStore("accounting_vat", newVat);
+      }
+      setPageData({ ...transformedVat, vats: newVat });
+      setGlobalStore("accounting_vat_data", {
+        ...transformedVat,
+        vats: newVat,
+      });
+      // accounting_vat_data({ ...transformedVat, vats: newVat });
+      // setPageData((x) => ({
+      //   ...x,
+      //   ...transformVATAPIResponse(apiData),
+      // }));
+    }
+  }, [apiData, setPageData, setGlobalStore]);
+
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: `${p.id}`,
+      label: p.title,
+    })) || [];
+
+  const {
+    getManagers,
+    getStaffs,
+    getAccountOfficers,
+    loading: loadingStaffs,
+    error: staffsError,
+  } = useStaffRoles();
+  const accountOfficers = getAccountOfficers();
+  const accountOfficersOptions =
+    accountOfficers?.map((o) => ({
+      label: o.name,
+      value: `${o.id}`,
+    })) || [];
 
   const [timeRange, setTimeRange] = useState("90d");
 
   const handleDateChange = (range: DateRange | undefined) => {
     setSelectedDateRange(range);
-    // If the user selects a custom range, set the timeRange to "custom"
     if (range?.from && range?.to) {
       setTimeRange("custom");
+      // Clear appliedFilters dates to avoid overlap
+      setAppliedFilters((prev) => ({
+        ...prev,
+        startDate: null,
+        endDate: null,
+      }));
     }
   };
 
@@ -61,35 +220,96 @@ const Vat = () => {
       const days =
         value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
       setSelectedDateRange(calculateDateRange(days));
+      // Clear appliedFilters dates when using predefined ranges
+      setAppliedFilters((prev) => ({
+        ...prev,
+        startDate: null,
+        endDate: null,
+      }));
     }
   };
 
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
-  };
-
   const handleRowClick = (item: DataItem) => {
-    router.push(`/accounting/vat/${item.id}/PrintVat`);
+    router.push(`/manager/accounting/vat/${item.id}/PrintVat`);
   };
 
-  const transformedTableData = vatTableData.map((item) => ({
+  const transformedTableData = vats.map((item) => ({
     ...item,
+    name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{item.name}</span>
+        {item.badge_color && <BadgeIcon color={item.badge_color} />}
+      </p>
+    ),
     total_vat: (
-      <p className={item.total_vat ? "text-status-success-3" : ""}>
-        {item.total_vat ? item.total_vat : "--- ---"}
+      <p
+        className={
+          item.total_vat ? "text-status-success-3 dark:text-white" : ""
+        }
+      >
+        {item.total_vat}
       </p>
     ),
   }));
+
+  const otherCurrency = getOtherCurrencyFromVats(apiData?.data.vats || []);
+
+  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    setSelectedItemId(String(item.id));
+    setAnchorEl(e.currentTarget);
+    // console.log("item", item);
+    // setInvoiceStatus(item.status);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItemId(null);
+    // setInvoiceStatus("");
+  };
+
+  // Function to get the display label for the time range
+  const getTimeRangeLabel = useCallback(() => {
+    switch (timeRange) {
+      case "90d":
+        return "Last 3 months";
+      case "30d":
+        return "Last 30 days";
+      case "7d":
+        return "Last 7 days";
+      case "1d":
+        return "Yesterday";
+      case "custom":
+        if (selectedDateRange?.from && selectedDateRange?.to) {
+          return `${dayjs(selectedDateRange.from).format(
+            "MMM D, YYYY"
+          )} - ${dayjs(selectedDateRange.to).format("MMM D, YYYY")}`;
+        }
+        return "Last 30 days";
+      default:
+        return "Last 30 days";
+    }
+  }, [timeRange, selectedDateRange]);
+
+  // Store timeRangeLabel in global store whenever it changes
+  useEffect(() => {
+    const timeRangeLabel = getTimeRangeLabel();
+    setGlobalStore("vatTimeRangeLabel", timeRangeLabel);
+  }, [getTimeRangeLabel, setGlobalStore]);
+
+  if (loading)
+    return <CustomLoader pageTitle="V.A.T" view="table" layout="page" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-6">
         <div className="flex gap-1 items-center">
           <h1 className="text-black dark:text-white text-2xl font-medium">
-            Vat
+            V.A.T
           </h1>
-          <ExclamationMark />
+          {/* <ExclamationMark /> */}
         </div>
         <div className="bg-white dark:bg-[#3C3D37] rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
           <div className="flex flex-wrap gap-y-4 items-center justify-between">
@@ -130,6 +350,7 @@ const Vat = () => {
               <SearchInput
                 placeholder="Search for Vat"
                 className="max-w-[255px]"
+                onSearch={handleSearch}
               />
               <Modal>
                 <ModalTrigger asChild>
@@ -137,58 +358,112 @@ const Vat = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
-                    filterOptionsMenu={accountingVatOptionsWithDropdown}
+                    filterOptionsMenu={[
+                      ...(propertyOptions.length > 0
+                        ? [
+                            {
+                              label: "Property",
+                              value: propertyOptions,
+                            },
+                          ]
+                        : []),
+                      ...(accountOfficersOptions.length > 0
+                        ? [
+                            {
+                              label: "Account Officer",
+                              value: accountOfficersOptions,
+                            },
+                          ]
+                        : []),
+                    ]}
                     handleFilterApply={handleFilterApply}
                     isDateTrue
+                    appliedFilters={appliedFilters}
                   />
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <ExportButton type="pdf" href="/accounting/vat/export" />
-                <ExportButton type="csv" href="/accounting/vat/export" />
+                <ExportButton type="pdf" href="/manager/accounting/vat/export" />
+                <ExportButton
+                  fileLabel="Accounting Vat"
+                  data={transformedTableData}
+                  type="csv"
+                />
               </div>
             </div>
           </div>
           <AutoResizingGrid gap={24} minWidth={300}>
             <AccountStatsCard
-              title="Total Vat Created"
-              balance={12345432}
-              percentage={53}
+              title="Total Vat Paid"
+              balance={total_vat_created}
+              percentage={percentage_change_total}
               variant="blueIncoming"
-              trendDirection="up"
-              trendColor="green"
-            />
-            <AccountStatsCard
-              title="Total Paid Vat"
-              balance={12345432}
-              variant="greenIncoming"
-              trendDirection="down"
-              trendColor="red"
-              percentage={73}
-            />
-            <AccountStatsCard
-              title="Total Pending Vat"
-              balance={12345432}
-              variant="yellowCard"
-              trendDirection="down"
-              trendColor="red"
-              percentage={53}
+              otherCurrency={otherCurrency}
+              timeRangeLabel={getTimeRangeLabel()}
+              trendDirection={percentage_change_total < 0 ? "down" : "up"}
+              trendColor={percentage_change_total < 0 ? "red" : "green"}
             />
           </AutoResizingGrid>
         </div>
       </div>
-      <CustomTable
-        fields={vatTableFields}
-        data={transformedTableData}
-        tableHeadStyle={{ height: "76px" }}
-        tableHeadCellSx={{ fontSize: "1rem" }}
-        tableBodyCellSx={{
-          fontSize: "1rem",
-          paddingTop: "12px",
-          paddingBottom: "12px",
-        }}
-        handleSelect={handleRowClick}
-      />
+      {vats.length === 0 && !silentLoading ? (
+        config.params.search || isFilterApplied() ? (
+          <SearchError />
+        ) : (
+          <EmptyList
+            noButton
+            title="No VAT yet"
+            body={
+              <p>
+                This section will display VAT records once they are generated.
+                VAT records are created based on transactions or activities that
+                are subject to Value Added Tax.
+                <br />
+                <br />
+                To start generating VAT records, ensure that you have entered
+                the necessary data, such as transactions or property items,
+                depending on your setup.
+                <br />
+                <br />
+              </p>
+            }
+          />
+        )
+      ) : silentLoading ? (
+        <TableLoading />
+      ) : (
+        <>
+          <CustomTable
+            fields={vatTableFields}
+            data={transformedTableData}
+            tableHeadStyle={{ height: "76px" }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "12px",
+              paddingBottom: "12px",
+            }}
+            // handleSelect={handleRowClick}
+            onActionClick={(item, e) => {
+              handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+            }}
+          />
+          <TableMenu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleMenuClose} disableRipple>
+              <Link
+                href={`/manager/accounting/vat/${selectedItemId}/PrintVat`}
+                className="w-full text-left"
+              >
+                Preview
+              </Link>
+            </MenuItem>
+          </TableMenu>
+        </>
+      )}
     </div>
   );
 };

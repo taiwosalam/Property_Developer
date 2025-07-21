@@ -4,16 +4,8 @@
 import Card from "@/components/dashboard/card";
 import {
   dashboardListingsChartConfig,
-  dashboardListingsChartData,
-  dashboardPerformanceChartConfig,
-  dashboardPerformanceChartData,
-  recentMessagesData,
-  walletBalanceCardData,
   invoiceTableFields,
-  dashboardInvoiceTableData,
   complaintsData,
-  transformDashboardData,
-  BranchDashboardResponse,
   dashboardCardData,
 } from "./data";
 import WalletBalanceCard from "@/components/dashboard/wallet-balance";
@@ -25,11 +17,7 @@ import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import CustomTable from "@/components/Table/table";
 import Link from "next/link";
 import { useWalletStore } from "@/store/wallet-store";
-import Cookies from "js-cookie";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
-import { useAuthStore } from "@/store/authStore";
-import { getLocalStorage } from "@/utils/local-storage";
 import useFetch from "@/hooks/useFetch";
 import { useEffect, useState } from "react";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
@@ -43,7 +31,6 @@ import {
   transformSingleBranchAPIResponse,
 } from "../../management/staff-branch/[branchId]/data";
 import { useGlobalStore } from "@/store/general-store";
-import useBranchStore from "@/store/branch-store";
 import { getTransactionIcon } from "@/components/Wallet/icons";
 import clsx from "clsx";
 import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
@@ -54,6 +41,10 @@ import {
 import { transformUsersMessages } from "../../(messages-reviews)/messages/data";
 import { useChatStore } from "@/store/message";
 import { getRecentMessages } from "../../dashboard/data";
+import { InvoiceListResponse } from "../../accounting/invoice/types";
+import { transformInvoiceData } from "../accounting/invoice/data";
+import { TransformedInvoiceData } from "../accounting/invoice/types";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
@@ -65,11 +56,53 @@ const Dashboard = () => {
     setGlobalInfoStore: s.setGlobalInfoStore,
   }));
   const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
+  const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
+    null
+  );
 
+  const branchURL =
+    BRANCH_ID && BRANCH_ID !== 0 ? `/branch/${BRANCH_ID}` : null;
   const { data, error, loading, isNetworkError, refetch } =
-    useFetch<SingleBranchResponseType>(`branch/${BRANCH_ID}`);
-  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
+    useFetch<SingleBranchResponseType>(branchURL);
+  useRefetchOnEvent("refetch-branch-data", () => {
+    refetch({ silent: true });
+  });
 
+  // =========== INVOICE DATA ===========
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/invoice/list?branch_id=${BRANCH_ID}`
+      : null;
+
+  const {
+    data: invoiceResponseData,
+    error: invoiceError,
+    loading: invoiceLoading,
+    isNetworkError: invoiceNetworkError,
+    silentLoading: invoiceSilentLoading,
+  } = useFetch<InvoiceListResponse>(fetchUrl);
+
+  useEffect(() => {
+    if (invoiceResponseData) {
+      const transformed = transformInvoiceData(invoiceResponseData);
+      setInvoiceData(transformed);
+    }
+  }, [invoiceResponseData]);
+
+  // Handle invoiceData nullability
+  const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
+  const transformedRecentInvoiceTableData = invoiceList.map((i) => ({
+    ...i,
+    client_name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{i.client_name}</span>
+        {i.badge_color && <BadgeIcon color={i.badge_color} />}
+      </p>
+    ),
+  }));
+
+  // =========== BRANCH DATA ===========
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
   const {
     branch_wallet,
@@ -303,23 +336,33 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* <SectionContainer heading="Recent invoice" href="/manager/accounting/invoice">
-        {branchResponse && branchResponse?.data?.invoices.length > 0 ? (
-          <CustomTable
-            data={branchResponse?.data.invoices}
-            fields={invoiceTableFields}
-            tableHeadClassName="h-[76px]"
-            tableBodyCellSx={{
-              fontSize: "1rem",
-              paddingTop: "18px",
-              paddingBottom: "18px",
-            }}
-            tableHeadCellSx={{ fontSize: "1rem" }}
-          />
-        ) : (
-          <p className="text-center py-20 text-slate-400">No recent invoices</p>
+      {/* =========== RECENT INVOICES =========== */}
+      <SectionContainer
+        className="recent-invoice-table"
+        heading="Recent invoice"
+        href="/manager/accounting/invoice"
+      >
+        <CustomTable
+          data={transformedRecentInvoiceTableData}
+          fields={invoiceTableFields}
+          tableHeadClassName="h-[76px]"
+          tableBodyCellSx={{
+            fontSize: "1rem",
+            paddingTop: "18px",
+            paddingBottom: "18px",
+          }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+        />
+        {transformedRecentInvoiceTableData.length === 0 && (
+          <div className="flex justify-center items-center min-h-[200px]">
+            <p className="text-gray-500 dark:text-gray-400">
+              No Recent Invoice Yet.
+            </p>
+          </div>
         )}
-      </SectionContainer> */}
+      </SectionContainer>
+
+      {/* =========== RECENT COMPLAINS =========== */}
       <SectionContainer heading="Recent Complains" href="/tasks/complaints">
         <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array(6)

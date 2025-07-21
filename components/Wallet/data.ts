@@ -63,13 +63,11 @@ export const fundWallet = async (amount: number) => {
 
 
 
-export const checkPaymentStatus = async (reference: string) => {
+export const checkPaymentStatus = async (reference: string, param?: string) => {
   try {
-    const res = await api.get(`/transactions/verify/${reference}`);
+    const res = await api.get(`/transactions/verify/${reference}?${param}`);
 
-    console.log("res here", res);
-
-    if (res.status === 200) {
+    if (res.status === 200 || res.status === 201) {
       const transactionStatus = res.data?.data?.status; // Extract actual payment status
 
       if (transactionStatus === "success") {

@@ -8,10 +8,12 @@ import { toast } from "sonner";
 
 interface WalletOnlineFundingCardProps {
   onPaymentInitiated?: (url: string, reference: string) => void;
+  page?: "manager" | "account";
 }
 
 const WalletOnlineFundingCard = ({
   onPaymentInitiated,
+  page,
 }: WalletOnlineFundingCardProps) => {
   const [amount, setAmount] = useState(0);
   const [loading, setLoading] = useState(false);

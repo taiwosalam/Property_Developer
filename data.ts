@@ -49872,6 +49872,7 @@ export const staffRoutes = [
   "/staff/accounting/receipts",
   "/staff/accounting/expenses",
   "/staff/accounting/disbursement",
+  "/manager/accounting/disbursement/export",
   "/staff/accounting/statement",
   "/staff/accounting/vat",
   "/staff/reports/tenants",
@@ -49965,6 +49966,7 @@ export const accountRoutes = [
   "/accountant/settings/profile",
   "/agent-community",
 ];
+
 export const managerRoutes = [
   "/messages",
   "/manager/dashboard",
@@ -49996,6 +49998,8 @@ export const managerRoutes = [
   "/manager/accounting/receipts",
   "/manager/accounting/expenses",
   "/manager/accounting/disbursement",
+  "/manager/accounting/disbursement/export",
+  "/manager/accounting/disbursement/create-disbursement",
   "/manager/accounting/statement",
   "/manager/accounting/vat",
   "/manager/reports/tenants",
