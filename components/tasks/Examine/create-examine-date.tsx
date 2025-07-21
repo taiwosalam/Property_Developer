@@ -245,7 +245,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
               required
             />
           </div>
-          <div className="flex justify-end">
+          {/* <div className="flex justify-end">
             <DocumentCheckbox
               alignCheckboxCenter
               title="Announce the event"
@@ -256,7 +256,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
                 setIsChecked: setAnnouncement,
               }}
             />
-          </div>
+          </div> */}
           <Button
             //onClick={next}
             disabled={loading}

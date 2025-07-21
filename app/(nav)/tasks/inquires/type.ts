@@ -23,6 +23,7 @@ type CallItem = {
   date: string; // format: "DD/MM/YYYY"
   user: {
     id: string;
+    user_id: number;
     name: string;
     tier: number;
     photo: string;

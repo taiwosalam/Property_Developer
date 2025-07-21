@@ -4,6 +4,7 @@ import api, { handleAxiosError } from "@/services/api";
 
 export interface RequestCallBackCardDataType {
   id?: number;
+  userId?: number;
   userName: string;
   requestDate: string;
   requestId: string;
@@ -66,6 +67,7 @@ export const transformCallbackRequestPageData = (
     call_requests: data?.data?.map((request) => {
       return {
         id: request?.id,
+        userId: request?.user?.user_id,
         requestId: request?.request_id.toString(),
         userName: request?.user?.name?.toLowerCase() || "___ ___",
         requestDate: request?.date,

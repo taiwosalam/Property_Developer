@@ -10,7 +10,7 @@ import {
   tenantsReportTableFields,
   transformTenantData,
 } from "./data";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -25,14 +25,11 @@ import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "lodash";
+import { Loader2 } from "lucide-react";
 
 const TenantsReport = () => {
   const router = useRouter();
-  const [pageData, setPageData] = useState<TenantReport>({
-    total_tenants: 0,
-    monthly_tenants: 0,
-    tenants: [],
-  });
+  const [pageData, setPageData] = useState<TenantReport | null>(null);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -49,6 +46,12 @@ const TenantsReport = () => {
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
+
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastRowRef = useRef<HTMLTableRowElement | null>(null);
+  const tableContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (apiData) setBranches(apiData.data);
@@ -123,6 +126,69 @@ const TenantsReport = () => {
     "/report/tenants",
     config
   );
+  
+  // Handle data transformation and appending for infinite scroll
+  useEffect(() => {
+    if (data && !loading) {
+      const transData = transformTenantData(data);
+      setPageData((prev) => ({
+        ...transData,
+        emails:
+          config.params.page === 1
+            ? transData.tenants
+            : [...(prev?.tenants ?? []), ...transData.tenants],
+      }));
+      //setGlobalStore("emails", transData.emails);
+      setIsFetchingMore(false);
+    }
+  }, [data, config.params.page, setGlobalStore]);
+
+  // Set up Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (
+      loading ||
+      isFetchingMore ||
+      !pageData ||
+      pageData.tenants.length === 0 ||
+      pageData.pagination.current_page >= pageData.pagination.last_page
+    ) {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      return;
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingMore) {
+          console.log(
+            "Last row visible, fetching page:",
+            config.params.page + 1
+          );
+          setConfig((prev) => ({
+            ...prev,
+            params: { ...prev.params, page: prev.params.page + 1 },
+          }));
+          setIsFetchingMore(true);
+        }
+      },
+      {
+        root: tableContainerRef.current, // Use TableContainer as the scrollable root
+        rootMargin: "20px", // Trigger slightly before the bottom
+        threshold: 1.0, // Trigger when the last row is fully visible
+      }
+    );
+
+    if (lastRowRef.current) {
+      observerRef.current.observe(lastRowRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [loading, isFetchingMore, pageData]);
 
   useEffect(() => {
     if (!loading && data) {
@@ -148,8 +214,8 @@ const TenantsReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total Tenants"
-          newData={pageData.monthly_tenants}
-          total={pageData.total_tenants}
+          newData={pageData?.monthly_tenants || 0}
+          total={pageData?.total_tenants || 0}
           colorScheme={1}
         />
       </div>
@@ -175,7 +241,7 @@ const TenantsReport = () => {
         fileLabel={"Tenants Reports"}
       />
       <section>
-        {pageData.tenants.length === 0 && !loading ? (
+        {pageData && pageData.tenants.length === 0 && !loading ? (
           !!config.params.search.trim() || hasActiveFilters(appliedFilters) ? (
             <SearchError />
           ) : (
@@ -199,12 +265,28 @@ const TenantsReport = () => {
             />
           )
         ) : (
-          <CustomTable
-            fields={tenantsReportTableFields}
-            data={pageData.tenants}
-            tableHeadClassName="h-[45px]"
-            tableBodyCellSx={{ color: "#3F4247" }}
-          />
+          <div ref={tableContainerRef} className="py-4">
+            <CustomTable
+              fields={tenantsReportTableFields}
+              data={pageData?.tenants || []}
+              tableHeadClassName="h-[45px]"
+              tableBodyCellSx={{ color: "#3F4247" }}
+            />
+
+            {isFetchingMore && (
+              <div className="flex justify-center py-4">
+                <Loader2 className="animate-spin text-brand-9" />
+              </div>
+            )}
+            {pageData &&
+              pageData.pagination.current_page >=
+                pageData.pagination.last_page &&
+              pageData.tenants.length > 0 && (
+                <div className="text-center py-4 text-gray-500">
+                  {/* No more emails to load */}
+                </div>
+              )}
+          </div>
         )}
       </section>
     </div>

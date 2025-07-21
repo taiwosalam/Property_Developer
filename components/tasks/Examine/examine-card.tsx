@@ -78,7 +78,7 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
                 router.push(`/tasks/examine/${id}/manage`);
               }}
             >
-              manage
+              inspect
             </Button>
           )}
 

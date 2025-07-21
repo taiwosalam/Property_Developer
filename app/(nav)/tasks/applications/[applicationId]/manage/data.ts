@@ -42,6 +42,7 @@ export interface IApplicationDetails {
     total_package?: string;
     unit_name?: string;
     renewal_amount?: string;
+    currency: string;
     local_government: string;
     account_officer: string;
   };
@@ -159,11 +160,12 @@ export const transformApplicationDetailsPageData = (
     application_status,
     property_details: {
       application_date,
+      currency: currencies[property_details?.property_currency || "naira"],
       property_title: property_details?.property_title || "--- ---",
       address: property_details?.full_address || "--- ---",
       landlord: property_details?.landlord?.toLowerCase() || "--- ---",
-      total_package: property_details?.total_package || "--- ---",
-      renewal_amount: property_details?.renew_total_package || "--- ---",
+      total_package: Math.round(Number(property_details?.total_package)).toLocaleString() || "--- ---",
+      renewal_amount: Math.round(Number(property_details?.renew_total_package)).toLocaleString() || "--- ---",
       description: property_details?.description || "--- ---",
       state: property_details?.state || "--- ---",
       unit_name: property_details?.unit_name || "--- ---",
@@ -245,7 +247,7 @@ export const transformApplicationDetailsPageData = (
     current_rent:
       rent_history?.previous?.map((current) => ({
         unitId: current?.unit_id,
-        currency: currencies[current?.currency],
+        currency: currencies[current?.currency || "naira"],
         unitData: {
           unit_name: current?.unit_name,
           unit_preference: current?.unit_preference,
@@ -262,7 +264,7 @@ export const transformApplicationDetailsPageData = (
           ? Math.round(Number(current?.rent_amount))?.toLocaleString()
           : "--- ---",
         period: current?.period || "--- ---",
-        moveInDate: current?.start_date || "--- ---",
+        moveInDate: current?.start_date || current?.payment_date || "--- ---",
         propertyImages:
           current?.unitImages?.length > 0
             ? current?.unitImages?.map((image) => image.path)
@@ -273,7 +275,7 @@ export const transformApplicationDetailsPageData = (
     previous_rent:
       rent_history?.previous?.map((current) => ({
         unitId: current?.unit_id,
-        currency: currencies[current?.currency],
+        currency: currencies[current?.currency || "naira"],
         unitData: {
           unit_name: current?.unit_name,
           unit_preference: current?.unit_preference,
@@ -336,8 +338,10 @@ export const rejectApplication = async (id: string, path: string) => {
     }
   } catch (error) {
     console.error(error);
-    handleAxiosError(error);
-    return false;
+    if (path === "reject") {
+      handleAxiosError(error);
+      return false;
+    }
   }
 };
 

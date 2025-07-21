@@ -45,7 +45,7 @@ const transformToCallBackRequestCardProps = (
       { label: "Phone Number", accessor: "phoneNumber" },
       { label: "Branch", accessor: "branch" },
       { label: "Property Name", accessor: "propertyName" },
-      { label: "Account Officer", accessor: "accountOfficer" },
+      { label: "Account Manager", accessor: "accountOfficer" },
       { label: "Property Address", accessor: "propertyAddress" },
       { label: "Unit Name", accessor: "unitName" },
     ],

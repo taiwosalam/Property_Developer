@@ -152,12 +152,16 @@ const MessagesFromTask = ({ comments }: MessageFromTaskProps) => {
       <div className="pb-8 bg-white dark:bg-[#3C3D37] rounded-b-lg">
         <div
           ref={containerRef}
-          className="p-4 h-[320px] overflow-y-scroll custom-round-scrollbar custom-flex-col"
+          className="p-4 h-[320px] w-full overflow-y-scroll custom-round-scrollbar custom-flex-col"
         >
           {comments && comments.length === 0 ? (
-            <p>No comment here</p>
+            <div className="flex items-center justify-center h-full w-full">
+              <p className="text-center text-darkText-2 dark:text-gray-400">No message yet</p>
+            </div>
           ) : (
-          comments && comments.length > 0 && comments.map((m, index) => {
+            comments &&
+            comments.length > 0 &&
+            comments.map((m, index) => {
               const currentDate = moment(m.time).startOf("day");
               const previousDate =
                 index > 0

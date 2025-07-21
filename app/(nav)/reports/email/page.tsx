@@ -215,19 +215,6 @@ const EmailReport = () => {
     setAnchorEl(e.currentTarget);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedItemId(null);
-  };
-
-  async function handleDeleteItem(item: string) {
-    //await deleteUndoItem(item);
-  }
-
-  async function restoreTrashItem(item: string) {
-    //await restoreItem(item);
-  }
-
   if (loading && config.params.page === 1)
     return <CustomLoader layout="page" pageTitle="Email" view="table" />;
   if (isNetworkError) return <NetworkError />;

@@ -29,6 +29,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../data/utils";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 interface TableRecord {
   id: number;
@@ -65,6 +66,8 @@ const Visitors = () => {
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: { page: 1, search: "" } as ReportsRequestParams,
   });
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -72,17 +75,15 @@ const Visitors = () => {
     startDate: null,
     endDate: null,
   });
-  const [branches, setBranches] = useState<BranchFilter[]>([]);
   const [branchAccountOfficers, setBranchAccountOfficers] = useState<
     BranchStaff[]
   >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
-  const { data: apiDataBranch } = useFetch<any>("branches");
+
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
   useEffect(() => {
-    if (apiData) setBranches(apiDataBranch.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -90,7 +91,7 @@ const Visitors = () => {
       setBranchAccountOfficers(filterStaff);
     }
     if (property) setPropertyList(property.data);
-  }, [apiDataBranch, staff, property]);
+  }, [staff, property]);
 
   const reportTenantFilterOption = [
     {
@@ -98,13 +99,6 @@ const Visitors = () => {
       value: branchAccountOfficers.map((staff: any) => ({
         label: staff.user.name,
         value: staff.user.id.toString(),
-      })),
-    },
-    {
-      label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
       })),
     },
     {
@@ -135,13 +129,12 @@ const Visitors = () => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
       const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
+
       const property = menuOptions["Property"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -152,13 +145,19 @@ const Visitors = () => {
     []
   );
 
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/report/visitor-request?branch_id=${BRANCH_ID}`
+      : null;
+
   const {
     data: apiData,
     loading,
     silentLoading,
     error,
     isNetworkError,
-  } = useFetch<VisitorRequestResponse>(`/report/visitor-request`);
+  } = useFetch<VisitorRequestResponse>(fetchUrl, config);
 
   useEffect(() => {
     if (!loading && apiData) {
