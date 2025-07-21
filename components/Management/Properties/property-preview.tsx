@@ -41,6 +41,7 @@ export interface PropertyPreviewProps
   fee_period?: string;
   description?: string;
   units: UnitItemProps[];
+  page?: "manager" | "account";
 }
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
@@ -56,6 +57,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
     landlord,
     units,
     description,
+    page,
     ...others
   } = props;
   const sanitizedDescription = DOMPurify.sanitize(description ?? "");
@@ -65,6 +67,16 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
     setIsClient(true);
   }, []);
 
+  const getManagePropertyLink = () => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/properties/${id}/edit-property`;
+      case "account":
+        return `/account/management/properties/${id}/edit-property`;
+      default:
+        return `/management/properties/${id}/edit-property`;
+    }
+  };
   return (
     <div className="space-y-5">
       <BackButton as="p" bold>
@@ -83,9 +95,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
             {address}
           </p>
         </div>
-        <Button href={`/management/properties/${id}/edit-property`}>
-          Manage
-        </Button>
+        <Button href={getManagePropertyLink()}>Manage</Button>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-x-[30px] gap-y-5">
@@ -135,7 +145,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
 
       <section className="space-y-4">
         {units.map((unit) => (
-          <UnitItem key={unit.unitId} {...unit} />
+          <UnitItem key={unit.unitId} {...unit} page={page} />
         ))}
       </section>
     </div>

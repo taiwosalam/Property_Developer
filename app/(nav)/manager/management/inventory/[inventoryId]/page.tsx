@@ -93,6 +93,7 @@ const InventoryUnit = ({ params }: { params: { inventoryId: string } }) => {
         <AutoResizingGrid minWidth={315}>
           {inventory_unit_data.map((unit) => (
             <InventoryUnitCard
+              page="manager"
               key={unit.unitId}
               {...unit}
               propertyId={Number(params.inventoryId)}

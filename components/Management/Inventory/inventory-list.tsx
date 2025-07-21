@@ -20,7 +20,7 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import { CameraIcon } from "@/public/icons/icons";
 
-const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
+const InventoryList: React.FC<InventoryListProps> = ({ data, page }) => {
   const [isOpened, setIsOpened] = useState(false);
   // const [branchName, setBranchName ] = useState<string | null>(null);
   const images =
@@ -42,6 +42,16 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
         : data?.account_officer?.name || "--- ---",
   };
 
+  const getManageLink = () => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/inventory/${data.property_id}`;
+      case "account":
+        return `/account/management/inventory/${data.property_id}`;
+      default:
+        return `/management/inventory/${data.property_id}`;
+    }
+  };
   // Ensure data is not null or undefined
   if (!data) {
     return <div>No data available</div>;
@@ -100,7 +110,7 @@ const InventoryList: React.FC<InventoryListProps> = ({ data }) => {
               variant="border"
               size="xs_medium"
               className="py-2 px-10"
-              href={`/management/inventory/${data.property_id}`}
+              href={getManageLink()}
             >
               manage
             </Button>

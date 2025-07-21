@@ -188,7 +188,7 @@ const Inventory = () => {
   // Conditionally set the URL only if BRANCH_ID is valid
   const fetchUrl =
     BRANCH_ID && BRANCH_ID !== 0
-      ? `/inventories?branch_id[]=${BRANCH_ID}`
+      ? `/inventories?branch_id[0]=${BRANCH_ID}`
       : null;
 
   const {
@@ -229,17 +229,12 @@ const Inventory = () => {
     const { menuOptions, startDate, endDate } = filters;
     const accountOfficerArray = menuOptions["Account Officer"] || [];
     const status = menuOptions["Status"]?.[0];
-    const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: InventoryRequestParams = {
       page: 1,
       sort: "asc",
       search: "",
     };
-    if (branchIdsArray.length > 0) {
-      queryParams.branch_id = branchIdsArray;
-      // queryParams.branch_id = branchIdsArray.join(",");
-    }
     if (accountOfficerArray.length > 0) {
       queryParams.accountOfficer_id = accountOfficerArray.join(",");
     }
@@ -257,7 +252,7 @@ const Inventory = () => {
     });
   };
 
-    // Render an error message if BRANCH_ID is invalid
+  // Render an error message if BRANCH_ID is invalid
   // if (!BRANCH_ID || BRANCH_ID === 0) {
   //   return (
   //     <div className="text-base text-red-500 font-medium">
@@ -266,7 +261,6 @@ const Inventory = () => {
   //   );
   // }
 
-  
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Inventory" statsCardCount={3} />
@@ -306,14 +300,6 @@ const Inventory = () => {
                 },
               ]
             : []),
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-            : []),
         ]}
         appliedFilters={appliedFilters}
         handleSearch={handleSearch}
@@ -349,7 +335,7 @@ const Inventory = () => {
                   <CardsLoading />
                 ) : (
                   inventory.map((item, idx) => (
-                    <InventoryCard key={idx} data={item} />
+                    <InventoryCard key={idx} data={item} page="manager" />
                   ))
                 )}
               </AutoResizingGrid>
@@ -360,7 +346,7 @@ const Inventory = () => {
                 ) : (
                   inventory.map((item, idx) => (
                     <div key={idx} className="mb-4">
-                      <InventoryList data={item} />
+                      <InventoryList data={item} page="manager" />
                     </div>
                   ))
                 )}

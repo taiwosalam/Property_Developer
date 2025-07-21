@@ -31,6 +31,7 @@ export interface AccountOfficer {
 export interface InventoryCardProps {
   data: Partial<InventoryCardDataProps>;
   viewOnly?: boolean;
+  page?: "manager" | "account";
 }
 
 export interface InventoryListProps extends InventoryCardProps {}

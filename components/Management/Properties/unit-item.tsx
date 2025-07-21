@@ -40,7 +40,7 @@ export interface UnitItemProps {
   tenantId?: number | string;
   tenantAgent?: "web" | "mobile";
   caution_deposit?: number;
-  page?: "tenant-profile" | "others";
+  page?: "tenant-profile" | "others" | "manager" | "account";
   documents?: AttachedDocument[];
 }
 
@@ -162,9 +162,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
 
           {property_name && page === "tenant-profile" && (
             <div>
-              <p className="text-[#747474] dark:text-white">
-                Property Name
-              </p>
+              <p className="text-[#747474] dark:text-white">Property Name</p>
               <p className="text-black dark:text-darkText-1 flex items-center">
                 {property_name}
               </p>
@@ -282,7 +280,8 @@ const UnitItem: React.FC<UnitItemProps> = ({
                     typeof action.route === "function"
                       ? action.route(
                           unitId,
-                          propertyType as "rental" | "facility"
+                          propertyType as "rental" | "facility",
+                          page
                         )
                       : action.route
                   }
