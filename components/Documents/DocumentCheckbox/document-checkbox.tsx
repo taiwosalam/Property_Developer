@@ -41,6 +41,7 @@ const DocumentCheckbox: React.FC<DocumentCheckboxProps> = ({
   };
 
   const handleClick = () => {
+    console.log("isChecked", isChecked);
     // This works fine for both controlled and uncontrolled scenarios
     setIsChecked((prev) => {
       const newValue = !prev;
