@@ -12,6 +12,8 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
 import type { Field } from "@/components/Table/types";
+import { DashboardCard, BranchData } from "./type";
+import { Stats } from "../../management/staff-branch/[branchId]/types";
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -366,17 +368,22 @@ export const dashboardListingsChartData = Array.from({ length: 90 }, (_, i) => {
 }).reverse();
 
 export const invoiceTableFields: Field[] = [
-  { id: "1", accessor: "picture", isImage: true, picSize: 40 },
+  {
+    id: "1",
+    accessor: "client_picture",
+    isImage: true,
+    picSize: 40,
+  },
   {
     id: "2",
     label: "Name",
-    accessor: "name",
+    accessor: "client_name",
   },
   { id: "3", label: "Invoice ID", accessor: "invoice_id" },
   {
     id: "4",
     label: "Details",
-    accessor: "details",
+    accessor: "payment_reason",
     cellStyle: {
       textOverflow: "ellipsis",
       overflow: "hidden",
@@ -385,7 +392,7 @@ export const invoiceTableFields: Field[] = [
     },
   },
   { id: "5", label: "Total Amount", accessor: "total_amount" },
-  { id: "6", label: "Date", accessor: "date" },
+  { id: "6", label: "Date", accessor: "invoice_date" },
 ];
 
 export const dashboardInvoiceTableData = Array.from(
@@ -410,12 +417,6 @@ export const dashboardInvoiceTableData = Array.from(
     };
   }
 );
-
-
-
-
-
-
 
 
 export const dashboardCardData = [
@@ -492,3 +493,62 @@ export const dashboardCardData = [
     link: "/listing/units",
   },
 ];
+
+
+export const transformDashboardCardData = (
+  dashboardCardData: DashboardCard[],
+  branchData: BranchData | null,
+  BRANCH_ID: number
+): DashboardCard[] => {
+  return dashboardCardData.map((card) => {
+    let stats: Stats | undefined;
+    let link = "";
+    switch (card.title) {
+      case "Properties":
+        stats = branchData?.properties;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/properties`;
+        break;
+      case "Landlords":
+        stats = branchData?.landlords;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/landlords`;
+        break;
+      case "Tenants & Occupants":
+        stats = branchData?.tenants;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/tenants`;
+        break;
+      case "Vacant Unit":
+        stats = branchData?.vacant_units;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/vacant-units`;
+        break;
+      case "Expired":
+        stats = branchData?.expired;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/expired-units`;
+        break;
+      case "Invoices":
+        stats = branchData?.invoices;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/invoices`;
+        break;
+      case "Inquiries":
+        stats = branchData?.inquiries;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/inquiries`;
+        break;
+      case "Complaints":
+        stats = branchData?.complaints;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/complaints`;
+        break;
+      case "Listings":
+        stats = branchData?.listings;
+        link = `/manager/management/staff-branch/${BRANCH_ID}/listings`;
+        break;
+      default:
+        break;
+    }
+
+    return {
+      ...card,
+      link,
+      value: stats ? stats.total : card.value,
+      subValue: stats ? stats.new_this_month : card.subValue,
+    };
+  });
+};

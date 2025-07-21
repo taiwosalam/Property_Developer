@@ -29,7 +29,6 @@ const AddFundsModal = ({
   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
   const company_name = usePersonalInfoStore((state) => state.company_name);
 
-  console.log("branch_details", branch_details);
   const [activeStep, setActiveStep] =
     useState<WalletSendFundsOptions>("send funds menu");
   // State to hold payment details
@@ -59,6 +58,7 @@ const AddFundsModal = ({
         reference={reference}
         onPaymentConfirmed={handlePaymentConfirmed}
         onClose={() => setIsOpen(false)}
+        page={page}
       />
     );
   }
@@ -93,6 +93,7 @@ const AddFundsModal = ({
             <WalletBankTransferCard />
             <WalletOnlineFundingCard
               onPaymentInitiated={handlePaymentInitiated}
+              page={page}
             />
           </div>
         )}
