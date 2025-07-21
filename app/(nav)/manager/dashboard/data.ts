@@ -147,81 +147,81 @@ export const transformDashboardData = (data: BranchDashboardResponse) => {
   };
 };
 
-export const dashboardCardData = (data: Record<string, any>) => [
-  {
-    title: "Properties",
-    bg: getBackgroundColor("properties"),
-    icon: BuildingIcon,
-    value: data?.property_count ?? 0,
-    subValue: data?.month_count ?? 0,
-    link: "/management/staff-branch/",
-  },
-  {
-    title: "Landlords",
-    bg: getBackgroundColor("landlords"),
-    icon: LandlordIcon,
-    value: data?.landlord_count ?? 0,
-    subValue: data?.month_landlord_count ?? 0,
-    link: "/management/landlord",
-  },
-  {
-    title: "Tenants & Occupants",
-    bg: getBackgroundColor("tenants & occupants"),
-    icon: TenantIcon,
-    value: data?.tenant_count ?? 0,
-    subValue: data?.month_tenant_count ?? 0,
-    link: "/management/tenants",
-  },
-  {
-    title: "Vacant Unit",
-    bg: getBackgroundColor("vacant unit"),
-    icon: BedIcon,
-    value: data?.vacant_unit ?? 0,
-    subValue: data?.month_vacant_unit ?? 0,
-    link: "/management/rent-unit",
-  },
-  {
-    title: "Expired",
-    bg: getBackgroundColor("expired"),
-    icon: ExpiredIcon,
-    value: data?.expired_unit ?? 0,
-    subValue: data?.month_expired_unit ?? 0,
-    link: "/management/rent-unit",
-  },
-  {
-    title: "Invoices",
-    bg: getBackgroundColor("invoices"),
-    icon: InvoiceIcon,
-    value: data?.invoice_count ?? 0,
-    subValue: data?.month_invoice_count ?? 0,
-    link: "/accounting/invoice",
-  },
-  {
-    title: "Inquiries",
-    bg: getBackgroundColor("inquiries"),
-    icon: InquiriesIcon,
-    value: data?.inquiry_count ?? 0,
-    subValue: data?.month_inquiry_count ?? 0,
-    link: "/tasks/inquires",
-  },
+// export const dashboardCardData = (data: Record<string, any>) => [
+//   {
+//     title: "Properties",
+//     bg: getBackgroundColor("properties"),
+//     icon: BuildingIcon,
+//     value: data?.property_count ?? 0,
+//     subValue: data?.month_count ?? 0,
+//     link: "/management/staff-branch/",
+//   },
+//   {
+//     title: "Landlords",
+//     bg: getBackgroundColor("landlords"),
+//     icon: LandlordIcon,
+//     value: data?.landlord_count ?? 0,
+//     subValue: data?.month_landlord_count ?? 0,
+//     link: "/management/landlord",
+//   },
+//   {
+//     title: "Tenants & Occupants",
+//     bg: getBackgroundColor("tenants & occupants"),
+//     icon: TenantIcon,
+//     value: data?.tenant_count ?? 0,
+//     subValue: data?.month_tenant_count ?? 0,
+//     link: "/management/tenants",
+//   },
+//   {
+//     title: "Vacant Unit",
+//     bg: getBackgroundColor("vacant unit"),
+//     icon: BedIcon,
+//     value: data?.vacant_unit ?? 0,
+//     subValue: data?.month_vacant_unit ?? 0,
+//     link: "/management/rent-unit",
+//   },
+//   {
+//     title: "Expired",
+//     bg: getBackgroundColor("expired"),
+//     icon: ExpiredIcon,
+//     value: data?.expired_unit ?? 0,
+//     subValue: data?.month_expired_unit ?? 0,
+//     link: "/management/rent-unit",
+//   },
+//   {
+//     title: "Invoices",
+//     bg: getBackgroundColor("invoices"),
+//     icon: InvoiceIcon,
+//     value: data?.invoice_count ?? 0,
+//     subValue: data?.month_invoice_count ?? 0,
+//     link: "/accounting/invoice",
+//   },
+//   {
+//     title: "Inquiries",
+//     bg: getBackgroundColor("inquiries"),
+//     icon: InquiriesIcon,
+//     value: data?.inquiry_count ?? 0,
+//     subValue: data?.month_inquiry_count ?? 0,
+//     link: "/tasks/inquires",
+//   },
 
-  {
-    title: "Complaints",
-    bg: getBackgroundColor("complaints"),
-    icon: ComplaintsIcon,
-    value: data?.complaint_count ?? 0,
-    subValue: data?.month_complaint_count ?? 0,
-    link: "/tasks/complaints",
-  },
-  {
-    title: "Listings",
-    bg: getBackgroundColor("listings"),
-    icon: ListingsIcon,
-    value: data?.listing_count ?? 0,
-    subValue: data?.month_listing_count ?? 0,
-    link: "/listing/units",
-  },
-];
+//   {
+//     title: "Complaints",
+//     bg: getBackgroundColor("complaints"),
+//     icon: ComplaintsIcon,
+//     value: data?.complaint_count ?? 0,
+//     subValue: data?.month_complaint_count ?? 0,
+//     link: "/tasks/complaints",
+//   },
+//   {
+//     title: "Listings",
+//     bg: getBackgroundColor("listings"),
+//     icon: ListingsIcon,
+//     value: data?.listing_count ?? 0,
+//     subValue: data?.month_listing_count ?? 0,
+//     link: "/listing/units",
+//   },
+// ];
 
 export const walletBalanceCardData = {
   mainBalance: 1000,
@@ -410,3 +410,85 @@ export const dashboardInvoiceTableData = Array.from(
     };
   }
 );
+
+
+
+
+
+
+
+
+export const dashboardCardData = [
+  {
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
+    icon: BuildingIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/staff-branch/",
+  },
+  {
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
+    icon: LandlordIcon,
+      value: "0",
+    subValue: "0",
+    link: "/management/landlord",
+  },
+  {
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
+    icon: TenantIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/tenants",
+  },
+  {
+    title: "Vacant Unit",
+    bg: getBackgroundColor("vacant unit"),
+    icon: BedIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/rent-unit",
+  },
+  {
+    title: "Expired",
+    bg: getBackgroundColor("expired"),
+    icon: ExpiredIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/rent-unit",
+  },
+  {
+    title: "Invoices",
+    bg: getBackgroundColor("invoices"),
+    icon: InvoiceIcon,
+    value: "0",
+    subValue: "0",
+    link: "/accounting/invoice",
+  },
+  {
+    title: "Inquiries",
+    bg: getBackgroundColor("inquiries"),
+    icon: InquiriesIcon,
+    value: "0",
+    subValue: "0",
+    link: "/tasks/inquires",
+  },
+  {
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
+    icon: ComplaintsIcon,
+    value: "0",
+    subValue: "0",
+    link: "/tasks/complaints",
+  },
+  {
+    title: "Listings",
+    bg: getBackgroundColor("listings"),
+    icon: ListingsIcon,
+    value: "0",
+    subValue: "0",
+    link: "/listing/units",
+  },
+];

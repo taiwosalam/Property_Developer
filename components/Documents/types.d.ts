@@ -59,6 +59,7 @@ export interface Document {
   total_unit: number;
   created_date: string;
   last_updated: string;
+  page?: 'manager' | 'account';
 }
 
 export interface DocumentsPageAPIResponse {

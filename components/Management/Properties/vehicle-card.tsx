@@ -30,11 +30,12 @@ export interface PropertyCardProps {
   available_units?: number;
   currency?: keyof typeof currencySymbols;
   isClickable?: boolean;
-  viewOnly?: boolean;
+  viewOnly?: boolean; 
   total: number;
+  page?: "manager" | "account";
 }
 
-const VehicleCard: React.FC<any> = ({ data }) => {
+const VehicleCard: React.FC<any> = ({ data, page }) => {
   const {
     id,
     images,
@@ -60,6 +61,18 @@ const VehicleCard: React.FC<any> = ({ data }) => {
       setIsModalActive(false);
     }
   });
+
+  const getPreviewRoute = () => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/vehicles-record/${id}`;
+      case "account":
+        return `/account/management/vehicles-record/${id}`;
+      default:
+        return `/management/vehicles-record/${id}`;
+    }
+  };
+
   return (
     <div
       className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
@@ -87,7 +100,7 @@ const VehicleCard: React.FC<any> = ({ data }) => {
         </div>
       </ImageSlider>
 
-      <Link href={`/management/vehicles-record/${id}`}>
+      <Link href={getPreviewRoute()}>
         <div
           className="relative rounded-b-2xl p-4"
           role={isClickable && !viewOnly ? "button" : undefined}

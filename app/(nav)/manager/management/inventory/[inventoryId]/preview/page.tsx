@@ -171,7 +171,7 @@ const PreviewInventory = () => {
         </div>
         <FixedFooter className="flex gap-6 justify-end">
           <Button
-            href={`/management/inventory/${inventoryId}/manage?inventoryId=${INVENTORY_ID}&propertyId=${PROPERTY_ID}`}
+            href={`/manager/management/inventory/${inventoryId}/manage?inventoryId=${INVENTORY_ID}&propertyId=${PROPERTY_ID}`}
             size="sm_medium"
             className="py-2 px-7"
           >

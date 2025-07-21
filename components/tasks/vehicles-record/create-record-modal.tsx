@@ -41,6 +41,7 @@ interface Property {
 interface CreateRecordModalProps {
   data: VehicleData[];
   propertyId?: number;
+  page?: "manager" | "account";
   // setIsOpen?: any;
 }
 
@@ -48,6 +49,7 @@ interface CreateRecordModalProps {
 const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
   data,
   propertyId,
+  page,
   // setIsOpen,
 }) => {
   const { setIsOpen } = useModal();
@@ -94,16 +96,28 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
     setSelectedProperty(option);
   };
 
+  // get routes
+  const getCreateLink = (type: "manual" | "id") => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+      case "account":
+        return `/account/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+      default:
+        return `/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+    }
+  };
   // Handle create actions
   const handleCreate = (type: "manual" | "id") => {
     if (!selectedProperty) {
       toast.error("Please select a property before proceeding.");
       return;
     }
-    const url =
-      type === "manual"
-        ? "/management/vehicles-record/create?type=manual"
-        : `/management/vehicles-record/create?type=id&p=${propertyId}`;
+    const url = getCreateLink(type);
+    // const url =
+    //   type === "manual"
+    //     ? "/management/vehicles-record/create?type=manual"
+    //     : `/management/vehicles-record/create?type=id&p=${propertyId}`;
     window.location.href = url;
   };
 
@@ -211,7 +225,6 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
     }
   };
 
-  console.log("data", data);
 
   // Filter data based on search term
   const filteredData = useMemo(
@@ -239,6 +252,19 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
   };
 
   const isPendingVehicle = selectedPlate?.status === "pending";
+
+  // get record link
+  // /management/vehicles-record/records/${selectedPlate.id}/record
+  const getRecordLink = (id: number) => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/vehicles-record/records/${id}/record`;
+      case "account":
+        return `/account/management/vehicles-record/records/${id}/record`;
+      default:
+        return `/management/vehicles-record/records/${id}/record`;
+    }
+  };
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -287,7 +313,8 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
                   <Button
                     size="sm_medium"
                     className="bg-brand-9 px-6 py-2 rounded-md"
-                    href={`/management/vehicles-record/records/${selectedPlate.id}/record`}
+                    // href={`/management/vehicles-record/records/${selectedPlate.id}/record`}
+                    href={getRecordLink(selectedPlate.id)}
                   >
                     Open Record
                   </Button>

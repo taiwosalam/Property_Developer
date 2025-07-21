@@ -8,7 +8,7 @@ const Landlord = () => {
   const { serviceProviderId } = useParams();
 
   useEffect(() => {
-    router.replace(`/management/service-providers/${serviceProviderId}/manage`);
+    router.replace(`/manager/management/service-providers/${serviceProviderId}/manage`);
   }, [router, serviceProviderId]);
 
   return null;

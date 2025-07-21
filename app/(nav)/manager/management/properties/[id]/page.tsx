@@ -22,7 +22,7 @@ const PropertyPreviewPage = ({ params }: { params: { id: string } }) => {
   if (error) return <div>{error}</div>;
   if (!propertyData) return <div>No property data found</div>;
 
-  return <PropertyPreview {...propertyData} />;
+  return <PropertyPreview {...propertyData} page="manager" />;
 };
 
 export default PropertyPreviewPage;

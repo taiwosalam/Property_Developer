@@ -444,7 +444,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  const validPlans = plan === "basic" || plan === "premium";
+  const validPlans = plan !== "free";
 
   const handleClick = () => {
     if (

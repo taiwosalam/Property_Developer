@@ -24,6 +24,7 @@ const VehicleRecordModal: React.FC<
   VehicleRecord & {
     showOpenRecordsButton?: boolean;
     note?: string;
+    page?: "manager" | "account";
   }
 > = ({
   status,
@@ -35,6 +36,7 @@ const VehicleRecordModal: React.FC<
   registrationDate,
   latest_check_in,
   showOpenRecordsButton = true,
+  page,
 }) => {
   const sanitizedNote = DOMPurify.sanitize(note || "");
   const [loading, setLoading] = useState(false);
@@ -143,6 +145,17 @@ const VehicleRecordModal: React.FC<
     setActiveStep("default");
   };
 
+  // get record link
+  const getRecordLink = (id: number) => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/vehicles-record/records/${id}/record`;
+      case "account":
+        return `/account/management/vehicles-record/records/${id}/record`;
+      default:
+        return `/management/vehicles-record/records/${id}/record`;
+    }
+  };
   if (activeStep === "default") {
     return (
       <WalletModalPreset title="Vehicle Record">
@@ -281,7 +294,8 @@ const VehicleRecordModal: React.FC<
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
-              href={`/management/vehicles-record/records/${id}/record`}
+              // href={`/management/vehicles-record/records/${id}/record`}
+              href={getRecordLink(Number(id))}
             >
               Open Records
             </Button>

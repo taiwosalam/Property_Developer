@@ -14,6 +14,7 @@ import {
   BlueLockIcon,
   CheckIcon,
   BlueUnlockIcon,
+  BlueSendIcon,
 } from "@/public/icons/dashboard-cards/icons";
 import { CautionIcon } from "@/public/icons/icons";
 import { useWalletStore } from "@/store/wallet-store";
@@ -32,15 +33,18 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import SendFundsModal from "@/components/Wallet/SendFunds/send-funds-modal";
 
 const BranchBalanceCard = ({
   mainBalance,
   cautionDeposit,
   className,
+  page,
 }: {
   mainBalance: number;
   cautionDeposit: number;
   className?: string;
+  page?: "manager" | "account";
 }) => {
   const walletPinStatus = useWalletStore((s) => s.sub_wallet.status);
   const is_active = useWalletStore((s) => s.sub_wallet.is_active);
@@ -49,8 +53,9 @@ const BranchBalanceCard = ({
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const { role, setRole } = useRole();
   const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
+  const hasFullWalletAccess = usePermission(role, "Full Wallet Access");
   const hasWalletAccess =
-    usePermission(role, "Full Wallet Access") || isCompanyOwner;
+    page === "manager" || hasFullWalletAccess || isCompanyOwner;
   const { branch } = useBranchStore();
 
   const { data, error, refetch } =
@@ -75,7 +80,7 @@ const BranchBalanceCard = ({
       icon: walletPinStatus === "active" ? <BluePlusIcon /> : <CheckIcon />,
       action:
         walletPinStatus === "active" ? (
-          <AddFundsModal branch />
+          <AddFundsModal branch={page !== "manager"} page={page} />
         ) : (
           <ActivateWalletModal />
         ),
@@ -88,18 +93,28 @@ const BranchBalanceCard = ({
           <WithdrawFundsModal branch={true} />
         ) : null,
     },
-    {
-      name:
-        walletPinStatus === "active" && is_active
-          ? "Hold Wallet"
-          : "UnHold Wallet",
-      icon:
-        walletPinStatus === "active" && is_active ? (
-          <BlueUnlockIcon />
-        ) : (
-          <BlueLockIcon />
-        ),
-    },
+    ...(page === "manager"
+      ? [
+          {
+            name: "Send Funds",
+            icon: <BlueSendIcon />,
+            action: walletPinStatus === "active" ? <SendFundsModal /> : null,
+          },
+        ]
+      : [
+          {
+            name:
+              walletPinStatus === "active" && is_active
+                ? "Hold Wallet"
+                : "UnHold Wallet",
+            icon:
+              walletPinStatus === "active" && is_active ? (
+                <BlueUnlockIcon />
+              ) : (
+                <BlueLockIcon />
+              ),
+          },
+        ]),
   ];
 
   useEffect(() => {
@@ -118,7 +133,7 @@ const BranchBalanceCard = ({
   };
 
   const handleHoldWallet = async () => {
-    if (!hasWalletAccess) return;
+    if (page !== "manager" && !hasWalletAccess) return;
     try {
       setLoading(true);
       const res = await holdBranchWallet(branch.branch_id);
@@ -198,7 +213,7 @@ const BranchBalanceCard = ({
               {options.map((option, index) => (
                 <div key={index} className="space-y-2">
                   {option.action &&
-                  hasWalletAccess &&
+                  (page === "manager" || hasWalletAccess) &&
                   walletPinStatus === "active" ? (
                     <Modal>
                       <ModalTrigger className="space-y-2">
@@ -218,7 +233,8 @@ const BranchBalanceCard = ({
                         <ModalContent>{option.action}</ModalContent>
                       )}
                     </Modal>
-                  ) : option.name === "Activate Wallet" && hasWalletAccess ? (
+                  ) : option.name === "Activate Wallet" &&
+                    (page === "manager" || hasWalletAccess) ? (
                     <Link
                       href={`/management/staff-branch/${branch.branch_id}/edit-branch`}
                       className="space-y-2"
@@ -234,7 +250,7 @@ const BranchBalanceCard = ({
                     <div
                       className={clsx(
                         "space-y-2",
-                        !hasWalletAccess ||
+                        (page !== "manager" && !hasWalletAccess) ||
                           option.name === "Hold Wallet" ||
                           option.name === "UnHold Wallet"
                           ? "opacity-50 cursor-not-allowed"
@@ -243,7 +259,9 @@ const BranchBalanceCard = ({
                     >
                       <button
                         className="space-y-2"
-                        disabled={!hasWalletAccess || loading}
+                        disabled={
+                          (page !== "manager" && !hasWalletAccess) || loading
+                        }
                         onClick={
                           option.name === "Hold Wallet" ||
                           option.name === "UnHold Wallet"
@@ -254,7 +272,9 @@ const BranchBalanceCard = ({
                         <div
                           className={clsx(
                             "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
-                            !hasWalletAccess && "opacity-50 cursor-not-allowed"
+                            page !== "manager" &&
+                              !hasWalletAccess &&
+                              "opacity-50 cursor-not-allowed"
                           )}
                         >
                           {loading &&

@@ -7,6 +7,33 @@ import type { PictureProps } from "./types";
 import clsx from "clsx";
 import { empty } from "@/app/config";
 
+const transformImageSrc = (src: string): string => {
+  // Define invalid placeholders
+  const invalidPlaceholders = ["___", "---", "", null, undefined];
+
+  // Check if src is invalid or a placeholder
+  if (!src || invalidPlaceholders.includes(src)) {
+    return empty; // Fallback to the default empty image from config
+  }
+
+  // Basic validation for URL or file path
+  // Check if src is a valid URL or a relative file path
+  const isValidUrl = (str: string) => {
+    try {
+      // Check for valid URL (http, https, or data URLs)
+      return (
+        /^(https?:\/\/|data:image\/)/.test(str) ||
+        /\.(jpg|jpeg|png|gif|svg|webp)$/i.test(str)
+      );
+    } catch {
+      return false;
+    }
+  };
+
+  // If src is a valid URL or file path, return it; otherwise, return the fallback
+  return isValidUrl(src) ? src : empty;
+};
+
 const Picture: React.FC<PictureProps> = ({
   src = empty,
   alt = "profile picture",
@@ -27,6 +54,8 @@ const Picture: React.FC<PictureProps> = ({
 
   const status_wh = Math.min(12, Math.floor(size / 3));
 
+  const transformedSrc = transformImageSrc(src);
+
   return (
     <div
       role={onClick ? "button" : undefined}
@@ -34,7 +63,7 @@ const Picture: React.FC<PictureProps> = ({
       onClick={onClick ? onClick : undefined}
     >
       <Image
-        src={src}
+        src={transformedSrc}
         alt={alt}
         width={imageWidth * resolutionMultiplier}
         height={imageHeight * resolutionMultiplier}
@@ -60,14 +89,14 @@ const Picture: React.FC<PictureProps> = ({
           ...style,
         }}
       />
-       {status && ( 
-      <div
-        className={`absolute right-[5%] bottom-[5%] rounded-full custom- ${
-          status ? "bg-status-success-primary" : "bg-yellow-500"
-        } border border-solid border-white`}
-        style={{ width: status_wh, height: status_wh }}
-      />
-       )} 
+      {status && (
+        <div
+          className={`absolute right-[5%] bottom-[5%] rounded-full custom- ${
+            status ? "bg-status-success-primary" : "bg-yellow-500"
+          } border border-solid border-white`}
+          style={{ width: status_wh, height: status_wh }}
+        />
+      )}
     </div>
   );
 };

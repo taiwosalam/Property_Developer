@@ -1,148 +1,308 @@
-// interface SelectPlanButtonProps {
-//   isFree?: boolean;
-//   price: string;
-//   planTitle: string;
-//   onSelectPlan?: () => Promise<boolean | undefined>;
-//   onSelect?: () => void;
-//   page?: "modal" | "settings";
-//   changeStep?: (step: FormSteps | number) => void;
-//   hovered?: boolean;
-// }
+// "use client";
 
-// export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
-//   isFree = false,
-//   price,
-//   planTitle,
-//   onSelectPlan,
-//   onSelect,
+// // Images
+// import WalletBG from "@/public/global/wallet-bg.svg";
+
+// // Imports
+// import clsx from "clsx";
+// import Image from "next/image";
+// import React, { useState, useEffect } from "react";
+// import { ChevronRight, Eye, EyeOff } from "lucide-react";
+// import {
+//   BluePlusIcon,
+//   BlueBuildingIcon,
+//   BlueLockIcon,
+//   CheckIcon,
+//   BlueUnlockIcon,
+// } from "@/public/icons/dashboard-cards/icons";
+// import { CautionIcon } from "@/public/icons/icons";
+// import { useWalletStore } from "@/store/wallet-store";
+// import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
+// import ActivateWalletModal from "@/components/Wallet/activate-wallet-modal";
+// import WithdrawFundsModal from "@/components/Wallet/Withdraw/withdraw-funds-modal";
+// import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+// import { WalletDataResponse } from "@/app/(nav)/wallet/data";
+// import useFetch from "@/hooks/useFetch";
+// import Link from "next/link";
+// import useBranchStore from "@/store/branch-store";
+// import { toast } from "sonner";
+// import { holdBranchWallet } from "@/app/(nav)/management/staff-branch/[branchId]/data";
+// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+// import { usePersonalInfoStore } from "@/store/personal-info-store";
+// import { useRole } from "@/hooks/roleContext";
+// import { usePermission } from "@/hooks/getPermission";
+
+// const BranchBalanceCard = ({
+//   mainBalance,
+//   cautionDeposit,
+//   className,
 //   page,
-//   changeStep,
-//   hovered,
+// }: {
+//   mainBalance: number;
+//   cautionDeposit: number;
+//   className?: string;
+//   page?: "manager" | "account";
 // }) => {
-//   const subCost = parseFormattedNumber(price);
-//   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
-//   const currentExpiryDate = usePersonalInfoStore(
-//     (state) => state.currentExpiryDate
-//   );
+//   const walletPinStatus = useWalletStore((s) => s.sub_wallet.status);
+//   const is_active = useWalletStore((s) => s.sub_wallet.is_active);
+//   const [hideBalance, setHideBalance] = useState(false);
+//   const [loading, setLoading] = useState(false);
+//   const setWalletStore = useWalletStore((s) => s.setWalletStore);
+//   const { role, setRole } = useRole();
+//   const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
+//   const hasWalletAccess =
+//     usePermission(role, "Full Wallet Access") || isCompanyOwner;
+//   const { branch } = useBranchStore();
 
-//   const isExpired = currentExpiryDate
-//     ? dayjs(currentExpiryDate).isSameOrBefore(dayjs(), "day")
-//     : false;
+//   const { data, error, refetch } =
+//     useFetch<WalletDataResponse>("/wallets/dashboard");
+//   useRefetchOnEvent("refetch-wallet", () => {
+//     refetch({ silent: true });
+//   });
 
-//   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
-//   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
-//   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
+//   console.log("walletPinStatus", walletPinStatus);
 
-//   console.log("currentPlanKeyword", currentPlanKeyword);
-
-//   // Determine button text based on plan context
-//   const buttonText = (() => {
-//     if (isCurrentPlan) {
-//       if (currentPlanKeyword === "free") return "Current Plan";
-//       return "Extend Plan"; // For Basic or Premium, if it's the current plan
+//   useEffect(() => {
+//     if (data) {
+//       setWalletStore("balance", {
+//         my_balance: data.balance.my_balance,
+//         caution_deposit: data.balance.escrow_balance,
+//         earned_bonus: data.balance.earned_bonus,
+//       });
 //     }
-//     if (currentPlanKeyword === "free") {
-//       return "Upgrade Plan"; // Free plan users see "Upgrade" for Basic/Premium
-//     }
-//     if (currentPlanKeyword === "basic" && thisPlanKeyword === "premium") {
-//       return "Upgrade Plan"; // Basic plan users see "Upgrade" for Premium
-//     }
-//     if (currentPlanKeyword === "premium") {
-//       return thisPlanKeyword === "premium" ? "Extend Plan" : "Basic Plan"; // Premium users see "Extend" for Premium, "Basic Plan" for others
-//     }
-//     return "Select Plan"; // Fallback
-//   })();
+//   }, [data, setWalletStore]);
 
-//   // Determine if the button should have an action
-//   const hasAction = (() => {
-//     if (isFree && isCurrentPlan) return false; // No action for free plan when current
-//     if (currentPlanKeyword === "premium" && thisPlanKeyword === "basic") {
-//       return false; // No action for Premium-to-Basic downgrade
+//   const options = [
+//     {
+//       name: walletPinStatus === "active" ? "Add Funds" : "Activate Wallet",
+//       icon: walletPinStatus === "active" ? <BluePlusIcon /> : <CheckIcon />,
+//       action:
+//         walletPinStatus === "active" ? (
+//           <AddFundsModal branch />
+//         ) : (
+//           <ActivateWalletModal />
+//         ),
+//     },
+//     {
+//       name: "Withdraw",
+//       icon: <BlueBuildingIcon />,
+//       action:
+//         walletPinStatus === "active" ? (
+//           <WithdrawFundsModal branch={true} />
+//         ) : null,
+//     },
+//     {
+//       name:
+//         walletPinStatus === "active" && is_active
+//           ? "Hold Wallet"
+//           : "UnHold Wallet",
+//       icon:
+//         walletPinStatus === "active" && is_active ? (
+//           <BlueUnlockIcon />
+//         ) : (
+//           <BlueLockIcon />
+//         ),
+//     },
+//   ];
+
+//   useEffect(() => {
+//     const storedHideBalance = localStorage.getItem("hideBalance");
+//     if (storedHideBalance !== null) {
+//       setHideBalance(JSON.parse(storedHideBalance));
 //     }
-//     return true; // Action for upgrades or extending plans
-//   })();
+//   }, []);
 
-//   // Determine if the modal should be used (only for actionable cases when not in modal page)
-//   const useModal = page !== "modal" && hasAction && !isFree;
+//   const toggleBalanceVisibility = () => {
+//     setHideBalance((prev) => {
+//       const newHideBalance = !prev;
+//       localStorage.setItem("hideBalance", JSON.stringify(newHideBalance));
+//       return newHideBalance;
+//     });
+//   };
 
-//   const notMessage = buttonText === "Extend Plan";
-
-//   const handleSelectPlan = async () => {
-//     if (page === "modal" && changeStep) {
-//       await onSelectPlan?.();
-//       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
-//       window.dispatchEvent(new Event("refetchEnrollments"));
-//       // window.location.reload();
-//       changeStep(3);
-//     } else if (!useModal && hasAction) {
-//       await onSelect?.(); // Direct action for non-modal actionable scenarios
-//       // window.location.reload();
-//       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
-//       window.dispatchEvent(new Event("refetchEnrollments"));
+//   const handleHoldWallet = async () => {
+//     if (!hasWalletAccess) return;
+//     try {
+//       setLoading(true);
+//       const res = await holdBranchWallet(branch.branch_id);
+//       if (res) {
+//         toast.success("Branch Wallet Hold Successfully");
+//         window.dispatchEvent(new Event("refetch-wallet"));
+//         window.dispatchEvent(new Event("refetch_staff"));
+//       }
+//     } catch {
+//       toast.error("Failed to Hold Branch Wallet");
+//     } finally {
+//       setLoading(false);
 //     }
 //   };
 
-//   const isDowngradeBlocked =
-//     (currentPlanKeyword === "professional" &&
-//       (thisPlanKeyword === "premium" || thisPlanKeyword === "basic")) ||
-//     (currentPlanKeyword === "premium" && thisPlanKeyword === "basic");
-
-//   const displayText =
-//     isDowngradeBlocked && hovered
-//       ? "Plan cannot be downgraded"
-//       : isExpired && hovered && isCurrentPlan
-//       ? "Renew Plan"
-//       : !hovered && isCurrentPlan
-//       ? "Current Plan"
-//       : buttonText;
-
 //   return (
-//     <div className="px-6 pb-4 flex justify-end">
-//       <div
-//         className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
-//           isFree ? "bg-brand-9 bg-opacity-40" : "bg-brand-9"
-//         }`}
-//       >
-//         {page === "modal" ? (
-//           <button
-//             className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
-//             onClick={hasAction ? handleSelectPlan : undefined} // No action for non-actionable cases
-//           >
-//             {displayText}
-//           </button>
-//         ) : useModal ? (
-//           <Modal>
-//             <ModalTrigger asChild className="w-full text-white">
-//               <button
-//                 className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
-//                 onClick={handleSelectPlan}
-//               >
-//                 {displayText}
+//     <div className={clsx("space-y-2", className)}>
+//       <div className="p-5 relative custom-primary-bg rounded-lg">
+//         <div className="absolute inset-0">
+//           <Image
+//             src={WalletBG}
+//             alt="wallet background"
+//             fill
+//             sizes="400px"
+//             className="object-cover"
+//           />
+//         </div>
+//         <div className="relative space-y-3">
+//           {/* Header Section */}
+//           <div className="flex items-center justify-between gap-2">
+//             <div className="flex items-center space-x-2">
+//               <p className="text-text-invert text-sm font-medium">
+//                 Branch Balance
+//               </p>
+//               <button onClick={toggleBalanceVisibility} className="">
+//                 {hideBalance ? (
+//                   <Eye size={15} className="text-text-invert" />
+//                 ) : (
+//                   <EyeOff size={15} className="text-text-invert" />
+//                 )}
 //               </button>
-//             </ModalTrigger>
-//             <ModalContent>
-//               <SponsorModal
-//                 page="subscription"
-//                 count={10}
-//                 cost={subCost ?? 0}
-//                 message={!notMessage}
-//                 onSubmit={onSelectPlan}
-//                 onSelect={onSelect}
-//               />
-//             </ModalContent>
-//           </Modal>
-//         ) : (
-//           <button
-//             className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
-//             onClick={hasAction ? handleSelectPlan : undefined} // No action for non-actionable cases
-//           >
-//             {displayText}
-//           </button>
-//         )}
+//             </div>
+//           </div>
+
+//           {/* Main Balance */}
+//           {walletPinStatus === "active" ? (
+//             <p className="font-extrabold text-xl text-white">
+//               {hideBalance
+//                 ? "*******"
+//                 : `${currencySymbols.naira} ${formatNumber(mainBalance, {
+//                     forceTwoDecimals: true,
+//                   })}`}
+//             </p>
+//           ) : (
+//             <p className="font-extrabold text-xl text-white">Inactive</p>
+//           )}
+
+//           {/* Caution Deposit Section */}
+//           <div className="text-white text-xs font-medium capitalize flex items-center space-x-2">
+//             <p className="text-text-white-secondary">Caution Deposit</p>
+//             {walletPinStatus === "active" ? (
+//               <span>
+//                 {!hideBalance
+//                   ? `${currencySymbols.naira} ${formatNumber(cautionDeposit, {
+//                       forceTwoDecimals: true,
+//                     })}`
+//                   : "*******"}
+//               </span>
+//             ) : (
+//               <span>Inactive</span>
+//             )}
+//             <CautionIcon />
+//           </div>
+
+//           <div className="w-full flex items-start space-x-4">
+//             <div className="w-full flex justify-between">
+//               {options.map((option, index) => (
+//                 <div key={index} className="space-y-2">
+//                   {option.action &&
+//                   hasWalletAccess &&
+//                   walletPinStatus === "active" ? (
+//                     <Modal>
+//                       <ModalTrigger className="space-y-2">
+//                         <div
+//                           className={clsx(
+//                             "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
+//                             !is_active && "opacity-50 cursor-not-allowed"
+//                           )}
+//                         >
+//                           <span className="text-brand-9">{option.icon}</span>
+//                         </div>
+//                         <p className="capitalize text-white dark:text-white text-xs font-normal">
+//                           {option.name}
+//                         </p>
+//                       </ModalTrigger>
+//                       {is_active && (
+//                         <ModalContent>{option.action}</ModalContent>
+//                       )}
+//                     </Modal>
+//                   ) : option.name === "Activate Wallet" && hasWalletAccess ? (
+//                     <Link
+//                       href={`/management/staff-branch/${branch.branch_id}/edit-branch`}
+//                       className="space-y-2"
+//                     >
+//                       <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
+//                         <span className="text-brand-9">{option.icon}</span>
+//                       </div>
+//                       <p className="capitalize text-white dark:text-white text-xs font-normal">
+//                         {option.name}
+//                       </p>
+//                     </Link>
+//                   ) : (
+//                     <div
+//                       className={clsx(
+//                         "space-y-2",
+//                         !hasWalletAccess ||
+//                           option.name === "Hold Wallet" ||
+//                           option.name === "UnHold Wallet"
+//                           ? "opacity-50 cursor-not-allowed"
+//                           : ""
+//                       )}
+//                     >
+//                       <button
+//                         className="space-y-2"
+//                         disabled={!hasWalletAccess || loading}
+//                         onClick={
+//                           option.name === "Hold Wallet" ||
+//                           option.name === "UnHold Wallet"
+//                             ? handleHoldWallet
+//                             : undefined
+//                         }
+//                       >
+//                         <div
+//                           className={clsx(
+//                             "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
+//                             !hasWalletAccess && "opacity-50 cursor-not-allowed"
+//                           )}
+//                         >
+//                           {loading &&
+//                           (option.name === "Hold Wallet" ||
+//                             option.name === "UnHold Wallet") ? (
+//                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-9"></div>
+//                           ) : (
+//                             <span className="text-brand-9">{option.icon}</span>
+//                           )}
+//                         </div>
+//                         <p className="capitalize text-white dark:text-white text-xs font-normal">
+//                           {option.name}
+//                         </p>
+//                       </button>
+//                     </div>
+//                   )}
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         </div>
 //       </div>
 //     </div>
 //   );
 // };
+
+// export default BranchBalanceCard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -84,7 +84,9 @@ const EditServiceProvider = () => {
                 action={async () =>
                   await deleteServiceProvider(serviceProviderId as string)
                 }
-                afterAction={() => router.push("/management/service-providers")}
+                afterAction={() =>
+                  router.push("/manager/management/service-providers")
+                }
               />
             </ModalContent>
           </Modal>
@@ -93,7 +95,7 @@ const EditServiceProvider = () => {
             size="base_medium"
             className="py-2 px-6"
             onClick={() => {
-              router.push(`/management/service-providers`);
+              router.push(`/manager/management/service-providers`);
             }}
           >
             save

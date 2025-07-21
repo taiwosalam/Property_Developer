@@ -90,7 +90,7 @@ const VehilceRecords = () => {
     };
     options.forEach(option => {
       if (option === 'all') {
-        queryParams.all = true;
+        queryParams.all = "true";
       } else if (option === 'trending') {
         queryParams.trending = true;
       } else if (option === 'new') {
@@ -250,7 +250,7 @@ const VehilceRecords = () => {
               {silentLoading ? (
                 <CardsLoading />
               ) : (
-                pageData.data.map((p, index) => <VehicleCard key={index} data={p} />)
+                pageData.data.map((p, index) => <VehicleCard key={index} data={p} page="manager" />)
               )}
             </AutoResizingGrid>
 

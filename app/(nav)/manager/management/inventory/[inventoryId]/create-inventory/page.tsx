@@ -20,6 +20,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
   const isDarkMode = useDarkMode();
   const router = useRouter();
   const unitId = useSearchParams().get("unitId");
+  const inventoryId = useSearchParams().get("inventoryId");
   const formRef = useRef<HTMLFormElement>(null);
   const [branches, setBranches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +37,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
 
   const { data, loading, isNetworkError, error } =
     useFetch<InventoryApiResponse>(`/inventory/${params.inventoryId}`);
-  const INVENTORY_ID = data?.inventory?.id || 0;
+  const INVENTORY_ID = data?.inventory?.id || inventoryId;
 
   useEffect(() => {
     // Update showRemoveButton based on inventoryItems
@@ -47,6 +48,12 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
+
+    if (!INVENTORY_ID || INVENTORY_ID === "0") {
+      toast.warning("Inventory ID is Invalid");
+      return;
+    }
+
     setIsLoading(true);
     const formData = new FormData(event.currentTarget);
     const inventoryData = [];
@@ -81,11 +88,11 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
 
       const success = await createInventory(
         payload,
-        INVENTORY_ID,
+        Number(INVENTORY_ID),
         Number(unitId)
       );
       if (success) {
-        router.push(`/management/inventory/${params.inventoryId}`);
+        router.push(`/manager/management/inventory/${params.inventoryId}`);
         toast.success("Inventory created successfully");
       }
     } catch (error) {

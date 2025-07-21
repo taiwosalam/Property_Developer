@@ -177,7 +177,7 @@ const ManageInventory = () => {
       const payload = new FormData();
       // payload.append("title", formData.get("inventory-title") as string);
       // payload.append("branch_id", formData.get("branch-name") as string);
-      payload.append("video", formData.get("video-link") as string);
+      payload.append("video", formData.get("video_link") as string);
 
       // Append all items to the payload
       allItems.forEach((item, index) => {
@@ -202,7 +202,7 @@ const ManageInventory = () => {
       );
       if (success) {
         toast.success("Inventory updated successfully!");
-        router.push(`/management/inventory/${PROPERTY_ID}`);
+        router.push(`/manager/management/inventory/${PROPERTY_ID}`);
       }
     } catch (error) {
       console.error("Error updating inventory:", error);
@@ -220,7 +220,7 @@ const ManageInventory = () => {
         setDeleteInventoryModal(false);
         setDeleteInventorySuccessModal(true);
         setTimeout(() => {
-          window.location.href = "/management/inventory";
+          window.location.href = "/manager/management/inventory";
         }, 1500);
       }
     } catch (error) {
