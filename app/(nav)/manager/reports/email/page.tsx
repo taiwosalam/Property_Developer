@@ -33,9 +33,13 @@ import { Loader2 } from "lucide-react";
 import TableMenu from "@/components/Table/table-menu";
 import { MenuItem } from "@mui/material";
 import { EmailModalSkeleton } from "@/components/reports/email-modal-skeleton";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const EmailReport = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const { branch } = usePersonalInfoStore();
+
+  const BRANCH_ID = branch?.branch_id || 0;
   const [selectedSMS, setSelectedSMS] = useState<EmailRecord | null>(null);
   const [pageData, setPageData] = useState<EmailPageData>({
     emails: [],
@@ -57,16 +61,22 @@ const EmailReport = () => {
     startDate: null,
     endDate: null,
   });
-  const { data: apiData } = useFetch<any>("branches");
+
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
+
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/report/emails?branch_id=${BRANCH_ID}`
+      : null;
 
   const {
     data: emailData,
     loading,
     isNetworkError,
     error,
-  } = useFetch<IEmailReportResponse>(`/report/emails`, config);
+  } = useFetch<IEmailReportResponse>(fetchUrl, config);
 
   // Handle data transformation and appending for infinite scroll
   useEffect(() => {
@@ -293,8 +303,6 @@ const EmailReport = () => {
               //   handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
               // }}
             />
-           
-
 
             {isFetchingMore && (
               <div className="flex justify-center py-4">

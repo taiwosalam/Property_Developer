@@ -23,8 +23,11 @@ import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "lodash";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const VehiclesRecordReport = () => {
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
   const router = useRouter();
   const [pageData, setPageData] = useState<VehicleRecordsType[]>([]);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
@@ -36,17 +39,14 @@ const VehiclesRecordReport = () => {
     startDate: null,
     endDate: null,
   });
-  const [branches, setBranches] = useState<BranchFilter[]>([]);
   const [branchAccountOfficers, setBranchAccountOfficers] = useState<
     BranchStaff[]
   >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
-  const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
   useEffect(() => {
-    if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -54,7 +54,7 @@ const VehiclesRecordReport = () => {
       setBranchAccountOfficers(filterStaff);
     }
     if (property) setPropertyList(property.data);
-  }, [apiData, staff, property]);
+  }, [staff, property]);
 
   const reportTenantFilterOption = [
     {
@@ -62,13 +62,6 @@ const VehiclesRecordReport = () => {
       value: branchAccountOfficers.map((staff: any) => ({
         label: staff.user.name,
         value: staff.user.id.toString(),
-      })),
-    },
-    {
-      label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
       })),
     },
     {
@@ -97,13 +90,13 @@ const VehiclesRecordReport = () => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
       const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
+
       const property = menuOptions["Property"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
+
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -114,8 +107,14 @@ const VehiclesRecordReport = () => {
     []
   );
 
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/report/vehicle-records?branch_id=${BRANCH_ID}`
+      : null;
+
   const { data, loading, error, isNetworkError } =
-    useFetch<VehicleRecordsResponse>("report/vehicle-records", config);
+    useFetch<VehicleRecordsResponse>(fetchUrl, config);
 
   useEffect(() => {
     if (!loading && data) {

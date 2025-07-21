@@ -114,9 +114,9 @@ export const transformComplaintManage = (
     notes:
       data?.complaint.notes &&
       data?.complaint?.notes?.map((note) => ({
-        date: note?.date,
+        date: note?.date ? dayjs(note.date).format("MMMM D, YYYY") : "--- ---",
         text: note.text,
-        time: note?.time,
+        time: note?.time ? dayjs(note.time, "HH:mm:ss").format("hh:mm A") : "--- ---",
         title: note?.title,
         note_by: note?.note_by,
       })),

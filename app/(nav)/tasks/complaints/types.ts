@@ -16,6 +16,7 @@ interface Complaint {
   unit_name: string;
   status: string;
   progress: number;
+  comment_count: number;
   created_at: string;
   updated_at: string;
 }
@@ -68,6 +69,7 @@ export interface ComplaintsPageData {
     message: string;
     avatarSrc: string;
     tier: number;
+    comment_count: number;
   }[];
   pagination: {
     total_pages: number;

@@ -269,14 +269,10 @@ const ManageApplication = () => {
                     "full address": `${property_details?.address}`,
                     "unit name": property_details?.unit_name,
                     "account manager": property_details?.account_officer,
-                    "total package": formatToNaira(
-                      property_details?.total_package
-                    ),
+                    "total package": `${property_details?.currency}${property_details?.total_package}`,
                     branch: property_details?.branch,
                     "application date": property_details?.application_date,
-                    "renewal amount": formatToNaira(
-                      property_details?.renewal_amount
-                    ),
+                    "renewal amount": `${property_details?.currency}${property_details?.renewal_amount}`,
 
                     //description: property_details?.description,
                     //state: property_details?.state,
@@ -518,7 +514,7 @@ const ManageApplication = () => {
 
               <LandlordTenantInfoBox className="space-y-4">
                 <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                  Proior Experience in Real Estate
+                  Prior Experience in Real Estate
                 </h3>
                 <div
                   className="text-black dark:text-darkText-2 text-base font-normal"
@@ -527,7 +523,7 @@ const ManageApplication = () => {
               </LandlordTenantInfoBox>
               <LandlordTenantInfoBox className="space-y-4">
                 <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                  Jusification for clearing next rent
+                  Justification for clearing next rent
                 </h3>
                 <div
                   className="text-black dark:text-darkText-2 text-base font-normal"
@@ -536,55 +532,59 @@ const ManageApplication = () => {
               </LandlordTenantInfoBox>
             </div>
           </div>
-          {current_rent && current_rent.length > 0 && (
-            <LandlordTenantInfoSection title="Current Rent">
-              <div className="space-y-3">
-                {current_rent?.map((rent, index) => (
-                  <ApplicationCardUnit
-                    key={index}
-                    unitId={rent.unitId}
-                    unitName={rent.unitName}
-                    currency={rent.currency}
-                    address={rent.address}
-                    propertyName={rent.propertyName}
-                    rentAmount={rent.rentAmount}
-                    period={rent.period}
-                    moveInDate={rent.moveInDate}
-                    propertyImages={rent.propertyImages}
-                    propertyType={rent.propertyType}
-                    managedBy={rent.managedBy}
-                    prev={false}
-                    unitData={rent?.unitData}
-                  />
-                ))}
-              </div>
-            </LandlordTenantInfoSection>
-          )}
+          <div className="mt-6">
+            {current_rent && current_rent.length > 0 && (
+              <LandlordTenantInfoSection title="Current Rent">
+                <div className="space-y-3">
+                  {current_rent?.map((rent, index) => (
+                    <ApplicationCardUnit
+                      key={index}
+                      unitId={rent.unitId}
+                      unitName={rent.unitName}
+                      currency={rent.currency}
+                      address={rent.address}
+                      propertyName={rent.propertyName}
+                      rentAmount={rent.rentAmount}
+                      period={rent.period}
+                      moveInDate={rent.moveInDate}
+                      propertyImages={rent.propertyImages}
+                      propertyType={rent.propertyType}
+                      managedBy={rent.managedBy}
+                      prev={false}
+                      unitData={rent?.unitData}
+                    />
+                  ))}
+                </div>
+              </LandlordTenantInfoSection>
+            )}
+          </div>
 
-          {previous_rent && previous_rent?.length > 0 && (
-            <LandlordTenantInfoSection title="Previous Rent">
-              <div className="space-y-3">
-                {previous_rent?.map((rent, index) => (
-                  <ApplicationCardUnit
-                    key={index}
-                    unitId={rent.unitId}
-                    unitName={rent.unitName}
-                    currency={rent?.currency}
-                    address={rent.address}
-                    propertyName={rent.propertyName}
-                    rentAmount={rent.rentAmount}
-                    period={rent.period}
-                    moveOutDate={rent.moveOutDate}
-                    propertyImages={rent.propertyImages}
-                    propertyType={rent.propertyType}
-                    managedBy={rent.managedBy}
-                    prev={true}
-                    unitData={rent?.unitData}
-                  />
-                ))}
-              </div>
-            </LandlordTenantInfoSection>
-          )}
+          <div className="mt-6">
+            {previous_rent && previous_rent?.length > 0 && (
+              <LandlordTenantInfoSection title="Previous Rent">
+                <div className="space-y-3">
+                  {previous_rent?.map((rent, index) => (
+                    <ApplicationCardUnit
+                      key={index}
+                      unitId={rent.unitId}
+                      unitName={rent.unitName}
+                      currency={rent?.currency}
+                      address={rent.address}
+                      propertyName={rent.propertyName}
+                      rentAmount={rent.rentAmount}
+                      period={rent.period}
+                      moveOutDate={rent.moveOutDate}
+                      propertyImages={rent.propertyImages}
+                      propertyType={rent.propertyType}
+                      managedBy={rent.managedBy}
+                      prev={true}
+                      unitData={rent?.unitData}
+                    />
+                  ))}
+                </div>
+              </LandlordTenantInfoSection>
+            )}
+          </div>
         </div>
         {/* <LandlordTenantInfoSection title="Previous Property">
         <div className="opacity-40">{/* <UnitItem /> </div>
@@ -599,7 +599,9 @@ const ManageApplication = () => {
               className={`py-2 px-8 ${
                 application_status === "evaluated"
                   ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
-                  : application_status === "approved" ? "bg-green-500/20 text-green-700" : ""
+                  : application_status === "approved"
+                  ? "bg-green-500/20 text-green-700"
+                  : ""
               }`}
               disabled={isFlagged || isLoading}
             >

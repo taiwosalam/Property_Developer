@@ -13,12 +13,13 @@ export async function middleware(req: NextRequest) {
   // Public routes accessible without authentication
   const publicRoutes = [
     "/auth/user/sign-in",
+    "/notifications",
     "/auth/sign-in",
     "/auth/sign-up",
     "/auth/setup",
     "/auth/forgot-password",
     "/management/agent-community",
-    "/auth/impersonate",
+    "/messages"
   ];
 
   // Define dashboard paths that bypass company_status check

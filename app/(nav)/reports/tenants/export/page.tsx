@@ -30,9 +30,14 @@ const ExportTenants = () => {
     total_tenants: 0,
     monthly_tenants: 0,
     tenants: [],
+    pagination: {
+      current_page: 0,
+      last_page: 0,
+      total: 0,
+    },
   });
 
-   const filteredTenants = useGlobalStore((s) => s.tenants);
+  const filteredTenants = useGlobalStore((s) => s.tenants);
 
   const { data, loading, error, isNetworkError } =
     useFetch<TenantListResponse>("/report/tenants");

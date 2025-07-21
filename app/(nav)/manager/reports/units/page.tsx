@@ -53,7 +53,6 @@ const UnitsReport = () => {
     BranchStaff[]
   >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
-  const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
@@ -70,7 +69,7 @@ const UnitsReport = () => {
       setBranchAccountOfficers(filterStaff);
     }
     if (property) setPropertyList(property.data);
-  }, [apiData, staff, property]);
+  }, [staff, property]);
 
   const unitStatus = ["occupied", "relocate", "vacant", "expired"];
   const reportTenantFilterOption = [

@@ -24,11 +24,14 @@ import ServerError from "@/components/Error/ServerError";
 import { hasActiveFilters } from "../data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const Call = () => {
   const [pageData, setPageData] = useState<ICallbackRequestPageData | null>(
     null
   );
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: { page: 1, search: "" } as ReportsRequestParams,
@@ -64,13 +67,19 @@ const Call = () => {
     if (property) setPropertyList(property.data);
   }, [branchApi, staff, property]);
 
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/report/call-request?branch_id=${BRANCH_ID}`
+      : null;
+
   const {
     data: apiData,
     loading,
     error,
     refetch,
     isNetworkError,
-  } = useFetch<CallbackApiResponse>(`/report/call-request`, config);
+  } = useFetch<CallbackApiResponse>(fetchUrl, config);
 
   useEffect(() => {
     if (apiData) {

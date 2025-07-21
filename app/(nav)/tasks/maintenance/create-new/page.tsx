@@ -27,11 +27,11 @@ import FileInput from "@/components/Form/FileInput/file-input";
 import FileUploader from "@/components/FileUploader/FileUploader";
 
 const CreateMaintenace = () => {
-  const router = useRouter();
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
   };
+  const router = useRouter();
   const [maintenanceCost, setMaintenanceCost] = useState("");
   const currencySymbol = currencySymbols.naira; // TODO: Make this dynamic
   const handleMaintenanceCostChange = (value: string) => {
@@ -143,12 +143,60 @@ const CreateMaintenace = () => {
     }
   }, [providerData]);
 
-  const handleSubmit = async (data: FormData) => {
-    // BACKEND ERROR: METHOD NOT ALLOWED
-    //data.delete("unit[]");
+  // const handleSubmit = async (data: FormData) => {
+  //   // BACKEND ERROR: METHOD NOT ALLOWED
+  //   //data.delete("unit[]");
 
+  //   const detail = data.get("detail");
+  //   const cost = data.get("maintenance_cost");
+
+  //   if (String(detail).trim().length < 30) {
+  //     toast.error("Work detail must be at least 30 characters.");
+  //     return;
+  //   }
+
+  //   if (!String(cost).trim()) {
+  //     toast.error("Maintenance cost is required");
+  //     return;
+  //   }
+
+  //   const quotationFile = data.get("quotation");
+
+  //   if (quotationFile) {
+  //     data.append("quotation_type", "file");
+  //   }
+  //   if (quotationFile) {
+  //     data.append("quotation", quotationFile);
+  //   }
+  //   // Append each selected unit id as an array item
+  //   selectedUnits.forEach((id) => {
+  //     data.append("unit[]", id.toString());
+  //   });
+
+  //   data.append("calendar_event", "1");
+
+  //   if (quotation && quotation.length > 0) {
+  //     data.append("quotation_type", "text");
+  //   }
+  //   try {
+  //     setIsLoading(true);
+  //     const response = await createMaintenance(data);
+  //     if (response) {
+  //       toast.success("Maintenance created");
+  //       //router.push("/tasks/maintenance");
+  //     }
+  //   } catch (error) {
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const handleSubmit = async (data: FormData) => {
     const detail = data.get("detail");
-    const cost = data.get("maintenance_cost");
+    const cost = data.get("cost");
+
+    const numericCost = String(cost).replace(/,/g, "");
+    data.append("cost", numericCost);
 
     if (String(detail).trim().length < 30) {
       toast.error("Work detail must be at least 30 characters.");
@@ -160,14 +208,18 @@ const CreateMaintenace = () => {
       return;
     }
 
-    const quotationFile = data.get("quotation");
-
-    if (quotationFile) {
+    // Only send file if quotation length is less than 30
+    if (quotation.length < 30 && quotationFile) {
       data.append("quotation_type", "file");
-    }
-    if (quotationFile) {
       data.append("quotation", quotationFile);
     }
+
+    // If quotation is text and length >= 30, send as text
+    if (quotation.length >= 30) {
+      data.append("quotation_type", "text");
+      data.append("quotation", quotation);
+    }
+
     // Append each selected unit id as an array item
     selectedUnits.forEach((id) => {
       data.append("unit[]", id.toString());
@@ -175,9 +227,6 @@ const CreateMaintenace = () => {
 
     data.append("calendar_event", "1");
 
-    if (quotation && quotation.length > 0) {
-      data.append("quotation_type", "text");
-    }
     try {
       setIsLoading(true);
       const response = await createMaintenance(data);
@@ -217,13 +266,13 @@ const CreateMaintenace = () => {
             id="property_id"
             name="property_id"
           />
-          {/* <input
+          <input
             value={selectedUnits ?? ""}
             type="hidden"
             aria-hidden
             id="unit_id"
             name="unit_id"
-          /> */}
+          />
           <Select
             required
             id=""
@@ -277,12 +326,25 @@ const CreateMaintenace = () => {
 
           <MultiSelectObj
             required
-            className={`${clsx({
-              "opacity-70": !selectedPropertyId || unitSilentLoading,
-            })}`}
-            disabled={!selectedPropertyId || unitSilentLoading}
+            className={clsx({
+              "opacity-70":
+                !selectedPropertyId ||
+                unitSilentLoading ||
+                unitOptions.length === 0,
+            })}
+            disabled={
+              !selectedPropertyId ||
+              unitSilentLoading ||
+              unitOptions.length === 0
+            }
             id=""
-            placeholder={unitSilentLoading ? "Please wait" : "Choose option"}
+            placeholder={
+              unitSilentLoading
+                ? "Please wait"
+                : unitOptions.length === 0
+                ? "No unit available"
+                : "Choose option"
+            }
             label="Affected Units"
             onValueChange={(selected) => setSelectedUnits(selected.map(String))}
             options={
@@ -377,7 +439,7 @@ const CreateMaintenace = () => {
           />
           <Input
             required
-            id="maintenance_cost"
+            id="cost"
             label="Maintenance Cost"
             CURRENCY_SYMBOL={currencySymbol}
             inputClassName="bg-white rounded-[8px]"
@@ -393,13 +455,20 @@ const CreateMaintenace = () => {
                 label="Maintenance Quotation"
                 inputSpaceClassName="bg-white dark:bg-darkText-primary"
               />
-              <FileUploader
-                id="quotation"
-                label="Upload Quotation File"
-                file={quotationFile}
-                onFileChange={setQuotationFile}
-                disabled={quotation.length > 19}
-              />
+              <div
+                className={`${
+                  quotation.length > 19 ? "opacity-40 cursor-not-allowed" : ""
+                }`}
+              >
+                <FileUploader
+                  id="quotation"
+                  label="Upload Quotation File"
+                  file={quotationFile}
+                  onFileChange={setQuotationFile}
+                  disabled={quotation.length > 19}
+                />
+              </div>
+
               {quotationFile?.name && (
                 <button
                   type="button"
@@ -423,7 +492,7 @@ const CreateMaintenace = () => {
         </div>
         <FixedFooter className="flex items-center justify-between gap-x-10 gap-y-4 flex-wrap">
           <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary">
-            <div>
+            {/* <div>
               <DocumentCheckbox
                 darkText
                 name="announcement"
@@ -434,7 +503,7 @@ const CreateMaintenace = () => {
               >
                 Announce the event
               </DocumentCheckbox>
-            </div>
+            </div> */}
             <div>
               {/* <DocumentCheckbox
                 darkText

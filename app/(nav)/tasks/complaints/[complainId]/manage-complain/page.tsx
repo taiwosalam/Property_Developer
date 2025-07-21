@@ -14,6 +14,9 @@ import { ComplaintDetailResponse } from "../../types";
 import { IManageComplaints, transformComplaintManage } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import ServerError from "@/components/Error/ServerError";
+import NetworkError from "@/components/Error/NetworkError";
+import ComplaintSkeleton from "@/components/Loader/complaint-details";
 // import CreateReminderModal from "@/components/tasks/complainid/create-reminder-modal";
 // import CreateTaskModal from "@/components/tasks/complainid/create-task-modal";
 
@@ -50,6 +53,14 @@ const ManageComplain = () => {
     }
   }, [manageData]);
 
+  if (loading && !error && !isNetworkError) {
+    return <ComplaintSkeleton />;
+  }
+  
+  if (manageData) <ComplaintSkeleton />;
+  if (error) <ServerError error={error} />;
+  if (isNetworkError) <NetworkError />;
+
   return (
     <section className="w-full lg:flex lg:items-start lg:gap-x-10 h-screen">
       <div className="w-full lg:w-3/5 lg:h-full space-y-10 overflow-y-scroll hide-scrollbar">
@@ -77,6 +88,7 @@ const ManageComplain = () => {
           task={pageData?.task}
           taskStatus={pageData?.status}
         />
+
       </div>
       <div className="w-full lg:w-2/5 h-full overflow-y-scroll p-6 space-y-6 hide-scrollbar">
         <div className="h-full space-y-10">

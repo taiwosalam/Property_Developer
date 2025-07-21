@@ -31,7 +31,7 @@ const ComplaintsCalendarFooter: React.FC<{
           <Button
             size="xs_normal"
             className="py-2 px-3"
-            disabled={taskStatus}
+            //disabled={taskStatus}
           >
             {buttonText}
           </Button>

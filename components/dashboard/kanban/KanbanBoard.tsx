@@ -686,9 +686,9 @@ export function KanbanBoard({
                 activeTask.columnId === "rejected") &&
               overTask.columnId === "processing"
             ) {
-              toast.error(
-                "Cannot move completed or rejected tasks to Processing"
-              );
+              // toast.error(
+              //   "Cannot move completed or rejected tasks to Processing"
+              // );
               return tasks;
             }
             setCurrentTaskForStatusChange(activeTask);
@@ -706,9 +706,9 @@ export function KanbanBoard({
               activeTask.columnId === "rejected") &&
             overId === "processing"
           ) {
-            toast.error(
-              "Cannot move completed or rejected tasks to Processing"
-            );
+            // toast.error(
+            //   "Cannot move completed or rejected tasks to Processing"
+            // );
             return tasks;
           }
           setCurrentTaskForStatusChange(activeTask);
@@ -764,9 +764,9 @@ export function KanbanBoard({
               activeTask.columnId === "rejected") &&
             overTask.columnId === "processing"
           ) {
-            toast.error(
-              "Cannot move completed or rejected tasks to Processing"
-            );
+            // toast.error(
+            //   "Cannot move completed or rejected tasks to Processing"
+            // );
             return tasks; // No state change
           }
 

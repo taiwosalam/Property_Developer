@@ -24,6 +24,9 @@ interface EnrollmentQueryParams {
 
 const SubscriptionRecord = () => {
   const searchParams = useSearchParams();
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+
   const search = searchParams.get("b");
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const { company_id } = usePersonalInfoStore();
@@ -67,10 +70,10 @@ const SubscriptionRecord = () => {
     isNetworkError,
     refetch: refetchEnrollments,
   } = useFetch<EnrollmentApiResponse>(
-    company_id && config ? `/enrollments/${company_id}` : null,
+    company_id && BRANCH_ID && config ? `/enrollments/${company_id}?branch_id=${BRANCH_ID}` : null,
     config
   );
-
+ 
   useRefetchOnEvent("refetchEnrollments", () =>
     company_id && config ? refetchEnrollments({ silent: true }) : null
   );
@@ -151,6 +154,8 @@ const SubscriptionRecord = () => {
     [fetchNextPage, state.hasMore, silentLoading, loading]
   );
 
+
+
   const transformedTableData = state.transactions.map((t, index) => ({
     ...t,
     status: (
@@ -169,7 +174,8 @@ const SubscriptionRecord = () => {
     ref: index === state.transactions.length - 1 ? lastRowRef : null,
   }));
 
-  if (loading || silentLoading) return <CustomLoader layout="page" view="table" />;
+  if (loading || silentLoading)
+    return <CustomLoader layout="page" view="table" />;
   if (isNetworkError) return <NetworkError />;
   if (enrollmentErr) return <ServerError error={enrollmentErr} />;
 

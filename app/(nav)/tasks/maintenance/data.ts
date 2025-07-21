@@ -143,6 +143,7 @@ export interface IMaintenanceCard {
       requested_by: string;
       maintenance_type: string;
       quotationFile?: string; 
+      quotation_type: "text" | "file";
       created_at: string;
       priority: "high" | "critical" | "low" | "very low" | "medium";
       service_type: string;
@@ -213,6 +214,7 @@ export const transformMaintenanceCard = (
           service_provider: item?.service_provider,
           work_details: item?.detail,
           quotation: item?.quotation,
+          quotation_type: item?.quotation_type,
           start_date: item?.start_date,
           end_date: item?.end_date,
           cost: item?.cost,

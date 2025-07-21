@@ -151,9 +151,11 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
       </div>
 
       <div className="p-4 font-medium">
-        <p className="mb-1 text-black dark:text-white text-base">{title}</p>
+        <p className="mb-1 text-black dark:text-white text-base first-letter:uppercase">
+          {title}
+        </p>
         <div
-          className="mb-2 text-xs text-text-tertiary dark:text-darkText-2 line-clamp-2 text-ellipsis"
+          className="mb-2 text-xs text-text-tertiary dark:text-darkText-2 line-clamp-2 text-ellipsis first-letter:uppercase"
           dangerouslySetInnerHTML={{ __html: description }}
         />
 
