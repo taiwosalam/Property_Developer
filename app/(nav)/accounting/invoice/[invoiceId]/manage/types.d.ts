@@ -14,6 +14,12 @@ export interface InvoiceData {
   caution_fee: string;
   agency_fee: string;
   inspection_fee: string;
+  legal_fee: string;
+  vat_amount: string;
+  security_fee: string;
+  inspection_fee: string;
+  management_fee: string;
+  other_charge: string;
   total_package: string;
   details: string | null;
   total_amount: string;
@@ -52,6 +58,10 @@ export interface InvoicePageData {
   agency_fee: string | number;
   legal_fee?: string | number;
   inspection_fee: string | number;
+  security_fee: string | number;
+  management_fee: string | number;
+  other_charge: string | number;
+  vat_amount: string | number;
   total_package: string | number;  
   details: string;
   total_amount: string | number;

@@ -129,7 +129,7 @@ const PreviewExpenses = () => {
                     <KeyValueList
                       data={{
                         "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
-                        "non refundable agency fee": formatFee(
+                        "agency fee": formatFee(
                           pageData.agency_fee,
                           CURRENCY
                         ),
@@ -137,11 +137,15 @@ const PreviewExpenses = () => {
                           pageData.service_charge,
                           CURRENCY
                         ),
-                        "refundable caution fee": formatFee(
+                        "inspection fee": formatFee(pageData.inspection_fee, CURRENCY),
+                        "caution fee": formatFee(
                           pageData.caution_fee,
                           CURRENCY
                         ),
-                        "non refundable legal fee": "",
+                        "management fee": formatFee(pageData.management_fee, CURRENCY),
+                        "other charge": formatFee(pageData.other_charge, CURRENCY),
+                        "legal fee": formatFee(pageData.legal_fee, CURRENCY),
+                        "vat": formatFee(pageData.vat_amount, CURRENCY),
                         "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
                         "Company Owe": formatFee(
                           pageData.company_owed,
@@ -152,10 +156,14 @@ const PreviewExpenses = () => {
                       direction="column"
                       referenceObject={{
                         "Annual fee": "",
-                        "non refundable agency fee": "",
+                        "agency fee": "",
                         "service charge": "",
-                        "non refundable legal fee": "",
-                        "refundable caution fee": "",
+                        "inspection fee": "",
+                        "legal fee": "",
+                        "caution fee": "",
+                        "vat": "",
+                        "other charge": "",
+                        "management fee": "",
                         "Tenant Owe": "",
                         "Company Owe": "",
                       }}
