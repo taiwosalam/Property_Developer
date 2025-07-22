@@ -57,6 +57,7 @@ import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-m
 import CompanyApplicantModal from "@/components/Management/application-company-details";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import { PrintContent } from "@/components/reports/print-content";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const ManageApplication = () => {
   const isDarkMode = useDarkMode();
@@ -88,6 +89,7 @@ const ManageApplication = () => {
   } = useFetch<TApplicationDetailsResponse>(
     `property-applications/${paramId}/company`
   );
+  useRefetchOnEvent("fetch-application", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {
@@ -135,6 +137,9 @@ const ManageApplication = () => {
     hasFlag,
   } = managePageData ?? {};
 
+  const CAN_START_RENT =
+    property_details?.unit_status.toLowerCase() === "vacant" ||
+    property_details?.unit_status.toLowerCase() === "relocate";
   const messageFlagger = ({ id, name, pictureSrc }: IMessageFlagger) => {
     if (!id) {
       toast.warning("User ID not Found!");
@@ -175,9 +180,16 @@ const ManageApplication = () => {
     router.push(`/messages/${profile_details?.user_id}`);
   };
 
+  console.log("property_details", property_details);
+
   const handleStartRent = async () => {
     const mailAddress = profile_details?.email;
     const unitID = property_details?.unit_id;
+    if (!CAN_START_RENT) {
+      toast.warning("Unit has been occupied!");
+      return;
+    }
+    
     if (!mailAddress) {
       toast.warning("No valid identifier found");
       return;
@@ -193,11 +205,11 @@ const ManageApplication = () => {
         identifier: mailAddress,
       };
       // Approve application
-      const approveRes = await rejectApplication(paramId, "approval");
-      if (!approveRes) {
-        toast.error("Failed to approve application");
-        return;
-      }
+      // const approveRes = await rejectApplication(paramId, "approval");
+      // if (!approveRes) {
+      //   toast.error("Failed to approve application");
+      //   return;
+      // }
       // become tenant
       const res = await becomeTenant(objectToFormData(payload));
       if (res) {
@@ -209,6 +221,21 @@ const ManageApplication = () => {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+  const handleApproveApplication = async () => {
+    try {
+      setReqLoading(true);
+      const res = await rejectApplication(paramId, "approval");
+      if (res) {
+        toast.success("Application approved successfully");
+        window.dispatchEvent(new Event("fetch-application"));
+      }
+    } catch (e) {
+      console.error(e);
     } finally {
       setReqLoading(false);
     }
@@ -617,14 +644,25 @@ const ManageApplication = () => {
             </Button>
           }
           <div className="flex gap-6">
-            <Button
-              size="base_bold"
-              className="py-2 px-8"
-              onClick={handleStartRent}
-              disabled={isFlagged || reqLoading}
-            >
-              {reqLoading ? "Please wait" : "start rent"}
-            </Button>
+            {application_status !== "approved" ? (
+              <Button
+                size="base_bold"
+                className="py-2 px-8"
+                onClick={handleApproveApplication}
+                disabled={isFlagged || reqLoading}
+              >
+                {reqLoading ? "Please wait" : "Approve Application"}
+              </Button>
+            ) : (
+              <Button
+                size="base_bold"
+                className="py-2 px-8"
+                onClick={handleStartRent}
+                disabled={isFlagged || reqLoading}
+              >
+                {reqLoading ? "Please wait" : "start rent"}
+              </Button>
+            )}
             {/* <Button size="base_bold" className="py-2 px-8" disabled={isFlagged}>
             create invoice
           </Button> */}

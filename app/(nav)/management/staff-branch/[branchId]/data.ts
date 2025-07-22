@@ -140,6 +140,7 @@ export const transformSingleBranchAPIResponse = (
             };
           })
         : [],
+    chart_data: branch.chart_data,
     hasManager: Array.isArray(branch.staffs)
       ? branch.staffs.some(
           (s: any) => s.staff_role?.toLowerCase() === "manager"

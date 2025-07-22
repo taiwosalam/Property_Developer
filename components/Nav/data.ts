@@ -163,16 +163,6 @@ export const manager_nav_items: NavItemsProps = [
     ],
   },
   {
-    type: "task",
-    label: "community",
-    href: "/applications",
-    content: [
-      { label: "team chat", href: "/community/team-chat" },
-      { label: "agent forum", href: "/community/agent-forum" },
-      { label: "agent request", href: "/community/agent-request" },
-    ],
-  },
-  {
     type: "menu_board",
     label: "accounting",
     content: [
@@ -182,6 +172,16 @@ export const manager_nav_items: NavItemsProps = [
       { label: "disbursement", href: "/manager/accounting/disbursement" },
       // { label: "statement", href: "/manager/accounting/statement" },
       { label: "VAT", href: "/manager/accounting/vat" },
+    ],
+  },
+  {
+    type: "task",
+    label: "community",
+    href: "/applications",
+    content: [
+      { label: "team chat", href: "/community/team-chat" },
+      { label: "agent forum", href: "/community/agent-forum" },
+      { label: "agent request", href: "/community/agent-request" },
     ],
   },
   {

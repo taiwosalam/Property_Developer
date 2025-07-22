@@ -127,7 +127,7 @@ const Property = () => {
   // Conditionally set the URL only if BRANCH_ID is valid
   const fetchUrl =
     BRANCH_ID && BRANCH_ID !== 0
-      ? `/property/invite/lists?branch_id=${BRANCH_ID}`
+      ? `/property/invite/lists?branch[0]=${BRANCH_ID}`
       : null;
 
   const {

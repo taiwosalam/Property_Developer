@@ -1,308 +1,251 @@
-// "use client";
+// import React, { useEffect, useState } from "react";
+
+// // Types
+// import type {
+//   WalletModalDefaultProps,
+//   WalletWithdrawFundsOptions,
+// } from "../types";
 
 // // Images
-// import WalletBG from "@/public/global/wallet-bg.svg";
+// import InfoWarningIcon from "@/public/icons/info-warning-circle.svg";
 
 // // Imports
-// import clsx from "clsx";
-// import Image from "next/image";
-// import React, { useState, useEffect } from "react";
-// import { ChevronRight, Eye, EyeOff } from "lucide-react";
-// import {
-//   BluePlusIcon,
-//   BlueBuildingIcon,
-//   BlueLockIcon,
-//   CheckIcon,
-//   BlueUnlockIcon,
-// } from "@/public/icons/dashboard-cards/icons";
-// import { CautionIcon } from "@/public/icons/icons";
+// import Input from "@/components/Form/Input/input";
+// import Picture from "@/components/Picture/picture";
+// import FundingCard from "../AddFunds/funding-card";
+// import Button from "@/components/Form/Button/button";
+// import useDarkMode from "@/hooks/useCheckDarkMode";
 // import { useWalletStore } from "@/store/wallet-store";
-// import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
-// import ActivateWalletModal from "@/components/Wallet/activate-wallet-modal";
-// import WithdrawFundsModal from "@/components/Wallet/Withdraw/withdraw-funds-modal";
-// import { currencySymbols, formatNumber } from "@/utils/number-formatter";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import { WalletDataResponse } from "@/app/(nav)/wallet/data";
-// import useFetch from "@/hooks/useFetch";
-// import Link from "next/link";
-// import useBranchStore from "@/store/branch-store";
 // import { toast } from "sonner";
-// import { holdBranchWallet } from "@/app/(nav)/management/staff-branch/[branchId]/data";
-// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-// import { usePersonalInfoStore } from "@/store/personal-info-store";
+// import useFetch from "@/hooks/useFetch";
+// import {
+//   BankAPIResponse,
+//   BankPageData,
+//   transformBank,
+// } from "@/app/(nav)/settings/data";
+// import useBankLogo from "@/app/(nav)/bank";
+// import { currencySymbols } from "@/utils/number-formatter";
+// import { formatToNaira } from "@/app/(nav)/tasks/inspections/data";
 // import { useRole } from "@/hooks/roleContext";
-// import { usePermission } from "@/hooks/getPermission";
+// import { usePersonalInfoStore } from "@/store/personal-info-store";
 
-// const BranchBalanceCard = ({
-//   mainBalance,
-//   cautionDeposit,
-//   className,
-//   page,
-// }: {
-//   mainBalance: number;
-//   cautionDeposit: number;
-//   className?: string;
-//   page?: "manager" | "account";
-// }) => {
-//   const walletPinStatus = useWalletStore((s) => s.sub_wallet.status);
-//   const is_active = useWalletStore((s) => s.sub_wallet.is_active);
-//   const [hideBalance, setHideBalance] = useState(false);
-//   const [loading, setLoading] = useState(false);
-//   const setWalletStore = useWalletStore((s) => s.setWalletStore);
+// const DISCOUNT_PERCENTAGE = 0.2;
+// const BANK_CHARGES = 53.75;
+
+// const calculateExpectedAmount = (amount: number): number => {
+//   if (!amount || amount <= 0) return 0;
+
+//   const discountAmount = (amount * DISCOUNT_PERCENTAGE) / 100;
+
+//   const expectedAmount = amount - discountAmount - BANK_CHARGES;
+
+//   return amount - expectedAmount;
+// };
+
+// const Withdrawal: React.FC<
+//   WalletModalDefaultProps<WalletWithdrawFundsOptions>
+// > = ({ changeStep, branch }) => {
+//   const isDarkMode = useDarkMode();
 //   const { role, setRole } = useRole();
-//   const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
-//   const hasWalletAccess =
-//     usePermission(role, "Full Wallet Access") || isCompanyOwner;
-//   const { branch } = useBranchStore();
-
-//   const { data, error, refetch } =
-//     useFetch<WalletDataResponse>("/wallets/dashboard");
-//   useRefetchOnEvent("refetch-wallet", () => {
-//     refetch({ silent: true });
+//   const { branch: branchData } = usePersonalInfoStore();
+//   const BRANCH_ID = branchData?.branch_id || 0;
+//   const setWalletStore = useWalletStore((s) => s.setWalletStore);
+//   const [loading, setLoading] = useState(false);
+//   const [amount, setAmount] = useState(0);
+//   const [expectedAmount, setExpectedAmount] = useState(0);
+//   const [description, setDescription] = useState("");
+//   const [companyBankDetails, setCompanyBankDetails] = useState<BankPageData>({
+//     bank_name: "",
+//     account_name: "",
+//     account_number: "",
+//     bank_code: "",
 //   });
 
-//   console.log("walletPinStatus", walletPinStatus);
+//   console.log("branch", branchData);
+
+//   const securityText = branch
+//     ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system."
+//     : "Each withdrawal incurs a fee of the withdrawal amount. We collaborate with a trusted third-party provider to facilitate wallet withdrawals to any pre-registered Nigerian bank account.";
+
+//   const {
+//     data: bankData,
+//     error: bankError,
+//     refetch: bankRefetch,
+//     loading: bankLoading,
+//   } = useFetch<BankAPIResponse>("/banks");
 
 //   useEffect(() => {
-//     if (data) {
-//       setWalletStore("balance", {
-//         my_balance: data.balance.my_balance,
-//         caution_deposit: data.balance.escrow_balance,
-//         earned_bonus: data.balance.earned_bonus,
-//       });
-//     }
-//   }, [data, setWalletStore]);
-
-//   const options = [
-//     {
-//       name: walletPinStatus === "active" ? "Add Funds" : "Activate Wallet",
-//       icon: walletPinStatus === "active" ? <BluePlusIcon /> : <CheckIcon />,
-//       action:
-//         walletPinStatus === "active" ? (
-//           <AddFundsModal branch />
-//         ) : (
-//           <ActivateWalletModal />
-//         ),
-//     },
-//     {
-//       name: "Withdraw",
-//       icon: <BlueBuildingIcon />,
-//       action:
-//         walletPinStatus === "active" ? (
-//           <WithdrawFundsModal branch={true} />
-//         ) : null,
-//     },
-//     {
-//       name:
-//         walletPinStatus === "active" && is_active
-//           ? "Hold Wallet"
-//           : "UnHold Wallet",
-//       icon:
-//         walletPinStatus === "active" && is_active ? (
-//           <BlueUnlockIcon />
-//         ) : (
-//           <BlueLockIcon />
-//         ),
-//     },
-//   ];
-
-//   useEffect(() => {
-//     const storedHideBalance = localStorage.getItem("hideBalance");
-//     if (storedHideBalance !== null) {
-//       setHideBalance(JSON.parse(storedHideBalance));
-//     }
-//   }, []);
-
-//   const toggleBalanceVisibility = () => {
-//     setHideBalance((prev) => {
-//       const newHideBalance = !prev;
-//       localStorage.setItem("hideBalance", JSON.stringify(newHideBalance));
-//       return newHideBalance;
-//     });
-//   };
-
-//   const handleHoldWallet = async () => {
-//     if (!hasWalletAccess) return;
-//     try {
-//       setLoading(true);
-//       const res = await holdBranchWallet(branch.branch_id);
+//     if (bankData) {
+//       const res = transformBank(bankData);
 //       if (res) {
-//         toast.success("Branch Wallet Hold Successfully");
-//         window.dispatchEvent(new Event("refetch-wallet"));
-//         window.dispatchEvent(new Event("refetch_staff"));
+//         setCompanyBankDetails(res);
 //       }
-//     } catch {
-//       toast.error("Failed to Hold Branch Wallet");
-//     } finally {
-//       setLoading(false);
+//     }
+//   }, [bankData]);
+
+//   //
+
+//   useEffect(() => {
+//     setWalletStore("amount", amount);
+//     setWalletStore("desc", description);
+//   }, [amount, description, setWalletStore]);
+
+//   const slug = companyBankDetails.bank_name?.toLowerCase().replace(/\s+/g, "-");
+//   const logo = useBankLogo({ slug }) || "/icons/default-bank.svg";
+//   const bankNotAvailable =
+//     !companyBankDetails.bank_name &&
+//     !companyBankDetails.account_name &&
+//     !companyBankDetails.account_number &&
+//     !companyBankDetails.bank_code;
+
+//   const [error, setError] = useState<string | null>(null);
+
+//   const handleAmountChange = (value: string) => {
+//     const newAmount = Number(value.replace(/,/g, ""));
+
+//     // Validate maximum amount
+//     if (newAmount > 10000000) {
+//       setError("Maximum withdrawal limit is ₦10,000,000.");
+//       setAmount(10000000); // Set to max allowed
+//       if (!branch) {
+//         const expected = calculateExpectedAmount(10000000);
+//         setExpectedAmount(expected);
+//       } else {
+//         setExpectedAmount(10000000); // No calculation for branch
+//       }
+//       return;
+//     }
+
+//     setAmount(newAmount);
+
+//     if (newAmount < 1000) {
+//       setError("Minimum withdrawal amount is ₦1,000.");
+//       setExpectedAmount(0);
+//     } else {
+//       setError(null);
+//       if (!branch) {
+//         const expected = calculateExpectedAmount(newAmount);
+//         setExpectedAmount(expected);
+//       } else {
+//         setExpectedAmount(newAmount); // Use input amount directly for branch
+//       }
 //     }
 //   };
+
+//   const handleContinue = () => {
+//     if (amount > 0 && description.length > 0) {
+//       changeStep("input pin");
+//     } else {
+//       toast.warning("Please enter an amount and description");
+//     }
+//   };
+
+//   const CURRENCY_SYMBOL = currencySymbols.naira;
 
 //   return (
-//     <div className={clsx("space-y-2", className)}>
-//       <div className="p-5 relative custom-primary-bg rounded-lg">
-//         <div className="absolute inset-0">
-//           <Image
-//             src={WalletBG}
-//             alt="wallet background"
-//             fill
-//             sizes="400px"
-//             className="object-cover"
+//     <div className="custom-flex-col gap-8">
+//       <div className="custom-flex-col gap-[18px]">
+//         {bankLoading ? (
+//           <div
+//             style={{ boxShadow: "5px 5px 10px 0px rgba(0, 0, 0, 0.02)" }}
+//             className="animate-pulse p-4 w-full h-24 flex items-center justify-between rounded-2xl bg-gray-200 dark:bg-darkText-primary"
+//           ></div>
+//         ) : (
+//           <div>
+//             {!branch && !bankNotAvailable && (
+//               <FundingCard
+//                 type="sterling"
+//                 title={companyBankDetails.account_number}
+//                 desc={companyBankDetails.account_name}
+//                 cta={companyBankDetails.bank_name}
+//                 notRounded
+//                 logo={logo}
+//               />
+//             )}
+//             {bankNotAvailable && (
+//               <div
+//                 className="p-4 flex items-center justify-between rounded-2xl bg-neutral-2 dark:bg-darkText-primary"
+//                 style={{ boxShadow: "5px 5px 10px 0px rgba(0, 0, 0, 0.02)" }}
+//               >
+//                 <p>
+//                   Sorry, your withdrawal cannot be processed at this time.
+//                   Please add your company&apos;s bank account details to your
+//                   account. Click here to update your bank details.
+//                 </p>
+//               </div>
+//             )}
+//           </div>
+//         )}
+//         <div className="custom-flex-col gap-4">
+//           <div className="custom-flex-col space-y-4">
+//             <Input
+//               id="amount"
+//               label="amount"
+//               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+//               value={amount ? amount.toLocaleString() : ""}
+//               max={10000000}
+//               style={{ backgroundColor: isDarkMode ? "black" : "white" }}
+//               required
+//               // onChange={(value) => {
+//               //   setAmount(parseFloat(value.replace(/,/g, "")));
+//               // }}
+//               onChange={handleAmountChange}
+//             />
+//             {!branch && error && (
+//               <p className="text-red-600 text-sm mt-1">{error}</p>
+//             )}
+//             {amount > 1000 && !branch && (
+//               <div>
+//                 <Input
+//                   readOnly
+//                   id="amount_expected"
+//                   label="charges"
+//                   CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+//                   style={{ backgroundColor: isDarkMode ? "black" : "white" }}
+//                   value={expectedAmount.toLocaleString()}
+//                   className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 hover:border-none active:border-none pointer-events-none"
+//                 />
+
+//                 <p className="text-red-600 text-sm mt-1">
+//                   {`-${DISCOUNT_PERCENTAGE}% convenience fee and ${formatToNaira(
+//                     BANK_CHARGES
+//                   )} bank VAT`}
+//                 </p>
+//               </div>
+//             )}
+//           </div>
+//           <Input
+//             id="description"
+//             label="description"
+//             placeholder="Description"
+//             style={{ backgroundColor: isDarkMode ? "black" : "white" }}
+//             maxLength={100}
+//             required
+//             onChange={setDescription}
 //           />
 //         </div>
-//         <div className="relative space-y-3">
-//           {/* Header Section */}
-//           <div className="flex items-center justify-between gap-2">
-//             <div className="flex items-center space-x-2">
-//               <p className="text-text-invert text-sm font-medium">
-//                 Branch Balance
-//               </p>
-//               <button onClick={toggleBalanceVisibility} className="">
-//                 {hideBalance ? (
-//                   <Eye size={15} className="text-text-invert" />
-//                 ) : (
-//                   <EyeOff size={15} className="text-text-invert" />
-//                 )}
-//               </button>
-//             </div>
+//       </div>
+//       <div className="custom-flex-col gap-3">
+//         <Button
+//           // onClick={() => changeStep("input pin")}
+//           onClick={handleContinue}
+//           disabled={!!error}
+//           size="sm_medium"
+//           className="py-2 px-8"
+//         >
+//           continue
+//         </Button>
+//         <div className="py-3 px-4 flex gap-2 rounded-[4px] bg-status-caution-1 dark:bg-[#3C3D37]">
+//           <div className="flex items-start">
+//             <Picture src={InfoWarningIcon} alt="warning" size={26} />
 //           </div>
-
-//           {/* Main Balance */}
-//           {walletPinStatus === "active" ? (
-//             <p className="font-extrabold text-xl text-white">
-//               {hideBalance
-//                 ? "*******"
-//                 : `${currencySymbols.naira} ${formatNumber(mainBalance, {
-//                     forceTwoDecimals: true,
-//                   })}`}
-//             </p>
-//           ) : (
-//             <p className="font-extrabold text-xl text-white">Inactive</p>
-//           )}
-
-//           {/* Caution Deposit Section */}
-//           <div className="text-white text-xs font-medium capitalize flex items-center space-x-2">
-//             <p className="text-text-white-secondary">Caution Deposit</p>
-//             {walletPinStatus === "active" ? (
-//               <span>
-//                 {!hideBalance
-//                   ? `${currencySymbols.naira} ${formatNumber(cautionDeposit, {
-//                       forceTwoDecimals: true,
-//                     })}`
-//                   : "*******"}
-//               </span>
-//             ) : (
-//               <span>Inactive</span>
-//             )}
-//             <CautionIcon />
-//           </div>
-
-//           <div className="w-full flex items-start space-x-4">
-//             <div className="w-full flex justify-between">
-//               {options.map((option, index) => (
-//                 <div key={index} className="space-y-2">
-//                   {option.action &&
-//                   hasWalletAccess &&
-//                   walletPinStatus === "active" ? (
-//                     <Modal>
-//                       <ModalTrigger className="space-y-2">
-//                         <div
-//                           className={clsx(
-//                             "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
-//                             !is_active && "opacity-50 cursor-not-allowed"
-//                           )}
-//                         >
-//                           <span className="text-brand-9">{option.icon}</span>
-//                         </div>
-//                         <p className="capitalize text-white dark:text-white text-xs font-normal">
-//                           {option.name}
-//                         </p>
-//                       </ModalTrigger>
-//                       {is_active && (
-//                         <ModalContent>{option.action}</ModalContent>
-//                       )}
-//                     </Modal>
-//                   ) : option.name === "Activate Wallet" && hasWalletAccess ? (
-//                     <Link
-//                       href={`/management/staff-branch/${branch.branch_id}/edit-branch`}
-//                       className="space-y-2"
-//                     >
-//                       <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-//                         <span className="text-brand-9">{option.icon}</span>
-//                       </div>
-//                       <p className="capitalize text-white dark:text-white text-xs font-normal">
-//                         {option.name}
-//                       </p>
-//                     </Link>
-//                   ) : (
-//                     <div
-//                       className={clsx(
-//                         "space-y-2",
-//                         !hasWalletAccess ||
-//                           option.name === "Hold Wallet" ||
-//                           option.name === "UnHold Wallet"
-//                           ? "opacity-50 cursor-not-allowed"
-//                           : ""
-//                       )}
-//                     >
-//                       <button
-//                         className="space-y-2"
-//                         disabled={!hasWalletAccess || loading}
-//                         onClick={
-//                           option.name === "Hold Wallet" ||
-//                           option.name === "UnHold Wallet"
-//                             ? handleHoldWallet
-//                             : undefined
-//                         }
-//                       >
-//                         <div
-//                           className={clsx(
-//                             "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
-//                             !hasWalletAccess && "opacity-50 cursor-not-allowed"
-//                           )}
-//                         >
-//                           {loading &&
-//                           (option.name === "Hold Wallet" ||
-//                             option.name === "UnHold Wallet") ? (
-//                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-9"></div>
-//                           ) : (
-//                             <span className="text-brand-9">{option.icon}</span>
-//                           )}
-//                         </div>
-//                         <p className="capitalize text-white dark:text-white text-xs font-normal">
-//                           {option.name}
-//                         </p>
-//                       </button>
-//                     </div>
-//                   )}
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
+//           <p className="text-[#606060] dark:text-darkText-1 text-sm font-normal">
+//             {securityText}
+//           </p>
 //         </div>
 //       </div>
 //     </div>
 //   );
 // };
 
-// export default BranchBalanceCard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// export default Withdrawal;

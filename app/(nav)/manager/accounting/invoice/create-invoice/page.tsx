@@ -37,11 +37,14 @@ import { currencySymbols } from "@/utils/number-formatter";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 import { ExclamationMark } from "@/public/icons/icons";
 import { useTourStore } from "@/store/tour-store";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const CreateInvoicePage = () => {
   const searchParams = useSearchParams();
   const propertyId = searchParams.get("p");
   const router = useRouter();
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
   const [reqLoading, setReqLoading] = useState(false);
   const [isAddPaymentChecked, setIsAddPaymentChecked] = useState(true);
   const [isSelectDisabled, setIsSelectDisabled] = useState(false);
@@ -58,12 +61,14 @@ const CreateInvoicePage = () => {
   const [paymentAmount, setPaymentAmount] = useState("");
 
   // PROPERTY SELECTION LOGIC
+  const propertyURL =
+    BRANCH_ID && BRANCH_ID !== 0 ? `/property/all?branch_id=${BRANCH_ID}` : null;
   const [selectedProperty, setSelectedProperty] = useState<number>(0);
   const {
     data: properties,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>("/property/all");
+  } = useFetch<PropertyListResponse>(propertyURL);
 
   const propertyOptions =
     properties?.data

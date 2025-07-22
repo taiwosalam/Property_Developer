@@ -119,6 +119,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
             <Select
               id="professional_title"
               label="real estate title"
+              required
               inputContainerClassName="bg-neutral-2"
               options={industryOptions}
             />
@@ -152,6 +153,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
             <PhoneNumberInput
               id="phone_number"
               label="phone number"
+              required
               inputContainerClassName="bg-neutral-2"
             />
           </div>
