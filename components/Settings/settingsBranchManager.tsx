@@ -153,9 +153,9 @@ const ManagerProfile = ({accountant}: {accountant?: boolean}) => {
               <div className='flex flex-col gap-2 w-full my-4'>
                 <TextArea
                   inputSpaceClassName='bg-white dark:bg-darkText-primary'
-                  id='branch_description'
+                  id='about'
                   // defaultValue={somedata?.description}
-                  label='About Branch'
+                  label='About'
                 />
               </div>
             </div>

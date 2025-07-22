@@ -38,7 +38,6 @@ import { TenantData } from "../../types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
 import dayjs from "dayjs";
-import { transformCardData } from "../../../landlord/data";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
 import {
   FlagBadge,
@@ -52,6 +51,7 @@ import { toast } from "sonner";
 import { saveLocalStorage } from "@/utils/local-storage";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import { IndividualTenantAPIResponse } from "./types";
+import { transformCardData } from "@/app/(nav)/management/landlord/data";
 
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
@@ -235,7 +235,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
             ) : (
               <>
                 <Button
-                  href={`/management/tenants/${tenantId}/manage/edit`}
+                  href={`/manager/management/tenants/${tenantId}/manage/edit`}
                   size="base_medium"
                   className="py-2 px-8"
                 >
@@ -247,7 +247,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                   className="py-2 px-8"
                   onClick={() =>
                     router.push(
-                      `/management/rent-unit/?is_active=vacant&tenant_id=${tenantId}`
+                      `/manager/management/rent-unit/?is_active=vacant&tenant_id=${tenantId}`
                     )
                   }
                 >
@@ -298,7 +298,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
       <SectionContainer
         heading="Statement"
         {...((tenant?.statement?.length ?? 0) > 0 && {
-          href: `/management/tenants/${tenantId}/export`,
+          href: `/manager/management/tenants/${tenantId}/export`,
         })}
         style={{ fontSize: "25px", fontWeight: "700" }}
       >
@@ -335,10 +335,10 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <UnitItem
                 {...rent}
                 tenantId={tenant?.id}
-                // page="tenant-profile"
-                tenant_profile
+                page="manager"
                 cautionDeposit={String(rent.caution_deposit)}
                 tenantAgent={tenant?.user_tag}
+                tenant_profile
               />
               {/* Documents for Current Rent */}
               {rent.documents && rent.documents.length > 0 ? (
@@ -409,7 +409,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                   tenantId={tenant?.id}
                   cautionDeposit={String(rent.caution_deposit)}
                   tenantAgent={tenant?.user_tag}
-                  // page="tenant-profile"
+                  page='manager'
                   tenant_profile
                 />
                 {/* Documents for Previous Rent */}

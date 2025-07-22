@@ -61,11 +61,9 @@ export const fundWallet = async (amount: number) => {
   }
 };
 
-
-
-export const checkPaymentStatus = async (reference: string, param?: string) => {
+export const checkPaymentStatus = async (reference: string) => {
   try {
-    const res = await api.get(`/transactions/verify/${reference}?${param}`);
+    const res = await api.get(`/transactions/verify/${reference}`);
 
     if (res.status === 200 || res.status === 201) {
       const transactionStatus = res.data?.data?.status; // Extract actual payment status
@@ -91,7 +89,6 @@ export const checkPaymentStatus = async (reference: string, param?: string) => {
     return false;
   }
 };
-
 
 export const getUserInfoFromWalletId = async (wallet_id: string) => {
   try {
@@ -165,44 +162,56 @@ export const transferFunds = async (
   }
 };
 
-
 // /branch/wallet-fund
 export const branchFundWallet = async (id: string, data: any) => {
-  try{
-    const res = await api.post(`/branch/${id}/wallet-fund`, data)
-    if (res.status === 200){
-      return true
+  try {
+    const res = await api.post(`/branch/${id}/wallet-fund`, data);
+    if (res.status === 200 || res.status === 201) {
+      return true;
     }
-  }catch(err){
-    handleAxiosError(err)
+  } catch (err) {
+    handleAxiosError(err);
     return false;
   }
-}
-
+};
 
 // Withdraw branch Funds
 // /branch/14/Withdraw
 export const withdrawBranchFunds = async (id: string, data: any) => {
-  try{
-    const res = await api.post(`/branch/${id}/Withdraw`, data)
-    if (res.status === 200){
-      return true
+  try {
+    const res = await api.post(`/branch/${id}/Withdraw`, data);
+    if (res.status === 200 || res.status === 201) {
+      return true;
     }
-  }catch(err){
-    handleAxiosError(err)
+  } catch (err) {
+    handleAxiosError(err);
     return false;
   }
-}
+};
 
 // /wallets/withdraw/3
 export const withdrawFunds = async (id: string, data: any) => {
-  try{
-    const res = await api.post(`/wallets/withdraw/${id}`, data)
-    if (res.status === 200){
-      return true
+  try {
+    const res = await api.post(`/wallets/withdraw/${id}`, data);
+    if (res.status === 200 || res.status === 201) {
+      return true;
     }
-  }catch(err){
-    handleAxiosError(err)
+  } catch (err) {
+    handleAxiosError(err);
     return false;
   }
-}
+};
+
+// manager withdraw funds
+// '/branch/{branchID}/Withdraw-bank'
+export const managerWithdrawFund = async (id: number, data: any) => {
+  try {
+    const res = await api.post(`/branch/${id}/Withdraw-bank`, data);
+    if (res.status === 200 || res.status === 201) {
+      return true;
+    }
+  } catch (err) {
+    handleAxiosError(err);
+    return false;
+  }
+};

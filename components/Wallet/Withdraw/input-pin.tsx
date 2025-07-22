@@ -8,19 +8,31 @@ import Button from "@/components/Form/Button/button";
 import { useWalletStore } from "@/store/wallet-store";
 import { toast } from "sonner";
 import useBranchStore from "@/store/branch-store";
-import { withdrawBranchFunds, withdrawFunds } from "../data";
+import {
+  managerWithdrawFund,
+  withdrawBranchFunds,
+  withdrawFunds,
+} from "../data";
 import { useModal } from "@/components/Modal/modal";
+import { useRole } from "@/hooks/roleContext";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
-const InputPin = ({ branch: branchState } : { branch?: boolean; }) => {
-  const { setIsOpen } = useModal()
+const InputPin = ({ branch: branchState }: { branch?: boolean }) => {
+  const { setIsOpen } = useModal();
+  const { role, setRole } = useRole();
+  const { branch } = useBranchStore();
+  const { branch: personalBranch } = usePersonalInfoStore();
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
   const [pin, setPin] = useState("");
-  const { branch } = useBranchStore()
   const [loading, setLoading] = useState(false);
   const id = useWalletStore((state) => state.id);
   const amount = useWalletStore((state) => state.amount);
   const desc = useWalletStore((state) => state.desc);
-  const branch_id = branch.branch_id
+  const isManagerAccount = role === "manager";
+  const branch_id = isManagerAccount
+    ? personalBranch.branch_id
+    : branch.branch_id || 0;
+
   // console.log(amount, desc)
 
   useEffect(() => {
@@ -42,23 +54,41 @@ const InputPin = ({ branch: branchState } : { branch?: boolean; }) => {
       toast.warning("Please enter your PIN");
       return;
     }
+
+    if ((isManagerAccount && !branch_id) || branch_id === 0) {
+      toast.warning("Invalid Branch ID");
+      return;
+    }
+
     try {
-      setLoading(true)
-      const action = branchState ? withdrawBranchFunds(branch_id, { amount, description: desc, pin }) : withdrawFunds(id as string, { amount, pin })
+      setLoading(true);
+      const action = branchState
+        ? withdrawBranchFunds(branch_id?.toString() || "", {
+            amount,
+            description: desc,
+            pin,
+          })
+        : isManagerAccount
+        ? managerWithdrawFund(Number(branch_id), {
+            amount,
+            description: desc,
+            pin,
+          })
+        : withdrawFunds(id as string, { amount, pin });
       const res = await action;
       if (res) {
-        setIsOpen(false)
-        toast.success("Withdrawal successful")
+        setIsOpen(false);
+        toast.success("Withdrawal successful");
         window.dispatchEvent(new Event("refetch-wallet"));
         window.dispatchEvent(new Event("refetch_staff"));
         // back()
       }
     } catch (err) {
-      toast.error("Failed to withdraw")
+      toast.error("Failed to withdraw");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="custom-flex-col gap-20">

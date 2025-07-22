@@ -17,7 +17,7 @@ export const settings_link_tabs = [
 ] as const;
 
 export const manager_settings_link_tabs = [
-  "profile",
+  "company",
   "security",
   "others",
 ] as const;

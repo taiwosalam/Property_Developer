@@ -40,8 +40,9 @@ export interface UnitItemProps {
   tenantId?: number | string;
   tenantAgent?: "web" | "mobile";
   caution_deposit?: number;
-  page?: "tenant-profile" | "others" | "manager" | "account";
+  page?: "manager" | "account";
   documents?: AttachedDocument[];
+  tenant_profile?: boolean;
 }
 
 const UnitItem: React.FC<UnitItemProps> = ({
@@ -67,6 +68,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
   noActionBtn,
   page,
   property_name,
+  tenant_profile,
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const isRental = propertyType.toLowerCase() === "rental";
@@ -148,7 +150,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
               </p>
             </div>
           )}
-          {tenantName && page !== "tenant-profile" && (
+          {tenantName && !tenant_profile&& (
             <div>
               <p className="text-[#747474] dark:text-white">
                 Tenant&apos;s Name
@@ -160,7 +162,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
             </div>
           )}
 
-          {property_name && page === "tenant-profile" && (
+          {property_name && tenant_profile && (
             <div>
               <p className="text-[#747474] dark:text-white">Property Name</p>
               <p className="text-black dark:text-darkText-1 flex items-center">

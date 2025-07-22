@@ -48,7 +48,6 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
 }) => {
   const [screenModal, setScreenModal] = useState(false);
 
-  console.log(currency)
 
   return (
     <>

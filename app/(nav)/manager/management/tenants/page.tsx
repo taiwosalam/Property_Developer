@@ -175,7 +175,7 @@ const Tenants = () => {
 
   // Conditionally set the URL only if BRANCH_ID is valid
   const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0 ? `tenants?branch_ids=${BRANCH_ID}` : null;
+    BRANCH_ID && BRANCH_ID !== 0 ? `tenants?branch_ids[0]=${BRANCH_ID}` : null;
 
   const {
     data: apiData,
@@ -420,7 +420,7 @@ const Tenants = () => {
                 ) : (
                   tenants.map((t) => (
                     <Link
-                      href={`/management/tenants/${t.id}/manage`}
+                      href={`/manager/management/tenants/${t.id}/manage`}
                       key={t.id}
                     >
                       <TenantCard

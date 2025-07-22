@@ -350,16 +350,16 @@ const AccountingInvoicePage = () => {
   }, [invoiceTimeRange, selectedDateRange]);
 
   // Render an error message if BRANCH_ID is invalid
-  if (!BRANCH_ID || BRANCH_ID === 0) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <PageCircleLoader />
-        <div className="text-base text-red-500 font-medium">
-          Invalid branch ID. Please select a valid branch.
-        </div>
-      </div>
-    );
-  }
+  // if (!BRANCH_ID || BRANCH_ID === 0) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <PageCircleLoader />
+  //       <div className="text-base text-red-500 font-medium">
+  //         Invalid branch ID. Please select a valid branch.
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (loading)
     return <CustomLoader layout="page" view="table" pageTitle="Invoices" />;

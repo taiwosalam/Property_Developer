@@ -3,20 +3,10 @@
 import React, { useEffect, useState } from "react";
 
 // Images
-import { Check } from "lucide-react";
-import DangerIcon from "@/public/icons/danger.svg";
-import ImageBlue from "@/public/icons/image-blue.svg";
 import SignatureImage from "@/public/accounting/signature.svg";
 
 // Imports
-import { industryOptions, titles } from "@/data";
-import Input from "@/components/Form/Input/input";
-import Picture from "@/components/Picture/picture";
-import Select from "@/components/Form/Select/select";
 import { useImageUploader } from "@/hooks/useImageUploader";
-import FundingCard from "@/components/Wallet/AddFunds/funding-card";
-import SettingsSection from "@/components/Settings/settings-section";
-import { ProfileUpload } from "@/components/Settings/settings-components";
 import SettingsPasswordSection from "@/components/Settings/settings-password-section";
 import SettingsWalletSection from "@/components/Settings/settings-wallet-section";
 
@@ -25,14 +15,25 @@ import {
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { FormState, updateUserProfile } from "./data";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import SettingsSignature from "@/components/Settings/settings-signature";
 import SettingsBank from "@/components/Settings/settings-bank";
+import ManagerProfile from "@/components/Settings/settingsBranchManager";
+import BranchBankSettings from "@/components/Settings/branch-bank";
+import { updateBranch } from "@/app/(nav)/management/staff-branch/[branchId]/edit-branch/data";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { SingleBranchResponseType } from "@/app/(nav)/management/staff-branch/[branchId]/types";
+import { transformSingleBranchAPIResponseToEditBranchFormDetails } from "@/app/(nav)/management/staff-branch/[branchId]/data";
+import { useRouter } from "next/navigation";
 
 const Security = () => {
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+  const router = useRouter();
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
   const { preview, inputFileRef, handleImageChange } = useImageUploader();
@@ -68,7 +69,7 @@ const Security = () => {
     try {
       setReqLoading(true);
       const res = await updateUserProfile(objectToFormData(payload));
-      if (res && 'status' in res && res.status === 200) {
+      if (res && "status" in res && res.status === 200) {
         // console.log(res);
         toast.success("Profile updated successfully");
         setNext(true);
@@ -81,12 +82,64 @@ const Security = () => {
     }
   };
 
+  // =========== BRANCH BANK DETAILS ==========
+
+  const [updateRequestLoading, setUpdateRequestLoading] = useState(false);
+
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl = BRANCH_ID && BRANCH_ID !== 0 ? `/branch/${BRANCH_ID}` : null;
+  const { data, error, loading, refetch } =
+    useFetch<SingleBranchResponseType>(fetchUrl);
+  useRefetchOnEvent("refectch-branch", () => refetch({ silent: true }));
+
+  const branchData = data
+    ? transformSingleBranchAPIResponseToEditBranchFormDetails(data)
+    : null;
+
+  // Function to update branch bank details
+  const updateBranchBankDetails = async (details: {
+    bank_name: string;
+    account_name: string;
+    account_number: string;
+    bank_code: string;
+  }) => {
+    const branchID = branchData?.id;
+    if (!branchID) return toast.error("Cannot Find Branch ID");
+    const payload = {
+      bank_name: details.bank_name,
+      account_name: details.account_name,
+      account_number: details.account_number,
+      bank_code: details.bank_code,
+    };
+    try {
+      setUpdateRequestLoading(true);
+      const status = await updateBranch(
+        objectToFormData(payload),
+        branchData.id
+      );
+      if (status) {
+        toast.success("Branch Bank Details Updated Successfully");
+        window.dispatchEvent(new Event("refectch-branch"));
+        router.push(`/management/staff-branch/${branchID}`);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdateRequestLoading(false);
+    }
+  };
+
 
   return (
     <>
+      <ManagerProfile />
       <SettingsWalletSection />
-      <SettingsPasswordSection />
-      <SettingsBank />
+      <BranchBankSettings
+        branch_account_name={branchData?.account_name}
+        branch_account_number={branchData?.account_number}
+        branch_bank_name={branchData?.bank_name}
+        action={updateBranchBankDetails}
+      />
     </>
   );
 };
