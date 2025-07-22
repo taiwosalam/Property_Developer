@@ -20,15 +20,18 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 const InputPin = ({ branch: branchState }: { branch?: boolean }) => {
   const { setIsOpen } = useModal();
   const { role, setRole } = useRole();
-  const { branch } = usePersonalInfoStore();
+  const { branch } = useBranchStore();
+  const { branch: personalBranch } = usePersonalInfoStore();
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
   const [pin, setPin] = useState("");
   const [loading, setLoading] = useState(false);
   const id = useWalletStore((state) => state.id);
   const amount = useWalletStore((state) => state.amount);
   const desc = useWalletStore((state) => state.desc);
-  const branch_id = branch.branch_id || 0;
   const isManagerAccount = role === "manager";
+  const branch_id = isManagerAccount
+    ? personalBranch.branch_id
+    : branch.branch_id || 0;
 
   // console.log(amount, desc)
 
@@ -60,7 +63,11 @@ const InputPin = ({ branch: branchState }: { branch?: boolean }) => {
     try {
       setLoading(true);
       const action = branchState
-        ? withdrawBranchFunds(branch_id.toString(), { amount, description: desc, pin })
+        ? withdrawBranchFunds(branch_id?.toString() || "", {
+            amount,
+            description: desc,
+            pin,
+          })
         : isManagerAccount
         ? managerWithdrawFund(Number(branch_id), {
             amount,
