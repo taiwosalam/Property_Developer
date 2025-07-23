@@ -63,8 +63,9 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
   };
 
   const [maintenanceCost, setMaintenanceCost] = useState(
-    props?.cost ? props.cost : ""
+    props?.cost ? Number(props.cost).toLocaleString() : ""
   );
+
   const handleMaintenanceCostChange = (value: string) => {
     setMaintenanceCost(formatCostInputValue(value));
   };
@@ -250,10 +251,7 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
             <p className="text-text-tertiary dark:text-white text-base">
               Maintenance Quotation:
             </p>
-            <div
-              className="py-6 rounded-lg"
-           
-            >
+            <div className="py-6 rounded-lg">
               <a
                 href={props.quotation}
                 target="_blank"
@@ -293,7 +291,7 @@ const ManageMaintenanceModal = ({ ...props }: MaintenanceModalProps) => {
             labelclassName="!text-sm"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
             onChange={handleMaintenanceCostChange}
-            defaultValue={props?.cost}
+            defaultValue={Number(props?.cost).toLocaleString()}
             value={maintenanceCost}
             inputClassName="bg-white"
           />

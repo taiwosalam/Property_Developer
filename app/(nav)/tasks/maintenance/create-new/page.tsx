@@ -232,7 +232,7 @@ const CreateMaintenace = () => {
       const response = await createMaintenance(data);
       if (response) {
         toast.success("Maintenance created");
-        //router.push("/tasks/maintenance");
+        router.push("/tasks/maintenance");
       }
     } catch (error) {
     } finally {

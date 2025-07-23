@@ -276,6 +276,8 @@ export const FeatureCompany = () => {
     const period = PERIOD_OPTIONS.find((p) => p.value === periodValue);
     const page = DISPLAY_OPTIONS.find((p) => p.value === selectedPage);
 
+    console.log(periodValue);
+
     if (period && page) {
       const baseAmount = page.amount * period.value;
       const discount = period.discount || 0;
@@ -288,7 +290,7 @@ export const FeatureCompany = () => {
 
   const handleRequestFeature = async () => {
     if (!company_id) return;
-    const periodString = selectedPeriod.split("")[0];
+    const periodString = selectedPeriod.split(" ")[0];
 
     const payload = {
       period: Number(periodString),
