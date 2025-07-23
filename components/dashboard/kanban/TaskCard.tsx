@@ -292,7 +292,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   <Avatar
                     key={index}
                     className={clsx(
-                      "h-6 w-6 rounded-full border-2 border-white flex items-center",
+                      "h-6 w-6 rounded-full border-2 border-white flex items-center bg-white",
                       index !== 0 && "-ml-2.5"
                     )}
                     style={{

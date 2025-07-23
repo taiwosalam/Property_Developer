@@ -111,13 +111,10 @@ const TenantsReport = () => {
   );
 
   // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/report/tenants?branch_id=${BRANCH_ID}`
-      : null;
+  const fetchUrl = BRANCH_ID && BRANCH_ID !== 0 ? `/report/tenants` : null;
   // FETCH
   const { data, loading, error, isNetworkError } = useFetch<TenantListResponse>(
-    fetchUrl,
+    `/report/tenants`,
     config
   );
 

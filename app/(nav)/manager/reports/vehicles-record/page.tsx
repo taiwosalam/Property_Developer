@@ -114,7 +114,7 @@ const VehiclesRecordReport = () => {
       : null;
 
   const { data, loading, error, isNetworkError } =
-    useFetch<VehicleRecordsResponse>(fetchUrl, config);
+    useFetch<VehicleRecordsResponse>(`/report/vehicle-records`, config);
 
   useEffect(() => {
     if (!loading && data) {

@@ -121,7 +121,7 @@ const PropertiesReport = () => {
       : null;
 
   const { data, loading, error, isNetworkError } =
-    useFetch<PropertyApiResponse>(fetchUrl, config);
+    useFetch<PropertyApiResponse>(`/report/properties`, config);
 
   useEffect(() => {
     if (!loading && data) {

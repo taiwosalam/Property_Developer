@@ -86,7 +86,7 @@ const ComplaintsPage = () => {
           self.findIndex((p) => p.title === property.title) === index
       )
       .map((property) => ({
-        label: property.title,
+        label: property.title?.toLowerCase(),
         value: property.id.toString(),
       })) || [];
 
@@ -96,7 +96,7 @@ const ComplaintsPage = () => {
     tenantsData?.data?.tenants
       ?.filter((tenant: { name: string; id: number }) => tenant?.name)
       .map((tenant: { name: string; id: number }) => ({
-        label: tenant.name,
+        label: tenant.name?.toLowerCase(),
         value: tenant.id.toString(),
       })) || [];
 
@@ -129,22 +129,22 @@ const ComplaintsPage = () => {
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
-    const statesArray = menuOptions["State"] || [];
-    const agent = menuOptions["Landlord/Landlady Type"]?.[0];
+    const propertyIds = menuOptions["Property"] || [];
+    const tenantIds = menuOptions["Tenant/Occupant"] || [];
     const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: LandlordRequestParams = {
       page: 1,
       search: "",
     };
-    if (statesArray.length > 0) {
-      queryParams.states = statesArray.join(",");
+    if (propertyIds.length > 0) {
+      queryParams.property_ids = propertyIds.join(",");
     }
     if (branchIdsArray.length > 0) {
       queryParams.branch_ids = branchIdsArray.join(",");
     }
-    if (agent && agent !== "all") {
-      queryParams.agent = agent;
+    if (tenantIds && tenantIds.length > 0) {
+      queryParams.tenant_ids = tenantIds.join(",");
     }
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");

@@ -131,7 +131,7 @@ const RentReport = () => {
       : null;
 
   const { data, loading, error, isNetworkError } = useFetch<RentListResponse>(
-    fetchUrl,
+    `/report/rents`,
     config
   );
 

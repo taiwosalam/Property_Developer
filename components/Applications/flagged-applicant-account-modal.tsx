@@ -7,6 +7,7 @@ import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-prese
 import { FlaggedCard } from "./flagged-card";
 import { toast } from "sonner";
 import { rejectApplication } from "@/app/(nav)/tasks/applications/[applicationId]/manage/data";
+import { useRouter } from "next/navigation";
 
 interface IFlaggedModal {
   id?: number;
@@ -33,6 +34,7 @@ const FlaggedApplicantAccountModal = ({
   type,
 }: IFlaggedModal) => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleRejectApplication = async (
     path: string,
@@ -105,7 +107,10 @@ const FlaggedApplicantAccountModal = ({
               size="base_bold"
               className="py-2 px-8"
               href={`/tasks/applications/${id}/manage`}
-              onClick={() => handleRejectApplication("evaluate", type)}
+              onClick={() => {
+                handleRejectApplication("evaluate", type);
+                //router.push(`/tasks/applications/${id}/manage`);
+              }}
             >
               skip
             </Button>
