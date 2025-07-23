@@ -16,6 +16,8 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ReviewResponseApi } from "./types";
 import { ISingleReview, transformSingleReview } from "../data";
 import ReplyComment from "@/components/Review/reply-comments";
+import ReviewCard from "@/components/Review/review-card";
+import { ReviewCardSkeleton } from "@/components/Loader/review-skeleton";
 
 const ReviewChat = () => {
   const router = useRouter();
@@ -23,7 +25,7 @@ const ReviewChat = () => {
   const clony = message_card_data.find((item) => item.id === id);
   const [review, setReview] = useState<ISingleReview | null>(null);
 
-  const { data, refetch } = useFetch<ReviewResponseApi>(
+  const { data, refetch, loading } = useFetch<ReviewResponseApi>(
     `/property/review/${id}`
   );
   useRefetchOnEvent("refetchReview", () => refetch({ silent: true }));
@@ -48,7 +50,7 @@ const ReviewChat = () => {
         </div>
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white custom-flex-col">
-        <Review {...review?.main} main />
+        {loading ? <ReviewCardSkeleton /> : <Review {...review?.main} main />}
 
         {review?.replies?.comments?.map((comment) => (
           <ReplyComment key={comment.id} {...comment} />

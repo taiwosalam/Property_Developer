@@ -26,8 +26,9 @@ interface MessagesFilterMenuProps extends MenuProps {
   filterOptions: FilterOption[];
   onFilterApply?: any;
   setSelectedLabel?: React.Dispatch<React.SetStateAction<string | null>>;
-  selectedFilters?: string[]; 
-  setSelectedFilters?: React.Dispatch<React.SetStateAction<string[]>>; 
+  selectedFilters?: string[];
+  setSelectedFilters?: React.Dispatch<React.SetStateAction<string[]>>;
+  allowMultiple?: boolean; // New prop to control single/multiple selection
 }
 
 const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
@@ -36,6 +37,7 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
   filterOptions,
   onFilterApply,
   setSelectedLabel,
+  allowMultiple = true,
   ...props
 }) => {
   const isDarkMode = useDarkMode();
@@ -133,6 +135,7 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
             setSelectedFilters={setSelectedFilters}
             onFilterApply={onFilterApply}
             setSelectedLabel={setSelectedLabel}
+            allowMultiple={allowMultiple}
           />
         ) : (
           <Step2Menu
@@ -160,6 +163,7 @@ const Step1Menu: React.FC<{
   onFilterApply: (selectedFilters: string[]) => void;
   setSelectedLabel?: React.Dispatch<React.SetStateAction<string | null>>;
   setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  allowMultiple?: boolean; // Add allowMultiple prop
 }> = ({
   changeStep,
   commonClasses,
@@ -169,13 +173,23 @@ const Step1Menu: React.FC<{
   setSelectedFilters,
   onFilterApply,
   setSelectedLabel,
+  allowMultiple,
 }) => {
   const handleFilterToggle = (label: string) => {
-    setSelectedFilters((prev) =>
-      prev.includes(label)
-        ? prev.filter((item) => item !== label)
-        : [...prev, label]
-    );
+    if (allowMultiple) {
+      // Multiple selection logic
+      setSelectedFilters((prev) =>
+        prev.includes(label)
+          ? prev.filter((item) => item !== label)
+          : [...prev, label]
+      );
+    } else {
+      // Single selection logic
+      setSelectedFilters([label]);
+      if (setSelectedLabel) {
+        setSelectedLabel(label);
+      }
+    }
   };
 
   const applyFilters = () => {
@@ -202,14 +216,18 @@ const Step1Menu: React.FC<{
         <button
           type="button"
           className={`${commonClasses} ${
-            selectedFilters.includes(option.label) ? "!bg-[#bfb3b3] dark:!border dark:!border-gray-600 dark:!bg-darkText-primary" : ""
+            selectedFilters.includes(option.label)
+              ? "!bg-[#bfb3b3] dark:!border dark:!border-gray-600 dark:!bg-darkText-primary"
+              : ""
           }`}
           key={index}
           onClick={() => handleFilterToggle(option.label)}
         >
           <span>{option.label}</span>
           <span
-            style={{ backgroundColor: option.bgColor || "var(--primary-color)" }}
+            style={{
+              backgroundColor: option.bgColor || "var(--primary-color)",
+            }}
             className="text-white rounded-full p-1 flex items-center justify-center w-5 h-5"
           >
             {option.value}
@@ -232,7 +250,8 @@ const Step2Menu: React.FC<{
   setSelectedBranches: React.Dispatch<React.SetStateAction<string[]>>;
 }> = ({ commonClasses, selectedBranches, setSelectedBranches }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: branchesData, loading } = useFetch<AllBranchesResponse>("/branches/select");
+  const { data: branchesData, loading } =
+    useFetch<AllBranchesResponse>("/branches/select");
 
   const branchOptions =
     branchesData?.data.map((branch) => ({
@@ -268,7 +287,10 @@ const Step2Menu: React.FC<{
       {loading ? (
         <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, index) => (
-            <div key={index} className={`${commonClasses} animate-pulse bg-gray-300 h-10`} />
+            <div
+              key={index}
+              className={`${commonClasses} animate-pulse bg-gray-300 h-10`}
+            />
           ))}
         </div>
       ) : (

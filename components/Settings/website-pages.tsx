@@ -187,7 +187,7 @@ const WebsitePages = () => {
     const payload = {
       ...checkedStates,
       ...propertyVisibility,
-      color_scheme: selectedColor ?? "default",
+      color_scheme: selectedColor ?? "default", // you can set the default color here
     };
 
     setLoading(true);

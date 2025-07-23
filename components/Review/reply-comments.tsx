@@ -47,7 +47,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
       </div>
       <div className=" flex-1 space-y-2">
         <div className="flex gap-2 items-center">
-          <p className="text-text-primary text-sm font-medium capitalize pt-2">
+          <p className="text-text-primary text-sm font-medium capitalize">
             {name.toLocaleLowerCase()}
           </p>
           {tier && (

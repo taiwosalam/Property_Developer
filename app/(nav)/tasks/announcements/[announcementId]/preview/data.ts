@@ -83,7 +83,10 @@ export const transformComment = (
   slug: string
 ): CommentProps => ({
   id: comment.id,
-  name: comment.name || comment?.user?.name || "No name",
+  name:
+    comment.name?.toLowerCase() ||
+    comment?.user?.name?.toLowerCase() ||
+    "No name",
   image: comment.profile_picture || comment?.user?.profile_picture,
   tier_id: comment.tier
     ? Number(comment.tier)
@@ -131,7 +134,7 @@ export const transformAnnouncementDetailsData = (
     viewers: announcement?.comments?.map((user) => user?.user?.profile_picture),
     read_by: announcement?.readByData?.map((read, index) => ({
       user_id: index + 1,
-      user_name: read?.name,
+      user_name: read?.name?.toLowerCase(),
       tier_id: 1,
       image: read?.profile_picture,
       date: read?.viewed_at,

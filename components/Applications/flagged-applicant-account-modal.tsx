@@ -84,7 +84,7 @@ const FlaggedApplicantAccountModal = ({
 
         <div className="flex flex-wrap gap-6 justify-between items-start mt-4">
           <div className="w-full lg:w-auto mx-auto">
-            <p className="text-blue-600 text-center max-w-lg mx-auto font-semibold">
+            <p className="text-brand-9 text-center max-w-lg mx-auto font-semibold">
               Kindly advise the applicant to resolve any outstanding issues with
               their previous manager in order to lift the flag on their account.
             </p>

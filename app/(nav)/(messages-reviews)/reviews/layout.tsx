@@ -107,13 +107,12 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-
   const filteredReviews =
     reviews?.reviews.filter((review) => {
       // Apply text search first
-      const matchesSearch = review.review
-        .toLowerCase()
-        .includes(searchInput.toLowerCase());
+      const matchesSearch =
+        review.review.toLowerCase().includes(searchInput.toLowerCase()) ||
+        review?.fullname?.toLowerCase().includes(searchInput.toLowerCase());
 
       if (!matchesSearch) return false;
 
@@ -122,15 +121,12 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
 
       // Apply selected filters
       return selectedFilters.some((filterType) => {
-        if (filterType === "Positive Review") return review.down_vote > 0;
-        if (filterType === "Neutral Review")
-          return review.up_vote === 0 && review.down_vote === 0;
-        if (filterType === "Negative Review") return review.up_vote > 0;
-        if (filterType === "New Review") {
-          const sevenDaysAgo = new Date();
-          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-          const reviewDate = new Date(review.created_at);
-          return reviewDate >= sevenDaysAgo;
+        if (filterType === "Positive Review") return review.review_type === 1;
+        if (filterType === "Neutral Review") return review.review_type === 3;
+        if (filterType === "Negative Review") return review.review_type === 2;
+        if (filterType === "Total Reviews") {
+          reviews.reviews.length;
+          return true; // Always true since this is a count, not a filter
         }
         if (filterType === "Un-replied Review") {
           return review.comment_count === 0 || review?.comments?.length === 0;
@@ -302,12 +298,34 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                     onClose={handleMenuClose}
                     onFilterApply={handleFilterApply}
                     setSelectedLabel={setSelectedLabel}
+                    allowMultiple={false}
                     filterOptions={[
-                      { label: "Positive Review", bgColor: "#01BA4C" },
-                      { label: "Neutral Review", bgColor: "#FFBB53" },
-                      { label: "Negative Review", bgColor: "#E9212E" },
-                      { label: "New Review", bgColor: "#60A5FA" },
-                      { label: "Un-replied Review", bgColor: "#005623" },
+                      {
+                        label: "Total Reviews",
+                        bgColor: "#60A5FA",
+                        value: reviews?.total_reviews,
+                      },
+                      {
+                        label: "Positive Review",
+                        bgColor: "#01BA4C",
+                        value: reviews?.total_dislike,
+                      },
+                      {
+                        label: "Neutral Review",
+                        bgColor: "#FFBB53",
+                        value: reviews?.neutral_count,
+                      },
+                      {
+                        label: "Negative Review",
+                        bgColor: "#E9212E",
+                        value: reviews?.total_like,
+                      },
+
+                      {
+                        label: "Un-replied Review",
+                        bgColor: "#005623",
+                        value: reviews?.total_unreplied,
+                      },
                     ]}
                   />
                 </div>

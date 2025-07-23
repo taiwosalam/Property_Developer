@@ -43,7 +43,7 @@ const SettingsLinkTab: React.FC<
       icon: ManagementIcon,
     },
     "add-on": {
-      check: usePermission(role, "Manage Add-on Settings") || isCompanyOwner,
+      check: usePermission(role, "Activate Add-on") || isCompanyOwner,
       icon: SubscriptionIcon,
     },
     services: {
