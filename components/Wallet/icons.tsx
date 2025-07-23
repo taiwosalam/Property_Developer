@@ -73,6 +73,7 @@ export const getTransactionIcon = (
     | "transfer_in"
     | "funding"
     | "debit"
+    | "DVA"
 ) => {
   switch (type) {
     case "funding":

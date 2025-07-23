@@ -87,7 +87,7 @@ const TransactionHistory = () => {
 
         const combinedTransactions = [
           ...prevState.transactions,
-          ...newTransactions.transactions,
+          ...(newTransactions?.transactions ?? []),
         ];
 
         // Filter out duplicates based on transaction ID
@@ -143,7 +143,13 @@ const TransactionHistory = () => {
           }
         )}
       >
-        {/* {getTransactionIcon(t.source, t.type)} */}
+        {getTransactionIcon(
+          t.source,
+          t.type as
+            | "withdrawal"
+            | "sponsor_listing"
+            | "transfer_out"
+            | "transfer_in" | "debit" | "funding")}
       </div>
     ),
     ref: index === state.transactions.length - 1 ? lastRowRef : null,
