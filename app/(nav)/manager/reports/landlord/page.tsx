@@ -122,7 +122,7 @@ const LandlordsReport = () => {
      : null;
 
   const { data, loading, error, isNetworkError } =
-    useFetch<LandlordsApiResponse>(fetchUrl, config);
+    useFetch<LandlordsApiResponse>(`/report/landlords`, config);
 
   useEffect(() => {
     if (!loading && data) {

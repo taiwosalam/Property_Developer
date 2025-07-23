@@ -79,7 +79,7 @@ const Call = () => {
     error,
     refetch,
     isNetworkError,
-  } = useFetch<CallbackApiResponse>(fetchUrl, config);
+  } = useFetch<CallbackApiResponse>(`report/call-request`, config);
 
   useEffect(() => {
     if (apiData) {

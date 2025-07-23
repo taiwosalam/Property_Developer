@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { PlusIcon } from "@/public/icons/icons";
+import { ExclamationMark, PlusIcon } from "@/public/icons/icons";
 import DraggableImage from "./draggable-image";
 import { useUnitForm } from "./unit-form-context";
 import clsx from "clsx";
@@ -12,13 +12,22 @@ import { useGlobalStore } from "@/store/general-store";
 import Button from "@/components/Form/Button/button";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { toast } from "sonner";
+import { useTourStore } from "@/store/tour-store";
+import { usePathname } from "next/navigation";
 
 const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   const allowEditUnit = useGlobalStore((s) => s.allowEditUnit);
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-  const { images, setImages, isEditing, formResetKey, notYetUploaded, unitData } = useUnitForm();
+  const {
+    images,
+    setImages,
+    isEditing,
+    formResetKey,
+    notYetUploaded,
+    unitData,
+  } = useUnitForm();
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const maxImages = propertyType === "facility" ? 5 : 14;
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
@@ -75,30 +84,65 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
     form?.requestSubmit();
   };
 
+  const pathname = usePathname();
+
+  // Tour implementation
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("EditPropertyTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
   // Check if the current form's ID matches any unit in addedUnits
-  const isExistingUnit = unitData?.id && addedUnits.some((unit) => unit.id === unitData.id);
+  const isExistingUnit =
+    unitData?.id && addedUnits.some((unit) => unit.id === unitData.id);
 
   // Show buttons if:
   // 1. notYetUploaded is true (unsaved unit)
   // 2. newForm is true (blank form)
   // 3. unitData is undefined or unitData.id is undefined (new form with no unit data)
   // 4. The form's ID does NOT match any unit in addedUnits
-  const shouldShowButtons = (notYetUploaded || newForm || !unitData || !unitData.id) && !isExistingUnit;
-  
+  const shouldShowButtons =
+    (notYetUploaded || newForm || !unitData || !unitData.id) && !isExistingUnit;
+
   return (
     <div
       ref={ref}
       className={clsx(
-        "unit-form-pictures-wrapper scroll-mt-[160px]",
+        "unit-form-pictures-wrapper unit-pictures-upload scroll-mt-[160px]",
         isEditing && "!mt-0"
       )}
     >
       <div className="flex justify-between items-center">
-        <h4 className="flex items-center text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
-          {propertyType === "rental" && <span className="text-red-500">*</span>}
-          Unit Pictures
-        </h4>
+        <div className="flex items-center gap-2">
+          <h4 className="flex items-center text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+            {propertyType === "rental" && (
+              <span className="text-red-500">*</span>
+            )}
+            Unit Pictures
+          </h4>
+          <button
+            onClick={() => goToStep(20)}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
+
         {shouldShowButtons && (
           <div className="flex gap-4 justify-end edit-unit-action-btns">
             <Button

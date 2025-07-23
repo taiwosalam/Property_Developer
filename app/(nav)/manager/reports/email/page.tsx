@@ -76,7 +76,7 @@ const EmailReport = () => {
     loading,
     isNetworkError,
     error,
-  } = useFetch<IEmailReportResponse>(fetchUrl, config);
+  } = useFetch<IEmailReportResponse>(`/report/emails`, config);
 
   // Handle data transformation and appending for infinite scroll
   useEffect(() => {

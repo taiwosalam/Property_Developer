@@ -135,10 +135,10 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
           <FooterModal noForm={noForm} />
         </ModalContent>
       </Modal>
-      <div className="unit-action-buttons flex items-center gap-10">
+      <div className="unit-action-buttons property-save-button-wrapper flex items-center gap-10">
         <Button
           size="base_medium"
-          className="py-2 px-6"
+          className="add-more-units-button py-2 px-6"
           disabled={submitLoading}
           form="add-unit-form"
           onClick={handleAddMoreClick}
@@ -149,7 +149,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
           form="add-unit-form"
           type="button"
           size="base_medium"
-          className="py-2 px-6"
+          className="save-button py-2 px-6"
           disabled={submitLoading}
           onClick={handleSaveClick}
         >

@@ -101,19 +101,25 @@ export function KanbanBoard({
     null
   );
 
-  const complaintId = currentTaskForStatusChange?.id;
+  // Only fetch when modal is open and complaintId is valid.
+  //  NOTE: This is to avoid multiple request whenever task card is dragged
+  const complaintId = statusChangeModalOpen
+    ? currentTaskForStatusChange?.id
+    : null;
   const {
     data: complaintDataResponse,
     loading,
     error: fetchError,
-  } = useFetch<ComplaintDetailResponse>(`complaint/${complaintId}`);
+  } = useFetch<ComplaintDetailResponse>(
+    complaintId ? `complaint/${complaintId}` : null
+  );
 
   useEffect(() => {
     if (complaintDataResponse) {
       const transformDetails = transformComplaintDetails(complaintDataResponse);
       setCardData(transformDetails);
     }
-  }, [complaintDataResponse]);
+  }, [complaintDataResponse, statusChangeModalOpen]);
 
   // Pagination state for each column
   const [columnPagination, setColumnPagination] = useState<
@@ -214,7 +220,6 @@ export function KanbanBoard({
       //toast.error(`Failed to update complaint to ${targetStatus}`);
     }
   };
-
   // Update tasks when new data comes in (append, don't replace)
   useEffect(() => {
     if (kanbanTask && kanbanTask.length > 0) {
@@ -260,6 +265,8 @@ export function KanbanBoard({
       }));
     }
   }, [pagination]);
+
+  console.log(targetStatus);
 
   // Load more data for a specific column
   const handleLoadMore = useCallback(
@@ -607,20 +614,16 @@ export function KanbanBoard({
   function onDragEnd(event: DragEndEvent) {
     setActiveColumn(null);
     setActiveTask(null);
-    // SAMPLE
 
     const { active, over } = event;
-
     if (!active || !over) return;
 
     const activeData = active.data.current;
     const overData = over.data.current;
-
     if (!activeData || !overData) return;
 
     // Task being dragged
     const draggedTask = activeData.task;
-
     // From which column the task came
     const fromColumn = draggedTask.columnId;
 
@@ -637,10 +640,9 @@ export function KanbanBoard({
       toColumn = over.id as ColumnId; // Assuming over.id is the column id
     }
 
-    if (toColumn !== "processing") {
-      setTimeout(() => {
-        setStatusChangeModalOpen(true);
-      }, 1000);
+    // Only open modal for status change if not moving to "processing"
+    if (toColumn && toColumn !== "processing") {
+      setStatusChangeModalOpen(true);
     }
 
     if (!over) return;
@@ -649,7 +651,6 @@ export function KanbanBoard({
     const overId = over.id;
 
     if (!hasDraggableData(active)) return;
-
     if (activeId === overId) return;
 
     const isActiveAColumn = activeData?.type === "Column";
@@ -668,62 +669,168 @@ export function KanbanBoard({
     }
 
     if (isActiveATask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((t) => t.id === activeId);
-        const activeTask = tasks[activeIndex];
+      const activeTask = tasks.find((t) => t.id === active.id);
+      let toColumn: ColumnId | null = null;
 
-        if (isOverATask) {
-          const overIndex = tasks.findIndex((t) => t.id === overId);
-          const overTask = tasks[overIndex];
+      if (isOverATask) {
+        toColumn = overData.task.columnId;
+      } else if (isOverAColumn) {
+        toColumn = over.id as ColumnId;
+      }
 
-          if (
-            activeTask &&
-            overTask &&
-            activeTask.columnId !== overTask.columnId
-          ) {
-            if (
-              (activeTask.columnId === "completed" ||
-                activeTask.columnId === "rejected") &&
-              overTask.columnId === "processing"
-            ) {
-              // toast.error(
-              //   "Cannot move completed or rejected tasks to Processing"
-              // );
-              return tasks;
-            }
-            setCurrentTaskForStatusChange(activeTask);
-            setTargetStatus(overTask.columnId as ColumnId);
-            activeTask.columnId = overTask.columnId;
-            return arrayMove(tasks, activeIndex, overIndex - 1);
-          }
-          return arrayMove(tasks, activeIndex, overIndex);
+      if (activeTask && toColumn) {
+        if (
+          (activeTask.columnId === "completed" ||
+            activeTask.columnId === "rejected") &&
+          toColumn === "processing"
+        ) {
+          toast.error("Cannot move completed or rejected tasks to Processing");
+          return;
         }
 
-        if (isOverAColumn) {
-          if (
-            activeTask &&
-            (activeTask.columnId === "completed" ||
-              activeTask.columnId === "rejected") &&
-            overId === "processing"
-          ) {
-            // toast.error(
-            //   "Cannot move completed or rejected tasks to Processing"
-            // );
-            return tasks;
-          }
+        setTasks((tasks) => {
+          const activeIndex = tasks.findIndex((t) => t.id === active.id);
+          const overIndex = isOverATask
+            ? tasks.findIndex((t) => t.id === over.id)
+            : activeIndex;
+          activeTask.columnId = toColumn;
+          return arrayMove(
+            tasks,
+            activeIndex,
+            isOverATask ? overIndex - 1 : activeIndex
+          );
+        });
+
+        if (toColumn !== "processing" && !statusChangeModalOpen) {
           setCurrentTaskForStatusChange(activeTask);
-          setTargetStatus(overId as ColumnId);
-
-          if (activeTask) {
-            activeTask.columnId = overId as ColumnId;
-            return arrayMove(tasks, activeIndex, activeIndex);
-          }
+          setTargetStatus(toColumn); // Set targetStatus immediately
+          setStatusChangeModalOpen(true);
         }
-        return tasks;
-      });
+      }
     }
     pickedUpTaskColumn.current = null;
   }
+
+  // function onDragEnd(event: DragEndEvent) {
+  //   setActiveColumn(null);
+  //   setActiveTask(null);
+  //   // SAMPLE
+
+  //   const { active, over } = event;
+
+  //   if (!active || !over) return;
+
+  //   const activeData = active.data.current;
+  //   const overData = over.data.current;
+
+  //   if (!activeData || !overData) return;
+
+  //   // Task being dragged
+  //   const draggedTask = activeData.task;
+
+  //   // From which column the task came
+  //   const fromColumn = draggedTask.columnId;
+
+  //   let toColumn: ColumnId | null = null;
+
+  //   // CASE 1: Dropped on another task
+  //   if (overData.type === "Task") {
+  //     const targetTask = overData.task;
+  //     toColumn = targetTask.columnId;
+  //   }
+
+  //   // CASE 2: Dropped directly on a column
+  //   if (overData.type === "Column") {
+  //     toColumn = over.id as ColumnId; // Assuming over.id is the column id
+  //   }
+
+  //   if (toColumn !== "processing") {
+  //     setTimeout(() => {
+  //       setStatusChangeModalOpen(true);
+  //     }, 1000);
+  //   }
+
+  //   if (!over) return;
+
+  //   const activeId = active.id;
+  //   const overId = over.id;
+
+  //   if (!hasDraggableData(active)) return;
+
+  //   if (activeId === overId) return;
+
+  //   const isActiveAColumn = activeData?.type === "Column";
+  //   const isActiveATask = activeData?.type === "Task";
+  //   const isOverATask = over.data.current?.type === "Task";
+  //   const isOverAColumn = over.data.current?.type === "Column";
+
+  //   if (isActiveAColumn) {
+  //     setColumns((columns) => {
+  //       const activeColumnIndex = columns.findIndex(
+  //         (col) => col.id === activeId
+  //       );
+  //       const overColumnIndex = columns.findIndex((col) => col.id === overId);
+  //       return arrayMove(columns, activeColumnIndex, overColumnIndex);
+  //     });
+  //   }
+
+  //   if (isActiveATask) {
+  //     setTasks((tasks) => {
+  //       const activeIndex = tasks.findIndex((t) => t.id === activeId);
+  //       const activeTask = tasks[activeIndex];
+
+  //       if (isOverATask) {
+  //         const overIndex = tasks.findIndex((t) => t.id === overId);
+  //         const overTask = tasks[overIndex];
+
+  //         if (
+  //           activeTask &&
+  //           overTask &&
+  //           activeTask.columnId !== overTask.columnId
+  //         ) {
+  //           if (
+  //             (activeTask.columnId === "completed" ||
+  //               activeTask.columnId === "rejected") &&
+  //             overTask.columnId === "processing"
+  //           ) {
+  //             // toast.error(
+  //             //   "Cannot move completed or rejected tasks to Processing"
+  //             // );
+  //             return tasks;
+  //           }
+  //           setCurrentTaskForStatusChange(activeTask);
+  //           setTargetStatus(overTask.columnId as ColumnId);
+  //           activeTask.columnId = overTask.columnId;
+  //           return arrayMove(tasks, activeIndex, overIndex - 1);
+  //         }
+  //         return arrayMove(tasks, activeIndex, overIndex);
+  //       }
+
+  //       if (isOverAColumn) {
+  //         if (
+  //           activeTask &&
+  //           (activeTask.columnId === "completed" ||
+  //             activeTask.columnId === "rejected") &&
+  //           overId === "processing"
+  //         ) {
+  //           // toast.error(
+  //           //   "Cannot move completed or rejected tasks to Processing"
+  //           // );
+  //           return tasks;
+  //         }
+  //         setCurrentTaskForStatusChange(activeTask);
+  //         setTargetStatus(overId as ColumnId);
+
+  //         if (activeTask) {
+  //           activeTask.columnId = overId as ColumnId;
+  //           return arrayMove(tasks, activeIndex, activeIndex);
+  //         }
+  //       }
+  //       return tasks;
+  //     });
+  //   }
+  //   pickedUpTaskColumn.current = null;
+  // }
 
   function onDragOver(event: DragOverEvent) {
     const { active, over } = event;
@@ -764,15 +871,9 @@ export function KanbanBoard({
               activeTask.columnId === "rejected") &&
             overTask.columnId === "processing"
           ) {
-            // toast.error(
-            //   "Cannot move completed or rejected tasks to Processing"
-            // );
+           
             return tasks; // No state change
           }
-
-          //setCurrentTaskForStatusChange(activeTask);
-          //setTargetStatus(overTask.columnId as ColumnId);
-          //setStatusChangeModalOpen(true);
           activeTask.columnId = overTask.columnId;
           return arrayMove(tasks, activeIndex, overIndex - 1);
         }
@@ -792,9 +893,6 @@ export function KanbanBoard({
               activeTask.columnId === "rejected") &&
             overId === "processing"
           ) {
-            toast.error(
-              "Cannot move completed or rejected tasks to Processing"
-            );
             return tasks; // No state change
           }
 
