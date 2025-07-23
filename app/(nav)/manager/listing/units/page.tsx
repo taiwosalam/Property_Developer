@@ -80,13 +80,7 @@ const Units = () => {
   useEffect(() => {
     sessionStorage.setItem("units_page", page.toString());
   }, [page]);
-
-  // const endpoint =
-  //   isFilterApplied() || search || sort
-  //     ? "/unit/vacant/list/filter"
-  //     : "/unit/vacant/lists";
-
-  const endpoint = `/unit/vacant/lists?branch[0]=${BRANCH_ID}`;
+  
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
@@ -142,7 +136,7 @@ const Units = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<UnitApiResponse | UnitFilterResponse>(endpoint, config);
+  } = useFetch<UnitApiResponse | UnitFilterResponse>("/unit/vacant/lists", config);
 
   
   useEffect(() => {

@@ -69,10 +69,6 @@ const Inventory = () => {
     selectedOptions.view || "grid"
   );
 
-  // console.log("officers", accountOfficers);
-  const { data: branchesData } =
-    useFetch<AllBranchesResponse>("/branches/select");
-
   const initialState = {
     gridView: selectedView === "grid",
     inventoryPageData: {
@@ -89,11 +85,6 @@ const Inventory = () => {
     },
   };
 
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
 
   const accountOfficersOptions =
     accountOfficers?.map((o) => ({
@@ -185,12 +176,6 @@ const Inventory = () => {
     });
   };
 
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/inventories?branch_id[0]=${BRANCH_ID}`
-      : null;
-
   const {
     data: apiData,
     loading,
@@ -198,7 +183,7 @@ const Inventory = () => {
     refetch,
     isNetworkError,
     silentLoading,
-  } = useFetch<InventoryApiData>(fetchUrl, config);
+  } = useFetch<InventoryApiData>("/inventories", config);
   useRefetchOnEvent("refetchInventory", () => refetch({ silent: true }));
 
   useEffect(() => {

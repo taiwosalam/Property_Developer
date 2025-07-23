@@ -77,11 +77,6 @@ const Property = () => {
     );
   };
 
-  const endpoint =
-    isFilterApplied() || search || sort
-      ? "/unit/vacant/list/filter"
-      : "/property/invite/lists";
-
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
@@ -124,12 +119,6 @@ const Property = () => {
     sessionStorage.setItem("property_page", pageNumber.toString());
   };
 
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/property/invite/lists?branch[0]=${BRANCH_ID}`
-      : null;
-
   const {
     data: apiData,
     loading,
@@ -137,7 +126,7 @@ const Property = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<PropertyApiResponse | any>(fetchUrl, config);
+    } = useFetch<PropertyApiResponse | any>("/property/invite/lists", config);
 
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 

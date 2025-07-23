@@ -29,15 +29,65 @@ export const initialPageData: TransactionPageData = {
   transactions: [],
 };
 
+// export const transformAllTransactionsResponse = (
+//   response: AllTransactionsResponse
+// ): TransactionPageData => {
+//   const { data } = response;
+//   return {
+//     current_page: data?.current_page,
+//     total_pages: data?.last_page,
+//     hasMore: data?.current_page < data?.last_page,
+//     transactions: data?.data?.map((t) => {
+//       // Parse the date and time strings into a Date object (assuming UTC from server)
+//       const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC
+//       const serverDateTime = new Date(dateTimeString);
+
+//       // Get the user's time zone (replace with your actual method)
+//       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; //Gets from browser
+
+//       // Convert to user's local time
+//       const localDateTime = new Date(
+//         serverDateTime.toLocaleString("en-US", { timeZone: userTimeZone })
+//       );
+
+//       // Format the date and time as needed
+//       const formattedDate = localDateTime.toLocaleDateString("en-GB", {
+//         day: "numeric",
+//         month: "short",
+//         year: "numeric",
+//       });
+//       const formattedTime = localDateTime.toLocaleTimeString("en-US", {
+//         hour: "numeric",
+//         minute: "numeric",
+//         hour12: true,
+//       });
+
+//       return {
+//         ...t,
+//         date: formattedDate,
+//         time: formattedTime,
+//         amount:
+//           currencySymbols.naira +
+//           formatNumber(t.amount, { forceTwoDecimals: true }),
+//       };
+//     }),
+//   };
+// };
+
+
+
+
+
 export const transformAllTransactionsResponse = (
   response: AllTransactionsResponse
 ): TransactionPageData => {
   const { data } = response;
+  const pagination = data?.pagination || {};
   return {
-    current_page: data.current_page,
-    total_pages: data.last_page,
-    hasMore: data.current_page < data.last_page,
-    transactions: data.data.map((t) => {
+    current_page: pagination.current_page ?? 1,
+    total_pages: pagination.last_page ?? 1,
+    hasMore: (pagination.current_page ?? 1) < (pagination.last_page ?? 1),
+    transactions: (data?.transactions ?? []).map((t) => {
       // Parse the date and time strings into a Date object (assuming UTC from server)
       const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC
       const serverDateTime = new Date(dateTimeString);

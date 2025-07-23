@@ -8,12 +8,10 @@ export interface AllTransactionsResponse {
       total_credit: string;
       total_withdrawal: string;
     };
-    //current_page: number;
-    //last_page: number;
-    transactions: {
-      last_page: number;
+    transactions: Transaction[];
+    pagination: {
       current_page: number;
-      data: Transaction[];
+      last_page: number;
     };
   };
 }

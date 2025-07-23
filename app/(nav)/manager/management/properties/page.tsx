@@ -107,12 +107,6 @@ const Properties = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/property/list?branch_id[]=${BRANCH_ID}`
-      : null;
-
   const config: AxiosRequestConfig = useMemo(() => {
     return {
       params: {
@@ -189,7 +183,7 @@ const Properties = () => {
     isNetworkError,
     error,
   } = useFetch<PropertiesApiResponse | PropertyFilterResponse>(
-    fetchUrl,
+    "/property/list",
     config
   );
 
@@ -305,13 +299,14 @@ const Properties = () => {
               title="You have not created any properties yet"
               body={
                 <p>
-                  You can create a property by clicking on the &apos;Add Property&apos;
-                  button. You can create two types of properties: rental and
-                  facility properties. Rental properties are mainly tailored for
-                  managing properties for rent, including landlord and tenant
-                  management processes. Facility properties are designed for
-                  managing occupants in gated estates, overseeing their due
-                  payments, visitor access, and vehicle records. <br />
+                  You can create a property by clicking on the &apos;Add
+                  Property&apos; button. You can create two types of properties:
+                  rental and facility properties. Rental properties are mainly
+                  tailored for managing properties for rent, including landlord
+                  and tenant management processes. Facility properties are
+                  designed for managing occupants in gated estates, overseeing
+                  their due payments, visitor access, and vehicle records.{" "}
+                  <br />
                   <br />
                   Once a property is added to this page, this guide will
                   disappear. To learn more about this page in the future, you
@@ -336,7 +331,9 @@ const Properties = () => {
                 {silentLoading ? (
                   <CardsLoading />
                 ) : (
-                  properties.map((p) => <PropertyCard key={p.id} {...p} isManagerPage />)
+                  properties.map((p) => (
+                    <PropertyCard key={p.id} {...p} isManagerPage />
+                  ))
                 )}
               </AutoResizingGrid>
             ) : (

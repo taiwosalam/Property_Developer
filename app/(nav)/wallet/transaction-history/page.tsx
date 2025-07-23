@@ -311,7 +311,7 @@ const TransactionHistory = () => {
         const newTransactions = transformAllTransactionsResponse(apiData);
         const combinedTransactions = [
           ...prevState.transactions,
-          ...newTransactions.transactions,
+          ...(newTransactions?.transactions ?? []),
         ];
         const uniqueTransactions = combinedTransactions.filter(
           (transaction, index, self) =>
