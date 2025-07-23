@@ -163,7 +163,7 @@ const UnitBreakdownRenewalTenant = () => {
   };
 
   return (
-    <div className="unit-fee-breakdown-renew-tenant">
+    <div className="unit-fee-breakdown-renew-tenant renewal-tenant-fee-form">
       <div className="flex items-center gap-2">
         <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
           Unit Fee Breakdown -{" "}
@@ -171,7 +171,12 @@ const UnitBreakdownRenewalTenant = () => {
         </h4>
         <button
           onClick={() => {
-            handleGoToTourStep(11);
+            if(!IS_RENTAL) {
+               handleGoToTourStep(11);
+            }else if(IS_RENTAL) {
+              handleGoToTourStep(27);
+            }
+           
           }}
           type="button"
           className="text-orange-normal"

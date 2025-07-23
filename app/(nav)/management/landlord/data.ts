@@ -201,6 +201,7 @@ export interface LandlordRequestParams {
   branch_ids?: string;
   property_ids?: string;
   status?: string;
+  tenant_ids?: string;
 }
 
 export const transformMobileUseData = (res: any): UserCardProps => {

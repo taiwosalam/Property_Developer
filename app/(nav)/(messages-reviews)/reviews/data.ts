@@ -1,5 +1,6 @@
 import api, { handleAxiosError } from "@/services/api";
 import { ReviewResponseApi } from "./[id]/types";
+import review from "@/components/Review/review";
 
 export type ReviewResponse = {
   status: "success";
@@ -47,10 +48,13 @@ export interface IReviewCard {
   total_like: number;
   total_dislike: number;
   neutral_count: number;
+  total_unreplied: number;
+  total_reviews: number;
   reviews: {
     id: number;
     comment_count: number;
     picture: string;
+    review_type: number;
     comments: any[];
     created_at: string;
     fullname: string;
@@ -67,14 +71,18 @@ export interface IReviewCard {
 export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
   const { data: reviews } = data;
 
-  const total_like = reviews.filter((r) => r.thumbs_up_count > 0).length;
-  const total_dislike = reviews.filter((r) => r.thumbs_down_count > 0).length;
-  const neutral_count = reviews.filter((r) => r.neutral_count > 0).length;
+  const total_dislike = reviews.filter((r) => r.review_type === 1).length;
+  const total_like = reviews.filter((r) => r.review_type === 2).length;
+  const neutral_count = reviews.filter((r) => r.review_type === 3).length;
+  const total_unreplied = reviews.filter((r) => r.comments.length === 0).length;
+  const total_reviews = reviews.length;
 
   return {
     total_like,
     total_dislike,
     neutral_count,
+    total_unreplied,
+    total_reviews,
     reviews: reviews.map((review) => {
       return {
         id: review.id,
@@ -83,6 +91,7 @@ export const transformReviewCard = (data: ReviewResponse): IReviewCard => {
         created_at: review?.created_at,
         comments: review?.comments,
         user_like: review?.user_disliked,
+        review_type: review?.review_type,
         picture: review?.user?.profile_picture_url,
         fullname: review?.user?.name?.toLowerCase() || "",
         review: review?.review || "",

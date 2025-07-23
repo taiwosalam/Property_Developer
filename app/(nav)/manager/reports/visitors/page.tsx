@@ -157,7 +157,7 @@ const Visitors = () => {
     silentLoading,
     error,
     isNetworkError,
-  } = useFetch<VisitorRequestResponse>(fetchUrl, config);
+  } = useFetch<VisitorRequestResponse>(`/report/visitor-request`, config);
 
   useEffect(() => {
     if (!loading && apiData) {

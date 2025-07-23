@@ -79,13 +79,19 @@ export const transformComplaintsData = (
         linkCount: 8,
         userAvatars:
           complaint?.comment_users.length > 0
-            ? complaint?.comment_users?.map((image) => image.profile_picture)
+            ? complaint?.comment_users?.map((image) => image.profile_picture)?.slice(0,3)
             : [],
         date: complaint?.created_at
           ? dayjs(complaint?.created_at).format("DD MMMM YYYY")
           : "___ ___",
-        status: complaint?.status?.toLowerCase(),
-        progress: complaint?.progress,
+        status:
+          complaint?.progress === 100
+            ? "completed"
+            : complaint?.status?.toLowerCase(),
+        progress:
+          complaint?.status?.toLowerCase() === "completed"
+            ? 100
+            : complaint?.progress,
       },
       name: complaint?.name?.toLowerCase(),
       title: complaint?.title,
@@ -93,7 +99,6 @@ export const transformComplaintsData = (
       avatarSrc: complaint?.picture,
       comment_count: complaint?.comment_count || 0,
       tier: complaint?.tier_id,
-
     })),
     pagination: {
       total: data?.pagination.total,

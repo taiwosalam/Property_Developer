@@ -16,10 +16,11 @@ import BadgeIcon, {
 } from "../BadgeIcon/badge-icon";
 import { postReaction } from "@/app/(nav)/(messages-reviews)/reviews/data";
 import { toast } from "sonner";
+import { empty } from "@/app/config";
 
 const Review: React.FC<ReviewProps> = ({
   id,
-  pfp = Avatar,
+  pfp = empty,
   desc,
   main,
   fullname,
@@ -49,7 +50,7 @@ const Review: React.FC<ReviewProps> = ({
         <Picture src={pfp} alt="profile picture" size={36} rounded />
         <SectionSeparator direction="y" className="bg-gray-200" />
       </div>
-      <div className="custom-flex-col gap-3 pb-3 flex-1">
+      <div className="custom-flex-col gap-3 pb-3 flex-1 ml-3">
         <div className="custom-flex-col gap-1">
           <div className="flex items-center gap-1">
             <p className="text-text-primary text-sm font-medium capitalize">
@@ -59,11 +60,11 @@ const Review: React.FC<ReviewProps> = ({
               <BadgeIcon color={getBadgeColor(tier_id) as BadgeIconColors} />
             )}
           </div>
-          <p className="text-text-disabled text-xs">{desc}</p>
+          <p className="text-text-disabled text-xs mt-1">{desc}</p>
         </div>
         <div className="flex items-center justify-between text-[10px] font-medium">
           {main ? (
-            <p className="text-text-disabled">Replies</p>
+            <p className="text-text-disabled"></p>
           ) : (
             <>
               <div></div>

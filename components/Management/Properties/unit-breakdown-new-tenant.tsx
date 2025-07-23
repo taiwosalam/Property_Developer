@@ -3,7 +3,7 @@ import Select from "@/components/Form/Select/select";
 import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useState, useEffect, useMemo } from "react";
-import { DeleteIconX } from "@/public/icons/icons";
+import { DeleteIconX, ExclamationMark } from "@/public/icons/icons";
 import {
   formatNumber,
   currencySymbols,
@@ -11,6 +11,8 @@ import {
 } from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
 import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
+import { useTourStore } from "@/store/tour-store";
+import { usePathname } from "next/navigation";
 
 const UnitBreakdownNewTenant = () => {
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
@@ -155,11 +157,42 @@ const UnitBreakdownNewTenant = () => {
     }
   }, [formResetKey, initialFormValues, unitData?.other_charge]);
 
+  // Tour implementation
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("EditPropertyTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   return (
-    <div className="unit-fee-breakdown-new-tenant">
-      <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-        Unit Fee Breakdown - New Tenant
-      </h4>
+    <div className="unit-fee-breakdown-new-tenant new-tenant-fee-form">
+      <div className="flex items-center gap-2">
+        <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
+          Unit Fee Breakdown - New Tenant
+        </h4>
+        <button
+          onClick={() => goToStep(26)}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
+
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select
@@ -267,7 +300,7 @@ const UnitBreakdownNewTenant = () => {
           readOnly
           type="text"
           autoComplete="off"
-          />
+        />
 
         <Select
           required

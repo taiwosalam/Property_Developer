@@ -53,7 +53,7 @@ const UnitFeatures = () => {
   };
 
   return (
-    <div className="unit-features-wrapper">
+    <div className="unit-measurement-form unit-features-wrapper">
       <div className="flex items-center gap-2">
         <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
           Units Features
@@ -61,7 +61,11 @@ const UnitFeatures = () => {
 
         <button
           onClick={() => {
-            handleGoToTourStep(9);
+            if (!isRental) {
+              handleGoToTourStep(9);
+            } else if(isRental){
+              handleGoToTourStep(25);
+            }
           }}
           type="button"
           className="text-orange-normal"

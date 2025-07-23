@@ -139,7 +139,7 @@ const UnitsReport = () => {
       : null;
 
   const { data, loading, error, isNetworkError } = useFetch<UnitListResponse>(
-    fetchUrl,
+    `/report/units`,
     config
   );
 

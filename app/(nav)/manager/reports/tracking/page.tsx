@@ -126,7 +126,7 @@ const TrackingReport = () => {
      : null;
 
   const { data, loading, error, isNetworkError } =
-    useFetch<ActivityApiResponse>(fetchUrl, config);
+    useFetch<ActivityApiResponse>(`/report/activities`, config);
 
   useEffect(() => {
     if (!loading && data) {

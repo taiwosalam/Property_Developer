@@ -137,7 +137,11 @@ const UnitDetails = () => {
 
         <button
           onClick={() => {
-           handleGoToTourStep(5)
+            if (!isRental) {
+              handleGoToTourStep(5);
+            } else if (isRental) {
+              handleGoToTourStep(21);
+            }
           }}
           type="button"
           className="text-orange-normal"
@@ -148,7 +152,7 @@ const UnitDetails = () => {
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Input
-          className="unit-name-wrapper"
+          className="unit-name-wrapper unit-name-input"
           id="unit_name"
           autoComplete="off"
           label="Unit Number or Name"
@@ -159,7 +163,7 @@ const UnitDetails = () => {
         />
         <Select
           id="unit_type"
-          className="unit-type-wrapper"
+          className="unit-type-wrapper unit-type-selector"
           options={unitTypeOptions}
           label="Unit Type"
           inputContainerClassName="bg-white"
@@ -176,7 +180,7 @@ const UnitDetails = () => {
           <Select
             options={unitSubtypeOptions || []}
             id="unit_sub_type"
-            className="unit-subtype-wrapper"
+            className="unit-subtype-wrapper unit-sub-type-selector"
             label="Unit Sub Type"
             inputContainerClassName="bg-white"
             value={selectedSubtype}
@@ -188,7 +192,7 @@ const UnitDetails = () => {
         )}
         <Select
           id="unit_preference"
-          className="unit-preference-wrapper"
+          className="unit-preference-wrapper unit-preferences-selector"
           label="Unit Preference"
           inputContainerClassName="bg-white"
           options={unitPreferencesOptions}

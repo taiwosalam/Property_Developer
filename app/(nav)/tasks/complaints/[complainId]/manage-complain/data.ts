@@ -116,7 +116,9 @@ export const transformComplaintManage = (
       data?.complaint?.notes?.map((note) => ({
         date: note?.date ? dayjs(note.date).format("MMMM D, YYYY") : "--- ---",
         text: note.text,
-        time: note?.time ? dayjs(note.time, "HH:mm:ss").format("hh:mm A") : "--- ---",
+        time: note?.time
+          ? dayjs(note.time, "HH:mm:ss").format("hh:mm A")
+          : "--- ---",
         title: note?.title,
         note_by: note?.note_by,
       })),
@@ -125,10 +127,9 @@ export const transformComplaintManage = (
       isVideo: false,
     })),
     progress:
-      data?.complaint?.progress ||
       data?.complaint?.status?.toLowerCase() === "completed"
         ? 100
-        : data?.complaint?.progress,
+        : data?.complaint?.progress || 0,
     updated_at: data?.complaint
       ? dayjs(data?.complaint?.updated_at).format("DD/MM/YYYY")
       : "",
