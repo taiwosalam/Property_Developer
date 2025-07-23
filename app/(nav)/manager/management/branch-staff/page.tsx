@@ -128,10 +128,6 @@ const BranchStaffPage = () => {
     sessionStorage.setItem(`staff_page_${BRANCH_ID}`, "1");
   };
 
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0 ? `staffs?branch_id=${BRANCH_ID}` : null;
-
   const {
     data: apiData,
     error,
@@ -139,7 +135,7 @@ const BranchStaffPage = () => {
     isNetworkError,
     silentLoading,
     refetch,
-  } = useFetch<StaffListResponse>(fetchUrl, config);
+  } = useFetch<StaffListResponse>("staffs", config);
 
   useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
 

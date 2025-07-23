@@ -181,10 +181,7 @@ const Landlord = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<LandlordApiResponse>(
-    `landlords?branch_ids=${BRANCH_ID}`,
-    config
-  );
+  } = useFetch<LandlordApiResponse>(`landlords`, config);
   useRefetchOnEvent("refetchLandlords", () => refetch({ silent: true }));
 
   useEffect(() => {
