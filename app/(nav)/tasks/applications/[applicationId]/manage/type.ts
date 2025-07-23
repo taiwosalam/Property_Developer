@@ -27,6 +27,7 @@ export type TApplicationDetailsResponse = {
       rent: string;
       local_government: string;
       account_officer: string;
+      unit_status: string;
     };
     user: {
       user_id: number;

@@ -42,15 +42,19 @@ const paymentModes = [
 
 const CreateDisbursement = () => {
   const router = useRouter();
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
   const [selectedPropertyId, setSelectedPropertyId] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
 
+  const propertyUrl =
+    BRANCH_ID && BRANCH_ID !== 0 ? `/property/all?branch_id=${BRANCH_ID}` : null;
   const {
     data: propertyOptionData,
     error: propertiesError,
     loading: propertiesLoading,
-  } = useFetch<PropertyListResponse>("/property/all");
+  } = useFetch<PropertyListResponse>(propertyUrl);
 
   const propertiesWithUnits =
     propertyOptionData?.data.filter(
@@ -468,6 +472,7 @@ const CreateDisbursement = () => {
             type="submit"
             className="create-button py-2 px-8"
             size="base_medium"
+            disabled={reqLoading}
           >
             {reqLoading ? "Please wait..." : "Create"}
           </Button>

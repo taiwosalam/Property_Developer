@@ -24,12 +24,12 @@ const PaymentIframe: React.FC<PaymentIframeProps> = ({
     if (!reference) return;
     const polling = setInterval(async () => {
       try {
-        if (page === "manager" && (!BRANCH_ID || BRANCH_ID === 0)) {
-          toast.error("Cannot find a valid branch ID");
-          return;
-        }
-        const param = page === "manager" ? `branch=${BRANCH_ID}` : "";
-        const res = await checkPaymentStatus(reference, param);
+        // if (page === "manager" && (!BRANCH_ID || BRANCH_ID === 0)) {
+        //   toast.error("Cannot find a valid branch ID");
+        //   return;
+        // }
+        // const param = page === "manager" ? `branch=${BRANCH_ID}` : "";
+        const res = await checkPaymentStatus(reference);
         if (res) {
           clearInterval(polling);
           if (page === "manager") {

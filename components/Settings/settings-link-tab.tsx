@@ -28,7 +28,7 @@ const SettingsLinkTab: React.FC<
 > = ({ type, active, className }) => {
   const { role } = useRole();
   const path = getSettingsPath(role);
-  const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
+  const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner) || role === "manager";
 
   // Permission checks
   const permissions: Record<string, { check: boolean; icon: React.FC }> = {

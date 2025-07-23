@@ -161,6 +161,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
           isSearchable={false}
           id="professional_title"
           label="real estate title"
+          required
           inputContainerClassName="bg-neutral-2"
           options={industryOptions}
           value={formData?.professional_title || ""}

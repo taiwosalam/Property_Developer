@@ -90,7 +90,7 @@ const Property = () => {
           ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
           : undefined,
         search: search,
-        branch_id: appliedFilters.menuOptions["Branch"] || [],
+        branch: appliedFilters.menuOptions["Branch"] || [],
         state: appliedFilters.menuOptions["State"] || [],
         property_type: appliedFilters.menuOptions["Property Type"]?.[0],
         sort_by: sort,

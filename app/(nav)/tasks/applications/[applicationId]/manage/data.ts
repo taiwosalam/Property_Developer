@@ -45,6 +45,7 @@ export interface IApplicationDetails {
     currency: string;
     local_government: string;
     account_officer: string;
+    unit_status: string;
   };
   profile_details: {
     user_id: number;
@@ -175,6 +176,7 @@ export const transformApplicationDetailsPageData = (
       rent: property_details?.rent || "--- ---",
       local_government: property_details?.local_government || "--- ---",
       account_officer: property_details?.account_officer || "--- ---",
+      unit_status: property_details?.unit_status || ""
     },
     business_profile: {
       business_address: business_Profile?.business_address || "--- ---",

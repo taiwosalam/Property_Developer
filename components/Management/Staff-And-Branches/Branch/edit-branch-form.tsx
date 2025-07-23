@@ -27,9 +27,11 @@ import UpdateBranchModalSuccess from "./update-branch-modal-success";
 const EditBranchForm = ({
   somedata,
   setUpdateRequestLoading,
+  page,
 }: {
   somedata: EditBranchFormData | null;
   setUpdateRequestLoading: (value: boolean) => void;
+  page?: "manager" | "account";
 }) => {
   const {
     preview,
@@ -90,7 +92,9 @@ const EditBranchForm = ({
     if (somedata?.id) {
       const status = await updateBranch(data, somedata.id);
       if (status) {
-        setSuccessModalOpen(true);
+        // setSuccessModalOpen(true);
+        toast.success("Branch updated successfully");
+        window.dispatchEvent(new Event("refetch-branch"));
       }
     }
     setUpdateRequestLoading(false);
@@ -168,13 +172,15 @@ const EditBranchForm = ({
                 inputClassName="city-street-input bg-white"
                 defaultValue={somedata?.address}
               />
-              <Select
-                id="branch_wallet"
-                label="Activate branch wallet"
-                options={["yes", "no"]}
-                inputContainerClassName="wallet-selection-toggle bg-white"
-                defaultValue={somedata?.wallet}
-              />
+              {page !== "manager" && (
+                <Select
+                  id="branch_wallet"
+                  label="Activate branch wallet"
+                  options={["yes", "no"]}
+                  inputContainerClassName="wallet-selection-toggle bg-white"
+                  defaultValue={somedata?.wallet}
+                />
+              )}
             </div>
 
             <TextArea
@@ -256,7 +262,7 @@ const EditBranchForm = ({
           </div>
         </div>
       </AuthForm>
-      <Modal
+      {/* <Modal
         state={{
           isOpen: successModalOpen,
           setIsOpen: setSuccessModalOpen,
@@ -265,7 +271,7 @@ const EditBranchForm = ({
         <ModalContent>
           <UpdateBranchModalSuccess />
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </>
   );
 };

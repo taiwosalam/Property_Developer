@@ -271,6 +271,16 @@ const Dashboard = () => {
     }
   }, [usersMessages, setChatData]);
 
+  // ======== LISTING PERFORMANCE CHART DATA ===========
+  const bookmarkChartData =
+    branchData?.chart_data.map((item: any) => ({
+      date: item?.date,
+      views: item?.total_views,
+      bookmarks: item?.total_bookmarks,
+    })) || [];
+
+
+
   return (
     <section className="custom-flex-col gap-10">
       <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
@@ -305,7 +315,7 @@ const Dashboard = () => {
                 chartTitle="listing Performance"
                 visibleRange
                 chartConfig={dashboardListingsChartConfig}
-                chartData={[]}
+                chartData={bookmarkChartData || []}
               />
             </div>
           </div>

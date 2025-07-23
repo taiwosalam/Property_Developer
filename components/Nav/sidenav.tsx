@@ -28,7 +28,9 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   };
 
   const showWallet =
-    usePermission(role, "Full Wallet Access") || isCompanyOwner;
+    usePermission(role, "Full Wallet Access") ||
+    isCompanyOwner ||
+    role === "manager";
 
   const company_logo = usePersonalInfoStore((state) => state.company_logo);
   const isDirector = role === "director";

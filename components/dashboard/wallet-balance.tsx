@@ -53,7 +53,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   const { role, setRole } = useRole();
   const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
   const hasWalletAccess =
-    usePermission(role, "Full Wallet Access") || isCompanyOwner;
+    usePermission(role, "Full Wallet Access") || isCompanyOwner || role === "manager";
   const hideWalletBalance = () => {
     setHideBalance((prevHideBalance) => {
       const newHideBalance = !prevHideBalance;
