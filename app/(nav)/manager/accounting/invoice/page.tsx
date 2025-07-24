@@ -177,14 +177,8 @@ const AccountingInvoicePage = () => {
     setSearch(query);
   };
 
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/invoice/list?branch_id=${BRANCH_ID}`
-      : null;
-
   const { data, error, loading, isNetworkError, silentLoading } =
-    useFetch<InvoiceListResponse>(fetchUrl, config);
+    useFetch<InvoiceListResponse>('/invoice/list', config);
 
   useEffect(() => {
     if (data) {

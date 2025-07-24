@@ -40,7 +40,7 @@ const InventoryCard: React.FC<InventoryCardProps> = ({
       case "manager":
         return `/manager/management/inventory/${data.property_id}`;
       case "account":
-        return `/account/management/inventory/${data.property_id}`;
+        return `/accountant/management/inventory/${data.property_id}`;
       default:
         return `/management/inventory/${data.property_id}`;
     }

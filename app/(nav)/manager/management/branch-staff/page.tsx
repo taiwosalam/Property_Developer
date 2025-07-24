@@ -77,6 +77,13 @@ const BranchStaffPage = () => {
     branch_name: "",
     branch_address: "",
     staffs: [],
+    staff_count_by_role: {
+      "account officer": 0,
+      staff: 0,
+      account_officer: 0,
+      manager: 0,
+    },
+    total_data_count: 0,
   });
 
   // Save page number to sessionStorage whenever it changes
@@ -228,15 +235,6 @@ const BranchStaffPage = () => {
     );
   };
 
-  // Render an error message if BRANCH_ID is invalid
-  // if (!BRANCH_ID || BRANCH_ID === 0) {
-  //   return (
-  //     <div className="text-base text-red-500 font-medium">
-  //       Invalid branch ID. Please select a valid branch.
-  //     </div>
-  //   );
-  // }
-
   if (isNetworkError) return <NetworkError />;
 
   if (error)
@@ -248,20 +246,20 @@ const BranchStaffPage = () => {
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Staff"
-            newData={12}
-            total={20}
+            newData={state.total_data_count}
+            total={state.total_data_count}
             colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Account Officers"
-            newData={1}
-            total={2}
+            newData={state.staff_count_by_role["account officer"]}
+            total={state.staff_count_by_role["account officer"]}
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Other Staffs"
-            newData={1}
-            total={2}
+            newData={state.staff_count_by_role.staff}
+            total={state.staff_count_by_role.staff}
             colorScheme={3}
           />
         </div>
