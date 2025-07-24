@@ -24,19 +24,18 @@ import { useEffect, useState } from "react";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import type {
-  IndividualServiceProvidersAPIResponse,
-  ServiceProviderData,
-} from "@/app/(nav)/accountant/management/service-providers/[serviceProviderId]/manage/types";
+
+
 // import { mockData } from "@/app/(nav)/management/landlord/data";
 import { useRouter } from "next/navigation";
+import { ServiceProviderData } from "../types";
 
 const EditServiceProvider = () => {
   const { serviceProviderId } = useParams();
   const [providersData, setProvidersData] =
     useState<ServiceProviderData | null>(null);
   const { data, loading, silentLoading, isNetworkError, refetch } =
-    useFetch<IndividualServiceProvidersAPIResponse>(
+    useFetch<any>(
       `service-providers/${serviceProviderId}`
     );
   const router = useRouter();

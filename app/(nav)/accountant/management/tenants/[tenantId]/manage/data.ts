@@ -15,7 +15,7 @@ import { UnitItemProps } from "@/components/Management/Properties/unit-item";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
-import { formatFee } from "../../../rent-unit/data";
+import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 import { empty } from "@/app/config";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import { transformUnitDetails } from "@/app/(nav)/listing/data";

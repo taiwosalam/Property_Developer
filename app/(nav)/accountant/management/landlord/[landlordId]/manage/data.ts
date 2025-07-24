@@ -9,9 +9,9 @@ import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import api, { handleAxiosError } from "@/services/api";
 import dayjs from "dayjs";
-import { formatFee } from "../../../rent-unit/data";
 import { empty } from "@/app/config";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
