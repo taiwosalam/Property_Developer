@@ -13,7 +13,7 @@ const CreateProperty = () => {
     const propertyId = await addProperty(data);
     if (propertyId) {
       router.push(
-        `/management/properties/create-rental-property/${propertyId}/add-unit`
+        `/staff/management/properties/create-rental-property/${propertyId}/add-unit`
       );
     }
   };
