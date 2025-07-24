@@ -3,9 +3,13 @@ import Image from "next/image";
 import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
 import { PageNotFoundIcon } from "@/public/icons/icons";
+import { getDashboardPage } from "@/app/(onboarding)/auth/data";
+import { useRole } from "@/hooks/roleContext";
 
 const NotFound = () => {
   const router = useRouter();
+  const { role } = useRole();
+  const dashboard = getDashboardPage(role);
   return (
     <div className="py-11 px-20 flex flex-col gap-10">
       <div className="w-full flex items-center justify-center">
@@ -16,7 +20,7 @@ const NotFound = () => {
       <div className="w-full flex items-center justify-center">
         <Button
           onClick={() => {
-            router.push("/dashboard");
+            router.push(dashboard);
           }}
         >
           Go to Dashboard

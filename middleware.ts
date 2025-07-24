@@ -19,7 +19,8 @@ export async function middleware(req: NextRequest) {
     "/auth/setup",
     "/auth/forgot-password",
     "/management/agent-community",
-    "/messages"
+    "/messages",
+    "/management/service-providers",
   ];
 
   // Define dashboard paths that bypass company_status check

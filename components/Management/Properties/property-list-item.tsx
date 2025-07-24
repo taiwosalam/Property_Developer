@@ -7,6 +7,7 @@ import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import PropertyTag from "@/components/Tags/property-tag";
 import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
 
 interface PropertyListItemProps {
   id: string;
@@ -51,9 +52,29 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const isRental = property_type === "rental";
+  const { role } = useRole();
   // const symbol =
   //   isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
   const symbol = currency ? currencySymbols[currency] : currencySymbols.naira;
+
+  const baseRoute =
+    role === "manager"
+      ? "/manager/management"
+      : role === "account"
+      ? "/accountant/management"
+      : "/management";
+
+  const getRoute = (action: "edit" | "preview") => {
+    switch (action) {
+      case "edit":
+        return `${baseRoute}/properties/${id}/edit-property`;
+      case "preview":
+        return `${baseRoute}/properties/${id}`;
+      default:
+        return "#";
+    }
+  };
+
   return (
     <div
       className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
@@ -173,7 +194,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             type="button"
             size="mid"
             className="!py-[5px] !px-5 md:!py-[8px] md:!px-8 !font-bold !bg-white !border-2 !border-brand-9 !text-brand-9 hover:opacity-70"
-            href={`/management/properties/${id}/edit-property`}
+            href={getRoute("edit")}
           >
             Manage
           </Button>
@@ -181,7 +202,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             type="button"
             size="mid"
             className="!py-[5px] !px-5 md:!py-[8px] md:!px-8 !font-bold"
-            href={`/management/properties/${id}`}
+            href={getRoute("preview")}
           >
             Preview
           </Button>

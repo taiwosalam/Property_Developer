@@ -60,15 +60,12 @@ const CreateInvoicePage = () => {
 
   const [paymentAmount, setPaymentAmount] = useState("");
 
-  // PROPERTY SELECTION LOGIC
-  const propertyURL =
-    BRANCH_ID && BRANCH_ID !== 0 ? `/property/all?branch_id=${BRANCH_ID}` : null;
   const [selectedProperty, setSelectedProperty] = useState<number>(0);
   const {
     data: properties,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>(propertyURL);
+  } = useFetch<PropertyListResponse>('/property/all');
 
   const propertyOptions =
     properties?.data

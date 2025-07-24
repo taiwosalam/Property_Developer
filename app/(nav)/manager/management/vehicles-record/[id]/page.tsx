@@ -26,12 +26,12 @@ import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-recor
 import BackButton from "@/components/BackButton/back-button";
 import { useParams } from "next/navigation";
 import useVehicleRecordStore from "@/store/vehicle-record";
-import { FilterResult } from "../../service-providers/types";
 import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";
 import ServerError from "@/components/Error/ServerError";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { FilterResult } from "@/app/(nav)/management/service-providers/types";
 
 const VehiclesRecordPage = () => {
   const { id } = useParams();

@@ -49842,6 +49842,7 @@ export const staffRoutes = [
   "/messages",
   "/notifications",
   "/community",
+  "/management/service-providers",
   "/auth/forgot-password",
   "/staff/dashboard",
   "/staff/management/landlord",
@@ -49902,10 +49903,12 @@ export const staffRoutes = [
   "/staff/settings/profile",
   "/agent-community",
 ];
+
 export const accountRoutes = [
   "/messages",
   "/notifications",
   "/community",
+  "/management/service-providers",
   "/accountant/dashboard",
   "/auth/forgot-password",
   "/accountant/dashboard",
@@ -49971,6 +49974,7 @@ export const managerRoutes = [
   "/messages",
   "/manager/dashboard",
   "/auth/forgot-password",
+  "/management/service-providers",
   "/manager/management/landlord",
   "/manager/management/tenants",
   "/manager/management/occupants",
@@ -50030,6 +50034,7 @@ export const managerRoutes = [
   "/agent-community",
   "/notifications",
 ];
+
 export const directorRoutes = ["/dashboard", "/wallet", "/auth/sign-in"];
 
 // Combine individual routes into a role-based object

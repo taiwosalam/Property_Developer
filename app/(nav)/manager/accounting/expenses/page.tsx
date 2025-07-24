@@ -135,11 +135,9 @@ const AccountingExpensesPage = () => {
   const handleSearch = (query: string) => {
     setSearch(query);
   };
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0 ? `/expenses?branch_id=${BRANCH_ID}` : null;
+  
   const { data, loading, silentLoading, isNetworkError, error } =
-    useFetch<ExpensesApiResponse>(fetchUrl, config);
+    useFetch<ExpensesApiResponse>("/expenses", config);
 
   useEffect(() => {
     if (data) {
@@ -159,7 +157,7 @@ const AccountingExpensesPage = () => {
     error: propertyError,
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>(
-    `/property/all?branch_id=${BRANCH_ID}`
+    `/property/all`
   );
 
   const {

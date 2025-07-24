@@ -67,7 +67,7 @@ const VehicleCard: React.FC<any> = ({ data, page }) => {
       case "manager":
         return `/manager/management/vehicles-record/${id}`;
       case "account":
-        return `/account/management/vehicles-record/${id}`;
+        return `/accountant/management/vehicles-record/${id}`;
       default:
         return `/management/vehicles-record/${id}`;
     }

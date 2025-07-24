@@ -22,7 +22,7 @@ import { transformPropertyRequestResponse } from "../../../[requestId]/preview/d
 import BackButton from "@/components/BackButton/back-button";
 import { formatNumber } from "@/utils/number-formatter";
 import { MoreDetailsCard, SummaryCard, ThreadArticle } from "./components";
-import { CommentProps } from "@/app/(nav)/accountant/management/agent-community/type";
+import { CommentProps } from "@/app/(nav)/staff/management/agent-community/type";
 
 const PreviewPage = () => {
   const router = useRouter();

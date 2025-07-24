@@ -18,12 +18,14 @@ import {
 } from "@/components/ui/select";
 import { ExclamationMark } from "@/public/icons/icons";
 import ExportButton from "@/components/reports/export-button";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import {
   accountingInvoiceOptionsWithDropdown,
   invoiceTableFields,
   invoiceTableData,
+  transformInvoiceData,
+  getOtherCurrency,
 } from "./data";
 import Link from "next/link";
 import CustomTable from "@/components/Table/table";
@@ -31,12 +33,228 @@ import MenuItem from "@mui/material/MenuItem";
 import type { DataItem } from "@/components/Table/types";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import TableMenu from "@/components/Table/table-menu";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import { AxiosRequestConfig } from "axios";
+import {
+  InvoiceListResponse,
+  InvoiceRequestParams,
+  TransformedInvoiceData,
+} from "./types";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import useFetch from "@/hooks/useFetch";
+import dayjs from "dayjs";
+import NetworkError from "@/components/Error/NetworkError";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import TableLoading from "@/components/Loader/TableLoading";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { useGlobalStore } from "@/store/general-store";
+import ServerError from "@/components/Error/ServerError";
+import useStaffRoles from "@/hooks/getStaffs";
+import { parseHTML } from "@/utils/parse-html";
+import clsx from "clsx";
+import { useSearchParams } from "next/navigation";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { PropertyListResponse } from "@/app/(nav)/tasks/inspections/type";
 
 const AccountingInvoicePage = () => {
   const isDarkMode = useDarkMode();
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    DateRange | undefined
-  >();
+  const { branch } = usePersonalInfoStore();
+  const BRANCH_ID = branch?.branch_id || 0;
+  const searchParams = useSearchParams();
+  const {
+    setGlobalInfoStore,
+    otherCurrencies,
+    invoiceTimeRange,
+    selectedDateRange,
+    timeRangeLabel,
+  } = useGlobalStore((s) => ({
+    setGlobalInfoStore: s.setGlobalInfoStore,
+    otherCurrencies: s.otherCurrencies,
+    invoiceTimeRange: s.invoiceTimeRange,
+    selectedDateRange: s.selectedDateRange,
+    timeRangeLabel: s.timeRangeLabel,
+  }));
+  // const [selectedDateRange, setSelectedDateRange] = useState<
+  //   DateRange | undefined
+  // >();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [inoiceStatus, setInvoiceStatus] = useState("");
+  const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
+    null
+  );
+
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
+  const {
+    getManagers,
+    getStaffs,
+    getAccountOfficers,
+    loading: loadingStaffs,
+    error: staffsError,
+  } = useStaffRoles();
+  
+  const propertyOptions =
+    propertyData?.data.map((p) => ({
+      value: `${p.id}`,
+      label: p.title,
+    })) || [];
+
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  // Initialize appliedFilters with status from URL
+  const initialFilters: FilterResult = {
+    options: [],
+    menuOptions: searchParams.get("status")
+      ? { Status: [searchParams.get("status")!] }
+      : {},
+    startDate: null,
+    endDate: null,
+  };
+
+  const [appliedFilters, setAppliedFilters] =
+    useState<FilterResult>(initialFilters);
+
+  const isFilterApplied = useCallback(() => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  }, [appliedFilters]);
+
+  const config: AxiosRequestConfig = useMemo(() => {
+    // date range from the Select/DatePicker if available,
+    // otherwise use the appliedFilters date (if both start and end are defined)
+    const fromDate = selectedDateRange?.from
+      ? dayjs(selectedDateRange.from).format("YYYY-MM-DD")
+      : appliedFilters.startDate
+      ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+      : undefined;
+
+    const toDate = selectedDateRange?.to
+      ? dayjs(selectedDateRange.to).format("YYYY-MM-DD")
+      : appliedFilters.endDate
+      ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+      : undefined;
+
+    const Status = appliedFilters.menuOptions["Status"]?.[0];
+
+    const params: InvoiceRequestParams = {
+      from_date: fromDate,
+      to_date: toDate,
+      date_filter: "custom",
+      search,
+      property_ids: appliedFilters.menuOptions["Property"] || [],
+      account_officer: appliedFilters.menuOptions["Account Officer"] || [],
+      sort_by: sort,
+      status: Status,
+    };
+
+    return { params };
+  }, [appliedFilters, search, sort, selectedDateRange]);
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+  };
+
+  const handleSearch = (query: string) => {
+    setSearch(query);
+  };
+
+
+  const { data, error, loading, isNetworkError, silentLoading } =
+    useFetch<InvoiceListResponse>('/invoice/list', config);
+
+  useEffect(() => {
+    if (data) {
+      const transformed = transformInvoiceData(data);
+      const newInvoices = transformed.invoices;
+      const newStats = transformed.statistics;
+      const currentInvoices = useGlobalStore.getState()?.accounting_invoices;
+      const currentStats = useGlobalStore.getState()?.accounting_statistics;
+      if (JSON.stringify(currentInvoices) !== JSON.stringify(newInvoices)) {
+        setGlobalInfoStore("accounting_invoices", newInvoices);
+      }
+      if (JSON.stringify(currentStats) !== JSON.stringify(newStats)) {
+        setGlobalInfoStore("accounting_statistics", newStats);
+      }
+      setInvoiceData({ ...transformed, invoices: newInvoices });
+    }
+  }, [data, setGlobalInfoStore]);
+
+  // Effect to update otherCurrencies
+  useEffect(() => {
+    if (invoiceData?.invoices) {
+      const otherCurrencyTotal = getOtherCurrency(
+        invoiceData.invoices,
+        selectedDateRange,
+        "total_amount"
+      );
+      const otherCurrencyPaid = getOtherCurrency(
+        invoiceData.invoices,
+        selectedDateRange,
+        "amount_paid"
+      );
+      const otherCurrencyPending = getOtherCurrency(
+        invoiceData.invoices,
+        selectedDateRange,
+        "balance_due"
+      );
+
+      const newOtherCurrencies = {
+        total: otherCurrencyTotal,
+        paid: otherCurrencyPaid,
+        pending: otherCurrencyPending,
+      };
+
+      const currentOtherCurrencies = useGlobalStore.getState()?.otherCurrencies;
+
+      if (
+        JSON.stringify(currentOtherCurrencies) !==
+        JSON.stringify(newOtherCurrencies)
+      ) {
+        setGlobalInfoStore("otherCurrencies", newOtherCurrencies);
+      }
+    }
+  }, [invoiceData, selectedDateRange, setGlobalInfoStore]);
+
+  // Effect to update timeRangeLabel
+  useEffect(() => {
+    const newTimeRangeLabel = (() => {
+      switch (invoiceTimeRange) {
+        case "90d":
+          return "Last 3 months";
+        case "30d":
+          return "Last 30 days";
+        case "7d":
+          return "Last 7 days";
+        case "1d":
+          return "Yesterday";
+        case "custom":
+          if (selectedDateRange?.from && selectedDateRange?.to) {
+            return `${dayjs(selectedDateRange.from).format(
+              "MMM D, YYYY"
+            )} - ${dayjs(selectedDateRange.to).format("MMM D, YYYY")}`;
+          }
+          return "Last 30 days";
+        default:
+          return "Last 30 days";
+      }
+    })();
+
+    if (newTimeRangeLabel !== timeRangeLabel) {
+      setGlobalInfoStore("timeRangeLabel", newTimeRangeLabel);
+    }
+  }, [invoiceTimeRange, selectedDateRange, timeRangeLabel, setGlobalInfoStore]);
 
   const [state, setState] = useState<{ selectedState: string }>({
     selectedState: "",
@@ -46,13 +264,10 @@ const AccountingInvoicePage = () => {
     setState((state) => ({ ...state, selectedState }));
   };
 
-  const [timeRange, setTimeRange] = useState("90d");
-
   const handleDateChange = (range: DateRange | undefined) => {
-    setSelectedDateRange(range);
-    // If the user selects a custom range, set the timeRange to "custom"
+    setGlobalInfoStore("selectedDateRange", range);
     if (range?.from && range?.to) {
-      setTimeRange("custom");
+      setGlobalInfoStore("timeRange", "custom");
     }
   };
 
@@ -64,30 +279,139 @@ const AccountingInvoicePage = () => {
   };
 
   const handleSelectChange = (value: string) => {
-    setTimeRange(value);
+    setGlobalInfoStore("invoiceTimeRange", value);
     if (value !== "custom") {
       const days =
         value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
-      setSelectedDateRange(calculateDateRange(days));
+      setGlobalInfoStore("selectedDateRange", calculateDateRange(days));
     }
-  };
-
-  const handleFilterApply = (filters: any) => {
-    console.log("Filter applied:", filters);
-    // Add filtering logic here for branches
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [isAutoGenerated, setIsAutoGenerated] = useState<boolean>(false);
+
   const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     setSelectedItemId(String(item.id));
     setAnchorEl(e.currentTarget);
+    setIsAutoGenerated(item.is_auto);
+    // Extract the actual status string from the React element
+    const statusString =
+      item.status && typeof item.status === "object" && "props" in item.status
+        ? item.status.props.children
+        : item.status;
+    setInvoiceStatus(statusString);
   };
+
   const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedItemId(null);
+    setInvoiceStatus("");
   };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Function to get the display label for the time range
+  const getTimeRangeLabel = useCallback(() => {
+    switch (invoiceTimeRange) {
+      case "90d":
+        return "Last 3 months";
+      case "30d":
+        return "Last 30 days";
+      case "7d":
+        return "Last 7 days";
+      case "1d":
+        return "Yesterday";
+      case "custom":
+        if (selectedDateRange?.from && selectedDateRange?.to) {
+          return `${dayjs(selectedDateRange.from).format(
+            "MMM D, YYYY"
+          )} - ${dayjs(selectedDateRange.to).format("MMM D, YYYY")}`;
+        }
+        return "Last 30 days";
+      default:
+        return "Last 30 days"; // Fallback for any unexpected value
+    }
+  }, [invoiceTimeRange, selectedDateRange]);
+
+  // Render an error message if BRANCH_ID is invalid
+  // if (!BRANCH_ID || BRANCH_ID === 0) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <PageCircleLoader />
+  //       <div className="text-base text-red-500 font-medium">
+  //         Invalid branch ID. Please select a valid branch.
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  if (loading)
+    return <CustomLoader layout="page" view="table" pageTitle="Invoices" />;
+  if (error) return <ServerError error={error} />;
+  if (isNetworkError) return <NetworkError />;
+  if (!invoiceData) return <div>No invoice data available.</div>;
+
+  const { statistics, invoices } = invoiceData;
+  const transformedInvoiceTableData = invoices.map((i) => ({
+    ...i,
+    client_name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{i.client_name}</span>
+        {i.badge_color && <BadgeIcon color={i.badge_color} />}
+      </p>
+    ),
+    payment_reason: (
+      <p className="flex items-center whitespace-nowrap">
+        <span> {parseHTML(i.payment_reason)}</span>
+      </p>
+    ),
+    status: (
+      <span
+        className={clsx({
+          "text-status-success-3":
+            i.status.toLowerCase() === "paid" ||
+            i.status.toLowerCase() === "partially paid",
+          "text-orange-normal": i.status.toLowerCase() === "pending",
+          "text-status-error-primary": i.status.toLowerCase() === "cancel",
+        })}
+      >
+        {i.status}
+      </span>
+    ),
+  }));
+
+  const statusOptions = [
+    { label: "Cancel", value: "cancel" },
+    { label: "Part Payment", value: "partially_paid" },
+    { label: "Fully Paid", value: "paid" },
+    { label: "Unpaid", value: "pending" },
+  ];
+
+  // const otherCurrency = getOtherCurrency(invoices);
+  // Calculate otherCurrency for each card
+  const otherCurrencyTotal = getOtherCurrency(
+    invoices,
+    selectedDateRange,
+    "total_amount"
+  );
+  const otherCurrencyPaid = getOtherCurrency(
+    invoices,
+    selectedDateRange,
+    "amount_paid"
+  );
+  const otherCurrencyPending = getOtherCurrency(
+    invoices,
+    selectedDateRange,
+    "balance_due"
+  );
+  const IS_PAID =
+    inoiceStatus?.toLowerCase() === "paid" ||
+    inoiceStatus?.toLowerCase() === "partially paid";
+  // const IS_PAID = false;
 
   return (
     <section className="space-y-8">
@@ -95,9 +419,16 @@ const AccountingInvoicePage = () => {
         <div className="w-full flex items-center justify-between">
           <div className="font-medium text-2xl flex items-center space-x-1">
             <span className="text-2xl font-bold">Invoices</span>
-            <ExclamationMark />
           </div>
-          <Modal>
+          <Button
+            href="/accountant/accounting/invoice/create-invoice"
+            type="button"
+            className="page-header-button"
+          >
+            + create invoice
+          </Button>
+
+          {/* <Modal>
             <ModalTrigger asChild>
               <Button type="button" className="page-header-button">
                 + create invoice
@@ -106,7 +437,7 @@ const AccountingInvoicePage = () => {
             <ModalContent>
               <CreateInvoiceModal />
             </ModalContent>
-          </Modal>
+          </Modal> */}
         </div>
         <div className="bg-white dark:bg-[#3C3D37] rounded-[8px] border border-opacity-20 border-[#BAC7D533] p-4 space-y-6">
           <div className="flex flex-wrap gap-y-4 items-center justify-between">
@@ -117,7 +448,10 @@ const AccountingInvoicePage = () => {
                 selectedRange={selectedDateRange}
                 onDateChange={handleDateChange}
               />
-              <Select value={timeRange} onValueChange={handleSelectChange}>
+              <Select
+                value={invoiceTimeRange}
+                onValueChange={handleSelectChange}
+              >
                 <SelectTrigger
                   className="md:w-full lg:w-[120px] rounded-lg sm:ml-auto"
                   aria-label="Select a value"
@@ -145,6 +479,7 @@ const AccountingInvoicePage = () => {
             </div>
             <div className="flex items-center gap-4 flex-wrap">
               <SearchInput
+                onSearch={handleSearch}
                 placeholder="Search for Invoice"
                 className="max-w-[255px]"
               />
@@ -154,90 +489,167 @@ const AccountingInvoicePage = () => {
                 </ModalTrigger>
                 <ModalContent>
                   <FilterModal
-                    filterOptionsMenu={accountingInvoiceOptionsWithDropdown}
+                    filterOptionsMenu={[
+                      {
+                        radio: true,
+                        label: "Status",
+                        value: statusOptions,
+                      },
+                      ...(propertyOptions.length > 0
+                        ? [
+                            {
+                              label: "Property",
+                              value: propertyOptions,
+                            },
+                          ]
+                        : []),
+                    ]}
                     handleFilterApply={handleFilterApply}
                     isDateTrue
+                    appliedFilters={appliedFilters}
                   />
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <ExportButton type="pdf" href="/accounting/invoice/export" />
-                <ExportButton type="csv" href="/accounting/invoice/export" />
+                <ExportButton
+                  type="pdf"
+                  href="/accountant/accounting/invoice/export"
+                />
+                <ExportButton
+                  fileLabel="Invoice"
+                  data={transformedInvoiceTableData}
+                  type="csv"
+                />
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={300}>
+          <AutoResizingGrid gap={24} minWidth={320}>
             <AccountStatsCard
-              title="Total Receipts Created"
-              balance={12345432}
-              trendDirection="up"
-              trendColor="green"
+              title="Total Invoice Created"
+              balance={statistics.total_receipt}
+              trendDirection={
+                statistics.percentage_change_total < 0 ? "down" : "up"
+              }
+              // otherCurrency={otherCurrency}
+              otherCurrency={otherCurrencyTotal}
+              trendColor={
+                statistics.percentage_change_total < 0 ? "red" : "green"
+              }
               variant="blueIncoming"
-              percentage={53}
+              percentage={statistics.percentage_change_total}
+              timeRangeLabel={getTimeRangeLabel()}
+              noSymbol
             />
             <AccountStatsCard
-              title="Total Paid Receipts"
-              balance={12345432}
-              trendDirection="down"
-              trendColor="red"
+              title="Total Paid Invoice"
+              balance={statistics.total_paid_receipt}
+              trendDirection={
+                statistics.percentage_change_paid < 0 ? "down" : "up"
+              }
+              otherCurrency={otherCurrencyPaid}
+              trendColor={
+                statistics.percentage_change_paid < 0 ? "red" : "green"
+              }
               variant="greenIncoming"
-              percentage={4.3}
+              percentage={statistics.percentage_change_paid}
+              timeRangeLabel={getTimeRangeLabel()}
+              noSymbol
             />
             <AccountStatsCard
-              title="Total Pending Receipts"
-              balance={12345432}
-              trendDirection="down"
-              trendColor="red"
+              title="Total Pending Invoice"
+              balance={statistics.total_pending_receipt}
+              otherCurrency={otherCurrencyPending}
+              trendDirection={
+                statistics.percentage_change_pending < 0 ? "down" : "up"
+              }
+              trendColor={
+                statistics.percentage_change_pending < 0 ? "red" : "green"
+              }
               variant="yellowCard"
-              percentage={4.3}
+              percentage={statistics.percentage_change_pending}
+              timeRangeLabel={getTimeRangeLabel()}
+              noSymbol
             />
           </AutoResizingGrid>
         </div>
       </div>
-      <CustomTable
-        fields={invoiceTableFields}
-        data={invoiceTableData}
-        tableHeadStyle={{ height: "76px" }}
-        tableHeadCellSx={{ fontSize: "1rem" }}
-        tableBodyCellSx={{
-          fontSize: "1rem",
-          paddingTop: "12px",
-          paddingBottom: "12px",
-        }}
-        onActionClick={(item, e) => {
-          handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
-        }}
-      />
-      <TableMenu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleMenuClose} disableRipple>
-          <Link
-            href={`/accounting/invoice/${selectedItemId}/manage`}
-            className="w-full text-left"
+      {invoices.length === 0 && !silentLoading ? (
+        config.params.search || isFilterApplied() ? (
+          <SearchError />
+        ) : (
+          <section>
+            <EmptyList
+              noButton
+              // buttonText="+ create invoice"
+              // buttonLink="/accounting/invoice/create-invoice"
+              // modalContent={<CreateInvoiceModal />}
+              title="You haven't created any invoices yet."
+              body={
+                <p>
+                  You can either create a new invoice manually or allow the
+                  system to generate an invoice automatically for a new rent.
+                </p>
+              }
+            />
+          </section>
+        )
+      ) : (
+        <>
+          {silentLoading ? (
+            <TableLoading />
+          ) : (
+            <CustomTable
+              fields={invoiceTableFields}
+              data={transformedInvoiceTableData}
+              tableHeadStyle={{ height: "76px" }}
+              tableHeadCellSx={{ fontSize: "1rem" }}
+              tableBodyCellSx={{
+                fontSize: "1rem",
+                paddingTop: "12px",
+                paddingBottom: "12px",
+              }}
+              onActionClick={(item, e) => {
+                handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+              }}
+            />
+          )}
+          <TableMenu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
           >
-            Manage
-          </Link>
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose} disableRipple>
-          <Link
-            href={`/accounting/invoice/${selectedItemId}/add-payment`}
-            className="w-full text-left"
-          >
-            Add Payment
-          </Link>
-        </MenuItem>
-        <MenuItem onClick={handleMenuClose} disableRipple>
-          <Link
-            href={`/accounting/invoice/${selectedItemId}/print-invoice`}
-            className="w-full text-left"
-          >
-            Print Invoice
-          </Link>
-        </MenuItem>
-      </TableMenu>
+            <>
+              {!IS_PAID && (
+                <MenuItem onClick={handleMenuClose} disableRipple>
+                  <Link
+                    href={`/accountant/accounting/invoice/${selectedItemId}/manage`}
+                    className="w-full text-left"
+                  >
+                    Manage
+                  </Link>
+                </MenuItem>
+              )}
+              {/* <MenuItem onClick={handleMenuClose} disableRipple>
+                  <Link
+                    href={`/accounting/invoice/${selectedItemId}/add-payment`}
+                    className="w-full text-left"
+                  >
+                    Add Payment
+                  </Link>
+                </MenuItem> */}
+            </>
+            {/* )} */}
+            <MenuItem onClick={handleMenuClose} disableRipple>
+              <Link
+                href={`/accountant/accounting/invoice/${selectedItemId}/print-invoice`}
+                className="w-full text-left"
+              >
+                Preview
+              </Link>
+            </MenuItem>
+          </TableMenu>
+        </>
+      )}
     </section>
   );
 };
