@@ -1,170 +1,305 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 // Images
-import { Check } from 'lucide-react';
-import DangerIcon from '@/public/icons/danger.svg';
-import ImageBlue from '@/public/icons/image-blue.svg';
-import SignatureImage from '@/public/accounting/signature.svg';
+import { Check } from "lucide-react";
+import DangerIcon from "@/public/icons/danger.svg";
+import ImageBlue from "@/public/icons/image-blue.svg";
+import SignatureImage from "@/public/accounting/signature.svg";
 
 // Imports
-import { genderTypes, industryOptions, titles } from '@/data';
-import Input from '@/components/Form/Input/input';
-import Picture from '@/components/Picture/picture';
-import Select from '@/components/Form/Select/select';
-import { useImageUploader } from '@/hooks/useImageUploader';
-import SettingsSection from '@/components/Settings/settings-section';
-import { ProfileUpload } from '@/components/Settings/settings-components';
+import { genderTypes, industryOptions, titles } from "@/data";
+import Input from "@/components/Form/Input/input";
+import Picture from "@/components/Picture/picture";
+import Select from "@/components/Form/Select/select";
+import { useImageUploader } from "@/hooks/useImageUploader";
+import SettingsSection from "@/components/Settings/settings-section";
+import { ProfileUpload } from "@/components/Settings/settings-components";
 
 import {
   SettingsSectionTitle,
   SettingsUpdateButton,
-} from '@/components/Settings/settings-components';
-import { usePersonalInfoStore } from '@/store/personal-info-store';
+} from "@/components/Settings/settings-components";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 import {
   cleanPhoneNumber,
   objectToFormData,
-} from '@/utils/checkFormDataForImageOrAvatar';
-import { toast } from 'sonner';
-import { AuthForm } from '@/components/Auth/auth-components';
-import { FormState } from '@/app/(nav)/settings/security/data';
-import PhoneNumberInput from '../Form/PhoneNumberInput/phone-number-input';
-import TextArea from '@/components/Form/TextArea/textarea';
+} from "@/utils/checkFormDataForImageOrAvatar";
+import { toast } from "sonner";
+import { AuthForm } from "@/components/Auth/auth-components";
+import {
+  FormState,
+  initialData,
+  InitialDataTypes,
+  transformProfileData,
+  updateUserProfile,
+} from "@/app/(nav)/settings/security/data";
+import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
+import TextArea from "@/components/Form/TextArea/textarea";
+import { useRole } from "@/hooks/roleContext";
+import useFetch from "@/hooks/useFetch";
+import Avatars from "@/components/Avatars/avatars";
+import CameraCircle from "@/public/icons/camera-circle.svg";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import Image from "next/image";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
+import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
+import Button from "../Form/Button/button";
 
-const ManagerProfile = ({accountant}: {accountant?: boolean}) => {
-  const name = usePersonalInfoStore((state) => state.full_name);
-  const title = usePersonalInfoStore((state) => state.title);
-  const { preview, inputFileRef, handleImageChange } = useImageUploader();
-
-  const [inputFields, setInputFields] = useState([
-    { id: Date.now(), signature: SignatureImage },
-  ]);
-  const profile_picture = usePersonalInfoStore(
-    (state) => state.profile_picture
-  );
-  const [reqLoading, setReqLoading] = useState(false);
-  const [next, setNext] = useState(false);
-  const [formState, setFormState] = useState<FormState>({
-    name: name || '',
-    title: title || '',
+const ManagerProfile = () => {
+  const { role } = useRole();
+  const {
+    preview,
+    inputFileRef,
+    handleImageChange: originalHandleImageChange,
+    clearSelection: clearImageSelection,
+  } = useImageUploader({
+    placeholder: CameraCircle,
+    maxSize: {
+      unit: "MB",
+      value: 2,
+    },
   });
+  const [pageData, setPageData] = useState<InitialDataTypes>(initialData);
+  const [avatar, setAvatar] = useState("");
+  const [picture, setPicture] = useState(pageData?.profile_picture || "");
+  const [reqLoading, setReqLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const setUpdateState = (fieldName: keyof FormState, value: any) => {
-    setFormState((prev) => ({ ...prev, [fieldName]: value }));
+  const { data, loading, error, refetch } = useFetch("/user/profile");
+  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (data) {
+      setPageData((x) => ({
+        ...x,
+        ...transformProfileData(data, true),
+      }));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (pageData?.profile_picture) {
+      // setAvatar(pageData?.profile_picture);
+      setPicture(pageData?.profile_picture);
+    }
+  }, [pageData?.profile_picture]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    originalHandleImageChange(e);
+    setPicture("");
   };
 
-  const changeImage = () => {
-    inputFileRef?.current?.click();
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection(); // Clear any selected image
+    setAvatar(avatarUrl);
+    if (avatarUrl) {
+      setPicture("");
+      setIsOpen(false);
+      setPageData((prev) => ({
+        ...prev,
+        profile_picture: "", // Clear the profile picture
+      }));
+    }
   };
 
-//   const handleUpdateProfile = async (data: FormData) => {
-//     const payload = {
-//       name: data.get('name'),
-//       title: data.get('title'),
-//       picture: data.get('picture'),
-//     };
+  const handleUpdateProfile = async (data: Record<string, string>) => {
+    const payload = {
+      name: data.fullname,
+      title: data.personal_title,
+      picture: data.picture,
+      phone: data.phone_number,
+      gender: data.gender,
+      bio: data.about,
+      professional_title: data.professional_title,
+      email: data.email,
+    };
 
-//     try {
-//       setReqLoading(true);
-//       const res = await updateUserProfile(objectToFormData(payload));
-//       if (res && 'status' in res && res.status === 200) {
-//         // console.log(res);
-//         toast.success('Profile updated successfully');
-//         setNext(true);
-//         window.dispatchEvent(new Event('fetch-profile'));
-//       }
-//     } catch (error) {
-//       toast.error('Error updating profile');
-//     } finally {
-//       setReqLoading(false);
-//     }
-//   };
+    console.log("payload", payload);
+
+    try {
+      setReqLoading(true);
+      const res = await updateUserProfile(objectToFormData(payload));
+      if (res && "status" in res && res.status === 200) {
+        // console.log(res);
+        toast.success("Profile updated successfully");
+        // setNext(true);
+        window.dispatchEvent(new Event("fetch-profile"));
+      }
+    } catch (error) {
+      toast.error("Error updating profile");
+    } finally {
+      setReqLoading(false);
+    }
+  };
 
   return (
     <>
-      <SettingsSection title={accountant ? "My Profile" : 'Manager profile'}>
-        <AuthForm
-          onFormSubmit={() => {}}
-          skipValidation
-          returnType='form-data'
-        >
-          <div className='custom-flex-col gap-8'>
-            <div className='custom-flex-col gap-4'>
+      <SettingsSection
+        title={role === "manager" ? "Manager profile" : "My profile"}
+      >
+        <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
+          <div className="custom-flex-col gap-8">
+            <div className="custom-flex-col gap-4">
               <SettingsSectionTitle
-                title='Profile Picture'
-                desc='The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB.'
+                title="Profile Picture"
+                desc="The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB."
               />
-              <div className='custom-flex-col gap-[18px]'>
-                <ProfileUpload
-                  preview={preview || profile_picture || ''}
-                  onChange={handleImageChange}
-                  inputFileRef={inputFileRef}
-                  onClick={changeImage}
-                />
-                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5'>
+              <div className="custom-flex-col gap-[18px]">
+                <div className="flex items-center gap-4">
+                  <label htmlFor="picture" className="cursor-pointer relative">
+                    <Picture
+                      src={picture || preview}
+                      alt="Camera"
+                      size={70}
+                      rounded
+                      className="bg-[rgba(42,42,42,0.63)]"
+                    />
+                    {preview && picture && preview !== CameraCircle && (
+                      <div
+                        role="button"
+                        aria-label="remove image"
+                        className="absolute top-0 right-0"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          clearImageSelection();
+                        }}
+                      >
+                        <DeleteIconOrange size={20} />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="picture"
+                      name="picture"
+                      accept="image/*"
+                      className="hidden pointer-events-none"
+                      onChange={handleImageChange}
+                      ref={inputFileRef}
+                    />
+                  </label>
+                  <Modal state={{ isOpen, setIsOpen }}>
+                    <ModalTrigger>
+                      <button
+                        type="button"
+                        className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
+                        aria-label="choose avatar"
+                      >
+                        {avatar ? (
+                          <>
+                            <input
+                              hidden
+                              value={avatar}
+                              name="avatar"
+                              id="avatar"
+                            />
+                            <Image
+                              src={avatar}
+                              width={70}
+                              height={70}
+                              alt="selected avatar"
+                              className="object-cover object-center w-[70px] h-[70px] rounded-full bg-brand-9"
+                            />
+                            <div
+                              role="button"
+                              aria-label="remove avatar"
+                              className="absolute top-0 right-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAvatar("");
+                              }}
+                            >
+                              <DeleteIconOrange size={20} />
+                            </div>
+                          </>
+                        ) : (
+                          <PersonIcon />
+                        )}
+                      </button>
+                    </ModalTrigger>
+
+                    <ModalContent className="relative">
+                      <LandlordTenantModalPreset heading="Choose Avatar">
+                        <Avatars onClick={handleAvatarSelection} />
+                      </LandlordTenantModalPreset>
+                    </ModalContent>
+                  </Modal>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   <Select
-                    id='personal_title'
-                    name='title'
+                    id="personal_title"
                     options={titles}
-                    label='personal title'
-                    inputContainerClassName='bg-neutral-2'
-                    defaultValue={title as string}
+                    label="personal title"
+                    inputContainerClassName="bg-neutral-2"
+                    defaultValue={pageData?.personal_title}
                   />
                   <Select
                     isSearchable={false}
-                    id='real_estate_title'
-                    label='real estate title'
-                    inputContainerClassName='bg-neutral-2'
+                    id="professional_title"
+                    label="real estate title"
+                    inputContainerClassName="bg-neutral-2"
                     options={industryOptions}
-                    // defaultValue={staff?.real_estate_title}
+                    defaultValue={pageData?.professional_title}
                   />
                   <Input
-                    id='fullname'
-                    name='name'
-                    label='full name'
-                    placeholder='Write Here'
-                    className='bg-neutral-2'
-                    defaultValue={name}
+                    id="fullname"
+                    label="full name"
+                    placeholder="Write Here"
+                    className="bg-neutral-2"
+                    defaultValue={pageData?.fullname}
                   />
                   <Input
-                    id='email'
-                    type='email'
-                    label='email'
+                    id="email"
+                    type="email"
+                    label="email"
                     disabled
-                    // defaultValue={staff?.email}
+                    defaultValue={pageData?.email}
                   />
                   <Select
-                    id='gender'
-                    label='gender'
+                    id="gender"
+                    label="gender"
                     isSearchable={false}
                     options={genderTypes}
-                    inputContainerClassName='bg-neutral-2'
-                    // defaultValue={staff?.gender}
+                    inputContainerClassName="bg-neutral-2"
+                    defaultValue={pageData?.gender}
                   />
                   <PhoneNumberInput
-                    id='phone_number'
-                    label='phone number'
+                    id="phone_number"
+                    label="phone number"
                     required
-                    // defaultValue={staff?.phone_number}
+                    defaultValue={pageData?.phone}
                   />
                 </div>
               </div>
-              <div className='flex flex-col gap-2 w-full my-4'>
+              <div className="flex flex-col gap-2 w-full my-4">
                 <TextArea
-                  inputSpaceClassName='bg-white dark:bg-darkText-primary'
-                  id='about'
-                  // defaultValue={somedata?.description}
-                  label='About'
+                  inputSpaceClassName="bg-white dark:bg-darkText-primary"
+                  id="about"
+                  defaultValue={pageData?.bio}
+                  label="About"
                 />
               </div>
             </div>
-            <SettingsUpdateButton
+            {/* <SettingsUpdateButton
               submit
               loading={reqLoading}
               //   action={()=> {}}
-              next={next}
-            />
+              // next={next}
+            /> */}
+
+            <div className="flex justify-end gap-4">
+              <Button
+                size="base_bold"
+                type="submit"
+                className="py-[10px] px-8"
+                // onClick={() => handleUpdateProfile(data)}
+              >
+                {reqLoading ? "Please ..." : "Update"}
+              </Button>
+            </div>
           </div>
         </AuthForm>
       </SettingsSection>
