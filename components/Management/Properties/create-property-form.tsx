@@ -80,7 +80,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const selectedLandlordId = useGlobalStore((s) => s.selectedLandlordId);
-
+  const { branch } = usePersonalInfoStore();
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
@@ -118,6 +118,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [coordinate, setCoordinate] = useState(
     propertySettings?.coordinate || ""
   );
+
+  console.log("branch in profile ", branch);
 
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },
@@ -490,6 +492,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               </Droppable>
             </DragDropContext>
           </div>
+          {/* Video Link */}
           {formType === "rental" && (
             <div className="youtube-video-link-wrapper md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
               <Input
@@ -731,7 +734,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               />
             )}
 
-            {!isAccountOfficer && (
+            {role !== "account" && (
               <SelectWithImage
                 options={officerOptions}
                 defaultValue={
@@ -825,7 +828,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   handleGoToTourStep(11);
                 } else if (formType === "rental" && editMode) {
                   handleGoToTourStep(10);
-                } else if(formType === "facility" && editMode){
+                } else if (formType === "facility" && editMode) {
                   handleGoToTourStep(10);
                 }
               }}

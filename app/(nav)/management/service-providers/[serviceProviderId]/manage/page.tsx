@@ -44,9 +44,11 @@ import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import dayjs from "dayjs";
 import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
 
 const ManageServiceProvider = () => {
   const params = useParams();
+  const { role } = useRole();
   const paramId = params.serviceProviderId;
   const {
     data: apiData,
@@ -98,6 +100,9 @@ const ManageServiceProvider = () => {
     provider_notes: userData?.note || "",
   };
   console.log("providerData", providerData)
+
+
+  const CAN_MANAGE_SERVICE_PROVIDER = role === "manager" || role === "director";
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
@@ -197,6 +202,7 @@ const ManageServiceProvider = () => {
                   </ModalContent>
                 </Modal>
 
+                {CAN_MANAGE_SERVICE_PROVIDER && (
                 <Modal>
                   <ModalTrigger asChild>
                     <Button
@@ -217,8 +223,9 @@ const ManageServiceProvider = () => {
                         router.push("/management/service-providers")
                       }
                     />
-                  </ModalContent>
-                </Modal>
+                    </ModalContent>
+                  </Modal>
+                )}
               </>
             ) : (
               <>
@@ -231,14 +238,17 @@ const ManageServiceProvider = () => {
                     message
                   </Button>
                 ) : (
+                  CAN_MANAGE_SERVICE_PROVIDER && (
                   <Button
                     size="base_medium"
                     className="py-2 px-8"
                     href={`/management/service-providers/${paramId}/manage/edit`}
-                  >
-                    Manage
-                  </Button>
+                    >
+                      Manage
+                    </Button>
+                  )
                 )}
+                {CAN_MANAGE_SERVICE_PROVIDER && (
                 <Modal>
                   <ModalTrigger>
                     <Button size="base_medium" className="py-2 px-8">
@@ -251,8 +261,9 @@ const ManageServiceProvider = () => {
                       id={Number(providerData?.id)}
                       data={userData}
                     />
-                  </ModalContent>
-                </Modal>
+                    </ModalContent>
+                  </Modal>
+                )}
               </>
             )}
           </div>

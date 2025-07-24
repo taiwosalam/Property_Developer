@@ -265,34 +265,6 @@ const Management = () => {
           </SettingsSection>
         ))}
       </>
-      {/* <SettingsSection
-        title="Users Configuration (Landlord, Occupant & Tenants)"
-        subTitle="Can be access through mobile app or web cross platform."
-      >
-        <div className="custom-flex-col gap-8">
-          <div className="flex">
-            <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row justify-between w-full max-w-[900px]">
-              <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText checked={false}>
-                  Create Profile Account For Tenants/Occupant
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={false}>
-                  Create Profile Account For Landlord/Landlady
-                </DocumentCheckbox>
-              </div>
-              <div className="custom-flex-col gap-4">
-                <DocumentCheckbox darkText checked={false}>
-                  Create Profile Account For Service Provider
-                </DocumentCheckbox>
-                <DocumentCheckbox darkText checked={false}>
-                  Create Profile Account When You Sent Invite
-                </DocumentCheckbox>
-              </div>
-            </div>
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection> */}
       <SettingsSection title="tenant / occupant screening configuration">
         <div className="custom-flex-col gap-8">
           <AuthForm onFormSubmit={handleUpdateScreeningLevel}>

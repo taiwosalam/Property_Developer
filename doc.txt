@@ -1,251 +1,977 @@
-// import React, { useEffect, useState } from "react";
+"use client";
 
-// // Types
-// import type {
-//   WalletModalDefaultProps,
-//   WalletWithdrawFundsOptions,
-// } from "../types";
+import Link from "next/link";
+import Image from "next/image";
+import { Skeleton } from "@mui/material";
+import { empty } from "@/app/config";
+import { useTheme } from "next-themes";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import Picture from "@/components/Picture/picture";
+import Cookies from "js-cookie";
+import Button from "@/components/Form/Button/button";
+import {
+  Dropdown,
+  DropdownContent,
+  DropdownTrigger,
+} from "@/components/Dropdown/dropdown";
+import clsx from "clsx";
+import { getGreeting, truncateName } from "./data";
+import NavCreateNew from "./nav-create-new";
+import NavGlobalSearch from "./nav-global-search";
+import { NavIcon, NotificationBadge } from "@/components/Nav/nav-components";
+import NavSwitchUserSwitch from "./nav-switch-user-switch";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
+import { useState, useEffect, useRef } from "react";
+import {
+  SearchIcon,
+  MailIcon,
+  BellIcon,
+  MoonIcon,
+  PlusBoldIcon,
+  SearchIconBold,
+  SunIcon,
+  DropdownListIcon,
+  SidebarIcon,
+  NavCloseIcon,
+} from "@/public/icons/icons";
+import { toast } from "sonner";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useBranchInfoStore } from "@/store/branch-info-store"; // Import the new store
+import useFetch from "@/hooks/useFetch";
+import { ProfileResponse } from "./data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { getLocalStorage, saveLocalStorage } from "@/utils/local-storage";
+import { useThemeStoreSelectors } from "@/store/themeStore";
+import { applyFont } from "@/app/(onboarding)/auth/data";
+import { roundUptoNine } from "@/app/(nav)/(messages-reviews)/messages/data";
+import {
+  clearAllNotification,
+  NotificationApiResponse,
+  transformNotificationData,
+} from "@/app/(nav)/notifications/data";
+import { usePathname } from "next/navigation";
+import { debounce } from "@/utils/debounce";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { saveCompanyStatusToCookie } from "@/utils/saveRole";
+import { pageSteps } from "@/tour/steps/page-steps";
+import { useApplyZoomFromLocalStorage } from "@/hooks/useZoom";
 
-// // Images
-// import InfoWarningIcon from "@/public/icons/info-warning-circle.svg";
+interface BranchResponse {
+  status: string;
+  message: string;
+  data: {
+    branch: {
+      id: number;
+      company_id: number;
+      is_active: boolean;
+      branch_name: string;
+      picture: string;
+      state: string;
+      local_government: string;
+      city: string;
+      branch_desc: string;
+      branch_address: string;
+      email: string | null;
+      bank_name: string;
+      account_name: string;
+      account_number: string;
+      staffs_count: number;
+      properties_count: number;
+      landlords_count: number;
+      tenants_count: number;
+      complaints_count: number;
+      invoice_count: number;
+      inquiry_count: number;
+      current_month_inquiry_count: number;
+      current_month_complaints_count: number;
+      current_month_staffs_count: number;
+      current_month_invoice_count: number;
+      current_month_properties_count: number;
+      current_month_landlords_count: number;
+      current_month_tenants_count: number;
+      receipt_statistic: {
+        total_receipt: string;
+        total_paid_receipt: string;
+        total_pending_receipt: string;
+        percentage_change_total: number;
+        percentage_change_paid: number;
+        percentage_change_pending: number;
+      };
+      staffs: Array<{
+        id: number;
+        user_id: number;
+        is_active: boolean;
+        title: string | null;
+        professional_title: string | null;
+        picture: string;
+        staff_role: string;
+        name: string;
+        tier: number;
+        online_status: string;
+      }>;
+      properties: Array<{
+        id: number;
+        branch_id: number;
+        inventory_id: number | null;
+        landlord_id: number | null;
+        user_id: number;
+        company_id: number;
+        video_link: string | null;
+        title: string;
+        state: string;
+        local_government: string;
+        city_area: string;
+        full_address: string;
+        category: string;
+        description: string;
+        property_type: string;
+        agency_fee: number;
+        who_to_charge_new_tenant: string | null;
+        who_to_charge_renew_tenant: string | null;
+        caution_deposit: string | null;
+        group_chat: boolean;
+        rent_penalty: boolean;
+        fee_penalty: boolean;
+        request_call_back: boolean;
+        book_visitors: boolean;
+        vehicle_record: boolean;
+        active_vat: boolean;
+        currency: string;
+        coordinate: string | null;
+        management_fee: number;
+        fee_period: string | null;
+        is_featured: boolean;
+        is_inventory: number;
+        created_at: string;
+        updated_at: string;
+        deleted_at: string | null;
+        image_count: number;
+        unit_count: number;
+        review_count: number;
+        units: Array<{
+          id: number;
+          user_id: number;
+          property_id: number;
+          tenant_id: number;
+          unit_name: string;
+          unit_type: string;
+          unit_sub_type: string;
+          unit_preference: string;
+          measurement: string;
+          bedroom: string;
+          bathroom: string;
+          toilet: number;
+          facilities: string | null;
+          en_suit: boolean;
+          prepaid: boolean;
+          wardrobe: boolean;
+          pet_allowed: boolean;
+          total_area_sqm: string | null;
+          number_of: string;
+          fee_period: string;
+          fee_amount: string;
+          vat_amount: string;
+          security_fee: string;
+          service_charge: string;
+          agency_fee: string;
+          legal_fee: string;
+          caution_fee: string;
+          inspection_fee: string;
+          management_fee: string | null;
+          other_charge: string;
+          negotiation: boolean;
+          total_package: string;
+          renew_fee_period: string;
+          renew_fee_amount: string;
+          renew_vat_amount: string;
+          renew_service_charge: string;
+          renew_other_charge: string;
+          renew_total_package: string;
+          renew_agency_fee: string;
+          renew_security_fee: string;
+          renew_legal_fee: string | null;
+          renew_caution_fee: string | null;
+          renew_inspection_fee: string | null;
+          renew_management_fee: string | null;
+          is_active: string;
+          published: boolean;
+          status: string;
+          reject_reason: string | null;
+          created_at: string;
+          updated_at: string;
+          deleted_at: string | null;
+        }>;
+      }>;
+      activities: Array<{
+        S_N: number;
+        title: string;
+        description: string;
+        ip_address: string;
+        location: {
+          city: string;
+          country: string;
+          latitude: number;
+          longitude: number;
+        };
+        created_at: string;
+        updated_at: string;
+        date: string;
+        time: string;
+      }>;
+      created_at: string;
+      updated_at: string;
+      vacant_unit: number;
+      vacant_month_unit: number;
+      expired_unit: number;
+      expired_month_unit: number;
+      listing: number;
+      listing_month: number;
+    };
+    manager: {
+      id: number;
+      user_id: number;
+      company_id: number;
+      branch_id: number;
+      is_active: boolean;
+      title: string;
+      professional_title: string;
+      years_experience: string | null;
+      staff_role: string;
+      deleted_at: string | null;
+      created_at: string;
+      updated_at: string;
+      user: {
+        id: number;
+        encodedId: string;
+        name: string;
+        email: string;
+        phone: string;
+        username: string | null;
+        referrer_code: string | null;
+        email_verified_at: string;
+        phone_verified_at: string | null;
+        username_updated_at: string | null;
+        is_active: boolean;
+        is_company_owner: boolean;
+        tier_id: number;
+        last_seen: string | null;
+        provider_id: string | null;
+        provider_name: string | null;
+        deleted_at: string | null;
+        created_at: string;
+        updated_at: string;
+        is_verified: boolean;
+        unread_messages_count: number;
+        unread_notifications_count: number;
+        profile_completion_status: string;
+        is_subscription_expired: boolean;
+        current_plan: string;
+        current_subscription_expiry: string;
+        profile: {
+          id: number;
+          user_id: number;
+          type: string;
+          name: string | null;
+          email: string | null;
+          phone: string | null;
+          picture: string;
+          background_image: string | null;
+          title: string | null;
+          gender: string;
+          address: string | null;
+          state: string | null;
+          lga: string | null;
+          city: string | null;
+          bio: string | null;
+          dob: string | null;
+          religion: string | null;
+          marital_status: string | null;
+          occupation: string | null;
+          job_type: string | null;
+          family_type: string | null;
+          facebook: string | null;
+          x: string | null;
+          instagram: string | null;
+          linkedin: string | null;
+          youtube: string | null;
+          tiktok: string | null;
+          website: string | null;
+          note: string | null;
+          bvn_link_at: string | null;
+          created_at: string;
+          updated_at: string;
+          deleted_at: string | null;
+          bvn_linked: boolean;
+          completion_status: string;
+        };
+      };
+    };
+    sub_wallet: {
+      wallet_id: string | null;
+      balance: string;
+      escrow_balance: string;
+      is_active: string;
+      pin_status: boolean;
+      credit_total: number;
+      debit_total: number;
+      balance_total: string;
+      last_week_credit: number;
+      last_week_debit: number;
+      last_week_balance: number;
+      recent_transactions: Array<{
+        id: number;
+        amount: string;
+        transaction_type: string;
+        reference: string;
+        description: string;
+        status: string;
+        balance_before: string;
+        balance_after: string;
+        source_name: string;
+        date: string;
+      }>;
+    };
+    recent_transactions: Array<{
+      id: number;
+      amount: string;
+      transaction_type: string;
+      reference: string;
+      description: string;
+      status: string;
+      balance_before: string;
+      balance_after: string;
+      source_name: string;
+      date: string;
+    }>;
+  };
+  errors: any;
+}
 
-// // Imports
-// import Input from "@/components/Form/Input/input";
-// import Picture from "@/components/Picture/picture";
-// import FundingCard from "../AddFunds/funding-card";
-// import Button from "@/components/Form/Button/button";
-// import useDarkMode from "@/hooks/useCheckDarkMode";
-// import { useWalletStore } from "@/store/wallet-store";
-// import { toast } from "sonner";
-// import useFetch from "@/hooks/useFetch";
-// import {
-//   BankAPIResponse,
-//   BankPageData,
-//   transformBank,
-// } from "@/app/(nav)/settings/data";
-// import useBankLogo from "@/app/(nav)/bank";
-// import { currencySymbols } from "@/utils/number-formatter";
-// import { formatToNaira } from "@/app/(nav)/tasks/inspections/data";
-// import { useRole } from "@/hooks/roleContext";
-// import { usePersonalInfoStore } from "@/store/personal-info-store";
+const Header = () => {
+  const { isMobile } = useWindowWidth();
+  const hasMounted = useRef(false);
+  const isManualToggle = useRef(false);
+  const setColor = useThemeStoreSelectors.getState().setColor;
+  const { theme, setTheme } = useTheme();
+  const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
 
-// const DISCOUNT_PERCENTAGE = 0.2;
-// const BANK_CHARGES = 53.75;
+  const pathname = usePathname();
 
-// const calculateExpectedAmount = (amount: number): number => {
-//   if (!amount || amount <= 0) return 0;
+  const { company_id, branch } = usePersonalInfoStore();
+  const unreadMessageCount =
+    usePersonalInfoStore((state) => state.unread_messages_count) || 0;
+  const notificationCount =
+    usePersonalInfoStore((state) => state.unread_notifications_count) || 0;
+  const loggedInUserDetails = getLocalStorage("additional_details");
+  const { company: loggedUserCompany, appearance } = loggedInUserDetails || {};
+  const setPersonalInfo = usePersonalInfoStore(
+    (state) => state.setPersonalInfo
+  );
+  const name = usePersonalInfoStore((state) => state.name);
+  const user_online_status = usePersonalInfoStore(
+    (state) => state.user_online_status
+  );
+  const profile_picture = usePersonalInfoStore(
+    (state) => state.profile_picture
+  );
+  const company_logo = usePersonalInfoStore((state) =>
+    theme === "light"
+      ? getLocalStorage("light_logo")
+      : getLocalStorage("dark_logo")
+      ? getLocalStorage("dark_logo")
+      : getLocalStorage("light_logo")
+  );
 
-//   const discountAmount = (amount * DISCOUNT_PERCENTAGE) / 100;
+  // Branch Info Store
+  const setBranchInfo = useBranchInfoStore((state) => state.setBranchInfo);
+  const branch_name = useBranchInfoStore((state) => state.branch_name);
+  const branch_picture = useBranchInfoStore((state) => state.picture);
 
-//   const expectedAmount = amount - discountAmount - BANK_CHARGES;
+  // Fetch branch data if branch.branch_id exists
+  const { data: branchData, loading: branchLoading, refetch: branchRefetch } = useFetch<BranchResponse>(
+    branch?.branch_id ? `branch/${branch.branch_id}` : null
+  );
+  useRefetchOnEvent("refetchBranch", () => branchRefetch({ silent: true }));
 
-//   return amount - expectedAmount;
-// };
+  // Update branch info store when branch data is fetched
+  useEffect(() => {
+    if (branchData?.data?.branch) {
+      const {
+        branch,
+        manager,
+        sub_wallet,
+        recent_transactions,
+      } = branchData.data;
 
-// const Withdrawal: React.FC<
-//   WalletModalDefaultProps<WalletWithdrawFundsOptions>
-// > = ({ changeStep, branch }) => {
-//   const isDarkMode = useDarkMode();
-//   const { role, setRole } = useRole();
-//   const { branch: branchData } = usePersonalInfoStore();
-//   const BRANCH_ID = branchData?.branch_id || 0;
-//   const setWalletStore = useWalletStore((s) => s.setWalletStore);
-//   const [loading, setLoading] = useState(false);
-//   const [amount, setAmount] = useState(0);
-//   const [expectedAmount, setExpectedAmount] = useState(0);
-//   const [description, setDescription] = useState("");
-//   const [companyBankDetails, setCompanyBankDetails] = useState<BankPageData>({
-//     bank_name: "",
-//     account_name: "",
-//     account_number: "",
-//     bank_code: "",
-//   });
+      setBranchInfo("branch_id", branch.id);
+      setBranchInfo("company_id", branch.company_id);
+      setBranchInfo("is_active", branch.is_active);
+      setBranchInfo("branch_name", branch.branch_name);
+      setBranchInfo("picture", branch.picture);
+      setBranchInfo("state", branch.state);
+      setBranchInfo("local_government", branch.local_government);
+      setBranchInfo("city", branch.city);
+      setBranchInfo("branch_desc", branch.branch_desc);
+      setBranchInfo("branch_address", branch.branch_address);
+      setBranchInfo("email", branch.email);
+      setBranchInfo("bank_name", branch.bank_name);
+      setBranchInfo("account_name", branch.account_name);
+      setBranchInfo("account_number", branch.account_number);
+      setBranchInfo("staffs_count", branch.staffs_count);
+      setBranchInfo("properties_count", branch.properties_count);
+      setBranchInfo("landlords_count", branch.landlords_count);
+      setBranchInfo("tenants_count", branch.tenants_count);
+      setBranchInfo("complaints_count", branch.complaints_count);
+      setBranchInfo("invoice_count", branch.invoice_count);
+      setBranchInfo("inquiry_count", branch.inquiry_count);
+      setBranchInfo("current_month_inquiry_count", branch.current_month_inquiry_count);
+      setBranchInfo("current_month_complaints_count", branch.current_month_complaints_count);
+      setBranchInfo("current_month_staffs_count", branch.current_month_staffs_count);
+      setBranchInfo("current_month_invoice_count", branch.current_month_invoice_count);
+      setBranchInfo("current_month_properties_count", branch.current_month_properties_count);
+      setBranchInfo("current_month_landlords_count", branch.current_month_landlords_count);
+      setBranchInfo("current_month_tenants_count", branch.current_month_tenants_count);
+      setBranchInfo("receipt_statistic", branch.receipt_statistic);
+      setBranchInfo("staffs", branch.staffs);
+      setBranchInfo("properties", branch.properties);
+      setBranchInfo("activities", branch.activities);
+      setBranchInfo("created_at", branch.created_at);
+      setBranchInfo("updated_at", branch.updated_at);
+      setBranchInfo("vacant_unit", branch.vacant_unit);
+      setBranchInfo("vacant_month_unit", branch.vacant_month_unit);
+      setBranchInfo("expired_unit", branch.expired_unit);
+      setBranchInfo("expired_month_unit", branch.expired_month_unit);
+      setBranchInfo("listing", branch.listing);
+      setBranchInfo("listing_month", branch.listing_month);
+      setBranchInfo("manager", manager);
+      setBranchInfo("sub_wallet", sub_wallet);
+      setBranchInfo("recent_transactions", recent_transactions);
+    }
+  }, [branchData, setBranchInfo]);
 
-//   console.log("branch", branchData);
+  const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
+  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
 
-//   const securityText = branch
-//     ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system."
-//     : "Each withdrawal incurs a fee of the withdrawal amount. We collaborate with a trusted third-party provider to facilitate wallet withdrawals to any pre-registered Nigerian bank account.";
+  const { data: companyData, refetch: companyRefetch } = useFetch<any>(
+    company_id ? `companies/${company_id}` : null
+  );
+  useRefetchOnEvent("refetchProfile", () => companyRefetch({ silent: true }));
 
-//   const {
-//     data: bankData,
-//     error: bankError,
-//     refetch: bankRefetch,
-//     loading: bankLoading,
-//   } = useFetch<BankAPIResponse>("/banks");
+  /* NOTIFICATION LOGIC */
+  const [notificationIds, setNotificationIds] = useState<string[]>([]);
+  const [notificationCounts, setNotificationCount] = useState(0);
+  const {
+    data: apiData,
+    silentLoading,
+    error,
+    refetch: refetchNotifications,
+  } = useFetch<NotificationApiResponse>(`/notifications`);
 
-//   useEffect(() => {
-//     if (bankData) {
-//       const res = transformBank(bankData);
-//       if (res) {
-//         setCompanyBankDetails(res);
-//       }
-//     }
-//   }, [bankData]);
+  useEffect(() => {
+    if (apiData) {
+      const ids = apiData?.data?.length
+        ? apiData?.data?.map((item) => item.id)
+        : [];
+      setNotificationIds(ids);
 
-//   //
+      const unreadCount = apiData?.data.filter(
+        (notification) => !notification.read_at
+      ).length;
+      setNotificationCount(unreadCount);
 
-//   useEffect(() => {
-//     setWalletStore("amount", amount);
-//     setWalletStore("desc", description);
-//   }, [amount, description, setWalletStore]);
+      saveLocalStorage("notificationCount", unreadCount);
+    }
+  }, [apiData]);
 
-//   const slug = companyBankDetails.bank_name?.toLowerCase().replace(/\s+/g, "-");
-//   const logo = useBankLogo({ slug }) || "/icons/default-bank.svg";
-//   const bankNotAvailable =
-//     !companyBankDetails.bank_name &&
-//     !companyBankDetails.account_name &&
-//     !companyBankDetails.account_number &&
-//     !companyBankDetails.bank_code;
+  const handleClearNotifications = async () => {
+    if (!notificationIds.length) return;
 
-//   const [error, setError] = useState<string | null>(null);
+    try {
+      const res = await clearAllNotification(notificationIds);
 
-//   const handleAmountChange = (value: string) => {
-//     const newAmount = Number(value.replace(/,/g, ""));
+      if (res) {
+        setNotificationCount(0);
 
-//     // Validate maximum amount
-//     if (newAmount > 10000000) {
-//       setError("Maximum withdrawal limit is ₦10,000,000.");
-//       setAmount(10000000); // Set to max allowed
-//       if (!branch) {
-//         const expected = calculateExpectedAmount(10000000);
-//         setExpectedAmount(expected);
-//       } else {
-//         setExpectedAmount(10000000); // No calculation for branch
-//       }
-//       return;
-//     }
+        if (pathname === "/notifications") {
+          saveLocalStorage("notificationCount", 0);
+        }
+      }
+    } catch (error) {}
+  };
 
-//     setAmount(newAmount);
+  useEffect(() => {
+    if (companyData?.data) {
+      setPersonalInfo("dark_logo", companyData.data.dark_logo);
+      saveLocalStorage("dark_logo", companyData?.data?.dark_logo);
+      saveLocalStorage("light_logo", companyData?.data?.company_logo);
+    }
+  }, [companyData, setPersonalInfo]);
 
-//     if (newAmount < 1000) {
-//       setError("Minimum withdrawal amount is ₦1,000.");
-//       setExpectedAmount(0);
-//     } else {
-//       setError(null);
-//       if (!branch) {
-//         const expected = calculateExpectedAmount(newAmount);
-//         setExpectedAmount(expected);
-//       } else {
-//         setExpectedAmount(newAmount); // Use input amount directly for branch
-//       }
-//     }
-//   };
+  useEffect(() => {
+    if (appearance && !hasMounted.current) {
+      const { colorMode, navbar, fonts, dashboardColor, zoom } = appearance;
+      saveLocalStorage("navbar", navbar);
+      setColor(dashboardColor);
+      applyFont(fonts);
+      setTheme(colorMode);
+      hasMounted.current = true;
+      saveLocalStorage("zoomLevel", zoom.toString());
+    }
+  }, [appearance, setColor, setTheme]);
 
-//   const handleContinue = () => {
-//     if (amount > 0 && description.length > 0) {
-//       changeStep("input pin");
-//     } else {
-//       toast.warning("Please enter an amount and description");
-//     }
-//   };
+  useEffect(() => {
+    if (data?.data) {
+      const {
+        user,
+        currentPlan,
+        isSubscriptionExpired,
+        company,
+        profile,
+        requestDemos,
+        director,
+        company_wallet,
+        currentExpiryDate,
+        branch,
+      } = data.data;
 
-//   const CURRENCY_SYMBOL = currencySymbols.naira;
+      const subscription_status = isSubscriptionExpired ? "expired" : "active";
 
-//   return (
-//     <div className="custom-flex-col gap-8">
-//       <div className="custom-flex-col gap-[18px]">
-//         {bankLoading ? (
-//           <div
-//             style={{ boxShadow: "5px 5px 10px 0px rgba(0, 0, 0, 0.02)" }}
-//             className="animate-pulse p-4 w-full h-24 flex items-center justify-between rounded-2xl bg-gray-200 dark:bg-darkText-primary"
-//           ></div>
-//         ) : (
-//           <div>
-//             {!branch && !bankNotAvailable && (
-//               <FundingCard
-//                 type="sterling"
-//                 title={companyBankDetails.account_number}
-//                 desc={companyBankDetails.account_name}
-//                 cta={companyBankDetails.bank_name}
-//                 notRounded
-//                 logo={logo}
-//               />
-//             )}
-//             {bankNotAvailable && (
-//               <div
-//                 className="p-4 flex items-center justify-between rounded-2xl bg-neutral-2 dark:bg-darkText-primary"
-//                 style={{ boxShadow: "5px 5px 10px 0px rgba(0, 0, 0, 0.02)" }}
-//               >
-//                 <p>
-//                   Sorry, your withdrawal cannot be processed at this time.
-//                   Please add your company&apos;s bank account details to your
-//                   account. Click here to update your bank details.
-//                 </p>
-//               </div>
-//             )}
-//           </div>
-//         )}
-//         <div className="custom-flex-col gap-4">
-//           <div className="custom-flex-col space-y-4">
-//             <Input
-//               id="amount"
-//               label="amount"
-//               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//               value={amount ? amount.toLocaleString() : ""}
-//               max={10000000}
-//               style={{ backgroundColor: isDarkMode ? "black" : "white" }}
-//               required
-//               // onChange={(value) => {
-//               //   setAmount(parseFloat(value.replace(/,/g, "")));
-//               // }}
-//               onChange={handleAmountChange}
-//             />
-//             {!branch && error && (
-//               <p className="text-red-600 text-sm mt-1">{error}</p>
-//             )}
-//             {amount > 1000 && !branch && (
-//               <div>
-//                 <Input
-//                   readOnly
-//                   id="amount_expected"
-//                   label="charges"
-//                   CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-//                   style={{ backgroundColor: isDarkMode ? "black" : "white" }}
-//                   value={expectedAmount.toLocaleString()}
-//                   className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 hover:border-none active:border-none pointer-events-none"
-//                 />
+      setPersonalInfo("user_id", user.userid);
+      setPersonalInfo("userId", user.id);
+      setPersonalInfo(
+        "name",
+        `${profile?.title ? profile.title + " " : ""}${user.name}`
+      );
+      setPersonalInfo("director_id", director?.id ? director?.id : null);
+      setPersonalInfo("full_name", user.name);
+      setPersonalInfo("user_email", user.email);
+      setPersonalInfo("user_online_status", user.user_online_status);
+      setPersonalInfo(
+        "unread_notifications_count",
+        user.unread_notifications_count
+      );
+      setPersonalInfo("unread_messages_count", user.unread_messages_count);
+      setPersonalInfo("title", profile?.title as string);
+      setPersonalInfo("profile_picture", director?.picture || profile.picture);
+      if (company) {
+        setPersonalInfo("company_id", company.company_id);
+        setPersonalInfo("company_logo", company.company_logo);
+        setPersonalInfo("company_name", company.company_name);
+        setPersonalInfo("company_state", company.state);
+        setPersonalInfo("company_status", company.company_status);
+        saveCompanyStatusToCookie(company.company_status);
+        setPersonalInfo("reject_reason", company.reject_reason);
+        setPersonalInfo("company_local_government", company.local_government);
+        setPersonalInfo(
+          "company_head_office_address",
+          company.head_office_address
+        );
+        setPersonalInfo("company_city", company.city);
+        setPersonalInfo("company_phone_number", company.phone_numbers);
+        setPersonalInfo("date_of_registration", company.date_of_registration);
+        setPersonalInfo("membership_number", company.membership_number);
+        setPersonalInfo("is_verified", company.is_verified);
+        setPersonalInfo("is_owner", user.is_owner);
+        setPersonalInfo("industry", company.industry);
+        setPersonalInfo("company_wallet", company_wallet);
+        setPersonalInfo("isSubscriptionExpired", isSubscriptionExpired);
+        setPersonalInfo("currentPlan", currentPlan);
+        setPersonalInfo("currentExpiryDate", currentExpiryDate);
+        setPersonalInfo("branch", branch);
+        setPersonalInfo(
+          "cac_registration_number",
+          company.cac_registration_number
+        );
+      }
+      setPersonalInfo(
+        "requestDemo",
+        Array.isArray(requestDemos) && requestDemos.length > 0
+      );
+      Cookies.set("subscription_status", subscription_status, {
+        expires: 7,
+        secure: true,
+        sameSite: "Strict",
+        path: "/",
+      });
+    }
+  }, [data, setPersonalInfo]);
 
-//                 <p className="text-red-600 text-sm mt-1">
-//                   {`-${DISCOUNT_PERCENTAGE}% convenience fee and ${formatToNaira(
-//                     BANK_CHARGES
-//                   )} bank VAT`}
-//                 </p>
-//               </div>
-//             )}
-//           </div>
-//           <Input
-//             id="description"
-//             label="description"
-//             placeholder="Description"
-//             style={{ backgroundColor: isDarkMode ? "black" : "white" }}
-//             maxLength={100}
-//             required
-//             onChange={setDescription}
-//           />
-//         </div>
-//       </div>
-//       <div className="custom-flex-col gap-3">
-//         <Button
-//           // onClick={() => changeStep("input pin")}
-//           onClick={handleContinue}
-//           disabled={!!error}
-//           size="sm_medium"
-//           className="py-2 px-8"
-//         >
-//           continue
-//         </Button>
-//         <div className="py-3 px-4 flex gap-2 rounded-[4px] bg-status-caution-1 dark:bg-[#3C3D37]">
-//           <div className="flex items-start">
-//             <Picture src={InfoWarningIcon} alt="warning" size={26} />
-//           </div>
-//           <p className="text-[#606060] dark:text-darkText-1 text-sm font-normal">
-//             {securityText}
-//           </p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+  // APPLY ZOOM
+  useApplyZoomFromLocalStorage();
 
-// export default Withdrawal;
+  const toggleTheme = () => {
+    if (!hasMounted.current) return;
+    const primaryColor = getLocalStorage("primary-color");
+    if (primaryColor === "#000000") {
+      toast.error("Cannot use dark mode on the selected primary color");
+      setTheme("light");
+      return;
+    }
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const isOnline = useOnlineStatus();
+
+  const lgIconsInteractionClasses =
+    "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
+
+  // Animation variants for slide effect
+  const slideVariants: Variants = {
+    logo: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    profile: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    logoExit: {
+      y: "100%",
+      opacity: 0,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    profileExit: {
+      y: "-100%",
+      opacity: 0,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+  };
+
+  return (
+    <header
+      className={clsx(
+        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
+        (loading || branchLoading) && "skeleton"
+      )}
+    >
+      <div className="flex-1 h-full flex gap-6 items-center">
+        {/* Logo - Desktop Only */}
+        <div className="hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden">
+          {loading || branchLoading ? (
+            <Skeleton
+              width="100%"
+              height="100%"
+              animation="wave"
+              sx={{ transform: "none" }}
+            />
+          ) : (
+            <Image
+              src={branch_picture || company_logo || empty}
+              alt="branch or company logo"
+              fill
+              priority
+              sizes="auto"
+              className="object-contain"
+            />
+          )}
+        </div>
+
+        {/* Mobile & Tablet Icons */}
+        <div className="lg:hidden flex items-center gap-2 md:justify-between md:flex-1 ml-auto md:ml-0">
+          {/* Tablet Icons */}
+          <div className="hidden md:flex items-center gap-2 w-full justify-between">
+            <div className="flex items-center gap-2">
+              <NavIcon
+                icon={<DropdownListIcon size={21} />}
+                alt="dropdown list"
+              />
+              <Modal>
+                <ModalTrigger>
+                  <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
+                </ModalTrigger>
+                <ModalContent>
+                  <NavGlobalSearch />
+                </ModalContent>
+              </Modal>
+              <Modal>
+                <ModalTrigger>
+                  <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
+                </ModalTrigger>
+                <ModalContent>
+                  <NavCreateNew />
+                </ModalContent>
+              </Modal>
+            </div>
+            <div className="flex items-center gap-2">
+              <NavIcon
+                icon={<MailIcon size={21} />}
+                href="/messages"
+                alt="messages"
+                count={unreadMessageCount}
+                badgeColor="red"
+              />
+              <NavIcon
+                icon={<BellIcon size={21} />}
+                count={notificationCounts}
+                alt="notifications"
+                href="/notifications"
+              />
+            </div>
+          </div>
+
+          {/* Mobile Toggle */}
+          <div className="flex md:hidden items-center gap-2">
+            <AnimatePresence mode="popLayout">
+              {mobileToggleOpen ? (
+                <motion.div
+                  key="open"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center gap-2"
+                >
+                  <NavSwitchUserSwitch
+                    trigger={
+                      <NavIcon
+                        icon={<DropdownListIcon size={21} />}
+                        alt="dropdown list"
+                      />
+                    }
+                  />
+                  <Modal>
+                    <ModalTrigger>
+                      <NavIcon
+                        icon={<SearchIconBold size={21} />}
+                        alt="search"
+                      />
+                    </ModalTrigger>
+                    <ModalContent>
+                      <NavGlobalSearch />
+                    </ModalContent>
+                  </Modal>
+                  <Modal>
+                    <ModalTrigger>
+                      <NavIcon
+                        icon={<PlusBoldIcon size={21} />}
+                        alt="create new"
+                      />
+                    </ModalTrigger>
+                    <ModalContent>
+                      <NavCreateNew />
+                    </ModalContent>
+                  </Modal>
+                  <NavIcon
+                    href="/messages"
+                    icon={<MailIcon size={21} />}
+                    alt="messages"
+                    count={unreadMessageCount}
+                    badgeColor="red"
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="closed"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex items-center gap-2"
+                >
+                  <NavIcon
+                    icon={<MailIcon size={21} />}
+                    href="/messages"
+                    badgeColor="red"
+                    alt="messages"
+                    count={unreadMessageCount}
+                  />
+                  <NavIcon
+                    icon={<BellIcon size={21} />}
+                    count={notificationCounts}
+                    alt="notifications"
+                    href="/notifications"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <NavIcon
+              icon={
+                mobileToggleOpen ? <NavCloseIcon size={21} /> : <SidebarIcon />
+              }
+              alt="Toggle"
+              onClick={() => setMobileToggleOpen(!mobileToggleOpen)}
+            />
+          </div>
+        </div>
+
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
+          <div className="flex-1 flex items-center gap-2">
+            <div className="module-dropdown">
+              <NavSwitchUserSwitch />
+            </div>
+            <Modal>
+              <ModalTrigger className="nav-global-search px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
+                <SearchIcon size={24} />
+                <span className="text-[#0a132ea6] dark:text-white text-base font-semibold">
+                  Search
+                </span>
+              </ModalTrigger>
+              <ModalContent>
+                <NavGlobalSearch />
+              </ModalContent>
+            </Modal>
+            <Modal>
+              <ModalTrigger asChild>
+                <Button
+                  size="base_medium"
+                  className="nav-create-new py-[10px] px-5 rounded-lg flex-1 max-w-fit"
+                >
+                  <span className="line-clamp-1 text-ellipsis">
+                    + Create New
+                  </span>
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <NavCreateNew />
+              </ModalContent>
+            </Modal>
+            <DrawerComponent />
+          </div>
+
+          <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
+            <div className="relative">
+              <Link
+                href="/messages"
+                aria-label="messages"
+                className={`nav-messages ${lgIconsInteractionClasses}`}
+              >
+                <MailIcon />
+                <NotificationBadge
+                  count={roundUptoNine(unreadMessageCount)}
+                  color="red"
+                />
+              </Link>
+            </div>
+            <div className="relative" onClick={handleClearNotifications}>
+              <Link
+                href="/notifications"
+                aria-label="notifications"
+                className={`nav-notifications ${lgIconsInteractionClasses}`}
+              >
+                <BellIcon />
+                <NotificationBadge
+                  count={roundUptoNine(notificationCounts)}
+                  color="green"
+                />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile: Company Logo / Profile Dropdown with Slide Animation */}
+      <div className="md:hidden w-[300px] h-full relative">
+        <AnimatePresence mode="wait">
+          {mobileToggleOpen ? (
+            <motion.div
+              key="profile"
+              variants={slideVariants}
+              initial="profileExit"
+              animate="profile"
+              exit="profileExit"
+              className="w-full h-full absolute top-0 left-0"
+            >
+              {/* Dropdown is outside of any overflow:hidden */}
+              <Dropdown className="profile-dropdown w-full h-full">
+                <DropdownTrigger>
+                  <div className="flex items-center gap-2 p-2 bg-white dark:bg-[#020617] h-full">
+                    <Picture
+                      src={profile_picture || empty}
+                      alt="profile picture"
+                      status={isOnline}
+                      size={50}
+                      rounded
+                      containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
+                    />
+                    <div className="flex flex-col text-text-secondary capitalize overflow-hidden">
+                      <p className="text-[10px] font-normal dark:text-[#F1F1D9] whitespace-nowrap">
+                        {getGreeting()},
+                      </p>
+                      <p className="text-xs font-medium dark:text-white capitalize truncate">
+                        {truncateName(branch_name || name ? (branch_name || name).toLowerCase() : "", 30)}
+                      </p>
+                    </div>
+                  </div>
+                </DropdownTrigger>
+                <DropdownContent
+                  direction="down"
+                  position="left"
+                  className="custom-flex-col gap-2 pb-[10px] min-w-[200px] text-sm font-normal capitalize z-50"
+                >
+                  <NavProfileDropdown />
+                </DropdownContent>
+              </Dropdown>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="logo"
+              variants={slideVariants}
+              initial="logoExit"
+              animate="logo"
+              exit="logoExit"
+              className="w-full h-full absolute top-0 left-0"
+            >
+              {loading || branchLoading ? (
+                <Skeleton
+                  width="100%"
+                  height="100%"
+                  animation="wave"
+                  sx={{ transform: "none" }}
+                />
+              ) : (
+                <Image
+                  src={branch_picture || company_logo || empty}
+                  alt="branch or company logo"
+                  width={200}
+                  height={200}
+                  priority
+                  className="object-contain w-1/2 h-full"
+                />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      {/* Desktop: Profile Dropdown */}
+      <div className="hidden md:block">
+        <Dropdown className="profile-dropdown">
+          <DropdownTrigger>
+            <div className="flex items-center gap-4">
+              <Picture
+                src={profile_picture || empty}
+                alt="profile picture"
+                status={isOnline}
+                size={isMobile ? 50 : 60}
+                rounded
+                containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
+              />
+              <div className="flex flex-col text-text-secondary capitalize">
+                <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
+                  {getGreeting()},
+                </p>
+                <p className="text-xs md:text-base font-medium dark:text-white capitalize">
+                  {truncateName(branch_name || name ? (branch_name || name).toLowerCase() : "", 50)}
+                </p>
+              </div>
+            </div>
+          </DropdownTrigger>
+          <DropdownContent
+            direction="down"
+            position="right"
+            className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize z-20"
+          >
+            <NavProfileDropdown />
+          </DropdownContent>
+        </Dropdown>
+      </div>
+    </header>
+  );
+};
+
+export default Header;

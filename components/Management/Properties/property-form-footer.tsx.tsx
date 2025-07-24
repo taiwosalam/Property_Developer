@@ -8,6 +8,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useRole } from "@/hooks/roleContext";
 
 const PropertyFormFooter: React.FC<{
   editMode?: boolean;
@@ -21,6 +22,20 @@ const PropertyFormFooter: React.FC<{
     useContext(FlowProgressContext);
   const { canDelete, addedUnits } = useAddUnitStore();
   const router = useRouter();
+  const { role } = useRole();
+
+
+  // switch case for properties page redirect
+  const getPropertyPage = () => {
+    switch (role) {
+      case "manager":
+        return "/manager/management/properties";
+      case "account":
+        return "/accountant/management/properties";
+      default:
+        return "/management/properties";
+    }
+  }
 
   const handleSave = () => {
     const hasUnuploadedUnits = addedUnits.some((unit) => unit.notYetUploaded);
@@ -33,7 +48,7 @@ const PropertyFormFooter: React.FC<{
     if (page === "rent-unit") {
       router.back();
     } else {
-      router.push("/management/properties");
+      router.push(getPropertyPage());
     }
   };
 

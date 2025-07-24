@@ -141,14 +141,14 @@ const StaffProfile = () => {
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-4">
         <div className="custom-flex-col">
-          <BackButton bold> {branch.branch_name} </BackButton>
-          <div className="flex">
+          <BackButton> Staff Profile </BackButton>
+          {/* <div className="flex">
             <div className="w-10"></div>
             <div className="flex items-center gap-1 text-text-disabled mb-2">
               <LocationIcon />
               <p className="text-sm font-normal">{branch.address}</p>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
           <LandlordTenantInfoBox style={{ padding: "24px 40px" }}>
@@ -186,13 +186,6 @@ const StaffProfile = () => {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  <Button
-                    href={`/manager/management/branch-staff/${staffId}/edit`}
-                    size="base_medium"
-                    className="py-2 px-8"
-                  >
-                    edit
-                  </Button>
                   <Button
                     onClick={goToMessage}
                     size="base_medium"
@@ -242,75 +235,6 @@ const StaffProfile = () => {
           />
         </div>
       </div>
-
-      {/* STAFF PORTFOLIOS */}
-      <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-        {`${staff?.title} ${staff?.name}`} Portfolios
-      </h1>
-      <div className="staff-portfolio-stats w-full flex py-1.5 xl:py-2 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
-        {initialStaffPortfolioStats.map((card, index) => (
-          <Link href={card.link} key={index} prefetch={false}>
-            <Card
-              title={card.title}
-              icon={<card.icon />}
-              value={card.value}
-              subvalue={card.subValue}
-              bg={card.bg}
-            />
-          </Link>
-        ))}
-      </div>
-
-      {/* STAFF CHATS */}
-      <div className="custom-flex-col gap-[18px]">
-        <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-          {`${staff?.title} ${staff?.name}`} Chat
-        </h2>
-        <StaffChat />
-      </div>
-      {/* STAFF ACTIVITIES */}
-      <div className="custom-flex-col gap-[18px]">
-        <div className="flex justify-between">
-          <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            {`${staff?.title} ${staff?.name} Activities`}
-          </h2>
-          {activities.length > 0 && (
-            <Link
-              href={`/manager/management/branch-staff/${staffId}/activities`}
-              className="flex items-center gap-1"
-            >
-              <p>See all</p>
-              <ChevronRight size={16} color="#5A5D61" />
-            </Link>
-          )}
-        </div>
-        {activities.length === 0 ? (
-          <p className="text-base text-text-disabled font-medium flex w-full items-center justify-center">
-            No activities yet
-          </p>
-        ) : (
-          <CustomTable
-            data={activities.map((activity) => ({
-              ...activity,
-              location: address?.formattedAddress
-                ? address?.formattedAddress
-                : "Location not available", // Safely handle location
-            }))}
-            fields={staffActivitiesTableFields}
-          />
-        )}
-      </div>
-
-      {/* <div className="custom-flex-col gap-[18px]">
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-          {`${staff?.title} ${staff?.name}`} Portfolios
-        </h1>
-        <div className="custom-flex-col gap-8">
-          {portfolioData.map(({ title, items }, index) => (
-            <StaffProfilePortfolio key={index} title={title} items={items} />
-          ))}
-        </div>
-      </div> */}
     </div>
   );
 };
