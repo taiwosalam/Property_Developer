@@ -12,11 +12,7 @@ interface Image {
   path: string;
 }
 
-interface InspectionChecklistItem {
-  [key: string]: string; // Allows dynamic keys with string values
-}
-
-interface InspectionSummaryItem {
+interface InspectionItem {
   [key: string]: string;
 }
 
@@ -32,8 +28,8 @@ interface ResponseData {
   assign_staff: string;
   image: Image[];
   service: string[];
-  inspection_checklist: InspectionChecklistItem[];
-  inspection_summary: InspectionSummaryItem[];
+  inspection_checklist: InspectionItem[];
+  inspection_summary: InspectionItem[];
   send_to_landlord: boolean;
   send_to_tenant: boolean;
   inspection_summary_note: string;

@@ -1,25 +1,25 @@
-type VisitorRequestsResponse = {
-  status: "success";
-  total: number;
-  total_pending: number;
-  total_checked_in: number;
-  total_completed: number;
-  total_cancelled: number;
-  this_month_total: number;
-  this_month_checked_in: number;
-  this_month_pending: number;
-  this_month_completed: number;
-  this_month_cancelled: number;
-  data: VisitorRequest[];
-  pagination: {
-    current_page: number;
-    per_page: number;
-    total: number;
-    total_pages: number;
-  };
-};
+// type VisitorRequestsResponse = {
+//   status: "success";
+//   total: number;
+//   total_pending: number;
+//   total_checked_in: number;
+//   total_completed: number;
+//   total_cancelled: number;
+//   this_month_total: number;
+//   this_month_checked_in: number;
+//   this_month_pending: number;
+//   this_month_completed: number;
+//   this_month_cancelled: number;
+//   data: VisitorRequest[];
+//   pagination: {
+//     current_page: number;
+//     per_page: number;
+//     total: number;
+//     total_pages: number;
+//   };
+// };
 
-type VisitorRequest = {
+export type VisitorRequest = {
   id: number;
   request_id: string;
   user_id: number;
