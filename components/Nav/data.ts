@@ -243,6 +243,18 @@ export const account_nav_items: NavItemsProps = [
     ],
   },
   {
+    type: "menu_board",
+    label: "accounting",
+    content: [
+      { label: "invoice", href: "/accountant/accounting/invoice" },
+      // { label: "receipts", href: "/accountant/accounting/receipts" },
+      { label: "expenses", href: "/accountant/accounting/expenses" },
+      { label: "disbursement", href: "/accountant/accounting/disbursement" },
+      // { label: "statement", href: "/manager/accounting/statement" },
+      { label: "VAT", href: "/accountant/accounting/vat" },
+    ],
+  },
+  {
     type: "task",
     label: "community",
     href: "/applications",
@@ -267,18 +279,6 @@ export const account_nav_items: NavItemsProps = [
       { label: "visitors request", href: "/accountant/tasks/visitors" },
       { label: "property request", href: "/accountant/tasks/property-request" },
       { label: "deposits request", href: "/accountant/tasks/deposits" },
-    ],
-  },
-  {
-    type: "menu_board",
-    label: "accounting",
-    content: [
-      { label: "invoice", href: "/accountant/accounting/invoice" },
-      // { label: "receipts", href: "/accountant/accounting/receipts" },
-      { label: "expenses", href: "/accountant/accounting/expenses" },
-      { label: "disbursement", href: "/accountant/accounting/disbursement" },
-      // { label: "statement", href: "/manager/accounting/statement" },
-      { label: "VAT", href: "/accountant/accounting/vat" },
     ],
   },
   { type: "settings", label: "settings", href: "/accountant/settings" },

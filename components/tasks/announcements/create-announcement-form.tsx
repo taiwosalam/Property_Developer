@@ -17,6 +17,7 @@ import {
   deleteAnnouncement,
   updateAnnouncement,
 } from "@/app/(nav)/tasks/announcements/data";
+import { useRole } from "@/hooks/roleContext";
 
 const MAX_IMAGES = 4;
 
@@ -26,6 +27,7 @@ const CreateAnnouncementForm: React.FC<{
   isLoading?: boolean;
 }> = ({ handleSubmit, editMode = false, isLoading }) => {
   const { company_id } = usePersonalInfoStore();
+  const { role } = useRole();
   const { announcementId } = useParams();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -181,6 +183,18 @@ const CreateAnnouncementForm: React.FC<{
 
   const paramId = announcementId as string;
 
+  // switch the route
+  const getRoute = () => {
+    switch (role) { 
+      case "account":
+        return "/accountant/tasks/announcements";
+      case "manager":
+        return "/manager/tasks/announcements";
+      default:
+        return "/tasks/announcements";
+    }
+  };
+
   const handleUpdate = async (formData: FormData) => {
     if (company_id) formData.append("company_id", company_id);
     formData.append("_method", "PATCH");
@@ -214,7 +228,7 @@ const CreateAnnouncementForm: React.FC<{
       const success = await updateAnnouncement(formData, paramId);
       if (success) {
         toast.success("Announcement updated");
-        router.push(`/tasks/announcements`);
+        router.push(getRoute());
       }
     } catch (error) {
     } finally {
@@ -228,7 +242,7 @@ const CreateAnnouncementForm: React.FC<{
       const success = await deleteAnnouncement(paramId);
       if (success) {
         toast.success("Announcement deleted");
-        router.push("/tasks/announcements");
+        router.push(getRoute());
       }
     } catch (error) {
     } finally {
