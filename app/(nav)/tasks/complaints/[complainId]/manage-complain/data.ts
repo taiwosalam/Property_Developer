@@ -20,6 +20,8 @@ export interface IManageComplaints {
     time: string;
     title: string;
     note_by: string;
+    assign_to: string;
+    assign_type: string;
   }[];
   images: {
     src: string;
@@ -121,6 +123,8 @@ export const transformComplaintManage = (
           : "--- ---",
         title: note?.title,
         note_by: note?.note_by,
+        assign_to: note?.assign_to,
+        assign_type: note?.assign_to_type,
       })),
     images: data?.complaint?.images?.map((media) => ({
       src: media,
@@ -137,7 +141,7 @@ export const transformComplaintManage = (
       id: message.id,
       text: message.content,
       time: message.created_at,
-      user: message.user.name,
+      user: message.user.name?.toLowerCase(),
       userId: message.user.id,
       avatar: message.user.picture,
     })),

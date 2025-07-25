@@ -530,7 +530,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 } else if (formType === "facility" && !editMode) {
                   handleGoToTourStep(3);
                 } else if (formType === "rental" && editMode) {
-                  handleGoToTourStep(2);
+                  handleGoToTourStep(3);
                 } else if (formType === "facility" && editMode) {
                   handleGoToTourStep(2);
                 }
@@ -831,8 +831,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 } else if (formType === "facility" && !editMode) {
                   handleGoToTourStep(11);
                 } else if (formType === "rental" && editMode) {
-                  handleGoToTourStep(10);
-                } else if (formType === "facility" && editMode) {
+                  handleGoToTourStep(13);
+                } else if(formType === "facility" && editMode){
                   handleGoToTourStep(10);
                 }
               }}

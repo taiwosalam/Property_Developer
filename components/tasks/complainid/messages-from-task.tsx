@@ -20,6 +20,7 @@ import { Loader2, SendIcon } from "lucide-react";
 import Input from "@mui/material/Input/Input";
 
 interface MessageFromTaskProps {
+  taskStatus?: boolean;
   comments?: {
     id: number;
     user: string;
@@ -29,7 +30,7 @@ interface MessageFromTaskProps {
     time: string;
   }[];
 }
-const MessagesFromTask = ({ comments }: MessageFromTaskProps) => {
+const MessagesFromTask = ({ comments, taskStatus }: MessageFromTaskProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -228,7 +229,7 @@ const MessagesFromTask = ({ comments }: MessageFromTaskProps) => {
             onKeyDown={handleKeyDown}
           />
           <Button
-            disabled={isSending}
+            disabled={taskStatus || isSending}
             size="xs_medium"
             className="px-4 py-2"
             onClick={handleSendTask}

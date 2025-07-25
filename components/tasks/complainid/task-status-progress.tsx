@@ -84,7 +84,7 @@ const TaskStatusProgress = ({
           <Button
             size="xs_medium"
             className="px-4 py-2 block ml-auto"
-            disabled={taskStatus}
+            //disabled={taskStatus}
           >
             Edit Status bar
           </Button>

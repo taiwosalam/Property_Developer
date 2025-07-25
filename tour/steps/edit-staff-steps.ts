@@ -23,11 +23,18 @@ export const editStaffSteps: TourStep[] = [
       "Pick the most fitting title or qualification from the dropdown to accompany the staff member’s name.<br/><br/>Highlight their professional role - such as Agent, Broker, or Property Manager - clearly on the platform and official documents.",
   },
   {
-    target: ".staff-name-email-input",
+    target: ".staff-name-input",
     placement: "bottom",
-    title: "👤 Staff Name & Email",
+    title: "👤 Staff Name",
     content:
-      "<b>Name</b>: Edit the staff member’s full name as it should appear in the system (e.g., Mathew John). This name will be used in all internal and external records.<br/><br/> <b>Email</b>: The staff email cannot be changed, and serves as their login credential. It is also used for receiving company notifications and direct communications.",
+      "Edit the staff member’s full name as it should appear in the system (e.g., Mathew John). This name will be used in all internal and external records.",
+  },
+  {
+    target: ".staff-email-input",
+    placement: "bottom",
+    title: "Staff Email",
+    content:
+      "The staff email <b>cannot be changed</b>, and serves as their login credential. It is also used for receiving company notifications and direct communications.",
   },
   {
     target: ".experience-year-dropdown",

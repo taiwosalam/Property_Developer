@@ -150,7 +150,7 @@ const Dashboard = () => {
     ),
   }));
 
-  // Handle Complaints KanbanBoard
+  // ====== Handle Complaints KanbanBoard ======
   const [pageData, setPageData] = useState<ComplaintsPageData | null>(null);
   const [recentComplaints, setRecentComplaints] =
     useState<ComplaintsDashboard | null>(null);
