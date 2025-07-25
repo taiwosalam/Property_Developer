@@ -3,9 +3,10 @@ import { toast } from "sonner";
 
 export const updateBranch = async (formData: any, branchId: string) => {
   try {
-    const { data } = await api.post(`/branch/${branchId}/update`, formData);
-    toast.success(data?.message || "Branch updated successfully");
-    return true;
+    const res = await api.post(`/branch/${branchId}/update`, formData);
+    if (res.status === 200 || res.status === 201) {
+      return true;
+    }
   } catch (error) {
     handleAxiosError(error, "Failed to update branch");
     return false;

@@ -107,6 +107,7 @@ export const branchAvatarLinks = [
 ];
 
 let cachedAvatarLinks: { id: string; image_url: string }[] | null = null;
+let cachedBranchAvatarLinks: { id: string; image_url: string }[] | null = null;
 
 export const getAvatarLinks = async () => {
   if (cachedAvatarLinks) {
@@ -123,12 +124,12 @@ export const getAvatarLinks = async () => {
 };
 
 export const getBranchAvatarLinks = async () => {
-  if (cachedAvatarLinks) {
-    return cachedAvatarLinks;
+  if (cachedBranchAvatarLinks) {
+    return cachedBranchAvatarLinks;
   }
   try {
     const { data } = await api<BranchAvatarLinksResponse>("branch-images");
-    cachedAvatarLinks = data.images;
+    cachedBranchAvatarLinks = data.images;
     return data.images;
   } catch (error) {
     handleAxiosError(error);

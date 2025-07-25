@@ -403,7 +403,7 @@ const Dashboard = () => {
       </SectionContainer>
 
       {/* =========== RECENT COMPLAINS =========== */}
-      <SectionContainer heading="Recent Complains" href="/tasks/complaints">
+      <SectionContainer heading="Recent Complains" href="/manager/tasks/complaints">
         {pageData && pageData.complaints.length === 0 ? (
           <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
             <p className="text-gray-500 dark:text-gray-400">
@@ -414,11 +414,6 @@ const Dashboard = () => {
           <KanbanBoard kanbanTask={pageData?.complaints} />
         )}
       </SectionContainer>
-      {/* {!isMobile && (
-        <SectionContainer heading="To do list">
-          <KanbanBoard />
-        </SectionContainer>
-      )} */}
     </section>
   );
 };

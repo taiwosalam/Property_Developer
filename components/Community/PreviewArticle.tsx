@@ -46,6 +46,16 @@ const PreviewThreadArticle = ({
   }
 
   const sanitizedHTML = DOMPurify.sanitize(post?.content || "");
+  // Filter unique comments based on user Picture 
+  const uniqueComments = comments.filter(
+    (comment, index, self) =>
+      index ===
+      self.findIndex(
+        (c) =>
+          c.name === comment.name &&
+          c.profile_picture === comment.profile_picture
+      )
+  );
 
   return (
     <div className="mt-4">
@@ -68,7 +78,9 @@ const PreviewThreadArticle = ({
           >
             <LikeIcon
               fill={`${post.user_liked ? "#E15B0F" : ""} `}
-              stroke={`${post.user_liked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
+              stroke={`${
+                post.user_liked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"
+              } `}
             />
             <p>{post.likes_up}</p>
           </button>
@@ -79,14 +91,16 @@ const PreviewThreadArticle = ({
           >
             <DislikeIcon
               fill={`${post.user_disliked ? "#E15B0F" : "none"} `}
-              stroke={`${post.user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"} `}
+              stroke={`${
+                post.user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"
+              } `}
             />
             <p>{post.likes_down}</p>
           </button>
 
           <div className="flex items-center">
             <div className="images flex z-30 rounded-full  h-[30px] w-[30px] -mr-2">
-              {comments.slice(0, 3).map((comment, index) => (
+              {uniqueComments.slice(0, 3).map((comment, index) => (
                 <Image
                   key={index}
                   src={comment.profile_picture || empty}

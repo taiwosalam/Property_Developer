@@ -25,7 +25,7 @@ export const getDashboardCardData = (
     icon: BuildingIcon,
     value: formatNumber(data.data.property_count),
     subValue: formatNumber(data.data.month_count),
-    link: "/management/staff-branch/",
+    link: "/accountant/management/properties",
   },
   {
     title: "Landlords",
@@ -33,7 +33,7 @@ export const getDashboardCardData = (
     icon: LandlordIcon,
     value: formatNumber(data.data.landlord_count),
     subValue: formatNumber(data.data.month_landlord_count),
-    link: "/management/landlord",
+    link: "/accountant/management/landlord",
   },
   {
     title: "Tenants & Occupants",
@@ -41,7 +41,7 @@ export const getDashboardCardData = (
     icon: TenantIcon,
     value: formatNumber(data.data.tenant_count),
     subValue: formatNumber(data.data.month_tenant_count),
-    link: "/management/tenants",
+    link: "/accountant/management/tenants",
   },
   {
     title: "Expired",
@@ -49,7 +49,7 @@ export const getDashboardCardData = (
     icon: ExpiredIcon,
     value: formatNumber(parseInt(data.data.expired_unit)),
     subValue: formatNumber(parseInt(data.data.month_expired_unit)),
-    link: "/management/rent-unit",
+    link: "/accountant/management/rent-unit?is_active=expired",
   },
   {
     title: "Invoices",
@@ -57,7 +57,7 @@ export const getDashboardCardData = (
     icon: InvoiceIcon,
     value: formatNumber(data.data.invoice_count),
     subValue: formatNumber(data.data.month_invoice_count),
-    link: "/accounting/invoice",
+    link: "/accountant/accounting/invoice",
   },
   {
     title: "Complaints",
@@ -65,7 +65,7 @@ export const getDashboardCardData = (
     icon: ComplaintsIcon,
     value: formatNumber(data.data.complaint_count),
     subValue: formatNumber(data.data.month_complaint_count),
-    link: "/tasks/complaints",
+    link: "/accountant/tasks/complaints",
   },
 ];
 

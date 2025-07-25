@@ -115,6 +115,8 @@ interface ComplaintDetail {
     time: string;
     title: string;
     note_by: string;
+    assign_to: string;
+    assign_to_type: string;
   }[];
   comments: ComplaintComment[];
   reminders: IReminder[];

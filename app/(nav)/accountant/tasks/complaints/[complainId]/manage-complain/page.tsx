@@ -107,7 +107,7 @@ const ManageComplain = () => {
               })) || []
             }
           />
-          <Notes notes={pageData?.notes ?? []} taskStatus={pageData?.status} />
+          <Notes notes={pageData?.notes ?? [] as any} taskStatus={pageData?.status} />
         </div>
       </div>
     </section>
