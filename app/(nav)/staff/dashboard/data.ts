@@ -12,6 +12,46 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
 import type { Field } from "@/components/Table/types";
+import { formatNumber } from "@/utils/number-formatter";
+import { type DashboardBranchDataResponse, type CardData } from "../../accountant/dashboard/types";
+
+// ========== STAFF DASHBOARD CARD DATA ==========
+export const getStaffDashboardCardData = (
+  data: DashboardBranchDataResponse
+): CardData[] => [
+  {
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
+    icon: BuildingIcon,
+    value: formatNumber(data.data.property_count),
+    subValue: formatNumber(data.data.month_count),
+    link: "/staff/management/properties",
+  },
+  {
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
+    icon: LandlordIcon,
+    value: formatNumber(data.data.landlord_count),
+    subValue: formatNumber(data.data.month_landlord_count),
+    link: "/staff/management/landlord",
+  },
+  {
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
+    icon: TenantIcon,
+    value: formatNumber(data.data.tenant_count),
+    subValue: formatNumber(data.data.month_tenant_count),
+    link: "/staff/management/tenants",
+  },
+  {
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
+    icon: ComplaintsIcon,
+    value: formatNumber(data.data.complaint_count),
+    subValue: formatNumber(data.data.month_complaint_count),
+    link: "/staff/tasks/complaints",
+  },
+];
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;

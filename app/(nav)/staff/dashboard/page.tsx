@@ -2,50 +2,61 @@
 
 // Imports
 import Card from "@/components/dashboard/card";
-import {
-  complaintsData,
-  accountantDashboardCardData,
-  invoiceTableFields,
-  dashboardInvoiceTableData,
-  staffDashboardCardData,
-} from './data';
+import { getStaffDashboardCardData } from "./data";
 import { SectionContainer } from "@/components/Section/section-components";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
-import CustomTable from "@/components/Table/table";
 import Link from "next/link";
-import { useWalletStore } from "@/store/wallet-store";
-import clsx from "clsx";
 import DashboarddCalendar from "@/components/dashboard/Dashcalendar";
-import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useEffect, useState } from "react";
+import {
+  CardData,
+  DashboardBranchDataResponse,
+} from "../../accountant/dashboard/types";
+import useFetch from "@/hooks/useFetch";
+import {
+  ComplaintsPageData,
+} from "../tasks/complaints/types";
+import { ComplaintsResponse } from "../tasks/complaints/types";
+import { ComplaintsDashboard, transformComplaintsData } from "../tasks/complaints/data";
+import { transformComplaintDashboard } from "../tasks/complaints/data";
+import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 
 const Dashboard = () => {
-  const walletId = useWalletStore((state) => state.walletId);
-  const branch = usePersonalInfoStore((state) => state.branch);
-  const recentTransactions = useWalletStore(
-    (state) => state.recentTransactions
-  );
-  const transactions = useWalletStore((state) => state.transactions);
+  const [dashboardStats, setDashboardStats] = useState<CardData[]>([]);
+  const { data, loading, error, isNetworkError } =
+    useFetch<DashboardBranchDataResponse>("/branch-data");
 
-  const dashboardPerformanceChartData = transactions.map((t) => ({
-    date: t.date,
-    totalfunds: t.amount,
-    credit: t.type === "credit" ? t.amount : 0,
-    debit: t.type === "debit" ? t.amount : 0,
-  }));
+  useEffect(() => {
+    if (data) {
+      setDashboardStats(getStaffDashboardCardData(data));
+    }
+  }, [data]);
 
-  console.log("transactions", transactions)
+  // ====== Handle Complaints KanbanBoard ======
+  const [pageData, setPageData] = useState<ComplaintsPageData | null>(null);
+  const [recentComplaints, setRecentComplaints] =
+    useState<ComplaintsDashboard | null>(null);
+
+  const { data: complaintData } = useFetch<ComplaintsResponse>(`/complaints`);
+
+  useEffect(() => {
+    if (complaintData) {
+      const transformData = transformComplaintsData(complaintData);
+      setPageData(transformData);
+
+      const transformRecentComplaints =
+        transformComplaintDashboard(complaintData);
+      setRecentComplaints(transformRecentComplaints);
+    }
+  }, [complaintData]);
 
   return (
-    <section className='custom-flex-col gap-10'>
-      <div className='w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6'>
-        <div className='w-full xl:flex-1 space-y- xl:space-y-2'>
-          <div className='w-full flex py-1.5 xl:py-1 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar'>
-            {staffDashboardCardData.map((card, index) => (
-              <Link
-                href={card.link}
-                key={index}
-                prefetch={false}
-              >
+    <section className="custom-flex-col gap-10">
+      <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
+        <div className="w-full xl:flex-1 space-y- xl:space-y-2">
+          <div className="w-full flex py-1.5 xl:py-1 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
+            {dashboardStats.map((card, index) => (
+              <Link href={card.link} key={index} prefetch={false}>
                 <Card
                   title={card.title}
                   icon={<card.icon />}
@@ -57,48 +68,22 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
-        <div className='w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6'>
+        <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
           <DashboarddCalendar />
         </div>
       </div>
 
-      <SectionContainer
-        heading='Recent Complains'
-        href='/tasks/complaints'
-      >
-        <div className='bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {Array(6)
-            .fill(null)
-            .map((_, index) => (
-              <TaskCard
-                statusChanger={false}
-                noDrag
-                isNew
-                key={index}
-                task={{
-                  id: 'task9',
-                  columnId: 'approved',
-                  content: {
-                    messageCount: 2,
-                    linkCount: 1,
-                    userAvatars: [
-                      '/empty/avatar.png',
-                      '/empty/avatar.png',
-                      '/empty/avatar.png',
-                    ],
-                    date: '25 Jan 2024',
-                    status: 'pending',
-                    progress: 50,
-                  },
-                  name: 'John Doe',
-                  title: 'Project Manager',
-                  message:
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                  avatarSrc: '/empty/avatar.png',
-                }}
-              />
-            ))}
-        </div>
+      {/* =========== RECENT COMPLAINS =========== */}
+      <SectionContainer heading="Recent Complains" href="/staff/tasks/complaints">
+        {pageData && pageData.complaints.length === 0 ? (
+          <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
+            <p className="text-gray-500 dark:text-gray-400">
+              No Recent Complains.
+            </p>
+          </div>
+        ) : (
+          <KanbanBoard kanbanTask={pageData?.complaints} />
+        )}
       </SectionContainer>
     </section>
   );
