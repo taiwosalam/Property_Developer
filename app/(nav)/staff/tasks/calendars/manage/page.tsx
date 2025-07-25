@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Images
@@ -45,6 +45,11 @@ import MonthEventCalendar from "@/components/tasks/Examine/EventCalendar/month-e
 import { EventCalendarContext } from "@/components/tasks/Examine/EventCalendar/event-calendar-context";
 import CalendarActivities from "@/components/Calendar/calendar-activities";
 import { calendar_events } from "@/components/Calendar/events";
+import { CalendarEventProps } from "@/components/Calendar/types";
+import useFetch from "@/hooks/useFetch";
+import { config } from "process";
+import { transformEventTable, transformCalendarEvents } from "../data";
+import { CalendarEventsApiResponse } from "../types";
 
 const ManageCalendar = () => {
   // Hooks
@@ -52,20 +57,43 @@ const ManageCalendar = () => {
 
   // States
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [activedate, setActiveDate] = useState(new Date());
+  const [activeDate, setActiveDate] = useState(new Date());
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
   const [activityModalIsOpen, setActivityModalIsOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
   const [activeLayout, setActiveLayout] = useState<CalendarLayoutType>("Month");
 
   // Memos
-  const { activities } = useMemo(() => {
-    const activities = calendar_events.filter((event) =>
-      isSameDay(event.date, activedate)
-    );
+  // const { activities } = useMemo(() => {
+  //   const activities = calendar_events.filter((event) =>
+  //     isSameDay(event.date, activedate)
+  //   );
 
-    return { activities };
-  }, [activedate]);
+  //   return { activities };
+  // }, [activedate]);
+
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>(
+    []
+  );
+
+  const {
+    data: calendarEventApiResponse,
+    loading,
+    error,
+    isNetworkError,
+  } = useFetch<CalendarEventsApiResponse>("/company/calender");
+
+  useEffect(() => {
+    if (calendarEventApiResponse) {
+      const eventsTable = transformEventTable(calendarEventApiResponse);
+      //setEventTable(eventsTable);
+
+      const events = transformCalendarEvents(calendarEventApiResponse);
+      setCalendarEvents(events);
+    }
+  }, [calendarEventApiResponse]);
+
+  //console.log(calendarEvents);
 
   // Constants
   const data = new Calendar({
@@ -104,6 +132,46 @@ const ManageCalendar = () => {
   // Move by 1 week
   const nextWeek = () => setCurrentDate((prev) => addWeeks(prev, 1));
   const prevWeek = () => setCurrentDate((prev) => subWeeks(prev, 1));
+  const { activities, eventsByDate } = useMemo(() => {
+    // Group events by date for multiple event detection
+    const eventsByDate = calendarEvents?.reduce((acc, event) => {
+      const dateKey = event.date.toDateString();
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(event);
+      return acc;
+    }, {} as Record<string, CalendarEventProps[]>);
+
+    // Get activities for the active date
+    const activities = calendarEvents
+      ?.filter((event) => isSameDay(event.date, activeDate))
+      .map((event) => {
+        const dateKey = event.date.toDateString();
+        const eventsOnDay = eventsByDate?.[dateKey];
+
+        // If multiple events exist on this day
+        if (eventsOnDay && eventsOnDay.length > 1) {
+          // Get all event types for this day
+          const allEventTypes = eventsOnDay.map((e) => e.type).join(", ");
+
+          return {
+            ...event,
+            originalType: event.title, // Preserve original type
+            eventCount: eventsOnDay.length,
+            isMultiple: true, // Flag for multiple events
+            title: `${event.title} (Part of ${eventsOnDay.length} events: ${allEventTypes})`, // Keep original title
+          };
+        }
+        return {
+          ...event,
+          originalType: event.title, // Ensure originalType is always set
+          isMultiple: false,
+        };
+      });
+
+    return { activities, eventsByDate };
+  }, [activeDate, calendarEvents]);
 
   return (
     <EventCalendarContext.Provider
@@ -116,12 +184,19 @@ const ManageCalendar = () => {
       }}
     >
       <div className="custom-flex-col gap-6 pb-10">
-        <div className="sticky top-[150px] z-10 bg-neutral-2 flex gap-6 items-center justify-between flex-wrap py-3 border-t border-b border-solid border-[#EAECF0]">
+        <div className="sticky top-[150px] z-10 bg-neutral-2 dark:bg-darkText-primary flex gap-6 items-center justify-between flex-wrap py-3 dark:border-none border-t border-b border-solid border-[#EAECF0]">
           <div className="flex items-center gap-4 text-black text-xl font-medium capitalize">
-            <button onClick={handleBack} type="button" aria-label="Go Back">
+            <button
+              className="dark:text-white"
+              onClick={handleBack}
+              type="button"
+              aria-label="Go Back"
+            >
               <ChevronLeft />
             </button>
-            <button onClick={goToToday}>Today</button>
+            <button onClick={goToToday} className="dark:text-white text-black">
+              Today
+            </button>
             <div className="flex items-center gap-3">
               <button
                 onClick={
@@ -152,7 +227,7 @@ const ManageCalendar = () => {
                 <ArrowRight size={18} color="#696B70" />
               </button>
             </div>
-            <p>
+            <p className="dark:text-white">
               {activeLayout === "Month"
                 ? format(setMonth(new Date(year, 0), month), "MMMM")
                 : activeLayout === "Week"
@@ -161,7 +236,7 @@ const ManageCalendar = () => {
               {year}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 dark:bg-darkText-primary">
             <Dropdown
               state={{ isOpen: dropdownIsOpen, setIsOpen: setDropdownIsOpen }}
             >
@@ -183,7 +258,7 @@ const ManageCalendar = () => {
                   <React.Fragment key={`${layout}-${index}`}>
                     <button
                       onClick={() => changeLayout(layout)}
-                      className="py-1 px-3 font-medium text-start hover:bg-neutral-2"
+                      className="py-1 px-3 font-medium text-start hover:bg-neutral-2 dark:hover:bg-gray-600"
                     >
                       {layout}
                     </button>
@@ -207,11 +282,11 @@ const ManageCalendar = () => {
           </div>
         </div>
         {activeLayout === "Year" ? (
-          <YearEventCalendar />
+          <YearEventCalendar events={calendarEvents} />
         ) : activeLayout === "Month" ? (
-          <MonthEventCalendar />
+          <MonthEventCalendar events={calendarEvents} />
         ) : activeLayout === "Week" ? (
-          <WeekEventCalendar />
+          <WeekEventCalendar events={calendarEvents} />
         ) : null}
         <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
@@ -225,8 +300,12 @@ const ManageCalendar = () => {
           }}
         >
           <ModalContent>
-            <div className="w-[95vw] max-w-[500px] max-h-[85vh]">
-              <CalendarActivities date={activedate} events={activities} />
+            <div className="w-[95vw] max-w-[500px] max-h-[600px] h-[550px]">
+              <CalendarActivities
+                date={activeDate}
+                events={activities ?? []}
+                setIsOpen={setActivityModalIsOpen}
+              />
             </div>
           </ModalContent>
         </Modal>

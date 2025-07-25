@@ -11,7 +11,7 @@ const AnnouncementPage = () => {
 
   useEffect(() => {
     if (announcementId) {
-      router.replace(`/tasks/announcements/${announcementId}/preview`);
+      router.replace(`/accountant/tasks/announcements/${announcementId}/preview`);
     }
   }, [announcementId, router]);
 

@@ -9,6 +9,7 @@ import Button from "@/components/Form/Button/button";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import Image from "next/image";
+import { useRole } from "@/hooks/roleContext";
 
 interface ExamineCardProps {
   viewOnly?: boolean;
@@ -30,6 +31,40 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
   service,
 }) => {
   const router = useRouter();
+  const { role } = useRole();
+
+  // /tasks/examine/${id}/manage`
+  const getExamineRoute = () => {
+    switch (role) {
+      case "director":
+        return `/tasks/examine/${id}/manage`;
+      case "manager":
+        return `/manager/tasks/examine/${id}/manage`;
+      case "account":
+        return `/accountant/tasks/examine/${id}/manage`;
+      case "staff":
+        return `/staff/tasks/examine/${id}/manage`;
+      default:
+        return `/unauthorized`;
+    }
+  }
+
+  // /tasks/examine/${id}/report`
+  const getExamineReportRoute = () => {
+    switch (role) {
+      case "director":
+        return `/tasks/examine/${id}/report`;
+      case "manager":
+        return `/manager/tasks/examine/${id}/report`;
+      case "account":
+        return `/accountant/tasks/examine/${id}/report`;
+      case "staff":
+        return `/staff/tasks/examine/${id}/report`;
+      default:
+        return `/unauthorized`;
+    }
+  }
+
   return (
     <div
       className="custom-flex-col gap-4 pb-[18px] rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
@@ -75,7 +110,7 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
               variant="border"
               className="py-2 px-6"
               onClick={() => {
-                router.push(`/tasks/examine/${id}/manage`);
+                router.push(getExamineRoute());
               }}
             >
               inspect
@@ -87,7 +122,7 @@ const ExamineCard: React.FC<ExamineCardProps> = ({
               size="xs_normal"
               className="py-2 px-6"
               onClick={() => {
-                router.push(`/tasks/examine/${id}/report`);
+                router.push(getExamineReportRoute());
               }}
             >
               report

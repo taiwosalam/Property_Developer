@@ -291,7 +291,7 @@ export interface BranchInfoStoreState {
     key: K,
     value: BranchInfoStoreState[K]
   ) => void;
-  clearBranchInfo: () => void; // Add clearBranchInfo to the interface
+  clearBranchInfo: () => void; 
 }
 
 const initialState: Omit<

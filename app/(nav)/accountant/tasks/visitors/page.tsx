@@ -279,7 +279,7 @@ const BookVisitorsPage = () => {
             <Pagination
               totalPages={pageData?.pagination?.total_pages || 0}
               currentPage={pageData?.pagination?.current_page || 0}
-              onPageChange={() => alert("Function not implemented.")}
+              onPageChange={handlePageChange}
             />
           </section>
         )

@@ -1,17 +1,24 @@
+import dayjs from "dayjs";
+import { CallRequestApiResponse } from "./type";
+import api, { handleAxiosError } from "@/services/api";
+
 export interface RequestCallBackCardDataType {
+  id?: number;
+  userId?: number;
   userName: string;
-  unitName?: string;
   requestDate: string;
   requestId: string;
   status: "completed" | "pending";
   pictureSrc: string;
   phoneNumber: string;
   propertyName: string;
+  unitName?: string;
   propertyAddress: string;
   branch: string;
   accountOfficer: string;
   resolvedBy: string;
   resolvedDateTime: string;
+  tier_id?: number;
 } //check with API
 
 export const inquiriesFilterOptionsWithDropdown = [
@@ -33,6 +40,70 @@ export const inquiriesFilterOptionsWithDropdown = [
     ],
   },
 ];
+
+export interface ICallRequestPageData {
+  total_call: number;
+  total_call_month: number;
+  total_resolved_call: number;
+  total_resolved_call_month: number;
+  total_unresolved: number;
+  total_unresolved_month: number;
+  call_requests: RequestCallBackCardDataType[];
+  pagination: {
+    current_page: number;
+    total: number;
+  };
+}
+export const transformCallbackRequestPageData = (
+  data: CallRequestApiResponse
+): ICallRequestPageData => {
+  return {
+    total_call: data?.total_call,
+    total_call_month: data?.total_call_month,
+    total_resolved_call: data?.total_completed_call,
+    total_resolved_call_month: data?.total_completed_call_month,
+    total_unresolved: data?.total_pending_call,
+    total_unresolved_month: data?.total_pending_call_month,
+    call_requests: data?.data?.map((request) => {
+      return {
+        id: request?.id,
+        userId: request?.user?.user_id,
+        requestId: request?.request_id.toString(),
+        userName: request?.user?.name?.toLowerCase() || "___ ___",
+        requestDate: request?.date,
+        status: request?.status,
+        pictureSrc: request?.user?.photo,
+        phoneNumber: request?.user?.phone,
+        propertyName: request?.property,
+        propertyAddress: request?.property_address,
+        branch: request?.branch,
+        accountOfficer: request?.account_officer ?? "___ ___",
+        resolvedBy: request?.resolved_by?.toLowerCase() ?? "___ ___",
+        resolvedDateTime: request?.resolved_date || "___ ___",
+        tier_id: request?.user?.tier,
+        unitName: request?.unit_name || "___ ___",
+      };
+    }),
+    pagination: {
+      current_page: data?.pagination?.current_page,
+      total: data?.pagination?.total_pages,
+    },
+  };
+};
+
+export const resolveCallRequest = async (id: number) => {
+  try {
+    const res = await api.put(`resolve-request/${id}`);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchRequest"));
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    console.error(error);
+    return false;
+  }
+};
 
 export const RequestCallBackCardData: RequestCallBackCardDataType[] = [
   {

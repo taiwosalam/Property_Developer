@@ -37,6 +37,8 @@ const AddTenantModal = () => {
     switch (role) {
       case "manager":
         return `/manager/management/tenants/`;
+      case "director":
+        return `/management/tenants`;
       case "account":
         return `/accountant/management/tenants/`;
       default:
