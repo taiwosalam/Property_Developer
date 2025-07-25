@@ -58,6 +58,7 @@ import { saveCompanyStatusToCookie } from "@/utils/saveRole";
 import { pageSteps } from "@/tour/steps/page-steps";
 import { useApplyZoomFromLocalStorage } from "@/hooks/useZoom";
 import useBranchData from "@/hooks/useBranchData";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
@@ -250,7 +251,6 @@ const Header = () => {
   // BRANCH LOGIC
   // Use branch data hook
   const { branchLoading } = useBranchData(branch?.branch_id || 0);
-
 
   const toggleTheme = () => {
     if (!hasMounted.current) return;

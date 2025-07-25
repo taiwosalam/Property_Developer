@@ -46,6 +46,10 @@ const transformToVisitorRequestCardProps = (
 };
 
 const BookVisitorsPage = () => {
+  const handlePageChange = (page: number) => {
+    console.log("page", page);
+  };
+
   return (
     <section className="space-y-9">
       <div className="hidden md:flex gap-5 flex-wrap">
@@ -93,7 +97,7 @@ const BookVisitorsPage = () => {
       <Pagination
         totalPages={5}
         currentPage={1}
-        onPageChange={() => alert("Function not implemented.")}
+        onPageChange={handlePageChange}
       />
     </section>
   );

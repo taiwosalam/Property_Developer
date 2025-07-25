@@ -294,7 +294,7 @@ export const staff_nav_items: NavItemsProps = [
     type: "people",
     label: "management",
     content: [
-      { label: "Other Staff", href: "/staff/management/staff-branch" },
+      { label: "Other Staff", href: "/staff/management/branch-staff" },
       {
         label: "vehicles record",
         href: "/staff/management/vehicles-record",

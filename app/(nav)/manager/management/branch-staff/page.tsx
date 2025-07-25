@@ -231,7 +231,7 @@ const BranchStaffPage = () => {
 
   const handleSelectTableItem = (item: DataItem) => {
     router.push(
-      `manager/management/staff-branch/${BRANCH_ID}/branch-staff/${item.id}`
+      `manager/management/branch-staff/${item.id}`
     );
   };
 

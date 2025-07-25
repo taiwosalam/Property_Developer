@@ -49,10 +49,12 @@ import { useTourStore } from "@/store/tour-store";
 import { getLocalStorage, removeLocalStorage } from "@/utils/local-storage";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 import CreateTenancyAggrementModal from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
+import { useRole } from "@/hooks/roleContext";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { role } = useRole();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const canSubmitRent = useGlobalStore((state) => state.canSubmitRent);
   const { selectedOccupant, isPastDate } = useGlobalStore();
@@ -161,6 +163,48 @@ const StartRent = () => {
     return;
   };
 
+  // get rent-unit route with role
+  const getRentUnitRoute = () => {
+    switch (role) {
+      case "director":
+        return "/management/rent-unit";
+      case "manager":
+        return "/manager/management/rent-unit";
+      case "account":
+        return "/accountant/management/rent-unit";
+      default:
+        return "/management/rent-unit";
+    }
+  }
+
+  // get manage agreement route with role
+  const getManageAgreementRoute = () => {
+    switch (role) {
+      case "director":
+        return `/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`;
+      case "manager":
+        return `/manager/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`;
+      case "account":
+        return `/accountant/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`;
+      default:
+        return `/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`;
+    }
+  }
+
+  // get create agreement route with role
+  const getCreateAgreementRoute = () => {
+    switch (role) {
+      case "director":
+        return `/documents/create-tenancy-agreement/?p=${unit_data.propertyId}`;
+      case "manager":
+        return `/manager/documents/create-tenancy-agreement/?p=${unit_data.propertyId}`;
+      case "account":
+        return `/accountant/documents/create-tenancy-agreement/?p=${unit_data.propertyId}`;
+      default:
+        return `/documents/create-tenancy-agreement/?p=${unit_data.propertyId}`;
+    }
+  }
+
   const submitRent = async (doc_file: File | null) => {
     const successMsg = isRental
       ? "Rent Started Successfully"
@@ -234,7 +278,7 @@ const StartRent = () => {
       const res = await startRent(payload);
       if (res) {
         toast.success(successMsg);
-        router.push("/management/rent-unit");
+        router.push(getRentUnitRoute());
         localStorage.removeItem("selectedTenantId");
       }
     } catch (err) {
@@ -312,8 +356,8 @@ const StartRent = () => {
     }
     router.push(
       HAS_DOCUMENT
-        ? `/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`
-        : `/documents/create-tenancy-agreement/?p=${unit_data.propertyId}`
+        ? getManageAgreementRoute()
+        : getCreateAgreementRoute()
     );
   };
 

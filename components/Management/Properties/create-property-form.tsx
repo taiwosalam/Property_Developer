@@ -59,6 +59,7 @@ import { usePathname } from "next/navigation";
 import { useGlobalStore } from "@/store/general-store";
 import { toast } from "sonner";
 import { landlordTableFields } from "@/app/(nav)/manager/management/landlord/data";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 const maxNumberOfImages = 6;
 
@@ -81,6 +82,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const selectedLandlordId = useGlobalStore((s) => s.selectedLandlordId);
   const { branch } = usePersonalInfoStore();
+  const branchIdFromStore = useBranchInfoStore((state) => state.branch_id);
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
   );
@@ -119,8 +121,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     propertySettings?.coordinate || ""
   );
 
-  console.log("branch in profile ", branch);
-
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },
     { label: "Keep it with Manager", value: "Company" },
@@ -141,7 +141,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
 
   const isFacility = formType === "facility";
   // const selectedBranchId = selectedBranch.value || propertyDetails?.branch_id;
-  const selectedBranchId = selectedBranch.value;
+  // const selectedBranchId = selectedBranch.value;
+  // Use branch_id from store for non-directors, otherwise use selectedBranch.value
+  const selectedBranchId = isDirector
+    ? selectedBranch.value
+    : branchIdFromStore;
 
   const setPropertyState = (changes: SetPropertyStateChanges) => {
     setState((x) => {
@@ -231,7 +235,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         setInventoryLoading(true);
         setInventoryError(null);
         try {
-          const data = await getBranchInventories(selectedBranchId);
+          const data = await getBranchInventories(String(selectedBranchId));
           setInventoryData(data);
         } catch (error) {
           setInventoryError("Failed to load inventories");
@@ -254,7 +258,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         return;
       }
 
-      const data = await fetchBranchDependentData(selectedBranchId);
+      const data = await fetchBranchDependentData(String(selectedBranchId));
       setBranchData(data);
     };
 
