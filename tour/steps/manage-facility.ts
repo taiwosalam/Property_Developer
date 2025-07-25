@@ -16,6 +16,12 @@ export const editPropertySteps: TourStep[] = [
       "Upload clear, high-quality images to visually represent the property for easier recognition within the platform. While not mandatory, adding pictures improves internal management and reference. You can upload up to 6 images and drag your preferred photo to the first position to set it as the default display image.",
   },
   {
+    target: ".youtube-video-link-wrapper",
+    placement: "bottom",
+    title: "Edit YouTube Video Link",
+    content: `Update or add a YouTube video link to enhance your property listing with a virtual tour or walkthrough of the property. This optional field allows clients to better visualize the space. Simply paste a valid YouTube URL - the video will automatically appear on all units under this property.`,
+  },
+  {
     target: ".property-category-wrapper",
     placement: "bottom",
     title: "Category Overview",
@@ -51,6 +57,23 @@ export const editPropertySteps: TourStep[] = [
       "Verify or reassign the property to the appropriate branch. This is essential for reporting, staff coordination, and property grouping across regions.<br/><br/>To edit branches, go to: Management > Staff & Branches",
   },
   {
+    target: ".property-landlord-wrapper",
+    placement: "bottom",
+    title: "Edit Landlord Assignment",
+    content: `Update or change the landlord linked to this property by selecting from your existing landlord profiles. This ensures accurate ownership records, financial reporting, and communication.
+                If the landlord is not yet listed, add them first under Management > Landlords before proceeding.
+                Assigning the correct landlord is essential for proper rent tracking and overall property accountability.`,
+  },
+  {
+    target: ".coordinate-wrapper",
+    placement: "bottom",
+    title: "Edit Coordinate Tour Guide",
+    content: `This step allows you to update the geographical coordinates (latitude and longitude) of the property. Accurate coordinates help improve location precision on the map, making it easier for tenants, agents, and visitors to find the property. 
+    <br/><br/>
+    You can manually input the coordinates or drag the map pin to the exact location. Use this feature especially when adjusting or correcting a previously set property location. Once updated, the new position will reflect across your listing and internal records.
+`,
+  },
+  {
     target: ".property-officer-wrapper",
     placement: "bottom",
     title: "Account Manager Overview",
@@ -76,7 +99,33 @@ export const editPropertySteps: TourStep[] = [
     placement: "bottom",
     title: "Management Fee",
     content:
-      "Update the agency fee percentage charged for managing the property. Accurate entry supports transparent billing for services like tenant placement and property oversight.",
+      "Update the agency fee percentage charged for managing the property. Accurate entry supports transparent billing for services like occupant placement and property oversight.",
+  },
+  {
+    target: ".property-new-agency-fee-wrapper",
+    placement: "bottom",
+    title: "Who Pays the Agency Fee (New Rent)",
+    content: `Select who is responsible for paying the agency fee on a new rental: Landlord, Tenant, or Both.
+              This helps define roles and avoids future disputes during lease setup.
+              `,
+  },
+  {
+    target: ".property-renew-agency-fee-wrapper",
+    placement: "bottom",
+    title: "Who Pays the Agency Fee (Renewal Rent)",
+    content: `Specify who pays the agency fee during lease renewal - Landlord, Tenant, or Both.`,
+  },
+  {
+    target: ".property-caution-deposit-wrapper",
+    placement: "bottom",
+    title: "Edit Caution Deposit Details",
+    content: `Review or update the caution deposit settings for this property. The caution deposit serves as a financial safeguard against potential damages, unpaid rent, or lease violations.
+              <br/><br/>
+              Who Holds the Deposit?
+              <br/>
+              Choose where the deposit is currently held. If None is selected, it indicates that no caution deposit is required for this property.
+              <br/><br
+              Ensure that the information reflects the current agreement to maintain transparency, accountability, and proper financial documentation.`,
   },
   {
     target: ".property-currency-wrapper",
@@ -128,6 +177,17 @@ export const editPropertySteps: TourStep[] = [
       "Choose whether to apply 7.5% VAT on relevant transactions.<br/><br/>Yes: VAT is automatically calculated where applicable.<br/>No: Omit VAT from billing.",
   },
   {
+    target: ".property-inventory-wrapper",
+    placement: "bottom",
+    title: "Edit Inventory Tracking Settings",
+    content: `Update the inventory tracking preference for this property. Enabling this feature allows you to manage and document items such as furniture, appliances, and fixtures within each unit for improved asset control.
+              <br/><br/>
+              Yes – Inventory tracking is enabled. All units under this property will include detailed item records for accountability and management.<br/>
+              No – Inventory tracking is disabled. Item records will not be maintained for this property's units.
+              <br/><br/>
+              Review and adjust this setting based on the current property management approach.`,
+  },
+  {
     target: ".property-update-button-wrapper",
     placement: "left",
     title: "Action Button Overview (Update)",
@@ -135,8 +195,7 @@ export const editPropertySteps: TourStep[] = [
       "Any changes made will not be saved unless you click the Update button.<br/><br/>To apply your edits, click Update - this ensures all modifications are saved and reflected across the platform in real time, keeping your property data accurate and up to date.",
   },
 
-
-  // Add units  
+  // Add units
   {
     target: ".property-save-button-wrapper",
     placement: "left",

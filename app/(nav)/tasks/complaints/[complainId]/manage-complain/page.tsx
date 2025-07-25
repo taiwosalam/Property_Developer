@@ -56,7 +56,7 @@ const ManageComplain = () => {
   if (loading && !error && !isNetworkError) {
     return <ComplaintSkeleton />;
   }
-  
+
   if (manageData) <ComplaintSkeleton />;
   if (error) <ServerError error={error} />;
   if (isNetworkError) <NetworkError />;
@@ -88,7 +88,6 @@ const ManageComplain = () => {
           task={pageData?.task}
           taskStatus={pageData?.status}
         />
-
       </div>
       <div className="w-full lg:w-2/5 h-full overflow-y-scroll p-6 space-y-6 hide-scrollbar">
         <div className="h-full space-y-10">
@@ -100,6 +99,7 @@ const ManageComplain = () => {
             />
           )}
           <MessagesFromTask
+            taskStatus={pageData?.status}
             comments={
               pageData?.comments?.map((comment) => ({
                 ...comment,

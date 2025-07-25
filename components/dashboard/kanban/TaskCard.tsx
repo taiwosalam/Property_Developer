@@ -98,6 +98,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     data: complaintDataResponse,
     loading,
     error,
+    refetch
   } = useFetch<ComplaintDetailResponse>(`complaint/${task.id}`);
 
   useEffect(() => {
@@ -275,16 +276,20 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 {/* Mail badge with green background */}
                 {task?.content?.messageCount > 0 && (
                   <div className="absolute -top-2 -right-2 bg-green-700 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
-                    {task.content.messageCount}
+                    {task.content.messageCount > 9
+                      ? "9+"
+                      : task?.content?.messageCount}
                   </div>
                 )}
               </div>
               <div className="relative">
                 <ClipIcon />
                 {/* Clip badge with red background */}
-                {/* <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
-                  5
-                </div> */}
+                {cardData && cardData.attachment > 0 && (
+                  <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
+                    {cardData?.attachment > 9 ? "9+" : cardData?.attachment}
+                  </div>
+                )}
               </div>
 
               <div className="flex item-center">

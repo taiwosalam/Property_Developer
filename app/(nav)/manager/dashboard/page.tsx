@@ -45,6 +45,18 @@ import { InvoiceListResponse } from "../../accounting/invoice/types";
 import { transformInvoiceData } from "../accounting/invoice/data";
 import { TransformedInvoiceData } from "../accounting/invoice/types";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import NetworkError from "@/components/Error/NetworkError";
+import DashboardLoading from "@/components/Loader/DashboardLoading";
+import {
+  ComplaintsPageData,
+  ComplaintsResponse,
+} from "../../tasks/complaints/types";
+import {
+  ComplaintsDashboard,
+  transformComplaintDashboard,
+  transformComplaintsData,
+} from "../../tasks/complaints/data";
+import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
@@ -279,7 +291,25 @@ const Dashboard = () => {
       bookmarks: item?.total_bookmarks,
     })) || [];
 
+  // ====== Handle Complaints KanbanBoard ======
+  const [pageData, setPageData] = useState<ComplaintsPageData | null>(null);
+  const [recentComplaints, setRecentComplaints] =
+    useState<ComplaintsDashboard | null>(null);
 
+  const { data: complaintData } = useFetch<ComplaintsResponse>(`/complaints`);
+
+  useEffect(() => {
+    if (complaintData) {
+      const transformData = transformComplaintsData(complaintData);
+      setPageData(transformData);
+
+      const transformRecentComplaints =
+        transformComplaintDashboard(complaintData);
+      setRecentComplaints(transformRecentComplaints);
+    }
+  }, [complaintData]);
+
+  if (isNetworkError) return <NetworkError />;
 
   return (
     <section className="custom-flex-col gap-10">
@@ -374,38 +404,15 @@ const Dashboard = () => {
 
       {/* =========== RECENT COMPLAINS =========== */}
       <SectionContainer heading="Recent Complains" href="/tasks/complaints">
-        <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array(6)
-            .fill(null)
-            .map((_, index) => (
-              <TaskCard
-                statusChanger={false}
-                noDrag
-                isNew
-                key={index}
-                task={{
-                  id: "task9",
-                  columnId: "approved",
-                  content: {
-                    messageCount: 2,
-                    linkCount: 1,
-                    userAvatars: [
-                      "/empty/avatar.png",
-                      "/empty/avatar.png",
-                      "/empty/avatar.png",
-                    ],
-                    date: "25 Jan 2024",
-                    status: "pending",
-                    progress: 50,
-                  },
-                  name: "John Doe",
-                  title: "Window dilapidated and entrance not working",
-                  message: "Hello, this is Makinwa, and i want to ask you how",
-                  avatarSrc: "/empty/avatar.png",
-                }}
-              />
-            ))}
-        </div>
+        {pageData && pageData.complaints.length === 0 ? (
+          <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
+            <p className="text-gray-500 dark:text-gray-400">
+              No Recent Complains.
+            </p>
+          </div>
+        ) : (
+          <KanbanBoard kanbanTask={pageData?.complaints} />
+        )}
       </SectionContainer>
       {/* {!isMobile && (
         <SectionContainer heading="To do list">

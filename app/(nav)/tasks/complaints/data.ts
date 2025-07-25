@@ -79,7 +79,9 @@ export const transformComplaintsData = (
         linkCount: 8,
         userAvatars:
           complaint?.comment_users.length > 0
-            ? complaint?.comment_users?.map((image) => image.profile_picture)?.slice(0,3)
+            ? complaint?.comment_users
+                ?.map((image) => image.profile_picture)
+                ?.slice(0, 3)
             : [],
         date: complaint?.created_at
           ? dayjs(complaint?.created_at).format("DD MMMM YYYY")
@@ -124,6 +126,7 @@ export const transformComplaintDetails = (
     branch: data?.complaint?.branch_name || "--- ---",
     brief: data?.complaint?.brief || "--- ---",
     tier: data?.complaint?.tier,
+    attachment: data?.complaint?.images.length,
   };
 };
 
@@ -149,6 +152,7 @@ export const approveAndProcessComplaint = async (
       }
     );
     if (res.status === 200 || res.status === 201) {
+      console.log("Approved...");
       window.dispatchEvent(new Event("refetchComplaints"));
       return true;
     }
@@ -166,10 +170,14 @@ export const rejectComplaint = async (note: string, id: string) => {
       },
     });
     if (res.status === 200 || res.status === 201) {
+      console.log("Rejected...");
       window.dispatchEvent(new Event("refetchComplaints"));
       return true;
     }
   } catch (error) {
     handleAxiosError(error);
+    console.log("Error rejecting complaint:", error);
+    window.dispatchEvent(new Event("refetchComplaints"));
+    return false;
   }
 };

@@ -38,6 +38,7 @@ import {
   ComplaintDetailResponse,
   ComplaintDetailsPageData,
 } from "@/app/(nav)/tasks/complaints/types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const defaultCols = [
   {
@@ -110,6 +111,7 @@ export function KanbanBoard({
     data: complaintDataResponse,
     loading,
     error: fetchError,
+    refetch,
   } = useFetch<ComplaintDetailResponse>(
     complaintId ? `complaint/${complaintId}` : null
   );
@@ -216,8 +218,6 @@ export function KanbanBoard({
     } catch (error) {
       window.dispatchEvent(new Event("refetchComplaints"));
       setStatusChangeModalOpen(false);
-
-      //toast.error(`Failed to update complaint to ${targetStatus}`);
     }
   };
   // Update tasks when new data comes in (append, don't replace)
@@ -563,7 +563,7 @@ export function KanbanBoard({
           )}
       </DndContext>
 
-      {
+      {cardData && (
         <Modal
           state={{
             isOpen: statusChangeModalOpen,
@@ -575,24 +575,23 @@ export function KanbanBoard({
               onConfirm={handleStatusChange}
               statusChanger={true}
               complaintData={{
-                id: cardData?.id || 0,
-                senderName: cardData?.senderName || "___ ___",
-                senderVerified: true,
-                complaintTitle: cardData?.complaintTitle || "___ ___",
-                propertyName: cardData?.propertyName || "___ ___",
-                unitName: cardData?.unitName || "___ ___",
-                propertyAddress: cardData?.propertyAddress || "___ ___",
-                accountOfficer: cardData?.accountOfficer || "___ ___",
-                branch: cardData?.branch || "___ ___",
-                brief: cardData?.brief || "___ ___",
-                tier: cardData?.tier || 0,
+                id: cardData.id || 0,
+                senderName: cardData.senderName || "___ ___",
+                senderVerified: cardData.senderVerified || true,
+                complaintTitle: cardData.complaintTitle || "___ ___",
+                propertyName: cardData.propertyName || "___ ___",
+                unitName: cardData.unitName || "___ ___",
+                propertyAddress: cardData.propertyAddress || "___ ___",
+                accountOfficer: cardData.accountOfficer || "___ ___",
+                branch: cardData.branch || "___ ___",
+                brief: cardData.brief || "___ ___",
+                tier: cardData.tier || 0,
               }}
-              //setModalOpen={setStatusChangeModalOpen}
               destinationColumn={targetStatus}
             />
           </ModalContent>
         </Modal>
-      }
+      )}
     </>
   );
 
@@ -601,13 +600,16 @@ export function KanbanBoard({
     const data = event.active.data.current;
     if (data?.type === "Column") {
       setActiveColumn(data.column);
-      //setStatusChangeModalOpen(true);
       return;
     }
 
-    if (data?.type === "Task") {
+    // !loading && !fetchError && currentTaskForStatusChange &&
+
+    if (data?.type === "Task" && data.task?.id) {
       setActiveTask(data.task);
-      return;
+    } else {
+      console.error("Invalid task data in onDragStart:", data);
+      setActiveTask(null);
     }
   }
 
@@ -647,6 +649,28 @@ export function KanbanBoard({
 
     if (!over) return;
 
+    const activeTask = tasks.find((t) => t.id === active.id);
+
+    //console.log(activeTask);
+
+    if (activeTask) {
+      setTargetStatus(toColumn);
+      setCurrentTaskForStatusChange(activeTask);
+      //setStatusChangeModalOpen(true);
+    }
+    setStatusChangeModalOpen(true);
+
+    // if (activeTask) {
+    //   setTimeout(() => {
+    //     setCurrentTaskForStatusChange(activeTask);
+    //     setTargetStatus(toColumn);
+    //   }, 1000);
+    // }
+    if (!activeTask) {
+      console.error("Active task not found in tasks array:", active.id);
+      return;
+    }
+
     const activeId = active.id;
     const overId = over.id;
 
@@ -679,12 +703,9 @@ export function KanbanBoard({
       }
 
       if (activeTask && toColumn) {
-        if (
-          (activeTask.columnId === "completed" ||
-            activeTask.columnId === "rejected") &&
-          toColumn === "processing"
-        ) {
-          toast.error("Cannot move completed or rejected tasks to Processing");
+        if (activeTask.columnId !== "processing") {
+          toast.error("Only processing tasks can be moved to other columns");
+          setStatusChangeModalOpen(false);
           return;
         }
 
@@ -701,11 +722,13 @@ export function KanbanBoard({
           );
         });
 
-        if (toColumn !== "processing" && !statusChangeModalOpen) {
-          setCurrentTaskForStatusChange(activeTask);
-          setTargetStatus(toColumn); // Set targetStatus immediately
-          setStatusChangeModalOpen(true);
-        }
+        // if (toColumn !== "processing" && !statusChangeModalOpen) {
+        //   setTimeout(() => {
+        //     setCurrentTaskForStatusChange(activeTask);
+        //     setTargetStatus(toColumn); // Set targetStatus immediately
+        //     setStatusChangeModalOpen(true);
+        //   }, 1000);
+        // }
       }
     }
     pickedUpTaskColumn.current = null;
@@ -866,15 +889,11 @@ export function KanbanBoard({
           activeTask.columnId !== overTask.columnId
         ) {
           // Prevent moving from "approved" or "rejected" to "processing"
-          if (
-            (activeTask.columnId === "completed" ||
-              activeTask.columnId === "rejected") &&
-            overTask.columnId === "processing"
-          ) {
-           
-            return tasks; // No state change
+          // Only allow movement from "processing" to other columns
+          if (activeTask.columnId !== "processing") {
+            return tasks; // Prevent any movement if not from processing
           }
-          activeTask.columnId = overTask.columnId;
+          //activeTask.columnId = overTask.columnId;
           return arrayMove(tasks, activeIndex, overIndex - 1);
         }
         return arrayMove(tasks, activeIndex, overIndex);
@@ -888,16 +907,13 @@ export function KanbanBoard({
         const activeTask = tasks[activeIndex];
         if (activeTask) {
           // Prevent moving from "approved" or "rejected" to "processing"
-          if (
-            (activeTask.columnId === "completed" ||
-              activeTask.columnId === "rejected") &&
-            overId === "processing"
-          ) {
-            return tasks; // No state change
+          // Only allow movement from "processing" to other columns
+          if (activeTask.columnId !== "processing") {
+            return tasks; // Prevent any movement if not from processing
           }
 
-          setCurrentTaskForStatusChange(activeTask);
-          setTargetStatus(overId as ColumnId);
+          //setCurrentTaskForStatusChange(activeTask);
+          // setTargetStatus(overId as ColumnId); // set the target status of the task card
           //setStatusChangeModalOpen(true);
           activeTask.columnId = overId as ColumnId;
           return arrayMove(tasks, activeIndex, activeIndex);

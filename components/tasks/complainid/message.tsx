@@ -71,7 +71,7 @@ const Message: React.FC<MessageProps> = ({
           )}
         >
           {!isOwnMessage && !isConsecutive && (
-            <p className="text-brand-10 mb-1">{user}</p>
+            <p className="text-brand-10 mb-1 capitalize">{user}</p>
           )}
           <p className="text-text-quaternary">{text}</p>
           <time className="mt-1 font-normal text-[10px] text-text-disabled self-end">

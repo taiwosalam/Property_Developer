@@ -111,12 +111,14 @@ export const StaffEditProfileInfoSection = () => {
           </div>
 
           <Input
+            className="staff-name-input"
             id="fullname"
             label="full name"
             required
             defaultValue={staff?.full_name}
           />
           <Input
+            className="staff-email-input"
             id="email"
             type="email"
             label="email"
@@ -135,7 +137,8 @@ export const StaffEditProfileInfoSection = () => {
           <DateInput
             id="years_experience"
             label="years of experience (since)"
-            inputClassName=".experience-year-dropdown setup-f required"
+            className="experience-year-dropdown"
+            inputClassName="setup-f required"
             disableFuture
             defaultValue={
               staff?.experience ? dayjs(staff?.experience) : undefined

@@ -149,6 +149,9 @@ const AssignTaskCard = ({ branchId, taskStatus }: IAssignTaskProps) => {
     }
   };
 
+  const hasStaff = branchOPtions.length > 0;
+  const hasProviders = providerOptions.length > 0;
+
   return (
     <div
       className="rounded-lg border border-[rgba(193,194,195,0.40)]"
@@ -167,22 +170,34 @@ const AssignTaskCard = ({ branchId, taskStatus }: IAssignTaskProps) => {
       {proceedTask === "assign" ? (
         <div className="bg-white dark:bg-darkText-primary rounded-b-lg font-medium text-text-secondary px-4 py-6 custom-flex-col gap-2">
           <Select
-            disabled={taskStatus}
+            disabled={!hasStaff || taskStatus}
             id="staff-select"
             isSearchable={false}
             options={taskStaff || []}
-            placeholder="Assign Task to Staff"
-            inputTextClassName="!font-medium text-text-secondary"
+            placeholder={
+              hasStaff ? "Assign Task to Staff" : "No staff available"
+            }
+            inputTextClassName={clsx(
+              "!font-medium",
+              !hasStaff ? "text-gray-400" : "text-text-secondary"
+            )}
             value={selectedStaff}
             onChange={(staff) => handleStaffSelection(staff)}
           />
           <Select
-            disabled={taskStatus}
+            disabled={!hasProviders || taskStatus}
             id="provider-select"
             isSearchable={false}
             options={taskProviders || []}
-            placeholder="Assign Task to Service Provider"
-            inputTextClassName="!font-medium text-text-secondary"
+            placeholder={
+              hasProviders
+                ? "Assign Task to Service Provider"
+                : "No service providers available"
+            }
+            inputTextClassName={clsx(
+              "!font-medium",
+              !hasProviders ? "text-gray-400" : "text-text-secondary"
+            )}
             value={selectedProvider}
             onChange={(provider) => handleProviderSelection(provider)}
           />
@@ -221,7 +236,7 @@ const AssignTaskCard = ({ branchId, taskStatus }: IAssignTaskProps) => {
               <div className="">
                 <p className="text-text-label">Assign task to:</p>
                 <p className="text-black">
-                  {selectedStaff || selectedProvider}
+                  {selectedStaff || selectedProvider || "Landlord"}
                 </p>
               </div>
 

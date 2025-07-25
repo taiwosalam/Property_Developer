@@ -14,13 +14,15 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
 interface NoteProps {
-  taskStatus?: boolean
+  taskStatus?: boolean;
   notes?: {
     date: string;
     text: string;
     time: string;
     title: string;
     note_by: string;
+    assign_to: string;
+    assign_type: string;
   }[];
 }
 
@@ -103,9 +105,21 @@ const Notes = ({ notes, taskStatus }: NoteProps) => {
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <h6 className="text-black dark:text-white text-base mb-4">
-        {currentNote?.title || "Notes"}
-      </h6>
+      <div className="text-black dark:text-white">
+        {!currentNote?.assign_to ? (
+          <h6 className="text-base mb-4">{currentNote?.title || "Notes"}</h6>
+        ) : (
+          <div className="space-y-3 pb-3">
+            <h6 className="text-base">Assigned Task</h6>
+            <span className="text-xs text-text-secondary dark:text-darkText-1">
+              Assigned To:{" "}
+              <span className="text-brand-9 capitalize">
+                {currentNote?.assign_to}
+              </span>
+            </span>
+          </div>
+        )}
+      </div>
 
       {isEditing ? (
         <>
