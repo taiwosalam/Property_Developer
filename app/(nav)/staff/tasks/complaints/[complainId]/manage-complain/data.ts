@@ -119,7 +119,7 @@ export const transformComplaintManage = (
         date: note?.date ? dayjs(note.date).format("MMMM D, YYYY") : "--- ---",
         text: note.text,
         time: note?.time
-          ? dayjs(note.time, "HH:mm:ss").format("hh:mm A")git 
+          ? dayjs(note.time, "HH:mm:ss").format("hh:mm A")
           : "--- ---",
         title: note?.title,
         note_by: note?.note_by,
