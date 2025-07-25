@@ -158,7 +158,7 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
         </div>
         <EditBranchForm
           somedata={branchData}
-          setUpdateRequestLoading={setUpdateRequestLoading}
+          // setUpdateRequestLoading={setUpdateRequestLoading}
         />
         <BranchBankSettings
           branch_account_name={branchData?.account_name}
@@ -187,13 +187,14 @@ const EditBranch = ({ params }: { params: { branchId: string } }) => {
           </ModalContent>
         </Modal>
         <Button
-          type="submit"
+          type="button"
+          onClick={() => {
+            router.back();
+          }}
           size="sm_medium"
           className="update-branch-button py-2 px-8"
-          form="edit-branch-form"
-          disabled={updateRequestLoading}
         >
-          {updateRequestLoading ? "Updating..." : "Update"}
+          Save
         </Button>
       </FixedFooter>
     </div>

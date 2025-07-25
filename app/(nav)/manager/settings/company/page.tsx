@@ -43,7 +43,7 @@ const Profile = () => {
       <SettingsSection title="Branch Pofile">
         <EditBranchForm
           somedata={branchData}
-          setUpdateRequestLoading={setUpdateRequestLoading}
+          // setUpdateRequestLoading={setUpdateRequestLoading}
           page="manager"
         />
         <div className="flex justify-end">

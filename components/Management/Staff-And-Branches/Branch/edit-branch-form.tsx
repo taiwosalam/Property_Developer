@@ -23,14 +23,15 @@ import {
 import { toast } from "sonner";
 import { updateBranch } from "@/app/(nav)/management/staff-branch/[branchId]/edit-branch/data";
 import UpdateBranchModalSuccess from "./update-branch-modal-success";
+import Button from "@/components/Form/Button/button";
 
 const EditBranchForm = ({
   somedata,
-  setUpdateRequestLoading,
+  // setUpdateRequestLoading,
   page,
 }: {
   somedata: EditBranchFormData | null;
-  setUpdateRequestLoading: (value: boolean) => void;
+  // setUpdateRequestLoading: (value: boolean) => void;
   page?: "manager" | "account";
 }) => {
   const {
@@ -43,7 +44,8 @@ const EditBranchForm = ({
     placeholder: CameraCircle,
   });
 
-  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [updateRequestLoading, setUpdateRequestLoading] = useState(false);
+  // const [successModalOpen, setSuccessModalOpen] = useState(false);
 
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("");
@@ -73,6 +75,39 @@ const EditBranchForm = ({
       ...(field === "local_govt" && { city: "" }),
     }));
   };
+
+  // Function to update branch bank details
+  // const updateBranchBankDetails = async (details: {
+  //   bank_name: string;
+  //   account_name: string;
+  //   account_number: string;
+  //   bank_code: string;
+  // }) => {
+  //   const branchID = branchData?.id;
+  //   if (!branchID) return toast.error("Cannot Find Branch ID");
+  //   const payload = {
+  //     bank_name: details.bank_name,
+  //     account_name: details.account_name,
+  //     account_number: details.account_number,
+  //     bank_code: details.bank_code,
+  //   };
+  //   try {
+  //     setUpdateRequestLoading(true);
+  //     const status = await updateBranch(
+  //       objectToFormData(payload),
+  //       branchData.id
+  //     );
+  //     if (status) {
+  //       toast.success("Branch Bank Details Updated Successfully");
+  //       window.dispatchEvent(new Event("refectch-branch"));
+  //       router.push(`/management/staff-branch/${branchID}`);
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //   } finally {
+  //     setUpdateRequestLoading(false);
+  //   }
+  // };
 
   const handleFormSubmit = async (data: FormData) => {
     if (somedata?.picture && preview !== somedata.picture) {
@@ -260,6 +295,17 @@ const EditBranchForm = ({
               </ModalContent>
             </Modal>
           </div>
+        </div>
+        <div className="flex justify-end -mt-4">
+        <Button
+          type="submit"
+          size="sm_medium"
+          className="update-branch-button py-2 px-8 ml-auto"
+          form="edit-branch-form"
+          disabled={updateRequestLoading}
+        >
+          {updateRequestLoading ? "Updating..." : "Update"}
+        </Button>
         </div>
       </AuthForm>
       {/* <Modal
