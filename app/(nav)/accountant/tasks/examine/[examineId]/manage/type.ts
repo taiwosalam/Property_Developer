@@ -12,9 +12,7 @@ interface Image {
   path: string;
 }
 
-interface InspectionItem {
-  [key: string]: string;
-}
+export type InspectionItem = Record<string, string>;
 
 interface ResponseData {
   id: number;
