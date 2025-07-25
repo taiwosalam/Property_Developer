@@ -13,6 +13,7 @@ import { useThemeStoreSelectors } from "@/store/themeStore";
 import { Badge } from "../ui/badge";
 import { getBadgeColor } from "@/lib/utils";
 import BadgeIcon from "../BadgeIcon/badge-icon";
+import TruncatedText from "../TruncatedText/truncated-text";
 
 const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   icon,
@@ -48,8 +49,8 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
       style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.03)" }}
     >
       <div className="flex-1 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-[60px] h-[60px] rounded-lg custom-secondary-bg flex items-center justify-center">
+        <div className="flex items-start gap-3">
+          <div className="w-[60px] h-[60px] aspect-square rounded-lg custom-secondary-bg flex items-center justify-center">
             <SVG
               type={icon}
               color={primaryColor || "#0033C4"}
@@ -65,9 +66,21 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
                 <BadgeIcon color={getBadgeColor(tier_id) || "gray"} />
               )}
             </div>
-            <p className="text-text-tertiary text-sm">
-              {highlightQuery(subtitle ?? "")}
-            </p>
+            {type?.toLowerCase() === "announcement" ? (
+              <TruncatedText className="text-text-tertiary text-sm" lines={1}>
+                <div
+                  className="text-text-tertiary text-sm"
+                  dangerouslySetInnerHTML={{
+                    __html: subtitle || "",
+                  }}
+                />
+              </TruncatedText>
+            ) : (
+              <p className="text-text-tertiary text-sm capitalize">
+                {highlightQuery(subtitle ?? "")}
+              </p>
+            )}
+
             <p className="text-text-tertiary text-base font-medium capitalize">
               {extra}
             </p>

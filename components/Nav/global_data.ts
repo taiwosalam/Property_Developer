@@ -193,7 +193,11 @@ export interface GlobalSearchApiResponse {
     }>;
     agentCommunities: any[];
     agentRequests: any[];
-    wallets: any[];
+    property_application: any[];
+    branches: any[];
+    announcements: any[];
+    brands: any[];
+    campaigns: any[];
   };
   meta: SearchResponseMeta;
 }
@@ -208,6 +212,11 @@ interface SearchResponseMeta {
     units: SearchResponseMetaDetails;
     agentCommunities: SearchResponseMetaDetails;
     agentRequests: SearchResponseMetaDetails;
+    property_application: SearchResponseMetaDetails;
+    branches: SearchResponseMetaDetails;
+    announcements: SearchResponseMetaDetails;
+    brands: SearchResponseMetaDetails;
+    campaigns: SearchResponseMetaDetails;
   };
 }
 
@@ -237,6 +246,11 @@ export interface IGlobalSearchPageData {
     units: ISearchItem[];
     agentCommunities: ISearchItem[];
     agentRequests: ISearchItem[];
+    propertyApplications: ISearchItem[];
+    announcements: ISearchItem[];
+    branches: ISearchItem[];
+    brands: ISearchItem[];
+    campaigns: ISearchItem[];
   };
   counts: {
     users: number;
@@ -246,6 +260,11 @@ export interface IGlobalSearchPageData {
     agentRequest: number;
     landlords: number;
     tenants: number;
+    brands: number;
+    announcement: number;
+    campaigns: number;
+    propertyApplications: number;
+    branches: number;
     //wallets: number;
   };
 }
@@ -260,16 +279,19 @@ export const transformGlobalSearchPageData = (
   return {
     query: query,
     results: {
-      users: results && results.users ? results.users.map((user) => ({
-        id: user?.id,
-        type: "users",
-        title: user.name?.toLowerCase() || "Unknown User",
-        subtitle: user.email || "No email",
-        extra: user.roles?.[0]?.name || "",
-        icon: "people",
-        isVerified: user.is_verified || false,
-        tier_id: user.tier_id,
-      })) : [],
+      users:
+        results && results.users
+          ? results.users.map((user) => ({
+              id: user?.id,
+              type: "users",
+              title: user.name?.toLowerCase() || "Unknown User",
+              subtitle: user.email || "No email",
+              extra: user.roles?.[0]?.name || "",
+              icon: "people",
+              isVerified: user.is_verified || false,
+              tier_id: user.tier_id,
+            }))
+          : [],
       landlords:
         results && results.landlords && results.landlords.length > 0
           ? results?.landlords?.map((landlord) => ({
@@ -326,7 +348,7 @@ export const transformGlobalSearchPageData = (
               title: community.title || "Unknown Community",
               subtitle: community.description || "No description",
               extra: "Community",
-              icon: "task",
+              icon: "menu_board",
             }))
           : [],
       agentRequests:
@@ -337,17 +359,76 @@ export const transformGlobalSearchPageData = (
               title: request.title || "Unknown Request",
               subtitle: request.description || "No description",
               extra: "Request",
-              icon: "task",
+              icon: "menu_board",
             }))
           : [],
-      // wallets: results.wallets.map((wallet) => ({
-      //   id: wallet?.i
-      //   type: "wallets",
-      //   title: wallet.name || "Unknown Wallet",
-      //   subtitle: wallet.description || "No description",
-      //   extra: "Wallet",
-      //   icon: "empty_wallet",
-      // })),
+      propertyApplications:
+        results &&
+        results.property_application &&
+        results.property_application.length > 0
+          ? results.property_application.map((application) => ({
+              id: application?.id,
+              type: "Property Application",
+              title: application.title || "Unknown Application",
+              subtitle: application.description || "No description",
+              extra: "Application",
+              icon: "menu_board",
+            }))
+          : [],
+      branches:
+        results && results.branches && results.branches.length > 0
+          ? results.branches.map((branch) => ({
+              id: branch?.id,
+              type: "Branch",
+              title: branch.name || "Unknown Branch",
+              subtitle: branch.location || "No location",
+              extra: "Branch",
+              icon: "menu_board",
+            }))
+          : [],
+      announcements:
+        results && results.announcements && results.announcements.length > 0
+          ? results.announcements.map((announcement) => ({
+              id: announcement?.id,
+              type: "Announcement",
+              title: announcement.title || "Unknown Announcement",
+              subtitle:
+                announcement.description || "No description",
+              extra: "Announcement",
+              icon: "menu_board",
+            }))
+          : [],
+      brands:
+        results && results.brands && results.brands.length > 0
+          ? results.brands.map((brand) => ({
+              id: brand?.id,
+              type: "Brand",
+              title:
+                brand.type +
+                  " " +
+                  (brand.period ? `(${brand.period} months)` : "") ||
+                "Unknown Brand",
+              subtitle: brand.page || "No description",
+              extra: "Brand",
+              icon: "settings",
+            }))
+          : [],
+      campaigns:
+        results && results.campaigns && results.campaigns.length > 0
+          ? results.campaigns.map((campaign) => ({
+              id: campaign?.id,
+              type: "Campaign",
+              title:
+                campaign.name +
+                  " " +
+                  `(${Math.round(Number(campaign.period))} months)` ||
+                "Unknown Campaign",
+              subtitle:
+                "Amount Paid: " + campaign.formatted_amount || "No description",
+              extra: "Campaign",
+              icon: "settings",
+            }))
+          : [],
     },
     counts: {
       users: details?.users?.total || 0,
@@ -357,6 +438,11 @@ export const transformGlobalSearchPageData = (
       units: details?.units?.total || 0,
       agentCommunities: details?.agentCommunities?.total || 0,
       agentRequest: details?.agentRequests?.total || 0,
+      propertyApplications: details?.property_application?.total || 0,
+      branches: details?.branches?.total || 0,
+      announcement: details?.announcements?.total || 0,
+      brands: details?.brands?.total || 0,
+      campaigns: details?.campaigns?.total || 0,
     },
   };
 };
