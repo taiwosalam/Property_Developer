@@ -80,7 +80,8 @@ const NavGlobalSearch = () => {
           (counts.users || 0) +
           (counts.properties || 0) +
           (counts.landlords || 0) +
-          (counts.tenants || 0)
+          (counts.tenants || 0) +
+          (counts.branches || 0)
         );
       case "listing":
         return counts.units || 0;
@@ -90,10 +91,13 @@ const NavGlobalSearch = () => {
       //   return counts.wallets || 0;
       // Handle tabs with no counts or static counts
       case "task":
+        return (counts.announcement || 0) + (counts.propertyApplications || 0);
       case "accounting":
       case "reports":
       case "documents":
         return 0; // Placeholder: Update with actual mappings if available
+      case "settings":
+        return (counts?.brands || 0) + (counts.campaigns || 0);
       default:
         return 0;
     }
@@ -109,6 +113,7 @@ const NavGlobalSearch = () => {
           ...searchResults.results.properties,
           ...searchResults.results.landlords,
           ...searchResults.results.tenants,
+          ...searchResults.results.branches,
         ];
       case "listing":
         return [...searchResults.results.units];
@@ -117,8 +122,16 @@ const NavGlobalSearch = () => {
           ...searchResults.results.agentCommunities,
           ...searchResults.results.agentRequests,
         ];
-      // case "wallet":
-      //   return searchResults.results.wallets;
+      case "task":
+        return [
+          ...searchResults.results.announcements,
+          ...searchResults.results.propertyApplications,
+        ];
+      case "settings":
+        return [
+          ...searchResults.results.brands,
+          ...searchResults.results.campaigns,
+        ];
       default:
         return [];
     }
@@ -135,7 +148,12 @@ const NavGlobalSearch = () => {
       counts.landlords > 0 ||
       counts.tenants > 0 ||
       counts.agentCommunities > 0 ||
-      counts.agentRequest > 0
+      counts.agentRequest > 0 ||
+      counts.propertyApplications > 0 ||
+      counts.announcement > 0 ||
+      counts.brands > 0 ||
+      counts.campaigns > 0 ||
+      counts.branches > 0
     );
   };
 
@@ -143,6 +161,8 @@ const NavGlobalSearch = () => {
   const getFilteredTabs = () => {
     return tabs.filter(({ label }) => getTabCount(label) > 0);
   };
+
+  console.log(getFilteredTabs());
 
   // Reset activeTab to the first available tab when search results change
   useEffect(() => {

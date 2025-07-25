@@ -21,8 +21,8 @@ interface NoteProps {
     time: string;
     title: string;
     note_by: string;
-    assign_to: string;
-    assign_type: string;
+    assign_to?: string;
+    assign_type?: string;
   }[];
 }
 
