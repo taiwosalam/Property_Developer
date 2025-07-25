@@ -81,6 +81,12 @@ export const handleAxiosError = (
       toast.error(error.response.data.error.message);
       return;
     }
+    // check for error in data.errors.details
+    if (typeof error.response.data.errors?.details === "string") {
+      toast.error(error.response.data.errors.details);
+      return;
+    }
+
     // Check for error in data.errors.messages
     if (error.response.data.errors?.messages) {
       const errorMessages = Object.values(error.response.data.errors.messages)
