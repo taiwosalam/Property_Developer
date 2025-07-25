@@ -13,6 +13,7 @@ import { useWalletStore } from "@/store/wallet-store";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
 
 const BuySponsorModal = () => {
+  const UNIT_SPONSOR_COST = 2000;
   const [count, setCount] = React.useState(1);
   const balance = useWalletStore((s) => s.balance);
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
@@ -28,7 +29,7 @@ const BuySponsorModal = () => {
     setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
   };
 
-  const amount = count * 100;
+  const amount = count * UNIT_SPONSOR_COST;
 
   const handleProceed = async () => {
     if (AVAILABLE_COMPANY_BALANCE < amount) {
@@ -75,7 +76,9 @@ const BuySponsorModal = () => {
             <div className="flex gap-4 items-end my-4">
               <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
                 Sponsor Cost{" "}
-                <span className="text-xs font-normal">(₦100/per unit)</span>
+                <span className="text-xs font-normal">
+                  (₦{UNIT_SPONSOR_COST}/per unit)
+                </span>
               </p>
               <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
                 <input
