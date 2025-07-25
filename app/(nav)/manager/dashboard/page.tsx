@@ -414,11 +414,6 @@ const Dashboard = () => {
           <KanbanBoard kanbanTask={pageData?.complaints} />
         )}
       </SectionContainer>
-      {/* {!isMobile && (
-        <SectionContainer heading="To do list">
-          <KanbanBoard />
-        </SectionContainer>
-      )} */}
     </section>
   );
 };
