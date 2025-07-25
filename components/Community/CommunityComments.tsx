@@ -36,8 +36,6 @@ const CommunityComments = ({ slug, comments, edit }: ThreadCommentProps) => {
     }
     return 0;
   });
-  const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

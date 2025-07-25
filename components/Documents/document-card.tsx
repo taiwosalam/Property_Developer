@@ -1,5 +1,6 @@
 "use client";
 
+import { useRole } from "@/hooks/roleContext";
 import Button from "../Form/Button/button";
 import KeyValueList from "../KeyValueList/key-value-list";
 import { Document } from "./types";
@@ -14,13 +15,18 @@ const DocumentCard = ({
   last_updated,
   page,
 }: Document) => {
+  const { role } = useRole();
   // switch case for route
-  const getRoute = () => {
-    switch (page) {
+  const getManageRoute = () => {
+    switch (role) {
+      case "director":
+        return `/documents/manage-tenancy-agreement/?d=${document_id}`;
       case 'manager':
         return `/manager/documents/manage-tenancy-agreement/?d=${document_id}`;
       case 'account':
-        return `/documents/manage-tenancy-agreement/?d=${document_id}`;
+        return `/accountant/documents/manage-tenancy-agreement/?d=${document_id}`;
+      default:
+        return `/unauthorized`;
     }
   };
 
@@ -69,7 +75,7 @@ const DocumentCard = ({
           </div>
           <div className="flex justify-end">
             <Button
-              href={getRoute()}
+              href={getManageRoute()}
               size="xs_normal"
               className="py-2 px-7"
             >

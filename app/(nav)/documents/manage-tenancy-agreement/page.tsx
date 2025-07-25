@@ -108,11 +108,25 @@ const ManageTenancyAgreement = () => {
     }
   };
 
+  // Compute customBackPath based on sessionStorage
+  const customBackPath = useMemo(() => {
+    const startRentUnitId =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem("return_to_start_rent_unit_id")
+        : null;
+    if (startRentUnitId) {
+      return `/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`;
+    }
+    return "/documents";
+  }, []);
+
   // if (!documentIdValue || Number.isNaN(Number(documentIdValue))) {
   if (propertyLoading) {
     return (
       <div className="flex flex-col gap-4">
-        <BackButton>Manage Tenancy Agreement</BackButton>
+        <BackButton customBackPath={customBackPath}>
+          Manage Tenancy Agreement
+        </BackButton>
         <CardsLoading length={2} />
       </div>
     );
@@ -125,7 +139,7 @@ const ManageTenancyAgreement = () => {
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-6">
-        <BackButton customBackPath="/documents">
+        <BackButton customBackPath={customBackPath}>
           Manage Tenancy Agreement
         </BackButton>
         <LandlordTenantInfoBox className="custom-flex-col gap-[10px]">
