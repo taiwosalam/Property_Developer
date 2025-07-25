@@ -133,6 +133,7 @@ const Security = () => {
   return (
     <>
       <ManagerProfile />
+      <SettingsPasswordSection />
       <SettingsWalletSection />
       <BranchBankSettings
         branch_account_name={branchData?.account_name}

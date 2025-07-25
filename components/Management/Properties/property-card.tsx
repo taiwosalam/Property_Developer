@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import { LocationIcon, CameraIcon, VideoIcon } from "@/public/icons/icons";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { useRole } from "@/hooks/roleContext";
 
 export interface PropertyCardProps {
   id: string;
@@ -62,6 +63,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   //   isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
   const symbol = currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
+  const { role } = useRole();
   const [isModalActive, setIsModalActive] = useState(false);
 
   useOutsideClick(modalRef, () => {
@@ -70,7 +72,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     }
   });
 
-  const baseRoute = isManagerPage ? "/manager/management" : "/management";
+  const baseRoute =
+    role === "manager"
+      ? "/manager/management"
+      : role === "account"
+      ? "/accountant/management"
+      : "/management";
 
   const getRoute = (action: "edit" | "preview") => {
     switch (action) {

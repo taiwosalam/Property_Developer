@@ -57,6 +57,8 @@ import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { saveCompanyStatusToCookie } from "@/utils/saveRole";
 import { pageSteps } from "@/tour/steps/page-steps";
 import { useApplyZoomFromLocalStorage } from "@/hooks/useZoom";
+import useBranchData from "@/hooks/useBranchData";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
@@ -68,9 +70,11 @@ const Header = () => {
 
   const pathname = usePathname();
 
+  
   const { company_id } = usePersonalInfoStore();
   const unreadMessageCount =
-    usePersonalInfoStore((state) => state.unread_messages_count) || 0;
+  usePersonalInfoStore((state) => state.unread_messages_count) || 0;
+  const { branch } = usePersonalInfoStore();
   const notificationCount =
     usePersonalInfoStore((state) => state.unread_notifications_count) || 0;
   const loggedInUserDetails = getLocalStorage("additional_details");
@@ -87,7 +91,7 @@ const Header = () => {
   );
   const company_logo = usePersonalInfoStore((state) =>
     theme === "light"
-      ? getLocalStorage("light_logo")
+  ? getLocalStorage("light_logo")
       : getLocalStorage("dark_logo")
       ? getLocalStorage("dark_logo")
       : getLocalStorage("light_logo")
@@ -95,12 +99,12 @@ const Header = () => {
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
-
+  
   const { data: companyData, refetch: companyRefetch } = useFetch<any>(
     company_id ? `companies/${company_id}` : null
   );
   useRefetchOnEvent("refetchProfile", () => companyRefetch({ silent: true }));
-
+  
   /* NOTIFICATION LOGIC*/
   const [notificationIds, setNotificationIds] = useState<string[]>([]);
   const [notificationCounts, setNotificationCount] = useState(0);
@@ -110,7 +114,7 @@ const Header = () => {
     error,
     refetch: refetchNotifications,
   } = useFetch<NotificationApiResponse>(`/notifications`);
-
+  
   useEffect(() => {
     if (apiData) {
       const ids = apiData?.data?.length
@@ -240,8 +244,13 @@ const Header = () => {
       });
     }
   }, [data, setPersonalInfo]);
+
   // APPLY ZOOM
   useApplyZoomFromLocalStorage();
+  
+  // BRANCH LOGIC
+  // Use branch data hook
+  const { branchLoading } = useBranchData(branch?.branch_id || 0);
 
   const toggleTheme = () => {
     if (!hasMounted.current) return;

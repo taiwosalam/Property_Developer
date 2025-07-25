@@ -31,6 +31,7 @@ import { VehicleData } from "@/app/(nav)/management/vehicles-record/data";
 import { checkInVehicle, checkOutVehicle } from "./data";
 import dayjs from "dayjs";
 import { VehicleRecord } from "./types";
+import { useRole } from "@/hooks/roleContext";
 
 // Define interfaces for type safety
 interface Property {
@@ -61,6 +62,7 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
   const [checkInModalOpen, setCheckInModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const latest_check_in = selectedPlate?.latest_check_in;
+  const { role } = useRole();
 
   console.log("selectedPlate", selectedPlate);
 
@@ -98,11 +100,11 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
 
   // get routes
   const getCreateLink = (type: "manual" | "id") => {
-    switch (page) {
+    switch (role) {
       case "manager":
         return `/manager/management/vehicles-record/create?type=${type}&p=${propertyId}`;
       case "account":
-        return `/account/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+        return `/accountant/management/vehicles-record/create?type=${type}&p=${propertyId}`;
       default:
         return `/management/vehicles-record/create?type=${type}&p=${propertyId}`;
     }
@@ -256,11 +258,11 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
   // get record link
   // /management/vehicles-record/records/${selectedPlate.id}/record
   const getRecordLink = (id: number) => {
-    switch (page) {
+    switch (role) {
       case "manager":
         return `/manager/management/vehicles-record/records/${id}/record`;
       case "account":
-        return `/account/management/vehicles-record/records/${id}/record`;
+        return `/accountant/management/vehicles-record/records/${id}/record`;
       default:
         return `/management/vehicles-record/records/${id}/record`;
     }

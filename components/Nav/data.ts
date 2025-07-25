@@ -131,7 +131,7 @@ export const manager_nav_items: NavItemsProps = [
       { label: "rent & mgmt", href: "/manager/management/rent-unit" },
       {
         label: "service providers",
-        href: "/manager/management/service-providers",
+        href: "/management/service-providers",
       },
       { label: "vehicles record", href: "/manager/management/vehicles-record" },
     ],
@@ -229,7 +229,7 @@ export const account_nav_items: NavItemsProps = [
     content: [
       { label: "landlord & landlady", href: "/accountant/management/landlord" },
       { label: "tenants & occupants", href: "/accountant/management/tenants" },
-      { label: "Other Staff", href: "/accountant/management/staff-branch" },
+      { label: "Other Staff", href: "/accountant/management/branch-staff" },
       { label: "inventory", href: "/accountant/management/inventory" },
       { label: "properties", href: "/accountant/management/properties" },
       {
@@ -238,8 +238,20 @@ export const account_nav_items: NavItemsProps = [
       },
       {
         label: "service providers",
-        href: "/accountant/management/service-providers",
+        href: "/management/service-providers",
       },
+    ],
+  },
+  {
+    type: "menu_board",
+    label: "accounting",
+    content: [
+      { label: "invoice", href: "/accountant/accounting/invoice" },
+      // { label: "receipts", href: "/accountant/accounting/receipts" },
+      { label: "expenses", href: "/accountant/accounting/expenses" },
+      { label: "disbursement", href: "/accountant/accounting/disbursement" },
+      // { label: "statement", href: "/manager/accounting/statement" },
+      { label: "VAT", href: "/accountant/accounting/vat" },
     ],
   },
   {
@@ -256,6 +268,7 @@ export const account_nav_items: NavItemsProps = [
     type: "briefcase_timer",
     label: "tasks",
     content: [
+      { label: "applications", href: "/accountant/tasks/applications" },
       { label: "complaints", href: "/accountant/tasks/complaints" },
       { label: "inspections", href: "/accountant/tasks/inspections" },
       { label: "examine", href: "/accountant/tasks/examine" },
@@ -267,22 +280,6 @@ export const account_nav_items: NavItemsProps = [
       { label: "property request", href: "/accountant/tasks/property-request" },
       { label: "deposits request", href: "/accountant/tasks/deposits" },
     ],
-  },
-  {
-    type: "menu_board",
-    label: "accounting",
-    content: [
-      { label: "invoice", href: "/accountant/accounting/invoice" },
-      { label: "receipts", href: "/accountant/accounting/receipts" },
-      { label: "expenses", href: "/accountant/accounting/expenses" },
-      { label: "disbursement", href: "/accountant/accounting/disbursement" },
-      // { label: "statement", href: "/accountant/accounting/statement" },
-    ],
-  },
-  {
-    type: "task",
-    label: "applications",
-    href: "/accountant/applications",
   },
   { type: "settings", label: "settings", href: "/accountant/settings" },
 ];
@@ -297,14 +294,14 @@ export const staff_nav_items: NavItemsProps = [
     type: "people",
     label: "management",
     content: [
-      { label: "Other Staff", href: "/staff/management/staff-branch" },
+      { label: "Other Staff", href: "/staff/management/branch-staff" },
       {
         label: "vehicles record",
         href: "/staff/management/vehicles-record",
       },
       {
         label: "service providers",
-        href: "/staff/management/service-providers",
+        href: "/management/service-providers",
       },
     ],
   },

@@ -265,19 +265,42 @@ export const updateSMSSettings = async (data: FormData) => {
   }
 };
 
-export const transformProfileData = (data: any): InitialDataTypes => {
+export const transformProfileData = (
+  data: any,
+  profile?: boolean
+): InitialDataTypes => {
   // console.log("data gotten", data)
   return {
-    profile_picture: data.data.director.picture ?? "",
+    profile_picture: profile
+      ? data?.data?.profile?.picture ?? ""
+      : data?.data?.director?.picture ?? "",
     email: data.data.user.email,
-    fullname: data.data.user.name || "",
-    personal_title: data.data.profile.title ?? "",
+    fullname: profile
+      ? data?.data?.profile?.name ?? ""
+      : data?.data?.director?.name || "",
+    personal_title: profile
+      ? data?.data?.profile?.title ?? ""
+      : data?.data?.director?.title ?? "",
     is_bvn_verified: data?.data?.profile?.bvn ? true : false,
-    professional_title: data.data.director.professional_title ?? "",
-    phone: data.data.director.phone || "",
-    about_director: data.data.director.about_director || "",
-    director_email: data.data.director.alt_email || "",
-    director_experience: data.data.director.years_in_business ?? "",
+    professional_title: profile
+      ? data?.data?.profile?.professional_title ?? ""
+      : data?.data?.director?.professional_title ?? "",
+    phone: profile
+      ? data?.data?.profile?.phone ?? ""
+      : data?.data?.director?.phone || "",
+    about_director: profile
+      ? data?.data?.profile?.about_director ?? ""
+      : data?.data?.director?.about_director || "",
+    director_email: profile
+      ? data?.data?.profile?.alt_email ?? ""
+      : data?.data?.director?.alt_email || "",
+    gender: profile
+      ? data?.data?.profile?.gender ?? ""
+      : data?.data?.director?.gender || "",
+    bio: profile
+      ? data?.data?.profile?.bio ?? ""
+      : data?.data?.director?.bio || "",
+    director_experience: data?.data?.director?.years_in_business ?? "",
   };
 };
 
@@ -292,6 +315,8 @@ export interface InitialDataTypes {
   director_email: string;
   director_experience: string;
   is_bvn_verified: boolean;
+  gender: string;
+  bio: string;
 }
 
 export const initialData: InitialDataTypes = {
@@ -305,6 +330,8 @@ export const initialData: InitialDataTypes = {
   director_experience: "",
   professional_title: "",
   is_bvn_verified: false,
+  gender: "",
+  bio: "",
 };
 
 export function base64ToBlob(base64Data: string): Blob {

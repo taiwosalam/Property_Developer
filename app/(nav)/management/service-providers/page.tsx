@@ -46,6 +46,7 @@ import { landlordTableFields } from "../landlord/data";
 import UserTag from "@/components/Tags/user-tag";
 import { entries } from "lodash";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { useRole } from "@/hooks/roleContext";
 
 interface ServiceProviderCardProps {
   id: number;
@@ -74,6 +75,7 @@ const defaultServiceProviderPageData: ServiceProviderPageData = {
 
 const ServiceProviders = () => {
   const storedView = useView();
+  const { role } = useRole();
   const [view, setView] = useState<string | null>(storedView);
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -291,6 +293,7 @@ const ServiceProviders = () => {
     }));
   }, [service_providers, current_page, total_pages, view]);
 
+  const CAN_CREATE_SERVICE_PROVIDER = role === "manager" || role === "director";
   //console.log(total_pages)
 
   if (loading) {
@@ -333,6 +336,7 @@ const ServiceProviders = () => {
             colorScheme={3}
           />
         </div>
+        {CAN_CREATE_SERVICE_PROVIDER && (
         <Modal>
           <ModalTrigger asChild>
             <Button type="button" className="page-header-button">
@@ -341,8 +345,9 @@ const ServiceProviders = () => {
           </ModalTrigger>
           <ModalContent>
             <AddServiceProviderModal />
-          </ModalContent>
-        </Modal>
+            </ModalContent>
+          </Modal>
+        )}
       </div>
       <div ref={itemListView}>
         <FilterBar

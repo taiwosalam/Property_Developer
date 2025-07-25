@@ -62,7 +62,7 @@ export const staffConfigurations = [
     ],
   },
   {
-    title: "colleague configuration (account officer)",
+    title: "colleague configuration (account manager)",
     // subTitle:
     //   "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [

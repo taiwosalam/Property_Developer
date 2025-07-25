@@ -40,16 +40,12 @@ const Disbursement = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [tableData, setTableData] = useState<TransformedDisburseItem[]>([]);
-  // conditionally set the url only if BRANCH_ID is valid
-  const fetchPropertyUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/property/all?branch_id=${BRANCH_ID}`
-      : null;
+ 
   const {
     data: propertyData,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>(fetchPropertyUrl);
+  } = useFetch<PropertyListResponse>('/property/all');
 
   const {
     data: landlordsData,
@@ -133,11 +129,8 @@ const Disbursement = () => {
     setSelectedItemId(null);
   };
 
-  // conditionally set the url only if BRANCH_ID is valid
-  const fetchDisburseUrl =
-    BRANCH_ID && BRANCH_ID !== 0 ? `/disburses?branch_id=${BRANCH_ID}` : null;
   const { data, loading, silentLoading, error, isNetworkError } =
-    useFetch<DisburseApiResponse>(fetchDisburseUrl, config);
+    useFetch<DisburseApiResponse>('/disburses', config);
 
   useEffect(() => {
     if (data) {

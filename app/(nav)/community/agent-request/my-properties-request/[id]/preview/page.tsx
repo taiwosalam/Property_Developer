@@ -9,7 +9,7 @@ import ReadyByCard from "@/components/Community/ReadByCard";
 import { useEffect, useMemo, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
+import PropertyRequestComments, { CommentProps } from "@/components/Community/PropertyRequestComments";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import ServerError from "@/components/Error/ServerError";
 import NetworkError from "@/components/Error/NetworkError";
@@ -22,7 +22,6 @@ import { transformPropertyRequestResponse } from "../../../[requestId]/preview/d
 import BackButton from "@/components/BackButton/back-button";
 import { formatNumber } from "@/utils/number-formatter";
 import { MoreDetailsCard, SummaryCard, ThreadArticle } from "./components";
-import { CommentProps } from "@/app/(nav)/accountant/management/agent-community/type";
 
 const PreviewPage = () => {
   const router = useRouter();

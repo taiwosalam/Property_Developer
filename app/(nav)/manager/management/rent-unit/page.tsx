@@ -132,9 +132,6 @@ const RentAndUnit = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0 ? `/unit/list?branch_id[]=${BRANCH_ID}` : null;
 
   const config: AxiosRequestConfig = useMemo(() => {
     const params: RentUnitFilterParams = {
@@ -245,11 +242,11 @@ const RentAndUnit = () => {
   const {
     data: apiData,
     loading,
-    silentLoading,
+    silentLoading,  
     isNetworkError,
     error,
     refetch,
-  } = useFetch<UnitApiResponse | UnitFilterResponse>(fetchUrl, config);
+  } = useFetch<UnitApiResponse | UnitFilterResponse>("/unit/list", config);
 
   useEffect(() => {
     if (apiData) {

@@ -24,7 +24,7 @@ const CreateGatedEstate = () => {
     const propertyId = await addProperty(data);
     if (propertyId) {
       router.push(
-        `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
+        `/manager/management/properties/create-gated-estate-property/${propertyId}/add-unit`
       );
     }
   };

@@ -90,7 +90,7 @@ const VehilceRecords = () => {
     };
     options.forEach(option => {
       if (option === 'all') {
-        queryParams.all = true;
+        queryParams.all = "true";
       } else if (option === 'trending') {
         queryParams.trending = true;
       } else if (option === 'new') {
@@ -150,23 +150,23 @@ const VehilceRecords = () => {
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
-    <div className='space-y-9'>
-      <div className='page-header-container'>
-        <div className='hidden md:flex gap-5 flex-wrap'>
+    <div className="space-y-9">
+      <div className="page-header-container">
+        <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title='Total Vehicle Records'
+            title="Total Vehicle Records"
             newData={properties_this_month}
             total={total_properties}
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title='Rental Vehicle Records'
+            title="Rental Vehicle Records"
             newData={vehicle_records_this_month}
             total={total_vehicle_records}
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title='Facility Vehicle Records'
+            title="Facility Vehicle Records"
             newData={vehicle_records_this_month}
             total={total_vehicle_records}
             colorScheme={3}
@@ -176,16 +176,20 @@ const VehilceRecords = () => {
 
       {/* Page Title with search */}
       <FilterBar
-        pageTitle='vehicles record'
+        pageTitle="vehicles record"
         hasGridListToggle={false}
-        noExclamationMark
-        searchInputPlaceholder='Search for vehicles record'
+        aboutPageModalData={{
+          title: "vehicles record",
+          description:
+            "This page contains a list of vehicles record on the platform.",
+        }}
+        searchInputPlaceholder="Search for vehicles record"
         filterOptions={{
           radio: true,
           value: [
-            { label: 'All', value: 'all' },
-            { label: 'Rental', value: 'rental' },
-            { label: 'Facility', value: 'facility' },
+            { label: "All", value: "all" },
+            { label: "Rental", value: "rental" },
+            { label: "Facility", value: "facility" },
           ],
         }}
         handleFilterApply={handleFilterApply}
@@ -194,55 +198,38 @@ const VehilceRecords = () => {
         appliedFilters={appliedFilters}
       />
 
-      <section className='capitalize'>
+      <section className="capitalize">
         {pageData.data.length === 0 && !silentLoading ? (
-          config.params.search || isFilterApplied() ? (
-            <div className='col-span-full text-center py-8 text-gray-500'>
-              No Search/Filter Found
-            </div>
+            config.params.search || isFilterApplied() ? (
+              <div className="col-span-full text-center py-8 text-gray-500">
+                No Search/Filter Found
+              </div>
           ) : (
             <EmptyList
               noButton
-              title='You have not activate any vehicles record yet'
+              title="You have not activate any vehicles record yet"
               body={
                 <p>
-                  When creating or editing property settings, you have the
-                  option to enable vehicle records by selecting &quot;Yes.&quot;
-                  This feature allows you to maintain and manage two distinct
-                  types of vehicle records: rental vehicle records and facility
-                  vehicle records. Each type serves a unique purpose to enhance
-                  property management within gated communities or commercial
-                  facilities.
+                  When creating or editing property settings, you have the option to enable vehicle records by selecting &quot;Yes.&quot; This feature allows you to maintain and manage two distinct types of vehicle records: rental vehicle records and facility vehicle records. Each type serves a unique purpose to enhance property management within gated communities or commercial facilities.
+
                   <br />
                   <br />
+
                   <strong>Rental Vehicle Records</strong>
                   <br />
-                  Rental vehicle records are designed specifically for
-                  properties intended for rent within gated communities. These
-                  records streamline the management processes for landlords,
-                  occupants, tenants, and property managers. By organizing
-                  vehicle information under this category, you can efficiently
-                  oversee tenant-related vehicle details, ensuring smooth
-                  operations and better communication between stakeholders.
+                  Rental vehicle records are designed specifically for properties intended for rent within gated communities. These records streamline the management processes for landlords, occupants, tenants, and property managers. By organizing vehicle information under this category, you can efficiently oversee tenant-related vehicle details, ensuring smooth operations and better communication between stakeholders.
                   <br />
                   <br />
+
                   <strong>Facility Vehicle Records</strong>
                   <br />
-                  Facility vehicle records cater to the management of occupants
-                  in gated estates or commercial facilities. This feature allows
-                  property managers to oversee essential activities, including:
-                  <ul className='custom-list'>
-                    <li>
-                      Monitoring occupant vehicle movements (entry and exit).{' '}
-                    </li>
+                  Facility vehicle records cater to the management of occupants in gated estates or commercial facilities. This feature allows property managers to oversee essential activities, including:
+                  <ul  className="custom-list">
+                    <li>Monitoring occupant vehicle movements (entry and exit). </li>
                     <li>Managing visitor access to the premises.</li>
-                    <li>
-                      Keeping a comprehensive database of vehicles associated
-                      with occupants.
-                    </li>
+                    <li>Keeping a comprehensive database of vehicles associated with occupants.</li>
                   </ul>
-                  These records ensure seamless access control and help maintain
-                  security standards within the estate or facility.
+                  These records ensure seamless access control and help maintain security standards within the estate or facility.
                   <br />
                   <br />
                 </p>
@@ -255,12 +242,7 @@ const VehilceRecords = () => {
               {silentLoading ? (
                 <CardsLoading />
               ) : (
-                pageData.data.map((p, index) => (
-                  <VehicleCard
-                    key={index}
-                    data={p}
-                  />
-                ))
+                pageData.data.map((p, index) => <VehicleCard key={index} data={p} page="account" />)
               )}
             </AutoResizingGrid>
 

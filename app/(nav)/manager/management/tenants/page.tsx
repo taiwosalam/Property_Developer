@@ -173,10 +173,6 @@ const Tenants = () => {
     });
   };
 
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0 ? `tenants?branch_ids[0]=${BRANCH_ID}` : null;
-
   const {
     data: apiData,
     loading,
@@ -184,7 +180,7 @@ const Tenants = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<TenantApiResponse>(fetchUrl, config);
+  } = useFetch<TenantApiResponse>("tenants", config);
 
   // Handle view change with reset and silent refetch
   useEffect(() => {

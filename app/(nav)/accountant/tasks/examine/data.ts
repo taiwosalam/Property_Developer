@@ -1,3 +1,5 @@
+import api, { handleAxiosError } from "@/services/api";
+
 export const examineFilterOptionsWithDropdown = [
   {
     label: "Property",
@@ -10,3 +12,17 @@ export const examineFilterOptionsWithDropdown = [
 ];
 
 export const getAllExamine = async () => {};
+
+export const createExamine = async (data: FormData) => {
+  try {
+    const res = await api.post(`/examine/create`, data);
+    if (res.status === 200 || res.status === 201) {
+      window.dispatchEvent(new Event("dispatchExamine"));
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+    handleAxiosError(error);
+    return false;
+  }
+};

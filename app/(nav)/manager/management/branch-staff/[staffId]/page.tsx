@@ -141,14 +141,14 @@ const StaffProfile = () => {
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-4">
         <div className="custom-flex-col">
-          <BackButton bold> {branch.branch_name} </BackButton>
-          <div className="flex">
+          <BackButton> Staff Profile </BackButton>
+          {/* <div className="flex">
             <div className="w-10"></div>
             <div className="flex items-center gap-1 text-text-disabled mb-2">
               <LocationIcon />
               <p className="text-sm font-normal">{branch.address}</p>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
           <LandlordTenantInfoBox style={{ padding: "24px 40px" }}>

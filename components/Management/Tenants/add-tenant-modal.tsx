@@ -21,25 +21,42 @@ import { useModal } from "@/components/Modal/modal";
 import { useRouter, usePathname } from "next/navigation";
 import { addTenantWithEmail } from "../Landlord/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { useRole } from "@/hooks/roleContext";
 
 const AddTenantModal = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { setIsOpen } = useModal();
+  const { role } = useRole();
   const [activeStep, setActiveStep] =
     useState<AddTenantModalOptions>("options");
   const [identifier, setIdentifier] = useState("");
 
+  // switch the pathname based on the role
+  const switchPathname = () => {
+    switch (role) {
+      case "manager":
+        return `/manager/management/tenants/`;
+      case "director":
+        return `/management/tenants`;
+      case "account":
+        return `/accountant/management/tenants/`;
+      default:
+        return `/management/tenants`;
+    }
+  };
+  
   const closeModalAndRefresh = () => {
     setIsOpen(false);
-    if (pathname !== "/management/tenants") {
-      router.push("/management/tenants");
+    if (pathname !== switchPathname()) {
+      router.push(switchPathname());
     } else {
       setTimeout(() => {
         window.dispatchEvent(new Event("refetchTenants"));
       }, 0);
     }
   };
+
   // Modify handleBack to handle both modal and form steps
   const handleBack = () => {
     if (activeStep === "add-tenant" && formStep === 2) {

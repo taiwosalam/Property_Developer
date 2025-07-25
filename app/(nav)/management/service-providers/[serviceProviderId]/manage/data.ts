@@ -1,6 +1,5 @@
 import api, { handleAxiosError } from "@/services/api";
 import type { ServiceProviderData, ServiceProviderPage } from "./types";
-import { IndividualServiceProvidersAPIResponse } from "@/app/(nav)/accountant/management/service-providers/[serviceProviderId]/manage/types";
 import { toast } from "sonner";
 
 
@@ -68,7 +67,7 @@ export const remapServiceProviderData = (data: any): ServiceProviderPage => {
 
 export const transformIndividualServiceProviderApiResponse = ({
   data,
-}: IndividualServiceProvidersAPIResponse): ServiceProviderData => {
+}: any): ServiceProviderData => {
   return {
     id: data.id,
     avatar: data.avatar,

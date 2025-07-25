@@ -50,7 +50,7 @@ const InventoryUnitCard: React.FC<{
       case "manager":
         return `/manager/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "account":
-        return `/account/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+        return `/accountant/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       default:
         return `/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
     }
@@ -62,7 +62,7 @@ const InventoryUnitCard: React.FC<{
       case "manager":
         return `/manager/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "account":
-        return `/account/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+        return `/accountant/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       default:
         return `/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
     }
@@ -73,11 +73,23 @@ const InventoryUnitCard: React.FC<{
       case "manager":
         return `/manager/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
       case "account":
-        return `/account/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
+        return `/accountant/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
       default:
         return `/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
     }
   };
+
+  const getRentUnitLink = () => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/rent-unit/${unitId}`;
+      case "account":
+        return `/accountant/management/rent-unit/${unitId}`;
+      default:
+        return `/management/rent-unit/${unitId}`;
+    }
+  };
+
   const router = useRouter();
   const activeStatuses = [status]; //if multiple statuses, add them here to show multiple status color
   return (
@@ -88,7 +100,7 @@ const InventoryUnitCard: React.FC<{
       <div
         role="button"
         className="p-2 pb-4 border-b border-[#C0C2C8] dark:border-gray-800 space-y-3 cursor-pointer transition-all duration-500"
-        onClick={() => router.push(`/management/rent-unit/${unitId}`)}
+        onClick={() => router.push(getRentUnitLink())}
       >
         <div className="relative">
           <div className="flex items-center justify-between">
@@ -113,7 +125,6 @@ const InventoryUnitCard: React.FC<{
           <>
             {!isOccupied && (
               <Button
-                // href={`/management/inventory/${unitId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`}
                 href={getManageLink()}
                 variant="border"
                 size="xs_medium"
@@ -123,7 +134,6 @@ const InventoryUnitCard: React.FC<{
               </Button>
             )}
             <Button
-              // href={`/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`}
               href={getPreviewLink()}
               size="xs_medium"
               className="py-2 px-7"
@@ -134,7 +144,6 @@ const InventoryUnitCard: React.FC<{
         ) : (
           <>
             <Button
-              // href={`/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`}
               href={getCreateLink()}
               variant="border"
               size="xs_medium"

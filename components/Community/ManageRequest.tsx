@@ -16,10 +16,10 @@ import { toast } from "sonner";
 import { usePropertyRequestStore } from "@/store/createPropertyStore";
 import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
-import { comments } from "@/app/(nav)/accountant/management/agent-community/data";
 import AgentRequestLoader from "../Loader/agent-reuest";
 import { RESTRICTED_ARTICLES_WORDS } from "@/app/(nav)/community/agent-forum/my-articles/data";
 import { useGlobalStore } from "@/store/general-store";
+import { comments } from "../tasks/announcements/data";
 
 const SkeletonBox = ({ className }: { className: string }) => (
   <div

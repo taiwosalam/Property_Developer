@@ -266,7 +266,7 @@ const Wallet = () => {
             Recent Transaction
           </h2>
           <Link
-            href="/wallet/transaction-history"
+            href="/manager/wallet/transaction-history"
             className="flex items-center gap-1"
           >
             <span className="text-text-label dark:text-darkText-1">

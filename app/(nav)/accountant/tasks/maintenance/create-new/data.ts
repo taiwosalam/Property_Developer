@@ -20,3 +20,11 @@ export const maintenanceTypes = [
 ];
 
 export const priorityLevels = ["Critical", "High", "Medium", "Low", "Very Low"];
+
+export const priorityLevelsOption = [
+  { label: "Critical", value: "critical" },
+  { label: "High", value: "high" },
+  { label: "Medium", value: "medium" },
+  { label: "Low", value: "low" },
+  { label: "Very Low", value: "very" },
+];
