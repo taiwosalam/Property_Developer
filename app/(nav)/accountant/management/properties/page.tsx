@@ -294,13 +294,13 @@ const Properties = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Add Property"
+              noButton
               modalContent={<AddPropertyModal />}
               title="You have not created any properties yet"
               body={
                 <p>
-                  You can create a property by clicking on the &apos;Add
-                  Property&apos; button. You can create two types of properties:
+                  You can create a property by clicking on the &quot;Add
+                  Property&quot; button. You can create two types of properties:
                   rental and facility properties. Rental properties are mainly
                   tailored for managing properties for rent, including landlord
                   and tenant management processes. Facility properties are
@@ -309,12 +309,11 @@ const Properties = () => {
                   <br />
                   <br />
                   Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  disappear.
+                  <br />
+                  To Learn more about this page later, click your profile
+                  picture at the top right of the dashboard and select
+                  Assistance & Support.
                   <br />
                   <br />
                   Property creation involves several segments: property

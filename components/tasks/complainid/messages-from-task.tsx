@@ -144,7 +144,7 @@ const MessagesFromTask = ({ comments, taskStatus }: MessageFromTaskProps) => {
       }}
     >
       <div className="p-4 flex justify-between bg-brand-1 rounded-t-lg">
-        <h6 className="text-black text-base font-medium">Messages from Task</h6>
+        <h6 className="text-black text-base font-medium">Messages</h6>
         <span className="text-borders-normal">
           <VerticalEllipsisIcon />
         </span>

@@ -162,8 +162,6 @@ const NavGlobalSearch = () => {
     return tabs.filter(({ label }) => getTabCount(label) > 0);
   };
 
-  console.log(getFilteredTabs());
-
   // Reset activeTab to the first available tab when search results change
   useEffect(() => {
     if (hasSearchResults()) {

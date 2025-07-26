@@ -5,6 +5,12 @@ export type ApplicationResponse = {
     total_applications: number;
     this_month_applications: number;
   };
+  pagination: {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+  };
   data: {
     id: number;
     application_date: string;
@@ -98,6 +104,10 @@ export interface IApplicationPageData {
       status: "rejected" | "pending" | "evaluated" | "approved";
     }[];
   }[];
+  pagination: {
+    total_pages: number;
+    current_page: number;
+  }
 }
 
 const currencies: { [key: string]: string } = {
@@ -109,7 +119,7 @@ const currencies: { [key: string]: string } = {
 export const transformApplicationData = (
   data: ApplicationResponse
 ): IApplicationPageData => {
-  const { data: res, stats } = data;
+  const { data: res, stats, pagination } = data;
 
   return {
     total_application: stats?.total_applications,
@@ -173,5 +183,9 @@ export const transformApplicationData = (
                 | "rejected"),
       })),
     })),
+    pagination: {
+      total_pages: pagination?.last_page,
+      current_page: pagination?.current_page,
+    }
   };
 };

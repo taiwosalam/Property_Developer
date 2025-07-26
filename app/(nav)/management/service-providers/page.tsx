@@ -337,14 +337,14 @@ const ServiceProviders = () => {
           />
         </div>
         {CAN_CREATE_SERVICE_PROVIDER && (
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + Create New Service Provider
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <AddServiceProviderModal />
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="button" className="page-header-button">
+                + Create New Service Provider
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddServiceProviderModal />
             </ModalContent>
           </Modal>
         )}
@@ -378,7 +378,6 @@ const ServiceProviders = () => {
             ) : (
               <EmptyList
                 noButton
-                //buttonText="+ Create Service Provider"
                 modalContent={<AddServiceProviderModal />}
                 title="You have not created any service providers yet"
                 body={
@@ -399,8 +398,6 @@ const ServiceProviders = () => {
                     complete list of service providers enhances property
                     management efficiency and ensures access to reliable
                     professionals when needed.
-                    <br />
-                    <br />
                     <br />
                     <br />
                   </p>

@@ -4,68 +4,104 @@ import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
 import { useEffect, useState } from "react";
 import {
-  calendarsrFilterOptionsWithDropdown,
   getAllEventsOnCalendar,
   CalendarTableFields,
-} from "./data";
+  ICalendarEventsTable,
+  transformCalendarEvents,
+  transformEventTable,
+} from "@/app/(nav)/tasks/calendars/data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CalendarComponent from "@/components/Calendar/calendar";
+import useFetch from "@/hooks/useFetch";
+import { CalendarEventsApiResponse } from "@/components/Management/Staff-And-Branches/types";
+import { AxiosRequestConfig } from "axios";
+import { LandlordRequestParams } from "../../management/landlord/data";
+import NetworkError from "@/components/Error/NetworkError";
+import ServerError from "@/components/Error/ServerError";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import { CalendarEventProps } from "@/components/Calendar/types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import PageLoader from "next/dist/client/page-loader";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import CalendarSkeletonLoader from "@/components/Loader/calendar-page-loader";
 
 const CalendarPage = () => {
   const [fetchedTabelData, setFetchedTableData] = useState([]);
+  const [eventTable, setEventTable] = useState<ICalendarEventsTable | null>(
+    null
+  );
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>(
+    []
+  );
+  const [config, setConfig] = useState<AxiosRequestConfig>({
+    params: {
+      page: 1,
+      search: "",
+    } as LandlordRequestParams,
+  });
+  const {
+    data: calendarEventApiResponse,
+    loading,
+    error,
+    isNetworkError,
+  } = useFetch<CalendarEventsApiResponse>("/company/calender", config);
 
-  const generateTableData = (numItems: number) => {
-    return Array.from({ length: numItems }, (_, index) => ({
-      id: (index + 1).toString(),
-      date: `28/01/2024 (0${index + 1}:30 pm)`,
-      event: `EVENT ${index + 1}`,
-      creator: `CREATOR ${index + 1}`,
-      property_name: `PROPERTY ${index + 1}`,
-      branch: `BRANCH ${index + 1}`,
-      account_officer: `OFFICER ${index + 1}`,
-    }));
-  };
+  useEffect(() => {
+    if (calendarEventApiResponse) {
+      const eventsTable = transformEventTable(calendarEventApiResponse);
+      setEventTable(eventsTable);
 
-  const tableData = generateTableData(10);
+      const events = transformCalendarEvents(calendarEventApiResponse);
+      setCalendarEvents(events);
+    }
+  }, [calendarEventApiResponse, config]);
 
   useEffect(() => {
     getAllEventsOnCalendar();
   }, []);
 
+  const handlePageChange = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+  };
+
+  if (loading) {
+    return <CalendarSkeletonLoader />;
+  }
+
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
   return (
     <div className="space-y-9">
       <div className="custom-flex-col gap-8">
-        <FilterBar
-          azFilter
-          pageTitle="Calendar"
-          aboutPageModalData={{
-            title: "Calendar",
-            description:
-              "This page contains a list of Calendar on the platform.",
-          }}
-          searchInputPlaceholder="Search"
-          handleFilterApply={() => {}}
-          isDateTrue
-          filterOptionsMenu={calendarsrFilterOptionsWithDropdown}
-          hasGridListToggle={false}
-        />
-        <CalendarComponent />
+        <PageTitle title="Calendar" />
+        <CalendarComponent events={calendarEvents} />
       </div>
       <div className="page-title-container">
         <PageTitle title="up coming events" />
-        <p className="text-text-label dark:text-darkText-1 text-sm md:text-base font-medium">
-          25TH - 28TH JAN 2024
-        </p>
+        <Link
+          href={"/reports/calendar-event"}
+          className="text-text-label dark:text-darkText-1 text-sm md:text-base font-medium flex gap-2 items-center"
+        >
+          See all{" "}
+          <span>
+            <ChevronRight />{" "}
+          </span>
+        </Link>
       </div>
-      <CustomTable
-        fields={CalendarTableFields}
-        data={tableData}
-        tableHeadClassName="h-[45px]"
-        tableBodyCellSx={{
-          textTransform: "uppercase",
-        }}
-      />
-      <Pagination totalPages={2} currentPage={2} onPageChange={() => {}} />
+      <div className="scroll-m-8 pb-10" id="event">
+        <CustomTable
+          fields={CalendarTableFields}
+          data={eventTable?.table.slice(0, 3) || []}
+          tableHeadClassName="h-[45px]"
+          tableBodyCellSx={{
+            textTransform: "capitalize",
+          }}
+        />
+      </div>
     </div>
   );
 };

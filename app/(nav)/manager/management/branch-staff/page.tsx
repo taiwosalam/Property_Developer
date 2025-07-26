@@ -230,9 +230,7 @@ const BranchStaffPage = () => {
   }));
 
   const handleSelectTableItem = (item: DataItem) => {
-    router.push(
-      `manager/management/branch-staff/${item.id}`
-    );
+    router.push(`manager/management/branch-staff/${item.id}`);
   };
 
   if (isNetworkError) return <NetworkError />;
@@ -258,8 +256,8 @@ const BranchStaffPage = () => {
           />
           <ManagementStatistcsCard
             title="Other Staffs"
-            newData={state.staff_count_by_role.staff}
-            total={state.staff_count_by_role.staff}
+            newData={state.staff_count_by_role.staff || 0}
+            total={state.staff_count_by_role.staff || 0}
             colorScheme={3}
           />
         </div>
@@ -305,7 +303,7 @@ const BranchStaffPage = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Create New Staff"
+              noButton
               modalContent={
                 <CreateStaffModal
                   branchId={BRANCH_ID.toString()}
@@ -315,8 +313,13 @@ const BranchStaffPage = () => {
               title="The branch staff is empty"
               body={
                 <p>
-                  You can create a staff by clicking on the &apos;Create
-                  Staff&apos; button.
+                  You can create profiles for all your branches and assign staff
+                  and properties to them by clicking on the &quot;Create
+                  Branch&quot; button. Branch managers will have the same access
+                  to their branch as you do, while you will have access to all
+                  staff accounts and branches created.
+                  <br />
+                  <br />
                 </p>
               }
             />

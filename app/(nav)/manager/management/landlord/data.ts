@@ -198,4 +198,6 @@ export interface LandlordRequestParams {
   end_date?: string;
   agent?: string;
   branch_ids?: string;
+  property_ids?: string;
+  tenant_ids?: string;
 }

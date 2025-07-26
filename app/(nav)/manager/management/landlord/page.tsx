@@ -381,7 +381,7 @@ const Landlord = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Create New Landlord"
+              noButton
               modalContent={<AddLandlordModal />}
               title="The landlord and landlady files are empty"
               body={
@@ -389,15 +389,7 @@ const Landlord = () => {
                   You don&apos;t have any landlord or landlady profiles yet. You
                   can easily create one by clicking on the &quot;Create New
                   Landlord&quot; button and add them using their profile ID.
-                  After adding profiles to this page, this guide will disappear.{" "}
-                  <br />
-                  <br />
-                  To learn more about this page in the future,you can click on
-                  this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  After adding profiles to this page, this guide will disappear.
                   <br />
                   <br />
                   Before creating or managing a rental property, you need to

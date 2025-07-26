@@ -7,139 +7,208 @@ import Button from "@/components/Form/Button/button";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import { SectionContainer } from "@/components/Section/section-components";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
+import { inspectionCheckList } from "@/app/(nav)/tasks/examine/[examineId]/manage/data";
+import useFetch from "@/hooks/useFetch";
+import { useParams } from "next/navigation";
+import ServerError from "@/components/Error/ServerError";
+import NetworkError from "@/components/Error/NetworkError";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { ExamineReportApiResponse } from "@/app/(nav)/tasks/examine/[examineId]/report/type";
+import { IExamineReportPageData, transformExamineReportPageData } from "@/app/(nav)/tasks/examine/[examineId]/report/data";
+import { useEffect, useRef, useState } from "react";
+import ExportPageFooter from "@/components/reports/export-page-footer";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 
 const ExamineReportpage = () => {
+  const params = useParams();
+  const paramId = params?.examineId as string;
+
+  const exportRef = useRef<HTMLDivElement | null>(null);
+
+  const [pageData, setPageData] = useState<IExamineReportPageData | null>(null);
+
   const commonBoxStyle: React.CSSProperties = {
     boxShadow:
       "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
   };
   const commonBoxClassName = "py-6 px-4 rounded-lg space-y-2";
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    error,
+    isNetworkError,
+  } = useFetch<ExamineReportApiResponse>(`/examine/${paramId}`);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformData = transformExamineReportPageData(apiData);
+      setPageData(transformData);
+    }
+  }, [apiData]);
+
+  const summaryLookup = (pageData?.inspection_summary || []).reduce(
+    (acc, obj) => {
+      if (obj && typeof obj === "object") {
+        const [key, value] = Object.entries(obj)[0];
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+  const checkListLookup = (pageData?.inspection_checklist || []).reduce(
+    (acc, obj) => {
+      if (obj && typeof obj === "object") {
+        const [key, value] = Object.entries(obj)[0];
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+
+  if (loading) <PageCircleLoader />;
+  if (error) <ServerError error={error} />;
+  if (isNetworkError) <NetworkError />;
+
   return (
     <div className="space-y-8 pb-[100px]">
       <BackButton as="p">Back</BackButton>
-      <ExportPageHeader />
-      <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
-        Property Inspection Report
-      </h1>
-      <div className="grid md:grid-cols-2 gap-8">
-        <LandlordTenantInfoBox
-          className={`${commonBoxClassName}`}
-          style={commonBoxStyle}
-        >
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-              Inspected Date:
-            </p>
-            <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-              8 -11th January 2024
-            </p>
-          </div>
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-              Added Guest:
-            </p>
-            <p className="text-sm font-medium text-text-secondary dark:text-darkText-2 text-right">
-              Landlord
-              <br />
-              Mr Ajadi David
-            </p>
-          </div>
-        </LandlordTenantInfoBox>
-        <LandlordTenantInfoBox
-          className={`${commonBoxClassName}`}
-          style={commonBoxStyle}
-        >
-          <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
-            Description
-          </p>
-          <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-            eget dictum sem, ut molestie eros. Morbi in dolor augue. Sed aliquet
-            ipsum fringilla sapien facilisis consectetur.
-          </p>
-        </LandlordTenantInfoBox>
-      </div>
-      <SectionContainer heading="Service connected to property">
-        <AutoResizingGrid minWidth={340}>
-          {["Electricity", "Sewer", "Gas", "Drainage", "Water"].map(
-            (service, index) => (
-              <span key={index}>{service}</span>
-            )
-          )}
-        </AutoResizingGrid>
-      </SectionContainer>
-      <SectionContainer heading="Site Summary">
-        <AutoResizingGrid minWidth={340}>
-          {[
-            "Age of Building",
-            "Construction Type",
-            "Roof",
-            "Condition",
-            "Extension/ Renovation",
-            "Out Buildings",
-            "Sub Floor",
-            "Site",
-            "Compare to others",
-          ].map((item, index) => (
-            <ExamineKeyValue key={item + index} itemKey={item} value="N/A" />
-          ))}
-        </AutoResizingGrid>
-      </SectionContainer>
-      <SectionContainer heading="Inspection Checklist">
-        <AutoResizingGrid minWidth={340}>
-          {[
-            "Outdoor Steps and Sidewalk",
-            "Dining Rooms",
-            "Outdoor Paint",
-            "Den(s)",
-            "Driveway",
-            "Study Room(s)",
-            "Storage Room(s)",
-            "Outdoor Plantation",
-            "Outdoor Entry Way",
-            "Game Room(s)",
-            "Doors",
-            "Music Room(s)",
-            "Door Fixtures",
-            "Fireplaces",
-            "Flooring",
-            "Carpentry",
-            "Bathroom Tiles",
-            "Bathroom Faucets",
-            "Window",
-            "Water Pressure",
-            "Window Screen",
-            "Kitchen",
-            "Window Fixtures",
-            "Laundry",
-            "Window Furnishing",
-            "Lighting",
-            "Ceilings",
-            "Disposal",
-            "Light Fixtures",
-            "Shelving",
-            "Staircases",
-            "Bedrooms",
-            "Indoor Paint",
-            "Wardrobes and Closets",
-            "Electrical Outlets and Fixtures",
-            "Living Room",
-          ].map((item, index) => (
-            <ExamineKeyValue key={item + index} itemKey={item} value="N/A" />
-          ))}
-        </AutoResizingGrid>
-      </SectionContainer>
-      <SectionContainer heading="Inspection Summary Note">
-        <p className="text-text-secondary dark:text-darkText-2 text-[16px] font-normal">
-          House is in good condition
-        </p>
-      </SectionContainer>
+      <div className="space-y-8 pb-[100px]" ref={exportRef}>
+        <ExportPageHeader />
+        <h1 className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
+          Property Inspection Report
+        </h1>
+        <div className="grid md:grid-cols-1 gap-8">
+          <LandlordTenantInfoBox
+            className={`min-h-0 ${commonBoxClassName} w-full`}
+            style={commonBoxStyle}
+          >
+            <div className="flex justify-between px-4">
+              <div className="flex-col items-center justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Inspected Date:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {pageData?.inspection_date}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Assigned Staff:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {pageData?.assign_staff}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Property Name:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {pageData?.property_name}
+                </p>
+              </div>
+              <div className="flex-col items-start justify-between gap-2">
+                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
+                  Branch Name:
+                </p>
+                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
+                  {pageData?.branch_name}
+                </p>
+              </div>
 
-      <FixedFooter className="flex justify-end">
-        <Button size="base_medium" variant="sky_blue" className="py-2 px-6">
-          Print
-        </Button>
-      </FixedFooter>
+              <div className="pb-3 max-w-lg">
+                <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
+                  Attached Note:
+                </p>
+                {pageData?.description && (
+                  <TruncatedText>
+                    <div
+                      className="text-sm font-medium text-text-secondary dark:text-darkText-2 break-words whitespace-normal overflow-wrap-anywhere"
+                      dangerouslySetInnerHTML={{
+                        __html: pageData?.description,
+                      }}
+                    />
+                  </TruncatedText>
+                )}
+              </div>
+            </div>
+          </LandlordTenantInfoBox>
+        </div>
+
+        {pageData && pageData?.services.length > 0 && (
+          <SectionContainer heading="Service connected to property">
+            <AutoResizingGrid minWidth={220}>
+              {pageData?.services?.map((service, index) => (
+                <span key={index}>{service ? service : ""}</span>
+              ))}
+            </AutoResizingGrid>
+          </SectionContainer>
+        )}
+
+        {pageData && (
+          <SectionContainer heading="Site Summary">
+            <AutoResizingGrid minWidth={340}>
+              {[
+                "Age of Building",
+                "Construction Type",
+                "Roof",
+                "Condition",
+                "Extension/ Renovation",
+                "Out Buildings",
+                "Sub Floor",
+                "Site",
+                "Compare to others",
+              ]
+                .filter(
+                  (item) =>
+                    !!summaryLookup[item] && summaryLookup[item] !== "N/A"
+                )
+                .map((item, index) => (
+                  <ExamineKeyValue
+                    key={item + index}
+                    itemKey={item}
+                    value={summaryLookup[item]}
+                  />
+                ))}
+            </AutoResizingGrid>
+          </SectionContainer>
+        )}
+        {pageData &&
+          pageData.inspection_checklist &&
+          pageData.inspection_checklist.length > 0 && (
+            <SectionContainer heading="Inspection Checklist">
+              <AutoResizingGrid minWidth={340}>
+                {inspectionCheckList
+                  .filter(
+                    (item) =>
+                      !!checkListLookup[item] && checkListLookup[item] !== "N/A"
+                  )
+                  .map((item, index) => (
+                    <ExamineKeyValue
+                      key={item + index}
+                      itemKey={item}
+                      value={checkListLookup[item]}
+                    />
+                  ))}
+              </AutoResizingGrid>
+            </SectionContainer>
+          )}
+        {pageData && pageData?.summary_note && (
+          <SectionContainer heading="Inspection Summary Note">
+            <div
+              className="text-text-secondary dark:text-darkText-2 text-[16px] font-normal"
+              dangerouslySetInnerHTML={{
+                __html: pageData?.summary_note ?? "--- ---",
+              }}
+            />
+          </SectionContainer>
+        )}
+      </div>
+      <ExportPageFooter printRef={exportRef} noBack={false} />
     </div>
   );
 };

@@ -1,5 +1,3 @@
-
-
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
@@ -64,7 +62,6 @@ const RentAndUnit = () => {
     current_page: 1,
     last_page: 1,
   });
-
 
   const { gridView, total_pages, current_page, last_page } = state;
 
@@ -135,13 +132,13 @@ const RentAndUnit = () => {
   };
 
   const { data: branchesData } =
-  useFetch<AllBranchesResponse>("/branches/select");
+    useFetch<AllBranchesResponse>("/branches/select");
 
-const branchOptions =
-  branchesData?.data.map((branch) => ({
-    label: branch.branch_name,
-    value: branch.id,
-  })) || [];
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
   // console.log("Braches", branchOptions)
 
@@ -186,11 +183,7 @@ const branchOptions =
 
   if (loading)
     return (
-      <CustomLoader
-        layout="page"
-        statsCardCount={3}
-        pageTitle="Rent & Units"
-      />
+      <CustomLoader layout="page" statsCardCount={3} pageTitle="Rent & Units" />
     );
 
   if (isNetworkError) return <NetworkError />;
@@ -206,7 +199,7 @@ const branchOptions =
           newData={pageData?.month_unit}
           total={pageData?.total_unit}
           className="w-[240px]"
-        colorScheme={1}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Occupied Units"
@@ -252,11 +245,11 @@ const branchOptions =
           ...RentAndUnitFiltersWithDropdown,
           ...(branchOptions.length > 0
             ? [
-              {
-                label: "Branch",
-                value: branchOptions,
-              },
-            ]
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
             : []),
         ]}
       />
@@ -266,32 +259,22 @@ const branchOptions =
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="Create New Unit"
-              buttonLink="/management/rent-unit/create"
+              noButton
               title="No Unit Found"
               body={
                 <p>
-                  You can create a Unit by clicking on the &quot;Add
-                  Property&quot; button. You can create two types of properties:
-                  rental and facility properties. Rental properties are mainly
-                  tailored for managing properties for rent, including landlord
-                  and tenant management processes. Facility properties are
-                  designed for managing occupants in gated estates, overseeing
-                  their due payments, visitor access, and vehicle records.{" "}
+                  You can create a unit when adding a property. Whether creating
+                  or editing a rental or facility property, units can be added
+                  during the process. Each property is registered as a whole,
+                  while individual flats or sections within it are considered
+                  units.
                   <br />
                   <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  To manage occupants and tenants, they are assigned to specific
+                  units within the property. Each unit is created separately
+                  under the main property.
                   <br />
                   <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
                 </p>
               }
             />
@@ -311,19 +294,13 @@ const branchOptions =
               {view === "grid" || gridView ? (
                 <AutoResizingGrid minWidth={315}>
                   {pageData?.unit.map((unit, index) => (
-                    <RentalPropertyCard
-                      key={index}
-                      {...unit}
-                    />
+                    <RentalPropertyCard key={index} {...unit} />
                   ))}
                 </AutoResizingGrid>
               ) : (
                 <div className="space-y-4">
                   {pageData?.unit.map((unit, index) => (
-                    <RentalPropertyListCard
-                      key={index}
-                      {...unit}
-                    />
+                    <RentalPropertyListCard key={index} {...unit} />
                   ))}
                 </div>
               )}

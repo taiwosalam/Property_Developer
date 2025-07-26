@@ -41,7 +41,7 @@ const Message: React.FC<MessageProps> = ({
             {isLastInSequence ? (
               <div className="rounded-full overflow-hidden w-[30px] h-[30px] relative flex-shrink-0">
                 <Image
-                  src={SamplePic}
+                  src={avatar}
                   alt={user}
                   fill
                   className="object-cover"

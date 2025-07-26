@@ -10,10 +10,16 @@ export async function middleware(req: NextRequest) {
   console.log("role", role);
   console.log("subscription_status", subscription_status);
 
+  console.log("Current Path:", currentPath);
+  console.log("Role:", role);
+  console.log("Subscription Status:", subscription_status);
+  console.log("Company Status:", company_status);
+
   // Public routes accessible without authentication
   const publicRoutes = [
     "/auth/user/sign-in",
     "/notifications",
+    "/reviews",
     "/auth/sign-in",
     "/auth/sign-up",
     "/auth/setup",
@@ -107,5 +113,6 @@ export const config = {
     "/settings/:path*",
     "/messages/:path*",
     "/notifications/:path*",
+    "/reviews/:path*",
   ],
 };
