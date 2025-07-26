@@ -81,9 +81,11 @@ const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
         if (branch) {
           toast.success("Branch Wallet Funded Successfully");
           window.dispatchEvent(new Event("refetch-wallet"));
+          window.dispatchEvent(new Event("refetch-branch-data"));
         };
         window.dispatchEvent(new Event("refetch_staff"));
-          window.dispatchEvent(new Event("refetch-wallet"));
+        window.dispatchEvent(new Event("refetch-wallet"));
+        window.dispatchEvent(new Event("refetch-branch-data"));
       }
       setLoading(false);
     }

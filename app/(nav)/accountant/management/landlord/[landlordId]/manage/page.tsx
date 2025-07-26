@@ -205,7 +205,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 >
                   message
                 </Button>
-                <Modal>
+                {/* <Modal>
                   <ModalTrigger asChild>
                     <Button
                       variant="light_green"
@@ -222,7 +222,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                       id={landlordId}
                     />
                   </ModalContent>
-                </Modal>
+                </Modal> */}
 
                 <Modal>
                   <ModalTrigger asChild>

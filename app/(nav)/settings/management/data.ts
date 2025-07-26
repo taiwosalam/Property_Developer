@@ -3,8 +3,6 @@ import api, { handleAxiosError } from "@/services/api";
 export const staffConfigurations = [
   {
     title: "admin configuration (company director)",
-    // subTitle:
-    //   "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [
       [
         "Add Other Directors",
@@ -32,8 +30,6 @@ export const staffConfigurations = [
   },
   {
     title: "partner configuration (branch manager)",
-    // subTitle:
-    //   "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [
       [
         "Can view and reply branch messages",
@@ -63,39 +59,38 @@ export const staffConfigurations = [
   },
   {
     title: "colleague configuration (account manager)",
-    // subTitle:
-    //   "Can be accessed through mobile app, software, or web cross-platform.",
     permissions: [
       [
+        "Can add/delete branch properties",
+        "Can check in visitors",
+        "Can create examine",
+        "Can manage inspections",
+        "Can add and manage tenants/occupants",
+        "Can view complaints",
+        "Can manage calendar",
+        "Can check in and manage vehicle records",
         "Can manage assign tenants/occupants",
         "Can manage assign properties",
-        "Can manage inspections",
-        "Can add and manage tenants occupants",
         "Can view service provider",
         "Can create announcement",
+      ],
+      [
         "Can add properties to branch",
         "Can create branch inventory",
         "Can reply assigned messages",
-        "Can check in and manage vehicle records",
-        "Can manage assign tenants/occupants",
-      ],
-      [
         "Can manage assigned landlord/landlady",
         "Can view assign account statement",
-        "Can check in visitors",
         "Can check calendars",
         "Can create branch examine",
         "Can reply to inspections",
-        "Can view complaints",
+        "Can manage tenants/occupants",
+        "Can manage landlords/landlady",
         "Can view call request",
-        "Can create examine",
-        "Can add/delete branch properties",
       ],
     ],
   },
   {
     title: "staff configuration (other staff) Configuration",
-    // subTitle: "Can be accessed through mobile app or web cross-platform.",
     permissions: [
       [
         "Can be added to task",
@@ -121,7 +116,6 @@ export const staffConfigurations = [
   },
   {
     title: "Users Configuration (Landlord, Occupant & Tenants)",
-    // subTitle: "Can be accessed through mobile app or web cross-platform.",
     permissions: [
       [
         "Create Profile Account For Tenants/Occupant",
@@ -134,6 +128,7 @@ export const staffConfigurations = [
     ],
   },
 ];
+
 
 export type RentPeriod =
   | "daily"

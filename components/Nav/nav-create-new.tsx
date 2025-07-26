@@ -25,7 +25,7 @@ const NavCreateNew = () => {
   return activeStep === 1 ? (
     <div
       style={{ boxShadow: '4px 4px 20px 2px rgba(0, 0, 0, 0.05)' }}
-      className='custom-flex-col gap-8 pt-3 pb-10 px-8 bg-white dark:bg-darkText-primary dark:border-[#3C3D37] rounded-2xl border border-solid border-neutral-4 w-[85%] max-w-[1200px]'
+      className='custom-flex-col gap-8 pt-3 pb-10 px-8 bg-white dark:bg-darkText-primary dark:border-[#3C3D37] rounded-2xl border border-solid border-neutral-4 max-w-[85%] max-w-[1200px]'
     >
       <div className='custom-flex-col gap-3'>
         <div className='flex items-center justify-between'>

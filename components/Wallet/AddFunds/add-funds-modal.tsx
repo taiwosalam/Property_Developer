@@ -47,6 +47,7 @@ const AddFundsModal = ({
     setIsOpen(false);
     window.dispatchEvent(new Event("fetch-profile"));
     window.dispatchEvent(new Event("refetch-wallet"));
+    window.dispatchEvent(new Event("refetch-branch-data"));
     window.dispatchEvent(new Event("refetchRentUnit"));
   };
 

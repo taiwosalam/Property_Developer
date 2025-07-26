@@ -38,7 +38,7 @@ import { ApiResponseUserPlan } from "../others/types";
 const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
   "partner configuration (branch manager)": "manager",
-  "colleague configuration (account officer)": "account",
+  "colleague configuration (account manager)": "account",
   "staff configuration (other staff) Configuration": "staff",
   "Users Configuration (Landlord, Occupant & Tenants)": "user",
 };
@@ -61,10 +61,6 @@ const Management = () => {
     occupant_screening_level: 0,
   });
   const [userPlan, setUserPlan] = useState<string>("");
-
-  const { data: settingsData } = useFetch<any>(`company/settings`);
-
-  
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
     "/property-manager-subscription/active"
@@ -324,49 +320,6 @@ const Management = () => {
       <SettingsSection title="rent penalty settings"> */}
       </SettingsSection>
       <RentPenalty />
-      {/* <SettingsSection title="rent penalty settings">
-        <div className="custom-flex-col gap-8">
-          <p className="text-text-disabled text-sm font-normal">
-            The tenant is required to make full rent payment on or before the
-            expiration of the current rent period. If the tenant is interested
-            in renewing the rent but makes payment after the due date, there
-            will be a monthly interest charged on the substantive rent until
-            both the rent and the accrued interest are fully paid.
-          </p>
-          <AuthForm onFormSubmit={handleUpdateRentPenalty}>
-            <div className="flex">
-              <Select
-                options={[
-                  "1%",
-                  "2%",
-                  "2.5%",
-                  "3%",
-                  "3.5%",
-                  "5%",
-                  "6%",
-                  "7%",
-                  "7.5%",
-                  "8%",
-                  "9%",
-                  "10%",
-                ]}
-                defaultValue={`${rentPenalty}%`}
-                id="monthly_interest_rent"
-                label="They will be subject to a monthly interest charge on rent"
-                inputContainerClassName="bg-neutral-2"
-              />
-            </div>
-            <div className="flex items-end w-full justify-end">
-              <SettingsUpdateButton
-                submit
-                action={handleUpdateRentPenalty as any}
-                loading={isPenalty}
-                next={false}
-              />
-            </div>
-          </AuthForm>
-        </div>
-      </SettingsSection> */}
     </>
   );
 };

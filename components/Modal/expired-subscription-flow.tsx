@@ -26,9 +26,11 @@ import { FormSteps } from "@/app/(onboarding)/auth/types";
 import { toast } from "sonner";
 import { useGlobalStore } from "@/store/general-store";
 import Cookies from "js-cookie";
+import { useRole } from "@/hooks/roleContext";
 
 const ExpiredSubscriptionModal: React.FC = () => {
   const [step, setStep] = useState<FormSteps | number>(1);
+  const { role } = useRole();
   const [reqLoading, setReqLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const { setIsOpen } = useModal();
@@ -135,6 +137,8 @@ const ExpiredSubscriptionModal: React.FC = () => {
     }
   };
 
+  const isDirector = role === "director";
+
   const renderContent = () => {
     switch (step) {
       case 1:
@@ -147,37 +151,46 @@ const ExpiredSubscriptionModal: React.FC = () => {
             </div>
             <div className="p-6 text-center">
               <h2 className="text-xl font-bold text-text-primary dark:text-white mb-4">
-                Subscription Expired
+                {isDirector
+                  ? "Subscription Expired"
+                  : "⚠️ Oops! Your Account is Temporarily Down for Maintenance"}
               </h2>
               <p className="text-text-secondary dark:text-darkText-1 mb-6">
-                Access to all features and services currently disabled. To
-                continue using your account without interruption, please renew
-                your subscription immediately.
+                {isDirector
+                  ? "Access to all features and services currently disabled. To continue using your account without interruption, please renew your subscription immediately."
+                  : "We’re currently performing scheduled maintenance on your account to improve system performance, enhance security, and deliver a better overall experience. During this short period, your dashboard and services may be unavailable. Don’t worry, all your data is safe and secure, and no information will be lost."}
               </p>
               <p className="text-xl font-bold text-text-primary dark:text-white mb-4">
-                Important Notes:
+                {isDirector ? "Important Notes:" : "✅ What You Can Do:"}
               </p>
               <ul className="custom-flex-col gap-2 text-text-secondary dark:text-darkText-1">
                 <li>
-                  Your company data is securely stored but restricted until
-                  renewal
+                  {isDirector
+                    ? "Your company data is securely stored but restricted until renewal"
+                    : "Please check back shortly. If you have any urgent concerns, kindly contact your company director or owner.They can reach out to the support team or help restore the system’s connection to the server"}
                 </li>
-                <li>
-                  All users under your company account will lose access until
-                  subscription is reactivated.
-                </li>
+                {isDirector && (
+                  <li>
+                    All users under your company account will lose access until
+                    subscription is reactivated.
+                  </li>
+                )}
               </ul>
 
-              <p className="my-4 ">Click the button to regain access</p>
-              <div className="flex justify-center gap-4">
-                <Button
-                  size="base_bold"
-                  className="py-[10px] px-8 bg-brand-9 text-white rounded-md hover:bg-brand-10"
-                  onClick={() => setStep(2)}
-                >
-                  Activate Subscription
-                </Button>
-              </div>
+              {isDirector && (
+                <p className="my-4 ">Click the button to regain access</p>
+              )}
+              {role === "director" && (
+                <div className="flex justify-center gap-4">
+                  <Button
+                    size="base_bold"
+                    className="py-[10px] px-8 bg-brand-9 text-white rounded-md hover:bg-brand-10"
+                    onClick={() => setStep(2)}
+                  >
+                    Activate Subscription
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         );
