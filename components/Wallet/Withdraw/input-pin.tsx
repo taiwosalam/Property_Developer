@@ -80,6 +80,7 @@ const InputPin = ({ branch: branchState }: { branch?: boolean }) => {
         setIsOpen(false);
         toast.success("Withdrawal successful");
         window.dispatchEvent(new Event("refetch-wallet"));
+        window.dispatchEvent(new Event("refetch-branch-data"));
         window.dispatchEvent(new Event("refetch_staff"));
         // back()
       }

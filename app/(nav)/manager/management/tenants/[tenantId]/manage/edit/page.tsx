@@ -121,7 +121,7 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
               <DeleteAccountModal
                 accountType="tenant"
                 action={async () => await deleteTenant(tenantId)}
-                afterAction={() => router.push("/management/tenants")}
+                afterAction={() => router.push("/manager/management/tenants")}
               />
             </ModalContent>
           </Modal>
@@ -132,7 +132,7 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
             className="save-button py-2 px-6"
             onClick={() => {
               // router.push(`/management/tenants/${tenantId}`);
-              router.push(`/management/tenants`);
+              router.push(`/manager/management/tenants`);
             }}
           >
             save

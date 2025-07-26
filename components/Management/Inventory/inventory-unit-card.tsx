@@ -104,7 +104,7 @@ const InventoryUnitCard: React.FC<{
       >
         <div className="relative">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold text-[#374151] dark:text-white">
+            <h3 className="text-2xl font-bold text-[#374151] dark:text-white line-clamp-1 truncate">
               {unitName}
             </h3>
             <div className="flex items-center space-x-1">
@@ -120,19 +120,26 @@ const InventoryUnitCard: React.FC<{
           <p className="text-sm font-normal">{unitDetails}</p>
         </div>
       </div>
+      {/* manage and preview buttons */}
       <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
-        {total_inventory > 0 ? (
+        {isOccupied ? (
+          <Button
+            href={getPreviewLink()}
+            size="xs_medium"
+            className="py-2 px-7"
+          >
+            preview
+          </Button>
+        ) : total_inventory > 0 ? (
           <>
-            {!isOccupied && (
-              <Button
-                href={getManageLink()}
-                variant="border"
-                size="xs_medium"
-                className="py-2 px-7"
-              >
-                manage
-              </Button>
-            )}
+            <Button
+              href={getManageLink()}
+              variant="border"
+              size="xs_medium"
+              className="py-2 px-7"
+            >
+              manage
+            </Button>
             <Button
               href={getPreviewLink()}
               size="xs_medium"
@@ -142,16 +149,14 @@ const InventoryUnitCard: React.FC<{
             </Button>
           </>
         ) : (
-          <>
-            <Button
-              href={getCreateLink()}
-              variant="border"
-              size="xs_medium"
-              className="py-2 px-7"
-            >
-              Create
-            </Button>
-          </>
+          <Button
+            href={getCreateLink()}
+            variant="border"
+            size="xs_medium"
+            className="py-2 px-7"
+          >
+            create
+          </Button>
         )}
       </div>
     </div>

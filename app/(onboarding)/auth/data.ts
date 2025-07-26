@@ -232,40 +232,83 @@ export const getFacilityPropertyCreatePath = (
       return basePath();
   }
 };
+// interface LoginResponse {
+//   message: string;
+//   access_token: string;
+//   subscription_expired: boolean;
+//   data: {
+//     details: {
+//       id: string;
+//       user_id: string;
+//       email: string;
+//       role: [string];
+//       email_verification: boolean;
+//       unread_messages_count?: number;
+//       unread_notifications_count?: number;
+//     };
+//   };
+//   wallet_pin_status: boolean;
+//   wallet_id: string | null;
+//   additional_details: {
+//     status: "approved" | "pending" | "rejected";
+//     user_id: string;
+//     branch: {
+//       id: string | null;
+//       picture: string | null;
+//     };
+//     // company: {
+//     id: string | null;
+//     company_logo: string | null;
+//     dark_logo: string | null;
+//     // };
+//     settings: {
+//       appearance: any;
+//     };
+//   };
+// }
+
+
 interface LoginResponse {
   message: string;
   access_token: string;
   subscription_expired: boolean;
   data: {
     details: {
-      id: string;
-      user_id: string;
+      id: string | number; 
+      user_id?: string; 
+      userid?: string; 
       email: string;
-      role: [string];
+      role: string | string[]; 
       email_verification: boolean;
       unread_messages_count?: number;
       unread_notifications_count?: number;
+      user_online_status?: string;
     };
   };
   wallet_pin_status: boolean;
   wallet_id: string | null;
   additional_details: {
     status: "approved" | "pending" | "rejected";
-    user_id: string;
+    user_id?: string; 
     branch: {
-      id: string | null;
+      id: string | number | null; 
       picture: string | null;
     };
-    // company: {
-    id: string | null;
-    company_logo: string | null;
-    dark_logo: string | null;
-    // };
-    settings: {
+    company?: {
+      id: string | number | null;
+      user_id?: string;
+      company_logo: string | null;
+      dark_logo: string | null;
+      settings?: {
+        appearance: any;
+      };
+    };
+    settings?: {
       appearance: any;
     };
   };
 }
+
 
 const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
 
@@ -294,34 +337,48 @@ export const login = async (formData: Record<string, any>) => {
       formData
     );
     useAuthStore.getState().reset();
-    // console.log("Login response", data)
     const token = data.access_token;
-    // const subscription_status = data.subscription_expired
-    //   ? "expired"
-    //   : "active";
     const email = data.data.details?.email || formData.email;
     const emailVerified = data.data.details.email_verification;
-    const role = data.data.details.role[0];
+    // Handle role as string or array
+    const role = Array.isArray(data.data.details.role)
+      ? data.data.details.role[0]
+      : data.data.details.role;
     const managerId = data.data.details.id;
-    // console.log('res', data);
     const additional_details = data?.additional_details;
-    const appearance = data?.additional_details?.settings?.appearance;
+
+    // Extract appearance with OR condition for old and new response
+    const appearance =
+      data?.additional_details?.company?.settings?.appearance ||
+      data?.additional_details?.settings?.appearance ||
+      {};
+
+    // Extract user_id with OR condition
+    const user_id =
+      data?.additional_details?.company?.user_id ||
+      data?.additional_details?.user_id ||
+      null;
+
+    // Extract company details (only from company object)
+    const company_id = data?.additional_details?.company?.id || null;
+    const company_logo = data?.additional_details?.company?.company_logo || null;
+    const dark_logo = data?.additional_details?.company?.dark_logo || null;
+
     const details = {
-      user_id: additional_details?.user_id || null,
+      user_id,
       branch: {
         branch_id: additional_details?.branch?.id || null,
         picture: additional_details?.branch?.picture || null,
       },
       company: {
-        company_id: additional_details?.id || null,
-        company_logo: additional_details?.company_logo || null,
-        dark_logo: additional_details?.dark_logo || null,
+        company_id,
+        company_logo,
+        dark_logo,
       },
-      appearance: appearance,
+      appearance,
     };
     const company_status = additional_details.status;
 
-    // console.log("subscription_status", subscription_status)
     // Save token to cookies
     Cookies.set("auth-token", token, {
       expires: 7,
@@ -329,11 +386,7 @@ export const login = async (formData: Record<string, any>) => {
       sameSite: "Strict",
       path: "/",
     });
-    // Cookies.set("subscription_status", subscription_status, {
-    //   expires: 7,
-    //   secure: true,
-    //   sameSite: "Strict",
-    // });
+
     // SAVE TO ZUSTAND
     useAuthStore.getState().setAuthState("token", token);
     useAuthStore.getState().setAuthState("role", role);
@@ -341,16 +394,12 @@ export const login = async (formData: Record<string, any>) => {
     useAuthStore.getState().setAuthState("user_id", details?.user_id);
     useAuthStore.getState().setAuthState("additional_details", details);
 
-    // setPersonalInfo("company_status", company.company_status);
-
     // save user id to localstorage for msg
     saveLocalStorage("user_id", managerId);
-    // saveLocalStorage("user_id", details?.user_id || managerId);
 
     //💀⚡ SECURE USER - DO NOT TOUCH 💀⚡
     await saveRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
     await saveClientRoleToCookie(role); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (BROWSER COOKIE)
-    // await saveCompanyStatusToCookie(company_status); //DO NOT REMOVE THIS - IT'S FOR AUTHENTICATION & AUTHORIZATION (SERVER COOKIE)
 
     if (emailVerified) {
       toast.success(data?.message || "Login successful!");
@@ -374,6 +423,7 @@ export const login = async (formData: Record<string, any>) => {
     handleAxiosError(error, "Login failed. Please try again.");
   }
 };
+
 
 // Signup function
 export const signup = async (

@@ -26,10 +26,6 @@ import {
 } from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import {
-  cleanPhoneNumber,
-  objectToFormData,
-} from "@/utils/checkFormDataForImageOrAvatar";
-import {
   base64ToBlob,
   FormState,
   initialData,

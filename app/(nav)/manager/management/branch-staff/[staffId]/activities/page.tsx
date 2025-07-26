@@ -18,10 +18,21 @@ import useAddressFromCoords from "@/hooks/useGeoCoding";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 const StaffActivitiesPage = () => {
   const { branchId, staffId } = useParams();
-  const { branch } = useBranchStore();
+  // const { branch } = useBranchStore();
+  const branchName = useBranchInfoStore((s) => s.branch_name);
+  const branchAddress = useBranchInfoStore((s) => s.branch_address);
+  const branchState = useBranchInfoStore((s) => s.state);
+  const branchLocalGovernment = useBranchInfoStore((s) => s.local_government);
+  const branchCity = useBranchInfoStore((s) => s.city);
+
+  const branchFullAddress = `${branchAddress || ""}, ${branchState || ""}, ${
+    branchLocalGovernment || ""
+  }, ${branchCity || ""}`;
+
   const [fullContent, setFullContent] = useState(false);
   const [pageData, setPageData] = useState<StaffPageTypes>(initialPageData);
   const [lat, setLat] = useState<number>(0);
@@ -74,12 +85,12 @@ const StaffActivitiesPage = () => {
   return (
     <div className="space-y-6">
       <div className="custom-flex-col gap-2">
-        <BackButton bold> {branch.branch_name} </BackButton>
+        <BackButton bold> {branchName} </BackButton>
         <div className="flex">
           <div className="w-10"></div>
           <div className="flex items-center gap-1 text-text-disabled">
             <LocationIcon />
-            <p className="text-sm font-normal">{branch.address}</p>
+            <p className="text-sm font-normal">{branchFullAddress}</p>
           </div>
         </div>
       </div>

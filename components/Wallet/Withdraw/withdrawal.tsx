@@ -23,6 +23,7 @@ import useBankLogo from "@/app/(nav)/bank";
 import { currencySymbols } from "@/utils/number-formatter";
 import { useRole } from "@/hooks/roleContext";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 // Constants
 const DISCOUNT_PERCENTAGE = 0.2;
@@ -49,7 +50,7 @@ const getSecurityText = (isBranch: boolean): string =>
     ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system."
     : "Each withdrawal incurs a fee of the withdrawal amount. We collaborate with a trusted third-party provider to facilitate wallet withdrawals to any pre-registered Nigerian bank account.";
 
-const Withdrawal: React.FC<
+ const Withdrawal: React.FC<
   WalletModalDefaultProps<WalletWithdrawFundsOptions>
 > = ({ changeStep, branch }) => {
   const isDarkMode = useDarkMode();
@@ -59,6 +60,10 @@ const Withdrawal: React.FC<
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const managerBankName = useBranchInfoStore((s) => s.bank_name);
+  const managerAccountName = useBranchInfoStore((s) => s.account_name);
+  const managerAccountNumber = useBranchInfoStore((s) => s.account_number);
+
   const [bankDetails, setBankDetails] = useState<
     BankPageData | BranchBankDetails
   >({
@@ -73,9 +78,6 @@ const Withdrawal: React.FC<
     error: bankError,
     loading: bankLoading,
   } = useFetch<BankAPIResponse>("/banks");
-  const { data: branchBankData, loading: branchLoading } = useFetch<{
-    data: { branch: BranchBankDetails };
-  }>(role === "manager" ? `/branch/${branchData?.branch_id}` : null);
 
   // Fallback formatToNaira function
   const formatToNaira = (amount: number): string => {
@@ -87,11 +89,11 @@ const Withdrawal: React.FC<
 
   // Set bank details based on role
   useEffect(() => {
-    if (role === "manager" && branchBankData?.data?.branch) {
+    if (role === "manager" && managerBankName && managerAccountName && managerAccountNumber) {
       setBankDetails({
-        bank_name: branchBankData.data.branch.bank_name,
-        account_name: branchBankData.data.branch.account_name,
-        account_number: branchBankData.data.branch.account_number,
+        bank_name: managerBankName,
+        account_name: managerAccountName,
+        account_number: managerAccountNumber, 
         bank_code: "", // Not provided in branch data
       });
     } else if (bankData) {
@@ -100,7 +102,7 @@ const Withdrawal: React.FC<
         setBankDetails(transformedBank);
       }
     }
-  }, [bankData, branchBankData, role]);
+  }, [bankData, managerBankName, managerAccountName, managerAccountNumber, role]);
 
   // Update wallet store
   useEffect(() => {
@@ -160,7 +162,7 @@ const Withdrawal: React.FC<
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
-        {bankLoading || branchLoading ? (
+        {bankLoading ? (
           <div
             className="animate-pulse p-4 w-full h-24 flex items-center justify-between rounded-2xl bg-gray-200 dark:bg-darkText-primary"
             style={{ boxShadow: "5px 5px 10px 0px rgba(0, 0, 0, 0.02)" }}

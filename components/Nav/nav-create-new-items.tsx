@@ -107,8 +107,8 @@ export const manager_create_new_items: CreateNewItemsProps = [
     content: [
       { label: "landlord / landlady", modal: <AddLandlordModal /> },
       { label: "tenants / occupants", modal: <AddTenantModal /> },
-      { label: "inventory", link: "/management/inventory/create-inventory" },
       { label: "property", modal: <AddPropertyModal /> },
+      { label: "service provider", modal: <AddServiceProviderModal /> },
     ],
   },
   {
@@ -116,14 +116,11 @@ export const manager_create_new_items: CreateNewItemsProps = [
     label: "tasks",
     content: [
       { label: "examine", modal: <CreateExamineModal /> },
-      { label: "maintenance", link: "/tasks/maintenance/create-new" },
-      { label: "service provider", modal: <AddServiceProviderModal /> },
-      { label: "event", modal: <CreateReminderMOdal /> },
-      { label: "task", modal: <CreateReminderMOdal /> },
+      { label: "maintenance", link: "/manager/tasks/maintenance/create-new" },
       { label: "reminder", modal: <CreateReminderMOdal /> },
       {
         label: "announcement",
-        link: "/tasks/announcements/create-announcement",
+        link: "/manager/tasks/announcements/create-announcement",
       },
     ],
   },
@@ -131,8 +128,8 @@ export const manager_create_new_items: CreateNewItemsProps = [
     type: "menu_board",
     label: "accounting",
     content: [
-      { label: "invoice", link: "/accounting/invoice/create-invoice" },
-      { label: "expenses", link: "/accounting/expenses/create-expenses" },
+      { label: "invoice", link: "/manager/accounting/invoice/create-invoice" },
+      { label: "expenses", link: "/manager/accounting/expenses/create-expenses" },
       { label: "disbursement", modal: <NewDisbursementModal /> },
     ],
   },
@@ -143,40 +140,12 @@ export const manager_create_new_items: CreateNewItemsProps = [
       {
         label: "tenancy agreement",
         modal: (
-          <LegalProcedureModal
-            type="tenancy_agreement"
-            title="Tenancy Agreement"
-          />
+          <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
         ),
       },
       {
-        label: "quit notice",
-        modal: <LegalProcedureModal type="quit_notice" title="Quit Notice" />,
-      },
-      {
-        label: "warning / reminder",
-        modal: (
-          <LegalProcedureModal
-            type="warning_reminder"
-            title="Warning / Reminder"
-          />
-        ),
-      },
-      {
-        label: "court processs",
-        modal: (
-          <LegalProcedureModal type="court_process" title="Court Process" />
-        ),
-      },
-      {
-        label: "possession",
-        modal: <LegalProcedureModal type="possession" title="Possession" />,
-      },
-      {
-        label: "other legal processes",
-        modal: (
-          <LegalProcedureModal type="other" title="Other Legal Processes" />
-        ),
+        label: "other documents",
+        modal: <CreateTenancyAggrementModal defaultOption="other_document" />,
       },
     ],
   },
@@ -187,10 +156,6 @@ export const accountant_create_new_items: CreateNewItemsProps = [
     type: "people",
     label: "management",
     content: [
-      {
-        label: "inventory",
-        link: "/accountant/management/inventory/create-inventory",
-      },
       { label: "property", modal: <AddPropertyModal /> },
     ],
   },
@@ -226,10 +191,6 @@ export const staff_create_new_items: CreateNewItemsProps = [
     type: "people",
     label: "management",
     content: [
-      {
-        label: "inventory",
-        link: "/accountant/management/inventory/create-inventory",
-      },
       { label: "property", modal: <AddPropertyModal /> },
     ],
   },

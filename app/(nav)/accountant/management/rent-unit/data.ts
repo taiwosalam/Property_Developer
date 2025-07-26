@@ -180,6 +180,8 @@ export interface UnitDataObject {
   renew_total_package: string;
   is_active: string;
   published: number;
+  is_sponsored: number;
+  sponsored_count: number;
   status: string;
   reject_reason: string | null;
   created_at: string;

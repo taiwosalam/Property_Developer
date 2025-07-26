@@ -190,51 +190,6 @@ const Dashboard = () => {
     };
   });
 
-  const transformedWalletTableData =
-    transactions &&
-    transactions.map((t: any) => ({
-      ...t,
-      amount: (
-        <span
-          className={clsx({
-            "text-status-success-3":
-              t.transaction_type === "funding" ||
-              t.transaction_type === "transfer_in",
-            "text-status-error-primary":
-              t.transaction_type === "debit" ||
-              t.transaction_type === "transfer_out",
-          })}
-        >
-          {`${
-            t.transaction_type === "funding" ||
-            t.transaction_type === "transfer_in"
-              ? "+"
-              : t.transaction_type === "debit" ||
-                t.transaction_type === "transfer_out"
-              ? "-"
-              : ""
-          }${t.amount}`}
-        </span>
-      ),
-      icon: (
-        <div
-          className={clsx(
-            "flex items-center justify-center w-9 h-9 rounded-full",
-            {
-              "bg-status-error-1 text-status-error-primary":
-                t.transaction_type === "debit" ||
-                t.transaction_type === "transfer_out",
-              "bg-status-success-1 text-status-success-primary":
-                t.transaction_type === "funding" ||
-                t.transaction_type === "transfer_in",
-            }
-          )}
-        >
-          {getTransactionIcon(t.source as string, t.transaction_type)}
-        </div>
-      ),
-    }));
-
   const walletChartData =
     recent_transactions &&
     recent_transactions.map((t: any) => ({
@@ -356,7 +311,6 @@ const Dashboard = () => {
             mainBalance={Number(branch_wallet?.balance_total || 0)}
             cautionDeposit={Number(branch_wallet?.escrow_balance || 0)}
             className="max-w-full"
-            page="manager"
           />
           <DashboarddCalendar />
           <div className="recent-messages-card">
