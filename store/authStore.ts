@@ -10,15 +10,17 @@ interface AuthState {
   code: string | null;
   emailVerified?: boolean;
   additional_details: {
+    user_id: string | null;
     branch: {
-      branch_id: string | null;
+      branch_id: string | number | null;
       picture: string | null;
     };
     company: {
-      company_id: string | null;
+      company_id: string | number | null;
       company_logo: string | null;
       dark_logo: string | null;
     };
+    appearance: any;
   };
   setAuthState: <K extends keyof Omit<AuthState, 'setAuthState' | 'reset'>>(
     key: K,
@@ -34,6 +36,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   code: null,
   role: null,
   additional_details: {
+    user_id: null,
     branch: {
       branch_id: null,
       picture: null,
@@ -43,6 +46,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       company_logo: null,
       dark_logo: null,
     },
+    appearance: {},
   },
   setAuthState: (key, value) => {
     if (key === 'token' && value) {
@@ -72,6 +76,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       code: null,
       emailVerified: undefined,
       additional_details: {
+        user_id: null,
         branch: {
           branch_id: null,
           picture: null,
@@ -81,6 +86,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           company_logo: null,
           dark_logo: null,
         },
+        appearance: {},
       },
     });
   },

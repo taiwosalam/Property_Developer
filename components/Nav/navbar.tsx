@@ -70,10 +70,9 @@ const Header = () => {
 
   const pathname = usePathname();
 
-  
   const { company_id } = usePersonalInfoStore();
   const unreadMessageCount =
-  usePersonalInfoStore((state) => state.unread_messages_count) || 0;
+    usePersonalInfoStore((state) => state.unread_messages_count) || 0;
   const { branch } = usePersonalInfoStore();
   const notificationCount =
     usePersonalInfoStore((state) => state.unread_notifications_count) || 0;
@@ -82,6 +81,7 @@ const Header = () => {
   const setPersonalInfo = usePersonalInfoStore(
     (state) => state.setPersonalInfo
   );
+
   const name = usePersonalInfoStore((state) => state.name);
   const user_online_status = usePersonalInfoStore(
     (state) => state.user_online_status
@@ -91,7 +91,7 @@ const Header = () => {
   );
   const company_logo = usePersonalInfoStore((state) =>
     theme === "light"
-  ? getLocalStorage("light_logo")
+      ? getLocalStorage("light_logo")
       : getLocalStorage("dark_logo")
       ? getLocalStorage("dark_logo")
       : getLocalStorage("light_logo")
@@ -99,12 +99,12 @@ const Header = () => {
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
-  
+
   const { data: companyData, refetch: companyRefetch } = useFetch<any>(
     company_id ? `companies/${company_id}` : null
   );
   useRefetchOnEvent("refetchProfile", () => companyRefetch({ silent: true }));
-  
+
   /* NOTIFICATION LOGIC*/
   const [notificationIds, setNotificationIds] = useState<string[]>([]);
   const [notificationCounts, setNotificationCount] = useState(0);
@@ -114,7 +114,7 @@ const Header = () => {
     error,
     refetch: refetchNotifications,
   } = useFetch<NotificationApiResponse>(`/notifications`);
-  
+
   useEffect(() => {
     if (apiData) {
       const ids = apiData?.data?.length
@@ -205,6 +205,7 @@ const Header = () => {
       if (company) {
         setPersonalInfo("company_id", company.company_id);
         setPersonalInfo("company_logo", company.company_logo);
+        setPersonalInfo("company_domain", company.domain);
         setPersonalInfo("company_name", company.company_name);
         setPersonalInfo("company_state", company.state);
         setPersonalInfo("company_status", company.company_status);
@@ -247,10 +248,10 @@ const Header = () => {
 
   // APPLY ZOOM
   useApplyZoomFromLocalStorage();
-  
+
   // BRANCH LOGIC
   // Use branch data hook
-  const { branchLoading } = useBranchData(branch?.branch_id || 0);
+  useBranchData(branch?.branch_id || 0);
 
   const toggleTheme = () => {
     if (!hasMounted.current) return;

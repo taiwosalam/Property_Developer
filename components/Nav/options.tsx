@@ -14,6 +14,12 @@ export const profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
+  {
     label: "Company Reviews",
     link: {
       href: "/reviews",
@@ -62,13 +68,25 @@ export const manager_profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
+  {
+    label: "Branch Reviews",
+    link: {
+      href: "/reviews",
+    },
+  },
+  {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
   },
-  {
-    label: "Request Call",
-    modal: <NavRequestCallback />,
-  },
+  // {
+  //   label: "Request Call",
+  //   modal: <NavRequestCallback />,
+  // },
 ];
 
 export const account_profile_actions: (
@@ -83,13 +101,19 @@ export const account_profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
+  {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
   },
-  {
-    label: "Request Call",
-    modal: <NavRequestCallback />,
-  },
+  // {
+  //   label: "Request Call",
+  //   modal: <NavRequestCallback />,
+  // },
 ];
 
 export const staff_profile_actions: (
@@ -104,13 +128,19 @@ export const staff_profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
+  {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
   },
-  {
-    label: "Request Call",
-    modal: <NavRequestCallback />,
-  },
+  // {
+  //   label: "Request Call",
+  //   modal: <NavRequestCallback />,
+  // },
 ];
 
 export const user_profile_actions: (
@@ -124,6 +154,12 @@ export const user_profile_actions: (
     }
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
+  {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
   {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,

@@ -36,18 +36,9 @@ import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useFetch from "@/hooks/useFetch";
 import { useGlobalStore } from "@/store/general-store";
+import { useRole } from "@/hooks/roleContext";
 
-// Function to determine route prefix based on page
-const getRoutePrefix = (page?: "manager" | "account"): string => {
-  switch (page) {
-    case "manager":
-      return "/manager/management";
-    case "account":
-      return "/account/management";
-    default:
-      return "/management";
-  }
-};
+
 
 const VacantUnitCard = ({
   status,
@@ -72,7 +63,26 @@ const VacantUnitCard = ({
   const [publishing, setPublishing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const is_sponsored = unit_data.is_sponsored;
+  const { role } = useRole();
 
+  const CAN_LINK_TENANT = role === "manager" || role === "director";
+  const CAN_SPONSOR_UNIT = role === "manager" || role === "director";
+
+console.log("role", role)
+  // Function to determine route prefix based on page
+  const getRoutePrefix = function (): string {
+    switch (role) {
+      case "manager":
+        return "/manager";
+      case "account":
+        return "/accountant"; 
+      case "director":
+        return "";
+      default:
+        return "";
+    }
+  };
+  
   const referenceObject = {
     property_title: "",
     unit_name: "",
@@ -229,38 +239,41 @@ const VacantUnitCard = ({
             </div>
           )}
 
-          {!["under moderation", "rejected", "unpublished"].includes(
-            unit_status
-          ) && (
-            <UnitSponsorPopover
-              sponsored_count={unit_data.sponsored_count}
-              unitId={unit_data.unitId}
-              unitName={keyValueData.unit_name}
-              propertyName={unit_data.property_title}
-              annualRent={keyValueData.rent}
-              status={unit_data.is_active}
-              unitDesc={keyValueData.unit_details}
-              availableSponsors={availableSponsors || 0}
-              is_sponsored={is_sponsored}
-            />
-          )}
-
-          <Modal
-            state={{
-              isOpen,
-              setIsOpen,
-            }}
-          >
-            <ModalContent>
-              <UnitPublishModal
-                isPublished={checked}
-                onYes={togglePublish}
-                loading={publishing}
+          {CAN_SPONSOR_UNIT &&
+            !["under moderation", "rejected", "unpublished"].includes(
+              unit_status
+            ) && (
+              <UnitSponsorPopover
+                sponsored_count={unit_data.sponsored_count}
+                unitId={unit_data.unitId}
+                unitName={keyValueData.unit_name}
+                propertyName={unit_data.property_title}
+                annualRent={keyValueData.rent}
+                status={unit_data.is_active}
+                unitDesc={keyValueData.unit_details}
+                availableSponsors={availableSponsors || 0}
+                is_sponsored={is_sponsored}
               />
-            </ModalContent>
-          </Modal>
+            )}
+
+          {CAN_SPONSOR_UNIT && (
+            <Modal
+              state={{
+                isOpen,
+                setIsOpen,
+              }}
+            >
+              <ModalContent>
+                <UnitPublishModal
+                  isPublished={checked}
+                  onYes={togglePublish}
+                  loading={publishing}
+                />
+              </ModalContent>
+            </Modal>
+          )}
           <Link
-            href={`${getRoutePrefix(page)}/rent-unit/${unit_data.unitId}`}
+            href={`${getRoutePrefix()}/management/rent-unit/${unit_data.unitId}`}
             className="flex items-center gap-2"
           >
             <PreviewEyeIcon />
@@ -270,7 +283,7 @@ const VacantUnitCard = ({
             unit_status
           ) && (
             <Link
-              href={`/listing/statistics/${unit_data.unitId}`}
+              href={`${getRoutePrefix()}/listing/statistics/${unit_data.unitId}`}
               className="flex gap-2"
             >
               <StatsChartIcon />
@@ -278,7 +291,7 @@ const VacantUnitCard = ({
             </Link>
           )}
           <Link
-            href={`${getRoutePrefix(page)}/properties/${
+            href={`${getRoutePrefix()}/management/properties/${
               unit_data.property_id
             }/edit-property`}
             className="flex gap-2"
@@ -286,15 +299,19 @@ const VacantUnitCard = ({
             <EditPencilIcon />
             <p>Edit</p>
           </Link>
-          <Link
-            href={`${getRoutePrefix(page)}/rent-unit/${
-              unit_data.unitId
-            }/start-rent?type=${unit_data.propertyType}&id=${unit_data.unitId}`}
-            className="flex gap-2 font-normal"
-          >
-            <StartRentIcon size={24} />
-            <p>Link Tenant</p>
-          </Link>
+          {CAN_LINK_TENANT && (
+            <Link
+              href={`${getRoutePrefix()}/management/rent-unit/${
+                unit_data.unitId
+              }/start-rent?type=${unit_data.propertyType}&id=${
+                unit_data.unitId
+              }`}
+              className="flex gap-2 font-normal"
+            >
+              <StartRentIcon size={24} />
+              <p>Link Tenant</p>
+            </Link>
+          )}
         </div>
       </div>
     </div>

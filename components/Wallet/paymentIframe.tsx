@@ -37,6 +37,7 @@ const PaymentIframe: React.FC<PaymentIframeProps> = ({
           } else {
             window.dispatchEvent(new Event("refetch-wallet"));
             window.dispatchEvent(new Event("/wallets/dashboard"));
+            window.dispatchEvent(new Event("refetch-branch-data"));
           }
           onPaymentConfirmed(); // Notify parent that payment is confirmed
         }

@@ -5,6 +5,7 @@ import Card from "@/components/dashboard/card";
 import {
   invoiceTableFields,
   getDashboardCardData,
+  dashboardListingsChartConfig,
 } from "./data";
 import DashboarddCalendar from "@/components/dashboard/Dashcalendar";
 import { SectionContainer } from "@/components/Section/section-components";
@@ -35,6 +36,9 @@ import {
   transformComplaintsData,
 } from "../tasks/complaints/data";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
+import { DashboardChart } from "@/components/dashboard/chart";
+import { initialDashboardStats } from "../../dashboard/data";
+import { DashboardDataResponse } from "../../dashboard/types";
 
 const AccountManagerDashboard = () => {
   const { role, setRole } = useRole();
@@ -52,6 +56,30 @@ const AccountManagerDashboard = () => {
       setDashboardStats(getDashboardCardData(data));
     }
   }, [data]);
+
+  // Dashboard Stats
+  const {
+    data: dashboardData,
+    loading: dashboardLoading,
+    error: dashboardError,
+    refetch: dashboardRefetch,
+    isNetworkError: dashboardIsNetworkError,
+  } = useFetch<DashboardDataResponse>("/dashboard/data");
+  const [performanceChart, setPerformanceChart] =
+    useState<DashboardDataResponse | null>(null);
+  useEffect(() => {
+    if (dashboardData) {
+      setDashboardStats(getDashboardCardData(dashboardData as any));
+      setPerformanceChart(dashboardData);
+    }
+  }, [dashboardData]);
+
+  const bookmarkChartData =
+    dashboardData?.data?.chart_data.map((item: any) => ({
+      date: item?.date,
+      views: item?.total_views,
+      bookmarks: item?.total_bookmarks,
+    })) || [];
 
   // Fetch and transform invoice data
   const {
@@ -130,6 +158,15 @@ const AccountManagerDashboard = () => {
         <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
           <DashboarddCalendar />
         </div>
+      </div>
+
+      <div className="listing-performance-chart w-full h-fit">
+        <DashboardChart
+          chartTitle="listing Performance"
+          visibleRange
+          chartConfig={dashboardListingsChartConfig}
+          chartData={bookmarkChartData}
+        />
       </div>
 
       {/* Recent Invoice */}

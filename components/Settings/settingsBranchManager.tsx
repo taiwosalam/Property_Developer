@@ -47,6 +47,7 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import Button from "../Form/Button/button";
+import { NameVerification } from "./name-verification";
 
 const ManagerProfile = () => {
   const { role } = useRole();
@@ -67,6 +68,7 @@ const ManagerProfile = () => {
   const [picture, setPicture] = useState(pageData?.profile_picture || "");
   const [reqLoading, setReqLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [closeVerificationModal, setCloseVerificationModal] = useState(false);
 
   const { data, loading, error, refetch } = useFetch("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
@@ -133,6 +135,15 @@ const ManagerProfile = () => {
     } finally {
       setReqLoading(false);
     }
+  };
+  const [fullName, setFullName] = useState<string>(pageData?.fullname || "");
+
+  useEffect(() => {
+    setFullName(pageData?.fullname || "");
+  }, [pageData?.fullname]);
+
+  const onChangeFullName = (value: string) => {
+    setFullName(value);
   };
 
   return (
@@ -244,13 +255,49 @@ const ManagerProfile = () => {
                     options={industryOptions}
                     defaultValue={pageData?.professional_title}
                   />
-                  <Input
+                  {/* <Input
                     id="fullname"
                     label="full name"
                     placeholder="Write Here"
                     className="bg-neutral-2"
                     defaultValue={pageData?.fullname}
-                  />
+                  /> */}
+                  <div className="relative">
+                    <Input
+                      disabled={pageData?.is_bvn_verified}
+                      inputClassName="capitalize"
+                      id="full_name"
+                      name="full_name"
+                      label="full name"
+                      placeholder="Write Here"
+                      readOnly={pageData?.is_bvn_verified}
+                      value={fullName ? fullName.toLowerCase() : ""}
+                      onChange={onChangeFullName}
+                    />
+                    <Modal
+                      state={{
+                        setIsOpen: setCloseVerificationModal,
+                        isOpen: closeVerificationModal,
+                      }}
+                    >
+                      <ModalTrigger>
+                        <Button
+                          size="sm_medium"
+                          disabled={pageData?.is_bvn_verified}
+                          className="text-white flex items-center justify-center text-center absolute top-9 right-2 py-2 px-4 h-9"
+                        >
+                          {pageData?.is_bvn_verified ? "Verified" : "Verify"}
+                        </Button>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <NameVerification
+                          fullName={fullName}
+                          setFullName={setFullName}
+                          setCloseVerification={setCloseVerificationModal}
+                        />
+                      </ModalContent>
+                    </Modal>
+                  </div>
                   <Input
                     id="email"
                     type="email"

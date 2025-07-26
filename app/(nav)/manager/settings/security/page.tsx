@@ -18,9 +18,6 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { FormState, updateUserProfile } from "./data";
 import { toast } from "sonner";
-import { AuthForm } from "@/components/Auth/auth-components";
-import SettingsSignature from "@/components/Settings/settings-signature";
-import SettingsBank from "@/components/Settings/settings-bank";
 import ManagerProfile from "@/components/Settings/settingsBranchManager";
 import BranchBankSettings from "@/components/Settings/branch-bank";
 import { updateBranch } from "@/app/(nav)/management/staff-branch/[branchId]/edit-branch/data";
@@ -120,7 +117,7 @@ const Security = () => {
       if (status) {
         toast.success("Branch Bank Details Updated Successfully");
         window.dispatchEvent(new Event("refectch-branch"));
-        router.push(`/management/staff-branch/${branchID}`);
+        // router.push(`/management/staff-branch/${branchID}`);
       }
     } catch (err) {
       console.error(err);
@@ -139,7 +136,7 @@ const Security = () => {
         branch_account_name={branchData?.account_name}
         branch_account_number={branchData?.account_number}
         branch_bank_name={branchData?.bank_name}
-        action={updateBranchBankDetails}
+        // action={updateBranchBankDetails}
       />
     </>
   );

@@ -16,6 +16,7 @@ import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-c
 import { useRef, useState, useEffect } from "react";
 import { toggleAutoRenewPlan } from "@/app/(nav)/settings/subscription/data";
 import { toast } from "sonner";
+import NavRequestCallback from "@/components/Nav/NavModals/nav-request-callback";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -59,7 +60,7 @@ export const PlanHeader: React.FC<{
     const parsedExpiryDate = expiry_date
       ? dayjs(expiry_date, ["YYYY-MM-DD", "DD/MM/YYYY"], true)
       : dayjs(currentExpiryDate, ["YYYY-MM-DD", "DD/MM/YYYY"], true);
-    
+
     formattedExpiryDate = parsedExpiryDate.isValid()
       ? parsedExpiryDate.format("MMMM D, YYYY")
       : "";
@@ -333,24 +334,6 @@ export const FeaturesToggle: React.FC<{
     setAutoRenewState(autoRenew);
   }, [autoRenew]);
 
-  // const handleToggleAutoRenew = async () => {
-  //   setAutoRenew(!autoRenew);
-  //   const payload = {
-  //     auto_renew: autoRenew ? 0 : 1,
-  //   };
-  //   const SUCCESS_MESSAGE = autoRenew
-  //     ? "Auto-Renewal disabled"
-  //     : "Auto-Renewal enabled";
-  //   const res = await toggleAutoRenewPlan(payload);
-  //   if (res) {
-  //     toast.success(SUCCESS_MESSAGE);
-  //   } else {
-  //     console.error("Failed to toggle Auto-Renewal");
-  //   }
-  // };
-
-  // Is this the current plan (except free)?
-
   const handleToggleAutoRenew = async () => {
     if (isToggling || clickProcessed.current) return;
     clickProcessed.current = true; // Mark click as processed
@@ -388,7 +371,7 @@ export const FeaturesToggle: React.FC<{
   const showAutoRenew = isCurrentPlan && !isFree;
   return (
     <div className="flex items-center justify-between">
-      <div className="flex w-full px-6 py-3">
+      <div className="flex flex-2/3 px-6 py-3">
         <button
           className="text-brand-9 text-[18px] font-medium tracking-[0px] flex items-center gap-2"
           onClick={handleCardClick}
@@ -407,7 +390,7 @@ export const FeaturesToggle: React.FC<{
           </motion.div>
         </button>
       </div>
-      <div className="flex items-center justify-end w-full">
+      <div className="flex items-center justify-end w-1/3 ml-auto">
         {showAutoRenew && (
           <DocumentCheckbox
             darkText
@@ -496,6 +479,8 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
 
+  const isProfessionalPlan = currentPlanKeyword === "professional";
+
   // Plan rank mapping (higher number = higher rank)
   const planRank: { [key: string]: number } = {
     free: 0,
@@ -515,7 +500,8 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
     (currentPlanKeyword === "premium" && thisPlanKeyword === "basic");
 
   const isButtonDisabled =
-    (isCurrentPlanLifetime && planRank[currentPlanKeyword] >= planRank[thisPlanKeyword]) ||
+    (isCurrentPlanLifetime &&
+      planRank[currentPlanKeyword] >= planRank[thisPlanKeyword]) ||
     isDowngradeBlocked;
 
   // Determine button text based on plan context
@@ -595,14 +581,18 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
               </button>
             </ModalTrigger>
             <ModalContent>
-              <SponsorModal
-                page="subscription"
-                count={10}
-                cost={subCost ?? 0}
-                message={!notMessage}
-                onSubmit={onSelectPlan}
-                onSelect={onSelect}
-              />
+              {!isProfessionalPlan ? (
+                <SponsorModal
+                  page="subscription"
+                  count={10}
+                  cost={subCost ?? 0}
+                  message={!notMessage}
+                  onSubmit={onSelectPlan}
+                  onSelect={onSelect}
+                />
+              ) : (
+                <NavRequestCallback />
+              )}
             </ModalContent>
           </Modal>
         ) : (

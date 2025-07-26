@@ -8,7 +8,7 @@ import { useUnitForm } from "./unit-form-context";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAddUnitStore } from "@/store/add-unit-store";
-
+import { useRole } from "@/hooks/roleContext";
 interface AddUnitFooterProps {
   noForm?: boolean;
 }
@@ -21,17 +21,31 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
     useUnitForm();
   const [footerModalOpen, setFooterModalOpen] = useState(false);
   const router = useRouter();
+  const { role } = useRole();
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
   const newForm = useAddUnitStore((s) => s.newForm ?? false);
   const [checkSubmit, setCheckSubmit] = useState(false);
   const [saveAfterValidation, setSaveAfterValidation] = useState(false);
+
+  const getPropertiesRoute = () => {
+    switch (role) {
+      case "director":
+        return "/management/properties";
+      case "manager":
+        return "/manager/management/properties";
+      case "account":
+        return "/accountant/management/properties";
+      default:
+        return "/unauthorized";
+    }
+  };
 
   const navigateBackOrToProperties = () => {
     const page = searchParams.get("page");
     if (page === "rent-unit") {
       router.back();
     } else {
-      router.push("/management/properties");
+      router.push(getPropertiesRoute());
     }
   };
 

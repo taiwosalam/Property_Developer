@@ -44,8 +44,8 @@ const SignIn = () => {
         const currentRole = useAuthStore.getState().role;
         if (currentRole) {
           clearInterval(interval);
-          // router.push(getDashboardPage(currentRole));
-          window.location.href = getDashboardPage(currentRole);
+          router.push(getDashboardPage(currentRole));
+          // window.location.href = getDashboardPage(currentRole);
         }
       }, 50);
     } else if (a === 'redirect to setup') {

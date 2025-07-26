@@ -61,10 +61,10 @@ export const nav_items: NavItemsProps = [
     label: "accounting",
     content: [
       { label: "invoice", href: "/invoice" },
-      { label: "VAT", href: "/vat" },
       // { label: "receipts", href: "/receipts" },
       { label: "expenses", href: "/expenses" },
       { label: "disbursement", href: "/disbursement" },
+      { label: "VAT", href: "/vat" },
       // { label: "statement", href: "/statement" },
     ],
   },
@@ -252,6 +252,15 @@ export const account_nav_items: NavItemsProps = [
       { label: "disbursement", href: "/accountant/accounting/disbursement" },
       // { label: "statement", href: "/manager/accounting/statement" },
       { label: "VAT", href: "/accountant/accounting/vat" },
+    ],
+  },
+  {
+    type: "chart",
+    label: "listing",
+    content: [
+      { label: "units", href: "/accountant/listing/units" },
+      { label: "statistics", href: "/accountant/listing/statistics" },
+      // { label: "Property Draft/Request", href: "/accountant/listing/property" },
     ],
   },
   {
@@ -527,6 +536,7 @@ export interface ProfileResponse {
       company_id: string;
       company_name: string;
       company_logo: string;
+      domain: string;
       company_status: string;
       reject_reason: string;
       state: string;
@@ -573,4 +583,23 @@ export const truncateName = (
 ): string => {
   if (!name) return "User"; // Fallback for undefined, null, or empty
   return name.length > maxLength ? `${name.slice(0, maxLength)}...` : name;
+};
+
+export const getSafeLinkHref = (
+  label: string,
+  originalHref: string,
+  domain: string
+) => {
+  if (typeof window === "undefined") return originalHref;
+
+  const isHomepage = label.toLowerCase() === "homepage";
+
+  if (!isHomepage) return originalHref;
+
+  // Ensure domain starts with https
+  if (!domain.startsWith("https://")) {
+    domain = "https://" + domain.replace(/^https?:\/\//, "");
+  }
+
+  return domain;
 };
