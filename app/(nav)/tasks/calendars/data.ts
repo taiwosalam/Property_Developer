@@ -95,7 +95,7 @@ export const transformEventTable = (
         ? dayjs(item.date).format("DD/MM/YYYY HH:mm A")
         : "___ ___",
       event: item?.description || "___ ___",
-      creator: item.creator || "___ ___",
+      creator: item.creator?.toLowerCase() || "___ ___",
       property_name: item.property || "___ ___",
       branch: item.branch || "___ ___",
       account_officer: item.accountOfficer || "___ ___",

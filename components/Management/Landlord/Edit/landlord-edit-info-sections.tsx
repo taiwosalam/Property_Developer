@@ -596,7 +596,11 @@ export const LandlordEditOthersInfoSection = () => {
   );
 };
 
-export const LandlordEditAttachmentInfoSection = ({ noDefault }: { noDefault?: boolean }) => {
+export const LandlordEditAttachmentInfoSection = ({
+  noDefault,
+}: {
+  noDefault?: boolean;
+}) => {
   const { data: landlord } = useLandlordEditContext();
   const [reqLoading, setReqLoading] = useState(false);
   const [documents, setDocuments] = useState<LandlordPageData["documents"]>([]);
@@ -754,34 +758,34 @@ export const LandlordEditAttachmentInfoSection = ({ noDefault }: { noDefault?: b
           ))}
         </div> */}
 
-        <div className="col-span-full">
-          {Object.entries(groupedDocuments).map(([documentType, docs]) => (
-            <div key={documentType} className="mb-6">
-              <h3 className="text-lg font-semibold capitalize mb-2">
-                {documentType === "others" ? "Other Documents" : documentType}
-              </h3>
-              <div className="flex flex-wrap gap-4">
-                {docs?.map((document) => (
-                  <div key={document.id} className="relative w-fit">
-                    <LandlordTenantInfoDocument {...document} />
-                    <button
-                      type="button"
-                      className="absolute top-0 right-0"
-                      onClick={() => handleDeleteDocument(document.id)}
-                    >
-                      <DeleteIconOrange size={32} />
-                    </button>
-                  </div>
-                ))}
+          <div className="col-span-full">
+            {Object.entries(groupedDocuments).map(([documentType, docs]) => (
+              <div key={documentType} className="mb-6">
+                <h3 className="text-lg font-semibold capitalize mb-2">
+                  {documentType === "others" ? "Other Documents" : documentType}
+                </h3>
+                <div className="flex flex-wrap gap-4">
+                  {docs?.map((document) => (
+                    <div key={document.id} className="relative w-fit">
+                      <LandlordTenantInfoDocument {...document} />
+                      <button
+                        type="button"
+                        className="absolute top-0 right-0"
+                        onClick={() => handleDeleteDocument(document.id)}
+                      >
+                        <DeleteIconOrange size={32} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-          {documents.length === 0 && (
-            <div className="flex justify-center items-center h-32 text-neutral-500">
-              No documents available
-            </div>
-          )}
-        </div>
+            ))}
+            {documents.length === 0 &&
+              // <div className="flex justify-center items-center h-32 text-neutral-500">
+              //   No documents available
+              // </div>
+              ""}
+          </div>
 
           <Button
             size="base_medium"

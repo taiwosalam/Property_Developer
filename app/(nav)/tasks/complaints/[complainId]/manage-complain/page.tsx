@@ -17,18 +17,9 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import ServerError from "@/components/Error/ServerError";
 import NetworkError from "@/components/Error/NetworkError";
 import ComplaintSkeleton from "@/components/Loader/complaint-details";
+import { useRole } from "@/hooks/roleContext";
 // import CreateReminderModal from "@/components/tasks/complainid/create-reminder-modal";
 // import CreateTaskModal from "@/components/tasks/complainid/create-task-modal";
-
-const images = [
-  { src: "/empty/SampleProperty.jpeg", isVideo: false },
-  { src: "/empty/SampleProperty2.jpeg", isVideo: true },
-  { src: "/empty/SampleProperty3.jpeg", isVideo: false },
-  { src: "/empty/SampleProperty4.png", isVideo: false },
-  { src: "/empty/SampleProperty5.jpg", isVideo: false },
-  { src: "/empty/SampleProperty6.jpg", isVideo: false },
-  { src: "/empty/SampleProperty.jpeg", isVideo: false },
-];
 
 const ManageComplain = () => {
   const [pageData, setPageData] = useState<IManageComplaints | null>(null);

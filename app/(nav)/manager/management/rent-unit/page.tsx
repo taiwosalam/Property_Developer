@@ -132,7 +132,6 @@ const RentAndUnit = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-
   const config: AxiosRequestConfig = useMemo(() => {
     const params: RentUnitFilterParams = {
       page: current_page,
@@ -242,7 +241,7 @@ const RentAndUnit = () => {
   const {
     data: apiData,
     loading,
-    silentLoading,  
+    silentLoading,
     isNetworkError,
     error,
     refetch,
@@ -380,31 +379,22 @@ const RentAndUnit = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="Create New Unit"
-              buttonLink="/manager/management/rent-unit/create"
+              noButton
               title="No Unit Found"
               body={
                 <p>
-                  You can create a Unit by clicking on the &apos;Add Property&apos;
-                  button. You can create two types of properties: rental and
-                  facility properties. Rental properties are mainly tailored for
-                  managing properties for rent, including landlord and tenant
-                  management processes. Facility properties are designed for
-                  managing occupants in gated estates, overseeing their due
-                  payments, visitor access, and vehicle records. <br />
-                  <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  You can create a unit when adding a property. Whether creating
+                  or editing a rental or facility property, units can be added
+                  during the process. Each property is registered as a whole,
+                  while individual flats or sections within it are considered
+                  units.
                   <br />
                   <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
+                  To manage occupants and tenants, they are assigned to specific
+                  units within the property. Each unit is created separately
+                  under the main property.
+                  <br />
+                  <br />
                 </p>
               }
             />
@@ -427,7 +417,11 @@ const RentAndUnit = () => {
                     <CardsLoading />
                   ) : (
                     pageData?.unit?.map((unit, index) => (
-                      <RentalPropertyCard page="manager" key={index} {...unit} />
+                      <RentalPropertyCard
+                        page="manager"
+                        key={index}
+                        {...unit}
+                      />
                     ))
                   )}
                 </AutoResizingGrid>
@@ -437,7 +431,11 @@ const RentAndUnit = () => {
                     <CardsLoading />
                   ) : (
                     pageData?.unit.map((unit, index) => (
-                      <RentalPropertyListCard page="manager" key={index} {...unit} />
+                      <RentalPropertyListCard
+                        page="manager"
+                        key={index}
+                        {...unit}
+                      />
                     ))
                   )}
                 </div>

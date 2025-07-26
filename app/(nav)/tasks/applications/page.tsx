@@ -30,6 +30,7 @@ import { ApplicationStatusItem } from "@/components/Listing/Property/property-li
 import { IPropertyApi } from "../../settings/others/types";
 import { rejectApplication } from "./[applicationId]/manage/data";
 import { toast } from "sonner";
+import Pagination from "@/components/Pagination/pagination";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
@@ -296,14 +297,13 @@ const Applications = () => {
                 : "No Application Yet"}
             </AutoResizingGrid>
           )}
-
-          {/* <AutoResizingGrid minWidth={300} gap={32} containerClassName="w-full">
-            <ApplicationCard status="flagged" type="staff" />
-            <ApplicationCard status="unflagged" type="guest" />
-            <ApplicationCard status="unflagged" type="staff" />
-          </AutoResizingGrid>  */}
         </section>
       </div>
+      <Pagination
+        totalPages={pageData?.pagination?.total_pages || 0}
+        currentPage={pageData?.pagination?.current_page || 0}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

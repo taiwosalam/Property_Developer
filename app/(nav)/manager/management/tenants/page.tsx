@@ -379,22 +379,19 @@ const Tenants = () => {
             </div>
           ) : (
             <EmptyList
-              buttonText="+ Create New Tenant"
+              noButton
               modalContent={<AddTenantModal />}
               title="The tenants and occupants profile files are empty."
               body={
                 <p>
                   You don&apos;t have any profiles for tenants and occupants
                   yet. You can create them manually by clicking on the
-                  &apos;Create New User&apos; button or add them using their
+                  &quot;Create New User&quot; button or add them using their
                   profile ID. Tenant profiles are for rental properties, while
                   occupant profiles are for residents in gated estates. Once you
-                  add profiles to this page, this guide will no longer show. To
-                  learn more about this page later, you can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  add profiles to this page, this guide will no longer show.
+                  <br />
+                  <br />
                   <br />
                   <br />
                   Occupants and tenants can be onboarded manually which creates

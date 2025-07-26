@@ -10,14 +10,35 @@ import ModalPreset from "@/components/Modal/modal-preset";
 import { useParams, useRouter } from "next/navigation";
 import { deleteExamine } from "@/app/(nav)/tasks/examine/[examineId]/manage/data";
 import { toast } from "sonner";
+import { useRole } from "@/hooks/roleContext";
 
 const DeleteExamineModal = () => {
   const { activeStep, changeStep } = useStep(2);
   const [isDeleting, setIsDeleting] = useState(false);
   const params = useParams();
   const paramId = params?.examineId;
-
   const router = useRouter();
+
+  const { role } = useRole();
+
+  const toToMainPage = () => {
+    switch (role) {
+      case "director":
+        router.push(`/tasks/examine`);
+        break;
+      case "manager":
+        router.push(`/manager/tasks/examine`);
+        break;
+      case "account":
+        router.push(`/accountant/tasks/examine`);
+        break;
+      case "staff":
+        router.push(`/staff/tasks/examine`);
+        break;
+      default:
+        router.push(`/unauthorized`);
+    }
+  };
 
   const handleDeleteExamine = async () => {
     if (!paramId) return;
@@ -28,7 +49,9 @@ const DeleteExamineModal = () => {
       if (res) {
         toast.success("Examine deleted");
         changeStep("next");
-        router.push("/tasks/examine");
+        setTimeout(() => {
+          toToMainPage();
+        }, 1000);
       }
     } catch (error) {
       console.error(error);

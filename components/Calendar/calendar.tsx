@@ -32,6 +32,7 @@ import useFetch from "@/hooks/useFetch";
 import { CalendarEventsApiResponse } from "@/app/(nav)/tasks/calendars/types";
 import { transformCalendarEvents } from "@/app/(nav)/tasks/calendars/data";
 import { CalendarEventProps } from "./types";
+import UnitBreakdownNewTenant from "../Management/Properties/unit-breakdown-new-tenant";
 
 interface CalendarComponentProps {
   events?: CalendarEventProps[];
@@ -104,6 +105,21 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
     }),
   });
 
+  const gotoPage = () => {
+    switch (role) {
+      case "director":
+        return "/tasks/calendars/manage";
+      case "manager":
+        return "/manager/tasks/calendars/manage";
+      case "accountant":
+        return "/accountant/tasks/calendars/manage";
+      case "staff":
+        return "/staff/tasks/calendars/manage";
+      default:
+        return "/unauthorized";
+    }
+  };
+
   const { calendarDays } = data;
 
   return (
@@ -154,7 +170,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
                 <Button
                   size="sm_medium"
                   className="py-2 px-8"
-                  href="/tasks/calendars/manage"
+                  href={gotoPage()}
                 >
                   explore
                 </Button>

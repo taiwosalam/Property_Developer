@@ -62,6 +62,12 @@ export const manager_profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Company Reviews",
+    link: {
+      href: "/reviews",
+    },
+  },
+  {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
   },
@@ -82,6 +88,12 @@ export const account_profile_actions: (
     }
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
+  {
+    label: "Company Reviews",
+    link: {
+      href: "/reviews",
+    },
+  },
   {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,

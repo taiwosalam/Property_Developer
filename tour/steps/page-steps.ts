@@ -34,6 +34,7 @@ export interface PageTourConfig {
   match?: (pathname: string) => boolean; // Add match function for dynamic routes
 }
 
+
 export const pageSteps: Record<string, PageTourConfig> = {
   "/dashboard": {
     steps: [...navSteps, ...dashboardSteps],
