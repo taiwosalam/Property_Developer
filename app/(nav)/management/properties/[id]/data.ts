@@ -29,7 +29,7 @@ export const transformSinglePropertyData = (
     id: data.id,
     video_link: data.video_link,
     property_name: data.title,
-    address: `${data.full_address}, ${data.city_area}, ${data.local_government}, ${data.state}`,
+    address: `${data.full_address}`, //${data.city_area}, ${data.local_government}, ${data.state}`,
     propertyType: data.property_type as "rental" | "facility",
     total_units: data.units_count,
     images: data.images.map((img) => img.path),
