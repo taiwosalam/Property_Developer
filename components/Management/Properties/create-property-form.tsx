@@ -421,6 +421,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     return <FullPageLoader text="Submitting..." />;
   }
 
+  console.log(propertyDetails?.full_address);
+
   return (
     <FlowProgress
       key="property-form-progress"
