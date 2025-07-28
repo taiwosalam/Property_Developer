@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import type {
@@ -24,6 +24,7 @@ import { currencySymbols } from "@/utils/number-formatter";
 import { useRole } from "@/hooks/roleContext";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useBranchInfoStore } from "@/store/branch-info-store";
+import Link from "next/link";
 
 // Constants
 const DISCOUNT_PERCENTAGE = 0.2;
@@ -50,7 +51,7 @@ const getSecurityText = (isBranch: boolean): string =>
     ? "For security reasons and to ensure accurate record-keeping, withdrawals are only permitted from the branch wallet to the company's main wallet. This policy helps maintain transparency, streamline financial management, and safeguard funds within the organization's system."
     : "Each withdrawal incurs a fee of the withdrawal amount. We collaborate with a trusted third-party provider to facilitate wallet withdrawals to any pre-registered Nigerian bank account.";
 
- const Withdrawal: React.FC<
+const Withdrawal: React.FC<
   WalletModalDefaultProps<WalletWithdrawFundsOptions>
 > = ({ changeStep, branch }) => {
   const isDarkMode = useDarkMode();
@@ -89,11 +90,16 @@ const getSecurityText = (isBranch: boolean): string =>
 
   // Set bank details based on role
   useEffect(() => {
-    if (role === "manager" && managerBankName && managerAccountName && managerAccountNumber) {
+    if (
+      role === "manager" &&
+      managerBankName &&
+      managerAccountName &&
+      managerAccountNumber
+    ) {
       setBankDetails({
         bank_name: managerBankName,
         account_name: managerAccountName,
-        account_number: managerAccountNumber, 
+        account_number: managerAccountNumber,
         bank_code: "", // Not provided in branch data
       });
     } else if (bankData) {
@@ -102,7 +108,13 @@ const getSecurityText = (isBranch: boolean): string =>
         setBankDetails(transformedBank);
       }
     }
-  }, [bankData, managerBankName, managerAccountName, managerAccountNumber, role]);
+  }, [
+    bankData,
+    managerBankName,
+    managerAccountName,
+    managerAccountNumber,
+    role,
+  ]);
 
   // Update wallet store
   useEffect(() => {
@@ -159,6 +171,17 @@ const getSecurityText = (isBranch: boolean): string =>
     }
   };
 
+  const getUpdateBankSettingsPage = () => {
+    switch (role) {
+      case "director":
+        return "/settings/security";
+      case "manager":
+        return "/manager/settings/security";
+      default:
+        return "/settings/security";
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-4">
@@ -187,7 +210,8 @@ const getSecurityText = (isBranch: boolean): string =>
                 <p>
                   Sorry, your withdrawal cannot be processed at this time.
                   Please add your {role === "manager" ? "branch" : "company"}{" "}
-                  bank account details to your account. Click here to update
+                  bank account details to your account. Click{" "}
+                  <Link className="text-brand-9 hover:underline" href={getUpdateBankSettingsPage()}>here</Link> to update
                   your bank details.
                 </p>
               </div>

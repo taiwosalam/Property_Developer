@@ -48,6 +48,9 @@ import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import Button from "../Form/Button/button";
 import { NameVerification } from "./name-verification";
+import { validateAndCleanPhoneNumber } from "@/utils/validatePhoneNumber";
+import { useBranchInfoStore } from "@/store/branch-info-store";
+import { updateStaffPicture, updateStaffProfile } from "@/app/(nav)/manager/management/branch-staff/[staffId]/edit/data";
 
 const ManagerProfile = () => {
   const { role } = useRole();
@@ -69,6 +72,9 @@ const ManagerProfile = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [closeVerificationModal, setCloseVerificationModal] = useState(false);
+  const managerID = useBranchInfoStore((s) => s.manager.id);
+  const staffID = role === "manager" ? managerID : 0; //TODO: get staff id for account officer and staff later
+  const branchId = useBranchInfoStore((s) => s.branch_id);
 
   const { data, loading, error, refetch } = useFetch("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
@@ -107,28 +113,89 @@ const ManagerProfile = () => {
     }
   };
 
-  const handleUpdateProfile = async (data: Record<string, string>) => {
-    const payload = {
-      name: data.fullname,
+  const handleUpdateProfile = async (data: Record<string, string | File>) => {
+    console.log("data", data);
+    const phoneNumber = data.phone_number as string;
+    // Validate phone number
+    const cleanedPhoneNumber = validateAndCleanPhoneNumber(phoneNumber) || "";
+    if (!cleanedPhoneNumber && phoneNumber) {
+      toast.warning("Please enter a valid phone number.");
+      return;
+    }
+
+    // Construct user payload
+    const payload: Record<string, string | File> = {
+      name: data.full_name,
       title: data.personal_title,
-      picture: data.picture,
-      phone: data.phone_number,
       gender: data.gender,
       bio: data.about,
       professional_title: data.professional_title,
-      email: data.email,
+      email: data.email || "",
     };
 
-    console.log("payload", payload);
+    // Construct staff payload
+    const staffPayload = {
+      full_name: data.full_name,
+      title: data.personal_title,
+      gender: data.gender,
+      bio: data.about,
+      professional_title: data.professional_title,
+      phone_number: "",
+    };
+
+    // Only include phone number if it has changed
+    if (cleanedPhoneNumber !== pageData.phone) {
+      payload.phone = cleanedPhoneNumber;
+      staffPayload.phone_number = cleanedPhoneNumber;
+    }
+
+    // Prepare picture or avatar for both user and staff
+    let imageChanged = false;
+    const pictureFormData = new FormData();
+
+    if (data.picture instanceof File && data.picture.size > 0) {
+      if (pageData.profile_picture !== preview) {
+        payload.picture = data.picture;
+        pictureFormData.append("picture", data.picture);
+        imageChanged = true;
+      }
+    } else if (avatar && avatar !== pageData.profile_picture) {
+      payload.avatar = avatar;
+      pictureFormData.append("avatar", avatar);
+      imageChanged = true;
+    }
+
 
     try {
       setReqLoading(true);
-      const res = await updateUserProfile(objectToFormData(payload));
-      if (res && "status" in res && res.status === 200) {
-        // console.log(res);
-        toast.success("Profile updated successfully");
-        // setNext(true);
-        window.dispatchEvent(new Event("fetch-profile"));
+
+      // Update user profile
+      const userRes = await updateUserProfile(objectToFormData(payload));
+      if (userRes) {
+        let success = true;
+
+        // Update staff profile if staffID exists
+        if (staffID) {
+          const staffRes = await updateStaffProfile(staffID.toString(), objectToFormData(staffPayload));
+          if (!staffRes) {
+            success = false;
+          }
+          // Update staff picture if changed
+          if (imageChanged) {
+            const pictureRes = await updateStaffPicture(staffID.toString(), pictureFormData);
+            if (!pictureRes) {
+              success = false;
+            }
+          }
+        }
+
+        // Show single success toast if all operations succeeded
+        if (success) {
+          toast.success("Profile updated successfully");
+          window.dispatchEvent(new Event("fetch-profile"));
+        }
+      } else {
+        throw new Error("User profile update failed");
       }
     } catch (error) {
       toast.error("Error updating profile");
@@ -136,6 +203,7 @@ const ManagerProfile = () => {
       setReqLoading(false);
     }
   };
+
   const [fullName, setFullName] = useState<string>(pageData?.fullname || "");
 
   useEffect(() => {
@@ -255,13 +323,6 @@ const ManagerProfile = () => {
                     options={industryOptions}
                     defaultValue={pageData?.professional_title}
                   />
-                  {/* <Input
-                    id="fullname"
-                    label="full name"
-                    placeholder="Write Here"
-                    className="bg-neutral-2"
-                    defaultValue={pageData?.fullname}
-                  /> */}
                   <div className="relative">
                     <Input
                       disabled={pageData?.is_bvn_verified}
@@ -303,7 +364,8 @@ const ManagerProfile = () => {
                     type="email"
                     label="email"
                     disabled
-                    defaultValue={pageData?.email}
+                    // defaultValue={pageData?.email}
+                    value={pageData?.email}
                   />
                   <Select
                     id="gender"
@@ -315,7 +377,7 @@ const ManagerProfile = () => {
                   />
                   <PhoneNumberInput
                     id="phone_number"
-                    label="phone number"
+                    label="WhatsApp number"
                     required
                     defaultValue={pageData?.phone}
                   />
@@ -330,19 +392,12 @@ const ManagerProfile = () => {
                 />
               </div>
             </div>
-            {/* <SettingsUpdateButton
-              submit
-              loading={reqLoading}
-              //   action={()=> {}}
-              // next={next}
-            /> */}
-
             <div className="flex justify-end gap-4">
               <Button
                 size="base_bold"
                 type="submit"
                 className="py-[10px] px-8"
-                // onClick={() => handleUpdateProfile(data)}
+                disabled={reqLoading}
               >
                 {reqLoading ? "Please ..." : "Update"}
               </Button>

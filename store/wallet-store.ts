@@ -9,6 +9,7 @@ export interface Beneficiary {
   badge_color?: BadgeIconColors;
   branch?: boolean;
   noBackBtn?: boolean;
+  company_name?: string;
 }
 
 export interface Transaction {

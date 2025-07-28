@@ -23,6 +23,7 @@ import { titles, genderTypes, industryOptions } from "@/data";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import useBranchStore from "@/store/branch-store";
+import { validateAndCleanPhoneNumber } from "@/utils/validatePhoneNumber";
 
 const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   branchId,
@@ -58,25 +59,61 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
     originalHandleImageChange(e);
   };
 
+  // const handleCreateStaff = async (data: FormData) => {
+  //   const email = data.get("email")?.toString() || "";
+
+  //   if (!checkFormDataForImageOrAvatar(data)) {
+  //     toast.warning("Please upload a picture or select an avatar.");
+  //     return;
+  //   }
+
+  //   const isEmailValid = await isValidEmail(email);
+  //   if (!isEmailValid) {
+  //     toast.error("Invalid email address!");
+  //     return;
+  //   }
+
+  //   setIsLoading(true);
+  //   cleanPhoneNumber(data);
+  //   if (!data.get("phone_number")) {
+  //     data.append("phone_number", "");
+  //   }
+  //   const status = await addStaff(data, branchId);
+  //   if (status) {
+  //     setIsOpen(false);
+  //     window.dispatchEvent(new Event("refetch_staff"));
+  //   } else {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+
   const handleCreateStaff = async (data: FormData) => {
     const email = data.get("email")?.toString() || "";
-
+    const phoneNumber = data.get("phone_number")?.toString() || "";
+  
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or select an avatar.");
       return;
     }
-
+  
     const isEmailValid = await isValidEmail(email);
     if (!isEmailValid) {
-      toast.error("Invalid email address!");
+      toast.warning("Invalid email address!");
       return;
     }
-
-    setIsLoading(true);
-    cleanPhoneNumber(data);
-    if (!data.get("phone_number")) {
-      data.append("phone_number", "");
+  
+    // Validate phone number
+    const cleanedPhoneNumber = validateAndCleanPhoneNumber(phoneNumber);
+    if (!cleanedPhoneNumber && phoneNumber) {
+      toast.warning("Please enter a valid phone number.");
+      return;
     }
+  
+    setIsLoading(true);
+    // Replace the original phone number with the cleaned version
+    data.set("phone_number", cleanedPhoneNumber || "");
+    
     const status = await addStaff(data, branchId);
     if (status) {
       setIsOpen(false);
@@ -86,6 +123,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
     }
   };
 
+  
   const STAFF_ROLE_OPTIONS = [
     ...(hasManager ? [] : [{ value: "manager", label: "branch manager" }]),
     // { value: "account_officer", label: "account officer" },
@@ -152,7 +190,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
             />
             <PhoneNumberInput
               id="phone_number"
-              label="phone number"
+              label="WhatsApp number"
               required
               inputContainerClassName="bg-neutral-2"
             />

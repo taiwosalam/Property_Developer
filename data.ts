@@ -50016,7 +50016,6 @@ export const managerRoutes = [
   "/manager/reports/units",
   "/manager/reports/rent",
   "/manager/reports/listings",
-  "/manager/reports/email",
   "/manager/reports/sms",
   "/manager/reports/tracking",
   "/manager/reports/call",

@@ -126,6 +126,7 @@ const BranchBankSettings: React.FC<BranchBankSettingsProps> = ({
   const logo = useBankLogo({ slug }) || "/icons/default-bank.svg";
 
   const handleUpdateBranchBank = async () => {
+    console.log("submitting...");
     if (!bankCode || !accountNumber || !accountName || !bankName) {
       toast.warning("Please fill in all bank details");
       return;
@@ -265,10 +266,21 @@ const BranchBankSettings: React.FC<BranchBankSettingsProps> = ({
           {!edit && (
             <SettingsUpdateButton
               type="otp"
+              submit
               text={!showCard ? "Add" : "Update"}
               loading={reqLoading}
               action={handleUpdateBranchBank}
             />
+            // <div className="flex justify-end gap-4">
+            // <Button
+            //   size="base_bold"
+            //   className="py-[10px] px-8"
+            //   disabled={reqLoading}
+            //   onClick={handleUpdateBranchBank}
+            // >
+            //     {reqLoading ? "Please wait..." : "Update"}
+            //   </Button>
+            // </div>
           )}
         </div>
       </SettingsSection>

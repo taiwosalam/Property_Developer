@@ -13,6 +13,7 @@ import { WalletSendFundsOptions } from "../types";
 import { useModal } from "@/components/Modal/modal";
 import PaymentMethod from "./payment-method";
 import { useDrawerStore } from "@/store/drawerStore";
+import { useRole } from "@/hooks/roleContext";
 
 const AddFundsModal = ({
   branch,
@@ -26,6 +27,7 @@ const AddFundsModal = ({
   const { branch: branch_details } = useBranchStore();
   const { sub_wallet } = useWalletStore();
   const { setIsOpen } = useModal();
+  const { role } = useRole();
   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
   const company_name = usePersonalInfoStore((state) => state.company_name);
 
@@ -91,7 +93,7 @@ const AddFundsModal = ({
                 price={selectedLegalOption?.amount ?? 0}
               />
             )}
-            <WalletBankTransferCard />
+            {role === "director" && <WalletBankTransferCard />}
             <WalletOnlineFundingCard
               onPaymentInitiated={handlePaymentInitiated}
               page={page}

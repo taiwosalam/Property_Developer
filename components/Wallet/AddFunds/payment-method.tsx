@@ -79,28 +79,3 @@ export const CounterButton: React.FC<{
     <Image src={icon} alt={alt} width={20} height={20} />
   </button>
 );
-
-// export const WalletFunding: React.FC<{
-//   title: string;
-// }> = ({ title }) => {
-//   return (
-//     <div className="p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2">
-//       <div className="w-full flex gap-2">
-//         <WalletLegalProcedureIcon />
-//         <div className="flex flex-col">
-//           <h3> {title} </h3>
-//           <p className="text-[12px] font-medium tracking-[0px]">
-//             Wallet Balance: ₦ 50,000 (Sufficient funds){" "}
-//           </p>
-//         </div>
-//       </div>
-//       <div className="custom-flex-col gap-6">
-//         <div className="flex justify-end">
-//           <Button size="xs_medium" className="py-1 px-2">
-//             proceed
-//           </Button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };

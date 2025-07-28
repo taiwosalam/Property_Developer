@@ -145,39 +145,39 @@ const Dashboard = () => {
     switch (card.title) {
       case "Properties":
         stats = branchData?.properties;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/properties`;
+        link = `/manager/management/properties`;
         break;
       case "Landlords":
         stats = branchData?.landlords;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/landlords`;
+        link = `/manager/management/landlord`;
         break;
       case "Tenants & Occupants":
         stats = branchData?.tenants;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/tenants`;
+        link = `/manager/management/tenants`;
         break;
       case "Vacant Unit":
         stats = branchData?.vacant_units;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/vacant-units`;
+        link = `/manager/management/rent-unit/is_active=vacant`;
         break;
       case "Expired":
         stats = branchData?.expired;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/expired-units`;
+        link = `/manager/management/rent-unit?is_active=expired`;
         break;
       case "Invoices":
         stats = branchData?.invoices;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/invoices`;
+        link = `/manager/accounting/invoice?status=pending`;
         break;
       case "Inquiries":
         stats = branchData?.inquiries;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/inquiries`;
+        link = `/manager/tasks/complaints?status=pending`;
         break;
       case "Complaints":
         stats = branchData?.complaints;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/complaints`;
+        link = `/manager/tasks/complaints`;
         break;
       case "Listings":
         stats = branchData?.listings;
-        link = `/manager/management/staff-branch/${BRANCH_ID}/listings`;
+        link = `/manager/listing/units`;
         break;
       default:
         break;

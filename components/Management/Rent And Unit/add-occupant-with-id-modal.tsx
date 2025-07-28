@@ -80,6 +80,7 @@ const AddOccupantWithId = ({
     >
       <div className="relative min-h-[200px]">
         <AuthForm
+          autoComplete="off"
           className={`items-center justify-center custom-flex-col gap-5 transition-opacity duration-150 ${
             formStep === 2 ? "pointer-events-none opacity-0" : "opacity-100"
           }`}
@@ -90,6 +91,7 @@ const AddOccupantWithId = ({
               id="identifier"
               label="Input Occupant ID"
               type="number"
+              autoComplete="off"
               inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
             />
             <div className="flex justify-center">

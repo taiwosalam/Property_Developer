@@ -23,7 +23,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
   onChange,
   inputTextClassName,
   validationErrors = {},
-  placeholder = "Select options",
+  placeholder = "Select options", 
   allowCustom = false,
   isSearchable = true,
   hiddenInputClassName,
@@ -63,9 +63,13 @@ const SelectWithImage: React.FC<SelectProps> = ({
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Constants for virtualization
-  const ITEMS_PER_PAGE = 20; // Number of items to load per batch
-  const DEBOUNCE_DELAY = 300; // Debounce delay for search and scroll in ms
-  const SCROLL_THRESHOLD = 100; // Pixels from bottom to trigger loading
+  const ITEMS_PER_PAGE = 20;
+  const DEBOUNCE_DELAY = 300;
+  const SCROLL_THRESHOLD = 100;
+
+  // Determine effective placeholder
+  const effectivePlaceholder =
+    options.length === 0 ? "No Option Available" : placeholder;
 
   // Custom debounce function
   const debounce = <T extends (...args: any[]) => void>(
@@ -101,7 +105,6 @@ const SelectWithImage: React.FC<SelectProps> = ({
         filteredOptions: newFilteredOptions,
         visibleOptions: newFilteredOptions.slice(0, ITEMS_PER_PAGE),
       }));
-      // Reset scroll position to top when filtering
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = 0;
       }
@@ -113,7 +116,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
     debounce(() => {
       setState((prev) => {
         if (prev.visibleOptions.length >= prev.filteredOptions.length) {
-          return prev; // No more options to load
+          return prev;
         }
         const scrollTop = scrollContainerRef.current?.scrollTop || 0;
         const nextBatch = prev.filteredOptions.slice(
@@ -144,7 +147,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
   const updateDropdownPosition = () => {
     if (dropdownRef.current) {
       const dropdownRect = dropdownRef.current.getBoundingClientRect();
-      const dropdownHeight = 240; // max-h-60 = 15rem = 240px
+      const dropdownHeight = 240;
       const windowHeight = window.innerHeight;
       const bottomSpace = windowHeight - dropdownRect.bottom;
       setState((x) => ({ ...x, showAbove: bottomSpace < dropdownHeight }));
@@ -170,7 +173,6 @@ const SelectWithImage: React.FC<SelectProps> = ({
     setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
   });
 
-  // Set up scroll event listener
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!isOpen || !container) return;
@@ -181,7 +183,6 @@ const SelectWithImage: React.FC<SelectProps> = ({
     };
   }, [isOpen, handleScroll]);
 
-  // Update dropdown position and focus input
   useEffect(() => {
     updateDropdownPosition();
     if (isOpen) {
@@ -189,12 +190,10 @@ const SelectWithImage: React.FC<SelectProps> = ({
     }
   }, [isOpen]);
 
-  // Filter options based on search term
   useEffect(() => {
     debouncedFilterOptions(searchTerm);
   }, [searchTerm, debouncedFilterOptions]);
 
-  // Initialize selection
   useEffect(() => {
     const updateSelection = (value: string, label: string, icon: string) => {
       setState((prevState) => ({
@@ -211,23 +210,27 @@ const SelectWithImage: React.FC<SelectProps> = ({
       const icon = typeof propValue === "string" ? propValue : propValue.icon;
       updateSelection(`${value}`, label, `${icon}`);
     } else if (defaultValue) {
-      const value = typeof defaultValue === "string" ? defaultValue : defaultValue.value;
-      const label = typeof defaultValue === "string" ? defaultValue : defaultValue.label;
-      const icon = typeof defaultValue === "string" ? defaultValue : defaultValue.icon;
+      const value =
+        typeof defaultValue === "string" ? defaultValue : defaultValue.value;
+      const label =
+        typeof defaultValue === "string" ? defaultValue : defaultValue.label;
+      const icon =
+        typeof defaultValue === "string" ? defaultValue : defaultValue.icon;
       updateSelection(`${value}`, label, `${icon}`);
     } else {
       updateSelection("", "", "");
     }
   }, [propValue, resetKey, defaultValue]);
 
-  // Handle validation and input change
   useEffect(() => {
     setValidationError(null);
     handleInputChange && handleInputChange();
   }, [selectedValue, handleInputChange]);
 
   useEffect(() => {
-    setValidationError(checkValidatonError({ errors: validationErrors, key: id }));
+    setValidationError(
+      checkValidatonError({ errors: validationErrors, key: id })
+    );
   }, [validationErrors, id]);
 
   return (
@@ -302,7 +305,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
                 "w-full flex-1 bg-transparent outline-none text-xs md:text-sm font-normal",
                 inputTextClassName
               )}
-              placeholder={placeholder}
+              placeholder={effectivePlaceholder} 
               value={searchTerm}
               onInput={() => setValidationError(null)}
               onChange={(e) => {
@@ -325,7 +328,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {placeholder}
+              {effectivePlaceholder} 
             </span>
           )}
           <div className="ml-auto flex items-center justify-center">
@@ -363,10 +366,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
               showAbove ? "bottom-full mb-2" : "top-full mt-2"
             )}
           >
-            <div
-              className="max-h-60 overflow-y-auto"
-              ref={scrollContainerRef}
-            >
+            <div className="max-h-60 overflow-y-auto" ref={scrollContainerRef}>
               {visibleOptions.length > 0 ? (
                 visibleOptions.map((option, index) => {
                   const label =

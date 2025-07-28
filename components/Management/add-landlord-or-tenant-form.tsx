@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Select from "../Form/Select/select";
-import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { getAllCities, getAllLocalGovernments, getAllStates, getLocalGovernments } from "@/utils/states";
 import { tenantTypes, landlordTypes, genderTypes } from "@/data";
 import Input from "../Form/Input/input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
@@ -16,6 +16,7 @@ import Avatars from "@/components/Avatars/avatars";
 import Picture from "@/components/Picture/picture";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import { cleanPhoneNumber } from "@/utils/checkFormDataForImageOrAvatar";
+import RestrictInput from "../Form/Input/InputWIthRestrict";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -140,7 +141,19 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             onChange={(value) => handleAddressChange("selectedLGA", value)}
             value={selectedLGA}
           />
-          <Input id="address" label="address" inputClassName="rounded-[8px]" />
+          {/* <Input id="address" label="address" inputClassName="rounded-[8px]" /> */}
+          <RestrictInput
+            id="address"
+            label="address"
+            inputClassName="rounded-[8px]"
+            restrictedWordsOptions={{
+              words: [
+                ...getAllStates(),
+                ...getAllLocalGovernments(),
+                ...getAllCities(),
+              ],
+            }}
+          />
           <Select
             options={type === "landlord" ? landlordTypes : tenantTypes}
             id={`${type === "landlord" ? "owner" : "tenant"}_type`}

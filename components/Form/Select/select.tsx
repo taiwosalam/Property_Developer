@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import Label from "../Label/label";
 import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import type { SelectOptionObject, SelectProps } from "./types";
-import { ArrowDownIcon, SearchIcon } from "@/public/icons/icons"; // Removed DeleteIconX import
+import { ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
@@ -21,7 +21,7 @@ const Select: React.FC<SelectProps> = ({
   onChange,
   inputTextClassName,
   validationErrors = {},
-  placeholder = "Select options",
+  placeholder = "Select options", 
   allowCustom = false,
   isSearchable = true,
   hiddenInputClassName,
@@ -61,9 +61,12 @@ const Select: React.FC<SelectProps> = ({
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Constants for virtualization
-  const ITEMS_PER_PAGE = 20; // Number of items to load per batch
-  const DEBOUNCE_DELAY = 300; // Debounce delay for search and scroll in ms
-  const SCROLL_THRESHOLD = 100; // Pixels from bottom to trigger loading
+  const ITEMS_PER_PAGE = 20;
+  const DEBOUNCE_DELAY = 300;
+  const SCROLL_THRESHOLD = 100;
+
+  // Determine effective placeholder
+  const effectivePlaceholder = options.length === 0 ? "No Option Available" : placeholder;
 
   // Custom debounce function
   const debounce = <T extends (...args: any[]) => void>(
@@ -101,7 +104,6 @@ const Select: React.FC<SelectProps> = ({
         filteredOptions: newFilteredOptions,
         visibleOptions: newFilteredOptions.slice(0, ITEMS_PER_PAGE),
       }));
-      // Reset scroll position to top when filtering
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = 0;
       }
@@ -114,7 +116,7 @@ const Select: React.FC<SelectProps> = ({
       setState((prev) => {
         if (prev.visibleOptions.length >= prev.filteredOptions.length) {
           console.log("No more options to load");
-          return prev; // No more options to load
+          return prev;
         }
         const nextBatch = prev.filteredOptions.slice(
           prev.visibleOptions.length,
@@ -144,7 +146,7 @@ const Select: React.FC<SelectProps> = ({
   const updateDropdownPosition = () => {
     if (dropdownRef.current) {
       const dropdownRect = dropdownRef.current.getBoundingClientRect();
-      const dropdownHeight = 240; // max-h-60 = 15rem = 240px
+      const dropdownHeight = 240;
       const windowHeight = window.innerHeight;
       const bottomSpace = windowHeight - dropdownRect.bottom;
       setState((x) => ({ ...x, showAbove: bottomSpace < dropdownHeight }));
@@ -168,7 +170,6 @@ const Select: React.FC<SelectProps> = ({
     setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
   });
 
-  // Set up scroll event listener
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!isOpen || !container) return;
@@ -179,7 +180,6 @@ const Select: React.FC<SelectProps> = ({
     };
   }, [isOpen, handleScroll]);
 
-  // Update dropdown position and focus input
   useEffect(() => {
     updateDropdownPosition();
     if (isOpen) {
@@ -187,12 +187,10 @@ const Select: React.FC<SelectProps> = ({
     }
   }, [isOpen]);
 
-  // Filter options based on search term
   useEffect(() => {
     debouncedFilterOptions(searchTerm);
   }, [searchTerm, debouncedFilterOptions]);
 
-  // Initialize selection
   useEffect(() => {
     const updateSelection = (value: string, label: string) => {
       setState((prevState) => ({
@@ -217,7 +215,6 @@ const Select: React.FC<SelectProps> = ({
     }
   }, [propValue, resetKey, defaultValue]);
 
-  // Handle validation and input change
   useEffect(() => {
     setValidationError(null);
     handleInputChange && handleInputChange();
@@ -294,7 +291,7 @@ const Select: React.FC<SelectProps> = ({
                 "w-full flex-1 bg-transparent outline-none text-xs md:text-sm font-normal",
                 inputTextClassName
               )}
-              placeholder={placeholder}
+              placeholder={effectivePlaceholder} 
               value={searchTerm}
               onInput={() => setValidationError(null)}
               onChange={(e) => {
@@ -318,7 +315,7 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {placeholder}
+              {effectivePlaceholder} 
             </span>
           )}
           <div className="ml-auto flex items-center justify-center">
