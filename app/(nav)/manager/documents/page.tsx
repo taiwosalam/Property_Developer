@@ -98,7 +98,7 @@ const Documents = () => {
 
   const { data, loading, error, silentLoading, isNetworkError } =
     useFetch<DocumentsPageAPIResponse>(
-      `/property-document?branch_id[0]=${BRANCH_ID}`,
+      `/property-document`,
       config
     );
 

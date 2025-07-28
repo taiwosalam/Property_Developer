@@ -8,9 +8,11 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Button from "../Form/Button/button";
+import { useRole } from "@/hooks/roleContext";
 
 const TenancyAgreement = () => {
   const router = useRouter();
+  const { role } = useRole();
   const [isCreateMode, setIsCreateMode] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState("");
 
@@ -42,9 +44,22 @@ const TenancyAgreement = () => {
         label: p.title,
       })) || [];
 
+  const getCreateRoute = () => {
+    switch (role) {
+      case "director":
+        return `/documents/create-tenancy-agreement/?p=${selectedProperty}`;
+      case "manager":
+        return `/manager/documents/create-tenancy-agreement/?p=${selectedProperty}`;
+      case "account":
+        return `/accountant/documents/create-tenancy-agreement/?p=${selectedProperty}`;
+      default:
+        return "/unauthorized";
+    }
+  };
+
   const handleProceed = () => {
     if (!selectedProperty) return toast.warning("Please select a property");
-    router.push(`/documents/create-tenancy-agreement/?p=${selectedProperty}`);
+    router.push(getCreateRoute());
   };
 
   const defaultSelectedOption = propertyOptions.find(
@@ -77,7 +92,7 @@ const TenancyAgreement = () => {
           className="bg-brand-9 px-12 py-3 rounded-md text-white"
           onClick={handleProceed}
         >
-           { isCreateMode ? "Create" : "Add" }
+          {isCreateMode ? "Create" : "Add"}
         </Button>
       </div>
     </>

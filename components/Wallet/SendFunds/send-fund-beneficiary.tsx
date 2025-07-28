@@ -28,6 +28,7 @@ const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   badge_color,
   branch,
   noBackBtn,
+  company_name,
 }) => {
   const { setIsOpen } = useModal();
   const balance = useWalletStore((s) => s.balance);
@@ -107,7 +108,7 @@ const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
             <div className="flex flex-col items-center">
               <div className="flex items-center">
                 <p className="text-[#010A23] dark:text-white text-base font-medium capitalize">
-                  {name}
+                  {name} {company_name && `- ${company_name}`}
                 </p>
                 {/* FIX BADGE LATER */}
                 {/* {badge_color && <BadgeIcon color={badge_color} />} */}

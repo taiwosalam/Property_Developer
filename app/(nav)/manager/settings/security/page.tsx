@@ -26,6 +26,7 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { SingleBranchResponseType } from "@/app/(nav)/management/staff-branch/[branchId]/types";
 import { transformSingleBranchAPIResponseToEditBranchFormDetails } from "@/app/(nav)/management/staff-branch/[branchId]/data";
 import { useRouter } from "next/navigation";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 const Security = () => {
   const { branch } = usePersonalInfoStore();
@@ -33,8 +34,12 @@ const Security = () => {
   const router = useRouter();
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
-  const { preview, inputFileRef, handleImageChange } = useImageUploader();
+  const branchWallet = useBranchInfoStore((s) => s.sub_wallet);
 
+  const ManagerWalletPinStatus = branchWallet?.pin_status;
+  const ManagerWalletIsActive = branchWallet?.is_active;
+  const { preview, inputFileRef, handleImageChange } = useImageUploader();
+  
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
   ]);
@@ -115,7 +120,7 @@ const Security = () => {
         branchData.id
       );
       if (status) {
-        toast.success("Branch Bank Details Updated Successfully");
+        // toast.success("Branch Bank Details Updated Successfully");
         window.dispatchEvent(new Event("refectch-branch"));
         // router.push(`/management/staff-branch/${branchID}`);
       }
@@ -126,17 +131,16 @@ const Security = () => {
     }
   };
 
-
   return (
     <>
       <ManagerProfile />
       <SettingsPasswordSection />
-      <SettingsWalletSection />
+      {ManagerWalletPinStatus && <SettingsWalletSection />}
       <BranchBankSettings
         branch_account_name={branchData?.account_name}
         branch_account_number={branchData?.account_number}
         branch_bank_name={branchData?.bank_name}
-        // action={updateBranchBankDetails}
+        action={updateBranchBankDetails}
       />
     </>
   );

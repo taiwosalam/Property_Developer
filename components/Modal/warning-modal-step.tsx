@@ -23,6 +23,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { cleanPricingValue } from "@/utils/cleanPrice";
 import ProfessionalPlanCard from "@/app/(nav)/settings/subscription/professional-card";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { useRole } from "@/hooks/roleContext";
 
 interface WarningStepProps {
   message?: string;
@@ -39,6 +40,21 @@ export const WarningStep1 = ({
   onClose,
   changeStep,
 }: WarningStepProps) => {
+  const { role } = useRole();
+
+  const getMessage = () => {
+    switch (role) {
+      case "manager":
+        return "You've reached the creation limit for your current role. Please contact your director or company owner to upgrade your limit.";
+      case "account":
+        return "You've reached the creation limit for your current role. Please contact your director or company owner to upgrade your limit.";
+      case "staff":
+        return "You've reached the creation limit for your current role. Please contact your director or company owner to upgrade your limit.";
+      default:
+        return "Sorry, your current subscription does not allow you to access these features. Please upgrade your account to gain access.";
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-[#3C3D37] rounded-lg shadow-xl p-6 min-w-[400px] max-w-[500px] z-[10002] text-gray-900 dark:text-gray-100">
       <div className="flex justify-between items-start">
@@ -53,30 +69,29 @@ export const WarningStep1 = ({
           <XIcon size="30" />
         </button>
       </div>
-      <p className="text-sm dark:text-white mb-4">
-        {message ||
-          "Sorry, your current subscription does not allow you to access these features. Please upgrade your account to gain access."}
-      </p>
-      <div className="gap-2 flex w-full justify-end items-end">
-        <Button
-          type="button"
-          size="sm_normal"
-          className="px-4 py-2 text-white capitalize rounded-md text-sm"
-          onClick={onNext}
-          aria-label="Proceed to upgrade"
-        >
-          Upgrade
-        </Button>
-        <Button
-          variant="border"
-          size="sm_normal"
-          className="px-4 py-2 dark:text-white"
-          onClick={onClose}
-          aria-label="Cancel"
-        >
-          Cancel
-        </Button>
-      </div>
+      <p className="text-sm dark:text-white mb-4">{message || getMessage()}</p>
+      {role === "director" && (
+        <div className="gap-2 flex w-full justify-end items-end">
+          <Button
+            type="button"
+            size="sm_normal"
+            className="px-4 py-2 text-white capitalize rounded-md text-sm"
+            onClick={onNext}
+            aria-label="Proceed to upgrade"
+          >
+            Upgrade
+          </Button>
+          <Button
+            variant="border"
+            size="sm_normal"
+            className="px-4 py-2 dark:text-white"
+            onClick={onClose}
+            aria-label="Cancel"
+          >
+            Cancel
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
@@ -264,7 +279,7 @@ export const WarningStep2 = ({
               />
             ))}
       </div>
-    <ProfessionalPlanCard
+      <ProfessionalPlanCard
         showFeatures={showFeatures}
         setShowFeatures={setShowFeatures}
         autoRenew={autoRenew}

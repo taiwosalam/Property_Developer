@@ -204,7 +204,7 @@ const Call = () => {
         onSort={handleSort}
         handleSearch={handleSearch}
         filterOptionsMenu={reportTenantFilterOption}
-        exportHref="/reports/call/export"
+        exportHref="/manager/reports/call/export"
         hasGridListToggle={false}
         xlsxData={useGlobalStore.getState().callback_requests}
         fileLabel={"Request Callback Reports"}
