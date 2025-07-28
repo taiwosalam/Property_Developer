@@ -215,7 +215,6 @@ const Documents = () => {
                     ready-to-use lease or rent agreement based on the saved
                     template.
                     <br />
-                   
                   </p>
                 }
               />

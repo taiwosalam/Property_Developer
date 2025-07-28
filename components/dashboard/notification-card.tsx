@@ -23,6 +23,8 @@ import {
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import { useRole } from "@/hooks/roleContext";
+import { complaintsData } from "@/app/(nav)/dashboard/data";
 
 const NotificationCard: React.FC<notificationCardProps> = ({
   sectionHeader,
@@ -140,7 +142,9 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                     ? `/management/staff-branch/${branchId}/branch-staff/${notification.staff_ID}`
                     : sectionHeader === "Recent Messages"
                     ? `/messages/${notification.id}`
-                    : "/tasks/complaints"
+                    : sectionHeader === "Recent Complaints" && seeAllLink
+                    ? seeAllLink
+                    : "#"
                 }
                 className="flex items-center gap-3 w-[70%]"
               >
@@ -155,7 +159,9 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 </div>
                 <div className="w-full gap-1">
                   <div className="flex items-center gap-1 text-sm font-medium text-text-primary dark:text-[#f1f1fd] line-clamp-1 text-ellipsis">
-                    <span className="truncate capitalize">{capitalizeWords(notification.name)}</span>
+                    <span className="truncate capitalize">
+                      {capitalizeWords(notification.name)}
+                    </span>
                     {notification.badgeColor && (
                       <BadgeIcon color={notification.badgeColor} />
                     )}
@@ -177,7 +183,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
 
                   {sectionHeader === "Recent Complaints" && (
                     <p className="line-clamp-2 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
-                    {notification.message} {notification.badgeColor}
+                      {notification.message} {notification.badgeColor}
                     </p>
                   )}
 

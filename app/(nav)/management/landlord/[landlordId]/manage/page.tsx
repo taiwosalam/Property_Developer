@@ -402,41 +402,51 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       )}
 
       {/* Property Managed */}
-      <LandlordTenantInfoSection title="Property Managed">
-        {landlordData?.properties_managed?.length === 0 ? (
-          <div className="flex justify-center items-center h-32 text-neutral-500">
-            The landlord does not manage any property yet
-          </div>
-        ) : (
-          <AutoResizingGrid minWidth={315}>
-            {landlordData?.properties_managed?.map((property) => (
-              <PropertyCard key={property.id} {...property} />
-            ))}
-          </AutoResizingGrid>
+      {landlordData &&
+        landlordData?.properties_managed &&
+        landlordData?.properties_managed?.length > 0 && (
+          <LandlordTenantInfoSection title="Property Managed">
+            {landlordData?.properties_managed?.length === 0 ? (
+              // <div className="flex justify-center items-center h-32 text-neutral-500">
+              //   The landlord does not manage any property yet
+              // </div>
+              ""
+            ) : (
+              <AutoResizingGrid minWidth={315}>
+                {landlordData?.properties_managed?.map((property) => (
+                  <PropertyCard key={property.id} {...property} />
+                ))}
+              </AutoResizingGrid>
+            )}
+          </LandlordTenantInfoSection>
         )}
-      </LandlordTenantInfoSection>
 
       {/* Statement */}
-      <SectionContainer
-        heading="Statement"
-        {...((landlordData?.statement?.length ?? 0) > 0 && {
-          href: `/management/landlord/${landlordId}/export`,
-        })}
-        style={{ fontSize: "25px", fontWeight: "700" }}
-      >
-        {(landlordData?.statement?.length ?? 0) === 0 ? (
-          <div className="flex justify-center items-center h-32 text-neutral-500">
-            The landlord does not have any statement yet
-          </div>
-        ) : (
-          <CustomTable
-            fields={statementTableFields}
-            data={transformedTableData ?? []}
-            tableBodyCellSx={{ fontSize: "1rem" }}
-            tableHeadCellSx={{ fontSize: "1rem" }}
-          />
+      {landlordData &&
+        landlordData?.statement &&
+        landlordData.statement?.length > 0 && (
+          <SectionContainer
+            heading="Statement"
+            {...((landlordData?.statement?.length ?? 0) > 0 && {
+              href: `/management/landlord/${landlordId}/export`,
+            })}
+            style={{ fontSize: "25px", fontWeight: "700" }}
+          >
+            {(landlordData?.statement?.length ?? 0) === 0 ? (
+              // <div className="flex justify-center items-center h-32 text-neutral-500">
+              //   The landlord does not have any statement yet
+              // </div>
+              ""
+            ) : (
+              <CustomTable
+                fields={statementTableFields}
+                data={transformedTableData ?? []}
+                tableBodyCellSx={{ fontSize: "1rem" }}
+                tableHeadCellSx={{ fontSize: "1rem" }}
+              />
+            )}
+          </SectionContainer>
         )}
-      </SectionContainer>
 
       {/* Shared Documents */}
       <div>
@@ -444,8 +454,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           ...(landlordData?.properties_managed ?? []),
           ...(landlordData?.previous_properties ?? []),
         ].length === 0 ? (
-          <div className="flex justify-center items-center h-32 text-neutral-500">
-            No documents available for any properties
+          <div className="">
+            {/* No documents available for any properties */}
           </div>
         ) : (
           <>
@@ -454,7 +464,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               ...(landlordData?.previous_properties ?? []),
             ].map((property) => (
               <LandlordTenantInfoSection
-                title={`Shared Documents for ${property.property_name}`}
+                title={
+                  property?.documents?.length > 0
+                    ? `Shared Documents for ${property.property_name}`
+                    : ""
+                }
                 key={property.id}
               >
                 {property.documents?.length > 0 ? (
@@ -502,8 +516,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     )}
                   </>
                 ) : (
-                  <p className="text-center text-gray-500 text-md py-4">
-                    No documents available for this property
+                  <p className="">
+                    {/* No documents available for this property */}
                   </p>
                 )}
               </LandlordTenantInfoSection>
@@ -513,19 +527,17 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       </div>
 
       {/* Previous Property */}
-      <LandlordTenantInfoSection title="previous property">
-        {landlordData?.previous_properties?.length === 0 ? (
-          <div className="flex justify-center items-center h-32 text-neutral-500">
-            The landlord does not have any previous property yet
-          </div>
-        ) : (
-          <AutoResizingGrid minWidth={315}>
-            {landlordData?.previous_properties?.map((property) => (
-              <PropertyCard key={property.id} {...property} />
-            ))}
-          </AutoResizingGrid>
+      {landlordData &&
+        landlordData?.previous_properties &&
+        landlordData?.previous_properties?.length > 0 && (
+          <LandlordTenantInfoSection title="previous property">
+            <AutoResizingGrid minWidth={315}>
+              {landlordData?.previous_properties?.map((property) => (
+                <PropertyCard key={property.id} {...property} />
+              ))}
+            </AutoResizingGrid>
+          </LandlordTenantInfoSection>
         )}
-      </LandlordTenantInfoSection>
     </div>
   );
 };

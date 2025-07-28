@@ -57,6 +57,7 @@ import {
   transformComplaintsData,
 } from "../../tasks/complaints/data";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
+import { useRole } from "@/hooks/roleContext";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
@@ -264,6 +265,23 @@ const Dashboard = () => {
     }
   }, [complaintData]);
 
+  const { role } = useRole();
+
+  const gotoPage = () => {
+    switch (role) {
+      case "director":
+        return "/tasks/complaints";
+      case "manager":
+        return "/manager/tasks/complaints";
+      case "staff":
+        return "/staff/tasks/complaints";
+      case "accountant":
+        return "/accountant/tasks/complaints";
+      default:
+        return "/unauthorized";
+    }
+  };
+
   if (isNetworkError) return <NetworkError />;
 
   return (
@@ -321,12 +339,14 @@ const Dashboard = () => {
               notifications={getRecentMessages(pageUsersMsg)}
             />
           </div>
-          <NotificationCard
-            className="h-[358px]"
-            sectionHeader="Complaints"
-            seeAllLink="/tasks/complaints"
-            notifications={complaintsData}
-          />
+          <div className="complaints-card">
+            <NotificationCard
+              className="h-[358px]"
+              sectionHeader="Recent Complaints"
+              seeAllLink={gotoPage()}
+              notifications={recentComplaints?.complaints.slice(0, 7) || []}
+            />
+          </div>
         </div>
       </div>
 
@@ -357,7 +377,10 @@ const Dashboard = () => {
       </SectionContainer>
 
       {/* =========== RECENT COMPLAINS =========== */}
-      <SectionContainer heading="Recent Complains" href="/manager/tasks/complaints">
+      <SectionContainer
+        heading="Recent Complains"
+        href="/manager/tasks/complaints"
+      >
         {pageData && pageData.complaints.length === 0 ? (
           <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
             <p className="text-gray-500 dark:text-gray-400">

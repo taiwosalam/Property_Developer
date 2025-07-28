@@ -49709,6 +49709,7 @@ export const states: State[] = [
 export const adminRoutes = [
   "/dashboard",
   "/messages",
+  "/reviews",
   "/notifications",
   "/dashboard/reports",
   "/auth/forgot-password",
@@ -49906,6 +49907,7 @@ export const staffRoutes = [
 
 export const accountRoutes = [
   "/messages",
+  "/reviews",
   "/notifications",
   "/community",
   "/management/service-providers",
@@ -49973,6 +49975,7 @@ export const accountRoutes = [
 export const managerRoutes = [
   "/messages",
   "/manager/dashboard",
+  "/reviews",
   "/auth/forgot-password",
   "/management/service-providers",
   "/manager/management/landlord",
@@ -49990,6 +49993,7 @@ export const managerRoutes = [
   "/manager/tasks/schedule",
   "/manager/tasks/announcement",
   "/manager/tasks/complaints",
+  "/manager/tasks/calendars",
   "/manager/tasks/examine",
   "/manager/tasks/maintenance",
   "/manager/tasks/deposits",
@@ -50028,6 +50032,10 @@ export const managerRoutes = [
   "/manager/reports/calendar-event",
   "/manager/wallet",
   "/manager/tasks/applications",
+  "/manager/tasks/inspections",
+  "/manager/tasks/inquires",
+  "/manager/tasks/visitors",
+  "/manager/tasks/property-request",
   "/manager/documents",
   "/manager/settings",
   "/manager/settings/profile",

@@ -44,10 +44,8 @@ import WeekEventCalendar from "@/components/tasks/Examine/EventCalendar/week-eve
 import MonthEventCalendar from "@/components/tasks/Examine/EventCalendar/month-event-calendar";
 import { EventCalendarContext } from "@/components/tasks/Examine/EventCalendar/event-calendar-context";
 import CalendarActivities from "@/components/Calendar/calendar-activities";
-import { calendar_events } from "@/components/Calendar/events";
 import { CalendarEventProps } from "@/components/Calendar/types";
 import useFetch from "@/hooks/useFetch";
-import { config } from "process";
 import { transformEventTable, transformCalendarEvents } from "../data";
 import { CalendarEventsApiResponse } from "../types";
 

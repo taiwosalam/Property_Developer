@@ -32,6 +32,7 @@ import { transformComplaintDetails } from "@/app/(nav)/tasks/complaints/data";
 import { getBadgeColor } from "@/lib/utils";
 import { empty } from "@/app/config";
 import PendingTaskModal from "./pending-tsak-card-modal";
+import { useRole } from "@/hooks/roleContext";
 
 export interface Task {
   id: UniqueIdentifier;
@@ -94,11 +95,28 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     null
   );
 
+  const { role } = useRole();
+  
+  const gotoPage = (id: string | number) => {
+    switch (role) {
+      case "director":
+        router.push(`/tasks/complaints/${id}/manage-complain/`);
+      case "manager":
+        router.push(`/manager/tasks/complaints/${id}/manage-complain/`);
+      case "accountant":
+        router.push(`/accountant/tasks/complaints/${id}/manage-complain/`);
+      case "staff":
+        router.push(`/staff/tasks/complaints/${id}/manage-complain/`);
+      default:
+        return router.push("/unauthorized");
+    }
+  };
+
   const {
     data: complaintDataResponse,
     loading,
     error,
-    refetch
+    refetch,
   } = useFetch<ComplaintDetailResponse>(`complaint/${task.id}`);
 
   useEffect(() => {
@@ -172,7 +190,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     if (!isDragging && !wasRecentlyDragged.current && noDrag) {
       setModalOpen(true);
     } else {
-      router.push(`/tasks/complaints/${task?.id}/manage-complain/`);
+      gotoPage(task.id);
     }
   };
 

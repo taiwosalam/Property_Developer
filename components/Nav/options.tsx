@@ -74,7 +74,7 @@ export const manager_profile_actions: (
     },
   },
   {
-    label: "Branch Reviews",
+    label: "Company Reviews",
     link: {
       href: "/reviews",
     },
@@ -104,6 +104,12 @@ export const account_profile_actions: (
     label: "Homepage",
     link: {
       href: "",
+    },
+  },
+  {
+    label: "Company Reviews",
+    link: {
+      href: "/reviews",
     },
   },
   {

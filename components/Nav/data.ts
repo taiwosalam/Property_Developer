@@ -462,6 +462,14 @@ export const tabs: {
     icon: "folder",
     label: "documents",
   },
+  {
+    icon: "menu_board",
+    label: "tasks",
+  },
+  {
+    icon: "briefcase_timer",
+    label: "settings",
+  },
 ];
 
 export const accountant_search_tabs: {

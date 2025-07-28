@@ -298,7 +298,7 @@ const Inventory = () => {
           ) : (
             <EmptyList
               noButton
-              buttonLink="/management/inventory/create-inventory"
+              buttonLink="/manager/management/inventory/create-inventory"
               title="You have not created any inventory yet"
               body={
                 <p>
