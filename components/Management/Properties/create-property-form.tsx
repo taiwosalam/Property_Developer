@@ -421,7 +421,37 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     return <FullPageLoader text="Submitting..." />;
   }
 
-  console.log(propertyDetails?.full_address);
+  const handleSectionTour = () => {
+    if (formType === "rental" && editMode && pathname.startsWith("/manager")) {
+      handleGoToTourStep(12);
+    } else if (
+      formType === "rental" &&
+      editMode &&
+      pathname.startsWith("/accountant")
+    ) {
+      handleGoToTourStep(11);
+    } else if (
+      formType === "facility" &&
+      !editMode &&
+      pathname.startsWith("/accountant")
+    ) {
+      handleGoToTourStep(9);
+    } else if (formType === "rental" && !editMode) {
+      handleGoToTourStep(14);
+    } else if (formType === "facility" && !editMode) {
+      handleGoToTourStep(11);
+    } else if (formType === "rental" && editMode) {
+      handleGoToTourStep(13);
+    } else if (
+      formType === "facility" &&
+      editMode &&
+      pathname.startsWith("/manager")
+    ) {
+      handleGoToTourStep(9);
+    } else if (formType === "facility" && editMode) {
+      handleGoToTourStep(10);
+    }
+  };
 
   return (
     <FlowProgress
@@ -827,17 +857,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 : "Estate/Facility Settings"}
             </p>
             <button
-              onClick={() => {
-                if (formType === "rental" && !editMode) {
-                  handleGoToTourStep(14);
-                } else if (formType === "facility" && !editMode) {
-                  handleGoToTourStep(11);
-                } else if (formType === "rental" && editMode) {
-                  handleGoToTourStep(13);
-                } else if(formType === "facility" && editMode){
-                  handleGoToTourStep(10);
-                }
-              }}
+              onClick={handleSectionTour}
               type="button"
               className="text-orange-normal"
             >

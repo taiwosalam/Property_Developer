@@ -118,11 +118,34 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   const shouldShowButtons =
     (notYetUploaded || newForm || !unitData || !unitData.id) && !isExistingUnit;
 
+  const handleTourSection = () => {
+    if (propertyType === "facility" && pathname.startsWith("/manager")) {
+      goToStep(21);
+    } else if (
+      propertyType === "rental" &&
+      pathname.startsWith("/accountant")
+    ) {
+      goToStep(25);
+    } else if (propertyType === "facility") {
+      goToStep(22);
+    } else if (propertyType === "rental" && pathname.startsWith("/manager")) {
+      goToStep(26);
+    } else if (propertyType === "rental") {
+      goToStep(27);
+    } else if (
+      propertyType === "facility" &&
+      pathname.startsWith("/management")
+    ) {
+      goToStep(6);
+    }
+  };
+
+  console.log(propertyType);
   return (
     <div
       ref={ref}
       className={clsx(
-        "unit-form-pictures-wrapper unit-pictures-upload scroll-mt-[160px]",
+        "unit-form-pictures-wrapper unit-pictures-upload unit-picture-wrapper scroll-mt-[160px]",
         isEditing && "!mt-0"
       )}
     >
@@ -135,7 +158,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
             Unit Pictures
           </h4>
           <button
-            onClick={() => goToStep(20)}
+            onClick={handleTourSection}
             type="button"
             className="text-orange-normal"
           >
