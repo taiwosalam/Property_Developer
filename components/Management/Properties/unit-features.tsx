@@ -52,6 +52,20 @@ const UnitFeatures = () => {
     goToStep(stepIndex, pathname);
   };
 
+  const handleTourSection = () => {
+    if (!isRental && pathname.startsWith("/manager")) {
+      handleGoToTourStep(26);
+    } else if (isRental && pathname.startsWith("/accountant")) {
+      handleGoToTourStep(30);
+    } else if (!isRental) {
+      handleGoToTourStep(27);
+    } else if (isRental && pathname.startsWith("/manager")) {
+      handleGoToTourStep(31);
+    } else if (isRental) {
+      handleGoToTourStep(32);
+    }
+  };
+
   return (
     <div className="unit-measurement-form unit-features-wrapper">
       <div className="flex items-center gap-2">
@@ -60,13 +74,7 @@ const UnitFeatures = () => {
         </h4>
 
         <button
-          onClick={() => {
-            if (!isRental) {
-              handleGoToTourStep(9);
-            } else if(isRental){
-              handleGoToTourStep(25);
-            }
-          }}
+          onClick={handleTourSection}
           type="button"
           className="text-orange-normal"
         >

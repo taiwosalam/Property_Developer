@@ -178,6 +178,24 @@ const UnitBreakdownNewTenant = () => {
     return () => setShouldRenderTour(false);
   }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
+  const propertyType = useAddUnitStore((state) => state.propertyType);
+  const isRental = propertyType === "rental";
+
+  const handleTourSection = () => {
+    if (!isRental && pathname.startsWith("/manager")) {
+      goToStep(25);
+    }
+    if (isRental && pathname.startsWith("/accountant")) {
+      goToStep(31);
+    } else if (!isRental) {
+      goToStep(26);
+    } else if (isRental && pathname.startsWith("/manager")) {
+      goToStep(32);
+    } else if (isRental) {
+      goToStep(33);
+    }
+  };
+
   return (
     <div className="unit-fee-breakdown-new-tenant new-tenant-fee-form">
       <div className="flex items-center gap-2">
@@ -185,7 +203,7 @@ const UnitBreakdownNewTenant = () => {
           Unit Fee Breakdown - New Tenant
         </h4>
         <button
-          onClick={() => goToStep(26)}
+          onClick={handleTourSection}
           type="button"
           className="text-orange-normal"
         >

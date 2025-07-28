@@ -17,6 +17,7 @@ const UnitDetails = () => {
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
   const propertyType = useAddUnitStore((s) => s.propertyType);
   const isRental = propertyType === "rental";
+
   const {
     unitType: selectedUnitType,
     setUnitType: setSelectedUnitType,
@@ -127,6 +128,20 @@ const UnitDetails = () => {
       ? `${unitData?.unit_name} (Unit ${(index ?? 0) + 1})`
       : unitData?.unit_name || "";
 
+  const handleTourSection = () => {
+    if (!isRental && pathname.startsWith("/manager")) {
+      goToStep(22);
+    } else if (isRental && pathname.startsWith("/accountant")) {
+      goToStep(26);
+    } else if (!isRental) {
+      handleGoToTourStep(23);
+    } else if (isRental && pathname.startsWith("/manager")) {
+      handleGoToTourStep(27);
+    } else if (isRental) {
+      handleGoToTourStep(28);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center gap-2">
@@ -136,13 +151,7 @@ const UnitDetails = () => {
         </h4>
 
         <button
-          onClick={() => {
-            if (!isRental) {
-              handleGoToTourStep(5);
-            } else if (isRental) {
-              handleGoToTourStep(21);
-            }
-          }}
+          onClick={handleTourSection}
           type="button"
           className="text-orange-normal"
         >
