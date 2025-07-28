@@ -135,7 +135,7 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
             Unit Pictures
           </h4>
           <button
-            onClick={() => goToStep(20)}
+            onClick={() => goToStep(22)}
             type="button"
             className="text-orange-normal"
           >
