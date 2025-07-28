@@ -10,7 +10,7 @@ import { ManagemenApplicationForm } from "./other-agreement/management-form";
 import { ManagemenApplicationForm2 } from "./other-agreement/management-form-2";
 import { ManagemenApplicationForm3 } from "./other-agreement/management-form-3";
 import FullPageLoader from "../Loader/start-rent-loader";
-
+import { useGlobalStore } from "@/store/general-store";
 export interface OtherAgreementDocumentOption {
   title: string;
   value: string;
@@ -22,6 +22,9 @@ const OtherAgreementDocument = ({
 }: {
   selectedOption: OtherAgreementDocumentOption;
 }) => {
+  const setGlobalInfoStore = useGlobalStore(
+    (state) => state.setGlobalInfoStore
+  );
   const { title, value, description } = selectedOption;
   const [isLoading, setIsLoading] = useState(true);
   const page1Ref = useRef<HTMLDivElement>(null);
@@ -36,7 +39,7 @@ const OtherAgreementDocument = ({
   // Simulate loading until content is rendered
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false); 
+      setIsLoading(false);
     }, 500);
 
     return () => clearTimeout(timer);
@@ -65,26 +68,39 @@ const OtherAgreementDocument = ({
           <Guarantor2 />
         </AgreementLayout>
       </div>
-      <div className="agreement-preview-footer flex gap-4 p-5">
-        <Button
-          type="button"
-          onClick={handleDownload}
-          size="custom"
-          disabled={loading}
-          className="agreement-preview-download-button"
-          variant="sky_blue"
-        >
-          {loading ? "Preparing..." : "Download"}
-        </Button>
+      <div className="agreement-preview-footer justify-between items-center w-full flex gap-4 p-5">
+        <div className="flex gap-4 w-full">
+          <Button
+            type="button"
+            size="custom"
+            variant="border"
+            onClick={() => setGlobalInfoStore("openDocumentModal", false)}
+            className="px-8 py-2"
+          >
+            Close
+          </Button>
+        </div>
+        <div className="flex gap-4 items-center justify-end w-full">
+          <Button
+            type="button"
+            onClick={handleDownload}
+            size="custom"
+            disabled={loading}
+            className="agreement-preview-download-button px-8 py-2"
+            variant="sky_blue"
+          >
+            {loading ? "Preparing..." : "Download"}
+          </Button>
 
-        <Button
-          onClick={handlePrint}
-          type="button"
-          className="px-8 py-2"
-          disabled={loading}
-        >
-          {loading ? "Preparing..." : "Print"}
-        </Button>
+          <Button
+            onClick={handlePrint}
+            type="button"
+            className="px-8 py-2"
+            disabled={loading}
+          >
+            {loading ? "Preparing..." : "Print"}
+          </Button>
+        </div>
       </div>
     </div>
   ) : (
@@ -104,26 +120,39 @@ const OtherAgreementDocument = ({
           <ManagemenApplicationForm3 />
         </AgreementLayout>
       </div>
-      <div className="agreement-preview-footer flex gap-4 p-5">
-        <Button
-          type="button"
-          onClick={handleDownload}
-          size="custom"
-          disabled={loading}
-          className="agreement-preview-download-button"
-          variant="sky_blue"
-        >
-          {loading ? "Preparing..." : "Download"}
-        </Button>
+      <div className="agreement-preview-footer justify-between items-center w-full flex gap-4 p-5">
+        <div className="flex gap-4 w-full">
+          <Button
+            type="button"
+            size="custom"
+            variant="border"
+            onClick={() => setGlobalInfoStore("openDocumentModal", false)}
+            className="px-8 py-2"
+          >
+            Close
+          </Button>
+        </div>
+        <div className="flex gap-4 items-center justify-end w-full">
+          <Button
+            type="button"
+            onClick={handleDownload}
+            size="custom"
+            disabled={loading}
+            className="agreement-preview-download-button px-8 py-2"
+            variant="sky_blue"
+          >
+            {loading ? "Preparing..." : "Download"}
+          </Button>
 
-        <Button
-          onClick={handlePrint}
-          type="button"
-          className="px-8 py-2"
-          disabled={loading}
-        >
-          {loading ? "Preparing..." : "Print"}
-        </Button>
+          <Button
+            onClick={handlePrint}
+            type="button"
+            className="px-8 py-2"
+            disabled={loading}
+          >
+            {loading ? "Preparing..." : "Print"}
+          </Button>
+        </div>
       </div>
     </div>
   );

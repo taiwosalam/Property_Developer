@@ -125,7 +125,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
 
   const handleAttachProperty = () => {
     router.push(
-      `/management/properties/create-rental-property?landlordId=${landlordId}`
+      `/manager/management/properties/create-rental-property?landlordId=${landlordId}`
     );
   };
 
@@ -246,7 +246,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             ) : (
               <>
                 <Button
-                  href={`/management/landlord/${landlordId}/manage/edit`}
+                  href={`/manager/management/landlord/${landlordId}/manage/edit`}
                   size="base_medium"
                   className="py-2 px-8"
                 >
@@ -428,7 +428,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           <SectionContainer
             heading="Statement"
             {...((landlordData?.statement?.length ?? 0) > 0 && {
-              href: `/management/landlord/${landlordId}/export`,
+              href: `/manager/management/landlord/${landlordId}/export`,
             })}
             style={{ fontSize: "25px", fontWeight: "700" }}
           >

@@ -313,11 +313,11 @@ const BranchStaffPage = () => {
               title="The branch staff is empty"
               body={
                 <p>
-                  You can create profiles for all your branches and assign staff
-                  and properties to them by clicking on the &quot;Create
-                  Branch&quot; button. Branch managers will have the same access
-                  to their branch as you do, while you will have access to all
-                  staff accounts and branches created.
+                  You can create profiles for all branch staff and assign them
+                  specific roles and properties using the &quot;Add Staff&quot; button.
+                  Each staff member will have access based on their role, while
+                  you maintain full control to manage all staff accounts and
+                  activities within the branch.
                   <br />
                   <br />
                 </p>
@@ -351,14 +351,12 @@ const BranchStaffPage = () => {
             handleSelect={handleSelectTableItem}
           />
         )}
-        {state && state.staffs.length && (
-          <Pagination
-            totalPages={state.total_pages}
-            currentPage={state.current_page}
-            onPageChange={handlePageChange}
-          />
-        )}
       </section>
+      <Pagination
+        totalPages={state.total_pages}
+        currentPage={state.current_page}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

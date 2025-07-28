@@ -80,6 +80,7 @@ export const StaffEditProfileInfoSection = () => {
         objectToFormData(payload)
       );
       if (status) {
+        toast.success("Profile updated successfully");
         window.dispatchEvent(new Event("staff-updated"));
       }
       setReqLoading(false);
@@ -587,6 +588,7 @@ export const StaffEditAvatarInfoSection = () => {
       setReqLoading(true);
       const status = await updateStaffPicture(data.id, formData);
       if (status) {
+        toast.success("Profile picture updated successfully");
         window.dispatchEvent(new Event("staff-updated"));
       }
       setReqLoading(false);

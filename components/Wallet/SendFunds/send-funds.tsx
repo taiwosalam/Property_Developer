@@ -44,6 +44,7 @@ const SendFunds: React.FC<SendFundsProps> = ({ changeStep, setRecipient }) => {
           : data.tier
           ? tierColorMap[data.tier]
           : undefined,
+        company_name: data.company_name,
       });
     }
     setLoading(false);

@@ -99,6 +99,7 @@ export const getUserInfoFromWalletId = async (wallet_id: string) => {
         picture: string | null;
         isVerified?: boolean;
         tier?: 1 | 2 | 3 | 4 | 5;
+        company_name?: string;
       };
     }>(`wallets/wallet-details?encodedId=${wallet_id}`);
     return data.data;

@@ -27,6 +27,7 @@ import Breakdown from "@/components/Accounting/invoice/create-invoice/Breakdown"
 import ServerError from "@/components/Error/ServerError";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import SwitchUnitPaymentStatus from "@/components/Accounting/invoice/create-invoice/payment_status";
+import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 
 const PreviewExpenses = () => {
   const router = useRouter();
@@ -41,6 +42,12 @@ const PreviewExpenses = () => {
     `/invoice/${invoiceId}`
   );
 
+  const {
+    data: walletData,
+    error: walletError,
+    refetch: walletRefetch,
+  } = useFetch<WalletDataResponse>("/wallets/dashboard");
+
   useEffect(() => {
     if (data) {
       setPageData(transformInvoiceData(data.data));
@@ -51,7 +58,7 @@ const PreviewExpenses = () => {
 
   const BANK_DETAILS = pageData.branchBankDetails;
 
-  console.log("BANK_DETAILS", BANK_DETAILS)
+  console.log("BANK_DETAILS", BANK_DETAILS);
   const CURRENCY = pageData.currency || "naira"; //TODO: change to real currency from endpount
   const IS_PAID = pageData.status.toLowerCase() === "paid";
   const UNIT_ID = pageData.unit_id;
@@ -127,31 +134,37 @@ const PreviewExpenses = () => {
                 <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
                   <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
                     <KeyValueList
-                     data={{
-                      "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
-                      "agency fee": formatFee(
-                        pageData.agency_fee,
-                        CURRENCY
-                      ),
-                      "service charge": formatFee(
-                        pageData.service_charge,
-                        CURRENCY
-                      ),
-                      "inspection fee": formatFee(pageData.inspection_fee, CURRENCY),
-                      "caution fee": formatFee(
-                        pageData.caution_fee,
-                        CURRENCY
-                      ),
-                      "management fee": formatFee(pageData.management_fee, CURRENCY),
-                      "other charge": formatFee(pageData.other_charge, CURRENCY),
-                      "legal fee": formatFee(pageData.legal_fee, CURRENCY),
-                      "vat": formatFee(pageData.vat_amount, CURRENCY),
-                      "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
-                      "Company Owe": formatFee(
-                        pageData.company_owed,
-                        CURRENCY
-                      ),
-                    }}
+                      data={{
+                        "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
+                        "agency fee": formatFee(pageData.agency_fee, CURRENCY),
+                        "service charge": formatFee(
+                          pageData.service_charge,
+                          CURRENCY
+                        ),
+                        "inspection fee": formatFee(
+                          pageData.inspection_fee,
+                          CURRENCY
+                        ),
+                        "caution fee": formatFee(
+                          pageData.caution_fee,
+                          CURRENCY
+                        ),
+                        "management fee": formatFee(
+                          pageData.management_fee,
+                          CURRENCY
+                        ),
+                        "other charge": formatFee(
+                          pageData.other_charge,
+                          CURRENCY
+                        ),
+                        "legal fee": formatFee(pageData.legal_fee, CURRENCY),
+                        vat: formatFee(pageData.vat_amount, CURRENCY),
+                        "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
+                        "Company Owe": formatFee(
+                          pageData.company_owed,
+                          CURRENCY
+                        ),
+                      }}
                       chunkSize={2}
                       direction="column"
                       referenceObject={{
@@ -161,7 +174,7 @@ const PreviewExpenses = () => {
                         "inspection fee": "",
                         "legal fee": "",
                         "caution fee": "",
-                        "vat": "",
+                        vat: "",
                         "other charge": "",
                         "management fee": "",
                         "Tenant Owe": "",
@@ -174,7 +187,7 @@ const PreviewExpenses = () => {
             ) : (
               <Breakdown data={pageData} />
             )}
-            
+
             {pageData.payment_status_desc && (
               <>
                 <SwitchUnitPaymentStatus
@@ -192,31 +205,63 @@ const PreviewExpenses = () => {
               </p>
             </div>
           </AccountingTitleSection>
-       {(BANK_DETAILS?.account_name || companyBankDetails.account_name) && (
-        <AccountingTitleSection title="Account Details">
-          <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
-            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
-              <KeyValueList
-                data={{
-                  "account name":
-                    BANK_DETAILS?.account_name || companyBankDetails.account_name,
-                  "account number":
-                    BANK_DETAILS?.account_number || companyBankDetails.account_number,
-                  "bank name":
-                    BANK_DETAILS?.bank_name || companyBankDetails.bank_name,
-                }}
-                chunkSize={1}
-                direction="column"
-                referenceObject={{
-                  "account number": "",
-                  "account name": "",
-                  "bank name": "",
-                }}
-              />
-            </div>
-          </div>
-        </AccountingTitleSection>
-      )}
+          {(BANK_DETAILS?.account_name || companyBankDetails.account_name) && (
+            <AccountingTitleSection title="Account Details">
+              <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
+                <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+                  <div className="flex flex-col gap-4 w-full">
+                    {/* Primary Account */}
+                    <div className="flex w-full">
+                      {(BANK_DETAILS?.account_name ||
+                        companyBankDetails.account_name) && (
+                        <KeyValueList
+                          data={{
+                            "Account Name":
+                              BANK_DETAILS?.account_name ||
+                              companyBankDetails.account_name,
+                            "Account Number":
+                              BANK_DETAILS?.account_number ||
+                              companyBankDetails.account_number,
+                            "Bank Name":
+                              BANK_DETAILS?.bank_name ||
+                              companyBankDetails.bank_name,
+                          }}
+                          chunkSize={1}
+                          direction="column"
+                          referenceObject={{
+                            "Account Name": "",
+                            "Account Number": "",
+                            "Bank Name": "",
+                          }}
+                        />
+                      )}
+                    </div>
+
+                    {/* Wallet Account */}
+                    <div className="flex w-full">
+                      {walletData?.account.account_name && (
+                        <KeyValueList
+                          data={{
+                            "Account Name": walletData?.account.account_name,
+                            "Account Number":
+                              walletData?.account.account_number,
+                            "Bank Name": walletData?.account.bank,
+                          }}
+                          chunkSize={1}
+                          direction="column"
+                          referenceObject={{
+                            "Account Name": "",
+                            "Account Number": "",
+                            "Bank Name": "",
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </AccountingTitleSection>
+          )}
           <Signature />
         </div>
         <ExportPageFooter printRef={printRef} />
