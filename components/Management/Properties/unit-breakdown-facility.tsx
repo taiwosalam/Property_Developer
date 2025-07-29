@@ -131,10 +131,10 @@ const UnitBreakdownFacility = () => {
     }
   }, [formResetKey, initialFormValues, unitData?.other_charge]);
 
-   const { goToStep, restartTour } = useTourStore();
-    const pathname = usePathname();
-    
-   const handleGoToTourStep = (stepIndex: number) => {
+  const { goToStep, restartTour } = useTourStore();
+  const pathname = usePathname();
+
+  const handleGoToTourStep = (stepIndex: number) => {
     goToStep(stepIndex, pathname);
   };
 
@@ -146,7 +146,11 @@ const UnitBreakdownFacility = () => {
         </h4>
         <button
           onClick={() => {
-            handleGoToTourStep(10);
+            if (pathname.startsWith("/manager")) {
+              handleGoToTourStep(27);
+            } else {
+              handleGoToTourStep(28);
+            }
           }}
           type="button"
           className="text-orange-normal"

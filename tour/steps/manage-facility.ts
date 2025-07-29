@@ -253,6 +253,13 @@ export const editPropertySteps: TourStep[] = [
       "Review and update the comprehensive fee breakdown applicable to new tenants moving into the unit. This includes rent, security deposits, agency fees, maintenance charges, and any other relevant costs. Transparent fee details ensure tenant clarity and facilitate accurate financial tracking.",
   },
   {
+    target: ".unit-fee-breakdown-wrapper",
+    placement: "bottom",
+    title: "Unit Fee",
+    content:
+      "This section details the complete breakdown of fees and charges applicable to the occupant assigned into the unit. It includes fees, security deposits, agency fees, maintenance charges, and any other relevant costs.",
+  },
+  {
     target: ".renewal-tenant-fee-form",
     placement: "top",
     title: "Unit Fee Breakdown - Renewal Tenants",

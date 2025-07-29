@@ -162,6 +162,21 @@ const UnitBreakdownRenewalTenant = () => {
     goToStep(stepIndex, pathname);
   };
 
+  const handleTourSection = () => {
+    if (!IS_RENTAL && pathname.startsWith("/manager")) {
+      goToStep(28);
+    }
+    if (IS_RENTAL && pathname.startsWith("/accountant")) {
+      goToStep(32);
+    } else if (!IS_RENTAL) {
+      handleGoToTourStep(29);
+    } else if (IS_RENTAL && pathname.startsWith("/manager")) {
+      handleGoToTourStep(33);
+    } else if (IS_RENTAL && pathname) {
+      handleGoToTourStep(34);
+    }
+  };
+
   return (
     <div className="unit-fee-breakdown-renew-tenant renewal-tenant-fee-form">
       <div className="flex items-center gap-2">
@@ -170,14 +185,7 @@ const UnitBreakdownRenewalTenant = () => {
           {IS_RENTAL ? " Renewal Tenants" : " Renewal Occupants"}
         </h4>
         <button
-          onClick={() => {
-            if(!IS_RENTAL) {
-               handleGoToTourStep(11);
-            }else if(IS_RENTAL) {
-              handleGoToTourStep(27);
-            }
-           
-          }}
+          onClick={handleTourSection}
           type="button"
           className="text-orange-normal"
         >
