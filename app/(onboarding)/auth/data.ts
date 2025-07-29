@@ -208,6 +208,8 @@ export const getRentalPropertyCreatePath = (
       return basePath("/manager");
     case "account":
       return basePath("/accountant");
+    case "staff":
+      return basePath("/staff");
     default:
       return basePath();
   }
@@ -228,44 +230,12 @@ export const getFacilityPropertyCreatePath = (
       return basePath("/manager");
     case "account":
       return basePath("/accountant");
+    case "staff":
+      return basePath("/staff");
     default:
       return basePath();
   }
 };
-// interface LoginResponse {
-//   message: string;
-//   access_token: string;
-//   subscription_expired: boolean;
-//   data: {
-//     details: {
-//       id: string;
-//       user_id: string;
-//       email: string;
-//       role: [string];
-//       email_verification: boolean;
-//       unread_messages_count?: number;
-//       unread_notifications_count?: number;
-//     };
-//   };
-//   wallet_pin_status: boolean;
-//   wallet_id: string | null;
-//   additional_details: {
-//     status: "approved" | "pending" | "rejected";
-//     user_id: string;
-//     branch: {
-//       id: string | null;
-//       picture: string | null;
-//     };
-//     // company: {
-//     id: string | null;
-//     company_logo: string | null;
-//     dark_logo: string | null;
-//     // };
-//     settings: {
-//       appearance: any;
-//     };
-//   };
-// }
 
 
 interface LoginResponse {

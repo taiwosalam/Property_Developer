@@ -341,7 +341,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 tenant_profile
               />
               {/* Documents for Current Rent */}
-              {rent.documents && rent.documents.length > 0 ? (
+              {rent.documents && rent.documents.length > 0 && (
                 <>
                   {Object.entries(groupDocumentsByType(rent.documents)).map(
                     ([documentType, documents]) => {
@@ -383,10 +383,6 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                     </LandlordTenantInfoSection>
                   )}
                 </>
-              ) : (
-                <p className="text-center text-gray-500 text-md py-4">
-                  No documents available for this unit
-                </p>
               )}
             </div>
           ))
@@ -413,7 +409,7 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                   tenant_profile
                 />
                 {/* Documents for Previous Rent */}
-                {rent.documents && rent.documents.length > 0 ? (
+                {rent.documents && rent.documents.length > 0 && (
                   <>
                     {Object.entries(groupDocumentsByType(rent.documents)).map(
                       ([documentType, documents]) => {
@@ -455,10 +451,6 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                       </LandlordTenantInfoSection>
                     )}
                   </>
-                ) : (
-                  <p className="text-center text-gray-500 text-md py-4">
-                    No documents available for this unit
-                  </p>
                 )}
               </div>
             ))

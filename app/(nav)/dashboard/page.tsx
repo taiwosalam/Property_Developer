@@ -60,8 +60,8 @@ import Button from "@/components/Form/Button/button";
 const Dashboard = () => {
   const walletId = useWalletStore((state) => state.walletId);
   const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { setChatData } = useChatStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { setShouldRenderTour, completeTour, setPersist, isTourCompleted } =
     useTourStore();
 

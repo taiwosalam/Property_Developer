@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // import BackButton from "@/components/BackButton/back-button";
 import Image, { StaticImageData } from "next/image";
 // import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { ChevronLeft } from "@/public/icons/icons";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import { CommentData } from "@/components/tasks/announcements/comment";
 import { ContributorDetails } from "@/components/Community/Contributor";
@@ -25,8 +25,10 @@ import ThreadCard from "@/components/Community/ThreadCard";
 
 const ThreadPreview = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { threadId } = useParams();
   const slug = threadId as string;
+  const hasScrolled = useRef(false);
   const [pageData, setPageData] = useState<{
     post: any;
     companySummary: any;
@@ -62,9 +64,10 @@ const ThreadPreview = () => {
         comments: transformedData.comments,
         targetAudience: transformedData.targetAudience,
         similarPosts: transformedData.similarPosts,
-      }); 
+      });
     }
   }, [data]);
+
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -119,19 +122,22 @@ const ThreadPreview = () => {
             slug={slug}
             comments={pageData.comments}
           />
-          <CommunityComments
-            slug={slug}
-            comments={pageData.comments}
-            setComments={(comments) =>
-              setPageData((prev) => ({
-                ...prev,
-                comments:
-                  typeof comments === "function"
-                    ? comments(prev.comments)
-                    : comments,
-              }))
-            }
-          />
+          {/* Comments */}
+          <div className="community-comments" id="community-comments">
+            <CommunityComments
+              slug={slug}
+              comments={pageData.comments}
+              setComments={(comments) =>
+                setPageData((prev) => ({
+                  ...prev,
+                  comments:
+                    typeof comments === "function"
+                      ? comments(prev.comments)
+                      : comments,
+                }))
+              }
+            />
+          </div>
         </div>
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
           <ContributorDetails

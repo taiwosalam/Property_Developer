@@ -28,9 +28,11 @@ import { property } from "lodash";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { useTourStore } from "@/store/tour-store";
 import { ExclamationMark } from "@/public/icons/icons";
+import { useRole } from "@/hooks/roleContext";
 
 const CreateTenancyAggrement = () => {
   const router = useRouter();
+  const { role } = useRole();
   const [reqLoading, setReqLoading] = useState(false);
   const propertyId = useSearchParams().get("p") ?? "";
   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
@@ -52,6 +54,55 @@ const CreateTenancyAggrement = () => {
     useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
   const propertyData = data ? transformSinglePropertyData(data) : null;
 
+  // get rent unit link
+  const getRentUnitLink = () => {
+    switch (role) {
+      case "director":
+        return `/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`;
+      case "manager":
+        return `/manager/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`;
+      case "account":
+        return `/accountant/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`;
+      case "staff":
+        return `/staff/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`;
+      default:
+        return `/unauthorized`;
+    }
+  };
+
+  // get preview link
+  const getPreviewLink = () => {
+    switch (role) {
+      case "director":
+        return `/documents/preview/?d=${documentId}&b=manage`;
+      case "manager":
+        return `/manager/documents/preview/?d=${documentId}&b=manage`;
+      case "account":
+        return `/accountant/documents/preview/?d=${documentId}&b=manage`;
+      case "staff":
+        return `/staff/documents/preview/?d=${documentId}&b=manage`;
+      default:
+        return `/unauthorized`;
+    }
+  };
+
+  // get documents link
+  const getDocumentsLink = () => {
+    switch (role) {
+      case "director":
+        return `/documents`;
+      case "manager":
+        return `/manager/documents`;
+      case "account":
+        return `/accountant/documents`;
+      case "staff":
+        return `/staff/documents`;
+      default:
+        return `/unauthorized`;
+    }
+  };
+
+  // handle save draft
   const handleSaveDraft = async (type: "create" | "preview") => {
     const articles = transformArticlesForPayload(checkboxOptions);
     const payload: TenancyAgreementPayload = {
@@ -64,14 +115,6 @@ const CreateTenancyAggrement = () => {
     try {
       setReqLoading(true);
       const res = await createPropertyDocument(objectToFormData(payload));
-      // if (res) {
-      //   toast.success("Draft saved successfully");
-      //   if (type === "preview") {
-      //     router.push(`/documents/preview/?d=${documentId}&b=manage`);
-      //   } else {
-      //     router.push(`/documents`);
-      //   }
-      // }
       if (res) {
         toast.success("Draft saved successfully");
         // Check if we should redirect back to Start Rent
@@ -81,14 +124,14 @@ const CreateTenancyAggrement = () => {
         if (startRentUnitId) {
           sessionStorage.removeItem("return_to_start_rent_unit_id");
           router.push(
-            `/management/rent-unit/${startRentUnitId}/start-rent?type=rental&id=${startRentUnitId}`
+            getRentUnitLink()
           );
           return;
         }
         if (type === "preview") {
-          router.push(`/documents/preview/?d=${documentId}&b=manage`);
+          router.push(getPreviewLink());
         } else {
-          router.push(`/documents`);
+          router.push(getDocumentsLink());
         }
       }
     } catch (err) {
@@ -97,6 +140,7 @@ const CreateTenancyAggrement = () => {
       setReqLoading(false);
     }
   };
+
 
   const pathname = usePathname();
   const {
@@ -200,7 +244,7 @@ const CreateTenancyAggrement = () => {
       </div>
       <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Button
-          href={"/documents"}
+          href={getDocumentsLink()}
           className="py-2 px-6"
           variant="sky_blue"
           size="base_medium"
