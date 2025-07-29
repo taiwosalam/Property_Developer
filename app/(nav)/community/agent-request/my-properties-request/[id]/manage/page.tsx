@@ -36,7 +36,7 @@ const ManageMyPropertyRequest = () => {
   const { getGlobalInfoStore } = useGlobalStore();
 
   const { data, loading, error, isNetworkError } = useFetch<{
-    data: {
+    post: {
       AgentRequest: any;
       comments: any;
     };
@@ -53,10 +53,10 @@ const ManageMyPropertyRequest = () => {
 
   useEffect(() => {
     //
-    if (data?.data?.AgentRequest) {
-      setPropertyRequests(data.data.AgentRequest);
-      setComments(data.data.comments);
-      setSlug(data.data.AgentRequest.slug);
+    if (data?.post?.AgentRequest) {
+      setPropertyRequests(data.post?.AgentRequest);
+      setComments(data.post.comments);
+      setSlug(data.post.AgentRequest.slug);
     }
   }, [data]);
 
@@ -94,11 +94,11 @@ const ManageMyPropertyRequest = () => {
       const updatedData = { ...data, _method: "patch" };
       try {
         setIsUpdating(true);
-        await updatePropertyRequest(id as string, updatedData);
-        toast.success("Property request updated successfully");
-        router.push(
-          `/community/agent-request/my-properties-request`
-        );
+        const res = await updatePropertyRequest(id as string, updatedData);
+        if (res) {
+          toast.success("Property request updated successfully");
+          router.push(`/community/agent-request/my-properties-request`);
+        }
       } catch (error) {
         toast.error("Failed to update property request");
       } finally {

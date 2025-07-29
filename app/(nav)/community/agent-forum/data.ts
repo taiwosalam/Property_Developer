@@ -106,12 +106,67 @@ export const updatePropertyRequest = async (id: string, data: any) => {
     valid_till: "valid_till",
   };
 
+  // Validate required fields
+  const requiredFields = [
+    { field: "title", label: "Title" },
+    { field: "content", label: "Description" },
+    { field: "property_category", label: "Property Category" },
+    { field: "property_type", label: "Property Type" },
+    { field: "property_sub_type", label: "Property Sub Type" },
+    //{ field: "target_audience", label: "Target Audience" },
+    { field: "min_budget", label: "Minimum Budget" },
+    { field: "max_budget", label: "Maximum Budget" },
+    //{ field: "valid_till", label: "Valid Till Date" },
+    { field: "lga", label: "LGA" },
+    { field: "state", label: "State" },
+  ];
+
+  // Check for missing required fields
+  const missingFields = requiredFields.filter(({ field, label }) => {
+    const value = data[field];
+    return !value || (Array.isArray(value) && value.length === 0);
+  });
+
+  if (missingFields.length > 0) {
+    const missingFieldLabels = missingFields.map((f) => f.label).join(", ");
+    toast.error(
+      `Please fill in all required fields: ${missingFieldLabels}`
+    );
+    return;
+  }
+
+  // Validate budget values
+  const minBudget = Number(data.min_budget);
+  const maxBudget = Number(data.max_budget);
+
+  if (isNaN(minBudget) || isNaN(maxBudget)) {
+    toast.error("Budget values must be valid numbers");
+    return;
+  }
+
+  if (minBudget > maxBudget) {
+    toast.error("Minimum budget cannot be greater than maximum budget");
+    return;
+  }
+
+  // Validate date
+  // const validTill = new Date(data.valid_till);
+  // if (isNaN(validTill.getTime())) {
+  //   toast.error("Please enter a valid date");
+  //   return;
+  // }
+
+  // if (validTill < new Date()) {
+  //    toast.error("Valid till date must be in the future");
+  //    return;
+  // }
+
   const formattedData = {
-    title: data.title || "",
-    description: data.content || "",
-    property_category: data.property_category || "",
-    property_type: data.property_type || "",
-    property_sub_type: data.property_sub_type || "",
+    title: data.title.trim(),
+    description: data.content.trim(),
+    property_category: data.property_category.trim(),
+    property_type: data.property_type.trim(),
+    property_sub_type: data.property_sub_type.trim(),
     target_audience: data.target_audience
       ? typeof data.target_audience === "string"
         ? [data.target_audience]
@@ -119,18 +174,22 @@ export const updatePropertyRequest = async (id: string, data: any) => {
         ? data.target_audience
         : [data.target_audience]
       : [],
-    min_budget: Number(data.min_budget) || "",
-    max_budget: Number(data.max_budget) || "",
-    valid_till: data.valid_till || "",
+    min_budget: minBudget,
+    max_budget: maxBudget,
+    valid_till: data.valid_till,
+    lga: data.lga.trim(),
+    state: data.state.trim(),
     _method: "patch",
   };
 
   try {
     const response = await api.post(`/agent_requests/${id}`, formattedData);
-    return response.data;
+    if(response.status === 200 || response.status === 201){
+      return true;
+    }
   } catch (error) {
     console.error("Error updating property request:", error);
-    throw error;
+    return false
   }
 };
 
@@ -156,9 +215,9 @@ export const transformToThreadCardProps = (data: any[]): ThreadCardProps[] => {
     slug: thread.post ? thread.post.slug : "--- ---",
     shareLink: thread.post ? thread.post.share_link : "--- ---",
     video: thread.post ? thread.post.video_link : "--- ---",
-    published: thread.post.published, 
-    user_liked: thread.post.user_liked, 
-    user_disliked: thread.post.user_disliked, 
+    published: thread.post.published,
+    user_liked: thread.post.user_liked,
+    user_disliked: thread.post.user_disliked,
     isVerified: Number(thread.user.tier) > 1,
     badge_color: Number(thread.user.tier) > 1 ? "gray" : undefined,
     // badge_color: thread.user.tier ? tierColorMap[thread.user.tier as keyof typeof tierColorMap] : undefined,

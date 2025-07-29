@@ -33,6 +33,7 @@ import ServerError from "@/components/Error/ServerError";
 import SettingsBank from "@/components/Settings/settings-bank";
 import { useTourStore } from "@/store/tour-store";
 import { ExclamationMark } from "@/public/icons/icons";
+import { cleanPathname } from "@/tour/steps/page-steps";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -103,13 +104,15 @@ const EditStaffProfile = () => {
   if (error) return <ServerError error={error} />;
   if (!apiData) return null;
 
+
+
   return (
     <StaffEditContext.Provider value={{ data: pageData }}>
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
         <div className="flex gap-2 items-center">
           <BackButton>Edit Staff</BackButton>
           <button
-            onClick={() => restartTour(pathname)}
+            onClick={() => restartTour(cleanPathname(pathname))}
             type="button"
             className="text-orange-normal"
           >
