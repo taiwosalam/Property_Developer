@@ -22,7 +22,7 @@ const positionMap: Record<string, string> = {
   manager: "Branch Manager",
   director: "Director",
   staff: "Staff",
-  account: "Account Officer",
+  account: "Account Manager",
 };
 
 const MessageUserCard = ({

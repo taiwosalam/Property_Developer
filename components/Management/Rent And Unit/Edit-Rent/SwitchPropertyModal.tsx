@@ -11,6 +11,7 @@ import useFetch from "@/hooks/useFetch";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 import { toast } from "sonner";
 import { Currency } from "@/utils/number-formatter";
+import { useRole } from "@/hooks/roleContext";
 
 const SwitchPropertyModal: React.FC<{
   isRental: boolean;
@@ -25,6 +26,7 @@ const SwitchPropertyModal: React.FC<{
   const [selectedProperty, setPropertySelected] = useState("");
   const [loading, setLoading] = useState(false);
   const isRentalProperty = propertyType === "rental";
+  const { role } = useRole();
 
   const {
     data: propertyData,
@@ -67,6 +69,21 @@ const SwitchPropertyModal: React.FC<{
     : "Error loading facilities";
   const SELECT_TITLE = isRentalProperty ? "Select Property" : "Select Facility";
 
+  const getBasePath = () => {
+    switch (role) {
+      case "director":
+        return "/management";
+      case "staff":
+        return "/staff/management";
+      case "manager":
+        return "/manager/management";
+      case "account":
+        return "/accountant/management";
+      default:
+        return "/unauthorized";
+    }
+  };
+
   const handleContinue = async () => {
     if (!selectedProperty) {
       toast.warning("Please select a property");
@@ -98,7 +115,7 @@ const SwitchPropertyModal: React.FC<{
       // Simulate async operation (e.g., API call or validation)
       await new Promise((resolve) => setTimeout(resolve, 500)); // Mock delay
       router.push(
-        `/management/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${selectedProperty}`
+        `${getBasePath()}/rent-unit/${id}/edit-rent/change-property?type=${propertyType}&p=${selectedProperty}`
       );
     } catch {
       toast.error("Failed to proceed. Please try again.");

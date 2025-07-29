@@ -335,7 +335,6 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
               <UnitItem
                 {...rent}
                 tenantId={tenant?.id}
-                // page="tenant-profile"
                 tenant_profile
                 cautionDeposit={String(rent.caution_deposit)}
                 tenantAgent={tenant?.user_tag}

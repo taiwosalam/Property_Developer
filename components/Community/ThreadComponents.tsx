@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import BadgeIcon, { BadgeIconColors } from "../BadgeIcon/badge-icon";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import { useRouter } from "next/navigation";
 
 // ============= THREAD HEADER ======================
 export const ThreadHeader = ({
@@ -135,6 +136,8 @@ export const ThreadFooter = ({
   setIsLikeDislikeLoading,
   user_liked,
   user_disliked,
+  id,
+  myArticle,
 }: {
   comments: string;
   likes: string;
@@ -144,7 +147,13 @@ export const ThreadFooter = ({
   user_liked?: boolean;
   user_disliked?: boolean;
   setIsLikeDislikeLoading?: (value: boolean) => void;
+  id: string;
+  myArticle?: boolean;
 }) => {
+  const router = useRouter();
+  const link = `/community/agent-forum/${
+    myArticle ? "my-articles" : "threads"
+  }/${slug}/preview?id=${id}&comments`;
   const isDarkMode = useDarkMode();
   const [userAction, setUserAction] = useState<"like" | "dislike" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -224,7 +233,7 @@ export const ThreadFooter = ({
         </button>
       </div>
 
-      <button className="flex items-center gap-2">
+      <button className="flex items-center gap-2" onClick={() => router.push(link)}>
         <CommentIcon />
         <span className="text-sm dark:text:darkText-1">
           {comments} Comments

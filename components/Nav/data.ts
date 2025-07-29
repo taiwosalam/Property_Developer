@@ -232,6 +232,7 @@ export const account_nav_items: NavItemsProps = [
       { label: "Other Staff", href: "/accountant/management/branch-staff" },
       { label: "inventory", href: "/accountant/management/inventory" },
       { label: "properties", href: "/accountant/management/properties" },
+      { label: "rent & mgmt", href: "/accountant/management/rent-unit" },
       {
         label: "vehicles record",
         href: "/accountant/management/vehicles-record",
@@ -260,7 +261,7 @@ export const account_nav_items: NavItemsProps = [
     content: [
       { label: "units", href: "/accountant/listing/units" },
       { label: "statistics", href: "/accountant/listing/statistics" },
-      // { label: "Property Draft/Request", href: "/accountant/listing/property" },
+      { label: "Property Draft/Request", href: "/accountant/listing/property" },
     ],
   },
   {
@@ -303,7 +304,11 @@ export const staff_nav_items: NavItemsProps = [
     type: "people",
     label: "management",
     content: [
+      { label: "landlord & landlady", href: "/staff/management/landlord" },
+      { label: "tenants & occupants", href: "/staff/management/tenants" },
       { label: "Other Staff", href: "/staff/management/branch-staff" },
+      { label: "inventory", href: "/staff/management/inventory" },
+      { label: "properties", href: "/staff/management/properties" },
       {
         label: "vehicles record",
         href: "/staff/management/vehicles-record",
@@ -336,6 +341,8 @@ export const staff_nav_items: NavItemsProps = [
       { label: "announcements", href: "/staff/tasks/announcements" },
       { label: "call request", href: "/staff/tasks/inquires" },
       { label: "visitors request", href: "/staff/tasks/visitors" },
+      { label: "property request", href: "/staff/tasks/property-request" },
+      { label: "deposits request", href: "/staff/tasks/deposits" },
     ],
   },
   { type: "settings", label: "settings", href: "/staff/settings" },

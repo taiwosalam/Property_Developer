@@ -12,6 +12,7 @@ import useFetch from "@/hooks/useFetch";
 import { transformUnitOptions, UnitsApiResponse } from "./data";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import { toast } from "sonner";
+import { useRole } from "@/hooks/roleContext";
 
 const SwitchUnitModal: React.FC<{
   isRental: boolean;
@@ -29,6 +30,7 @@ const SwitchUnitModal: React.FC<{
   const [modalView, setModalView] = useState<"warning" | "menu">("warning");
   const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
+  const { role } = useRole();
 
   const {
     data: unitsData,
@@ -67,19 +69,34 @@ const SwitchUnitModal: React.FC<{
     setDeduction(newChecked2);
   };
 
+  const getBasePath = () => {
+    switch (role) {
+      case "director":
+        return "/management";
+      case "staff":
+        return "/staff/management";
+      case "manager":
+        return "/manager/management";
+      case "account":
+        return "/accountant/management";
+      default:
+        return "/unauthorized";
+    }
+  }
+
   const handleContinue = () => {
     if (!selectedUnitId) {
       toast.warning("Please select a unit");
       return;
     }
     router.push(
-      `/management/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${propertyId}&u=${selectedUnitId}`
+      `${getBasePath()}/rent-unit/${id}/edit-rent/change-unit?type=${propertyType}&p=${propertyId}&u=${selectedUnitId}`
     );
   };
 
   const proceedToSelectUnit = () => {
     router.push(
-      `/management/rent-unit/${id}/edit-rent/select-unit?type=${propertyType}&p=${propertyId}`
+      `${getBasePath()}/rent-unit/${id}/edit-rent/select-unit?type=${propertyType}&p=${propertyId}`
     );
   };
 

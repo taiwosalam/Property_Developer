@@ -23,9 +23,9 @@ export const transformInventoryUnitApiResponse = (
     account_manager: inventory?.account_officer?.name || "--- ---",
     branch_id: inventory?.branch_id?.toString() || "0",
     video: inventory?.video || "",
+    total_unit: unit.length || 0,
   };
 
-  console.log("unit", unit)
   // Transform unit data for InventoryUnitCard
   const inventoryUnitData: InventoryUnitData[] = unit
     .filter((u) => ["vacant", "occupied", "relocate"].includes(u?.is_active))

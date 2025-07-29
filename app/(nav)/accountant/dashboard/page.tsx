@@ -37,17 +37,27 @@ import {
 } from "../tasks/complaints/data";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import { DashboardChart } from "@/components/dashboard/chart";
-import { initialDashboardStats } from "../../dashboard/data";
+import { getRecentMessages, initialDashboardStats } from "../../dashboard/data";
 import { DashboardDataResponse } from "../../dashboard/types";
 import { useTourStore } from "@/store/tour-store";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import CompanyStatusModal from "@/components/dashboard/company-status";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { transformUsersMessages } from "../../(messages-reviews)/messages/data";
+import {
+  ConversationsAPIResponse,
+  PageMessages,
+} from "../../(messages-reviews)/messages/types";
+import NotificationCard from "@/components/dashboard/notification-card";
+import { useChatStore } from "@/store/message";
 
 const AccountManagerDashboard = () => {
   const { role, setRole } = useRole();
   const walletId = useWalletStore((state) => state.walletId);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
+  const { setChatData } = useChatStore();
   const [dashboardStats, setDashboardStats] = useState<CardData[]>([]);
   const { setShouldRenderTour, completeTour, setPersist, isTourCompleted } =
     useTourStore();
@@ -170,6 +180,25 @@ const AccountManagerDashboard = () => {
     setPersist,
     isTourCompleted,
   ]);
+  // Recent messages
+  const {
+    data: usersMessages,
+    loading: usersMsgLoading,
+    error: usersMsgError,
+    refetch: refetchMsg,
+    isNetworkError: MsgNetworkError,
+  } = useFetch<ConversationsAPIResponse>("/messages");
+  useRefetchOnEvent("refetch-users-msg", () => {
+    refetchMsg({ silent: true });
+  });
+
+  useEffect(() => {
+    if (usersMessages) {
+      const transformed = transformUsersMessages(usersMessages);
+      setPageUsersMsg(transformed);
+      setChatData("users_messages", transformed);
+    }
+  }, [usersMessages, setChatData]);
 
   // Handle error
   if (isNetworkError) return <NetworkError />;
@@ -251,6 +280,25 @@ const AccountManagerDashboard = () => {
             </div>
           )}
         </SectionContainer>
+      <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
+        <div className="w-full xl:flex-1 space-y- xl:space-y-2">
+          <DashboardChart
+            chartTitle="listing Performance"
+            visibleRange
+            chartConfig={dashboardListingsChartConfig}
+            chartData={bookmarkChartData}
+          />
+        </div>
+
+        <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
+          <NotificationCard
+            className="h-[358px]"
+            seeAllLink="/messages"
+            sectionHeader="Recent Messages"
+            notifications={getRecentMessages(pageUsersMsg)}
+          />
+        </div>
+      </div>
 
         {/* Recent Complains */}
         <SectionContainer

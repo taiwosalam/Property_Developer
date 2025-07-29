@@ -120,6 +120,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [coordinate, setCoordinate] = useState(
     propertySettings?.coordinate || ""
   );
+  
+  const BRANCH_MANAGER_ID = useBranchInfoStore((state) => state.manager.id);
+
 
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },

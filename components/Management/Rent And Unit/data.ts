@@ -76,10 +76,16 @@ export type Action = {
 // External function to determine route prefix based on page
 const getRoutePrefix = (page?: string): string => {
   switch (page) {
+    case "director":
+      return "/management";
     case "manager":
       return "/manager/management";
+    case "account":
+      return "/accountant/management";
+    case "staff":
+      return "/staff/management";
     default:
-      return "/management";
+      return "/unauthorized";
   }
 };
 

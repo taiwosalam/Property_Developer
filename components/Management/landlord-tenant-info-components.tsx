@@ -22,6 +22,7 @@ import { updateLandlordNote } from "@/app/(nav)/management/landlord/[landlordId]
 import { updateProviderNotes } from "@/app/(nav)/management/service-providers/[serviceProviderId]/manage/data";
 import { combine } from "zustand/middleware";
 import { updateVehicleDetails } from "../tasks/vehicles-record/data";
+import { useRole } from "@/hooks/roleContext";
 
 export const LandlordTenantInfoBox: React.FC<{
   style?: CSSProperties;
@@ -293,6 +294,8 @@ export const MobileNotesModal: React.FC<{
     note_last_updated: string;
   };
 }> = ({ notes, id, page, provider_data, defaultNote }) => {
+  const { role } = useRole();
+  const CAN_MANAGE_NOTE = role === "director" || role === "manager";
   const { provider_notes, company_id, avatar, note_last_updated } =
     provider_data || {};
   const [editNote, setEditNote] = useState(false);
@@ -357,7 +360,7 @@ export const MobileNotesModal: React.FC<{
             </sub>
           </h3>
           <div className="flex items-center gap-2">
-            {editNote ? (
+            {editNote && CAN_MANAGE_NOTE ? (
               <>
                 <Button
                   variant="light_red"
@@ -378,14 +381,16 @@ export const MobileNotesModal: React.FC<{
                 </Button>
               </>
             ) : (
-              <Button
-                variant="sky_blue"
-                size="xs_normal"
-                className="py-1 px-2"
-                onClick={() => setEditNote(true)}
-              >
-                Edit
-              </Button>
+              CAN_MANAGE_NOTE && (
+                <Button
+                  variant="sky_blue"
+                  size="xs_normal"
+                  className="py-1 px-2"
+                  onClick={() => setEditNote(true)}
+                >
+                  Edit
+                </Button>
+              )
             )}
           </div>
         </div>
@@ -394,7 +399,7 @@ export const MobileNotesModal: React.FC<{
         </ModalTrigger>
       </div>
       <div className="pt-2">
-        {editNote ? (
+        {editNote && CAN_MANAGE_NOTE ? (
           <TextArea
             id="write_up"
             value={note}

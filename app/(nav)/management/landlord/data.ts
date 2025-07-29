@@ -6,6 +6,7 @@ import { UserCardProps } from "@/components/Management/landlord-and-tenant-card"
 import { PersonalDataProps } from "@/components/tasks/vehicles-record/form-sections";
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
+import { empty } from "@/app/config";
 
 interface LandlordCardProps {
   id: string;
@@ -182,6 +183,7 @@ export const transformLandlordApiResponse = (
       user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: landlord.picture,
       note: landlord.note.note !== null && landlord.note.note !== "",
+      
       badge_color: landlord.user_tier
         ? tierColorMap[landlord.user_tier]
         : undefined,
@@ -254,15 +256,15 @@ export const transformMobileUseDataForVehicleRecord = (
 
 export const transformTenantUserData = (res: any): UserCardProps => {
   const { data } = res;
-  console.log("res", data);
+  // console.log("res", data);
   const badgeColor =
     tierColorMap[data.user_tier as keyof typeof tierColorMap] || "green";
   return {
-    id: data.id,
-    name: data.name,
-    picture_url: data.picture,
-    email: data.email,
-    phone_number: data.phone,
+    id: data?.id || "",
+    name: data?.name || "",
+    picture_url: data?.picture || empty,
+    email: data?.email || "",
+    phone_number: data?.phone?.profile_phone || data?.phone?.user_phone || "",
     user_tag: "mobile",
     badge_color: badgeColor,
   };

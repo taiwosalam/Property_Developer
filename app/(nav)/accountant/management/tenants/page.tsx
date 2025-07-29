@@ -80,7 +80,6 @@ const Tenants = () => {
     sessionStorage.setItem("tenant_page", current_page.toString());
   }, [current_page]);
 
-
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
@@ -311,6 +310,16 @@ const Tenants = () => {
             colorScheme={3}
           />
         </div>
+        {/* <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + create new tenant
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <AddTenantModal />
+          </ModalContent>
+        </Modal> */}
       </div>
 
       <FilterBar
@@ -346,7 +355,7 @@ const Tenants = () => {
               { label: "Web Tenant", value: "web" },
               { label: "All Tenants", value: "all" },
             ],
-          }
+          },
         ]}
       />
       <section>

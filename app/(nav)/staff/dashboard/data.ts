@@ -51,6 +51,22 @@ export const getStaffDashboardCardData = (
     subValue: formatNumber(data.data.month_complaint_count),
     link: "/staff/tasks/complaints",
   },
+  {
+    title: "Vehicles Record",
+    bg: getBackgroundColor("vacant unit"),
+    icon: ExpiredIcon,
+    value: formatNumber(11  ),
+    subValue: formatNumber(0),
+    link: "/staff/management/rent-unit?is_active=vacant",
+  },
+  {
+    title: "Visitor Request",
+    bg: getBackgroundColor("expired"),
+   icon: BedIcon,
+    value: formatNumber(11),
+    subValue: formatNumber(0),
+    link: "/staff/management/rent-unit?is_active=expired",
+  },
 ];
 
 function getBackgroundColor(title: string): string {

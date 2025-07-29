@@ -279,14 +279,7 @@ const Tenants = () => {
         : undefined,
   }));
 
-  // Render an error message if BRANCH_ID is invalid
-  // if (!BRANCH_ID || BRANCH_ID === 0) {
-  //   return (
-  //     <div className="text-base text-red-500 font-medium">
-  //       Invalid branch ID. Please select a valid branch.
-  //     </div>
-  //   );
-  // }
+  
 
   if (loading)
     return (
@@ -424,6 +417,7 @@ const Tenants = () => {
                         badge_color={t.badge_color}
                         email={t.email}
                         phone_number={t.phone_number}
+                        is_flagged={t.flagged}
                       />
                     </Link>
                   ))

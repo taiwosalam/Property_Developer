@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LocationIcon, PlayIconButton } from "@/public/icons/icons";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import BackButton from "@/components/BackButton/back-button";
@@ -11,16 +11,36 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-section-container";
 import PropeertyDetailsSettingsCard from "@/components/Management/Properties/property-details-settings-others-card";
 import { useSearchParams } from "next/navigation";
-import { empty } from "@/app/config";
+import {
+  SinglePropertyResponse,
+  transformSinglePropertyData,
+} from "@/app/(nav)/management/properties/[id]/data";
+import useFetch from "@/hooks/useFetch";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import dynamic from "next/dynamic";
+import { useOccupantStore } from "@/hooks/occupant-store";
+import Select from "@/components/Form/Select/select";
+import ServerError from "@/components/Error/ServerError";
+const DynamicReactPlayer = dynamic(() => import("react-player"), {
+  ssr: false,
+});
 
 const ChangePropertyPage: React.FC = () => {
   const searchParams = useSearchParams();
-  const propertyType = searchParams.get("type") as "rental" | "facility"; //would be gotten from API
-  const isRental = propertyType === "rental";
+  const property_id = searchParams.get("p");
+  const propertyType = searchParams.get("type") as "rental" | "facility";
+  // const isRental = propertyType === "rental";
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const [step1Done, setStep1Done] = useState(false);
 
+  const [isClient, setIsClient] = useState(false);
   const [selectedUnitId, setSelectedUnitId] = useState<string | null>(null);
+  const { setPropertyData } = useOccupantStore();
 
   const handleUnitSelect = (id: string) => {
     setSelectedUnitId(id === selectedUnitId ? null : id);
@@ -28,9 +48,45 @@ const ChangePropertyPage: React.FC = () => {
 
   const handleChangeContent = () => setStep1Done(true);
 
+  const { data, loading, error, isNetworkError } =
+    useFetch<SinglePropertyResponse>(`property/${property_id}/view`);
+
+  const propertyData = data ? transformSinglePropertyData(data) : null;
+  useEffect(() => {
+    if (
+      propertyData &&
+      propertyData.id !== useOccupantStore.getState().propertyData?.id
+    ) {
+      setPropertyData(propertyData);
+    }
+  }, [propertyData, setPropertyData]);
+
+  const filteredUnits = useMemo(
+    () =>
+      propertyData?.units.filter(
+        (u) => u.unitStatus === "vacant" || u.unitStatus === "relocate"
+      ) || [],
+    [propertyData?.units]
+  );
+
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+  if (!propertyData) return <div>No property data found</div>;
+
   if (step1Done) {
-    return <PostProceedContent />;
+    return (
+      <PostProceedContent
+        selectedUnitId={selectedUnitId as string}
+        page="property"
+      />
+    );
   }
+
+
+  console.log("propertyData", propertyData)
+
+  const isRental = propertyData.isRental;
 
   return (
     <div className="space-y-5 pb-[100px]">
@@ -41,14 +97,15 @@ const ChangePropertyPage: React.FC = () => {
       {/* Heading */}
       <div className="text-black dark:text-white">
         <p className="text-base font-medium dark:text-darkText-1">
-          ID: 123456789
+          ID: {propertyData.id}
         </p>
         <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
-          Moniya Apartment (14Units)
+          {propertyData.property_name} ({propertyData.total_units}Units)
         </h1>
         <p className="text-sm text-text-label font-normal flex items-center gap-1">
           <LocationIcon />
-          Street 23, All Avenue, Nigeria
+          {propertyData.address}, {propertyData.local_government},{" "}
+          {propertyData.state}
         </p>
       </div>
 
@@ -56,80 +113,57 @@ const ChangePropertyPage: React.FC = () => {
         <div className="lg:w-[60%] space-y-6">
           {/* Main Image */}
           <ImageSlider
-            images={[
-              "/empty/SampleProperty.jpeg",
-              "/empty/SampleProperty2.jpeg",
-              "/empty/SampleProperty3.jpeg",
-              "/empty/SampleProperty4.jpeg",
-              "/empty/SampleProperty5.jpeg",
-            ]}
+            images={propertyData.images}
             className="aspect-[1.4] rounded-lg"
           />
 
           {/* Videos */}
-          {isRental && (
-            <div className="space-y-6">
+          {isRental && isClient && propertyData.video_link && (
+            <div className="space-y-4">
               <p className="text-black text-lg md:text-xl lg:text-2xl font-bold">
-                Videos
+                Video
               </p>
               <div className="relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]">
-                <div
-                  className="absolute inset-0 bg-black opacity-50 z-[1]"
-                  aria-hidden="true"
-                />
-                <button
-                  type="button"
-                  aria-label="Play Video"
-                  className="absolute inset-0 flex items-center justify-center z-[2] text-white"
-                >
-                  <PlayIconButton />
-                </button>
-                <Image
-                  src={"/empty/SampleProperty3.jpeg"}
-                  alt={""}
-                  fill
-                  className="object-center"
+                <DynamicReactPlayer
+                  url={propertyData.video_link}
+                  width="100%"
+                  height="100%"
+                  pip
+                  controls
                 />
               </div>
             </div>
           )}
         </div>
         <div className="lg:flex-1 space-y-4">
-          {/* <PropeertyDetailsSettingsCard
-            isRental={isRental}
-            annual_income={1000000}
-            property_name="Moniya Apartment"
-            category="Apartment"
-            state="Lagos"
-            local_government="Ikeja"
-            fee_period="Monthly"
-            total_units={14}
-            annual_returns={1000000}
-            total_unit_pictures={5}
-            hasVideo={true}
-          /> */}
+          <PropeertyDetailsSettingsCard {...propertyData} />
         </div>
       </div>
 
       <RentSectionTitle>Select New Unit For Tenant</RentSectionTitle>
+      <div className="my-2">
+        <p>
+          Select the new unit you wish to move into by toggling the desired
+          unit, then click &apos;Proceed&apos; to continue to the next step
+        </p>
+      </div>
       <section className="space-y-4">
-        {[...Array(4)].map((_, index) => {
-          const unitId = `123456776342${index}`; // Generate unique IDs for test
-          return (
+        {filteredUnits.length > 0 ? (
+          filteredUnits.map((u, index) => (
             <PropertySwitchUnitItem
               key={index}
-              unitName="Unit name"
-              propertyType="rental" //fix later
-              id={unitId}
-              unitDetails=""
-              rent={"10"}
-              unitImages={[empty]}
-              isSelected={selectedUnitId === unitId}
+              id={u.unitId}
+              isSelected={selectedUnitId === u.unitId}
               onSelect={handleUnitSelect}
               isRental={isRental}
+              {...u}
             />
-          );
-        })}
+          ))
+        ) : (
+          <div className="flex items-center w-full justify-center">
+            You do not have any Vacant Unit
+          </div>
+        )}
       </section>
       <FixedFooter className="flex justify-end">
         <Button
