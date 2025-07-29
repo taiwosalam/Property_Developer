@@ -1,9 +1,9 @@
 export interface PropertyRequestDataType {
   userName: string;
-  location?: string;
-  updatedAt?: string;
-  createdAt?: string;
   requestDate: string;
+  location?: string;
+  createdAt?: string;
+  updatedAt?: string;
   pictureSrc: string;
   requestId: string;
   state: string;

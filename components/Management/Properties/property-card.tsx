@@ -77,7 +77,11 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       ? "/manager/management"
       : role === "account"
       ? "/accountant/management"
-      : "/management";
+      : role === "staff"
+      ? "/staff/management"
+      : role === "director"
+      ? "/management"
+      : "/unauthorized";
 
   const getRoute = (action: "edit" | "preview") => {
     switch (action) {

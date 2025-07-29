@@ -183,6 +183,7 @@ export const transformLandlordApiResponse = (
       user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: landlord.picture,
       note: landlord.note.note !== null && landlord.note.note !== "",
+      
       badge_color: landlord.user_tier
         ? tierColorMap[landlord.user_tier]
         : undefined,

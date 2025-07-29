@@ -364,7 +364,7 @@ export const yesNoToActiveInactive = (yesNo: string): string => {
 export const transformStaffAPIResponse = (
   res: StaffAPIResponse
 ): StaffPageTypes => {
-  // console.log("our res", res);
+  console.log("our res", res);
   return {
     staff: {
       id: res.data.id.toString(),

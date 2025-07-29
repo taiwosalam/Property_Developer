@@ -341,6 +341,8 @@ export const staff_nav_items: NavItemsProps = [
       { label: "announcements", href: "/staff/tasks/announcements" },
       { label: "call request", href: "/staff/tasks/inquires" },
       { label: "visitors request", href: "/staff/tasks/visitors" },
+      { label: "property request", href: "/staff/tasks/property-request" },
+      { label: "deposits request", href: "/staff/tasks/deposits" },
     ],
   },
   { type: "settings", label: "settings", href: "/staff/settings" },

@@ -5,6 +5,7 @@ import "keen-slider/keen-slider.min.css";
 import { useRouter } from "next/navigation";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import Button from "@/components/Form/Button/button";
+import { useRole } from "@/hooks/roleContext";
 
 const getBackgroundColor = (status: string) => {
   switch (status) {
@@ -44,49 +45,66 @@ const InventoryUnitCard: React.FC<{
   isOccupied,
   page,
 }) => {
+  const { role } = useRole();
   // /management/inventory/${unitId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}
   const getManageLink = () => {
-    switch (page) {
+    switch (role) {
+      case "director":
+        return `/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "manager":
         return `/manager/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "account":
         return `/accountant/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+      case "staff":
+        return `/staff/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       default:
-        return `/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+        return `/unauthorized`;
     }
   };
 
   // /management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}
   const getPreviewLink = () => {
-    switch (page) {
+    switch (role) {
+      case "director":
+        return `/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "manager":
         return `/manager/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "account":
         return `/accountant/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+      case "staff":
+        return `/staff/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       default:
-        return `/management/inventory/${unitId}/preview?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+        return `/unauthorized`;
     }
   };
 
   const getCreateLink = () => {
-    switch (page) {
+    switch (role) {
+      case "director":
+        return `/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
       case "manager":
         return `/manager/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
       case "account":
         return `/accountant/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
+      case "staff":
+        return `/staff/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
       default:
-        return `/management/inventory/${propertyId}/create-inventory?unitId=${unitId}`;
+        return `/unauthorized`;
     }
   };
 
   const getRentUnitLink = () => {
-    switch (page) {
+    switch (role) {
+      case "director":
+        return `/management/rent-unit/${unitId}`;
       case "manager":
         return `/manager/management/rent-unit/${unitId}`;
       case "account":
         return `/accountant/management/rent-unit/${unitId}`;
+      case "staff":
+        return `/staff/management/rent-unit/${unitId}`;
       default:
-        return `/management/rent-unit/${unitId}`;
+        return `/unauthorized`;
     }
   };
 

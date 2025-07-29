@@ -238,7 +238,7 @@ const EditRent = () => {
           setAmt("");
           setStartDate(null);
         } else if (res.data.payment_type === "full") {
-          router.push("/management/rent-unit");
+          router.push("/accountant/management/rent-unit");
         }
       }
     } catch (err) {
@@ -472,7 +472,7 @@ const EditRent = () => {
       </section>
       <FixedFooter className="flex gap-4 justify-end">
         <Button
-          onClick={() => router.push(`/management/rent-unit`)}
+          onClick={() => router.push(`/accountant/management/rent-unit`)}
           size="base_medium"
           className="py-2 px-6"
         >

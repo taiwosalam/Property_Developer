@@ -253,7 +253,7 @@ const RenewRent = () => {
       const res = await startRent(payload);
       if (res) {
         toast.success(successMsg);
-        router.push("/management/rent-unit");
+        router.push("/accountant/management/rent-unit");
       }
     } catch (err) {
       toast.error(failedMsg);
@@ -324,7 +324,7 @@ const RenewRent = () => {
           setAmt("");
           setStartDate(null);
         } else if (res.pay_status === "full") {
-          router.push("/management/rent-unit");
+          router.push("/accountant/management/rent-unit");
         }
       }
     } catch (err) {
@@ -523,7 +523,7 @@ const RenewRent = () => {
               size="base_medium"
               className="py-2 px-6 items-end ml-auto"
               disabled={reqLoading}
-              onClick={() => router.push("/management/rent-unit")}
+              onClick={() => router.push("/accountant/management/rent-unit")}
               // onClick={handlePartPayment}
             >
               Save
@@ -534,7 +534,7 @@ const RenewRent = () => {
               size="base_medium"
               className="py-2 px-6 items-end ml-auto"
               disabled={reqLoading}
-              onClick={() => router.push("/management/rent-unit")}
+              onClick={() => router.push("/accountant/management/rent-unit")}
               // onClick={handleRenewRent}
             >
               Save
@@ -548,7 +548,7 @@ const RenewRent = () => {
             <Button
               size="base_medium"
               className="py-2 px-6 items-end ml-auto"
-              onClick={() => router.push("/management/rent-unit")}
+              onClick={() => router.push("/accountant/management/rent-unit")}
               // disabled={reqLoading || !amt || !startDate}
               // onClick={handlePartPayment}
             >

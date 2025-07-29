@@ -212,7 +212,7 @@ const StaffProfile = () => {
           <LandlordTenantInfoBox>
             <div className="custom-flex-col gap-4">
               <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                About {`${staff?.title} ${staff?.name}`}
+                About {`${staff?.title || ""} ${staff?.name || ""}`}
               </h3>
               <div className="w-full border border-dashed border-brand-9 opacity-40" />
               <TruncatedText as="div" lines={6}>

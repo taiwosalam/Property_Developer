@@ -47,11 +47,13 @@ import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { toast } from "sonner";
 import Card from "@/components/dashboard/card";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
   const router = useRouter();
   const { branch, setBranch } = useBranchStore();
+  const branchName = useBranchInfoStore((s) => s.branch_name);
   const [lat, setLat] = useState<number>(0);
   const [lng, setLng] = useState<number>(0);
   const [pageData, setPageData] = useState<StaffPageTypes>(initialPageData);
@@ -234,7 +236,7 @@ const StaffProfile = () => {
             separator
             heading="Information"
             info={{
-              branch: branch.branch_name,
+              branch: branchName || branch.branch_name,
               "date created": dayjs(staff.created_at).format("MMM DD, YYYY"),
               "last updated": dayjs(staff.updated_at).format("MMM DD, YYYY"),
               status: staff.status,

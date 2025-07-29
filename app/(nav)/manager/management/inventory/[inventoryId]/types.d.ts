@@ -126,6 +126,7 @@ export interface InventoryData {
   account_manager: string;
   branch_id: string;
   video: string;
+  total_unit?: number;
 }
 
 export interface InventoryUnitData {
