@@ -159,6 +159,7 @@ export const transformToAgentCommunityCardProps: (
     userName: `${user?.title || ""} ${user?.name || "--- ---"}`,
     userTitle: user.professional_title,
     pictureSrc: user.picture,
+    slug: propertyRequest.slug,
     // requestId: propertyRequest.slug,
     requestId: propertyRequest.id.toString(),
     propertyTitle: propertyRequest.title,

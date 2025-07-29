@@ -27,7 +27,6 @@ import { createPropertyRequestSteps } from "./property-request-steps";
 import { createExpensesSteps } from "./create-expenses";
 import { createInventorySteps } from "./create-inventory-steps";
 
-
 const knownRoles = ["manager", "staff", "accountant"];
 
 export const cleanPathname = (pathname: string): string => {
@@ -37,7 +36,6 @@ export const cleanPathname = (pathname: string): string => {
   }
   return pathname;
 };
-
 
 export interface PageTourConfig {
   steps: TourStep[];
@@ -61,19 +59,24 @@ export const pageSteps: Record<string, PageTourConfig> = {
         .getGlobalInfoStore("managementProperties");
       return !properties || properties.length === 0;
     },
-    match: (pathname: string) => cleanPathname(pathname) === "/management/properties",
+    match: (pathname: string) =>
+      cleanPathname(pathname) === "/management/properties",
   },
   "/management/rent-unit/start-rent": {
     steps: startRentSteps,
     tourKey: "StartRentTour",
     match: (pathname: string) =>
-      /^\/management\/rent-unit\/[^\/]+\/start-rent$/.test(cleanPathname(pathname)),
+      /^\/management\/rent-unit\/[^\/]+\/start-rent$/.test(
+        cleanPathname(pathname)
+      ),
   },
   "/management/rent-unit/edit-rent": {
     steps: editRentSteps,
     tourKey: "EditRentTour",
     match: (pathname: string) =>
-      /^\/management\/rent-unit\/[^\/]+\/edit-rent$/.test(cleanPathname(pathname)),
+      /^\/management\/rent-unit\/[^\/]+\/edit-rent$/.test(
+        cleanPathname(pathname)
+      ),
   },
   "/management/rent-unit/edit-rent/select-unit": {
     steps: selectUnitRentSteps,
@@ -95,33 +98,39 @@ export const pageSteps: Record<string, PageTourConfig> = {
     steps: renewRentSteps,
     tourKey: "RenewRentTour",
     match: (pathname: string) =>
-      /^\/management\/rent-unit\/[^\/]+\/renew-rent$/.test(cleanPathname(pathname)),
+      /^\/management\/rent-unit\/[^\/]+\/renew-rent$/.test(
+        cleanPathname(pathname)
+      ),
   },
   "/management/properties/create-rental-property": {
     steps: createPropertySteps,
     tourKey: "CreatePropertyTour",
     match: (pathname: string) =>
-      cleanPathname(pathname) === "/management/properties/create-rental-property",
+      cleanPathname(pathname) ===
+      "/management/properties/create-rental-property",
   },
   "/management/properties/create-rental-property/add-unit": {
     steps: addUnitSteps,
     tourKey: "AddUnitTour",
     match: (pathname: string) =>
       /^\/management\/properties\/create-rental-property\/[^\/]+\/add-unit$/.test(
-        pathname
+        cleanPathname(pathname)
       ),
   },
   "/management/properties/edit-property": {
     steps: editPropertySteps,
     tourKey: "EditPropertyTour",
     match: (pathname: string) =>
-      /^\/management\/properties\/[^\/]+\/edit-property$/.test(cleanPathname(pathname)),
+      /^\/management\/properties\/[^\/]+\/edit-property$/.test(
+        cleanPathname(pathname)
+      ),
   },
   "/management/properties/create-gated-estate-property": {
     steps: createFacilitySteps,
     tourKey: "CreateGatedEstatePropertyTour",
     match: (pathname: string) =>
-      cleanPathname(pathname) === "/management/properties/create-gated-estate-property",
+      cleanPathname(pathname) ===
+      "/management/properties/create-gated-estate-property",
   },
   "/management/properties/create-gated-estate-property/add-unit": {
     steps: addFacilityUnit,
@@ -145,7 +154,9 @@ export const pageSteps: Record<string, PageTourConfig> = {
     steps: editBranchSteps,
     tourKey: "EditBranchTour",
     match: (pathname: string) =>
-      /^\/management\/staff-branch\/[^\/]+\/edit-branch$/.test(cleanPathname(pathname)),
+      /^\/management\/staff-branch\/[^\/]+\/edit-branch$/.test(
+        cleanPathname(pathname)
+      ),
   },
   "/accounting/invoice/create-invoice": {
     steps: createInvoiceSteps,
@@ -157,7 +168,8 @@ export const pageSteps: Record<string, PageTourConfig> = {
     steps: createDisbursementSteps,
     tourKey: "CreateDisbursementTour",
     match: (pathname: string) =>
-      cleanPathname(pathname) === "/accounting/disbursement/create-disbursement",
+      cleanPathname(pathname) ===
+      "/accounting/disbursement/create-disbursement",
   },
   "/management/staff-branch/branch-staff/edit": {
     steps: editStaffSteps,
@@ -167,18 +179,28 @@ export const pageSteps: Record<string, PageTourConfig> = {
         cleanPathname(pathname)
       ),
   },
+  "/management/branch-staff/:id/edit": {
+    steps: editStaffSteps,
+    tourKey: "EditBranchStaffTour",
+    match: (pathname: string) =>
+      /^\/management\/branch-staff\/\d+\/edit$/.test(cleanPathname(pathname)),
+  },
   "/management/landlord/manage/edit": {
     steps: editLandlordSteps,
     tourKey: "EditLandlordTour",
     match: (pathname: string) =>
-      /^\/management\/landlord\/[^\/]+\/manage\/edit$/.test(cleanPathname(pathname)),
+      /^\/management\/landlord\/[^\/]+\/manage\/edit$/.test(
+        cleanPathname(pathname)
+      ),
   },
 
   "/management/tenants/manage/edit": {
     steps: editTenantSteps,
     tourKey: "EditTenantTour",
     match: (pathname: string) =>
-      /^\/management\/tenants\/[^\/]+\/manage\/edit$/.test(cleanPathname(pathname)),
+      /^\/management\/tenants\/[^\/]+\/manage\/edit$/.test(
+        cleanPathname(pathname)
+      ),
   },
   "/tasks/announcements/create-announcement": {
     steps: createAnnouncementSteps,
@@ -196,30 +218,38 @@ export const pageSteps: Record<string, PageTourConfig> = {
     steps: createTenancyAgreementSteps,
     tourKey: "CreateTenancyAgreementTour",
     match: (pathname: string) =>
-      /^\/documents\/create-tenancy-agreement(\?p=\d+)?$/.test(cleanPathname(pathname)),
+      /^\/documents\/create-tenancy-agreement(\?p=\d+)?$/.test(
+        cleanPathname(pathname)
+      ),
   },
   "/community/agent-request/my-properties-request/create": {
     steps: createPropertyRequestSteps,
     tourKey: "CreatePropertyRequestTour",
     match: (pathname: string) =>
-     cleanPathname(pathname) === "/community/agent-request/my-properties-request/create",
+      cleanPathname(pathname) ===
+      "/community/agent-request/my-properties-request/create",
   },
-   "/accounting/expenses/create-expenses": {
+  "/accounting/expenses/create-expenses": {
     steps: createExpensesSteps,
     tourKey: "CreateExpensesTour",
-    match: (pathname: string) => cleanPathname(pathname) === "/accounting/expenses/create-expenses",
+    match: (pathname: string) =>
+      cleanPathname(pathname) === "/accounting/expenses/create-expenses",
   },
-   "/management/inventory/:propertyId/create-inventory": {
+  "/management/inventory/:propertyId/create-inventory": {
     steps: createInventorySteps,
     tourKey: "CreateInventoryTour",
     match: (pathname: string) =>
-      /^\/management\/inventory\/[^\/]+\/create-inventory(\?unitId=\d+)?$/.test(cleanPathname(pathname)),
+      /^\/management\/inventory\/[^\/]+\/create-inventory(\?unitId=\d+)?$/.test(
+        cleanPathname(pathname)
+      ),
   },
   "/management/inventory/:inventoryId/manage": {
     steps: createInventorySteps,
     tourKey: "ManageInventoryTour",
     match: (pathname: string) =>
-      /^\/management\/inventory\/[^\/]+\/manage(\?inventoryId=\d+&propertyId=\d+)?$/.test(cleanPathname(pathname)),
+      /^\/management\/inventory\/[^\/]+\/manage(\?inventoryId=\d+&propertyId=\d+)?$/.test(
+        cleanPathname(pathname)
+      ),
   },
 
   "/setup": {

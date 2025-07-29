@@ -15,9 +15,13 @@ const PropertyRequestUnitType = ({ data }: { data?: any }) => {
   const [propertyType, setPropertyType] = useState<UnitTypeKey | "">(
     data?.property_type || ""
   );
+
   const [selectedSubtype, setSelectedSubtype] = useState<string>(
     data?.property_sub_type || ""
   );
+
+  
+
   const [propertyTypeOptions, setPropertyTypeOptions] = useState<string[]>(
     selectedCategory
       ? unitTypes[selectedCategory as keyof typeof unitTypes]
@@ -105,7 +109,7 @@ const PropertyRequestUnitType = ({ data }: { data?: any }) => {
           id="property_sub_type"
           label="Property Sub Type"
           inputContainerClassName="bg-white"
-          value={data?.sub_type || selectedSubtype}
+          value={data?.property_sub_type || selectedSubtype}
           onChange={handleSubtypeChange}
         />
       </div>

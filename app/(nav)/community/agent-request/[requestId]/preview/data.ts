@@ -171,7 +171,7 @@ export const transformPropertyRequestResponse = (
       createdAt: AgentRequest.created_at,
       likesUp: AgentRequest.likes_up,
       likesDown: AgentRequest.likes_down,
-      commentsCount: AgentRequest.comments_count,
+      commentsCount: AgentRequest.comments_count ?? 0,
       viewsCount: AgentRequest.views_count,
       shareLink: AgentRequest.share_link,
       companyBio: company_summary.company_bio,
