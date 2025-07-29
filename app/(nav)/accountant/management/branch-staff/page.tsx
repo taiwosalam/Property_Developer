@@ -32,12 +32,14 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 const BranchStaffPage = () => {
   const { branch } = usePersonalInfoStore();
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
   const companyVerified = usePersonalInfoStore((state) => state.is_verified);
+  const branchName = branch?.branch_name;
   const BRANCH_ID = branch?.branch_id || 0;
   const router = useRouter();
 
@@ -267,7 +269,7 @@ const BranchStaffPage = () => {
       <FilterBar
         azFilter
         noFilterButton
-        pageTitle="Branch Staff"
+        pageTitle={`${branchName !== null ? branchName : "Branch"} Staff`}
         searchInputPlaceholder="Search within Branch"
         handleFilterApply={handleFilterApply}
         gridView={view === "grid"}

@@ -14,6 +14,7 @@ import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
 import { StatusDots } from "./status-dot";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import { useRole } from "@/hooks/roleContext";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -156,6 +157,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [isImgHovered, setImgIsHovered] = useState(false);
   const router = useRouter();
+  const { role } = useRole();
 
   const HAS_INVOICE_PENDING =
     invoice_status && invoice_status.trim().toLowerCase() === "pending";
@@ -167,13 +169,17 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
     status.toLowerCase() === "relocate" || status.toLowerCase() === "vacant";
 
   const getManageLink = () => {
-    switch (page) {
+    switch (role) {
+      case "director":
+        return `/management/rent-unit/${unitId}`;
       case "manager":
         return `/manager/management/rent-unit/${unitId}`;
       case "account":
-        return `/account/management/rent-unit/${unitId}`;
+        return `/accountant/management/rent-unit/${unitId}`;
+      case "staff":
+        return `/staff/management/rent-unit/${unitId}`;
       default:
-        return `/management/rent-unit/${unitId}`;
+        return `/unauthorized`;
     }
   };
 
@@ -340,7 +346,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               {...action}
               route={
                 typeof action.route === "function"
-                  ? action.route(unitId, propertyType, page)
+                  ? action.route(unitId, propertyType, role)
                   : action.route
               }
               label={

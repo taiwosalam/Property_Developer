@@ -331,18 +331,22 @@ export const ProfileForm: React.FC<{
               error={tierError}
             />
           </div>
-          <div className="select-tenant-using-id">
-            <Modal>
-              <ModalTrigger asChild>
-                <Button size="16_bold" className="py-2 px-6">
-                  Choose With ID
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <AddOccupantWithId onTenantIdSelect={handleTenantIdFromModal} />
-              </ModalContent>
-            </Modal>
-          </div>
+          {!selectedId && (
+            <div className="select-tenant-using-id">
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button size="16_bold" className="py-2 px-6">
+                    Choose With ID
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <AddOccupantWithId
+                    onTenantIdSelect={handleTenantIdFromModal}
+                  />
+                </ModalContent>
+              </Modal>
+            </div>
+          )}
         </div>
         <div className="block lg:hidden">
           <MatchedProfile
