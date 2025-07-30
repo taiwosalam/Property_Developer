@@ -50,8 +50,6 @@ const PreviewPage = () => {
     }
   }, [data]);
 
-  console.log(data);
-
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;

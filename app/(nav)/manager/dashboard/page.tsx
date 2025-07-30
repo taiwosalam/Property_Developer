@@ -40,7 +40,7 @@ import {
 } from "../../(messages-reviews)/messages/types";
 import { transformUsersMessages } from "../../(messages-reviews)/messages/data";
 import { useChatStore } from "@/store/message";
-import { getRecentMessages } from "../../dashboard/data";
+import { getRecentMessages, initialDashboardStats } from "../../dashboard/data";
 import { InvoiceListResponse } from "../../accounting/invoice/types";
 import { transformInvoiceData } from "../accounting/invoice/data";
 import { TransformedInvoiceData } from "../accounting/invoice/types";
@@ -58,6 +58,9 @@ import {
 } from "../../tasks/complaints/data";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
 import { useRole } from "@/hooks/roleContext";
+import { useTourStore } from "@/store/tour-store";
+import { Modal, ModalContent } from "@/components/Modal/modal";
+import CompanyStatusModal from "@/components/dashboard/company-status";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
@@ -72,6 +75,16 @@ const Dashboard = () => {
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
     null
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const company_status = usePersonalInfoStore((state) => state.company_status);
+   const company_id = usePersonalInfoStore((state) => state.company_id);
+
+  // Open modal if company status is "pending" or "rejected"
+  useEffect(() => {
+    if (company_status === "pending" || company_status === "rejected") {
+      setIsModalOpen(true);
+    }
+  }, [company_status]);
 
   const branchURL =
     BRANCH_ID && BRANCH_ID !== 0 ? `/branch/${BRANCH_ID}` : null;
@@ -265,6 +278,45 @@ const Dashboard = () => {
     }
   }, [complaintData]);
 
+  // Tour logic
+  const { setShouldRenderTour, completeTour, setPersist, isTourCompleted } =
+    useTourStore();
+  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
+
+  useEffect(() => {
+    if (loading) {
+      // Wait for data to load
+      setShouldRenderTour(false);
+      return;
+    }
+    // Set persist to false for NavTour and DashboardTour
+    setPersist(false);
+    const hasNoProperties = dashboardStats.some(
+      (stat) => stat.title === "Properties" && stat.value === "0"
+    );
+
+    const hasNoVacantUnits = dashboardStats.some(
+      (stat) => stat.title === "Vacant Unit" && stat.value === "0"
+    );
+    const shouldRunTour =
+      company_status === "approved" && hasNoProperties && hasNoVacantUnits;
+
+    if (shouldRunTour) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [
+    company_status,
+    dashboardStats,
+    loading,
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+  ]);
+
   const { role } = useRole();
 
   const gotoPage = () => {
@@ -285,113 +337,125 @@ const Dashboard = () => {
   if (isNetworkError) return <NetworkError />;
 
   return (
-    <section className="custom-flex-col gap-10">
-      <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
-        <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
-          <div className="w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
-            {updatedDashboardCardData.map((card, index) => (
-              <Link href={card.link} key={index} prefetch={false}>
-                <Card
-                  title={card.title}
-                  icon={<card.icon />}
-                  value={card.value.toString()}
-                  subvalue={card.subValue.toString()}
-                  bg={card.bg}
+    <>
+      {isModalOpen && (
+        <Modal state={{ isOpen: isModalOpen, setIsOpen: setIsModalOpen }}>
+          <ModalContent disableOutsideClick>
+            <CompanyStatusModal
+              status={company_status as "approved" | "pending" | "rejected"}
+              id={Number(company_id)}
+            />
+          </ModalContent>
+        </Modal>
+      )}
+      <section className="custom-flex-col gap-10">
+        <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
+          <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
+            <div className="w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
+              {updatedDashboardCardData.map((card, index) => (
+                <Link href={card.link} key={index} prefetch={false}>
+                  <Card
+                    title={card.title}
+                    icon={<card.icon />}
+                    value={card.value.toString()}
+                    subvalue={card.subValue.toString()}
+                    bg={card.bg}
+                  />
+                </Link>
+              ))}
+            </div>
+
+            {/* Chart */}
+            <div className="hidden md:block space-y-10">
+              <div className="w-full h-fit">
+                <DashboardChart
+                  chartTitle="Wallet Analysis"
+                  visibleRange
+                  className="wallet-analysis-card"
+                  chartConfig={branchIdChartConfig}
+                  chartData={walletChartData}
                 />
-              </Link>
-            ))}
+              </div>
+              <div className="listing-performance-chart w-full h-fit">
+                <DashboardChart
+                  chartTitle="listing Performance"
+                  visibleRange
+                  chartConfig={dashboardListingsChartConfig}
+                  chartData={bookmarkChartData || []}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Chart */}
-          <div className="hidden md:block space-y-10">
-            <div className="w-full h-fit">
-              <DashboardChart
-                chartTitle="Wallet Analysis"
-                visibleRange
-                className="wallet-analysis-card"
-                chartConfig={branchIdChartConfig}
-                chartData={walletChartData}
+          <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
+            <BranchBalanceCard
+              mainBalance={Number(branch_wallet?.balance_total || 0)}
+              cautionDeposit={Number(branch_wallet?.escrow_balance || 0)}
+              className="max-w-full"
+            />
+            <DashboarddCalendar />
+            <div className="recent-messages-card">
+              <NotificationCard
+                className="h-[358px]"
+                seeAllLink="/messages"
+                sectionHeader="Recent Messages"
+                notifications={getRecentMessages(pageUsersMsg)}
               />
             </div>
-            <div className="listing-performance-chart w-full h-fit">
-              <DashboardChart
-                chartTitle="listing Performance"
-                visibleRange
-                chartConfig={dashboardListingsChartConfig}
-                chartData={bookmarkChartData || []}
+            <div className="complaints-card">
+              <NotificationCard
+                className="h-[358px]"
+                sectionHeader="Recent Complaints"
+                seeAllLink={gotoPage()}
+                notifications={recentComplaints?.complaints.slice(0, 7) || []}
               />
             </div>
           </div>
         </div>
 
-        <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
-          <BranchBalanceCard
-            mainBalance={Number(branch_wallet?.balance_total || 0)}
-            cautionDeposit={Number(branch_wallet?.escrow_balance || 0)}
-            className="max-w-full"
+        {/* =========== RECENT INVOICES =========== */}
+        <SectionContainer
+          className="recent-invoice-table"
+          heading="Recent invoice"
+          href="/manager/accounting/invoice"
+        >
+          <CustomTable
+            data={transformedRecentInvoiceTableData}
+            fields={invoiceTableFields}
+            tableHeadClassName="h-[76px]"
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "18px",
+              paddingBottom: "18px",
+            }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
           />
-          <DashboarddCalendar />
-          <div className="recent-messages-card">
-            <NotificationCard
-              className="h-[358px]"
-              seeAllLink="/messages"
-              sectionHeader="Recent Messages"
-              notifications={getRecentMessages(pageUsersMsg)}
-            />
-          </div>
-          <div className="complaints-card">
-            <NotificationCard
-              className="h-[358px]"
-              sectionHeader="Recent Complaints"
-              seeAllLink={gotoPage()}
-              notifications={recentComplaints?.complaints.slice(0, 7) || []}
-            />
-          </div>
-        </div>
-      </div>
+          {transformedRecentInvoiceTableData.length === 0 && (
+            <div className="flex justify-center items-center min-h-[200px]">
+              <p className="text-gray-500 dark:text-gray-400">
+                No Recent Invoice Yet.
+              </p>
+            </div>
+          )}
+        </SectionContainer>
 
-      {/* =========== RECENT INVOICES =========== */}
-      <SectionContainer
-        className="recent-invoice-table"
-        heading="Recent invoice"
-        href="/manager/accounting/invoice"
-      >
-        <CustomTable
-          data={transformedRecentInvoiceTableData}
-          fields={invoiceTableFields}
-          tableHeadClassName="h-[76px]"
-          tableBodyCellSx={{
-            fontSize: "1rem",
-            paddingTop: "18px",
-            paddingBottom: "18px",
-          }}
-          tableHeadCellSx={{ fontSize: "1rem" }}
-        />
-        {transformedRecentInvoiceTableData.length === 0 && (
-          <div className="flex justify-center items-center min-h-[200px]">
-            <p className="text-gray-500 dark:text-gray-400">
-              No Recent Invoice Yet.
-            </p>
-          </div>
-        )}
-      </SectionContainer>
-
-      {/* =========== RECENT COMPLAINS =========== */}
-      <SectionContainer
-        heading="Recent Complains"
-        href="/manager/tasks/complaints"
-      >
-        {pageData && pageData.complaints.length === 0 ? (
-          <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
-            <p className="text-gray-500 dark:text-gray-400">
-              No Recent Complains.
-            </p>
-          </div>
-        ) : (
-          <KanbanBoard kanbanTask={pageData?.complaints} />
-        )}
-      </SectionContainer>
-    </section>
+        {/* =========== RECENT COMPLAINS =========== */}
+        <SectionContainer
+          heading="Recent Complains"
+          href="/manager/tasks/complaints"
+        >
+          {pageData && pageData.complaints.length === 0 ? (
+            <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
+              <p className="text-gray-500 dark:text-gray-400">
+                No Recent Complains.
+              </p>
+            </div>
+          ) : (
+            <KanbanBoard kanbanTask={pageData?.complaints} />
+          )}
+        </SectionContainer>
+      </section>
+    </>
   );
 };
 

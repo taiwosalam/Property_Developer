@@ -70,7 +70,11 @@ export const ThreadArticle = ({
         }}
       />
       <div className="flex justify-between mt-6">
-        <div className="flex items-center gap-2">
+        <div
+          className={`flex items-center gap-2 ${
+            !propertyRequest?.commentsCount ? "invisible" : ""
+          }`}
+        >
           <span className="text-text-secondary dark:text-white">Comments</span>
           <p className="text-white text-xs font-semibold rounded-full bg-brand-9 px-3 py-[2px]">
             {propertyRequest?.commentsCount}

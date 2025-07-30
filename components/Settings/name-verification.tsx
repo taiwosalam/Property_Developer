@@ -82,7 +82,6 @@ export const NameVerification = ({
       setIsInitiating(true);
       const res = await initiateBVNLookUp(bvnInput);
 
-      console.log(res);
       if (res?.data) {
         setMethodRes(res.data);
         handleConfirmBVN();
@@ -105,12 +104,14 @@ export const NameVerification = ({
             <div>
               <div className="p-[18px] rounded-2xl bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-gray-500">
                 <div className="flex gap-3">
-                  <div className="flex items-center gap-1">
-                    <p className="font-bold text-lg text-black dark:text-white capitalize">
-                      {fullName}
-                    </p>
-                    <BadgeIcon color={"gray"} />
-                  </div>
+                  {fullName && (
+                    <div className="flex items-center gap-1">
+                      <p className="font-bold text-lg text-black dark:text-white capitalize">
+                        {fullName}
+                      </p>
+                      <BadgeIcon color={"gray"} />
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2 mt-4">
                   <p className="pb-2 border-b-2 border-dotted border-slate-400 text-black dark:text-darkText-1">
@@ -332,7 +333,7 @@ export const VerificationMethod = ({
                       //   handleProceedToOTP({ method: method.method });
                       // }}
                       variant="custom"
-                      className="p-2 bg-brand-9 hover:bg-brand-9/80 items-center flex"
+                      className="p-2 bg-brand-9 hover:bg-brand-9/80 items-center flex text-white"
                       disabled={isProceeding}
                       size="sm_normal"
                     >
@@ -481,8 +482,6 @@ export const InputPinDialog = ({
           : { phone_number: contactInfo }),
       });
 
-      console.log(result);
-
       if (result) {
         toast.success("Code resent successfully");
       }
@@ -505,8 +504,7 @@ export const InputPinDialog = ({
             An OTP has been sent to your{" "}
             {method === "email" ? "email" : "phone number"}
           </p>
-          <p className="text-gray-500">
-          </p>
+          <p className="text-gray-500"></p>
           <p className="text-gray-500">for confirmation</p>
           <div className="py-12">
             <AuthPinField onChange={setCode} length={6} />
@@ -583,8 +581,6 @@ export const AlternateMethod = ({
   //const [error, setError] = useState<string | null>(null);
   const [method, setMethod] = useState("");
 
-  console.log(selectMethod);
-
   useEffect(() => {
     if (responseMethod && selectMethod) {
       if (selectMethod === "Email") {
@@ -598,8 +594,6 @@ export const AlternateMethod = ({
       }
     }
   }, [selectMethod]);
-
-  console.log(selectMethod);
 
   const handleOnChange = (value: string) => {
     const numbersOnly = value.replace(/[^0-9]/g, "");
@@ -752,7 +746,7 @@ export const AlternateMethod = ({
                 />
               )}
               <Button
-                className="bg-transparent flex justify-center items-center font-semibold text-center py-4 text-lg dark:text-white hover:bg-transparent"
+                className="bg-transparent text-brand-9 hover:text-brand-5 flex justify-center items-center font-semibold text-center py-4 text-lg dark:text-white"
                 onClick={onChangeOption}
                 variant="custom"
               >
@@ -770,7 +764,7 @@ export const AlternateMethod = ({
               Back
             </Button> */}
             <Button
-              className="py-4 bg-brand-9 hover:bg-brand-9/80 w-full"
+              className="py-4 bg-brand-9 hover:bg-brand-9/80 w-full text-white"
               onClick={handleProceedToOTP}
               disabled={isSubmitting}
             >

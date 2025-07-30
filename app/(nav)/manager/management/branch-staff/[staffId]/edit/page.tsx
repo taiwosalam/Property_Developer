@@ -33,6 +33,7 @@ import ServerError from "@/components/Error/ServerError";
 import SettingsBank from "@/components/Settings/settings-bank";
 import { useTourStore } from "@/store/tour-store";
 import { ExclamationMark } from "@/public/icons/icons";
+import { cleanPathname } from "@/tour/steps/page-steps";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -97,6 +98,8 @@ const EditStaffProfile = () => {
 
     return () => setShouldRenderTour(false);
   }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
+  console.log(cleanPathname(pathname));
 
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;

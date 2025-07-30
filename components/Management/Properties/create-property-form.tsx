@@ -429,6 +429,12 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       handleGoToTourStep(12);
     } else if (
       formType === "rental" &&
+      !editMode &&
+      pathname.startsWith("/manager")
+    ) {
+      handleGoToTourStep(13);
+    } else if (
+      formType === "rental" &&
       editMode &&
       pathname.startsWith("/accountant")
     ) {

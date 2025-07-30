@@ -122,7 +122,11 @@ export const PropertyRequestSecondSection = ({
   });
   const CURRENCY_SYMBOL = currencySymbols.naira;
 
+  console.log(data);
+
   if (loading) return <AgentRequestLoader />;
+
+  
 
   // Handle minimum budget change
   const handleMinChange = (value: string) => {
@@ -138,8 +142,6 @@ export const PropertyRequestSecondSection = ({
       setMinBudget(numValue);
     }
   };
-
-  //
 
   // Handle maximum budget change
   const handleMaxChange = (value: string) => {
@@ -196,7 +198,7 @@ export const PropertyRequestSecondSection = ({
               id=""
               placeholder=""
               label="Minimum Budget"
-              formatNumber
+              //formatNumber
               CURRENCY_SYMBOL={CURRENCY_SYMBOL}
               inputClassName="bg-white"
               onChange={(value: string) => handleMinChange(value)}
@@ -284,8 +286,6 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
 
   useEffect(() => {
-    //
-
     const initialSelectedStates = (() => {
       if (typeof data?.target_audience === "string") {
         try {
@@ -306,7 +306,6 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
       return [];
     })();
 
-    //
     setSelectedStates(initialSelectedStates);
   }, [data?.target_audience]);
 
