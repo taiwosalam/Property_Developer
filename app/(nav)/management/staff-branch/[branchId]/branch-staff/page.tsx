@@ -336,6 +336,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
                     phone_number={staff.phone_number}
                     user_tag={staff.position}
                     picture_url={staff.picture}
+                    isOnline={staff.isOnline}
                   />
                 </Link>
               ))}

@@ -74,8 +74,8 @@ export type Action = {
 };
 
 // External function to determine route prefix based on page
-const getRoutePrefix = (page?: string): string => {
-  switch (page) {
+const getRoutePrefix = (role?: string): string => {
+  switch (role) {
     case "director":
       return "/management";
     case "manager":
@@ -94,22 +94,22 @@ export const actions: Action[] = [
     color: "#FF9800",
     label: (propertyType) =>
       propertyType === "rental" ? "Start Rent" : "Move In",
-    route: (id, propertyType, page) =>
-      `${getRoutePrefix(page)}/rent-unit/${id}/start-rent?type=${propertyType}&id=${id}`,
+    route: (id, propertyType, role) =>
+      `${getRoutePrefix(role)}/rent-unit/${id}/start-rent?type=${propertyType}&id=${id}`,
   },
   {
     color: "#4CAF50",
     label: (propertyType) =>
       propertyType === "rental" ? "Renew Rent" : "Renew Fee",
-    route: (id, propertyType, page) =>
-      `${getRoutePrefix(page)}/rent-unit/${id}/renew-rent?type=${propertyType}&id=${id}`,
+    route: (id, propertyType, role) =>
+      `${getRoutePrefix(role)}/rent-unit/${id}/renew-rent?type=${propertyType}&id=${id}`,
   },
   {
     color: (propertyType) =>
       propertyType === "rental" ? "#4CAF50" : "#0033C4",
     label: "Edit",
-    route: (id, propertyType, page) =>
-      `${getRoutePrefix(page)}/rent-unit/${id}/edit-rent?type=${propertyType}&id=${id}`,
+    route: (id, propertyType, role) =>
+      `${getRoutePrefix(role)}/rent-unit/${id}/edit-rent?type=${propertyType}&id=${id}`,
   },
   {
     color: "#E9212E",

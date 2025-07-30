@@ -12,6 +12,7 @@ import DOMPurify from "dompurify";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import parse from "html-react-parser";
 import Button from "@/components/Form/Button/button";
+import { useRole } from "@/hooks/roleContext";
 
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
@@ -60,6 +61,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
     page,
     ...others
   } = props;
+  const { role } = useRole();
   const sanitizedDescription = DOMPurify.sanitize(description ?? "");
 
   const [isClient, setIsClient] = useState(false);
@@ -68,13 +70,17 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
   }, []);
 
   const getManagePropertyLink = () => {
-    switch (page) {
+    switch (role) {
       case "manager":
         return `/manager/management/properties/${id}/edit-property`;
-      case "account":
-        return `/account/management/properties/${id}/edit-property`;
-      default:
+      case "account": 
+        return `/accountant/management/properties/${id}/edit-property`;
+      case "director":
         return `/management/properties/${id}/edit-property`;
+      case "staff":
+        return `/staff/management/properties/${id}/edit-property`;
+      default:
+        return `/unauthorized`;
     }
   };
   return (

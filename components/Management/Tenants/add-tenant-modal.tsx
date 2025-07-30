@@ -36,11 +36,11 @@ const AddTenantModal = () => {
   const switchPathname = () => {
     switch (role) {
       case "manager":
-        return `/manager/management/tenants/`;
+        return `/manager/management/tenants`;
       case "director":
         return `/management/tenants`;
-      case "account":
-        return `/accountant/management/tenants/`;
+      case "account": 
+        return `/accountant/management/tenants`;
       default:
         return `/management/tenants`;
     }
@@ -48,6 +48,7 @@ const AddTenantModal = () => {
   
   const closeModalAndRefresh = () => {
     setIsOpen(false);
+    window.dispatchEvent(new Event("refetchTenants"));
     if (pathname !== switchPathname()) {
       router.push(switchPathname());
     } else {

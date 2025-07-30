@@ -38,4 +38,5 @@ export interface StaffProfileProps {
   about:any;
   status: string;
   experience: number | string;
+  isVerified?: boolean;
 }

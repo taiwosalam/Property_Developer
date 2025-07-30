@@ -13,6 +13,10 @@ export  interface DashboardBranchDataResponse {
     month_complaint_count: number;
     invoice_count: number;
     month_invoice_count: number;
+    vehicle_record_count: number;
+    month_vehicle_record_count: number;
+    visitor_request_count: number;
+    month_visitor_request_count: number;
     invoices: {
       id: number;
       invoice_id: string;

@@ -10,6 +10,7 @@ interface Staff {
   gender?: string;
   picture: string | null;
   badge_color?: BadgeIconColors;
+  isOnline?: boolean;
 }
 
 export interface BranchStaffPageState {
@@ -45,6 +46,8 @@ export interface StaffListResponse {
       staff_role: string;
       title: string | null;
       tier: 1 | 2 | 3 | 4 | 5;
+      online_status: string;
+      online: boolean;
     }[];
     branch: {
       id: string;

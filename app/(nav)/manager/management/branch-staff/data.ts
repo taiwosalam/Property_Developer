@@ -50,6 +50,7 @@ export const transformStaffListResponse = (
         phone_number: s.phone,
         gender: "",
         badge_color: s.tier >= 2 ? "gray" : undefined,
+        isOnline: s?.online_status?.toLowerCase() === "online",
       })) || [],
     staff_count_by_role: staff_count_by_role,
     total_data_count: total_data_count,

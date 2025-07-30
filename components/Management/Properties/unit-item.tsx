@@ -13,6 +13,7 @@ import { actions } from "../Rent And Unit/data";
 import { ActionButton } from "../Rent And Unit/action-button";
 import { empty } from "@/app/config";
 import { AttachedDocument } from "@/app/(nav)/management/tenants/types";
+import { useRole } from "@/hooks/roleContext";
 
 export interface UnitItemProps {
   propertyType: string;
@@ -20,7 +21,7 @@ export interface UnitItemProps {
   unitId: string;
   property_name?: string;
   noActionBtn?: boolean;
-  unitImages: string[];
+  unitImages: string[]; 
   unitDetails: string;
   unitStatus: keyof typeof UnitStatusColors;
   unitName: string;
@@ -70,6 +71,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
   property_name,
   tenant_profile,
 }) => {
+  const { role } = useRole();
   const [screenModal, setScreenModal] = useState(false);
   const isRental = propertyType.toLowerCase() === "rental";
 
@@ -283,7 +285,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
                       ? action.route(
                           unitId,
                           propertyType as "rental" | "facility",
-                          page
+                          role
                         )
                       : action.route
                   }

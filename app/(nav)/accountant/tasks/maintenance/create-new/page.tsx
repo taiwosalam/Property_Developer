@@ -25,9 +25,11 @@ import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
 import clsx from "clsx";
 import FileInput from "@/components/Form/FileInput/file-input";
 import FileUploader from "@/components/FileUploader/FileUploader";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 const CreateMaintenace = () => {
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const staffBranchID = useBranchInfoStore((state) => state.branch_id);
   const handleStartDateChange = (date?: Dayjs | null) => {
     setStartDate(date || null);
   };
@@ -63,6 +65,7 @@ const CreateMaintenace = () => {
   const [providerOptions, setProviderOptions] = useState<
     { id: number; name: string }[]
   >([]);
+
   const [branchOptions, setBranchOptions] = useState<
     { id: number; name: string }[]
   >([]);
@@ -143,54 +146,6 @@ const CreateMaintenace = () => {
     }
   }, [providerData]);
 
-  // const handleSubmit = async (data: FormData) => {
-  //   // BACKEND ERROR: METHOD NOT ALLOWED
-  //   //data.delete("unit[]");
-
-  //   const detail = data.get("detail");
-  //   const cost = data.get("maintenance_cost");
-
-  //   if (String(detail).trim().length < 30) {
-  //     toast.error("Work detail must be at least 30 characters.");
-  //     return;
-  //   }
-
-  //   if (!String(cost).trim()) {
-  //     toast.error("Maintenance cost is required");
-  //     return;
-  //   }
-
-  //   const quotationFile = data.get("quotation");
-
-  //   if (quotationFile) {
-  //     data.append("quotation_type", "file");
-  //   }
-  //   if (quotationFile) {
-  //     data.append("quotation", quotationFile);
-  //   }
-  //   // Append each selected unit id as an array item
-  //   selectedUnits.forEach((id) => {
-  //     data.append("unit[]", id.toString());
-  //   });
-
-  //   data.append("calendar_event", "1");
-
-  //   if (quotation && quotation.length > 0) {
-  //     data.append("quotation_type", "text");
-  //   }
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await createMaintenance(data);
-  //     if (response) {
-  //       toast.success("Maintenance created");
-  //       //router.push("/tasks/maintenance");
-  //     }
-  //   } catch (error) {
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const handleSubmit = async (data: FormData) => {
     const detail = data.get("detail");
     const cost = data.get("cost");
@@ -253,7 +208,7 @@ const CreateMaintenace = () => {
         <SectionSeparator className="!mt-4 !mb-6" />
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <input
-            value={selectedBranchId ?? ""}
+            value={selectedBranchId || staffBranchID || ""}
             type="hidden"
             aria-hidden
             id="branch_id"

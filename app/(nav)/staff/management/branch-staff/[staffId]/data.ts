@@ -388,7 +388,7 @@ export const transformStaffAPIResponse = (
       about_staff: res.data.about_staff,
       experience: res.data.years_experience,
       status: yesNoToActiveInactive(res.data.status),
-      badge_color: res.data.tier_id === 2 ? "gray" : undefined,
+      badge_color: res.data.tier_id >= 2 ? "gray" : undefined,
       online: res.data.online_status === "online",
       statistic: res.data.statistic,
       // badge_color: res.data.tier_id

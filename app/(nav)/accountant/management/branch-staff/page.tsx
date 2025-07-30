@@ -253,13 +253,13 @@ const BranchStaffPage = () => {
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title="Account Officers"
+            title="Account Manager"
             newData={state.staff_count_by_role["account officer"]}
             total={state.staff_count_by_role["account officer"]}
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Other Staffs"
+            title="Other Staff"
             newData={state.staff_count_by_role.staff}
             total={state.staff_count_by_role.staff}
             colorScheme={3}
@@ -322,6 +322,7 @@ const BranchStaffPage = () => {
                   phone_number={staff.phone_number}
                   user_tag={staff.position}
                   picture_url={staff.picture}
+                  isOnline={staff.isOnline}
                 />
               </Link>
             ))}
