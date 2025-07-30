@@ -48,7 +48,8 @@ export const lockStaffAccount = async (id: string, otp: string) => {
 // /security/get_opt
 export const getPasswordResetOTP = async () => {
   try {
-    const response = await api.post("/security/get_opt");
+    // const response = await api.post("/security/get_opt");
+    const response = await api.post("/security/password-otp");
     if (response.status === 200) {
       return true;
     }

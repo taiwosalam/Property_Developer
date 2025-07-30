@@ -17,6 +17,7 @@ import Picture from "@/components/Picture/picture";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import { cleanPhoneNumber } from "@/utils/checkFormDataForImageOrAvatar";
 import RestrictInput from "../Form/Input/InputWIthRestrict";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -31,6 +32,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   setFormStep,
   formStep,
 }) => {
+  const branchID = useBranchInfoStore((state) => state.branch_id);
   const [isLoading, setIsLoading] = useState(false);
   const {
     preview,
@@ -100,6 +102,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       >
         <input type="hidden" name="avatar" value={avatar} />
         <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <input type="hidden" name="branch_id" value={branchID || ""} />
           <Input
             required
             id="first_name"

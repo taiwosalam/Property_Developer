@@ -66,6 +66,7 @@ const EditStaffProfile = () => {
         about: apiData.data.about_staff,
         experience: apiData.data.years_experience,
         status: yesNoToActiveInactive(apiData.data.status),
+        isVerified: apiData.data.tier_id >= 2,
       });
     }
   }, [apiData, branchId]);
@@ -143,7 +144,7 @@ const EditStaffProfile = () => {
             <ModalContent>
               <DeleteAccountModal
                 action={async () => await deleteStaff(pageData.id)}
-                afterAction={() => router.push("/management/staff-branch")}
+                afterAction={() => router.push("/manager/management/staff-branch")}
               />
             </ModalContent>
           </Modal>

@@ -577,6 +577,17 @@ export interface ProfileResponse {
       local_government: string | null;
       city: string | null;
     };
+    staff: {
+      id: number | null;
+      user_id: number | null;
+      company_id: number | null;
+      branch_id: number | null;
+      is_active: boolean | null;
+      title: string | null;
+      professional_title: string | null;
+      years_experience: number | null;
+      staff_role: string | null;
+    };
     requestDemos: any[];
     isSubscriptionExpired: boolean;
     currentPlan: string;

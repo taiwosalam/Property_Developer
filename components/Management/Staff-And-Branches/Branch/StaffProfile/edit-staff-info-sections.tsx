@@ -55,7 +55,6 @@ export const StaffEditProfileInfoSection = () => {
   });
 
   const handleUpdateProfile = async (data: Record<string, string>) => {
-    // Initialize payload with fields that are always included
     const payload: Record<string, string> = {
       full_name: data.fullname,
       title: data.personal_title,
@@ -63,16 +62,21 @@ export const StaffEditProfileInfoSection = () => {
       years_experience: data.years_experience,
       gender: data.gender,
     };
-
-    // Only include phone_number if it has changed
-    if (data.phone_number !== staff?.phone_number) {
-      payload.phone_number = data.phone_number;
-      cleanPhoneNumber(payload);
-      if (!payload.phone_number) {
-        payload.phone_number = "";
-      }
+  
+    // Create a temp object with a proper type
+    const phoneObj: { phone_number: string } = {
+      phone_number: data.phone_number,
+    };
+  
+    cleanPhoneNumber(phoneObj); 
+  
+    if (
+      phoneObj.phone_number &&
+      phoneObj.phone_number !== staff?.phone_number
+    ) {
+      payload.phone_number = phoneObj.phone_number;
     }
-
+  
     if (staff?.id) {
       setReqLoading(true);
       const status = await updateStaffProfile(
@@ -80,12 +84,13 @@ export const StaffEditProfileInfoSection = () => {
         objectToFormData(payload)
       );
       if (status) {
-        toast.success("Profile updated successfully");
         window.dispatchEvent(new Event("staff-updated"));
       }
       setReqLoading(false);
     }
   };
+  
+
   return (
     <LandlordTenantInfoEditSection title="profile">
       <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
@@ -116,6 +121,7 @@ export const StaffEditProfileInfoSection = () => {
             id="fullname"
             label="full name"
             required
+            readOnly={staff?.isVerified}
             defaultValue={staff?.full_name}
           />
           <Input
@@ -157,7 +163,7 @@ export const StaffEditProfileInfoSection = () => {
           </div>
           <PhoneNumberInput
             id="phone_number"
-            label="phone number"
+            label="WhatsApp number"
             required
             className="phone-number-input"
             defaultValue={staff?.phone_number}

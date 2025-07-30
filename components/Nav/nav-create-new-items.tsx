@@ -129,7 +129,10 @@ export const manager_create_new_items: CreateNewItemsProps = [
     label: "accounting",
     content: [
       { label: "invoice", link: "/manager/accounting/invoice/create-invoice" },
-      { label: "expenses", link: "/manager/accounting/expenses/create-expenses" },
+      {
+        label: "expenses",
+        link: "/manager/accounting/expenses/create-expenses",
+      },
       { label: "disbursement", modal: <NewDisbursementModal /> },
     ],
   },
@@ -155,9 +158,7 @@ export const accountant_create_new_items: CreateNewItemsProps = [
   {
     type: "people",
     label: "management",
-    content: [
-      { label: "property", modal: <AddPropertyModal /> },
-    ],
+    content: [{ label: "property", modal: <AddPropertyModal /> }],
   },
   {
     type: "briefcase_timer",
@@ -184,15 +185,29 @@ export const accountant_create_new_items: CreateNewItemsProps = [
       },
     ],
   },
+  {
+    type: "folder",
+    label: "documents",
+    content: [
+      {
+        label: "tenancy agreement",
+        modal: (
+          <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+        ),
+      },
+      {
+        label: "other documents",
+        modal: <CreateTenancyAggrementModal defaultOption="other_document" />,
+      },
+    ],
+  },
 ];
 
 export const staff_create_new_items: CreateNewItemsProps = [
   {
     type: "people",
     label: "management",
-    content: [
-      { label: "property", modal: <AddPropertyModal /> },
-    ],
+    content: [{ label: "property", modal: <AddPropertyModal /> }],
   },
   {
     type: "briefcase_timer",
@@ -205,19 +220,32 @@ export const staff_create_new_items: CreateNewItemsProps = [
       },
     ],
   },
+  {
+    type: "folder",
+    label: "documents",
+    content: [
+      {
+        label: "tenancy agreement",
+        modal: (
+          <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+        ),
+      },
+      {
+        label: "other documents",
+        modal: <CreateTenancyAggrementModal defaultOption="other_document" />,
+      },
+    ],
+  },
 ];
 
-
-
-
-  // Array of labels for features that are not yet available
+// Array of labels for features that are not yet available
 export const unavailableFeatures = [
-    'task', 
-    'event',
-    'reminder',
-    'announcement',
-    'examine',
-    'maintenance',
-    'announcement',
-    'quit notice',
-  ];
+  "task",
+  "event",
+  "reminder",
+  "announcement",
+  "examine",
+  "maintenance",
+  "announcement",
+  "quit notice",
+];

@@ -73,25 +73,25 @@ const SettingsPasswordSection = () => {
             title="Change Password"
             desc="Use this section to reset your account password."
           />
-          <div className="flex flex-col sm:flex-row gap-5">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-5">
             <div className="flex flex-col gap-1">
               <Input
                 id="current_password"
                 label="current password"
-                className="w-full sm:w-[277px]"
+                className="w-full sm:w-[277px] min-w-[277px]"
                 type="password"
                 validationErrors={validationErrors}
               />
             </div>
             <AuthNewPassword
               label="New Password"
-              className="w-full sm:w-[277px]"
+              className="w-full sm:w-[277px] min-w-[277px]"
               validationErrors={validationErrors}
             />
             <Input
               id="confirm_password"
               label="re-enter new password"
-              className="w-full sm:w-[277px]"
+              className="w-full sm:w-[277px] min-w-[277px]"
               type="password"
               validationErrors={validationErrors}
             />

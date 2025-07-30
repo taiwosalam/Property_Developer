@@ -1,6 +1,9 @@
 import type { Field } from "@/components/Table/types";
 import type { BranchStaffPageState, StaffListResponse } from "./types";
-import { staffTierColorMap, tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import {
+  staffTierColorMap,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
 
 export const branchStaffTableFields: Field[] = [
   { id: "1", accessor: "S/N", label: "S/N" },
@@ -50,6 +53,7 @@ export const transformStaffListResponse = (
         phone_number: s.phone,
         gender: "",
         badge_color: s.tier >= 2 ? "gray" : undefined,
+        isOnline: s?.online_status?.toLowerCase() === "online",
       })) || [],
   };
 };

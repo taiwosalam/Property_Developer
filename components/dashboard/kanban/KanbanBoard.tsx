@@ -266,7 +266,6 @@ export function KanbanBoard({
     }
   }, [pagination]);
 
-  console.log(targetStatus);
 
   // Load more data for a specific column
   const handleLoadMore = useCallback(

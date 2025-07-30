@@ -9,6 +9,7 @@ interface Staff {
   phone_number?: string;
   gender?: string;
   picture: string | null;
+  isOnline?: boolean;
   badge_color?: BadgeIconColors;
 }
 
@@ -38,6 +39,7 @@ export interface StaffListResponse {
       staff_role: string;
       tier: 1 | 2 | 3 | 4 | 5;
       title: string | null;
+      online_status: string;
     }[];
     branch: {
       id: string;

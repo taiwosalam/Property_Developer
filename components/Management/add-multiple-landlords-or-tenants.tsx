@@ -5,6 +5,7 @@ import { useFileUploader } from "@/hooks/useFileUploader";
 import { useState } from "react";
 import { toast } from "sonner";
 import { LandlordTenantInfoDocument } from "./landlord-tenant-info-components";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 interface AddMultipleLandlordsOrTenantsProps {
   type: "landlord" | "tenant";
@@ -15,6 +16,7 @@ interface AddMultipleLandlordsOrTenantsProps {
 const AddMultipleLandlordsOrTenants: React.FC<
   AddMultipleLandlordsOrTenantsProps
 > = ({ type, method, submitAction }) => {
+  const branchID = useBranchInfoStore((state) => state.branch_id);
   const [requestLoading, setRequestLoading] = useState(false);
   const acceptedExtensions = ["xls", "xlsx", "csv"];
   const {
@@ -104,6 +106,7 @@ const AddMultipleLandlordsOrTenants: React.FC<
         )}
       </div>
 
+      <input type="hidden" name="branch_id" value={branchID || ""} />
       <input
         type="file"
         ref={fileInputRef}
