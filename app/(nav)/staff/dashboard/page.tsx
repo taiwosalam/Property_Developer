@@ -45,6 +45,7 @@ const Dashboard = () => {
     }
   }, [data]);
 
+
   // ====== Handle Complaints KanbanBoard ======
   const [pageData, setPageData] = useState<ComplaintsPageData | null>(null);
   const [recentComplaints, setRecentComplaints] =
@@ -141,9 +142,12 @@ const Dashboard = () => {
 
         {/* =========== RECENT COMPLAINS =========== */}
         <SectionContainer
-          heading="Recent Complains"
-          href="/staff/tasks/complaints"
-        >
+         
+        heading="Recent Complains"
+         
+        href="/staff/tasks/complaints"
+        
+      >
           {pageData && pageData.complaints.length === 0 ? (
             <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
               <p className="text-gray-500 dark:text-gray-400">

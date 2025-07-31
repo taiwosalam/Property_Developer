@@ -112,7 +112,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         router.push(`/staff/tasks/complaints/${id}/manage-complain/`);
         break;
       default:
-        return router.push("/unauthorized");
+        return "/unauthorized";
     }
   };
 

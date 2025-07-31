@@ -8,6 +8,7 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { Lock } from "lucide-react";
 import { capitalizeWords } from "@/hooks/capitalize-words";
+import Picture from "../Picture/picture";
 
 export interface UserCardProps {
   picture_url?: string | null;
@@ -24,6 +25,7 @@ export interface UserCardProps {
   is_flagged?: boolean;
   is_verified?: boolean;
   is_active?: boolean;
+  isOnline?: boolean;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -41,6 +43,7 @@ const UserCard: React.FC<UserCardProps> = ({
   is_flagged,
   is_verified,
   is_active,
+  isOnline,
 }) => {
   const flagged = Boolean(is_flagged);
   return (
@@ -48,13 +51,23 @@ const UserCard: React.FC<UserCardProps> = ({
       className={`h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 justify-center items-center ${className}`}
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px] bg-[#F0F2F5]">
+      {/* <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px] bg-[#F0F2F5]">
         <Image
           src={picture_url || empty}
           alt={name}
           fill
           sizes="300px"
           className="w-full h-full object-cover"
+        />
+      </div> */}
+      <div className="relative">
+        <Picture
+          src={picture_url || empty}
+          alt={name}
+          className="w-full h-full object-cover rounded-lg"
+          width={82}
+          height={82}
+          status={isOnline}
         />
       </div>
       <div className="flex-1 flex flex-col items-start">

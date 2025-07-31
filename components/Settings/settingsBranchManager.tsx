@@ -51,6 +51,7 @@ import { NameVerification } from "./name-verification";
 import { validateAndCleanPhoneNumber } from "@/utils/validatePhoneNumber";
 import { useBranchInfoStore } from "@/store/branch-info-store";
 import { updateStaffPicture, updateStaffProfile } from "@/app/(nav)/manager/management/branch-staff/[staffId]/edit/data";
+import { StaffEditProfileInfoSection } from "../Management/Staff-And-Branches/Branch/StaffProfile/edit-staff-info-sections";
 
 const ManagerProfile = () => {
   const { role } = useRole();
@@ -72,8 +73,10 @@ const ManagerProfile = () => {
   const [reqLoading, setReqLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [closeVerificationModal, setCloseVerificationModal] = useState(false);
+  const { staff } = usePersonalInfoStore();
+  const OtherStaffID = staff?.id;
   const managerID = useBranchInfoStore((s) => s.manager.id);
-  const staffID = role === "manager" ? managerID : 0; //TODO: get staff id for account officer and staff later
+  const staffID = role === "manager" ? managerID : OtherStaffID; //TODO: get staff id for account officer and staff later
   const branchId = useBranchInfoStore((s) => s.branch_id);
 
   const { data, loading, error, refetch } = useFetch("/user/profile");

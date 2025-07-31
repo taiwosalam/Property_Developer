@@ -181,6 +181,7 @@ const Header = () => {
         company_wallet,
         currentExpiryDate,
         branch,
+        staff,
       } = data.data;
 
       const subscription_status = isSubscriptionExpired ? "expired" : "active";
@@ -232,6 +233,9 @@ const Header = () => {
           "cac_registration_number",
           company.cac_registration_number
         );
+      }
+      if (staff) {
+        setPersonalInfo("staff", staff);
       }
       setPersonalInfo(
         "requestDemo",

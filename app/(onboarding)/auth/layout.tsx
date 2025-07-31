@@ -36,7 +36,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
               : "flex-1 flex items-center justify-start"
           }
         >
-          <div className="w-full max-w-[580px] pb-6 px-10 rounded-2xl bg-white dark:bg-darkText-primary max-h-full overflow-x-hidden overflow-y-auto no-scrollbar">
+          <div className="w-full max-w-[580px] pb-6 px-10 rounded-2xl bg-white dark:bg-darkText-primary max-h-full overflow-x-hidden overflow-y-auto custom-round-scrollbar">
             {children}
           </div>
         </div>

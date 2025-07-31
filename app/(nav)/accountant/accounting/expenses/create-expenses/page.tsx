@@ -139,7 +139,7 @@ const CreateExpensePage = () => {
   const handleCreateExpense = async (data: Record<string, string>) => {
     const payload = {
       company_id: companyId,
-      property_id: 2,
+      property_id: Number(selectedPropertyId),
       description: data.expenses_description,
       // unit: data.units,
       unit: unitsSelected,

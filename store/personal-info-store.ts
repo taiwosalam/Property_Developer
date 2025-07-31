@@ -48,6 +48,19 @@ interface PersonalInfoStoreState {
     local_government: string | null;
     city: string | null;
   };
+
+  staff: {
+    id: number | null;
+    user_id: number | null;
+    company_id: number | null;
+    branch_id: number | null;
+    is_active: boolean | null;
+    title: string | null;
+    professional_title: string | null;
+    years_experience: number | null;
+    staff_role: string | null;
+  },  
+
   setPersonalInfo: <
     K extends keyof Omit<PersonalInfoStoreState, "setPersonalInfo">
   >(
@@ -104,6 +117,18 @@ export const usePersonalInfoStore = create<PersonalInfoStoreState>((set) => ({
     state: null,
     local_government: null,
     city: null,
+  },
+
+  staff: {
+    id: null,
+    user_id: null,
+    company_id: null,
+    branch_id: null,
+    is_active: null,
+    title: null,
+    professional_title: null,
+    years_experience: null,
+    staff_role: null,
   },
 
   isSubscriptionExpired: false,

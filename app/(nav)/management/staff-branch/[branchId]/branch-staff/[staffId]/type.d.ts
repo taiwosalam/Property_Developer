@@ -141,6 +141,7 @@ export interface StaffPageTypes {
     badge_color?: BadgeIconColors;
     online?: boolean;
     statistic?: any;
+    isVerified?: boolean;
   };
   activities: StaffActivitiies[];
   chats: [];

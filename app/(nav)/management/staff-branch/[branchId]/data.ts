@@ -93,7 +93,8 @@ export const transformSingleBranchAPIResponse = (
         position: s.staff_role,
         staff_ID: s.id,
         user_id: s.user_id,
-        badgeColor: s.tier === 2 ? "gray" : undefined,
+        badgeColor: s.tier >= 2 ? "gray" : undefined,
+        online: s?.online_status.toLowerCase() === "online",
         // badgeColor: s.tier
         //   ? staffTierColorMap[s.tier as keyof typeof staffTierColorMap]
         //   : undefined,

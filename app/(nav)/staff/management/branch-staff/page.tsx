@@ -40,6 +40,7 @@ const BranchStaffPage = () => {
   const companyVerified = usePersonalInfoStore((state) => state.is_verified);
   const BRANCH_ID = branch?.branch_id || 0;
   const router = useRouter();
+  const branchName = branch?.branch_name;
 
   const gridSectionRef = useRef<HTMLDivElement>(null);
   const [config, setConfig] = useState<AxiosRequestConfig>(() => {
@@ -251,13 +252,13 @@ const BranchStaffPage = () => {
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title="Account Officers"
+            title="Account Manager"
             newData={state.staff_count_by_role["account officer"]}
             total={state.staff_count_by_role["account officer"]}
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Other Staffs"
+            title="Other Staff"
             newData={state.staff_count_by_role.staff}
             total={state.staff_count_by_role.staff}
             colorScheme={3}
@@ -267,7 +268,7 @@ const BranchStaffPage = () => {
       <FilterBar
         azFilter
         noFilterButton
-        pageTitle="Branch Staff"
+        pageTitle={`${branchName !== null ? branchName : "Branch"} Staff`}
         searchInputPlaceholder="Search within Branch"
         handleFilterApply={handleFilterApply}
         gridView={view === "grid"}
@@ -312,6 +313,7 @@ const BranchStaffPage = () => {
                   name={staff.name}
                   phone_number={staff.phone_number}
                   user_tag={staff.position}
+                  isOnline={staff.isOnline}
                   picture_url={staff.picture}
                 />
               </Link>

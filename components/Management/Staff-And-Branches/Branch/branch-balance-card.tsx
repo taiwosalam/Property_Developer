@@ -76,6 +76,7 @@ const BranchBalanceCard = ({
   const defaultWalletIsActive = useWalletStore((s) => s.sub_wallet.is_active);
   const managerWalletIsActive = branchWallet?.is_active;
 
+  console.log("managerWalletIsActive", managerWalletIsActive);
   // Normalize statuses
   const walletPinStatus =
     role === "manager"
@@ -86,10 +87,10 @@ const BranchBalanceCard = ({
       ? normalizeIsActive(managerWalletIsActive as any)
       : normalizeIsActive(defaultWalletIsActive);
 
+  console.log("is_active", is_active);
   const hasWalletAccess =
     usePermission(role, "Full Wallet Access") || isCompanyOwner;
   const { branch } = useBranchStore();
-
 
   const { data, error, refetch } =
     useFetch<WalletDataResponse>("/wallets/dashboard");
@@ -282,13 +283,10 @@ const BranchBalanceCard = ({
                     </Modal>
                   ) : (
                     <div
+                      title="Toggle branch access to use company or branch wallet for transactions."
                       className={clsx(
                         "space-y-2",
-                        !hasWalletAccess ||
-                          option.name === "Hold Wallet" ||
-                          option.name === "UnHold Wallet"
-                          ? "opacity-50 cursor-not-allowed"
-                          : ""
+                        !hasWalletAccess ? "opacity-50 cursor-not-allowed" : ""
                       )}
                     >
                       <button
@@ -302,7 +300,7 @@ const BranchBalanceCard = ({
                         onClick={
                           (option.name === "Hold Wallet" ||
                             option.name === "UnHold Wallet") &&
-                          role !== "manager"
+                          role === "director"
                             ? handleHoldWallet
                             : undefined
                         }
