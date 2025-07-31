@@ -21,12 +21,19 @@ const CreateProperty = () => {
     goToStep,
     restartTour,
   } = useTourStore();
+  // const handleSubmit = async (data: Record<string, any>) => {
+  //   const propertyId = await addProperty(data);
+  //   if (propertyId) {
+  //     router.push(
+  //       `/management/properties/create-rental-property/${propertyId}/add-unit`
+  //     );
+  //   }
+  // };
+
   const handleSubmit = async (data: Record<string, any>) => {
     const propertyId = await addProperty(data);
     if (propertyId) {
-      router.push(
-        `/management/properties/create-rental-property/${propertyId}/add-unit`
-      );
+      window.location.href = `/management/properties/create-rental-property/${propertyId}/add-unit`;
     }
   };
 
@@ -68,7 +75,7 @@ const CreateProperty = () => {
         <CreateRentalPropertyForm
           handleSubmit={handleSubmit}
           formType="rental"
-          landlordId={landlordId} 
+          landlordId={landlordId}
         />
       </div>
     </>

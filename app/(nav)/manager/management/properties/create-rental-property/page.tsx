@@ -24,9 +24,10 @@ const CreateProperty = () => {
   const handleSubmit = async (data: Record<string, any>) => {
     const propertyId = await addProperty(data);
     if (propertyId) {
-      router.push(
-        `/manager/management/properties/create-rental-property/${propertyId}/add-unit`
-      );
+      // router.push(
+      //   `/manager/management/properties/create-rental-property/${propertyId}/add-unit`
+      // );
+      window.location.href = `/manager/management/properties/create-rental-property/${propertyId}/add-unit`;
     }
   };
 

@@ -10,7 +10,6 @@ import { toast } from "sonner";
 const DynamicFooterActions = () => {
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-  const allowEditUnit = useGlobalStore((s) => s.allowEditUnit);
   const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
   const { canSubmit, missingFields, handleInputChange } =
     useContext(FlowProgressContext);
@@ -20,9 +19,11 @@ const DynamicFooterActions = () => {
     resetForm,
     setSaveClick,
     formSubmitted,
+    notYetUploaded,
+    unitData,
   } = useUnitForm();
   const addedUnits = useAddUnitStore((s) => s.addedUnits);
-  const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
+  const newForm = useAddUnitStore((s) => s.newForm);
 
   // TRACK WHEN FORM IS SUBMITTED
   useEffect(() => {
@@ -31,6 +32,15 @@ const DynamicFooterActions = () => {
       setGlobalStore("closeUnitForm", true);
     }
   }, [formSubmitted]);
+
+  // Replicate shouldShowButtons logic from UnitPictures
+  const isExistingUnit =
+    unitData?.id && addedUnits.some((unit) => unit.id === unitData.id);
+
+  const shouldShowButtons =
+    addedUnits.length > 0 &&
+    (notYetUploaded || newForm || !unitData || !unitData.id) &&
+    !isExistingUnit;
 
   const handleUpdateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -59,7 +69,7 @@ const DynamicFooterActions = () => {
     setAddUnitStore("newForm", false);
     setGlobalStore("closeUnitForm", true);
     setGlobalStore("allowEditUnit", false);
-    
+
     // Reset form if it exists
     const formInDom = document.getElementById(
       "add-unit-form"
@@ -67,14 +77,14 @@ const DynamicFooterActions = () => {
     if (formInDom) {
       formInDom.reset();
     }
-    
+
     // Reset form state
     resetForm();
   };
 
   return (
     <div className="my-4">
-      {allowEditUnit && !hasNotYetUploaded && (
+      {shouldShowButtons && (
         <div className="flex gap-4 justify-end edit-unit-action-btns">
           <Button
             size="sm_medium"
