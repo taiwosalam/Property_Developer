@@ -23,9 +23,10 @@ const CreateGatedEstate = () => {
   const handleSubmit = async (data: Record<string, any>) => {
     const propertyId = await addProperty(data);
     if (propertyId) {
-      router.push(
-        `/accountant/management/properties/create-gated-estate-property/${propertyId}/add-unit`
-      );
+      // router.push(
+      //   `/accountant/management/properties/create-gated-estate-property/${propertyId}/add-unit`
+      // );
+      window.location.href = `/accountant/management/properties/create-gated-estate-property/${propertyId}/add-unit`;
     }
   };
 

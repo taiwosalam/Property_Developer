@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -48,6 +49,7 @@ import { useGlobalStore } from "@/store/general-store";
 import { toast } from "sonner";
 import Card from "@/components/dashboard/card";
 import { useBranchInfoStore } from "@/store/branch-info-store";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 const StaffProfile = () => {
   const { branchId, staffId } = useParams();
@@ -144,13 +146,6 @@ const StaffProfile = () => {
       <div className="custom-flex-col gap-4">
         <div className="custom-flex-col">
           <BackButton> Staff Profile </BackButton>
-          {/* <div className="flex">
-            <div className="w-10"></div>
-            <div className="flex items-center gap-1 text-text-disabled mb-2">
-              <LocationIcon />
-              <p className="text-sm font-normal">{branch.address}</p>
-            </div>
-          </div> */}
         </div>
         <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
           <LandlordTenantInfoBox style={{ padding: "24px 40px" }}>
@@ -169,7 +164,7 @@ const StaffProfile = () => {
                 <div className="space-y-4">
                   <div>
                     <div className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-center">
-                      {staff?.title || ""} {staff?.name}
+                      {capitalizeWords(staff?.title || "")} {capitalizeWords(staff?.name || "")}
                       {staff.badge_color && (
                         <BadgeIcon color={staff.badge_color} />
                       )}
@@ -221,7 +216,7 @@ const StaffProfile = () => {
           <LandlordTenantInfoBox>
             <div className="custom-flex-col gap-4">
               <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                About {`${staff?.title} ${staff?.name}`}
+                About {`${capitalizeWords(staff?.title || "")} ${capitalizeWords(staff?.name || "")}`}
               </h3>
               <div className="w-full border border-dashed border-brand-9 opacity-40" />
               <TruncatedText as="div" lines={6}>
@@ -247,7 +242,7 @@ const StaffProfile = () => {
 
       {/* STAFF PORTFOLIOS */}
       <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-        {`${staff?.title} ${staff?.name}`} Portfolios
+        {`${capitalizeWords(staff?.title || "")} ${capitalizeWords(staff?.name || "")}`} Portfolios
       </h1>
       <div className="staff-portfolio-stats w-full flex py-1.5 xl:py-2 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
         {initialStaffPortfolioStats.map((card, index) => (
@@ -260,13 +255,13 @@ const StaffProfile = () => {
               bg={card.bg}
             />
           </Link>
-        ))}
+        ))} 
       </div>
 
       {/* STAFF CHATS */}
       <div className="custom-flex-col gap-[18px]">
         <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-          {`${staff?.title} ${staff?.name}`} Chat
+          {`${capitalizeWords(staff?.title || "")} ${capitalizeWords(staff?.name || "")}`} Chat
         </h2>
         <StaffChat />
       </div>
@@ -274,7 +269,7 @@ const StaffProfile = () => {
       <div className="custom-flex-col gap-[18px]">
         <div className="flex justify-between">
           <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            {`${staff?.title} ${staff?.name} Activities`}
+            {`${capitalizeWords(staff?.title || "")} ${capitalizeWords(staff?.name || "")}`} Activities
           </h2>
           {activities.length > 0 && (
             <Link

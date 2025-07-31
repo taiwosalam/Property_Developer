@@ -84,9 +84,10 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
         return;
       }
       if (transformedData.propertyType === "facility") {
-        router.push(
-          `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
-        );
+        // router.push(
+        //   `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
+        // );
+        window.location.href = `/management/properties/create-gated-estate-property/${propertyId}/add-unit`;
       }
       setDataNotFound(false);
       setAddUnitStore("property_id", transformedData.property_id);
@@ -111,8 +112,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
       setAddUnitStore("editMode", true);
     }
   }, [showUnitForm, setAddUnitStore]);
-
-  const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
+  // const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
+  const SHOW_UNIT_FORM = !closeUnitForm && (newForm || addedUnits.length === 0);
 
   const pathname = usePathname();
 

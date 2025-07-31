@@ -112,7 +112,8 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
     }
   }, [showUnitForm, setAddUnitStore]);
 
-  const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
+  // const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
+  const SHOW_UNIT_FORM = !closeUnitForm && (newForm || addedUnits.length === 0);
 
   const pathname = usePathname();
 
@@ -186,9 +187,9 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
             )}
             {/* {(addedUnits.length === 0 || showUnitForm) && !closeUnitForm && ( */}
             {SHOW_UNIT_FORM && (
-              <div>
-                <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
-              </div>
+            <div>
+              <UnitForm empty hideEmptyForm={() => setShowUnitForm(false)} />
+            </div>
             )}
           </div>
 

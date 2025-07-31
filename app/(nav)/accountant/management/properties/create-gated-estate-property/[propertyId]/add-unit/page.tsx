@@ -67,9 +67,10 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
         return;
       }
       if (transformedData.propertyType === "rental") {
-        router.push(
-          `/management/properties/create-rental-property/${propertyId}/add-unit`
-        );
+        // router.push(
+        //   `/management/properties/create-rental-property/${propertyId}/add-unit`
+        // );
+        window.location.href = `/management/properties/create-rental-property/${propertyId}/add-unit`;
       }
       setDataNotFound(false);
       setAddUnitStore("property_id", transformedData.property_id);
@@ -114,8 +115,8 @@ const AddUnitGated = ({ params }: { params: { propertyId: string } }) => {
   }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
   // useCustomBackNavigation({ customBackPath });
-
-  const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
+  // const SHOW_UNIT_FORM = (addedUnits.length === 0 && !closeUnitForm) || newForm;
+  const SHOW_UNIT_FORM = !closeUnitForm && (newForm || addedUnits.length === 0);
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
