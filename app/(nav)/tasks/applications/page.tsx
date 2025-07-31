@@ -31,15 +31,24 @@ import { IPropertyApi } from "../../settings/others/types";
 import { rejectApplication } from "./[applicationId]/manage/data";
 import { toast } from "sonner";
 import Pagination from "@/components/Pagination/pagination";
+import CardsLoading from "@/components/Loader/CardsLoading";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as LandlordRequestParams,
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("applications_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: "",
+      } as LandlordRequestParams,
+    };
   });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("applications_page", config.params.page.toString());
+  }, [config.params.page]);
 
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
@@ -78,7 +87,7 @@ const Applications = () => {
     ? [
         ...new Map(
           propertiesData.data.properties.data.map((property: any) => [
-            property.title, // Use property title as the unique key
+            property.title,
             {
               label: property.title,
               value: property.id.toString(),
@@ -87,6 +96,12 @@ const Applications = () => {
         ).values(),
       ]
     : [];
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
@@ -106,7 +121,6 @@ const Applications = () => {
     if (branchIdsArray.length > 0) {
       queryParams.branch_ids = branchIdsArray.join(",");
     }
-
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
     }
@@ -116,6 +130,7 @@ const Applications = () => {
     setConfig({
       params: queryParams,
     });
+    sessionStorage.setItem("applications_page", "1");
   };
 
   const contentTopRef = useRef<HTMLDivElement>(null);
@@ -124,7 +139,7 @@ const Applications = () => {
     setConfig({
       params: { ...config.params, page },
     });
-    // Scroll to the top where LandlordCards start
+    sessionStorage.setItem("applications_page", page.toString());
     if (contentTopRef.current) {
       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -132,28 +147,30 @@ const Applications = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_order: order, page: 1 },
     });
+    sessionStorage.setItem("applications_page", "1");
   };
 
   const handleSearch = async (query: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, page: 1 },
     });
+    sessionStorage.setItem("applications_page", "1");
   };
-
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
 
   useEffect(() => {
     if (apiData) {
       const transData = transformApplicationData(apiData);
-      setPagedata(transData);
+      setPagedata({
+        ...transData,
+        pagination: {
+          ...transData.pagination,
+          current_page: config.params.page || 1,
+        },
+      });
     }
-  }, [apiData]);
+  }, [apiData, config.params.page]);
 
   const handleEvaluation = async (
     id: string,
@@ -183,7 +200,7 @@ const Applications = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
         <ManagementStatistcsCard
           title="Total Application"
           newData={pageData?.month_application || 0}
@@ -230,13 +247,16 @@ const Applications = () => {
                   },
                 ]
               : []),
+            ...(branchOptions.length > 0
+              ? [
+                  {
+                    label: "Branch",
+                    value: branchOptions,
+                  },
+                ]
+              : []),
+            ...DocumentssFilterOptionsWithDropdown,
           ]}
-          // filterOptionsMenu={[
-          //   ...(DocumentssFilterOptionsWithDropdown),
-          //   ...(branchOptions)
-          // ]
-
-          //}
         />
 
         <section>
@@ -248,7 +268,7 @@ const Applications = () => {
               <ApplicationStatusItem status="rejected" />
             </div>
           )}
-          {pageData?.applications?.length === 0 && !loading ? (
+          {pageData?.applications?.length === 0 && !silentLoading ? (
             !!config.params.search || hasActiveFilters(appliedFilters) ? (
               <SearchError />
             ) : (
@@ -274,27 +294,31 @@ const Applications = () => {
               gap={32}
               containerClassName="w-full"
             >
-              {pageData && pageData?.applications?.length > 0
-                ? pageData?.applications.map((item) => (
-                    <div
-                      key={item.id}
-                      className="w-full"
-                      onClick={() =>
-                        handleEvaluation(
-                          item?.id?.toString(),
-                          item?.flagged,
-                          item?.application_status
-                        )
-                      }
-                    >
-                      <ApplicationCard
-                        status={item?.flagged}
-                        type={item.application_status}
-                        data={item}
-                      />
-                    </div>
-                  ))
-                : "No Application Yet"}
+              {silentLoading ? (
+                <CardsLoading />
+              ) : pageData && pageData?.applications?.length > 0 ? (
+                pageData.applications.map((item) => (
+                  <div
+                    key={item.id}
+                    className="w-full"
+                    onClick={() =>
+                      handleEvaluation(
+                        item?.id?.toString(),
+                        item?.flagged,
+                        item?.application_status
+                      )
+                    }
+                  >
+                    <ApplicationCard
+                      status={item?.flagged}
+                      type={item.application_status}
+                      data={item}
+                    />
+                  </div>
+                ))
+              ) : (
+                "No Application Yet"
+              )}
             </AutoResizingGrid>
           )}
         </section>

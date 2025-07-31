@@ -143,7 +143,6 @@ export const transformComment = (
 export const transformPropertyRequestResponse = (
   response: PropertyRequestResponse
 ): TransformedPropertyRequestData => {
-  console.log("response", response);
   const { post, similar_posts } = response;
   const { AgentRequest, contributor, company_summary, readByData, comments } =
     post;
@@ -191,6 +190,7 @@ export const transformPropertyRequestResponse = (
       total_property: company_summary.total_property,
       total_unit: company_summary.details.total_unit,
       total_reviews: company_summary.details.total_reviews,
+      facility_property: company_summary.details.facility_property,
       contact_details: {
         phone_numbers: company_summary.contact_details.phone_numbers,
       },
@@ -218,6 +218,7 @@ export const transformPropertyRequestResponse = (
         total_branches: company_summary.details.total_branches,
         total_staff: company_summary.details.total_staff,
         total_unit_managing: company_summary.details.total_unit_managing,
+        facility_property: company_summary.details.facility_property,
         //completed_transaction: company_summary.details.completed_transaction,
       },
       social_handles: {

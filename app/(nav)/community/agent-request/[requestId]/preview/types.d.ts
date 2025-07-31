@@ -56,6 +56,7 @@ export interface CompanySummary {
   total_property: number;
   total_unit: number;
   total_reviews: number;
+  facility_property: number;
   contact_details: {
     phone_numbers: string[];
   };
@@ -84,6 +85,7 @@ export interface CompanySummary {
     total_staff: number;
     total_unit_managing: number;
     completed_transaction: number;
+    facility_property: number;
   };
   social_handles: {
     facebook: string | null;

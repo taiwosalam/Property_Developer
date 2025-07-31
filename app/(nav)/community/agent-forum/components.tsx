@@ -367,6 +367,10 @@ export const formatCompanySummary = (
       label: "Hospitality Property",
       value: details?.hospitality_property || 0,
     },
+    {
+      label: "Facility Property",
+      value: details?.facility_property || 0,
+    },
     { label: "Total Unit Managing", value: details.total_unit_managing || 0 },
     { label: "Total Reviews", value: details.total_reviews || 0 },
     {

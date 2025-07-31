@@ -20,7 +20,7 @@ export const ContributorDetails = ({
 }) => {
   if (loading) return <LoadingContributorUser />;
   return (
-    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
+    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg overflow-hidden">
       <h2 className="text-black font-semibold text-lg dark:text-white">
         {title}
       </h2>
