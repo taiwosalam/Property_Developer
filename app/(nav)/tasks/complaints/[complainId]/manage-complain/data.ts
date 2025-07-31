@@ -166,7 +166,7 @@ interface ITaskReminder {
   title: string;
   note: string;
   date: Dayjs | null;
-  id: string;
+  id?: string;
 }
 export const createReminder = async ({
   title,
@@ -178,8 +178,9 @@ export const createReminder = async ({
     title,
     note,
     reminder_date: date,
+    complain_id: id
   };
-  const endpoint = `complaints/${id}/reminder`;
+  const endpoint = `complaint/reminder`;
   try {
     const res = await api.post(endpoint, payload);
     if (res) {

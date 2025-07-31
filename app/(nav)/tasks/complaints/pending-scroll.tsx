@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard"; // Adjust import path as needed
 import { TaskCardSkeleton } from "./card-loader"; // Adjust import path as needed
+import { empty } from "@/app/config";
 
 interface PendingComplaint {
   id: number | string;
@@ -141,7 +142,7 @@ const PendingComplaintsScroll: React.FC<PendingComplaintsScrollProps> = ({
             title: complaint?.title,
             message: complaint?.message,
             tier: complaint?.tier,
-            avatarSrc: complaint?.avatarSrc ?? "/empty/avatar.png",
+            avatarSrc: complaint?.avatarSrc ?? empty,
           }}
         />
       ))}

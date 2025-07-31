@@ -96,17 +96,21 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   );
 
   const { role } = useRole();
-  
+
   const gotoPage = (id: string | number) => {
     switch (role) {
       case "director":
         router.push(`/tasks/complaints/${id}/manage-complain/`);
+        break;
       case "manager":
         router.push(`/manager/tasks/complaints/${id}/manage-complain/`);
+        break;
       case "accountant":
         router.push(`/accountant/tasks/complaints/${id}/manage-complain/`);
+        break;
       case "staff":
         router.push(`/staff/tasks/complaints/${id}/manage-complain/`);
+        break;
       default:
         return router.push("/unauthorized");
     }
