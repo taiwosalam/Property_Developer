@@ -36,6 +36,7 @@ import PendingComplaintsScroll from "./pending-scroll";
 import { toast } from "sonner";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import TaskModal from "@/components/dashboard/kanban/task-action-modal";
+import { empty } from "@/app/config";
 
 const ComplaintsPage = () => {
   const { isMobile } = useWindowWidth();
@@ -209,7 +210,7 @@ const ComplaintsPage = () => {
     );
   }
   if (error) <ServerError error={error} />;
-  if (isNetworkError) return <NetworkError />;
+  if (isNetworkError) <NetworkError />;
 
   return (
     <div className="space-y-7">
@@ -322,7 +323,7 @@ const ComplaintsPage = () => {
                       title: complaint?.title,
                       message: complaint?.message,
                       tier: complaint?.tier,
-                      avatarSrc: complaint?.avatarSrc ?? "/empty/avatar.png",
+                      avatarSrc: complaint?.avatarSrc ?? empty,
                     }}
                     onClick={() => {
                       setSelectedPendingTask(complaint);

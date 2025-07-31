@@ -6,7 +6,7 @@ import WalletModalPreset from "../Wallet/wallet-modal-preset";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Input from "../Form/Input/input";
 import { EmailIcon, PhoneIcon } from "./verification_icons";
-import { RotateCw } from "lucide-react";
+import { Mail, PhoneCallIcon, RotateCw } from "lucide-react";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import { AuthPinField } from "../Auth/auth-components";
 import {
@@ -17,6 +17,7 @@ import {
 import { BvnLookupResponse } from "@/app/(nav)/settings/security/types";
 import { toast } from "sonner";
 import Button from "../Form/Button/button";
+import { FaMailBulk, FaPhoneAlt } from "react-icons/fa";
 
 interface NameVerificationProps {
   fullName: string;
@@ -141,6 +142,7 @@ export const NameVerification = ({
                     className="rounded-[8px]"
                     type="number"
                     max={11}
+                    maxLength={11}
                     value={bvnInput}
                     onChange={handleBvnChange}
                   />
@@ -213,25 +215,25 @@ const extractEmail = (text: string) => {
 // Predefined verification methods
 const VERIFICATION_METHOD = [
   {
-    icon: EmailIcon,
+    icon: Mail,
     title: "Email",
     method: "email",
     description: `Email verification`,
   },
   {
-    icon: PhoneIcon,
+    icon: FaPhoneAlt,
     title: "Primary Number",
     method: "phone",
     description: "Primary Phone number",
   },
   {
-    icon: PhoneIcon,
+    icon: FaPhoneAlt,
     title: "Secondary Number",
     method: "phone_1",
     description: `Selecting this option`,
   },
   {
-    icon: PhoneIcon,
+    icon: FaPhoneAlt,
     title: "Alternative Number",
     method: "alternate_phone",
     description: `Description`,
@@ -310,8 +312,8 @@ export const VerificationMethod = ({
                 onClick={() => onMethodSelect(method.title)}
               >
                 <div className="flex justify-between items-center">
-                  <div className="flex gap-3">
-                    <div>
+                  <div className="flex items-start gap-3">
+                    <div className="text-brand-9 flex justify-center items-center px-6 py-3 aspect-video bg-brand-9 custom-secondary-bg text-3xl rounded-2xl">
                       <method.icon />
                     </div>
                     <div>
@@ -417,12 +419,12 @@ export const InputPinDialog = ({
       if (data?.status) {
         setCloseVerification(false);
       }
-      console.log(data?.data);
+
       if (data?.status === false) {
         setCode("");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -506,17 +508,23 @@ export const InputPinDialog = ({
           </p>
           <p className="text-gray-500"></p>
           <p className="text-gray-500">for confirmation</p>
+          {isResendDisabled && (
+            <p className="text-slate-400 dark:text-slate-200">{countdown}s</p>
+          )}
           <div className="py-12">
-            <AuthPinField onChange={setCode} length={6} />
+            <AuthPinField
+              onChange={setCode}
+              length={6}
+              className="rounded-[8px] aspect-square"
+            />
           </div>
         </div>
         <div className="mt-6">
-          <div className="flex items-center gap-2">
-            <Button
+          <div className="flex gap-2">
+            <button
               onClick={handleResendCode}
               disabled={isResendDisabled}
-              variant="custom"
-              className=""
+              className="py-3 text-lg font-medium flex justify-center items-center"
             >
               <div className="flex items-center gap-2">
                 <RotateCw
@@ -529,17 +537,15 @@ export const InputPinDialog = ({
                     isResendDisabled ? "text-gray-400" : "text-brand-9"
                   }`}
                 >
-                  {isResendDisabled
-                    ? `Resend code (${countdown}s)`
-                    : "Resend code"}
+                  Resend code
                 </p>
               </div>
-            </Button>
+            </button>
           </div>
-          <div className="flex justify-between mt-8">
+          <div className="flex justify-between w-full mt-8">
             <Button
               onClick={handleBVNInfoDetails}
-              className="px-8 py-2"
+              className="px-8 py-2 w-full"
               size="base_medium"
               disabled={loading}
             >
@@ -624,12 +630,12 @@ export const AlternateMethod = ({
       }
     } else {
       // Phone number validation
-      if (inputField.length !== 11) {
+      if (method !== "email" && inputField.length !== 11) {
         toast.error("Phone number must be 11 digits");
         return;
       }
 
-      if (!/^\d+$/.test(inputField)) {
+      if (method !== "email" && !/^\d+$/.test(inputField)) {
         toast.error("Phone number must contain only digits");
         return;
       }
@@ -741,12 +747,13 @@ export const AlternateMethod = ({
                   className="w-[80%] text-lg py-2"
                   type="text"
                   max={11}
+                  maxLength={11}
                   value={inputField}
                   onChange={handleOnChange}
                 />
               )}
               <Button
-                className="bg-transparent text-brand-9 hover:text-brand-5 flex justify-center items-center font-semibold text-center py-4 text-lg dark:text-white"
+                className="bg-transparent text-brand-9 hover:text-brand-8 flex justify-center items-center font-semibold text-center py-4 text-lg dark:text-white"
                 onClick={onChangeOption}
                 variant="custom"
               >

@@ -50,14 +50,20 @@ interface ITaskProgressModal {
   };
   setIsOpen?: (val: boolean) => void;
   percentage: number;
+  onTaskUpdate?: () => void; // Callback to refresh parent data
 }
+
 const TaskProgressModal: React.FC<ITaskProgressModal> = ({
   task_bar,
   task,
   setIsOpen,
   percentage,
+  onTaskUpdate,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [pendingTasks, setPendingTasks] = useState<Set<string>>(new Set());
+  const [processingTasks, setProcessingTasks] = useState<Set<string>>(
+    new Set()
+  );
 
   const param = useParams();
   const id = param.complainId as string;
@@ -65,9 +71,6 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
   const [checkedTasks, setCheckedTasks] = useState<string[]>(
     task_bar.map((bar) => bar.text)
   );
-
-  // Track the most recently checked task
-  const [lastCheckedTask, setLastCheckedTask] = useState<string | null>(null);
 
   const commonClasses =
     "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center w-full";
@@ -100,91 +103,110 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
     </div>
   );
 
-  // Handle checkbox changes with useCallback for stability
+  // Function to submit a task to the backend
+  const submitTask = async (taskValue: string) => {
+    const taskConfig = assignTaskCheckList.find((t) => t.value === taskValue);
+    if (!taskConfig) return false;
+
+    try {
+      setProcessingTasks((prev) => new Set([...prev, taskValue]));
+
+      const res = await updateProgressStatus(
+        id,
+        taskConfig.value,
+        taskConfig.progress
+      );
+
+      if (res) {
+        toast.success(`Task completed: ${taskConfig.label}`);
+        // Remove from pending tasks on success
+        setPendingTasks((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(taskValue);
+          return newSet;
+        });
+        // Trigger parent refresh if callback provided
+        onTaskUpdate?.();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      toast.error(`Failed to update task: ${taskConfig?.label}`);
+      console.error("Task update error:", error);
+      return false;
+    } finally {
+      setProcessingTasks((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(taskValue);
+        return newSet;
+      });
+    }
+  };
+
+  // Handle checkbox changes with immediate backend submission
   const handleCheckboxChange = useCallback(
-    (taskValue: string, checked: boolean) => {
-      setCheckedTasks((prev) => {
-        if (checked) {
-          // Add task if not already checked
+    async (taskValue: string, checked: boolean) => {
+      if (checked) {
+        // Immediately update UI
+        setCheckedTasks((prev) => {
           if (!prev.includes(taskValue)) {
-            setLastCheckedTask(taskValue);
             return [...prev, taskValue];
           }
           return prev;
-        } else {
-          // Allow unchecking only if task is not in task_bar
-          if (!task_bar.some((bar) => bar.text === taskValue)) {
-            const newCheckedTasks = prev.filter((val) => val !== taskValue);
-            // Update lastCheckedTask if the unchecked task was the last checked
-            if (taskValue === lastCheckedTask) {
-              // Set to the most recently checked task still in checkedTasks
-              const remainingTasks = newCheckedTasks.filter(
-                (val) => !task_bar.some((bar) => bar.text === val)
-              );
-              setLastCheckedTask(
-                remainingTasks[remainingTasks.length - 1] || null
-              );
-            }
-            return newCheckedTasks;
-          }
-          return prev;
+        });
+
+        // Add to pending tasks and submit
+        setPendingTasks((prev) => new Set([...prev, taskValue]));
+
+        // Submit to backend
+        const success = await submitTask(taskValue);
+
+        if (!success) {
+          // Revert UI state if submission failed
+          setCheckedTasks((prev) => prev.filter((val) => val !== taskValue));
+          setPendingTasks((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(taskValue);
+            return newSet;
+          });
         }
-      });
+      } else {
+        // Handle unchecking (only for tasks not yet submitted to backend)
+        const isBackendTask = task_bar.some((bar) => bar.text === taskValue);
+        const isPending = pendingTasks.has(taskValue);
+
+        if (!isBackendTask && !isPending) {
+          setCheckedTasks((prev) => prev.filter((val) => val !== taskValue));
+        }
+      }
     },
-    [task_bar, lastCheckedTask]
+    [task_bar, pendingTasks, id]
   );
 
-  const getTaskToSubmit = () => {
-    if (!lastCheckedTask) return null;
-    const task = assignTaskCheckList.find((t) => t.value === lastCheckedTask);
-    return task ? { task: task.value, progress: task.progress } : null;
+  // Get the task status for display
+  const getTaskStatus = (taskValue: string) => {
+    const isBackendCompleted = task_bar.some((bar) => bar.text === taskValue);
+    const isPending = pendingTasks.has(taskValue);
+    const isProcessing = processingTasks.has(taskValue);
+
+    if (isBackendCompleted) return "completed";
+    if (isProcessing) return "processing";
+    if (isPending) return "pending";
+    return "available";
   };
 
-  // Handle form submission
-  const handleUpdateStatusProgress = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    const taskToSubmit = getTaskToSubmit();
-    if (!taskToSubmit) {
-      toast.error("Please check a task before submitting.");
-      return;
-    }
-    try {
-      setIsLoading(true);
-      const res = await updateProgressStatus(
-        id,
-        taskToSubmit.task,
-        taskToSubmit.progress
-      );
-      if (res) {
-        toast.success(`Status updated: ${taskToSubmit?.task}`);
-        // Clear lastCheckedTask after successful submission
-        setLastCheckedTask(null);
-        setIsOpen?.(false);
-      }
-    } catch (error) {
-      toast.error("Failed to update status");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  //Sync checkedTasks with task_bar when it changes
+  // Sync checkedTasks with task_bar when it changes
   useEffect(() => {
-    // Only update checkedTasks if task_bar has new completed tasks
     setCheckedTasks((prev) => {
       const backendTasks = task_bar.map((bar) => bar.text);
-      // Preserve locally checked tasks that aren't yet in task_bar
-      const newCheckedTasks = [...new Set([...prev, ...backendTasks])];
+      const pendingTasksArray = Array.from(pendingTasks);
+      // Combine backend tasks with pending tasks
+      const newCheckedTasks = [
+        ...new Set([...prev, ...backendTasks, ...pendingTasksArray]),
+      ];
       return newCheckedTasks;
     });
-    // Reset lastCheckedTask if it's already in task_bar
-    if (
-      lastCheckedTask &&
-      task_bar.some((bar) => bar.text === lastCheckedTask)
-    ) {
-      setLastCheckedTask(null);
-    }
-  }, [task_bar, lastCheckedTask]);
+  }, [task_bar, pendingTasks]);
 
   return (
     <ModalPreset title="Task bar">
@@ -199,7 +221,7 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
           <LabelValuePair label="Time" value={task?.time || ""} />
         </div>
         <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
-        <form className="space-y-4">
+        <div className="space-y-4">
           <div>
             {percentage === 100 ? (
               <p className="text-green-500 text-lg">{"Completed"}</p>
@@ -207,7 +229,7 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
               <p className="text-black dark:text-white">Processing stage</p>
             )}
             <p className="text-text-tertiary">
-              Kindly check the box if you are done with a particular task
+              Tasks are automatically saved when checked
             </p>
           </div>
 
@@ -217,44 +239,60 @@ const TaskProgressModal: React.FC<ITaskProgressModal> = ({
                 (bar) => bar.text === task.value
               );
               const isChecked = checkedTasks.includes(task.value);
+              const taskStatus = getTaskStatus(task.value);
               const isDisabled =
-                !isChecked && task_bar.some((bar) => bar.text === task.value); // Disable if already checked in backend
+                taskStatus === "completed" || taskStatus === "processing";
+
+              // Create dynamic classes based on task status
+              let checkboxClasses = commonClasses;
+              if (taskStatus === "processing") {
+                checkboxClasses += " opacity-60";
+              } else if (taskStatus === "pending") {
+                checkboxClasses +=
+                  " bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700";
+              } else if (taskStatus === "completed") {
+                checkboxClasses +=
+                  " bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700";
+              }
+
               return (
-                <Checkbox
-                  key={task.value}
-                  className={commonClasses}
-                  hoverContent={
-                    matchedTaskBar && (
-                      <HoverContent
-                        approve_by={matchedTaskBar.approve_by}
-                        time={matchedTaskBar.time}
-                        date={matchedTaskBar.date}
-                      />
-                    )
-                  }
-                  checked={isChecked}
-                  onChange={(checked: boolean) =>
-                    handleCheckboxChange(task.value, checked)
-                  }
-                  disabled={isDisabled}
-                >
-                  {task.label}
-                </Checkbox>
+                <div key={task.value} className="relative">
+                  <Checkbox
+                    className={commonClasses}
+                    hoverContent={
+                      matchedTaskBar && (
+                        <HoverContent
+                          approve_by={matchedTaskBar.approve_by}
+                          time={matchedTaskBar.time}
+                          date={matchedTaskBar.date}
+                        />
+                      )
+                    }
+                    checked={isChecked}
+                    onChange={(checked: boolean) =>
+                      handleCheckboxChange(task.value, checked)
+                    }
+                    //disabled={isDisabled}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span>{task.label}</span>
+                      {taskStatus === "processing" && (
+                        <span className="text-xs text-blue-500 ml-2">
+                          Saving...
+                        </span>
+                      )}
+                      {taskStatus === "pending" && (
+                        <span className="text-xs text-yellow-600 dark:text-yellow-400 ml-2">
+                          Pending
+                        </span>
+                      )}
+                    </div>
+                  </Checkbox>
+                </div>
               );
             })}
           </div>
-          <div className="space-y-5 w-full">
-            <Button
-              disabled={isLoading || !lastCheckedTask}
-              type="submit"
-              size="xs_normal"
-              className="py-2 px-6 w-full"
-              onClick={handleUpdateStatusProgress}
-            >
-              {isLoading ? "Please wait..." : "Update Progress bar"}
-            </Button>
-          </div>
-        </form>
+        </div>
       </div>
     </ModalPreset>
   );
