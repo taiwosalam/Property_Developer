@@ -179,9 +179,9 @@ const AddServiceProviderModal = () => {
               inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
             />
             <Input
-              id="phone"
-              name="phone"
-              label="Phone Number"
+              id="name"
+              name="name"
+              label="Full Name"
               inputClassName="text-xs md:text-sm font-normal rounded-[8px]"
             />
 
