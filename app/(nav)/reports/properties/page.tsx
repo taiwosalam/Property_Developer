@@ -35,6 +35,8 @@ const PropertiesReport = () => {
   });
   const setPropertiesStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
+
+
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -126,14 +128,11 @@ const PropertiesReport = () => {
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformPropertyData(data);
-      console.log("API data:", data);
-      console.log("Transformed data:", transformedData);
       const newProperties = transformedData.properties;
       const currentProperties = useGlobalStore.getState().properties;
       if (JSON.stringify(currentProperties) !== JSON.stringify(newProperties)) {
         setPageData(transformedData);
         setPropertiesStore("properties", newProperties);
-        console.log("Store after update:", useGlobalStore.getState().properties);
       }
     }
     
