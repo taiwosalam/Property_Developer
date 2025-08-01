@@ -53,10 +53,6 @@ const UnitsReport = () => {
   const { data: property } = useFetch<any>(`property/all`);
 
   useEffect(() => {
-    console.log("Source page - filteredUnits:", filteredUnits);
-  }, [filteredUnits]);
-
-  useEffect(() => {
     if (apiData) setBranches(apiData.data);
     if (staff) {
       const filterStaff = staff.data.filter(

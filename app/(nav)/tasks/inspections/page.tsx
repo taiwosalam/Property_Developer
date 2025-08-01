@@ -225,9 +225,10 @@ const InspectionPage = () => {
                     Currently, there are no inspection records linked to your
                     property listings. Once a potential client submits an
                     inspection request, the details will appear here, allowing
-                    you to view and book appointments. <br /> <br />
-                   
-                    <br /> 
+                    you to view and book appointments.
+                    <br />
+                    <br />
+                    <br />
                   </p>
                 }
               />
