@@ -134,7 +134,7 @@ export const ApplicationCardUnit: React.FC<IApplicationCardUnit> = ({
         <SectionSeparator className="my-4 h-[2px]" />
         <div className="flex justify-between items-center flex-wrap ">
           <button
-            className={`property-type bg-opacity-40 text-brand-9 py-1 capitalize rounded-xl bg-brand-5 px-4 h-7 text-sm mt-1 ${
+            className={`property-type bg-opacity-40 text-brand-9 py-1 capitalize rounded-xl bg-brand-1 px-4 h-7 text-sm mt-1 ${
               propertyType === "rental"
                 ? "bg-status-success-primary/25 text-status-success-2"
                 : ""

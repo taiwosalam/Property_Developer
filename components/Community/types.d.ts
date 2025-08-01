@@ -22,6 +22,7 @@ export interface Details {
     property_for_sale: number;
     property_for_rent: number;
     hospitality_property: number;
+    facility_property: number;
     completed_transaction: number;
     total_reviews: number;
     total_branches: number;

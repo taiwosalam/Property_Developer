@@ -25,6 +25,7 @@ import Link from "next/link";
 import PopupImageModal from "../PopupSlider/PopupSlider";
 import { getBadgeColor } from "@/lib/utils";
 import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   status,
@@ -33,6 +34,22 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
 }) => {
   const [isOpened, setIsOpened] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const { role } = useRole();
+
+  const getManageRoute = () => {
+    switch (role) {
+      case "manager":
+        return `/manager/tasks/applications/${data?.id}/manage`;
+      case "account":
+        return `/accountant/tasks/applications/${data?.id}/manage`;
+      case "director":
+        return `/tasks/applications/${data?.id}/manage`;
+      case "staff":
+        return `/staff/tasks/applications/${data?.id}/manage`;
+      default:
+        return `/unauthorized`;
+    }
+  };
 
   const handleCardClick = () => {
     if (status === "flagged" && type !== "rejected") {
@@ -158,7 +175,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         </div>
       ) : (
         <Link
-          href={`applications/${data?.id}/manage`}
+          href={getManageRoute()}
           className="custom-flex-col gap-3 px-2"
         >
           <Content />

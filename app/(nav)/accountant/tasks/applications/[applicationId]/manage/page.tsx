@@ -1,65 +1,55 @@
 "use client";
 
-// Images
-import Avatar3 from "@/public/empty/avatar-3.svg";
+import { useEffect, useRef, useState } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { Phone } from "lucide-react";
 
-import { useReactToPrint } from "react-to-print";
-import { useRef } from "react";
-
-// Imports
 import { secondaryFont } from "@/utils/fonts";
 import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
-import UnitItem from "@/components/Management/Properties/unit-item";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { SectionSeparator } from "@/components/Section/section-components";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   LandlordTenantInfo,
   LandlordTenantInfoSection,
   LandlordTenantInfoBox,
 } from "@/components/Management/landlord-tenant-info-components";
-
 import UserTag from "@/components/Tags/user-tag";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 import Button from "@/components/Form/Button/button";
 import BackButton from "@/components/BackButton/back-button";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import useFetch from "@/hooks/useFetch";
-import { useEffect, useState } from "react";
 import {
   becomeTenant,
   IApplicationDetails,
   rejectApplication,
   transformApplicationDetailsPageData,
 } from "./data";
-import { property } from "lodash";
 import { formatToNaira, getBadgeColor } from "@/lib/utils";
 import { TApplicationDetailsResponse } from "./type";
-import { toast } from "sonner";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
-import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import CustomLoader from "@/components/Loader/CustomLoader";
 import { empty } from "@/app/config";
-import { Phone, Printer } from "lucide-react";
 import { ApplicationCardUnit } from "@/components/Management/Properties/application-card";
-import { IPropertyApi } from "@/app/(nav)/settings/others/types";
 import { useGlobalStore } from "@/store/general-store";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { Modal, ModalContent } from "@/components/Modal/modal";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import CompanyApplicantModal from "@/components/Management/application-company-details";
+import { PrintContent } from "@/components/reports/print-content";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 interface IMessageFlagger {
   id: number;
   name: string;
   pictureSrc: string | null;
 }
-import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { Modal, ModalContent } from "@/components/Modal/modal";
-import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
-import CompanyApplicantModal from "@/components/Management/application-company-details";
-import CustomLoader from "@/components/Loader/CustomLoader";
-import { PrintContent } from "@/components/reports/print-content";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const ManageApplication = () => {
+  // ----------- HOOKS (always first) ----------
   const isDarkMode = useDarkMode();
   const searchParams = useSearchParams();
   const type = searchParams.get("type") as "flagged" | "unflagged";
@@ -67,17 +57,20 @@ const ManageApplication = () => {
   const params = useParams();
   const paramId = params?.applicationId as string;
   const [reqLoading, setReqLoading] = useState(false);
-
-  const contentRef = useRef<HTMLDivElement>(null);
-  const reactToPrintFn = useReactToPrint({ contentRef });
-
+  const [isLoading, setIsLoading] = useState(false);
   const [managePageData, setManagePageData] =
     useState<IApplicationDetails | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Hydration guard
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
   const router = useRouter();
-
-  const [isLoading, setIsLoading] = useState(false);
-
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const {
     data: apiData,
@@ -89,6 +82,7 @@ const ManageApplication = () => {
   } = useFetch<TApplicationDetailsResponse>(
     `property-applications/${paramId}/company`
   );
+
   useRefetchOnEvent("fetch-application", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -98,27 +92,12 @@ const ManageApplication = () => {
     }
   }, [apiData]);
 
-  const handleRejectApplication = async () => {
-    if (application_status !== "rejected") {
-      return;
-    }
-    try {
-      setIsLoading(true);
-      const res = await rejectApplication(paramId, "reject");
-      if (res) {
-        toast.success("Application rejected");
-        router.push("/tasks/applications");
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // ----------- EARLY RETURNS (loader/errors) ----------
+  if (!hydrated || loading) return <CustomLoader layout="profile" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
 
-  // Destructure properties from managePageData only if it's not null
-  // Example: const { property_details } = managePageData ?? {};
-
+  // ----------- DESTRUCTURE DATA -----------
   const {
     application_status,
     profile_details,
@@ -138,15 +117,15 @@ const ManageApplication = () => {
   } = managePageData ?? {};
 
   const CAN_START_RENT =
-    property_details?.unit_status.toLowerCase() === "vacant" ||
-    property_details?.unit_status.toLowerCase() === "relocate";
+    property_details?.unit_status?.toLowerCase() === "vacant" ||
+    property_details?.unit_status?.toLowerCase() === "relocate";
+
+  // ----------- HANDLERS -----------
   const messageFlagger = ({ id, name, pictureSrc }: IMessageFlagger) => {
     if (!id) {
       toast.warning("User ID not Found!");
       return;
     }
-
-    // Set the user data in the global store
     const newMessageUserData = {
       branch_id: 0,
       id,
@@ -155,8 +134,6 @@ const ManageApplication = () => {
       position: "agent",
     };
     setGlobalStore("messageUserData", newMessageUserData);
-
-    // Redirect to the messaging page
     router.push(`/messages/${id}`);
   };
 
@@ -165,8 +142,6 @@ const ManageApplication = () => {
       toast.warning("User ID not Found!");
       return;
     }
-
-    // Set the user data in the global store
     const newMessageUserData = {
       branch_id: 0,
       id: profile_details?.user_id,
@@ -175,12 +150,26 @@ const ManageApplication = () => {
       position: "agent",
     };
     setGlobalStore("messageUserData", newMessageUserData);
-
-    // Redirect to the messaging page
     router.push(`/messages/${profile_details?.user_id}`);
   };
 
-  console.log("property_details", property_details);
+  const handleRejectApplication = async () => {
+    if (application_status !== "rejected") {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const res = await rejectApplication(paramId, "reject");
+      if (res) {
+        toast.success("Application rejected");
+        router.push("/accountant/tasks/applications");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleStartRent = async () => {
     const mailAddress = profile_details?.email;
@@ -189,7 +178,6 @@ const ManageApplication = () => {
       toast.warning("Unit has been occupied!");
       return;
     }
-    
     if (!mailAddress) {
       toast.warning("No valid identifier found");
       return;
@@ -201,16 +189,7 @@ const ManageApplication = () => {
 
     try {
       setReqLoading(true);
-      const payload = {
-        identifier: mailAddress,
-      };
-      // Approve application
-      // const approveRes = await rejectApplication(paramId, "approval");
-      // if (!approveRes) {
-      //   toast.error("Failed to approve application");
-      //   return;
-      // }
-      // become tenant
+      const payload = { identifier: mailAddress };
       const res = await becomeTenant(objectToFormData(payload));
       if (res) {
         const tenantId = res.data.id;
@@ -240,11 +219,8 @@ const ManageApplication = () => {
       setReqLoading(false);
     }
   };
-  const [isOpen, setIsOpen] = useState(false);
 
-  const handleOpenModal = () => {
-    setIsOpen(true);
-  };
+  const handleOpenModal = () => setIsOpen(true);
 
   const statusStyles = {
     pending: { label: "Pending", color: "#FACC15" },
@@ -252,18 +228,13 @@ const ManageApplication = () => {
     approved: { label: "Approved", color: "#22C55E" },
     rejected: { label: "Rejected", color: "#EF4444" },
   };
-
   const defaultStatus = { label: "Unknown", color: "#6B7280" };
-
   const getStatusStyle = (status: string | undefined) => {
     if (!status) return defaultStatus;
     return statusStyles[status as keyof typeof statusStyles] || defaultStatus;
   };
 
-  if (loading) return <CustomLoader layout="profile" />;
-  if (isNetworkError) <NetworkError />;
-  if (error) <ServerError error={error} />;
-
+  // ----------- RENDER -----------
   return (
     <>
       <div className="custom-flex-col gap-[88px] pb-[150px] lg:pb-[100px]">
@@ -271,14 +242,13 @@ const ManageApplication = () => {
           <div className="custom-flex-col gap-6">
             <BackButton>Back</BackButton>
             <div
-              style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+              style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
               className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
             >
               <div className="flex justify-between items-center">
                 <p className="text-primary-navy dark:text-white text-xl font-bold">
                   Property Details
                 </p>
-
                 <div className="text-primary-navy dark:text-white text-xl font-bold flex items-center gap-4">
                   <PrintContent
                     printRef={contentRef}
@@ -286,7 +256,6 @@ const ManageApplication = () => {
                   />
                 </div>
               </div>
-
               <SectionSeparator />
               <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
                 <KeyValueList
@@ -300,13 +269,6 @@ const ManageApplication = () => {
                     branch: property_details?.branch,
                     "application date": property_details?.application_date,
                     "renewal amount": `${property_details?.currency}${property_details?.renewal_amount}`,
-
-                    //description: property_details?.description,
-                    //state: property_details?.state,
-                    //branch: property_details?.branch,
-                    //categories: property_details?.categories,
-                    //rent: property_details?.rent,
-                    //"local government": property_details?.local_government,
                   }}
                   chunkSize={3}
                   referenceObject={{
@@ -324,9 +286,10 @@ const ManageApplication = () => {
               </div>
             </div>
 
+            {/* Flag Details */}
             {hasFlag && (
               <div
-                style={{ boxShadow: " 4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+                style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
                 className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
               >
                 <div className="flex justify-between items-center">
@@ -334,49 +297,48 @@ const ManageApplication = () => {
                     Flag Details
                   </p>
                 </div>
-
                 <SectionSeparator />
                 <div className="w-full">
-                  <div className="flex justify-around py-1 w-full">
-                    {flag_details?.map((flag, index) => {
-                      return (
-                        <div className="flex gap-8" key={index}>
-                          <div className="py-1">
-                            <p className="text-black dark:text-white text-xl font-bold capitalize">
-                              {flag?.flagger_name}
-                            </p>
-                            <p className="text-gray-500 dark:text-white">
-                              {flag?.email}
-                            </p>
-                            {flag.phone && (
-                              <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
-                                <Phone
-                                  fill="currentColor"
-                                  size={18}
-                                  strokeWidth={0.75}
-                                />
-                                <p>{flag.phone}</p>
-                              </div>
-                            )}
-                            <button
-                              className="bg-opacity-40 text-brand-9 py-1 rounded-xl bg-brand-5 px-3 h-7 text-sm mt-1"
-                              onClick={() =>
-                                messageFlagger({
-                                  id: flag?.user_id,
-                                  name: flag?.flagger_name,
-                                  pictureSrc: flag?.picture,
-                                })
-                              }
-                            >
-                              Message
-                            </button>
-                          </div>
-                          <div className="max-w-3xl mt-2 text-red-500 capitalize">
-                            <p>{flag?.reason}</p>
-                          </div>
+                  <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-8 py-1 w-full">
+                    {flag_details?.map((flag, index) => (
+                      <div className="flex gap-8" key={index}>
+                        <div className="py-1">
+                          <p className="text-black dark:text-white text-xl font-bold capitalize">
+                            {flag?.flagger_name}
+                          </p>
+                          <p className="text-gray-500 dark:text-white">
+                            {flag?.email}
+                          </p>
+                          {flag.phone && (
+                            <div className="flex gap-1 items-center text-gray-500 dark:text-white py-1">
+                              <Phone
+                                fill="currentColor"
+                                size={16}
+                                strokeWidth={0.75}
+                              />
+                              <p className="text-text-neutral-1 dark:text-white text-sm">
+                                {flag.phone}
+                              </p>
+                            </div>
+                          )}
+                          <button
+                            className="bg-opacity-40 text-center text-brand-9 py-1 rounded-xl bg-brand-1 px-4 h-7 text-xs mt-2"
+                            onClick={() =>
+                              messageFlagger({
+                                id: flag?.user_id,
+                                name: flag?.flagger_name,
+                                pictureSrc: flag?.picture,
+                              })
+                            }
+                          >
+                            Message
+                          </button>
                         </div>
-                      );
-                    })}
+                        <div className="max-w-3xl mt-2 text-red-500 capitalize">
+                          <p>{flag?.reason}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -524,21 +486,18 @@ const ManageApplication = () => {
                   xxxxxxxxxxxxx: "xxxxxxxxxxxxxx",
                 }}
               />
-              {guarantors?.map((guarantor, index) => {
-                return (
-                  <LandlordTenantInfo
-                    key={index}
-                    heading={`Guarantor ${index + 1}`}
-                    info={{
-                      name: guarantor?.name,
-                      email: guarantor?.email,
-                      "phone number": guarantor?.phone,
-                      address: guarantor?.address,
-                    }}
-                  />
-                );
-              })}
-
+              {guarantors?.map((guarantor, index) => (
+                <LandlordTenantInfo
+                  key={index}
+                  heading={`Guarantor ${index + 1}`}
+                  info={{
+                    name: guarantor?.name,
+                    email: guarantor?.email,
+                    "phone number": guarantor?.phone,
+                    address: guarantor?.address,
+                  }}
+                />
+              ))}
               <LandlordTenantInfoBox className="space-y-4">
                 <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
                   Prior Experience in Real Estate
@@ -613,36 +572,31 @@ const ManageApplication = () => {
             )}
           </div>
         </div>
-        {/* <LandlordTenantInfoSection title="Previous Property">
-        <div className="opacity-40">{/* <UnitItem /> </div>
-      </LandlordTenantInfoSection> */}
         <FixedFooter className="flex gap-6 flex-wrap items-center justify-between">
-          {
-            <Button
-              onClick={handleRejectApplication}
-              aria-disabled={isLoading}
-              variant="light_red"
-              size="base_bold"
-              className={`py-2 px-8 ${
-                application_status === "evaluated"
-                  ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
-                  : application_status === "approved"
-                  ? "bg-green-500/20 text-green-700"
-                  : ""
-              }`}
-              disabled={isFlagged || isLoading}
-            >
-              {isLoading
-                ? "Please wait"
-                : application_status === "rejected"
-                ? "Rejected"
-                : application_status === "evaluated"
-                ? "Application evaluated"
+          <Button
+            onClick={handleRejectApplication}
+            aria-disabled={isLoading}
+            variant="light_red"
+            size="base_bold"
+            className={`py-2 px-8 ${
+              application_status === "evaluated"
+                ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
                 : application_status === "approved"
-                ? "Application approved"
-                : "reject application"}
-            </Button>
-          }
+                ? "bg-green-500/20 text-green-700"
+                : ""
+            }`}
+            disabled={isFlagged || isLoading}
+          >
+            {isLoading
+              ? "Please wait"
+              : application_status === "rejected"
+              ? "Rejected"
+              : application_status === "evaluated"
+              ? "Application evaluated"
+              : application_status === "approved"
+              ? "Application approved"
+              : "reject application"}
+          </Button>
           <div className="flex gap-6">
             {application_status !== "approved" ? (
               <Button
@@ -663,9 +617,6 @@ const ManageApplication = () => {
                 {reqLoading ? "Please wait" : "start rent"}
               </Button>
             )}
-            {/* <Button size="base_bold" className="py-2 px-8" disabled={isFlagged}>
-            create invoice
-          </Button> */}
           </div>
         </FixedFooter>
       </div>

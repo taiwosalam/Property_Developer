@@ -116,7 +116,9 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
   // 3. unitData is undefined or unitData.id is undefined (new form with no unit data)
   // 4. The form's ID does NOT match any unit in addedUnits
   const shouldShowButtons =
-    (notYetUploaded || newForm || !unitData || !unitData.id) && !isExistingUnit;
+    addedUnits.length > 0 &&
+    (notYetUploaded || newForm || !unitData || !unitData.id) &&
+    !isExistingUnit;
 
   const handleTourSection = () => {
     if (propertyType === "facility" && pathname.startsWith("/manager")) {
@@ -140,7 +142,6 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
     }
   };
 
-  console.log(propertyType);
   return (
     <div
       ref={ref}
