@@ -150,6 +150,7 @@ export const AuthAction: React.FC<AuthActionProps> = ({
 export const AuthPinField: React.FC<AuthPinFieldProps> = ({
   length,
   onChange,
+  className,
 }) => {
   // Create a ref to hold the array of input elements
   const pinFieldRef = useRef<HTMLInputElement[] | null>(null);
@@ -177,7 +178,7 @@ export const AuthPinField: React.FC<AuthPinFieldProps> = ({
         type="password"
         autoComplete="one-time-code"
         autoCorrect="off"
-        className="w-[35px] h-10 text-center custom-primary-color rounded-[4px] border border-solid custom-primary-outline bg-background-1"
+        className={`w-[35px] h-10 text-center custom-primary-color rounded-[4px] border border-solid custom-primary-outline bg-background-1 ${className}`}
         style={{ borderColor: "rgba(186, 199, 213, 0.50)" }} // Inline style for border color
       />
     </div>

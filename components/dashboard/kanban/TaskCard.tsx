@@ -97,17 +97,21 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   );
 
   const { role } = useRole();
-  
+
   const gotoPage = (id: string | number) => {
     switch (role) {
       case "director":
-       return `/tasks/complaints/${id}/manage-complain/`;
+        router.push(`/tasks/complaints/${id}/manage-complain/`);
+        break;
       case "manager":
-        return `/manager/tasks/complaints/${id}/manage-complain/`;
-      case "account":
-        return `/accountant/tasks/complaints/${id}/manage-complain/`;
+        router.push(`/manager/tasks/complaints/${id}/manage-complain/`);
+        break;
+      case "accountant":
+        router.push(`/accountant/tasks/complaints/${id}/manage-complain/`);
+        break;
       case "staff":
-        return `/staff/tasks/complaints/${id}/manage-complain/`;
+        router.push(`/staff/tasks/complaints/${id}/manage-complain/`);
+        break;
       default:
         return "/unauthorized";
     }
@@ -191,7 +195,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     if (!isDragging && !wasRecentlyDragged.current && noDrag) {
       setModalOpen(true);
     } else {
-      router.push(gotoPage(task.id));
+      gotoPage(task.id);
     }
   };
 

@@ -79,9 +79,13 @@ export const transformComplaintsData = (
         linkCount: 8,
         userAvatars:
           complaint?.comment_users.length > 0
-            ? complaint?.comment_users
-                ?.map((image) => image.profile_picture)
-                ?.slice(0, 3)
+            ? [
+                ...new Set(
+                  complaint?.comment_users?.map(
+                    (image) => image.profile_picture
+                  )
+                ),
+              ]?.slice(0, 3)
             : [],
         date: complaint?.created_at
           ? dayjs(complaint?.created_at).format("DD MMMM YYYY")

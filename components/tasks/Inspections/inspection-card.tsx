@@ -57,7 +57,7 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
     const newMessageUserData = {
       branch_id: 0,
       id: data?.booked_by_id,
-      imageUrl:  data?.profile_picture,
+      imageUrl: data?.profile_picture,
       name: data?.user_name || "Unknown User",
       position: "agent",
     };

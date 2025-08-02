@@ -236,6 +236,11 @@ interface ISearchItem {
   isVerified?: boolean;
   tier_id?: number;
 }
+
+interface IPaginationMeta {
+  current_page: number;
+  last_page: number;
+}
 export interface IGlobalSearchPageData {
   query: string;
   results: {
@@ -266,6 +271,20 @@ export interface IGlobalSearchPageData {
     propertyApplications: number;
     branches: number;
     //wallets: number;
+  };
+  pagination: {
+    users: IPaginationMeta;
+    properties: IPaginationMeta;
+    units: IPaginationMeta;
+    agentCommunities: IPaginationMeta;
+    agentRequests: IPaginationMeta;
+    landlords: IPaginationMeta;
+    tenants: IPaginationMeta;
+    brands: IPaginationMeta;
+    announcement: IPaginationMeta;
+    campaigns: IPaginationMeta;
+    propertyApplication: IPaginationMeta;
+    branches: IPaginationMeta;
   };
 }
 export const transformGlobalSearchPageData = (
@@ -392,8 +411,7 @@ export const transformGlobalSearchPageData = (
               id: announcement?.id,
               type: "Announcement",
               title: announcement.title || "Unknown Announcement",
-              subtitle:
-                announcement.description || "No description",
+              subtitle: announcement.description || "No description",
               extra: "Announcement",
               icon: "menu_board",
             }))
@@ -443,6 +461,56 @@ export const transformGlobalSearchPageData = (
       announcement: details?.announcements?.total || 0,
       brands: details?.brands?.total || 0,
       campaigns: details?.campaigns?.total || 0,
+    },
+    pagination: {
+      users: {
+        current_page: details?.users?.current_page || 1,
+        last_page: details?.users?.last_page || 1,
+      },
+      properties: {
+        current_page: details?.properties?.current_page || 1,
+        last_page: details?.properties?.last_page || 1,
+      },
+      landlords: {
+        current_page: details?.landlords?.current_page || 1,
+        last_page: details?.landlords?.last_page || 1,
+      },
+      tenants: {
+        current_page: details?.tenants?.current_page || 1,
+        last_page: details?.tenants?.last_page || 1,
+      },
+      units: {
+        current_page: details?.units?.current_page || 1,
+        last_page: details?.units?.last_page || 1,
+      },
+      agentCommunities: {
+        current_page: details?.agentCommunities?.current_page || 1,
+        last_page: details?.agentCommunities?.last_page || 1,
+      },
+      agentRequests: {
+        current_page: details?.agentRequests?.current_page || 1,
+        last_page: details?.agentRequests.last_page || 1,
+      },
+      propertyApplication: {
+        current_page: details?.property_application?.current_page || 1,
+        last_page: details?.property_application?.last_page || 1,
+      },
+      branches: {
+        current_page: details?.branches?.current_page || 1,
+        last_page: details?.branches?.last_page || 1,
+      },
+      announcement: {
+        current_page: details?.announcements?.current_page || 1,
+        last_page: details?.announcements?.last_page || 1,
+      },
+      brands: {
+        current_page: details?.brands?.current_page || 1,
+        last_page: details?.brands?.last_page || 1,
+      },
+      campaigns: {
+        current_page: details?.campaigns?.current_page || 1,
+        last_page: details?.campaigns?.last_page || 1,
+      },
     },
   };
 };

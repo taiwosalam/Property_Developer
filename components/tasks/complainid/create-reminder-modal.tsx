@@ -41,12 +41,17 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
     setTextAreaNote(value);
   };
 
-  console.log(reminderDate);
-
   const handleCreateReminder = async () => {
-
-    if(!reminderDate){
+    if (!reminderDate) {
       toast.error("Please select a reminder date");
+      return;
+    }
+    if (!inputTitle) {
+      toast.error("Please the reminder title");
+      return;
+    }
+    if (!textAreaNote) {
+      toast.error("Please add a note");
       return;
     }
     const params = {
@@ -60,7 +65,7 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
       setLoading(true);
       const res = await createReminder(params);
       if (res) {
-        toast.success("Reminder create successfully");
+        toast.success("Reminder created successfully");
         setIsOpen?.(false);
       }
     } catch (error) {

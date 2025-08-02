@@ -31,6 +31,7 @@ export interface AuthPinFieldProps {
   onChange: (data: any) => void;
   length?: number;
   resetTrigger?: string;
+  className?: string
 }
 
 export type PasswordConditionsProps = Record<
