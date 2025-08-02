@@ -158,6 +158,10 @@ const PreviewExpenses = () => {
                           CURRENCY
                         ),
                         "legal fee": formatFee(pageData.legal_fee, CURRENCY),
+                        "security fee": formatFee(
+                          pageData.security_fee,
+                          CURRENCY
+                        ),
                         vat: formatFee(pageData.vat_amount, CURRENCY),
                         "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
                         "Company Owe": formatFee(
@@ -174,6 +178,7 @@ const PreviewExpenses = () => {
                         "inspection fee": "",
                         "legal fee": "",
                         "caution fee": "",
+                        "security fee": "",
                         vat: "",
                         "other charge": "",
                         "management fee": "",

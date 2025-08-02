@@ -37,6 +37,7 @@ const ManageComplain = () => {
   } = useFetch<ComplaintDetailResponse>(`/complaint/${id}`);
   useRefetchOnEvent("manageComplain", () => refetch({ silent: true }));
 
+
   useEffect(() => {
     if (manageData) {
       const transData = transformComplaintManage(manageData);
