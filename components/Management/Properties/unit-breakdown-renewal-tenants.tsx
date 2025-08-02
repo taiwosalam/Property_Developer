@@ -168,7 +168,10 @@ const UnitBreakdownRenewalTenant = () => {
     }
     if (IS_RENTAL && pathname.startsWith("/accountant")) {
       goToStep(32);
-    } else if (!IS_RENTAL) {
+    } else if (!IS_RENTAL && pathname.startsWith("/accountant")){
+      goToStep(27)
+    }
+     else if (!IS_RENTAL) {
       handleGoToTourStep(29);
     } else if (IS_RENTAL && pathname.startsWith("/manager")) {
       handleGoToTourStep(33);

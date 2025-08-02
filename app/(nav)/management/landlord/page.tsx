@@ -41,12 +41,16 @@ import { AxiosRequestConfig } from "axios";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import ServerError from "@/components/Error/ServerError";
+import { useSearchParams } from "next/navigation";
 
 const states = getAllStates();
 
 const Landlord = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
 
   const [pageData, setPageData] = useState<LandlordsPageData>(() => {
     const savedPage = sessionStorage.getItem("landlord_page");
@@ -73,10 +77,26 @@ const Landlord = () => {
     return {
       params: {
         page: savedPage ? parseInt(savedPage, 10) : 1,
-        search: "",
+        search: query ? query.trim() : "",
       } as LandlordRequestParams,
     };
   });
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("landlord_page", "1");
+    }
+  }, [query]);
 
   const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
     useState<LandlordHelpInfo>();

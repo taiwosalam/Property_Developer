@@ -34,8 +34,12 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useTourStore } from "@/store/tour-store";
+import { useSearchParams } from "next/navigation";
 
 const Properties = () => {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
   const storedView = useView();
   const { setShouldRenderTour, isTourCompleted } = useTourStore();
   const setGlobalInfoStore = useGlobalStore(
@@ -103,8 +107,14 @@ const Properties = () => {
   }, [appliedFilters]);
 
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(query ? query : "");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  useEffect(() => {
+    if (query) {
+      setSearch(query);
+    }
+  }, [query]);
 
   // const endpoint =
   //   isFilterApplied() || search || sort ? "/property/filter" : "/property/list";

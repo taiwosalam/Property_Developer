@@ -128,7 +128,10 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
       pathname.startsWith("/accountant")
     ) {
       goToStep(25);
-    } else if (propertyType === "facility") {
+    } else if(propertyType === "facility" && pathname.startsWith("/accountant")){
+      goToStep(20);
+    }
+     else if (propertyType === "facility") {
       goToStep(22);
     } else if (propertyType === "rental" && pathname.startsWith("/manager")) {
       goToStep(26);

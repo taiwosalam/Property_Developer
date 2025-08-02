@@ -61,9 +61,16 @@ export const transformCalendarEvents = (
       ? event.type
       : "multiple event";
 
+    // Remove "General Reminder: " from description if present
+    // Format description based on event type
+    const cleanDescription = event.type === "reminders"
+      ? `${event.title}: ${event.description.replace(/^General Reminder:\s*/i, '')}`
+      : event.description.replace(/^General Reminder:\s*/i, '');
+
+
     return {
       date: new Date(event.date),
-      desc: event.description,
+      desc: cleanDescription,
       title: event.type,
       //originalType: event.type,
       type: eventType, // Now properly typed as CalendarEventType

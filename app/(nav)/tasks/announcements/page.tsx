@@ -28,9 +28,12 @@ import { MaintenanceRequestParams } from "../maintenance/data";
 import dayjs from "dayjs";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
+import { useSearchParams } from "next/navigation";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -60,6 +63,21 @@ const AnnouncementPage = () => {
       setAnnouncements(apiData?.data);
     }
   }, [apiData]);
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setAnnouncements((prevData) => ({
+        ...prevData,
+        current_page: 1,
+      }));
+      sessionStorage.setItem("tenant_page", "1");
+    }
+  }, [query]);
 
   const handleAppliedFilter = useCallback(
     debounce((filters: FilterResult) => {
@@ -127,8 +145,6 @@ const AnnouncementPage = () => {
     );
   if (error) <ServerError error={error} />;
   if (isNetworkError) <NetworkError />;
-
-
 
   return (
     <div className="space-y-9">

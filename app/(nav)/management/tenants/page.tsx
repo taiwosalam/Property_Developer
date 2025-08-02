@@ -39,10 +39,14 @@ import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import ServerError from "@/components/Error/ServerError";
+import { useSearchParams } from "next/navigation";
 
 const states = getAllStates();
 
 const Tenants = () => {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
   const storedView = useView();
   const contentTopRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<string | null>(storedView);
@@ -71,7 +75,7 @@ const Tenants = () => {
     return {
       params: {
         page: savedPage ? parseInt(savedPage, 10) : 1,
-        search: "",
+        search: query ? query.trim() : "",
       } as TenantRequestParams,
     };
   });
@@ -165,9 +169,25 @@ const Tenants = () => {
     }
   };
 
-  const handleSearch = async (query: string) => {
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("tenant_page", "1");
+    }
+  }, [query]);
+
+  const handleSearch = async (searchQuery: string) => {
     setConfig({
-      params: { ...config.params, search: query, page: 1 },
+      params: { ...config.params, search: searchQuery, page: 1 },
     });
     setPageData((prevData) => ({
       ...prevData,

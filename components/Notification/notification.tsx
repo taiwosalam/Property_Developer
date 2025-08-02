@@ -45,7 +45,9 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
     : notification.type.toLowerCase().trim();
 
   const route = notification_links[resolvedType] || "/";
-  
+
+  console.log(notification.type);
+
   return (
     <div className="custom-flex-col gap-4">
       <div className="flex gap-4">
@@ -57,7 +59,7 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
           <div className="flex items-start">
             <Picture
               src={
-                notification_icons[notification.type?.toLowerCase()] || empty
+                notification_icons[resolvedType] || empty
               }
               alt="message"
               size={50}
@@ -67,14 +69,14 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
             <div className="custom-flex-col gap-1">
               <p>
                 <span className="text-text-primary text-base font-medium dark:text-slate-400">
-                  {notification?.subject} 
+                  {notification?.subject}
                 </span>
                 {/* <span className="text-text-secondary text-sm font-normal">
                 (4 new messages)
               </span> */}
               </p>
               <p className="text-text-secondary text-base font-normal first-letter:uppercase">
-                {notification?.time} 
+                {notification?.time}
               </p>
             </div>
             <div className="py-2 px-4 rounded-md bg-brand-1 flex gap-3 dark:text-black">

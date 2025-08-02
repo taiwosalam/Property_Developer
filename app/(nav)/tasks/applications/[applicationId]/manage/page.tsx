@@ -233,7 +233,7 @@ const ManageApplication = () => {
     return statusStyles[status as keyof typeof statusStyles] || defaultStatus;
   };
 
-  // ----------- RENDER -----------
+  // ----------- RENDER ----------- 
   return (
     <>
       <div className="custom-flex-col gap-[88px] pb-[150px] lg:pb-[100px]">
@@ -576,12 +576,13 @@ const ManageApplication = () => {
         </div>
 
         <FixedFooter className="flex gap-6 flex-wrap items-center justify-between">
+          {/* please make this button hidden at all cost, you're not allowed to edit this part. */}
           <Button
             onClick={handleRejectApplication}
             aria-disabled={isLoading}
             variant="light_red"
             size="base_bold"
-            className={`py-2 px-8 ${
+            className={`invisible py-2 px-8 ${
               application_status === "evaluated"
                 ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
                 : application_status === "approved"

@@ -235,6 +235,7 @@ interface ISearchItem {
   icon: string;
   isVerified?: boolean;
   tier_id?: number;
+  link: string;
 }
 
 interface IPaginationMeta {
@@ -309,6 +310,7 @@ export const transformGlobalSearchPageData = (
               icon: "people",
               isVerified: user.is_verified || false,
               tier_id: user.tier_id,
+              link: "",
             }))
           : [],
       landlords:
@@ -321,6 +323,7 @@ export const transformGlobalSearchPageData = (
               icon: "people",
               isVerified: false,
               title: landlord?.profile?.name,
+              link: "/management/landlord",
             }))
           : [],
       tenants:
@@ -333,6 +336,7 @@ export const transformGlobalSearchPageData = (
               icon: "people",
               isVerified: false,
               title: tenant?.profile?.name,
+              link: "/management/tenants",
             }))
           : [],
       properties:
@@ -344,6 +348,7 @@ export const transformGlobalSearchPageData = (
               subtitle: property.full_address || "No address",
               extra: property.category || "No category",
               icon: "people",
+              link: "/management/properties",
             }))
           : [],
       units:
@@ -355,6 +360,7 @@ export const transformGlobalSearchPageData = (
               subtitle: unit.unit_type || "No type",
               extra: `₦${unit.total_package || "0"}`,
               icon: "chart",
+              link: "/listing/units",
             }))
           : [],
       agentCommunities:
@@ -368,6 +374,7 @@ export const transformGlobalSearchPageData = (
               subtitle: community.description || "No description",
               extra: "Community",
               icon: "menu_board",
+              link: "/community/agent-forum",
             }))
           : [],
       agentRequests:
@@ -379,6 +386,7 @@ export const transformGlobalSearchPageData = (
               subtitle: request.description || "No description",
               extra: "Request",
               icon: "menu_board",
+              link: "/community/agent-request",
             }))
           : [],
       propertyApplications:
@@ -392,6 +400,7 @@ export const transformGlobalSearchPageData = (
               subtitle: application.description || "No description",
               extra: "Application",
               icon: "menu_board",
+              link: "/tasks/applications",
             }))
           : [],
       branches:
@@ -399,10 +408,12 @@ export const transformGlobalSearchPageData = (
           ? results.branches.map((branch) => ({
               id: branch?.id,
               type: "Branch",
-              title: branch.name || "Unknown Branch",
-              subtitle: branch.location || "No location",
+              title: branch.name || branch.branch_name || "Unknown Branch",
+              subtitle:
+                branch.location || branch.branch_address || "No location",
               extra: "Branch",
               icon: "menu_board",
+              link: "/management/staff-branch",
             }))
           : [],
       announcements:
@@ -414,6 +425,7 @@ export const transformGlobalSearchPageData = (
               subtitle: announcement.description || "No description",
               extra: "Announcement",
               icon: "menu_board",
+              link: "/tasks/announcements",
             }))
           : [],
       brands:
@@ -429,6 +441,7 @@ export const transformGlobalSearchPageData = (
               subtitle: brand.page || "No description",
               extra: "Brand",
               icon: "settings",
+              link: "",
             }))
           : [],
       campaigns:
@@ -445,6 +458,7 @@ export const transformGlobalSearchPageData = (
                 "Amount Paid: " + campaign.formatted_amount || "No description",
               extra: "Campaign",
               icon: "settings",
+              link: "",
             }))
           : [],
     },

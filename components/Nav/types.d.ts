@@ -84,4 +84,7 @@ export interface NavGlobalSearchItemProps {
   isVerified?: boolean;
   tier_id?: number;
   type?: string;
+  link: string;
+  query: string
+  setIsOpen: (isOpen: boolean) => void;
 }

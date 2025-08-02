@@ -120,9 +120,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const [coordinate, setCoordinate] = useState(
     propertySettings?.coordinate || ""
   );
-  
-  const BRANCH_MANAGER_ID = useBranchInfoStore((state) => state.manager.id);
 
+  const BRANCH_MANAGER_ID = useBranchInfoStore((state) => state.manager.id);
 
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },
@@ -435,10 +434,22 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       handleGoToTourStep(13);
     } else if (
       formType === "rental" &&
+      !editMode &&
+      pathname.startsWith("/accountant")
+    ) {
+      handleGoToTourStep(12);
+    } else if (
+      formType === "rental" &&
       editMode &&
       pathname.startsWith("/accountant")
     ) {
       handleGoToTourStep(11);
+    } else if (
+      formType === "facility" &&
+      editMode &&
+      pathname.startsWith("/accountant")
+    ) {
+      handleGoToTourStep(8);
     } else if (
       formType === "facility" &&
       !editMode &&
@@ -448,7 +459,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     } else if (formType === "rental" && !editMode) {
       handleGoToTourStep(14);
     } else if (formType === "facility" && !editMode) {
-      handleGoToTourStep(11);
+      handleGoToTourStep(10);
     } else if (formType === "rental" && editMode) {
       handleGoToTourStep(13);
     } else if (

@@ -56,10 +56,10 @@ export const FlaggedCard = ({ ...props }: IFaggerCard) => {
             <div className="relative overflow-hidden flex-shrink-0 w-[90px] h-[90px]">
               <Image
                 src={props?.picture || "/empty/SampleLandlord.jpeg"}
-                alt={"Profile"}
+                alt={`${props?.flagger_name} picture`}
                 fill
                 sizes="300px"
-                className="object-cover rounded-full aspect-square"
+                className="object-cover rounded-full aspect-square bg-brand-9"
               />
             </div>
             <div className="flex-1 flex flex-col items-start px-2">
