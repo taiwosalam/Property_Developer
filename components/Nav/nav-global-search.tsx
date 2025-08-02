@@ -12,7 +12,7 @@ import {
 // Imports
 import { SVGType } from "../SVG/types";
 import Input from "../Form/Input/input";
-import { ModalTrigger } from "../Modal/modal";
+import { ModalTrigger, useModal } from "../Modal/modal";
 import { NavSearchTab } from "./nav-components";
 import { NavCloseIcon } from "@/public/icons/icons";
 import NavGlobalSearchItem from "./nav-global-search-item";
@@ -37,6 +37,8 @@ const NavGlobalSearch = () => {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [searchResults, setSearchResults] =
     useState<IGlobalSearchPageData | null>(null);
+
+  const { setIsOpen } = useModal();
 
   const debouncedSetQuery = useCallback(
     debounce((value: string) => setDebouncedQuery(value), 400),
@@ -309,6 +311,8 @@ const NavGlobalSearch = () => {
                       query={searchQuery}
                       isVerified={item.isVerified}
                       type={item.type}
+                      link={item.link}
+                      setIsOpen={setIsOpen}
                     />
                   ))
                 ) : (

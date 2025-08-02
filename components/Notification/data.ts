@@ -25,16 +25,28 @@ export const notification_icons: Record<string, StaticImageData | any> = {
   setting: NotificationSettings,
   listing: NotificationProperty,
   location: NotificationSettings,
+
+  examine: NotificationReview,
+  inspection: NotificationReview,
+  announcement: NotificationReview,
+  application: NotificationReview,
+  trash: NotificationReview,
+  complain: NotificationReview,
+
   subscription: NotificationReservation,
   "wallet transaction": NotificationPayment,
   "rent and unit": NotificationProperty,
   "agent community": NotificationService,
-  "new request published": NotificationService,
+  "new request published": NotificationProperty,
   "property draft": NotificationProperty,
   "new property request": NotificationPropertyRequest,
   "new post published": NotificationService,
-};
+  "property request": NotificationProperty,
+  "call request": NotificationMessage,
+  "agent request": NotificationService,
+ // "App\Notifications\NewRequestPublished": NotificationMessage,
 
+};
 
 export const notification_links: Record<string, string> = {
   user: "/settings/company",
@@ -45,6 +57,12 @@ export const notification_links: Record<string, string> = {
   setting: "/settings",
   listing: "/listing/units",
   location: "/settings",
+  application: "/tasks/application",
+  complain: "/tasks/complaints",
+  trash: "/tasks/undo",
+  examine: "/tasks/examine",
+  announcement: "/tasks/announcements",
+  inspection: "/tasks/inspections",
   subscription: "/settings/subscription",
   "wallet transaction notification": "/wallet",
   "rent and unit notification": "/management/rent-unit",
@@ -52,13 +70,15 @@ export const notification_links: Record<string, string> = {
   "property draft notification": "/listing/property",
   "property request notification": "/community/agent-request",
   "invoice notification": "/accounting/invoice",
-  "new request published": "/community/agent-request",
+  "agent request": "/community/agent-request",
   "new post published": "/community/agent-forum",
   "listing notification": "/listing/units",
   "company setting notification": "/settings/company",
   "subscription notification": "/settings/subscription",
-};
+  "new request published": "/tasks/property-requests",
+  "call request": "/tasks/call-requests",
 
+};
 
 export const normalizeNotificationType = (fullType: string) => {
   const parts = fullType.split("\\");

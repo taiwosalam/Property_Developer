@@ -148,6 +148,8 @@ const UnitBreakdownFacility = () => {
           onClick={() => {
             if (pathname.startsWith("/manager")) {
               handleGoToTourStep(27);
+            } else if (pathname.startsWith("/accountant")) {
+              handleGoToTourStep(26)
             } else {
               handleGoToTourStep(28);
             }

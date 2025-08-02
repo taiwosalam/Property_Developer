@@ -10,7 +10,7 @@ import Button from "@/components/Form/Button/button";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
 import Pagination from "@/components/Pagination/pagination";
 import { PlusIcon } from "@/public/icons/icons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { empty } from "@/app/config";
 import useFetch from "@/hooks/useFetch";
@@ -61,6 +61,9 @@ const transformToPropertyRequestCardProps = (
 
 const PropertyRequest = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
   const initialState: PropertyRequestApiData = {
     data: [],
     meta: {
@@ -94,7 +97,7 @@ const PropertyRequest = () => {
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: 1,
-      search: "",
+      search: query ? query.trim() : "",
       sort: "asc",
     } as PropertyRequestParams,
   });
@@ -186,6 +189,20 @@ const PropertyRequest = () => {
       }));
     }
   }, [apiData]);
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setState((prevData) => ({
+        ...prevData,
+        current_page: 1,
+      }));
+    }
+  }, [query]);
 
   const propertyRequestData = getPropertyRequests(data);
 

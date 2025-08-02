@@ -133,6 +133,8 @@ const UnitDetails = () => {
       goToStep(22);
     } else if (isRental && pathname.startsWith("/accountant")) {
       goToStep(26);
+    } else if (!isRental && pathname.startsWith("/accountant")) {
+      goToStep(21);
     } else if (!isRental) {
       handleGoToTourStep(23);
     } else if (isRental && pathname.startsWith("/manager")) {

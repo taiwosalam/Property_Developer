@@ -12,6 +12,7 @@ export interface CalendarEventItem {
   date: string;
   time?: string;
   type: string;
+  
   creator: string;
   description: string;
   branch: string | null;
@@ -34,6 +35,7 @@ export interface RawActivity {
   date: string;
   time?: string;
   type: string;
+  title: string;
   description: string;
   creator: string;
   branch: string;

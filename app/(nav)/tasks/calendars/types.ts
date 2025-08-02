@@ -4,6 +4,7 @@ export interface CalendarEventsApiResponse {
     date: string;
     time?: string; // Only present for some items
     type: string;
+    title: string;
     creator: string;
     description: string;
     branch: string | null;
