@@ -41,6 +41,7 @@ import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-m
 import CompanyApplicantModal from "@/components/Management/application-company-details";
 import { PrintContent } from "@/components/reports/print-content";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import Image from "next/image";
 
 interface IMessageFlagger {
   id: number;
@@ -286,8 +287,8 @@ const ManageApplication = () => {
               </div>
             </div>
 
-          {/* Flag Details */}
-          {hasFlag && (
+            {/* Flag Details */}
+            {hasFlag && (
               <div
                 style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
                 className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary"
@@ -302,6 +303,15 @@ const ManageApplication = () => {
                   <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-8 py-1 w-full">
                     {flag_details?.map((flag, index) => (
                       <div className="flex gap-8" key={index}>
+                        <div className="min-w-[140px] min-h-[140px] custom-secondary-bg rounded-md overflow-hidden">
+                          <Image
+                            src={flag?.picture || empty}
+                            alt="flag"
+                            width={100}
+                            height={100}
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                        </div>
                         <div className="py-1">
                           <p className="text-black dark:text-white text-xl font-bold capitalize">
                             {flag?.flagger_name}

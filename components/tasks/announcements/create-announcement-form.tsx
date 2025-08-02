@@ -202,10 +202,11 @@ const CreateAnnouncementForm: React.FC<{
 
     const title = formData.get("title");
 
-    if (!title) {
-      toast.error("You need to provide a title");
-      return;
-    } else if (!description) {
+    // if (!title) {
+    //   toast.error("You need to provide a title");
+    //   return;
+    // } else if (!description) {
+    if (!description) {
       toast.error("You need to provide a description");
       return;
     } else if (String(description).trim().length < 40) {

@@ -39,7 +39,7 @@ const Message: React.FC<MessageProps> = ({
         {!isOwnMessage && (
           <>
             {isLastInSequence ? (
-              <div className="rounded-full overflow-hidden w-[30px] h-[30px] relative flex-shrink-0">
+              <div className="rounded-full overflow-hidden w-[30px] h-[30px] relative flex-shrink-0 custom-secondary-bg">
                 <Image
                   src={avatar}
                   alt={user}

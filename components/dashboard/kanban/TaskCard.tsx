@@ -33,6 +33,7 @@ import { getBadgeColor } from "@/lib/utils";
 import { empty } from "@/app/config";
 import PendingTaskModal from "./pending-tsak-card-modal";
 import { useRole } from "@/hooks/roleContext";
+import Picture from "@/components/Picture/picture";
 
 export interface Task {
   id: UniqueIdentifier;
@@ -215,14 +216,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       >
         <CardHeader className="px-3 py-3 space-between flex flex-row border-secondary relative">
           <div className="w-full flex items-center space-x-2">
-            <Avatar className="hidden h-9 w-9 rounded-full sm:flex overflow-hidden custom-secondary-bg">
-              <AvatarImage
-                src={task.avatarSrc}
-                alt="Avatar"
-                className="group-hover:scale-125 transition-all duration-700 ease-in-out"
-              />
-              <AvatarFallback>{task.name.charAt(0)}</AvatarFallback>
-            </Avatar>
+            {/* <div className="h-9 w-9 rounded-full custom-secondary-bg"> */}
+            <Picture
+              src={task.avatarSrc}
+              alt="Avatar"
+              rounded
+              size={36}
+              className="group-hover:scale-125 transition-all duration-700 ease-in-out"
+            />
+            {/* <AvatarFallback>{task.name.charAt(0)}</AvatarFallback> */}
+            {/* </div> */}
             <div className="space-x-1">
               <p className="text-sm font-medium text-text-primary dark:text-darkText-1 flex items-center space-x-0.5 capitalize">
                 {task.name}
@@ -313,36 +316,42 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   </div>
                 )}
               </div>
-
+              {/* MAKE THE IMAGES UNIQUE */}
               <div className="flex item-center">
-                {task?.content?.userAvatars?.map((avatar, index) => (
-                  <Avatar
-                    key={index}
-                    className={clsx(
-                      "h-6 w-6 rounded-full border-2 border-white flex items-center bg-white",
-                      index !== 0 && "-ml-2.5"
-                    )}
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      boxShadow:
-                        index !== task?.content?.userAvatars?.length - 1
-                          ? "3px 4px 8px 0px rgba(53, 37, 19, 0.31)"
-                          : undefined,
-                      zIndex: index,
-                    }}
-                  >
-                    <AvatarImage
-                      src={avatar || empty}
-                      alt="Avatar"
-                      className="rounded-full h-full w-full flex items-center"
-                    />
-                  </Avatar>
-                ))}
+                {[...new Set(task?.content?.userAvatars)]?.map(
+                  (avatar, index) => (
+                    <Avatar
+                      key={index}
+                      className={clsx(
+                        "h-6 w-6 rounded-full border-2 border-brand-1 flex items-center custom-secondary-bg",
+                        index !== 0 && "-ml-2.5"
+                      )}
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        boxShadow:
+                          index !==
+                          [...new Set(task?.content?.userAvatars)].length - 1
+                            ? "3px 4px 8px 0px rgba(53, 37, 19, 0.31)"
+                            : undefined,
+                        zIndex: index,
+                      }}
+                    >
+                      <AvatarImage
+                        src={avatar || empty}
+                        alt="Avatar"
+                        className="rounded-full h-full w-full flex items-center custom-secondary-bg"
+                        style={{
+                          backgroundColor: "var(--secondary-color)",
+                        }}
+                      />
+                    </Avatar>
+                  )
+                )}
               </div>
             </div>
 
-            <p className="bg-[var(--secondary-color)] bg-opacity-10 text-xs rounded-md py-2 px-4">
+            <p className="bg-[var(--secondary-color) bg-red-500 flex text-center bg-opacity-10 text-xs rounded-md py-2 px-4">
               {task.content.date}
             </p>
           </div>
