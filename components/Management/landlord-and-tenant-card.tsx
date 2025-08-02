@@ -64,7 +64,7 @@ const UserCard: React.FC<UserCardProps> = ({
         <Picture
           src={picture_url || empty}
           alt={name}
-          className="w-full h-full object-cover rounded-lg"
+          className="w-full h-full object-cover rounded-lg custom-secondary-bg"
           width={82}
           height={82}
           status={isOnline}
