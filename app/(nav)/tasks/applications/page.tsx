@@ -89,22 +89,32 @@ const Applications = () => {
   const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
     ? [
         ...new Map(
-          propertiesData.data.properties.data.map((property: any) => [
-            property.title,
+          propertiesData.data.properties.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
+
+  const branchOptions = Array.isArray(branchesData?.data)
+    ? [
+        ...new Map(
+          branchesData.data.map((branch) => [
+            branch.branch_name.toLowerCase(),
             {
-              label: property.title,
-              value: property.id.toString(),
+              label: branch.branch_name,
+              value: branch.id,
             },
           ])
         ).values(),
       ]
     : [];
-
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
@@ -256,7 +266,6 @@ const Applications = () => {
                   },
                 ]
               : []),
-            ...DocumentssFilterOptionsWithDropdown,
           ]}
         />
 

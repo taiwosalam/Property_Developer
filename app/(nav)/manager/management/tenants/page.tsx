@@ -378,21 +378,7 @@ const Tenants = () => {
               body={
                 <p>
                   You don&apos;t have any profiles for tenants and occupants
-                  yet. You can create them manually by clicking on the
-                  &quot;Create New User&quot; button or add them using their
-                  profile ID. Tenant profiles are for rental properties, while
-                  occupant profiles are for residents in gated estates. Once you
-                  add profiles to this page, this guide will no longer show.
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  Occupants and tenants can be onboarded manually which creates
-                  two types of users: web and mobile profile types. When
-                  creating or managing a rental or gated estate property, adding
-                  tenants and occupants comes last. You can invite them using
-                  their email and phone number for registration. If you already
-                  have their list, you can add them in bulk using an XML file.
+                  yet.
                 </p>
               }
             />

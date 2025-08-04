@@ -54,7 +54,7 @@ export async function deleteUndoItem(id: string) {
       `report/trashes/permanent-delete?trash_id=${id}`
     );
     if (data.status === 200 || data.status === 201) {
-      window.dispatchEvent(new Event("trashes"));
+      window.dispatchEvent(new Event("DispatchTrashes"));
       toast.success("Item deleted permanently");
       return true;
     }
@@ -68,13 +68,11 @@ export async function deleteUndoItem(id: string) {
 export async function restoreItem(id: string) {
   try {
     const payload = {
-      trash_id: id
-    }
-    const data = await api.post(
-      `report/trashes/restore`, payload
-    );
+      trash_id: id,
+    };
+    const data = await api.post(`report/trashes/restore`, payload);
     if (data.status === 200 || data.status === 201) {
-      window.dispatchEvent(new Event("trashes"));
+      window.dispatchEvent(new Event("DispatchTrashes"));
       toast.success("Item restored");
       return true;
     }

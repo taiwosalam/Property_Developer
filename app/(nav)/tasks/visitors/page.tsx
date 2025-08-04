@@ -12,7 +12,7 @@ import {
 } from "./data";
 import { type VisitorRequestCardProps } from "@/components/tasks/CallBack/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import NetworkError from "@/components/Error/NetworkError";
@@ -75,6 +75,10 @@ const BookVisitorsPage = () => {
       search: "",
     } as LandlordRequestParams,
   });
+
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+
+  
 
   const {
     data: visitorsData,
@@ -155,7 +159,8 @@ const BookVisitorsPage = () => {
     setConfig((prev) => ({
       params: { ...prev.params, page },
     }));
-    console.log("Task Page changer");
+
+    sectionRef.current?.scrollIntoView({behavior: 'smooth'});
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -192,7 +197,7 @@ const BookVisitorsPage = () => {
   if (error) return <ServerError error={error} />;
 
   return (
-    <section className="space-y-9">
+    <section className="space-y-9" ref={sectionRef}>
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           total={pageData?.month_total || 0}
@@ -279,7 +284,7 @@ const BookVisitorsPage = () => {
             <Pagination
               totalPages={pageData?.pagination?.total_pages || 0}
               currentPage={pageData?.pagination?.current_page || 0}
-              onPageChange={() => alert("Function not implemented.")}
+              onPageChange={handlePageChange}
             />
           </section>
         )

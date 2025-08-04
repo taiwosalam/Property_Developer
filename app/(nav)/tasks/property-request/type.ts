@@ -24,4 +24,10 @@ export interface PropertyRequestApi {
   total_requests_this_month: number;
   total_requests_overall: number;
   data: PropertyRequestData[];
+  pagination: {
+    current_page: number;
+    per_page: number;
+    total: number;
+    total_pages: number;
+  };
 }

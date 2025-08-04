@@ -41,7 +41,7 @@ export interface IManageComplaints {
     date: Date;
     desc: string;
     title: string;
-    type: "reminder";
+    type: "reminders";
     created_at?: string;
   }[];
   task_bar: {
@@ -149,7 +149,7 @@ export const transformComplaintManage = (
       date: new Date(r.reminder_date),
       desc: r.note,
       title: r.title,
-      type: "reminder",
+      type: "reminders",
       created_at: r.created_at ? dayjs(r.created_at).format("hh:mm A") : "",
     })),
     task_bar: data?.complaint?.task_bar?.map((task) => ({
@@ -165,7 +165,7 @@ export const transformComplaintManage = (
 interface ITaskReminder {
   title: string;
   note: string;
-  date: Dayjs | null;
+  date: Dayjs | string | null ;
   id?: string;
 }
 export const createReminder = async ({

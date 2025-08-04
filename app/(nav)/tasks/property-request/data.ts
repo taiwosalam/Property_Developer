@@ -46,6 +46,10 @@ export interface propertyRequestPageData {
     createdAt: string;
     updatedAt: string;
   }[];
+  pagination: {
+    total_pages: number;
+    current_page: number;
+  };
 }
 
 export const transformPropertyRequestData = (
@@ -82,6 +86,10 @@ export const transformPropertyRequestData = (
       minBudget: formatToNaira(request?.budget_min),
       maxBudget: formatToNaira(request?.budget_max),
     })),
+    pagination: {
+      total_pages: data?.pagination?.total_pages,
+      current_page: data?.pagination?.current_page,
+    },
   };
 };
 

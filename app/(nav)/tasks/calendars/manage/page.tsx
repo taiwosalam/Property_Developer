@@ -48,6 +48,7 @@ import { CalendarEventProps } from "@/components/Calendar/types";
 import useFetch from "@/hooks/useFetch";
 import { transformEventTable, transformCalendarEvents } from "../data";
 import { CalendarEventsApiResponse } from "../types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const ManageCalendar = () => {
   // Hooks
@@ -79,7 +80,10 @@ const ManageCalendar = () => {
     loading,
     error,
     isNetworkError,
+    refetch,
   } = useFetch<CalendarEventsApiResponse>("/company/calender");
+
+  useRefetchOnEvent("CalendarEvents", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (calendarEventApiResponse) {

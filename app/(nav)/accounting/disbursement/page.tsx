@@ -50,17 +50,35 @@ const Disbursement = () => {
     error: landlordsError,
   } = useFetch<AllLandlordsResponse>("/landlord/select");
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
-  const landlordOptions =
-    landlordsData?.data.map((landlord) => ({
-      value: landlord.id,
-      label: landlord.name,
-    })) || [];
+  const landlordOptions = Array.isArray(landlordsData?.data)
+    ? [
+        ...new Map(
+          landlordsData.data.map((l) => [
+            l.name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: l.name.toLowerCase(), // Keep original case for display
+              value: l.id,
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
