@@ -285,7 +285,6 @@ const Property = () => {
                   data={property as any}
                   status={property.status}
                   propertyType={property.property_type as "rental" | "gated"}
-                  page="manager"
                 />
               ))}
             </div>

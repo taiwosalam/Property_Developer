@@ -2,7 +2,6 @@ import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-prese
 import Select from "@/components/Form/Select/select";
 import Button from "@/components/Form/Button/button";
 import { useDrawerStore } from "@/store/drawerStore";
-import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
 import { useModal } from "../Modal/modal"; 
 
 

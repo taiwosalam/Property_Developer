@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import { deleteProperty } from "@/app/(nav)/management/properties/[id]/edit-property/data";
 import { toast } from "sonner";
 import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
 
 const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   data,
@@ -46,6 +47,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const color = property_listing_status[status];
+  const { role } = useRole();
 
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -76,25 +78,33 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
 
   // switch case for route
   const getContinueRoute = () => {
-    switch (page) {
+    switch (role) {
+      case "director":
+        return `/management/properties/${data.id}/edit-property`;
       case "manager":
         return `/manager/management/properties/${data.id}/edit-property`;
       case "account":
-        return `/account/management/properties/${data.id}/edit-property`;
+        return `/accountant/management/properties/${data.id}/edit-property`;
+      case "staff":
+        return `/staff/management/properties/${data.id}/edit-property`;
       default:
-        return `/management/properties/${data.id}/edit-property`;
+        return `/unauthorized`;
     }
   };
 
   // switch case for preview route
   const getPreviewRoute = () => {
-    switch (page) {
+    switch (role) {
+      case "director":
+        return `/management/properties/${data.id}`;
       case "manager":
         return `/manager/management/properties/${data.id}`;
       case "account":
-        return `/account/management/properties/${data.id}`;
+        return `/accountant/management/properties/${data.id}`;
+      case "staff":
+        return `/staff/management/properties/${data.id}`;
       default:
-        return `/management/properties/${data.id}`;
+        return `/unauthorized`;
     }
   };
 

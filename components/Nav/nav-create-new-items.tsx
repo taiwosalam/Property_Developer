@@ -190,14 +190,14 @@ export const accountant_create_new_items: CreateNewItemsProps = [
     label: "documents",
     content: [
       {
-        label: "tenancy agreement",
+        label: "Application Form",
         modal: (
-          <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+          <CreateTenancyAggrementModal defaultOption="tenancy_application_form" />
         ),
       },
       {
-        label: "other documents",
-        modal: <CreateTenancyAggrementModal defaultOption="other_document" />,
+        label: "Management Application Form",
+        modal: <CreateTenancyAggrementModal defaultOption="management_application_form" />,
       },
     ],
   },
@@ -225,14 +225,14 @@ export const staff_create_new_items: CreateNewItemsProps = [
     label: "documents",
     content: [
       {
-        label: "tenancy agreement",
+        label: "Application Form",
         modal: (
-          <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+          <CreateTenancyAggrementModal defaultOption="tenancy_application_form" />
         ),
       },
       {
-        label: "other documents",
-        modal: <CreateTenancyAggrementModal defaultOption="other_document" />,
+        label: "Management Application Form",
+        modal: <CreateTenancyAggrementModal defaultOption="management_application_form" />,
       },
     ],
   },

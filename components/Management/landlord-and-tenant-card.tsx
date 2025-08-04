@@ -10,6 +10,18 @@ import { Lock } from "lucide-react";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import Picture from "../Picture/picture";
 
+// Function to map user tags to display names
+const getUserTagDisplay = (userTag: string): string => {
+  switch (userTag.toLowerCase()) {
+    case "account officer":
+      return "Account Manager";
+    case "manager":
+      return "Branch Manager";
+    default:
+      return userTag;
+  }
+};
+
 export interface UserCardProps {
   picture_url?: string | null;
   name: string;
@@ -51,15 +63,6 @@ const UserCard: React.FC<UserCardProps> = ({
       className={`h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-2 rounded-lg flex gap-2 justify-center items-center ${className}`}
       style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      {/* <div className="rounded-lg relative overflow-hidden flex-shrink-0 w-[82px] h-[90px] bg-[#F0F2F5]">
-        <Image
-          src={picture_url || empty}
-          alt={name}
-          fill
-          sizes="300px"
-          className="w-full h-full object-cover"
-        />
-      </div> */}
       <div className="relative">
         <Picture
           src={picture_url || empty}
@@ -104,7 +107,7 @@ const UserCard: React.FC<UserCardProps> = ({
           </div>
         ) : (
           <p className="text-xs text-brand-10 font-normal capitalize">
-            {user_tag === "manager" ? "Branch Manager" : user_tag}
+            {getUserTagDisplay(user_tag)}
           </p>
         )}
         <p className="font-semibold text-xs text-[#8D8D8D] dark:text-darkText-2 text-ellipsis line-clamp-1">

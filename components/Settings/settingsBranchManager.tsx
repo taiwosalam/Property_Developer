@@ -91,6 +91,7 @@ const ManagerProfile = () => {
     }
   }, [data]);
 
+
   useEffect(() => {
     if (pageData?.profile_picture) {
       // setAvatar(pageData?.profile_picture);
