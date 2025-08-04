@@ -83,7 +83,7 @@ const Examine = () => {
         queryParams.branch_ids = branchIdsArray.join(",");
       }
       if (status.length > 0) queryParams.status = status.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (property.length > 0) queryParams.property_ids = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)

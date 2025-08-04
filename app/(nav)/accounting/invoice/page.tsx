@@ -96,11 +96,27 @@ const AccountingInvoicePage = () => {
   } = useStaffRoles();
   const accountOfficers = getAccountOfficers();
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
+
+  // const propertyOptions =
+  //   propertyData?.data.map((p) => ({
+  //     value: `${p.id}`,
+  //     label: p.title,
+  //   })) || [];
 
   const accountOfficersOptions =
     accountOfficers?.map((o) => ({
@@ -121,7 +137,8 @@ const AccountingInvoicePage = () => {
     endDate: null,
   };
 
-  const [appliedFilters, setAppliedFilters] = useState<FilterResult>(initialFilters);
+  const [appliedFilters, setAppliedFilters] =
+    useState<FilterResult>(initialFilters);
 
   const isFilterApplied = useCallback(() => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;

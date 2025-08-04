@@ -294,9 +294,7 @@ const Inventory = () => {
               body={
                 <p>
                   This section consists of records of all items in the property
-                  before renting it out to tenants. These records should be
-                  created before creating the property itself. You can create
-                  records by clicking on the &quot;Create New&quot; button.
+                  before renting it out to tenants.
                   <br />
                   <br />
                 </p>

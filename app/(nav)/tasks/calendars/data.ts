@@ -37,7 +37,7 @@ type CalendarEventType =
   | "applications"
   | "maintenance"
   | "multiple event"
-  | "reminder";
+  | "reminders";
 
 const isValidEventType = (type: string): type is CalendarEventType => {
   return [
@@ -49,7 +49,7 @@ const isValidEventType = (type: string): type is CalendarEventType => {
     "applications",
     "maintenance",
     "multiple event",
-    "reminder",
+    "reminders",
   ].includes(type);
 };
 
@@ -63,10 +63,13 @@ export const transformCalendarEvents = (
 
     // Remove "General Reminder: " from description if present
     // Format description based on event type
-    const cleanDescription = event.type === "reminders"
-      ? `${event.title}: ${event.description.replace(/^General Reminder:\s*/i, '')}`
-      : event.description.replace(/^General Reminder:\s*/i, '');
-
+    const cleanDescription =
+      event.type === "reminders"
+        ? `${event.title}: ${event.description.replace(
+            /^General Reminder:\s*/i,
+            ""
+          )}`
+        : event.description.replace(/^General Reminder:\s*/i, "");
 
     return {
       date: new Date(event.date),

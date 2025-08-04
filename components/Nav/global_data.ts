@@ -441,7 +441,7 @@ export const transformGlobalSearchPageData = (
               subtitle: brand.page || "No description",
               extra: "Brand",
               icon: "settings",
-              link: "",
+              link: "/settings/add-on",
             }))
           : [],
       campaigns:
@@ -458,7 +458,7 @@ export const transformGlobalSearchPageData = (
                 "Amount Paid: " + campaign.formatted_amount || "No description",
               extra: "Campaign",
               icon: "settings",
-              link: "",
+              link: "/settings/add-on",
             }))
           : [],
     },

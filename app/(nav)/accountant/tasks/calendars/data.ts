@@ -37,7 +37,7 @@ type CalendarEventType =
   | "applications"
   | "maintenance"
   | "multiple event"
-  | "reminder";
+  | "reminders";
 
 const isValidEventType = (type: string): type is CalendarEventType => {
   return [
@@ -49,7 +49,7 @@ const isValidEventType = (type: string): type is CalendarEventType => {
     "applications",
     "maintenance",
     "multiple event",
-    "reminder",
+    "reminders",
   ].includes(type);
 };
 
