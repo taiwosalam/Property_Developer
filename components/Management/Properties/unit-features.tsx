@@ -57,7 +57,10 @@ const UnitFeatures = () => {
       handleGoToTourStep(26);
     } else if (isRental && pathname.startsWith("/accountant")) {
       handleGoToTourStep(30);
-    } else if (!isRental) {
+    } else if(!isRental && pathname.startsWith("/accountant")){
+      handleGoToTourStep(25);
+    }
+     else if (!isRental) {
       handleGoToTourStep(27);
     } else if (isRental && pathname.startsWith("/manager")) {
       handleGoToTourStep(31);

@@ -31,9 +31,13 @@ import { rejectApplication } from "./[applicationId]/manage/data";
 import { toast } from "sonner";
 import Pagination from "@/components/Pagination/pagination";
 import CardsLoading from "@/components/Loader/CardsLoading";
+import { useSearchParams } from "next/navigation";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
   const [config, setConfig] = useState<AxiosRequestConfig>(() => {
     const savedPage = sessionStorage.getItem("applications_page");
     return {
@@ -150,6 +154,16 @@ const Applications = () => {
     });
     sessionStorage.setItem("applications_page", "1");
   };
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+    }
+  }, [query]);
 
   const handleSearch = async (query: string) => {
     setConfig({

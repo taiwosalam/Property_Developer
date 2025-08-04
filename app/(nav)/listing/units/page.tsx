@@ -33,8 +33,12 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import Pagination from "@/components/Pagination/pagination";
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
+import { useSearchParams } from "next/navigation";
 
 const Units = () => {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
   const {
     total_vacant,
@@ -70,8 +74,14 @@ const Units = () => {
   const [page, setPage] = useState(
     parseInt(sessionStorage.getItem("units_page") || "1", 10)
   );
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(query ? query : "");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  useEffect(() => {
+    if (query) {
+      setSearch(query);
+    }
+  }, [query]);
 
   // Save page number to sessionStorage whenever it changes
   useEffect(() => {
@@ -211,8 +221,6 @@ const Units = () => {
     value: property.id.toString(),
     label: property.title,
   }));
-
-
 
   if (loading)
     return (

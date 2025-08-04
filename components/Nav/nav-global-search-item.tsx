@@ -14,6 +14,7 @@ import { Badge } from "../ui/badge";
 import { getBadgeColor } from "@/lib/utils";
 import BadgeIcon from "../BadgeIcon/badge-icon";
 import TruncatedText from "../TruncatedText/truncated-text";
+import { useRouter } from "next/navigation";
 
 const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   icon,
@@ -24,8 +25,12 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   type,
   isVerified = false,
   tier_id,
+  link,
+  setIsOpen,
 }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
+
+  const router = useRouter();
 
   // Highlight the query in text (case-insensitive)
   const highlightQuery = (text: string) => {
@@ -43,10 +48,16 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
     );
   };
 
+  const handleSearchItemNavigation = () => {
+    router.push(`${link}?q=${title}`);
+    setIsOpen(false);
+  };
+
   return (
     <div
-      className="py-2 px-4 rounded-md flex justify-between"
+      className="py-2 px-4 rounded-md flex justify-between cursor-pointer"
       style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.03)" }}
+      onClick={handleSearchItemNavigation}
     >
       <div className="flex-1 flex items-center justify-between">
         <div className="flex items-start gap-3">

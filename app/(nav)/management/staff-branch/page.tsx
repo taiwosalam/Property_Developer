@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/Form/Button/button";
 import BranchCard from "@/components/Management/Staff-And-Branches/branch-card";
 import CustomTable from "@/components/Table/table";
@@ -44,6 +44,9 @@ const StaffAndBranches = () => {
   const [view, setView] = useState<string | null>(storedView);
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
   // For grid view we use this ref to scroll to top when changing pages.
   const contentTopRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +80,7 @@ const StaffAndBranches = () => {
     return {
       params: {
         page: savedPage ? parseInt(savedPage, 10) : 1,
-        search: "",
+        search: query ? query.trim() : "",
       } as BranchRequestParams,
     };
   });
@@ -162,6 +165,22 @@ const StaffAndBranches = () => {
       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("staff_page", "1");
+    }
+  }, [query]);
 
   const handleSearch = (query: string) => {
     setConfig({ params: { ...config.params, search: query, page: 1 } });
@@ -250,7 +269,6 @@ const StaffAndBranches = () => {
               : undefined,
         }))
       : branches;
-
 
   // Show full-page loader only on the very first load.
   if (loading && current_page === 1)

@@ -12,7 +12,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CommunityBoardModal from "@/components/Community/modal/CommunityBoardModal";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { PlusIcon } from "@/public/icons/icons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import NetworkError from "@/components/Error/NetworkError";
@@ -47,6 +47,9 @@ const AgentCommunityPage = () => {
   const router = useRouter();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [isLikeDislikeLoading, setIsLikeDislikeLoading] = useState(false);
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
 
   const initialState: ThreadApiResponse = {
     data: [],
@@ -96,7 +99,7 @@ const AgentCommunityPage = () => {
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: parseInt(sessionStorage.getItem("agent_community_page") || "1", 10),
-      search: "",
+      search: query ? query.trim() : "",
       sort: "asc",
     } as ArticlesRequestParams,
   });
@@ -173,6 +176,22 @@ const AgentCommunityPage = () => {
   });
 
   // useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
+
+   useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setState((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("agent_community_page", "1");
+    }
+  }, [query]);
 
   useEffect(() => {
     if (apiData) {
