@@ -20,9 +20,9 @@ const TeamChatContent: React.FC<MessagesLayoutProps> = ({ children }) => {
   const paramId = params.id;
   const { isNetworkError, loading, error } = useTeamChat();
 
-  if (isNetworkError) return <NetworkError />;
   if (loading) return <PageCircleLoader />;
   if (error) return <ServerError error={error} />;
+  if (isNetworkError) return <NetworkError />;
 
   return (
     <>

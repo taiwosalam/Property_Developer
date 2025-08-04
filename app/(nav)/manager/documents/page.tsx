@@ -6,9 +6,7 @@ import DocumentCard from "@/components/Documents/document-card";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import CreateTenancyAggrementModal, {
-  DrawerComponent,
-} from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
+import CreateTenancyAggrementModal from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
@@ -32,6 +30,7 @@ import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import OtherAgreementDocument from "@/components/Documents/other-agreement";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { DrawerComponent } from "@/components/Drawer/drawer";
 
 const Documents = () => {
   const { branch } = usePersonalInfoStore();

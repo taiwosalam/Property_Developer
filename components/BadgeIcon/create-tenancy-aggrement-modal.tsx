@@ -29,7 +29,7 @@ const CreateTenancyAggrementModal = ({
 }: ICreateAgreement) => {
   const [step, setStep] = useState<number>(0);
   const { setGlobalInfoStore } = useGlobalStore();
-  const { setIsOpen } = useModal()
+  const { setIsOpen } = useModal();
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
   const [openDocumentModal, setOpenDocumentModal] = useState<boolean>(false);
@@ -48,6 +48,10 @@ const CreateTenancyAggrementModal = ({
     selectedLegalOption?.title === "Tenancy Agreement";
   const IS_OTHER_AGREEMENT_SELECTED =
     selectedAgreementOption === "other_document";
+  const IS_TENANCY_APPLICATION_FORM =
+    selectedAgreementOption === "tenancy_application_form";
+  const IS_MANAGEMENT_APPLICATION_FORM =
+    selectedAgreementOption === "management_application_form";
 
   useEffect(() => {
     if (data && selectedAgreementOption) {
@@ -63,22 +67,56 @@ const CreateTenancyAggrementModal = ({
     if (defaultOption) {
       if (
         defaultOption === "tenancy_agreement" ||
-        defaultOption === "other_document"
+        defaultOption === "other_document" ||
+        defaultOption === "tenancy_application_form" ||
+        defaultOption === "management_application_form"
       ) {
         setSelectedAgreementOption(defaultOption);
         setStep(1);
+
+        // Automatically open the document for application forms
+        if (
+          defaultOption === "tenancy_application_form" ||
+          defaultOption === "management_application_form"
+        ) {
+          const selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+            (option) => option.value === defaultOption
+          );
+          if (selectedOption) {
+            setGlobalInfoStore("selectedDocumentOption", selectedOption);
+            setGlobalInfoStore("openDocumentModal", true);
+            setIsOpen(false); // Close the modal
+          }
+        }
       } else {
         toast.warning("Coming soon");
         setSelectedAgreementOption("");
       }
     }
-  }, [defaultOption]);
+  }, [defaultOption, setGlobalInfoStore, setIsOpen]);
 
   const handleCheckboxChange = (value: string | number) => {
-    if (IS_OTHER_AGREEMENT_SELECTED) {
-      const selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
-        (option) => option.value === value
-      );
+    if (
+      IS_OTHER_AGREEMENT_SELECTED ||
+      IS_TENANCY_APPLICATION_FORM ||
+      IS_MANAGEMENT_APPLICATION_FORM
+    ) {
+      let selectedOption;
+
+      if (IS_TENANCY_APPLICATION_FORM) {
+        selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+          (option) => option.value === "tenancy_application_form"
+        );
+      } else if (IS_MANAGEMENT_APPLICATION_FORM) {
+        selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+          (option) => option.value === "management_application_form"
+        );
+      } else {
+        selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+          (option) => option.value === value
+        );
+      }
+
       if (selectedOption) {
         setSelectedOptionId(value.toString());
         setIsOpen(false); // Close the CreateTenancyAggrementModal
@@ -117,7 +155,12 @@ const CreateTenancyAggrementModal = ({
 
   // HANDLE AGREEMENT OPTION CLICKED
   const handleAgreementOption = (option: string) => {
-    if (option !== "tenancy_agreement" && option !== "other_document") {
+    if (
+      option !== "tenancy_agreement" &&
+      option !== "other_document" &&
+      option !== "tenancy_application_form" &&
+      option !== "management_application_form"
+    ) {
       toast.warning("Coming soon");
       return;
     }
@@ -132,9 +175,20 @@ const CreateTenancyAggrementModal = ({
         (option) => option.value === selectedAgreementOption
       );
       const isTenancy = selectedOption?.value === "tenancy_agreement";
-      return isTenancy
-        ? "Create a Reusable Tenancy Agreement Template"
-        : selectedOption?.title ?? "Other Document";
+      const isTenancyApplication =
+        selectedAgreementOption === "tenancy_application_form";
+      const isManagementApplication =
+        selectedAgreementOption === "management_application_form";
+
+      if (isTenancyApplication) {
+        return "Tenancy Application Form";
+      } else if (isManagementApplication) {
+        return "Management Application Form";
+      } else if (isTenancy) {
+        return "Create a Reusable Tenancy Agreement Template";
+      } else {
+        return selectedOption?.title ?? "Other Document";
+      }
     }
     return step === 2 ? "Select Property" : "Select Document";
   };
@@ -185,7 +239,9 @@ const CreateTenancyAggrementModal = ({
               </div>
             )}
             <div>
-              {IS_OTHER_AGREEMENT_SELECTED ? (
+              {IS_OTHER_AGREEMENT_SELECTED ||
+              IS_TENANCY_APPLICATION_FORM ||
+              IS_MANAGEMENT_APPLICATION_FORM ? (
                 <div className="mt-4">
                   <h2 className="text-text-primary text-[20px] font-bold dark:text-white text-base not-italic leading-[32px]">
                     Choose from a Range of Essential Documents to Support
@@ -267,7 +323,7 @@ const CreateTenancyAggrementModal = ({
     <LandlordTenantModalPreset
       noPaddingTop
       {...(step !== 0 ? { back: { handleBack } } : {})}
-      style={{ maxWidth: "714px"}}
+      style={{ maxWidth: "714px" }}
       heading={getHeading()}
     >
       {renderContent()}
@@ -276,31 +332,3 @@ const CreateTenancyAggrementModal = ({
 };
 
 export default CreateTenancyAggrementModal;
-
-// DRAWER COMPONENT FLOW
-export const DrawerComponent = () => {
-  const { isDrawerOpen, closeDrawer, selectedLegalOption } = useDrawerStore();
-  return (
-    <Drawer
-      anchor="bottom"
-      open={isDrawerOpen}
-      onClose={closeDrawer}
-      classes={{ paper: "custom-round-scrollbar" }}
-      sx={{
-        "& .MuiPaper-root": {
-          borderTopLeftRadius: "32px",
-          borderTopRightRadius: "32px",
-          overflow: "auto",
-          height: "500px",
-        },
-        zIndex: 1,
-      }}
-    >
-      <SettingsLegalDrawer
-        onClose={closeDrawer}
-        noCheckbox={true}
-        selectedLegalOption={selectedLegalOption}
-      />
-    </Drawer>
-  );
-};

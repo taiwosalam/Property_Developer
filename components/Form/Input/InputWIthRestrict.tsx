@@ -184,6 +184,7 @@ const RestrictInput: React.FC<InputProps> = ({
         )}
         <input
           id={id}
+          autoComplete="off"
           name={name || id}
           ref={inputRef}
           value={internalValue}

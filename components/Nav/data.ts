@@ -248,11 +248,9 @@ export const account_nav_items: NavItemsProps = [
     label: "accounting",
     content: [
       { label: "invoice", href: "/accountant/accounting/invoice" },
-      // { label: "receipts", href: "/accountant/accounting/receipts" },
       { label: "expenses", href: "/accountant/accounting/expenses" },
       { label: "disbursement", href: "/accountant/accounting/disbursement" },
-      // { label: "statement", href: "/manager/accounting/statement" },
-      { label: "VAT", href: "/accountant/accounting/vat" },
+      // { label: "VAT", href: "/accountant/accounting/vat" },
     ],
   },
   {

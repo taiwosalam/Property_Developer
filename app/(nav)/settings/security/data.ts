@@ -277,7 +277,7 @@ export const transformProfileData = (
       : data?.data?.director?.picture ?? "",
     email: data.data.user.email,
     fullname: profile
-      ? data?.data?.profile?.name ?? ""
+      ? (data?.data?.profile?.name && data?.data?.profile?.name !== "undefined" ? data?.data?.profile?.name : data?.data?.user?.name) || ""
       : data?.data?.director?.name || "",
     personal_title: profile
       ? data?.data?.profile?.title ?? ""

@@ -86,7 +86,7 @@ const OtherAgreementDocument = ({
             onClick={handleDownload}
             size="custom"
             disabled={loading}
-            className="px-8 py-2"
+            className="px-8 py-3"
             variant="sky_blue"
           >
             {loading ? "Preparing..." : "Download"}
@@ -138,7 +138,7 @@ const OtherAgreementDocument = ({
             onClick={handleDownload}
             size="custom"
             disabled={loading}
-            className="px-8 py-2"
+            className="px-8 py-3"
             variant="sky_blue"
           >
             {loading ? "Preparing..." : "Download"}
