@@ -37,7 +37,6 @@ import {
 } from "@/public/icons/icons";
 import { toast } from "sonner";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { DrawerComponent } from "../BadgeIcon/create-tenancy-aggrement-modal";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "./data";
@@ -59,6 +58,7 @@ import { pageSteps } from "@/tour/steps/page-steps";
 import { useApplyZoomFromLocalStorage } from "@/hooks/useZoom";
 import useBranchData from "@/hooks/useBranchData";
 import { useBranchInfoStore } from "@/store/branch-info-store";
+import { DrawerComponent } from "../Drawer/drawer";
 
 const Header = () => {
   const { isMobile } = useWindowWidth();

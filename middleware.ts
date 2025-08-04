@@ -9,6 +9,7 @@ export async function middleware(req: NextRequest) {
 
   // console.log("role", role);
   // console.log("subscription_status", subscription_status);
+  // console.log("currentPath", currentPath);
 
   // Public routes accessible without authentication
   const publicRoutes = [
@@ -76,6 +77,11 @@ export async function middleware(req: NextRequest) {
   }
 
   // Role-based route restrictions for non-'user' roles
+  // Allow root path to pass through to page component for redirection logic
+  if (currentPath === "/") {
+    return NextResponse.next();
+  }
+  
   const allowedRoutes =
     roleBasedRoutes[role as keyof typeof roleBasedRoutes] || [];
   const isAllowed = allowedRoutes.some((route) =>

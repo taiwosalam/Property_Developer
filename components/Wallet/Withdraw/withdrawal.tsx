@@ -40,10 +40,16 @@ interface BranchBankDetails {
 }
 
 // Utility Functions
+// const calculateExpectedAmount = (amount: number): number => {
+//   if (!amount || amount <= 0) return 0;
+//   const discountAmount = (amount * DISCOUNT_PERCENTAGE) / 100;
+//   return amount - discountAmount - BANK_CHARGES;
+// };
+
 const calculateExpectedAmount = (amount: number): number => {
   if (!amount || amount <= 0) return 0;
   const discountAmount = (amount * DISCOUNT_PERCENTAGE) / 100;
-  return amount - discountAmount - BANK_CHARGES;
+  return discountAmount + BANK_CHARGES;
 };
 
 const getSecurityText = (isBranch: boolean): string =>
@@ -211,8 +217,13 @@ const Withdrawal: React.FC<
                   Sorry, your withdrawal cannot be processed at this time.
                   Please add your {role === "manager" ? "branch" : "company"}{" "}
                   bank account details to your account. Click{" "}
-                  <Link className="text-brand-9 hover:underline" href={getUpdateBankSettingsPage()}>here</Link> to update
-                  your bank details.
+                  <Link
+                    className="text-brand-9 hover:underline"
+                    href={getUpdateBankSettingsPage()}
+                  >
+                    here
+                  </Link>{" "}
+                  to update your bank details.
                 </p>
               </div>
             )}
@@ -243,7 +254,7 @@ const Withdrawal: React.FC<
                   className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 hover:border-none active:border-none pointer-events-none"
                 />
                 <p className="text-red-600 text-sm mt-1">
-                  {`-${DISCOUNT_PERCENTAGE}% convenience fee and ${formatToNaira(
+                  {`${DISCOUNT_PERCENTAGE}% convenience fee and ${formatToNaira(
                     BANK_CHARGES
                   )} bank VAT`}
                 </p>
