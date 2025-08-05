@@ -110,7 +110,7 @@ const Undo = () => {
     refetch,
   } = useFetch<TrashRecordsResponse>("/report/trashes", config);
 
-  useRefetchOnEvent("trashes", () => refetch({ silent: true }));
+  useRefetchOnEvent("DispatchTrashes", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (apiData) {

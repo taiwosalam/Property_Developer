@@ -28,7 +28,7 @@ interface IReminder {
   date: Date;
   title: string;
   desc: string;
-  type: "reminder";
+  type: "reminders";
 }
 const ComplaintsCalendar: React.FC<{
   header: string;

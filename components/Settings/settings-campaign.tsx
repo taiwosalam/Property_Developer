@@ -15,7 +15,7 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import SponsorModal from "./Modals/sponsor-modal";
 import Link from "next/link";
 import { ChevronRight, Upload, UploadIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FileInput from "../Form/FileInput/file-input";
 import { PERIOD_OPTIONS } from "./subscription-components";
 import FileUploadInput from "./fileInput";
@@ -29,6 +29,7 @@ import {
   ICampaignTable,
   transformCampaignData,
 } from "./sponsor_data";
+import { useSearchParams } from "next/navigation";
 
 const campaignType = [
   {
@@ -56,6 +57,17 @@ export const Campaign = () => {
   const [campaignName, setCampaignName] = useState("");
   const [campaignValue, setCampaignValue] = useState("https://");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+  const campSectionRef = useRef<HTMLDivElement | null>(null);
+
+  const searchParams = useSearchParams();
+  const campaignParams = searchParams.get("q");
+
+  useEffect(() => {
+    if (campaignParams) {
+      campSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [campaignParams]);
 
   const [campaignTable, setCampaignTable] = useState<ICampaignTable[] | null>(
     null
@@ -202,42 +214,43 @@ export const Campaign = () => {
 
   return (
     <>
-      <SettingsSection title="Campaign">
-        <div className="custom-flex-col gap-6">
-          <SettingsSectionTitle
-            title="Advertise with a Banner on Our Platform"
-            desc={headline}
-          />
-          <div className="flex gap-3 items-center">
-            <div className="flex gap-6 items-center pb-8"></div>
+      <section className="scroll-m-4" ref={campSectionRef}>
+        <SettingsSection title="Campaign">
+          <div className="custom-flex-col gap-6">
+            <SettingsSectionTitle
+              title="Advertise with a Banner on Our Platform"
+              desc={headline}
+            />
+            <div className="flex gap-3 items-center">
+              <div className="flex gap-6 items-center pb-8"></div>
+            </div>
           </div>
-        </div>
 
-        <div className="mb-10" id="campaign">
-          <AutoResizingGrid minWidth={400}>
-            <Input
-              id="campaign_name"
-              label="campaign name"
-              placeholder="Write here"
-              onChange={(val) => setCampaignName(val)}
-            />
-            <Input
-              id="campaign_link"
-              label="campaign link"
-              value={campaignValue}
-              onChange={(val) => setCampaignValue(val)}
-            />
+          <div className="mb-10" id="campaign">
+            <AutoResizingGrid minWidth={400}>
+              <Input
+                id="campaign_name"
+                label="campaign name"
+                placeholder="Write here"
+                onChange={(val) => setCampaignName(val)}
+              />
+              <Input
+                id="campaign_link"
+                label="campaign link"
+                value={campaignValue}
+                onChange={(val) => setCampaignValue(val)}
+              />
 
-            <FileUploadInput
-              required
-              id="upload_campaign"
-              label="upload campaign"
-              placeholder="SVG format only"
-              sizeUnit="MB"
-              size={2}
-              onChange={(file) => setUploadedFile(file)}
-            />
-            {/* <FileInput
+              <FileUploadInput
+                required
+                id="upload_campaign"
+                label="upload campaign"
+                placeholder="SVG format only"
+                sizeUnit="MB"
+                size={2}
+                onChange={(file) => setUploadedFile(file)}
+              />
+              {/* <FileInput
               required
               id="upload_campaign"
               label="upload campaign"
@@ -251,121 +264,122 @@ export const Campaign = () => {
              
               endAdornment={<UploadIcon />} */}
 
-            <Select
-              id="pages"
-              className=""
-              options={campaignType.map((option) => ({
-                value: option.type,
-                label: `${option.type} - ₦${option.amount.toLocaleString()}`,
-              }))}
-              placeholder="select options"
-              label="campaign type"
-              value={selectedPage}
-              onChange={(value) => setSelectedPage(value)}
-              renderValue={(selected) => {
-                const option = campaignType.find(
-                  (opt) => opt.type === selected
-                );
-                return option
-                  ? `${option.type} - ₦${option.amount.toLocaleString()}`
-                  : "";
-              }}
-            />
-            <Select
-              className=""
-              id="period"
-              options={PERIOD_OPTIONS.map((option) => ({
-                value: `${option.value} ${
-                  option.value === 1 ? "month" : "months"
-                }`,
-                label: `${option.label}${
-                  option.discount
-                    ? ` (-${(option.discount * 100).toFixed(1)}%)`
-                    : ""
-                }`,
-              }))}
-              placeholder="Select period"
-              label="Period"
-              value={selectedPeriod}
-              onChange={(value) => setSelectedPeriod(value)}
-              renderValue={(selected) => {
-                if (!selected) return "";
-                const periodValue = parseInt(selected.split(" ")[0]);
-                const option = PERIOD_OPTIONS.find(
-                  (opt) => opt.value === periodValue
-                );
-                return option
-                  ? `${option.label}${
-                      option.discount
-                        ? ` (-${(option.discount * 100).toFixed(1)}%)`
-                        : ""
-                    }`
-                  : "";
-              }}
-            />
-            <div className="w-full relative">
-              <Input
-                id="amount"
-                className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 active:border-none hover:border-none"
-                label="Amount"
-                value={`₦${totalAmount.toLocaleString()}`}
-                readOnly
-                style={{ outline: "none" }}
+              <Select
+                id="pages"
+                className=""
+                options={campaignType.map((option) => ({
+                  value: option.type,
+                  label: `${option.type} - ₦${option.amount.toLocaleString()}`,
+                }))}
+                placeholder="select options"
+                label="campaign type"
+                value={selectedPage}
+                onChange={(value) => setSelectedPage(value)}
+                renderValue={(selected) => {
+                  const option = campaignType.find(
+                    (opt) => opt.type === selected
+                  );
+                  return option
+                    ? `${option.type} - ₦${option.amount.toLocaleString()}`
+                    : "";
+                }}
               />
+              <Select
+                className=""
+                id="period"
+                options={PERIOD_OPTIONS.map((option) => ({
+                  value: `${option.value} ${
+                    option.value === 1 ? "month" : "months"
+                  }`,
+                  label: `${option.label}${
+                    option.discount
+                      ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                      : ""
+                  }`,
+                }))}
+                placeholder="Select period"
+                label="Period"
+                value={selectedPeriod}
+                onChange={(value) => setSelectedPeriod(value)}
+                renderValue={(selected) => {
+                  if (!selected) return "";
+                  const periodValue = parseInt(selected.split(" ")[0]);
+                  const option = PERIOD_OPTIONS.find(
+                    (opt) => opt.value === periodValue
+                  );
+                  return option
+                    ? `${option.label}${
+                        option.discount
+                          ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                          : ""
+                      }`
+                    : "";
+                }}
+              />
+              <div className="w-full relative">
+                <Input
+                  id="amount"
+                  className="focus:border-none focus-within:border-none focus:outline-none focus:ring-0 active:border-none hover:border-none"
+                  label="Amount"
+                  value={`₦${totalAmount.toLocaleString()}`}
+                  readOnly
+                  style={{ outline: "none" }}
+                />
 
-              <div className="absolute top-2 bottom-0 right-2">
-                <Modal>
-                  <ModalTrigger>
-                    <Button
-                      variant="change"
-                      size="xs_normal"
-                      className="py-2 px-3 mt-8 bg-brand-9 text-white"
-                      disabled={isFormIncomplete}
-                    >
-                      Activate
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <SponsorModal
-                      count={parseInt(selectedPeriod)}
-                      cost={totalAmount / parseInt(selectedPeriod)}
-                      onSubmit={handlePostCampaign}
-                    />
-                  </ModalContent>
-                </Modal>
+                <div className="absolute top-2 bottom-0 right-2">
+                  <Modal>
+                    <ModalTrigger>
+                      <Button
+                        variant="change"
+                        size="xs_normal"
+                        className="py-2 px-3 mt-8 bg-brand-9 text-white"
+                        disabled={isFormIncomplete}
+                      >
+                        Activate
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <SponsorModal
+                        count={parseInt(selectedPeriod)}
+                        cost={totalAmount / parseInt(selectedPeriod)}
+                        onSubmit={handlePostCampaign}
+                      />
+                    </ModalContent>
+                  </Modal>
+                </div>
               </div>
-            </div>
-          </AutoResizingGrid>
-        </div>
-
-        {campaignTable && campaignTable.length > 0 && (
-          <div>
-            <div className="flex justify-between mb-4">
-              <h2 className="text-text-primary dark:text-white text-lg font-medium">
-                Campaign History
-              </h2>
-              <Link
-                href="/settings/subscription/sponsors"
-                className="flex items-center gap-1"
-              >
-                <Link
-                  href={"/reports/adds-on-campaign?b=true"}
-                  className="text-text-label dark:text-darkText-1"
-                >
-                  See all
-                </Link>
-                <ChevronRight color="#5A5D61" size={16} />
-              </Link>
-            </div>
-
-            <CustomTable
-              data={campaignTable ? campaignTable?.slice(0, 3) : []}
-              fields={CampaignFields}
-              {...table_style_props}
-            />
+            </AutoResizingGrid>
           </div>
-        )}
-      </SettingsSection>
+
+          {campaignTable && campaignTable.length > 0 && (
+            <div>
+              <div className="flex justify-between mb-4">
+                <h2 className="text-text-primary dark:text-white text-lg font-medium">
+                  Campaign History
+                </h2>
+                <Link
+                  href="/settings/subscription/sponsors"
+                  className="flex items-center gap-1"
+                >
+                  <Link
+                    href={"/reports/adds-on-campaign?b=true"}
+                    className="text-text-label dark:text-darkText-1"
+                  >
+                    See all
+                  </Link>
+                  <ChevronRight color="#5A5D61" size={16} />
+                </Link>
+              </div>
+
+              <CustomTable
+                data={campaignTable ? campaignTable?.slice(0, 3) : []}
+                fields={CampaignFields}
+                {...table_style_props}
+              />
+            </div>
+          )}
+        </SettingsSection>
+      </section>
     </>
   );
 };

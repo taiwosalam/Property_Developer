@@ -54,11 +54,12 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
       toast.error("Please add a note");
       return;
     }
+    const utcDate = reminderDate.startOf("day").format("YYYY-MM-DD");
+
     const params = {
       title: inputTitle,
       note: textAreaNote,
-      date: reminderDate,
-      id,
+      date: utcDate,
     };
 
     try {

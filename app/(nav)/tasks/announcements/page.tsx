@@ -106,11 +106,19 @@ const AnnouncementPage = () => {
 
   const { data: branchesData } = useFetch<any>("/branches");
 
-  const branchOptions =
-    branchesData?.data.map((branch: { branch_name: string; id: number }) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
+  const branchOptions = Array.isArray(branchesData?.data)
+    ? [
+        ...new Map(
+          branchesData.data.map((branch: any) => [
+            branch.branch_name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: branch.branch_name, // Keep original case for display
+              value: branch.id,
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
   const handlePageChange = (page: number) => {
     setConfig((prev) => ({

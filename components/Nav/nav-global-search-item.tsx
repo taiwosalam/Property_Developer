@@ -15,6 +15,7 @@ import { getBadgeColor } from "@/lib/utils";
 import BadgeIcon from "../BadgeIcon/badge-icon";
 import TruncatedText from "../TruncatedText/truncated-text";
 import { useRouter } from "next/navigation";
+import { useRole } from "@/hooks/roleContext";
 
 const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   icon,
@@ -29,6 +30,7 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   setIsOpen,
 }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
+  const { role } = useRole();
 
   const router = useRouter();
 
@@ -49,7 +51,20 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
   };
 
   const handleSearchItemNavigation = () => {
-    router.push(`${link}?q=${title}`);
+    switch (role) {
+      case "manager":
+        router.push(`/manager/${link}?q=${title}`);
+        break;
+      case "accountant":
+        router.push(`/accountant/${link}?q=${title}`);
+        break;
+      case "staff":
+        router.push(`/staff/${link}?q=${title}`);
+        break;
+      default:
+        router.push(`${link}?q=${title}`);
+        break;
+    }
     setIsOpen(false);
   };
 

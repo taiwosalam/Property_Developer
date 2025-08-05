@@ -27,6 +27,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 import { getAllStates } from "@/utils/states";
+import Pagination from "@/components/Pagination/pagination";
 
 const allStates = getAllStates();
 
@@ -131,7 +132,11 @@ const PropertyRequest = () => {
 
   if (loading)
     return (
-      <CustomLoader layout="page" pageTitle="Property Request" statsCardCount={3} />
+      <CustomLoader
+        layout="page"
+        pageTitle="Property Request"
+        statsCardCount={3}
+      />
     );
 
   if (isNetworkError) return <NetworkError />;
@@ -205,6 +210,12 @@ const PropertyRequest = () => {
                 />
               ))}
             </AutoResizingGrid>
+
+            <Pagination
+              totalPages={pageData?.pagination?.total_pages}
+              currentPage={pageData?.pagination?.current_page}
+              onPageChange={handlePageChange}
+            />
           </section>
         )
       ) : (
@@ -218,6 +229,12 @@ const PropertyRequest = () => {
               />
             ))}
           </AutoResizingGrid>
+
+          <Pagination
+            totalPages={pageData?.pagination?.total_pages}
+            currentPage={pageData?.pagination?.current_page}
+            onPageChange={handlePageChange}
+          />
         </section>
       )}
     </div>

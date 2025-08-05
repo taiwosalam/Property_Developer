@@ -91,7 +91,7 @@ const AttachedImagesGrid: React.FC<AttachedImagesGridProps> = ({ images }) => {
                     fill
                     sizes="auto"
                     priority
-                    className="object-cover object-center cursor-pointer"
+                    className="object-cover cursor-pointer"
                     quality={60}
                     onClick={() => openModal(index)}
                     role="button"

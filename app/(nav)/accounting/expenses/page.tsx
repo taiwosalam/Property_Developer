@@ -163,11 +163,21 @@ const AccountingExpensesPage = () => {
 
   const staffOptions = staffsData ? transformStaffs(staffsData) : [];
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   const [timeRange, setTimeRange] = useState("90d");
 

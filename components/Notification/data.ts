@@ -15,37 +15,57 @@ import NotificationReservation from "@/public/icons/notification-reservation.svg
 import NotificationInvoice from "@/public/icons/notification-invoice.svg";
 import NotificationPropertyRequest from "@/public/icons/property-request.svg";
 import NotificationSettings from "@/public/icons/notification-settings.svg";
+import {
+  ProfileIcon,
+  CalendarIcon,
+  MessageIcon,
+  ReviewIcon,
+  PropertyIcon,
+  ExamineIcon,
+  ApplicationIcon,
+  ComplaintIcon,
+  WalletIcon,
+  RentUnitManagementIcon,
+  InspectionIcon,
+  SubscriptionIcon,
+  AnnouncementIcon,
+  ListingIcon,
+  AccountingIcon,
+  CommunityIcon,
+  PropertyRequestIcon,
+  CallRequestIcon,
+  UndoTrashIcon,
+  OtherIconSettings,
+} from "./notification-icons";
+import React from "react";
 
 export const notification_icons: Record<string, StaticImageData | any> = {
-  user: NotificationUser,
-  review: NotificationReview,
-  message: NotificationMessage,
-  invoice: NotificationInvoice,
-  profile: NotificationProfile,
-  setting: NotificationSettings,
-  listing: NotificationProperty,
-  location: NotificationSettings,
+  user: ProfileIcon,
+  profile: ProfileIcon,
+  inspection: InspectionIcon,
+  message: MessageIcon,
+  review: ReviewIcon,
+  examine: ExamineIcon,
+  application: ApplicationIcon,
+  complain: ComplaintIcon,
+  subscription: SubscriptionIcon,
+  announcement: AnnouncementIcon,
+  listing: ListingIcon,
+  invoice: AccountingIcon,
+  trash: UndoTrashIcon,
+  setting: OtherIconSettings,
+  location: OtherIconSettings,
 
-  examine: NotificationReview,
-  inspection: NotificationReview,
-  announcement: NotificationReview,
-  application: NotificationReview,
-  trash: NotificationReview,
-  complain: NotificationReview,
-
-  subscription: NotificationReservation,
-  "wallet transaction": NotificationPayment,
-  "rent and unit": NotificationProperty,
-  "agent community": NotificationService,
-  "new request published": NotificationProperty,
-  "property draft": NotificationProperty,
-  "new property request": NotificationPropertyRequest,
-  "new post published": NotificationService,
-  "property request": NotificationProperty,
-  "call request": NotificationMessage,
-  "agent request": NotificationService,
- // "App\Notifications\NewRequestPublished": NotificationMessage,
-
+  "wallet transaction": WalletIcon,
+  "rent and unit": RentUnitManagementIcon,
+  "agent community": CommunityIcon,
+  "property request": PropertyRequestIcon,
+  "call request": CallRequestIcon,
+  "agent request": CommunityIcon,
+  "new property request": PropertyRequestIcon,
+  "property draft": ListingIcon,
+  "new request published": CommunityIcon,
+  "new post published": CommunityIcon,
 };
 
 export const notification_links: Record<string, string> = {
@@ -75,9 +95,9 @@ export const notification_links: Record<string, string> = {
   "listing notification": "/listing/units",
   "company setting notification": "/settings/company",
   "subscription notification": "/settings/subscription",
-  "new request published": "/tasks/property-requests",
+  "new request published": "/tasks/property-request",
+  "property request": "/tasks/property-request",
   "call request": "/tasks/call-requests",
-
 };
 
 export const normalizeNotificationType = (fullType: string) => {

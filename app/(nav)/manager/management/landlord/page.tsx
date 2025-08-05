@@ -386,17 +386,7 @@ const Landlord = () => {
               title="The landlord and landlady files are empty"
               body={
                 <p>
-                  You don&apos;t have any landlord or landlady profiles yet. You
-                  can easily create one by clicking on the &quot;Create New
-                  Landlord&quot; button and add them using their profile ID.
-                  After adding profiles to this page, this guide will disappear.
-                  <br />
-                  <br />
-                  Before creating or managing a rental property, you need to
-                  create a profile for the landlord or landlady of the property.
-                  You can invite them using their email and phone number for
-                  registration. If you already have their list, you can add them
-                  in bulk using an XML file or add them manually.
+                  You don&apos;t have any landlord or landlady profiles yet. 
                 </p>
               }
             />

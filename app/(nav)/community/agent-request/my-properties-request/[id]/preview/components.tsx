@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { empty } from "@/app/config";
 import { CommentProps } from "@/app/(nav)/community/agent-forum/type";
+import clsx from "clsx";
 
 const getUniqueCommenters = (comments: CommentProps[]) => {
   const uniqueUsers = new Map();
@@ -42,6 +43,9 @@ interface ThreadArticleProps {
     viewed_at: string;
   }[];
 }
+
+const maxImagesToShow = 3;
+
 export const ThreadArticle = ({
   propertyRequest,
   readByData,
@@ -60,7 +64,22 @@ export const ThreadArticle = ({
     }
   };
 
-  const uniqueCommenters = getUniqueCommenters(comments || []);
+  // Get unique, non-null user images from comments
+  const uniqueUserImages = Array.from(
+    new Map(
+      (comments || [])
+        .filter((comment) => comment.image != null) // Exclude null or undefined images
+        .map((comment) => [comment.image, comment.image as string]) // Map to [image, image] pairs
+    ).values()
+  ).slice(0, maxImagesToShow);
+
+  const uniqueCommenterCount = new Set(
+    (comments || [])
+      .filter((comment) => comment.image != null)
+      .map((comment) => comment.image)
+  ).size;
+
+  const excessImagesCount = Math.max(uniqueCommenterCount - maxImagesToShow, 0);
 
   return (
     <div className="">
@@ -108,22 +127,25 @@ export const ThreadArticle = ({
           </button>
           <div>
             <div className="flex items-center">
-              {uniqueCommenters.slice(0, 3).map((commenter) => (
-                <div className="flex" key={commenter.id}>
-                  <div className="images flex z-30 w-[30px] h-[30px] rounded-full -mr-3">
-                    <Image
-                      src={commenter?.image ?? empty}
-                      alt="commenter avatar"
-                      width={30}
-                      height={30}
-                      className="-mr-3 bg-brand-9 w-full h-full rounded-full object-cover"
-                    />
-                  </div>
-                </div>
+              {uniqueUserImages.map((image, index) => (
+                <Image
+                  key={index}
+                  src={image || empty}
+                  alt="user avatar"
+                  width={24}
+                  height={24}
+                  className={clsx(
+                    "w-6 h-6 border border-brand-9 rounded-full object-cover",
+                    index !== 0 && "-ml-3"
+                  )}
+                  style={{ zIndex: index }} // control stacking
+                />
               ))}
-              <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
-                {uniqueCommenters.length}
-              </div>
+              {excessImagesCount > 0 && (
+                <div className="bg-brand-9 h-6 pl-[14px] pr-[10px] -ml-3 rounded-[24px] text-[10px] text-text-invert font-semibold flex items-center justify-end">
+                  +{excessImagesCount}
+                </div>
+              )}
             </div>
           </div>
         </div>

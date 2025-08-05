@@ -16,6 +16,7 @@ export type Notification = {
   data: {
     subject: string;
     message: string;
+    title: string;
     action_text: string;
     action_url: string;
   };
@@ -80,21 +81,21 @@ export const transformNotificationData = (
       id: notification.id,
       action_text: notification?.data?.action_text || "",
       type: extractNotificationType(notification.type),
-      subject: notification.data.subject || "",
+      subject: notification.data.subject || notification?.data?.title || "",
       message: notification.data.message || "",
       time: notification.created_at
         ? formatDateTime(notification.created_at)
         : "",
       from_id: notification.from_id,
-      sender_name: notification.sender_name || "",
+      sender_name: notification.sender_name?.toLowerCase() || "",
       sender_picture: notification?.sender_picture ?? "",
     })),
     meta: {
       total: data?.meta.total,
       current_page: data?.meta?.current_page,
       last_page: data?.meta?.last_page,
-      per_page: data?.meta?.per_page
-    }
+      per_page: data?.meta?.per_page,
+    },
   };
 };
 
