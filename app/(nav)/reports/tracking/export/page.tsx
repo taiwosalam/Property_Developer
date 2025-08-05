@@ -25,9 +25,11 @@ dayjs.extend(advancedFormat);
 
 const ExportTracking = () => {
   const exportRef = useRef<HTMLDivElement>(null);
-  const [activity, setActivity] = useState<ActivityTable[]>([]);
+  const [activity, setActivity] = useState<ActivityTable>({
+    activities: [],
+    pagination: { total: 0, current_page: 0, last_page: 0 },
+  });
   const [fullContent, setFullContent] = useState(false);
-  
 
   const filteredActivities = useGlobalStore((s) => s.activities);
 

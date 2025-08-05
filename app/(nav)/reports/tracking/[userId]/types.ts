@@ -19,6 +19,12 @@ export type ActivityApiResponse = {
         user_name: string;
       }
     ];
+    meta: {
+      total: number;
+      per_page: number;
+      current_page: number;
+      last_page: number;
+    };
   };
   message: string;
   status: string;
@@ -33,18 +39,25 @@ export type ActivityDataReport = {
   location: string;
   date: string;
   time: string;
-}
+};
 export type ActivityTable = {
-  id: number;
-  username: string;
-  page_visited: string;
-  action_taken: string;
-  ip_address: string;
-  location: string;
-  date: string;
-  time: string;
-  longitude: string;
-  latitude: string;
+  activities: {
+    id: number;
+    username: string;
+    page_visited: string;
+    action_taken: string;
+    ip_address: string;
+    location: string;
+    date: string;
+    time: string;
+    longitude: string;
+    latitude: string;
+  }[];
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  };
 };
 
 interface Location {
@@ -66,10 +79,16 @@ export interface UserActivity {
 
 interface ActivitiesData {
   activities: UserActivity[];
+  meta: {
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+  };
 }
 
 export interface UserActivityResponse {
-  status: string; 
+  status: string;
   message: string;
   data: ActivitiesData;
 }
@@ -99,6 +118,11 @@ export interface UserActivityTable {
     latitude: number;
     action_taken: string;
   }[];
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  };
 }
 export const transformUserActivityData = (
   data: UserActivityResponse
@@ -118,30 +142,40 @@ export const transformUserActivityData = (
         date: activity?.date ?? "____ ____",
         longitude: activity?.location?.longitude,
         latitude: activity?.location?.latitude,
-        action_taken: "___ ___"
-
-
+        action_taken: "___ ___",
       };
     }),
+    pagination: {
+      total: data?.data?.meta?.total,
+      current_page: data?.data?.meta?.current_page,
+      last_page: data?.data?.meta?.last_page,
+    },
   };
 };
 
 export const transformActivityAData = (
   data: ActivityApiResponse
-): ActivityTable[] => {
+): ActivityTable => {
   const { data: apiData } = data;
-  return apiData.activities.map((activity, index) => {
-    return {
+  return {
+    activities: apiData?.activities.map((activity) => ({
       id: activity?.user_id,
-      username: activity.user_name,
+      username: activity.user_name.toLowerCase(),
       page_visited: getLastSegment(activity.page_visited) || "",
       action_taken: activity.description,
       ip_address: activity.ip_address,
-      location:  activity.location.city,
+      location: activity.location.city,
       date: activity.date,
-      time: activity.time ? dayjs(activity.time, "HH:mm").format("hh:mm A") : "___ ___",
+      time: activity.time
+        ? dayjs(activity.time, "HH:mm").format("hh:mm A")
+        : "___ ___",
       longitude: activity.location.longitude,
       latitude: activity.location.latitude,
-    };
-  });
+    })),
+    pagination: {
+      total: data?.data?.meta?.total,
+      current_page: data?.data?.meta?.current_page,
+      last_page: data?.data?.meta?.last_page,
+    },
+  };
 };

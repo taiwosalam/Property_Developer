@@ -173,6 +173,54 @@ const EmailReport = () => {
     []
   );
 
+  const [branches, setBranches] = useState<BranchFilter[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
+  const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
+
+  useEffect(() => {
+    if (apiData) setBranches(apiData.data);
+    if (staff) {
+      const filterStaff = staff.data.filter(
+        (staff: any) => staff.staff_role === "account officer"
+      );
+      setBranchAccountOfficers(filterStaff);
+    }
+    if (property) setPropertyList(property.data);
+  }, [apiData, staff, property]);
+
+  const reportTenantFilterOption = [
+    // {
+    //   label: "Account Manager",
+    //   value: [
+    //     ...new Map(
+    //       branchAccountOfficers.map((staff: any) => [
+    //         staff.user.name.toLowerCase(), // Use lowercase for comparison
+    //         {
+    //           label: staff.user.name.toLowerCase(), // Keep original case for display
+    //           value: staff.user.id.toString(),
+    //         },
+    //       ])
+    //     ).values(),
+    //   ],
+    // },
+    {
+      label: "Branch",
+      value: [
+        ...new Map(
+          branches.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name.toLowerCase(),
+              value: branch.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
+    },
+  ];
+
   const handleTableItemClick = (record: DataItem) => {
     setSelectedSMS(record as EmailRecord);
     if (record.email_id) {
@@ -215,7 +263,7 @@ const EmailReport = () => {
     setAnchorEl(e.currentTarget);
   };
 
-  if (loading && config.params.page === 1)
+  if (loading || silentLoading)
     return <CustomLoader layout="page" pageTitle="Email" view="table" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -245,7 +293,7 @@ const EmailReport = () => {
         handleSearch={handleSearch}
         fileLabel={"Email Reports"}
         xlsxData={useGlobalStore.getState().emails}
-        filterOptionsMenu={reportsEmailFilterOptionsWithDropdown}
+        filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/email/export"
       />
@@ -280,8 +328,6 @@ const EmailReport = () => {
               //   handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
               // }}
             />
-           
-
 
             {isFetchingMore && (
               <div className="flex justify-center py-4">

@@ -64,29 +64,54 @@ const TenantsReport = () => {
     if (property) setPropertyList(property.data);
   }, [apiData, staff, property]);
 
+  // ...existing code...
+
   const reportTenantFilterOption = [
     {
-      label: "Account Officer",
-      value: branchAccountOfficers.map((staff: any) => ({
-        label: staff.user.name,
-        value: staff.user.id.toString(),
-      })),
+      label: "Account Manager",
+      value: [
+        ...new Map(
+          branchAccountOfficers.map((staff: any) => [
+            staff.user.name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: staff.user.name, // Keep original case for display
+              value: staff.user.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          branches.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name,
+              value: branch.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Property",
-      value: propertyList.map((property: any) => ({
-        label: property.title,
-        value: property.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          propertyList.map((property: any) => [
+            property.title.toLowerCase(), // Use lowercase for comparison
+            {
+              label: property.title, // Keep original case for display
+              value: property.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
   ];
+
+  // ...existing code...
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: { page: 1, search: "" } as ReportsRequestParams,
@@ -126,7 +151,7 @@ const TenantsReport = () => {
     "/report/tenants",
     config
   );
-  
+
   // Handle data transformation and appending for infinite scroll
   useEffect(() => {
     if (data && !loading) {

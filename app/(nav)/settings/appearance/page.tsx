@@ -27,6 +27,8 @@ const Appearance = () => {
     zoom: "",
   };
 
+  console.log(data);
+
   const [appearance, setAppearance] = useState(defaultAppearance);
 
   useEffect(() => {

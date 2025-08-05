@@ -34,7 +34,7 @@ export const tenantsReportTableFields: Field[] = [
     id: "2",
     label: "Name",
     accessor: "name",
-    cellStyle: { textTransform: "uppercase" },
+    cellStyle: { textTransform: "capitalize" },
   },
   { id: "3", label: "Gender", accessor: "gender" },
   { id: "4", label: "Contact Address", accessor: "address" },
@@ -88,7 +88,7 @@ export interface TenantReport {
     total: number;
     current_page: number;
     last_page: number;
-  }
+  };
 }
 
 export const transformTenantData = (
@@ -98,7 +98,7 @@ export const transformTenantData = (
   monthly_tenants: data.data.monthly_tenants,
   tenants: data.data.tenants.map((tenant) => ({
     id: tenant.tenant_id || "__ __",
-    name: tenant.name || "__ __",
+    name: tenant.name?.toLowerCase() || "__ __",
     gender: tenant.gender || "__ __",
     address:
       [tenant.address, tenant.lga, tenant.city, tenant.state]
@@ -111,7 +111,7 @@ export const transformTenantData = (
     total: data?.data?.pagination?.total || 0,
     current_page: data?.data?.pagination?.current_page || 0,
     last_page: data?.data?.pagination?.last_page || 0,
-  }
+  },
 });
 
 export interface ReportsRequestParams {
@@ -123,6 +123,8 @@ export interface ReportsRequestParams {
   end_date?: string;
   property_id?: string;
   branch_id?: string;
+  property_ids?: string;
+  branch_ids?: string;
   status?: string;
   is_active?: string;
 }

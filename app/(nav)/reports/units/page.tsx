@@ -46,7 +46,9 @@ const UnitsReport = () => {
     endDate: null,
   });
   const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
@@ -66,25 +68,46 @@ const UnitsReport = () => {
   const unitStatus = ["occupied", "relocate", "vacant", "expired"];
   const reportTenantFilterOption = [
     {
-      label: "Account Officer",
-      value: branchAccountOfficers.map((staff: any) => ({
-        label: staff.user.name,
-        value: staff.user.id.toString(),
-      })),
+      label: "Account Manager",
+      value: [
+        ...new Map(
+          branchAccountOfficers.map((staff: any) => [
+            staff.user.name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: staff.user.name.toLowerCase(), // Keep original case for display
+              value: staff.user.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          branches.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name.toLowerCase(),
+              value: branch.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Property",
-      value: propertyList.map((property: any) => ({
-        label: property.title,
-        value: property.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          propertyList.filter((u) => u.units.length > 0).map((property: any) => [
+            property.title.toLowerCase(), // Use lowercase for comparison
+            {
+              label: property.title.toLowerCase(), // Keep original case for display
+              value: property.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Status",
@@ -117,12 +140,15 @@ const UnitsReport = () => {
       const status = menuOptions["Status"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
       if (branch.length > 0) queryParams.branch_id = branch.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
-      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
@@ -151,7 +177,8 @@ const UnitsReport = () => {
     router.push("/reports/units/export");
   };
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Units Report" view="table" />;
+  if (loading)
+    return <CustomLoader layout="page" pageTitle="Units Report" view="table" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -195,10 +222,15 @@ const UnitsReport = () => {
               title="No Unit Data Available Yet"
               body={
                 <p>
-                  There is currently no unit data available for export. Once unit records are added to the system, they will automatically appear here and be available for download or export.
-                  <br /><br />
+                  There is currently no unit data available for export. Once
+                  unit records are added to the system, they will automatically
+                  appear here and be available for download or export.
+                  <br />
+                  <br />
                   <p>
-                    This section will be updated in real-time as new unit profiles are created, allowing you to easily manage and export your data when needed.
+                    This section will be updated in real-time as new unit
+                    profiles are created, allowing you to easily manage and
+                    export your data when needed.
                   </p>
                 </p>
               }
