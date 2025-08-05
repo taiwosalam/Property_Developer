@@ -22,7 +22,7 @@ import {
 } from "@/components/Settings/data";
 
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-import { staffConfigurations, updateSettingsManagement } from "./data";
+import { staffConfigurations, updateSettingsManagement, validPermissions } from "./data";
 import Button from "@/components/Form/Button/button";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
@@ -150,24 +150,57 @@ const Management = () => {
   };
 
   /* MANAGEMENT CONFIGURATION */
-  const handleUpdate = async (title: string) => {
-    const role = roleMapping[title] || title; // Map title or fallback to original
-    const permissions = selectedPermissions[title] || []; // Ensure we have an array
+  // const handleUpdate = async (title: string) => {
+  //   const role = roleMapping[title] || title; // Map title or fallback to original
+  //   const permissions = selectedPermissions[title] || []; // Ensure we have an array
 
-    const payload = {
-      role, // Use mapped role
-      permissions, // Correctly formatted array
-    };
+  //   const payload = {
+  //     role, // Use mapped role
+  //     permissions, // Correctly formatted array
+  //   };
+  //   try {
+  //     setLoadingStates((prev) => ({ ...prev, [role]: true }));
+  //     const res = await updateSettingsManagement(objectToFormData(payload));
+  //     if (res) {
+  //       toast.success(`Management updated successfully`);
+  //     }
+  //   } catch (err) {
+  //     toast.error("Failed to update role");
+  //   } finally {
+  //     setLoadingStates((prev) => ({ ...prev, [role]: false }));
+  //   }
+  // };
+
+  const handleUpdate = async (title: string) => {
+    const roles =
+      roleMapping[title] === "user"
+        ? ["user", "landlord", "tenant"]
+        : [roleMapping[title] || title];
+    const permissions = (selectedPermissions[title] || []).filter((perm) =>
+      roles.some((role) => validPermissions[role]?.includes(perm))
+    );
+
+    if (!permissions.length) {
+      toast.warning("No valid permissions selected");
+      return;
+    }
+
     try {
-      setLoadingStates((prev) => ({ ...prev, [role]: true }));
-      const res = await updateSettingsManagement(objectToFormData(payload));
-      if (res) {
-        toast.success(`Management updated successfully`);
+      setLoadingStates((prev) => ({ ...prev, [roleMapping[title]]: true }));
+      for (const role of roles) {
+        const payload = {
+          role,
+          permissions,
+        };
+        const res = await updateSettingsManagement(objectToFormData(payload));
+        if (res) {
+          toast.success(`Management updated successfully for ${role}`);
+        }
       }
     } catch (err) {
       toast.error("Failed to update role");
     } finally {
-      setLoadingStates((prev) => ({ ...prev, [role]: false }));
+      setLoadingStates((prev) => ({ ...prev, [roleMapping[title]]: false }));
     }
   };
 

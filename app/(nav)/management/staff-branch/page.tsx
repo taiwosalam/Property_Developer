@@ -43,6 +43,7 @@ const StaffAndBranches = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
   const router = useRouter();
+  const didMountRef = useRef(false);
 
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
@@ -90,9 +91,12 @@ const StaffAndBranches = () => {
     sessionStorage.setItem("branches_page", current_page.toString());
   }, [current_page]);
 
-  // When view changes, reset page to 1 and clear branch list,
-  // then trigger a refetch (similar to the Landlord page)
   useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return; // skip initial mount!
+    }
+    // Now reset page ONLY if user actually changed view
     setConfig((prevConfig) => ({
       ...prevConfig,
       params: { ...prevConfig.params, page: 1 },

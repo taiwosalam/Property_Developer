@@ -107,7 +107,7 @@ export interface UnitDataObject {
   tenants_by_agent?: {
     Web: number;
     Mobile: number;
-  }
+  };
 }
 
 export interface PropertyDataObject {
@@ -139,7 +139,7 @@ export interface PropertyDataObject {
   tenants_by_agent: {
     Mobile: number;
     Web: number;
-  },
+  };
   staff:
     | {
         id: string;
@@ -215,9 +215,9 @@ export const transformPropertiesApiResponse = (
   };
 
   const propertiesData = isPropertiesApiResponse(response)
-  ? response.data.properties
-  : response.data;
-  
+    ? response.data.properties
+    : response.data;
+
   // console.log("respin", propertiesData)
   const transformedProperties: PropertyCardProps[] = propertiesData.data.map(
     (p) => {

@@ -351,7 +351,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               </div>
             </div>
 
-            <p className="bg-[var(--secondary-color) bg-red-500 flex text-center bg-opacity-10 text-xs rounded-md py-2 px-4">
+            <p className="bg-[var(--secondary-color) bg-red-500 flex items-center justify-center text-center bg-opacity-10 text-xs rounded-md py-2 px-4">
               {task.content.date}
             </p>
           </div>

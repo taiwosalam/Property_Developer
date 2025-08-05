@@ -45,6 +45,7 @@ interface CustomDatePickerProps {
   minDate?: Dayjs;
   maxDate?: Dayjs;
   disabled?: boolean;
+  views?: ("year" | "month" | "day")[];
 }
 
 export default function CustomDatePicker({
@@ -59,6 +60,7 @@ export default function CustomDatePicker({
   maxDate,
   disabled,
   lastYear,
+  views = ["year", "month", "day"],
 }: CustomDatePickerProps) {
   const isDarkMode = useDarkMode();
   const CustomCalendarIcon = () => (
@@ -86,7 +88,8 @@ export default function CustomDatePicker({
           minDate={computedMinDate}
           maxDate={maxDate}
           openTo="year"
-          views={["year", "month", "day"]}
+          views={views}
+          // views={["year", "month", "day"]}
           value={value}
           onChange={(date) => {
             onChange?.(date);

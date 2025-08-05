@@ -55,28 +55,37 @@ export const StaffEditProfileInfoSection = () => {
   });
 
   const handleUpdateProfile = async (data: Record<string, string>) => {
+    // Calculate years_experience from selected date
+    let yearsExperience = 0;
+    if (data.years_experience) {
+      const selectedDate = dayjs(data.years_experience as string);
+      const selectedYear = selectedDate.year();
+      const currentYear = dayjs().year(); 
+      yearsExperience = Math.max(0, currentYear - selectedYear); 
+    }
+
     const payload: Record<string, string> = {
       full_name: data.fullname,
       title: data.personal_title,
       professional_title: data.real_estate_title,
-      years_experience: data.years_experience,
+      years_experience: yearsExperience.toString(),
       gender: data.gender,
     };
-  
+
     // Create a temp object with a proper type
     const phoneObj: { phone_number: string } = {
       phone_number: data.phone_number,
     };
-  
-    cleanPhoneNumber(phoneObj); 
-  
+
+    cleanPhoneNumber(phoneObj);
+
     if (
       phoneObj.phone_number &&
       phoneObj.phone_number !== staff?.phone_number
     ) {
       payload.phone_number = phoneObj.phone_number;
     }
-  
+
     if (staff?.id) {
       setReqLoading(true);
       const status = await updateStaffProfile(
@@ -89,7 +98,11 @@ export const StaffEditProfileInfoSection = () => {
       setReqLoading(false);
     }
   };
-  
+
+  // Convert staffExperience (number of years) to a year for DateInput
+  const experienceDate = staff?.experience
+    ? dayjs(`${dayjs().year() - Number(staff?.experience)}-01-01`)
+    : null;
 
   return (
     <LandlordTenantInfoEditSection title="profile">
@@ -133,23 +146,14 @@ export const StaffEditProfileInfoSection = () => {
             defaultValue={staff?.email}
           />
 
-          {/* <Select
-            id="years_experience"
-            label="years of experience"
-            placeholder="Write here"
-            options={yearsOptions}
-            hiddenInputClassName="setup-f"
-            defaultValue={`${staff?.experience}+`}
-          /> */}
           <DateInput
             id="years_experience"
             label="years of experience (since)"
             className="experience-year-dropdown"
             inputClassName="setup-f required"
             disableFuture
-            defaultValue={
-              staff?.experience ? dayjs(staff?.experience) : undefined
-            }
+            views={["year"]}
+            value={experienceDate}
           />
           <div className="gender-dropdown">
             <Select

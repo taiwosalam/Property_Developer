@@ -1,3 +1,4 @@
+
 "use client";
 import { Fragment, useEffect, useState } from "react";
 import Select from "@/components/Form/Select/select";
@@ -12,7 +13,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import useFetch from "@/hooks/useFetch";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { toast } from "sonner";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   deleteAnnouncement,
   updateAnnouncement,
@@ -61,12 +62,10 @@ const CreateAnnouncementForm: React.FC<{
 
   useEffect(() => {
     if (branchData) {
-      const branchIdName = branchData?.data.map((branch) => {
-        return {
-          id: branch.id,
-          branch_name: branch.branch_name,
-        };
-      });
+      const branchIdName = branchData?.data.map((branch) => ({
+        id: branch.id,
+        branch_name: branch.branch_name,
+      }));
       setBranches(branchIdName);
     }
   }, [branchData]);
@@ -84,19 +83,17 @@ const CreateAnnouncementForm: React.FC<{
   useEffect(() => {
     if (propertyData) {
       const propertyIdTitle = propertyData.data.branch.properties.map(
-        (property) => {
-          return {
-            id: property.id,
-            title: property.title,
-          };
-        }
+        (property) => ({
+          id: property.id,
+          title: property.title,
+        })
       );
       setProperties(propertyIdTitle);
     }
   }, [propertyData]);
 
-  const [imageFiles, setImageFiles] = useState<File[]>([]); // Store actual File objects
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]); // Store Base64 for previews
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   useEffect(() => {
     if (announcementData && editMode) {
@@ -105,7 +102,7 @@ const CreateAnnouncementForm: React.FC<{
       ) as string[];
       setImagePreviews(defaultImage);
     }
-  }, [announcementData]);
+  }, [announcementData, editMode]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let files = Array.from(e.target.files || []);
@@ -167,25 +164,21 @@ const CreateAnnouncementForm: React.FC<{
       toast.error("Please upload at least one image or provide a video link.");
       return;
     }
-    // Append image files to FormData
     imageFiles.forEach((file, index) => {
       formData.append(`images[${index}]`, file);
     });
 
     if (company_id) formData.append("company_id", company_id);
 
-    // Call the parent handleSubmit with the updated FormData
     handleSubmit(formData);
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-
   const paramId = announcementId as string;
 
-  // switch the route
   const getRoute = () => {
-    switch (role) { 
+    switch (role) {
       case "account":
         return "/accountant/tasks/announcements";
       case "manager":
@@ -199,14 +192,12 @@ const CreateAnnouncementForm: React.FC<{
     if (company_id) formData.append("company_id", company_id);
     formData.append("_method", "PATCH");
     const description = formData.get("description");
-
     const title = formData.get("title");
 
-    // if (!title) {
-    //   toast.error("You need to provide a title");
-    //   return;
-    // } else if (!description) {
-    if (!description) {
+    if (!title) {
+      toast.error("You need to provide a title");
+      return;
+    } else if (!description) {
       toast.error("You need to provide a description");
       return;
     } else if (String(description).trim().length < 40) {
@@ -259,12 +250,14 @@ const CreateAnnouncementForm: React.FC<{
       }));
       setBranches(branchIdName);
 
-      // Set selected branch from announcement data if not already set
       if (announcementData?.announcement?.branch_id && !selectedBranch) {
         const foundBranch = branchIdName.find(
           (b) => b.id === announcementData.announcement.branch_id
         );
         if (foundBranch) setSelectedBranch(foundBranch);
+      }
+      if (!announcementData?.announcement?.branch_id && !selectedBranch) {
+        setSelectedBranch(null);
       }
     }
   }, [editMode, branchData, announcementData]);
@@ -279,15 +272,45 @@ const CreateAnnouncementForm: React.FC<{
       );
       setProperties(propertyIdTitle);
 
-      // Set selected property from announcement data if not already set
       if (announcementData?.announcement?.property_id && !selectedProperty) {
         const foundProperty = propertyIdTitle.find(
           (p) => p.id === announcementData.announcement.property_id
         );
         if (foundProperty) setSelectedProperty(foundProperty);
       }
+      if (!announcementData?.announcement?.property_id && !selectedProperty) {
+        setSelectedProperty(null);
+      }
     }
   }, [editMode, propertyData, announcementData]);
+
+  // Build select options for branches based on editMode
+  const branchSelectOptions = editMode
+    ? [
+        { value: "", label: "Send to all Branches" },
+        ...branches.map((branch) => ({
+          value: branch.id.toString(),
+          label: branch.branch_name,
+        })),
+      ]
+    : branches.map((branch) => ({
+        value: branch.id.toString(),
+        label: branch.branch_name,
+      }));
+
+  // Same logic for properties if you need "Send to all Properties" in editMode
+  const propertySelectOptions = editMode
+    ? [
+        { value: "", label: "Send to all Properties" },
+        ...properties.map((property) => ({
+          value: property.id.toString(),
+          label: property.title,
+        })),
+      ]
+    : properties.map((property) => ({
+        value: property.id.toString(),
+        label: property.title,
+      }));
 
   return (
     <AuthForm
@@ -297,83 +320,69 @@ const CreateAnnouncementForm: React.FC<{
     >
       <div className="flex flex-col gap-y-5 gap-x-[40px] lg:flex-row lg:items-start pb-[200px]">
         <div className="grid gap-x-4 gap-y-5 md:grid-cols-2 lg:w-[63%]">
-          {
-            <Fragment>
-              <Select
-                id="branch_id"
-                label="Branch"
-                className="branch-selection-dropdown"
-                disabled={silentLoading || loading}
-                placeholder={
-                  loading ? "Please wait..." : "Send to all Branches"
-                }
-                options={branches.map((branch) => {
-                  return {
-                    value: branch.id,
-                    label: branch.branch_name,
-                  };
-                })}
-                value={
-                  selectedBranch && selectedBranch.id !== null
-                    ? {
-                        value: selectedBranch.id.toString(),
-                        label: selectedBranch.branch_name,
-                      }
-                    : ""
-                }
-                onChange={(selectedOption) => {
-                  if (selectedOption) {
-                    const branch = branches.find(
-                      (b) => b.id.toString() === selectedOption
-                    );
-                    if (branch) {
-                      setSelectedBranch(branch);
+          <Fragment>
+            <Select
+              id="branch_id"
+              label="Branch"
+              className="branch-selection-dropdown"
+              disabled={silentLoading || loading}
+              placeholder={loading ? "Please wait..." : "Send to all Branches"}
+              options={branchSelectOptions}
+              value={
+                selectedBranch && selectedBranch.id !== null
+                  ? {
+                      value: selectedBranch.id.toString(),
+                      label: selectedBranch.branch_name,
                     }
-                  } else {
-                    setSelectedBranch(null);
-                    setSelectedProperty(null);
+                  : ""
+              }
+              onChange={(selectedOption) => {
+                if (selectedOption === "") {
+                  setSelectedBranch(null);
+                  setSelectedProperty(null);
+                } else if (selectedOption) {
+                  const branch = branches.find(
+                    (b) => b.id.toString() === selectedOption
+                  );
+                  if (branch) {
+                    setSelectedBranch(branch);
                   }
-                }}
-                inputContainerClassName="bg-white"
-              />
-              <Select
-                id="property_id"
-                label="Property"
-                className="property-selection-dropdown"
-                disabled={!selectedBranch || propertySilent}
-                placeholder={
-                  propertyLoading ? "Please wait..." : "Send to all Properties"
                 }
-                options={properties.map((property) => {
-                  return {
-                    value: property.id.toString(),
-                    label: property.title,
-                  };
-                })}
-                value={
-                  selectedProperty && selectedProperty.id !== null
-                    ? {
-                        value: selectedProperty.id.toString(),
-                        label: selectedProperty.title,
-                      }
-                    : ""
-                }
-                onChange={(selectedValue) => {
-                  if (selectedValue) {
-                    const property = properties.find(
-                      (p) => p.id.toString() === selectedValue
-                    );
-                    if (property) {
-                      setSelectedProperty(property);
+              }}
+              inputContainerClassName="bg-white"
+            />
+            <Select
+              id="property_id"
+              label="Property"
+              className="property-selection-dropdown"
+              disabled={!selectedBranch || propertySilent}
+              placeholder={
+                propertyLoading ? "Please wait..." : "Send to all Properties"
+              }
+              options={propertySelectOptions}
+              value={
+                selectedProperty && selectedProperty.id !== null
+                  ? {
+                      value: selectedProperty.id.toString(),
+                      label: selectedProperty.title,
                     }
-                  } else {
-                    setSelectedProperty(null);
+                  : ""
+              }
+              onChange={(selectedValue) => {
+                if (selectedValue === "") {
+                  setSelectedProperty(null);
+                } else if (selectedValue) {
+                  const property = properties.find(
+                    (p) => p.id.toString() === selectedValue
+                  );
+                  if (property) {
+                    setSelectedProperty(property);
                   }
-                }}
-                inputContainerClassName="bg-white"
-              />
-            </Fragment>
-          }
+                }
+              }}
+              inputContainerClassName="bg-white"
+            />
+          </Fragment>
           <Input
             id="title"
             label="Title"
