@@ -124,17 +124,17 @@ const BranchBalanceCard = ({
               ),
           },
           {
+            name: "Send Funds",
+            icon: <BlueSendIcon />,
+            action: walletPinStatus === "active" ? <SendFundsModal /> : null,
+          },
+          {
             name: "Withdraw",
             icon: <BlueBuildingIcon />,
             action:
               walletPinStatus === "active" ? (
                 <WithdrawFundsModal branch={true} />
               ) : null,
-          },
-          {
-            name: "Send Funds",
-            icon: <BlueSendIcon />,
-            action: walletPinStatus === "active" ? <SendFundsModal /> : null,
           },
         ]
       : [

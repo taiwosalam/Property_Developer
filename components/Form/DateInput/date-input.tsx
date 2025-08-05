@@ -25,11 +25,11 @@ const DateInput: React.FC<DateInputProps> = ({
   containerClassName,
   labelclassName,
   disabled,
+  views,
 }) => {
   const handleDateChange = (date: Dayjs | null) => {
     if (onChange) {
       onChange(date);
-      console.log("date: ", date);
     }
   };
 
@@ -41,6 +41,7 @@ const DateInput: React.FC<DateInputProps> = ({
         </Label>
       )}
       <DatePicker
+        views={views}
         inputId={id}
         inputClassName={inputClassName}
         onChange={handleDateChange}

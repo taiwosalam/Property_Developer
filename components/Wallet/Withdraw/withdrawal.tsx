@@ -242,7 +242,7 @@ const Withdrawal: React.FC<
               onChange={handleAmountChange}
             />
             {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
-            {amount >= MIN_WITHDRAWAL && !branch && (
+            {amount >= MIN_WITHDRAWAL && (!branch || role === "manager") && (
               <div>
                 <Input
                   readOnly

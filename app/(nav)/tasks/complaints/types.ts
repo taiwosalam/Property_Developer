@@ -94,6 +94,7 @@ interface ComplaintDetail {
   property_city: string;
   property_address: string;
   branch_id: number;
+  landlord_agent: string;
   branch_name: string;
   account_officer: string | null;
   status: string;

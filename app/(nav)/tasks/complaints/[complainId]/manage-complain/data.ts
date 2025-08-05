@@ -13,6 +13,7 @@ export interface IManageComplaints {
   description: string | null;
   tier_id: number;
   branch_id: number;
+  landlord_agent: string;
   status: boolean;
   notes: {
     date: string;
@@ -113,6 +114,7 @@ export const transformComplaintManage = (
         : false,
     tier_id: data?.complaint?.tier,
     branch_id: data?.complaint?.branch_id,
+    landlord_agent: data?.complaint?.landlord_agent,
     notes:
       data?.complaint.notes &&
       data?.complaint?.notes?.map((note) => ({
