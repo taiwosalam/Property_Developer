@@ -17,6 +17,8 @@ import {
 import { SectionSeparator } from "../Section/section-components";
 import useFetch from "@/hooks/useFetch";
 import Link from "next/link";
+import { OtherIcon } from "./notification-icons";
+import { useRole } from "@/hooks/roleContext";
 
 interface NotificationProps {
   notification: {
@@ -46,24 +48,46 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
 
   const route = notification_links[resolvedType] || "/";
 
-  console.log(notification.type);
+  const IconComponent = notification_icons[resolvedType];
+
+  const { role } = useRole();
+
+  const getRoleBasedRoute = (baseRoute: string) => {
+    switch (role) {
+      case "manager":
+        return `/manager${baseRoute}`;
+      case "accountant":
+        return `/accountant${baseRoute}`;
+      case "staff":
+        return `/staff${baseRoute}`;
+      default:
+        return baseRoute;
+    }
+  };
+
+  const roleRoute = getRoleBasedRoute(route);
 
   return (
     <div className="custom-flex-col gap-4">
       <div className="flex gap-4">
         <Link
-          // href={notification_links[notification.type.toLowerCase()]}
-          href={route}
+          href={roleRoute}
           className="w-full flex gap-4"
         >
           <div className="flex items-start">
-            <Picture
-              src={
-                notification_icons[resolvedType] || empty
-              }
-              alt="message"
-              size={50}
-            />
+            {/* Render the JSX Element icon */}
+            {IconComponent ? (
+              <IconComponent
+                size={50}
+                className="w-[50px] h-[50px]"
+                alt="notification icon"
+              />
+            ) : (
+              // Fallback icon or empty div
+              <div className="w-[50px] h-[50px] bg-gray-200 rounded">
+                <OtherIcon />
+              </div>
+            )}
           </div>
           <div className="flex-1 custom-flex-col gap-2">
             <div className="custom-flex-col gap-1">
@@ -86,13 +110,14 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
               />
               <div className="flex gap-2 py-2">
                 {notification.sender_picture &&
+                  notification.sender_name !== "system" &&
                   notification.sender_picture !== "/img/system-logo.png" && (
                     <div className="flex items-center">
                       <Picture
                         src={notification.sender_picture ?? Avatar}
                         alt="profile picture"
                         size={50}
-                        className="rounded-md"
+                        className="rounded-md bg-brand-9"
                       />
                     </div>
                   )}
@@ -100,7 +125,7 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
                   <div className="flex items-center gap-2">
                     <p className="text-text-secondary text-sm font-medium capitalize">
                       {notification.sender_name &&
-                      notification.sender_name !== "System"
+                      notification.sender_name !== "system"
                         ? notification.action_text
                         : null}
                     </p>
