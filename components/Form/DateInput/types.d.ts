@@ -16,4 +16,5 @@ export interface DateInputProps {
   labelclassName?: string;
   disabled?: boolean;
   lastYear?: boolean;
+  views?: ("year" | "month" | "day")[];
 }

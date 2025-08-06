@@ -23,8 +23,9 @@ interface StateType {
 interface IAssignTaskProps {
   branchId?: number;
   taskStatus?: boolean;
+  landlordAgent?: string;
 }
-const AssignTaskCard = ({ branchId, taskStatus }: IAssignTaskProps) => {
+const AssignTaskCard = ({ branchId, taskStatus, landlordAgent }: IAssignTaskProps) => {
   const myClasses =
     "border border-[#C1C2C366] rounded-lg py-[11px] px-[18px] text-xs md:text-sm font-medium hover:border-[#00000099] transition-colors duration-300 ease-in-out";
 
@@ -151,6 +152,7 @@ const AssignTaskCard = ({ branchId, taskStatus }: IAssignTaskProps) => {
 
   const hasStaff = branchOPtions.length > 0;
   const hasProviders = providerOptions.length > 0;
+  const isMobileLandlord = landlordAgent?.toLowerCase() === "mobile";
 
   return (
     <div
@@ -202,7 +204,7 @@ const AssignTaskCard = ({ branchId, taskStatus }: IAssignTaskProps) => {
             onChange={(provider) => handleProviderSelection(provider)}
           />
           <button
-            disabled={taskStatus}
+            disabled={taskStatus || !isMobileLandlord}
             className={clsx(myClasses, "flex justify-between")}
             onClick={handleLandlordClick}
           >

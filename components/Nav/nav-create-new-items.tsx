@@ -190,13 +190,13 @@ export const accountant_create_new_items: CreateNewItemsProps = [
     label: "documents",
     content: [
       {
-        label: "Application Form",
+        label: "Tenancy Form",
         modal: (
           <CreateTenancyAggrementModal defaultOption="tenancy_application_form" />
         ),
       },
       {
-        label: "Management Application Form",
+        label: "Management Form",
         modal: <CreateTenancyAggrementModal defaultOption="management_application_form" />,
       },
     ],
@@ -225,13 +225,13 @@ export const staff_create_new_items: CreateNewItemsProps = [
     label: "documents",
     content: [
       {
-        label: "Application Form",
+        label: "Tenancy Form",
         modal: (
           <CreateTenancyAggrementModal defaultOption="tenancy_application_form" />
         ),
       },
       {
-        label: "Management Application Form",
+        label: "Management Form",
         modal: <CreateTenancyAggrementModal defaultOption="management_application_form" />,
       },
     ],

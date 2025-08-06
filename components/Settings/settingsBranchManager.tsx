@@ -1,22 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-
-// Images
 import { Check } from "lucide-react";
 import DangerIcon from "@/public/icons/danger.svg";
 import ImageBlue from "@/public/icons/image-blue.svg";
 import SignatureImage from "@/public/accounting/signature.svg";
-
-// Imports
 import { genderTypes, industryOptions, titles } from "@/data";
 import Input from "@/components/Form/Input/input";
 import Picture from "@/components/Picture/picture";
 import Select from "@/components/Form/Select/select";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import SettingsSection from "@/components/Settings/settings-section";
-import { ProfileUpload } from "@/components/Settings/settings-components";
-
 import {
   SettingsSectionTitle,
   SettingsUpdateButton,
@@ -50,8 +44,13 @@ import Button from "../Form/Button/button";
 import { NameVerification } from "./name-verification";
 import { validateAndCleanPhoneNumber } from "@/utils/validatePhoneNumber";
 import { useBranchInfoStore } from "@/store/branch-info-store";
-import { updateStaffPicture, updateStaffProfile } from "@/app/(nav)/manager/management/branch-staff/[staffId]/edit/data";
+import {
+  updateStaffPicture,
+  updateStaffProfile,
+} from "@/app/(nav)/manager/management/branch-staff/[staffId]/edit/data";
 import { StaffEditProfileInfoSection } from "../Management/Staff-And-Branches/Branch/StaffProfile/edit-staff-info-sections";
+import DateInput from "../Form/DateInput/date-input";
+import dayjs from "dayjs";
 
 const ManagerProfile = () => {
   const { role } = useRole();
@@ -76,8 +75,11 @@ const ManagerProfile = () => {
   const { staff } = usePersonalInfoStore();
   const OtherStaffID = staff?.id;
   const managerID = useBranchInfoStore((s) => s.manager.id);
-  const staffID = role === "manager" ? managerID : OtherStaffID; //TODO: get staff id for account officer and staff later
+  const staffID = role === "manager" ? managerID : OtherStaffID;
   const branchId = useBranchInfoStore((s) => s.branch_id);
+  const staffExperience = usePersonalInfoStore(
+    (state) => state.staff.years_experience
+  );
 
   const { data, loading, error, refetch } = useFetch("/user/profile");
   useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
@@ -91,10 +93,8 @@ const ManagerProfile = () => {
     }
   }, [data]);
 
-
   useEffect(() => {
     if (pageData?.profile_picture) {
-      // setAvatar(pageData?.profile_picture);
       setPicture(pageData?.profile_picture);
     }
   }, [pageData?.profile_picture]);
@@ -105,55 +105,60 @@ const ManagerProfile = () => {
   };
 
   const handleAvatarSelection = (avatarUrl: string) => {
-    clearImageSelection(); // Clear any selected image
+    clearImageSelection();
     setAvatar(avatarUrl);
     if (avatarUrl) {
       setPicture("");
       setIsOpen(false);
       setPageData((prev) => ({
         ...prev,
-        profile_picture: "", // Clear the profile picture
+        profile_picture: "",
       }));
     }
   };
 
   const handleUpdateProfile = async (data: Record<string, string | File>) => {
-    console.log("data", data);
     const phoneNumber = data.phone_number as string;
-    // Validate phone number
     const cleanedPhoneNumber = validateAndCleanPhoneNumber(phoneNumber) || "";
     if (!cleanedPhoneNumber && phoneNumber) {
       toast.warning("Please enter a valid phone number.");
       return;
     }
 
+    // Calculate years_experience from selected date
+    let yearsExperience = 0;
+    if (data.years_experience) {
+      const selectedDate = dayjs(data.years_experience as string);
+      const selectedYear = selectedDate.year();
+      const currentYear = dayjs().year(); 
+      yearsExperience = Math.max(0, currentYear - selectedYear);
+    }
+
     // Construct user payload
     const payload: Record<string, string | File> = {
       name: data.full_name,
       title: data.personal_title,
-      gender: data.gender,
       bio: data.about,
       professional_title: data.professional_title,
       email: data.email || "",
+      years_experience: yearsExperience.toString(), // Send as string for FormData
     };
 
     // Construct staff payload
     const staffPayload = {
       full_name: data.full_name,
       title: data.personal_title,
-      gender: data.gender,
       bio: data.about,
       professional_title: data.professional_title,
       phone_number: "",
+      years_experience: yearsExperience.toString(), // Send as string for FormData
     };
 
-    // Only include phone number if it has changed
     if (cleanedPhoneNumber !== pageData.phone) {
       payload.phone = cleanedPhoneNumber;
       staffPayload.phone_number = cleanedPhoneNumber;
     }
 
-    // Prepare picture or avatar for both user and staff
     let imageChanged = false;
     const pictureFormData = new FormData();
 
@@ -169,31 +174,32 @@ const ManagerProfile = () => {
       imageChanged = true;
     }
 
-
     try {
       setReqLoading(true);
 
-      // Update user profile
       const userRes = await updateUserProfile(objectToFormData(payload));
       if (userRes) {
         let success = true;
 
-        // Update staff profile if staffID exists
         if (staffID) {
-          const staffRes = await updateStaffProfile(staffID.toString(), objectToFormData(staffPayload));
+          const staffRes = await updateStaffProfile(
+            staffID.toString(),
+            objectToFormData(staffPayload)
+          );
           if (!staffRes) {
             success = false;
           }
-          // Update staff picture if changed
           if (imageChanged) {
-            const pictureRes = await updateStaffPicture(staffID.toString(), pictureFormData);
+            const pictureRes = await updateStaffPicture(
+              staffID.toString(),
+              pictureFormData
+            );
             if (!pictureRes) {
               success = false;
             }
           }
         }
 
-        // Show single success toast if all operations succeeded
         if (success) {
           toast.success("Profile updated successfully");
           window.dispatchEvent(new Event("fetch-profile"));
@@ -217,6 +223,11 @@ const ManagerProfile = () => {
   const onChangeFullName = (value: string) => {
     setFullName(value);
   };
+
+  // Convert staffExperience (number of years) to a year for DateInput
+  const experienceDate = staffExperience
+    ? dayjs(`${dayjs().year() - staffExperience}-01-01`)
+    : null;
 
   return (
     <>
@@ -368,16 +379,14 @@ const ManagerProfile = () => {
                     type="email"
                     label="email"
                     disabled
-                    // defaultValue={pageData?.email}
                     value={pageData?.email}
                   />
-                  <Select
-                    id="gender"
-                    label="gender"
-                    isSearchable={false}
-                    options={genderTypes}
-                    inputContainerClassName="bg-neutral-2"
-                    defaultValue={pageData?.gender}
+                  <DateInput
+                    id="years_experience"
+                    label="Years of Experience (Since)"
+                    value={experienceDate}
+                    disableFuture
+                    views={["year"]}
                   />
                   <PhoneNumberInput
                     id="phone_number"

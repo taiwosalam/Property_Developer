@@ -25,6 +25,7 @@ import { updateBranch } from "@/app/(nav)/management/staff-branch/[branchId]/edi
 import UpdateBranchModalSuccess from "./update-branch-modal-success";
 import Button from "@/components/Form/Button/button";
 import { useRole } from "@/hooks/roleContext";
+import DateInput from "@/components/Form/DateInput/date-input";
 
 const EditBranchForm = ({
   somedata,
@@ -176,7 +177,7 @@ const EditBranchForm = ({
                 inputClassName="city-street-input bg-white"
                 defaultValue={somedata?.address}
               />
-              {page !== "manager" && (
+              {role !== "manager" && (
                 <Select
                   id="branch_wallet"
                   label="Activate branch wallet"
@@ -185,6 +186,7 @@ const EditBranchForm = ({
                   defaultValue={somedata?.wallet}
                 />
               )}
+
             </div>
 
             <TextArea

@@ -34,28 +34,25 @@ const UnitBreakdownRenewalTenant = () => {
   const initialFormValues = useMemo(() => {
     return {
       rentAmount: unitData?.renew_fee_amount
-        ? formatNumber(parseFloat(unitData.renew_fee_amount))
+        ? formatNumber(parseFloat(unitData.renew_fee_amount) || 0)
         : "",
       agencyFee: unitData?.agency_fee
-        ? formatNumber(parseFloat(unitData.agency_fee))
+        ? formatNumber(parseFloat(unitData.agency_fee) || 0)
         : "",
       serviceCharge: unitData?.renew_service_charge
-        ? formatNumber(parseFloat(unitData.renew_service_charge))
+        ? formatNumber(parseFloat(unitData.renew_service_charge) || 0)
         : "",
       otherCharges: unitData?.renew_other_charge
-        ? formatNumber(parseFloat(unitData.renew_other_charge))
+        ? formatNumber(parseFloat(unitData.renew_other_charge) || 0)
         : "",
       securityFee: unitData?.security_fee
-        ? formatNumber(
-            parseFloat((unitData.renew_security_fee || "0").toString())
-          )
+        ? formatNumber(parseFloat(unitData.renew_security_fee as string) || 0)
         : "",
-      // Initialize VAT to "0"
       vat: unitData?.renew_vat
-        ? formatNumber(parseFloat(unitData.renew_vat as string))
+        ? formatNumber(parseFloat(unitData.renew_vat as string) || 0)
         : "0",
       totalPackage: unitData?.renew_total_package
-        ? formatNumber(parseFloat(unitData.renew_total_package))
+        ? formatNumber(parseFloat(unitData.renew_total_package) || 0)
         : "",
     };
   }, [
@@ -82,7 +79,11 @@ const UnitBreakdownRenewalTenant = () => {
   } = formValues;
   type FormField = keyof typeof formValues;
 
-  // Update formValues based on input changes
+  const parseCurrencyValue = (value: string): number => {
+    const cleanedValue = value.replace(/,/g, "");
+    return isNaN(parseFloat(cleanedValue)) ? 0 : parseFloat(cleanedValue);
+  };
+
   const handleInputChange = (field: FormField, value: string) => {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -102,14 +103,10 @@ const UnitBreakdownRenewalTenant = () => {
     }));
   };
 
-  // Calculate VAT for Renewal only if VAT is enabled in settings.
-  // VAT is calculated by:
-  //   const rentTenPercent = rentAmount * 0.10
-  //   const calculatedVAT = rentTenPercent * 0.075
+  // Calculate VAT for Renewal
   useEffect(() => {
-    const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
+    const rentAmountValue = parseCurrencyValue(rentAmount);
     const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
-    // const rentTenPercent = (rentAmountValue * agencyFeePercentage) / 100;
     const rentTenPercent = rentAmountValue * 0.1;
     const calculatedVAT = shouldCalculateVAT ? rentTenPercent * 0.075 : 0;
 
@@ -119,9 +116,9 @@ const UnitBreakdownRenewalTenant = () => {
     }));
   }, [rentAmount, propertySettings?.VAT]);
 
-  // Calculate Agency Fee based on rentAmount and agencyFeePercentage
+  // Calculate Agency Fee
   useEffect(() => {
-    const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
+    const rentAmountValue = parseCurrencyValue(rentAmount);
     const calculatedAgencyFee = shouldChargeTenantAgencyFee
       ? (rentAmountValue * agencyFeePercentage) / 100
       : 0;
@@ -132,20 +129,20 @@ const UnitBreakdownRenewalTenant = () => {
     }));
   }, [rentAmount, agencyFeePercentage, shouldChargeTenantAgencyFee]);
 
-  // Calculate the total package including VAT if enabled
+  // Calculate Total Package
   useEffect(() => {
     const total =
-      (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
-      (parseFloat(agencyFee.replace(/,/g, "")) || 0) +
-      (parseFloat(securityFee.replace(/,/g, "")) || 0) +
-      (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
-      (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
-      (parseFloat(vat.replace(/,/g, "")) || 0);
+      parseCurrencyValue(rentAmount) +
+      parseCurrencyValue(agencyFee) +
+      parseCurrencyValue(securityFee) +
+      parseCurrencyValue(serviceCharge) +
+      parseCurrencyValue(otherCharges) +
+      parseCurrencyValue(vat);
     setFormValues((prevValues) => ({
       ...prevValues,
       totalPackage: formatNumber(total.toFixed(2)),
     }));
-  }, [rentAmount, agencyFee, serviceCharge, otherCharges, vat]);
+  }, [rentAmount, agencyFee, serviceCharge, otherCharges, vat, securityFee]);
 
   // Reset form when formResetKey changes
   useEffect(() => {
@@ -168,10 +165,9 @@ const UnitBreakdownRenewalTenant = () => {
     }
     if (IS_RENTAL && pathname.startsWith("/accountant")) {
       goToStep(32);
-    } else if (!IS_RENTAL && pathname.startsWith("/accountant")){
-      goToStep(27)
-    }
-     else if (!IS_RENTAL) {
+    } else if (!IS_RENTAL && pathname.startsWith("/accountant")) {
+      goToStep(27);
+    } else if (!IS_RENTAL) {
       handleGoToTourStep(29);
     } else if (IS_RENTAL && pathname.startsWith("/manager")) {
       handleGoToTourStep(33);
@@ -241,7 +237,6 @@ const UnitBreakdownRenewalTenant = () => {
         {shouldChargeTenantAgencyFee && (
           <Input
             id="renew_agency_fee"
-            // label={IS_RENTAL ? "Management Fee" : "Agency Fee"}
             label="Management Fee"
             inputClassName="bg-white"
             CURRENCY_SYMBOL={CURRENCY_SYMBOL}
@@ -251,7 +246,6 @@ const UnitBreakdownRenewalTenant = () => {
             autoComplete="off"
           />
         )}
-        {/* Only display VAT input if VAT is enabled */}
         {propertySettings?.VAT?.toLowerCase() === "yes" && (
           <Input
             id="renew_vat_amount"

@@ -87,6 +87,7 @@ const ManageComplain = () => {
             <AssignTaskCard
               branchId={pageData.branch_id}
               taskStatus={pageData?.status}
+              landlordAgent={pageData?.landlord_agent}
             />
           )}
           <MessagesFromTask
