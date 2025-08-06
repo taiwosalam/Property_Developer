@@ -114,7 +114,7 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
                   notification.sender_picture !== "/img/system-logo.png" && (
                     <div className="flex items-center">
                       <Picture
-                        src={notification.sender_picture ?? Avatar}
+                        src={notification.sender_picture}
                         alt="profile picture"
                         size={50}
                         className="rounded-md bg-brand-9"
