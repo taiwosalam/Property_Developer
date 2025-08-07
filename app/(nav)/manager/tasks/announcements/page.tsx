@@ -164,10 +164,7 @@ const AnnouncementPage = () => {
             colorScheme={2}
           /> */}
         </div>
-        <Button
-          href={gotoPage()}
-          className="page-header-button"
-        >
+        <Button href={gotoPage()} className="page-header-button">
           + Create Announcement
         </Button>
       </div>
@@ -190,14 +187,6 @@ const AnnouncementPage = () => {
                 {
                   label: "Property",
                   value: propertyOptions,
-                },
-              ]
-            : []),
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
                 },
               ]
             : []),

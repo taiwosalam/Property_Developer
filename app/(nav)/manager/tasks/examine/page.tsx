@@ -183,14 +183,6 @@ const Examine = () => {
                 },
               ]
             : []),
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-            : []),
         ]}
         hasGridListToggle={false}
       />
@@ -213,14 +205,14 @@ const Examine = () => {
                 usage. It helps ensure that properties under your management are
                 in good condition, with tenants maintaining the property as
                 intended.
-                <br />
+                {/* <br />
                 <br />
                 This message will automatically disappear once examine records
                 are added.
                 <br />
                 <br />
                 Need assistance? Click your profile icon in the top right corner
-                and select &apos;Assistance & Support&apos; for help on using this page.
+                and select &apos;Assistance & Support&apos; for help on using this page. */}
               </p>
             }
           />

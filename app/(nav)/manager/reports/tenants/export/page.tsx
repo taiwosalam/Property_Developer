@@ -30,6 +30,7 @@ const ExportTenants = () => {
     total_tenants: 0,
     monthly_tenants: 0,
     tenants: [],
+    pagination: { total: 0, current_page: 0, last_page: 0}
   });
 
    const filteredTenants = useGlobalStore((s) => s.tenants);

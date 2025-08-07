@@ -54,7 +54,6 @@ const LandlordsReport = () => {
   const { data: property } = useFetch<any>(`property/all`);
 
   useEffect(() => {
-   
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -66,18 +65,32 @@ const LandlordsReport = () => {
 
   const reportTenantFilterOption = [
     {
-      label: "Account Officer",
-      value: branchAccountOfficers.map((staff: any) => ({
-        label: staff.user.name,
-        value: staff.user.id.toString(),
-      })),
+      label: "Account Manager",
+      value: [
+        ...new Map(
+          branchAccountOfficers.map((staff: any) => [
+            staff.user.name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: staff.user.name.toLowerCase(), // Keep original case for display
+              value: staff.user.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Property",
-      value: propertyList.map((property: any) => ({
-        label: property.title,
-        value: property.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          propertyList.map((property: any) => [
+            property.title.toLowerCase(), // Use lowercase for comparison
+            {
+              label: property.title, // Keep original case for display
+              value: property.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
   ];
 
@@ -98,13 +111,13 @@ const LandlordsReport = () => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
       const accountOfficer = menuOptions["Account Officer"] || [];
-     
+
       const property = menuOptions["Property"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
-     
+
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -115,11 +128,11 @@ const LandlordsReport = () => {
     []
   );
 
-   // Conditionally set the URL only if BRANCH_ID is valid
-   const fetchUrl =
-   BRANCH_ID && BRANCH_ID !== 0
-     ? `/report/landlords?branch_id=${BRANCH_ID}`
-     : null;
+  // Conditionally set the URL only if BRANCH_ID is valid
+  const fetchUrl =
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/report/landlords?branch_id=${BRANCH_ID}`
+      : null;
 
   const { data, loading, error, isNetworkError } =
     useFetch<LandlordsApiResponse>(`/report/landlords`, config);

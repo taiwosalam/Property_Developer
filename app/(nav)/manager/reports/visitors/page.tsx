@@ -115,20 +115,6 @@ const Visitors = () => {
       ],
     },
     {
-      label: "Branch",
-      value: [
-        ...new Map(
-          branches.map((branch) => [
-            branch.branch_name.toLowerCase(),
-            {
-              label: branch.branch_name.toLowerCase(),
-              value: branch.id.toString(),
-            },
-          ])
-        ).values(),
-      ],
-    },
-    {
       label: "Property",
       value: [
         ...new Map(

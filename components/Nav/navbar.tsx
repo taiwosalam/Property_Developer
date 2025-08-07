@@ -59,6 +59,7 @@ import { useApplyZoomFromLocalStorage } from "@/hooks/useZoom";
 import useBranchData from "@/hooks/useBranchData";
 import { useBranchInfoStore } from "@/store/branch-info-store";
 import { DrawerComponent } from "../Drawer/drawer";
+import Marquee from "../Marquee/marquee";
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
@@ -298,334 +299,354 @@ const Header = () => {
   };
 
   return (
-    <header
-      className={clsx(
-        "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
-        loading && "skeleton"
-      )}
-    >
-      <div className="flex-1 h-full flex gap-6 items-center">
-        {/* Logo - Desktop Only */}
-        <div className="hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden">
-          {loading ? (
-            <Skeleton
-              width="100%"
-              height="100%"
-              animation="wave"
-              sx={{ transform: "none" }}
-            />
-          ) : (
-            <Image
-              src={company_logo || empty}
-              alt="company logo"
-              fill
-              priority
-              sizes="auto"
-              className="object-contain"
-            />
-          )}
-        </div>
-
-        {/* Mobile & Tablet Icons */}
-        <div className="lg:hidden flex items-center gap-2 md:justify-between md:flex-1 ml-auto md:ml-0">
-          {/* Tablet Icons */}
-          <div className="hidden md:flex items-center gap-2 w-full justify-between">
-            <div className="flex items-center gap-2">
-              <NavIcon
-                icon={<DropdownListIcon size={21} />}
-                alt="dropdown list"
+    <>
+      <header
+        className={clsx(
+          "sticky top-0 z-[4] w-full h-[100px] px-3 md:px-10 py-[12.5px] flex gap-4 md:gap-7 lg:gap-5 items-center border-b border-neutral-2 dark:border-[#292929] bg-white dark:bg-[#020617] flex-row-reverse md:flex-row",
+          loading && "skeleton"
+        )}
+      >
+        <div className="flex-1 h-full flex gap-6 items-center">
+          {/* Logo - Desktop Only */}
+          <div className="hidden md:block w-[200px] h-full rounded-lg relative overflow-hidden">
+            {loading ? (
+              <Skeleton
+                width="100%"
+                height="100%"
+                animation="wave"
+                sx={{ transform: "none" }}
               />
+            ) : (
+              <Image
+                src={company_logo || empty}
+                alt="company logo"
+                fill
+                priority
+                sizes="auto"
+                className="object-contain"
+              />
+            )}
+          </div>
+
+          {/* Mobile & Tablet Icons */}
+          <div className="lg:hidden flex items-center gap-2 md:justify-between md:flex-1 ml-auto md:ml-0">
+            {/* Tablet Icons */}
+            <div className="hidden md:flex items-center gap-2 w-full justify-between">
+              <div className="flex items-center gap-2">
+                <NavIcon
+                  icon={<DropdownListIcon size={21} />}
+                  alt="dropdown list"
+                />
+                <Modal>
+                  <ModalTrigger>
+                    <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
+                  </ModalTrigger>
+                  <ModalContent>
+                    <NavGlobalSearch />
+                  </ModalContent>
+                </Modal>
+                <Modal>
+                  <ModalTrigger>
+                    <NavIcon
+                      icon={<PlusBoldIcon size={21} />}
+                      alt="create new"
+                    />
+                  </ModalTrigger>
+                  <ModalContent>
+                    <NavCreateNew />
+                  </ModalContent>
+                </Modal>
+              </div>
+              <div className="flex items-center gap-2">
+                <NavIcon
+                  icon={<MailIcon size={21} />}
+                  href="/messages"
+                  alt="messages"
+                  count={unreadMessageCount}
+                  badgeColor="red"
+                />
+                <NavIcon
+                  icon={<BellIcon size={21} />}
+                  count={notificationCounts}
+                  alt="notifications"
+                  href="/notifications"
+                />
+              </div>
+            </div>
+
+            {/* Mobile Toggle */}
+            <div className="flex md:hidden items-center gap-2">
+              <AnimatePresence mode="popLayout">
+                {mobileToggleOpen ? (
+                  <motion.div
+                    key="open"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-2"
+                  >
+                    <NavSwitchUserSwitch
+                      trigger={
+                        <NavIcon
+                          icon={<DropdownListIcon size={21} />}
+                          alt="dropdown list"
+                        />
+                      }
+                    />
+                    <Modal>
+                      <ModalTrigger>
+                        <NavIcon
+                          icon={<SearchIconBold size={21} />}
+                          alt="search"
+                        />
+                      </ModalTrigger>
+                      <ModalContent>
+                        <NavGlobalSearch />
+                      </ModalContent>
+                    </Modal>
+                    <Modal>
+                      <ModalTrigger>
+                        <NavIcon
+                          icon={<PlusBoldIcon size={21} />}
+                          alt="create new"
+                        />
+                      </ModalTrigger>
+                      <ModalContent>
+                        <NavCreateNew />
+                      </ModalContent>
+                    </Modal>
+                    <NavIcon
+                      href="/messages"
+                      icon={<MailIcon size={21} />}
+                      alt="messages"
+                      count={unreadMessageCount}
+                      badgeColor="red"
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="closed"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center gap-2"
+                  >
+                    <NavIcon
+                      icon={<MailIcon size={21} />}
+                      href="/messages"
+                      badgeColor="red"
+                      alt="messages"
+                      count={unreadMessageCount}
+                    />
+                    <NavIcon
+                      icon={<BellIcon size={21} />}
+                      count={notificationCounts}
+                      alt="notifications"
+                      href="/notifications"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <NavIcon
+                icon={
+                  mobileToggleOpen ? (
+                    <NavCloseIcon size={21} />
+                  ) : (
+                    <SidebarIcon />
+                  )
+                }
+                alt="Toggle"
+                onClick={() => setMobileToggleOpen(!mobileToggleOpen)}
+              />
+            </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
+            <div className="flex-1 flex items-center gap-2">
+              <div className="module-dropdown">
+                <NavSwitchUserSwitch />
+              </div>
               <Modal>
-                <ModalTrigger>
-                  <NavIcon icon={<SearchIconBold size={21} />} alt="search" />
+                <ModalTrigger className="nav-global-search px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
+                  <SearchIcon size={24} />
+                  <span className="text-[#0a132ea6] dark:text-white text-base font-semibold">
+                    Search
+                  </span>
                 </ModalTrigger>
                 <ModalContent>
                   <NavGlobalSearch />
                 </ModalContent>
               </Modal>
               <Modal>
-                <ModalTrigger>
-                  <NavIcon icon={<PlusBoldIcon size={21} />} alt="create new" />
+                <ModalTrigger asChild>
+                  <Button
+                    size="base_medium"
+                    className="nav-create-new py-[10px] px-5 rounded-lg flex-1 max-w-fit"
+                  >
+                    <span className="line-clamp-1 text-ellipsis">
+                      + Create New
+                    </span>
+                  </Button>
                 </ModalTrigger>
                 <ModalContent>
                   <NavCreateNew />
                 </ModalContent>
               </Modal>
+              <DrawerComponent />
             </div>
-            <div className="flex items-center gap-2">
-              <NavIcon
-                icon={<MailIcon size={21} />}
-                href="/messages"
-                alt="messages"
-                count={unreadMessageCount}
-                badgeColor="red"
-              />
-              <NavIcon
-                icon={<BellIcon size={21} />}
-                count={notificationCounts}
-                alt="notifications"
-                href="/notifications"
-              />
-            </div>
-          </div>
 
-          {/* Mobile Toggle */}
-          <div className="flex md:hidden items-center gap-2">
-            <AnimatePresence mode="popLayout">
-              {mobileToggleOpen ? (
-                <motion.div
-                  key="open"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex items-center gap-2"
+            <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
+              <div className="relative">
+                <Link
+                  href="/messages"
+                  aria-label="messages"
+                  className={`nav-messages ${lgIconsInteractionClasses}`}
                 >
-                  <NavSwitchUserSwitch
-                    trigger={
-                      <NavIcon
-                        icon={<DropdownListIcon size={21} />}
-                        alt="dropdown list"
-                      />
-                    }
+                  <MailIcon />
+                  <NotificationBadge
+                    count={roundUptoNine(unreadMessageCount)}
+                    color="red"
                   />
-                  <Modal>
-                    <ModalTrigger>
-                      <NavIcon
-                        icon={<SearchIconBold size={21} />}
-                        alt="search"
-                      />
-                    </ModalTrigger>
-                    <ModalContent>
-                      <NavGlobalSearch />
-                    </ModalContent>
-                  </Modal>
-                  <Modal>
-                    <ModalTrigger>
-                      <NavIcon
-                        icon={<PlusBoldIcon size={21} />}
-                        alt="create new"
-                      />
-                    </ModalTrigger>
-                    <ModalContent>
-                      <NavCreateNew />
-                    </ModalContent>
-                  </Modal>
-                  <NavIcon
-                    href="/messages"
-                    icon={<MailIcon size={21} />}
-                    alt="messages"
-                    count={unreadMessageCount}
-                    badgeColor="red"
-                  />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="closed"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex items-center gap-2"
+                </Link>
+              </div>
+              <div className="relative" onClick={handleClearNotifications}>
+                <Link
+                  href="/notifications"
+                  aria-label="notifications"
+                  className={`nav-notifications ${lgIconsInteractionClasses}`}
                 >
-                  <NavIcon
-                    icon={<MailIcon size={21} />}
-                    href="/messages"
-                    badgeColor="red"
-                    alt="messages"
-                    count={unreadMessageCount}
+                  <BellIcon />
+                  <NotificationBadge
+                    count={roundUptoNine(notificationCounts)}
+                    color="green"
                   />
-                  <NavIcon
-                    icon={<BellIcon size={21} />}
-                    count={notificationCounts}
-                    alt="notifications"
-                    href="/notifications"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <NavIcon
-              icon={
-                mobileToggleOpen ? <NavCloseIcon size={21} /> : <SidebarIcon />
-              }
-              alt="Toggle"
-              onClick={() => setMobileToggleOpen(!mobileToggleOpen)}
-            />
-          </div>
-        </div>
-
-        {/* Desktop Navigation */}
-        <div className="hidden lg:flex-1 lg:flex lg:justify-between lg:items-center lg:gap-4">
-          <div className="flex-1 flex items-center gap-2">
-            <div className="module-dropdown">
-              <NavSwitchUserSwitch />
-            </div>
-            <Modal>
-              <ModalTrigger className="nav-global-search px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
-                <SearchIcon size={24} />
-                <span className="text-[#0a132ea6] dark:text-white text-base font-semibold">
-                  Search
-                </span>
-              </ModalTrigger>
-              <ModalContent>
-                <NavGlobalSearch />
-              </ModalContent>
-            </Modal>
-            <Modal>
-              <ModalTrigger asChild>
-                <Button
-                  size="base_medium"
-                  className="nav-create-new py-[10px] px-5 rounded-lg flex-1 max-w-fit"
-                >
-                  <span className="line-clamp-1 text-ellipsis">
-                    + Create New
-                  </span>
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <NavCreateNew />
-              </ModalContent>
-            </Modal>
-            <DrawerComponent />
-          </div>
-
-          <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
-            <div className="relative">
-              <Link
-                href="/messages"
-                aria-label="messages"
-                className={`nav-messages ${lgIconsInteractionClasses}`}
-              >
-                <MailIcon />
-                <NotificationBadge
-                  count={roundUptoNine(unreadMessageCount)}
-                  color="red"
-                />
-              </Link>
-            </div>
-            <div className="relative" onClick={handleClearNotifications}>
-              <Link
-                href="/notifications"
-                aria-label="notifications"
-                className={`nav-notifications ${lgIconsInteractionClasses}`}
-              >
-                <BellIcon />
-                <NotificationBadge
-                  count={roundUptoNine(notificationCounts)}
-                  color="green"
-                />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile: Company Logo / Profile Dropdown with Slide Animation */}
-      <div className="md:hidden w-[300px] h-full relative">
-        <AnimatePresence mode="wait">
-          {mobileToggleOpen ? (
-            <motion.div
-              key="profile"
-              variants={slideVariants}
-              initial="profileExit"
-              animate="profile"
-              exit="profileExit"
-              className="w-full h-full absolute top-0 left-0"
-            >
-              {/* Dropdown is outside of any overflow:hidden */}
-              <Dropdown className="profile-dropdown w-full h-full">
-                <DropdownTrigger>
-                  <div className="flex items-center gap-2 p-2 bg-white dark:bg-[#020617] h-full">
-                    <Picture
-                      src={profile_picture || empty}
-                      alt="profile picture"
-                      status={isOnline}
-                      size={50}
-                      rounded
-                      containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
-                    />
-                    <div className="flex flex-col text-text-secondary capitalize overflow-hidden">
-                      <p className="text-[10px] font-normal dark:text-[#F1F1D9] whitespace-nowrap">
-                        {getGreeting()},
-                      </p>
-                      <p className="text-xs font-medium dark:text-white capitalize truncate">
-                        {truncateName(name ? name.toLowerCase() : "", 30)}
-                      </p>
-                    </div>
-                  </div>
-                </DropdownTrigger>
-                <DropdownContent
-                  direction="down"
-                  position="left"
-                  className="custom-flex-col gap-2 pb-[10px] min-w-[200px] text-sm font-normal capitalize z-50"
-                >
-                  <NavProfileDropdown />
-                </DropdownContent>
-              </Dropdown>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="logo"
-              variants={slideVariants}
-              initial="logoExit"
-              animate="logo"
-              exit="logoExit"
-              className="w-full h-full absolute top-0 left-0"
-            >
-              {loading ? (
-                <Skeleton
-                  width="100%"
-                  height="100%"
-                  animation="wave"
-                  sx={{ transform: "none" }}
-                />
-              ) : (
-                <Image
-                  src={company_logo || empty}
-                  alt="company logo"
-                  width={200}
-                  height={200}
-                  priority
-                  className="object-contain w-1/2 h-full"
-                />
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-      {/* Desktop: Profile Dropdown */}
-      <div className="hidden md:block">
-        <Dropdown className="profile-dropdown">
-          <DropdownTrigger>
-            <div className="flex items-center gap-4">
-              <Picture
-                src={profile_picture || empty}
-                alt="profile picture"
-                status={isOnline}
-                size={isMobile ? 50 : 60}
-                rounded
-                containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
-              />
-              <div className="flex flex-col text-text-secondary capitalize">
-                <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
-                  {getGreeting()},
-                </p>
-                <p className="text-xs md:text-base font-medium dark:text-white capitalize">
-                  {truncateName(name ? name.toLowerCase() : "", 50)}
-                </p>
+                </Link>
               </div>
             </div>
-          </DropdownTrigger>
-          <DropdownContent
-            direction="down"
-            position="right"
-            className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize z-20"
-          >
-            <NavProfileDropdown />
-          </DropdownContent>
-        </Dropdown>
+          </div>
+        </div>
+
+        {/* Mobile: Company Logo / Profile Dropdown with Slide Animation */}
+        <div className="md:hidden w-[300px] h-full relative">
+          <AnimatePresence mode="wait">
+            {mobileToggleOpen ? (
+              <motion.div
+                key="profile"
+                variants={slideVariants}
+                initial="profileExit"
+                animate="profile"
+                exit="profileExit"
+                className="w-full h-full absolute top-0 left-0"
+              >
+                {/* Dropdown is outside of any overflow:hidden */}
+                <Dropdown className="profile-dropdown w-full h-full">
+                  <DropdownTrigger>
+                    <div className="flex items-center gap-2 p-2 bg-white dark:bg-[#020617] h-full">
+                      <Picture
+                        src={profile_picture || empty}
+                        alt="profile picture"
+                        status={isOnline}
+                        size={50}
+                        rounded
+                        containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
+                      />
+                      <div className="flex flex-col text-text-secondary capitalize overflow-hidden">
+                        <p className="text-[10px] font-normal dark:text-[#F1F1D9] whitespace-nowrap">
+                          {getGreeting()},
+                        </p>
+                        <p className="text-xs font-medium dark:text-white capitalize truncate">
+                          {truncateName(name ? name.toLowerCase() : "", 30)}
+                        </p>
+                      </div>
+                    </div>
+                  </DropdownTrigger>
+                  <DropdownContent
+                    direction="down"
+                    position="left"
+                    className="custom-flex-col gap-2 pb-[10px] min-w-[200px] text-sm font-normal capitalize z-50"
+                  >
+                    <NavProfileDropdown />
+                  </DropdownContent>
+                </Dropdown>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="logo"
+                variants={slideVariants}
+                initial="logoExit"
+                animate="logo"
+                exit="logoExit"
+                className="w-full h-full absolute top-0 left-0"
+              >
+                {loading ? (
+                  <Skeleton
+                    width="100%"
+                    height="100%"
+                    animation="wave"
+                    sx={{ transform: "none" }}
+                  />
+                ) : (
+                  <Image
+                    src={company_logo || empty}
+                    alt="company logo"
+                    width={200}
+                    height={200}
+                    priority
+                    className="object-contain w-1/2 h-full"
+                  />
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        {/* Desktop: Profile Dropdown */}
+        <div className="hidden md:block">
+          <Dropdown className="profile-dropdown">
+            <DropdownTrigger>
+              <div className="flex items-center gap-4">
+                <Picture
+                  src={profile_picture || empty}
+                  alt="profile picture"
+                  status={isOnline}
+                  size={isMobile ? 50 : 60}
+                  rounded
+                  containerClassName="flex-shrink-0 bg-[var(--secondary-color)] rounded-full"
+                />
+                <div className="flex flex-col text-text-secondary capitalize">
+                  <p className="text-[10px] md:text-xs font-normal dark:text-[#F1F1D9]">
+                    {getGreeting()},
+                  </p>
+                  <p className="text-xs md:text-base font-medium dark:text-white capitalize">
+                    {truncateName(name ? name.toLowerCase() : "", 50)}
+                  </p>
+                </div>
+              </div>
+            </DropdownTrigger>
+            <DropdownContent
+              direction="down"
+              position="right"
+              className="custom-flex-col gap-2 pb-[10px] min-w-[300px] sm:min-w-[350px] text-sm sm:text-base font-normal capitalize z-20"
+            >
+              <NavProfileDropdown />
+            </DropdownContent>
+          </Dropdown>
+        </div>
+      </header>
+
+      <div className="">
+        <Marquee
+          text="🎉 Summer Sale: Up to 50% off all items! Don't miss out on amazing deals. Your subscription will expire in 2 days, your can renew to get early discount."
+          urlText="Shop Now"
+          //showMarquee
+          url="https://example.com/sale"
+          speed={120}
+          className="bg-brand-9 border-[var(--secondary-color)] h-[3.7rem] flex items-center leading-loose"
+        />
       </div>
-    </header>
+    </>
   );
 };
 

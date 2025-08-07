@@ -40,12 +40,12 @@ const Disbursement = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [tableData, setTableData] = useState<TransformedDisburseItem[]>([]);
- 
+
   const {
     data: propertyData,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>('/property/all');
+  } = useFetch<PropertyListResponse>("/property/all");
 
   const {
     data: landlordsData,
@@ -53,17 +53,35 @@ const Disbursement = () => {
     error: landlordsError,
   } = useFetch<AllLandlordsResponse>("/landlord/select");
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
-  const landlordOptions =
-    landlordsData?.data.map((landlord) => ({
-      value: landlord.id,
-      label: landlord.name,
-    })) || [];
+  const landlordOptions = Array.isArray(landlordsData?.data)
+    ? [
+        ...new Map(
+          landlordsData.data.map((landlord: any) => [
+            landlord.name?.toLowerCase(),
+            {
+              value: landlord.id,
+              label: landlord.name?.toLowerCase(),
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -130,7 +148,7 @@ const Disbursement = () => {
   };
 
   const { data, loading, silentLoading, error, isNetworkError } =
-    useFetch<DisburseApiResponse>('/disburses', config);
+    useFetch<DisburseApiResponse>("/disburses", config);
 
   useEffect(() => {
     if (data) {

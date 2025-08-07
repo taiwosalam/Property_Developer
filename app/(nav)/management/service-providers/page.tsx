@@ -389,7 +389,7 @@ const ServiceProviders = () => {
                     plumbers, painters, electricians, and more. These
                     professionals handle maintenance, repairs, and improvements
                     for residential and commercial properties.
-                    <br />
+                    {/* <br />
                     <br />
                     To add a service provider, click{" "}
                     <span className="font-bold">Create Service Provider </span>
@@ -399,7 +399,7 @@ const ServiceProviders = () => {
                     management efficiency and ensures access to reliable
                     professionals when needed.
                     <br />
-                    <br />
+                    <br /> */}
                   </p>
                 }
               />
