@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import Button from "@/components/Form/Button/button";
 import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const getBackgroundColor = (status: string) => {
   switch (status) {
@@ -46,6 +47,8 @@ const InventoryUnitCard: React.FC<{
   page,
 }) => {
   const { role } = useRole();
+  const canCreateInventory =
+    usePermission(role, "Can create inventory") || role === "director";
   // /management/inventory/${unitId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}
   const getManageLink = () => {
     switch (role) {
@@ -167,14 +170,16 @@ const InventoryUnitCard: React.FC<{
             </Button>
           </>
         ) : (
-          <Button
-            href={getCreateLink()}
-            variant="border"
-            size="xs_medium"
-            className="py-2 px-7"
-          >
-            create
-          </Button>
+          canCreateInventory && (
+            <Button
+              href={getCreateLink()}
+              variant="border"
+              size="xs_medium"
+              className="py-2 px-7"
+            >
+              create
+            </Button>
+          )
         )}
       </div>
     </div>

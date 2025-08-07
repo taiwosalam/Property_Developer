@@ -20,6 +20,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useRouter } from "next/navigation";
 import { useRole } from "@/hooks/roleContext";
 import { useDropdownContext } from "../Dropdown/dropdown-context";
+import { usePermission } from "@/hooks/getPermission";
 
 const NavProfileDropdown = () => {
   const router = useRouter();
@@ -34,11 +35,39 @@ const NavProfileDropdown = () => {
   );
   const [requestLoading, setRequestLoading] = useState(false);
 
+  // PERMISSIONS
+  const canViewAndReplyReviews = usePermission(
+    role,
+    "Can view and reply property reviews"
+  );
+  const isDirector = role === "director";
+
+  // Define restricted labels and their conditions
+  const restrictedLabels = [
+    {
+      label: "company reviews",
+      condition: () => isDirector || canViewAndReplyReviews,
+    },
+    // Add more restricted labels here, e.g.:
+    // {
+    //   label: "some other label",
+    //   condition: () => usePermission(role, "Some permission") || role === "admin",
+    // },
+  ];
+
+  // Filter actions to exclude restricted labels
+  const actions =
+    getProfileDropdownItems(role)?.filter((action) => {
+      const restricted = restrictedLabels.find(
+        (r) => r.label.toLowerCase() === action.label.toLowerCase()
+      );
+      return !restricted || restricted.condition();
+    }) || [];
+
   const handleItemClick = () => {
     setIsOpen(false);
   };
 
-  const actions = getProfileDropdownItems(role) || "";
 
   const class_styles =
     "py-2 px-5 sm:py-3 sm:px-[30px] text-start text-text-primary dark:text-darkText-1 hover:bg-neutral-2 dark:hover:bg-[#3C3D37]";
@@ -56,11 +85,6 @@ const NavProfileDropdown = () => {
     setRequestLoading(false);
     handleItemClick();
   };
-
-  // const getSafeLinkHref = (label: string, originalHref: string) => {
-  //   if (typeof window === "undefined") return originalHref;
-  //   return label.toLowerCase() === "homepage" ? domain : originalHref;
-  // };
 
   return (
     <>

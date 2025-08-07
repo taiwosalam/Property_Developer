@@ -44,6 +44,8 @@ import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-in
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 export const StaffEditProfileInfoSection = () => {
   const { data: staff } = useStaffEditContext();
@@ -60,8 +62,8 @@ export const StaffEditProfileInfoSection = () => {
     if (data.years_experience) {
       const selectedDate = dayjs(data.years_experience as string);
       const selectedYear = selectedDate.year();
-      const currentYear = dayjs().year(); 
-      yearsExperience = Math.max(0, currentYear - selectedYear); 
+      const currentYear = dayjs().year();
+      yearsExperience = Math.max(0, currentYear - selectedYear);
     }
 
     const payload: Record<string, string> = {

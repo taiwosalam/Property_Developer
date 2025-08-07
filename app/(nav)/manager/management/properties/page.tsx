@@ -35,12 +35,21 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useTourStore } from "@/store/tour-store";
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const Properties = () => {
   const storedView = useView();
   const { branch } = usePersonalInfoStore();
   const BRANCH_ID = branch?.branch_id || 0;
   const [view, setView] = useState<string | null>(storedView);
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canAddOrDeleteBranchProperties = usePermission(
+    role,
+    "Can add/delete branch properties"
+  );
 
   const { setShouldRenderTour, isTourCompleted } = useTourStore();
   const setGlobalInfoStore = useGlobalStore(
@@ -256,16 +265,18 @@ const Properties = () => {
             colorScheme={3}
           />
         </div>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + create property
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <AddPropertyModal />
-          </ModalContent>
-        </Modal>
+        {canAddOrDeleteBranchProperties && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="button" className="page-header-button">
+                + create property
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddPropertyModal />
+            </ModalContent>
+          </Modal>
+        )}
       </div>
 
       {/* Page Title with search */}

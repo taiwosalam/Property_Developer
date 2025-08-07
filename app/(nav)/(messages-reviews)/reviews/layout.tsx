@@ -43,10 +43,19 @@ import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { handleAxiosError } from "@/services/api";
 import { Loader2 } from "lucide-react";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
   const { id } = useParams();
   const [reviews, setReviews] = useState<IReviewCard | null>(null);
+  const { role } = useRole();
+  // PERMISSIONS
+  const canViewAndReplyReviews = usePermission(
+    role,
+    "Can view and reply property reviews"
+  );
+  const isDirector = role === "director";
 
   const { isCustom } = useWindowWidth(900);
   const [filter, setFilter] = useState<
@@ -197,7 +206,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
   }
 
   return (
-    <>
+    <div className="relative">
       {isCustom && id ? null : (
         <div className="flex flex-1 p-4 pr-0">
           <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
@@ -402,7 +411,15 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
           </div>
         </div>
       )}
-    </>
+
+      {!isDirector && !canViewAndReplyReviews && (
+        <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-md flex items-center justify-center text-center px-4">
+          <p className="text-sm font-medium text-gray-700">
+            ⚠️ You don’t have permission to view this page.
+          </p>
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -27,13 +27,14 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
     setActiveDropdown((prevActive) => (prevActive === label ? null : label));
   };
 
-  const showWallet =
-    usePermission(role, "Full Wallet Access") ||
-    isCompanyOwner ||
-    role === "manager";
+  const canViewCallRequests = usePermission(role, "Can view call request");
+  const canViewPropertyRequests = usePermission(role, "Can view property request");
+  const canViewWallet = usePermission(role, "Full Wallet Access");
+  const canViewComplain = usePermission(role, "Can view complaints");
+
+  const isDirector = role === "director";
 
   const company_logo = usePersonalInfoStore((state) => state.company_logo);
-  const isDirector = role === "director";
 
   const sanitizeClassName = (label: string): string => {
     return label
@@ -42,10 +43,54 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
       .replace(/[^a-z0-9-]/g, "");
   };
 
-  // Get navigation items and filter out wallet if showWallet is false
-  const navItems = getNavs(role)?.filter(
-    (item) => item.label !== "wallet" || showWallet
-  );
+  // Define restricted labels and their conditions (for both top-level and child items)
+  const restrictedLabels = [
+    {
+      label: "call request",
+      condition: () => isDirector || canViewCallRequests,
+    },
+    {
+      label: "property request",
+      condition: () => isDirector || canViewPropertyRequests,
+    },
+    {
+      label: "Can view complaints",
+      condition: () => isDirector || canViewComplain,
+    },
+    {
+      label: "wallet",
+      condition: () => canViewWallet || isCompanyOwner || role === "manager",
+    },
+    // Add more restricted labels here, e.g.:
+    // {
+    //   label: "complaints",
+    //   condition: () => usePermission(role, "Can view complaints") || isCompanyOwner,
+    // },
+  ];
+
+  // Filter navItems for both top-level and child items
+  const navItems = getNavs(role)
+    ?.filter((item) => {
+      const restricted = restrictedLabels.find(
+        (r) => r.label.toLowerCase() === item.label.toLowerCase()
+      );
+      return !restricted || restricted.condition();
+    })
+    .map((item) => {
+      if (item.content) {
+        return {
+          ...item,
+          content: item.content.filter((subItem) => {
+            const restricted = restrictedLabels.find(
+              (r) => r.label.toLowerCase() === subItem.label.toLowerCase()
+            );
+            return !restricted || restricted.condition();
+          }),
+        };
+      }
+      return item;
+    })
+    .filter((item) => !item.content || item.content.length > 0); // Remove dropdowns that become empty
 
   return (
     <div className="custom-flex-col pb-3">
@@ -60,7 +105,7 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
       </div>
 
       {navItems?.map((item, idx) => {
-        const className = sanitizeClassName(item.label); // Sanitize the label for use as a class name
+        const className = sanitizeClassName(item.label);
         return item.content ? (
           <NavDropdown
             key={idx}
@@ -96,4 +141,5 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
     </div>
   );
 };
+
 export default SideNav;

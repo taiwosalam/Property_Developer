@@ -41,6 +41,8 @@ import { AxiosRequestConfig } from "axios";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const states = getAllStates();
 
@@ -48,6 +50,12 @@ const Landlord = () => {
   const storedView = useView();
   const { branch } = usePersonalInfoStore();
   const [view, setView] = useState<string | null>(storedView);
+  const { role } = useRole();
+  // PERMISSIONS
+  const canAddOrManageLandlord = usePermission(
+    role,
+    "Can add and manage landlords/landlady"
+  );
 
   const BRANCH_ID = branch?.branch_id || 0;
 
@@ -274,13 +282,15 @@ const Landlord = () => {
             Chat
           </Button>
         )}
-        <Button
-          href={`/management/landlord/${l.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2"
-        >
-          Manage
-        </Button>
+        {canAddOrManageLandlord && (
+          <Button
+            href={`/management/landlord/${l.id}/manage`}
+            size="sm_medium"
+            className="px-8 py-2"
+          >
+            Manage
+          </Button>
+        )}
       </div>
     ),
     // Attach the lastRowRef to the final row if more pages exist.
@@ -331,16 +341,18 @@ const Landlord = () => {
           />
         </div>
 
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + create new landlord
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <AddLandlordModal />
-          </ModalContent>
-        </Modal>
+        {canAddOrManageLandlord && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="button" className="page-header-button">
+                + create new landlord
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddLandlordModal />
+            </ModalContent>
+          </Modal>
+        )}
       </div>
 
       <FilterBar
@@ -386,7 +398,7 @@ const Landlord = () => {
               title="The landlord and landlady files are empty"
               body={
                 <p>
-                  You don&apos;t have any landlord or landlady profiles yet. 
+                  You don&apos;t have any landlord or landlady profiles yet.
                 </p>
               }
             />
