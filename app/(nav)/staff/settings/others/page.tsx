@@ -102,7 +102,7 @@ const Others = () => {
       {/* NOTIFICATIONS */}
       <SettingsSection title='Notifications'>
         <div className='custom-flex-col gap-6 mt-4'>
-          <div className='mt-2 flex flex-col gap-2'>
+          <div className='mt-2 flex flex-col gap-4'>
             <h4> Notify me when: </h4>
             {[
               'Whenever there is a new message from either a client or a group chat related to the company.',
@@ -138,7 +138,7 @@ const Others = () => {
             ))}
           </div>
         </div>
-        <div className='flex justify-end mt-2'>
+        <div className='flex justify-end mt-8'>
           <SettingsUpdateButton />
         </div>
       </SettingsSection>

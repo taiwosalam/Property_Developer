@@ -139,6 +139,11 @@ export const personalized_domain: SubscriptionTableType = {
       label: "Added Date",
       accessor: "updated_at",
     },
+    {
+      id: "4",
+      label: "Sync Date",
+      accessor: "sync_date",
+    },
 
     {
       id: "5",

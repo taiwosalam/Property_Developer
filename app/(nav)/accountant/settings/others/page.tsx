@@ -41,11 +41,10 @@ import {
 import Avatars from "@/components/Avatars/avatars";
 const notificationSettings = [
   {
-    title: 'General Notification',
-    desc: 'Receive priority notifications for general events or whenever there is a new event of notification.',
+    title: "General Notification",
+    desc: "Receive priority notifications for general events or whenever there is a new event of notification.",
   },
 ];
-
 
 const Others = () => {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
@@ -57,14 +56,13 @@ const Others = () => {
   }>({});
 
   type DirectorsFormOptions = "options" | "choose-avatar";
-  
-    const handleSubmit = async (data: FormData) => {
-      console.log(data);
-      // if (res) {
-      //   setIsOpen(false);
-      // }
-  };
 
+  const handleSubmit = async (data: FormData) => {
+    console.log(data);
+    // if (res) {
+    //   setIsOpen(false);
+    // }
+  };
 
   const modal_states: Record<
     DirectorsFormOptions,
@@ -75,12 +73,14 @@ const Others = () => {
   > = {
     options: {
       heading: "Create New Director",
-      content: <DirectorsForm 
-      submitAction={handleSubmit}
-      chooseAvatar={() => setActiveStep("choose-avatar")}
-      avatar={selectedAvatar}
-      setAvatar={setSelectedAvatar}
-        />,
+      content: (
+        <DirectorsForm
+          submitAction={handleSubmit}
+          chooseAvatar={() => setActiveStep("choose-avatar")}
+          avatar={selectedAvatar}
+          setAvatar={setSelectedAvatar}
+        />
+      ),
     },
     "choose-avatar": {
       heading: "Choose Avatar",
@@ -95,31 +95,25 @@ const Others = () => {
     },
   };
 
-  
-
   return (
     <>
       {/* NOTIFICATIONS */}
-      <SettingsSection title='Notifications'>
-        <div className='custom-flex-col gap-6 mt-4'>
-          <div className='mt-2 flex flex-col gap-2'>
+      <SettingsSection title="Notifications">
+        <div className="custom-flex-col gap-6 mt-4">
+          <div className="mt-2 flex flex-col gap-4">
             <h4> Notify me when: </h4>
             {[
-              'Whenever there is a new message from either a client or a group chat related to the company.',
-              'Task is created or if there are unattended tasks pending for an extended period.',
-              'Document is created using my signature, name, or consent.',
+              "Whenever there is a new message from either a client or a group chat related to the company.",
+              "Task is created or if there are unattended tasks pending for an extended period.",
+              "Document is created using my signature, name, or consent.",
             ].map((option, index) => (
-              <DocumentCheckbox
-                darkText
-                key={index}
-                checked={true}
-              >
+              <DocumentCheckbox darkText key={index} checked={true}>
                 {option}
               </DocumentCheckbox>
             ))}
           </div>
 
-          <div className='toggle flex flex-col gap-2'>
+          <div className="toggle flex flex-col gap-2">
             {notificationSettings.map((setting, index) => (
               <SettingsOthersCheckBox
                 key={index}
@@ -132,13 +126,12 @@ const Others = () => {
                     ...prevState,
                     [value]: checked,
                   }));
-                  console.log(`${value} changed to: ${checked}`);
                 }}
               />
             ))}
           </div>
         </div>
-        <div className='flex justify-end mt-2'>
+        <div className="flex justify-end mt-8">
           <SettingsUpdateButton />
         </div>
       </SettingsSection>

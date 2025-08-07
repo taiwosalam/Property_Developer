@@ -85,8 +85,8 @@ const SettingsWebsiteDomain = () => {
 
       const customDomain = {
         domain: companySettings?.data?.custom_domain?.toLowerCase() ?? null,
-        ssl: companySettings?.data?.custom_domain_ssl_status ?? "____ ____",
-        status: companySettings?.data?.custom_domain_status,
+        ssl: "pending", //companySettings?.data?.custom_domain_ssl_status ?? "____ ____",
+        status: "pending", //companySettings?.data?.custom_domain_status,
         updated_at: companySettings?.data?.updated_at
           ? dayjs(companySettings?.data?.updated_at).format("DD-MM-YYYY")
           : "___ ___",

@@ -81,7 +81,7 @@ export const staffConfigurations = [
     ],
   },
   {
-    title: "staff configuration (other staff) Configuration",
+    title: "staff configuration (other staff)",
     permissions: [
       [
         "Can view complaints",

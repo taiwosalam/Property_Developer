@@ -87,7 +87,6 @@ const AddsOnCampaignRecord = () => {
             ? transData.campaigns
             : [...prev.campaigns, ...transData.campaigns],
       }));
-
       setIsFetchingMore(false);
     }
   }, [campaignData, config.params.page, setGlobalStore]);

@@ -68,16 +68,20 @@ export const CompanySettingsDomainTable = ({ data }: DomainTable) => {
     <>
       {data && data?.length > 0 && (
         <div className="py-6">
-          <SectionTitle>
-            <div className="py-4">
-              <h2 className="text-base">Custom Domain</h2>
-              <p className="py-2 text-sm text-slate-600">
-                Manage a custom domain of your choice to showcase your company
-                profile and promote your property listings portfolio to a global
-                audience.
-              </p>
-            </div>
-          </SectionTitle>
+          <div className="py-4 ">
+            <h2 className="text-base">Custom Domain</h2>
+            <p className="py-2 text-sm text-slate-600 first-letter:uppercase">
+              To configure your custom domain, go to your DNS provider and add{" "}
+              <span className="font-extrabold">A record</span>. Set the{" "}
+              <span className="font-extrabold">Name</span> to your custom domain
+              (e.g., the domain you added) and the{" "}
+              <span className="font-extrabold">Value</span> to this IP address
+              <span className="font-extrabold"> 49.13.135.159</span> <br /> the
+              step is required to point your domain to our server and enable
+              proper connection.
+            </p>
+          </div>
+
           <div>
             <CustomTable
               tableBodyCellSx={{
