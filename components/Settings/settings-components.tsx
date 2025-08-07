@@ -247,7 +247,7 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   return (
     <div className="flex justify-between">
       <div className="first flex gap-1 items-start">
-        <span className="dark:text-white flex-shrink-0 text-black">{icon}</span>
+        <span className="dark:text-white flex-shrink-0 text-black mr-2">{icon}</span>
         <div className="flex flex-col">
           <h4 className="text-text-quaternary dark:text-white text-base">
             {title}

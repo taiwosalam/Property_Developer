@@ -2,16 +2,7 @@
 import CustomTable from "@/components/Table/table";
 import type { DataItem } from "@/components/Table/types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-// import {
-//   reportsListingsFilterOptionsWithDropdown,
-//   trackingTableFields,
-// } from "./data";
-// import {
-//   ActivityApiResponse,
-//   ActivityTable,
-//   transformActivityAData,
-// } from "./[userId]/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -28,7 +19,7 @@ import useAddressFromCoords from "@/hooks/useGeoCoding";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
-import { Activity } from "lucide-react";
+import { Activity, Loader2 } from "lucide-react";
 import { FeatureFields, SponsorFields } from "../../settings/add-on/data";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import {
@@ -46,8 +37,10 @@ const AddsOnFeatureRecord = () => {
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const filteredTransactions = useGlobalStore((s) => s.feature_history);
 
-  const [featureTable, setFeatureTable] =
-    useState<EnrollmentHistoryTable | null>(null);
+  const [featureTable, setFeatureTable] = useState<EnrollmentHistoryTable>({
+    data: [],
+    pagination: { total: 0, current_page: 0, last_page: 0 },
+  });
 
   const {
     data: enrollmentData,
@@ -55,8 +48,17 @@ const AddsOnFeatureRecord = () => {
     loading,
     isNetworkError,
     error,
-  } = useFetch<BrandHistoryResponse>(`brands/${Number(company_id)}`, config);
-  useRefetchOnEvent("buySMS", () => refetch({ silent: true }));
+  } = useFetch<BrandHistoryResponse>(
+    company_id ? `brands/${company_id}` : null,
+    config
+  );
+  //useRefetchOnEvent("buySMS", () => refetch({ silent: true }));
+
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastRowRef = useRef<HTMLTableRowElement | null>(null);
+  const tableContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (enrollmentData) {
@@ -94,6 +96,69 @@ const AddsOnFeatureRecord = () => {
     []
   );
 
+  const handleSearch = (query: string) => {
+    setConfig({ params: { ...config.params, search: query } });
+  };
+
+  // Handle data transformation and appending for infinite scroll
+  useEffect(() => {
+    if (enrollmentData) {
+      const transData = transformEnrollmentHistory(enrollmentData);
+      setFeatureTable((prev) => ({
+        ...transData,
+        emails:
+          config.params.page === 1
+            ? transData.data
+            : [...prev.data, ...transData.data],
+      }));
+      //setGlobalStore("emails", transData.emails);
+      setIsFetchingMore(false);
+    }
+  }, [enrollmentData, config.params.page, setGlobalStore]);
+
+  // Set up Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (
+      loading ||
+      isFetchingMore ||
+      !enrollmentData ||
+      featureTable.data.length === 0 ||
+      featureTable.pagination.current_page >= featureTable.pagination.last_page
+    ) {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      return;
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingMore) {
+          setConfig((prev) => ({
+            ...prev,
+            params: { ...prev.params, page: prev.params.page + 1 },
+          }));
+          setIsFetchingMore(true);
+        }
+      },
+      {
+        root: tableContainerRef.current, // Use TableContainer as the scrollable root
+        rootMargin: "20px", // Trigger slightly before the bottom
+        threshold: 1.0, // Trigger when the last row is fully visible
+      }
+    );
+
+    if (lastRowRef.current) {
+      observerRef.current.observe(lastRowRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [loading, isFetchingMore, enrollmentData]);
+
   useEffect(() => {
     if (!loading && enrollmentData) {
       const transformedData = transformEnrollmentHistory(enrollmentData);
@@ -126,7 +191,7 @@ const AddsOnFeatureRecord = () => {
       <FilterBar
         exports
         isDateTrue
-        onBack={search ? true : false}
+        onBack={!!search}
         pageTitle="Adds-On Feature"
         aboutPageModalData={{
           title: "Adds-On Feature",
@@ -134,10 +199,8 @@ const AddsOnFeatureRecord = () => {
         }}
         searchInputPlaceholder="Search for audit trail"
         handleFilterApply={handleAppliedFilter}
-        //={() => {}}
-        onSort={() => {}}
-        handleSearch={() => {}}
-        //filterOptionsMenu={() => {}}
+        handleSearch={handleSearch}
+        appliedFilters={appliedFilters}
         hasGridListToggle={false}
         exportHref="/reports/adds-on-feature/export"
         xlsxData={filteredTransactions?.data.map((activity) => ({
@@ -164,11 +227,25 @@ const AddsOnFeatureRecord = () => {
             />
           )
         ) : (
-          <CustomTable
-            fields={FeatureFields}
-            data={featureTable ? featureTable?.data.slice(0, 7) : []}
-            tableHeadClassName="h-[45px]"
-          />
+          <div ref={tableContainerRef} className="py-4">
+            <CustomTable
+              fields={FeatureFields}
+              data={featureTable ? featureTable?.data.slice(0, 7) : []}
+              tableHeadClassName="h-[45px]"
+            />
+
+            {isFetchingMore && (
+              <div className="flex justify-center py-4">
+                <Loader2 className="animate-spin text-brand-9" />
+              </div>
+            )}
+            {featureTable &&
+              featureTable.pagination.current_page >=
+                featureTable.pagination.last_page &&
+              featureTable.data.length > 0 && (
+                <div className="text-center py-4 text-gray-500"></div>
+              )}
+          </div>
         )}
       </section>
     </div>

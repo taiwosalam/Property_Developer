@@ -149,9 +149,10 @@ export const NameVerification = ({
                 </div>
                 <div className="flex justify-end gap-2 items-center">
                   <Button
-                    className="bg-brand-9 flex items-center dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white mt-5 py-2 h-9"
+                    className="bg-brand-9 flex items-center dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white mt-5 px-4"
                     onClick={handleInitiateBVNLookup}
                     disabled={isInitiating}
+                    size="mid"
                   >
                     {isInitiating ? "Please wait..." : "Confirm"}
                   </Button>

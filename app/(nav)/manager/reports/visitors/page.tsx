@@ -9,7 +9,7 @@ import {
   IVisitorsReportPageData,
   transformVisitorsRequest,
 } from "./data";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { DataItem } from "@/components/Table/types";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import VisitorRequestModal from "@/components/tasks/visitors-requests/visitor-request-modal";
@@ -29,7 +29,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../data/utils";
-import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { Loader2 } from "lucide-react";
 
 interface TableRecord {
   id: number;
@@ -66,8 +66,6 @@ const Visitors = () => {
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: { page: 1, search: "" } as ReportsRequestParams,
   });
-  const { branch } = usePersonalInfoStore();
-  const BRANCH_ID = branch?.branch_id || 0;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -75,15 +73,23 @@ const Visitors = () => {
     startDate: null,
     endDate: null,
   });
+  const [branches, setBranches] = useState<BranchFilter[]>([]);
   const [branchAccountOfficers, setBranchAccountOfficers] = useState<
     BranchStaff[]
   >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
-
+  const { data: apiDataBranch } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
 
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastRowRef = useRef<HTMLTableRowElement | null>(null);
+  const tableContainerRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
+    if (apiData) setBranches(apiDataBranch.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -91,30 +97,67 @@ const Visitors = () => {
       setBranchAccountOfficers(filterStaff);
     }
     if (property) setPropertyList(property.data);
-  }, [staff, property]);
+  }, [apiDataBranch, staff, property]);
 
   const reportTenantFilterOption = [
     {
-      label: "Account Officer",
-      value: branchAccountOfficers.map((staff: any) => ({
-        label: staff.user.name,
-        value: staff.user.id.toString(),
-      })),
+      label: "Account Manager",
+      value: [
+        ...new Map(
+          branchAccountOfficers.map((staff: any) => [
+            staff.user.name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: staff.user.name.toLowerCase(), // Keep original case for display
+              value: staff.user.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
+    },
+    {
+      label: "Branch",
+      value: [
+        ...new Map(
+          branches.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name.toLowerCase(),
+              value: branch.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Property",
-      value: propertyList.map((property: any) => ({
-        label: property.title,
-        value: property.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          propertyList
+            .filter((u) => u.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(), // Use lowercase for comparison
+              {
+                label: property.title.toLowerCase(), // Keep original case for display
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ],
     },
   ];
 
   const setVisitorRequestStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
-  const [pageData, setPageData] = useState<IVisitorsReportPageData | null>(
-    null
-  );
+  const [pageData, setPageData] = useState<IVisitorsReportPageData>({
+    request_total: 0,
+    request_month: 0,
+    checked_in_total: 0,
+    checked_in_month: 0,
+    checked_out_total: 0,
+    checked_out_month: 0,
+    visitors: [],
+    pagination: { total: 0, current_page: 0, last_page: 0 },
+  });
 
   const handleSearch = (query: string) => {
     setConfig({ params: { ...config.params, search: query } });
@@ -129,12 +172,13 @@ const Visitors = () => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
       const accountOfficer = menuOptions["Account Officer"] || [];
-
+      const branch = menuOptions["Branch"] || [];
       const property = menuOptions["Property"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
+      if (branch.length > 0) queryParams.branch_id = branch.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
       if (startDate)
         queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
@@ -145,12 +189,6 @@ const Visitors = () => {
     []
   );
 
-  // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/report/visitor-request?branch_id=${BRANCH_ID}`
-      : null;
-
   const {
     data: apiData,
     loading,
@@ -158,6 +196,69 @@ const Visitors = () => {
     error,
     isNetworkError,
   } = useFetch<VisitorRequestResponse>(`/report/visitor-request`, config);
+
+  // Handle data transformation and appending for infinite scroll
+  useEffect(() => {
+    if (apiData) {
+      const transData = transformVisitorsRequest(apiData);
+      setPageData((prev) => ({
+        ...transData,
+        emails:
+          config.params.page === 1
+            ? transData.visitors
+            : [...prev.visitors, ...transData.visitors],
+      }));
+      //setGlobalStore("emails", transData.emails);
+      setIsFetchingMore(false);
+    }
+  }, [apiData, config.params.page]);
+
+  // Set up Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (
+      loading ||
+      isFetchingMore ||
+      !pageData ||
+      pageData.visitors.length === 0 ||
+      pageData.pagination.current_page >= pageData.pagination.last_page
+    ) {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      return;
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingMore) {
+          console.log(
+            "Last row visible, fetching page:",
+            config.params.page + 1
+          );
+          setConfig((prev) => ({
+            ...prev,
+            params: { ...prev.params, page: prev.params.page + 1 },
+          }));
+          setIsFetchingMore(true);
+        }
+      },
+      {
+        root: tableContainerRef.current, // Use TableContainer as the scrollable root
+        rootMargin: "20px", // Trigger slightly before the bottom
+        threshold: 1.0, // Trigger when the last row is fully visible
+      }
+    );
+
+    if (lastRowRef.current) {
+      observerRef.current.observe(lastRowRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [loading, isFetchingMore, pageData]);
 
   useEffect(() => {
     if (!loading && apiData) {
@@ -210,8 +311,6 @@ const Visitors = () => {
       reason: (record as any).reason ?? "",
     };
 
-    console.log("Transformed data:", visitorData); // Debug log
-
     setSelectedVisitor(visitorData);
     setModalOpen(true);
   };
@@ -263,11 +362,11 @@ const Visitors = () => {
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/visitors/export"
-        xlsxData={useGlobalStore.getState().properties}
+        xlsxData={useGlobalStore.getState().visitorsRequest}
         fileLabel={"Properties Reports"}
       />
       <section>
-        {pageData?.data.length === 0 && !loading ? (
+        {pageData?.visitors.length === 0 && !loading ? (
           !!config.params.search || hasActiveFilters(appliedFilters) ? (
             <SearchError />
           ) : (
@@ -285,12 +384,26 @@ const Visitors = () => {
             />
           )
         ) : (
-          <CustomTable
-            fields={visitorsRequestTableFields}
-            data={pageData?.data || []}
-            tableHeadClassName="h-[45px]"
-            // handleSelect={handleTableItemClick}
-          />
+          <div ref={tableContainerRef} className="py-4">
+            <CustomTable
+              fields={visitorsRequestTableFields}
+              data={pageData?.visitors || []}
+              tableHeadClassName="h-[45px]"
+              
+            />
+
+            {isFetchingMore && (
+              <div className="flex justify-center py-4">
+                <Loader2 className="animate-spin text-brand-9" />
+              </div>
+            )}
+            {pageData &&
+              pageData.pagination.current_page >=
+                pageData.pagination.last_page &&
+              pageData.visitors.length > 0 && (
+                <div className="text-center py-4 text-gray-500"></div>
+              )}
+          </div>
         )}
       </section>
 

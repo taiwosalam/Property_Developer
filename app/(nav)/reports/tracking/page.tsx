@@ -29,6 +29,7 @@ import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity, Loader2 } from "lucide-react";
+import VirtualizeTable from "@/components/Table/virtualize-table";
 
 const TrackingReport = () => {
   const router = useRouter();
@@ -196,10 +197,6 @@ const TrackingReport = () => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isFetchingMore) {
-          console.log(
-            "Last row visible, fetching page:",
-            config.params.page + 1
-          );
           setConfig((prev) => ({
             ...prev,
             params: { ...prev.params, page: prev.params.page + 1 },
@@ -342,9 +339,7 @@ const TrackingReport = () => {
               pageData.pagination.current_page >=
                 pageData.pagination.last_page &&
               pageData.activities.length > 0 && (
-                <div className="text-center py-4 text-gray-500">
-                  No more emails to load
-                </div>
+                <div className="text-center py-4 text-gray-500"></div>
               )}
           </div>
         )}

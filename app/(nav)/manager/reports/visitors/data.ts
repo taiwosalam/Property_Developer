@@ -71,7 +71,7 @@ export interface IVisitorsReportPageData {
   checked_in_month: number;
   checked_out_total: number;
   checked_out_month: number;
-  data: {
+  visitors: {
     id: number;
     request_id: string;
     branch: string;
@@ -81,7 +81,13 @@ export interface IVisitorsReportPageData {
     check_in: string;
     check_out: string;
     pictureSrc: string | null;
-    status: "completed" | "pending" | "in-progress" | "decline" | "checked_in" | "cancelled";
+    status:
+      | "completed"
+      | "pending"
+      | "in-progress"
+      | "decline"
+      | "checked_in"
+      | "cancelled";
     userName: string;
     visitorName: string;
     visitorPhoneNumber: string;
@@ -89,8 +95,12 @@ export interface IVisitorsReportPageData {
     secretQuestion: string;
     secretAnswer: string;
   }[];
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  };
 }
-
 export const transformVisitorsRequest = (
   res: VisitorRequestResponse
 ): IVisitorsReportPageData => {
@@ -102,7 +112,7 @@ export const transformVisitorsRequest = (
     checked_in_month: data?.count?.current_month_checked_in,
     checked_out_total: data?.count?.total_checked_out,
     checked_out_month: data?.count?.current_month_checked_out,
-    data: data?.visitors?.data.map((req) => ({
+    visitors: data?.visitors?.data.map((req) => ({
       id: req.id,
       pictureSrc: req.picture,
       status: req.status,
@@ -110,7 +120,9 @@ export const transformVisitorsRequest = (
       visitor: req.visitor_name,
       visitorName: req.visitor_name,
       visitorPhoneNumber: req.visitor_number,
-      requestDate: req.request_date ? dayjs(req.request_date).format("DD/MM/YYYY") : "___ ___",
+      requestDate: req.request_date
+        ? dayjs(req.request_date).format("DD/MM/YYYY")
+        : "___ ___",
       secretQuestion: req.secret_question || "___ ___",
       secretAnswer: req.secret_answer,
       request_id: req.request_id,
@@ -127,6 +139,10 @@ export const transformVisitorsRequest = (
         ? dayjs(req.check_out_time).format("hh:mmA")
         : "___ ___",
     })),
+    pagination: {
+      total: data?.visitors?.total,
+      current_page: data?.visitors?.current_page,
+      last_page: data?.visitors?.last_page,
+    },
   };
 };
-

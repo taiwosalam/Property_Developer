@@ -153,7 +153,7 @@ const LandlordsReport = () => {
       if (JSON.stringify(currentLandlords) !== JSON.stringify(newLandlords)) {
         setPageData(transformedData);
         setGlobalStore("landlords", newLandlords);
-        console.log("Store after update:", useGlobalStore.getState().landlords);
+       
       }
     }
   }, [data, loading, setGlobalStore]);
