@@ -34,6 +34,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
 import { useBranchInfoStore } from "@/store/branch-info-store";
+import CautionDepositModal from "@/components/Modal/caution-deposit-modal";
 
 // Utility function to normalize walletPinStatus and is_active
 const normalizeWalletStatus = (
@@ -253,7 +254,14 @@ const BranchBalanceCard = ({
             ) : (
               <span>Inactive</span>
             )}
-            <CautionIcon />
+            <Modal>
+              <ModalTrigger>
+                <CautionIcon />
+              </ModalTrigger>
+              <ModalContent>
+                <CautionDepositModal />
+              </ModalContent>
+            </Modal>
           </div>
 
           <div className="w-full flex items-start space-x-4">
