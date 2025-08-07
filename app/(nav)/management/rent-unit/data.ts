@@ -1006,7 +1006,7 @@ export interface initDataProps {
 // ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
-  // console.log("unit response", data);
+  console.log("unit response", data);
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   const current_records = response.data.current_records;
@@ -1134,6 +1134,14 @@ export const transformUnitData = (response: any) => {
     ),
     renew_other_charge: formatFee(
       data.renew_other_charge,
+      data.property.currency
+    ),
+    renew_security_fee: formatFee(
+      data.renew_security_fee,
+      data.property.currency
+    ),
+    renew_agency_fee: formatFee(
+      data.renew_agency_fee,
       data.property.currency
     ),
     management_fee: formatFee(data.management_fee, data.property.currency),

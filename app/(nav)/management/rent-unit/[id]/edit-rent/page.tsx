@@ -320,8 +320,12 @@ const EditRent = () => {
                   amount: unit_data.renew_vat_amount,
                 },
                 {
+                  name: "Management Fee",
+                  amount: unit_data.renew_agency_fee,
+                },
+                {
                   name: "Security Fee",
-                  amount: unit_data.security_fee,
+                  amount: unit_data.renew_security_fee,
                 },
                 {
                   name: "Other Charges",
