@@ -12,18 +12,30 @@ import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
 
-
-import { AnnouncementDetailsResponse, AnnouncementResponseDetails } from "@/app/(nav)/tasks/announcements/types";
+import {
+  AnnouncementDetailsResponse,
+  AnnouncementResponseDetails,
+} from "@/app/(nav)/tasks/announcements/types";
 import { useEffect, useState } from "react";
-import { AnnouncementDetailsPageData, transformAnnouncementDetailsData } from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
+import {
+  AnnouncementDetailsPageData,
+  transformAnnouncementDetailsData,
+} from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import dayjs from "dayjs";
 import AnnouncementSkeleton from "@/components/Loader/announcement-preview";
-
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const PreviewAnnouncement = () => {
   const router = useRouter();
   const { announcementId } = useParams();
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCreateManageAnnouncement = usePermission(
+    role,
+    "Can create and manage announcement"
+  );
 
   const [pageData, setPageData] = useState<AnnouncementDetailsPageData | null>(
     null
@@ -47,9 +59,8 @@ const PreviewAnnouncement = () => {
     }
   }, [apiData]);
 
-  
-// Show skeleton if loading or silentLoading is true, or if delay hasn't completed
-  if ((loading) && !error && !isNetworkError) {
+  // Show skeleton if loading or silentLoading is true, or if delay hasn't completed
+  if (loading && !error && !isNetworkError) {
     return <AnnouncementSkeleton />;
   }
 
@@ -73,13 +84,15 @@ const PreviewAnnouncement = () => {
             {pageData?.title}
           </h1>
         </div>
-        <Button
-          href={`/tasks/announcements/${announcementId}/manage`}
-          size="sm_medium"
-          className="py-2 px-3"
-        >
-          manage announcement
-        </Button>
+        {canCreateManageAnnouncement && (
+          <Button
+            href={`/tasks/announcements/${announcementId}/manage`}
+            size="sm_medium"
+            className="py-2 px-3"
+          >
+            manage announcement
+          </Button>
+        )}
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         {/* Left Side */}

@@ -32,6 +32,8 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 const BranchStaffPage = () => {
   const { branch } = usePersonalInfoStore();
@@ -41,6 +43,12 @@ const BranchStaffPage = () => {
   const BRANCH_ID = branch?.branch_id || 0;
   const router = useRouter();
   const branchName = branch?.branch_name;
+  const { role } = useRole();
+  // PERMISSIONS
+  const canAddOrDeleteStaff = usePermission(
+    role,
+    "Can add/delete branch staff"
+  );
 
   const gridSectionRef = useRef<HTMLDivElement>(null);
   const [config, setConfig] = useState<AxiosRequestConfig>(() => {
@@ -262,21 +270,23 @@ const BranchStaffPage = () => {
             colorScheme={3}
           />
         </div>
-        <div className="flex items-center justify-between gap-2 ml-auto flex-wrap">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + create staff
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <CreateStaffModal
-                branchId={BRANCH_ID.toString()}
-                hasManager={true}
-              />
-            </ModalContent>
-          </Modal>
-        </div>
+        {canAddOrDeleteStaff && (
+          <div className="flex items-center justify-between gap-2 ml-auto flex-wrap">
+            <Modal>
+              <ModalTrigger asChild>
+                <Button type="button" className="page-header-button">
+                  + create staff
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <CreateStaffModal
+                  branchId={BRANCH_ID.toString()}
+                  hasManager={true}
+                />
+              </ModalContent>
+            </Modal>
+          </div>
+        )}
       </div>
       <FilterBar
         azFilter
@@ -315,10 +325,10 @@ const BranchStaffPage = () => {
               body={
                 <p>
                   You can create profiles for all branch staff and assign them
-                  specific roles and properties using the &quot;Add Staff&quot; button.
-                  Each staff member will have access based on their role, while
-                  you maintain full control to manage all staff accounts and
-                  activities within the branch.
+                  specific roles and properties using the &quot;Add Staff&quot;
+                  button. Each staff member will have access based on their
+                  role, while you maintain full control to manage all staff
+                  accounts and activities within the branch.
                   <br />
                   <br />
                 </p>

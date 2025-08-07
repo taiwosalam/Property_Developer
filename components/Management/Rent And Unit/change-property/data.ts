@@ -32,16 +32,24 @@ export const getNewUnitFeeDetails = (
         : unitData.renew_service_charge,
     },
     {
-      name: "Security Fee",
-      amount: calculation ? unitData.security_fee : "",
+      name: "Agency Fee",
+      amount: calculation ? unitData.unitAgentFee : unitData.renew_agency_fee,
     },
     {
-      name: "Agency Fee",
-      amount: calculation ? unitData.unitAgentFee : "",
+      name: "Legal Fee",
+      amount: calculation ? unitData.legalFee : "",
     },
     {
       name: "Caution Fee",
       amount: calculation ? unitData.caution_fee : "",
+    },
+    {
+      name: "Security Fee",
+      amount: calculation ? unitData.security_fee : unitData.renew_security_fee,
+    },
+    {
+      name: "Inspection Fee",
+      amount: calculation ? unitData.inspectionFee : "",
     },
     {
       name: "VAT Amount",
@@ -100,6 +108,40 @@ export const getDeductionsArrays = (
 };
 
 // Helper function to compute total payable and related values
+// export const getTotalPayable = (
+//   calculation: boolean,
+//   deduction: boolean,
+//   unitData: any | null,
+//   outstanding: number,
+//   currency: Currency = "naira"
+// ): TotalPayableResult => {
+//   const newUnitTotal = calculation
+//     ? Number(unitData?.newTenantTotalPrice || 0)
+//     : Number(unitData?.renewalTenantTotalPrice || 0);
+//   const newUnitTotalFormatted = calculation
+//     ? formatFee(
+//         unitData?.newTenantTotalPrice || 0,
+//         unitData?.currency || currency
+//       )
+//     : formatFee(
+//         unitData?.renewalTenantTotalPrice || 0,
+//         unitData?.currency || currency
+//       );
+//   const totalPayable = deduction ? outstanding - newUnitTotal : newUnitTotal;
+
+//   return {
+//     newUnitTotal,
+//     newUnitTotalFormatted: newUnitTotalFormatted || "",
+//     totalPayable,
+//   };
+// };
+
+export interface TotalPayableResult {
+  newUnitTotal: number;
+  newUnitTotalFormatted: string;
+  totalPayable: number;
+}
+
 export const getTotalPayable = (
   calculation: boolean,
   deduction: boolean,
@@ -107,19 +149,41 @@ export const getTotalPayable = (
   outstanding: number,
   currency: Currency = "naira"
 ): TotalPayableResult => {
+  // Validate inputs
+  if (!unitData) {
+    console.warn("getTotalPayable: unitData is null");
+    return {
+      newUnitTotal: 0,
+      newUnitTotalFormatted: "",
+      totalPayable: 0,
+    };
+  }
+
+  const newTenantTotalPrice = Number(unitData?.newTenantTotalPrice || 0);
+  const renewalTenantTotalPrice = Number(
+    unitData?.renewalTenantTotalPrice || 0
+  );
+
+  // Log inputs for debugging
+  console.log({
+    calculation,
+    deduction,
+    newTenantTotalPrice,
+    renewalTenantTotalPrice,
+    outstanding,
+    currency,
+  });
+
   const newUnitTotal = calculation
-    ? Number(unitData?.newTenantTotalPrice || 0)
-    : Number(unitData?.renewalTenantTotalPrice || 0);
+    ? newTenantTotalPrice
+    : renewalTenantTotalPrice;
   const newUnitTotalFormatted = calculation
-    ? formatFee(
-        unitData?.newTenantTotalPrice || 0,
-        unitData?.currency || currency
-      )
-    : formatFee(
-        unitData?.renewalTenantTotalPrice || 0,
-        unitData?.currency || currency
-      );
+    ? formatFee(newTenantTotalPrice, unitData?.currency || currency)
+    : formatFee(renewalTenantTotalPrice, unitData?.currency || currency);
   const totalPayable = deduction ? outstanding - newUnitTotal : newUnitTotal;
+
+  // Log output for debugging
+  console.log({ newUnitTotal, newUnitTotalFormatted, totalPayable });
 
   return {
     newUnitTotal,

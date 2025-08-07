@@ -29,6 +29,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
   const [code, setCode] = useState("");
   const [countdown, setCountdown] = useState(40);
   const [canResend, setCanResend] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const handlePinChange = (pin: string) => {
     setCode(pin);
@@ -78,15 +79,20 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
   };
 
   const handleResendCode = async () => {
-    if (canResend) {
+    if (canResend && !resending) {
+      setResending(true);
+
       const status =
         type === "sign up"
           ? await resendOtp()
           : await requestPasswordReset({ email });
+
       if (status) {
         setCountdown(40);
         setCanResend(false);
       }
+
+      setResending(false);
     }
   };
 
@@ -144,14 +150,15 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
           type="button"
           onClick={handleResendCode}
           className="flex gap-1 custom-primary-color text-base font-medium"
-          disabled={!canResend}
+          disabled={!canResend || resending}
         >
           <span className="custom-primary-color">
             <ReloadIcon />
           </span>
-          <p>Resend code</p>
-          {!canResend && <p>({countdown}s)</p>}
+          <p>{resending ? "Sending code..." : "Resend code"}</p>
+          {!canResend && !resending && <p>({countdown}s)</p>}
         </button>
+
         <button
           type="button"
           onClick={() => changeStep("prev")}

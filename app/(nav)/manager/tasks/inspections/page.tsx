@@ -5,7 +5,11 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import Pagination from "@/components/Pagination/pagination";
 import InspectionCard from "@/components/tasks/Inspections/inspection-card";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { FilterResult, InspectionRequestParams, transformInspectionCard } from "@/app/(nav)/tasks/inspections/data";
+import {
+  FilterResult,
+  InspectionRequestParams,
+  transformInspectionCard,
+} from "@/app/(nav)/tasks/inspections/data";
 import useFetch from "@/hooks/useFetch";
 import {
   InspectionDataApiResponse,
@@ -24,10 +28,16 @@ import { hasActiveFilters } from "../../reports/data/utils";
 import ServerError from "@/components/Error/ServerError";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const InspectionPage = () => {
   const [inspectionData, setInspectionData] =
     useState<InspectionPageType | null>(null);
+  const { role } = useRole();
+  // PERMISSIONS
+  const canManageInspection = usePermission(role, "Can create examine");
+
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: 1,
@@ -221,8 +231,7 @@ const InspectionPage = () => {
                     property listings. Once a potential client submits an
                     inspection request, the details will appear here, allowing
                     you to view and book appointments. <br /> <br />
-                   
-                    <br /> 
+                    <br />
                   </p>
                 }
               />

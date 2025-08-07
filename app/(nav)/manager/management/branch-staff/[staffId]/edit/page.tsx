@@ -34,11 +34,23 @@ import SettingsBank from "@/components/Settings/settings-bank";
 import { useTourStore } from "@/store/tour-store";
 import { ExclamationMark } from "@/public/icons/icons";
 import { cleanPathname } from "@/tour/steps/page-steps";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
   const { branch } = useBranchStore();
   const router = useRouter();
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canAddOrDeleteStaff = usePermission(
+    role,
+    "Can add/delete branch staff"
+  );
+  const canChangeStaffPosition =
+    usePermission(role, "Can upgrade or downgrade branch staff account") ||
+    role === "director";
 
   const [pageData, setPageData] = useState<StaffProfileProps>(staffData);
   const {
@@ -125,7 +137,18 @@ const EditStaffProfile = () => {
             <StaffEditProfileInfoSection />
             <StaffEditAboutSection />
             {/* <StaffEditMoveToAnotherBranchSection /> */}
-            <StaffEditChangePositionSection />
+            {/* <StaffEditChangePositionSection /> */}
+            <div className="relative">
+              <StaffEditChangePositionSection />
+              {!canChangeStaffPosition && (
+                <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-md flex items-center justify-center text-center px-4">
+                  <p className="text-sm font-medium text-gray-700">
+                    ⚠️ You don’t have permission to change staff position.
+                  </p>
+                </div>
+              )}
+            </div>
+
             <StaffLockAccountSection />
           </div>
           <div className="w-full lg:w-[334px] custom-flex-col gap-5 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
@@ -133,28 +156,32 @@ const EditStaffProfile = () => {
           </div>
         </div>
         <FixedFooter className="flex justify-between items-center flex-wrap">
-          <Modal>
-            <ModalTrigger asChild>
-              <Button
-                size="base_medium"
-                className="delete-account-button
+          {canAddOrDeleteStaff && (
+            <Modal>
+              <ModalTrigger asChild>
+                <Button
+                  size="base_medium"
+                  className="delete-account-button
                 py-2 px-6"
-                variant="light_red"
-              >
-                delete account
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <DeleteAccountModal
-                action={async () => await deleteStaff(pageData.id)}
-                afterAction={() => router.push("/manager/management/staff-branch")}
-              />
-            </ModalContent>
-          </Modal>
+                  variant="light_red"
+                >
+                  delete account
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <DeleteAccountModal
+                  action={async () => await deleteStaff(pageData.id)}
+                  afterAction={() =>
+                    router.push("/manager/management/staff-branch")
+                  }
+                />
+              </ModalContent>
+            </Modal>
+          )}
 
           <Button
             size="base_medium"
-            className="save-button py-2 px-6"
+            className="save-button py-2 px-6 ml-auto"
             onClick={() => router.back()}
           >
             save

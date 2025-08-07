@@ -275,14 +275,6 @@ const PostProceedContent = ({
       return;
     }
     const IS_FACILITY = propertyType === "facility";
-    // Open modal for all tenants
-    // // setIsAgreementModalOpen(true);
-    // if (!IS_FACILITY && !isPastDate) {
-    //   // Open modal for non-facility and non-past date cases
-    //   setIsAgreementModalOpen(true);
-    //   return;
-    // }
-
     // Only open modal if not facility, not past date, and rent_agreement is true
     if (!IS_FACILITY && !isPastDate && selectedCheckboxOptions.rent_agreement) {
       setIsAgreementModalOpen(true);
@@ -309,7 +301,7 @@ const PostProceedContent = ({
       payment_date: startDate,
       has_document: shouldAttachDocument ? 1 : 0,
       payment_status_desc: paymentStatus?.desc || "",
-      payment_status_amount: paymentStatus?.amount || 0,
+      payment_status_amount: Math.abs(paymentStatus?.amount || 0),
       has_invoice: 1, //ADDED AS REQUEST BY MR-TAIWO
       // ...(isRental ? { doc_file } : {}), // Only include doc_file for rental properties
     };

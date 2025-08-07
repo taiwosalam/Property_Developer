@@ -31,6 +31,18 @@ interface PropertySwitchUnitItemProps {
   agencyFee?: string;
 }
 
+// Utility function to check for valid, non-zero values
+const isValidValue = (value: string | undefined): boolean => {
+  if (value === undefined || value === null || value === "") return false;
+
+  // Remove currency symbols (e.g., ₦) and trim whitespace
+  const cleanValue = value.replace(/[^\d.-]/g, "").trim();
+
+  // Check if the cleaned value is a number and not zero
+  const numericValue = parseFloat(cleanValue);
+  return !isNaN(numericValue) && numericValue !== 0;
+};
+
 const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
   id,
   isSelected,
@@ -67,20 +79,6 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
     setDeductChecked(deduction);
   }, [deduction]);
 
-  // Handle switch toggles
-  const handleCalculationToggle = useCallback(() => {
-    const newValue = !calcChecked;
-    setCalcChecked(newValue);
-    setCalculation(newValue);
-  }, [calcChecked, setCalculation]);
-
-  const handleDeductionToggle = useCallback(() => {
-    const newValue = !deductChecked;
-    setDeductChecked(newValue);
-    setDeduction(newValue);
-  }, [deductChecked, setDeduction]);
-
-  // Define fields with labels and values
   const fields = [
     { label: "Unit No/Name", value: unitName, required: true },
     { label: "Rent", value: rent, required: true },
@@ -95,9 +93,9 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
     { label: "Total Package", value: totalPackage },
   ];
 
-  // Filter fields to show only those with available values or required
+  // Filter fields to show only those with valid values or required
   const visibleFields = fields.filter(
-    (field) => field.required || (field.value && field.value !== "0")
+    (field) => field.required || isValidValue(field.value)
   );
 
   return (
@@ -157,45 +155,6 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
           />
         </div>
       </div>
-
-      {/* Divider and Switches */}
-      {/* {isSelected && isRental && (
-        <>
-          <SectionSeparator className="my-4 h-[2px]" />
-          <div className="space-y-6 text-text-secondary dark:text-darkText-1 text-sm font-medium">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={calcChecked}
-                  onClick={handleCalculationToggle}
-                  aria-label="Toggle calculation"
-                />
-                <p>Calculation</p>
-              </div>
-              <p>
-                {calcChecked
-                  ? "Calculate the total package of the new rent, including caution deposit, service charge, agency fee, legal fee, and other charges for the tenants transferring to the new unit."
-                  : "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before."}
-              </p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={deductChecked}
-                  onClick={handleDeductionToggle}
-                  aria-label="Toggle deduction"
-                />
-                <p>Deduction</p>
-              </div>
-              <p>
-                {deductChecked
-                  ? "Calculate the total package of the new fee, including service charge and other charges for the occupant transferring to the new unit."
-                  : "Do not deduct the current outstanding rent balance from the cost of the new units that the occupants are moving into."}
-              </p>
-            </div>
-          </div>
-        </>
-      )} */}
     </div>
   );
 };

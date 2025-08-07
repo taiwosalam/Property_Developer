@@ -39,6 +39,8 @@ import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import ServerError from "@/components/Error/ServerError";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const states = getAllStates();
 
@@ -48,6 +50,12 @@ const Tenants = () => {
   const BRANCH_ID = branch?.branch_id || 0;
   const contentTopRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<string | null>(storedView);
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCreateManageTenants = usePermission(
+    role,
+    "Can add and manage tenants/occupants"
+  );
 
   const [pageData, setPageData] = useState<TenantPageData>(() => {
     const savedPage = sessionStorage.getItem("tenant_page");
@@ -262,13 +270,15 @@ const Tenants = () => {
             Chat
           </Button>
         )}
-        <Button
-          href={`/management/tenants/${t.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2"
-        >
-          Manage
-        </Button>
+        {canCreateManageTenants && (
+          <Button
+            href={`/management/tenants/${t.id}/manage`}
+            size="sm_medium"
+            className="px-8 py-2"
+          >
+            Manage
+          </Button>
+        )}
       </div>
     ),
     ref:
@@ -278,8 +288,6 @@ const Tenants = () => {
         ? lastRowRef
         : undefined,
   }));
-
-  
 
   if (loading)
     return (
@@ -316,16 +324,18 @@ const Tenants = () => {
             colorScheme={3}
           />
         </div>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + create new tenant
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <AddTenantModal />
-          </ModalContent>
-        </Modal>
+        {canCreateManageTenants && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="button" className="page-header-button">
+                + create new tenant
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddTenantModal />
+            </ModalContent>
+          </Modal>
+        )}
       </div>
 
       <FilterBar
@@ -372,8 +382,8 @@ const Tenants = () => {
             </div>
           ) : (
             <EmptyList
-              noButton
-              modalContent={<AddTenantModal />}
+              buttonText="+ Create New Tenant"
+              modalContent={canCreateManageTenants ? <AddTenantModal /> : <></>}
               title="The tenants and occupants profile files are empty."
               body={
                 <p>

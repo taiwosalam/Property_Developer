@@ -33,6 +33,7 @@ import { CalendarEventsApiResponse } from "@/app/(nav)/tasks/calendars/types";
 import { transformCalendarEvents } from "@/app/(nav)/tasks/calendars/data";
 import { CalendarEventProps } from "./types";
 import UnitBreakdownNewTenant from "../Management/Properties/unit-breakdown-new-tenant";
+import { usePermission } from "@/hooks/getPermission";
 
 interface CalendarComponentProps {
   events?: CalendarEventProps[];
@@ -41,6 +42,8 @@ interface CalendarComponentProps {
 const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
   const { role, setRole } = useRole();
   const today = new Date();
+  const canManageCalendar =
+    usePermission(role, "Can manage calendar") || role === "director";
 
   const isStaff = role === "staff";
   // States
@@ -165,7 +168,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
             <SectionSeparator
               style={{ backgroundColor: "rgba(120, 122, 126, 0.20)" }}
             />
-            {!isStaff && (
+            {!isStaff && canManageCalendar && (
               <div className="flex justify-end">
                 <Button
                   size="sm_medium"

@@ -9,6 +9,7 @@ import { useAddUnitStore } from "@/store/add-unit-store";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const PropertyFormFooter: React.FC<{
   editMode?: boolean;
@@ -24,6 +25,13 @@ const PropertyFormFooter: React.FC<{
   const router = useRouter();
   const { role } = useRole();
 
+  // PERMISSIONS
+  const canAddOrDeleteBranchProperties = usePermission(
+    role,
+    "Can add/delete branch properties"
+  );
+  const canShowDeleteButton =
+    canDelete && (role === "director" || canAddOrDeleteBranchProperties);
 
   // switch case for properties page redirect
   const getPropertyPage = () => {
@@ -35,7 +43,7 @@ const PropertyFormFooter: React.FC<{
       default:
         return "/management/properties";
     }
-  }
+  };
 
   const handleSave = () => {
     const hasUnuploadedUnits = addedUnits.some((unit) => unit.notYetUploaded);
@@ -88,7 +96,7 @@ const PropertyFormFooter: React.FC<{
       >
         {editMode ? (
           <>
-            {canDelete ? (
+            {canShowDeleteButton ? (
               <Modal>
                 <ModalTrigger asChild>
                   <Button

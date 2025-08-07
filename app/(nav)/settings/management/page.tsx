@@ -149,27 +149,6 @@ const Management = () => {
     });
   };
 
-  /* MANAGEMENT CONFIGURATION */
-  // const handleUpdate = async (title: string) => {
-  //   const role = roleMapping[title] || title; // Map title or fallback to original
-  //   const permissions = selectedPermissions[title] || []; // Ensure we have an array
-
-  //   const payload = {
-  //     role, // Use mapped role
-  //     permissions, // Correctly formatted array
-  //   };
-  //   try {
-  //     setLoadingStates((prev) => ({ ...prev, [role]: true }));
-  //     const res = await updateSettingsManagement(objectToFormData(payload));
-  //     if (res) {
-  //       toast.success(`Management updated successfully`);
-  //     }
-  //   } catch (err) {
-  //     toast.error("Failed to update role");
-  //   } finally {
-  //     setLoadingStates((prev) => ({ ...prev, [role]: false }));
-  //   }
-  // };
 
   const handleUpdate = async (title: string) => {
     const roles =

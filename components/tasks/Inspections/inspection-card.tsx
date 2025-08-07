@@ -28,8 +28,14 @@ import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { useGlobalStore } from "@/store/general-store";
 import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
+  const { role } = useRole();
+  // PERMISSIONS
+  const canManageInspection = usePermission(role, "Can create examine");
+
   const { data: inspectionData, refetch } =
     useFetch<InspectionDetailsApiResponse>(`inspections/${data?.id}`);
   const [inspection, setInspection] = useState<TInspectionDetails | null>(null);
@@ -145,26 +151,28 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
           >
             Message
           </button>
-          <Modal
-            state={{
-              setIsOpen,
-              isOpen,
-            }}
-          >
-            <ModalTrigger asChild>
-              <Button size="xs_normal" className="py-2 px-6">
-                more details
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              {inspection && (
-                <InspectionDetailModal
-                  data={inspection}
-                  setIsOpen={setIsOpen}
-                />
-              )}
-            </ModalContent>
-          </Modal>
+          {canManageInspection && (
+            <Modal
+              state={{
+                setIsOpen,
+                isOpen,
+              }}
+            >
+              <ModalTrigger asChild>
+                <Button size="xs_normal" className="py-2 px-6">
+                  more details
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                {inspection && (
+                  <InspectionDetailModal
+                    data={inspection}
+                    setIsOpen={setIsOpen}
+                  />
+                )}
+              </ModalContent>
+            </Modal>
+          )}
         </div>
       </div>
     </div>
