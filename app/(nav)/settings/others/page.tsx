@@ -1097,7 +1097,7 @@ Once restricted, they will no longer have access to participate in the property'
       {/* COMPANY TYPE SETTINGS */}
       {(canManageCompanyModules || IS_COMPANY_OWNER) && (
         <SettingsSection title="Company Default Module">
-          <div className="custom-flex-col gap-3">
+          <div className="custom-flex-col gap-8">
             {companyTypes.map((type) => (
               <SettingsOthersType
                 key={type.id}
@@ -1132,7 +1132,7 @@ Once restricted, they will no longer have access to participate in the property'
       {/* MESSAGES & REVIEW SETTINGS */}
       {(canManageMessagesReviews || IS_COMPANY_OWNER) && (
         <SettingsSection title="Messages & Review Settings">
-          <div className="custom-flex-col gap-3">
+          <div className="custom-flex-col gap-8">
             {messageReviewSettings.map((setting, index) => (
               <SettingsOthersType
                 key={index}
@@ -1166,7 +1166,7 @@ Once restricted, they will no longer have access to participate in the property'
       {(canManageNotificationPreference || IS_COMPANY_OWNER) && (
         <SettingsSection title="Notifications">
           <div className="custom-flex-col gap-6 mt-4">
-            <div className="mt-2 flex flex-col gap-2">
+            <div className="mt-2 flex flex-col gap-4">
               <h4> Notify me when: </h4>
               {notificationOptions.map((option) => (
                 <DocumentCheckbox
@@ -1186,7 +1186,7 @@ Once restricted, they will no longer have access to participate in the property'
               ))}
             </div>
 
-            <div className="toggle flex flex-col gap-2">
+            <div className="toggle flex flex-col gap-6">
               {notificationOtherSettings.map((setting, index) => (
                 <SettingsOthersCheckBox
                   plan={userPlan}
@@ -1201,7 +1201,7 @@ Once restricted, they will no longer have access to participate in the property'
               ))}
             </div>
           </div>
-          <div className="flex justify-end mt-2">
+          <div className="flex justify-end mt-8">
             <SettingsUpdateButton
               loading={loadingNotification}
               action={saveSettings}
@@ -1218,7 +1218,7 @@ Once restricted, they will no longer have access to participate in the property'
             This section enables you to revert all modifications made in the
             settings back to their default state.
           </h4>
-          <div className="mt-4 flex flex-col gap-2">
+          <div className="mt-4 flex flex-col gap-6">
             {resetSettingsOptions.map((option, index) => (
               <SettingsOthersType
                 key={index}

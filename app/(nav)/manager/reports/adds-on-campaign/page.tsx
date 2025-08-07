@@ -11,13 +11,14 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 //   ActivityTable,
 //   transformActivityAData,
 // } from "./[userId]/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { BranchFilter, FilterResult, PropertyFilter } from "../tenants/types";
 import { ReportsRequestParams } from "../tenants/data";
 import { AxiosRequestConfig } from "axios";
+import { BranchStaff } from "@/app/(nav)/(messages-reviews)/messages/types";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { hasActiveFilters } from "../data/utils";
@@ -27,7 +28,8 @@ import useAddressFromCoords from "@/hooks/useGeoCoding";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
-import { Activity } from "lucide-react";
+import { Activity, Loader2 } from "lucide-react";
+import { CampaignFields } from "@/app/(nav)/settings/add-on/data";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import {
   CampaignHistoryResponse,
@@ -35,7 +37,6 @@ import {
   transformCampaignData,
 } from "@/components/Settings/sponsor_data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { CampaignFields } from "@/app/(nav)/settings/add-on/data";
 
 const AddsOnCampaignRecord = () => {
   const { company_id } = usePersonalInfoStore();
@@ -45,17 +46,16 @@ const AddsOnCampaignRecord = () => {
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const filteredCampaign = useGlobalStore((s) => s.campaign_history);
 
-  const { branch } = usePersonalInfoStore();
-  const BRANCH_ID = branch?.branch_id || 0;
+  const [campaignTable, setCampaignTable] = useState<ICampaignTable>({
+    campaigns: [],
+    pagination: { total: 0, current_page: 0, last_page: 0 },
+  });
 
-  const [campaignTable, setCampaignTable] = useState<ICampaignTable[] | null>(
-    null
-  );
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-  const fetchUrl =
-    company_id && BRANCH_ID && BRANCH_ID !== 0
-      ? `/campaigns/${company_id}?branch_id=${BRANCH_ID}`
-      : null;
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastRowRef = useRef<HTMLTableRowElement | null>(null);
+  const tableContainerRef = useRef<HTMLDivElement | null>(null);
 
   const {
     data: campaignData,
@@ -64,7 +64,7 @@ const AddsOnCampaignRecord = () => {
     isNetworkError,
     error,
   } = useFetch<CampaignHistoryResponse>(
-   fetchUrl,
+    company_id ? `campaigns/${company_id}` : null,
     config
   );
   useRefetchOnEvent("companyCampaign", () => refetch({ silent: true }));
@@ -75,6 +75,70 @@ const AddsOnCampaignRecord = () => {
       setCampaignTable(transData);
     }
   }, [campaignData]);
+
+  // Handle data transformation and appending for infinite scroll
+  useEffect(() => {
+    if (campaignData) {
+      const transData = transformCampaignData(campaignData);
+      setCampaignTable((prev) => ({
+        ...transData,
+        emails:
+          config.params.page === 1
+            ? transData.campaigns
+            : [...prev.campaigns, ...transData.campaigns],
+      }));
+
+      setIsFetchingMore(false);
+    }
+  }, [campaignData, config.params.page, setGlobalStore]);
+
+  // Set up Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (
+      loading ||
+      isFetchingMore ||
+      !campaignTable ||
+      campaignTable.campaigns.length === 0 ||
+      campaignTable.pagination.current_page >=
+        campaignTable.pagination.last_page
+    ) {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      return;
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingMore) {
+          console.log(
+            "Last row visible, fetching page:",
+            config.params.page + 1
+          );
+          setConfig((prev) => ({
+            ...prev,
+            params: { ...prev.params, page: prev.params.page + 1 },
+          }));
+          setIsFetchingMore(true);
+        }
+      },
+      {
+        root: tableContainerRef.current, // Use TableContainer as the scrollable root
+        rootMargin: "20px", // Trigger slightly before the bottom
+        threshold: 1.0, // Trigger when the last row is fully visible
+      }
+    );
+
+    if (lastRowRef.current) {
+      observerRef.current.observe(lastRowRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [loading, isFetchingMore, campaignData]);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -112,7 +176,7 @@ const AddsOnCampaignRecord = () => {
   useEffect(() => {
     if (!loading && campaignData) {
       const transformedData = transformCampaignData(campaignData);
-      const campaignHistory = transformedData;
+      const campaignHistory = transformedData.campaigns;
       const currentCampaign = useGlobalStore.getState().sms_transaction;
       if (JSON.stringify(currentCampaign) !== JSON.stringify(campaignHistory)) {
         setGlobalStore("campaign_history", campaignHistory);
@@ -135,7 +199,7 @@ const AddsOnCampaignRecord = () => {
       <FilterBar
         exports
         isDateTrue
-        onBack={search ? true : false}
+        onBack={!!search}
         pageTitle="Adds-On Campaign"
         aboutPageModalData={{
           title: "Adds-On Campaign",
@@ -143,8 +207,7 @@ const AddsOnCampaignRecord = () => {
         }}
         searchInputPlaceholder="Search for campaign history"
         handleFilterApply={handleAppliedFilter}
-        //={() => {}}
-
+        appliedFilters={appliedFilters}
         handleSearch={handleSearch}
         //filterOptionsMenu={() => {}}
         hasGridListToggle={false}
@@ -155,7 +218,7 @@ const AddsOnCampaignRecord = () => {
         fileLabel={"Campaign Reports"}
       />
       <section>
-        {campaignTable && campaignTable.length === 0 && !loading ? (
+        {campaignTable && campaignTable.campaigns.length === 0 && !loading ? (
           !!config.params.search ? (
             <SearchError />
           ) : (
@@ -173,11 +236,24 @@ const AddsOnCampaignRecord = () => {
             />
           )
         ) : (
-          <CustomTable
-            fields={CampaignFields}
-            data={campaignTable ? campaignTable : []}
-            tableHeadClassName="h-[45px]"
-          />
+          <div ref={tableContainerRef} className="py-4">
+            <CustomTable
+              fields={CampaignFields}
+              data={campaignTable ? campaignTable.campaigns : []}
+              tableHeadClassName="h-[45px]"
+            />{" "}
+            {isFetchingMore && (
+              <div className="flex justify-center py-4">
+                <Loader2 className="animate-spin text-brand-9" />
+              </div>
+            )}
+            {campaignData &&
+              campaignTable?.pagination.current_page >=
+                campaignTable.pagination.last_page &&
+              campaignTable.campaigns.length > 0 && (
+                <div className="text-center py-4 text-gray-500"></div>
+              )}
+          </div>
         )}
       </section>
     </div>

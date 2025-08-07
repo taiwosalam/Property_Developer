@@ -20,6 +20,7 @@ import { DateRange } from "react-day-picker";
 import { WalletStats } from "@/app/(nav)/wallet/data";
 import {
   EnrollmentHistoryTable,
+  ICampaignRecords,
   ICampaignTable,
   SMSTable,
 } from "@/components/Settings/sponsor_data";
@@ -40,6 +41,7 @@ import {
   ICallbackRequestPageData,
 } from "@/app/(nav)/reports/call/data";
 import { DataItem } from "@/components/Table/types";
+import { CalendarTable, ICalendarEventsTable } from "@/app/(nav)/tasks/calendars/data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -60,9 +62,10 @@ interface GlobalStoreState {
   rentEndDate: string | null;
   sms_transaction?: SMSTable;
   feature_history?: EnrollmentHistoryTable;
-  campaign_history?: ICampaignTable[];
+  campaign_history?: ICampaignRecords[];
   sponsored_listing?: ISponsoredListing[];
   callback_requests?: ICallbackRequest[];
+  calendar_events: CalendarTable[];
 
   activities?: ActivityDataReport[];
   user_activities?: ActivityDataReport[];
@@ -168,6 +171,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   subscriptions: [],
   activities: [],
   vehicle_records: [],
+  calendar_events: [],
   rent: [],
   campaign_history: [],
   sponsored_listing: [],

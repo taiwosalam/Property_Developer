@@ -97,6 +97,7 @@ const TeamChatInputArea = () => {
     }
   }, [voiceControls.recordedBlob, setAudioUrl]);
 
+
   return (
     <div className="py-4 px-6 flex w-full items-center gap-4">
       {!audioUrl && !voiceControls.isRecordingInProgress && (
@@ -120,11 +121,11 @@ const TeamChatInputArea = () => {
               name="chat"
               id="chat"
               placeholder="Type your message here"
-              className="w-full text-sm w-[90%] border-none focus:ring-0 focus:outline-none focus:border-none bg-transparent"
+              className="w-full text-sm border-none focus:ring-0 focus:outline-none focus:border-none bg-transparent"
               value={message}
               onChange={handleMessageChange}
             />
-            <div className="flex relative items-center justify-end w-[10%] justify-center text-brand-9">
+            <div className="flex relative items-center w-[10%] justify-center text-brand-9">
               <button
                 type="button"
                 ref={emojiBtnRef}
