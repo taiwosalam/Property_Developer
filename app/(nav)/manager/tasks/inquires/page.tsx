@@ -1,7 +1,11 @@
 "use client";
 
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { ICallRequestPageData, transformCallbackRequestPageData, type RequestCallBackCardDataType } from "@/app/(nav)/tasks/inquires/data";
+import {
+  ICallRequestPageData,
+  transformCallbackRequestPageData,
+  type RequestCallBackCardDataType,
+} from "@/app/(nav)/tasks/inquires/data";
 import Pagination from "@/components/Pagination/pagination";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import RequestCallBackCard from "@/components/tasks/CallBack/RequestCard";
@@ -28,6 +32,8 @@ import { MaintenanceRequestParams } from "@/app/(nav)/tasks/maintenance/data";
 import { hasActiveFilters } from "../../reports/data/utils";
 import { IPropertyApi } from "@/app/(nav)/settings/others/types";
 import { useSearchParams } from "next/navigation";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const transformToCallBackRequestCardProps = (
   data: RequestCallBackCardDataType
@@ -52,13 +58,10 @@ const Inquires = () => {
     useState<ICallRequestPageData | null>(null);
   const searchParams = useSearchParams();
   const urlStatus = searchParams.get("status");
+  const { role } = useRole();
 
-  // const [config, setConfig] = useState<AxiosRequestConfig>({
-  //   params: {
-  //     page: 1,
-  //     search: "",
-  //   } as LandlordRequestParams,
-  // });
+  // PERMISSIONS
+  const canViewCallRequests = usePermission(role, "Can view call request");
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -198,7 +201,7 @@ const Inquires = () => {
   if (error) return <ServerError error={error} />;
 
   return (
-    <section className="space-y-9">
+    <section className="space-y-9 relative">
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           total={callRequestPageData?.total_call || 0}
@@ -315,6 +318,15 @@ const Inquires = () => {
           currentPage={callRequestPageData?.pagination?.current_page ?? 1}
           onPageChange={handlePageChange}
         />
+      )}
+
+      {/* PERMISSION OVERLAY */}
+      {!canViewCallRequests && (
+        <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-20 rounded-md flex items-center justify-center text-center px-4">
+          <p className="text-sm font-medium text-gray-700">
+            ⚠️ You don’t have permission to view call back requests.
+          </p>
+        </div>
       )}
     </section>
   );

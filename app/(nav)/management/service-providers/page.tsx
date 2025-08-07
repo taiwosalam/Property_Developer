@@ -47,6 +47,7 @@ import UserTag from "@/components/Tags/user-tag";
 import { entries } from "lodash";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 interface ServiceProviderCardProps {
   id: number;
@@ -76,6 +77,10 @@ const defaultServiceProviderPageData: ServiceProviderPageData = {
 const ServiceProviders = () => {
   const storedView = useView();
   const { role } = useRole();
+  // PERMISSIONS
+  const canViewServiceProviders =
+    usePermission(role, "Can create service provider");
+
   const [view, setView] = useState<string | null>(storedView);
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -293,7 +298,7 @@ const ServiceProviders = () => {
     }));
   }, [service_providers, current_page, total_pages, view]);
 
-  const CAN_CREATE_SERVICE_PROVIDER = role === "manager" || role === "director";
+  const CAN_CREATE_SERVICE_PROVIDER = canViewServiceProviders || role === "director";
   //console.log(total_pages)
 
   if (loading) {

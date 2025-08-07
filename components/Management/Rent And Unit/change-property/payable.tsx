@@ -12,9 +12,9 @@ import { useEffect } from "react";
 
 export const ProceedPayAble: React.FC = () => {
   const { calculation, deduction, unitData, propertyType } = useOccupantStore();
-  const { currentRentStats } = useGlobalStore();
-  const { setGlobalInfoStore } = useGlobalStore();
-  const outstanding = currentRentStats?.outstanding || 0;
+  const { currentRentStats, setGlobalInfoStore } = useGlobalStore();
+  const outstanding =
+    Math.round((currentRentStats?.outstanding || 0) * 100) / 100; // Round to 2 decimal places
 
   const isRental = propertyType === "rental";
   const currency = unitData?.currency || "naira";
@@ -26,37 +26,49 @@ export const ProceedPayAble: React.FC = () => {
     calculation,
     deduction,
     unitData,
-    currentRentStats?.outstanding || 0,
+    outstanding,
     currency
   );
 
-  const isExcess = totalPayable < 0;
-  const feeTitle = isRental ? "Breakdown" : "Annual Fee";
-  const detail = {
-    label: isExcess ? "Client Excess" : "Refund Client",
-    amount: totalPayable,
-  };
+  // Determine payment status
+  const remainingBalance = totalPayable > 0 && deduction; // Client has remaining balance
+  const clientOwes =
+    (totalPayable < 0 && deduction) || (totalPayable > 0 && !deduction); // Client owes company
+  const noBalance = totalPayable === 0; // No balance or debt
 
-  // Subtitles
+  // Subtitles (as specified by project manager)
   const subtitles = {
     zero: "Based on the calculation and your selected option, there is no outstanding balance. Neither your company nor the client owes any refund or payment.",
     refund:
       "Based on the calculation and your selected option, the client has an excess balance to be paid to your company.",
     excess:
       "Based on the calculation and your selected option, your company owes the client a refund balance.",
+    remainingBalance:
+      "Based on the calculation and your selected option, the client has a remaining balance with your company.", // Added for clarity
   };
-  
-  const tenantOwes = detail.amount > 0; // Tenant owes company
-  const companyOwes = deduction && detail.amount < 0; // Company owes tenant
-  const noOneOwes = detail.amount === 0; // Neither owes
 
-  const subtitle = noOneOwes
+  const subtitle = noBalance
     ? subtitles.zero
-    : tenantOwes
+    : clientOwes
     ? subtitles.refund
+    : remainingBalance
+    ? subtitles.remainingBalance
     : subtitles.excess;
 
-  // Save payment status desc & amount to general store
+  const detail = {
+    label: noBalance
+      ? "No Payment Due"
+      : clientOwes
+      ? deduction
+        ? "Client Owes"
+        : "New Unit Cost"
+      : remainingBalance
+      ? "Remaining Client Balance"
+      : "Refund to Client",
+    amount: totalPayable,
+  };
+
+  // Save payment status to global store
   useEffect(() => {
     setGlobalInfoStore("paymentStatus", {
       desc: subtitle,
@@ -65,17 +77,23 @@ export const ProceedPayAble: React.FC = () => {
   }, [subtitle, detail.amount, setGlobalInfoStore]);
 
   // Return null if unitData is not available
-  if (!unitData) return null;
-  // Determine payment status
-  // // Determine subtitle based on totalPayable and isExcess
-  // const subtitle =
-  //   detail.amount === 0
-  //     ? subtitles.zero
-  //     : isExcess
-  //     ? subtitles.excess
-  //     : subtitles.refund;
+  if (!unitData) {
+    console.warn("ProceedPayAble: unitData is not available");
+    return null;
+  }
 
-  // NB: 💀💀💀👿ALL CLASSNAME IN PARENT DIV IS FOR TOUR GUIDE - DON'T CHANGE e.g payment-status-wrapper💀💀💀👿
+  // Log for debugging
+  console.log({
+    outstanding,
+    newUnitTotal: calculation
+      ? unitData?.newTenantTotalPrice
+      : unitData?.renewalTenantTotalPrice,
+    totalPayable,
+    subtitle,
+    calculation,
+    deduction,
+  });
+
   return (
     <div className="payment-status-wrapper space-y-1">
       <RentSectionTitle>Payment Status</RentSectionTitle>

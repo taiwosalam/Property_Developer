@@ -16,12 +16,20 @@ import { transformSingleBranchAPIResponseToEditBranchFormDetails } from "@/app/(
 import ServerError from "@/components/Error/ServerError";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import Button from "@/components/Form/Button/button";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const Profile = () => {
   const { branch } = usePersonalInfoStore();
   const BRANCH_ID = branch?.branch_id || 0;
   const company_id = usePersonalInfoStore((state) => state.company_id);
+  const { role } = useRole();
 
+  // PERMISSIONS
+  const canEditBranchProfile = usePermission(
+    role,
+    "Can view and edit branch profile"
+  );
   const [updateRequestLoading, setUpdateRequestLoading] = useState(false);
 
   // Conditionally set the URL only if BRANCH_ID is valid
@@ -36,26 +44,37 @@ const Profile = () => {
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  if (error && canEditBranchProfile) return <ServerError error={error} />;
 
   return (
     <>
-      <SettingsSection title="Branch Pofile">
-        <EditBranchForm
-          somedata={branchData}
-          // setUpdateRequestLoading={setUpdateRequestLoading}
-          page="manager"
-        />
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            size="sm_medium"
-            className="update-branch-button py-2 px-8"
-            form="edit-branch-form"
-            disabled={updateRequestLoading}
-          >
-            {updateRequestLoading ? "Updating..." : "Update"}
-          </Button>
+      <SettingsSection title="Branch Profile">
+        <div
+          className={`relative ${
+            !canEditBranchProfile ? "pointer-events-none opacity-50" : ""
+          }
+    `}
+        >
+          <EditBranchForm somedata={branchData} page="manager" />
+          <div className="flex justify-end mt-4">
+            <Button
+              type="submit"
+              size="sm_medium"
+              className="update-branch-button py-2 px-8"
+              form="edit-branch-form"
+              disabled={updateRequestLoading}
+            >
+              {updateRequestLoading ? "Updating..." : "Update"}
+            </Button>
+          </div>
+
+          {!canEditBranchProfile && (
+            <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-md flex items-center justify-center text-center px-4">
+              <p className="text-sm font-medium text-gray-700">
+                ⚠️ You don’t have permission to edit this section.
+              </p>
+            </div>
+          )}
         </div>
       </SettingsSection>
     </>
