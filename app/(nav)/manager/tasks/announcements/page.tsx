@@ -197,14 +197,6 @@ const AnnouncementPage = () => {
                 },
               ]
             : []),
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-            : []),
         ]}
         hasGridListToggle={false}
       />

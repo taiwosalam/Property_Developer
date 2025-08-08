@@ -41,6 +41,7 @@ import { LandlordRequestParams } from "../../management/landlord/data";
 const CalendarEventRecord = () => {
   const searchParams = useSearchParams();
   const search = searchParams.get("b");
+  const setCalendarEventStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   const [eventTable, setEventTable] = useState<ICalendarEventsTable | null>(
     null
@@ -50,6 +51,12 @@ const CalendarEventRecord = () => {
       page: 1,
       search: "",
     } as LandlordRequestParams,
+  });
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
   });
 
   const {
@@ -65,6 +72,42 @@ const CalendarEventRecord = () => {
       setEventTable(eventsTable);
     }
   }, [calendarEventApiResponse, config]);
+
+  useEffect(() => {
+    if (!loading && calendarEventApiResponse) {
+      const transformedData = transformEventTable(calendarEventApiResponse);
+
+      const events = transformedData.table;
+      const currentTenants = useGlobalStore.getState().calendar_events;
+      if (JSON.stringify(currentTenants) !== JSON.stringify(events)) {
+        setEventTable(transformedData);
+        setCalendarEventStore("calendar_events", events);
+      }
+    }
+  }, [calendarEventApiResponse, loading, setCalendarEventStore]);
+
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { startDate, endDate } = filters;
+
+      const queryParams: ReportsRequestParams = { page: 1, search: "" };
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
+  );
+
+  const handleSearch = (query: string) => {
+    setConfig({ params: { ...config.params, search: query } });
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({ params: { ...config.params, sort_order: order } });
+  };
 
   if (loading)
     return (
@@ -85,11 +128,9 @@ const CalendarEventRecord = () => {
           description: "This page contains all calendar events",
         }}
         searchInputPlaceholder="Search for calendar events"
-        handleFilterApply={() => {}}
-        //={() => {}}
-        onSort={() => {}}
-        handleSearch={() => {}}
-        //filterOptionsMenu={() => {}}
+        handleFilterApply={handleAppliedFilter}
+        onSort={handleSort}
+        handleSearch={handleSearch}
         hasGridListToggle={false}
         exportHref="/reports/calendar-event/export"
         xlsxData={eventTable?.table.map((activity) => ({

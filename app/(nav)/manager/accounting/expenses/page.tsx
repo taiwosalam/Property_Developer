@@ -135,7 +135,7 @@ const AccountingExpensesPage = () => {
   const handleSearch = (query: string) => {
     setSearch(query);
   };
-  
+
   const { data, loading, silentLoading, isNetworkError, error } =
     useFetch<ExpensesApiResponse>("/expenses", config);
 
@@ -156,9 +156,7 @@ const AccountingExpensesPage = () => {
     data: propertyData,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>(
-    `/property/all`
-  );
+  } = useFetch<PropertyListResponse>(`/property/all`);
 
   const {
     data: staffsData,
@@ -168,11 +166,21 @@ const AccountingExpensesPage = () => {
 
   const staffOptions = staffsData ? transformStaffs(staffsData) : [];
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   const [timeRange, setTimeRange] = useState("90d");
 

@@ -108,17 +108,36 @@ const Documents = () => {
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
-
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
+  const documentFilterOption = [
+    {
+      label: "Branch",
+      value: [
+        ...new Map(
+          branchesData?.data.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name,
+              value: branch.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
+    },
+    {
+      label: "Property",
+      value: [
+        ...new Map(
+          propertyData?.data.map((property: any) => [
+            property.title.toLowerCase(), // Use lowercase for comparison
+            {
+              label: property.title, // Keep original case for display
+              value: property.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
+    },
+  ];
 
   const { pagination, total_month, total_document } = data || {
     pagination: null,
@@ -163,24 +182,7 @@ const Documents = () => {
           appliedFilters={appliedFilters}
           searchInputPlaceholder="Document Search"
           noExclamationMark
-          filterOptionsMenu={[
-            ...(propertyOptions.length > 0
-              ? [
-                  {
-                    label: "Property",
-                    value: propertyOptions,
-                  },
-                ]
-              : []),
-            ...(branchOptions.length > 0
-              ? [
-                  {
-                    label: "Branch",
-                    value: branchOptions,
-                  },
-                ]
-              : []),
-          ]}
+          filterOptionsMenu={documentFilterOption}
           azFilter
           isDateTrue
         />

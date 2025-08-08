@@ -69,7 +69,7 @@ export const Campaign = () => {
     }
   }, [campaignParams]);
 
-  const [campaignTable, setCampaignTable] = useState<ICampaignTable[] | null>(
+  const [campaignTable, setCampaignTable] = useState<ICampaignTable| null>(
     null
   );
 
@@ -351,7 +351,7 @@ export const Campaign = () => {
             </AutoResizingGrid>
           </div>
 
-          {campaignTable && campaignTable.length > 0 && (
+          {campaignTable && campaignTable.campaigns.length > 0 && (
             <div>
               <div className="flex justify-between mb-4">
                 <h2 className="text-text-primary dark:text-white text-lg font-medium">
@@ -372,7 +372,7 @@ export const Campaign = () => {
               </div>
 
               <CustomTable
-                data={campaignTable ? campaignTable?.slice(0, 3) : []}
+                data={campaignTable ? campaignTable?.campaigns?.slice(0, 3) : []}
                 fields={CampaignFields}
                 {...table_style_props}
               />

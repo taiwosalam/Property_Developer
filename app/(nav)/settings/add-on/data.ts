@@ -139,6 +139,11 @@ export const personalized_domain: SubscriptionTableType = {
       label: "Added Date",
       accessor: "updated_at",
     },
+    {
+      id: "4",
+      label: "Sync Date",
+      accessor: "sync_date",
+    },
 
     {
       id: "5",
@@ -294,7 +299,6 @@ export const CampaignFields = [
     id: "2",
     label: "Link",
     accessor: "link",
-    
   },
   {
     id: "3",
@@ -372,6 +376,11 @@ export interface SponsorUnitTable {
     units: number;
     amount: string;
   }[];
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  };
 }
 
 export const transformSponsorResponse = (
@@ -387,6 +396,11 @@ export const transformSponsorResponse = (
         amount: formatToNGN(listing.amount),
       })
     ),
+    pagination: {
+      total: response.data?.listings?.total,
+      current_page: response?.data?.listings?.current_page,
+      last_page: response?.data?.listings?.last_page,
+    },
   };
 };
 

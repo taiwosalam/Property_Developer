@@ -247,15 +247,13 @@ const AccountManagerDashboard = () => {
         </div>
 
         <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
-          <div className="listing-performance-chart">
-            <div className="w-full xl:flex-1 space-y- xl:space-y-2">
-              <DashboardChart
-                chartTitle="listing Performance"
-                visibleRange
-                chartConfig={dashboardListingsChartConfig}
-                chartData={bookmarkChartData}
-              />
-            </div>
+          <div className="listing-performance-chart w-full xl:flex-1 space-y- xl:space-y-2">
+            <DashboardChart
+              chartTitle="listing Performance"
+              visibleRange
+              chartConfig={dashboardListingsChartConfig}
+              chartData={bookmarkChartData}
+            />
           </div>
 
           <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">

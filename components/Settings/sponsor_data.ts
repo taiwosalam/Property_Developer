@@ -108,6 +108,11 @@ export interface EnrollmentHistoryTable {
     start_date: string;
     expired_date: string;
   }[];
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  };
 }
 
 export const getMonthDifference = (
@@ -129,7 +134,11 @@ export const getMonthDifference = (
 export const transformEnrollmentHistory = (
   data: BrandHistoryResponse
 ): EnrollmentHistoryTable => {
-  if (!data?.data?.data) return { data: [] };
+  if (!data?.data?.data)
+    return {
+      data: [],
+      pagination: { total: 0, current_page: 0, last_page: 0 },
+    };
 
   return {
     data: data?.data?.data?.map((item) => ({
@@ -150,6 +159,11 @@ export const transformEnrollmentHistory = (
         ? dayjs(item.expire_date).format("DD/MM/YYYY HH:MM A")
         : "",
     })),
+    pagination: {
+      total: data?.data?.total,
+      current_page: data?.data?.current_page,
+      last_page: data?.data?.last_page,
+    },
   };
 };
 
@@ -193,7 +207,7 @@ export interface PaginationLink {
   active: boolean;
 }
 
-export interface ICampaignTable {
+export interface ICampaignRecords {
   payment_id: number;
   campaign_type: string;
   campaign_name: string;
@@ -202,6 +216,15 @@ export interface ICampaignTable {
   period: string;
   amount: string;
   expired_date: string;
+}
+
+export interface ICampaignTable {
+  campaigns: ICampaignRecords[];
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  };
 }
 
 export function getImageNameFromUrl(url: string): string {
@@ -217,20 +240,27 @@ export function getImageNameFromUrl(url: string): string {
 
 export const transformCampaignData = (
   data: CampaignHistoryResponse
-): ICampaignTable[] => {
+): ICampaignTable => {
   const { data: campaignData } = data.data;
-  return campaignData.map((item) => ({
-    payment_id: item?.id,
-    campaign_type: item?.type || "___ ___",
-    campaign_name: item?.name || "___ ___",
-    link: item?.link?.toLowerCase() || "___ ___",
-    uploaded: item?.attachment ? getImageNameFromUrl(item.attachment) : "",
-    period: item?.period
-      ? Math.round(parseFloat(item?.period)).toString()
-      : "___ ___",
-    amount: item.amount ? formatToNaira(item.amount) : "___ ____",
-    expired_date: item?.expire_date
-      ? dayjs(item?.expire_date).format("DD/MM/YYYY HH:MM A")
-      : "___ ___",
-  }));
+  return {
+    campaigns: campaignData.map((item) => ({
+      payment_id: item?.id,
+      campaign_type: item?.type || "___ ___",
+      campaign_name: item?.name || "___ ___",
+      link: item?.link?.toLowerCase() || "___ ___",
+      uploaded: item?.attachment ? getImageNameFromUrl(item.attachment) : "",
+      period: item?.period
+        ? Math.round(parseFloat(item?.period)).toString()
+        : "___ ___",
+      amount: item.amount ? formatToNaira(item.amount) : "___ ____",
+      expired_date: item?.expire_date
+        ? dayjs(item?.expire_date).format("DD/MM/YYYY HH:MM A")
+        : "___ ___",
+    })),
+    pagination: {
+      total: data?.data?.total,
+      last_page: data?.data?.last_page,
+      current_page: data?.data?.current_page,
+    },
+  };
 };

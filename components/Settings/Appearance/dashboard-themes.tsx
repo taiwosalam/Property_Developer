@@ -76,7 +76,7 @@ const DashboardThemes = ({
         </div>
         <div className="flex justify-end mt-4">
           <SettingsUpdateButton
-            submit
+            //submit
             action={handleUpdateTheme}
             loading={reqLoading}
           />

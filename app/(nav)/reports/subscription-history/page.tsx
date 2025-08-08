@@ -17,6 +17,12 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { transformEnrollmentHistory } from "./data";
 import clsx from "clsx";
 import { enrollment_subscriptions } from "../../settings/add-on/data";
+import dayjs from "dayjs";
+import { ReportsRequestParams } from "../tenants/data";
+import { debounce } from "lodash";
+import { FilterResult } from "../tenants/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { hasActiveFilters } from "../data/utils";
 
 interface EnrollmentQueryParams {
   page?: number;
@@ -27,6 +33,13 @@ const SubscriptionRecord = () => {
   const search = searchParams.get("b");
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const { company_id } = usePersonalInfoStore();
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
 
   const [state, setState] = useState<{
     transactions: DataItem[];
@@ -71,8 +84,38 @@ const SubscriptionRecord = () => {
     config
   );
 
-  useRefetchOnEvent("refetchEnrollments", () =>
-    company_id && config ? refetchEnrollments({ silent: true }) : null
+  // useRefetchOnEvent("refetchEnrollments", () =>
+  //   company_id && config ? refetchEnrollments({ silent: true }) : null
+  // );
+
+  const handleSearch = (query: string) => {
+    setConfig({ params: { ...config?.params, search: query } });
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({ params: { ...config?.params, sort_order: order } });
+  };
+
+  const handleAppliedFilter = useCallback(
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const branch = menuOptions["Branch"] || [];
+      const property = menuOptions["Property"] || [];
+
+      const queryParams: ReportsRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
+      if (branch.length > 0) queryParams.branch_id = branch.join(",");
+      if (property.length > 0) queryParams.property_id = property.join(",");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
   );
 
   // Always update state when new data is fetched
@@ -169,7 +212,14 @@ const SubscriptionRecord = () => {
     ref: index === state.transactions.length - 1 ? lastRowRef : null,
   }));
 
-  if (loading || silentLoading) return <CustomLoader layout="page" view="table" />;
+  if (loading)
+    return (
+      <CustomLoader
+        layout="page"
+        view="table"
+        pageTitle="Subscription history"
+      />
+    );
   if (isNetworkError) return <NetworkError />;
   if (enrollmentErr) return <ServerError error={enrollmentErr} />;
 
@@ -186,43 +236,50 @@ const SubscriptionRecord = () => {
             "This page contains a list of listing subscription history",
         }}
         searchInputPlaceholder="Search for subscriptions"
-        handleFilterApply={() => {}}
-        handleSearch={() => {}}
+        handleFilterApply={handleAppliedFilter}
+        handleSearch={handleSearch}
+        onSort={handleSort}
+        appliedFilters={appliedFilters}
         hasGridListToggle={false}
         exportHref="/reports/subscription-history/export"
         xlsxData={state?.transactions}
         fileLabel={"Subscriptions"}
       />
+
       <section>
-        {state.transactions.length === 0 ? (
-          <EmptyList
-            noButton
-            title=" No Previous Subscription Record Found"
-            body={
-              <p>
-                You currently do not have any previous records associated with
-                this subscription plan. Once you subscribe, your subscription
-                history and related details will appear here for future
-                reference and tracking.
-                <br />
-                <br />
-              </p>
-            }
-          />
-        ) : (
-          <>
-            <CustomTable
-              fields={enrollment_subscriptions.fields}
-              data={transformedTableData}
-              tableHeadClassName="h-[45px]"
+        {state?.transactions.length === 0 && !loading ? (
+          !!config?.params.search || hasActiveFilters(appliedFilters) ? (
+            <SearchError />
+          ) : (
+            <EmptyList
+              noButton
+              title=" No Previous Subscription Record Found"
+              body={
+                <p>
+                  You currently do not have any previous records associated with
+                  this subscription plan. Once you subscribe, your subscription
+                  history and related details will appear here for future
+                  reference and tracking.
+                  <br />
+                  <br />
+                </p>
+              }
             />
-            {silentLoading && (
-              <div className="flex items-center justify-center py-4">
-                <div className="loader" />
-              </div>
-            )}
-          </>
+          )
+        ) : (
+          <CustomTable
+            fields={enrollment_subscriptions.fields}
+            data={transformedTableData}
+            tableHeadClassName="h-[45px]"
+          />
         )}
+        <>
+          {silentLoading && (
+            <div className="flex items-center justify-center py-4">
+              <div className="loader" />
+            </div>
+          )}
+        </>
       </section>
     </div>
   );

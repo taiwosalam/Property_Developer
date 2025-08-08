@@ -24,7 +24,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
-import { debounce } from "lodash"
+import { debounce } from "lodash";
 
 const PropertiesReport = () => {
   const router = useRouter();
@@ -35,8 +35,6 @@ const PropertiesReport = () => {
   });
   const setPropertiesStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
-
-
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -45,13 +43,14 @@ const PropertiesReport = () => {
   });
 
   const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
 
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
-
 
   useEffect(() => {
     if (apiData) setBranches(apiData.data);
@@ -64,29 +63,54 @@ const PropertiesReport = () => {
     if (property) setPropertyList(property.data);
   }, [apiData, staff, property]);
 
+  // ...existing code...
+
   const reportTenantFilterOption = [
     {
       label: "Account Officer",
-      value: branchAccountOfficers.map((staff: any) => ({
-        label: staff.user.name,
-        value: staff.user.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          branchAccountOfficers.map((staff: any) => [
+            staff.user.name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: staff.user.name, // Keep original case for display
+              value: staff.user.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          branches.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name,
+              value: branch.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Property",
-      value: propertyList.map((property: any) => ({
-        label: property.title,
-        value: property.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          propertyList.map((property: any) => [
+            property.title.toLowerCase(), // Use lowercase for comparison
+            {
+              label: property.title, // Keep original case for display
+              value: property.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
   ];
+
+  // ...existing code...
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: { page: 1, search: "" } as ReportsRequestParams,
@@ -109,21 +133,21 @@ const PropertiesReport = () => {
       const property = menuOptions["Property"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
       if (branch.length > 0) queryParams.branch_id = branch.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
-      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
   );
 
-  const { data, loading, error, isNetworkError } = useFetch<PropertyApiResponse>(
-    "/report/properties",
-    config
-  );
-
+  const { data, loading, error, isNetworkError } =
+    useFetch<PropertyApiResponse>("/report/properties", config);
 
   useEffect(() => {
     if (!loading && data) {
@@ -135,13 +159,14 @@ const PropertiesReport = () => {
         setPropertiesStore("properties", newProperties);
       }
     }
-    
   }, [data, loading, setPropertiesStore]);
 
-  const { properties, monthly_properties, total_properties } = pageData
+  const { properties, monthly_properties, total_properties } = pageData;
 
-
-  if (loading) return <CustomLoader layout="page" pageTitle="Properties Report" view="table" />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Properties Report" view="table" />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -162,7 +187,8 @@ const PropertiesReport = () => {
         pageTitle="Properties Report"
         aboutPageModalData={{
           title: "Properties Report",
-          description: "This page contains a list of Properties Report on the platform.",
+          description:
+            "This page contains a list of Properties Report on the platform.",
         }}
         searchInputPlaceholder="Search for Properties Report"
         handleFilterApply={handleAppliedFilter}
@@ -186,10 +212,14 @@ const PropertiesReport = () => {
               body={
                 <p>
                   Currently, there is no property data available for export.
-                  Once data is added to the system, they will be displayed here and ready for download or export.
-                  <br /><br />
+                  Once data is added to the system, they will be displayed here
+                  and ready for download or export.
+                  <br />
+                  <br />
                   <p>
-                    This section will automatically update to show all available property records as they are created or imported into the platform.
+                    This section will automatically update to show all available
+                    property records as they are created or imported into the
+                    platform.
                   </p>
                 </p>
               }

@@ -81,17 +81,19 @@ export const transformCalendarEvents = (
   });
 };
 
-export interface ICalendarEventsTable {
-  total_pages: number;
-  current_page: number;
-  table: {
-    date: string;
+export interface CalendarTable {
+   date: string;
     event: string;
     creator: string;
     property_name: string;
     branch: string | null;
     account_officer: string | null;
-  }[];
+}
+
+export interface ICalendarEventsTable {
+  total_pages: number;
+  current_page: number;
+  table: CalendarTable[]
 }
 
 export const transformEventTable = (

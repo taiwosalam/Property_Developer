@@ -14,4 +14,5 @@ export type BranchFilter = {
 export type PropertyFilter = {
     id: number;
     title: string
+    units: []
 }

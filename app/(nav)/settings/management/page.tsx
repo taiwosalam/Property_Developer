@@ -39,7 +39,7 @@ const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
   "partner configuration (branch manager)": "manager",
   "colleague configuration (account manager)": "account",
-  "staff configuration (other staff) Configuration": "staff",
+  "staff configuration (other staff)": "staff",
   "Users Configuration (Landlord, Occupant & Tenants)": "user",
 };
 

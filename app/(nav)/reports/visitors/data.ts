@@ -71,7 +71,7 @@ export interface IVisitorsReportPageData {
   checked_in_month: number;
   checked_out_total: number;
   checked_out_month: number;
-  data: {
+  visitors: {
     id: number;
     request_id: string;
     branch: string;
@@ -89,6 +89,11 @@ export interface IVisitorsReportPageData {
     secretQuestion: string;
     secretAnswer: string;
   }[];
+  pagination: {
+    total: number;
+    current_page: number;
+    last_page: number;
+  }
 }
 
 export const transformVisitorsRequest = (
@@ -102,7 +107,7 @@ export const transformVisitorsRequest = (
     checked_in_month: data?.count?.current_month_checked_in,
     checked_out_total: data?.count?.total_checked_out,
     checked_out_month: data?.count?.current_month_checked_out,
-    data: data?.visitors?.data.map((req) => ({
+    visitors: data?.visitors?.data.map((req) => ({
       id: req.id,
       pictureSrc: req.picture,
       status: req.status,
@@ -127,6 +132,11 @@ export const transformVisitorsRequest = (
         ? dayjs(req.check_out_time).format("hh:mmA")
         : "___ ___",
     })),
+    pagination: {
+      total: data?.visitors?.total,
+      current_page: data?.visitors?.current_page,
+      last_page: data?.visitors?.last_page,
+    }
   };
 };
 

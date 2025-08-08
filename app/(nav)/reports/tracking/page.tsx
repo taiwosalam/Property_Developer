@@ -11,7 +11,7 @@ import {
   ActivityTable,
   transformActivityAData,
 } from "./[userId]/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -28,11 +28,15 @@ import useAddressFromCoords from "@/hooks/useGeoCoding";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "@/utils/debounce";
-import { Activity } from "lucide-react";
+import { Activity, Loader2 } from "lucide-react";
+import VirtualizeTable from "@/components/Table/virtualize-table";
 
 const TrackingReport = () => {
   const router = useRouter();
-  const [pageData, setPageData] = useState<ActivityTable[]>([]);
+  const [pageData, setPageData] = useState<ActivityTable>({
+    activities: [],
+    pagination: { total: 0, current_page: 0, last_page: 0 },
+  });
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -49,6 +53,12 @@ const TrackingReport = () => {
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
   const { data: property } = useFetch<any>(`property/all`);
+
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastRowRef = useRef<HTMLTableRowElement | null>(null);
+  const tableContainerRef = useRef<HTMLDivElement | null>(null);
 
   const [lat, setLat] = useState<number>(0);
   const [lng, setLng] = useState<number>(0);
@@ -71,25 +81,48 @@ const TrackingReport = () => {
 
   const reportTenantFilterOption = [
     {
-      label: "Account Officer",
-      value: branchAccountOfficers.map((staff: any) => ({
-        label: staff.user.name,
-        value: staff.user.id.toString(),
-      })),
+      label: "Account Manager",
+      value: [
+        ...new Map(
+          branchAccountOfficers.map((staff: any) => [
+            staff.user.name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: staff.user.name.toLowerCase(), // Keep original case for display
+              value: staff.user.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          branches.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name.toLowerCase(),
+              value: branch.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Property",
-      value: propertyList.map((property: any) => ({
-        label: property.title,
-        value: property.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          propertyList
+            .filter((u) => u.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(), // Use lowercase for comparison
+              {
+                label: property.title.toLowerCase(), // Keep original case for display
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ],
     },
   ];
 
@@ -130,6 +163,65 @@ const TrackingReport = () => {
   const { data, loading, error, isNetworkError } =
     useFetch<ActivityApiResponse>("report/activities", config);
 
+  // Handle data transformation and appending for infinite scroll
+  useEffect(() => {
+    if (data) {
+      const transData = transformActivityAData(data);
+      setPageData((prev) => ({
+        ...transData,
+        emails:
+          config.params.page === 1
+            ? transData.activities
+            : [...prev.activities, ...transData.activities],
+      }));
+      //setGlobalStore("emails", transData.emails);
+      setIsFetchingMore(false);
+    }
+  }, [data, config.params.page, setGlobalStore]);
+
+  // Set up Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (
+      loading ||
+      isFetchingMore ||
+      !pageData ||
+      pageData.activities.length === 0 ||
+      pageData.pagination.current_page >= pageData.pagination.last_page
+    ) {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+      return;
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !isFetchingMore) {
+          setConfig((prev) => ({
+            ...prev,
+            params: { ...prev.params, page: prev.params.page + 1 },
+          }));
+          setIsFetchingMore(true);
+        }
+      },
+      {
+        root: tableContainerRef.current, // Use TableContainer as the scrollable root
+        rootMargin: "20px", // Trigger slightly before the bottom
+        threshold: 1.0, // Trigger when the last row is fully visible
+      }
+    );
+
+    if (lastRowRef.current) {
+      observerRef.current.observe(lastRowRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [loading, isFetchingMore, pageData]);
+
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformActivityAData(data);
@@ -137,7 +229,7 @@ const TrackingReport = () => {
       const currentActivities = useGlobalStore.getState().activities;
       if (JSON.stringify(currentActivities) !== JSON.stringify(newActivities)) {
         setPageData(transformedData);
-        const activitiesLocation = newActivities.map((activity) => {
+        const activitiesLocation = newActivities.activities.map((activity) => {
           return {
             ...activity,
             location: address?.formattedAddress
@@ -148,8 +240,8 @@ const TrackingReport = () => {
         setGlobalStore("activities", activitiesLocation);
       }
 
-      if (transformedData && transformedData.length > 0) {
-        transformedData.forEach((activity) => {
+      if (transformedData && transformedData.activities.length > 0) {
+        transformedData.activities.forEach((activity) => {
           const lat = activity?.latitude;
           const lng = activity?.longitude;
           if (lat && lng) {
@@ -191,7 +283,7 @@ const TrackingReport = () => {
         filterOptionsMenu={reportTenantFilterOption}
         hasGridListToggle={false}
         exportHref="/reports/tracking/export"
-        xlsxData={pageData.map((activity) => ({
+        xlsxData={pageData.activities?.map((activity) => ({
           ...activity,
           location: address?.formattedAddress
             ? address.formattedAddress
@@ -200,7 +292,7 @@ const TrackingReport = () => {
         fileLabel={"Activity Reports"}
       />
       <section>
-        {pageData.length === 0 && !loading ? (
+        {pageData?.activities?.length === 0 && !loading ? (
           !!config.params.search.trim() || hasActiveFilters(appliedFilters) ? (
             <SearchError />
           ) : (
@@ -224,17 +316,32 @@ const TrackingReport = () => {
             />
           )
         ) : (
-          <CustomTable
-            fields={trackingTableFields}
-            data={pageData.map((activity) => ({
-              ...activity,
-              location: address?.formattedAddress
-                ? address.formattedAddress
-                : "___ ___",
-            }))}
-            tableHeadClassName="h-[45px]"
-            handleSelect={handleSelectTableItem}
-          />
+          <div ref={tableContainerRef} className="py-4">
+            <CustomTable
+              fields={trackingTableFields}
+              data={pageData?.activities?.map((activity) => ({
+                ...activity,
+                location: address?.formattedAddress
+                  ? address.formattedAddress
+                  : "___ ___",
+              }))}
+              tableHeadClassName="h-[45px]"
+              handleSelect={handleSelectTableItem}
+              lastRowRef={lastRowRef}
+            />
+
+            {isFetchingMore && (
+              <div className="flex justify-center py-4">
+                <Loader2 className="animate-spin text-brand-9" />
+              </div>
+            )}
+            {pageData &&
+              pageData.pagination.current_page >=
+                pageData.pagination.last_page &&
+              pageData.activities.length > 0 && (
+                <div className="text-center py-4 text-gray-500"></div>
+              )}
+          </div>
         )}
       </section>
     </div>

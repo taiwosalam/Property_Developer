@@ -135,7 +135,7 @@ const Chat = () => {
           </button>
           <Modal state={{ isOpen, setIsOpen }}>
             <ModalTrigger asChild>
-              <div className="flex items-center gap-4 text-left">
+              <div className="flex items-center gap-4 text-left cursor-pointer">
                 <Picture
                   src={groupDetails.picture || empty}
                   alt="group picture"

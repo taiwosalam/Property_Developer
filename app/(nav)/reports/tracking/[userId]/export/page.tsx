@@ -31,6 +31,7 @@ const UserActivitiesExportPage = () => {
   const [userActivity, setUserActivity] = useState<UserActivityTable>({
     name: "",
     activities: [],
+    pagination: { total: 0, current_page: 0, last_page: 0 },
   });
   const { userId } = useParams();
   const {

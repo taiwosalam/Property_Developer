@@ -28,7 +28,7 @@ const ExportVisitors = () => {
         <CustomTable
           className={`${fullContent && "max-h-none"}`}
           fields={visitorsRequestTableFields}
-          data={filterVisitorsRequest?.data || []}
+          data={filterVisitorsRequest?.visitors || []}
           tableHeadClassName="h-[45px]"
         />
         <Signature />

@@ -1,12 +1,10 @@
+
 import { useMemo } from "react";
 import { usePermission } from "@/hooks/getPermission";
 
 export const usePermissionsCache = (
   role: string,
-  permissionMapping: Record<
-    string,
-    { permission: string; ownerRoles: string[] }
-  >
+  permissionMapping: Record<string, { permission: string; ownerRoles: string[] }>
 ): Record<string, boolean> => {
   return useMemo(() => {
     const cache: Record<string, boolean> = {};

@@ -172,12 +172,21 @@ const Vat = () => {
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
-
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
   const {
     getManagers,
     getStaffs,
@@ -383,7 +392,10 @@ const Vat = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <ExportButton type="pdf" href="/manager/accounting/vat/export" />
+                <ExportButton
+                  type="pdf"
+                  href="/manager/accounting/vat/export"
+                />
                 <ExportButton
                   fileLabel="Accounting Vat"
                   data={transformedTableData}

@@ -6,7 +6,7 @@ import {
   reportsLandlordsFilterOptionsWithDropdown,
   landlordsReportTableFields,
   landlordsReportTableData,
-   type LandlordsReport,
+  type LandlordsReport,
   LandlordsApiResponse,
   transformLandlordsData,
 } from "./data";
@@ -43,7 +43,9 @@ const LandlordsReport = () => {
     endDate: null,
   });
   const [branches, setBranches] = useState<BranchFilter[]>([]);
-  const [branchAccountOfficers, setBranchAccountOfficers] = useState<BranchStaff[]>([]);
+  const [branchAccountOfficers, setBranchAccountOfficers] = useState<
+    BranchStaff[]
+  >([]);
   const [propertyList, setPropertyList] = useState<PropertyFilter[]>([]);
   const { data: apiData } = useFetch<any>("branches");
   const { data: staff } = useFetch<any>(`report/staffs`);
@@ -62,25 +64,46 @@ const LandlordsReport = () => {
 
   const reportTenantFilterOption = [
     {
-      label: "Account Officer",
-      value: branchAccountOfficers.map((staff: any) => ({
-        label: staff.user.name,
-        value: staff.user.id.toString(),
-      })),
+      label: "Account Manager",
+      value: [
+        ...new Map(
+          branchAccountOfficers.map((staff: any) => [
+            staff.user.name.toLowerCase(), // Use lowercase for comparison
+            {
+              label: staff.user.name.toLowerCase(), // Keep original case for display
+              value: staff.user.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          branches.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name,
+              value: branch.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
     {
       label: "Property",
-      value: propertyList.map((property: any) => ({
-        label: property.title,
-        value: property.id.toString(),
-      })),
+      value: [
+        ...new Map(
+          propertyList.map((property: any) => [
+            property.title.toLowerCase(), // Use lowercase for comparison
+            {
+              label: property.title, // Keep original case for display
+              value: property.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
     },
   ];
 
@@ -105,37 +128,40 @@ const LandlordsReport = () => {
       const property = menuOptions["Property"] || [];
 
       const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0) queryParams.account_officer_id = accountOfficer.join(",");
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
       if (branch.length > 0) queryParams.branch_id = branch.join(",");
       if (property.length > 0) queryParams.property_id = property.join(",");
-      if (startDate) queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate) queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (startDate)
+        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
   );
 
-  const { data, loading, error, isNetworkError } = useFetch<LandlordsApiResponse>(
-    "/report/landlords",
-    config
-  );
-
+  const { data, loading, error, isNetworkError } =
+    useFetch<LandlordsApiResponse>("/report/landlords", config);
 
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformLandlordsData(data);
-      
+
       const newLandlords = transformedData.landlords;
       const currentLandlords = useGlobalStore.getState().landlords;
       if (JSON.stringify(currentLandlords) !== JSON.stringify(newLandlords)) {
         setPageData(transformedData);
         setGlobalStore("landlords", newLandlords);
-        console.log("Store after update:", useGlobalStore.getState().landlords);
+       
       }
     }
   }, [data, loading, setGlobalStore]);
 
-  if (loading) return <CustomLoader layout="page" pageTitle="Landlord/Landlady" view="table" />;
+  if (loading)
+    return (
+      <CustomLoader layout="page" pageTitle="Landlord/Landlady" view="table" />
+    );
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
@@ -156,7 +182,8 @@ const LandlordsReport = () => {
         pageTitle="Landlord/Landlady"
         aboutPageModalData={{
           title: "Landlord/Landlady",
-          description: "This page contains a list of Landlord/Landlady on the platform.",
+          description:
+            "This page contains a list of Landlord/Landlady on the platform.",
         }}
         searchInputPlaceholder="Search for Landlord/Landlady"
         handleFilterApply={handleAppliedFilter}
@@ -179,11 +206,16 @@ const LandlordsReport = () => {
               title="No Landlord or Landlady Profiles Available Yet"
               body={
                 <p>
-                  At the moment, there are no landlord or landlady profiles available for export.
-                  Once profile records are added to the system, they will appear here and be available for download or export.
-                  <br /><br />
+                  At the moment, there are no landlord or landlady profiles
+                  available for export. Once profile records are added to the
+                  system, they will appear here and be available for download or
+                  export.
+                  <br />
+                  <br />
                   <p>
-                    This section will automatically populate with all available data as soon as new landlord or landlady profiles are created or imported into the platform.
+                    This section will automatically populate with all available
+                    data as soon as new landlord or landlady profiles are
+                    created or imported into the platform.
                   </p>
                 </p>
               }

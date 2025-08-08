@@ -64,12 +64,12 @@ export const transformComplaintsData = (
   data: ComplaintsResponse
 ): ComplaintsPageData => {
   return {
-    total_complaints: data.total || 0,
-    total_month_complaints: Number(data?.total_month) || 0,
-    total_completed: Number(data?.total_completed) || 0,
-    total_month_completed: Number(data?.total_month_completed) || 0,
-    total_rejected: Number(data?.total_rejected) || 0,
-    total_month_rejected: Number(data?.total_month_rejected) || 0,
+    total_complaints: Number(data?.stats?.total), //data.total || 0,
+    total_month_complaints: Number(data?.stats?.monthly?.total) || 0,
+    total_completed: Number(data?.stats?.completed) || 0,
+    total_month_completed: Number(data?.stats?.monthly?.completed) || 0,
+    total_rejected: Number(data?.stats?.rejected) || 0,
+    total_month_rejected: Number(data?.stats?.monthly?.rejected) || 0,
     complaints: data?.complaints?.map((complaint) => ({
       //const complaintStatus = complaint?.status?.toLowerCase();
       id: complaint.id,
