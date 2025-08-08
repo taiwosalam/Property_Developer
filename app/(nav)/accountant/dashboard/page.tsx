@@ -246,13 +246,26 @@ const AccountManagerDashboard = () => {
           </div>
         </div>
 
-        <div className="listing-performance-chart w-full h-fit">
-          <DashboardChart
-            chartTitle="listing Performance"
-            visibleRange
-            chartConfig={dashboardListingsChartConfig}
-            chartData={bookmarkChartData}
-          />
+        <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
+          <div className="listing-performance-chart">
+            <div className="w-full xl:flex-1 space-y- xl:space-y-2">
+              <DashboardChart
+                chartTitle="listing Performance"
+                visibleRange
+                chartConfig={dashboardListingsChartConfig}
+                chartData={bookmarkChartData}
+              />
+            </div>
+          </div>
+
+          <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
+            <NotificationCard
+              className="h-[358px]"
+              seeAllLink="/messages"
+              sectionHeader="Recent Messages"
+              notifications={getRecentMessages(pageUsersMsg)}
+            />
+          </div>
         </div>
 
         {/* Recent Invoice */}
@@ -280,25 +293,6 @@ const AccountManagerDashboard = () => {
             </div>
           )}
         </SectionContainer>
-      <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
-        <div className="w-full xl:flex-1 space-y- xl:space-y-2">
-          <DashboardChart
-            chartTitle="listing Performance"
-            visibleRange
-            chartConfig={dashboardListingsChartConfig}
-            chartData={bookmarkChartData}
-          />
-        </div>
-
-        <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
-          <NotificationCard
-            className="h-[358px]"
-            seeAllLink="/messages"
-            sectionHeader="Recent Messages"
-            notifications={getRecentMessages(pageUsersMsg)}
-          />
-        </div>
-      </div>
 
         {/* Recent Complains */}
         <SectionContainer

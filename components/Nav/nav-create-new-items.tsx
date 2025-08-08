@@ -197,7 +197,9 @@ export const accountant_create_new_items: CreateNewItemsProps = [
       },
       {
         label: "Management Form",
-        modal: <CreateTenancyAggrementModal defaultOption="management_application_form" />,
+        modal: (
+          <CreateTenancyAggrementModal defaultOption="management_application_form" />
+        ),
       },
     ],
   },
@@ -232,7 +234,9 @@ export const staff_create_new_items: CreateNewItemsProps = [
       },
       {
         label: "Management Form",
-        modal: <CreateTenancyAggrementModal defaultOption="management_application_form" />,
+        modal: (
+          <CreateTenancyAggrementModal defaultOption="management_application_form" />
+        ),
       },
     ],
   },
@@ -249,3 +253,74 @@ export const unavailableFeatures = [
   "announcement",
   "quit notice",
 ];
+
+// ========== PERMISSION CHECK  ==========
+export const permissionMapping: Record<
+  string,
+  { permission: string; ownerRoles: string[] }
+> = {
+  "landlord / landlady": {
+    permission: "Can add and manage landlords/landlady",
+    ownerRoles: ["manager", "account"],
+  },
+  "tenants / occupants": {
+    permission: "Can add and manage tenants/occupants",
+    ownerRoles: ["manager", "account"],
+  },
+  branch: {
+    permission: "Can add/delete branch properties",
+    ownerRoles: ["manager", "account"],
+  },
+  property: {
+    permission: "Can add/delete branch properties",
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  "service provider": {
+    permission: "Can create service provider",
+    ownerRoles: ["manager"],
+  },
+  examine: {
+    permission: "Can create examine",
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  maintenance: {
+    permission: "Can manage inspections",
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  reminder: {
+    permission: "Can manage calendar",
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  announcement: {
+    permission: "Can create and manage announcement",
+    ownerRoles: ["manager", "account"],
+  },
+  invoice: {
+    permission: "Can manage tenants/occupants",
+    ownerRoles: ["account"],
+  },
+  expenses: {
+    permission: "Can manage tenants/occupants",
+    ownerRoles: ["account"],
+  },
+  disbursement: {
+    permission: "Can manage tenants/occupants",
+    ownerRoles: ["account"],
+  },
+  "tenancy agreement": {
+    permission: "Can manage tenants/occupants",
+    ownerRoles: ["manager", "account"],
+  },
+  "other documents": {
+    permission: "Can manage tenants/occupants",
+    ownerRoles: ["manager", "account"],
+  },
+  "tenancy form": {
+    permission: "Can manage tenants/occupants",
+    ownerRoles: ["staff"],
+  },
+  "management form": {
+    permission: "Can manage tenants/occupants",
+    ownerRoles: ["staff"],
+  },
+};

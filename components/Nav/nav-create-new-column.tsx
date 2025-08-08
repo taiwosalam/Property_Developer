@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-
-// Types
-import type { NavCreateNewColumnProps } from "./types";
-
-// Imports
 import SVG from "../SVG/svg";
 import { useModal } from "../Modal/modal";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
+import type { NavCreateNewColumnProps } from "./types";
+import { useMemo } from "react";
+import { permissionMapping } from "./nav-create-new-items";
+
 
 const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   data = [],
@@ -16,11 +17,27 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
 }) => {
   const { setIsOpen } = useModal();
   const isDarkMode = useDarkMode();
+  const { role } = useRole();
 
-  const options = ["management", "tasks", "accounting", "documents"];
-  const content = data.filter((item) =>
-    options.includes(item.label.toLowerCase())
-  );
+  const filteredContent = useMemo(() => {
+    const options = ["management", "tasks", "accounting", "documents"];
+    return data
+      .filter((item) => options.includes(item.label.toLowerCase()))
+      .map((item) => ({
+        ...item,
+        content: item.content?.filter(({ label }) => {
+          const mapping = permissionMapping[label.toLowerCase()];
+          // Render item if no permission is defined or if the role is not an owner
+          if (!mapping || !mapping.ownerRoles.includes(role)) {
+            return true;
+          }
+          // Only filter out if the role owns the permission and it's false
+          return usePermission(role, mapping.permission);
+        }),
+      }))
+      .filter((item) => item.content && item.content.length > 0);
+  }, [data, role]);
+
   const class_styles = "flex items-center gap-4";
   const icon = (
     <SVG
@@ -36,7 +53,7 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
 
   return (
     <div className="flex gap-10 w-full overflow-auto custom-round-scrollbar">
-      {content.map(({ type, label, content }, index) => (
+      {filteredContent.map(({ type, label, content }, index) => (
         <div key={index} className="custom-flex-col text-base font-medium">
           <div className="flex items-center gap-2">
             <SVG
