@@ -65,7 +65,7 @@ export const transformCalendarEvents = (
     // Format description based on event type
     const cleanDescription =
       event.type === "reminders"
-        ? `${event.title}: ${event?.description?.replace(
+        ? `${event?.title}: ${event?.description?.replace(
             /^General Reminder:\s*/i,
             ""
           )}`

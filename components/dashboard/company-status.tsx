@@ -12,6 +12,7 @@ import { AuthForm } from "../Auth/auth-components";
 import { toast } from "sonner";
 import { sendDemoRequest } from "@/app/(nav)/dashboard/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { validateAndCleanPhoneNumber } from "@/utils/validatePhoneNumber";
 
 interface CompanyStatusModalProps {
   status: "approved" | "pending" | "rejected";
@@ -58,21 +59,60 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
     }
   };
 
+  // const handleSubmit = async (data: FormData) => {
+  //   const payload = {
+  //     name: data.get("full_name") ?? "",
+  //     title: data.get("title") ?? "",
+  //     email: user_email,
+  //     date: data.get("prefer_date") ?? "",
+  //     time: data.get("prefer_time") ?? "",
+  //     // phone: data.get("phone") ?? "",
+  //   };
+
+  //   const phoneNumber = data.get("phone");
+  //   const cleanedPhoneNumber = validateAndCleanPhoneNumber(phoneNumber);
+  //   if (!cleanedPhoneNumber && phoneNumber) {
+  //     toast.warning("Please enter a valid phone number.");
+  //     return;
+  //   }
+  //   try {
+  //     setReqLoading(true);
+  //     const res = await sendDemoRequest(objectToFormData(payload));
+  //     if (res) {
+  //       toast.success("Request sent successfully");
+  //       // After a successful demo request, show the alternate step.
+  //       setActiveStep(3);
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to send Request. Try again");
+  //   } finally {
+  //     setReqLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (data: FormData) => {
+    const rawPhoneNumber = data.get("phone")?.toString() || ""; 
+    const cleanedPhoneNumber = validateAndCleanPhoneNumber(rawPhoneNumber);
+
+    if (!cleanedPhoneNumber && rawPhoneNumber) {
+      toast.warning("Please enter a valid phone number.");
+      return;
+    }
+
     const payload = {
-      name: data.get("full_name") ?? "",
-      title: data.get("title") ?? "",
+      name: data.get("full_name")?.toString() || "",
+      title: data.get("title")?.toString() || "",
       email: user_email,
-      date: data.get("prefer_date") ?? "",
-      time: data.get("prefer_time") ?? "",
-      phone: data.get("phone") ?? "",
+      date: data.get("prefer_date")?.toString() || "",
+      time: data.get("prefer_time")?.toString() || "",
+      phone: cleanedPhoneNumber || "",
     };
+
     try {
       setReqLoading(true);
       const res = await sendDemoRequest(objectToFormData(payload));
       if (res) {
         toast.success("Request sent successfully");
-        // After a successful demo request, show the alternate step.
         setActiveStep(3);
       }
     } catch (error) {
@@ -90,8 +130,8 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
           ? "success"
           : status === "rejected"
           ? "rejected"
-          : status === "pending" 
-          ? 'pending'
+          : status === "pending"
+          ? "pending"
           : "success"
       }
       className="lg:w-[50%] w-60%"

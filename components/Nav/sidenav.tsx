@@ -1,96 +1,76 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { empty } from "@/app/config";
-// Types
 import type { SideNavProps } from "./types";
-
-// Imports
-import { nav_items } from "./data";
 import NavDropdown from "./nav-dropdown";
 import { NavButton } from "./nav-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { getNavs } from "@/app/(onboarding)/auth/data";
 import { useRole } from "@/hooks/roleContext";
-import { usePermission } from "@/hooks/getPermission";
+import { useBranchInfoStore } from "@/store/branch-info-store";
+import { normalizeIsActive } from "../Management/Staff-And-Branches/Branch/branch-balance-card";
+import {
+  filterNavItems,
+  sanitizeClassName,
+  useNavPermissions,
+  type NavItem,
+} from "./sidenav-permission";
 
 const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
   const pathname = usePathname();
-  const [loading, setLoading] = useState(false);
-  const { role, setRole } = useRole();
-  const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-
-  const handleDropdownToggle = (label: string) => {
-    setActiveDropdown((prevActive) => (prevActive === label ? null : label));
-  };
-
-  const canViewCallRequests = usePermission(role, "Can view call request");
-  const canViewPropertyRequests = usePermission(role, "Can view property request");
-  const canViewWallet = usePermission(role, "Full Wallet Access");
-  const canViewComplain = usePermission(role, "Can view complaints");
-
-  const isDirector = role === "director";
-
+  const { role } = useRole();
+  const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
+  const branchWallet = useBranchInfoStore((s) => s.sub_wallet);
   const company_logo = usePersonalInfoStore((state) => state.company_logo);
 
-  const sanitizeClassName = (label: string): string => {
-    return label
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
-  };
+  const managerWalletIsActive = useMemo(
+    () => normalizeIsActive(branchWallet?.is_active as string | boolean),
+    [branchWallet?.is_active]
+  );
 
-  // Define restricted labels and their conditions (for both top-level and child items)
-  const restrictedLabels = [
-    {
-      label: "call request",
-      condition: () => isDirector || canViewCallRequests,
-    },
-    {
-      label: "property request",
-      condition: () => isDirector || canViewPropertyRequests,
-    },
-    {
-      label: "Can view complaints",
-      condition: () => isDirector || canViewComplain,
-    },
-    {
-      label: "wallet",
-      condition: () => canViewWallet || isCompanyOwner || role === "manager",
-    },
-    // Add more restricted labels here, e.g.:
-    // {
-    //   label: "complaints",
-    //   condition: () => usePermission(role, "Can view complaints") || isCompanyOwner,
-    // },
-  ];
+  // Get permissions and configuration
+  const { permissionsCache, permissionMapping } = useNavPermissions(role);
 
-  // Filter navItems for both top-level and child items
-  const navItems = getNavs(role)
-    ?.filter((item) => {
-      const restricted = restrictedLabels.find(
-        (r) => r.label.toLowerCase() === item.label.toLowerCase()
+  // Filter navigation items based on permissions
+  const navItems = useMemo(() => {
+    const items: any = getNavs(role);
+    return filterNavItems({
+      items,
+      role,
+      permissionsCache,
+      permissionMapping,
+      managerWalletIsActive,
+      isCompanyOwner,
+    });
+  }, [
+    role,
+    permissionsCache,
+    permissionMapping,
+    managerWalletIsActive,
+    isCompanyOwner,
+  ]);
+
+  const handleDropdownToggle = useMemo(
+    () => (label: string) => {
+      setActiveDropdown((prevActive) => (prevActive === label ? null : label));
+    },
+    []
+  );
+
+  const isHighlighted = (item: NavItem): boolean => {
+    if (item.content) {
+      return item.content.some((i) =>
+        role === "director"
+          ? pathname.includes(`${item.label}${i.href || ""}`)
+          : pathname.includes(`${i.href || ""}`)
       );
-      return !restricted || restricted.condition();
-    })
-    .map((item) => {
-      if (item.content) {
-        return {
-          ...item,
-          content: item.content.filter((subItem) => {
-            const restricted = restrictedLabels.find(
-              (r) => r.label.toLowerCase() === subItem.label.toLowerCase()
-            );
-            return !restricted || restricted.condition();
-          }),
-        };
-      }
-      return item;
-    })
-    .filter((item) => !item.content || item.content.length > 0); // Remove dropdowns that become empty
+    }
+    return item.href ? pathname.includes(item.href) : false;
+  };
 
   return (
     <div className="custom-flex-col pb-3">
@@ -104,18 +84,14 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
         />
       </div>
 
-      {navItems?.map((item, idx) => {
+      {navItems.map((item, idx) => {
         const className = sanitizeClassName(item.label);
         return item.content ? (
           <NavDropdown
-            key={idx}
+            key={`${item.label}-${idx}`}
             type={item.type}
             content={item.content}
-            highlight={item.content.some((i) =>
-              isDirector
-                ? pathname.includes(`${item.label}${i.href}`)
-                : pathname.includes(`${i.href}`)
-            )}
+            highlight={isHighlighted(item)}
             onContentClick={closeSideNav}
             isOpen={activeDropdown === item.label}
             onToggle={() => handleDropdownToggle(item.label)}
@@ -126,8 +102,8 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
           </NavDropdown>
         ) : (
           <NavButton
-            highlight={item.href ? pathname.includes(item.href) : false}
-            key={idx}
+            key={`${item.label}-${idx}`}
+            highlight={isHighlighted(item)}
             href={item.href}
             type={item.type}
             onClick={closeSideNav}

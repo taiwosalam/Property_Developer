@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-
-// Types
-import type { NavCreateNewColumnProps } from "./types";
-
-// Imports
 import SVG from "../SVG/svg";
 import { useModal } from "../Modal/modal";
 import useDarkMode from "@/hooks/useCheckDarkMode";
+import { useRole } from "@/hooks/roleContext";
+import type { NavCreateNewColumnProps } from "./types";
+import { useMemo } from "react";
+import { sanitizeClassName, useNavPermissions } from "./sidenav-permission";
+import { filterCreateNavItems } from "./nav-create-permission";
 
 const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   data = [],
@@ -16,11 +16,20 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
 }) => {
   const { setIsOpen } = useModal();
   const isDarkMode = useDarkMode();
+  const { role } = useRole();
 
-  const options = ["management", "tasks", "accounting", "documents"];
-  const content = data.filter((item) =>
-    options.includes(item.label.toLowerCase())
-  );
+  // Get permissions and configuration
+  const { permissionsCache, permissionMapping } = useNavPermissions(role);
+
+  const filteredContent = useMemo(() => {
+    return filterCreateNavItems({
+      items: data as any, 
+      role,
+      permissionsCache,
+      permissionMapping,
+    });
+  }, [data, role, permissionsCache, permissionMapping]);
+
   const class_styles = "flex items-center gap-4";
   const icon = (
     <SVG
@@ -36,8 +45,8 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
 
   return (
     <div className="flex gap-10 w-full overflow-auto custom-round-scrollbar">
-      {content.map(({ type, label, content }, index) => (
-        <div key={index} className="custom-flex-col text-base font-medium">
+      {filteredContent.map(({ type, label, content }, index) => (
+        <div key={`${sanitizeClassName(label)}-${index}`} className="custom-flex-col text-base font-medium">
           <div className="flex items-center gap-2">
             <SVG
               type={type}
@@ -48,11 +57,11 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
               {label}
             </p>
           </div>
-          {content?.map(({ label, link, modal }, idx) => (
-            <div key={idx} className="py-3 px-5">
-              {link ? (
+          {content.map(({ label, href, modal }, idx) => (
+            <div key={`${sanitizeClassName(label)}-${idx}`} className="py-3 px-5">
+              {href ? (
                 <Link
-                  href={link}
+                  href={href}
                   className={class_styles}
                   onClick={closeCreateNewModal}
                 >

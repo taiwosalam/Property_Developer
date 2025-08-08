@@ -12,6 +12,7 @@ import { UserPlusIcon } from "lucide-react";
 import FilterButton from "../FilterButton/filter-button";
 import MessagesFilterMenu from "../Message/messages-filter-menu";
 import { useState } from "react";
+import { useRole } from "@/hooks/roleContext";
 
 const TeamChatSidebar = () => {
   const {
@@ -28,12 +29,12 @@ const TeamChatSidebar = () => {
   } = useTeamChat();
   const params = useParams();
   const paramId = params.id;
+  const { role } = useRole();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   return (
     <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
-
       {/* sticky search and filter */}
       <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
         <div className="flex-1 relative">
@@ -58,7 +59,7 @@ const TeamChatSidebar = () => {
               onClose={() => setAnchorEl(null)}
               onFilterApply={onFilterApply}
               filterOptions={[
-                  { label: "Unread", value: filterCounts["Unread"] || 0 },
+                { label: "Unread", value: filterCounts["Unread"] || 0 },
                 { label: "All", value: filterCounts["All"] || 0 },
               ]}
             />
@@ -84,21 +85,23 @@ const TeamChatSidebar = () => {
       </div>
 
       {/* Floating action button */}
-      <div className="fixed bottom-20 z-[10] max-w-[50px]">
-        <Modal>
-          <ModalTrigger asChild>
-            <button
-              onClick={() => {}}
-              className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
-            >
-              <PlusIcon />
-            </button>
-          </ModalTrigger>
-          <ModalContent>
-            <CreateGroupModal create />
-          </ModalContent>
-        </Modal>
-      </div>
+      {role === "director" && (
+        <div className="fixed bottom-20 z-[10] max-w-[50px]">
+          <Modal>
+            <ModalTrigger asChild>
+              <button
+                onClick={() => {}}
+                className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+              >
+                <PlusIcon />
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <CreateGroupModal create />
+            </ModalContent>
+          </Modal>
+        </div>
+      )}
     </div>
   );
 };
