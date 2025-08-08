@@ -165,7 +165,10 @@ const Header = () => {
       applyFont(fonts);
       setTheme(colorMode);
       hasMounted.current = true;
-      saveLocalStorage("zoomLevel", zoom.toString());
+      // saveLocalStorage("zoomLevel", zoom.toString());
+      if (typeof zoom !== "undefined" && zoom !== null) {
+        saveLocalStorage("zoomLevel", zoom.toString());
+      }
     }
   }, [appearance, setColor, setTheme]);
 

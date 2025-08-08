@@ -59,34 +59,6 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
     originalHandleImageChange(e);
   };
 
-  // const handleCreateStaff = async (data: FormData) => {
-  //   const email = data.get("email")?.toString() || "";
-
-  //   if (!checkFormDataForImageOrAvatar(data)) {
-  //     toast.warning("Please upload a picture or select an avatar.");
-  //     return;
-  //   }
-
-  //   const isEmailValid = await isValidEmail(email);
-  //   if (!isEmailValid) {
-  //     toast.error("Invalid email address!");
-  //     return;
-  //   }
-
-  //   setIsLoading(true);
-  //   cleanPhoneNumber(data);
-  //   if (!data.get("phone_number")) {
-  //     data.append("phone_number", "");
-  //   }
-  //   const status = await addStaff(data, branchId);
-  //   if (status) {
-  //     setIsOpen(false);
-  //     window.dispatchEvent(new Event("refetch_staff"));
-  //   } else {
-  //     setIsLoading(false);
-  //   }
-  // };
-
 
   const handleCreateStaff = async (data: FormData) => {
     const email = data.get("email")?.toString() || "";

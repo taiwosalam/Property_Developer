@@ -100,19 +100,19 @@ export const staffConfigurations = [
       ],
     ],
   },
-  {
-    title: "Users Configuration (Landlord, Occupant & Tenants)",
-    permissions: [
-      [
-        "Create profile account when you sent invite",
-        "Create profile account for service provider",
-      ],
-      [
-        "Create profile account for landlord/landlady",
-        "Create profile account for tenants/occupant",
-      ],
-    ],
-  },
+  // {
+  //   title: "Users Configuration (Landlord, Occupant & Tenants)",
+  //   permissions: [
+  //     [
+  //       "Create profile account when you sent invite",
+  //       "Create profile account for service provider",
+  //     ],
+  //     [
+  //       "Create profile account for landlord/landlady",
+  //       "Create profile account for tenants/occupant",
+  //     ],
+  //   ],
+  // },
 ];
 
 

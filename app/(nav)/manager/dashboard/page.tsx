@@ -33,7 +33,9 @@ import {
 import { useGlobalStore } from "@/store/general-store";
 import { getTransactionIcon } from "@/components/Wallet/icons";
 import clsx from "clsx";
-import BranchBalanceCard from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
+import BranchBalanceCard, {
+  normalizeIsActive,
+} from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
 import {
   ConversationsAPIResponse,
   PageMessages,
@@ -61,23 +63,33 @@ import { useRole } from "@/hooks/roleContext";
 import { useTourStore } from "@/store/tour-store";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import CompanyStatusModal from "@/components/dashboard/company-status";
+import { useBranchInfoStore } from "@/store/branch-info-store";
+import { usePermission } from "@/hooks/getPermission";
 
 const Dashboard = () => {
   const { isMobile } = useWindowWidth();
   const { branch } = usePersonalInfoStore();
   const BRANCH_ID = branch?.branch_id || 0;
+  const { role } = useRole();
   const { setChatData } = useChatStore();
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const { setGlobalInfoStore } = useGlobalStore((s) => ({
     setGlobalInfoStore: s.setGlobalInfoStore,
   }));
+  // PERMISSIONS
+  const canViewComplain = usePermission(role, "Can view complaints");
+
   const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const company_status = usePersonalInfoStore((state) => state.company_status);
-   const company_id = usePersonalInfoStore((state) => state.company_id);
+  const company_id = usePersonalInfoStore((state) => state.company_id);
+  const branchWallet = useBranchInfoStore((s) => s.sub_wallet);
+  const managerWalletIsActive = normalizeIsActive(
+    branchWallet?.is_active as string | boolean
+  );
 
   // Open modal if company status is "pending" or "rejected"
   useEffect(() => {
@@ -170,7 +182,7 @@ const Dashboard = () => {
         break;
       case "Vacant Unit":
         stats = branchData?.vacant_units;
-        link = `/manager/management/rent-unit/is_active=vacant`;
+        link = `/manager/management/rent-unit?is_active=vacant`;
         break;
       case "Expired":
         stats = branchData?.expired;
@@ -182,7 +194,7 @@ const Dashboard = () => {
         break;
       case "Inquiries":
         stats = branchData?.inquiries;
-        link = `/manager/tasks/complaints?status=pending`;
+        link = `/manager/tasks/inquires`;
         break;
       case "Complaints":
         stats = branchData?.complaints;
@@ -317,8 +329,6 @@ const Dashboard = () => {
     isTourCompleted,
   ]);
 
-  const { role } = useRole();
-
   const gotoPage = () => {
     switch (role) {
       case "director":
@@ -388,11 +398,13 @@ const Dashboard = () => {
           </div>
 
           <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
-            <BranchBalanceCard
-              mainBalance={Number(branch_wallet?.balance_total || 0)}
-              cautionDeposit={Number(branch_wallet?.escrow_balance || 0)}
-              className="max-w-full"
-            />
+            {managerWalletIsActive && (
+              <BranchBalanceCard
+                mainBalance={Number(branch_wallet?.balance_total || 0)}
+                cautionDeposit={Number(branch_wallet?.escrow_balance || 0)}
+                className="max-w-full"
+              />
+            )}
             <DashboarddCalendar />
             <div className="recent-messages-card">
               <NotificationCard
@@ -402,14 +414,16 @@ const Dashboard = () => {
                 notifications={getRecentMessages(pageUsersMsg)}
               />
             </div>
-            <div className="complaints-card">
-              <NotificationCard
-                className="h-[358px]"
-                sectionHeader="Recent Complaints"
-                seeAllLink={gotoPage()}
-                notifications={recentComplaints?.complaints.slice(0, 7) || []}
-              />
-            </div>
+            {canViewComplain && (
+              <div className="complaints-card">
+                <NotificationCard
+                  className="h-[358px]"
+                  sectionHeader="Recent Complaints"
+                  seeAllLink={gotoPage()}
+                  notifications={recentComplaints?.complaints.slice(0, 7) || []}
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -440,20 +454,22 @@ const Dashboard = () => {
         </SectionContainer>
 
         {/* =========== RECENT COMPLAINS =========== */}
-        <SectionContainer
-          heading="Recent Complains"
-          href="/manager/tasks/complaints"
-        >
-          {pageData && pageData.complaints.length === 0 ? (
-            <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
-              <p className="text-gray-500 dark:text-gray-400">
-                No Recent Complains.
-              </p>
-            </div>
-          ) : (
-            <KanbanBoard kanbanTask={pageData?.complaints} />
-          )}
-        </SectionContainer>
+        {canViewComplain && (
+          <SectionContainer
+            heading="Recent Complains"
+            href="/manager/tasks/complaints"
+          >
+            {pageData && pageData.complaints.length === 0 ? (
+              <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
+                <p className="text-gray-500 dark:text-gray-400">
+                  No Recent Complains.
+                </p>
+              </div>
+            ) : (
+              <KanbanBoard kanbanTask={pageData?.complaints} />
+            )}
+          </SectionContainer>
+        )}
       </section>
     </>
   );

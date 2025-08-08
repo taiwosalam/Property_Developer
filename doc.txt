@@ -1,305 +1,160 @@
 "use client";
 
-// Images
-import WalletBG from "@/public/global/wallet-bg.svg";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { empty } from "@/app/config";
+// Types
+import type { SideNavProps } from "./types";
 
 // Imports
-import clsx from "clsx";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { ChevronRight, Eye, EyeOff } from "lucide-react";
-import {
-  BluePlusIcon,
-  BlueBuildingIcon,
-  BlueLockIcon,
-  CheckIcon,
-  BlueUnlockIcon,
-} from "@/public/icons/dashboard-cards/icons";
-import { CautionIcon } from "@/public/icons/icons";
-import { useWalletStore } from "@/store/wallet-store";
-import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
-import ActivateWalletModal from "@/components/Wallet/activate-wallet-modal";
-import WithdrawFundsModal from "@/components/Wallet/Withdraw/withdraw-funds-modal";
-import { currencySymbols, formatNumber } from "@/utils/number-formatter";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import { WalletDataResponse } from "@/app/(nav)/wallet/data";
-import useFetch from "@/hooks/useFetch";
-import Link from "next/link";
-import useBranchStore from "@/store/branch-store";
-import { toast } from "sonner";
-import { holdBranchWallet } from "@/app/(nav)/management/staff-branch/[branchId]/data";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { nav_items } from "./data";
+import NavDropdown from "./nav-dropdown";
+import { NavButton } from "./nav-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { getNavs } from "@/app/(onboarding)/auth/data";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { useBranchInfoStore } from "@/store/branch-info-store";
+import { normalizeIsActive } from "../Management/Staff-And-Branches/Branch/branch-balance-card";
 
-const BranchBalanceCard = ({
-  mainBalance,
-  cautionDeposit,
-  className,
-}: {
-  mainBalance: number;
-  cautionDeposit: number;
-  className?: string;
-}) => {
-  const walletPinStatus = useWalletStore((s) => s.sub_wallet.status);
-  const is_active = useWalletStore((s) => s.sub_wallet.is_active);
-  const [hideBalance, setHideBalance] = useState(false);
+const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
+  const pathname = usePathname();
   const [loading, setLoading] = useState(false);
-  const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const { role, setRole } = useRole();
   const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
-  const hasWalletAccess =
-    usePermission(role, "Full Wallet Access") || isCompanyOwner;
-  const { branch } = useBranchStore();
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const branchWallet = useBranchInfoStore((s) => s.sub_wallet);
 
-  const { data, error, refetch } =
-    useFetch<WalletDataResponse>("/wallets/dashboard");
-  useRefetchOnEvent("refetch-wallet", () => {
-    refetch({ silent: true });
-  });
+  const handleDropdownToggle = (label: string) => {
+    setActiveDropdown((prevActive) => (prevActive === label ? null : label));
+  };
 
-  useEffect(() => {
-    if (data) {
-      setWalletStore("balance", {
-        my_balance: data.balance.my_balance,
-        caution_deposit: data.balance.escrow_balance,
-        earned_bonus: data.balance.earned_bonus,
-      });
-    }
-  }, [data, setWalletStore]);
+  // ============== PERMISSIONS CHECK ==============
+  const canViewCallRequests = usePermission(role, "Can view call request");
+  const canViewPropertyRequests = usePermission(
+    role,
+    "Can view property request"
+  );
+  const managerWalletIsActive = normalizeIsActive(
+    branchWallet?.is_active as string | boolean
+  );
+  const canViewWallet =
+    usePermission(role, "Full Wallet Access") ||
+    (role === "manager" && managerWalletIsActive);
+  const canViewComplain = usePermission(role, "Can view complaints");
 
-  const options = [
+  const isDirector = role === "director";
+
+  const company_logo = usePersonalInfoStore((state) => state.company_logo);
+
+  const sanitizeClassName = (label: string): string => {
+    return label
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
+  };
+
+  // Define restricted labels and their conditions (for both top-level and child items)
+  const restrictedLabels = [
     {
-      name: walletPinStatus === "active" ? "Add Funds" : "Activate Wallet",
-      icon: walletPinStatus === "active" ? <BluePlusIcon /> : <CheckIcon />,
-      action:
-        walletPinStatus === "active" ? (
-          <AddFundsModal branch />
-        ) : (
-          <ActivateWalletModal />
-        ),
+      label: "call request",
+      condition: () => isDirector || canViewCallRequests,
     },
     {
-      name: "Withdraw",
-      icon: <BlueBuildingIcon />,
-      action:
-        walletPinStatus === "active" ? (
-          <WithdrawFundsModal branch={true} />
-        ) : null,
+      label: "property request",
+      condition: () => isDirector || canViewPropertyRequests,
     },
     {
-      name:
-        walletPinStatus === "active" && is_active
-          ? "Hold Wallet"
-          : "UnHold Wallet",
-      icon:
-        walletPinStatus === "active" && is_active ? (
-          <BlueUnlockIcon />
-        ) : (
-          <BlueLockIcon />
-        ),
+      label: "Can view complaints",
+      condition: () => isDirector || canViewComplain,
     },
+    {
+      label: "wallet",
+      condition: () => canViewWallet || isCompanyOwner,
+    },
+    // Add more restricted labels here, e.g.:
+    // {
+    //   label: "complaints",
+    //   condition: () => usePermission(role, "Can view complaints") || isCompanyOwner,
+    // },
   ];
 
-  useEffect(() => {
-    const storedHideBalance = localStorage.getItem("hideBalance");
-    if (storedHideBalance !== null) {
-      setHideBalance(JSON.parse(storedHideBalance));
-    }
-  }, []);
-
-  const toggleBalanceVisibility = () => {
-    setHideBalance((prev) => {
-      const newHideBalance = !prev;
-      localStorage.setItem("hideBalance", JSON.stringify(newHideBalance));
-      return newHideBalance;
-    });
-  };
-
-  const handleHoldWallet = async () => {
-    if (!hasWalletAccess) return;
-    try {
-      setLoading(true);
-      const res = await holdBranchWallet(branch.branch_id);
-      if (res) {
-        toast.success("Branch Wallet Hold Successfully");
-        window.dispatchEvent(new Event("refetch-wallet"));
-        window.dispatchEvent(new Event("refetch_staff"));
+  // Filter navItems for both top-level and child items
+  const navItems = getNavs(role)
+    ?.filter((item) => {
+      const restricted = restrictedLabels.find(
+        (r) => r.label.toLowerCase() === item.label.toLowerCase()
+      );
+      return !restricted || restricted.condition();
+    })
+    .map((item) => {
+      if (item.content) {
+        return {
+          ...item,
+          content: item.content.filter((subItem) => {
+            const restricted = restrictedLabels.find(
+              (r) => r.label.toLowerCase() === subItem.label.toLowerCase()
+            );
+            return !restricted || restricted.condition();
+          }),
+        };
       }
-    } catch {
-      toast.error("Failed to Hold Branch Wallet");
-    } finally {
-      setLoading(false);
-    }
-  };
+      return item;
+    })
+    .filter((item) => !item.content || item.content.length > 0); // Remove dropdowns that become empty
 
   return (
-    <div className={clsx("space-y-2", className)}>
-      <div className="p-5 relative custom-primary-bg rounded-lg">
-        <div className="absolute inset-0">
-          <Image
-            src={WalletBG}
-            alt="wallet background"
-            fill
-            sizes="400px"
-            className="object-cover"
-          />
-        </div>
-        <div className="relative space-y-3">
-          {/* Header Section */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center space-x-2">
-              <p className="text-text-invert text-sm font-medium">
-                Branch Balance
-              </p>
-              <button onClick={toggleBalanceVisibility} className="">
-                {hideBalance ? (
-                  <Eye size={15} className="text-text-invert" />
-                ) : (
-                  <EyeOff size={15} className="text-text-invert" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Main Balance */}
-          {walletPinStatus === "active" ? (
-            <p className="font-extrabold text-xl text-white">
-              {hideBalance
-                ? "*******"
-                : `${currencySymbols.naira} ${formatNumber(mainBalance, {
-                    forceTwoDecimals: true,
-                  })}`}
-            </p>
-          ) : (
-            <p className="font-extrabold text-xl text-white">Inactive</p>
-          )}
-
-          {/* Caution Deposit Section */}
-          <div className="text-white text-xs font-medium capitalize flex items-center space-x-2">
-            <p className="text-text-white-secondary">Caution Deposit</p>
-            {walletPinStatus === "active" ? (
-              <span>
-                {!hideBalance
-                  ? `${currencySymbols.naira} ${formatNumber(cautionDeposit, {
-                      forceTwoDecimals: true,
-                    })}`
-                  : "*******"}
-              </span>
-            ) : (
-              <span>Inactive</span>
-            )}
-            <CautionIcon />
-          </div>
-
-          <div className="w-full flex items-start space-x-4">
-            <div className="w-full flex justify-between">
-              {options.map((option, index) => (
-                <div key={index} className="space-y-2">
-                  {option.action &&
-                  hasWalletAccess &&
-                  walletPinStatus === "active" ? (
-                    <Modal>
-                      <ModalTrigger className="space-y-2">
-                        <div
-                          className={clsx(
-                            "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
-                            !is_active && "opacity-50 cursor-not-allowed"
-                          )}
-                        >
-                          <span className="text-brand-9">{option.icon}</span>
-                        </div>
-                        <p className="capitalize text-white dark:text-white text-xs font-normal">
-                          {option.name}
-                        </p>
-                      </ModalTrigger>
-                      {is_active && (
-                        <ModalContent>{option.action}</ModalContent>
-                      )}
-                    </Modal>
-                  ) : option.name === "Activate Wallet" && hasWalletAccess ? (
-                    <Link
-                      href={`/management/staff-branch/${branch.branch_id}/edit-branch`}
-                      className="space-y-2"
-                    >
-                      <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                        <span className="text-brand-9">{option.icon}</span>
-                      </div>
-                      <p className="capitalize text-white dark:text-white text-xs font-normal">
-                        {option.name}
-                      </p>
-                    </Link>
-                  ) : (
-                    <div
-                      className={clsx(
-                        "space-y-2",
-                        !hasWalletAccess ||
-                          option.name === "Hold Wallet" ||
-                          option.name === "UnHold Wallet"
-                          ? "opacity-50 cursor-not-allowed"
-                          : ""
-                      )}
-                    >
-                      <button
-                        className="space-y-2"
-                        disabled={!hasWalletAccess || loading}
-                        onClick={
-                          option.name === "Hold Wallet" ||
-                          option.name === "UnHold Wallet"
-                            ? handleHoldWallet
-                            : undefined
-                        }
-                      >
-                        <div
-                          className={clsx(
-                            "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
-                            !hasWalletAccess && "opacity-50 cursor-not-allowed"
-                          )}
-                        >
-                          {loading &&
-                          (option.name === "Hold Wallet" ||
-                            option.name === "UnHold Wallet") ? (
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-9"></div>
-                          ) : (
-                            <span className="text-brand-9">{option.icon}</span>
-                          )}
-                        </div>
-                        <p className="capitalize text-white dark:text-white text-xs font-normal">
-                          {option.name}
-                        </p>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+    <div className="custom-flex-col pb-3">
+      <div className="flex md:hidden justify-center p-3 pt-0">
+        <Image
+          src={company_logo || empty}
+          alt="company logo"
+          width={200}
+          height={55}
+          className="w-full h-[55px] object-contain"
+        />
       </div>
+
+      {navItems?.map((item, idx) => {
+        const className = sanitizeClassName(item.label);
+        return item.content ? (
+          <NavDropdown
+            key={idx}
+            type={item.type}
+            content={item.content}
+            highlight={item.content.some((i) =>
+              isDirector
+                ? pathname.includes(`${item.label}${i.href}`)
+                : pathname.includes(`${i.href}`)
+            )}
+            onContentClick={closeSideNav}
+            isOpen={activeDropdown === item.label}
+            onToggle={() => handleDropdownToggle(item.label)}
+            isCollapsed={isCollapsed}
+            className={className}
+          >
+            {item.label}
+          </NavDropdown>
+        ) : (
+          <NavButton
+            highlight={item.href ? pathname.includes(item.href) : false}
+            key={idx}
+            href={item.href}
+            type={item.type}
+            onClick={closeSideNav}
+            isCollapsed={isCollapsed}
+            className={className}
+          >
+            {item.label}
+          </NavButton>
+        );
+      })}
     </div>
   );
 };
 
-export default BranchBalanceCard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default SideNav;
 
 
 
@@ -315,305 +170,447 @@ export default BranchBalanceCard;
 
 // "use client";
 
-// // Images
-// import WalletBG from "@/public/global/wallet-bg.svg";
-
-// // Imports
-// import clsx from "clsx";
+// import { useEffect, useState } from "react";
 // import Image from "next/image";
-// import React, { useState, useEffect } from "react";
-// import { ChevronRight, Eye, EyeOff } from "lucide-react";
-// import {
-//   BluePlusIcon,
-//   BlueBuildingIcon,
-//   BlueLockIcon,
-//   CheckIcon,
-//   BlueUnlockIcon,
-//   BlueSendIcon,
-// } from "@/public/icons/dashboard-cards/icons";
-// import { CautionIcon } from "@/public/icons/icons";
-// import { useWalletStore } from "@/store/wallet-store";
-// import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
-// import ActivateWalletModal from "@/components/Wallet/activate-wallet-modal";
-// import WithdrawFundsModal from "@/components/Wallet/Withdraw/withdraw-funds-modal";
-// import { currencySymbols, formatNumber } from "@/utils/number-formatter";
-// import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-// import { WalletDataResponse } from "@/app/(nav)/wallet/data";
-// import useFetch from "@/hooks/useFetch";
-// import Link from "next/link";
-// import useBranchStore from "@/store/branch-store";
-// import { toast } from "sonner";
-// import { holdBranchWallet } from "@/app/(nav)/management/staff-branch/[branchId]/data";
-// import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+// import { usePathname } from "next/navigation";
+// import { empty } from "@/app/config";
+// import type { SideNavProps } from "./types";
+// import { nav_items } from "./data";
+// import NavDropdown from "./nav-dropdown";
+// import { NavButton } from "./nav-components";
 // import { usePersonalInfoStore } from "@/store/personal-info-store";
+// import { getNavs } from "@/app/(onboarding)/auth/data";
 // import { useRole } from "@/hooks/roleContext";
 // import { usePermission } from "@/hooks/getPermission";
-// import SendFundsModal from "@/components/Wallet/SendFunds/send-funds-modal";
+// import { useBranchInfoStore } from "@/store/branch-info-store";
+// import { normalizeIsActive } from "../Management/Staff-And-Branches/Branch/branch-balance-card";
 
-// const BranchBalanceCard = ({
-//   mainBalance,
-//   cautionDeposit,
-//   className,
-//   page,
-// }: {
-//   mainBalance: number;
-//   cautionDeposit: number;
-//   className?: string;
-//   page?: "manager" | "account";
-// }) => {
-//   const walletPinStatus = useWalletStore((s) => s.sub_wallet.status);
-//   const is_active = useWalletStore((s) => s.sub_wallet.is_active);
-//   const [hideBalance, setHideBalance] = useState(false);
+// const permissionMapping: Record<
+//   string,
+//   { permission: string; ownerRoles: string[] }
+// > = {
+//   "call request": {
+//     permission: "Can view call request",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   "property request": {
+//     permission: "Can view property request",
+//     ownerRoles: ["manager"],
+//   },
+//   complaints: {
+//     permission: "Can view complaints",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   wallet: {
+//     permission: "Full Wallet Access",
+//     ownerRoles: ["director"],
+//   },
+//   "landlord & landlady": {
+//     permission: "Can add and manage landlords/landlady",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   "tenants & occupants": {
+//     permission: "Can add and manage tenants/occupants",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   properties: {
+//     permission: "Can add/delete branch properties",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   "service providers": {
+//     permission: "Can view service provider",
+//     ownerRoles: ["account", "staff"],
+//   },
+//   examine: {
+//     permission: "Can create examine",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   inspections: {
+//     permission: "Can manage inspections",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   calendars: {
+//     permission: "Can manage calendar",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   announcements: {
+//     permission: "Can create and manage announcement",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   "visitors request": {
+//     permission: "Can check in visitors",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   inventory: {
+//     permission: "Can create inventory",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   "vehicles record": {
+//     permission: "Can check in and manage vehicle records",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   invoice: {
+//     permission: "Can manage tenants/occupants",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   expenses: {
+//     permission: "Can manage tenants/occupants",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   disbursement: {
+//     permission: "Can manage tenants/occupants",
+//     ownerRoles: ["manager", "account"],
+//   },
+// };
+
+// const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
+//   const pathname = usePathname();
 //   const [loading, setLoading] = useState(false);
-//   const setWalletStore = useWalletStore((s) => s.setWalletStore);
 //   const { role, setRole } = useRole();
 //   const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
-//   const hasFullWalletAccess = usePermission(role, "Full Wallet Access");
-//   const hasWalletAccess =
-//     page === "manager" || hasFullWalletAccess || isCompanyOwner;
-//   const { branch } = useBranchStore();
+//   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+//   const branchWallet = useBranchInfoStore((s) => s.sub_wallet);
+//   const company_logo = usePersonalInfoStore((state) => state.company_logo);
 
-//   const { data, error, refetch } =
-//     useFetch<WalletDataResponse>("/wallets/dashboard");
-//   useRefetchOnEvent("refetch-wallet", () => {
-//     refetch({ silent: true });
+//   const managerWalletIsActive = normalizeIsActive(
+//     branchWallet?.is_active as string | boolean
+//   );
+
+//   // 1️⃣ Precompute all permissions outside of filter/map loops
+//   const permissionsCache: Record<string, boolean> = {};
+//   Object.entries(permissionMapping).forEach(([label, mapping]) => {
+//     permissionsCache[label] = usePermission(role, mapping.permission);
 //   });
 
-//   useEffect(() => {
-//     if (data) {
-//       setWalletStore("balance", {
-//         my_balance: data.balance.my_balance,
-//         caution_deposit: data.balance.escrow_balance,
-//         earned_bonus: data.balance.earned_bonus,
-//       });
-//     }
-//   }, [data, setWalletStore]);
+//   // 2️⃣ Now filter/map using the cached results (no hook calls here)
+//   const navItems = getNavs(role)
+//     ?.filter((item) => {
+//       const mapping = permissionMapping[item.label.toLowerCase()];
 
-//   const options = [
-//     {
-//       name: walletPinStatus === "active" ? "Add Funds" : "Activate Wallet",
-//       icon: walletPinStatus === "active" ? <BluePlusIcon /> : <CheckIcon />,
-//       action:
-//         walletPinStatus === "active" ? (
-//           <AddFundsModal branch={page !== "manager"} page={page} />
-//         ) : (
-//           <ActivateWalletModal />
-//         ),
-//     },
-//     {
-//       name: "Withdraw",
-//       icon: <BlueBuildingIcon />,
-//       action:
-//         walletPinStatus === "active" ? (
-//           <WithdrawFundsModal branch={true} />
-//         ) : null,
-//     },
-//     ...(page === "manager"
-//       ? [
-//           {
-//             name: "Send Funds",
-//             icon: <BlueSendIcon />,
-//             action: walletPinStatus === "active" ? <SendFundsModal /> : null,
-//           },
-//         ]
-//       : [
-//           {
-//             name:
-//               walletPinStatus === "active" && is_active
-//                 ? "Hold Wallet"
-//                 : "UnHold Wallet",
-//             icon:
-//               walletPinStatus === "active" && is_active ? (
-//                 <BlueUnlockIcon />
-//               ) : (
-//                 <BlueLockIcon />
-//               ),
-//           },
-//         ]),
-//   ];
+//       if (!mapping || !mapping.ownerRoles.includes(role)) return true;
 
-//   useEffect(() => {
-//     const storedHideBalance = localStorage.getItem("hideBalance");
-//     if (storedHideBalance !== null) {
-//       setHideBalance(JSON.parse(storedHideBalance));
-//     }
-//   }, []);
-
-//   const toggleBalanceVisibility = () => {
-//     setHideBalance((prev) => {
-//       const newHideBalance = !prev;
-//       localStorage.setItem("hideBalance", JSON.stringify(newHideBalance));
-//       return newHideBalance;
-//     });
-//   };
-
-//   const handleHoldWallet = async () => {
-//     if (page !== "manager" && !hasWalletAccess) return;
-//     try {
-//       setLoading(true);
-//       const res = await holdBranchWallet(branch.branch_id);
-//       if (res) {
-//         toast.success("Branch Wallet Hold Successfully");
-//         window.dispatchEvent(new Event("refetch-wallet"));
-//         window.dispatchEvent(new Event("refetch_staff"));
+//       if (item.label.toLowerCase() === "wallet") {
+//         return (
+//           permissionsCache["wallet"] ||
+//           (role === "manager" && managerWalletIsActive) ||
+//           isCompanyOwner
+//         );
 //       }
-//     } catch {
-//       toast.error("Failed to Hold Branch Wallet");
-//     } finally {
-//       setLoading(false);
-//     }
+
+//       return permissionsCache[item.label.toLowerCase()];
+//     })
+//     .map((item) => {
+//       if (item.content) {
+//         return {
+//           ...item,
+//           content: item.content.filter((subItem) => {
+//             const mapping = permissionMapping[subItem.label.toLowerCase()];
+//             return (
+//               !mapping ||
+//               !mapping.ownerRoles.includes(role) ||
+//               permissionsCache[subItem.label.toLowerCase()]
+//             );
+//           }),
+//         };
+//       }
+//       return item;
+//     })
+//     .filter((item) => !item.content || item.content.length > 0);
+
+//   const sanitizeClassName = (label: string): string =>
+//     label
+//       .toLowerCase()
+//       .replace(/\s+/g, "-")
+//       .replace(/[^a-z0-9-]/g, "");
+
+//   const handleDropdownToggle = (label: string) => {
+//     setActiveDropdown((prevActive) => (prevActive === label ? null : label));
 //   };
 
 //   return (
-//     <div className={clsx("space-y-2", className)}>
-//       <div className="p-5 relative custom-primary-bg rounded-lg">
-//         <div className="absolute inset-0">
-//           <Image
-//             src={WalletBG}
-//             alt="wallet background"
-//             fill
-//             sizes="400px"
-//             className="object-cover"
-//           />
-//         </div>
-//         <div className="relative space-y-3">
-//           {/* Header Section */}
-//           <div className="flex items-center justify-between gap-2">
-//             <div className="flex items-center space-x-2">
-//               <p className="text-text-invert text-sm font-medium">
-//                 Branch Balance
-//               </p>
-//               <button onClick={toggleBalanceVisibility} className="">
-//                 {hideBalance ? (
-//                   <Eye size={15} className="text-text-invert" />
-//                 ) : (
-//                   <EyeOff size={15} className="text-text-invert" />
-//                 )}
-//               </button>
-//             </div>
-//           </div>
-
-//           {/* Main Balance */}
-//           {walletPinStatus === "active" ? (
-//             <p className="font-extrabold text-xl text-white">
-//               {hideBalance
-//                 ? "*******"
-//                 : `${currencySymbols.naira} ${formatNumber(mainBalance, {
-//                     forceTwoDecimals: true,
-//                   })}`}
-//             </p>
-//           ) : (
-//             <p className="font-extrabold text-xl text-white">Inactive</p>
-//           )}
-
-//           {/* Caution Deposit Section */}
-//           <div className="text-white text-xs font-medium capitalize flex items-center space-x-2">
-//             <p className="text-text-white-secondary">Caution Deposit</p>
-//             {walletPinStatus === "active" ? (
-//               <span>
-//                 {!hideBalance
-//                   ? `${currencySymbols.naira} ${formatNumber(cautionDeposit, {
-//                       forceTwoDecimals: true,
-//                     })}`
-//                   : "*******"}
-//               </span>
-//             ) : (
-//               <span>Inactive</span>
-//             )}
-//             <CautionIcon />
-//           </div>
-
-//           <div className="w-full flex items-start space-x-4">
-//             <div className="w-full flex justify-between">
-//               {options.map((option, index) => (
-//                 <div key={index} className="space-y-2">
-//                   {option.action &&
-//                   (page === "manager" || hasWalletAccess) &&
-//                   walletPinStatus === "active" ? (
-//                     <Modal>
-//                       <ModalTrigger className="space-y-2">
-//                         <div
-//                           className={clsx(
-//                             "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
-//                             !is_active && "opacity-50 cursor-not-allowed"
-//                           )}
-//                         >
-//                           <span className="text-brand-9">{option.icon}</span>
-//                         </div>
-//                         <p className="capitalize text-white dark:text-white text-xs font-normal">
-//                           {option.name}
-//                         </p>
-//                       </ModalTrigger>
-//                       {is_active && (
-//                         <ModalContent>{option.action}</ModalContent>
-//                       )}
-//                     </Modal>
-//                   ) : option.name === "Activate Wallet" &&
-//                     (page === "manager" || hasWalletAccess) ? (
-//                     <Link
-//                       href={`/management/staff-branch/${branch.branch_id}/edit-branch`}
-//                       className="space-y-2"
-//                     >
-//                       <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-//                         <span className="text-brand-9">{option.icon}</span>
-//                       </div>
-//                       <p className="capitalize text-white dark:text-white text-xs font-normal">
-//                         {option.name}
-//                       </p>
-//                     </Link>
-//                   ) : (
-//                     <div
-//                       className={clsx(
-//                         "space-y-2",
-//                         (page !== "manager" && !hasWalletAccess) ||
-//                           option.name === "Hold Wallet" ||
-//                           option.name === "UnHold Wallet"
-//                           ? "opacity-50 cursor-not-allowed"
-//                           : ""
-//                       )}
-//                     >
-//                       <button
-//                         className="space-y-2"
-//                         disabled={
-//                           (page !== "manager" && !hasWalletAccess) || loading
-//                         }
-//                         onClick={
-//                           option.name === "Hold Wallet" ||
-//                           option.name === "UnHold Wallet"
-//                             ? handleHoldWallet
-//                             : undefined
-//                         }
-//                       >
-//                         <div
-//                           className={clsx(
-//                             "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
-//                             page !== "manager" &&
-//                               !hasWalletAccess &&
-//                               "opacity-50 cursor-not-allowed"
-//                           )}
-//                         >
-//                           {loading &&
-//                           (option.name === "Hold Wallet" ||
-//                             option.name === "UnHold Wallet") ? (
-//                             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-9"></div>
-//                           ) : (
-//                             <span className="text-brand-9">{option.icon}</span>
-//                           )}
-//                         </div>
-//                         <p className="capitalize text-white dark:text-white text-xs font-normal">
-//                           {option.name}
-//                         </p>
-//                       </button>
-//                     </div>
-//                   )}
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
+//     <div className="custom-flex-col pb-3">
+//       <div className="flex md:hidden justify-center p-3 pt-0">
+//         <Image
+//           src={company_logo || empty}
+//           alt="company logo"
+//           width={200}
+//           height={55}
+//           className="w-full h-[55px] object-contain"
+//         />
 //       </div>
+
+//       {navItems?.map((item, idx) => {
+//         const className = sanitizeClassName(item.label);
+//         return item.content ? (
+//           <NavDropdown
+//             key={idx}
+//             type={item.type}
+//             content={item.content}
+//             highlight={item.content.some((i) =>
+//               role === "director"
+//                 ? pathname.includes(`${item.label}${i.href}`)
+//                 : pathname.includes(`${i.href}`)
+//             )}
+//             onContentClick={closeSideNav}
+//             isOpen={activeDropdown === item.label}
+//             onToggle={() => handleDropdownToggle(item.label)}
+//             isCollapsed={isCollapsed}
+//             className={className}
+//           >
+//             {item.label}
+//           </NavDropdown>
+//         ) : (
+//           <NavButton
+//             highlight={item.href ? pathname.includes(item.href) : false}
+//             key={idx}
+//             href={item.href}
+//             type={item.type}
+//             onClick={closeSideNav}
+//             isCollapsed={isCollapsed}
+//             className={className}
+//           >
+//             {item.label}
+//           </NavButton>
+//         );
+//       })}
 //     </div>
 //   );
 // };
 
-// export default BranchBalanceCard;
+// export default SideNav;
+
+
+
+
+
+
+
+
+
+
+// // "use client";
+
+// // import Link from "next/link";
+// // import SVG from "../SVG/svg";
+// // import { useModal } from "../Modal/modal";
+// // import useDarkMode from "@/hooks/useCheckDarkMode";
+// // import { useRole } from "@/hooks/roleContext";
+// // import { usePermission } from "@/hooks/getPermission";
+// // import type { NavCreateNewColumnProps } from "./types";
+// // import { useMemo } from "react";
+// // import { permissionMapping } from "./nav-create-new-items";
+
+// // const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
+// //   data = [],
+// //   handleModalTrigger,
+// // }) => {
+// //   const { setIsOpen } = useModal();
+// //   const isDarkMode = useDarkMode();
+// //   const { role } = useRole();
+
+// //   // Pre-compute permissions to avoid calling usePermission in a callback
+// //   const permissionsCache: Record<string, boolean> = useMemo(() => {
+// //     const cache: Record<string, boolean> = {};
+// //     Object.entries(permissionMapping).forEach(([label, mapping]) => {
+// //       cache[label] = usePermission(role, mapping.permission);
+// //     });
+// //     return cache;
+// //   }, [role]);
+
+// //   const filteredContent = useMemo(() => {
+// //     const options = ["management", "tasks", "accounting", "documents"];
+// //     return data
+// //       .filter((item) => options.includes(item.label.toLowerCase()))
+// //       .map((item) => ({
+// //         ...item,
+// //         content: item.content?.filter(({ label }) => {
+// //           const mapping = permissionMapping[label.toLowerCase()];
+// //           // Render item if no permission is defined or if the role is not an owner
+// //           if (!mapping || !mapping.ownerRoles.includes(role)) {
+// //             return true;
+// //           }
+// //           // Only filter out if the role owns the permission and it's false
+// //           return permissionsCache[label.toLowerCase()];
+// //         }),
+// //       }))
+// //       .filter((item) => item.content && item.content.length > 0);
+// //   }, [data, role, permissionsCache]);
+
+// //   const class_styles = "flex items-center gap-4";
+// //   const icon = (
+// //     <SVG
+// //       type="horizontal_line"
+// //       className="w-[30px] flex justify-center"
+// //       color={isDarkMode ? "#fff" : "#050901"}
+// //     />
+// //   );
+
+// //   const closeCreateNewModal = () => {
+// //     setIsOpen(false);
+// //   };
+
+// //   return (
+// //     <div className="flex gap-10 w-full overflow-auto custom-round-scrollbar">
+// //       {filteredContent.map(({ type, label, content }, index) => (
+// //         <div key={index} className="custom-flex-col text-base font-medium">
+// //           <div className="flex items-center gap-2">
+// //             <SVG
+// //               type={type}
+// //               color={isDarkMode ? "#fff" : "#050901"}
+// //               className="w-[30px] flex justify-center"
+// //             />
+// //             <p className="text-text-primary dark:text-white capitalize">
+// //               {label}
+// //             </p>
+// //           </div>
+// //           {content?.map(({ label, link, modal }, idx) => (
+// //             <div key={idx} className="py-3 px-5">
+// //               {link ? (
+// //                 <Link
+// //                   href={link}
+// //                   className={class_styles}
+// //                   onClick={closeCreateNewModal}
+// //                 >
+// //                   {icon}
+// //                   <p className="text-text-secondary dark:text-darkText-1 capitalize">
+// //                     {label}
+// //                   </p>
+// //                 </Link>
+// //               ) : (
+// //                 <button
+// //                   type="button"
+// //                   className={class_styles}
+// //                   onClick={() => handleModalTrigger(modal)}
+// //                 >
+// //                   {icon}
+// //                   <p className="text-text-secondary dark:text-darkText-1 capitalize">
+// //                     {label}
+// //                   </p>
+// //                 </button>
+// //               )}
+// //             </div>
+// //           ))}
+// //         </div>
+// //       ))}
+// //     </div>
+// //   );
+// // };
+
+// // export default NavCreateNewColumn;
+
+
+
+
+
+
+
+// "use client";
+
+// import Link from "next/link";
+// import SVG from "../SVG/svg";
+// import { useModal } from "../Modal/modal";
+// import useDarkMode from "@/hooks/useCheckDarkMode";
+// import { useRole } from "@/hooks/roleContext";
+// import type { NavCreateNewColumnProps } from "./types";
+// import { useMemo } from "react";
+// import { permissionMapping } from "./nav-create-new-items";
+// import { usePermissionsCache } from "@/hooks/usePermissioncache";
+
+// const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
+//   data = [],
+//   handleModalTrigger,
+// }) => {
+//   const { setIsOpen } = useModal();
+//   const isDarkMode = useDarkMode();
+//   const { role } = useRole();
+
+//   // Use custom hook to get permissions cache
+//   const permissionsCache = usePermissionsCache(role, permissionMapping);
+
+//   const filteredContent = useMemo(() => {
+//     const options = ["management", "tasks", "accounting", "documents"];
+//     return data
+//       .filter((item) => options.includes(item.label.toLowerCase()))
+//       .map((item) => ({
+//         ...item,
+//         content: item.content?.filter(({ label }) => {
+//           const mapping = permissionMapping[label.toLowerCase()];
+//           // Render item if no permission is defined or if the role is not an owner
+//           if (!mapping || !mapping.ownerRoles.includes(role)) {
+//             return true;
+//           }
+//           // Only filter out if the role owns the permission and it's false
+//           return permissionsCache[label.toLowerCase()];
+//         }),
+//       }))
+//       .filter((item) => item.content && item.content.length > 0);
+//   }, [data, role, permissionsCache]);
+
+//   const class_styles = "flex items-center gap-4";
+//   const icon = (
+//     <SVG
+//       type="horizontal_line"
+//       className="w-[30px] flex justify-center"
+//       color={isDarkMode ? "#fff" : "#050901"}
+//     />
+//   );
+
+//   const closeCreateNewModal = () => {
+//     setIsOpen(false);
+//   };
+
+//   return (
+//     <div className="flex gap-10 w-full overflow-auto custom-round-scrollbar">
+//       {filteredContent.map(({ type, label, content }, index) => (
+//         <div key={index} className="custom-flex-col text-base font-medium">
+//           <div className="flex items-center gap-2">
+//             <SVG
+//               type={type}
+//               color={isDarkMode ? "#fff" : "#050901"}
+//               className="w-[30px] flex justify-center"
+//             />
+//             <p className="text-text-primary dark:text-white capitalize">
+//               {label}
+//             </p>
+//           </div>
+//           {content?.map(({ label, link, modal }, idx) => (
+//             <div key={idx} className="py-3 px-5">
+//               {link ? (
+//                 <Link
+//                   href={link}
+//                   className={class_styles}
+//                   onClick={closeCreateNewModal}
+//                 >
+//                   {icon}
+//                   <p className="text-text-secondary dark:text-darkText-1 capitalize">
+//                     {label}
+//                   </p>
+//                 </Link>
+//               ) : (
+//                 <button
+//                   type="button"
+//                   className={class_styles}
+//                   onClick={() => handleModalTrigger(modal)}
+//                 >
+//                   {icon}
+//                   <p className="text-text-secondary dark:text-darkText-1 capitalize">
+//                     {label}
+//                   </p>
+//                 </button>
+//               )}
+//             </div>
+//           ))}
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// export default NavCreateNewColumn;
+
+
+
+
+
+
+

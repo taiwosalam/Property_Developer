@@ -46,7 +46,9 @@ const normalizeWalletStatus = (
   return status === "active" ? "active" : "inactive";
 };
 
-const normalizeIsActive = (status: string | boolean | undefined): boolean => {
+export const normalizeIsActive = (
+  status: string | boolean | undefined
+): boolean => {
   if (typeof status === "boolean") {
     return status;
   }
