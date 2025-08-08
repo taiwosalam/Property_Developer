@@ -165,7 +165,7 @@ const InspectionPage = () => {
       <CustomLoader layout="page" pageTitle="Inspection" statsCardCount={3} />
     );
   if (error) {
-    <ServerError error={error} />;
+    return <ServerError error={error} />;
   }
 
   return (
@@ -212,7 +212,7 @@ const InspectionPage = () => {
           <AutoResizingGrid minWidth={505} gap={32}>
             <PropertyrequestSkeletonLoader length={10} />
           </AutoResizingGrid>
-        ) : inspectionData?.card.length === 0 ? (
+        ) : inspectionData?.card?.length === 0 ? (
           !!config.params?.search || hasActiveFilters(appliedFilter) ? (
             <SearchError />
           ) : (
