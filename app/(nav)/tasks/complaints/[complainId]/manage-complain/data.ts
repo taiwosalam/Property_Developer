@@ -180,8 +180,9 @@ export const createReminder = async ({
     title,
     note,
     reminder_date: date,
-    complain_id: id
+    complain_id: id,
   };
+
   const endpoint = `complaint/reminder`;
   try {
     const res = await api.post(endpoint, payload);

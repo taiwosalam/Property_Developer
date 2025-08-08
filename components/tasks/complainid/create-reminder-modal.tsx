@@ -34,6 +34,8 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
 
   const id = params.complainId as string;
 
+  console.log(id);
+
   const handleInputTitle = (value: string) => {
     setInputTitle(value);
   };
@@ -42,6 +44,10 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
   };
 
   const handleCreateReminder = async () => {
+    if (!id) {
+      toast.error("No complaint ID");
+      return;
+    }
     if (!reminderDate) {
       toast.error("Please select a reminder date");
       return;
@@ -60,7 +66,10 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
       title: inputTitle,
       note: textAreaNote,
       date: utcDate,
+      id,
     };
+
+    console.log(params);
 
     try {
       setLoading(true);

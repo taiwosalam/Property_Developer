@@ -19,9 +19,12 @@ import useFetch from "@/hooks/useFetch";
 import Link from "next/link";
 import { OtherIcon } from "./notification-icons";
 import { useRole } from "@/hooks/roleContext";
+import { toast } from "sonner";
+import { deleteAllNotification } from "@/app/(nav)/notifications/data";
 
 interface NotificationProps {
   notification: {
+    id: string;
     type:
       | "message"
       | "payment"
@@ -48,6 +51,9 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
 
   const route = notification_links[resolvedType] || "/";
 
+  const [notificationIds, setNotificationIds] = useState<string[]>([]);
+  const [isClearingNotifications, setIsClearingNotifications] = useState(false);
+
   const IconComponent = notification_icons[resolvedType];
 
   const { role } = useRole();
@@ -67,13 +73,28 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
 
   const roleRoute = getRoleBasedRoute(route);
 
+  const handleDeleteNotifications = async () => {
+    setNotificationIds([notification?.id]);
+
+    if (!notification.id) return;
+
+    try {
+      setIsClearingNotifications(true);
+      const res = await deleteAllNotification([notification.id]);
+      if (res) {
+        //toast.success("Notifications Cleared");
+      }
+    } catch (error) {
+      //console.error(error);
+    } finally {
+      setIsClearingNotifications(false);
+    }
+  };
+
   return (
-    <div className="custom-flex-col gap-4">
+    <div className="custom-flex-col gap-4" onClick={handleDeleteNotifications}>
       <div className="flex gap-4">
-        <Link
-          href={roleRoute}
-          className="w-full flex gap-4"
-        >
+        <Link href={roleRoute} className="w-full flex gap-4">
           <div className="flex items-start">
             {/* Render the JSX Element icon */}
             {IconComponent ? (
