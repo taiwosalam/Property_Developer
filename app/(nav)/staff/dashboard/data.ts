@@ -57,7 +57,7 @@ export const getStaffDashboardCardData = (
     icon: ExpiredIcon,
     value: formatNumber(data.data.vehicle_record_count),
     subValue: formatNumber(data.data.month_vehicle_record_count),
-    link: "/staff/management/rent-unit?is_active=vacant",
+    link: "/staff/management/vehicles-record",
   },
   {
     title: "Visitor Request",
@@ -65,7 +65,7 @@ export const getStaffDashboardCardData = (
    icon: BedIcon,
     value: formatNumber(data.data.visitor_request_count),
     subValue: formatNumber(data.data.month_visitor_request_count),
-    link: "/staff/management/rent-unit?is_active=expired",
+    link: "/staff/tasks/visitors",
   },
 ];
 

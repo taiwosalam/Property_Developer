@@ -1,6 +1,6 @@
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
-import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
+import { getAllStates, getLocalGovernments, getCities, getAllLocalGovernments, getAllCities } from "@/utils/states";
 import { useState } from "react";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import CameraCircle from "@/public/icons/camera-circle.svg";
@@ -16,6 +16,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import RestrictInput from "@/components/Form/Input/InputWIthRestrict";
 
 export interface VehicleDataProps {
   id: number;
@@ -90,7 +91,6 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     local_government: editMode ? props.data.local_government : "",
     city: editMode ? props.data.city : "",
   });
-
 
   const {
     preview,
@@ -176,12 +176,20 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             }
             allowCustom
           />
-          <Input
-            label="Address"
+
+          <RestrictInput
             id="address"
+            label="Street Name/Number"
+            inputClassName="rounded-lg py-4"
             required
-            inputClassName="rounded-lg"
             defaultValue={editMode ? props.data.address : undefined}
+            restrictedWordsOptions={{
+              words: [
+                ...getAllStates(),
+                ...getAllLocalGovernments(),
+                ...getAllCities(),
+              ],
+            }}
           />
 
           {editMode ? (
