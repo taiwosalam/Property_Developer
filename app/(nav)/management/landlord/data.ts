@@ -178,14 +178,18 @@ export const transformLandlordApiResponse = (
       id: landlord.id,
       name: landlord.name,
       email: landlord.email,
-      phone_number: `${landlord.phone.profile_phone ?? ""}${landlord.phone.user_phone && landlord.phone.profile_phone  ? " / " + landlord.phone.user_phone : ""}`,
+      phone_number: `${landlord?.phone?.profile_phone || ""}${
+        landlord?.phone?.user_phone && landlord?.phone?.profile_phone
+          ? " / " + landlord?.phone?.user_phone
+          : ""
+      }`,
       // phone_number: landlord.phone,
       user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
-      picture_url: landlord.picture,
-      note: landlord.note.note !== null && landlord.note.note !== "",
-      
-      badge_color: landlord.user_tier
-        ? tierColorMap[landlord.user_tier]
+      picture_url: landlord?.picture,
+      note: landlord?.note?.note !== null && landlord?.note?.note !== "",
+
+      badge_color: landlord?.user_tier
+        ? tierColorMap[landlord?.user_tier]
         : undefined,
     })),
   };

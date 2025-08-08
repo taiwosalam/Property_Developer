@@ -127,10 +127,17 @@ export const CalendarActivity: React.FC<CalendarEventProps> = ({
       }}
     />
     <p className="p-1 text-text-primary text-sm font-normal">
-      <span className="capitalize font-bold dark:text-white">
-        {originalType || type}
+      <span className="capitalize font-bold dark:text-white pr-1">
+        {(originalType || type) === "reminders" ? "reminder" : (originalType || type)}
       </span>
-      <span className="dark:text-darkText-2"> || {desc}</span>
+      {type !== "reminders" ? (
+        <span className="dark:text-darkText-2"> || {desc}</span>
+      ) : (
+        <span
+          className="dark:text-darkText-2 inline-flex gap-1"
+          dangerouslySetInnerHTML={{ __html: ` || ${desc}` }}
+        />
+      )}
     </p>
   </div>
 );
