@@ -89,32 +89,32 @@ export const permissionMapping: Record<
   },
   announcements: {
     permission: "Can create and manage announcement",
-    ownerRoles: ["manager", "account"],
+    ownerRoles: ["manager", "account", "staff"],
   },
   "visitors request": {
     permission: "Can check in visitors",
     ownerRoles: ["manager", "account", "staff"],
   },
-  inventory: {
-    permission: "Can create inventory",
-    ownerRoles: ["manager", "account", "staff"],
-  },
+  // inventory: {
+  //   permission: "Can create inventory",
+  //   ownerRoles: ["manager", "account", "staff"],
+  // },
   "vehicles record": {
     permission: "Can check in and manage vehicle records",
     ownerRoles: ["manager", "account"],
   },
-  invoice: {
-    permission: "Can manage tenants/occupants",
-    ownerRoles: ["manager", "account"],
-  },
-  expenses: {
-    permission: "Can manage tenants/occupants",
-    ownerRoles: ["manager", "account"],
-  },
-  disbursement: {
-    permission: "Can manage tenants/occupants",
-    ownerRoles: ["manager", "account"],
-  },
+  // invoice: {
+  //   permission: "Can manage tenants/occupants",
+  //   ownerRoles: ["manager", "account"],
+  // },
+  // expenses: {
+  //   permission: "Can manage tenants/occupants",
+  //   ownerRoles: ["manager", "account"],
+  // },
+  // disbursement: {
+  //   permission: "Can manage tenants/occupants",
+  //   ownerRoles: ["manager", "account"],
+  // },
 };
 
 export const useNavPermissions = (role: string) => {

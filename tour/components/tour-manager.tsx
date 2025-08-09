@@ -52,35 +52,23 @@ const CustomTour: React.FC = () => {
       const config = pageSteps[key];
       if (config.match?.(pathname)) {
         if (!isGoToStepActive && isTourCompleted(config.tourKey)) {
-          console.log(`Tour ${config.tourKey} already completed, skipping.`);
           return { steps: [], tourKey: "" };
         }
         setPersist(true);
-        console.log(`Selected tour: ${config.tourKey}, persist: ${persist}`);
         return config;
       }
     }
-    console.log("No valid tour configuration found for pathname:", pathname);
     return { steps: [], tourKey: "" };
   };
 
   const startTour = (steps: TourStep[], tourKey: string) => {
-    console.log(
-      `Starting tour: ${tourKey}, isCompleted: ${isTourCompleted(
-        tourKey
-      )}, stepIndex: ${
-        tourState.stepIndex
-      }, isGoToStepActive: ${isGoToStepActive}`
-    );
     if (!isGoToStepActive && isTourCompleted(tourKey)) {
       setShouldRenderTour(false);
-      console.log(`Tour ${tourKey} already completed, not starting.`);
       return;
     }
 
     if (retryCountRef.current >= maxRetries) {
       setShouldRenderTour(false);
-      console.log(`Max retries reached for tour: ${tourKey}`);
       return;
     }
 
@@ -90,7 +78,7 @@ const CustomTour: React.FC = () => {
         return true;
       const element = document.querySelector(step.target);
       if (!element) {
-        console.log(
+        console.warn(
           `Target ${step.target} not found for ${tourKey}. Skipping step.`
         );
         return false;
@@ -100,14 +88,8 @@ const CustomTour: React.FC = () => {
 
     if (validSteps.length > 1) {
       const stepIndex = isGoToStepActive ? tourState.stepIndex : 0;
-      console.log(
-        `Setting tour state: tourKey: ${tourKey}, stepIndex: ${stepIndex}, steps: ${validSteps.length}`
-      );
       setTourState({ run: true, stepIndex, steps: validSteps, tourKey });
       retryCountRef.current = 0;
-      console.log(
-        `Tour started: ${tourKey}, steps: ${validSteps.length}, current step: ${stepIndex}`
-      );
     } else {
       debugMissingTargets(steps, tourKey);
       retryCountRef.current += 1;
@@ -163,7 +145,7 @@ const CustomTour: React.FC = () => {
 
   useEffect(() => {
     if (!isMounted || !shouldRenderTour) {
-      console.log("Tour not started: isMounted or shouldRenderTour is false");
+      console.warn("Tour not started: isMounted or shouldRenderTour is false");
       return;
     }
 
@@ -175,17 +157,13 @@ const CustomTour: React.FC = () => {
       }
 
       if (config.condition && !config.condition()) {
-        console.log(`Tour condition not met for ${config.tourKey}`);
+        console.warn(`Tour condition not met for ${config.tourKey}`);
         completeTour(config.tourKey, persist);
         setShouldRenderTour(false);
         return;
       }
 
       const steps = getTourStepsWithWelcome(config);
-      console.log(
-        `Starting tour after config selection: ${config.tourKey}, isGoToStepActive: ${isGoToStepActive}`
-      );
-
       // If isGoToStepActive, wait briefly to ensure state is updated
       if (isGoToStepActive) {
         setTimeout(() => startTour(steps, config.tourKey), 20);
@@ -193,7 +171,7 @@ const CustomTour: React.FC = () => {
         startTour(steps, config.tourKey);
       }
     } else {
-      console.log(
+      console.warn(
         "Tour not started: companyStatus is null for non-/setup route"
       );
     }
@@ -271,22 +249,18 @@ const CustomTour: React.FC = () => {
   };
 
   const handleSkip = () => {
-    console.log(`Skipping tour: ${tourState.tourKey}, persist: ${persist}`);
     completeTour(tourState.tourKey, persist);
   };
 
   const handleFinish = () => {
-    console.log(`Finishing tour: ${tourState.tourKey}, persist: ${persist}`);
     completeTour(tourState.tourKey, persist);
   };
 
   const handleDeclineTour = () => {
-    console.log(`Declining tour: ${tourState.tourKey}, persist: ${persist}`);
     completeTour(tourState.tourKey, persist);
   };
 
   const handleRestart = () => {
-    console.log("Restarting tour for pathname:", pathname);
     restartTour(pathname);
   };
 

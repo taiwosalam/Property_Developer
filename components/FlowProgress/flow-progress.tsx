@@ -1,23 +1,29 @@
-"use client";
-
 import { useEffect, useRef, createContext, useCallback, useState } from "react";
 import { z } from "zod";
-
-// Types
-import type { FlowProgressProps } from "./types";
-
-// Imports
 import gsap from "gsap";
 import FlowProgressBar from "./flow-progress-bar";
 
+interface FlowProgressProps {
+  steps: number;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+  className?: string;
+  activeStep: number;
+  inputClassName?: string;
+  requiredFields?: string[];
+  showProgressBar?: boolean;
+}
+
 interface FlowProgressContextType {
   handleInputChange: () => void;
+  validateForm: () => boolean;
   canSubmit: boolean;
   missingFields: string[];
 }
 
 export const FlowProgressContext = createContext<FlowProgressContextType>({
   handleInputChange: () => {},
+  validateForm: () => false,
   canSubmit: false,
   missingFields: [],
 });
@@ -38,7 +44,6 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
   const [canSubmit, setCanSubmit] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
 
-  // Helper function to check if an input is filled
   const isInputFilled = (input: HTMLInputElement) => {
     if (input.type === "file") {
       return input.files && input.files.length > 0 && input.files[0].size > 0;
@@ -56,7 +61,6 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
       return datePattern.test(value);
     }
 
-    // Handle email input using Zod for validation
     if (input.type === "email") {
       const emailSchema = z.string().email();
       return emailSchema.safeParse(value).success;
@@ -69,7 +73,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     return value;
   };
 
-  const handleInputChange = useCallback(() => {
+  const validateForm = useCallback(() => {
     const selector = inputClassName ? `.${inputClassName}` : "input";
     const inputs = Array.from(
       containerRef.current?.querySelectorAll(selector) || []
@@ -79,7 +83,6 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     const filledInputs = inputs.filter(isInputFilled);
     progress.current = filledInputs.length * stepValue;
 
-    // Only animate the progress bar if it is shown
     if (showProgressBar) {
       gsap.to(barRef.current, {
         width: `${progress.current}%`,
@@ -87,7 +90,6 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
       });
     }
 
-    // Check if all required fields are filled
     const allRequired = inputs.filter((input) => {
       return (
         input.classList.contains("required") ||
@@ -99,14 +101,26 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     });
 
     const allRequiredFilled = allRequired.every(isInputFilled);
-    setCanSubmit(allRequiredFilled);
-
-    const missingFields = allRequired
+    const missing = allRequired
       .filter((input) => !isInputFilled(input))
       .map((input) => input.name || input.id);
 
-    setMissingFields(missingFields);
+    setCanSubmit(allRequiredFilled);
+    setMissingFields(missing);
+
+    console.log(
+      "validateForm: canSubmit =",
+      allRequiredFilled,
+      "missingFields =",
+      missing
+    );
+
+    return allRequiredFilled;
   }, [inputClassName, requiredFields, showProgressBar]);
+
+  const handleInputChange = useCallback(() => {
+    validateForm();
+  }, [validateForm]);
 
   useEffect(() => {
     const selector = inputClassName ? `.${inputClassName}` : "input";
@@ -116,7 +130,6 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
 
     handleInputChange();
 
-    // Invoke the passed callback function when input changes
     inputs.forEach((input) => {
       input.addEventListener("input", handleInputChange);
     });
@@ -130,16 +143,18 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
 
   useEffect(() => {
     handleInputChange();
-    // console.log("can submit", canSubmit);
   }, [children, handleInputChange]);
 
   return (
     <FlowProgressContext.Provider
-      value={{ handleInputChange, canSubmit, missingFields }}
+      value={{ handleInputChange, validateForm, canSubmit, missingFields }}
     >
       <div ref={containerRef} className={className}>
         {showProgressBar && (
-          <div className="setup-flow-progress flex gap-[10px] bg-white dark:bg-darkText-primary" style={style}>
+          <div
+            className="setup-flow-progress flex gap-[10px] bg-white dark:bg-darkText-primary"
+            style={style}
+          >
             {Array(steps)
               .fill(null)
               .map((_, index) => (

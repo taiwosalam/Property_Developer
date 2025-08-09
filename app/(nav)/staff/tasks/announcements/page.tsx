@@ -28,9 +28,15 @@ import { MaintenanceRequestParams } from "../maintenance/data";
 import dayjs from "dayjs";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCreateAndManageAnnouncements = usePermission(role, "Can create examine");
+
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {

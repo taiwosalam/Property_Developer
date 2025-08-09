@@ -23,11 +23,18 @@ import {
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import dayjs from "dayjs";
 import AnnouncementSkeleton from "@/components/Loader/announcement-preview";
-
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 const PreviewAnnouncement = () => {
   const router = useRouter();
   const { announcementId } = useParams();
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCreateAndManageAnnouncements = usePermission(
+    role,
+    "Can create examine"
+  );
 
   const [pageData, setPageData] = useState<AnnouncementDetailsPageData | null>(
     null
@@ -51,9 +58,8 @@ const PreviewAnnouncement = () => {
     }
   }, [apiData]);
 
-  
-// Show skeleton if loading or silentLoading is true, or if delay hasn't completed
-  if ((loading) && !error && !isNetworkError) {
+  // Show skeleton if loading or silentLoading is true, or if delay hasn't completed
+  if (loading && !error && !isNetworkError) {
     return <AnnouncementSkeleton />;
   }
 
@@ -77,13 +83,15 @@ const PreviewAnnouncement = () => {
             {pageData?.title}
           </h1>
         </div>
-        <Button
-          href={`/accountant/tasks/announcements/${announcementId}/manage`}
-          size="sm_medium"
-          className="py-2 px-3"
-        >
-          manage announcement
-        </Button>
+        {canCreateAndManageAnnouncements && (
+          <Button
+            href={`/accountant/tasks/announcements/${announcementId}/manage`}
+            size="sm_medium"
+            className="py-2 px-3"
+          >
+            manage announcement
+          </Button>
+        )}
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         {/* Left Side */}
