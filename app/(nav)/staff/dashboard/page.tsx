@@ -36,7 +36,6 @@ const Dashboard = () => {
     useTourStore();
 
   const company_status = usePersonalInfoStore((state) => state.company_status);
-  // console.log("company_status", company_status)
   const company_id = usePersonalInfoStore((state) => state.company_id);
 
   useEffect(() => {

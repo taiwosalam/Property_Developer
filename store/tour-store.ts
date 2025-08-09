@@ -28,9 +28,12 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
     set((prev) => ({
       tour: { ...prev.tour, ...state },
     })),
+
   setShouldRenderTour: (shouldRender) =>
     set({ shouldRenderTour: shouldRender }),
+
   setPersist: (persist) => set({ persist }),
+
   completeTour: (tourKey, persistOverride) => {
     const shouldPersist =
       persistOverride !== undefined ? persistOverride : get().persist;
@@ -45,9 +48,7 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
         }
       }
       parsedData[tourKey] = true;
-      console.log("Saving tour completion:", { tourKey, parsedData });
       saveLocalStorage("tour", JSON.stringify(parsedData));
-      console.log("Saved to localStorage:", getLocalStorage("tour"));
     }
     set({
       tour: { run: false, stepIndex: 0, steps: [], tourKey: "" },
@@ -55,20 +56,20 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
       isGoToStepActive: false,
     });
   },
+
   isTourCompleted: (tourKey) => {
     const tourData = getLocalStorage("tour");
     if (tourData) {
       try {
         const parsedData = JSON.parse(tourData);
-        console.log(`Checking completion for ${tourKey}:`, parsedData[tourKey]);
         return parsedData[tourKey] === true;
       } catch (e) {
         console.warn("Error parsing tour data from localStorage:", e);
       }
     }
-    console.log(`No tour data found for ${tourKey} in localStorage`);
     return false;
   },
+
   resetTour: (tourKey) => {
     const shouldPersist = get().persist;
     if (shouldPersist) {
@@ -82,7 +83,6 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
         }
       }
       parsedData[tourKey] = false;
-      console.log("Resetting tour:", { tourKey, parsedData });
       saveLocalStorage("tour", JSON.stringify(parsedData));
     }
     set({
@@ -91,9 +91,9 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
       isGoToStepActive: false,
     });
   },
+
   goToStep: (stepIndex, pathnameOverride) => {
     const pathname = pathnameOverride || window.location.pathname;
-
     // Find the tour configuration for the pathname
     const selectTourConfig = () => {
       for (const key in pageSteps) {
@@ -110,20 +110,9 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
               }
             }
             parsedData[config.tourKey] = false;
-            console.log("Resetting tour for goToStep:", {
-              tourKey: config.tourKey,
-              parsedData,
-            });
             saveLocalStorage("tour", JSON.stringify(parsedData));
-            setTimeout(() => {
-              console.log(
-                `LocalStorage after reset for ${config.tourKey}:`,
-                getLocalStorage("tour")
-              );
-            }, 0);
           }
           get().setPersist(true);
-          console.log(`Initializing tour for goToStep: ${config.tourKey}`);
           return config;
         }
       }
@@ -160,7 +149,6 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
 
     // Set isGoToStepActive first
     set({ isGoToStepActive: true });
-    console.log(`Set isGoToStepActive: true for step ${stepIndex}`);
 
     // Delay tour initialization to ensure state is updated
     setTimeout(() => {
@@ -173,15 +161,13 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
         },
         shouldRenderTour: true,
       });
-      console.log(
-        `Navigated to step ${stepIndex} for tour: ${config.tourKey}, isGoToStepActive: true`
-      );
 
       if (step.target !== "body" && stepIndex !== 0) {
         target.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     }, 10); // Small delay to ensure state propagation
   },
+
   restartTour: (pathname) => {
     const selectTourConfig = () => {
       for (const key in pageSteps) {
@@ -198,14 +184,9 @@ export const useTourStore = create<TourStoreState>((set, get) => ({
               }
             }
             parsedData[config.tourKey] = false;
-            console.log("Resetting tour for restart:", {
-              tourKey: config.tourKey,
-              parsedData,
-            });
             saveLocalStorage("tour", JSON.stringify(parsedData));
           }
           get().setPersist(true);
-          console.log(`Restarting tour: ${config.tourKey}`);
           return config;
         }
       }

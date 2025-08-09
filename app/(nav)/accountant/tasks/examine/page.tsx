@@ -29,11 +29,17 @@ import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import { MaintenanceRequestParams } from "@/app/(nav)/tasks/maintenance/data";
 import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
     null
   );
+
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCreateExamine = usePermission(role, "Can create examine");
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -120,7 +126,6 @@ const Examine = () => {
     })
   );
 
-
   if (loading)
     return (
       <CustomLoader layout="page" pageTitle="Examine" statsCardCount={3} />
@@ -140,19 +145,21 @@ const Examine = () => {
             colorScheme={1}
           />
         </div>
-        <Modal
-          state={{
-            isOpen: isOpen,
-            setIsOpen: setIsOpen,
-          }}
-        >
-          <ModalTrigger asChild>
-            <Button className="page-header-button">+ create new</Button>
-          </ModalTrigger>
-          <ModalContent>
-            <CreateExamineModal setIsOpen={setIsOpen} />
-          </ModalContent>
-        </Modal>
+        {canCreateExamine && (
+          <Modal
+            state={{
+              isOpen: isOpen,
+              setIsOpen: setIsOpen,
+            }}
+          >
+            <ModalTrigger asChild>
+              <Button className="page-header-button">+ create new</Button>
+            </ModalTrigger>
+            <ModalContent>
+              <CreateExamineModal setIsOpen={setIsOpen} />
+            </ModalContent>
+          </Modal>
+        )}
       </div>
       <FilterBar
         azFilter
@@ -204,7 +211,8 @@ const Examine = () => {
                 <br />
                 <br />
                 Need assistance? Click your profile icon in the top right corner
-                and select &apos;Assistance & Support&apos; for help on using this page.
+                and select &apos;Assistance & Support&apos; for help on using
+                this page.
               </p>
             }
           />

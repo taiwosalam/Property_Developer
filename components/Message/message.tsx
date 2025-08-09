@@ -46,7 +46,7 @@ const Message: React.FC<MessageProps> = ({
 }) => {
   const { isMobile } = useWindowWidth();
   const messageRef = useRef<HTMLDivElement>(null);
-  const AVATAR_SIZE = 30;
+  const AVATAR_SIZE = 32;
   useEffect(() => {
     if (!noScroll && messageRef.current) {
       messageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -61,30 +61,35 @@ const Message: React.FC<MessageProps> = ({
       {chat_type === "group" && type === "to user" && (
         <div
           className="flex flex-col items-end justify-end mr-2"
-          style={{ width: AVATAR_SIZE, minWidth: AVATAR_SIZE }}
+          style={{
+            width: AVATAR_SIZE,
+            maxWidth: AVATAR_SIZE,
+            maxHeight: AVATAR_SIZE,
+          }}
         >
           {showSenderInfo && sender?.picture ? (
-            <Image
-              src={sender.picture}
-              width={AVATAR_SIZE}
-              height={AVATAR_SIZE}
-              alt={sender?.fullname ?? "sender"}
-              className="rounded-full mb-1 custom-secondary-bg"
-            />
+            <div
+              className="rounded-full overflow-hidden mb-1"
+              style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
+            >
+              <Image
+                src={sender.picture}
+                width={AVATAR_SIZE}
+                height={AVATAR_SIZE }
+                alt={sender?.fullname ?? "sender"}
+                className="object-cover w-full h-full custom-secondary-bg rounded-full"
+              />
+            </div>
           ) : (
-            // Empty div to keep the space if no avatar
             <div style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}></div>
           )}
         </div>
       )}
       <div
-        className={clsx(
-          "py-2 px-4 flex gap-4 rounded-2xl max-w-[70%]",
-          {
-            "bg-brand-primary rounded-tr-none": type === "from user",
-            "bg-status-caution-1 rounded-tl-none": type === "to user",
-          }
-        )}
+        className={clsx("py-2 px-4 flex gap-4 rounded-2xl max-w-[70%]", {
+          "bg-brand-primary rounded-tr-none": type === "from user",
+          "bg-status-caution-1 rounded-tl-none": type === "to user",
+        })}
       >
         <div className="custom-flex-col gap-1">
           {/* SENDER INFORMATION FOR GROUP CHAT */}
