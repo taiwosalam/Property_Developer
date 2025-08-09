@@ -44,6 +44,8 @@ import UpdateVehicleWithEmail from "@/components/Modal/update-vehicle-record";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import { NotepadTextDashed } from "lucide-react";
 import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 interface TransformedData {
   userData: UserData | null;
@@ -77,6 +79,11 @@ const RecordPage = () => {
   const { recordId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [checking, setChecking] = useState(false);
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCheckInAndManageVehicleRec =
+    usePermission(role, "Can check in and manage vehicle records") ||
+    role === "director";
 
   const initialState: TransformedData = {
     userData: null,
@@ -192,8 +199,6 @@ const RecordPage = () => {
     vehicle_type,
   } = vehicleDetails;
 
-  console.log("userData", userData);
-
   const handleCheckIn = async (event: React.FormEvent) => {
     event.preventDefault();
     const form = event.target as HTMLFormElement;
@@ -307,65 +312,69 @@ const RecordPage = () => {
                 </Button>
               </>
             ) : (
-              <>
-                <Modal
-                  state={{
-                    isOpen: updateUserModal,
-                    setIsOpen: setUpdateUserModal,
-                  }}
-                >
-                  <ModalTrigger asChild>
-                    <Button size="base_medium" className="py-2 px-8">
-                      Edit
-                    </Button>
-                  </ModalTrigger>
-                  {/* <ModalContent>
-                    <EditPersonalDetailsFormModal
-                      data={{
-                        id: vehicleDetails.id,
-                        full_name,
-                        state: userState,
-                        address,
-                        avatar,
-                        local_government,
-                        city,
-                        phone_number,
-                      }}
-                      isOpen={updateUserModal}
-                      setIsOpen={setUpdateUserModal}
-                    />
-                  </ModalContent> */}
-                </Modal>
-                <Modal>
-                  <ModalTrigger asChild>
-                    <Button size="base_medium" className="py-2 px-8">
-                      Update with Email
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <UpdateVehicleWithEmail recordId={recordId.toString()} />
-                  </ModalContent>
-                </Modal>
-              </>
+              canCheckInAndManageVehicleRec && (
+                <>
+                  <Modal
+                    state={{
+                      isOpen: updateUserModal,
+                      setIsOpen: setUpdateUserModal,
+                    }}
+                  >
+                    <ModalTrigger asChild>
+                      <Button size="base_medium" className="py-2 px-8">
+                        Edit
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <EditPersonalDetailsFormModal
+                        data={{
+                          id: vehicleDetails.id,
+                          full_name,
+                          state: userState,
+                          address,
+                          avatar,
+                          local_government,
+                          city,
+                          phone_number,
+                        }}
+                        isOpen={updateUserModal}
+                        setIsOpen={setUpdateUserModal}
+                      />
+                    </ModalContent>
+                  </Modal>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button size="base_medium" className="py-2 px-8">
+                        Update with Email
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <UpdateVehicleWithEmail recordId={recordId.toString()} />
+                    </ModalContent>
+                  </Modal>
+                </>
+              )
             )}
-            <Modal>
-              <ModalTrigger asChild>
-                <Button
-                  variant="sky_blue"
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  Note
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <MobileNotesModal
-                  page="vehicle-record"
-                  id={recordId.toString()}
-                  defaultNote={note}
-                />
-              </ModalContent>
-            </Modal>
+            {canCheckInAndManageVehicleRec && (
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button
+                    variant="sky_blue"
+                    size="base_medium"
+                    className="py-2 px-8"
+                  >
+                    Note
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <MobileNotesModal
+                    page="vehicle-record"
+                    id={recordId.toString()}
+                    defaultNote={note}
+                  />
+                </ModalContent>
+              </Modal>
+            )}
           </div>
         </InfoBox>
 
@@ -415,13 +424,15 @@ const RecordPage = () => {
             <Detail label="Color" value={color || "N/A"} />
             <Detail label="Manufacture Year" value={manufacture_year} />
           </div>
-          <Button
-            size="base_medium"
-            className="py-2 px-8 ml-auto self-end"
-            onClick={handleEditVehicleClick}
-          >
-            Edit
-          </Button>
+          {canCheckInAndManageVehicleRec && (
+            <Button
+              size="base_medium"
+              className="py-2 px-8 ml-auto self-end"
+              onClick={handleEditVehicleClick}
+            >
+              Edit
+            </Button>
+          )}
           <Modal
             state={{
               isOpen: updateVehicleModal,
@@ -482,28 +493,30 @@ const RecordPage = () => {
             Ok
           </Button>
         ) : (
-          <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
-            <Button
-              onClick={handleCreateNewRecordClick}
-              size="sm_normal"
-              className="py-2 px-8"
-            >
-              Create New Record
-            </Button>
-            <ModalContent>
-              <CheckInOutForm
-                onSubmit={handleCheckIn}
-                loading={checking}
-                useCase="vehicle"
-                type="check-in"
-                pictureSrc={pictureSrc}
-                userName={full_name}
-                id={userId}
-                category={category}
-                registrationDate={registrationDate}
-              />
-            </ModalContent>
-          </Modal>
+          canCheckInAndManageVehicleRec && (
+            <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
+              <Button
+                onClick={handleCreateNewRecordClick}
+                size="sm_normal"
+                className="py-2 px-8"
+              >
+                Create New Record
+              </Button>
+              <ModalContent>
+                <CheckInOutForm
+                  onSubmit={handleCheckIn}
+                  loading={checking}
+                  useCase="vehicle"
+                  type="check-in"
+                  pictureSrc={pictureSrc}
+                  userName={full_name}
+                  id={userId}
+                  category={category}
+                  registrationDate={registrationDate}
+                />
+              </ModalContent>
+            </Modal>
+          )
         )}
       </FixedFooter>
     </div>

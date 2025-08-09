@@ -15,11 +15,19 @@ import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { deleteUnit } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
 import { empty } from "@/app/config";
 import { transformUnitDetails } from "@/app/(nav)/listing/data";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const propertySettings = useAddUnitStore((state) => state.propertySettings);
   const removeUnit = useAddUnitStore((state) => state.removeUnit);
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canAddOrDeleteBranchProperties =
+    usePermission(role, "Can add/delete branch properties") ||
+    role === "director";
 
   const currency = propertySettings?.currency;
   // console.log("data hereeee", data);
@@ -99,14 +107,16 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
           >
             edit
           </Button>
-          <Button
-            size="sm_medium"
-            variant="light_red"
-            className="py-2 px-8"
-            onClick={handleRemove}
-          >
-            { data?.notYetUploaded ? "remove" : "delete" }
-          </Button>
+          {canAddOrDeleteBranchProperties && (
+            <Button
+              size="sm_medium"
+              variant="light_red"
+              className="py-2 px-8"
+              onClick={handleRemove}
+            >
+              {data?.notYetUploaded ? "remove" : "delete"}
+            </Button>
+          )}
         </div>
       </div>
       <SectionSeparator />

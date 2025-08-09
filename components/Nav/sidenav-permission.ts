@@ -59,18 +59,18 @@ export const permissionMapping: Record<
     permission: "Full Wallet Access",
     ownerRoles: ["director"],
   },
-  "landlord & landlady": {
-    permission: "Can add and manage landlords/landlady",
-    ownerRoles: ["manager", "account"],
-  },
-  "tenants & occupants": {
-    permission: "Can add and manage tenants/occupants",
-    ownerRoles: ["manager", "account"],
-  },
-  properties: {
-    permission: "Can add/delete branch properties",
-    ownerRoles: ["manager", "account", "staff"],
-  },
+  // "landlord & landlady": {
+  //   permission: "Can add and manage landlords/landlady",
+  //   ownerRoles: ["manager", "account"],
+  // },
+  // "tenants & occupants": {
+  //   permission: "Can add and manage tenants/occupants",
+  //   ownerRoles: ["manager", "account"],
+  // },
+  // properties: {
+  //   permission: "Can add/delete branch properties",
+  //   ownerRoles: ["manager", "account", "staff"],
+  // },
   "service providers": {
     permission: "Can view service provider",
     ownerRoles: ["account", "staff"],
@@ -83,26 +83,26 @@ export const permissionMapping: Record<
     permission: "Can manage inspections",
     ownerRoles: ["manager", "account", "staff"],
   },
-  calendars: {
-    permission: "Can manage calendar",
-    ownerRoles: ["manager", "account", "staff"],
-  },
-  announcements: {
-    permission: "Can create and manage announcement",
-    ownerRoles: ["manager", "account", "staff"],
-  },
+  // calendars: {
+  //   permission: "Can manage calendar",
+  //   ownerRoles: ["manager", "account", "staff"],
+  // },
+  // announcements: {
+  //   permission: "Can create and manage announcement",
+  //   ownerRoles: ["manager", "account", "staff"],
+  // },
   "visitors request": {
     permission: "Can check in visitors",
     ownerRoles: ["manager", "account", "staff"],
   },
-  // inventory: {
-  //   permission: "Can create inventory",
-  //   ownerRoles: ["manager", "account", "staff"],
-  // },
-  "vehicles record": {
-    permission: "Can check in and manage vehicle records",
-    ownerRoles: ["manager", "account"],
+  "team chat": {
+    permission: "Can view and reply branch messages",
+    ownerRoles: ["manager", "account", "staff"],
   },
+  // "vehicles record": {
+  //   permission: "Can check in and manage vehicle records",
+  //   ownerRoles: ["manager", "account"],
+  // },
   // invoice: {
   //   permission: "Can manage tenants/occupants",
   //   ownerRoles: ["manager", "account"],
@@ -123,6 +123,7 @@ export const useNavPermissions = (role: string) => {
   const propertyRequestPerm = usePermission(role, "Can view property request");
   const complaintsPerm = usePermission(role, "Can view complaints");
   const walletPerm = usePermission(role, "Full Wallet Access");
+  const teamChatPerm = usePermission(role, "Can view and reply branch messages") || role === 'director';
   const landlordPerm = usePermission(
     role,
     "Can add and manage landlords/landlady"
@@ -168,6 +169,7 @@ export const useNavPermissions = (role: string) => {
       "visitors request": visitorsRequestPerm,
       inventory: inventoryPerm,
       "vehicles record": vehiclesRecordPerm,
+      "team chat": teamChatPerm,
       invoice: tenantsPerm,
       expenses: tenantsPerm,
       disbursement: tenantsPerm,
@@ -188,6 +190,7 @@ export const useNavPermissions = (role: string) => {
       visitorsRequestPerm,
       inventoryPerm,
       vehiclesRecordPerm,
+      teamChatPerm,
     ]
   );
 
