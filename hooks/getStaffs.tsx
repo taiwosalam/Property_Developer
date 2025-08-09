@@ -21,18 +21,23 @@ interface Staff {
 interface StaffApiResponse {
   status: string;
   statusCode: number;
-  data: {
-    staff: Staff[];
-  };
+
+  staff: Staff[];
+
   total_data_count: number;
   message: string;
 }
 
 function useStaffRoles() {
-  const { data, loading, error, refetch } = useFetch<StaffApiResponse>("/staffs");
+  const { data, loading, error, refetch } =
+    useFetch<StaffApiResponse>("/staffs/select");
 
   const getStaffByRole = (role: string) => {
-    return data?.data.staff.filter((staff) => staff.staff_role.toLowerCase() === role.toLowerCase()) || [];
+    return (
+      data?.staff.filter(
+        (staff) => staff.staff_role.toLowerCase() === role.toLowerCase()
+      ) || []
+    );
   };
 
   return {

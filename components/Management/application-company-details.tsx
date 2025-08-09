@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import { X, Printer } from "lucide-react";
 import TruncatedText from "../TruncatedText/truncated-text";
 import Button from "../Form/Button/button";
 import Picture from "../Picture/picture";
 import Image from "next/image";
 import { empty } from "@/app/config";
+import { PrintContent } from "../reports/print-content";
 
 interface ICompanyApplicantModal {
   business_logo: string;
@@ -35,24 +36,22 @@ const CompanyApplicantModal = ({ ...props }: ICompanyApplicantModal) => {
     tiktok,
     website,
   } = props;
-  const handlePrint = () => {
-    window.print();
-  };
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <div className="">
       {/* Content */}
-      <div className="p-6">
+      <div className="p-6" ref={contentRef}>
         {/* Business Logo and Basic Info */}
         <div className="flex items-start gap-6 mb-8">
-          <div className="flex-shrink-0 w-1/3 relative">
+          <div className="flex-shrink-0 w-[15%] relative">
             <Image
               src={business_logo || empty}
               alt="Business logo"
               width={100}
               height={100}
               //fill
-              className="w-full h-1/2"
+              className="w-full h-1/2 aspect-video"
             />
           </div>
 
@@ -64,9 +63,6 @@ const CompanyApplicantModal = ({ ...props }: ICompanyApplicantModal) => {
               </div>
               <div className="flex items-center gap-3">
                 <div className="text-gray-500">Business Details</div>
-                <div className="text-gray-800 font-medium">
-                  {"Ajadi Tijani"}
-                </div>
               </div>
             </div>
 
@@ -136,14 +132,10 @@ const CompanyApplicantModal = ({ ...props }: ICompanyApplicantModal) => {
 
       {/* Footer */}
       <div className="flex justify-end p-6 border-t border-gray-200">
-        <Button
-          onClick={handlePrint}
-          variant="blank"
-          className="flex items-center gap-2 px-4 py-2 text-primary-navy dark:text-darkText-1 text-lg"
-        >
-          <Printer className="w-4 h-4" />
-          Print Company Details
-        </Button>
+        <PrintContent
+          printRef={contentRef}
+          buttonText="Print Company Details"
+        />
       </div>
     </div>
   );

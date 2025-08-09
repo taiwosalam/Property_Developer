@@ -98,6 +98,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   const { role } = useRole();
 
+  console.log(role)
+
   const gotoPage = (id: string | number) => {
     switch (role) {
       case "director":
@@ -106,7 +108,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       case "manager":
         router.push(`/manager/tasks/complaints/${id}/manage-complain/`);
         break;
-      case "accountant":
+      case "account":
         router.push(`/accountant/tasks/complaints/${id}/manage-complain/`);
         break;
       case "staff":
@@ -188,6 +190,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   }, [isDragging, noDrag, viewOnly]);
 
   const handleCardClick = () => {
+    console.log("Clicked..")
     if (viewOnly) return;
     if (noDrag && onClick) {
       onClick();

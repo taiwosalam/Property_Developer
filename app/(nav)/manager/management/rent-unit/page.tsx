@@ -232,11 +232,21 @@ const RentAndUnit = () => {
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title.toLowerCase(),
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   const {
     data: apiData,
@@ -366,7 +376,7 @@ const RentAndUnit = () => {
           ...(accountOfficersOptions.length > 0
             ? [
                 {
-                  label: "Account Officer",
+                  label: "Account Manager",
                   value: accountOfficersOptions,
                 },
               ]

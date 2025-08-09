@@ -128,6 +128,7 @@ export interface DepositRequestCardProps extends RequestCardBaseProps {
     label: string;
     accessor: keyof DepositRequestCardProps;
   }[];
+  onDataUpdate?: () => void;
 }
 
 export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {

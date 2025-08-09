@@ -21,4 +21,5 @@ export type DepositRequestModalProps = {
   refunded_amount?: string | null;
   resolved_by?: string | null;
   resolved_date?: string | null;
+  onDataUpdate?: () => void;
 };

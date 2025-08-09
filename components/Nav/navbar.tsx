@@ -133,10 +133,10 @@ const Header = () => {
   }, [apiData]);
 
   const handleClearNotifications = async () => {
-    if (!notificationIds.length) return;
+   // if (!notificationIds.length) return;
 
     try {
-      const res = await clearAllNotification(notificationIds);
+      const res = await clearAllNotification();
 
       if (res) {
         setNotificationCount(0);

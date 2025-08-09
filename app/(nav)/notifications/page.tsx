@@ -18,6 +18,7 @@ import ServerError from "@/components/Error/ServerError";
 import { toast } from "sonner";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { Loader2 } from "lucide-react";
+import EmptyList from "@/components/EmptyList/Empty-List";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<
@@ -43,6 +44,28 @@ const Notifications = () => {
     hasMore: page < (meta?.last_page || 1),
   });
 
+  const refetchNotifications = async () => {
+    const data = await fetchNotifications(1);
+    if (data) {
+      setNotifications(data.notifications);
+      setMeta(data.meta);
+      setPage(1); // Reset page to 1
+    }
+  };
+
+  // Listen for the custom refetch event
+  useEffect(() => {
+    const handleRefetch = () => {
+      refetchNotifications();
+    };
+
+    window.addEventListener("refetchNotifications", handleRefetch);
+
+    return () => {
+      window.removeEventListener("refetchNotifications", handleRefetch);
+    };
+  }, []);
+
   useEffect(() => {
     const loadInitial = async () => {
       const data = await fetchNotifications(1);
@@ -55,11 +78,9 @@ const Notifications = () => {
   }, []);
 
   const handleDeleteNotifications = async () => {
-    if (!notificationIds.length) return;
-
     try {
       setIsClearingNotifications(true);
-      const res = await deleteAllNotification(notificationIds);
+      const res = await clearAllNotification();
       if (res) {
         toast.success("Notifications Cleared");
       }
@@ -83,31 +104,45 @@ const Notifications = () => {
               type="button"
               onClick={handleDeleteNotifications}
               disabled={isClearingNotifications}
-              className={`text-base ml-3 ${
+              className={`text-base ml-3 px-4 font-semibold hover:opacity-70 ${
                 isClearingNotifications
                   ? "text-slate-400 dark:text-slate-300"
                   : ""
               }`}
             >
-              {isClearingNotifications ? "Please wait..." : "Clear"}
+              {isClearingNotifications ? "Please wait..." : "Clear all"}
             </button>
           )}
         </div>
         <SectionSeparator />
       </div>
       <div className="custom-flex-col gap-6">
-        {notifications.map((notification, index) => {
-          if (index === notifications.length - 1) {
+        {notifications && notifications.length > 0 ? (
+          notifications.map((notification, index) => {
+            if (index === notifications.length - 1) {
+              return (
+                <div key={notification.id} ref={lastElementRef}>
+                  <Notification notification={notification} />
+                </div>
+              );
+            }
             return (
-              <div key={notification.id} ref={lastElementRef}>
-                <Notification notification={notification} />
-              </div>
+              <Notification key={notification.id} notification={notification} />
             );
-          }
-          return (
-            <Notification key={notification.id} notification={notification} />
-          );
-        })}
+          })
+        ) : (
+          <EmptyList
+            noButton
+            title="No Notifications Yet"
+            body={
+              <p>
+                You have no new notifications at the moment. Stay tuned;
+                updates, alerts, and important information will appear here as
+                soon as they&apos;re available.
+              </p>
+            }
+          />
+        )}
 
         {isLoading && (
           <div className="flex justify-center py-4">

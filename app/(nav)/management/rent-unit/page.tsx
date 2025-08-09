@@ -242,17 +242,35 @@ const RentAndUnit = () => {
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
 
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
+  const branchOptions = Array.isArray(branchesData?.data)
+    ? [
+        ...new Map(
+          branchesData.data.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name.toLowerCase(),
+              value: branch.id,
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title.toLowerCase(),
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   const {
     data: apiData,
@@ -382,7 +400,7 @@ const RentAndUnit = () => {
           ...(accountOfficersOptions.length > 0
             ? [
                 {
-                  label: "Account Officer",
+                  label: "Account Manager",
                   value: accountOfficersOptions,
                 },
               ]

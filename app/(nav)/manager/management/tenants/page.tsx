@@ -36,27 +36,20 @@ import { AxiosRequestConfig } from "axios";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
-import { usePersonalInfoStore } from "@/store/personal-info-store";
-import ServerError from "@/components/Error/ServerError";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
-import { useRole } from "@/hooks/roleContext";
-import { usePermission } from "@/hooks/getPermission";
+import ServerError from "@/components/Error/ServerError";
+import { useSearchParams } from "next/navigation";
 
 const states = getAllStates();
 
 const Tenants = () => {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
   const storedView = useView();
-  const { branch } = usePersonalInfoStore();
-  const BRANCH_ID = branch?.branch_id || 0;
   const contentTopRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<string | null>(storedView);
-  const { role } = useRole();
-  // PERMISSIONS
-  const canCreateManageTenants = usePermission(
-    role,
-    "Can add and manage tenants/occupants"
-  );
-
   const [pageData, setPageData] = useState<TenantPageData>(() => {
     const savedPage = sessionStorage.getItem("tenant_page");
     return {
@@ -82,7 +75,7 @@ const Tenants = () => {
     return {
       params: {
         page: savedPage ? parseInt(savedPage, 10) : 1,
-        search: "",
+        search: query ? query.trim() : "",
       } as TenantRequestParams,
     };
   });
@@ -91,6 +84,15 @@ const Tenants = () => {
   useEffect(() => {
     sessionStorage.setItem("tenant_page", current_page.toString());
   }, [current_page]);
+
+  const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
 
   useEffect(() => {
     setView(storedView);
@@ -118,6 +120,7 @@ const Tenants = () => {
     const { menuOptions, startDate, endDate } = filters;
     const statesArray = menuOptions["State"] || [];
     const agent = menuOptions["Tenant Type"]?.[0];
+    const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: TenantRequestParams = {
       page: 1,
@@ -125,6 +128,9 @@ const Tenants = () => {
     };
     if (statesArray.length > 0) {
       queryParams.states = statesArray.join(",");
+    }
+    if (branchIdsArray.length > 0) {
+      queryParams.branch_ids = branchIdsArray.join(",");
     }
     if (agent && agent !== "all") {
       queryParams.agent = agent;
@@ -163,9 +169,25 @@ const Tenants = () => {
     }
   };
 
-  const handleSearch = async (query: string) => {
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("tenant_page", "1");
+    }
+  }, [query]);
+
+  const handleSearch = async (searchQuery: string) => {
     setConfig({
-      params: { ...config.params, search: query, page: 1 },
+      params: { ...config.params, search: searchQuery, page: 1 },
     });
     setPageData((prevData) => ({
       ...prevData,
@@ -270,15 +292,13 @@ const Tenants = () => {
             Chat
           </Button>
         )}
-        {canCreateManageTenants && (
-          <Button
-            href={`/management/tenants/${t.id}/manage`}
-            size="sm_medium"
-            className="px-8 py-2"
-          >
-            Manage
-          </Button>
-        )}
+        <Button
+          href={`/management/tenants/${t.id}/manage`}
+          size="sm_medium"
+          className="px-8 py-2"
+        >
+          Manage
+        </Button>
       </div>
     ),
     ref:
@@ -303,7 +323,7 @@ const Tenants = () => {
 
   return (
     <div className="space-y-8">
-      <div className="page-header-container">
+      <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Users"
@@ -324,18 +344,16 @@ const Tenants = () => {
             colorScheme={3}
           />
         </div>
-        {canCreateManageTenants && (
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
-                + create new tenant
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <AddTenantModal />
-            </ModalContent>
-          </Modal>
-        )}
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" className="page-header-button">
+              + create new tenant
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <AddTenantModal />
+          </ModalContent>
+        </Modal>
       </div>
 
       <FilterBar
@@ -365,25 +383,31 @@ const Tenants = () => {
           },
           {
             radio: true,
-            label: "Tenant Type",
+            label: "Tenant/Occupants Type",
             value: [
               { label: "Mobile Tenant", value: "mobile" },
               { label: "Web Tenant", value: "web" },
               { label: "All Tenants", value: "all" },
             ],
           },
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
         ]}
       />
       <section>
         {tenants.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+            <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Create New Tenant"
-              modalContent={canCreateManageTenants ? <AddTenantModal /> : <></>}
+              noButton
+              modalContent={<AddTenantModal />}
               title="The tenants and occupants profile files are empty."
               body={
                 <p>
@@ -402,17 +426,19 @@ const Tenants = () => {
                 ) : (
                   tenants.map((t) => (
                     <Link
-                      href={`/manager/management/tenants/${t.id}/manage`}
+                      href={`/management/tenants/${t.id}/manage`}
                       key={t.id}
                     >
                       <TenantCard
                         key={t.id}
                         picture_url={t.picture_url}
                         name={t.name}
+                        title={t.title}
                         user_tag={t.user_tag}
                         badge_color={t.badge_color}
                         email={t.email}
                         phone_number={t.phone_number}
+                        note={t.note}
                         is_flagged={t.flagged}
                       />
                     </Link>
@@ -421,24 +447,26 @@ const Tenants = () => {
               </AutoResizingGrid>
             ) : (
               <>
-                {silentLoading ? (
-                  <TableLoading />
-                ) : (
-                  <CustomTable
-                    displayTableHead={false}
-                    fields={tenantTableFields}
-                    data={transformedTenants}
-                    tableBodyCellSx={{ color: "#3F4247" }}
-                  />
+                <CustomTable
+                  displayTableHead={false}
+                  fields={tenantTableFields}
+                  data={transformedTenants}
+                  tableBodyCellSx={{ color: "#3F4247" }}
+                />
+                {silentLoading && current_page > 1 && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="loader" />
+                  </div>
                 )}
               </>
             )}
-
-            <Pagination
-              totalPages={total_pages}
-              currentPage={current_page}
-              onPageChange={handlePageChange}
-            />
+            {view === "grid" && (
+              <Pagination
+                totalPages={total_pages}
+                currentPage={current_page}
+                onPageChange={handlePageChange}
+              />
+            )}
           </>
         )}
       </section>

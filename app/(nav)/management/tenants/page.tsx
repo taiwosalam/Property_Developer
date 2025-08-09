@@ -90,7 +90,7 @@ const Tenants = () => {
 
   const branchOptions =
     branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
+      label: branch.branch_name?.toLowerCase(),
       value: branch.id,
     })) || [];
 
