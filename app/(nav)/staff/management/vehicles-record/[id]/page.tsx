@@ -32,6 +32,8 @@ import ServerError from "@/components/Error/ServerError";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { FilterResult } from "@/components/Management/Landlord/types";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const VehiclesRecordPage = () => {
   const { id } = useParams();
@@ -39,6 +41,13 @@ const VehiclesRecordPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
     null
+  );
+
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCheckInAndManageVehicleRec = usePermission(
+    role,
+    "Can check in and manage vehicle records"
   );
 
   useEffect(() => {
@@ -295,16 +304,18 @@ const VehiclesRecordPage = () => {
             colorScheme={3}
           />
         </div>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
-              + Create New Record
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <CreateRecordModal propertyId={Number(id)} data={data} />
-          </ModalContent>
-        </Modal>
+        {canCheckInAndManageVehicleRec && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="button" className="page-header-button">
+                + Create New Record
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <CreateRecordModal propertyId={Number(id)} data={data} />
+            </ModalContent>
+          </Modal>
+        )}
       </div>
 
       <div className="back flex gap-2">
@@ -334,7 +345,11 @@ const VehiclesRecordPage = () => {
             <EmptyList
               buttonText="+ create new"
               modalContent={
-                <CreateRecordModal propertyId={Number(id)} data={data} />
+                canCheckInAndManageVehicleRec ? (
+                  <CreateRecordModal propertyId={Number(id)} data={data} />
+                ) : (
+                  <></>
+                )
               }
               title="No vehicle record profiles have been created yet"
               body={
@@ -457,7 +472,10 @@ const VehiclesRecordPage = () => {
               }}
             >
               <ModalContent>
-                <VehicleRecordModal page="account" {...(selectedRecord as VehicleRecord)} />
+                <VehicleRecordModal
+                  page="account"
+                  {...(selectedRecord as VehicleRecord)}
+                />
               </ModalContent>
             </Modal>
           </>

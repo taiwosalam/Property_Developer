@@ -19,6 +19,8 @@ import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
 import DOMPurify from "dompurify";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const VehicleRecordModal: React.FC<
   VehicleRecord & {
@@ -41,6 +43,12 @@ const VehicleRecordModal: React.FC<
   const sanitizedNote = DOMPurify.sanitize(note || "");
   const [loading, setLoading] = useState(false);
   const { setIsOpen } = useModal();
+
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCheckInAndManageVehicleRec =
+    usePermission(role, "Can check in and manage vehicle records") ||
+    role === "director";
 
   const checkIn = {
     id: latest_check_in?.id,
@@ -281,7 +289,7 @@ const VehicleRecordModal: React.FC<
         {/* Buttons */}
         <div className="mt-8 flex items-center justify-center gap-4 md:gap-[70px]">
           {/* {status === "pending" && ( */}
-          {status === "check-in" && (
+          {status === "check-in" && canCheckInAndManageVehicleRec && (
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
@@ -301,15 +309,16 @@ const VehicleRecordModal: React.FC<
             </Button>
           )}
           {/* {(status === "no_record" || status === "completed") && ( */}
-          {(status === "pending" || status === "check-out") && (
-            <Button
-              size="sm_bold"
-              className="py-[10px] px-6 rounded-lg"
-              onClick={() => setActiveStep("check-in")}
-            >
-              Check In
-            </Button>
-          )}
+          {(status === "pending" || status === "check-out") &&
+            canCheckInAndManageVehicleRec && (
+              <Button
+                size="sm_bold"
+                className="py-[10px] px-6 rounded-lg"
+                onClick={() => setActiveStep("check-in")}
+              >
+                Check In
+              </Button>
+            )}
         </div>
       </WalletModalPreset>
     );

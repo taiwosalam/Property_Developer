@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import Label from "../Label/label";
 import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import type { SelectOptionObject, SelectProps } from "./types";
-import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
+import { ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
@@ -118,7 +118,6 @@ const SelectWithImage: React.FC<SelectProps> = ({
         if (prev.visibleOptions.length >= prev.filteredOptions.length) {
           return prev;
         }
-        const scrollTop = scrollContainerRef.current?.scrollTop || 0;
         const nextBatch = prev.filteredOptions.slice(
           prev.visibleOptions.length,
           prev.visibleOptions.length + ITEMS_PER_PAGE
@@ -194,6 +193,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
     debouncedFilterOptions(searchTerm);
   }, [searchTerm, debouncedFilterOptions]);
 
+  // FIXED: Better synchronization with prop values
   useEffect(() => {
     const updateSelection = (value: string, label: string, icon: string) => {
       setState((prevState) => ({
@@ -209,15 +209,13 @@ const SelectWithImage: React.FC<SelectProps> = ({
       const label = typeof propValue === "string" ? propValue : propValue.label;
       const icon = typeof propValue === "string" ? propValue : propValue.icon;
       updateSelection(`${value}`, label, `${icon}`);
-    } else if (defaultValue) {
-      const value =
-        typeof defaultValue === "string" ? defaultValue : defaultValue.value;
-      const label =
-        typeof defaultValue === "string" ? defaultValue : defaultValue.label;
-      const icon =
-        typeof defaultValue === "string" ? defaultValue : defaultValue.icon;
+    } else if (defaultValue && !propValue) {
+      const value = typeof defaultValue === "string" ? defaultValue : defaultValue.value;
+      const label = typeof defaultValue === "string" ? defaultValue : defaultValue.label;
+      const icon = typeof defaultValue === "string" ? defaultValue : defaultValue.icon;
       updateSelection(`${value}`, label, `${icon}`);
-    } else {
+    } else if (!propValue) {
+      // Clear selection when propValue becomes undefined/null
       updateSelection("", "", "");
     }
   }, [propValue, resetKey, defaultValue]);
@@ -258,16 +256,15 @@ const SelectWithImage: React.FC<SelectProps> = ({
       <div className={clsx("relative", dropdownRefClassName)} ref={dropdownRef}>
         <div
           className={clsx(
-            "flex items-center dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out",
+            "flex items-center dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out cursor-pointer",
             selectedValue
               ? "bg-neutral-2 dark:bg-darkText-primary"
-              : "cursor-pointer",
+              : "",
             isSearchable ? "pl-10" : "pl-4",
             inputContainerClassName
           )}
           onClick={() => {
-            if (!selectedValue && !disabled)
-              setState((x) => ({ ...x, isOpen: !x.isOpen }));
+            if (!disabled) setState((x) => ({ ...x, isOpen: !x.isOpen }));
           }}
         >
           {isSearchable && (
@@ -331,28 +328,16 @@ const SelectWithImage: React.FC<SelectProps> = ({
               {effectivePlaceholder} 
             </span>
           )}
+          {/* REMOVED: X icon for clearing selection */}
           <div className="ml-auto flex items-center justify-center">
-            {!selectedValue ? (
-              <div
-                className={clsx(
-                  "transition-transform duration-300",
-                  isOpen && "rotate-180"
-                )}
-              >
-                <ArrowDownIcon />
-              </div>
-            ) : (
-              <button
-                type="button"
-                aria-label="Clear"
-                onClick={(e) => {
-                  handleSelection("");
-                  e.stopPropagation();
-                }}
-              >
-                <DeleteIconX />
-              </button>
-            )}
+            <div
+              className={clsx(
+                "transition-transform duration-300",
+                isOpen && "rotate-180"
+              )}
+            >
+              <ArrowDownIcon />
+            </div>
           </div>
         </div>
         {isOpen && (
@@ -369,12 +354,9 @@ const SelectWithImage: React.FC<SelectProps> = ({
             <div className="max-h-60 overflow-y-auto" ref={scrollContainerRef}>
               {visibleOptions.length > 0 ? (
                 visibleOptions.map((option, index) => {
-                  const label =
-                    typeof option === "string" ? option : option.label;
-                  const value =
-                    typeof option === "string" ? option : option.value;
-                  const icon =
-                    typeof option === "string" ? option : option.icon;
+                  const label = typeof option === "string" ? option : option.label;
+                  const value = typeof option === "string" ? option : option.value;
+                  const icon = typeof option === "string" ? option : option.icon;
                   return (
                     <div
                       role="button"

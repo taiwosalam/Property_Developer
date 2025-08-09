@@ -72,32 +72,60 @@ const Examine = () => {
     }
   }, [apiData]);
 
+  // const handleAppliedFilter = useCallback(
+  //   debounce((filters: FilterResult) => {
+  //     setAppliedFilters(filters);
+  //     const { menuOptions, startDate, endDate } = filters;
+  //     const accountOfficer = menuOptions["Account Officer"] || [];
+  //     const status = menuOptions["Status"] || [];
+  //     const property = menuOptions["Property"] || [];
+  //     const branchIdsArray = menuOptions["Branch"] || [];
+
+  //     const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
+  //     if (accountOfficer.length > 0)
+  //       queryParams.account_officer_id = accountOfficer.join(",");
+
+  //     if (branchIdsArray.length > 0) {
+  //       queryParams.branch_ids = branchIdsArray.join(",");
+  //     }
+  //     if (status.length > 0) queryParams.status = status.join(",");
+  //     if (property.length > 0) queryParams.property_id = property.join(",");
+  //     if (startDate)
+  //       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     if (endDate)
+  //       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     setConfig({ params: queryParams });
+  //   }, 300),
+  //   []
+  // );
+
+
   const handleAppliedFilter = useCallback(
-    debounce((filters: FilterResult) => {
-      setAppliedFilters(filters);
-      const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
-      const status = menuOptions["Status"] || [];
-      const property = menuOptions["Property"] || [];
-      const branchIdsArray = menuOptions["Branch"] || [];
-
-      const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0)
-        queryParams.account_officer_id = accountOfficer.join(",");
-
-      if (branchIdsArray.length > 0) {
-        queryParams.branch_ids = branchIdsArray.join(",");
-      }
-      if (status.length > 0) queryParams.status = status.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
-      if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-      setConfig({ params: queryParams });
-    }, 300),
-    []
+    (filters: FilterResult) => {
+      const debouncedFilter = debounce((filters: FilterResult) => {
+        setAppliedFilters(filters);
+        const { menuOptions, startDate, endDate } = filters;
+        const accountOfficer = menuOptions["Account Officer"] || [];
+        const status = menuOptions["Status"] || [];
+        const property = menuOptions["Property"] || [];
+  
+        const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
+        if (accountOfficer.length > 0)
+          queryParams.account_officer_id = accountOfficer.join(",");
+        if (status.length > 0) queryParams.status = status.join(",");
+        if (property.length > 0) queryParams.property_id = property.join(",");
+        if (startDate)
+          queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+        if (endDate)
+          queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        setConfig({ params: queryParams });
+      }, 300);
+  
+      debouncedFilter(filters);
+    },
+    [setAppliedFilters, setConfig]
   );
+
 
   const handlePageChange = (page: number) => {
     setConfig((prev) => ({
@@ -125,15 +153,6 @@ const Examine = () => {
       label: property.title,
     })
   );
-
-  const { data: branchesData } =
-    useFetch<AllBranchesResponse>("/branches/select");
-
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
 
   if (loading)
     return (

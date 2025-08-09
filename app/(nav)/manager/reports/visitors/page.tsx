@@ -89,7 +89,7 @@ const Visitors = () => {
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (apiData) setBranches(apiDataBranch.data);
+    if (apiDataBranch) setBranches(apiDataBranch.data);
     if (staff) {
       const filterStaff = staff.data.filter(
         (staff: any) => staff.staff_role === "account officer"
@@ -153,26 +153,54 @@ const Visitors = () => {
     setConfig({ params: { ...config.params, sort_order: order } });
   };
 
-  const handleAppliedFilter = useCallback(
-    debounce((filters: FilterResult) => {
-      setAppliedFilters(filters);
-      const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
-      const property = menuOptions["Property"] || [];
+  // const handleAppliedFilter = useCallback(
+  //   debounce((filters: FilterResult) => {
+  //     setAppliedFilters(filters);
+  //     const { menuOptions, startDate, endDate } = filters;
+  //     const accountOfficer = menuOptions["Account Officer"] || [];
+  //     const branch = menuOptions["Branch"] || [];
+  //     const property = menuOptions["Property"] || [];
 
-      const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0)
-        queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
-      if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-      setConfig({ params: queryParams });
-    }, 300),
-    []
+  //     const queryParams: ReportsRequestParams = { page: 1, search: "" };
+  //     if (accountOfficer.length > 0)
+  //       queryParams.account_officer_id = accountOfficer.join(",");
+  //     if (branch.length > 0) queryParams.branch_id = branch.join(",");
+  //     if (property.length > 0) queryParams.property_id = property.join(",");
+  //     if (startDate)
+  //       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     if (endDate)
+  //       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     setConfig({ params: queryParams });
+  //   }, 300),
+  //   []
+  // );
+
+  const handleAppliedFilter = useCallback(
+    (filters: FilterResult) => {
+      const debouncedFilter = debounce((filters: FilterResult) => {
+        setAppliedFilters(filters);
+        const { menuOptions, startDate, endDate } = filters;
+        const accountOfficer = menuOptions["Account Officer"] || [];
+        const branch = menuOptions["Branch"] || [];
+        const property = menuOptions["Property"] || [];
+
+        const queryParams: ReportsRequestParams = { page: 1, search: "" };
+        if (accountOfficer.length > 0)
+          queryParams.account_officer_id = accountOfficer.join(",");
+        if (branch.length > 0) queryParams.branch_id = branch.join(",");
+        if (property.length > 0) queryParams.property_id = property.join(",");
+        if (startDate)
+          queryParams.start_date = dayjs(startDate).format(
+            "YYYY-MM-DD:hh:mm:ss"
+          );
+        if (endDate)
+          queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        setConfig({ params: queryParams });
+      }, 300);
+
+      debouncedFilter(filters);
+    },
+    [setAppliedFilters, setConfig]
   );
 
   const {
@@ -244,7 +272,7 @@ const Visitors = () => {
         observerRef.current.disconnect();
       }
     };
-  }, [loading, isFetchingMore, pageData]);
+  }, [loading, isFetchingMore, pageData, config.params.page]);
 
   useEffect(() => {
     if (!loading && apiData) {
@@ -375,7 +403,6 @@ const Visitors = () => {
               fields={visitorsRequestTableFields}
               data={pageData?.visitors || []}
               tableHeadClassName="h-[45px]"
-              
             />
 
             {isFetchingMore && (

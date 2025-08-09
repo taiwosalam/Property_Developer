@@ -11,7 +11,7 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 //   ActivityTable,
 //   transformActivityAData,
 // } from "./[userId]/types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -83,26 +83,51 @@ const AddsOnSMSRecord = () => {
     }
   }, [smsTransactions]);
 
-  const handleAppliedFilter = useCallback(
-    debounce((filters: FilterResult) => {
-      setAppliedFilters(filters);
-      const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
-      const property = menuOptions["Property"] || [];
+  // const handleAppliedFilter = useCallback(
+  //   debounce((filters: FilterResult) => {
+  //     setAppliedFilters(filters);
+  //     const { menuOptions, startDate, endDate } = filters;
+  //     const accountOfficer = menuOptions["Account Officer"] || [];
+  //     const branch = menuOptions["Branch"] || [];
+  //     const property = menuOptions["Property"] || [];
 
-      const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0)
-        queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
-      if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-      setConfig({ params: queryParams });
-    }, 300),
-    []
+  //     const queryParams: ReportsRequestParams = { page: 1, search: "" };
+  //     if (accountOfficer.length > 0)
+  //       queryParams.account_officer_id = accountOfficer.join(",");
+  //     if (branch.length > 0) queryParams.branch_id = branch.join(",");
+  //     if (property.length > 0) queryParams.property_id = property.join(",");
+  //     if (startDate)
+  //       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     if (endDate)
+  //       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     setConfig({ params: queryParams });
+  //   }, 300),
+  //   []
+  // );
+
+  const handleAppliedFilter = useMemo(
+    () =>
+      debounce((filters: FilterResult) => {
+        setAppliedFilters(filters);
+        const { menuOptions, startDate, endDate } = filters;
+        const accountOfficer = menuOptions["Account Officer"] || [];
+        const branch = menuOptions["Branch"] || [];
+        const property = menuOptions["Property"] || [];
+
+        const queryParams: ReportsRequestParams = { page: 1, search: "" };
+        if (accountOfficer.length > 0)
+          queryParams.account_officer_id = accountOfficer.join(",");
+        if (branch.length > 0) queryParams.branch_id = branch.join(",");
+        if (property.length > 0) queryParams.property_id = property.join(",");
+        if (startDate)
+          queryParams.start_date = dayjs(startDate).format(
+            "YYYY-MM-DD:hh:mm:ss"
+          );
+        if (endDate)
+          queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        setConfig({ params: queryParams });
+      }, 300),
+    [setAppliedFilters, setConfig]
   );
 
   useEffect(() => {

@@ -142,7 +142,7 @@ const AddsOnCampaignRecord = () => {
         observerRef.current.disconnect();
       }
     };
-  }, [loading, isFetchingMore, campaignData]);
+  }, [loading, isFetchingMore, campaignTable, config.params.page]);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -152,25 +152,31 @@ const AddsOnCampaignRecord = () => {
   });
 
   const handleAppliedFilter = useCallback(
-    debounce((filters: FilterResult) => {
-      setAppliedFilters(filters);
-      const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
-      const property = menuOptions["Property"] || [];
+    (filters: FilterResult) => {
+      const debouncedFilter = debounce((filters: FilterResult) => {
+        setAppliedFilters(filters);
+        const { menuOptions, startDate, endDate } = filters;
+        const accountOfficer = menuOptions["Account Officer"] || [];
+        const branch = menuOptions["Branch"] || [];
+        const property = menuOptions["Property"] || [];
 
-      const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0)
-        queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
-      if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-      setConfig({ params: queryParams });
-    }, 300),
-    []
+        const queryParams: ReportsRequestParams = { page: 1, search: "" };
+        if (accountOfficer.length > 0)
+          queryParams.account_officer_id = accountOfficer.join(",");
+        if (branch.length > 0) queryParams.branch_id = branch.join(",");
+        if (property.length > 0) queryParams.property_id = property.join(",");
+        if (startDate)
+          queryParams.start_date = dayjs(startDate).format(
+            "YYYY-MM-DD:hh:mm:ss"
+          );
+        if (endDate)
+          queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        setConfig({ params: queryParams });
+      }, 300);
+
+      debouncedFilter(filters);
+    },
+    [setAppliedFilters, setConfig]
   );
 
   const handleSearch = (query: string) => {
