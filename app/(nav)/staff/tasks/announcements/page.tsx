@@ -35,8 +35,10 @@ const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
   const { role } = useRole();
   // PERMISSIONS
-  const canCreateAndManageAnnouncements = usePermission(role, "Can create examine");
-
+  const canCreateManageAnnouncement = usePermission(
+    role,
+    "Can create and manage announcement"
+  );
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -134,8 +136,6 @@ const AnnouncementPage = () => {
   if (error) <ServerError error={error} />;
   if (isNetworkError) <NetworkError />;
 
-
-
   return (
     <div className="space-y-9">
       <div className="page-header-container">
@@ -146,13 +146,15 @@ const AnnouncementPage = () => {
             colorScheme={1}
             total={apiData?.total_announcement || 0}
           />
-          {/* <ManagementStatistcsCard
-            title="Examine"
-            newData={apiData?.total_examine_month ?? 0}
-            total={apiData?.total_examine ?? 0}
-            colorScheme={2}
-          /> */}
         </div>
+        {canCreateManageAnnouncement && (
+          <Button
+            href="/staff/tasks/announcements/create-announcement"
+            className="page-header-button"
+          >
+            + Create Announcement
+          </Button>
+        )}
       </div>
       <FilterBar
         azFilter

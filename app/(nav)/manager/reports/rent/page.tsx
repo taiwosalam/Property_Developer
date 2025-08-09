@@ -116,46 +116,84 @@ const RentReport = () => {
     setConfig({ params: { ...config.params, sort_order: order } });
   };
 
-  const handleAppliedFilter = useCallback(
-    debounce((filters: FilterResult) => {
-      setAppliedFilters(filters);
-      const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
-      const property = menuOptions["Property"] || [];
-      const status = menuOptions["Status"] || [];
+  // const handleAppliedFilter = useCallback(
+  //   debounce((filters: FilterResult) => {
+  //     setAppliedFilters(filters);
+  //     const { menuOptions, startDate, endDate } = filters;
+  //     const accountOfficer = menuOptions["Account Officer"] || [];
+  //     const branch = menuOptions["Branch"] || [];
+  //     const property = menuOptions["Property"] || [];
+  //     const status = menuOptions["Status"] || [];
 
-      const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0)
-        queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
-      if (status.length > 0) queryParams.status = status.join(",");
-      if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-      setConfig({ params: queryParams });
-    }, 300),
-    []
-  );
+  //     const queryParams: ReportsRequestParams = { page: 1, search: "" };
+  //     if (accountOfficer.length > 0)
+  //       queryParams.account_officer_id = accountOfficer.join(",");
+  //     if (branch.length > 0) queryParams.branch_id = branch.join(",");
+  //     if (property.length > 0) queryParams.property_id = property.join(",");
+  //     if (status.length > 0) queryParams.status = status.join(",");
+  //     if (startDate)
+  //       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     if (endDate)
+  //       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     setConfig({ params: queryParams });
+  //   }, 300),
+  //   []
+  // );
 
   // Conditionally set the URL only if BRANCH_ID is valid
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/report/rents?branch_id=${BRANCH_ID}`
-      : null;
+
+  const handleAppliedFilter = useCallback(
+    (filters: FilterResult) => {
+      const debouncedFilter = debounce((filters: FilterResult) => {
+        setAppliedFilters(filters);
+        const { menuOptions, startDate, endDate } = filters;
+        const accountOfficer = menuOptions["Account Officer"] || [];
+        const property = menuOptions["Property"] || [];
+        const status = menuOptions["Status"] || [];
+
+        const queryParams: ReportsRequestParams = { page: 1, search: "" };
+        if (accountOfficer.length > 0)
+          queryParams.account_officer_id = accountOfficer.join(",");
+        if (property.length > 0) queryParams.property_id = property.join(",");
+        if (status.length > 0) queryParams.status = status.join(",");
+        if (startDate)
+          queryParams.start_date = dayjs(startDate).format(
+            "YYYY-MM-DD:hh:mm:ss"
+          );
+        if (endDate)
+          queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        setConfig({ params: queryParams });
+      }, 300);
+
+      debouncedFilter(filters);
+    },
+    [setAppliedFilters, setConfig]
+  );
 
   const { data, loading, error, isNetworkError } = useFetch<RentListResponse>(
     `/report/rents`,
     config
   );
 
+  // useEffect(() => {
+  //   if (!loading && data) {
+  //     const transformedData = transformRentData(data);
+  //     console.log("API data:", data);
+  //     console.log("Transformed data:", transformedData);
+  //     const newRents = transformedData.rents;
+  //     const currentRents = useGlobalStore.getState().rents;
+  //     if (JSON.stringify(currentRents) !== JSON.stringify(newRents)) {
+  //       setPageData(transformedData);
+  //       setGlobalStore("rents", newRents);
+  //     }
+  //   }
+  //   if (error) console.error("Fetch error:", error);
+  //   if (isNetworkError) console.error("Network error");
+  // }, [data, loading, setGlobalStore]);
+
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformRentData(data);
-      console.log("API data:", data);
-      console.log("Transformed data:", transformedData);
       const newRents = transformedData.rents;
       const currentRents = useGlobalStore.getState().rents;
       if (JSON.stringify(currentRents) !== JSON.stringify(newRents)) {
@@ -163,9 +201,9 @@ const RentReport = () => {
         setGlobalStore("rents", newRents);
       }
     }
-    if (error) console.error("Fetch error:", error);
-    if (isNetworkError) console.error("Network error");
   }, [data, loading, setGlobalStore]);
+
+
 
   if (loading)
     return <CustomLoader layout="page" pageTitle="Rent Report" view="table" />;

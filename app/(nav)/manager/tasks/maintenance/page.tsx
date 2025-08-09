@@ -6,7 +6,12 @@ import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import MaintenanceCard from "@/components/tasks/maintenance/maintenance-card";
 import { useCallback, useEffect, useState } from "react";
-import { IMaintenanceCard, maintenanceFilterOptionsWithDropdown, MaintenanceRequestParams, transformMaintenanceCard } from "@/app/(nav)/tasks/maintenance/data";
+import {
+  IMaintenanceCard,
+  maintenanceFilterOptionsWithDropdown,
+  MaintenanceRequestParams,
+  transformMaintenanceCard,
+} from "@/app/(nav)/tasks/maintenance/data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
 import ServerError from "@/components/Error/ServerError";
@@ -56,28 +61,57 @@ const Maintenance = () => {
 
   useRefetchOnEvent("dispatchMaintenance", () => refetch({ silent: true }));
 
-  const handleAppliedFilter = useCallback(
-    debounce((filters: FilterResult) => {
-      setAppliedFilters(filters);
-      const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
-      const status = menuOptions["Status"] || [];
-      const property = menuOptions["Property"] || [];
+  // const handleAppliedFilter = useCallback(
+  //   debounce((filters: FilterResult) => {
+  //     setAppliedFilters(filters);
+  //     const { menuOptions, startDate, endDate } = filters;
+  //     const accountOfficer = menuOptions["Account Officer"] || [];
+  //     const status = menuOptions["Status"] || [];
+  //     const property = menuOptions["Property"] || [];
 
-      const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0)
-        queryParams.account_officer_id = accountOfficer.join(",");
-      if (status.length > 0) queryParams.status = status.join(",");
-      if (property.length > 0) queryParams.property_ids = property.join(",");
-      if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-      setConfig({ params: queryParams });
-    }, 300),
-    []
+  //     const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
+  //     if (accountOfficer.length > 0)
+  //       queryParams.account_officer_id = accountOfficer.join(",");
+  //     if (status.length > 0) queryParams.status = status.join(",");
+  //     if (property.length > 0) queryParams.property_ids = property.join(",");
+  //     if (startDate)
+  //       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     if (endDate)
+  //       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     setConfig({ params: queryParams });
+  //   }, 300),
+  //   []
+  // );
+
+  const handleAppliedFilter = useCallback(
+    (filters: FilterResult) => {
+      const debouncedFilter = debounce((filters: FilterResult) => {
+        setAppliedFilters(filters);
+        const { menuOptions, startDate, endDate } = filters;
+        const accountOfficer = menuOptions["Account Officer"] || [];
+        const status = menuOptions["Status"] || [];
+        const property = menuOptions["Property"] || [];
+
+        const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
+        if (accountOfficer.length > 0)
+          queryParams.account_officer_id = accountOfficer.join(",");
+        if (status.length > 0) queryParams.status = status.join(",");
+        if (property.length > 0) queryParams.property_ids = property.join(",");
+        if (startDate)
+          queryParams.start_date = dayjs(startDate).format(
+            "YYYY-MM-DD:hh:mm:ss"
+          );
+        if (endDate)
+          queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        setConfig({ params: queryParams });
+      }, 300);
+
+      debouncedFilter(filters);
+    },
+    [setAppliedFilters, setConfig]
   );
 
+  
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
   const propertyOptions =

@@ -97,13 +97,6 @@ const UserTrackingPage = () => {
       })),
     },
     {
-      label: "Branch",
-      value: branches.map((branch) => ({
-        label: branch.branch_name,
-        value: branch?.id.toString(),
-      })),
-    },
-    {
       label: "Property",
       value: propertyList.map((property: any) => ({
         label: property.title,
@@ -124,36 +117,94 @@ const UserTrackingPage = () => {
     setConfig({ params: { ...config.params, sort_order: order } });
   };
 
-  const handleAppliedFilter = useCallback(
-    debounce((filters: FilterResult) => {
-      setAppliedFilters(filters);
-      const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
-      const branch = menuOptions["Branch"] || [];
-      const property = menuOptions["Property"] || [];
+  // const handleAppliedFilter = useCallback(
+  //   debounce((filters: FilterResult) => {
+  //     setAppliedFilters(filters);
+  //     const { menuOptions, startDate, endDate } = filters;
+  //     const accountOfficer = menuOptions["Account Officer"] || [];
+  //     const property = menuOptions["Property"] || [];
 
-      const queryParams: ReportsRequestParams = { page: 1, search: "" };
-      if (accountOfficer.length > 0)
-        queryParams.account_officer_id = accountOfficer.join(",");
-      if (branch.length > 0) queryParams.branch_id = branch.join(",");
-      if (property.length > 0) queryParams.property_id = property.join(",");
-      if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-      if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-      setConfig({ params: queryParams });
-    }, 300),
-    []
+  //     const queryParams: ReportsRequestParams = { page: 1, search: "" };
+  //     if (accountOfficer.length > 0)
+  //       queryParams.account_officer_id = accountOfficer.join(",");
+  //     if (branch.length > 0) queryParams.branch_id = branch.join(",");
+  //     if (property.length > 0) queryParams.property_id = property.join(",");
+  //     if (startDate)
+  //       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     if (endDate)
+  //       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+  //     setConfig({ params: queryParams });
+  //   }, 300),
+  //   []
+  // );
+
+  const handleAppliedFilter = useCallback(
+    (filters: FilterResult) => {
+      const debouncedFilter = debounce((filters: FilterResult) => {
+        setAppliedFilters(filters);
+        const { menuOptions, startDate, endDate } = filters;
+        const accountOfficer = menuOptions["Account Officer"] || [];
+        const branch = menuOptions["Branch"] || [];
+        const property = menuOptions["Property"] || [];
+
+        const queryParams: ReportsRequestParams = { page: 1, search: "" };
+        if (accountOfficer.length > 0)
+          queryParams.account_officer_id = accountOfficer.join(",");
+        if (branch.length > 0) queryParams.branch_id = branch.join(",");
+        if (property.length > 0) queryParams.property_id = property.join(",");
+        if (startDate)
+          queryParams.start_date = dayjs(startDate).format(
+            "YYYY-MM-DD:hh:mm:ss"
+          );
+        if (endDate)
+          queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        setConfig({ params: queryParams });
+      }, 300);
+
+      debouncedFilter(filters);
+    },
+    [setAppliedFilters, setConfig]
   );
 
   const { data, loading, error, isNetworkError } =
     useFetch<UserActivityResponse>(`report/activities/${userId}`, config);
 
+  // useEffect(() => {
+  //   if (!loading && data) {
+  //     const transformedData = transformUserActivityData(data);
+  //     console.log("API data:", data);
+  //     console.log("Transformed data:", transformedData);
+  //     const newActivities = transformedData.activities;
+  //     const currentActivities = useGlobalStore.getState().user_activities;
+  //     if (JSON.stringify(currentActivities) !== JSON.stringify(newActivities)) {
+  //       setPageData(transformedData);
+  //       const activitiesLocation = newActivities.map((activity) => {
+  //         return {
+  //           ...activity,
+  //           location: address?.formattedAddress
+  //             ? address?.formattedAddress
+  //             : "___ ___",
+  //         };
+  //       });
+  //       setGlobalStore("user_activities", activitiesLocation);
+  //     }
+  //     if (transformedData && transformedData.activities.length > 0) {
+  //       transformedData.activities.forEach((activity) => {
+  //         const lat = activity?.latitude;
+  //         const lng = activity?.longitude;
+  //         if (lat && lng) {
+  //           setLat(parseFloat(`${lat}`));
+  //           setLng(parseFloat(`${lng}`));
+  //         }
+  //       });
+  //     }
+  //   }
+  // }, [data, loading, setGlobalStore]);
+
+
   useEffect(() => {
     if (!loading && data) {
       const transformedData = transformUserActivityData(data);
-      console.log("API data:", data);
-      console.log("Transformed data:", transformedData);
       const newActivities = transformedData.activities;
       const currentActivities = useGlobalStore.getState().user_activities;
       if (JSON.stringify(currentActivities) !== JSON.stringify(newActivities)) {
@@ -179,7 +230,7 @@ const UserTrackingPage = () => {
         });
       }
     }
-  }, [data, loading, setGlobalStore]);
+  }, [data, loading, setGlobalStore, address?.formattedAddress]);
 
   if (loading)
     return (

@@ -36,6 +36,7 @@ const CalendarPage = () => {
   const { role } = useRole();
   const canManageCalendar =
     usePermission(role, "Can manage calendar") || role === "director";
+    
   const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>(
     []
   );

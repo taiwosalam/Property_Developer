@@ -1,14 +1,6 @@
-// src/components/multi-select.tsx
-
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import {
-  CheckIcon,
-  XCircle,
-  ChevronDown,
-  XIcon,
-  WandSparkles,
-} from "lucide-react";
+import { CheckIcon, ChevronDown, WandSparkles } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
@@ -31,10 +23,6 @@ import {
 import Image from "next/image";
 import Picture from "../Picture/picture";
 
-/**
- * Variants for the multi-select component to handle different styles.
- * Uses class-variance-authority (cva) to define different styles based on "variant" prop.
- */
 const multiSelectVariants = cva(
   "m-1 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-300",
   {
@@ -55,72 +43,23 @@ const multiSelectVariants = cva(
   }
 );
 
-/**
- * Props for MultiSelect component
- */
 interface MultiSelectProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof multiSelectVariants> {
-  /**
-   * An array of option objects to be displayed in the multi-select component.
-   * Each option object has a label, value, and an optional icon.
-   */
   options: {
-    /** The text to display for the option. */
     label: string;
-    /** The unique value associated with the option. */
     value: string;
-    /** Optional icon component to display alongside the option. */
-    // icon?: React.ComponentType<{ className?: string }>;
     icon?: string;
   }[];
-
-  /**
-   * Callback function triggered when the selected values change.
-   * Receives an array of the new selected values.
-   */
   onValueChange: (value: string[]) => void;
-
-  /** The default selected values when the component mounts. */
+  value?: string[]; // ADDED: Controlled value prop
   defaultValue?: string[];
-
-  /**
-   * Placeholder text to be displayed when no values are selected.
-   * Optional, defaults to "Select options".
-   */
   placeholder?: string;
-
-  /**
-   * Animation duration in seconds for the visual effects (e.g., bouncing badges).
-   * Optional, defaults to 0 (no animation).
-   */
   animation?: number;
-
-  /**
-   * Maximum number of items to display. Extra selected items will be summarized.
-   * Optional, defaults to 3.
-   */
   maxCount?: number;
-
-  /**
-   * The modality of the popover. When set to true, interaction with outside elements
-   * will be disabled and only popover content will be visible to screen readers.
-   * Optional, defaults to false.
-   */
   modalPopover?: boolean;
-
-  /**
-   * If true, renders the multi-select component as a child of another component.
-   * Optional, defaults to false.
-   */
   asChild?: boolean;
-
   maxSelect?: number;
-
-  /**
-   * Additional class names to apply custom styles to the multi-select component.
-   * Optional, can be used to add custom styles.
-   */
   className?: string;
 }
 
@@ -133,6 +72,7 @@ export const MultiSelect = React.forwardRef<
       options,
       onValueChange,
       variant,
+      value: propValue, // ADDED: Controlled value
       defaultValue,
       placeholder = "Select options",
       animation = 0,
@@ -146,15 +86,17 @@ export const MultiSelect = React.forwardRef<
     ref
   ) => {
     const [selectedValues, setSelectedValues] = React.useState<string[]>(
-      defaultValue || []
+      propValue || defaultValue || []
     );
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
 
-    // console.log("default", defaultValue)
-    // React.useEffect(() => {
-    //   console.log("defaultValue changed:", selectedValues);
-    // }, [defaultValue]);
+    // FIXED: Sync with controlled value prop
+    React.useEffect(() => {
+      if (propValue !== undefined) {
+        setSelectedValues(propValue);
+      }
+    }, [propValue]);
 
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>
@@ -169,33 +111,22 @@ export const MultiSelect = React.forwardRef<
       }
     };
 
-    // const toggleOption = (option: string) => {
-    //   const newSelectedValues = selectedValues.includes(option)
-    //     ? selectedValues.filter((value) => value !== option)
-    //     : [...selectedValues, option];
-    //   setSelectedValues(newSelectedValues);
-    //   onValueChange(newSelectedValues);
-    // };
-
     const toggleOption = (option: string) => {
+      let newSelectedValues: string[];
+
       if (selectedValues.includes(option)) {
-        // If the option is already selected, remove it
-        const newSelectedValues = selectedValues.filter(
-          (value) => value !== option
-        );
-        setSelectedValues(newSelectedValues);
-        onValueChange(newSelectedValues);
+        // Remove option
+        newSelectedValues = selectedValues.filter((value) => value !== option);
       } else {
-        // If maxSelect is defined and the limit is reached, do nothing
+        // Add option (check maxSelect limit)
         if (maxSelect && selectedValues.length >= maxSelect) {
           return;
         }
-
-        // Otherwise, add the new option
-        const newSelectedValues = [...selectedValues, option];
-        setSelectedValues(newSelectedValues);
-        onValueChange(newSelectedValues);
+        newSelectedValues = [...selectedValues, option];
       }
+
+      setSelectedValues(newSelectedValues);
+      onValueChange(newSelectedValues);
     };
 
     const handleClear = () => {
@@ -205,12 +136,6 @@ export const MultiSelect = React.forwardRef<
 
     const handleTogglePopover = () => {
       setIsPopoverOpen((prev) => !prev);
-    };
-
-    const clearExtraOptions = () => {
-      const newSelectedValues = selectedValues.slice(0, maxCount);
-      setSelectedValues(newSelectedValues);
-      onValueChange(newSelectedValues);
     };
 
     const toggleAll = () => {
@@ -236,7 +161,6 @@ export const MultiSelect = React.forwardRef<
             onClick={handleTogglePopover}
             className={cn(
               "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
-              // "flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-inherit [&_svg]:pointer-events-auto",
               className
             )}
           >
@@ -244,11 +168,9 @@ export const MultiSelect = React.forwardRef<
               <div className="flex justify-between items-center w-full">
                 <div className="flex flex-wrap items-center">
                   {selectedValues.slice(0, maxCount).map((value) => {
-                    // const option = options.find((o) => o.value === value);
                     const option = options.find(
                       (o) => String(o.value) === String(value)
                     );
-                    const IconComponent = option?.icon;
                     return (
                       <Badge
                         key={value}
@@ -263,9 +185,7 @@ export const MultiSelect = React.forwardRef<
                           fontWeight: "normal",
                         }}
                       >
-                        {/* {IconComponent && ( */}
                         {option?.icon && (
-                          // <IconComponent className="h-4 w-4 mr-2" />
                           <div className="custom-secondary-bg p-[2px] h-5 w-5 mr-[1px] rounded-full items-center">
                             <Image
                               src={option?.icon as string}
@@ -277,20 +197,12 @@ export const MultiSelect = React.forwardRef<
                           </div>
                         )}
                         {option?.label}
-                        {/* <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            toggleOption(value);
-                          }}
-                        /> */}
                       </Badge>
                     );
                   })}
                   {selectedValues.length > maxCount && (
                     <Badge
                       className={cn(
-                        // "bg-transparent text-foreground border-foreground/1 hover:bg-transparent",
                         "bg-transparent",
                         isAnimating ? "animate-bounce" : "border-none",
                         multiSelectVariants({ variant })
@@ -301,28 +213,11 @@ export const MultiSelect = React.forwardRef<
                       }}
                     >
                       {`+ ${selectedValues.length - maxCount} more`}
-                      {/* <XCircle
-                        className="ml-2 h-4 w-4 cursor-pointer"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          clearExtraOptions();
-                        }}
-                      /> */}
                     </Badge>
                   )}
                 </div>
+                {/* REMOVED: XIcon for clearing - no individual clear button */}
                 <div className="flex items-center justify-between">
-                  <XIcon
-                    className="h-4 mx-2 cursor-pointer text-muted-foreground"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      handleClear();
-                    }}
-                  />
-                  <Separator
-                    orientation="vertical"
-                    className="flex min-h-6 h-full"
-                  />
                   <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
                 </div>
               </div>
@@ -387,7 +282,6 @@ export const MultiSelect = React.forwardRef<
                         <CheckIcon className="h-4 w-4" />
                       </div>
                       {option.icon && (
-                        // <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                         <div className="">
                           <Picture
                             src={option.icon}

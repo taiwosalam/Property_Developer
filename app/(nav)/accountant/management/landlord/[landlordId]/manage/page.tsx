@@ -45,6 +45,8 @@ import { useGlobalStore } from "@/store/general-store";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const AddPropertyModal = dynamic(
   () => import("@/components/Management/Properties/add-property-modal"),
@@ -56,6 +58,14 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canCreateAndManageLandlord = usePermission(
+    role,
+    "Can add and manage landlords/landlady"
+  );
 
   const { data, error, loading, isNetworkError, refetch } =
     useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
@@ -224,69 +234,73 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                   </ModalContent>
                 </Modal> */}
 
-                <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      variant="sky_blue"
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      Note
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <MobileNotesModal
-                      id={landlordId}
-                      page="landlord"
-                      notes={landlordData.notes}
-                    />
-                  </ModalContent>
-                </Modal>
+                {canCreateAndManageLandlord && (
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        variant="sky_blue"
+                        size="base_medium"
+                        className="py-2 px-8"
+                      >
+                        Note
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <MobileNotesModal
+                        id={landlordId}
+                        page="landlord"
+                        notes={landlordData.notes}
+                      />
+                    </ModalContent>
+                  </Modal>
+                )}
               </>
             ) : (
-              <>
-                <Button
-                  href={`/accountant/management/landlord/${landlordId}/manage/edit`}
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  edit
-                </Button>
-                <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      variant="light_green"
-                      size="base_medium"
-                      className="py-2 px-4 page-header-button"
-                      type="button"
-                      onClick={handleAttachProperty}
-                    >
-                      Attach Property
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <AddPropertyModal id={Number(landlordId)} />
-                  </ModalContent>
-                </Modal>
-                <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      variant="sky_blue"
-                      size="base_medium"
-                      className="py-2 px-4"
-                    >
-                      update with Email
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <UpdateProfileWithIdModal
-                      page="landlord"
-                      id={Number(landlordData.id)}
-                      data={userData && userData}
-                    />
-                  </ModalContent>
-                </Modal>
-              </>
+              canCreateAndManageLandlord && (
+                <>
+                  <Button
+                    href={`/accountant/management/landlord/${landlordId}/manage/edit`}
+                    size="base_medium"
+                    className="py-2 px-8"
+                  >
+                    edit
+                  </Button>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        variant="light_green"
+                        size="base_medium"
+                        className="py-2 px-4 page-header-button"
+                        type="button"
+                        onClick={handleAttachProperty}
+                      >
+                        Attach Property
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <AddPropertyModal id={Number(landlordId)} />
+                    </ModalContent>
+                  </Modal>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        variant="sky_blue"
+                        size="base_medium"
+                        className="py-2 px-4"
+                      >
+                        update with Email
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <UpdateProfileWithIdModal
+                        page="landlord"
+                        id={Number(landlordData.id)}
+                        data={userData && userData}
+                      />
+                    </ModalContent>
+                  </Modal>
+                </>
+              )
             )}
           </div>
         </LandlordTenantInfoBox>

@@ -38,6 +38,8 @@ import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import ServerError from "@/components/Error/ServerError";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const states = getAllStates();
 
@@ -52,6 +54,14 @@ const Tenants = () => {
       current_page: savedPage ? parseInt(savedPage, 10) : 1,
     };
   });
+
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canCreateAndManageTenant = usePermission(
+    role,
+    "Can add and manage tenants/occupants"
+  );
 
   const {
     total_pages,
@@ -258,13 +268,15 @@ const Tenants = () => {
             Chat
           </Button>
         )}
-        <Button
-          href={`/staff/management/tenants/${t.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2"
-        >
-          Manage
-        </Button>
+        {canCreateAndManageTenant && (
+          <Button
+            href={`/staff/management/tenants/${t.id}/manage`}
+            size="sm_medium"
+            className="px-8 py-2"
+          >
+            Manage
+          </Button>
+        )}
       </div>
     ),
     ref:

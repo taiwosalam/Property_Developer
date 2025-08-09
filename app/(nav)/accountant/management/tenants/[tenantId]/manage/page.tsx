@@ -52,7 +52,8 @@ import { toast } from "sonner";
 import { saveLocalStorage } from "@/utils/local-storage";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import { IndividualTenantAPIResponse } from "./types";
-
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -68,6 +69,13 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const tenant = apiData ? transformIndividualTenantAPIResponse(apiData) : null;
   const cardData = tenant ? transformCardData(tenant) : null;
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canCreateAndManageTenant = usePermission(
+    role,
+    "Can add and manage tenants/occupants"
+  );
 
   useEffect(() => {
     if (tenant) {
@@ -193,85 +201,91 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 >
                   message
                 </Button>
-                <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      variant="light_green"
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      {tenant.is_flagged ? "Unflag" : "Edit"}
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <EditMobileUser
-                      is_flagged={tenant?.is_flagged}
-                      flag_reason={tenant?.flag?.reason || ""}
-                      page="tenant"
-                      CAN_DELETE={CAN_DELETE}
-                      id={Number(tenantId)}
-                    />
-                  </ModalContent>
-                </Modal>
-                <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      variant="sky_blue"
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      Note
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <MobileNotesModal
-                      page="tenant"
-                      id={tenantId}
-                      notes={tenant.notes}
-                    />
-                  </ModalContent>
-                </Modal>
+                {canCreateAndManageTenant && (
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        variant="light_green"
+                        size="base_medium"
+                        className="py-2 px-8"
+                      >
+                        {tenant.is_flagged ? "Unflag" : "Edit"}
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <EditMobileUser
+                        is_flagged={tenant?.is_flagged}
+                        flag_reason={tenant?.flag?.reason || ""}
+                        page="tenant"
+                        CAN_DELETE={CAN_DELETE}
+                        id={Number(tenantId)}
+                      />
+                    </ModalContent>
+                  </Modal>
+                )}
+                {canCreateAndManageTenant && (
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        variant="sky_blue"
+                        size="base_medium"
+                        className="py-2 px-8"
+                      >
+                        Note
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <MobileNotesModal
+                        page="tenant"
+                        id={tenantId}
+                        notes={tenant.notes}
+                      />
+                    </ModalContent>
+                  </Modal>
+                )}
               </>
             ) : (
-              <>
-                <Button
-                  href={`/accountant/management/tenants/${tenantId}/manage/edit`}
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  edit
-                </Button>
-                <Button
-                  variant="light_green"
-                  size="base_medium"
-                  className="py-2 px-8"
-                  onClick={() =>
-                    router.push(
-                      `/accountant/management/rent-unit/?is_active=vacant&tenant_id=${tenantId}`
-                    )
-                  }
-                >
-                  Link New Unit
-                </Button>
-                <Modal>
-                  <ModalTrigger>
-                    <Button
-                      variant="sky_blue"
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      update with ID
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <UpdateProfileWithIdModal
-                      page="tenant"
-                      id={Number(tenant.id)}
-                      data={cardData}
-                    />
-                  </ModalContent>
-                </Modal>
-              </>
+              canCreateAndManageTenant && (
+                <>
+                  <Button
+                    href={`/accountant/management/tenants/${tenantId}/manage/edit`}
+                    size="base_medium"
+                    className="py-2 px-8"
+                  >
+                    edit
+                  </Button>
+                  <Button
+                    variant="light_green"
+                    size="base_medium"
+                    className="py-2 px-8"
+                    onClick={() =>
+                      router.push(
+                        `/accountant/management/rent-unit/?is_active=vacant&tenant_id=${tenantId}`
+                      )
+                    }
+                  >
+                    Link New Unit
+                  </Button>
+                  <Modal>
+                    <ModalTrigger>
+                      <Button
+                        variant="sky_blue"
+                        size="base_medium"
+                        className="py-2 px-8"
+                      >
+                        update with ID
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <UpdateProfileWithIdModal
+                        page="tenant"
+                        id={Number(tenant.id)}
+                        data={cardData}
+                      />
+                    </ModalContent>
+                  </Modal>
+                </>
+              )
             )}
           </div>
         </LandlordTenantInfoBox>

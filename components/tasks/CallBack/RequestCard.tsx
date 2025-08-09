@@ -19,6 +19,8 @@ import { getBadgeColor } from "@/lib/utils";
 import { useGlobalStore } from "@/store/general-store";
 import { toast } from "sonner";
 import { resolveCallRequest } from "@/app/(nav)/tasks/inquires/data";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 const UserDetailItems: React.FC<UserDetailItemsProp> = ({ label, value }) => (
   <div>
@@ -46,6 +48,11 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const { role } = useRole();
+  // PERMISSIONS
+  const canApproveCautionDeposit =
+    usePermission(role, "Can approve and refund caution deposit") ||
+    role === "director";
 
   const [isResolving, setIsResolving] = useState(false);
 
@@ -383,14 +390,29 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             </Link>
           </div>
         ) : (
-          <Button
-            disabled={isResolving}
-            size="sm_medium"
-            className="py-2 px-8"
-            onClick={handleButtonClick}
-          >
-            {buttonText()}
-          </Button>
+          <>
+            {cardType === "deposit" ? (
+              canApproveCautionDeposit && (
+                <Button
+                  disabled={isResolving}
+                  size="sm_medium"
+                  className="py-2 px-8"
+                  onClick={handleButtonClick}
+                >
+                  {buttonText()}
+                </Button>
+              )
+            ) : (
+              <Button
+                disabled={isResolving}
+                size="sm_medium"
+                className="py-2 px-8"
+                onClick={handleButtonClick}
+              >
+                {buttonText()}
+              </Button>
+            )}
+          </>
         )}
       </div>
       <Modal

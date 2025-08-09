@@ -41,12 +41,22 @@ import { AxiosRequestConfig } from "axios";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import ServerError from "@/components/Error/ServerError";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const states = getAllStates();
 
 const Landlord = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
+
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canCreateAndManageLandlord = usePermission(
+    role,
+    "Can add and manage landlords/landlady"
+  );
 
   const [pageData, setPageData] = useState<LandlordsPageData>(() => {
     const savedPage = sessionStorage.getItem("landlord_page");
@@ -288,13 +298,15 @@ const Landlord = () => {
             Chat
           </Button>
         )}
-        <Button
-          href={`/accountant/management/landlord/${l.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2"
-        >
-          Manage
-        </Button>
+        {canCreateAndManageLandlord && (
+          <Button
+            href={`/accountant/management/landlord/${l.id}/manage`}
+            size="sm_medium"
+            className="px-8 py-2"
+          >
+            Manage
+          </Button>
+        )}
       </div>
     ),
     // Attach the lastRowRef to the final row if more pages exist.
@@ -374,14 +386,6 @@ const Landlord = () => {
               { label: "All Landlords", value: "all" },
             ],
           },
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-            : []),
         ]}
       />
       <section>

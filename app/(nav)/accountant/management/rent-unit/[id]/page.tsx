@@ -116,7 +116,7 @@ const UnitPreviewPage = () => {
             {unit_data.address}
           </p>
         </div>
-        <Button href={`/manager/management/properties/${unit_data.propertyId}/edit-property`}>
+        <Button href={`/accountant/management/properties/${unit_data.propertyId}/edit-property`}>
           Manage
         </Button>
       </div>

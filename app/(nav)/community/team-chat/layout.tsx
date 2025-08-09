@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -13,12 +12,19 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import ServerError from "@/components/Error/ServerError";
 import { MessagesLayoutProps } from "./types";
 import { useTeamChat } from "@/contexts/teamChatContext";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const TeamChatContent: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { isCustom } = useWindowWidth(900);
   const params = useParams();
   const paramId = params.id;
   const { isNetworkError, loading, error } = useTeamChat();
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canViewAndreplyMessages =
+    usePermission(role,   "Can view and reply branch messages") || role === "director";
 
   if (loading) return <PageCircleLoader />;
   if (error) return <ServerError error={error} />;
@@ -38,7 +44,7 @@ const TeamChatContent: React.FC<MessagesLayoutProps> = ({ children }) => {
         <div className="flex-1 relative">
           <div className="custom-flex-col h-full justify-end">
             {children}
-            {paramId && <TeamChatInputArea />}
+            {paramId && canViewAndreplyMessages && <TeamChatInputArea />}
           </div>
         </div>
       </div>

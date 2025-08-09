@@ -37,10 +37,11 @@ export interface PersonalDataProps {
   local_government: string;
   city: string;
   address: string;
-  phone_number: {
-    profile_phone: string;
-  };
+  // phone_number?: {
+  //   profile_phone: string;
+  // };
   avatar?: string;
+  phone_number: string;
 }
 
 type BaseFieldProps = {
@@ -117,6 +118,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     originalHandleImageChange(e);
   };
 
+  console.log("props", props)
   return (
     <div className="relative">
       <div
@@ -192,22 +194,13 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             }}
           />
 
-          {editMode ? (
-            <Input
-              label="Phone Number here"
-              id="phone"
-              inputClassName="rounded-lg"
-              defaultValue={props.data.phone_number.profile_phone}
-              readOnly
-            />
-          ) : (
             <PhoneNumberInput
               required
               id="phone"
               label="Phone Number"
               inputContainerClassName="bg-neutral-2"
+              defaultValue={editMode ? props.data.phone_number : ""}
             />
-          )}
         </div>
         <div className="flex gap-4 justify-between items-end flex-wrap">
           <div className="flex items-end gap-3">
