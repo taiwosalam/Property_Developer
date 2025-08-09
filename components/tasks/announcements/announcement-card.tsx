@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import ReactPlayer from "react-player";
+import { usePermission } from "@/hooks/getPermission";
 
 interface AnnouncementCardProps {
   title: string;
@@ -63,6 +64,10 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   const [isLiking, setIsLiking] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
+  // PERMISSIONS
+  const canCreateAndManageAnnouncements = usePermission(role, "Can create examine");
+
+
 
   const path =
     role === "director"

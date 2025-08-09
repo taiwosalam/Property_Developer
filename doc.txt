@@ -607,3 +607,1079 @@ export default SideNav;
  };
 
  export default NavCreateNewColumn;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { usePermission } from "@/hooks/getPermission";
+// import { useMemo } from "react";
+
+// // Define the valid icon types based on your component requirements
+// export type ValidIconType =
+//   | "buildings"
+//   | "people"
+//   | "menu_board"
+//   | "status_up"
+//   | "empty_wallet"
+//   | "folder"
+//   | "chart"
+//   | "task"
+//   | "settings"
+//   | "briefcase_timer"
+//   | "horizontal_line"
+//   | "arrow_down"
+//   | "sidebar"
+//   | "list"
+//   | "grid"
+//   | "eye";
+
+// export interface NavItem {
+//   label: string;
+//   href: string;
+//   type: ValidIconType;
+//   content: NavItem[];
+// }
+
+// interface FilterNavItemsParams {
+//   items: NavItem[] | null;
+//   role: string;
+//   permissionsCache: Record<string, boolean>;
+//   permissionMapping: Record<
+//     string,
+//     { permission: string; ownerRoles: string[] }
+//   >;
+//   managerWalletIsActive: boolean;
+//   isCompanyOwner: boolean;
+// }
+
+// export const permissionMapping: Record<
+//   string,
+//   { permission: string; ownerRoles: string[] }
+// > = {
+//   "call request": {
+//     permission: "Can view call request",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   "property request": {
+//     permission: "Can view property request",
+//     ownerRoles: ["manager"],
+//   },
+//   complaints: {
+//     permission: "Can view complaints",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   wallet: {
+//     permission: "Full Wallet Access",
+//     ownerRoles: ["director"],
+//   },
+//   "landlord & landlady": {
+//     permission: "Can add and manage landlords/landlady",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   "tenants & occupants": {
+//     permission: "Can add and manage tenants/occupants",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   properties: {
+//     permission: "Can add/delete branch properties",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   "service providers": {
+//     permission: "Can view service provider",
+//     ownerRoles: ["account", "staff"],
+//   },
+//   examine: {
+//     permission: "Can create examine",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   inspections: {
+//     permission: "Can manage inspections",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   calendars: {
+//     permission: "Can manage calendar",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   announcements: {
+//     permission: "Can create and manage announcement",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   "visitors request": {
+//     permission: "Can check in visitors",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   inventory: {
+//     permission: "Can create inventory",
+//     ownerRoles: ["manager", "account", "staff"],
+//   },
+//   "vehicles record": {
+//     permission: "Can check in and manage vehicle records",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   invoice: {
+//     permission: "Can manage tenants/occupants",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   expenses: {
+//     permission: "Can manage tenants/occupants",
+//     ownerRoles: ["manager", "account"],
+//   },
+//   disbursement: {
+//     permission: "Can manage tenants/occupants",
+//     ownerRoles: ["manager", "account"],
+//   },
+// };
+
+// export const useNavPermissions = (role: string) => {
+//   // Call all permissions at the top level
+//   const callRequestPerm = usePermission(role, "Can view call request");
+//   const propertyRequestPerm = usePermission(role, "Can view property request");
+//   const complaintsPerm = usePermission(role, "Can view complaints");
+//   const walletPerm = usePermission(role, "Full Wallet Access");
+//   const landlordPerm = usePermission(
+//     role,
+//     "Can add and manage landlords/landlady"
+//   );
+//   const tenantsPerm = usePermission(
+//     role,
+//     "Can add and manage tenants/occupants"
+//   );
+//   const propertiesPerm = usePermission(
+//     role,
+//     "Can add/delete branch properties"
+//   );
+//   const serviceProvidersPerm = usePermission(role, "Can view service provider");
+//   const examinePerm = usePermission(role, "Can create examine");
+//   const inspectionsPerm = usePermission(role, "Can manage inspections");
+//   const calendarsPerm = usePermission(role, "Can manage calendar");
+//   const announcementsPerm = usePermission(
+//     role,
+//     "Can create and manage announcement"
+//   );
+//   const visitorsRequestPerm = usePermission(role, "Can check in visitors");
+//   const inventoryPerm = usePermission(role, "Can create inventory");
+//   const vehiclesRecordPerm = usePermission(
+//     role,
+//     "Can check in and manage vehicle records"
+//   );
+
+//   // Create permissions cache using the hook results
+//   const permissionsCache = useMemo(
+//     () => ({
+//       "call request": callRequestPerm,
+//       "property request": propertyRequestPerm,
+//       complaints: complaintsPerm,
+//       wallet: walletPerm,
+//       "landlord & landlady": landlordPerm,
+//       "tenants & occupants": tenantsPerm,
+//       properties: propertiesPerm,
+//       "service providers": serviceProvidersPerm,
+//       examine: examinePerm,
+//       inspections: inspectionsPerm,
+//       calendars: calendarsPerm,
+//       announcements: announcementsPerm,
+//       "visitors request": visitorsRequestPerm,
+//       inventory: inventoryPerm,
+//       "vehicles record": vehiclesRecordPerm,
+//       invoice: tenantsPerm,
+//       expenses: tenantsPerm,
+//       disbursement: tenantsPerm,
+//     }),
+//     [
+//       callRequestPerm,
+//       propertyRequestPerm,
+//       complaintsPerm,
+//       walletPerm,
+//       landlordPerm,
+//       tenantsPerm,
+//       propertiesPerm,
+//       serviceProvidersPerm,
+//       examinePerm,
+//       inspectionsPerm,
+//       calendarsPerm,
+//       announcementsPerm,
+//       visitorsRequestPerm,
+//       inventoryPerm,
+//       vehiclesRecordPerm,
+//     ]
+//   );
+
+//   return { permissionsCache, permissionMapping };
+// };
+
+// export const sanitizeClassName = (label: string): string =>
+//   label
+//     ? label
+//         .toLowerCase()
+//         .replace(/\s+/g, "-")
+//         .replace(/[^a-z0-9-]/g, "")
+//     : "";
+
+// // Helper function to ensure type safety
+// const ensureValidType = (type: string | undefined): ValidIconType => {
+//   const validTypes: ValidIconType[] = [
+//     "buildings",
+//     "people",
+//     "menu_board",
+//     "status_up",
+//     "empty_wallet",
+//     "folder",
+//     "chart",
+//     "task",
+//     "settings",
+//     "briefcase_timer",
+//     "horizontal_line",
+//     "arrow_down",
+//     "sidebar",
+//     "list",
+//   ];
+
+//   return validTypes.includes(type as ValidIconType)
+//     ? (type as ValidIconType)
+//     : "folder";
+// };
+
+// export const filterNavItems = ({
+//   items,
+//   role,
+//   permissionsCache,
+//   permissionMapping,
+//   managerWalletIsActive,
+//   isCompanyOwner,
+// }: FilterNavItemsParams): NavItem[] => {
+//   // Handle null or undefined items
+//   if (!items || !Array.isArray(items)) {
+//     return [];
+//   }
+
+//   return items
+//     .filter((item) => {
+//       if (!item || typeof item.label !== "string") {
+//         return false;
+//       }
+//       const mapping = permissionMapping[item.label.toLowerCase()];
+
+//       // Render item if no permission is defined or role is not an owner
+//       if (!mapping || !mapping.ownerRoles.includes(role)) {
+//         return true;
+//       }
+
+//       // Special case for "wallet"
+//       if (item.label.toLowerCase() === "wallet") {
+//         return (
+//           permissionsCache["wallet"] ||
+//           (role === "manager" && managerWalletIsActive) ||
+//           isCompanyOwner
+//         );
+//       }
+
+//       return permissionsCache[item.label.toLowerCase()];
+//     })
+//     .map((item) => {
+//       // Ensure type safety by providing a valid type
+//       const safeItem: NavItem = {
+//         ...item,
+//         type: ensureValidType(item.type),
+//       };
+
+//       if (safeItem.content && Array.isArray(safeItem.content)) {
+//         return {
+//           ...safeItem,
+//           content: safeItem.content
+//             .filter((subItem) => {
+//               if (!subItem || typeof subItem.label !== "string") {
+//                 return false;
+//               }
+//               const mapping = permissionMapping[subItem.label.toLowerCase()];
+//               return (
+//                 !mapping ||
+//                 !mapping.ownerRoles.includes(role) ||
+//                 permissionsCache[subItem.label.toLowerCase()]
+//               );
+//             })
+//             .map((subItem) => ({
+//               ...subItem,
+//               type: ensureValidType(subItem.type),
+//             })),
+//         };
+//       }
+//       return safeItem;
+//     })
+//     .filter((item) => !item.content || item.content.length > 0);
+// };
+
+import { usePermission } from "@/hooks/getPermission";
+import { useMemo } from "react";
+
+// Define the valid icon types based on your component requirements
+export type ValidIconType =
+  | "buildings"
+  | "people"
+  | "menu_board"
+  | "status_up"
+  | "empty_wallet"
+  | "folder"
+  | "chart"
+  | "task"
+  | "settings"
+  | "briefcase_timer"
+  | "horizontal_line"
+  | "arrow_down"
+  | "sidebar"
+  | "list";
+
+export interface NavItem {
+  label: string;
+  href?: string;
+  type?: ValidIconType;
+  content?: NavItem[];
+}
+
+interface FilterNavItemsParams {
+  items: NavItem[] | null;
+  role: string;
+  permissionsCache: Record<string, boolean>;
+  permissionMapping: Record<
+    string,
+    {
+      permissions: Record<string, string>;
+      ownerRoles: string[];
+    }
+  >;
+  managerWalletIsActive: boolean;
+  isCompanyOwner: boolean;
+}
+
+// Role-specific permission mapping - accounts for different permission names per role
+export const permissionMapping: Record<
+  string,
+  {
+    permissions: Record<string, string>; // role -> permission name mapping
+    ownerRoles: string[];
+  }
+> = {
+  "call request": {
+    permissions: {
+      manager: "Can view call request",
+      account: "Can view call request",
+      staff: "Can view call request",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  "property request": {
+    permissions: {
+      manager: "Can view property request",
+    },
+    ownerRoles: ["manager"],
+  },
+  complaints: {
+    permissions: {
+      manager: "Can view complaints",
+      account: "Can view complaints",
+      staff: "Can view complaints",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  wallet: {
+    permissions: {
+      director: "Full Wallet Access",
+    },
+    ownerRoles: ["director"],
+  },
+  "landlord & landlady": {
+    permissions: {
+      manager: "Can add and manage landlords/landlady",
+      account: "Can add and manage landlords/landlady",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  // "tenants & occupants": {
+  //   permissions: {
+  //     manager: "Can add and manage tenants/occupants",
+  //     account: "Can manage tenants/occupants", 
+  //   },
+  //   ownerRoles: ["manager", "account"],
+  // },
+  properties: {
+    permissions: {
+      manager: "Can add/delete branch properties",
+      account: "Can add/delete branch properties",
+      staff: "Can add/delete branch properties",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  "service providers": {
+    permissions: {
+      manager: "Can create service provider",
+      account: "Can view service provider",
+      staff: "Can view service provider",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  examine: {
+    permissions: {
+      manager: "Can create examine",
+      account: "Can create examine",
+      staff: "Can create examine",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  inspections: {
+    permissions: {
+      manager: "Can manage inspections",
+      account: "Can manage inspections",
+      staff: "Can manage inspections",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  calendars: {
+    permissions: {
+      manager: "Can manage calendar",
+      account: "Can manage calendar",
+      staff: "Can manage calendar",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  announcements: {
+    permissions: {
+      manager: "Can create and manage announcement",
+      account: "Can create announcement", 
+      staff: "Can view announcement",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  "visitors request": {
+    permissions: {
+      manager: "Can check in visitors",
+      account: "Can check in visitors",
+      staff: "Can check in visitors",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  inventory: {
+    permissions: {
+      manager: "Can create inventory",
+      account: "Can create branch inventory", 
+      staff: "Can create inventory",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  "vehicles record": {
+    permissions: {
+      manager: "Can check in and manage vehicle records",
+      account: "Can check in and manage vehicle records",
+      staff: "Can check in vehicle records",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  invoice: {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  expenses: {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  disbursement: {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+};
+
+export const useNavPermissions = (role: string) => {
+  // Call all permissions at the top level - React-compliant way
+  const callRequestPerm = usePermission(role, "Can view call request");
+  const propertyRequestPerm = usePermission(role, "Can view property request");
+  const complaintsPerm = usePermission(role, "Can view complaints");
+  const walletPerm = usePermission(role, "Full Wallet Access");
+  const landlordPerm = usePermission(
+    role,
+    "Can add and manage landlords/landlady"
+  );
+  const tenantsPerm = usePermission(
+    role,
+    "Can add and manage tenants/occupants"
+  );
+  const propertiesPerm = usePermission(
+    role,
+    "Can add/delete branch properties"
+  );
+  const serviceProvidersPerm = usePermission(role, "Can view service provider");
+  const examinePerm = usePermission(role, "Can create examine");
+  const inspectionsPerm = usePermission(role, "Can manage inspections");
+  const calendarsPerm = usePermission(role, "Can manage calendar");
+  const announcementsPerm = usePermission(
+    role,
+    "Can create and manage announcement"
+  );
+  const visitorsRequestPerm = usePermission(role, "Can check in visitors");
+  const inventoryPerm = usePermission(role, "Can create inventory");
+  const vehiclesRecordPerm = usePermission(
+    role,
+    "Can check in and manage vehicle records"
+  );
+
+  // Create permissions cache using the hook results
+  const permissionsCache = useMemo(
+    () => ({
+      "call request": callRequestPerm,
+      "property request": propertyRequestPerm,
+      complaints: complaintsPerm,
+      wallet: walletPerm,
+      "landlord & landlady": landlordPerm,
+      "tenants & occupants": tenantsPerm,
+      properties: propertiesPerm,
+      "service providers": serviceProvidersPerm,
+      examine: examinePerm,
+      inspections: inspectionsPerm,
+      calendars: calendarsPerm,
+      announcements: announcementsPerm,
+      "visitors request": visitorsRequestPerm,
+      inventory: inventoryPerm,
+      "vehicles record": vehiclesRecordPerm,
+      invoice: tenantsPerm,
+      expenses: tenantsPerm,
+      disbursement: tenantsPerm,
+    }),
+    [
+      callRequestPerm,
+      propertyRequestPerm,
+      complaintsPerm,
+      walletPerm,
+      landlordPerm,
+      tenantsPerm,
+      propertiesPerm,
+      serviceProvidersPerm,
+      examinePerm,
+      inspectionsPerm,
+      calendarsPerm,
+      announcementsPerm,
+      visitorsRequestPerm,
+      inventoryPerm,
+      vehiclesRecordPerm,
+    ]
+  );
+
+  return { permissionsCache, permissionMapping };
+};
+
+export const sanitizeClassName = (label: string): string =>
+  label
+    ? label
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^a-z0-9-]/g, "")
+    : "";
+
+// Helper function to ensure type safety
+const ensureValidType = (type: string | undefined): ValidIconType => {
+  const validTypes: ValidIconType[] = [
+    "buildings",
+    "people",
+    "menu_board",
+    "status_up",
+    "empty_wallet",
+    "folder",
+    "chart",
+    "task",
+    "settings",
+    "briefcase_timer",
+    "horizontal_line",
+    "arrow_down",
+    "sidebar",
+    "list",
+  ];
+
+  return validTypes.includes(type as ValidIconType)
+    ? (type as ValidIconType)
+    : "folder";
+};
+
+export const filterNavItems = ({
+  items,
+  role,
+  permissionsCache,
+  permissionMapping,
+  managerWalletIsActive,
+  isCompanyOwner,
+}: FilterNavItemsParams): NavItem[] => {
+  // Handle null or undefined items
+  if (!items || !Array.isArray(items)) {
+    return [];
+  }
+
+  return items
+    .filter((item) => {
+      if (!item || typeof item.label !== "string") {
+        return false;
+      }
+      const mapping = permissionMapping[item.label.toLowerCase()];
+
+      // Render item if no permission is defined or role is not an owner
+      if (!mapping || !mapping.ownerRoles.includes(role)) {
+        return true;
+      }
+
+      // Special case for "wallet"
+      if (item.label.toLowerCase() === "wallet") {
+        return (
+          permissionsCache["wallet"] ||
+          (role === "manager" && managerWalletIsActive) ||
+          isCompanyOwner
+        );
+      }
+
+      return permissionsCache[item.label.toLowerCase()];
+    })
+    .map((item) => {
+      // Ensure type safety by providing a valid type
+      const safeItem: NavItem = {
+        ...item,
+        type: ensureValidType(item.type),
+      };
+
+      if (safeItem.content && Array.isArray(safeItem.content)) {
+        return {
+          ...safeItem,
+          content: safeItem.content
+            .filter((subItem) => {
+              if (!subItem || typeof subItem.label !== "string") {
+                return false;
+              }
+              const mapping = permissionMapping[subItem.label.toLowerCase()];
+              return (
+                !mapping ||
+                !mapping.ownerRoles.includes(role) ||
+                permissionsCache[subItem.label.toLowerCase()]
+              );
+            })
+            .map((subItem) => ({
+              ...subItem,
+              type: ensureValidType(subItem.type),
+            })),
+        };
+      }
+      return safeItem;
+    })
+    .filter((item) => !item.content || item.content.length > 0);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { usePermission } from "@/hooks/getPermission";
+import { useMemo } from "react";
+import { SVGType } from "../SVG/types";
+
+// Staff configurations for reference
+export const staffConfigurations = [
+  {
+    title: "admin configuration (company director)",
+    permissions: [
+      [
+        "Add Other Directors",
+        "Change Company Module",
+        "Manage Messages & Reviews",
+        "Notification Preferences",
+        "Reset System Settings",
+        "Customize Appearance",
+        "Manage Enrollment Settings",
+        "Set Authorized Signature",
+        "Change Wallet PIN",
+      ],
+      [
+        "Update Bank Details",
+        "Modify SMS Sender Name",
+        "Configure SMTP Settings",
+        "Edit Services",
+        "Manage Subscription Settings",
+        "Access Management Settings",
+        "Modify Company Information",
+        "Full Wallet Access",
+        "Activate Add-on",
+      ],
+    ],
+  },
+  {
+    title: "partner configuration (branch manager)",
+    permissions: [
+      [
+        "Can view and reply branch messages",
+        "Can add/delete branch staff",
+        "Can add/delete branch properties",
+        "Can view and edit branch profile",
+        "Can upgrade or downgrade branch staff account",
+        "Can view call request",
+        "Can check in visitors",
+        "Can view property request",
+        "Can create examine",
+        "Can manage inspections",
+      ],
+      [
+        "Can create and manage announcement",
+        "Can add and manage tenants/occupants",
+        "Can view and reply property reviews",
+        "Can add and manage landlords/landlady",
+        "Can view complaints",
+        "Can create inventory",
+        "Can manage calendar",
+        "Can create service provider",
+        "Can check in and manage vehicle records",
+        "Can approve and refund caution deposit",
+      ],
+    ],
+  },
+  {
+    title: "colleague configuration (account manager)",
+    permissions: [
+      [
+        "Can manage tenants/occupants",
+        "Can view service provider",
+        "Can create announcement",
+        "Can add/delete branch properties",
+        "Can view call request",
+        "Can create branch inventory",
+        "Can reply assigned messages",
+        "Can check in and manage vehicle records",
+      ],
+      [
+        "Can add and manage landlords/landlady",
+        "Can check in visitors",
+        "Can manage calendar",
+        "Can create examine",
+        "Can view complaints",
+        "Can manage inspections",
+      ],
+    ],
+  },
+  {
+    title: "staff configuration (other staff)",
+    permissions: [
+      [
+        "Can view complaints",
+        "Can view announcement",
+        "Can create examine",
+        "Can manage inspections",
+        "Can view service provider",
+        "Can check in vehicle records",
+      ],
+      [
+        "Can check in visitors",
+        "Can view call request",
+        "Can create inventory",
+        "Can manage calendar",
+        "Can view and reply assigned messages",
+      ],
+    ],
+  },
+];
+
+// Role-specific permission mapping for nav create items
+export const permissionMapping: Record<
+  string,
+  {
+    permissions: Record<string, string>; // role -> permission name mapping
+    ownerRoles: string[];
+  }
+> = {
+  "landlord / landlady": {
+    permissions: {
+      manager: "Can add and manage landlords/landlady",
+      account: "Can add and manage landlords/landlady",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  "tenants / occupants": {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants", // Different permission name for account role
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  branch: {
+    permissions: {
+      manager: "Can add/delete branch properties",
+      account: "Can add/delete branch properties",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  property: {
+    permissions: {
+      manager: "Can add/delete branch properties",
+      account: "Can add/delete branch properties",
+      staff: "Can add/delete branch properties",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  "service provider": {
+    permissions: {
+      manager: "Can create service provider",
+      account: "Can view service provider", // Different permission for account
+      staff: "Can view service provider", // Different permission for staff
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  examine: {
+    permissions: {
+      manager: "Can create examine",
+      account: "Can create examine",
+      staff: "Can create examine",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  maintenance: {
+    permissions: {
+      manager: "Can manage inspections",
+      account: "Can manage inspections",
+      staff: "Can manage inspections",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  reminder: {
+    permissions: {
+      manager: "Can manage calendar",
+      account: "Can manage calendar",
+      staff: "Can manage calendar",
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  announcement: {
+    permissions: {
+      manager: "Can create and manage announcement",
+      account: "Can create announcement", // Different permission name for account role
+      staff: "Can view announcement", // Staff can only view, not create
+    },
+    ownerRoles: ["manager", "account", "staff"],
+  },
+  invoice: {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  expenses: {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  disbursement: {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  "tenancy agreement": {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  "other documents": {
+    permissions: {
+      manager: "Can add and manage tenants/occupants",
+      account: "Can manage tenants/occupants",
+    },
+    ownerRoles: ["manager", "account"],
+  },
+  "tenancy form": {
+    permissions: {
+      staff: "Can view and reply assigned messages", // Staff have different permission
+    },
+    ownerRoles: ["staff"],
+  },
+  "management form": {
+    permissions: {
+      staff: "Can view and reply assigned messages", // Staff have different permission
+    },
+    ownerRoles: ["staff"],
+  },
+};
+
+// Custom hook for nav create permissions
+export const useNavCreatePermissions = (role: string) => {
+  // Helper function to get role-specific permission name
+  const getPermissionForRole = (
+    navItem: string,
+    userRole: string
+  ): string | null => {
+    const mapping = permissionMapping[navItem];
+    if (!mapping) return null;
+    return mapping.permissions[userRole] || null;
+  };
+
+  // Call all permissions at the top level with role-specific permission names
+  const landlordPerm = usePermission(
+    role,
+    getPermissionForRole("landlord / landlady", role) || ""
+  );
+  const tenantsPerm = usePermission(
+    role,
+    getPermissionForRole("tenants / occupants", role) || ""
+  );
+  const branchPerm = usePermission(
+    role,
+    getPermissionForRole("branch", role) || ""
+  );
+  const propertiesPerm = usePermission(
+    role,
+    getPermissionForRole("property", role) || ""
+  );
+  const serviceProviderPerm = usePermission(
+    role,
+    getPermissionForRole("service provider", role) || ""
+  );
+  const examinePerm = usePermission(
+    role,
+    getPermissionForRole("examine", role) || ""
+  );
+  const inspectionsPerm = usePermission(
+    role,
+    getPermissionForRole("maintenance", role) || ""
+  );
+  const calendarPerm = usePermission(
+    role,
+    getPermissionForRole("reminder", role) || ""
+  );
+  const announcementPerm = usePermission(
+    role,
+    getPermissionForRole("announcement", role) || ""
+  );
+  const formsPerm = usePermission(
+    role,
+    getPermissionForRole("tenancy form", role) || ""
+  );
+
+  // Create permissions cache using the hook results
+  const permissionsCache = useMemo(
+    () => ({
+      "landlord / landlady": landlordPerm,
+      "tenants / occupants": tenantsPerm,
+      branch: branchPerm,
+      property: propertiesPerm,
+      "service provider": serviceProviderPerm,
+      examine: examinePerm,
+      maintenance: inspectionsPerm,
+      reminder: calendarPerm,
+      announcement: announcementPerm,
+      invoice: tenantsPerm, // Uses same as tenants
+      expenses: tenantsPerm, // Uses same as tenants
+      disbursement: tenantsPerm, // Uses same as tenants
+      "tenancy agreement": tenantsPerm, // Uses same as tenants
+      "other documents": tenantsPerm, // Uses same as tenants
+      "tenancy form": formsPerm,
+      "management form": formsPerm,
+    }),
+    [
+      landlordPerm,
+      tenantsPerm,
+      branchPerm,
+      propertiesPerm,
+      serviceProviderPerm,
+      examinePerm,
+      inspectionsPerm,
+      calendarPerm,
+      announcementPerm,
+      formsPerm,
+    ]
+  );
+
+  return { permissionsCache, permissionMapping };
+};
+
+// Define interfaces for better type safety
+export interface NavCreateItem {
+  label: string;
+  link?: string;
+  modal?: string;
+}
+
+export interface NavCreateSection {
+  type: SVGType;
+  label: string;
+  content?: NavCreateItem[];
+}
+
+interface FilterNavCreateItemsParams {
+  data: NavCreateSection[];
+  role: string;
+  permissionsCache: Record<string, boolean>;
+  permissionMapping: Record<
+    string,
+    {
+      permissions: Record<string, string>;
+      ownerRoles: string[];
+    }
+  >;
+}
+
+// Filter function for nav create items
+export const filterNavCreateItems = ({
+  data,
+  role,
+  permissionsCache,
+  permissionMapping,
+}: FilterNavCreateItemsParams): NavCreateSection[] => {
+  const options = ["management", "tasks", "accounting", "documents"];
+
+  return data
+    .filter((item) => options.includes(item.label.toLowerCase()))
+    .map((item) => ({
+      ...item,
+      content: item.content?.filter(({ label }) => {
+        const mapping = permissionMapping[label.toLowerCase()];
+
+        // Render item if no permission is defined or if the role is not an owner
+        if (!mapping || !mapping.ownerRoles.includes(role)) {
+          return true;
+        }
+
+        // Only filter out if the role owns the permission and it's false
+        return permissionsCache[label.toLowerCase()];
+      }),
+    }))
+    .filter((item) => item.content && item.content.length > 0);
+};

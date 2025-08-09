@@ -2,7 +2,6 @@ import { usePermission } from "@/hooks/getPermission";
 import { useMemo } from "react";
 import { SVGType } from "../SVG/types";
 
-
 // Permission mapping for nav create items
 export const permissionMapping: Record<
   string,
