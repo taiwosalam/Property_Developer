@@ -10,6 +10,8 @@ import { useModal } from "@/components/Modal/modal";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { FilterOptionObj } from "./types";
 import { FilterResult } from "./types";
+import { empty } from "@/app/config";
+import Image from "next/image";
 
 interface FilterOption {
   label: string;

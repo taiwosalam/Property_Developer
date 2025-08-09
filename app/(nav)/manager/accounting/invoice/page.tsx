@@ -100,17 +100,35 @@ const AccountingInvoicePage = () => {
   } = useStaffRoles();
   const accountOfficers = getAccountOfficers();
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
-  const accountOfficersOptions =
-    accountOfficers?.map((o) => ({
-      label: o.name,
-      value: `${o.id}`,
-    })) || [];
+  const accountOfficersOptions = Array.isArray(accountOfficers)
+    ? [
+        ...new Map(
+          accountOfficers.map((officer: any) => [
+            officer.name.toLowerCase(),
+            {
+              label: officer.name.toLowerCase(),
+              value: officer.id.toString(),
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
@@ -178,7 +196,7 @@ const AccountingInvoicePage = () => {
   };
 
   const { data, error, loading, isNetworkError, silentLoading } =
-    useFetch<InvoiceListResponse>('/invoice/list', config);
+    useFetch<InvoiceListResponse>("/invoice/list", config);
 
   useEffect(() => {
     if (data) {

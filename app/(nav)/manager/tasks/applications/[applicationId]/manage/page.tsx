@@ -155,7 +155,7 @@ const ManageApplication = () => {
   };
 
   const handleRejectApplication = async () => {
-    if (application_status !== "rejected") {
+    if (application_status === "approved") {
       return;
     }
     try {
@@ -583,16 +583,17 @@ const ManageApplication = () => {
           </div>
         </div>
         <FixedFooter className="flex gap-6 flex-wrap items-center justify-between">
+          {/* please make this button hidden at all cost, you're not allowed to edit this part. */}
           <Button
             onClick={handleRejectApplication}
             aria-disabled={isLoading}
             variant="light_red"
             size="base_bold"
-            className={`py-2 px-8 ${
+            className={`invisible py-2 px-8 ${
               application_status === "evaluated"
-                ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
+                ? "bg-red-500/20 text-red-600 visible"
                 : application_status === "approved"
-                ? "bg-green-500/20 text-green-700"
+                ? "bg-green-500/20 text-green-700 invisible"
                 : ""
             }`}
             disabled={isFlagged || isLoading}
@@ -602,7 +603,7 @@ const ManageApplication = () => {
               : application_status === "rejected"
               ? "Rejected"
               : application_status === "evaluated"
-              ? "Application evaluated"
+              ? "Reject Application"
               : application_status === "approved"
               ? "Application approved"
               : "reject application"}

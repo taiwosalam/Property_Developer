@@ -54,6 +54,7 @@ import {
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useStaffRoles from "@/hooks/getStaffs";
 
 const AccountingExpensesPage = () => {
   const router = useRouter();
@@ -164,7 +165,28 @@ const AccountingExpensesPage = () => {
     loading: staffsLoading,
   } = useFetch<StaffListResponse>("/report/staffs");
 
-  const staffOptions = staffsData ? transformStaffs(staffsData) : [];
+  const {
+    getManagers,
+    getStaffs,
+    getAccountOfficers,
+    loading: loadingStaffs,
+  } = useStaffRoles();
+
+  const accountOfficers = getAccountOfficers();
+
+  const accountOfficersOptions = Array.isArray(accountOfficers)
+    ? [
+        ...new Map(
+          accountOfficers.map((officer: any) => [
+            officer.name.toLowerCase(),
+            {
+              label: officer.name.toLowerCase(),
+              value: officer.id.toString(),
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
   const propertyOptions = Array.isArray(propertyData?.data)
     ? [
@@ -174,7 +196,7 @@ const AccountingExpensesPage = () => {
             .map((property: any) => [
               property.title.toLowerCase(),
               {
-                label: property.title,
+                label: property.title.toLowerCase(),
                 value: property.id.toString(),
               },
             ])
@@ -333,11 +355,11 @@ const AccountingExpensesPage = () => {
               handleFilterApply={handleFilterApply}
               isDateTrue
               filterOptionsMenu={[
-                ...(staffOptions.length > 0
+                ...(accountOfficersOptions.length > 0
                   ? [
                       {
-                        label: "Account Officer",
-                        value: staffOptions,
+                        label: "Account Manager",
+                        value: accountOfficersOptions,
                       },
                     ]
                   : []),

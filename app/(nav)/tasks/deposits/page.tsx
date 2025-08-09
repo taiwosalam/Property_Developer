@@ -117,6 +117,11 @@ const DepositRequest = () => {
     isNetworkError,
     refetch,
   } = useFetch<ICautionApiResponse>(`cautions-deposit/company`, config);
+
+  const handleSilentRefetch = () => {
+    refetch({ silent: true });
+  };
+
   useRefetchOnEvent("dispatchDeposit", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -232,6 +237,7 @@ const DepositRequest = () => {
                   <DepositRequestCard
                     key={index}
                     {...transformToDepositRequestCardProps(details)}
+                    onDataUpdate={handleSilentRefetch}
                   />
                 ))}
               </AutoResizingGrid>

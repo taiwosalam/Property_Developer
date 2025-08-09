@@ -133,6 +133,8 @@ const Inventory = () => {
     setSelectedView("list");
   };
 
+ 
+
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -282,7 +284,7 @@ const Inventory = () => {
           ...(accountOfficersOptions.length > 0
             ? [
                 {
-                  label: "Account Officer",
+                  label: "Account Manager",
                   value: accountOfficersOptions,
                 },
               ]

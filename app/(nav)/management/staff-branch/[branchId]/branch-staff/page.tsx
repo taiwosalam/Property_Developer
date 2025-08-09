@@ -278,7 +278,7 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
               label: "Position",
               radio: true,
               value: [
-                { label: "Account Officer", value: "account_officer" },
+                { label: "Account Manager", value: "account_officer" },
                 { label: "Staff", value: "staff" },
                 { label: "Branch Manager", value: "manager" },
               ],

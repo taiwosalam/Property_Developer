@@ -155,7 +155,7 @@ const ManageApplication = () => {
   };
 
   const handleRejectApplication = async () => {
-    if (application_status !== "rejected") {
+    if (application_status === "approved") {
       return;
     }
     try {
@@ -235,7 +235,7 @@ const ManageApplication = () => {
     return statusStyles[status as keyof typeof statusStyles] || defaultStatus;
   };
 
-  // ----------- RENDER ----------- 
+  // ----------- RENDER -----------
   return (
     <>
       <div className="custom-flex-col gap-[88px] pb-[150px] lg:pb-[100px]">
@@ -434,7 +434,7 @@ const ManageApplication = () => {
                       <Button
                         onClick={handleOpenModal}
                         variant="blank"
-                        className="underline font-semibold invisible group-hover:visible text-brand-9"
+                        className="underline font-semibold text-brand-9"
                       >
                         {"Preview Company Profile > >"}
                       </Button>
@@ -595,9 +595,9 @@ const ManageApplication = () => {
             size="base_bold"
             className={`invisible py-2 px-8 ${
               application_status === "evaluated"
-                ? "bg-purple-600/20 text-purple-800 hover:bg-purple-600/20 focus-within:bg-purple-600/20"
+                ? "bg-red-500/20 text-red-600 visible"
                 : application_status === "approved"
-                ? "bg-green-500/20 text-green-700"
+                ? "bg-green-500/20 text-green-700 invisible"
                 : ""
             }`}
             disabled={isFlagged || isLoading}
@@ -607,7 +607,7 @@ const ManageApplication = () => {
               : application_status === "rejected"
               ? "Rejected"
               : application_status === "evaluated"
-              ? "Application evaluated"
+              ? "Reject Application"
               : application_status === "approved"
               ? "Application approved"
               : "reject application"}
