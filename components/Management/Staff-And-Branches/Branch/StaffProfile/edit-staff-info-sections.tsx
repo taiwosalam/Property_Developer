@@ -301,7 +301,7 @@ export const StaffEditMoveToAnotherBranchSection = () => {
               id="select_new_branch_position"
               label="select new branch role"
               inputContainerClassName="bg-neutral-2"
-              options={["manager", "account officer", "staff"]}
+              options={["manager", "account manager", "staff"]}
               //   defaultValue={staff?.real_estate_title}
             />
             <div className="md:col-span-2 flex justify-end">
@@ -348,7 +348,7 @@ export const StaffEditChangePositionSection = () => {
   const hasManager = staff?.position === "manager";
   const positionOptions = [
     ...(hasManager ? [] : [{ value: "manager", label: "branch manager" }]),
-    { value: "account officer", label: "account officer" },
+    { value: "account officer", label: "account manager" },
     { value: "staff", label: "staff" },
   ].filter((option) => option.value !== position);
 

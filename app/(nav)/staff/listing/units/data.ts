@@ -1,8 +1,5 @@
 import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
-import {
-  RentalPropertyCardProps,
-  UnitDataObject,
-} from "../../management/rent-unit/data";
+import { RentalPropertyCardProps, UnitDataObject } from "@/app/(nav)/management/rent-unit/data";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import api, { handleAxiosError } from "@/services/api";
 
