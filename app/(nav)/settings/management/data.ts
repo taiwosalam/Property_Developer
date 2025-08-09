@@ -64,7 +64,7 @@ export const staffConfigurations = [
         // "Can manage tenants/occupants",
         "Can add and manage tenants/occupants",
         "Can view service provider",
-        "Can create announcement",
+        "Can create and manage announcement",
         "Can add/delete branch properties",
         "Can view call request",
         "Can create inventory",
@@ -87,7 +87,7 @@ export const staffConfigurations = [
     permissions: [
       [
         "Can view complaints",
-        "Can view announcement",
+        "Can create and manage announcement",
         "Can create examine",
         "Can manage inspections",
         "Can view service provider",
