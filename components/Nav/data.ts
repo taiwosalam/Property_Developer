@@ -244,35 +244,6 @@ export const account_nav_items: NavItemsProps = [
     ],
   },
   {
-    type: "menu_board",
-    label: "accounting",
-    content: [
-      { label: "invoice", href: "/accountant/accounting/invoice" },
-      { label: "expenses", href: "/accountant/accounting/expenses" },
-      { label: "disbursement", href: "/accountant/accounting/disbursement" },
-      // { label: "VAT", href: "/accountant/accounting/vat" },
-    ],
-  },
-  {
-    type: "chart",
-    label: "listing",
-    content: [
-      { label: "units", href: "/accountant/listing/units" },
-      { label: "statistics", href: "/accountant/listing/statistics" },
-      { label: "Property Draft/Request", href: "/accountant/listing/property" },
-    ],
-  },
-  {
-    type: "task",
-    label: "community",
-    href: "/applications",
-    content: [
-      { label: "team chat", href: "/community/team-chat" },
-      { label: "agent forum", href: "/community/agent-forum" },
-      { label: "agent request", href: "/community/agent-request" },
-    ],
-  },
-  {
     type: "briefcase_timer",
     label: "tasks",
     content: [
@@ -289,6 +260,37 @@ export const account_nav_items: NavItemsProps = [
       { label: "deposits request", href: "/accountant/tasks/deposits" },
     ],
   },
+  {
+    type: "chart",
+    label: "listing",
+    content: [
+      { label: "units", href: "/accountant/listing/units" },
+      { label: "statistics", href: "/accountant/listing/statistics" },
+      { label: "Property Draft/Request", href: "/accountant/listing/property" },
+    ],
+  },
+  {
+    type: "menu_board",
+    label: "accounting",
+    content: [
+      { label: "invoice", href: "/accountant/accounting/invoice" },
+      { label: "expenses", href: "/accountant/accounting/expenses" },
+      { label: "disbursement", href: "/accountant/accounting/disbursement" },
+      // { label: "VAT", href: "/accountant/accounting/vat" },
+    ],
+  },
+  
+  {
+    type: "task",
+    label: "community",
+    href: "/applications",
+    content: [
+      { label: "team chat", href: "/community/team-chat" },
+      { label: "agent forum", href: "/community/agent-forum" },
+      { label: "agent request", href: "/community/agent-request" },
+    ],
+  },
+  
   { type: "settings", label: "settings", href: "/accountant/settings" },
 ];
 
@@ -318,16 +320,6 @@ export const staff_nav_items: NavItemsProps = [
     ],
   },
   {
-    type: "task",
-    label: "community",
-    href: "/community",
-    content: [
-      { label: "team chat", href: "/community/team-chat" },
-      { label: "agent forum", href: "/community/agent-forum" },
-      { label: "agent request", href: "/community/agent-request" },
-    ],
-  },
-  {
     type: "briefcase_timer",
     label: "tasks",
     content: [
@@ -343,6 +335,17 @@ export const staff_nav_items: NavItemsProps = [
       { label: "deposits request", href: "/staff/tasks/deposits" },
     ],
   },
+  {
+    type: "task",
+    label: "community",
+    href: "/community",
+    content: [
+      { label: "team chat", href: "/community/team-chat" },
+      { label: "agent forum", href: "/community/agent-forum" },
+      { label: "agent request", href: "/community/agent-request" },
+    ],
+  },
+
   { type: "settings", label: "settings", href: "/staff/settings" },
 ];
 

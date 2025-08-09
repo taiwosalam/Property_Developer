@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 
 import utc from "dayjs/plugin/utc";
 import { parseCurrencyToNumber } from "@/lib/utils";
+import { useRole } from "@/hooks/roleContext";
 dayjs.extend(utc);
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
@@ -58,6 +59,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
 }) => {
   const [isEscrowChecked, setIsEscrowChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { role } = useRole();
 
   // New state to track which checkboxes are locked (successfully updated)
   const [lockedCheckboxes, setLockedCheckboxes] = useState({
@@ -308,43 +310,45 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
               </Checkbox>
             ))}
           </div>
-          {status !== "completed" && (
-            <div className="space-y-5">
-              <div className="flex gap-1 items-center">
-                <p className="text-red-500">*</p>
-                <p className="text-text-tertiary dark:text-white">
-                  Caution deposit held in escrow by the{" "}
-                  {request_from === "company"
-                    ? "Management Company"
-                    : request_from === "landlord"
-                    ? "Landlord/Landlady"
-                    : request_from === "escrow"
-                    ? "Administrator"
-                    : "Management Company"}
-                </p>
-              </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between">
-                <Input
-                  id="refund_amount"
-                  label="Amount to be Refunded"
-                  CURRENCY_SYMBOL="₦"
-                  formatNumber
-                  value={formattedRefundAmount}
-                  onChange={handleRefundAmountChange}
-                  disabled={isLoading}
-                />
-                <Button
-                  type="submit"
-                  size="xs_normal"
-                  className="py-2 px-6"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Please wait..." : "Refund Now"}
-                </Button>
+          {role === "manager" ||
+            (role === "director" && status !== "completed" && (
+              <div className="space-y-5">
+                <div className="flex gap-1 items-center">
+                  <p className="text-red-500">*</p>
+                  <p className="text-text-tertiary dark:text-white">
+                    Caution deposit held in escrow by the{" "}
+                    {request_from === "company"
+                      ? "Management Company"
+                      : request_from === "landlord"
+                      ? "Landlord/Landlady"
+                      : request_from === "escrow"
+                      ? "Administrator"
+                      : "Management Company"}
+                  </p>
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between">
+                  <Input
+                    id="refund_amount"
+                    label="Amount to be Refunded"
+                    CURRENCY_SYMBOL="₦"
+                    formatNumber
+                    value={formattedRefundAmount}
+                    onChange={handleRefundAmountChange}
+                    disabled={isLoading}
+                  />
+                  <Button
+                    type="submit"
+                    size="xs_normal"
+                    className="py-2 px-6"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Please wait..." : "Refund Now"}
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            ))}
         </form>
       </div>
     </ModalPreset>

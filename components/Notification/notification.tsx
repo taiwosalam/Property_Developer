@@ -21,6 +21,7 @@ import { OtherIcon } from "./notification-icons";
 import { useRole } from "@/hooks/roleContext";
 import { toast } from "sonner";
 import { deleteAllNotification } from "@/app/(nav)/notifications/data";
+import Image from "next/image";
 
 interface NotificationProps {
   notification: {
@@ -48,6 +49,8 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
   const resolvedType = notification.type.includes("\\")
     ? normalizeNotificationType(notification.type)
     : notification.type.toLowerCase().trim();
+
+  const [imageSrc, setImageSrc] = useState(notification.sender_picture);
 
   const route = notification_links[resolvedType] || "/";
 
@@ -140,6 +143,14 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
                         size={50}
                         className="rounded-md bg-brand-9"
                       />
+
+                      {/* <Image
+                        src={`https://${notification.message}` || imageSrc}
+                        width={100}
+                        height={100}
+                        alt="sample image"
+                        onError={() => setImageSrc(empty)}
+                      /> */}
                     </div>
                   )}
                 <div className="custom-flex-col">
