@@ -28,6 +28,11 @@ const GoogleMapsModal = ({
 }) => {
   const { setIsOpen } = useModal();
   const [locationPicked, setLocationPicked] = useState(false);
+  const [selectedLoacationPoint, setSelectedLoacationPoint] = useState<null | {
+    lat: number;
+    lng: number;
+  }>(null);
+
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
   });
@@ -41,6 +46,7 @@ const GoogleMapsModal = ({
         lng: event.latLng.lng(),
       };
       setSelectedLocation(newLocation);
+      setSelectedLoacationPoint(newLocation);
       // console.log("new location", newLocation)
       setCoordinate(`${event.latLng.lat()}, ${event.latLng.lng()}`);
     }
@@ -106,8 +112,24 @@ const GoogleMapsModal = ({
             {/* Marker at the selected location */}
             <Marker position={selectedLocation} draggable={true} />
           </GoogleMap>
-          <div className="flex justify-end gap-4 mb-4 mt-10">
-            {!locationPicked && (
+          <div className="flex justify-end items-center gap-4 mb-4 mt-10">
+            {/* {!locationPicked && (
+              <Button
+                size="base_bold"
+                className="py-[10px] px-8"
+                type="button"
+                variant="sky_blue"
+                onClick={handleGetCurrentLocation}
+              >
+                Pick Current Location
+              </Button>
+            )} */}
+            {selectedLoacationPoint ? (
+              <div className="flex items-center gap-2  flex-col text-center font-semibold text-brand-9">
+                <p>Lat - {selectedLoacationPoint.lat.toFixed(5)}</p>
+                <p>Long - {selectedLoacationPoint.lng.toFixed(5)}</p>
+              </div>
+            ) : (
               <Button
                 size="base_bold"
                 className="py-[10px] px-8"

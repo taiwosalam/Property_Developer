@@ -28,7 +28,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
   const [checkSubmit, setCheckSubmit] = useState(false);
   const [saveAfterValidation, setSaveAfterValidation] = useState(false);
 
-  // Track form presence in DOM
+  // ---- ADDED: Track form presence in DOM ----
   const [formInDom, setFormInDom] = useState<boolean>(true);
 
   useEffect(() => {
@@ -39,6 +39,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
     }, 300);
     return () => clearInterval(interval);
   }, []);
+  // -------------------------------------------
 
   const hasAddedUnits = addedUnits.length > 0;
 
@@ -112,19 +113,18 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
 
   const handleSaveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // Force synchronous validation to ensure latest state
+    // handleInputChange();
     const isValid = validateForm();
     const formInDom = document.getElementById(
       "add-unit-form"
     ) as HTMLFormElement | null;
-
+    
     if (formInDom && !isValid) {
-      toast.error(
+      toast.warning(
         `The following fields are required: ${missingFields.join(", ")}`
       );
       return;
     }
-
     if (addedUnits.length > 0) {
       const hasNotYetUploaded = addedUnits.some((unit) => unit.notYetUploaded);
       if (hasNotYetUploaded) {
@@ -134,13 +134,11 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
         return;
       }
     }
-
-    if (formInDom && isValid) {
+    if (formInDom && canSubmit) {
       setSaveClick(true);
-      setSaveAfterValidation(true); // Trigger saveAfterValidation to maintain your logic
+      formInDom.requestSubmit();
       return;
     }
-
     if (!formInDom) {
       if (addedUnits.length === 0) {
         toast.success("Property has been added to your drafts.");
@@ -160,6 +158,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
         </ModalContent>
       </Modal>
       <div className="unit-action-buttons property-save-button-wrapper flex items-center gap-10">
+        {/* RENDER BUTTON ONLY IF NO FORM IN DOM AND THERE ARE ADDED UNITS */}
         {!formInDom && hasAddedUnits && (
           <Button
             size="base_medium"

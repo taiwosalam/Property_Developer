@@ -88,9 +88,10 @@ const AccountManagerDashboard = () => {
   } = useFetch<DashboardDataResponse>("/dashboard/data");
   const [performanceChart, setPerformanceChart] =
     useState<DashboardDataResponse | null>(null);
+    
   useEffect(() => {
     if (dashboardData) {
-      setDashboardStats(getDashboardCardData(dashboardData as any));
+      // setDashboardStats(getDashboardCardData(dashboardData as any));
       setPerformanceChart(dashboardData);
     }
   }, [dashboardData]);

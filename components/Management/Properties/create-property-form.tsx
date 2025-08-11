@@ -1,57 +1,5 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { v4 as uuidv4 } from "uuid";
-import clsx from "clsx";
-import Cookies from "js-cookie";
-import { toast } from "sonner";
-import { Cat } from "lucide-react";
-
-// Components
-import Input from "@/components/Form/Input/input";
-import Select from "@/components/Form/Select/select";
-import TextArea from "@/components/Form/TextArea/textarea";
-import { AuthForm } from "@/components/Auth/auth-components";
-import FlowProgress from "@/components/FlowProgress/flow-progress";
-import PropertyFormFooter from "./property-form-footer.tsx";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
-import SelectWithImage from "@/components/Form/Select/select-with-image";
-import RestrictInput from "@/components/Form/Input/InputWIthRestrict";
-import FullPageLoader from "@/components/Loader/start-rent-loader";
-import { PlusIcon, DeleteIconX, ExclamationMark } from "@/public/icons/icons";
-import DraggableImage from "./draggable-image";
-import GoogleMapsModal from "./google-maps";
-
-// Utils & Hooks
-import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
-import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
-import { usePersonalInfoStore } from "@/store/personal-info-store";
-import useFetch from "@/hooks/useFetch";
-import { useAddUnitStore } from "@/store/add-unit-store";
-import { useRole } from "@/hooks/roleContext";
-import { useTourStore } from "@/store/tour-store";
-import { usePathname } from "next/navigation";
-import { useGlobalStore } from "@/store/general-store";
-import { useBranchInfoStore } from "@/store/branch-info-store";
-
-// Data & Types
-import { propertyCategories } from "@/data";
-import { currencySymbols } from "@/utils/number-formatter";
-import { property_form_state_data, transformPropertyFormData } from "./data";
-import { getAllStaffByBranch } from "./data";
-import {
-  fetchBranchDependentData,
-  getBranchInventories,
-} from "@/utils/getData";
-import {
-  getAllCities,
-  getAllLocalGovernments,
-  getAllStates,
-  getCities,
-  getLocalGovernments,
-} from "@/utils/states";
-import api, { handleAxiosError } from "@/services/api";
-
 // Types
 import type {
   CreatePropertyFormProps,
@@ -60,9 +8,59 @@ import type {
   AllLandlordsResponse,
   AllInventoryResponse,
 } from "./types";
-import type { BranchDependentData } from "@/utils/types";
-import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
+import { convertYesNoToBoolean } from "@/utils/checkFormDataForImageOrAvatar";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { PlusIcon, DeleteIconX, ExclamationMark } from "@/public/icons/icons";
+import Input from "@/components/Form/Input/input";
+import Select from "@/components/Form/Select/select";
+import TextArea from "@/components/Form/TextArea/textarea";
+import {
+  getAllCities,
+  getAllLocalGovernments,
+  getAllStates,
+  getCities,
+  getLocalGovernments,
+} from "@/utils/states";
+import { v4 as uuidv4 } from "uuid";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
+import DraggableImage from "./draggable-image";
+import { propertyCategories } from "@/data";
+import { AuthForm } from "@/components/Auth/auth-components";
+import {
+  getAllStaffByBranch,
+  property_form_state_data,
+  transformPropertyFormData,
+} from "./data";
+import { currencySymbols } from "@/utils/number-formatter";
+import FlowProgress from "@/components/FlowProgress/flow-progress";
+import PropertyFormFooter from "./property-form-footer.tsx";
+import { useMultipleImageUpload } from "@/hooks/useMultipleImageUpload";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useFetch from "@/hooks/useFetch";
+import clsx from "clsx";
+import { useAddUnitStore } from "@/store/add-unit-store";
+import Cookies from "js-cookie";
+import { useRole } from "@/hooks/roleContext";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import GoogleMapsModal from "./google-maps";
 import { MultiSelect } from "@/components/multiselect/multi-select";
+import { Cat } from "lucide-react";
+import SelectWithImage from "@/components/Form/Select/select-with-image";
+import RestrictInput from "@/components/Form/Input/InputWIthRestrict";
+import {
+  fetchBranchDependentData,
+  getBranchInventories,
+} from "@/utils/getData";
+import { BranchDependentData } from "@/utils/types";
+import api, { handleAxiosError } from "@/services/api";
+import FullPageLoader from "@/components/Loader/start-rent-loader";
+import { useTourStore } from "@/store/tour-store";
+import { usePathname } from "next/navigation";
+import { useGlobalStore } from "@/store/general-store";
+import { toast } from "sonner";
+import { landlordTableFields } from "@/app/(nav)/manager/management/landlord/data";
+import { useBranchInfoStore } from "@/store/branch-info-store";
+
 const maxNumberOfImages = 6;
 
 type SetPropertyStateChanges = Partial<{
@@ -101,17 +99,18 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const isDirector = role === "director";
   const isAccountOfficer = role === "account";
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
+  // const [selectedStaffs, setSelectedStaffs] = useState<string[]>([]);
+  const [selectedStaffs, setSelectedStaffs] = useState<string[]>(() => {
+    return editMode && propertyDetails?.staff_id
+      ? propertyDetails.staff_id
+      : [];
+  });
+
+  // const [selectedLandlord, setSelectedLandlord] = useState<string[]>([]);
   const [selectedLandlord, setSelectedLandlord] = useState<string | undefined>(
     undefined
   );
-  const [selectedAccountManager, setSelectedAccountManager] = useState<
-    string | undefined
-  >(
-    editMode && propertyDetails?.officer_id?.[0]
-      ? String(propertyDetails.officer_id[0])
-      : undefined
-  );
+  const [selectedOfficer, setSelectedOfficer] = useState<string[]>([]);
   const [inventoryError, setInventoryError] = useState<string | null>(null);
   const [inventoryLoading, setInventoryLoading] = useState<boolean>(false);
   const [branchData, setBranchData] = useState<BranchDependentData>({
@@ -149,6 +148,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = state;
 
   const isFacility = formType === "facility";
+  
+  // const selectedBranchId = selectedBranch.value || propertyDetails?.branch_id;
+  // const selectedBranchId = selectedBranch.value;
+  // Use branch_id from store for non-directors, otherwise use selectedBranch.value
   const selectedBranchId = isDirector
     ? selectedBranch.value
     : branchIdFromStore;
@@ -194,6 +197,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     handleImageReorder(source.index, destination.index);
   };
 
+  // Function to reset the state
   const handleReset = () => {
     setState((x) => ({
       ...x,
@@ -205,7 +209,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }));
     resetImages();
     setSelectedCategory(null);
-    setSelectedAccountManager(undefined);
+    // setSelectedLandlord([]);
+    // setSelectedLandlord("");
+    // setGlobalStore("selectedLandlordId", "");
   };
 
   const {
@@ -280,12 +286,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }
   }, [branchData?.staff?.data]);
 
-  useEffect(() => {
-    // When branch changes, reset account manager and other staff
-    setSelectedAccountManager(undefined);
-    setSelectedStaffs([]);
-  }, [selectedBranchId]);
-
   const landlordOptions = useMemo(
     () =>
       landlordsData?.data?.map((landlord) => ({
@@ -296,27 +296,74 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     [landlordsData]
   );
 
+  // console.log("landlordsData", landlordsData);
   const inventoryOptions =
     branchData?.inventory?.data?.data?.map((inventory: any) => ({
       value: inventory.id,
       label: inventory.title,
     })) || [];
 
-  const officerOptions =
-    branchData?.accountOfficer?.data?.data?.map((officer: any) => ({
-      value: officer.id,
-      label: officer.user.name,
-      icon: officer.user.profile.picture,
-    })) || [];
+  // const officerOptions =
+  //   branchData?.accountOfficer?.data?.data?.map((officer: any) => ({
+  //     value: officer.id,
+  //     label: officer.user.name,
+  //     icon: officer.user.profile.picture,
+  //   })) || [];
 
-  const staffOption =
-    branchData?.staff?.data?.data
-      .filter((s: any) => s.staff_role !== "manager")
-      .map((s: any) => ({
-        value: s.id,
-        label: s.user.name,
-        icon: s.user.profile.picture,
-      })) || [];
+  const officerOptions = useMemo(
+    () =>
+      branchData?.accountOfficer?.data?.data?.map((officer: any) => ({
+        value: officer.id,
+        label: officer.user.name,
+        icon: officer.user.profile.picture,
+      })) || [],
+    [branchData?.accountOfficer?.data]
+  );
+
+
+  const staffOption = useMemo(
+    () =>
+      branchData?.staff?.data?.data
+        ?.filter((s: any) => s.staff_role !== "manager")
+        .map((s: any) => ({
+          value: s.id,
+          label: s.user.name,
+          icon: s.user.profile.picture,
+        })) || [],
+    [branchData?.staff?.data]
+  );
+
+  //Stabilize the selectedStaffs initialization to prevent rerendering
+  const initialSelectedStaffs = useMemo(() => {
+    return editMode && propertyDetails?.staff_id
+      ? propertyDetails.staff_id
+      : [];
+  }, [editMode, propertyDetails?.staff_id]);
+
+  // Use useCallback to stabilize the onValueChange handler
+  const handleStaffChange = useCallback((newStaffs: string[]) => {
+    setSelectedStaffs(newStaffs);
+  }, []);
+
+  useEffect(() => {
+    if (editMode && propertyDetails?.staff_id && selectedStaffs.length === 0) {
+      setSelectedStaffs(propertyDetails.staff_id);
+    }
+  }, [editMode, propertyDetails?.staff_id, selectedStaffs.length]);
+
+  // Memoize the account officer defaultValue to prevent recalculation
+  const accountOfficerDefaultValue = useMemo(() => {
+    if (editMode && (propertyDetails?.officer_id ?? [])[0]) {
+      return (
+        officerOptions.find(
+          (staff: any) =>
+            String(staff.value) ===
+            String((propertyDetails?.officer_id ?? [])[0])
+        ) || { value: "", label: "", icon: "" }
+      );
+    }
+    return undefined;
+  }, [editMode, propertyDetails?.officer_id, officerOptions]);
 
   useEffect(() => {
     if (staffsData) {
@@ -373,6 +420,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     "is_inventory",
   ];
 
+  // console.log("selected", selectedStaffs)
   const handleFormSubmit = async (data: Record<string, any>) => {
     setRequestLoading(true);
     convertYesNoToBoolean(data, yesNoFields);
@@ -416,9 +464,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   }, [selectedLandlord, landlordsData]);
 
   const filteredCautionDepositOptions = useMemo(() => {
+    // Only show "Keep with Landlord" if agent is "Mobile"
     if (selectedLandlordAgent?.toLowerCase() === "mobile") {
       return CautionDepositOptions;
     }
+    // Otherwise, filter out "Keep with Landlord"
     return CautionDepositOptions.filter((opt) => opt.value !== "Landlord");
   }, [selectedLandlordAgent]);
 
@@ -437,22 +487,10 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       handleGoToTourStep(13);
     } else if (
       formType === "rental" &&
-      !editMode &&
-      pathname.startsWith("/accountant")
-    ) {
-      handleGoToTourStep(12);
-    } else if (
-      formType === "rental" &&
       editMode &&
       pathname.startsWith("/accountant")
     ) {
       handleGoToTourStep(11);
-    } else if (
-      formType === "facility" &&
-      editMode &&
-      pathname.startsWith("/accountant")
-    ) {
-      handleGoToTourStep(8);
     } else if (
       formType === "facility" &&
       !editMode &&
@@ -462,7 +500,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     } else if (formType === "rental" && !editMode) {
       handleGoToTourStep(14);
     } else if (formType === "facility" && !editMode) {
-      handleGoToTourStep(10);
+      handleGoToTourStep(11);
     } else if (formType === "rental" && editMode) {
       handleGoToTourStep(13);
     } else if (
@@ -487,11 +525,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
         "p-6 bg-white dark:bg-darkText-primary rounded-2xl": editMode,
       })}
     >
-      <AuthForm onFormSubmit={handleFormSubmit} skipValidation>
+      <AuthForm
+        onFormSubmit={handleFormSubmit}
+        // id={editMode ? "edit-property-form" : "create-property-form"}
+        skipValidation
+      >
         <div className="max-w-[970px] scroll-mt-[160px]" ref={scrollTargetRef}>
           <input name="property_type" type="hidden" value={formType} />
-
-          {/* Image Upload Section */}
           <div className="mb-5 lg:mb-8 property-picture-upload-wrapper">
             <p className="mb-5 text-text-secondary dark:text-darkText-1 text-base font-normal">
               Set{" "}
@@ -549,7 +589,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               </Droppable>
             </DragDropContext>
           </div>
-
           {/* Video Link */}
           {formType === "rental" && (
             <div className="youtube-video-link-wrapper md:grid md:gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -566,7 +605,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               />
             </div>
           )}
-
           {/* Property Details */}
           <div className="flex gap-2 items-center">
             <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
@@ -644,6 +682,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               required
               hiddenInputClassName="property-form-input"
             />
+
             <Select
               options={getLocalGovernments(selectedState)}
               id="local_government"
@@ -682,6 +721,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 ],
               }}
             />
+
             {formType === "rental" && (
               <>
                 <div className="coordinate-wrapper flex flex-col gap-2">
@@ -733,6 +773,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 </div>
               </>
             )}
+
             {!isFacility && (
               <SelectWithImage
                 options={landlordOptions}
@@ -755,7 +796,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 }
               />
             )}
-          
+
             {isDirector && (
               <Select
                 id="branch_id"
@@ -765,8 +806,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 resetKey={resetKey}
                 options={branchOptions}
                 inputContainerClassName="bg-white"
-                onChange={(selectedBranchId) => {
-                  // Update the branch in state
+                onChange={(selectedBranchId) =>
                   setPropertyState({
                     selectedBranch: {
                       value: selectedBranchId,
@@ -776,9 +816,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                             String(branch.value) === String(selectedBranchId)
                         )?.label || "",
                     },
-                  });
-                  // Selections will be reset by the useEffect above
-                }}
+                  })
+                }
                 value={selectedBranch}
                 hiddenInputClassName="property-form-input"
                 placeholder={
@@ -788,17 +827,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                     ? "Error loading branches"
                     : "Select branch"
                 }
+                // error={branchesError}
               />
             )}
-  
 
             {role !== "account" && (
               <SelectWithImage
                 options={officerOptions}
-                value={officerOptions.find(
-                  (o:any) => o.value === selectedAccountManager
-                )}
-                onChange={(value) => setSelectedAccountManager(value)}
+                defaultValue={accountOfficerDefaultValue}
                 id="account_officer_id"
                 label="Account Manager"
                 className="property-officer-wrapper"
@@ -807,44 +843,37 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 hiddenInputClassName="property-form-input"
                 placeholder={
                   branchData.accountOfficer.loading
-                    ? "Loading account managers..."
+                    ? "Loading account manager..."
                     : branchData.accountOfficer.error
-                    ? "Error loading account managers"
-                    : selectedBranchId
-                    ? "Select account manager"
-                    : "Select branch first"
+                    ? "Error loading account manager"
+                    : "Select account manager"
                 }
-                disabled={
-                  branchData.accountOfficer.loading || !selectedBranchId
-                }
+                disabled={branchData.accountOfficer.loading}
               />
             )}
-            
 
+            {/* Other Staff - Use memoized options and stable handlers */}
             <div className="property-staff-wrapper bg-transparent flex flex-col gap-2 self-end">
               <label className="text-text-label dark:text-darkText-2">
                 Other Staff
               </label>
               <MultiSelect
                 options={staffOption}
-                value={selectedStaffs}
-                onValueChange={setSelectedStaffs}
+                onValueChange={handleStaffChange}
+                value={selectedStaffs} // Use controlled value instead of defaultValue
                 placeholder={
                   branchData.staff.loading
-                    ? "Loading staff..."
+                    ? "Loading Other staff..."
                     : branchData.staff.error
-                    ? "Error loading staff"
-                    : selectedBranchId
-                    ? "Select other staff"
-                    : "Select branch first"
+                    ? "Error loading other staff"
+                    : "Select Other staff"
                 }
-                disabled={branchData.staff.loading || !selectedBranchId}
+                disabled={branchData.staff.loading}
                 variant="default"
                 maxCount={1}
                 className="property-staff-wrapper bg-white dark:bg-darkText-primary dark:border dark:border-solid dark:border-[#C1C2C366] hover:bg-white dark:hover:bg-darkText-primary text-black dark:text-white py-3"
               />
             </div>
-
 
             <TextArea
               id="description"
@@ -866,7 +895,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               defaultValue={editMode ? propertyDetails?.description : undefined}
             />
           </div>
-
           {/* Property Settings */}
           <div className="flex gap-2 items-center">
             <p className="text-primary-navy dark:text-white font-bold text-lg lg:text-xl">
@@ -1033,6 +1061,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
               </>
             )}
 
+            {/* NOTE: I ADDED CURRENCY TO FACILITY PROPERTY CREATE FORM  */}
             <Select
               options={Object.entries(currencySymbols).map(([key, symbol]) => ({
                 value: key.toLowerCase(),

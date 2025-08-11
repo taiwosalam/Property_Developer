@@ -138,6 +138,10 @@ const UnitBreakdownFacility = () => {
     goToStep(stepIndex, pathname);
   };
 
+  const [defaultPeriod, setDefaultPeriod] = useState(
+    unitData?.renew_fee_period || "yearly"
+  );
+
   return (
     <div className="unit-fee-breakdown-new-tenant">
       <div className="flex gap-2 items-center">
@@ -149,7 +153,7 @@ const UnitBreakdownFacility = () => {
             if (pathname.startsWith("/manager")) {
               handleGoToTourStep(27);
             } else if (pathname.startsWith("/accountant")) {
-              handleGoToTourStep(26)
+              handleGoToTourStep(26);
             } else {
               handleGoToTourStep(28);
             }
@@ -168,6 +172,7 @@ const UnitBreakdownFacility = () => {
           options={rentPeriods}
           label="Fee Period"
           inputContainerClassName="bg-white"
+          onChange={setDefaultPeriod}
           hiddenInputClassName="unit-form-input"
           resetKey={formResetKey}
           defaultValue={unitData?.fee_period || "yearly"}
@@ -195,7 +200,7 @@ const UnitBreakdownFacility = () => {
         />
         <Input
           id="security_fee"
-          label="Security Fee"
+          label={`Security Fee (${defaultPeriod})`}
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={securityFee}
@@ -205,7 +210,7 @@ const UnitBreakdownFacility = () => {
         />
         <Input
           id="service_charge"
-          label="Service Charge"
+          label={`Service Charge (${defaultPeriod})`}
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={serviceCharge}
