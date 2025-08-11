@@ -68,7 +68,7 @@ export const staffConfigurations = [
         "Can add/delete branch properties",
         "Can view call request",
         "Can create inventory",
-        "Can reply assigned messages",
+        // "Can reply assigned messages",
         "Can check in and manage vehicle records",
       ],
       [
@@ -171,7 +171,7 @@ export const validPermissions: Record<string, string[]> = {
     "can_add_delete_branch_properties",
     "can_view_call_request",
     "can_create_inventory",
-    "can_reply_assigned_messages",
+    // "can_reply_assigned_messages",
     "can_check_in_and_manage_vehicle_records",
     "can_add_and_manage_landlords_landlady",
     "can_check_in_visitors",
@@ -193,7 +193,7 @@ export const validPermissions: Record<string, string[]> = {
     "can_view_call_request",
     "can_create_inventory",
     "can_manage_calendar",
-    "can_view_and_reply_assigned_messages",
+    // "can_view_and_reply_assigned_messages",
     "can_view_and_reply_branch_messages",
   ],
   user: [

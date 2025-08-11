@@ -33,7 +33,7 @@ const PreviewAnnouncement = () => {
   // PERMISSIONS
   const canCreateAndManageAnnouncements = usePermission(
     role,
-    "Can create examine"
+    "Can create and manage announcement"
   );
 
   const [pageData, setPageData] = useState<AnnouncementDetailsPageData | null>(

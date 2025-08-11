@@ -336,16 +336,18 @@ export const dashboardPerformanceChartConfig = {
   },
 } satisfies ChartConfig;
 
+
 export const dashboardListingsChartConfig = {
   views: {
     label: "Views",
     color: "#01BA4C",
   },
-  enquiries: {
-    label: "Enquiries",
-    color: "#315EE7",
+  bookmarks: {
+    label: "Bookmarked",
+    color: "#2DD4BF",
   },
 };
+
 
 export const dashboardPerformanceChartData = [
   { date: "2024-09-01", profits: 50, sales: 70, expenses: 30 },

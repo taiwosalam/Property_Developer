@@ -49,7 +49,6 @@ const NotificationCard: React.FC<notificationCardProps> = ({
         return `/unauthorized`;
     }
   };
-  
 
   const handleUserClicked = (user: any) => {
     try {
@@ -154,7 +153,10 @@ const NotificationCard: React.FC<notificationCardProps> = ({
               <Link
                 href={
                   sectionHeader === "Staffs"
-                    ? getStaffsPageLink(branchId || "0", notification.staff_ID || "0")
+                    ? getStaffsPageLink(
+                        branchId || "0",
+                        notification.staff_ID || "0"
+                      )
                     : sectionHeader === "Recent Messages"
                     ? `/messages/${notification.id}`
                     : sectionHeader === "Recent Complaints" && seeAllLink
@@ -242,7 +244,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                     {notification.time}
                   </p>
                   {notification.count !== undefined && (
-                    <div className="bg-brand-9 inline-flex items-end ml-aotu min-w-[30px] max-w-[30px] justify-end py-1 rounded-full whitespace-nowrap">
+                    <div className="ml-auto bg-brand-9 inline-flex items-center justify-center min-w-[30px] h-[20px] px-1 rounded-full whitespace-nowrap">
                       <p className="text-white text-[10px] font-medium text-center">
                         {roundUptoNine(notification.count)}
                       </p>

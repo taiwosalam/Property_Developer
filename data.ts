@@ -49875,7 +49875,7 @@ export const staffRoutes = [
   "/staff/accounting/receipts",
   "/staff/accounting/expenses",
   "/staff/accounting/disbursement",
-  "/manager/accounting/disbursement/export",
+  "/staff/accounting/disbursement/export",
   "/staff/accounting/statement",
   "/staff/accounting/vat",
   "/staff/reports/tenants",

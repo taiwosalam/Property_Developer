@@ -354,9 +354,9 @@ export const dashboardListingsChartConfig = {
     label: "Views",
     color: "#01BA4C",
   },
-  enquiries: {
-    label: "Enquiries",
-    color: "#315EE7",
+  bookmarks: {
+    label: "Bookmarked",
+    color: "#2DD4BF",
   },
 };
 
