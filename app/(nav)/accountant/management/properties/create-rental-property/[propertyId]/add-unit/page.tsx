@@ -24,7 +24,7 @@ import { ExclamationMark } from "@/public/icons/icons";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
-  const customBackPath = `/management/properties/${propertyId}/edit-property`;
+  const customBackPath = `/accountant/management/properties/${propertyId}/edit-property`;
   const router = useRouter();
   const [dataNotFound, setDataNotFound] = useState(false);
   const [showUnitForm, setShowUnitForm] = useState(true);
@@ -87,7 +87,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
         // router.push(
         //   `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
         // );
-        window.location.href = `/management/properties/create-gated-estate-property/${propertyId}/add-unit`;
+        window.location.href = `/accountant/management/properties/create-gated-estate-property/${propertyId}/add-unit`;
       }
       setDataNotFound(false);
       setAddUnitStore("property_id", transformedData.property_id);

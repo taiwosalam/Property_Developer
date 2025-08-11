@@ -156,7 +156,11 @@ const Applications = () => {
     flagged: "flagged" | "unflagged",
     status: "evaluated" | "rejected" | "pending" | "approved"
   ) => {
-    if (flagged === "flagged" || status === "evaluated") {
+    if (
+      flagged === "flagged" ||
+      status === "evaluated" ||
+      status === "rejected"
+    ) {
       return;
     }
     try {

@@ -71,6 +71,8 @@ export interface ComplaintsPageData {
   total_month_completed: number;
   total_rejected: number;
   total_month_rejected: number;
+  total_processing: number;
+  total_month_processing: number;
   complaints: {
     id: number | string;
     columnId: "processing" | "approved" | "rejected" | string;

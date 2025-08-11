@@ -92,17 +92,22 @@ const EditBranchForm = ({
       // Remove picture field if it wasn't changed cos its partial update on d backend
       data.delete("picture");
     }
-    setUpdateRequestLoading(true);
-    convertYesNoToBoolean(data, ["branch_wallet"]);
-    if (somedata?.id) {
-      const status = await updateBranch(data, somedata.id);
-      if (status) {
-        // setSuccessModalOpen(true);
-        toast.success("Branch updated successfully");
-        window.dispatchEvent(new Event("refetch-branch"));
+    try {
+      setUpdateRequestLoading(true);
+      convertYesNoToBoolean(data, ["branch_wallet"]);
+      if (somedata?.id) {
+        const status = await updateBranch(data, somedata.id);
+        if (status) {
+          // setSuccessModalOpen(true);
+          toast.success("Branch updated successfully");
+          window.dispatchEvent(new Event("refetch-branch"));
+        }
       }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdateRequestLoading(false);
     }
-    setUpdateRequestLoading(false);
   };
 
   useEffect(() => {
@@ -186,7 +191,6 @@ const EditBranchForm = ({
                   defaultValue={somedata?.wallet}
                 />
               )}
-
             </div>
 
             <TextArea
@@ -267,7 +271,7 @@ const EditBranchForm = ({
             </Modal>
           </div>
         </div>
-        {role === "director" && (
+        {(role === "manager" || role === "director") && (
           <div className="flex justify-end -mt-4">
             <Button
               type="submit"

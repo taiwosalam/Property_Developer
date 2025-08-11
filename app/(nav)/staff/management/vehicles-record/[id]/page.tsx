@@ -343,7 +343,7 @@ const VehiclesRecordPage = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ create new"
+              noButton
               modalContent={
                 canCheckInAndManageVehicleRec ? (
                   <CreateRecordModal propertyId={Number(id)} data={data} />

@@ -148,11 +148,8 @@ const RecordPage = () => {
           webContactInfo: transformed.webContactInfo,
           checkInsOutData: transformed.checkInsOutData,
         }));
-      } catch (error) {
-        console.error("Transformation error:", error, apiData);
-      }
+      } catch (error) {}
     } else if (!loading) {
-      console.error("Invalid API data format:", apiData);
     }
   }, [apiData, loading]);
 
@@ -225,7 +222,6 @@ const RecordPage = () => {
         toast.error("Failed to check in vehicle");
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setChecking(false);
     }
@@ -258,8 +254,6 @@ const RecordPage = () => {
     }
     setModalOpen(true);
   };
-
-  console.log("phone_number", phone_number);
 
   return (
     <div className="space-y-5 pb-[100px]">

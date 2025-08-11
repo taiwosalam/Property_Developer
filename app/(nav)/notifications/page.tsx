@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { Loader2 } from "lucide-react";
 import EmptyList from "@/components/EmptyList/Empty-List";
+import NotificationsSkeleton from "./notification-skeleton";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<
@@ -26,6 +27,7 @@ const Notifications = () => {
   >([]);
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState<TNotificationData["meta"]>();
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const [notificationIds, setNotificationIds] = useState<string[]>([]);
   const [isClearingNotifications, setIsClearingNotifications] = useState(false);
@@ -68,11 +70,13 @@ const Notifications = () => {
 
   useEffect(() => {
     const loadInitial = async () => {
+      setInitialLoading(true);
       const data = await fetchNotifications(1);
       if (data) {
         setNotifications(data.notifications);
         setMeta(data.meta);
       }
+      setInitialLoading(false);
     };
     loadInitial();
   }, []);
@@ -80,7 +84,7 @@ const Notifications = () => {
   const handleDeleteNotifications = async () => {
     try {
       setIsClearingNotifications(true);
-      const res = await clearAllNotification();
+      const res = await deleteAllNotification();
       if (res) {
         toast.success("Notifications Cleared");
       }
@@ -99,7 +103,7 @@ const Notifications = () => {
       <div className="space-y-3 sticky top-0 bg-neutral-2 dark:bg-[#000000] z-[1]">
         <div className="flex items-center justify-between gap-4 text-black dark:text-white text-lg md:text-xl lg:text-2xl font-medium">
           <h1>Notifications</h1>
-          {notifications?.length > 0 && (
+          {!initialLoading && notifications?.length > 0 && (
             <button
               type="button"
               onClick={handleDeleteNotifications}
@@ -117,7 +121,9 @@ const Notifications = () => {
         <SectionSeparator />
       </div>
       <div className="custom-flex-col gap-6">
-        {notifications && notifications.length > 0 ? (
+        {initialLoading ? (
+          <NotificationsSkeleton />
+        ) : notifications && notifications.length > 0 ? (
           notifications.map((notification, index) => {
             if (index === notifications.length - 1) {
               return (

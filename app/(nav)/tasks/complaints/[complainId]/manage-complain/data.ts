@@ -156,7 +156,7 @@ export const transformComplaintManage = (
     })),
     task_bar: data?.complaint?.task_bar?.map((task) => ({
       progress: task?.progress,
-      approve_by: task?.approve_by,
+      approve_by: task?.approve_by?.toLowerCase(),
       date: task?.date,
       time: task?.time,
       text: task?.text,
@@ -167,7 +167,7 @@ export const transformComplaintManage = (
 interface ITaskReminder {
   title: string;
   note: string;
-  date: Dayjs | string | null ;
+  date: Dayjs | string | null;
   id?: string;
 }
 export const createReminder = async ({

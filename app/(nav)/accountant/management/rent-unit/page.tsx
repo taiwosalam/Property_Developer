@@ -366,7 +366,7 @@ const RentAndUnit = () => {
           ...(accountOfficersOptions.length > 0
             ? [
                 {
-                  label: "Account Officer",
+                  label: "Account Manager",
                   value: accountOfficersOptions,
                 },
               ]

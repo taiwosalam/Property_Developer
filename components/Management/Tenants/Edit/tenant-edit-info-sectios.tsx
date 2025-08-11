@@ -416,57 +416,57 @@ export const TenantEditOthersInfoSection = () => {
 
   return (
     <div className="other-details-form">
-    <LandlordTenantInfoEditSection title="Others">
-      <AuthForm
-        onFormSubmit={handleUpdateOthers}
-        skipValidation
-        returnType="form-data"
-      >
-        <LandlordTenantInfoEditGrid>
-          <Select
-            id="employment"
-            label="employment"
-            options={employmentOptions}
-            value={employment || ""}
-            inputContainerClassName="bg-neutral-2"
-            onChange={(value) => setEmployment(value)}
-          />
-          {employment && employment.toLowerCase() === "employed" && (
+      <LandlordTenantInfoEditSection title="Others">
+        <AuthForm
+          onFormSubmit={handleUpdateOthers}
+          skipValidation
+          returnType="form-data"
+        >
+          <LandlordTenantInfoEditGrid>
             <Select
-              id="employment_type"
-              label="employment type"
-              options={employmentTypeOptions}
+              id="employment"
+              label="employment"
+              options={employmentOptions}
+              value={employment || ""}
               inputContainerClassName="bg-neutral-2"
-              defaultValue={tenant?.others?.employment_type || ""}
+              onChange={(value) => setEmployment(value)}
             />
-          )}
-          <Select
-            id="family_type"
-            label="family type"
-            options={familyTypes}
-            inputContainerClassName="bg-neutral-2"
-            defaultValue={tenant?.others?.family_type || ""}
-          />
-          <div
-            className={clsx(
-              "flex items-end justify-end",
-              (!employment ||
-                (employment && employment.toLowerCase()) !== "employed") &&
-                "md:col-span-2"
+            {employment && employment.toLowerCase() === "employed" && (
+              <Select
+                id="employment_type"
+                label="employment type"
+                options={employmentTypeOptions}
+                inputContainerClassName="bg-neutral-2"
+                defaultValue={tenant?.others?.employment_type || ""}
+              />
             )}
-          >
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              disabled={reqLoading}
-              type="submit"
+            <Select
+              id="family_type"
+              label="family type"
+              options={familyTypes}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={tenant?.others?.family_type || ""}
+            />
+            <div
+              className={clsx(
+                "flex items-end justify-end",
+                (!employment ||
+                  (employment && employment.toLowerCase()) !== "employed") &&
+                  "md:col-span-2"
+              )}
             >
-              {reqLoading ? "updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                disabled={reqLoading}
+                type="submit"
+              >
+                {reqLoading ? "updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
     </div>
   );
 };
@@ -522,72 +522,72 @@ export const TenantEditBankDetailsSection = () => {
 
   return (
     <div className="bank-details-form">
-    <LandlordTenantInfoEditSection title="Bank Details">
-      <AuthForm
-        onFormSubmit={handleUpdateBankDetails}
-        skipValidation
-        returnType="form-data"
-      >
-        <LandlordTenantInfoEditGrid>
-          <Select
-            id="bank_name"
-            label="bank name"
-            options={
-              bankList?.data.map((bank) => ({
-                value: bank.bank_code,
-                label: bank.bank_name,
-              })) || []
-            }
-            placeholder={
-              bankListLoading
-                ? "Loading bank list..."
-                : bankListError
-                ? "Error loading bank list"
-                : "Select bank"
-            }
-            value={bankName}
-            error={bankListError}
-            onChange={(value) => {
-              setBankCode(value);
-              setIsVerified(false);
-              setAccountName("");
-              const selectedBank = bankList?.data.find(
-                (bank) => String(bank.bank_code) === value
-              );
-              setBankName(selectedBank ? selectedBank.bank_name : "");
-            }}
-          />
-          <Input
-            id="account_number"
-            label="account number"
-            inputClassName="rounded-lg"
-            value={accountNumber}
-            maxLength={10}
-            onChange={handleAccountNumberChange}
-            disabled={!bankCode}
-          />
-          <Input
-            id="account_name"
-            label="account name"
-            placeholder={lookupLoading ? "Looking up account" : ""}
-            value={accountName}
-            inputClassName="rounded-lg"
-            readOnly
-          />
+      <LandlordTenantInfoEditSection title="Bank Details">
+        <AuthForm
+          onFormSubmit={handleUpdateBankDetails}
+          skipValidation
+          returnType="form-data"
+        >
+          <LandlordTenantInfoEditGrid>
+            <Select
+              id="bank_name"
+              label="bank name"
+              options={
+                bankList?.data.map((bank) => ({
+                  value: bank.bank_code,
+                  label: bank.bank_name,
+                })) || []
+              }
+              placeholder={
+                bankListLoading
+                  ? "Loading bank list..."
+                  : bankListError
+                  ? "Error loading bank list"
+                  : "Select bank"
+              }
+              value={bankName}
+              error={bankListError}
+              onChange={(value) => {
+                setBankCode(value);
+                setIsVerified(false);
+                setAccountName("");
+                const selectedBank = bankList?.data.find(
+                  (bank) => String(bank.bank_code) === value
+                );
+                setBankName(selectedBank ? selectedBank.bank_name : "");
+              }}
+            />
+            <Input
+              id="account_number"
+              label="account number"
+              inputClassName="rounded-lg"
+              value={accountNumber}
+              maxLength={10}
+              onChange={handleAccountNumberChange}
+              disabled={!bankCode}
+            />
+            <Input
+              id="account_name"
+              label="account name"
+              placeholder={lookupLoading ? "Looking up account" : ""}
+              value={accountName}
+              inputClassName="rounded-lg"
+              readOnly
+            />
 
-          <div className="flex items-end justify-end">
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              disabled={!isVerified || reqLoading}
-              type="submit"
-            >
-              {reqLoading ? "updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+            <div className="flex items-end justify-end">
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                disabled={!isVerified || reqLoading}
+                type="submit"
+              >
+                {reqLoading ? "updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
     </div>
   );
 };
@@ -652,25 +652,45 @@ export const TenantEditAttachmentSection = ({
   };
 
   const handleUpdateButtonClick = async () => {
-    if (!tenant?.id) return;
-    setReqLoading(true);
+    if (!tenant?.id) {
+      toast.error(`Tenant field is required`);
+      return;
+    }
+
+    if (!documents.length) {
+      toast.error(`Documents are required`);
+      return;
+    }
+
+    if (!unit) {
+      toast.error(`Unit selection is required`);
+      return;
+    }
+
     const removeSuccess =
       urlsToRemove.length > 0
         ? await removeDocuments(urlsToRemove, tenant.id)
         : true;
-    const uploadSuccess = await uploadDocuments(
-      documents,
-      tenant.id,
-      unit || undefined
-    );
-    if (removeSuccess && uploadSuccess) {
-      toast.success("Documents updated successfully");
-      window.dispatchEvent(new Event("tenant-updated"));
-      window.dispatchEvent(new Event("refetchtenant"));
-    } else {
-      toast.error("An error occurred while updating documents");
+    try {
+      setReqLoading(true);
+      const uploadSuccess = await uploadDocuments(
+        documents,
+        tenant.id,
+        unit || undefined
+      );
+      if (removeSuccess && uploadSuccess) {
+        toast.success("Documents updated successfully");
+        window.dispatchEvent(new Event("tenant-updated"));
+        window.dispatchEvent(new Event("refetchtenant"));
+      } else {
+        toast.error("An error occurred while updating documents");
+      }
+      setReqLoading(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setReqLoading(false);
     }
-    setReqLoading(false);
   };
 
   useEffect(() => {
@@ -684,49 +704,49 @@ export const TenantEditAttachmentSection = ({
   const groupedDocuments = groupDocumentsByType(documents);
   return (
     <div className="attachment-section">
-    <LandlordTenantInfoEditSection title="attachment">
-      <LandlordTenantInfoEditGrid>
-        <div className="space-y-5 col-span-full">
-          <div className="flex gap-2 w-full">
-            <Select
-              id="document_type"
-              label="document type"
-              placeholder="Select options"
-              options={["invoice", "receipt", "agreement", "other document"]}
-              value={documentType}
-              onChange={(value) => setDocumentType(value)}
-              className="w-full"
-            />
-            <Select
-              id="unit"
-              label="unit"
-              placeholder="Select options"
-              options={tenant?.unitOptions || []}
-              // value={documentType}
-              onChange={(value) => setUnit(Number(value))}
-              className="w-full"
-            />
+      <LandlordTenantInfoEditSection title="attachment">
+        <LandlordTenantInfoEditGrid>
+          <div className="space-y-5 col-span-full">
+            <div className="flex gap-2 w-full">
+              <Select
+                id="document_type"
+                label="document type"
+                placeholder="Select options"
+                options={["invoice", "receipt", "agreement", "other document"]}
+                value={documentType}
+                onChange={(value) => setDocumentType(value)}
+                className="w-full"
+              />
+              <Select
+                id="unit"
+                label="unit"
+                placeholder="Select options"
+                options={tenant?.unitOptions || []}
+                // value={documentType}
+                onChange={(value) => setUnit(Number(value))}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <p className="text-base font-medium">Browse <span className="text-red-500">*</span></p>
+              <Button
+                size="base_medium"
+                className="py-2 px-6"
+                onClick={handleChooseFileClick}
+              >
+                Choose File
+              </Button>
+            </div>
           </div>
-          <div>
-            <p className="text-base font-medium">Browse *</p>
-            <Button
-              size="base_medium"
-              className="py-2 px-6"
-              onClick={handleChooseFileClick}
-            >
-              Choose File
-            </Button>
-          </div>
-        </div>
-        <input
-          type="file"
-          onChange={handleFileChange}
-          className="hidden"
-          accept={acceptedExtensions.join(",")}
-          ref={fileInputRef}
-          multiple
-        />
-        {/* <div className="flex flex-wrap gap-4 col-span-full">
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="hidden"
+            accept={acceptedExtensions.join(",")}
+            ref={fileInputRef}
+            multiple
+          />
+          {/* <div className="flex flex-wrap gap-4 col-span-full">
           {documents?.map((document) => (
             <div key={document.id} className="relative w-fit">
               <LandlordTenantInfoDocument {...document} />
@@ -740,44 +760,44 @@ export const TenantEditAttachmentSection = ({
             </div>
           ))}
         </div> */}
-        <div className="col-span-full">
-          {Object.entries(groupedDocuments).map(([documentType, docs]) => (
-            <div key={documentType} className="mb-6">
-              <h3 className="text-lg font-semibold capitalize mb-2">
-                {documentType === "others" ? "Other Documents" : documentType}
-              </h3>
-              <div className="flex flex-wrap gap-4">
-                {docs?.map((document) => (
-                  <div key={document.id} className="relative w-fit">
-                    <LandlordTenantInfoDocument {...document} />
-                    <button
-                      type="button"
-                      className="absolute top-0 right-0"
-                      onClick={() => handleDeleteDocument(document.id)}
-                    >
-                      <DeleteIconOrange size={32} />
-                    </button>
-                  </div>
-                ))}
+          <div className="col-span-full">
+            {Object.entries(groupedDocuments).map(([documentType, docs]) => (
+              <div key={documentType} className="mb-6">
+                <h3 className="text-lg font-semibold capitalize mb-2">
+                  {documentType === "others" ? "Other Documents" : documentType}
+                </h3>
+                <div className="flex flex-wrap gap-4">
+                  {docs?.map((document) => (
+                    <div key={document.id} className="relative w-fit">
+                      <LandlordTenantInfoDocument {...document} />
+                      <button
+                        type="button"
+                        className="absolute top-0 right-0"
+                        onClick={() => handleDeleteDocument(document.id)}
+                      >
+                        <DeleteIconOrange size={32} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-          {!noDefault && documents.length === 0 && (
-            <div className="flex justify-center items-center h-32 text-neutral-500">
-              No documents available
-            </div>
-          )}
-        </div>
-        <Button
-          size="base_medium"
-          className="update-button col-span-full w-fit ml-auto py-2 px-6"
-          onClick={handleUpdateButtonClick}
-          disabled={reqLoading}
-        >
-          {reqLoading ? "updating..." : "update"}
-        </Button>
-      </LandlordTenantInfoEditGrid>
-    </LandlordTenantInfoEditSection>
+            ))}
+            {!noDefault && documents.length === 0 && (
+              <div className="flex justify-center items-center h-32 text-neutral-500">
+                No documents available
+              </div>
+            )}
+          </div>
+          <Button
+            size="base_medium"
+            className="update-button col-span-full w-fit ml-auto py-2 px-6"
+            onClick={handleUpdateButtonClick}
+            disabled={reqLoading}
+          >
+            {reqLoading ? "updating..." : "update"}
+          </Button>
+        </LandlordTenantInfoEditGrid>
+      </LandlordTenantInfoEditSection>
     </div>
   );
 };
@@ -806,27 +826,27 @@ export const TenantEditNoteSection = () => {
   }, [data?.notes?.write_up]);
   return (
     <div className="add-note-section">
-    <LandlordTenantInfoEditSection
-      title="add note"
-      style={{ position: "relative" }}
-    >
-      <button
-        type="button"
-        className="absolute top-5 right-5 !w-[unset]"
-        onClick={() => setNote("")}
+      <LandlordTenantInfoEditSection
+        title="add note"
+        style={{ position: "relative" }}
       >
-        Clear
-      </button>
-      <TextArea id="note" value={note} onChange={(value) => setNote(value)} />
-      <Button
-        size="base_medium"
-        className="!w-fit ml-auto py-2 px-6"
-        onClick={handleUpdateNote}
-        disabled={reqLoading}
-      >
-        {reqLoading ? "updating..." : "update"}
-      </Button>
-    </LandlordTenantInfoEditSection>
+        <button
+          type="button"
+          className="absolute top-5 right-5 !w-[unset]"
+          onClick={() => setNote("")}
+        >
+          Clear
+        </button>
+        <TextArea id="note" value={note} onChange={(value) => setNote(value)} />
+        <Button
+          size="base_medium"
+          className="!w-fit ml-auto py-2 px-6"
+          onClick={handleUpdateNote}
+          disabled={reqLoading}
+        >
+          {reqLoading ? "updating..." : "update"}
+        </Button>
+      </LandlordTenantInfoEditSection>
     </div>
   );
 };

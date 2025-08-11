@@ -205,12 +205,14 @@ const Documents = () => {
                     when assigning a new tenant - whether its mobile tenant or
                     web tenant.
                     <br />
+                    <br />
                     Once a template is saved here: It will be used to
                     auto-generate agreements during the &apos;Start Rent&apos;
                     process.
                     <br />
                     You can easily share with mobile tenant or download the
                     agreement for web tenants.
+                    <br />
                     <br />
                     Each new tenant assigned to a property unit will receive a
                     ready-to-use lease or rent agreement based on the saved
