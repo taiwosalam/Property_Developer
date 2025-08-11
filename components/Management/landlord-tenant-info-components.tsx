@@ -31,7 +31,7 @@ export const LandlordTenantInfoBox: React.FC<{
 }> = ({ style, children, className }) => (
   <div
     className={cn(
-      "p-4 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden min-h-[200px]",
+      "p-4 bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden min-h-[200px",
       className
     )}
     style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)", ...style }}

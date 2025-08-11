@@ -75,14 +75,14 @@ export const permissionMapping: Record<
     permission: "Can view service provider",
     ownerRoles: ["account", "staff"],
   },
-  examine: {
-    permission: "Can create examine",
-    ownerRoles: ["manager", "account", "staff"],
-  },
-  inspections: {
-    permission: "Can manage inspections",
-    ownerRoles: ["manager", "account", "staff"],
-  },
+  // examine: {
+  //   permission: "Can create examine",
+  //   ownerRoles: ["manager", "account", "staff"],
+  // },
+  // inspections: {
+  //   permission: "Can manage inspections",
+  //   ownerRoles: ["manager", "account", "staff"],
+  // },
   // calendars: {
   //   permission: "Can manage calendar",
   //   ownerRoles: ["manager", "account", "staff"],
