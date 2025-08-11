@@ -33,6 +33,8 @@ export interface BranchStaffRequestParams {
   search?: string;
   sort_order?: "asc" | "desc";
   staff_positiion?: string; // "account_officer" | "staff" | "manager";
+  position?: string; // "account_officer" | "staff" | "manager";
+
 }
 
 export interface StaffListResponse {

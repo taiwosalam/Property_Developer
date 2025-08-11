@@ -56,6 +56,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   refunded_amount,
   resolved_by,
   resolved_date,
+  onDataUpdate,
 }) => {
   const [isEscrowChecked, setIsEscrowChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -170,6 +171,13 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
           [field]: newCheckedState,
         }));
         toast.success("Deposit status updated successfully");
+
+        if (onDataUpdate) {
+          onDataUpdate();
+        } else {
+          // Fallback to event dispatch
+          window.dispatchEvent(new Event("dispatchDeposit"));
+        }
       }
     } catch (error) {
       // Revert state on error
@@ -311,8 +319,8 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
             ))}
           </div>
 
-          {role === "manager" ||
-            (role === "director" && status !== "completed" && (
+          {(role === "manager" || role === "director") &&
+            status !== "completed" && (
               <div className="space-y-5">
                 <div className="flex gap-1 items-center">
                   <p className="text-red-500">*</p>
@@ -348,7 +356,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
                   </Button>
                 </div>
               </div>
-            ))}
+            )}
         </form>
       </div>
     </ModalPreset>

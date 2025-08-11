@@ -24,6 +24,7 @@ export type ApplicationResponse = {
       email: string;
       user_type: string;
       phone: string;
+      profile_phone: string;
       is_flagged: boolean;
     };
     flags: {
@@ -152,7 +153,7 @@ export const transformApplicationData = (
       property_name: `${item?.unit.name} - ${item?.unit?.property_title}`,
       renew_fee_period: item?.unit?.renew_fee_period,
       address: item?.unit?.property_address,
-      phone_number: item?.user?.phone,
+      phone_number: item?.user?.profile_phone ,
       date: item?.application_date,
       total_package: item?.unit?.renew_total_package
         ? Math.round(Number(item?.unit?.renew_total_package))?.toLocaleString()

@@ -133,6 +133,9 @@ const BranchStaffPage = () => {
       page: 1,
       search: "",
     };
+    if (position) {
+      queryParams.position = position;
+    }
     setConfig({
       params: queryParams,
     });
@@ -290,10 +293,19 @@ const BranchStaffPage = () => {
       </div>
       <FilterBar
         azFilter
-        noFilterButton
         pageTitle={`${branchName !== null ? branchName : "Branch"} Staff`}
         searchInputPlaceholder="Search within Branch"
         handleFilterApply={handleFilterApply}
+        filterOptionsMenu={[
+          {
+            label: "Position",
+            radio: true,
+            value: [
+              { label: "Account Manager", value: "account_officer" },
+              { label: "Staff", value: "staff" },
+            ],
+          },
+        ]}
         gridView={view === "grid"}
         setGridView={() => setView("grid")}
         setListView={() => setView("list")}

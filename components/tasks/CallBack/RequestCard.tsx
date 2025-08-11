@@ -486,6 +486,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               refunded_amount={props?.refunded_amount}
               resolved_by={props?.resolved_by}
               resolved_date={props?.resolved_date}
+              onDataUpdate={props?.onDataUpdate}
             />
           ) : null}
         </ModalContent>

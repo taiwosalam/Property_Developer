@@ -104,7 +104,7 @@ const AccountingInvoicePage = () => {
             .map((property: any) => [
               property.title.toLowerCase(),
               {
-                label: property.title,
+                label: property.title.toLowerCase(),
                 value: property.id.toString(),
               },
             ])
@@ -118,11 +118,19 @@ const AccountingInvoicePage = () => {
   //     label: p.title,
   //   })) || [];
 
-  const accountOfficersOptions =
-    accountOfficers?.map((o) => ({
-      label: o.name,
-      value: `${o.id}`,
-    })) || [];
+  const accountOfficersOptions = Array.isArray(accountOfficers)
+    ? [
+        ...new Map(
+          accountOfficers.map((officer: any) => [
+            officer.name.toLowerCase(),
+            {
+              label: officer.name.toLowerCase(),
+              value: officer.id.toString(),
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
@@ -512,7 +520,7 @@ const AccountingInvoicePage = () => {
                       ...(accountOfficersOptions.length > 0
                         ? [
                             {
-                              label: "Account Officer",
+                              label: "Account Manager",
                               value: accountOfficersOptions,
                             },
                           ]
