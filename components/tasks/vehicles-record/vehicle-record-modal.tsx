@@ -159,7 +159,7 @@ const VehicleRecordModal: React.FC<
       case "manager":
         return `/manager/management/vehicles-record/records/${id}/record`;
       case "account":
-        return `/account/management/vehicles-record/records/${id}/record`;
+        return `/accountant/management/vehicles-record/records/${id}/record`;
       default:
         return `/management/vehicles-record/records/${id}/record`;
     }

@@ -2,7 +2,10 @@
 
 // Imports
 import Card from "@/components/dashboard/card";
-import { getStaffDashboardCardData } from "./data";
+import {
+  dashboardListingsChartConfig,
+  getStaffDashboardCardData,
+} from "./data";
 import { SectionContainer } from "@/components/Section/section-components";
 import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
 import Link from "next/link";
@@ -25,12 +28,25 @@ import { useTourStore } from "@/store/tour-store";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import CompanyStatusModal from "@/components/dashboard/company-status";
+import { DashboardChart } from "@/components/dashboard/chart";
+import NotificationCard from "@/components/dashboard/notification-card";
+import { getRecentMessages } from "../../dashboard/data";
+import {
+  ConversationsAPIResponse,
+  PageMessages,
+} from "../../(messages-reviews)/messages/types";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { transformUsersMessages } from "../../(messages-reviews)/messages/data";
+import { useChatStore } from "@/store/message";
+import { DashboardDataResponse } from "../../dashboard/types";
 
 const Dashboard = () => {
   const [dashboardStats, setDashboardStats] = useState<CardData[]>([]);
   const { data, loading, error, isNetworkError } =
     useFetch<DashboardBranchDataResponse>("/branch-data");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
+  const { setChatData } = useChatStore();
 
   const { setShouldRenderTour, completeTour, setPersist, isTourCompleted } =
     useTourStore();
@@ -43,7 +59,6 @@ const Dashboard = () => {
       setDashboardStats(getStaffDashboardCardData(data));
     }
   }, [data]);
-
 
   // ====== Handle Complaints KanbanBoard ======
   const [pageData, setPageData] = useState<ComplaintsPageData | null>(null);
@@ -69,6 +84,52 @@ const Dashboard = () => {
       setIsModalOpen(true);
     }
   }, [company_status]);
+
+  // RECENT MESSAGES
+  const {
+    data: usersMessages,
+    loading: usersMsgLoading,
+    error: usersMsgError,
+    refetch: refetchMsg,
+    isNetworkError: MsgNetworkError,
+  } = useFetch<ConversationsAPIResponse>("/messages");
+  useRefetchOnEvent("refetch-users-msg", () => {
+    refetchMsg({ silent: true });
+  });
+
+  useEffect(() => {
+    if (usersMessages) {
+      const transformed = transformUsersMessages(usersMessages);
+      setPageUsersMsg(transformed);
+      setChatData("users_messages", transformed);
+    }
+  }, [usersMessages, setChatData]);
+
+  // DASHBOARD PERFORMANCE
+  // Dashboard Stats
+  const {
+    data: dashboardData,
+    loading: dashboardLoading,
+    error: dashboardError,
+    refetch: dashboardRefetch,
+    isNetworkError: dashboardIsNetworkError,
+  } = useFetch<DashboardDataResponse>("/dashboard/data");
+  const [performanceChart, setPerformanceChart] =
+    useState<DashboardDataResponse | null>(null);
+
+  useEffect(() => {
+    if (dashboardData) {
+      // setDashboardStats(getDashboardCardData(dashboardData as any));
+      setPerformanceChart(dashboardData);
+    }
+  }, [dashboardData]);
+
+  const bookmarkChartData =
+    dashboardData?.data?.chart_data.map((item: any) => ({
+      date: item?.date,
+      views: item?.total_views,
+      bookmarks: item?.total_bookmarks,
+    })) || [];
 
   // Tour logic
   useEffect(() => {
@@ -139,14 +200,33 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* ========== LISTING PERFORMANCCE AND RECENT MESSAGES ========== */}
+
+        <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
+          <div className="listing-performance-chart w-full xl:flex-1 space-y- xl:space-y-2">
+            <DashboardChart
+              chartTitle="listing Performance"
+              visibleRange
+              chartConfig={dashboardListingsChartConfig}
+              chartData={bookmarkChartData}
+            />
+          </div>
+
+          <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
+            <NotificationCard
+              className="h-[358px]"
+              seeAllLink="/messages"
+              sectionHeader="Recent Messages"
+              notifications={getRecentMessages(pageUsersMsg)}
+            />
+          </div>
+        </div>
+
         {/* =========== RECENT COMPLAINS =========== */}
         <SectionContainer
-         
-        heading="Recent Complains"
-         
-        href="/staff/tasks/complaints"
-        
-      >
+          heading="Recent Complains"
+          href="/staff/tasks/complaints"
+        >
           {pageData && pageData.complaints.length === 0 ? (
             <div className="bg-white flex w-full justify-center items-center h-full min-h-[300px] dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300">
               <p className="text-gray-500 dark:text-gray-400">

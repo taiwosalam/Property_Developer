@@ -91,9 +91,12 @@ export const MultiSelect = React.forwardRef<
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
 
-    // FIXED: Sync with controlled value prop
+    // Sync with controlled value prop
     React.useEffect(() => {
-      if (propValue !== undefined) {
+      if (
+        propValue !== undefined &&
+        JSON.stringify(propValue) !== JSON.stringify(selectedValues)
+      ) {
         setSelectedValues(propValue);
       }
     }, [propValue]);

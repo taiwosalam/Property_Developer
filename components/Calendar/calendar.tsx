@@ -114,7 +114,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
         return "/tasks/calendars/manage";
       case "manager":
         return "/manager/tasks/calendars/manage";
-      case "accountant":
+      case "account":
         return "/accountant/tasks/calendars/manage";
       case "staff":
         return "/staff/tasks/calendars/manage";

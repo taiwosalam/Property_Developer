@@ -9,6 +9,7 @@ import { LocationIcon, CameraIcon, VideoIcon } from "@/public/icons/icons";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { empty } from "@/app/config";
 import Link from "next/link";
+import { useRole } from "@/hooks/roleContext";
 
 export interface PropertyCardProps {
   id: string;
@@ -52,6 +53,7 @@ const VehicleCard: React.FC<any> = ({ data, page }) => {
 
   const isRental = property_type === "rental";
   
+  const { role } = useRole()
   // isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -63,13 +65,17 @@ const VehicleCard: React.FC<any> = ({ data, page }) => {
   });
 
   const getPreviewRoute = () => {
-    switch (page) {
+    switch (role) {
+      case "director":
+        return `/management/vehicles-record/${id}`;
       case "manager":
         return `/manager/management/vehicles-record/${id}`;
       case "account":
         return `/accountant/management/vehicles-record/${id}`;
+      case "staff":
+        return `/staff/management/vehicles-record/${id}`;
       default:
-        return `/management/vehicles-record/${id}`;
+        return `/unauthorized`;
     }
   };
 

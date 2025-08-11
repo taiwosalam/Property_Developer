@@ -57,7 +57,7 @@ export const getDashboardCardData = (
     icon: InvoiceIcon,
     value: formatNumber(data.data.invoice_count),
     subValue: formatNumber(data.data.month_invoice_count),
-    link: "/accountant/accounting/invoice",
+    link: "/accountant/accounting/invoice?status=pending",
   },
   {
     title: "Complaints",
@@ -354,9 +354,9 @@ export const dashboardListingsChartConfig = {
     label: "Views",
     color: "#01BA4C",
   },
-  enquiries: {
-    label: "Enquiries",
-    color: "#315EE7",
+  bookmarks: {
+    label: "Bookmarked",
+    color: "#2DD4BF",
   },
 };
 

@@ -39,7 +39,7 @@ const TenancyRecord = ({
   renewalPackage,
   tenant,
   unit_id,
-  documents, // Use documents prop instead of unit_documents
+  unit_documents, // Use documents prop instead of unit_documents
   currency,
   index,
   move_in,
@@ -57,12 +57,12 @@ const TenancyRecord = ({
   renew_total_package?: string;
   renewalPackage?: string;
   tenant?: any;
-  documents?: any[]; // Updated to include documents prop
+  unit_documents?: any[]; // Updated to include documents prop
   currency?: Currency;
   index?: number;
 }) => {
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
-  const transformedDocs = transformDocuments(documents || []); // Use documents instead of unit_documents
+  const transformedDocs = transformDocuments(unit_documents || []); // changed to use unit_documents instead document again. WTF ::)
   const groupedDocuments = groupDocumentsByType(transformedDocs);
   const CURRENCY =
     currencySymbols[currency as keyof typeof currencySymbols] ||

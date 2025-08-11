@@ -46,7 +46,7 @@ interface ReadByProps {
 
 const ReadBy = ({ readBy, delivered }: ReadByProps) => {
   return (
-    <div className="p-[18px] rounded-lg bg-brand-1 dark:bg-darkText-primary space-y-6">
+    <div className="p-[18px] rounded-lg bg-white shadow-sm space-y-6">
       <div className="space-y-3">
         <h6 className="text-sm text-text-label dark:text-white font-medium">
           Read by

@@ -35,6 +35,20 @@ const NotificationCard: React.FC<notificationCardProps> = ({
 }) => {
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const { role } = useRole();
+
+  const getStaffsPageLink = (branchId: string, staffId: string) => {
+    switch (role) {
+      case "director":
+        return `/management/staff-branch/${branchId}/branch-staff/${staffId}`;
+      case "manager":
+        return `/manager/management/branch-staff/${staffId}`;
+      case "account":
+        return `/accountant/management/branch-staff/${staffId}`;
+      default:
+        return `/unauthorized`;
+    }
+  };
 
   const handleUserClicked = (user: any) => {
     try {
@@ -139,7 +153,10 @@ const NotificationCard: React.FC<notificationCardProps> = ({
               <Link
                 href={
                   sectionHeader === "Staffs"
-                    ? `/management/staff-branch/${branchId}/branch-staff/${notification.staff_ID}`
+                    ? getStaffsPageLink(
+                        branchId || "0",
+                        notification.staff_ID || "0"
+                      )
                     : sectionHeader === "Recent Messages"
                     ? `/messages/${notification.id}`
                     : sectionHeader === "Recent Complaints" && seeAllLink
@@ -227,7 +244,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                     {notification.time}
                   </p>
                   {notification.count !== undefined && (
-                    <div className="bg-brand-9 inline-flex items-center min-w-[30px] max-w-[30px] justify-center py-1 rounded-full whitespace-nowrap">
+                    <div className="ml-auto bg-brand-9 inline-flex items-center justify-center min-w-[30px] h-[20px] px-1 rounded-full whitespace-nowrap">
                       <p className="text-white text-[10px] font-medium text-center">
                         {roundUptoNine(notification.count)}
                       </p>
