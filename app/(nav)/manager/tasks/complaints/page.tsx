@@ -12,7 +12,10 @@ import useWindowWidth from "@/hooks/useWindowWidth";
 import { transformComplaintsData } from "@/app/(nav)/tasks/complaints/data";
 import useFetch from "@/hooks/useFetch";
 import { useState, useEffect, useCallback } from "react";
-import { ComplaintsPageData, ComplaintsResponse } from "@/app/(nav)/tasks/complaints/types";
+import {
+  ComplaintsPageData,
+  ComplaintsResponse,
+} from "@/app/(nav)/tasks/complaints/types";
 import { AxiosRequestConfig } from "axios";
 import { LandlordRequestParams } from "../../management/landlord/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -217,16 +220,22 @@ const ComplaintsPage = () => {
           colorScheme={1}
         />
         <ManagementStatistcsCard
+          title="Total Processing"
+          newData={pageData?.total_month_processing || 0}
+          total={pageData?.total_processing || 0}
+          colorScheme={2}
+        />
+        <ManagementStatistcsCard
           title="Total Completed"
           newData={pageData?.total_month_completed || 0}
           total={pageData?.total_completed || 0}
-          colorScheme={2}
+          colorScheme={3}
         />
         <ManagementStatistcsCard
           title="Total Rejected"
           newData={pageData?.total_month_rejected || 0}
           total={pageData?.total_rejected || 0}
-          colorScheme={3}
+          colorScheme={4}
         />
       </div>
       <FilterBar

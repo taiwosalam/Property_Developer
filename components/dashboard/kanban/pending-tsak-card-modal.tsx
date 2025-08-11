@@ -96,6 +96,11 @@ const PendingTaskModal = ({
       return;
     }
 
+    if(!note){
+      toast.error("You need to provide a note");
+      return;
+    }
+
     try {
       setIsLoading(true);
       if (status === "approved") {

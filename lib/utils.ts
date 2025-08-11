@@ -139,3 +139,22 @@ export function parseCurrencyToNumber(
   const parsed = parseFloat(normalized);
   return isNaN(parsed) ? 0 : parsed;
 }
+
+const nameColors = [
+  "text-red-500",
+  "text-pink-500",
+  "text-yellow-500",
+  "text-green-500",
+  "text-blue-500",
+  "text-purple-500",
+  "text-orange-500",
+  "text-teal-500",
+];
+
+export function getColorClass(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return nameColors[Math.abs(hash) % nameColors.length];
+}

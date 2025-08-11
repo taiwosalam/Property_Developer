@@ -13,7 +13,6 @@ import {
   IApplicationPageData,
   transformApplicationData,
 } from "../tasks/applications/data";
-import { transformApiData } from "../../community/agent-forum/threads/[threadId]/preview/data";
 import { AxiosRequestConfig } from "axios";
 import { LandlordRequestParams } from "../../management/landlord/data";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
@@ -29,16 +28,30 @@ import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ApplicationStatusItem } from "@/components/Listing/Property/property-listing-component";
 import { IPropertyApi } from "../../settings/others/types";
 import { rejectApplication } from "../tasks/applications/[applicationId]/manage/data";
+import { toast } from "sonner";
 import Pagination from "@/components/Pagination/pagination";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import { useSearchParams } from "next/navigation";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as LandlordRequestParams,
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("applications_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: "",
+      } as LandlordRequestParams,
+    };
   });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("applications_page", config.params.page.toString());
+  }, [config.params.page]);
 
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
@@ -76,11 +89,27 @@ const Applications = () => {
   const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
     ? [
         ...new Map(
-          propertiesData.data.properties.data.map((property: any) => [
-            property.title, // Use property title as the unique key
+          propertiesData.data.properties.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
+
+  const branchOptions = Array.isArray(branchesData?.data)
+    ? [
+        ...new Map(
+          branchesData.data.map((branch) => [
+            branch.branch_name.toLowerCase(),
             {
-              label: property.title,
-              value: property.id.toString(),
+              label: branch.branch_name,
+              value: branch.id,
             },
           ])
         ).values(),
@@ -105,7 +134,6 @@ const Applications = () => {
     if (branchIdsArray.length > 0) {
       queryParams.branch_ids = branchIdsArray.join(",");
     }
-
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
     }
@@ -115,6 +143,7 @@ const Applications = () => {
     setConfig({
       params: queryParams,
     });
+    sessionStorage.setItem("applications_page", "1");
   };
 
   const contentTopRef = useRef<HTMLDivElement>(null);
@@ -123,7 +152,7 @@ const Applications = () => {
     setConfig({
       params: { ...config.params, page },
     });
-    // Scroll to the top where LandlordCards start
+    sessionStorage.setItem("applications_page", page.toString());
     if (contentTopRef.current) {
       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
     }
@@ -131,35 +160,51 @@ const Applications = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_order: order, page: 1 },
     });
+    sessionStorage.setItem("applications_page", "1");
   };
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+    }
+  }, [query]);
 
   const handleSearch = async (query: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, page: 1 },
     });
+    sessionStorage.setItem("applications_page", "1");
   };
-
-  const branchOptions =
-    branchesData?.data.map((branch) => ({
-      label: branch.branch_name,
-      value: branch.id,
-    })) || [];
 
   useEffect(() => {
     if (apiData) {
       const transData = transformApplicationData(apiData);
-      setPagedata(transData);
+      setPagedata({
+        ...transData,
+        pagination: {
+          ...transData.pagination,
+          current_page: config.params.page || 1,
+        },
+      });
     }
-  }, [apiData]);
+  }, [apiData, config.params.page]);
 
   const handleEvaluation = async (
     id: string,
     flagged: "flagged" | "unflagged",
     status: "evaluated" | "rejected" | "pending" | "approved"
   ) => {
-    if (flagged === "flagged" || status === "evaluated") {
+    if (
+      flagged === "flagged" ||
+      status === "evaluated" ||
+      status === "rejected"
+    ) {
       return;
     }
     try {
@@ -168,7 +213,7 @@ const Applications = () => {
         // toast.success("Application evaluated");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -182,25 +227,13 @@ const Applications = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
         <ManagementStatistcsCard
           title="Total Application"
           newData={pageData?.month_application || 0}
           total={pageData?.total_application || 0}
           colorScheme={1}
         />
-        {/* <ManagementStatistcsCard
-          title="Mobile Application"
-          newData={pageData?.month_mobile_application || 0}
-          total={pageData?.mobile_application || 0}
-          colorScheme={2}
-        />
-        <ManagementStatistcsCard
-          title="Web Application"
-          newData={pageData?.month_web_application || 0}
-          total={pageData?.web_application || 0}
-          colorScheme={3}
-        /> */}
       </div>
       <div className="custom-flex-col gap-5">
         <FilterBar
@@ -229,13 +262,15 @@ const Applications = () => {
                   },
                 ]
               : []),
+            ...(branchOptions.length > 0
+              ? [
+                  {
+                    label: "Branch",
+                    value: branchOptions,
+                  },
+                ]
+              : []),
           ]}
-          // filterOptionsMenu={[
-          //   ...(DocumentssFilterOptionsWithDropdown),
-          //   ...(branchOptions)
-          // ]
-
-          //}
         />
 
         <section>
@@ -247,7 +282,7 @@ const Applications = () => {
               <ApplicationStatusItem status="rejected" />
             </div>
           )}
-          {pageData?.applications?.length === 0 && !loading ? (
+          {pageData?.applications?.length === 0 && !silentLoading ? (
             !!config.params.search || hasActiveFilters(appliedFilters) ? (
               <SearchError />
             ) : (
@@ -273,27 +308,31 @@ const Applications = () => {
               gap={32}
               containerClassName="w-full"
             >
-              {pageData && pageData?.applications?.length > 0
-                ? pageData?.applications.map((item) => (
-                    <div
-                      key={item.id}
-                      className="w-full"
-                      onClick={() =>
-                        handleEvaluation(
-                          item?.id?.toString(),
-                          item?.flagged,
-                          item?.application_status
-                        )
-                      }
-                    >
-                      <ApplicationCard
-                        status={item?.flagged}
-                        type={item.application_status}
-                        data={item}
-                      />
-                    </div>
-                  ))
-                : "No Application Yet"}
+              {silentLoading ? (
+                <CardsLoading />
+              ) : pageData && pageData?.applications?.length > 0 ? (
+                pageData.applications.map((item) => (
+                  <div
+                    key={item.id}
+                    className="w-full"
+                    onClick={() =>
+                      handleEvaluation(
+                        item?.id?.toString(),
+                        item?.flagged,
+                        item?.application_status
+                      )
+                    }
+                  >
+                    <ApplicationCard
+                      status={item?.flagged}
+                      type={item.application_status}
+                      data={item}
+                    />
+                  </div>
+                ))
+              ) : (
+                "No Application Yet"
+              )}
             </AutoResizingGrid>
           )}
         </section>

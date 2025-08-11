@@ -200,7 +200,11 @@ const Applications = () => {
     flagged: "flagged" | "unflagged",
     status: "evaluated" | "rejected" | "pending" | "approved"
   ) => {
-    if (flagged === "flagged" || status === "evaluated") {
+    if (
+      flagged === "flagged" ||
+      status === "evaluated" ||
+      status === "rejected"
+    ) {
       return;
     }
     try {
@@ -209,7 +213,7 @@ const Applications = () => {
         // toast.success("Application evaluated");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

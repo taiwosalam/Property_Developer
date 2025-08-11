@@ -42,6 +42,24 @@ export interface ComplaintsResponse {
   total_month_rejected: string;
   total_month_approved: string | null;
   total_month_processing: string | null;
+  stats: {
+    total: number;
+    pending: string;
+    resolved: string;
+    rejected: string;
+    completed: string;
+    approved: string;
+    processing: string;
+    monthly: {
+      total: string;
+      pending: string;
+      resolved: string;
+      rejected: string;
+      completed: string;
+      approved: string;
+      processing: string;
+    };
+  };
   complaints: Complaint[];
   pagination: Pagination;
 }
@@ -53,6 +71,8 @@ export interface ComplaintsPageData {
   total_month_completed: number;
   total_rejected: number;
   total_month_rejected: number;
+  total_processing: number;
+  total_month_processing: number;
   complaints: {
     id: number | string;
     columnId: "processing" | "approved" | "rejected" | string;

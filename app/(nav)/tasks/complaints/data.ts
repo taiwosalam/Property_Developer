@@ -66,6 +66,8 @@ export const transformComplaintsData = (
   return {
     total_complaints: Number(data?.stats?.total), //data.total || 0,
     total_month_complaints: Number(data?.stats?.monthly?.total) || 0,
+    total_processing: Number(data?.stats?.processing) || 0,
+    total_month_processing: Number(data?.stats?.monthly.processing) || 0,
     total_completed: Number(data?.stats?.completed) || 0,
     total_month_completed: Number(data?.stats?.monthly?.completed) || 0,
     total_rejected: Number(data?.stats?.rejected) || 0,
@@ -156,7 +158,6 @@ export const approveAndProcessComplaint = async (
       }
     );
     if (res.status === 200 || res.status === 201) {
-      console.log("Approved...");
       window.dispatchEvent(new Event("refetchComplaints"));
       return true;
     }
@@ -174,13 +175,11 @@ export const rejectComplaint = async (note: string, id: string) => {
       },
     });
     if (res.status === 200 || res.status === 201) {
-      console.log("Rejected...");
       window.dispatchEvent(new Event("refetchComplaints"));
       return true;
     }
   } catch (error) {
     handleAxiosError(error);
-    console.log("Error rejecting complaint:", error);
     window.dispatchEvent(new Event("refetchComplaints"));
     return false;
   }
