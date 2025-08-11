@@ -108,13 +108,6 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     setCanSubmit(allRequiredFilled);
     setMissingFields(missing);
 
-    console.log(
-      "validateForm: canSubmit =",
-      allRequiredFilled,
-      "missingFields =",
-      missing
-    );
-
     return allRequiredFilled;
   }, [inputClassName, requiredFields, showProgressBar]);
 

@@ -57,7 +57,7 @@ export const getDashboardCardData = (
     icon: InvoiceIcon,
     value: formatNumber(data.data.invoice_count),
     subValue: formatNumber(data.data.month_invoice_count),
-    link: "/accountant/accounting/invoice",
+    link: "/accountant/accounting/invoice?status=pending",
   },
   {
     title: "Complaints",

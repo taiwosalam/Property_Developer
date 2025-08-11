@@ -6,44 +6,15 @@ import {
 } from "./types";
 import { Currency } from "@/utils/number-formatter";
 
-export const staffPropertyMockData: StaffPropertyPageData = {
-  properties: [
-    {
-      address: "123 Main St",
-      isClickable: true,
-      id: "1",
-      images: [empty],
-      property_name: "Property 1",
-      total_units: 1,
-      total_returns: 1000,
-      total_income: 1000,
-      total_unit_pictures: 8,
-      hasVideo: true,
-      property_type: "rental",
-      currency: "naira",
-    },
-    {
-      address: "123 Main St",
-      isClickable: true,
-      id: "1",
-      images: [empty],
-      property_name: "Property 1",
-      total_units: 1,
-      total_returns: 1000,
-      total_income: 1000,
-      total_unit_pictures: 8,
-      hasVideo: true,
-      property_type: "rental",
-      currency: "naira",
-    },
-  ],
+export const staffPropertyPageData: StaffPropertyPageData = {
+  properties: [],
   pagination: {
     current_page: 1,
     total_page: 1,
   },
   staff: {
-    name: "Mubarak Abdulrafiu",
-    role: "branch manager",
+    name: "",
+    role: "",
   },
 };
 

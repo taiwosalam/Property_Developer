@@ -176,6 +176,10 @@ const UnitBreakdownRenewalTenant = () => {
     }
   };
 
+  const [defaultPeriod, setDefaultPeriod] = useState(
+    unitData?.renew_fee_period || "yearly"
+  );
+
   return (
     <div className="unit-fee-breakdown-renew-tenant renewal-tenant-fee-form">
       <div className="flex items-center gap-2">
@@ -202,6 +206,7 @@ const UnitBreakdownRenewalTenant = () => {
           hiddenInputClassName="unit-form-input"
           resetKey={formResetKey}
           defaultValue={unitData?.renew_fee_period || "yearly"}
+          onChange={setDefaultPeriod}
         />
         <Input
           id="renew_fee_amount"
@@ -216,7 +221,7 @@ const UnitBreakdownRenewalTenant = () => {
         />
         <Input
           id="renew_service_charge"
-          label="Service Charge"
+          label={`Service Charge (${defaultPeriod})`}
           inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={serviceCharge}
@@ -224,16 +229,18 @@ const UnitBreakdownRenewalTenant = () => {
           type="text"
           autoComplete="off"
         />
-        <Input
-          id="renew_security_fee"
-          label="Security Fee"
-          inputClassName="bg-white unit-form-input"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={securityFee}
-          onChange={(value) => handleInputChange("securityFee", value)}
-          type="text"
-          autoComplete="off"
-        />
+        {!IS_RENTAL && (
+          <Input
+            id="renew_security_fee"
+            label={`Security Fee (${defaultPeriod})`}
+            inputClassName="bg-white unit-form-input"
+            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+            value={securityFee}
+            onChange={(value) => handleInputChange("securityFee", value)}
+            type="text"
+            autoComplete="off"
+          />
+        )}
         {shouldChargeTenantAgencyFee && (
           <Input
             id="renew_agency_fee"
