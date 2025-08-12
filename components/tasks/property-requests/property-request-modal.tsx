@@ -37,12 +37,10 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
   createdAt,
   updatedAt,
   userId,
-  pictureSrc
+  pictureSrc,
 }) => {
   const router = useRouter();
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-
-
 
   const goToMessage = () => {
     if (!userId) {
@@ -91,15 +89,17 @@ const PropertyRequestModal: React.FC<PropertyRequestModalProps> = ({
           </TruncatedText>
         </div>
 
-        <button
-          // onClick={() => router.push(`/messages/${props?.userId}`)}
-          onClick={goToMessage}
-          type="button"
-          aria-label="Message"
-          className=" flex justify-end ml-auto border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1 bg-brand-9 text-white mt-4"
-        >
-          Message
-        </button>
+        {userId && (
+          <button
+            // onClick={() => router.push(`/messages/${props?.userId}`)}
+            onClick={goToMessage}
+            type="button"
+            aria-label="Message"
+            className=" flex justify-end ml-auto border border-brand-9 text-brand-9 rounded-[4px] px-4 py-1 bg-brand-9 text-white mt-4"
+          >
+            Message
+          </button>
+        )}
       </div>
     </ModalPreset>
   );

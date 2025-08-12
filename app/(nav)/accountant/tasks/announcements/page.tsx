@@ -140,14 +140,28 @@ const AnnouncementPage = () => {
     });
   };
 
-  const { data: propertyData } = useFetch<any>(`property/list`);
+  const { data: propertiesData } = useFetch<any>(`property/list`);
 
-  const propertyOptions = propertyData?.data?.properties?.data?.map(
-    (property: { id: number; title: string }) => ({
-      value: property.id,
-      label: property.title,
-    })
-  );
+  const propertyOptions: any = Array.isArray(
+    propertiesData?.data.properties.data
+  )
+    ? [
+        ...new Map(
+          propertiesData.data.properties.data
+            .filter(
+              (property: any) =>
+                property.property_type === "rental" && property.units.length > 0
+            )
+            .map((property: any) => [
+              property.title,
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   if (loading)
     return (

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Router } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { deleteDisbursement } from "@/app/(nav)/accounting/disbursement/data";
+import { useRole } from "@/hooks/roleContext";
 
 const DeleteDisbursementModal = ({
   disbursementId,
@@ -21,6 +22,28 @@ const DeleteDisbursementModal = ({
   const { activeStep, changeStep } = useStep(2);
   const [reqLoading, setReqLoading] = React.useState<boolean>(false);
 
+  const { role } = useRole();
+
+  const getRoute = () => {
+    switch (role?.trim()) {
+      case "director":
+        router.push("/accounting/disbursement");
+        break;
+      case "manager":
+        router.push("/manager/accounting/disbursement");
+        break;
+      case "account":
+        router.push("/accountant/accounting/disbursement");
+        break;
+      case "staff":
+        router.push("/staff/accounting/disbursement");
+        break;
+      default:
+        router.push("/unauthorized");
+        break;
+    }
+  };
+
   const handleDeleteDisbursement = async () => {
     if (!disbursementId) return toast.warning("Disbursement ID not Found!");
 
@@ -29,7 +52,7 @@ const DeleteDisbursementModal = ({
       const res = await deleteDisbursement(disbursementId);
       if (res) {
         toast.success("Disbursement deleted successfully!");
-        router.push("/accounting/disbursement");
+        getRoute();
       }
     } catch (err) {
       console.error(err);

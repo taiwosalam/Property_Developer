@@ -29,6 +29,7 @@ import { IPropertyApi } from "@/app/(nav)/settings/others/types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import PropertyRequestPageLoader from "@/components/Loader/property-request-page-loader";
 import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
+import { MaintenanceRequestParams } from "@/app/(nav)/tasks/maintenance/data";
 
 const transformToDepositRequestCardProps = (
   data: DepositRequestDataType
@@ -68,22 +69,26 @@ const DepositRequest = () => {
   const handleFilterApply = (filter: FilterResult) => {
     setAppliedFilters(filter);
     const { menuOptions, startDate, endDate } = filter;
-    const propertyIdArray = menuOptions["Property"] || [];
+    const property = menuOptions["Property"] || [];
+    const status = menuOptions["Status"] || [];
 
-    const queryParams: InspectionRequestParams = {
+    const queryParams: MaintenanceRequestParams = {
       page: 1,
       search: "",
     };
+
+    if (property.length > 0) {
+      property.forEach((id: string | number, idx: number) => {
+        (queryParams as any)[`property_id[${idx}]`] = id;
+      });
+    }
+    if (status.length > 0) queryParams.status = status.join(",");
     if (startDate) {
-      queryParams.from = dayjs(startDate).format("YYYY-MM-DD");
+      queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (endDate) {
-      queryParams.to = dayjs(endDate).format("YYYY-MM-DD");
+      queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD");
     }
-    if (propertyIdArray.length > 0) {
-      queryParams.property_id = propertyIdArray.join(",");
-    }
-
     setConfig({
       params: queryParams,
     });
@@ -98,7 +103,7 @@ const DepositRequest = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort: order },
+      params: { ...config.params, sort_order: order },
     });
   };
 
@@ -140,6 +145,24 @@ const DepositRequest = () => {
         ).values(),
       ]
     : [];
+
+  const statusOptions = {
+    label: "Status",
+    value: [
+      {
+        label: "In-Progress",
+        value: "progress",
+      },
+      {
+        label: "Pending",
+        value: "pending",
+      },
+      {
+        label: "Completed",
+        value: "completed",
+      },
+    ],
+  };
 
   if (isNetworkError) {
     return <NetworkError />;
@@ -187,6 +210,7 @@ const DepositRequest = () => {
         onSort={handleSort}
         isDateTrue
         filterOptionsMenu={[
+          statusOptions,
           ...(propertyOptions?.length > 0
             ? [
                 {

@@ -207,12 +207,17 @@ const Units = () => {
   );
 
   // Transform into select options
-  const propertyOptions = rentalProperties.map((property) => ({
-    value: property.id.toString(),
-    label: property.title,
-  }));
-
-
+  const propertyOptions = [
+    ...new Map(
+      rentalProperties.map((property) => [
+        property.title.toLowerCase().trim(),
+        {
+          value: property.id.toString(),
+          label: property.title,
+        },
+      ])
+    ).values(),
+  ];
 
   if (loading)
     return (
@@ -269,14 +274,6 @@ const Units = () => {
         isDateTrue={false}
         filterOptionsMenu={[
           ...listingUnitFilter,
-          ...(branchOptions.length > 0
-            ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
-            : []),
           ...(propertyOptions.length > 0
             ? [
                 {

@@ -85,7 +85,7 @@ const PreviewAnnouncement = () => {
         </div>
         {canCreateAndManageAnnouncements && (
           <Button
-            href={`/accountant/tasks/announcements/${announcementId}/manage`}
+            href={`/staff/tasks/announcements/${announcementId}/manage`}
             size="sm_medium"
             className="py-2 px-3"
           >

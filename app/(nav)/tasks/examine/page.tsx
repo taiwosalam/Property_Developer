@@ -5,7 +5,7 @@ import Button from "@/components/Form/Button/button";
 import ExamineCard from "@/components/tasks/Examine/examine-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { examineFilterOptionsWithDropdown, getAllExamine } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -29,11 +29,14 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import Pagination from "@/components/Pagination/pagination";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
     null
   );
+
+  const eleScrollIn = useRef<HTMLDivElement | null>(null);
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -85,23 +88,17 @@ const Examine = () => {
       if (status.length > 0) queryParams.status = status.join(",");
       if (property.length > 0) queryParams.property_ids = property.join(",");
       if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
   );
 
-  const handlePageChange = (page: number) => {
-    setConfig((prev) => ({
-      params: { ...prev.params, page },
-    }));
-  };
-
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_by: order },
     });
   };
 
@@ -111,12 +108,19 @@ const Examine = () => {
     });
   };
 
+  const handlePageChanger = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+    eleScrollIn.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const { data: propertyData } = useFetch<any>(`property/list`);
 
   const propertyOptions = propertyData?.data?.properties?.data?.map(
     (property: { id: number; title: string }) => ({
       value: property.id,
-      label: property.title,
+      label: property.title?.toLocaleLowerCase(),
     })
   );
 
@@ -195,7 +199,7 @@ const Examine = () => {
         hasGridListToggle={false}
       />
 
-      <section>
+      <section ref={eleScrollIn}>
         {loading || silentLoading ? (
           <AutoResizingGrid gap={32} minWidth={350}>
             <CardsLoading length={10} />
@@ -259,6 +263,12 @@ const Examine = () => {
             ))}
           </AutoResizingGrid>
         )}
+
+        <Pagination
+          totalPages={examineData?.pagination?.total_pages || 1}
+          currentPage={examineData?.pagination?.current_page || 1}
+          onPageChange={handlePageChanger}
+        />
       </section>
     </div>
   );

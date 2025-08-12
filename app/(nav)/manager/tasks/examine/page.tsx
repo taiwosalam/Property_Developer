@@ -5,7 +5,7 @@ import Button from "@/components/Form/Button/button";
 import ExamineCard from "@/components/tasks/Examine/examine-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { examineFilterOptionsWithDropdown, getAllExamine } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -31,6 +31,7 @@ import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import Pagination from "@/components/Pagination/pagination";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
@@ -55,6 +56,7 @@ const Examine = () => {
   });
 
   const [isOpen, setIsOpen] = useState(false);
+   const eleScrollIn = useRef<HTMLDivElement | null>(null);
 
   const {
     data: apiData,
@@ -99,7 +101,6 @@ const Examine = () => {
   //   []
   // );
 
-
   const handleAppliedFilter = useCallback(
     (filters: FilterResult) => {
       const debouncedFilter = debounce((filters: FilterResult) => {
@@ -108,29 +109,31 @@ const Examine = () => {
         const accountOfficer = menuOptions["Account Officer"] || [];
         const status = menuOptions["Status"] || [];
         const property = menuOptions["Property"] || [];
-  
+
         const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
         if (accountOfficer.length > 0)
           queryParams.account_officer_id = accountOfficer.join(",");
         if (status.length > 0) queryParams.status = status.join(",");
         if (property.length > 0) queryParams.property_id = property.join(",");
         if (startDate)
-          queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+          queryParams.start_date = dayjs(startDate).format(
+            "YYYY-MM-DD:hh:mm:ss"
+          );
         if (endDate)
           queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
         setConfig({ params: queryParams });
       }, 300);
-  
+
       debouncedFilter(filters);
     },
     [setAppliedFilters, setConfig]
   );
 
-
-  const handlePageChange = (page: number) => {
-    setConfig((prev) => ({
-      params: { ...prev.params, page },
-    }));
+  const handlePageChanger = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+    eleScrollIn.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -214,7 +217,7 @@ const Examine = () => {
         hasGridListToggle={false}
       />
 
-      <section>
+      <section ref={eleScrollIn}>
         {loading || silentLoading ? (
           <AutoResizingGrid gap={32} minWidth={350}>
             <CardsLoading length={10} />
@@ -280,6 +283,12 @@ const Examine = () => {
             ))}
           </AutoResizingGrid>
         )}
+
+        <Pagination
+          totalPages={examineData?.pagination?.total_pages || 1}
+          currentPage={examineData?.pagination?.current_page || 1}
+          onPageChange={handlePageChanger}
+        />
       </section>
     </div>
   );

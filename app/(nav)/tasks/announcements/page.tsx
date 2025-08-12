@@ -96,9 +96,9 @@ const AnnouncementPage = () => {
 
       if (property.length > 0) queryParams.property_ids = property.join(",");
       if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
@@ -128,7 +128,7 @@ const AnnouncementPage = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_by: order },
     });
   };
 
@@ -138,14 +138,26 @@ const AnnouncementPage = () => {
     });
   };
 
-  const { data: propertyData } = useFetch<any>(`property/list`);
+  const { data: propertiesData } = useFetch<any>(`property/list`);
 
-  const propertyOptions = propertyData?.data?.properties?.data?.map(
-    (property: { id: number; title: string }) => ({
-      value: property.id,
-      label: property.title,
-    })
-  );
+  const propertyOptions: any = Array.isArray(propertiesData?.data.properties.data)
+    ? [
+        ...new Map(
+          propertiesData.data.properties.data
+            .filter(
+              (property: any) =>
+                property.property_type === "rental" && property.units.length > 0
+            )
+            .map((property: any) => [
+              property.title,
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   if (loading)
     return (

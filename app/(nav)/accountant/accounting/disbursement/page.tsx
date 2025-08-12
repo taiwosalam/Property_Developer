@@ -41,30 +41,18 @@ const Disbursement = () => {
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [tableData, setTableData] = useState<TransformedDisburseItem[]>([]);
   // conditionally set the url only if BRANCH_ID is valid
-  
+
   const {
     data: propertyData,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>('/property/all');
+  } = useFetch<PropertyListResponse>("/property/all");
 
   const {
     data: landlordsData,
     loading: landlordsLoading,
     error: landlordsError,
   } = useFetch<AllLandlordsResponse>("/landlord/select");
-
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
-
-  const landlordOptions =
-    landlordsData?.data.map((landlord) => ({
-      value: landlord.id,
-      label: landlord.name,
-    })) || [];
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -85,6 +73,39 @@ const Disbursement = () => {
       endDate !== null
     );
   }, [appliedFilters]);
+
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter(
+              (property: any) =>
+                property.property_type === "rental" && property.units.length > 0
+            )
+            .map((property: any) => [
+              property.title,
+              {
+                label: property.title?.toLowerCase(),
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
+
+  const landlordOptions = Array.isArray(landlordsData?.data)
+    ? [
+        ...new Map(
+          landlordsData.data.map((l: any) => [
+            l.name,
+            {
+              label: l.name?.toLowerCase(),
+              value: l.id.toString(),
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
   const config: AxiosRequestConfig = useMemo(() => {
     const fromDate = appliedFilters.startDate
@@ -131,7 +152,7 @@ const Disbursement = () => {
   };
 
   const { data, loading, silentLoading, error, isNetworkError } =
-    useFetch<DisburseApiResponse>('/disburses', config);
+    useFetch<DisburseApiResponse>("/disburses", config);
 
   useEffect(() => {
     if (data) {
@@ -159,7 +180,9 @@ const Disbursement = () => {
           type="button"
           className="page-header-button"
           onClick={() =>
-            router.push("/accountant/accounting/disbursement/create-disbursement")
+            router.push(
+              "/accountant/accounting/disbursement/create-disbursement"
+            )
           }
         >
           + new disbursement

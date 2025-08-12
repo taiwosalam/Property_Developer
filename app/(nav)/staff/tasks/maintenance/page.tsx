@@ -76,11 +76,16 @@ const Maintenance = () => {
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
-      if (property.length > 0) queryParams.property_ids = property.join(",");
+       if (property.length > 0) {
+        property.forEach((id: string | number, idx: number) => {
+          (queryParams as any)[`property_ids[${idx}]`] = id;
+        });
+      }
+      //if (property.length > 0) queryParams.property_ids = property.join(",");
       if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
@@ -108,7 +113,7 @@ const Maintenance = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_by: order },
     });
   };
 

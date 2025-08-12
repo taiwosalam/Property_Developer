@@ -4,14 +4,6 @@ import moment from "moment";
 
 export const listingPropertyFilter: FilterOptionMenu[] = [
   {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
-  {
     label: "Status",
     radio: true,
     value: [
@@ -80,10 +72,9 @@ export interface PropertyDataProps {
   branch: BranchDataObject;
 }
 
-export interface BranchDataObject{
+export interface BranchDataObject {
   branch_name: string;
 }
-
 
 export const initialState = {
   total_property: 0,
@@ -95,7 +86,7 @@ export const initialState = {
   current_page: 0,
   last_page: 0,
   properties: [],
-}
+};
 
 export interface PropertyPageState {
   total_property: number;
@@ -121,10 +112,9 @@ export interface PropertyApiResponse {
       current_page: number;
       last_page: number;
       data: PropertyDataProps[];
-    }
-  }
+    };
+  };
 }
-
 
 export interface PropertyDraftFilterResponse {
   data: {
@@ -133,7 +123,6 @@ export interface PropertyDraftFilterResponse {
     data: PropertyDataProps[];
   };
 }
-
 
 export const transformDraftUnitData = (
   response: PropertyApiResponse | PropertyDraftFilterResponse
@@ -148,43 +137,41 @@ export const transformDraftUnitData = (
     ? response.data.invites
     : response.data;
 
-  console.log("Property data", propertyData)
-  const transformedProperties: any = propertyData.data.map(
-    (p) => {
-      const status = p.invites.length > 0 ? "request" : "draft";
-      const updatedAt = moment(p.updated_at);
-      let lastUpdated;
-      const now = moment();
-      if (now.diff(updatedAt, "days") < 7) {
-        lastUpdated = updatedAt.fromNow();
-      } else {
-        lastUpdated = updatedAt.format("DD/MM/YYYY");
-      }
-      const totalReturns = p.units.reduce((sum, unit) => {
-        return sum + parseFloat(unit.fee_amount);
-      }, 0);
-      const feePercentage =
-        p.property_type === "rental" ? p.agency_fee : p.management_fee;
-        const units = p.units.length
-      return {
-        id: p.id,
-        images: p.images.map((image) => image.path),
-        property_name: p.title,
-        address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
-        state: p.state,
-        local_government: p.local_government,
-        total_unit: units,
-        last_updated: lastUpdated,
-        hasVideo: !!p.video_link,
-        property_type: p.property_type,
-        branch: p.branch?.branch_name,
-        total_returns: totalReturns,
-        total_income: (totalReturns * feePercentage) / 100,
-        account_officer: "Nil",
-        status: status,
-      };
+  console.log("Property data", propertyData);
+  const transformedProperties: any = propertyData.data.map((p) => {
+    const status = p.invites.length > 0 ? "request" : "draft";
+    const updatedAt = moment(p.updated_at);
+    let lastUpdated;
+    const now = moment();
+    if (now.diff(updatedAt, "days") < 7) {
+      lastUpdated = updatedAt.fromNow();
+    } else {
+      lastUpdated = updatedAt.format("DD/MM/YYYY");
     }
-  );
+    const totalReturns = p.units.reduce((sum, unit) => {
+      return sum + parseFloat(unit.fee_amount);
+    }, 0);
+    const feePercentage =
+      p.property_type === "rental" ? p.agency_fee : p.management_fee;
+    const units = p.units.length;
+    return {
+      id: p.id,
+      images: p.images.map((image) => image.path),
+      property_name: p.title,
+      address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
+      state: p.state,
+      local_government: p.local_government,
+      total_unit: units,
+      last_updated: lastUpdated,
+      hasVideo: !!p.video_link,
+      property_type: p.property_type,
+      branch: p.branch?.branch_name,
+      total_returns: totalReturns,
+      total_income: (totalReturns * feePercentage) / 100,
+      account_officer: "Nil",
+      status: status,
+    };
+  });
 
   // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {
@@ -203,7 +190,7 @@ export const transformDraftUnitData = (
   } else {
     return {
       current_page: response.data.current_page,
-      last_page: response.data.last_page,    
+      last_page: response.data.last_page,
       properties: transformedProperties,
     };
   }

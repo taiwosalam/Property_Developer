@@ -203,6 +203,8 @@ export interface LandlordRequestParams {
   state?: string;
   start_date?: string;
   end_date?: string;
+  date_from?: string;
+  date_to?: string;
   agent?: string;
   branch_ids?: string;
   property_ids?: string;

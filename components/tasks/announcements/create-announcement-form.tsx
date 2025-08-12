@@ -1,4 +1,3 @@
-
 "use client";
 import { Fragment, useEffect, useState } from "react";
 import Select from "@/components/Form/Select/select";
@@ -179,12 +178,21 @@ const CreateAnnouncementForm: React.FC<{
 
   const getRoute = () => {
     switch (role) {
+      case "director":
+        router.push("/tasks/announcements");
+        break;
       case "account":
-        return "/accountant/tasks/announcements";
+        router.push("/accountant/tasks/announcements");
+        break;
       case "manager":
-        return "/manager/tasks/announcements";
+        router.push("/manager/tasks/announcements");
+        break;
+      case "staff":
+        router.push("/staff/tasks/announcements");
+        break;
       default:
-        return "/tasks/announcements";
+        router.push("/unauthorized");
+        break;
     }
   };
 
@@ -220,7 +228,7 @@ const CreateAnnouncementForm: React.FC<{
       const success = await updateAnnouncement(formData, paramId);
       if (success) {
         toast.success("Announcement updated");
-        router.push(getRoute());
+        getRoute();
       }
     } catch (error) {
     } finally {
@@ -234,7 +242,7 @@ const CreateAnnouncementForm: React.FC<{
       const success = await deleteAnnouncement(paramId);
       if (success) {
         toast.success("Announcement deleted");
-        router.push(getRoute());
+        getRoute();
       }
     } catch (error) {
     } finally {

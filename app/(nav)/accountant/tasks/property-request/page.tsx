@@ -98,10 +98,10 @@ const PropertyRequest = () => {
     };
 
     if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+      queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD");
     }
     if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
+      queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (statesArray.length > 0) {
       queryParams.state = statesArray.join(",");
@@ -120,7 +120,7 @@ const PropertyRequest = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_by: order },
     });
   };
 
