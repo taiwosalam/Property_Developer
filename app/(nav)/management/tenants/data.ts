@@ -139,15 +139,15 @@ export const transformTenantApiResponse = (
       name: tenant.name,
       title: tenant.title,
       email: tenant.email,
-      phone_number: `${tenant.phone.profile_phone ?? ""}${
-        tenant.phone.user_phone && tenant.phone.profile_phone
-          ? " / " + tenant.phone.user_phone
+      phone_number: `${tenant?.phone?.profile_phone ?? ""}${
+        tenant?.phone?.user_phone && tenant?.phone?.profile_phone
+          ? " / " + tenant?.phone?.user_phone
           : ""
       }`,
       // phone_number: tenant.phone,
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
-      note: tenant.note.note !== null && tenant.note.note !== "",
+      note: tenant?.note?.note !== null && tenant?.note?.note !== "",
       flagged: tenant.flags?.some(flag => flag.is_flagged) ?? false,
       badge_color: tenant.user_tier
         ? tierColorMap[tenant.user_tier]

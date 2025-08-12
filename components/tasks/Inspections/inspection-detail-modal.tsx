@@ -23,6 +23,8 @@ import BadgeIcon, {
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
 import { toast } from "sonner";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 interface InspectionDetailsModelProps {
   data: TInspectionDetails;
@@ -34,6 +36,10 @@ const InspectionDetailModal = ({
 }: InspectionDetailsModelProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { role } = useRole();
+  // PERMISSIONS
+  const canManageInspection =
+    usePermission(role, "Can manage inspections") || role === "director";
 
   const getBadgeColor = (tier?: number): BadgeIconColors => {
     if (!tier) return "blue";
@@ -138,27 +144,31 @@ const InspectionDetailModal = ({
               <InspectionCardDesc>{data?.description}</InspectionCardDesc>
             </div>
           </div>
+
           <div className="flex gap-4 justify-end">
-            {!data?.is_application ? (
-              <Button
-                variant="sky_blue"
-                size="xs_normal"
-                className="py-2 px-6"
-                disabled={isLoading}
-                onClick={handleRequestApplication}
-              >
-                {isLoading ? "Please wait..." : "Mark As Inspected"}
-              </Button>
-            ) : (
-              <Button
-                variant="sky_blue"
-                size="xs_normal"
-                className="py-2 px-6 cursor-default"
-                disabled={isLoading}
-                
-              >
-                {"Inspected"}
-              </Button>
+            {canManageInspection && (
+              <>
+                {!data?.is_application ? (
+                  <Button
+                    variant="sky_blue"
+                    size="xs_normal"
+                    className="py-2 px-6"
+                    disabled={isLoading}
+                    onClick={handleRequestApplication}
+                  >
+                    {isLoading ? "Please wait..." : "Mark As Inspected"}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="sky_blue"
+                    size="xs_normal"
+                    className="py-2 px-6 cursor-default"
+                    disabled={isLoading}
+                  >
+                    {"Inspected"}
+                  </Button>
+                )}
+              </>
             )}
             <Button
               size="xs_normal"

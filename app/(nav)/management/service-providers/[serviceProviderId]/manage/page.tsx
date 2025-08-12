@@ -9,6 +9,7 @@ import {
   LandlordTenantInfoSection as InfoSection,
   NotesInfoBox,
   MobileNotesModal,
+  ViewNote,
 } from "@/components/Management/landlord-tenant-info-components";
 import Picture from "@/components/Picture/picture";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
@@ -93,14 +94,12 @@ const ManageServiceProvider = () => {
   };
 
   const webNote = {
-    note_last_updated:
-      providerData?.updated_at
-        ? dayjs(providerData?.updated_at).format("DD/MM/YYYY")
-        : "",
+    note_last_updated: providerData?.updated_at
+      ? dayjs(providerData?.updated_at).format("DD/MM/YYYY")
+      : "",
     provider_notes: userData?.note || "",
   };
-  console.log("providerData", providerData)
-
+  console.log("providerData", providerData);
 
   const CAN_MANAGE_SERVICE_PROVIDER = role === "manager" || role === "director";
 
@@ -161,7 +160,15 @@ const ManageServiceProvider = () => {
                 )}
                 {hasNote && (
                   <div className="flex items-center">
-                    <NoteBlinkingIcon size={20} className="blink-color" />
+                    {/* <NoteBlinkingIcon size={20} className="blink-color" /> */}
+                    <Modal>
+                      <ModalTrigger>
+                        <NoteBlinkingIcon size={20} className="blink-color" />
+                      </ModalTrigger>
+                      <ModalContent>
+                        <ViewNote note={providerDataProps?.provider_notes || ""} />
+                      </ModalContent>
+                    </Modal>
                   </div>
                 )}
               </div>
@@ -203,26 +210,26 @@ const ManageServiceProvider = () => {
                 </Modal>
 
                 {CAN_MANAGE_SERVICE_PROVIDER && (
-                <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      size="custom"
-                      variant="light_red"
-                      className="py-2 px-6"
-                    >
-                      delete account
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <DeleteAccountModal
-                      accountType="service-providers"
-                      action={async () =>
-                        await deleteServiceProvider(paramId as string)
-                      }
-                      afterAction={() =>
-                        router.push("/management/service-providers")
-                      }
-                    />
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button
+                        size="custom"
+                        variant="light_red"
+                        className="py-2 px-6"
+                      >
+                        delete account
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <DeleteAccountModal
+                        accountType="service-providers"
+                        action={async () =>
+                          await deleteServiceProvider(paramId as string)
+                        }
+                        afterAction={() =>
+                          router.push("/management/service-providers")
+                        }
+                      />
                     </ModalContent>
                   </Modal>
                 )}
@@ -239,28 +246,28 @@ const ManageServiceProvider = () => {
                   </Button>
                 ) : (
                   CAN_MANAGE_SERVICE_PROVIDER && (
-                  <Button
-                    size="base_medium"
-                    className="py-2 px-8"
-                    href={`/management/service-providers/${paramId}/manage/edit`}
+                    <Button
+                      size="base_medium"
+                      className="py-2 px-8"
+                      href={`/management/service-providers/${paramId}/manage/edit`}
                     >
                       Manage
                     </Button>
                   )
                 )}
                 {CAN_MANAGE_SERVICE_PROVIDER && (
-                <Modal>
-                  <ModalTrigger>
-                    <Button size="base_medium" className="py-2 px-8">
-                      update with ID
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <UpdateProfileWithIdModal
-                      page="service-providers"
-                      id={Number(providerData?.id)}
-                      data={userData}
-                    />
+                  <Modal>
+                    <ModalTrigger>
+                      <Button size="base_medium" className="py-2 px-8">
+                        update with ID
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <UpdateProfileWithIdModal
+                        page="service-providers"
+                        id={Number(providerData?.id)}
+                        data={userData}
+                      />
                     </ModalContent>
                   </Modal>
                 )}
