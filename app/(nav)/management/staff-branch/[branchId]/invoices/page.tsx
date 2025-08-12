@@ -47,11 +47,13 @@ import TableLoading from "@/components/Loader/TableLoading";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { parseHTML } from "@/utils/parse-html";
 import clsx from "clsx";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
+import BackButton from "@/components/BackButton/back-button";
 
 const BranchInvoicePage = () => {
   const isDarkMode = useDarkMode();
   const { branch } = useBranchStore();
+  const searchParams = useSearchParams();
   const { branchId } = useParams();
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
@@ -68,6 +70,7 @@ const BranchInvoicePage = () => {
   const [timeRange, setTimeRange] = useState("90d");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [inoiceStatus, setInvoiceStatus] = useState("");
 
   // Set up API parameters, including branch_id
   const config: AxiosRequestConfig = useMemo(() => {
@@ -79,19 +82,17 @@ const BranchInvoicePage = () => {
       : undefined;
     return {
       params: {
-        from_date: fromDate,
-        to_date: toDate,
-        date_filter: "custom",
-        search,
-        sort_by: sort,
-        branch_id: branch?.id, // IMPORTANT: filter by branch
+        status: "pending",
       },
     };
-  }, [selectedDateRange, search, sort, branch?.id]);
+  }, [status, branchId]);
 
   // Fetch branch invoices
   const { data, error, loading, isNetworkError, silentLoading } =
-    useFetch<InvoiceListResponse>("/invoice/list?branch_id=" + branch.branch_id, config);
+    useFetch<InvoiceListResponse>(
+      `/invoice/list?branch_ids[0]=${branchId}`,
+      config
+    );
 
   // Transform and store data for table/cards
   const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
@@ -198,17 +199,19 @@ const BranchInvoicePage = () => {
     <section className="space-y-8">
       <div className="space-y-4">
         <div className="w-full flex items-center justify-between">
-          <div>
-            <div className="flex flex-col">
-              <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-                {branch.branch_name}
-              </h1>
-              <div className="text-text-disabled flex items-center space-x-1">
-                <LocationIcon />
-                <p className="text-sm font-medium">{branch.address}</p>
+          <BackButton>
+            <div>
+              <div className="flex flex-col">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
+                  {branch.branch_name}
+                </h1>
+                <div className="text-text-disabled flex items-center space-x-1">
+                  <LocationIcon />
+                  <p className="text-sm font-medium">{branch.address}</p>
+                </div>
               </div>
             </div>
-          </div>
+          </BackButton>
           <Modal>
             <ModalTrigger asChild>
               <Button type="button" className="page-header-button">

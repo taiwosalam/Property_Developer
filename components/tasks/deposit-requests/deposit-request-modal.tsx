@@ -18,6 +18,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { parseCurrencyToNumber } from "@/lib/utils";
 import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 dayjs.extend(utc);
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
@@ -61,6 +62,10 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   const [isEscrowChecked, setIsEscrowChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { role } = useRole();
+  // PERMISSIONS
+  const canApproveCautionDeposit =
+    usePermission(role, "Can approve and refund caution deposit") ||
+    role === "director";
 
   // New state to track which checkboxes are locked (successfully updated)
   const [lockedCheckboxes, setLockedCheckboxes] = useState({
@@ -319,7 +324,8 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
             ))}
           </div>
 
-          {(role === "manager" || role === "director") &&
+          {((role === "manager" && canApproveCautionDeposit) ||
+            role === "director") &&
             status !== "completed" && (
               <div className="space-y-5">
                 <div className="flex gap-1 items-center">

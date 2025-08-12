@@ -391,7 +391,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           </div>
         ) : (
           <>
-            {cardType === "deposit" ? (
+            {/* {cardType === "deposit" ? (
               canApproveCautionDeposit && (
                 <Button
                   disabled={isResolving}
@@ -402,7 +402,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                   {buttonText()}
                 </Button>
               )
-            ) : (
+            ) : ( */}
               <Button
                 disabled={isResolving}
                 size="sm_medium"
@@ -411,7 +411,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               >
                 {buttonText()}
               </Button>
-            )}
+            {/* )} */}
           </>
         )}
       </div>

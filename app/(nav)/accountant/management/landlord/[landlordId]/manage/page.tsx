@@ -14,6 +14,7 @@ import {
   LandlordTenantInfoDocument,
   NotesInfoBox,
   MobileNotesModal,
+  ViewNote,
 } from "@/components/Management/landlord-tenant-info-components";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import { LandlordEditContext } from "@/components/Management/Landlord/landlord-edit-context";
@@ -193,7 +194,14 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 <div className="flex gap-2 items-center">
                   <UserTag type={landlordData.user_tag} />
                   {landlordData?.note && (
-                    <NoteBlinkingIcon size={20} className="blink-color" />
+                    <Modal>
+                      <ModalTrigger>
+                        <NoteBlinkingIcon size={20} className="blink-color" />
+                      </ModalTrigger>
+                      <ModalContent>
+                        <ViewNote note={landlordData.notes?.write_up || ""} />
+                      </ModalContent>
+                    </Modal>
                   )}
                 </div>
                 {IS_MOBILE && (

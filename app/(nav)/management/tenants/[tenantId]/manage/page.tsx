@@ -15,6 +15,7 @@ import {
   LandlordTenantInfoDocument,
   NotesInfoBox,
   MobileNotesModal,
+  ViewNote,
 } from "@/components/Management/landlord-tenant-info-components";
 import { ChevronLeft } from "@/public/icons/icons";
 import UnitItem from "@/components/Management/Properties/unit-item";
@@ -52,7 +53,6 @@ import { toast } from "sonner";
 import { saveLocalStorage } from "@/utils/local-storage";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import { IndividualTenantAPIResponse } from "./types";
-
 
 const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -164,9 +164,16 @@ const ManageTenant = ({ params }: { params: { tenantId: string } }) => {
                 <div className="flex items-center gap-2">
                   <UserTag type={tenant.user_tag} />
                   {tenant.note && (
-                    <div className="flex items-center">
-                      <NoteBlinkingIcon size={20} className="blink-color" />
-                    </div>
+                    <Modal>
+                      <ModalTrigger>
+                        <div className="flex items-center">
+                          <NoteBlinkingIcon size={20} className="blink-color" />
+                        </div>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <ViewNote note={tenant.notes.write_up} />
+                      </ModalContent>
+                    </Modal>
                   )}
                   {tenant.user_tag !== "web" && tenant.is_flagged && (
                     <div className="flex text-red-500 items-center">

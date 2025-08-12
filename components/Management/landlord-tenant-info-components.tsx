@@ -419,3 +419,27 @@ export const MobileNotesModal: React.FC<{
     </LandlordTenantInfoBox>
   );
 };
+
+
+export const ViewNote = ({ note }: { note: string }) => {
+  const sanitizedHTML = DOMPurify.sanitize(note || "");
+  return (
+    <LandlordTenantInfoBox className="w-[600px] max-w-[80%] max-h-[85%] min-h-[250px] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar">
+      <div className="flex justify-between gap-4 sticky z-[1] top-0 bg-white dark:bg-black">
+        <h3 className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize flex items-end gap-1">
+          <span>Note</span>
+        </h3>
+        <ModalTrigger aria-label="Close" close>
+          <NavCloseIcon />
+        </ModalTrigger>
+      </div>
+      <TruncatedText
+        lines={7}
+        className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
+        as="div"
+      >
+        <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
+      </TruncatedText>
+    </LandlordTenantInfoBox>
+  );
+};

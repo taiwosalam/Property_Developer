@@ -34,10 +34,11 @@ import { getTransactionIcon } from "@/components/Wallet/icons";
 import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useTourStore } from "@/store/tour-store";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
+  const searchParams = useSearchParams();
   const { branch, setBranch } = useBranchStore();
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
   const { setGlobalInfoStore } = useGlobalStore((s) => ({
@@ -47,6 +48,8 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
   const { data, error, loading, isNetworkError, refetch } =
     useFetch<SingleBranchResponseType>(`branch/${branchId}`);
   useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
+
+  const [inoiceStatus, setInvoiceStatus] = useState("");
 
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
   const {
@@ -96,7 +99,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         break;
       case "Invoices":
         stats = branchData?.invoices;
-        link = `/management/staff-branch/${branchId}/invoices`;
+        link = `/management/staff-branch/${branchId}/invoices?status=pending`;
         break;
       case "Inquiries":
         stats = branchData?.inquiries;
