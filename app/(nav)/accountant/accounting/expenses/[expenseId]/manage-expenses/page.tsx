@@ -6,7 +6,12 @@ import Button from "@/components/Form/Button/button";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { DeleteIconX } from "@/public/icons/icons";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
-import { Modal, ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
+import {
+  Modal,
+  ModalContent,
+  ModalTrigger,
+  useModal,
+} from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteExpenseModal from "@/components/Accounting/expenses/delete-expense-modal";
@@ -34,12 +39,14 @@ import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { useRole } from "@/hooks/roleContext";
 
 const ManageExpenses = () => {
   const router = useRouter();
   // const { setIsOpen } = useModal()
   const { expenseId } = useParams();
   const [reqLoading, setReqLoading] = useState(false);
+  const { role } = useRole();
   const CURRENCY_SYMBOL = currencySymbols.naira;
   const [pageData, setPageData] = useState<ManageExpensePageData | null>(null);
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
@@ -158,6 +165,26 @@ const ManageExpenses = () => {
     }
   };
 
+  const getRoute = () => {
+    switch (role?.trim()) {
+      case "director":
+        router.push("/accounting/expenses");
+        break;
+      case "manager":
+        router.push("/manager/accounting/expenses");
+        break;
+      case "account":
+        router.push("/accountant/accounting/expenses");
+        break;
+      case "staff":
+        router.push("/staff/accounting/expenses");
+        break;
+      default:
+        router.push("/unauthorized");
+        break;
+    }
+  };
+
   const handleDeleteDeduction = (index: number) => {
     setDeductions(deductions.filter((_, i) => i !== index));
   };
@@ -171,7 +198,7 @@ const ManageExpenses = () => {
       const res = await deleteExpense(Number(paymentId));
       if (res) {
         toast.success("Expense deleted successfully");
-        router.push("/accounting/expenses");
+        getRoute();
       }
     } catch (err) {
       console.error(err);
@@ -410,7 +437,7 @@ const ManageExpenses = () => {
           <Modal>
             {/* <ModalTrigger asChild> */}
             <Button
-              onClick={() => router.push("/accounting/expenses")}
+              onClick={getRoute}
               size="base_bold"
               className="py-2 px-8"
             >

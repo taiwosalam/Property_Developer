@@ -65,9 +65,10 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   const [isLiked, setIsLiked] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   // PERMISSIONS
-  const canCreateAndManageAnnouncements = usePermission(role, "Can create examine");
-
-
+  const canCreateAndManageAnnouncements = usePermission(
+    role,
+    "Can create examine"
+  );
 
   const path =
     role === "director"
@@ -122,9 +123,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
         ) : (
           <Image
             src={
-              poster
-                ? poster
-                : imageUrls.length
+              imageUrls.length
                 ? typeof imageUrls[0] === "string"
                   ? imageUrls[0]
                   : imageUrls[0]?.url

@@ -331,7 +331,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               Message
             </button>
           ))}
-        {cardType === "property" && (
+        {(cardType === "property" && userId) && (
           <button
             // onClick={() => router.push(`/messages/${props?.userId}`)}
             onClick={goToMessage}

@@ -41,6 +41,26 @@ const PreviewAnnouncement = () => {
     null
   );
 
+  const getRoute = () => {
+    switch (role) {
+      case "director":
+        router.push(`/tasks/announcements/${announcementId}/manage`);
+        break;
+      case "account":
+        router.push(`/accountant/tasks/announcements/${announcementId}/manage`);
+        break;
+      case "manager":
+        router.push(`/manager/tasks/announcements/${announcementId}/manage`);
+        break;
+      case "staff":
+        router.push(`/staff/tasks/announcements/${announcementId}/manage`);
+        break;
+      default:
+        router.push("/unauthorized");
+        break;
+    }
+  };
+
   const {
     data: apiData,
     loading,
@@ -86,7 +106,7 @@ const PreviewAnnouncement = () => {
         </div>
         {canCreateManageAnnouncement && (
           <Button
-            href={`/tasks/announcements/${announcementId}/manage`}
+            href={`/manager/tasks/announcements/${announcementId}/manage`}
             size="sm_medium"
             className="py-2 px-3"
           >

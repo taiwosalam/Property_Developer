@@ -6,7 +6,12 @@ import Button from "@/components/Form/Button/button";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { DeleteIconX } from "@/public/icons/icons";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
-import { Modal, ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
+import {
+  Modal,
+  ModalContent,
+  ModalTrigger,
+  useModal,
+} from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteExpenseModal from "@/components/Accounting/expenses/delete-expense-modal";
@@ -34,11 +39,15 @@ import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { useRole } from "@/hooks/roleContext";
 
 const ManageExpenses = () => {
   const router = useRouter();
   // const { setIsOpen } = useModal()
   const { expenseId } = useParams();
+  const { role } = useRole();
+  const [paymentTitle, setPaymentTitle] = useState("");
+  const [paymentAmount, setPaymentAmount] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
   const CURRENCY_SYMBOL = currencySymbols.naira;
   const [pageData, setPageData] = useState<ManageExpensePageData | null>(null);
@@ -71,9 +80,6 @@ const ManageExpenses = () => {
       setDeductions(pageData.deductions);
     }
   }, [pageData]);
-
-  const [paymentTitle, setPaymentTitle] = useState("");
-  const [paymentAmount, setPaymentAmount] = useState("");
 
   const handleAddPaymentClick = async () => {
     if (paymentTitle && paymentAmount) {
@@ -108,6 +114,26 @@ const ManageExpenses = () => {
       } finally {
         setReqLoading(false);
       }
+    }
+  };
+
+  const getRoute = () => {
+    switch (role?.trim()) {
+      case "director":
+        router.push("/accounting/expenses");
+        break;
+      case "manager":
+        router.push("/manager/accounting/expenses");
+        break;
+      case "account":
+        router.push("/accountant/accounting/expenses");
+        break;
+      case "staff":
+        router.push("/manager/accounting/expenses");
+        break;
+      default:
+        router.push("/accountant/accounting/expenses");
+        break;
     }
   };
 
@@ -409,11 +435,7 @@ const ManageExpenses = () => {
         <div className="flex justify-end">
           <Modal>
             {/* <ModalTrigger asChild> */}
-            <Button
-              onClick={() => router.push("/accounting/expenses")}
-              size="base_bold"
-              className="py-2 px-8"
-            >
+            <Button onClick={getRoute} size="base_bold" className="py-2 px-8">
               save
             </Button>
             {/* </ModalTrigger> */}
