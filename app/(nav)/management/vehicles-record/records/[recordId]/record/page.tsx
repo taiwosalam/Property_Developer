@@ -10,6 +10,7 @@ import {
   LandlordTenantInfoBox as InfoBox,
   LandlordTenantInfo as ContactInfo,
   MobileNotesModal,
+  ViewNote,
 } from "@/components/Management/landlord-tenant-info-components";
 import PreviousRecord from "@/components/tasks/vehicles-record/previous-record";
 import DefaultLandlordAvatar from "@/public/empty/landlord-avatar.png";
@@ -293,7 +294,15 @@ const RecordPage = () => {
                 <div className="flex gap-2 items-center">
                   <UserTag type={user_tag} />
                   {note && (
-                    <NoteBlinkingIcon size={20} className="blink-color" />
+                    // <NoteBlinkingIcon size={20} className="blink-color" />
+                    <Modal>
+                      <ModalTrigger>
+                        <NoteBlinkingIcon size={20} className="blink-color" />
+                      </ModalTrigger>
+                      <ModalContent>
+                        <ViewNote note={note || ""} />
+                      </ModalContent>
+                    </Modal>
                   )}
                 </div>
                 {user_tag === "mobile" && (

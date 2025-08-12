@@ -50,7 +50,7 @@ export const staffConfigurations = [
         "Can add and manage landlords/landlady",
         "Can view complaints",
         "Can create inventory",
-        "Can manage calendar",
+        // "Can manage calendar",
         "Can create service provider",
         "Can check in and manage vehicle records",
         "Can approve and refund caution deposit",

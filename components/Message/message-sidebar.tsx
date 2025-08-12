@@ -7,6 +7,8 @@ import SelectChatUsersModal from "@/components/Message/user-modal";
 import { PlusIcon } from "@/public/icons/icons";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import { useMessages } from "@/contexts/messageContext";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const MessagesSidebar = ({
   anchorEl,
@@ -14,6 +16,13 @@ const MessagesSidebar = ({
   handleMenuClose,
   id,
 }: any) => {
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canViewAndreplyMessages =
+    usePermission(role, "Can view and reply branch messages") ||
+    role === "director";
+
   const {
     searchQuery,
     setSearchQuery,
@@ -29,9 +38,15 @@ const MessagesSidebar = ({
     setSelectedFilters(filters);
   };
 
-  const inboxCount = pageUsersMsg.filter((msg:any) => msg.type !== "group").length;
-  const groupsCount = pageUsersMsg.filter((msg:any) => msg.type === "group").length;
-  const unreadCount = pageUsersMsg.filter((msg:any) => msg.unread_count > 0).length;
+  const inboxCount = pageUsersMsg.filter(
+    (msg: any) => msg.type !== "group"
+  ).length;
+  const groupsCount = pageUsersMsg.filter(
+    (msg: any) => msg.type === "group"
+  ).length;
+  const unreadCount = pageUsersMsg.filter(
+    (msg: any) => msg.unread_count > 0
+  ).length;
 
   return (
     <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
@@ -60,7 +75,7 @@ const MessagesSidebar = ({
               filterOptions={[
                 { label: "Inbox", value: inboxCount || 0 },
                 { label: "Groups", value: groupsCount || 0 },
-                { label: "Unread", value: unreadCount || 0  },
+                { label: "Unread", value: unreadCount || 0 },
               ]}
             />
           </div>
@@ -77,7 +92,7 @@ const MessagesSidebar = ({
       ) : (
         <div className="custom-flex-col overflow-x-hidden relative z-[1] pb-4">
           {filteredMessages.map((message, idx) =>
-            message.type === "group" ? (
+            message.type === "group" && canViewAndreplyMessages ? (
               <MessageCard
                 key={idx}
                 {...message}

@@ -42,6 +42,7 @@ const states = getAllStates();
 const Tenants = () => {
   const storedView = useView();
   const { branch } = useBranchStore();
+  const branchId = branch.branch_id
   const [view, setView] = useState<string | null>(storedView);
   const [pageData, setPageData] = useState<TenantPageData>(
     defaultTenantPageData
@@ -150,7 +151,7 @@ const Tenants = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<TenantApiResponse>("tenants", config);
+  } = useFetch<TenantApiResponse>(`/branch/${branchId}/tenants`, config);
 
   useEffect(() => {
     if (apiData) {

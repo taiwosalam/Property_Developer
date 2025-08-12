@@ -34,7 +34,7 @@ import { usePermission } from "@/hooks/getPermission";
 const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
   const { role } = useRole();
   // PERMISSIONS
-  const canManageInspection = usePermission(role, "Can create examine");
+  const canManageInspection = usePermission(role, "Can manage inspections");
 
   const { data: inspectionData, refetch } =
     useFetch<InspectionDetailsApiResponse>(`inspections/${data?.id}`);
@@ -151,7 +151,6 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
           >
             Message
           </button>
-          {canManageInspection && (
             <Modal
               state={{
                 setIsOpen,
@@ -172,7 +171,6 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
                 )}
               </ModalContent>
             </Modal>
-          )}
         </div>
       </div>
     </div>
