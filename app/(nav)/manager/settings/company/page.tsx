@@ -56,7 +56,7 @@ const Profile = () => {
     `}
         >
           <EditBranchForm somedata={branchData} page="manager" />
-          <div className="flex justify-end mt-4">
+          {/* <div className="flex justify-end mt-4">
             <Button
               type="submit"
               size="sm_medium"
@@ -66,7 +66,7 @@ const Profile = () => {
             >
               {updateRequestLoading ? "Updating..." : "Update"}
             </Button>
-          </div>
+          </div> */}
 
           {!canEditBranchProfile && (
             <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-md flex items-center justify-center text-center px-4">

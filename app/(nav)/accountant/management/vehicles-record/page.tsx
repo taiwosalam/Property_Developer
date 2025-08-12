@@ -116,8 +116,6 @@ const VehilceRecords = () => {
     setConfig({
       params: queryParams,
     });
-
-    console.log({ menuOptions, startDate, endDate, options });
   };
 
   const {

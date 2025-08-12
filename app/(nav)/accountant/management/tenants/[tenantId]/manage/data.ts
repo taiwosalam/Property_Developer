@@ -19,7 +19,11 @@ import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 import { empty } from "@/app/config";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import { transformUnitDetails } from "@/app/(nav)/listing/data";
-import { CurrentRent, IndividualTenantAPIResponse, PreviousRent } from "./types";
+import {
+  CurrentRent,
+  IndividualTenantAPIResponse,
+  PreviousRent,
+} from "./types";
 
 export const statementTableFields: Field[] = [
   { id: "1", accessor: "S/N" },
@@ -325,9 +329,6 @@ export const statementTableData = generateTableData(10);
 //   };
 // };
 
-
-
-
 export const transformIndividualTenantAPIResponse = ({
   data,
 }: IndividualTenantAPIResponse): TenantData => {
@@ -428,9 +429,7 @@ export const transformIndividualTenantAPIResponse = ({
       tenantBadgeColor: data?.user_tier
         ? tierColorMap[data.user_tier as keyof typeof tierColorMap]
         : undefined,
-      dueDate: rent?.due_date
-        ? moment(rent.due_date).format("DD/MM/YYYY")
-        : "",
+      dueDate: rent?.due_date ? moment(rent.due_date).format("DD/MM/YYYY") : "",
       documents: unitDocuments, // Only unit-specific documents
     };
   };
@@ -452,16 +451,18 @@ export const transformIndividualTenantAPIResponse = ({
   };
 
   const bankDetails: any = Array.isArray(data?.bank_details)
-    ? data.bank_details.map((bd) => ({
-        bank_name: bd.bank_name || "",
-        account_name: bd.account_name || "",
-        account_number: bd.account_number || "",
-      }))
-    : {
-        bank_name: data?.bank_details?.bank_name || "",
-        account_name: data?.bank_details?.account_name || "",
-        account_number: data?.bank_details?.account_number || "",
-      };
+     ? data.bank_details.map((bd) => ({
+         bank_name: bd.bank_name || "",
+         account_name: bd.account_name ? capitalizeWords(bd.account_name) : "___ ___",
+         account_number: bd.account_number || "",
+       }))
+     : {
+         bank_name: data?.bank_details?.bank_name || "",
+         account_name: data?.bank_details?.account_name
+           ? capitalizeWords(data?.bank_details?.account_name)
+           : "___ ___",
+         account_number: data?.bank_details?.account_number || "",
+       };
 
   const guarantor1: Guarantor = {
     name: data?.guarantor?.[0]?.name || "",

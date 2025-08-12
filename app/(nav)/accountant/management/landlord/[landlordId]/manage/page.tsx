@@ -48,6 +48,7 @@ import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { capitalizeWords } from "@/hooks/capitalize-words";
 
 const AddPropertyModal = dynamic(
   () => import("@/components/Management/Properties/add-property-modal"),
@@ -342,7 +343,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           heading="bank details"
           info={{
             bank: landlordData.bank_details.bank_name,
-            "account name": landlordData.bank_details.account_name,
+            "account name": capitalizeWords(landlordData.bank_details.account_name?.toLowerCase() || "___ ___"),
             "account number": landlordData.bank_details.account_number,
             ...(landlordData.user_tag === "mobile" && {
               "wallet ID": landlordData.bank_details.wallet_id,

@@ -24,7 +24,7 @@ import { ExclamationMark } from "@/public/icons/icons";
 
 const AddUnit = ({ params }: { params: { propertyId: string } }) => {
   const { propertyId } = params;
-  const customBackPath = `/management/properties/${propertyId}/edit-property`;
+  const customBackPath = `/manager/management/properties/${propertyId}/edit-property`;
   const router = useRouter();
   const [dataNotFound, setDataNotFound] = useState(false);
   const [showUnitForm, setShowUnitForm] = useState(true);
@@ -85,7 +85,7 @@ const AddUnit = ({ params }: { params: { propertyId: string } }) => {
       }
       if (transformedData.propertyType === "facility") {
         router.push(
-          `/management/properties/create-gated-estate-property/${propertyId}/add-unit`
+          `/manager/management/properties/create-gated-estate-property/${propertyId}/add-unit`
         );
       }
       setDataNotFound(false);

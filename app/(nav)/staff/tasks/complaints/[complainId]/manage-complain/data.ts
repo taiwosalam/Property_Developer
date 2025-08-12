@@ -141,7 +141,7 @@ export const transformComplaintManage = (
       id: message.id,
       text: message.content,
       time: message.created_at,
-      user: message.user.name,
+      user: message.user.name?.toLowerCase(),
       userId: message.user.id,
       avatar: message.user.picture,
     })),
@@ -154,7 +154,7 @@ export const transformComplaintManage = (
     })),
     task_bar: data?.complaint?.task_bar?.map((task) => ({
       progress: task?.progress,
-      approve_by: task?.approve_by,
+      approve_by: task?.approve_by?.toLowerCase(),
       date: task?.date,
       time: task?.time,
       text: task?.text,

@@ -664,32 +664,57 @@ export const LandlordEditAttachmentInfoSection = ({
   };
 
   const handleUpdateButtonClick = async () => {
-    if (!landlord?.id) return;
-    setReqLoading(true);
+    if (!landlord?.id) {
+      toast.error(`Landlord field is required`);
+      return;
+    }
+
+    if (!documents.length) {
+      toast.error(`Documents are required`);
+      return;
+    }
+
+    if (!property) {
+      toast.error(`Property selection is required`);
+      return;
+    }
+
     const removeSuccess =
       urlsToRemove.length > 0
         ? await removeDocuments(urlsToRemove, landlord.id)
         : true;
-    const uploadSuccess = await uploadDocuments(
-      documents,
-      landlord.id,
-      property || undefined
-    );
-    if (removeSuccess && uploadSuccess) {
-      toast.success("Documents updated successfully");
-      window.dispatchEvent(new Event("landlord-updated"));
-      window.dispatchEvent(new Event("refetchlandlord"));
-      setDocuments([]);
-      setUrlsToRemove([]);
-      setDocumentType("");
-    } else {
+    try {
+      setReqLoading(true);
+      const uploadSuccess = await uploadDocuments(
+        documents,
+        landlord.id,
+        property || undefined
+      );
+      if (removeSuccess && uploadSuccess) {
+        toast.success("Documents updated successfully");
+        window.dispatchEvent(new Event("landlord-updated"));
+        window.dispatchEvent(new Event("refetchlandlord"));
+        setDocuments([]);
+        setUrlsToRemove([]);
+        setDocumentType("");
+      }
+      setReqLoading(false);
+    } catch (error) {
+      console.error(error);
       toast.error("An error occurred while updating documents");
+    } finally {
+      setReqLoading(false);
     }
-    setReqLoading(false);
   };
 
   // Group documents for display
   const groupedDocuments = groupDocumentsByType(documents);
+
+  const landlordOptions =
+    landlord?.propertyOptions?.filter(
+      (option, index, array) =>
+        array.findIndex((item) => item.label === option.label) === index
+    ) || [];
 
   return (
     <div className="attachment-section">
@@ -717,7 +742,7 @@ export const LandlordEditAttachmentInfoSection = ({
                 id="property"
                 label="property"
                 placeholder="Select options"
-                options={landlord?.propertyOptions || []}
+                options={landlordOptions}
                 // value={property}
                 onChange={(value) => setProperty(Number(value))}
                 // inputContainerClassName="bg-neutral-2"
@@ -725,7 +750,9 @@ export const LandlordEditAttachmentInfoSection = ({
               />
             </div>
             <div>
-              <p className="text-base font-medium">Browse *</p>
+              <p className="text-base font-medium">
+                Browse <span className="text-red-500">*</span>
+              </p>
               <Button
                 size="base_medium"
                 className="py-2 px-6"

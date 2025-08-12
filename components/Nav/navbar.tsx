@@ -133,20 +133,21 @@ const Header = () => {
   }, [apiData]);
 
   const handleClearNotifications = async () => {
-   // if (!notificationIds.length) return;
+    if (!notificationIds.length) return;
 
     try {
-      const res = await clearAllNotification();
-
+      const res = await clearAllNotification(notificationIds);
       if (res) {
         setNotificationCount(0);
 
         if (pathname === "/notifications") {
           saveLocalStorage("notificationCount", 0);
         }
-        //refetchNotifications()
+        refetchNotifications();
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

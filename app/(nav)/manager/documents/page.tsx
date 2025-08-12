@@ -96,10 +96,7 @@ const Documents = () => {
   };
 
   const { data, loading, error, silentLoading, isNetworkError } =
-    useFetch<DocumentsPageAPIResponse>(
-      `/property-document`,
-      config
-    );
+    useFetch<DocumentsPageAPIResponse>(`/property-document`, config);
 
   const transformedDocuments = data ? transformDocuments(data) : [];
 
@@ -114,6 +111,23 @@ const Documents = () => {
       value: `${p.id}`,
       label: p.title,
     })) || [];
+
+  const documentFilterOption = [
+    {
+      label: "Property",
+      value: [
+        ...new Map(
+          propertyData?.data?.map((property: any) => [
+            property.title.toLowerCase(), // Use lowercase for comparison
+            {
+              label: property.title, // Keep original case for display
+              value: property.id.toString(),
+            },
+          ])
+        ).values(),
+      ],
+    },
+  ];
 
   const { pagination, total_month, total_document } = data || {
     pagination: null,
@@ -158,16 +172,7 @@ const Documents = () => {
           appliedFilters={appliedFilters}
           searchInputPlaceholder="Document Search"
           noExclamationMark
-          filterOptionsMenu={[
-            ...(propertyOptions.length > 0
-              ? [
-                  {
-                    label: "Property",
-                    value: propertyOptions,
-                  },
-                ]
-              : []),
-          ]}
+          filterOptionsMenu={documentFilterOption}
           azFilter
           isDateTrue
         />
@@ -190,12 +195,14 @@ const Documents = () => {
                     when assigning a new tenant - whether its mobile tenant or
                     web tenant.
                     <br />
+                    <br />
                     Once a template is saved here: It will be used to
                     auto-generate agreements during the &apos;Start Rent&apos;
                     process.
                     <br />
                     You can easily share with mobile tenant or download the
                     agreement for web tenants.
+                    <br />
                     <br />
                     Each new tenant assigned to a property unit will receive a
                     ready-to-use lease or rent agreement based on the saved
@@ -212,7 +219,11 @@ const Documents = () => {
                   <CardsLoading />
                 ) : (
                   transformedDocuments.map((doc) => (
-                    <DocumentCard key={doc.document_id} {...doc} page="manager" />
+                    <DocumentCard
+                      key={doc.document_id}
+                      {...doc}
+                      page="manager"
+                    />
                   ))
                 )}
               </AutoResizingGrid>

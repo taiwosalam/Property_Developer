@@ -20,7 +20,7 @@ import Link from "next/link";
 import { OtherIcon } from "./notification-icons";
 import { useRole } from "@/hooks/roleContext";
 import { toast } from "sonner";
-import { deleteAllNotification } from "@/app/(nav)/notifications/data";
+import { clearAllNotification, deleteAllNotification } from "@/app/(nav)/notifications/data";
 import Image from "next/image";
 
 interface NotificationProps {
@@ -83,7 +83,7 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
 
     try {
       setIsClearingNotifications(true);
-      const res = await deleteAllNotification([notification.id]);
+      const res = await clearAllNotification([notification.id]);
       if (res) {
         //toast.success("Notifications Cleared");
       }

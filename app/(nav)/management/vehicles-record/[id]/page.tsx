@@ -332,7 +332,7 @@ const VehiclesRecordPage = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ create new"
+              noButton
               modalContent={
                 <CreateRecordModal propertyId={Number(id)} data={data} />
               }

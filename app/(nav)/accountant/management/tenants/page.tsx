@@ -115,7 +115,7 @@ const Tenants = () => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
     const statesArray = menuOptions["State"] || [];
-    const agent = menuOptions["Tenant Type"]?.[0];
+    const agent = menuOptions["Tenant/Occupants Type"]?.[0];
 
     const queryParams: TenantRequestParams = {
       page: 1,

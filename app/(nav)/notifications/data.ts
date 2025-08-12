@@ -99,9 +99,9 @@ export const transformNotificationData = (
   };
 };
 
-export const clearAllNotification = async () => {
+export const deleteAllNotification = async () => {
   try {
-    const res = await api.post(`/notifications/delete-all`, {
+    const res = await api.post('/notifications/delete-all', {
       headers: {
         "Content-Type": "application/json",
       },
@@ -116,13 +116,14 @@ export const clearAllNotification = async () => {
     return false;
   }
 };
-export const deleteAllNotification = async (ids: string[]) => {
+
+export const clearAllNotification = async (ids: string[]) => {
   const payload = {
     notification_ids: ids,
   };
 
   try {
-    const res = await api.post(`/notifications/clear-all`, payload, {
+    const res = await api.post('/notifications/mark-read', payload, {
       headers: {
         "Content-Type": "application/json",
       },
