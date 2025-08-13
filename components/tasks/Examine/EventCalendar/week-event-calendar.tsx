@@ -22,6 +22,7 @@ const WeekEventCalendar = ({ events }: WeekEventCalendarProps) => {
   const {
     openModal,
     openActivityModal,
+    openReminderModal,
     weekData: { weekDates, dayNumbers },
   } = useEventCalendar();
 
@@ -51,7 +52,9 @@ const WeekEventCalendar = ({ events }: WeekEventCalendarProps) => {
               >
                 {day}
               </p>
-              <p className="text-black dark:text-white text-2xl">{dayNumbers[index]}</p>
+              <p className="text-black dark:text-white text-2xl">
+                {dayNumbers[index]}
+              </p>
             </div>
           ))}
         </div>
@@ -91,7 +94,10 @@ const WeekEventCalendar = ({ events }: WeekEventCalendarProps) => {
                             ? () => {
                                 openActivityModal(parseISO(day));
                               }
-                            : openModal
+                            : () => {
+                                openModal();
+                                openReminderModal?.(parseISO(day));
+                              }
                         }
                         className="flex-1 hover:bg-white dark:hover:bg-gray-600 cursor-pointer"
                       >

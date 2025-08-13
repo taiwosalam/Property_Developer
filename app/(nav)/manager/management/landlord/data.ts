@@ -194,6 +194,7 @@ export interface LandlordRequestParams {
   search?: string;
   sort_order?: "asc" | "desc";
   states?: string;
+  state?:string;
   start_date?: string;
   date_from?: string;
   date_to?: string;

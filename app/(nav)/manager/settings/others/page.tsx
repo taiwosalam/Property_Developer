@@ -45,12 +45,12 @@ import { ApiResponseUserPlan } from "@/app/(nav)/settings/others/types";
 import useFetch from "@/hooks/useFetch";
 const notificationSettingOptions = [
   {
-    title: "General Notification",
+    title: "Email Notification",
     name: "general_notification",
     desc: "Receive priority notifications for general events or whenever there is a new event of notification.",
   },
   {
-    title: "Email Notification",
+    title: "System Notification",
     name: "email_notification",
     desc: "Receive email notifications for every notification and reminder, as well as whenever I make any transaction in my wallet and other payment transactions.",
   },
@@ -230,7 +230,7 @@ const Others = () => {
   return (
     <>
       {/* NOTIFICATIONS */}
-      <SettingsSection title="Notifications">
+      <SettingsSection title="Email/Notifications">
         <div className="custom-flex-col gap-6 mt-4">
           <div className="mt-2 flex flex-col gap-4">
             <h4> Notify me when: </h4>

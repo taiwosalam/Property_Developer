@@ -83,10 +83,16 @@ const Examine = () => {
         queryParams.account_officer_id = accountOfficer.join(",");
 
       if (branchIdsArray.length > 0) {
-        queryParams.branch_ids = branchIdsArray.join(",");
+        branchIdsArray.forEach((id: number | string, idx: number) => {
+          (queryParams as any)[`branch_ids[${idx}]`] = id;
+        });
       }
       if (status.length > 0) queryParams.status = status.join(",");
-      if (property.length > 0) queryParams.property_ids = property.join(",");
+      if (property.length > 0) {
+        property.forEach((id: string | number, idx: number) => {
+          (queryParams as any)[`property_ids[${idx}]`] = id;
+        });
+      }
       if (startDate)
         queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
@@ -115,14 +121,29 @@ const Examine = () => {
     eleScrollIn.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const { data: propertyData } = useFetch<any>(`property/list`);
+  const { data: propertiesData } = useFetch<any>(`property/list`);
 
-  const propertyOptions = propertyData?.data?.properties?.data?.map(
-    (property: { id: number; title: string }) => ({
-      value: property.id,
-      label: property.title?.toLocaleLowerCase(),
-    })
-  );
+  const propertyOptions: any = Array.isArray(
+    propertiesData?.data.properties.data
+  )
+    ? [
+        ...new Map(
+          propertiesData.data.properties.data
+            .filter(
+              (property: any) =>
+                typeof property.book_visitors === "boolean" &&
+                property.book_visitors
+            )
+            .map((property: any) => [
+              property.title, // Use property title as the unique key
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");

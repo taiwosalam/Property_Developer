@@ -77,7 +77,7 @@ export const notification_links: Record<string, string> = {
   setting: "/settings",
   listing: "/listing/units",
   location: "/settings",
-  application: "/tasks/application",
+  application: "/tasks/applications",
   complain: "/tasks/complaints",
   trash: "/tasks/undo",
   examine: "/tasks/examine",

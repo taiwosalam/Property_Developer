@@ -68,8 +68,6 @@ const SettingsWebsiteDomain = () => {
     useFetch<CompanySettingsResponse>("/company/settings");
   useRefetchOnEvent("refetchProfile", () => refetch({ silent: true }));
 
-  
-
   const isOwner =
     customDomain &&
     `${customDomain}.ourlisting.ng` === companySettings?.data?.domain;
@@ -85,9 +83,16 @@ const SettingsWebsiteDomain = () => {
 
       const customDomain = {
         domain: companySettings?.data?.custom_domain?.toLowerCase() ?? null,
-        ssl: "pending", //companySettings?.data?.custom_domain_ssl_status ?? "____ ____",
-        status: "pending", //companySettings?.data?.custom_domain_status,
+        ssl: companySettings?.data?.updated_at
+          ? companySettings?.data?.custom_domain_ssl_status
+          : "pending", // ?? "____ ____",
+        status: companySettings?.data?.updated_at
+          ? companySettings?.data?.custom_domain_status
+          : "pending",
         updated_at: companySettings?.data?.updated_at
+          ? dayjs(companySettings?.data?.updated_at).format("DD-MM-YYYY")
+          : "___ ___",
+        created_at: companySettings?.data?.created_at
           ? dayjs(companySettings?.data?.updated_at).format("DD-MM-YYYY")
           : "___ ___",
       };
@@ -210,7 +215,6 @@ const SettingsWebsiteDomain = () => {
         return "";
     }
   };
-
 
   return (
     <div>

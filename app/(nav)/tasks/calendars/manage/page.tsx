@@ -59,6 +59,7 @@ const ManageCalendar = () => {
   const [activeDate, setActiveDate] = useState(new Date());
   const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
   const [activityModalIsOpen, setActivityModalIsOpen] = useState(false);
+  const [reminderModal, setReminderModal] = useState(true);
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
   const [activeLayout, setActiveLayout] = useState<CalendarLayoutType>("Month");
 
@@ -115,7 +116,19 @@ const ManageCalendar = () => {
     setActiveLayout(newLayout);
   };
 
-  const openModal = () => setModalIsOpen(true);
+  const openReminderModal = (date: Date) => {
+    setActiveDate(date);
+    setReminderModal(true);
+  };
+
+  const openModal = () => {
+
+  }
+
+  useEffect(()=> {
+    setReminderModal(false);
+  }, [])
+
   const openActivityModal = (date: Date) => {
     setActiveDate(date);
     setActivityModalIsOpen(true);
@@ -181,6 +194,7 @@ const ManageCalendar = () => {
         ...data,
         weekData,
 
+        openReminderModal,
         openModal,
         openActivityModal,
       }}
@@ -290,9 +304,9 @@ const ManageCalendar = () => {
         ) : activeLayout === "Week" ? (
           <WeekEventCalendar events={calendarEvents} />
         ) : null}
-        <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
+        <Modal state={{ isOpen: reminderModal, setIsOpen: setReminderModal }}>
           <ModalContent>
-            <CreateReminderMOdal />
+            <CreateReminderMOdal date={activeDate} />
           </ModalContent>
         </Modal>
         <Modal

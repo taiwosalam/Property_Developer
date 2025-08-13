@@ -111,7 +111,7 @@ const Examine = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_by: order },
     });
   };
 

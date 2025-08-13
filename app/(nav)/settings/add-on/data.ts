@@ -137,12 +137,12 @@ export const personalized_domain: SubscriptionTableType = {
     {
       id: "3",
       label: "Added Date",
-      accessor: "updated_at",
+      accessor: "created_at",
     },
     {
       id: "4",
       label: "Sync Date",
-      accessor: "sync_date",
+      accessor: "updated_at",
     },
 
     {

@@ -14,6 +14,7 @@ import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { createReminder } from "@/app/(nav)/tasks/complaints/[complainId]/manage-complain/data";
 import { Dayjs } from "dayjs";
+import { format } from "date-fns";
 import { toast } from "sonner";
 // import { SectionSeparator } from "@/components/Section/section-components";
 
@@ -24,15 +25,24 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const CreateReminderMOdal = () => {
+interface IReminderProps {
+  date?: Date;
+}
+const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
   const allTabs = ["event", "task", "reminder", "examine"] as const;
   type Tab = (typeof allTabs)[number];
   const [activeTab, setActiveTab] = useState<Tab>(allTabs[0]);
   const { setIsOpen } = useModal();
 
-  const [reminderDate, setReminderDate] = useState<Dayjs | null>(null);
+  const [reminderDate, setReminderDate] = useState<Dayjs | null>(
+    date ? dayjs(date) : dayjs()
+  );
 
   const handleDateChange = (date?: Dayjs | null) => {
+    if (date && date.isBefore(dayjs().startOf("day"))) {
+      toast.error("Please select a current or future date");
+      return;
+    }
     setReminderDate(date || null);
   };
 
@@ -41,10 +51,15 @@ const CreateReminderMOdal = () => {
   const [loading, setLoading] = useState(false);
 
   const handleInputTitle = (value: string) => {
-    setInputTitle(value);
+    if (value.length <= 40) {
+      setInputTitle(value);
+    }
   };
+
   const handleTextNote = (value: string) => {
-    setTextAreaNote(value);
+    if (value.length <= 200) {
+      setTextAreaNote(value);
+    }
   };
 
   const handleCreateReminder = async () => {
@@ -52,14 +67,33 @@ const CreateReminderMOdal = () => {
       toast.error("Please select a reminder date");
       return;
     }
-    if (!inputTitle) {
-      toast.error("Please the reminder title");
+
+    // Additional date validation
+    if (reminderDate.isBefore(dayjs().startOf("day"))) {
+      toast.error("Please select a current or future date");
       return;
     }
-    if (!textAreaNote) {
+
+    if (!inputTitle.trim()) {
+      toast.error("Please enter the reminder title");
+      return;
+    }
+
+    if (inputTitle.length > 40) {
+      toast.error("Title cannot exceed 40 characters");
+      return;
+    }
+
+    if (!textAreaNote.trim()) {
       toast.error("Please add a note");
       return;
     }
+
+    if (textAreaNote.length > 200) {
+      toast.error("Note cannot exceed 20 characters");
+      return;
+    }
+
     const utcDate = reminderDate.startOf("day").format("YYYY-MM-DD");
 
     const params = {
@@ -77,6 +111,7 @@ const CreateReminderMOdal = () => {
         setIsOpen(false);
       }
     } catch (error) {
+      toast.error("Failed to create reminder");
     } finally {
       setLoading(false);
     }
@@ -88,6 +123,7 @@ const CreateReminderMOdal = () => {
           <Input
             id="title"
             placeholder="Add title"
+            label="Add title"
             inputClassName="bg-white"
             onChange={handleInputTitle}
           />
@@ -95,8 +131,12 @@ const CreateReminderMOdal = () => {
             id="reminder_date"
             label="Reminder Date"
             lastYear
+            value={reminderDate}
+            defaultValue={dayjs(date)}
             onChange={handleDateChange}
+            //minDate={dayjs().startOf('day').toDate()} // Prevent past dates
           />
+
           <TextArea
             id="note"
             label="Attach note:"
