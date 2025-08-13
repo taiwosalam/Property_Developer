@@ -74,7 +74,7 @@ const TenantsReport = () => {
           branchAccountOfficers.map((staff: any) => [
             staff.user.name.toLowerCase(), // Use lowercase for comparison
             {
-              label: staff.user.name, // Keep original case for display
+              label: staff.user.name?.toLowerCase(), // Keep original case for display
               value: staff.user.id.toString(),
             },
           ])
@@ -129,7 +129,7 @@ const TenantsReport = () => {
     debounce((filters: FilterResult) => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
+      const accountOfficer = menuOptions["Account Manager"] || [];
       const branch = menuOptions["Branch"] || [];
       const property = menuOptions["Property"] || [];
 

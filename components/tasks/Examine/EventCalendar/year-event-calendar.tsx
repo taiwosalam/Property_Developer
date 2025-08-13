@@ -34,7 +34,8 @@ interface YearEventCalendarProps {
   events?: CalendarEventProps[];
 }
 const YearEventCalendar = ({ events }: YearEventCalendarProps) => {
-  const { year, openModal, openActivityModal } = useEventCalendar();
+  const { year, openModal, openActivityModal, openReminderModal } =
+    useEventCalendar();
 
   const { isCustom, isSmallTablet } = useWindowWidth(1280);
   const today = new Date();
@@ -164,7 +165,10 @@ const YearEventCalendar = ({ events }: YearEventCalendarProps) => {
                             ? () => {
                                 openActivityModal(day.date);
                               }
-                            : openModal
+                            : () => {
+                                openModal();
+                                openReminderModal?.(day.date);
+                              }
                         }
                       />
                     ))}

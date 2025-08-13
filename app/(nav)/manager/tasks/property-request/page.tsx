@@ -102,7 +102,7 @@ const PropertyRequest = () => {
       queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (statesArray.length > 0) {
-      queryParams.states = statesArray.join(",");
+      queryParams.state = statesArray.join(",");
     }
 
     setConfig({
@@ -118,7 +118,7 @@ const PropertyRequest = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_by: order },
+      params: { ...config.params, sort_dir: order },
     });
   };
 

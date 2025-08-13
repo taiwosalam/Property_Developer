@@ -67,7 +67,7 @@ const PropertiesReport = () => {
 
   const reportTenantFilterOption = [
     {
-      label: "Account Officer",
+      label: "Account Manager",
       value: [
         ...new Map(
           branchAccountOfficers.map((staff: any) => [
@@ -128,7 +128,7 @@ const PropertiesReport = () => {
     debounce((filters: FilterResult) => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
+      const accountOfficer = menuOptions["Account Manager"] || [];
       const branch = menuOptions["Branch"] || [];
       const property = menuOptions["Property"] || [];
 

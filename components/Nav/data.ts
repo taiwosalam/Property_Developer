@@ -123,9 +123,9 @@ export const manager_nav_items: NavItemsProps = [
     type: "people",
     label: "management",
     content: [
+      { label: "branch Staff", href: "/manager/management/branch-staff" },
       { label: "landlord & landlady", href: "/manager/management/landlord" },
       { label: "tenants & occupants", href: "/manager/management/tenants" },
-      { label: "branch Staff", href: "/manager/management/branch-staff" },
       { label: "inventory", href: "/manager/management/inventory" },
       { label: "properties", href: "/manager/management/properties" },
       { label: "rent & mgmt", href: "/manager/management/rent-unit" },

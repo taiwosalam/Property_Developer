@@ -234,6 +234,7 @@ interface CompanySettingsData {
   general_notification: boolean;
   sms_notification: boolean;
   updated_at: string;
+  created_at: string;
   email_notification: boolean;
   screening_levels: ScreeningLevels;
 }

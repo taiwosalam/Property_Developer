@@ -123,7 +123,7 @@ const LandlordsReport = () => {
     debounce((filters: FilterResult) => {
       setAppliedFilters(filters);
       const { menuOptions, startDate, endDate } = filters;
-      const accountOfficer = menuOptions["Account Officer"] || [];
+      const accountOfficer = menuOptions["Account Manager"] || [];
       const branch = menuOptions["Branch"] || [];
       const property = menuOptions["Property"] || [];
 

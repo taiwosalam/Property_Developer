@@ -305,7 +305,7 @@ const ComplaintsPage = () => {
             <SearchError />
           ) : (
             <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 gap-4 flex items-center overflow-x-scroll no-scrollbar">
-              {pageData.complaints
+              {/* {pageData.complaints
                 ?.filter((task) => task?.content?.status === "pending")
                 .map((complaint, index) => (
                   <TaskCard
@@ -336,7 +336,14 @@ const ComplaintsPage = () => {
                       setPendingModalOpen(true);
                     }}
                   />
-                ))}
+                ))} */}
+
+              <PendingComplaintsScroll
+                complaints={pageData.complaints}
+                pagination={pageData.pagination}
+                onLoadMore={handleLoadMorePending}
+                loading={silentLoading} // Use silentLoading to avoid showing main loader
+              />
             </div>
           )
         ) : (

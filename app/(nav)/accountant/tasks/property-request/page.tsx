@@ -120,7 +120,7 @@ const PropertyRequest = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_by: order },
+      params: { ...config.params, sort_dir: order },
     });
   };
 

@@ -18,8 +18,14 @@ interface MonthEventCalendarProps {
 }
 
 const MonthEventCalendar = ({ events }: MonthEventCalendarProps) => {
-  const { openModal, openActivityModal, calendarDays, month, year } =
-    useEventCalendar();
+  const {
+    openModal,
+    openActivityModal,
+    openReminderModal,
+    calendarDays,
+    month,
+    year,
+  } = useEventCalendar();
 
   // Group events by date and process multiple events
   const { eventsByDate, processedCalendarDays } = useMemo(() => {
@@ -68,8 +74,13 @@ const MonthEventCalendar = ({ events }: MonthEventCalendarProps) => {
             <EventCalendarDay
               {...day}
               key={index}
-              onClick={openModal}
-              onEventClick={() => openActivityModal(day.date)}
+              onClick={() => {
+                openModal();
+                openReminderModal?.(day.date);
+              }}
+              onEventClick={() => {
+                openActivityModal(day.date);
+              }}
               removeBorder={{ right: (index + 1) % 7 === 0 ? true : false }}
             />
           ))}

@@ -19,6 +19,7 @@ import useFetch from "@/hooks/useFetch";
 import { number } from "zod";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import dayjs from "dayjs";
+import { useRole } from "@/hooks/roleContext";
 
 const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
   next,
@@ -27,6 +28,8 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [announcement, setAnnouncement] = useState(false);
+
+  const { role } = useRole();
 
   const [branchOptions, setBranchOptions] = useState<
     { id: number; name: string }[]
@@ -77,8 +80,34 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
   const { data: propertyData, silentLoading: propertySilentLoading } =
     useFetch<any>(selectedBranchId ? `branch/${selectedBranchId}` : null);
 
+  const { data: roleProperty, silentLoading: roleSilentLoading } =
+    useFetch<any>("/property/all");
+
   useEffect(() => {
-    if (propertyData) {
+    if (roleProperty && role !== "director") {
+      const roleProperties = roleProperty.data.map(
+        (p: { id: number; title: string }) => ({ id: p.id, name: p.title })
+      );
+
+      const staff = propertyData.data?.branch?.staffs.filter(
+        (staff: { id: number; name: string; staff_role: string }) =>
+          staff.staff_role !== "director" 
+      );
+
+      const officersOptions = staff?.map(
+        (staff: { user_id: number; name: string }) => {
+          return {
+            id: staff.user_id,
+            name: staff.name,
+          };
+        }
+      );
+
+      setPropertyOptions(roleProperties);
+      setAccountOfficerOptions(officersOptions);
+    }
+
+    if (propertyData && role === "director") {
       const properties = propertyData.data?.branch?.properties?.map(
         (property: { id: number; title: string }) => {
           return {
@@ -87,23 +116,25 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
           };
         }
       );
-      const accountOfficers = propertyData.data?.branch?.staffs.filter(
-        (staff: { id: number; name: string; staff_role: string }) =>
-          staff.staff_role === "staff"
-      );
-      const officersOptions = accountOfficers?.map(
-        (staff: { id: number; name: string }) => {
+
+      // const staff = propertyData.data?.branch?.staffs.filter(
+      //   (staff: { id: number; name: string; staff_role: string }) =>
+      //     staff.staff_role === "staff"
+      // );
+
+      const officersOptions = propertyData.data?.branch?.staffs?.map(
+        (staff: { user_id: number; name: string }) => {
           return {
-            id: staff.id,
+            id: staff.user_id,
             name: staff.name,
           };
         }
       );
 
-      setAccountOfficerOptions(officersOptions);
       setPropertyOptions(properties);
+      setAccountOfficerOptions(officersOptions);
     }
-  }, [propertyData, selectedPropertyId]);
+  }, [propertyData, selectedPropertyId, role]);
 
   useEffect(() => {
     if (branchData) {

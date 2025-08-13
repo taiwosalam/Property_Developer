@@ -114,7 +114,7 @@ export const CalendarActivity: React.FC<CalendarEventProps> = ({
   title,
   originalType,
 }) => (
-  <div className="flex gap-4">
+  <div className="flex gap-4 overflow-hidden">
     <div
       className="w-1"
       style={{
@@ -126,15 +126,17 @@ export const CalendarActivity: React.FC<CalendarEventProps> = ({
           "#000000", // fallback color
       }}
     />
-    <p className="p-1 text-text-primary text-sm font-normal">
+    <p className="p-1 text-text-primary text-sm font-normal break-words whitespace-normal">
       <span className="capitalize font-bold dark:text-white pr-1">
-        {(originalType || type) === "reminders" ? "reminder" : (originalType || type)}
+        {(originalType || type) === "reminders"
+          ? "reminder"
+          : originalType || type}
       </span>
       {type !== "reminders" ? (
         <span className="dark:text-darkText-2"> || {desc}</span>
       ) : (
         <span
-          className="dark:text-darkText-2 inline-flex gap-1"
+          className="dark:text-darkText-2 inline-flex gap-1 break-words whitespace-normal"
           dangerouslySetInnerHTML={{ __html: ` || ${desc}` }}
         />
       )}

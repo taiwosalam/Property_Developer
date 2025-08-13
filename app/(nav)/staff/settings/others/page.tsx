@@ -45,7 +45,7 @@ import { debounce } from "lodash";
 import { otherNotificationSettings, updateCompanyNotification } from "@/app/(nav)/settings/others/data";
 const notificationSettingOptions = [
   {
-    title: "General Notification",
+    title: "System Notification",
     name: "general_notification",
     desc: "Receive priority notifications for general events or whenever there is a new event of notification.",
   },
@@ -203,7 +203,7 @@ const Others = () => {
   return (
     <>
       {/* NOTIFICATIONS */}
-      <SettingsSection title="Notifications">
+      <SettingsSection title="Email/Notifications">
         <div className="custom-flex-col gap-6 mt-4">
           <div className="mt-2 flex flex-col gap-4">
             <h4> Notify me when: </h4>
