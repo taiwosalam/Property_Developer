@@ -41,7 +41,7 @@ const Marquee = ({
     <>
       {showMarquee && (
         <div
-          className={`relative overflow-hidden bg-gray-100 border border-gray-300 ${className}`}
+          className={`relative overflow-hidden ${className}`}
         >
           <div
             ref={marqueeRef}

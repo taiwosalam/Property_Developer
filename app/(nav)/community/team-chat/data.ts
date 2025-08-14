@@ -185,7 +185,6 @@ export const createNewTeamChat = async (data: FormData) => {
   }
 };
 
-// group-chats/3/members
 export const addUserToGroup = async (groupId: string, data: FormData) => {
   try {
     const response = await api.post(`group-chats/${groupId}/members`, data);
@@ -201,7 +200,6 @@ export const addUserToGroup = async (groupId: string, data: FormData) => {
   }
 };
 
-// group-chat/2?description=testing update&name=update name
 export const updateGroupNameAndDescription = async (
   groupId: string,
   name: string,
@@ -222,7 +220,6 @@ export const updateGroupNameAndDescription = async (
   }
 };
 
-// http://127.0.0.1:8000/api/v1/group-chat/2/status
 export const updateTeamAvatar = async (groupId: string, formData: FormData) => {
   try {
     const response = await api.patch(`group-chat/${groupId}/status`, formData);
@@ -270,7 +267,6 @@ export const updateGroupNameOrDescription = async (
   }
 };
 
-// group-chats/3
 export const deleteGroupChat = async (groupId: number) => {
   try {
     const response = await api.delete(`group-chats/${groupId}`);
@@ -313,7 +309,6 @@ export const removeGroupMember = async (groupId: number, userId: number) => {
   }
 };
 
-// curl --location --request POST 'http://127.0.0.1:8000/api/v1/group-chat/2/send-message?message=testing%20the%20chat'
 export const sendGroupMessage = async (groupId: string, data: FormData) => {
   try {
     const response = await api.post(`group-chat/${groupId}/send-message`, data);
@@ -326,7 +321,7 @@ export const sendGroupMessage = async (groupId: string, data: FormData) => {
     handleAxiosError(error);
     return false;
   }
-};
+}; 
 
 export function isImageFile(filename: string): boolean {
   return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(filename);

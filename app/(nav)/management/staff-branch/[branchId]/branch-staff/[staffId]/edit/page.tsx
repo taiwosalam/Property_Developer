@@ -72,13 +72,6 @@ const EditStaffProfile = () => {
     }
   }, [apiData, branchId]);
 
-  const handleDeleteStaffAccount = () => {
-    try {
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const pathname = usePathname();
   const {
     setShouldRenderTour,

@@ -22,7 +22,7 @@ import { NavIcon, NotificationBadge } from "@/components/Nav/nav-components";
 import NavSwitchUserSwitch from "./nav-switch-user-switch";
 import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import NavProfileDropdown from "@/components/Nav/nav-profile-dropdown";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   SearchIcon,
   MailIcon,
@@ -60,14 +60,20 @@ import useBranchData from "@/hooks/useBranchData";
 import { useBranchInfoStore } from "@/store/branch-info-store";
 import { DrawerComponent } from "../Drawer/drawer";
 import Marquee from "../Marquee/marquee";
+import { SmartMarquee } from "../Marquee/smart-marque";
+import { useMarqueeConfig } from "../Marquee/marque-config";
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
   const hasMounted = useRef(false);
+  // Get marquee config
+  const marqueeConfig = useMarqueeConfig();
   const isManualToggle = useRef(false);
   const setColor = useThemeStoreSelectors.getState().setColor;
   const { theme, setTheme } = useTheme();
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
 
   const pathname = usePathname();
 
@@ -90,6 +96,7 @@ const Header = () => {
   const profile_picture = usePersonalInfoStore(
     (state) => state.profile_picture
   );
+
   const company_logo = usePersonalInfoStore((state) =>
     theme === "light"
       ? getLocalStorage("light_logo")
@@ -641,13 +648,9 @@ const Header = () => {
       </header>
 
       <div className="">
-        <Marquee
-          text="🎉 Summer Sale: Up to 50% off all items! Don't miss out on amazing deals. Your subscription will expire in 2 days, your can renew to get early discount."
-          urlText="Shop Now"
-          //showMarquee
-          url="https://example.com/sale"
-          speed={120}
-          className="bg-brand-9 border-[var(--secondary-color)] h-[3.7rem] flex items-center leading-loose"
+        <SmartMarquee
+          {...marqueeConfig}
+          className="flex items-center leading-loose"
         />
       </div>
     </>

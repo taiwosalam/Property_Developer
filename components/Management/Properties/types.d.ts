@@ -70,6 +70,7 @@ export interface AllBranchesResponse {
   data: {
     id: string;
     branch_name: string;
+    manager_id?: string;
   }[];
 }
 export interface AllInventoryResponse {
