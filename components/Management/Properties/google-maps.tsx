@@ -47,6 +47,7 @@ const GoogleMapsModal = ({
       };
       setSelectedLocation(newLocation);
       setSelectedLoacationPoint(newLocation);
+      setLocationPicked(true); 
       // console.log("new location", newLocation)
       setCoordinate(`${event.latLng.lat()}, ${event.latLng.lng()}`);
     }
@@ -59,6 +60,7 @@ const GoogleMapsModal = ({
           const { latitude, longitude } = position.coords;
           const newLocation = { lat: latitude, lng: longitude };
           setSelectedLocation(newLocation);
+          setSelectedLoacationPoint(newLocation);
           setCoordinate(`${latitude}, ${longitude}`);
           setLocationPicked(true); // HIDE THE BUTTON
           toast.success("Your current Location has been added successfully.");
@@ -124,10 +126,10 @@ const GoogleMapsModal = ({
                 Pick Current Location
               </Button>
             )} */}
-            {selectedLoacationPoint ? (
+            {locationPicked ? (
               <div className="flex items-center gap-2  flex-col text-center font-semibold text-brand-9">
-                <p>Lat - {selectedLoacationPoint.lat.toFixed(5)}</p>
-                <p>Long - {selectedLoacationPoint.lng.toFixed(5)}</p>
+                <p>Lat - {selectedLoacationPoint?.lat.toFixed(5)}</p>
+                <p>Long - {selectedLoacationPoint?.lng.toFixed(5)}</p>
               </div>
             ) : (
               <Button
