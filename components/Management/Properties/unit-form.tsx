@@ -20,12 +20,13 @@ import {
   getUnitById,
   editUnit as editUnitApi,
 } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
-import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
+import { CreateUnitLoadsteps, type UnitDataObject } from "@/app/(nav)/management/properties/data";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
 import { useGlobalStore } from "@/store/general-store";
 import DynamicFooterActions from "./footer-action";
+import ProgressCardLoader from "@/components/Loader/setup-card-loader";
 
 export interface UnitFormState {
   images: string[];
@@ -278,90 +279,93 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     }
   }, [props.empty, newForm]);
 
-  if (submitLoading) {
-    return <FullPageLoader text="Processing Unit Data..." />;
-  }
+  // if (submitLoading) {
+  //   return <FullPageLoader text="Processing Unit Data..." />;
+  // }
 
   return (
-    <FlowProgress
-      steps={1}
-      activeStep={0}
-      inputClassName="unit-form-input"
-      showProgressBar={false}
-      key="unit-form-progress"
-    >
-      <UnitFormContext.Provider
-        value={{
-          ...state,
-          setImages,
-          setUnitType,
-          submitLoading,
-          setSaveClick,
-          resetForm,
-          formSubmitted,
-          setFormSubmitted,
-          shouldRedirect,
-          setShouldRedirect,
-          ...(!props.empty
-            ? {
-                isEditing: props.isEditing,
-                setIsEditing: props.setIsEditing,
-                unitData: props.data,
-                index: props.index,
-                notYetUploaded: props.data.notYetUploaded || false,
-              }
-            : {
-                duplicate,
-                setDuplicate,
-              }),
-        }}
+    <>
+      <ProgressCardLoader loading={submitLoading} steps={CreateUnitLoadsteps} />
+      <FlowProgress
+        steps={1}
+        activeStep={0}
+        inputClassName="unit-form-input"
+        showProgressBar={false}
+        key="unit-form-progress"
       >
-        <AuthForm
-          id={props.empty ? "add-unit-form" : undefined}
-          className="space-y-6 lg:space-y-8"
-          skipValidation
-          onFormSubmit={handleSubmit}
-          ref={formRef}
+        <UnitFormContext.Provider
+          value={{
+            ...state,
+            setImages,
+            setUnitType,
+            submitLoading,
+            setSaveClick,
+            resetForm,
+            formSubmitted,
+            setFormSubmitted,
+            shouldRedirect,
+            setShouldRedirect,
+            ...(!props.empty
+              ? {
+                  isEditing: props.isEditing,
+                  setIsEditing: props.setIsEditing,
+                  unitData: props.data,
+                  index: props.index,
+                  notYetUploaded: props.data.notYetUploaded || false,
+                }
+              : {
+                  duplicate,
+                  setDuplicate,
+                }),
+          }}
         >
-          {!props.empty && props.isEditing && (
-            <>
-              <div className="flex justify-between items-center">
-                <p className="text-brand-9 font-semibold">Edit Unit</p>
-                <EditUnitActions />
-              </div>
-              <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
-            </>
-          )}
-          <UnitPictures ref={unitPicturesRef} />
-          <UnitDetails />
-          <div className="unit-feature-wrapper">
-            <UnitFeatures />
-          </div>
+          <AuthForm
+            id={props.empty ? "add-unit-form" : undefined}
+            className="space-y-6 lg:space-y-8"
+            skipValidation
+            onFormSubmit={handleSubmit}
+            ref={formRef}
+          >
+            {!props.empty && props.isEditing && (
+              <>
+                <div className="flex justify-between items-center">
+                  <p className="text-brand-9 font-semibold">Edit Unit</p>
+                  <EditUnitActions />
+                </div>
+                <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
+              </>
+            )}
+            <UnitPictures ref={unitPicturesRef} />
+            <UnitDetails />
+            <div className="unit-feature-wrapper">
+              <UnitFeatures />
+            </div>
 
-          {propertyType === "rental" ? (
-            <>
-              <UnitBreakdownNewTenant />
-              <UnitBreakdownRenewalTenant />
-            </>
-          ) : (
-            <>
-              <div className="unit-fee-breakdown-wrapper">
-                <UnitBreakdownFacility />
-              </div>
-              <div className="unit-fee-renewal-details">
+            {propertyType === "rental" ? (
+              <>
+                <UnitBreakdownNewTenant />
                 <UnitBreakdownRenewalTenant />
-              </div>
-            </>
-          )}
-          {!props.empty ? (
-            <EditUnitActions />
-          ) : (
-            <AddUntFooter noForm={props.empty} />
-          )}
-          <DynamicFooterActions />
-        </AuthForm>
-      </UnitFormContext.Provider>
-    </FlowProgress>
+              </>
+            ) : (
+              <>
+                <div className="unit-fee-breakdown-wrapper">
+                  <UnitBreakdownFacility />
+                </div>
+                <div className="unit-fee-renewal-details">
+                  <UnitBreakdownRenewalTenant />
+                </div>
+              </>
+            )}
+            {!props.empty ? (
+              <EditUnitActions />
+            ) : (
+              <AddUntFooter noForm={props.empty} />
+            )}
+            <DynamicFooterActions />
+          </AuthForm>
+        </UnitFormContext.Provider>
+      </FlowProgress>
+    </>
   );
 };
 

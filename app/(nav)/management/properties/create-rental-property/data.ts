@@ -1,7 +1,4 @@
-
-
-
-
+import { ProgressCardStep } from "@/components/Loader/setup-card-loader";
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
 

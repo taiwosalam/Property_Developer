@@ -174,19 +174,6 @@ export interface GroupedMessages {
 }
 [];
 
-// export interface StaffChatTypes  {
-//   pfp: string;
-//   desc: string;
-//   time: string;
-//   fullname: string;
-//   id: string;
-//   messages?: number;
-//   verified?: boolean;
-//   content_type?: string;
-//   unread_count?: number;
-//   groupedMessages: GroupedMessages[];
-// };
-
 export interface StaffChatTypes {
   pfp: string;
   desc: string;

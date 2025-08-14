@@ -13,6 +13,8 @@ export interface IMemberList {
     role: string;
   }[];
 }
+
+
 export const transformTeamMemberData = (
   data: TeamChatUsersResponse
 ): IMemberList => {

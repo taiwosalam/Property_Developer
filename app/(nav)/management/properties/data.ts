@@ -4,6 +4,7 @@ import { type PropertyCardProps } from "@/components/Management/Properties/prope
 import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
 import moment from "moment";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
+import { ProgressCardStep } from "@/components/Loader/setup-card-loader";
 
 export const initialState: PropertiesPageState = {
   total_pages: 1,
@@ -208,6 +209,16 @@ export interface PropertyFilterResponse {
 export const transformPropertiesApiResponse = (
   response: PropertiesApiResponse | PropertyFilterResponse
 ): Partial<PropertiesPageState> => {
+  // const isPropertiesApiResponse = (
+  //   response: any
+  // ): response is PropertiesApiResponse => {
+  //   return "total_property" in response.data;
+  // };
+
+  if (!response?.data) {
+    return initialState;
+  }
+
   const isPropertiesApiResponse = (
     response: any
   ): response is PropertiesApiResponse => {
@@ -310,3 +321,38 @@ export interface PropertiesFilterParams {
   search?: string;
   // per_page?: number;
 }
+
+// ================  CREATE UNIT LOADING STEPS ====================
+
+export const CreateUnitLoadsteps: ProgressCardStep[] = [
+  {
+    title: "Setting up unit details to property details",
+    type: "warning",
+    desc: "Adding unit name, type, size, and linking it to the property with complete location and category details.",
+  },
+  {
+    title: "Creating unit breakdown and slots",
+    type: "warning",
+    desc: "Structuring units into sections or groups, creating inventory slots, and defining capacity for clients or tenants.",
+  },
+  {
+    title: "Applying settings, features, and pricing",
+    type: "warning",
+    desc: "Adding amenities, availability status, rent or sale prices, and management preferences for both property and units.",
+  },
+  {
+    title: "Uploading and optimizing images",
+    type: "success",
+    desc: "Preparing high-quality, fast-loading photos for the property and all associated units.",
+  },
+  {
+    title: "Publishing to your website and sending for approval",
+    type: "success",
+    desc: "Finalizing layout, maps, and branding, then making the listing live and submitting it for admin review.",
+  },
+  {
+    title: "Unit creation complete",
+    type: "success",
+    desc: "All steps finished successfully — your unit is now fully set up and ready for use.",
+  },
+];

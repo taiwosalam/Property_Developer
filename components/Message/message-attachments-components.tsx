@@ -134,3 +134,4 @@ export const MessageDocumentComponent = ({ id }: { id: string }) => {
     </div>
   );
 };
+
