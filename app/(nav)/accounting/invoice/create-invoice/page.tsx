@@ -65,13 +65,26 @@ const CreateInvoicePage = () => {
     loading: propertyLoading,
   } = useFetch<PropertyListResponse>("/property/all");
 
-  const propertyOptions =
-    properties?.data
-      .filter((p) => p.has_unit)
-      .map((p) => ({
-        value: `${p.id}`,
-        label: p.title,
-      })) || [];
+  const propertyOptions = Array.isArray(properties?.data)
+    ? [
+        ...new Map(
+          properties.data
+            .filter(
+              (property: any) =>
+                property.property_type === "rental" && property.units.length > 0
+            )
+            .map((property: any) => [
+              property.title,
+              {
+                label: property.title?.toLowerCase(),
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
+
+  
 
   useEffect(() => {
     const fetchTenants = async () => {

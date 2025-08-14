@@ -412,7 +412,7 @@ const ManagerProfile = () => {
                 className="py-[10px] px-8"
                 disabled={reqLoading}
               >
-                {reqLoading ? "Please ..." : "Update"}
+                {reqLoading ? "Please wait..." : "Update"}
               </Button>
             </div>
           </div>

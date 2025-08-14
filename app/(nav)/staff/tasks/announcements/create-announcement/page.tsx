@@ -7,13 +7,35 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ExclamationMark } from "@/public/icons/icons";
 import { useTourStore } from "@/store/tour-store";
+import { useRole } from "@/hooks/roleContext";
 
 const CreateAnnouncement = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const { role } = useRole();
 
   const { announcementId } = useParams();
   const paramId = announcementId as string;
+
+  const getRoute = () => {
+    switch (role) {
+      case "director":
+        router.push("/tasks/announcements");
+        break;
+      case "account":
+        router.push("/accountant/tasks/announcements");
+        break;
+      case "manager":
+        router.push("/manager/tasks/announcements");
+        break;
+      case "staff":
+        router.push("/staff/tasks/announcements");
+        break;
+      default:
+        router.push("/unauthorized");
+        break;
+    }
+  };
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -21,7 +43,7 @@ const CreateAnnouncement = () => {
       const success = await createAnnouncement(formData);
       if (success) {
         toast.success("Announcement created");
-        router.push("/tasks/announcements");
+        getRoute();
       }
     } catch (error) {
     } finally {

@@ -138,9 +138,9 @@ const Inquires = () => {
         });
       }
       if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
@@ -160,7 +160,7 @@ const Inquires = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_by: order },
     });
   };
 

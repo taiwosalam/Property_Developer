@@ -19,7 +19,7 @@ import { Dayjs } from "dayjs";
 import { DeleteIconX } from "@/public/icons/icons";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
 import { SectionSeparator } from "@/components/Section/section-components";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   addDisburse,
   DisburseApiResponse,
@@ -35,6 +35,7 @@ import { toast, Toaster } from "sonner";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import { useRole } from "@/hooks/roleContext";
 
 const paymentModes = [
   "Bank Transfer",
@@ -47,19 +48,21 @@ const paymentModes = [
 const ManageDisbursement = () => {
   const { disbursementId } = useParams();
   const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
-  const [reqLoading, setReqLoading] = useState(false)
-  const [unitId, setUnitId] = useState('')
+  const [reqLoading, setReqLoading] = useState(false);
+  const [unitId, setUnitId] = useState("");
   const [pageData, setPageData] = useState<ManageDisbursementPageData | null>(
     null
   );
+  const {role } = useRole();
+  const router = useRouter();
+
   const CURRENCY_SYMBOL = currencySymbols.naira;
   const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
     []
   );
 
-  const { data, error, loading, refetch, isNetworkError } = useFetch<DisburseApiResponse>(
-    `/disburses/${disbursementId}`
-  );
+  const { data, error, loading, refetch, isNetworkError } =
+    useFetch<DisburseApiResponse>(`/disburses/${disbursementId}`);
   useRefetchOnEvent("fetch-disburses", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -92,7 +95,7 @@ const ManageDisbursement = () => {
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
 
-  const handleAddPaymentClick = async() => {
+  const handleAddPaymentClick = async () => {
     if (!disbursementId) return toast.warning("Invalid Disbursement Id");
     if (paymentTitle && paymentAmount) {
       // Remove commas and parse the amount as a float
@@ -109,24 +112,23 @@ const ManageDisbursement = () => {
       const payload = {
         amount: parsedAmount,
         title: paymentTitle,
-      }
+      };
 
       // console.log("payload", payload)
       try {
-        setReqLoading(true)
-        const res = await addDisburse(payload, Number(disbursementId))
-        if(res){
-          toast.success("Disbursement added successfully")
-          window.dispatchEvent(new Event('fetch-disburses'));
+        setReqLoading(true);
+        const res = await addDisburse(payload, Number(disbursementId));
+        if (res) {
+          toast.success("Disbursement added successfully");
+          window.dispatchEvent(new Event("fetch-disburses"));
         }
       } catch (error) {
-        toast.error("Failed to add disbursement. Please try again!")
-      }finally{
-        setReqLoading(false)
+        toast.error("Failed to add disbursement. Please try again!");
+      } finally {
+        setReqLoading(false);
       }
     }
   };
-
 
   const handleDeletePayment = (index: number) => {
     setPayments(payments.filter((_, i) => i !== index));
@@ -171,9 +173,28 @@ const ManageDisbursement = () => {
 
   const handleUnitChange = (e: any) => {
     setPaymentTitle(e.target.value);
-    setUnitId(e.target.value)
-  }
+    setUnitId(e.target.value);
+  };
 
+  const getRoute = () => {
+    switch (role?.trim()) {
+      case "director":
+        router.push("/accounting/disbursement");
+        break;
+      case "manager":
+        router.push("/manager/accounting/disbursement");
+        break;
+      case "account":
+        router.push("/accountant/accounting/disbursement");
+        break;
+      case "staff":
+        router.push("/staff/accounting/disbursement");
+        break;
+      default:
+        router.push("/unauthorized");
+        break;
+    }
+  };
 
   if (loading)
     return (
@@ -183,7 +204,6 @@ const ManageDisbursement = () => {
     );
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
-
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
@@ -259,7 +279,7 @@ const ManageDisbursement = () => {
                 disabled={reqLoading}
                 onClick={handleAddPaymentClick}
               >
-               {reqLoading ? "Please wait..." : "add"}
+                {reqLoading ? "Please wait..." : "add"}
               </Button>
             </div>
           </div>
@@ -324,7 +344,7 @@ const ManageDisbursement = () => {
           </ModalContent>
         </Modal>
         <div className="flex gap-6">
-          <Button size="base_bold" className="py-2 px-8">
+          <Button size="base_bold" className="py-2 px-8" onClick={getRoute}>
             save
           </Button>
         </div>

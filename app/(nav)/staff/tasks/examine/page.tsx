@@ -5,7 +5,7 @@ import Button from "@/components/Form/Button/button";
 import ExamineCard from "@/components/tasks/Examine/examine-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { examineFilterOptionsWithDropdown, getAllExamine } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -31,11 +31,13 @@ import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
 import { LandlordRequestParams } from "@/app/(nav)/management/landlord/data";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import Pagination from "@/components/Pagination/pagination";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
     null
   );
+  const eleScrollIn = useRef<HTMLDivElement | null>(null);
 
   const { role } = useRole();
   // PERMISSIONS
@@ -98,11 +100,11 @@ const Examine = () => {
     }, 300),
     []
   );
-
-  const handlePageChange = (page: number) => {
-    setConfig((prev) => ({
-      params: { ...prev.params, page },
-    }));
+  const handlePageChanger = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+    eleScrollIn.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -251,6 +253,12 @@ const Examine = () => {
             ))}
           </AutoResizingGrid>
         )}
+
+        <Pagination
+          totalPages={examineData?.pagination?.total_pages || 1}
+          currentPage={examineData?.pagination?.current_page || 1}
+          onPageChange={handlePageChanger}
+        />
       </section>
     </div>
   );

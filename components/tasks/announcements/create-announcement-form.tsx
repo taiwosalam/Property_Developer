@@ -1,4 +1,3 @@
-
 "use client";
 import { Fragment, useEffect, useState } from "react";
 import Select from "@/components/Form/Select/select";
@@ -62,10 +61,14 @@ const CreateAnnouncementForm: React.FC<{
 
   useEffect(() => {
     if (branchData) {
-      const branchIdName = branchData?.data.map((branch) => ({
-        id: branch.id,
-        branch_name: branch.branch_name,
-      }));
+      const branchIdName = [
+        ...new Map(
+          branchData.data.map((branch: { id: number; branch_name: string }) => [
+            branch.branch_name.toLowerCase(),
+            { id: branch.id, branch_name: branch.branch_name },
+          ])
+        ).values(),
+      ];
       setBranches(branchIdName);
     }
   }, [branchData]);
@@ -80,17 +83,36 @@ const CreateAnnouncementForm: React.FC<{
     selectedBranch && selectedBranch.id ? `/branch/${selectedBranch.id}` : null
   );
 
+  const { data: roleProperty, silentLoading: roleSilentLoading } =
+    useFetch<any>("/property/all");
+
   useEffect(() => {
-    if (propertyData) {
-      const propertyIdTitle = propertyData.data.branch.properties.map(
-        (property) => ({
-          id: property.id,
-          title: property.title,
-        })
-      );
+    if (roleProperty && role !== "director") {
+      const roleProperties: any = [
+        ...new Map(
+          roleProperty.data.map((p: { id: number; title: string }) => [
+            p.title.toLowerCase(),
+            { id: p.id, title: p.title },
+          ])
+        ).values(),
+      ];
+      setProperties(roleProperties);
+    }
+
+    if (propertyData && role === "director") {
+      const propertyIdTitle = [
+        ...new Map(
+          propertyData.data.branch.properties.map(
+            (property: { id: number; title: string }) => [
+              property.title?.toLowerCase(),
+              { id: property.id, title: property.title },
+            ]
+          )
+        ).values(),
+      ];
       setProperties(propertyIdTitle);
     }
-  }, [propertyData]);
+  }, [propertyData, role, selectedBranch]);
 
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -179,12 +201,21 @@ const CreateAnnouncementForm: React.FC<{
 
   const getRoute = () => {
     switch (role) {
+      case "director":
+        router.push("/tasks/announcements");
+        break;
       case "account":
-        return "/accountant/tasks/announcements";
+        router.push("/accountant/tasks/announcements");
+        break;
       case "manager":
-        return "/manager/tasks/announcements";
+        router.push("/manager/tasks/announcements");
+        break;
+      case "staff":
+        router.push("/staff/tasks/announcements");
+        break;
       default:
-        return "/tasks/announcements";
+        router.push("/unauthorized");
+        break;
     }
   };
 
@@ -220,7 +251,7 @@ const CreateAnnouncementForm: React.FC<{
       const success = await updateAnnouncement(formData, paramId);
       if (success) {
         toast.success("Announcement updated");
-        router.push(getRoute());
+        getRoute();
       }
     } catch (error) {
     } finally {
@@ -234,7 +265,7 @@ const CreateAnnouncementForm: React.FC<{
       const success = await deleteAnnouncement(paramId);
       if (success) {
         toast.success("Announcement deleted");
-        router.push(getRoute());
+        getRoute();
       }
     } catch (error) {
     } finally {

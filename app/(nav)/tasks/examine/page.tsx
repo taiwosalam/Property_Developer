@@ -5,7 +5,7 @@ import Button from "@/components/Form/Button/button";
 import ExamineCard from "@/components/tasks/Examine/examine-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { examineFilterOptionsWithDropdown, getAllExamine } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -29,11 +29,14 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import CustomLoader from "@/components/Loader/CustomLoader";
+import Pagination from "@/components/Pagination/pagination";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
     null
   );
+
+  const eleScrollIn = useRef<HTMLDivElement | null>(null);
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -80,28 +83,28 @@ const Examine = () => {
         queryParams.account_officer_id = accountOfficer.join(",");
 
       if (branchIdsArray.length > 0) {
-        queryParams.branch_ids = branchIdsArray.join(",");
+        branchIdsArray.forEach((id: number | string, idx: number) => {
+          (queryParams as any)[`branch_ids[${idx}]`] = id;
+        });
       }
       if (status.length > 0) queryParams.status = status.join(",");
-      if (property.length > 0) queryParams.property_ids = property.join(",");
+      if (property.length > 0) {
+        property.forEach((id: string | number, idx: number) => {
+          (queryParams as any)[`property_ids[${idx}]`] = id;
+        });
+      }
       if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
   );
 
-  const handlePageChange = (page: number) => {
-    setConfig((prev) => ({
-      params: { ...prev.params, page },
-    }));
-  };
-
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_by: order },
     });
   };
 
@@ -111,14 +114,36 @@ const Examine = () => {
     });
   };
 
-  const { data: propertyData } = useFetch<any>(`property/list`);
+  const handlePageChanger = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+    eleScrollIn.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
-  const propertyOptions = propertyData?.data?.properties?.data?.map(
-    (property: { id: number; title: string }) => ({
-      value: property.id,
-      label: property.title,
-    })
-  );
+  const { data: propertiesData } = useFetch<any>(`property/list`);
+
+  const propertyOptions: any = Array.isArray(
+    propertiesData?.data.properties.data
+  )
+    ? [
+        ...new Map(
+          propertiesData.data.properties.data
+            .filter(
+              (property: any) =>
+                typeof property.book_visitors === "boolean" &&
+                property.book_visitors
+            )
+            .map((property: any) => [
+              property.title, // Use property title as the unique key
+              {
+                label: property.title,
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
@@ -195,7 +220,7 @@ const Examine = () => {
         hasGridListToggle={false}
       />
 
-      <section>
+      <section ref={eleScrollIn}>
         {loading || silentLoading ? (
           <AutoResizingGrid gap={32} minWidth={350}>
             <CardsLoading length={10} />
@@ -259,6 +284,12 @@ const Examine = () => {
             ))}
           </AutoResizingGrid>
         )}
+
+        <Pagination
+          totalPages={examineData?.pagination?.total_pages || 1}
+          currentPage={examineData?.pagination?.current_page || 1}
+          onPageChange={handlePageChanger}
+        />
       </section>
     </div>
   );

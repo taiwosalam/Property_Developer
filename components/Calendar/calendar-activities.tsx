@@ -16,6 +16,8 @@ const CalendarActivities: React.FC<CalendarActivitiesProps> = ({
     setIsOpen(false);
   };
 
+  console.log(date);
+
   return (
     <div
       className={`w-full h-full overflow-auto bg-white dark:bg-darkText-primary rounded-lg custom-flex-col gap-[18px]`}

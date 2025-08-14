@@ -8,7 +8,7 @@ export const maintenanceFilterOptionsWithDropdown: FilterOptionMenu[] = [
     radio: true,
     label: "Status",
     value: [
-      { label: "all", value: "all" },
+      { label: "all", value: "" },
       { label: "Pending", value: "pending" },
       { label: "Ongoing", value: "in_progress" },
       { label: "Completed", value: "completed" },
@@ -237,6 +237,8 @@ export interface MaintenanceRequestParams {
   end_date?: string;
   property_ids?: string;
   property_id?: string;
+  date_to?: string;
+  date_from?: string;
   branch_id?: string;
   status?: string;
   is_active?: string;

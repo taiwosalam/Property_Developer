@@ -117,7 +117,7 @@ const BookVisitorsPage = () => {
             .map((property: any) => [
               property.title, // Use property title as the unique key
               {
-                label: property.title,
+                label: property.title?.toLowerCase(),
                 value: property.id.toString(),
               },
             ])
@@ -143,9 +143,9 @@ const BookVisitorsPage = () => {
         });
       }
       if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []

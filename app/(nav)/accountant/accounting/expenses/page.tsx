@@ -87,6 +87,7 @@ const AccountingExpensesPage = () => {
     DateRange | undefined
   >();
 
+
   const isFilterApplied = useCallback(() => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
     return (
@@ -168,11 +169,15 @@ const AccountingExpensesPage = () => {
 
   const staffOptions = staffsData ? transformStaffs(staffsData) : [];
 
-  const propertyOptions =
-    propertyData?.data.map((p) => ({
-      value: `${p.id}`,
-      label: p.title,
-    })) || [];
+  const propertyOptions = [
+    ...new Map(propertyData?.data?.map((property) => [
+      property.title.toLowerCase().trim(),
+      {
+        value: property.id.toString(),
+        label: property.title.toLowerCase(),
+      }
+    ])).values(),
+  ]
 
   const [timeRange, setTimeRange] = useState("90d");
 
@@ -325,14 +330,14 @@ const AccountingExpensesPage = () => {
               handleFilterApply={handleFilterApply}
               isDateTrue
               filterOptionsMenu={[
-                ...(staffOptions.length > 0
-                  ? [
-                      {
-                        label: "Account Officer",
-                        value: staffOptions,
-                      },
-                    ]
-                  : []),
+                // ...(staffOptions.length > 0
+                //   ? [
+                //       {
+                //         label: "Account Manager",
+                //         value: staffOptions,
+                //       },
+                //     ]
+                //   : []),
                 ...(propertyOptions.length > 0
                   ? [
                       {

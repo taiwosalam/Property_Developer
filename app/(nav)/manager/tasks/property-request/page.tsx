@@ -1,7 +1,11 @@
 "use client";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import PropertyRequestCard from "@/components/tasks/CallBack/RequestCard";
-import { propertyRequestPageData, transformPropertyRequestData, type PropertyRequestDataType } from "@/app/(nav)/tasks/property-request/data";
+import {
+  propertyRequestPageData,
+  transformPropertyRequestData,
+  type PropertyRequestDataType,
+} from "@/app/(nav)/tasks/property-request/data";
 import { type PropertyRequestCardProps } from "@/components/tasks/CallBack/types";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";
@@ -21,6 +25,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 import { getAllStates } from "@/utils/states";
+import Pagination from "@/components/Pagination/pagination";
 
 const allStates = getAllStates();
 
@@ -91,13 +96,13 @@ const PropertyRequest = () => {
     };
 
     if (endDate) {
-      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+      queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD");
     }
     if (startDate) {
-      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
+      queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD");
     }
     if (statesArray.length > 0) {
-      queryParams.states = statesArray.join(",");
+      queryParams.state = statesArray.join(",");
     }
 
     setConfig({
@@ -113,7 +118,7 @@ const PropertyRequest = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_dir: order },
     });
   };
 
@@ -125,7 +130,11 @@ const PropertyRequest = () => {
 
   if (loading)
     return (
-      <CustomLoader layout="page" pageTitle="Property Request" statsCardCount={3} />
+      <CustomLoader
+        layout="page"
+        pageTitle="Property Request"
+        statsCardCount={3}
+      />
     );
 
   if (isNetworkError) return <NetworkError />;
@@ -199,6 +208,11 @@ const PropertyRequest = () => {
                 />
               ))}
             </AutoResizingGrid>
+            <Pagination
+              totalPages={pageData?.pagination?.total_pages}
+              currentPage={pageData?.pagination?.current_page}
+              onPageChange={handlePageChange}
+            />
           </section>
         )
       ) : (
@@ -212,6 +226,12 @@ const PropertyRequest = () => {
               />
             ))}
           </AutoResizingGrid>
+
+          <Pagination
+            totalPages={pageData?.pagination?.total_pages}
+            currentPage={pageData?.pagination?.current_page}
+            onPageChange={handlePageChange}
+          />
         </section>
       )}
     </div>

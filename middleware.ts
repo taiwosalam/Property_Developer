@@ -109,6 +109,7 @@ export const config = {
     "/reports/:path*",
     "/listing/:path*",
     "/accounting/:path*",
+    "/accountant/:path",
     "/applications/:path*",
     "/documents/:path*",
     "/settings/:path*",

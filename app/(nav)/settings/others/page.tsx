@@ -121,7 +121,7 @@ const notificationOtherSettings: NotificationSetting[] = [
   },
   {
     name: "general_notification",
-    title: "General Notification",
+    title: "System Notification",
     desc: "Receive priority notifications for general events or whenever there is a new event of notification.",
   },
   {
@@ -697,7 +697,6 @@ const Others = () => {
     const payload = {
       company_type_id: selectedCompany.id,
     };
-
     try {
       setUpdatingModule(true);
       if (company_id != null) {
@@ -1164,7 +1163,7 @@ Once restricted, they will no longer have access to participate in the property'
 
       {/* NOTIFICATIONS */}
       {(canManageNotificationPreference || IS_COMPANY_OWNER) && (
-        <SettingsSection title="Notifications">
+        <SettingsSection title="Email/Notifications">
           <div className="custom-flex-col gap-6 mt-4">
             <div className="mt-2 flex flex-col gap-4">
               <h4> Notify me when: </h4>
