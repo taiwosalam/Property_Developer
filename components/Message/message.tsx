@@ -109,7 +109,7 @@ const Message: React.FC<MessageProps> = ({
               </div>
             )}
 
-          <div className="flex gap-4">
+          <div className={`flex gap-4 ${content_type === "audio" && "flex flex-col gap-0"}`}>
             <div>
               {/* Text Content */}
               {content_type === "text" && (
