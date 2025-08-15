@@ -37,6 +37,7 @@ import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { useSearchParams } from "next/navigation";
 
 const Properties = () => {
   const storedView = useView();
@@ -44,6 +45,8 @@ const Properties = () => {
   const BRANCH_ID = branch?.branch_id || 0;
   const [view, setView] = useState<string | null>(storedView);
   const { role } = useRole();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
 
   // PERMISSIONS
   const canAddOrDeleteBranchProperties = usePermission(
@@ -113,8 +116,14 @@ const Properties = () => {
   }, [appliedFilters]);
 
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(query ? query : "");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
+
+  useEffect(() => {
+    if (query) {
+      setSearch(query);
+    }
+  }, [query]);
 
   const config: AxiosRequestConfig = useMemo(() => {
     return {

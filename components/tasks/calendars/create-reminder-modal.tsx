@@ -16,7 +16,6 @@ import { createReminder } from "@/app/(nav)/tasks/complaints/[complainId]/manage
 import { Dayjs } from "dayjs";
 import { format } from "date-fns";
 import { toast } from "sonner";
-// import { SectionSeparator } from "@/components/Section/section-components";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -28,6 +27,7 @@ dayjs.extend(timezone);
 interface IReminderProps {
   date?: Date;
 }
+
 const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
   const allTabs = ["event", "task", "reminder", "examine"] as const;
   type Tab = (typeof allTabs)[number];
@@ -35,8 +35,19 @@ const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
   const { setIsOpen } = useModal();
 
   const [reminderDate, setReminderDate] = useState<Dayjs | null>(
-    date ? dayjs(date) : dayjs()
+    date ? dayjs(date) : null
   );
+
+  const [inputTitle, setInputTitle] = useState("");
+  const [textAreaNote, setTextAreaNote] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Helper function to strip HTML tags and get plain text
+  const stripHtmlTags = (html: string): string => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
 
   const handleDateChange = (date?: Dayjs | null) => {
     if (date && date.isBefore(dayjs().startOf("day"))) {
@@ -46,31 +57,33 @@ const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
     setReminderDate(date || null);
   };
 
-  const [inputTitle, setInputTitle] = useState("");
-  const [textAreaNote, setTextAreaNote] = useState("");
-  const [loading, setLoading] = useState(false);
-
   const handleInputTitle = (value: string) => {
-    if (value.length <= 40) {
-      setInputTitle(value);
+    if (value.length > 40) {
+      toast.error("Title cannot exceed 40 characters");
+      return;
     }
+    setInputTitle(value);
   };
 
   const handleTextNote = (value: string) => {
-    if (value.length <= 200) {
+    const plainText = stripHtmlTags(value);
+    if (plainText.length > 400) {
+      toast.error("Note cannot exceed 400 characters");
+      setTextAreaNote(value);
+      return;
+    } else {
       setTextAreaNote(value);
     }
   };
 
   const handleCreateReminder = async () => {
-    if (!reminderDate) {
-      toast.error("Please select a reminder date");
+    if (!reminderDate || !reminderDate.isValid()) {
+      toast.error("Please select a valid date");
       return;
     }
 
-    // Additional date validation
     if (reminderDate.isBefore(dayjs().startOf("day"))) {
-      toast.error("Please select a current or future date");
+      toast.error("Past dates are not allowed");
       return;
     }
 
@@ -84,13 +97,14 @@ const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
       return;
     }
 
-    if (!textAreaNote.trim()) {
+    const plainNoteText = stripHtmlTags(textAreaNote);
+    if (!plainNoteText.trim()) {
       toast.error("Please add a note");
       return;
     }
 
-    if (textAreaNote.length > 200) {
-      toast.error("Note cannot exceed 20 characters");
+    if (plainNoteText.length > 400) {
+      toast.error("Note cannot exceed 400 characters");
       return;
     }
 
@@ -98,7 +112,7 @@ const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
 
     const params = {
       title: inputTitle,
-      note: textAreaNote,
+      note: textAreaNote, // Send HTML content to the API
       date: utcDate,
     };
 
@@ -116,6 +130,9 @@ const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
       setLoading(false);
     }
   };
+
+  console.log(date);
+
   return (
     <WalletModalPreset title="Create Reminder">
       <AuthForm onFormSubmit={handleCreateReminder}>
@@ -126,22 +143,23 @@ const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
             label="Add title"
             inputClassName="bg-white"
             onChange={handleInputTitle}
+            value={inputTitle}
           />
           <DateInput
             id="reminder_date"
             label="Reminder Date"
             lastYear
+            minDate={dayjs(Date.now())}
             value={reminderDate}
-            defaultValue={dayjs(date)}
+            //defaultValue={date ? dayjs(date) : null}
             onChange={handleDateChange}
-            //minDate={dayjs().startOf('day').toDate()} // Prevent past dates
           />
-
           <TextArea
             id="note"
             label="Attach note:"
             className="md:col-span-2"
             onChange={handleTextNote}
+            value={textAreaNote}
           />
           <Button
             type="submit"

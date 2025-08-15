@@ -52,6 +52,24 @@ export interface propertyRequestPageData {
   };
 }
 
+const randomAvatar = [
+  "https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png",
+  "https://pubassets.ourproperty.ng/uploads/7M10IKK6OGULqivpfmJ7AMYWNb1BAzpboSLtHffM.png",
+  "https://pubassets.ourproperty.ng/uploads/es2Oy2BoX9CmUjhJMfXS2ILNRkrelzY8aGIKddz1.png",
+  "https://pubassets.ourproperty.ng/uploads/yZlXfgqcoIV4SSDpvTrbV2M5udRiusWXunoiC9hz.png",
+  "https://pubassets.ourproperty.ng/uploads/UeHG28utJmv673FdhAMkwQT1Iqsw1wQgcfudaBbj.png",
+  "https://pubassets.ourproperty.ng/uploads/wY5EG56esonczs2vmo9nViwPOC9h0t8cFdR7IEKO.png",
+  "https://pubassets.ourproperty.ng/uploads/ZR5yx0996Xg0hKpEvf3LEtHenF7TKcMrR0pID0RH.png",
+  "https://pubassets.ourproperty.ng/uploads/gkPOBmMBZi1c8Lp9VCbiEf7PuGDAj0c5r0JUmFww.png",
+  "https://pubassets.ourproperty.ng/uploads/WVaRTdl51SieJHw1sp6wu9h81Hu7F6NVa3wlkDZH.png",
+  "https://pubassets.ourproperty.ng/uploads/gkPOBmMBZi1c8Lp9VCbiEf7PuGDAj0c5r0JUmFww.png",
+];
+
+const getRandomAvatar = () => {
+  const randomIndex = Math.floor(Math.random() * randomAvatar.length);
+  return randomAvatar[randomIndex];
+};
+
 export const transformPropertyRequestData = (
   data: PropertyRequestApi
 ): propertyRequestPageData => {
@@ -66,7 +84,7 @@ export const transformPropertyRequestData = (
       requestDate: request?.created_at
         ? dayjs(request.created_at).format("DD/MM/YYYY")
         : "",
-      pictureSrc: request?.image ?? "",
+      pictureSrc: request?.user_id ? request?.image ?? "" : getRandomAvatar(),
       requestId: request.id.toString(),
       state: request?.state || "--- ---",
       lga: request?.lga || "--- ---",

@@ -122,7 +122,7 @@ const ManageCalendar = () => {
   };
 
   const openModal = () => {
-
+    setReminderModal(true);
   }
 
   useEffect(()=> {
