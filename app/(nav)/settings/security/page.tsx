@@ -63,7 +63,6 @@ const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
   const company_wallet = usePersonalInfoStore((state) => state.company_wallet);
-
   const directorId = usePersonalInfoStore((state) => state.director_id);
 
   const {
@@ -82,7 +81,10 @@ const Security = () => {
   const [avatar, setAvatar] = useState("");
   const [picture, setPicture] = useState(pageData?.profile_picture || "");
   const [closeVerificationModal, setCloseVerificationModal] = useState(false);
-
+  const [phoneNumber, setPhoneNumber] = useState(pageData?.phone || "");
+  const [personalTitle, setPersonalTitle] = useState(
+    pageData?.personal_title || ""
+  );
   const [fullName, setFullName] = useState<string>(pageData?.fullname || "");
 
   const [isOpen, setIsOpen] = useState(false);
@@ -159,6 +161,16 @@ const Security = () => {
 
   const handleUpdateProfile = async (formData: FormData) => {
     const payload = new FormData();
+
+    if(!fullName.length){
+      toast.error("Provide a name or verify using BVN");
+      return;
+    }
+
+    if (phoneNumber && phoneNumber.trim().length < 13) {
+      toast.error("Provide a valid phone number");
+      return;
+    }
 
     // Append all form fields
     payload.append("full_name", (formData.get("full_name") as string) || "");
@@ -325,8 +337,10 @@ const Security = () => {
                     id="title"
                     name="title"
                     options={titles}
-                    label="personal title"
+                    label="personal"
                     inputContainerClassName="bg-neutral-2"
+                    value={personalTitle}
+                    onChange={(value: string) => setPersonalTitle(value)}
                     defaultValue={pageData?.personal_title}
                   />
 
@@ -341,7 +355,7 @@ const Security = () => {
                   <div className="relative">
                     <Input
                       disabled={pageData?.is_bvn_verified}
-                      inputClassName="capitalize"
+                      inputClassName="capitalize py-4"
                       id="full_name"
                       name="full_name"
                       label="full name"
@@ -359,7 +373,7 @@ const Security = () => {
                       <ModalTrigger>
                         <Button
                           disabled={pageData?.is_bvn_verified}
-                          className="bg-brand-9 dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white absolute top-9 right-2 py-2 h-9"
+                          className="bg-brand-9 dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white absolute top-10 right-2 py-4 h-9"
                         >
                           {pageData?.is_bvn_verified ? "Verified" : "Verify"}
                         </Button>
@@ -378,9 +392,10 @@ const Security = () => {
                     id="alt_email"
                     label="email"
                     type="email"
+                    disabled={!pageData?.isOwner}
                     placeholder="write here"
                     inputClassName="rounded-[8px] setup-f bg-white"
-                    defaultValue={pageData?.director_email}
+                    defaultValue={pageData?.director_email ?? pageData?.email}
                   />
 
                   <DateInput
@@ -404,6 +419,8 @@ const Security = () => {
                     label="phone number"
                     placeholder="800 0000 000"
                     inputClassName="setup-f"
+                    value={phoneNumber}
+                    onChange={(value) => setPhoneNumber(value)}
                     defaultValue={pageData?.phone}
                   />
                 </div>
@@ -416,11 +433,7 @@ const Security = () => {
                 />
               </div>
             </div>
-            <SettingsUpdateButton
-              submit
-              loading={reqLoading}
-              action={handleUpdateProfile as any}
-            />
+            <SettingsUpdateButton submit loading={reqLoading} />
           </div>
         </AuthForm>
       </SettingsSection>

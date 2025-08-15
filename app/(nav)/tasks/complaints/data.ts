@@ -93,9 +93,13 @@ export const transformComplaintsData = (
           ? dayjs(complaint?.created_at).format("DD MMMM YYYY")
           : "___ ___",
         status:
-          complaint?.progress === 100
+          complaint?.status?.toLowerCase() === "approved"
+            ? "pending"
+            : complaint?.progress === 100 &&
+              complaint?.status?.toLowerCase() !== "pending"
             ? "completed"
             : complaint?.status?.toLowerCase(),
+
         progress:
           complaint?.status?.toLowerCase() === "completed"
             ? 100

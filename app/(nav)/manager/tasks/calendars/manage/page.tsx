@@ -288,7 +288,7 @@ const ManageCalendar = () => {
         ) : null}
         <Modal state={{ isOpen: modalIsOpen, setIsOpen: setModalIsOpen }}>
           <ModalContent>
-            <CreateReminderMOdal />
+            <CreateReminderMOdal date={activeDate} isShowDate={true}/>
           </ModalContent>
         </Modal>
         <Modal
