@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import parse from "html-react-parser";
 
 interface IMarqueeProps {
   text: string;
@@ -66,7 +67,7 @@ const Marquee = ({
                 {urlText}
               </a>
               {/* Duplicate content for seamless loop */}
-              <span className="text-brand-9 text-sm">{text}</span>
+              <span className="text-brand-9 text-sm">{parse(text)}</span>
               <a
                 href={url}
                 onClick={handleLinkClick}
