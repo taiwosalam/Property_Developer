@@ -34,13 +34,29 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
 
   const id = params.complainId as string;
 
-  console.log(id);
+  // Helper function to strip HTML tags and get plain text
+  const stripHtmlTags = (html: string): string => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
 
   const handleInputTitle = (value: string) => {
+    if (value.length > 40) {
+      toast.error("Title cannot exceed 40 characters");
+      return;
+    }
     setInputTitle(value);
   };
   const handleTextNote = (value: string) => {
-    setTextAreaNote(value);
+    const plainText = stripHtmlTags(value);
+    if (plainText.length > 400) {
+      toast.error("Note cannot exceed 400 characters");
+      setTextAreaNote(value);
+      return;
+    } else {
+      setTextAreaNote(value);
+    }
   };
 
   const handleCreateReminder = async () => {
@@ -52,12 +68,17 @@ const CreateReminderModal: React.FC<CreateModalProps> = ({
       toast.error("Please select a reminder date");
       return;
     }
-    if (!inputTitle) {
+    if (!inputTitle.trim()) {
       toast.error("Please the reminder title");
       return;
     }
-    if (!textAreaNote) {
+    const plainNoteText = stripHtmlTags(textAreaNote);
+    if (!plainNoteText.trim()) {
       toast.error("Please add a note");
+      return;
+    }
+    if (plainNoteText.length > 400) {
+      toast.error("Note cannot exceed 400 characters");
       return;
     }
     const utcDate = reminderDate.startOf("day").format("YYYY-MM-DD");

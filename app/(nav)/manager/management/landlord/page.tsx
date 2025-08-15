@@ -43,6 +43,7 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { useSearchParams } from "next/navigation";
 
 const states = getAllStates();
 
@@ -51,6 +52,8 @@ const Landlord = () => {
   const { branch } = usePersonalInfoStore();
   const [view, setView] = useState<string | null>(storedView);
   const { role } = useRole();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
   // PERMISSIONS
   const canAddOrManageLandlord = usePermission(
     role,
@@ -78,15 +81,32 @@ const Landlord = () => {
     new_web_landlords_this_month,
     landlords,
   } = pageData;
+
   const [config, setConfig] = useState<AxiosRequestConfig>(() => {
     const savedPage = sessionStorage.getItem("landlord_page");
     return {
       params: {
         page: savedPage ? parseInt(savedPage, 10) : 1,
-        search: "",
+        search: query ? query.trim() : "",
       } as LandlordRequestParams,
     };
   });
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("landlord_page", "1");
+    }
+  }, [query]);
 
   useEffect(() => {
     setView(storedView);

@@ -33,7 +33,7 @@ import {
 } from "@/components/Modal/modal";
 
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
-import RestrictUserForm from "./RestrictUserForm";
+//import RestrictUserForm from "./RestrictUserForm";
 import UserCard from "@/components/Management/landlord-and-tenant-card";
 import {
   SettingUserIcon,
@@ -89,6 +89,7 @@ import {
   tierColorMap,
 } from "@/components/BadgeIcon/badge-icon";
 import { usePermission } from "@/hooks/getPermission";
+import RestrictUsersForm from "./ResrtrictedUsersForm";
 
 const companyTypes = [
   {
@@ -274,8 +275,6 @@ const Others = () => {
   const { company_id } = usePersonalInfoStore();
 
   const { data: apiDataProfile } = useFetch(`user/profile`);
-
-  console.log(apiDataProfile);
 
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettings>({
@@ -1080,7 +1079,7 @@ Once restricted, they will no longer have access to participate in the property'
                       heading="Access Control"
                       style={{ maxHeight: "80vh", overflow: "visible" }}
                     >
-                      <RestrictUserForm
+                      <RestrictUsersForm
                         submitAction={() => {}}
                         setIsUserRestricted={setIsUserRestricted}
                       />

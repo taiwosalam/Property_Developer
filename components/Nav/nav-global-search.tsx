@@ -1,3 +1,5 @@
+// Updated NavGlobalSearch component with role-based filtering
+
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -27,18 +29,25 @@ import {
   transformGlobalSearchPageData,
 } from "./global_data";
 import { debounce } from "lodash";
+import { useRoleBasedSearch } from "./useRoleBaseSearch"; // Import the new hook
 
 const NavGlobalSearch = () => {
   const { role, setRole } = useRole();
-  //const [activeTab, setActiveTab] = useState(0);
   const tabs = getGlobalSearchTabs(role) || [];
   const [activeTab, setActiveTab] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [searchResults, setSearchResults] =
-    useState<IGlobalSearchPageData | null>(null);
+  const [searchResults, setSearchResults] = useState<IGlobalSearchPageData | null>(null);
 
   const { setIsOpen } = useModal();
+  
+  // Use the role-based search hook
+  const {
+    filterSearchResults,
+    getRoleBasedTabCount,
+    getRoleBasedTabResults,
+    isTypeAllowed
+  } = useRoleBasedSearch();
 
   const debouncedSetQuery = useCallback(
     debounce((value: string) => setDebouncedQuery(value), 400),
@@ -64,82 +73,28 @@ const NavGlobalSearch = () => {
   useEffect(() => {
     if (apiData) {
       const transformData = transformGlobalSearchPageData(apiData);
-      setSearchResults(transformData);
+      // Apply role-based filtering here
+      const filteredData = filterSearchResults(transformData);
+      setSearchResults(filteredData);
     } else {
       setSearchResults(null);
       setActiveTab("");
     }
-  }, [apiData]);
+  }, [apiData, filterSearchResults]);
 
-  // Mapping of tab labels to count fields or aggregated counts
+  // Updated to use role-based tab count
   const getTabCount = (label: string): number => {
     if (!searchResults || searchQuery.length === 0) return 0;
-
-    const counts = searchResults.counts;
-    switch (label.toLowerCase()) {
-      case "management":
-        return (
-          (counts.users || 0) +
-          (counts.properties || 0) +
-          (counts.landlords || 0) +
-          (counts.tenants || 0) +
-          (counts.branches || 0)
-        );
-      case "listing":
-        return counts.units || 0;
-      case "community":
-        return (counts.agentCommunities || 0) + (counts.agentRequest || 0);
-      // case "wallet":
-      //   return counts.wallets || 0;
-      // Handle tabs with no counts or static counts
-      case "task":
-        return (counts.announcement || 0) + (counts.propertyApplications || 0);
-      case "accounting":
-      case "reports":
-      case "documents":
-        return 0; // Placeholder: Update with actual mappings if available
-      case "settings":
-        return (counts?.brands || 0) + (counts.campaigns || 0);
-      default:
-        return 0;
-    }
+    return getRoleBasedTabCount(label, searchResults);
   };
 
-  // Map tabs to result arrays
+  // Updated to use role-based tab results
   const getTabResults = (label: string) => {
     if (!searchResults?.results) return [];
-    switch (label.toLowerCase()) {
-      case "management":
-        return [
-          ...searchResults.results.users,
-          ...searchResults.results.properties,
-          ...searchResults.results.landlords,
-          ...searchResults.results.tenants,
-          ...searchResults.results.branches,
-        ];
-      case "listing":
-        return [...searchResults.results.units];
-      case "community":
-        return [
-          ...searchResults.results.agentCommunities,
-          ...searchResults.results.agentRequests,
-        ];
-      case "task":
-        return [
-          ...searchResults.results.announcements,
-          ...searchResults.results.propertyApplications,
-        ];
-      case "settings":
-        return [
-          ...searchResults.results.brands,
-          ...searchResults.results.campaigns,
-        ];
-      default:
-        return [];
-    }
+    return getRoleBasedTabResults(label, searchResults);
   };
 
-  // Check if there are any search results
+  // Check if there are any search results (role-filtered)
   const hasSearchResults = (): boolean => {
     if (!searchResults) return false;
     const counts = searchResults.counts;
@@ -155,11 +110,13 @@ const NavGlobalSearch = () => {
       counts.announcement > 0 ||
       counts.brands > 0 ||
       counts.campaigns > 0 ||
-      counts.branches > 0
+      counts.branches > 0 ||
+      counts.examines > 0 ||
+      counts.enrollments > 0
     );
   };
 
-  // Filter tabs to only those with results
+  // Filter tabs to only those with results (already role-filtered)
   const getFilteredTabs = () => {
     return tabs.filter(({ label }) => getTabCount(label) > 0);
   };
@@ -194,6 +151,7 @@ const NavGlobalSearch = () => {
   };
 
   if (!tabs.length) return null;
+  
   return (
     <div
       style={{
@@ -233,7 +191,7 @@ const NavGlobalSearch = () => {
               value={searchQuery}
               onChange={(value: string) => setSearchQuery(value)}
               placeholder="Type here"
-              className="h-full flex-1 text-sm bg-neutral-3 dark:bg-black"
+              className="h-full flex-1 text-sm bg-neutral-3 dark:bg-black py-2"
             />
 
             <button
@@ -253,7 +211,7 @@ const NavGlobalSearch = () => {
                 const count = getTabCount(label);
                 return (
                   <NavSearchTab
-                    key={label} // Use label as key for uniqueness
+                    key={label}
                     count={count}
                     active={label === activeTab}
                     onClick={() => setActiveTab(label)}
@@ -328,8 +286,10 @@ const NavGlobalSearch = () => {
     </div>
   );
 };
+
 export default NavGlobalSearch;
 
+// Keep your existing helper components
 const NetworkError = () => {
   return (
     <>
@@ -388,16 +348,11 @@ const LoaderSkeleton = () => {
                   key={idx}
                   className="flex items-center gap-4 p-3 border border-gray-200 dark:border-gray-700 rounded-lg"
                 >
-                  {/* Icon skeleton */}
                   <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse flex-shrink-0"></div>
-
-                  {/* Content skeleton */}
                   <div className="flex-1 flex flex-col gap-5">
                     <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
                     <div className="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
                   </div>
-
-                  {/* Type/Status skeleton */}
                   <div className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse"></div>
                 </div>
               ))}
@@ -421,7 +376,7 @@ export const EmptySearch = () => {
 
       <div className="flex flex-col gap-7 text-text-secondary dark:text-darkText-2 font-normal text-sm">
         <p className="py-4">
-          We couldn’t find anything that matches your search. Try again with
+          We couldn&apos;t find anything that matches your search. Try again with
           different terms.
         </p>
       </div>

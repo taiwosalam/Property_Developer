@@ -266,14 +266,15 @@ export interface ITenantsApi {
 
 export interface ITenantResponse {
   data: {
-    data: {
-      id: number;
-      name: string;
-      phone: string;
-      agent: string;
-      picture: string;
-      email: string;
+    id: number;
+    name: string;
+    phone: {
+      profile_phone: string | null;
+      user_phone: string | null;
     };
+    agent: string;
+    picture: string;
+    email: string;
   };
 }
 

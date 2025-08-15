@@ -198,6 +198,8 @@ export interface GlobalSearchApiResponse {
     announcements: any[];
     brands: any[];
     campaigns: any[];
+    examines: any[];
+    enrollments: any[];
   };
   meta: SearchResponseMeta;
 }
@@ -217,6 +219,8 @@ interface SearchResponseMeta {
     announcements: SearchResponseMetaDetails;
     brands: SearchResponseMetaDetails;
     campaigns: SearchResponseMetaDetails;
+    examines: SearchResponseMetaDetails;
+    enrollments: SearchResponseMetaDetails;
   };
 }
 
@@ -257,6 +261,8 @@ export interface IGlobalSearchPageData {
     branches: ISearchItem[];
     brands: ISearchItem[];
     campaigns: ISearchItem[];
+    examines: ISearchItem[];
+    enrollments: ISearchItem[];
   };
   counts: {
     users: number;
@@ -271,6 +277,8 @@ export interface IGlobalSearchPageData {
     campaigns: number;
     propertyApplications: number;
     branches: number;
+    examines: number;
+    enrollments: number;
     //wallets: number;
   };
   pagination: {
@@ -286,6 +294,8 @@ export interface IGlobalSearchPageData {
     campaigns: IPaginationMeta;
     propertyApplication: IPaginationMeta;
     branches: IPaginationMeta;
+    examines: IPaginationMeta;
+    enrollments: IPaginationMeta;
   };
 }
 export const transformGlobalSearchPageData = (
@@ -461,6 +471,36 @@ export const transformGlobalSearchPageData = (
               link: "/settings/add-on",
             }))
           : [],
+      enrollments:
+        results && results.enrollments && results.enrollments.length > 0
+          ? results.enrollments.map((enrollment) => ({
+              id: enrollment?.id,
+              type: "Enrollment",
+              title:
+                enrollment.name +
+                  " " +
+                  `(${Math.round(Number(enrollment.period))} months)` ||
+                "Unknown Campaign",
+              subtitle:
+                "Amount Paid: " + enrollment.formatted_amount || "No description",
+              extra: "Enrollment",
+              icon: "settings",
+              link: "/settings/add-on",
+            }))
+          : [],
+
+      examines:
+        results && results.examines && results.examines.length > 0
+          ? results.examines.map((examine) => ({
+              id: examine?.id,
+              type: "Examine",
+              title: examine.title || "Unknown Examine",
+              subtitle: examine.description || "No description",
+              extra: "Examine",
+              icon: "menu_board",
+              link: "/tasks/examine",
+            }))
+          : [],
     },
     counts: {
       users: details?.users?.total || 0,
@@ -475,6 +515,8 @@ export const transformGlobalSearchPageData = (
       announcement: details?.announcements?.total || 0,
       brands: details?.brands?.total || 0,
       campaigns: details?.campaigns?.total || 0,
+      examines: details?.examines?.total || 0,
+      enrollments: details?.enrollments?.total || 0,
     },
     pagination: {
       users: {
@@ -524,6 +566,14 @@ export const transformGlobalSearchPageData = (
       campaigns: {
         current_page: details?.campaigns?.current_page || 1,
         last_page: details?.campaigns?.last_page || 1,
+      },
+      examines: {
+        current_page: details?.examines?.current_page || 1,
+        last_page: details?.examines?.last_page || 1,
+      },
+      enrollments: {
+        current_page: details?.enrollments?.current_page || 1,
+        last_page: details?.enrollments?.last_page || 1,
       },
     },
   };

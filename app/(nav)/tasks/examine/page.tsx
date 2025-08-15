@@ -30,11 +30,14 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
+import { useSearchParams } from "next/navigation";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
     null
   );
+  const searchQuery = useSearchParams();
+  const query = searchQuery.get("q");
 
   const eleScrollIn = useRef<HTMLDivElement | null>(null);
 
@@ -68,6 +71,18 @@ const Examine = () => {
       setExamineData(apiData);
     }
   }, [apiData]);
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setExamineData((prevData) => prevData);
+      sessionStorage.setItem("tenant_page", "1");
+    }
+  }, [query]);
 
   const handleAppliedFilter = useCallback(
     debounce((filters: FilterResult) => {

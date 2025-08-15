@@ -30,6 +30,7 @@ import { rejectApplication } from "./[applicationId]/manage/data";
 import Pagination from "@/components/Pagination/pagination";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { IPropertyApi } from "@/app/(nav)/settings/others/types";
+import { useSearchParams } from "next/navigation";
 
 const Applications = () => {
   const [pageData, setPagedata] = useState<IApplicationPageData | null>(null);
@@ -42,6 +43,19 @@ const Applications = () => {
       } as LandlordRequestParams,
     };
   });
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+    }
+  }, [query]);
 
   // Save page number to sessionStorage whenever it changes
   useEffect(() => {

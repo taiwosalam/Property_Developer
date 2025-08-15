@@ -32,12 +32,16 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
 import Pagination from "@/components/Pagination/pagination";
+import { useSearchParams } from "next/navigation";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
     null
   );
   const { role } = useRole();
+
+  const searchQuery = useSearchParams();
+  const query = searchQuery.get("q");
 
   // PERMISSIONS
   const canCreateExamine = usePermission(role, "Can create examine");
@@ -56,7 +60,7 @@ const Examine = () => {
   });
 
   const [isOpen, setIsOpen] = useState(false);
-   const eleScrollIn = useRef<HTMLDivElement | null>(null);
+  const eleScrollIn = useRef<HTMLDivElement | null>(null);
 
   const {
     data: apiData,
@@ -74,32 +78,17 @@ const Examine = () => {
     }
   }, [apiData]);
 
-  // const handleAppliedFilter = useCallback(
-  //   debounce((filters: FilterResult) => {
-  //     setAppliedFilters(filters);
-  //     const { menuOptions, startDate, endDate } = filters;
-  //     const accountOfficer = menuOptions["Account Officer"] || [];
-  //     const status = menuOptions["Status"] || [];
-  //     const property = menuOptions["Property"] || [];
-  //     const branchIdsArray = menuOptions["Branch"] || [];
-
-  //     const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
-  //     if (accountOfficer.length > 0)
-  //       queryParams.account_officer_id = accountOfficer.join(",");
-
-  //     if (branchIdsArray.length > 0) {
-  //       queryParams.branch_ids = branchIdsArray.join(",");
-  //     }
-  //     if (status.length > 0) queryParams.status = status.join(",");
-  //     if (property.length > 0) queryParams.property_id = property.join(",");
-  //     if (startDate)
-  //       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-  //     if (endDate)
-  //       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-  //     setConfig({ params: queryParams });
-  //   }, 300),
-  //   []
-  // );
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setExamineData((prevData) => prevData);
+      sessionStorage.setItem("tenant_page", "1");
+    }
+  }, [query]);
 
   const handleAppliedFilter = useCallback(
     (filters: FilterResult) => {

@@ -175,7 +175,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
                   className="py-2 px-8"
                   href={gotoPage()}
                 >
-                  explore
+                  manage
                 </Button>
               </div>
             )}
