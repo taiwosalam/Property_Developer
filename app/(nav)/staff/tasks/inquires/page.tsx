@@ -206,7 +206,7 @@ const Inquires = () => {
 
   return (
     <section className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="flex gap-5 py-4 scrollbar-hide overflow-x-auto md:flex-wrap">
         <ManagementStatistcsCard
           total={callRequestPageData?.total_call || 0}
           title="Total Request"
@@ -318,6 +318,7 @@ const Inquires = () => {
 
       {(callRequestPageData?.call_requests?.length ?? 0) > 0 && (
         <Pagination
+          className="pb-4"
           totalPages={callRequestPageData?.pagination?.total ?? 1}
           currentPage={callRequestPageData?.pagination?.current_page ?? 1}
           onPageChange={handlePageChange}

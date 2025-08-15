@@ -163,8 +163,9 @@ const AccountingExpensesPage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={300}>
+          <div className="account-card-container">
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Expenses"
               balance={12345432}
               variant="redOutgoing"
@@ -173,6 +174,7 @@ const AccountingExpensesPage = () => {
               percentage={53}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Part Payment"
               balance={12345432}
               variant="blueIncoming"
@@ -181,6 +183,7 @@ const AccountingExpensesPage = () => {
               percentage={4.3}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Balance"
               balance={12345432}
               variant="yellowCard"
@@ -188,7 +191,7 @@ const AccountingExpensesPage = () => {
               trendColor="green"
               percentage={4.3}
             />
-          </AutoResizingGrid>
+          </div>
         </div>
       </div>
       <CustomTable

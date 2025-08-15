@@ -67,7 +67,7 @@ const Profile = () => {
 
   // Redirect if user doesn't have permission
   useEffect(() => {
-    console.log("canViewThisPage", canViewThisPage)
+    console.log("canViewThisPage", canViewThisPage);
     if (!canViewThisPage) {
       router.push("/settings/security");
     }
@@ -193,7 +193,7 @@ const Profile = () => {
           onFormSubmit={handleSubmit}
           returnType="form-data"
         >
-          <div className="custom-flex-col gap-8">
+          <div className="custom-flex-col  gap-8">
             <div className="">
               <div className="flex w-full items-start gap-4 md:flex-row flex-col">
                 <div className="flex-1 w-full gap-1 flex items-end">

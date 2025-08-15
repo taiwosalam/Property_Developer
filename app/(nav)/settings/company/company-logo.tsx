@@ -136,12 +136,12 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({
                   <button
                     type="button"
                     onClick={() => handleDeleteImage(mode)}
-                    className="absolute top-[-15px] right-[-25px] z-10"
+                    className="absolute top-[-15px] scale-75 sm:scale-0 right-[15px] sm:right-[-25px] z-10"
                     aria-label={`Delete ${mode} logo`}
                   >
                     <DeleteIconOrange />
                   </button>
-                  <div className="relative w-full h-full rounded-md overflow-hidden">
+                  <div className="relative  max-w-full w-[90%] sm:w-[375px] h-[150px] rounded-md overflow-hidden">
                     <Image
                       src={
                         mode === "light"
@@ -151,7 +151,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({
                       alt={`${mode} Company Logo`}
                       fill
                       style={{ objectFit: "contain" }}
-                      className="rounded-md w-[375px] h-[150px] object-contain"
+                      className="rounded-md object-contain"
                     />
                   </div>
                 </div>
@@ -168,7 +168,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({
                 </button>
               )}
               {(mode === "light" ? lightPreview : darkPreview) && (
-                <div className="flex items-end">
+                <div className="hidden sm:flex items-end">
                   <Button
                     className={`${
                       mode === "light"

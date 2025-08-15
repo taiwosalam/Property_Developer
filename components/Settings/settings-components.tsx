@@ -247,7 +247,9 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   return (
     <div className="flex justify-between">
       <div className="first flex gap-1 items-start">
-        <span className="dark:text-white flex-shrink-0 text-black mr-2">{icon}</span>
+        <span className="dark:text-white flex-shrink-0 text-black mr-2">
+          {icon}
+        </span>
         <div className="flex flex-col">
           <h4 className="text-text-quaternary dark:text-white text-base">
             {title}
@@ -467,7 +469,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 
   return (
     <div
-      className="themesWrapper shadow-lg rounded-md flex items-center flex-wrap gap-4 cursor-pointer relative"
+      className="themesWrapper shrink-0 w-[85%] sm:w-auto shadow-lg rounded-md flex items-center flex-wrap gap-4 cursor-pointer relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
@@ -655,7 +657,7 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
       <button
         type="button"
         onClick={decreaseZoom}
-        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white size-[2.86rem] sm:size-[3.25rem] flex items-center justify-center"
       >
         <ZoomMinusIcon />
       </button>
@@ -675,7 +677,7 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
       <button
         type="button"
         onClick={increaseZoom}
-        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white size-[2.86rem] sm:size-[3.25rem] flex items-center justify-center"
       >
         <ZoomPlusIcon />
       </button>

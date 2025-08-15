@@ -144,7 +144,7 @@ const PropertyRequest = () => {
 
   return (
     <div className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="flex pt-3 gap-5 overflow-x-auto md:flex-wrap">
         <ManagementStatistcsCard
           title="Property Request"
           newData={pageData?.total_month || 0}

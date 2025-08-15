@@ -27,7 +27,7 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
   return (
     <div
       className={clsx(
-        "flex items-center gap-6 justify-between",
+        "flex items-center gap-1 sm:gap-6 justify-between",
         className
       )}
     >
@@ -59,9 +59,7 @@ const InspectionCardInfo: React.FC<InspectionCardInfoProps> = ({
           </div>
         </div>
         <div className="pr-4 custom-flex-col gap-1 text-text-secondary dark:text-white text-sm lg:text-base font-bold capitalize max-w-[500px] min-w-0 overflow-hidden break-words">
-          <p className="break-words whitespace-normal">
-            {title}
-          </p>
+          <p className="break-words whitespace-normal">{title}</p>
 
           <div className="text-text-disabled flex gap-1 min-w-0  max-w-full">
             <LocationIcon />

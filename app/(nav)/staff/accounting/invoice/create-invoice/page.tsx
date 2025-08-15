@@ -57,7 +57,7 @@ const CreateInvoicePage = () => {
       <ExportPageHeader />
       <div className="flex flex-col gap-4">
         <Details />
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid lg:grid-cols-2 lg:grid-cols-3 gap-4">
           <Select
             id="client_name"
             options={["Client Name", "Client Name 2"]}
@@ -100,36 +100,36 @@ const CreateInvoicePage = () => {
           />
         </div>
         {/* {isAddPaymentChecked && ( */}
-          <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Input
-                type="text"
-                id="payment_title"
-                label="Payment Title"
-                value={paymentTitle}
-                onChange={(value) => setPaymentTitle(value as string)}
-              />
-              <Input
-                type="text"
-                id="amount"
-                label="Amount"
-                className="w-full"
-                CURRENCY_SYMBOL={"₦"}
-                formatNumber
-                value={paymentAmount}
-                onChange={(value) => setPaymentAmount(value as string)}
-              />
-            </div>
-            <div className="flex items-center justify-end">
-              <Button
-                size="base_medium"
-                className="py-2 px-8"
-                onClick={handleAddPaymentClick}
-              >
-                Add
-              </Button>
-            </div>
+        <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Input
+              type="text"
+              id="payment_title"
+              label="Payment Title"
+              value={paymentTitle}
+              onChange={(value) => setPaymentTitle(value as string)}
+            />
+            <Input
+              type="text"
+              id="amount"
+              label="Amount"
+              className="w-full"
+              CURRENCY_SYMBOL={"₦"}
+              formatNumber
+              value={paymentAmount}
+              onChange={(value) => setPaymentAmount(value as string)}
+            />
           </div>
+          <div className="flex items-center justify-end">
+            <Button
+              size="base_medium"
+              className="py-2 px-8"
+              onClick={handleAddPaymentClick}
+            >
+              Add
+            </Button>
+          </div>
+        </div>
         {/* )} */}
       </div>
 

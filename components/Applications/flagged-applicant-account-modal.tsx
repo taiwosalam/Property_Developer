@@ -73,7 +73,7 @@ const FlaggedApplicantAccountModal = ({
       heading="Applicant Account Is Flagged by;"
       style={{ maxWidth: "950px" }}
     >
-      <div className="custom-flex-col gap-6">
+      <div className="custom-flex-col  gap-6">
         <div className="custom-flex-col gap-8">
           <div className="flex flex-col gap-6">
             <div className="custom-flex-col gap-2 flex-1">
@@ -92,7 +92,7 @@ const FlaggedApplicantAccountModal = ({
             </p>
           </div>
 
-          <div className="w-full flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4 lg:w-auto">
+          <div className="w-full flex  sm:flex-row justify-center sm:justify-between items-center gap-4 lg:w-auto">
             <Button
               size="base_bold"
               variant="light_red"

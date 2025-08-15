@@ -440,7 +440,7 @@ const AccountingInvoicePage = () => {
   return (
     <section className="space-y-8">
       <div className="space-y-4">
-        <div className="w-full flex items-center justify-between">
+        <div className="w-full pt-4 flex items-center justify-between">
           <div className="font-medium text-2xl flex items-center space-x-1">
             <span className="text-2xl font-bold">Invoices</span>
           </div>
@@ -555,8 +555,9 @@ const AccountingInvoicePage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={320}>
+          <div className="account-card-container">
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Invoice Created"
               balance={statistics.total_receipt}
               trendDirection={
@@ -573,6 +574,7 @@ const AccountingInvoicePage = () => {
               noSymbol
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Paid Invoice"
               balance={statistics.total_paid_receipt}
               trendDirection={
@@ -588,6 +590,7 @@ const AccountingInvoicePage = () => {
               noSymbol
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Pending Invoice"
               balance={statistics.total_pending_receipt}
               otherCurrency={otherCurrencyPending}
@@ -602,7 +605,7 @@ const AccountingInvoicePage = () => {
               timeRangeLabel={getTimeRangeLabel()}
               noSymbol
             />
-          </AutoResizingGrid>
+          </div>
         </div>
       </div>
       {invoices.length === 0 && !silentLoading ? (

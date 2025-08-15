@@ -31,12 +31,14 @@ const DashboardThemes = ({
     const payload = { theme: appearance.theme };
     try {
       setReqLoading(true);
-      toast.warning("Sorry, this theme is for Professional Plan subscribers only");
-    //   UNCOMMENT LATER WHEN WE HAVE DESIGN
-    //   const res = await updateSettings(objectToFormData(payload), "appearance");
-    //   if (res && res.status === 200) {
-    //     window.dispatchEvent(new Event("refetch-settings"));
-    //   }
+      toast.warning(
+        "Sorry, this theme is for Professional Plan subscribers only"
+      );
+      //   UNCOMMENT LATER WHEN WE HAVE DESIGN
+      //   const res = await updateSettings(objectToFormData(payload), "appearance");
+      //   if (res && res.status === 200) {
+      //     window.dispatchEvent(new Event("refetch-settings"));
+      //   }
     } catch (err) {
       toast.error("Failed to Update Theme");
     } finally {
@@ -51,7 +53,7 @@ const DashboardThemes = ({
         desc="Select the themes that best match your interests."
       />
       <AuthForm onFormSubmit={handleUpdateTheme} skipValidation>
-        <div className="themes flex gap-5 flex-wrap mt-6">
+        <div className="themes flex gap-5 overflow-x-scroll  scrollbar-hide mt-6">
           <ThemeCard
             img="/global/theme1.svg"
             value="theme1"

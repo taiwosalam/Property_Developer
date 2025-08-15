@@ -177,7 +177,7 @@ const AgentCommunityPage = () => {
 
   // useRefetchOnEvent("refetchThreads", () => refetch({ silent: true }));
 
-   useEffect(() => {
+  useEffect(() => {
     if (query) {
       const searchQuery = query.trim().toLowerCase();
       setConfig((prevConfig) => ({
@@ -227,15 +227,15 @@ const AgentCommunityPage = () => {
   if (error) return <ServerError error={error} />;
   return (
     <div className="space-y-7">
-      <div className="flex gap-5 flex-wrap items-center justify-between">
+      <div className="flex gap-5 pt-4  items-center justify-between">
         <ManagementStatistcsCard
           title="Total Thread"
           colorScheme={1}
           newData={meta?.current_month_posts}
           total={meta?.total}
-          className="hidden md:block"
+          className="shrink-0"
         />
-        <div className="w-full flex justify-center items-center md:justify-end md:w-auto md:items-center">
+        <div className="w-full flex justify-center self-end md:self-auto items-center md:justify-end md:w-auto md:items-center">
           <Button
             href="/community/agent-forum/my-articles"
             className="page-header-button"
@@ -322,14 +322,14 @@ const AgentCommunityPage = () => {
           )}
         </AutoResizingGrid>
       )}
-      <div className="pagination">
+      <div className="pagination pb-4">
         <Pagination
           totalPages={meta?.last_page}
           currentPage={meta?.current_page}
           onPageChange={handlePageChange}
         />
       </div>
-      <div className="top-80 right-5 fixed rounded-full">
+      <div className="bottom-5 right-5 fixed rounded-full">
         <button
           onClick={handleCreateArticleClick}
           className="bg-brand-9 rounded-full text-white p-4 shadow-lg"

@@ -25,7 +25,10 @@ import {
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import {
+  cleanPhoneNumber,
+  objectToFormData,
+} from "@/utils/checkFormDataForImageOrAvatar";
 import { FormState, updateUserProfile } from "./data";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
@@ -68,7 +71,7 @@ const Security = () => {
     try {
       setReqLoading(true);
       const res = await updateUserProfile(objectToFormData(payload));
-      if (res && 'status' in res && res.status === 200) {
+      if (res && "status" in res && res.status === 200) {
         // console.log(res);
         toast.success("Profile updated successfully");
         setNext(true);
@@ -81,82 +84,70 @@ const Security = () => {
     }
   };
 
-
   return (
     <>
-      <SettingsSection title="directors profile">
-        <AuthForm onFormSubmit={handleUpdateProfile} skipValidation returnType="form-data">
-          <div className="custom-flex-col gap-8">
-            <div className="custom-flex-col gap-4">
-              <SettingsSectionTitle
-                title="Director Display Picture"
-                desc="The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB."
-              />
-              <div className="custom-flex-col gap-[18px]">
-                <ProfileUpload
-                  preview={preview || profile_picture || ""}
-                  onChange={handleImageChange}
-                  inputFileRef={inputFileRef}
-                  onClick={changeImage}
-                />
-                <div className="flex flex-col lg:flex-row gap-5">
-                  <Select
-                    id="personal_title"
-                    name="title"
-                    options={titles}
-                    label="personal title"
-                    inputContainerClassName="w-[277px] bg-neutral-2"
-                    defaultValue={title as string}
-                  />
-                  <Input
-                    id="fullname"
-                    name="name"
-                    label="full name"
-                    placeholder="Write Here"
-                    className="w-[277px]"
-                    defaultValue={name}
-                  />
-                </div>
-              </div>
-            </div>
-            <SettingsUpdateButton
-              submit
-              loading={reqLoading}
-              action={handleUpdateProfile as any}
-              next={next}
-            />
-          </div>
-        </AuthForm>
-      </SettingsSection>
-      <SettingsSignature />
-      <SettingsWalletSection />
-      <SettingsPasswordSection />
-      <SettingsBank />
-      <SettingsSection title="Customized SMS name">
+      <SettingsSection title="Change Wallet Pin">
         <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle desc="Custom sender SMS name allows you to input a preferred name, providing a way to brand your SMS messages with a personalized touch.  replaces the sender numbers displayed on devices receiving your SMS messages with a name of your choice, up to 11 characters in length." />
-          <div className="flex gap-5">
+          <SettingsSectionTitle
+            title="Change Pin"
+            desc="Use this section to reset your wallet pin."
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:w-2/3 lg:grid-cols-3 gap-5">
+            <Input id="email" label="Current Pin" className="w-full" />
+            <Input id="password" label="New Pin" className="w-full" />
             <Input
-              id="desired_name"
-              label="input desired name"
-              className="w-[277px]"
-              maxLength={11}
+              id="smtp_server"
+              label="Re-enter New Pin"
+              className="w-full"
             />
           </div>
           <SettingsUpdateButton />
         </div>
       </SettingsSection>
-      <SettingsSection title="SMTP Settings">
+
+      <SettingsSection title="Change Email">
         <div className="custom-flex-col gap-8">
           <SettingsSectionTitle
-            title="Set up email alias"
-            desc="Choose how you intend to utilize your SMTP: for private and business correspondence, updates, notifications, mobile messages, transactional messages, marketing communications, or other purposes. This feature enables you to utilize your own domain email address to send messages to your users."
+            title="Change Email"
+            desc="Use this section to change your email."
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Input id="email" label="email address" className="w-full" />
-            <Input id="password" label="password" className="w-full" />
-            <Input id="smtp_server" label="SMTP Server" className="w-full" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:w-2/3 lg:grid-cols-3 gap-5">
+            <Input id="email" label="Current Email" className="w-full" />
+            <Input id="password" label="New Email" className="w-full" />
+            <Input
+              id="smtp_server"
+              label="Re-enter New Email"
+              className="w-full"
+            />
           </div>
+          <SettingsUpdateButton />
+        </div>
+      </SettingsSection>
+
+      <SettingsSection title="Link BVN">
+        <div className="custom-flex-col gap-8">
+          <SettingsSectionTitle
+            title="BVN"
+            desc="Your BVN is linked solely for account verification purposes. We do not have access to any of your personal details; it is used only to confirm the authenticity of your name and facilitate the withdrawal of funds from your wallet to your bank account."
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:w-2/3 lg:grid-cols-3 gap-5">
+            <Input id="email" className="w-full" />
+          </div>
+          <SettingsUpdateButton />
+        </div>
+      </SettingsSection>
+
+      <SettingsSection title="Signature">
+        <div className="custom-flex-col gap-8">
+          <SettingsSectionTitle
+            title="Authorize Signature "
+            desc="This will be attached to all electronic documents issued to you or by you. You are required to sign on a plain white sheet of paper, take a clear photo of the signed area, and upload it. For better quality, you may remove the background if possible."
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:w-2/3 lg:grid-cols-3 gap-5">
+            <Input id="email" className="w-full" />
+          </div>
+
+          {/* need the add image component */}
           <SettingsUpdateButton />
         </div>
       </SettingsSection>

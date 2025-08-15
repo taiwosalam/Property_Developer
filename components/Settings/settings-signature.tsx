@@ -195,7 +195,7 @@ const SettingsSignature = () => {
 
         // Find the correct field by ID instead
         const correctIndex = updatedFields.findIndex(
-          (field: { id: number; }) => field.id === targetFieldId
+          (field: { id: number }) => field.id === targetFieldId
         );
         if (correctIndex >= 0) {
           console.log(`Found correct field at index ${correctIndex} instead`);
@@ -274,7 +274,6 @@ const SettingsSignature = () => {
       setReqLoading(false);
     }
   };
-
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
@@ -382,8 +381,8 @@ const SettingsSignature = () => {
                           </ModalContent>
                         </Modal>
                       </div>
-                      <div className="flex flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
-                        <div className="flex-1">
+                      <div className="flex  flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
+                        <div className="flex-1 w-full  p-2">
                           <Select
                             id={`personal_title_qualification_${index}`}
                             options={titles}
@@ -392,7 +391,7 @@ const SettingsSignature = () => {
                             inputContainerClassName="w-full bg-neutral-2"
                           />
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1  w-full">
                           <Input
                             id={`fullname_${index}`}
                             label="full name"
@@ -401,8 +400,9 @@ const SettingsSignature = () => {
                             defaultValue={state[index]?.name}
                           />
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-3 items-end">
+                        <div className="flex flex-col w-full sm:w-auto sm:flex-row gap-3 items-end">
                           <Select
+                            className="w-full sm:w-auto"
                             id={`real_estate_title_${index}`}
                             options={industryOptions}
                             defaultValue={state[index]?.professional_title}

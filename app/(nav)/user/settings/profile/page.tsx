@@ -5,6 +5,7 @@ import { secondaryFont } from "@/utils/fonts";
 
 // Imports
 import Picture from "@/components/Picture/picture";
+import { empty } from "@/app/config";
 import Button from "@/components/Form/Button/button";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import {
@@ -48,7 +49,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <ChevronLeft />
             </button>
             <Picture
-              src={""}
+              src={empty}
               alt="profile picture"
               size={120}
               containerClassName="w-fit bg-[#F0F2F5] rounded-full"

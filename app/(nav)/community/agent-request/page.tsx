@@ -218,15 +218,15 @@ const PropertyRequest = () => {
   if (error) return <ServerError error={error} />;
   return (
     <div className="space-y-9">
-      <div className="flex gap-5 flex-wrap items-center justify-between">
+      <div className="flex gap-5 pt-3 items-center justify-between">
         <ManagementStatistcsCard
           title="Total Request"
           newData={current_month_requests}
           total={total_requests}
           colorScheme={1}
-          className="hidden md:block"
+          className="shrink-0"
         />
-        <div className="w-full flex justify-center items-center md:justify-end md:w-auto md:items-center">
+        <div className="w-full flex justify-center self-end md:self-auto items-center md:justify-end md:w-auto md:items-center">
           <Button
             href="/community/agent-request/my-properties-request"
             type="button"
@@ -307,7 +307,7 @@ const PropertyRequest = () => {
         />
       </div>
 
-      <div className="top-80 right-4 fixed rounded-full">
+      <div className="bottom-4 right-4 fixed rounded-full">
         <button
           onClick={handleCreatePropertyRequestClick}
           className="bg-brand-9 rounded-full text-white p-4 shadow-lg"

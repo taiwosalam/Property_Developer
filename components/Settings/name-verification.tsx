@@ -100,7 +100,7 @@ export const NameVerification = ({
           <WalletModalPreset
             title="Verify your Identity"
             headerClassName="text-xl"
-            className="w-[800px]"
+            className=""
           >
             <div>
               <div className="p-[18px] rounded-2xl bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-gray-500">
@@ -201,7 +201,11 @@ export const NameVerification = ({
     }
   };
 
-  return <div>{renderModalContent()}</div>;
+  return (
+    <div className=" p-3 w-full sm:w-[calc(100%-2rem)] max-w-[90vw] mx-auto">
+      {renderModalContent()}
+    </div>
+  );
 };
 
 const extractPhone = (text: string) => {

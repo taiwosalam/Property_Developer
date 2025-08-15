@@ -247,7 +247,7 @@ const CreateMaintenace = () => {
         returnType="form-data"
         onFormSubmit={handleSubmit}
         setValidationErrors={() => {}}
-        className="space-y-5 pb-[150px]"
+        className="space-y-5 pb-[9.375rem]"
       >
         <h2 className="text-sm md:text-base text-brand-10">Details</h2>
         <SectionSeparator className="!mt-4 !mb-6" />
@@ -442,7 +442,7 @@ const CreateMaintenace = () => {
             id="cost"
             label="Maintenance Cost"
             CURRENCY_SYMBOL={currencySymbol}
-            inputClassName="bg-white rounded-[8px]"
+            inputClassName="bg-white rounded-[0.5rem]"
             onChange={handleMaintenanceCostChange}
             value={maintenanceCost}
           />
