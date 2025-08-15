@@ -192,4 +192,4 @@ export const RequestCallBackCardData: RequestCallBackCardDataType[] = [
   },
 ];
 
-export const getAllCallbackRequests = async () => {};
+export const getAllCallbackRequests = async () => { };

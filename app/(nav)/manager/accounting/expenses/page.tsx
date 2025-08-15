@@ -376,8 +376,9 @@ const AccountingExpensesPage = () => {
               appliedFilters={appliedFilters}
             />
           </div>
-          <AutoResizingGrid gap={24} minWidth={300}>
+          <div className="account-card-container">
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Expenses"
               balance={Number(stats.total_amount)}
               variant="redOutgoing"
@@ -389,6 +390,7 @@ const AccountingExpensesPage = () => {
               timeRangeLabel={getTimeRangeLabel()}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Deduction"
               balance={Number(stats.total_deduct)}
               variant="blueIncoming"
@@ -400,6 +402,7 @@ const AccountingExpensesPage = () => {
               timeRangeLabel={getTimeRangeLabel()}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Balance"
               balance={Number(stats.total_balance)}
               variant="yellowCard"
@@ -410,7 +413,7 @@ const AccountingExpensesPage = () => {
               percentage={stats.percentage_change_balance}
               timeRangeLabel={getTimeRangeLabel()}
             />
-          </AutoResizingGrid>
+          </div>
         </div>
       </div>
       {/* Table and Menu */}

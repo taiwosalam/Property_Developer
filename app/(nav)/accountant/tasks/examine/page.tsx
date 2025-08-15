@@ -32,6 +32,7 @@ import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
 import { usePermission } from "@/hooks/getPermission";
 import { useRole } from "@/hooks/roleContext";
 import Pagination from "@/components/Pagination/pagination";
+import { PlusIcon } from "@/public/icons/icons";
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
@@ -140,8 +141,8 @@ const Examine = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="flex items-center justify-between">
+        <div className="flex pt-3">
           <ManagementStatistcsCard
             title="Total Examine"
             newData={examineData?.total_examine_month || 0}
@@ -254,6 +255,24 @@ const Examine = () => {
               />
             ))}
           </AutoResizingGrid>
+        )}
+
+        {canCreateExamine && (
+          <Modal
+            state={{
+              isOpen: isOpen,
+              setIsOpen: setIsOpen,
+            }}
+          >
+            <ModalTrigger asChild>
+              <Button className="page-header-button mobile-button ">
+                <PlusIcon />
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <CreateExamineModal setIsOpen={setIsOpen} />
+            </ModalContent>
+          </Modal>
         )}
 
         <Pagination

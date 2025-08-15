@@ -9,7 +9,9 @@ import ReadyByCard from "@/components/Community/ReadByCard";
 import { useEffect, useMemo, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import PropertyRequestComments, { CommentProps } from "@/components/Community/PropertyRequestComments";
+import PropertyRequestComments, {
+  CommentProps,
+} from "@/components/Community/PropertyRequestComments";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import ServerError from "@/components/Error/ServerError";
 import NetworkError from "@/components/Error/NetworkError";
@@ -60,7 +62,7 @@ const PreviewPage = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+      <div className="flex items-center mt-2 justify-between flex-wrap gap-2 mb-4">
         <BackButton>
           {agentRequest && agentRequest?.title?.length > 0
             ? agentRequest?.title

@@ -25,18 +25,23 @@ import BadgeIcon, {
 import { toast } from "sonner";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 interface InspectionDetailsModelProps {
   data: TInspectionDetails;
   setIsOpen?: (val: boolean) => void;
+  hideCard?: boolean;
 }
 const InspectionDetailModal = ({
   data,
   setIsOpen,
+  hideCard,
 }: InspectionDetailsModelProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { role } = useRole();
+  const { isMobile } = useWindowWidth();
+
   // PERMISSIONS
   const canManageInspection =
     usePermission(role, "Can manage inspections") || role === "director";
@@ -74,7 +79,7 @@ const InspectionDetailModal = ({
   };
   return (
     <div
-      className="w-[600px] max-w-[80%] max-h-[90vh] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col pb-14 gap-6 overflow-x-hidden overflow-y-auto custom-round-scrollbar"
+      className="w-[600px] max-w-[90%] max-h-[90vh] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col pb-14 gap-6 overflow-x-hidden overflow-y-auto custom-round-scrollbar"
       style={{
         border: "1px solid rgba(193, 194, 195, 0.40) dark:border-darkText-1",
         boxShadow:
@@ -91,15 +96,17 @@ const InspectionDetailModal = ({
           Inspection details
         </h2>
       </div>
-      <InspectionCardInfo
-        className="px-6"
-        address={data?.address}
-        unit_fee_period={data?.unit_fee_amount}
-        total_price={data?.total_package}
-        image={data?.images || []}
-        title={data?.property_name}
-        yearly_price={data?.fee_amount}
-      />
+      {!hideCard && !isMobile && (
+        <InspectionCardInfo
+          className="px-6"
+          address={data?.address}
+          unit_fee_period={data?.unit_fee_amount}
+          total_price={data?.total_package}
+          image={data?.images || []}
+          title={data?.property_name}
+          yearly_price={data?.fee_amount}
+        />
+      )}
 
       <div className="relative z-[1] custom-flex-col gap-4">
         <div className="w-full border-b border-dashed border-brand-7 opacity-50"></div>

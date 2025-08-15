@@ -190,7 +190,7 @@ const Vat = () => {
     error: staffsError,
   } = useStaffRoles();
   const accountOfficers = getAccountOfficers();
-  
+
   const accountOfficersOptions = Array.isArray(accountOfficers)
     ? [
         ...new Map(
@@ -404,8 +404,9 @@ const Vat = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={300}>
+          <div className="account-card-container">
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Vat Paid"
               balance={total_vat_created}
               percentage={percentage_change_total}
@@ -415,7 +416,7 @@ const Vat = () => {
               trendDirection={percentage_change_total < 0 ? "down" : "up"}
               trendColor={percentage_change_total < 0 ? "red" : "green"}
             />
-          </AutoResizingGrid>
+          </div>
         </div>
       </div>
       {vats.length === 0 && !silentLoading ? (

@@ -92,7 +92,7 @@ const AccountingInvoicePage = () => {
   return (
     <section className="space-y-8">
       <div className="space-y-4">
-        <div className="w-full flex items-center justify-between">
+        <div className="w-full pt-4 flex items-center justify-between">
           <div className="font-medium text-2xl flex items-center space-x-1">
             <span className="text-2xl font-bold">Invoices</span>
             <ExclamationMark />
@@ -166,8 +166,9 @@ const AccountingInvoicePage = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={300}>
+          <div className="account-card-container">
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Receipts Created"
               balance={12345432}
               trendDirection="up"
@@ -176,6 +177,7 @@ const AccountingInvoicePage = () => {
               percentage={53}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Paid Receipts"
               balance={12345432}
               trendDirection="down"
@@ -184,6 +186,7 @@ const AccountingInvoicePage = () => {
               percentage={4.3}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Pending Receipts"
               balance={12345432}
               trendDirection="down"
@@ -191,7 +194,7 @@ const AccountingInvoicePage = () => {
               variant="yellowCard"
               percentage={4.3}
             />
-          </AutoResizingGrid>
+          </div>
         </div>
       </div>
       <CustomTable

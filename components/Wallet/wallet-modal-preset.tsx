@@ -19,7 +19,7 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
   return (
     <div
       // Please dont change the styles
-      className={`w-[600px] max-w-[80%] max-h-[85%] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar ${className}`}
+      className={`w-[600px] mx-auto max-w-[90%] max-h-[85%] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar ${className}`}
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",

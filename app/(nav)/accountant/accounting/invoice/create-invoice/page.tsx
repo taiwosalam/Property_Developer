@@ -62,7 +62,9 @@ const CreateInvoicePage = () => {
 
   // PROPERTY SELECTION LOGIC
   const propertyURL =
-    BRANCH_ID && BRANCH_ID !== 0 ? `/property/all?branch_id=${BRANCH_ID}` : null;
+    BRANCH_ID && BRANCH_ID !== 0
+      ? `/property/all?branch_id=${BRANCH_ID}`
+      : null;
   const [selectedProperty, setSelectedProperty] = useState<number>(0);
   const {
     data: properties,
@@ -218,7 +220,7 @@ const CreateInvoicePage = () => {
               account_officer={propertyData?.account_officer}
             />
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-2 gap-4">
             <Select
               id="property"
               className="property-selection-dropdown"

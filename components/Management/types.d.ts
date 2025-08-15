@@ -10,6 +10,7 @@ export interface LandlordTenantModalPresetProps {
   noPaddingTop?: boolean;
   style?: CSSProperties;
   children: React.ReactNode;
+  className?: string;
   lightSeparator?: boolean;
   customClose?: () => void;
 }

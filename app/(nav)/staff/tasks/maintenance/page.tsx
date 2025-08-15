@@ -34,6 +34,8 @@ import Pagination from "@/components/Pagination/pagination";
 import { IPropertyApi } from "@/app/(nav)/settings/others/types";
 import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
 import { LandlordRequestParams } from "@/app/(nav)/management/landlord/data";
+import Link from "next/link";
+import { PlusIcon } from "@/public/icons/icons";
 
 const Maintenance = () => {
   const [maintenanceData, setMaintenanceData] =
@@ -76,7 +78,7 @@ const Maintenance = () => {
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
-       if (property.length > 0) {
+      if (property.length > 0) {
         property.forEach((id: string | number, idx: number) => {
           (queryParams as any)[`property_ids[${idx}]`] = id;
         });
@@ -141,8 +143,8 @@ const Maintenance = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container !justify-between">
+        <div className="flex gap-5 pt-3 overflow-x-auto scrollbar-hide flex-nowrap md:flex-wrap">
           <ManagementStatistcsCard
             title="Total Maintenance"
             newData={maintenanceData?.stats.this_month || 0}
@@ -241,8 +243,16 @@ const Maintenance = () => {
         )}
       </section>
 
+      <Link
+        href="/tasks/maintenance/create-new"
+        className="text-5xl md:hidden !rounded-full bg-brand-9 text-white grid place-items-center !size-[4rem] fixed bottom-4 right-4"
+      >
+        <PlusIcon />
+      </Link>
+
       <div>
         <Pagination
+          className="pb-3"
           onPageChange={handlePageChange}
           totalPages={maintenanceData?.pagination?.total_pages || 0}
           currentPage={maintenanceData?.pagination?.current_page || 0}

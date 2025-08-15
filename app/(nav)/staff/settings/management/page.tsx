@@ -74,7 +74,7 @@ const Management = () => {
                   Can view assign account statement
                 </DocumentCheckbox>
                 <DocumentCheckbox darkText checked={true}>
-                  Can check in visitors
+                  Can check in visitorsk
                 </DocumentCheckbox>
                 <DocumentCheckbox darkText checked={true}>
                   Can check calendars

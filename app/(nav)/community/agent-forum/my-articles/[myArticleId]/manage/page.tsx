@@ -121,7 +121,7 @@ const ManageMyArticle = () => {
 
   return (
     <div className="wra mb-16 overflow-visible">
-      <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+      <div className="flex items-center mt-2 justify-between flex-wrap gap-2 mb-4">
         <BackButton>Manage Article </BackButton>
       </div>
 

@@ -51,7 +51,6 @@ body {
   outline: 1px solid red; //FOR CSS DEBUGGING
 } */
 
-
 .autocomplete-suggestions {
   position: absolute;
   top: 100%;
@@ -95,23 +94,17 @@ button[data-v-81bf4389][data-v-87825872][aria-label="Close"] {
   display: none !important;
 }
 
-
-button .button .button--standard{
+button .button .button--standard {
   display: none !important;
 }
-
 
 .stroke-texts {
   -webkit-text-stroke: 1px var(--primary-color);
   color: white;
-  text-shadow:
-      3px 3px 0 var(--primary-color),
-    -1px -1px 0 var(--primary-color),  
-     1px -1px 0 var(--primary-color),
-     -1px 1px 0 var(--primary-color),
-      1px 1px 0 var(--primary-color);
+  text-shadow: 3px 3px 0 var(--primary-color), -1px -1px 0 var(--primary-color),
+    1px -1px 0 var(--primary-color), -1px 1px 0 var(--primary-color),
+    1px 1px 0 var(--primary-color);
 }
-
 
 #portal {
   position: fixed;
@@ -120,7 +113,7 @@ button .button .button--standard{
   pointer-events: none;
 }
 
-#portal>* {
+#portal > * {
   position: absolute;
   pointer-events: all;
 }
@@ -132,12 +125,12 @@ h1 {
 }
 
 .lato,
-.lato>* {
+.lato > * {
   font-family: "Lato", sans-serif !important;
 }
 
 .dm-sans,
-.dm-sans>* {
+.dm-sans > * {
   font-family: "DM Sans", sans-serif !important;
 }
 
@@ -195,7 +188,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col>* {
+.custom-flex-col > * {
   width: 100%;
 }
 
@@ -254,15 +247,15 @@ h1 {
   height: 0px !important;
 }
 
-.voice-visualizer button{
+.voice-visualizer button {
   height: 2em !important;
   width: 2em !important;
 }
 
-.voice-visualizer__btn{
+.voice-visualizer__btn {
   min-height: 2em !important;
   min-width: 4em !important;
-  border-radius: .6em !important;
+  border-radius: 0.6em !important;
   /* display: flex !important; */
   text-align: center !important;
   padding: 0 !important;
@@ -270,20 +263,19 @@ h1 {
   justify-content: center !important; */
 }
 
-.voice-visualizer__buttons-container{
+.voice-visualizer__buttons-container {
   /* background-color: #000000; */
   margin-top: 1em !important;
   display: flex !important;
   gap: 0.5em !important;
 }
 
-
 /* -------------------------------------------------------------- */
 
 /* Overwriting default behaviour */
 /* -------------------------------------------------------------- */
 
-.sections>*:last-child .separator {
+.sections > *:last-child .separator {
   display: none;
 }
 
@@ -484,7 +476,7 @@ button:disabled:not(.retain-opacity) {
 }
 
 /* for the blue buttons */
-.page-header-container> :last-child {
+.page-header-container > :last-child {
   @apply flex-shrink-0;
 }
 
@@ -500,7 +492,6 @@ button:disabled:not(.retain-opacity) {
   text-transform: unset !important;
 }
 
-
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
@@ -508,7 +499,6 @@ button:disabled:not(.retain-opacity) {
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
-
 
 /* ------------------------ */
 .loader {
@@ -570,8 +560,9 @@ button:disabled:not(.retain-opacity) {
 }
 
 @keyframes blinkColor {
-  0%, 100% {
-    stroke: var(--primary-color); 
+  0%,
+  100% {
+    stroke: var(--primary-color);
   }
   50% {
     stroke: #ef4444;
@@ -579,7 +570,7 @@ button:disabled:not(.retain-opacity) {
 }
 
 .blink-color {
-  stroke: #1d4ed8; 
+  stroke: #1d4ed8;
   animation: blinkColor 1.5s infinite ease-in-out;
 }
 
@@ -588,7 +579,6 @@ button:disabled:not(.retain-opacity) {
     box-shadow: none !important;
   }
 }
-
 
 .agreement-preview-container {
   @apply rounded-[20px] bg-white dark:bg-white p-6 max-h-[80vh] overflow-y-auto md:max-w-[80%] custom-round-scrollbar;
@@ -628,4 +618,40 @@ button:disabled:not(.retain-opacity) {
 
 .fixedText-color {
   @apply text-[#000000] dark:text-black;
+}
+
+/* scrollbar hide */
+/* Hide scrollbar but still allow scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.card-scroll {
+  @apply flex gap-5 py-4 scrollbar-hide items-start overflow-x-auto md:flex-wrap;
+}
+
+.mobile-button {
+  @apply bg-brand-9 z-[50] grid fixed bottom-4 right-4 text-white size-[4rem] rounded-full place-items-center md:hidden;
+}
+
+.page-header-container-variant {
+  @apply w-full flex items-center justify-start md:justify-between gap-4;
+}
+
+/* for the blue buttons */
+.page-header-container > :last-child {
+  @apply flex-shrink-0;
+}
+
+.account-card-container {
+  @apply scrollbar-hide pl-2 py-3 flex gap-6 overflow-x-auto;
+}
+
+.account-card {
+  @apply !min-w-[320px] shrink-0;
 }

@@ -183,12 +183,13 @@ const Applications = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="account-card-container">
         <ManagementStatistcsCard
           title="Total Application"
           newData={pageData?.month_application || 0}
           total={pageData?.total_application || 0}
           colorScheme={1}
+          className="!min-w-[320px] shrink-0"
         />
         {/* <ManagementStatistcsCard
           title="Mobile Application"

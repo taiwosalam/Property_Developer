@@ -78,8 +78,6 @@ const BookVisitorsPage = () => {
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
-  
-
   const {
     data: visitorsData,
     loading,
@@ -160,7 +158,7 @@ const BookVisitorsPage = () => {
       params: { ...prev.params, page },
     }));
 
-    sectionRef.current?.scrollIntoView({behavior: 'smooth'});
+    sectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -198,7 +196,7 @@ const BookVisitorsPage = () => {
 
   return (
     <section className="space-y-9" ref={sectionRef}>
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="flex gap-5 py-4 scrollbar-hide overflow-x-auto md:flex-wrap">
         <ManagementStatistcsCard
           total={pageData?.month_total || 0}
           title="Total Visitors"
@@ -301,6 +299,7 @@ const BookVisitorsPage = () => {
           </AutoResizingGrid>
 
           <Pagination
+            className="pb-4"
             totalPages={pageData?.pagination?.total_pages || 0}
             currentPage={pageData?.pagination?.current_page || 0}
             onPageChange={handlePageChange}

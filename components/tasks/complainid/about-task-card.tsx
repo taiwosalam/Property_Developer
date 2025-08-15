@@ -16,7 +16,11 @@ export interface AboutTaskCardProps {
     value: string | null;
   }[];
 }
-const AboutTaskCard = ({ description, aboutCard, tier_id }: AboutTaskCardProps) => {
+const AboutTaskCard = ({
+  description,
+  aboutCard,
+  tier_id,
+}: AboutTaskCardProps) => {
   const [isVisible, setIsVisible] = useState(true);
 
   const toggleVisibility = () => {
@@ -58,14 +62,13 @@ const AboutTaskCard = ({ description, aboutCard, tier_id }: AboutTaskCardProps) 
                 "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
             }}
           >
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid  grid-cols-2 sm:grid-cols-4 gap-4">
               {aboutCard?.map((detail, index) => (
                 <DetailItem
                   key={index}
                   label={detail.label}
                   value={detail.value ?? "___ ___"}
                   tier_id={tier_id}
-
                 />
               ))}
             </div>

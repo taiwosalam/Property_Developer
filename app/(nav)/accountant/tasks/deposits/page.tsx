@@ -277,6 +277,7 @@ const DepositRequest = () => {
       </section>
 
       <Pagination
+        className="pb-4"
         totalPages={pageData?.pagination?.last_page || 0}
         currentPage={pageData?.pagination?.current_page || 0}
         onPageChange={handlePageChanger}

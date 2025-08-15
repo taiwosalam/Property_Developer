@@ -44,15 +44,15 @@ export const FlaggedCard = ({ ...props }: IFaggerCard) => {
     // Redirect to the messaging page
     router.push(`/messages/${props?.flagger_id}`);
   };
-  
+
   return (
     <>
       <div
         className={`h-full border border-brand-tertiary bg-[#F9F9F9] dark:bg-[#020617] dark:border-[#3C3D37] p-3 rounded-lg`}
         style={{ boxShadow: "4px 4px 5px 0px rgba(0, 0, 0, 0.05)" }}
       >
-        <div className="flex gap-10">
-          <div className="flex gap-2">
+        <div className="flex  flex-col sm:flex-row gap-5 sm:gap-10">
+          <div className="flex  gap-2">
             <div className="relative overflow-hidden flex-shrink-0 w-[90px] h-[90px]">
               <Image
                 src={props?.picture || "/empty/SampleLandlord.jpeg"}
@@ -90,11 +90,9 @@ export const FlaggedCard = ({ ...props }: IFaggerCard) => {
             </div>
           </div>
 
-          <div className="border-l border-slate-300 flex-1">
+          <div className="border-l  border-slate-300 flex-1">
             <div className="pl-4 flex flex-col justify-between h-full gap-1">
-              <p className="text-red-500 dark:bg-red-200 capitalize">
-                {props?.reason}
-              </p>
+              <p className=" dark:bg-red-200 capitalize">{props?.reason}</p>
               {/* <p className="text-blue-600">
                 Kindly advice the applicant to resolve any outstanding issues
                 with their previous manager in order to lift the flag on their

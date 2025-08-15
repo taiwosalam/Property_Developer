@@ -227,12 +227,13 @@ const Applications = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
+      <div className="account-card-container" ref={contentTopRef}>
         <ManagementStatistcsCard
           title="Total Application"
           newData={pageData?.month_application || 0}
           total={pageData?.total_application || 0}
           colorScheme={1}
+          className="!min-w-[320px] shrink-0"
         />
       </div>
       <div className="custom-flex-col gap-5">
@@ -338,6 +339,7 @@ const Applications = () => {
         </section>
       </div>
       <Pagination
+        className="!pb-3 "
         totalPages={pageData?.pagination?.total_pages || 0}
         currentPage={pageData?.pagination?.current_page || 0}
         onPageChange={handlePageChange}

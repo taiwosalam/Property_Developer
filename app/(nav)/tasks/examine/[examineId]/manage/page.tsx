@@ -25,6 +25,7 @@ import { IExaminePageData } from "./data";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { toast } from "sonner";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
+import InfoItem from "./comp";
 
 const ManageExaminepage = () => {
   const [examinePageData, setExaminePageData] =
@@ -160,44 +161,25 @@ const ManageExaminepage = () => {
         <BackButton>Examine Title (Rent Increase)</BackButton>
         <div className="grid md:grid-cols-1 gap-8">
           <LandlordTenantInfoBox
-            className={`min-h-0 ${commonBoxClassName} w-full`}
+            className={`min-h-0 ${commonBoxClassName}  w-full`}
             style={commonBoxStyle}
           >
-            <div className="flex justify-between px-4">
-              <div className="flex-col items-center justify-between gap-2">
-                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                  Inspected Date:
-                </p>
-                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
-                  {examinePageData?.date}
-                </p>
-              </div>
-              <div className="flex-col items-start justify-between gap-2">
-                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                  Assigned Staff:
-                </p>
-                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
-                  {examinePageData?.assign_staff}
-                </p>
-              </div>
-              <div className="flex-col items-start justify-between gap-2">
-                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                  Property Name:
-                </p>
-                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
-                  {examinePageData?.property_name}
-                </p>
-              </div>
-              <div className="flex-col items-start justify-between gap-2">
-                <p className="text-text-tertiary dark:text-darkText-1 text-[16px] font-medium">
-                  Branch Name:
-                </p>
-                <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
-                  {examinePageData?.branch_name}
-                </p>
-              </div>
+            <div className="lg:flex lg:justify-between px-4 grid gap-y-4 grid-cols-2">
+              <InfoItem label="Inspected Date:" value={examinePageData?.date} />
+              <InfoItem
+                label="Assigned Staff:"
+                value={examinePageData?.assign_staff}
+              />
+              <InfoItem
+                label="Property Name:"
+                value={examinePageData?.property_name}
+              />
+              <InfoItem
+                label="Branch Name:"
+                value={examinePageData?.branch_name}
+              />
 
-              <div className="pb-3 max-w-lg">
+              <div className="pb-3  col-span-2 max-w-lg">
                 <p className="text-base font-medium text-text-tertiary dark:text-darkText-1">
                   Attached Note:
                 </p>

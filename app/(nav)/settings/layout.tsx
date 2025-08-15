@@ -15,7 +15,7 @@ const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <SettingsProvider>
-      <div className="custom-flex-col gap-10">
+      <div className="custom-flex-col  gap-10">
         <div className="flex overflow-x-auto gap-1 bg-neutral-2 dark:bg-[#3C3D37] pb-2 no-scrollbar">
           <div className="flex">
             {settings_link_tabs.map((tab) => (
@@ -28,7 +28,7 @@ const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
             ))}
           </div>
         </div>
-        <div className="relative z-[1] custom-flex-col gap-8 p-6 rounded-2xl bg-white dark:bg-[#3C3D37]">
+        <div className="relative z-[1] custom-flex-col p-3   gap-8 sm:p-6 rounded-2xl bg-white dark:bg-[#3C3D37]">
           {children}
         </div>
       </div>

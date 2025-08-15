@@ -72,7 +72,6 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
   const [isHovered, setIsHovered] = useState(false);
 
-
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
     onBillingTypeChange(type); // Trigger parent handler for all plans
   };
@@ -105,7 +104,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`min-w-[400px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
+      className={`sm:min-w-[400px] min-w-[320px] min-h-[480px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}

@@ -34,6 +34,8 @@ import { debounce } from "lodash";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
 import { IPropertyApi } from "../../settings/others/types";
+import Link from "next/link";
+import { PlusIcon } from "@/public/icons/icons";
 
 const Maintenance = () => {
   const [maintenanceData, setMaintenanceData] =
@@ -136,8 +138,8 @@ const Maintenance = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container !justify-between">
+        <div className="flex gap-5 pt-3 overflow-x-auto scrollbar-hide flex-nowrap md:flex-wrap">
           <ManagementStatistcsCard
             title="Total Maintenance"
             newData={maintenanceData?.stats.this_month || 0}
@@ -145,7 +147,7 @@ const Maintenance = () => {
             colorScheme={1}
           />
         </div>
-        <div className="flex items-center">
+        <div className="hidden md:flex items-center">
           <Button
             href="/tasks/maintenance/create-new"
             className="page-header-button"
@@ -236,7 +238,14 @@ const Maintenance = () => {
         )}
       </section>
 
-      <div>
+      <Link
+        href="/tasks/maintenance/create-new"
+        className="text-5xl md:hidden !rounded-full bg-brand-9 text-white grid place-items-center !size-[4rem] fixed bottom-4 right-4"
+      >
+        <PlusIcon />
+      </Link>
+
+      <div className="pb-4">
         <Pagination
           onPageChange={handlePageChange}
           totalPages={maintenanceData?.pagination?.total_pages || 0}

@@ -1,4 +1,3 @@
-
 // Fix for SignatureModal component
 
 import React, { useRef, useState, useEffect } from "react";
@@ -132,11 +131,13 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
         const imageBase64 = reader.result as string;
         setSignatureImageBase64(imageBase64);
         setSignatureImageFile(file);
-        
+
         // Always use the realIndex that we stored when component mounted
-        console.log(`SignatureModal: Uploading signature for index ${realIndex}`);
+        console.log(
+          `SignatureModal: Uploading signature for index ${realIndex}`
+        );
         onCreateSignature(imageBase64, realIndex, file);
-        
+
         setIsOpen(false);
       };
     }
@@ -148,6 +149,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
 
   return activeStep === 1 ? (
     <LandlordTenantModalPreset
+      className="!w-[90%] !max-w-[600px]"
       style={{ width: "100%", height: "fit" }}
       heading="Draw your signature"
     >

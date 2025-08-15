@@ -65,7 +65,7 @@ const CreateInvoicePage = () => {
     data: properties,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>('/property/all');
+  } = useFetch<PropertyListResponse>("/property/all");
 
   const propertyOptions =
     properties?.data
@@ -215,7 +215,7 @@ const CreateInvoicePage = () => {
               account_officer={propertyData?.account_officer}
             />
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-2 gap-4">
             <Select
               id="property"
               className="property-selection-dropdown"

@@ -29,6 +29,8 @@ import dayjs from "dayjs";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { PlusIcon } from "@/public/icons/icons";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
@@ -140,7 +142,9 @@ const AnnouncementPage = () => {
 
   const { data: propertiesData } = useFetch<any>(`property/list`);
 
-  const propertyOptions: any = Array.isArray(propertiesData?.data.properties.data)
+  const propertyOptions: any = Array.isArray(
+    propertiesData?.data.properties.data
+  )
     ? [
         ...new Map(
           propertiesData.data.properties.data
@@ -168,8 +172,8 @@ const AnnouncementPage = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container-variant">
+        <div className="flex pt-4 gap-5 overflow-x-auto scrollbar-hide md:flex-wrap">
           <ManagementStatistcsCard
             title="Announcement"
             newData={apiData?.total_announcement_month || 0}
@@ -185,7 +189,7 @@ const AnnouncementPage = () => {
         </div>
         <Button
           href="/tasks/announcements/create-announcement"
-          className="page-header-button"
+          className="page-header-button hidden md:block"
         >
           + Create Announcement
         </Button>
@@ -330,6 +334,13 @@ const AnnouncementPage = () => {
           </AutoResizingGrid>
         </section>
       )}
+
+      <Link
+        href="/tasks/announcements/create-announcement"
+        className="mobile-button"
+      >
+        <PlusIcon />
+      </Link>
 
       <Pagination
         totalPages={apiData?.pagination?.total_pages || 0}
