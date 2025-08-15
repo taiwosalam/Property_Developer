@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ServerError from "@/components/Error/ServerError";
 import { useTourStore } from "@/store/tour-store";
+import { PlusIcon } from "@/public/icons/icons";
 
 const allStates = getAllStates();
 
@@ -289,12 +290,11 @@ const StaffAndBranches = () => {
   console.log("branches", branches);
   return (
     <div className="space-y-9">
-      {/* For grid view use the contentTopRef so that manual pagination scrolls to top */}
       <div
-        className="page-header-container"
+        className="page-header-container mt-4 md:mt-0"
         ref={view === "grid" ? contentTopRef : null}
       >
-        <div className="hidden md:flex gap-5 flex-wrap">
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full">
           <ManagementStatistcsCard
             title="Total Branches"
             newData={new_branches_count}
@@ -316,7 +316,10 @@ const StaffAndBranches = () => {
         </div>
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button
+              type="button"
+              className="page-header-button md:block hidden"
+            >
               + create branch
             </Button>
           </ModalTrigger>
@@ -411,6 +414,21 @@ const StaffAndBranches = () => {
             onPageChange={handlePageChange}
           />
         )}
+
+        <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+          <Modal>
+            <ModalTrigger>
+              <button
+                className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+              >
+                <PlusIcon />
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <CreateBranchModal branches={branches} />
+            </ModalContent>
+          </Modal>
+        </div>
       </section>
     </div>
   );

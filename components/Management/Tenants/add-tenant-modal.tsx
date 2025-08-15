@@ -22,12 +22,14 @@ import { useRouter, usePathname } from "next/navigation";
 import { addTenantWithEmail } from "../Landlord/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useRole } from "@/hooks/roleContext";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const AddTenantModal = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { setIsOpen } = useModal();
   const { role } = useRole();
+  const { isMobile } = useWindowWidth();
   const [activeStep, setActiveStep] =
     useState<AddTenantModalOptions>("options");
   const [identifier, setIdentifier] = useState("");
@@ -194,6 +196,7 @@ const AddTenantModal = () => {
   return (
     <LandlordTenantModalPreset
       heading={modal_states[activeStep].heading}
+      style={{ overflow: "hidden", maxWidth: isMobile ? "100%" : "50%" }}
       back={activeStep !== "options" ? { handleBack } : undefined}
     >
       {modal_states[activeStep].content}

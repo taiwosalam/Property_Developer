@@ -75,8 +75,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
       )}
       {children && (
         <p
-          className={`text-text-secondary dark:text-darkText-1 font-medium capitalize ${
-            sm ? "text-sm" : "text-base"
+          className={`text-text-secondary dark:text-darkText-1 text-xs md:text-sm capitalize ${
+            sm ? "text-sm font-normal" : "text-base font-medium"
           }`}
         >
           {children}

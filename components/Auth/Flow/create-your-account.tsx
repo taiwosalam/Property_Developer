@@ -14,6 +14,7 @@ import {
 import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import { signup } from "@/app/(onboarding)/auth/data";
+import Text from "@/components/Form/Text/text";
 
 const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
   const [requestLoading, setRequestLoading] = useState(false);
@@ -34,12 +35,12 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
     <AuthForm
       onFormSubmit={handleSignUp}
       setValidationErrors={setErrorMsgs}
-      className="custom-flex-col gap-10"
+      className="custom-flex-col gap-md"
     >
       <AuthHeading title="Create Your Account">
         Please provide the following information to set up your account.
       </AuthHeading>
-      <div className="custom-flex-col gap-6">
+      <div className="custom-flex-col gap-md">
         <Input
           id="email"
           type="email"
@@ -47,10 +48,10 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
           placeholder="Use a company email for this process"
           validationErrors={errorMsgs}
         />
-        <p className="text-text-label text-base font-normal">
+        <Text as="p" variant="change" size="xs_normal">
           Passwords must contain an UPPERCASE letter, lowercase letter, number,
           and a special character.
-        </p>
+        </Text>
         <div className="custom-flex-col gap-4">
           {/* Component to handle password input and strength validation */}
           <AuthNewPassword validationErrors={errorMsgs} />
@@ -69,7 +70,13 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
           Got an account?
         </AuthAction>
         {/* Button to submit the form */}
-        <Button type="submit" disabled={requestLoading}>
+        <Button
+          type="submit"
+          disabled={requestLoading}
+          size="base_bold"
+          variant="default"
+          className="py-xs px-md"
+        >
           {requestLoading ? "Please wait..." : "continue"}
         </Button>
       </div>

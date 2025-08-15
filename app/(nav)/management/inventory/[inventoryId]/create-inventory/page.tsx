@@ -14,7 +14,7 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { InventoryApiResponse } from "../types";
 import useFetch from "@/hooks/useFetch";
 import { useTourStore } from "@/store/tour-store";
-import { ExclamationMark } from "@/public/icons/icons";
+import { ExclamationMark, PlusIcon } from "@/public/icons/icons";
 
 const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
   const isDarkMode = useDarkMode();
@@ -211,7 +211,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
                 <Button
                   size="sm_medium"
                   variant="border"
-                  className="add-more-button py-2 px-8"
+                  className="add-more-button py-2 px-8 md:block hidden"
                   onClick={() => {
                     handleAddMoreInventory();
                   }}
@@ -230,6 +230,17 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
             </div>
           </div>
         </FixedFooter>
+        <div className="bottom-40 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+          <button
+            type="button"
+            onClick={() => {
+              handleAddMoreInventory();
+            }}
+            className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+          >
+            <PlusIcon />
+          </button>
+        </div>
       </form>
     </div>
   );

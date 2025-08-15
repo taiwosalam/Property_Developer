@@ -36,6 +36,7 @@ const AddPropertyModal = ({ isOpen, id }: { isOpen?: boolean; id?: number }) => 
   return (
     <LandlordTenantModalPreset
       heading={modal_states[view].heading}
+      style={{ overflow: "hidden" }}
       back={view !== "options" ? { handleBack } : undefined}
     >
       {modal_states[view].content}

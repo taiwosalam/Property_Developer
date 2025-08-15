@@ -24,6 +24,7 @@ import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-in
 import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import useBranchStore from "@/store/branch-store";
 import { validateAndCleanPhoneNumber } from "@/utils/validatePhoneNumber";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   branchId,
@@ -33,6 +34,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [formStep, setFormStep] = useState(1);
   const { branch } = useBranchStore();
+  const { isMobile } = useWindowWidth();
 
   const { staffs } = branch;
   // console.log("Branch data", branch.isManagerAvailable)
@@ -59,33 +61,32 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
     originalHandleImageChange(e);
   };
 
-
   const handleCreateStaff = async (data: FormData) => {
     const email = data.get("email")?.toString() || "";
     const phoneNumber = data.get("phone_number")?.toString() || "";
-  
+
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or select an avatar.");
       return;
     }
-  
+
     const isEmailValid = await isValidEmail(email);
     if (!isEmailValid) {
       toast.warning("Invalid email address!");
       return;
     }
-  
+
     // Validate phone number
     const cleanedPhoneNumber = validateAndCleanPhoneNumber(phoneNumber);
     if (!cleanedPhoneNumber && phoneNumber) {
       toast.warning("Please enter a valid phone number.");
       return;
     }
-  
+
     setIsLoading(true);
     // Replace the original phone number with the cleaned version
     data.set("phone_number", cleanedPhoneNumber || "");
-    
+
     const status = await addStaff(data, branchId);
     if (status) {
       setIsOpen(false);
@@ -95,7 +96,6 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
     }
   };
 
-  
   const STAFF_ROLE_OPTIONS = [
     ...(hasManager ? [] : [{ value: "manager", label: "branch manager" }]),
     // { value: "account_officer", label: "account officer" },
@@ -175,7 +175,12 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
               </p>
               <div className="flex gap-3 items-end">
                 <label htmlFor="picture" className="relative cursor-pointer">
-                  <Picture src={preview} alt="plus" size={70} rounded />
+                  <Picture
+                    src={preview}
+                    alt="plus"
+                    size={isMobile ? 40 : 70}
+                    rounded
+                  />
                   {preview && preview !== CameraCircle && (
                     <div
                       role="button"
@@ -186,7 +191,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
                         clearImageSelection();
                       }}
                     >
-                      <DeleteIconOrange size={20} />
+                      <DeleteIconOrange size={isMobile ? 16 : 20} />
                     </div>
                   )}
                   <input
@@ -202,7 +207,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setFormStep(2)}
-                  className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
+                  className="bg-[rgba(42,42,42,0.63)] w-[40px] md:w-[70px] h-[40px] md:h-[70px] rounded-full flex items-center justify-center text-white relative"
                   aria-label="choose avatar"
                 >
                   {selectedAvatar ? (
@@ -210,9 +215,9 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
                       <Image
                         src={selectedAvatar}
                         alt="selected avatar"
-                        width={70}
-                        height={70}
-                        className="object-cover object-center w-[70px] h-[70px] rounded-full bg-brand-9"
+                        width={isMobile ? 40 : 70}
+                        height={isMobile ? 40 : 70}
+                        className="object-cover object-center w-[40px] md:w-[70px] h-[40px] md:h-[70px] rounded-full bg-brand-9"
                       />
                       <div
                         role="button"
@@ -223,11 +228,11 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
                           setSelectedAvatar("");
                         }}
                       >
-                        <DeleteIconOrange size={20} />
+                        <DeleteIconOrange size={isMobile ? 16 : 20} />
                       </div>
                     </>
                   ) : (
-                    <PersonIcon />
+                    <PersonIcon size={isMobile ? 16 : 20} />
                   )}
                 </button>
               </div>

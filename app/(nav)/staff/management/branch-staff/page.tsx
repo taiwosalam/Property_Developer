@@ -231,9 +231,7 @@ const BranchStaffPage = () => {
   }));
 
   const handleSelectTableItem = (item: DataItem) => {
-    router.push(
-      `staff/management/branch-staff/${item.id}`
-    );
+    router.push(`staff/management/branch-staff/${item.id}`);
   };
 
   if (isNetworkError) return <NetworkError />;
@@ -243,8 +241,8 @@ const BranchStaffPage = () => {
 
   return (
     <div className="custom-flex-col gap-6">
-      <div className="w-full gap-2 flex items-center justify-between flex-wrap">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container mt-4 md:mt-0">
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
           <ManagementStatistcsCard
             title="Total Staff"
             newData={state.total_data_count}
@@ -295,7 +293,8 @@ const BranchStaffPage = () => {
               title="The branch staff is empty"
               body={
                 <p>
-                  You can view other staffs once they are added by the manager or the director.
+                  You can view other staffs once they are added by the manager
+                  or the director.
                 </p>
               }
             />

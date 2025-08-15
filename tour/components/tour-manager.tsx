@@ -280,7 +280,7 @@ const CustomTour: React.FC = () => {
   }
 
   return (
-    <>
+    <div className="bg-red-500 w-full flex flex-col">
       <TourOverlay
         step={currentStep}
         targetElement={
@@ -300,7 +300,7 @@ const CustomTour: React.FC = () => {
         onSkip={tourState.stepIndex === 0 ? handleDeclineTour : handleSkip}
         onRestart={handleRestart}
       />
-    </>
+    </div>
   );
 };
 

@@ -198,7 +198,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
 
   return (
     <Card
-      className={clsx("w-[250px] h-[160px]", className)}
+      className={clsx("min-w-[250px] h-[160px]", className)}
       style={{ boxShadow: "-2px 2px 10px rgba(21, 21, 21, 0.10)" }}
     >
       <CardContent className="h-full py-5">

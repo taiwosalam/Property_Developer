@@ -23,6 +23,7 @@ import { useModal } from "@/components/Modal/modal";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useRole } from "@/hooks/roleContext";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 type AddLandlordModalOptions =
   | "options"
@@ -37,6 +38,7 @@ const AddLandlordModal = () => {
   const pathname = usePathname();
   const { setIsOpen } = useModal();
   const { role } = useRole();
+  const { isMobile } = useWindowWidth();
 
   const [identifier, setIdentifier] = useState("");
 
@@ -195,6 +197,7 @@ const AddLandlordModal = () => {
   return (
     <LandlordTenantModalPreset
       heading={modal_states[activeStep].heading}
+      style={{ overflow: "hidden", maxWidth: isMobile ? "100%" : "50%" }}
       back={activeStep !== "options" ? { handleBack } : undefined}
     >
       {modal_states[activeStep].content}

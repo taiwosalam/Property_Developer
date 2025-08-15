@@ -476,7 +476,7 @@ button:disabled:not(.retain-opacity) {
 }
 
 .page-header-button {
-  @apply rounded-[8px] xl:px-12 !text-sm !font-normal;
+  @apply rounded-[8px] xl:px-12 !text-sm !font-normal mt-6 md:mt-0;
 }
 
 .page-header-container {
@@ -489,7 +489,7 @@ button:disabled:not(.retain-opacity) {
 }
 
 .page-title-container {
-  @apply flex flex-wrap gap-4 items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4 dark:border-[#3C3D37];
+  @apply flex flex-wrap md:flex-nowrap gap-4 items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4 dark:border-[#3C3D37];
 }
 
 .search-input-placeholder-color::placeholder {
@@ -632,10 +632,16 @@ button:disabled:not(.retain-opacity) {
 
 
 
+/* scrollbar hide */
+/* Hide scrollbar but still allow scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
 
-
-
-
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
 
 
 
@@ -854,3 +860,13 @@ button:disabled:not(.retain-opacity) {
 .min-w-xs { min-width: clamp(1rem, 2.5vw, 1.125rem); }
 .min-w-sm { min-width: clamp(1.125rem, 3vw, 1.25rem); }
 .min-w-md { min-width: clamp(1.25rem, 3.5vw, 1.5rem); }
+
+
+
+.account-card-container {
+  @apply scrollbar-hide py-3 pl-2 flex gap-6 overflow-x-auto;
+}
+
+.account-card {
+  @apply !min-w-[320px] shrink-0;
+}

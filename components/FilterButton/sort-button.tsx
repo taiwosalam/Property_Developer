@@ -1,4 +1,5 @@
 "use client";
+import useWindowWidth from "@/hooks/useWindowWidth";
 import { ArrowDownAZ, ArrowUpZA } from "lucide-react";
 import { useState } from "react";
 
@@ -6,6 +7,7 @@ const SortButton: React.FC<{
   onSort?: (order: "asc" | "desc") => void;
 }> = ({ onSort }) => {
   const [sort, setSort] = useState<"asc" | "desc">("asc");
+  const { isMobile } = useWindowWidth();
 
   const toggleSort = () => {
     const newSort = sort === "asc" ? "desc" : "asc";
@@ -18,14 +20,14 @@ const SortButton: React.FC<{
       case "asc":
         return (
           <ArrowDownAZ
-            size={20}
+            size={isMobile ? 16 : 20}
             className="text-[#344054] dark:text-darkText-1"
           />
         );
       case "desc":
         return (
           <ArrowUpZA
-            size={20}
+            size={isMobile ? 16 : 20}
             className="text-[#344054] dark:text-darkText-1"
           />
         );
@@ -41,7 +43,7 @@ const SortButton: React.FC<{
       onClick={toggleSort}
     >
       {getIcon()}
-      <span className="text-[#344054] dark:text-darkText-1 text-base font-medium">
+      <span className="text-[#344054] dark:text-darkText-1 md:block hidden text-base font-medium">
         Sort
       </span>
     </button>

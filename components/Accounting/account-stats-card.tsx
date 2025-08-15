@@ -54,9 +54,9 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
   // Determine font size based on digit count
   const digitCount = getDigitCount(balance);
   const fontSizeClass = clsx({
-    "text-[24px] xl:text-[28px]": digitCount < 10, // Default for < 8 digits
-    "text-[20px] xl:text-[24px]": digitCount >= 10 && digitCount <= 12, // 8–9 digits
-    "text-[16px] xl:text-[20px]": digitCount >= 13, // 10+ digits
+    "text-md md:text-[24px] xl:text-[28px]": digitCount < 10, // Default for < 8 digits
+    "text-base md:text-[20px] xl:text-[24px]": digitCount >= 10 && digitCount <= 12, // 8–9 digits
+    "text-sm md:text-[16px] xl:text-[20px]": digitCount >= 13, // 10+ digits
   });
 
   const getVariantStyles = (): VariantStyle => {
@@ -107,7 +107,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
     >
       <div className="w-full flex justify-between gap-4">
         <div className="space-y-2">
-          <p className="font-medium text-[16px] text-text-tertiary dark:text-darkText-1 whitespace-nowrap">
+          <p className="font-normal md:font-medium text-sm md:text-base text-text-tertiary dark:text-darkText-1 whitespace-nowrap">
             {title}
           </p>
           {/* <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
@@ -152,7 +152,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
         >
           {trendDirection === "up" ? <TrendingUpIcon /> : <TrendingDownIcon />}
         </span>
-        <p className="text-text-label font-normal text-[16px]">
+        <p className="text-text-label font-normal text-sm md:text-base">
           <span
             className={
               trendDirection === "up"

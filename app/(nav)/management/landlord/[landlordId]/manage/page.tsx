@@ -131,7 +131,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   };
 
   return (
-    <div className="custom-flex-col gap-6 lg:gap-10">
+    <div className="custom-flex-col gap-6 lg:gap-10 my-6">
       <div className="grid lg:grid-cols-2 gap-y-5 gap-x-8">
         <LandlordTenantInfoBox
           style={{ padding: "24px 40px" }}
@@ -206,10 +206,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             {landlordData?.user_tag === "mobile" ? (
               <>
                 <Button
-                  // href={`/messages/${landlordData.user_id}`}
                   onClick={goToMessage}
                   size="base_medium"
-                  className="py-2 px-8"
+                  className="py-2 px-4 page-header-button"
                 >
                   message
                 </Button>
@@ -218,7 +217,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     <Button
                       variant="light_green"
                       size="base_medium"
-                      className="py-2 px-8"
+                      className="py-2 px-4 page-header-button"
                     >
                       Edit
                     </Button>
@@ -237,7 +236,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     <Button
                       variant="sky_blue"
                       size="base_medium"
-                      className="py-2 px-8"
+                      className="py-2 px-4 page-header-button"
                     >
                       Note
                     </Button>
@@ -256,7 +255,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                 <Button
                   href={`/management/landlord/${landlordId}/manage/edit`}
                   size="base_medium"
-                  className="py-2 px-8"
+                  className="py-2 px-4 page-header-button"
                 >
                   edit
                 </Button>
@@ -281,7 +280,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     <Button
                       variant="sky_blue"
                       size="base_medium"
-                      className="py-2 px-4"
+                      className="py-2 px-4 page-header-button"
                     >
                       update with Email
                     </Button>

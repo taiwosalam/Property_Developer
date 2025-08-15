@@ -53,7 +53,7 @@ const CompanyType = () => {
           Please choose the company type that best fits your default dashboard
           configuration.
         </SectionHeading>
-        <div className="flex gap-5 overflow-x-auto custom-round-scrollbar">
+        <div className="flex gap-5 overflow-x-auto custom-round-scrollbar scrollbar-hide">
           <input
             type="hidden"
             name="company_type_id"

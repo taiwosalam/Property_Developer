@@ -1,6 +1,8 @@
 // Imports
+import clsx from "clsx";
 import Button from "../Form/Button/button";
 import { useModal } from "../Modal/modal";
+import { CSSProperties } from "react";
 interface AddLandlordOrTenantCardProps {
   desc?: string;
   title: string;
@@ -8,6 +10,8 @@ interface AddLandlordOrTenantCardProps {
   buttonHref?: string;
   onClick?: () => void;
   loading?: boolean;
+  className?: string;
+  style?: CSSProperties;
 }
 
 const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
@@ -17,10 +21,18 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
   buttonText,
   buttonHref,
   loading,
+  className,
+  style,
 }) => {
   const { setIsOpen } = useModal();
   return (
-    <div className="w-[250px] h-[250px] flex gap-5 flex-col text-center items-center justify-center rounded-2xl border border-solid border-brand-9 dark:border-[#3C3D37] bg-neutral-2 dark:bg-darkText-primary">
+    <div
+      style={style}
+      className={clsx(
+        "min-w-[250px] h-[250px] flex gap-5 flex-col text-center items-center justify-center rounded-2xl border border-solid border-brand-9 dark:border-[#3C3D37] bg-neutral-2 dark:bg-darkText-primary",
+        className
+      )}
+    >
       <p className="text-brand-9 text-xl font-medium capitalize mb-4">
         {title}
       </p>
@@ -37,7 +49,7 @@ const AddLandlordOrTenantCard: React.FC<AddLandlordOrTenantCardProps> = ({
         className="py-2 px-8"
         disabled={loading}
       >
-        {loading ? "Please wait...": buttonText}
+        {loading ? "Please wait..." : buttonText}
       </Button>
     </div>
   );

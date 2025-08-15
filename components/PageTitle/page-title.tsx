@@ -16,7 +16,7 @@ const PageTitle: React.FC<PageTitleProps> = ({
 }) => {
   const router = useRouter();
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 min-w-[30%]">
       <div className="flex gap-3 items-center">
         {onBack && (
           <div onClick={() => router.back()} className="cursor-pointer">

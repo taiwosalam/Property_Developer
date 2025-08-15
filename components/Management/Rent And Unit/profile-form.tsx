@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import PaymentCheckBoxs from "./payment-checkbox";
 import PaymentConfirmationText from "./payment-checkbox-texts";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 export const ProfileForm: React.FC<{
   occupants: { name: string; id: string; picture?: string }[];
@@ -48,6 +49,7 @@ export const ProfileForm: React.FC<{
   disableInput,
   tenantsLoading,
 }) => {
+  const { isMobile } = useWindowWidth();
   const [isModalIdSelected, setIsModalIdSelected] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [dueDate, setDueDateLocal] = useState<Dayjs | null>(null);
@@ -386,6 +388,7 @@ export const ProfileForm: React.FC<{
           isWebUser={isWebUser}
           isMobileUser={isMobileUser}
           currency={currency}
+          sm={isMobile}
         />
       </div>
       {/* PAYMENT CONFIRMATION TEXTS */}

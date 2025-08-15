@@ -50,7 +50,13 @@ const ForgotPassword: React.FC<FlowComponentProps> = ({ changeStep }) => {
         <AuthAction href="/auth/sign-in" linkText="sign in">
           Got an account?
         </AuthAction>
-        <Button type="submit" disabled={isLoading}>
+        <Button
+          type="submit"
+          disabled={isLoading}
+          size="base_bold"
+          variant="default"
+          className="py-xs px-lg mt-2"
+        >
           {isLoading ? "Please wait..." : "continue"}
         </Button>
       </div>

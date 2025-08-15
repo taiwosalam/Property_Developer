@@ -22,6 +22,7 @@ import { password_conditions, password_strength } from "./data";
 import FlowProgressBar from "../FlowProgress/flow-progress-bar";
 import Image from "next/image";
 import { empty } from "@/app/config";
+import Text from "../Form/Text/text";
 
 // AuthHeading Component: Displays the heading and subheading for the auth form
 export const AuthHeading: React.FC<AuthHeadingProps> = ({
@@ -41,12 +42,10 @@ export const AuthHeading: React.FC<AuthHeadingProps> = ({
         />
       </div>
     )}
-    <h1 className="custom-primary-color text-[32px] font-bold capitalize mt-2">
-      {title}
-    </h1>
-    <p className="text-text-label text-base font-normal dark:text-darkText-1">
+    <Text as="h1" variant="sky_blue" size="lg_bold">{title}</Text>
+    <Text as="p" variant="change" size="sm_normal" >
       {children}
-    </p>
+    </Text>
   </div>
 );
 
@@ -137,9 +136,9 @@ export const AuthAction: React.FC<AuthActionProps> = ({
   linkText,
 }) => (
   // Render a paragraph with children content and a link
-  <p className="text-text-black dark:text-darkText-1 text-sm md:text-base font-normal">
+  <p className="text-text-black dark:text-darkText-1 text-xs md:text-sm md:text-base font-normal">
     {children}{" "}
-    <Link href={href} className="custom-primary-color font-medium capitalize">
+    <Link href={href} className="custom-primary-color font-normal md:font-medium capitalize">
       {/* Render link text or a default value if not provided */}
       {linkText || "link"}
     </Link>
