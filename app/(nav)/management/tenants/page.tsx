@@ -29,7 +29,7 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
-import { ExclamationMark } from "@/public/icons/icons";
+import { ExclamationMark, PlusIcon } from "@/public/icons/icons";
 import TableLoading from "@/components/Loader/TableLoading";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import { AxiosRequestConfig } from "axios";
@@ -323,8 +323,8 @@ const Tenants = () => {
 
   return (
     <div className="space-y-8">
-      <div className="page-header-container" ref={contentTopRef}>
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container mt-4 md:mt-0" ref={contentTopRef}>
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
           <ManagementStatistcsCard
             title="Total Users"
             newData={new_tenants_this_month}
@@ -346,7 +346,10 @@ const Tenants = () => {
         </div>
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button
+              type="button"
+              className="page-header-button md:block hidden"
+            >
               + create new tenant
             </Button>
           </ModalTrigger>
@@ -469,6 +472,19 @@ const Tenants = () => {
             )}
           </>
         )}
+
+        <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+          <Modal>
+            <ModalTrigger asChild>
+              <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
+                <PlusIcon />
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddTenantModal />
+            </ModalContent>
+          </Modal>
+        </div>
       </section>
     </div>
   );

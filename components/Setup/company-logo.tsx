@@ -47,7 +47,7 @@ const CompanyLogo = () => {
           className="hidden setup-f required"
         />
         {preview ? (
-          <div className="w-[375px] h-[150px] relative rounded-xl flex items-center justify-center">
+          <div className="max-w-[375px] h-[150px] relative rounded-xl flex items-center justify-center">
             <button
               type="button"
               onClick={handleDeleteImage}

@@ -34,6 +34,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { PlusIcon } from "@/public/icons/icons";
 
 const VehiclesRecordPage = () => {
   const { id } = useParams();
@@ -475,6 +476,21 @@ const VehiclesRecordPage = () => {
               </ModalContent>
             </Modal>
           </>
+        )}
+
+        {canCheckInAndManageVehicleRec && (
+          <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+            <Modal>
+              <ModalTrigger asChild>
+                <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
+                  <PlusIcon />
+                </button>
+              </ModalTrigger>
+              <ModalContent>
+                <CreateRecordModal propertyId={Number(id)} data={data} />
+              </ModalContent>
+            </Modal>
+          </div>
         )}
       </section>
     </div>

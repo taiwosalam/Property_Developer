@@ -139,7 +139,7 @@ const StaffProfile = () => {
   if (error) return <ServerError error={error} />;
 
   return (
-    <div className="custom-flex-col gap-10">
+    <div className="custom-flex-col gap-10 p-4">
       <div className="custom-flex-col gap-4">
         <div className="custom-flex-col">
           <BackButton bold> {capitalizeWords(branch.branch_name)} </BackButton>

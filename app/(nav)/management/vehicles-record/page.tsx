@@ -123,7 +123,6 @@ const VehilceRecords = () => {
     sessionStorage.setItem("vehicles_record_page", "1");
   };
 
-  
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate, options } = filters;
@@ -199,25 +198,27 @@ const VehilceRecords = () => {
 
   return (
     <div className="space-y-9">
-      <div className="hidden flex md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard
-          title="Total Vehicle Records"
-          newData={properties_this_month}
-          total={total_properties}
-          colorScheme={1}
-        />
-        <ManagementStatistcsCard
-          title="Rental Vehicle Records"
-          newData={property_type_stats.rental.this_month}
-          total={property_type_stats.rental.total}
-          colorScheme={2}
-        />
-        <ManagementStatistcsCard
-          title="Facility Vehicle Records"
-          newData={property_type_stats.facility.this_month}
-          total={property_type_stats.facility.total}
-          colorScheme={3}
-        />
+      <div className="page-header-container mt-4 md:mt-0">
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
+          <ManagementStatistcsCard
+            title="Total Vehicle Records"
+            newData={properties_this_month}
+            total={total_properties}
+            colorScheme={1}
+          />
+          <ManagementStatistcsCard
+            title="Rental Vehicle Records"
+            newData={property_type_stats.rental.this_month}
+            total={property_type_stats.rental.total}
+            colorScheme={2}
+          />
+          <ManagementStatistcsCard
+            title="Facility Vehicle Records"
+            newData={property_type_stats.facility.this_month}
+            total={property_type_stats.facility.total}
+            colorScheme={3}
+          />
+        </div>
       </div>
 
       {/* Page Title with search */}

@@ -3,6 +3,7 @@ import type { LandlordTenantModalPresetProps } from "./types";
 import { ModalTrigger } from "../Modal/modal";
 import { ChevronLeft, NavCloseIcon } from "@/public/icons/icons";
 import { SectionSeparator } from "../Section/section-components";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   star,
@@ -16,6 +17,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   noPaddingTop = false,
   customClose,
 }) => {
+  const { isMobile } = useWindowWidth();
   return (
     <div
       style={style}
@@ -37,11 +39,11 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
           </div>
           {!customClose ? (
             <ModalTrigger close className="p-2" aria-label="close">
-              <NavCloseIcon />
+              <NavCloseIcon size={isMobile ? 20 : 35} />
             </ModalTrigger>
           ) : (
             <button onClick={customClose}>
-              <NavCloseIcon />
+              <NavCloseIcon size={isMobile ? 20 : 35} />
             </button>
           )}
         </div>

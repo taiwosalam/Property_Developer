@@ -27,7 +27,7 @@ const SetupHeader: React.FC<{
     <div className="setup-header-wrapper sticky top-[52px] z-[2] py-5 px-10 bg-brand-1 flex justify-between items-center gap-1">
       <div className="custom-flex-col">
         <div className="flex gap-2 items-center">
-          <h1 className="text-text-primary font-medium md:text:xl lg:text-2xl">
+          <h1 className="text-text-primary font-medium text-md md:text:xl lg:text-2xl">
             {isEditMode
               ? "Finish updating your account"
               : "Finish Setting Up Your Account!"}

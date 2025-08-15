@@ -13,11 +13,20 @@ export const text_variants = {
     base_medium: "text-[clamp(1rem,3vw,1.125rem)] font-medium",
     base_bold: "text-[clamp(1rem,3vw,1.125rem)] font-bold",
     "16_bold": "text-[clamp(1rem,3vw,1.125rem)] font-bold",
+     // LG sizes (~24px → 32px)
+     lg_normal: "text-[clamp(1.5rem,4vw,2rem)] font-normal",
+     lg_medium: "text-[clamp(1.5rem,4vw,2rem)] font-medium",
+     lg_bold: "text-[clamp(1.5rem,4vw,2rem)] font-bold capitalize mt-2",
+ 
+     // XL sizes (~32px → 48px)
+     xl_normal: "text-[clamp(2rem,5vw,3rem)] font-normal",
+     xl_medium: "text-[clamp(2rem,5vw,3rem)] font-medium",
+     xl_bold: "text-[clamp(2rem,5vw,3rem)] font-bold",
     custom: "",
   },
   variant: {
     border: "text-brand-9 border border-brand-9",
-    change: "text-brand-9",
+    change: "text-text-label",
     default: "text-neutral-900 dark:text-white",
     sky_blue: "text-brand-9",
     light_red: "text-status-error-primary",

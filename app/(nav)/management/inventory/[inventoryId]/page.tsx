@@ -66,7 +66,7 @@ const InventoryUnit = ({ params }: { params: { inventoryId: string } }) => {
   } = pageData;
 
   return (
-    <div className="custom-flex-col gap-6">
+    <div className="custom-flex-col gap-6 my-4">
       <div
         ref={contentTopRef}
         className="w-full gap-2 flex items-center justify-between flex-wrap"

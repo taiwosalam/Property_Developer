@@ -330,8 +330,8 @@ const Landlord = () => {
 
   return (
     <div className="space-y-8">
-      <div className="page-header-container" ref={contentTopRef}>
-        <div className="hidden md:flex flex-wrap gap-5">
+      <div className="page-header-container mt-4 md:mt-0" ref={contentTopRef}>
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
           <ManagementStatistcsCard
             title="Total Landlords"
             newData={new_landlords_this_month}
@@ -385,7 +385,7 @@ const Landlord = () => {
               { label: "Web Landlord", value: "web" },
               { label: "All Landlords", value: "all" },
             ],
-          }
+          },
         ]}
       />
       <section>

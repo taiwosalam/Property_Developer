@@ -468,7 +468,7 @@ button:disabled:not(.retain-opacity) {
 }
 
 .page-header-button {
-  @apply rounded-[8px] xl:px-12 !text-sm !font-normal;
+  @apply rounded-[8px] xl:px-12 !text-sm !font-normal mt-6 md:mt-0;
 }
 
 .page-header-container {
@@ -481,7 +481,7 @@ button:disabled:not(.retain-opacity) {
 }
 
 .page-title-container {
-  @apply flex flex-wrap gap-4 items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4 dark:border-[#3C3D37];
+  @apply flex flex-wrap md:flex-nowrap gap-4 items-center justify-between border-y-2 border-[#EAECF0] py-2 px-4 dark:border-[#3C3D37];
 }
 
 .search-input-placeholder-color::placeholder {
@@ -619,6 +619,21 @@ button:disabled:not(.retain-opacity) {
 .fixedText-color {
   @apply text-[#000000] dark:text-black;
 }
+
+
+
+/* scrollbar hide */
+/* Hide scrollbar but still allow scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
 
 /* =================================== RESPONSIVE CLASSES =============================================== */
 
@@ -934,46 +949,14 @@ button:disabled:not(.retain-opacity) {
 }
 
 /* min-width responsive utilities for badges */
-.min-w-xs {
-  min-width: clamp(1rem, 2.5vw, 1.125rem);
-}
-.min-w-sm {
-  min-width: clamp(1.125rem, 3vw, 1.25rem);
-}
-.min-w-md {
-  min-width: clamp(1.25rem, 3.5vw, 1.5rem);
-}
+.min-w-xs { min-width: clamp(1rem, 2.5vw, 1.125rem); }
+.min-w-sm { min-width: clamp(1.125rem, 3vw, 1.25rem); }
+.min-w-md { min-width: clamp(1.25rem, 3.5vw, 1.5rem); }
 
-/* scrollbar hide */
-/* Hide scrollbar but still allow scrolling */
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-
-.card-scroll {
-  @apply flex gap-5 py-4 scrollbar-hide items-start overflow-x-auto md:flex-wrap;
-}
-
-.mobile-button {
-  @apply bg-brand-9 z-[50] grid fixed bottom-4 right-4 text-white size-[4rem] rounded-full place-items-center md:hidden;
-}
-
-.page-header-container-variant {
-  @apply w-full flex items-center justify-start md:justify-between gap-4;
-}
-
-/* for the blue buttons */
-.page-header-container > :last-child {
-  @apply flex-shrink-0;
-}
 
 .account-card-container {
-  @apply scrollbar-hide pl-2 py-3 flex gap-6 overflow-x-auto;
+  @apply scrollbar-hide py-3 pl-2 flex gap-6 overflow-x-auto;
 }
 
 .account-card {

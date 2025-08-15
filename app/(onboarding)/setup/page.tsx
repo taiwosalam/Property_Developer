@@ -18,7 +18,12 @@ import CompanyAddress from "@/components/Setup/company-address";
 import ProfilePicture from "@/components/Setup/profile-picture";
 import ProfileInformation from "@/components/Setup/profile-information";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { transformFormData, createCompany, updateCompany, SetupLoadsteps } from "./data";
+import {
+  transformFormData,
+  createCompany,
+  updateCompany,
+  SetupLoadsteps,
+} from "./data";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
@@ -38,6 +43,7 @@ import FullPageLoader from "@/components/Loader/start-rent-loader";
 import ProgressCardLoader, {
   ProgressCardStep,
 } from "@/components/Loader/setup-card-loader";
+import Text from "@/components/Form/Text/text";
 
 const Setup = () => {
   const router = useRouter();
@@ -149,7 +155,7 @@ const Setup = () => {
             isEditMode={isEditMode}
             requestLoading={requestLoading}
           />
-          <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-10">
+          <div className="relative z-[1] custom-flex-col gap-6 pt-6 pb-20 px-xl">
             <CompanyType />
             <Section separatorStyles="max-w-[1200px]">
               <div className="custom-flex-col gap-5">
@@ -193,12 +199,12 @@ const Setup = () => {
             </Section>
             <div className="director-details-wrapper">
               <div className="flex gap-[2px] flex-col mb-4">
-                <h1 className="text-text-primary text-xl font-semibold capitalize dark:text-[#f1f1fd]">
+                <Text size="base_medium" className="capitalize">
                   directors details
-                </h1>
-                <p className="text-text-quaternary dark:text-darkText-1 capitalize">
+                </Text>
+                <Text size="sm_normal" className="capitalize">
                   Fill the details below to add a director to your company
-                </p>
+                </Text>
               </div>
               <ProfilePicture />
               <ProfileInformation

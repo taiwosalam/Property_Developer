@@ -228,9 +228,6 @@ export const transformMobileUseData = (res: any): UserCardProps => {
 };
 
 export const transformCardData = (data: any): UserCardProps => {
-  console.log("data", data);
-  // const badgeColor =
-  // tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
   return {
     name: data.name,
     picture_url: data.picture,

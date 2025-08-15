@@ -110,7 +110,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
       }}
     >
       <CardHeader className="p-4 pb-[10px] sticky top-0 bg-[inherit] z-[2]">
-        <CardTitle className="flex items-center justify-between text-[16px]">
+        <CardTitle className="flex items-center justify-between text-base">
           <p className="text-black font-medium dark:text-[#f1f1fd]">
             {sectionHeader}
           </p>
@@ -118,7 +118,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
             <Link
               href={notifications?.length === 0 ? "#" : seeAllLink}
               className={clsx(
-                "flex items-center font-medium",
+                "flex items-center font-medium text-sm md:text-base",
                 notifications?.length === 0
                   ? "text-[#C1C2C3] cursor-not-allowed"
                   : "text-[#4F5E71] dark:text-[#f1f1fd]"

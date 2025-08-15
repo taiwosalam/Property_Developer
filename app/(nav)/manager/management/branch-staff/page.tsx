@@ -7,7 +7,7 @@ import Button from "@/components/Form/Button/button";
 import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-staff-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
-import { LocationIcon } from "@/public/icons/icons";
+import { LocationIcon, PlusIcon } from "@/public/icons/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -271,8 +271,8 @@ const BranchStaffPage = () => {
 
   return (
     <div className="custom-flex-col gap-6">
-      <div className="w-full gap-2 flex items-center justify-between flex-wrap">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container mt-4 md:mt-0">
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
           <ManagementStatistcsCard
             title="Total Staff"
             newData={state.total_data_count}
@@ -296,7 +296,10 @@ const BranchStaffPage = () => {
           <div className="flex items-center justify-between gap-2 ml-auto flex-wrap">
             <Modal>
               <ModalTrigger asChild>
-                <Button type="button" className="page-header-button">
+                <Button
+                  type="button"
+                  className="page-header-button md:block hidden"
+                >
                   + create staff
                 </Button>
               </ModalTrigger>
@@ -394,6 +397,22 @@ const BranchStaffPage = () => {
             handleSelect={handleSelectTableItem}
           />
         )}
+
+        <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+          <Modal>
+            <ModalTrigger>
+              <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
+                <PlusIcon />
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <CreateStaffModal
+                branchId={BRANCH_ID.toString()}
+                hasManager={true}
+              />
+            </ModalContent>
+          </Modal>
+        </div>
       </section>
       <Pagination
         totalPages={state.total_pages}

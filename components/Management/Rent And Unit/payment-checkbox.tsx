@@ -1,4 +1,5 @@
 import Checkbox from "@/components/Form/Checkbox/checkbox";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 type CheckboxOption = {
   label: string;
@@ -26,11 +27,12 @@ const PaymentCheckBoxs: React.FC<PaymentCheckBoxsProps> = ({
   sm,
   className,
 }) => {
+  const { isMobile } = useWindowWidth();
   return (
     <div className={`flex items-center gap-4 flex-wrap ${className || ""}`}>
       {options.map(({ label, key }) => (
         <Checkbox
-          sm={sm}
+          sm={isMobile || sm}
           key={key}
           checked={selectedOptions[key]}
           onChange={(checked) => onChange(key, checked)}

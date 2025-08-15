@@ -15,10 +15,10 @@ export const permissionMapping: Record<
     permission: "Can add and manage tenants/occupants",
     ownerRoles: ["manager", "account"],
   },
-  branch: {
-    permission: "Can add/delete branch properties",
-    ownerRoles: ["manager", "account"],
-  },
+  // branch: {
+  //   permission: "Can add/delete branch properties",
+  //   ownerRoles: ["manager", "account"],
+  // },
   property: {
     permission: "Can add/delete branch properties",
     ownerRoles: ["manager", "account", "staff"],

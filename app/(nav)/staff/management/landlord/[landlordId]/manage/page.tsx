@@ -216,31 +216,12 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             {landlordData?.user_tag === "mobile" ? (
               <>
                 <Button
-                  // href={`/messages/${landlordData.user_id}`}
                   onClick={goToMessage}
                   size="base_medium"
-                  className="py-2 px-8"
+                  className="py-2 px-4 page-header-button"
                 >
                   message
                 </Button>
-                {/* <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      variant="light_green"
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      Edit
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <EditMobileUser
-                      CAN_DELETE={CAN_DELETE}
-                      page="landlord"
-                      id={landlordId}
-                    />
-                  </ModalContent>
-                </Modal> */}
 
                 {canCreateAndManageLandlord && (
                   <Modal>
@@ -248,7 +229,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                       <Button
                         variant="sky_blue"
                         size="base_medium"
-                        className="py-2 px-8"
+                        className="py-2 px-4 page-header-button"
                       >
                         Note
                       </Button>
@@ -287,7 +268,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                       <Button
                         variant="sky_blue"
                         size="base_medium"
-                        className="py-2 px-4"
+                        className="py-2 px-4 page-header-button"
                       >
                         update with Email
                       </Button>

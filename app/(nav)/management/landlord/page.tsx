@@ -31,7 +31,7 @@ import { LandlordHelpInfo } from "./types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useView from "@/hooks/useView";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { ExclamationMark } from "@/public/icons/icons";
+import { ExclamationMark, PlusIcon } from "@/public/icons/icons";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import TableLoading from "@/components/Loader/TableLoading";
 import type { AllBranchesResponse } from "@/components/Management/Properties/types";
@@ -338,8 +338,8 @@ const Landlord = () => {
 
   return (
     <div className="space-y-8">
-      <div className="page-header-container" ref={contentTopRef}>
-        <div className="hidden md:flex flex-wrap gap-5">
+      <div className="page-header-container mt-4 md:mt-0" ref={contentTopRef}>
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
           <ManagementStatistcsCard
             title="Total Landlords"
             newData={new_landlords_this_month}
@@ -365,7 +365,10 @@ const Landlord = () => {
 
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button
+              type="button"
+              className="page-header-button md:block hidden"
+            >
               + create new landlord
             </Button>
           </ModalTrigger>
@@ -480,6 +483,19 @@ const Landlord = () => {
             )}
           </>
         )}
+
+        <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+          <Modal>
+            <ModalTrigger asChild>
+              <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
+                <PlusIcon />
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddLandlordModal />
+            </ModalContent>
+          </Modal>
+        </div>
       </section>
     </div>
   );

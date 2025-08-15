@@ -2,6 +2,7 @@
 import { FilterIcon } from "@/public/icons/icons";
 import { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 interface FilterButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   noTitle?: boolean;
@@ -13,6 +14,7 @@ const FilterButton = ({
   className,
   ...props
 }: FilterButtonProps) => {
+  const { isMobile } = useWindowWidth()
   return (
     <button
       type="button"
@@ -23,9 +25,9 @@ const FilterButton = ({
       onClick={onClick}
       {...props}
     >
-      <FilterIcon />
+      <FilterIcon size={isMobile ? 16 : 20} />
       <span
-        className="text-text-secondary dark:text-darkText-1 text-base font-medium"
+        className="text-text-secondary dark:text-darkText-1 md:block hidden text-base font-medium"
         hidden={noTitle}
       >
         Filters

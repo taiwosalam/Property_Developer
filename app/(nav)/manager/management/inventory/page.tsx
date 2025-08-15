@@ -85,7 +85,6 @@ const Inventory = () => {
     },
   };
 
-
   const accountOfficersOptions =
     accountOfficers?.map((o) => ({
       label: o.name,
@@ -256,8 +255,8 @@ const Inventory = () => {
 
   return (
     <div className="custom-flex-col gap-9">
-      <div className="page-header-container" ref={contentTopRef}>
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container mt-4 md:mt-0" ref={contentTopRef}>
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
           <ManagementStatistcsCard
             title="Total Records"
             newData={new_inventory_this_month}

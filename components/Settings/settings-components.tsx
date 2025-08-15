@@ -104,12 +104,12 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
     <div className="flex">
       {required && <p className="text-red-500">*</p>}
       {title && (
-        <p className="text-text-quaternary dark:text-white text-base font-medium capitalize">
+        <p className="text-text-quaternary dark:text-white text-sm md:text-base font-medium capitalize">
           {title}
         </p>
       )}
     </div>
-    {desc && <p className="text-text-disabled text-sm font-normal">{desc}</p>}
+    {desc && <p className="text-text-disabled text-xs md:text-sm font-normal">{desc}</p>}
   </div>
 );
 
