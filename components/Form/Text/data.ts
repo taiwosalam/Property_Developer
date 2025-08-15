@@ -1,19 +1,4 @@
-const default_border = "border-2 border-solid border-transparent";
-const default_interaction = "active:bg-transparent hover:opacity-70";
-
-export const button_variants = {
-  variant: {
-    border: "custom-border-button",
-    change: "bg-neutral-2 text-brand-9",
-    default: "custom-default-button text-white",
-
-    sky_blue: `${default_border} bg-brand-1 text-brand-9 active:border-brand-1 ${default_interaction}`,
-    light_red: `${default_border} bg-status-error-1 text-status-error-primary active:border-status-error-1 ${default_interaction}`,
-    light_green: `${default_border} bg-status-success-1 text-status-success-primary active:border-success-1 ${default_interaction}`,
-    red: `${default_border} bg-status-error-primary text-white active:border-status-error-primary active:text-status-error-primary ${default_interaction}`,
-    blank: `${default_border}`,
-    custom: "",
-  },
+export const text_variants = {
   size: {
     sm: "py-[clamp(0.5rem,1.5vw,0.75rem)] px-[clamp(0.75rem,2.5vw,1rem)] text-[clamp(0.875rem,2.5vw,1rem)] font-normal",
     mid: "py-[clamp(0.625rem,2vw,0.875rem)] px-[clamp(0.75rem,2.5vw,1rem)] text-[clamp(1rem,3vw,1.125rem)] font-medium",
@@ -28,6 +13,17 @@ export const button_variants = {
     base_medium: "text-[clamp(1rem,3vw,1.125rem)] font-medium",
     base_bold: "text-[clamp(1rem,3vw,1.125rem)] font-bold",
     "16_bold": "text-[clamp(1rem,3vw,1.125rem)] font-bold",
+    custom: "",
+  },
+  variant: {
+    border: "text-brand-9 border border-brand-9",
+    change: "text-brand-9",
+    default: "text-neutral-900 dark:text-white",
+    sky_blue: "text-brand-9",
+    light_red: "text-status-error-primary",
+    light_green: "text-status-success-primary",
+    red: "text-status-error-primary",
+    blank: "text-neutral-900 dark:text-white",
     custom: "",
   },
 };
