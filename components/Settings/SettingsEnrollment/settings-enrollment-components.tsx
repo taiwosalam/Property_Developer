@@ -72,7 +72,8 @@ export const PlanHeader: React.FC<{
   }
 
   const upperTitle = planTitle.toUpperCase();
-  const freeTitle = "FREE PLAN (Active until upgraded)";
+  // const freeTitle = "FREE PLAN (Active until upgraded)";
+  const freeTitle = "FREE PLAN";
   const title = !isFree ? upperTitle : freeTitle;
 
   return (

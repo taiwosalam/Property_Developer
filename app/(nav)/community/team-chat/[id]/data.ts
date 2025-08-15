@@ -58,7 +58,6 @@ export const sendTeamMessage = async (groupId: string, message: any, type: strin
       payload
     );
     if (res.status === 200 || res.status === 201) {
-      // toast.success("Message sent!");
       window.dispatchEvent(new Event("refetchTeam"));
       return true;
     }

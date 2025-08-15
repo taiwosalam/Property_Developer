@@ -57,7 +57,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
 
         if (status) {
           if (type === "sign up") {
-            console.log("role here for redirect", role);
+            // console.log("role here for redirect", role);
             if (role === "user") {
               router.push("/setup");
             } else {

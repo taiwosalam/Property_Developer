@@ -148,7 +148,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   } = state;
 
   const isFacility = formType === "facility";
-  
+
   // const selectedBranchId = selectedBranch.value || propertyDetails?.branch_id;
   // const selectedBranchId = selectedBranch.value;
   // Use branch_id from store for non-directors, otherwise use selectedBranch.value
@@ -238,6 +238,8 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       label: branch.branch_name,
     })) || [];
 
+  console.log("selectedStaffs", selectedStaffs);
+
   useEffect(() => {
     const fetchInventory = async () => {
       if (selectedBranchId) {
@@ -296,20 +298,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     [landlordsData]
   );
 
-  // console.log("landlordsData", landlordsData);
-  const inventoryOptions =
-    branchData?.inventory?.data?.data?.map((inventory: any) => ({
-      value: inventory.id,
-      label: inventory.title,
-    })) || [];
-
-  // const officerOptions =
-  //   branchData?.accountOfficer?.data?.data?.map((officer: any) => ({
-  //     value: officer.id,
-  //     label: officer.user.name,
-  //     icon: officer.user.profile.picture,
-  //   })) || [];
-
   const officerOptions = useMemo(
     () =>
       branchData?.accountOfficer?.data?.data?.map((officer: any) => ({
@@ -319,7 +307,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       })) || [],
     [branchData?.accountOfficer?.data]
   );
-
 
   const staffOption = useMemo(
     () =>
@@ -409,6 +396,33 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     }
   }, [propertyDetails, editMode]);
 
+  // Include manager ID to the staff array so that group chat can be created for the manager role
+  const handleBranchSelection = useCallback(
+    (selectedBranchId: string) => {
+      setPropertyState({
+        selectedBranch: {
+          value: selectedBranchId,
+          label:
+            branchOptions.find(
+              (branch) => String(branch.value) === String(selectedBranchId)
+            )?.label || "",
+        },
+      });
+
+      const selectedBranchData = branchesData?.data?.find(
+        (branch) => String(branch.id) === String(selectedBranchId)
+      );
+
+      // Reset selectedStaffs and add the new manager ID as a string
+      const newStaffs: string[] = [];
+      if (selectedBranchData?.manager_id) {
+        newStaffs.push(String(selectedBranchData.manager_id));
+      }
+      setSelectedStaffs(newStaffs);
+    },
+    [branchOptions, branchesData?.data, setPropertyState]
+  );
+
   const yesNoFields = [
     "group_chat",
     "rent_penalty",
@@ -431,6 +445,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       selectedStaffs
     );
     await handleSubmit(payload);
+    console.log("payload", payload);
     setRequestLoading(false);
   };
 
@@ -806,18 +821,19 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 resetKey={resetKey}
                 options={branchOptions}
                 inputContainerClassName="bg-white"
-                onChange={(selectedBranchId) =>
-                  setPropertyState({
-                    selectedBranch: {
-                      value: selectedBranchId,
-                      label:
-                        branchOptions.find(
-                          (branch) =>
-                            String(branch.value) === String(selectedBranchId)
-                        )?.label || "",
-                    },
-                  })
-                }
+                onChange={handleBranchSelection}
+                // onChange={(selectedBranchId) =>
+                //   setPropertyState({
+                //     selectedBranch: {
+                //       value: selectedBranchId,
+                //       label:
+                //         branchOptions.find(
+                //           (branch) =>
+                //             String(branch.value) === String(selectedBranchId)
+                //         )?.label || "",
+                //     },
+                //   })
+                // }
                 value={selectedBranch}
                 hiddenInputClassName="property-form-input"
                 placeholder={

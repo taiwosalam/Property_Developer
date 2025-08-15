@@ -6,14 +6,16 @@ import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 import CreateRentalPropertyForm from "@/components/Management/Properties/create-property-form";
 import { addProperty } from "./data";
 import { useTourStore } from "@/store/tour-store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ExclamationMark } from "@/public/icons/icons";
+import ProgressCardLoader from "@/components/Loader/setup-card-loader";
 
 const CreateProperty = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const landlordId = searchParams.get("landlord") || "";
+  const [requestLoading, setRequestLoading] = useState(false);
   const {
     setShouldRenderTour,
     setPersist,
@@ -31,9 +33,16 @@ const CreateProperty = () => {
   // };
 
   const handleSubmit = async (data: Record<string, any>) => {
-    const propertyId = await addProperty(data);
-    if (propertyId) {
-      window.location.href = `/management/properties/create-rental-property/${propertyId}/add-unit`;
+    try {
+      setRequestLoading(true);
+      const propertyId = await addProperty(data);
+      if (propertyId) {
+        window.location.href = `/management/properties/create-rental-property/${propertyId}/add-unit`;
+      }
+    } catch (error) {
+      console.error("Failed to create property", error);
+    } finally {
+      setRequestLoading(false);
     }
   };
 
@@ -50,6 +59,7 @@ const CreateProperty = () => {
 
   return (
     <>
+     {/* <ProgressCardLoader loading={requestLoading} steps={[]} /> */}
       <BackButton className="mb-1">
         <div className="flex gap-2 items-center">
           <h1 className="text-lg lg:text-xl capitalize font-normal">
