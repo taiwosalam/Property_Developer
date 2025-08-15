@@ -9,7 +9,7 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
 import { LocationIcon } from "@/public/icons/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import type { DataItem } from "@/components/Table/types";
@@ -49,6 +49,9 @@ const BranchStaffPage = () => {
     role,
     "Can add/delete branch staff"
   );
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
 
   const gridSectionRef = useRef<HTMLDivElement>(null);
   const [config, setConfig] = useState<AxiosRequestConfig>(() => {
@@ -111,6 +114,22 @@ const BranchStaffPage = () => {
       gridSectionRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setState((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("staff_page", "1");
+    }
+  }, [query]);
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({

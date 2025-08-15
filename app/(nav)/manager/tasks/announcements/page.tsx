@@ -31,6 +31,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { useSearchParams } from "next/navigation";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
@@ -40,6 +41,8 @@ const AnnouncementPage = () => {
     role,
     "Can create and manage announcement"
   );
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -85,30 +88,20 @@ const AnnouncementPage = () => {
     }
   }, [apiData]);
 
-  // const handleAppliedFilter = useCallback(
-  //   debounce((filters: FilterResult) => {
-  //     setAppliedFilters(filters);
-  //     const { menuOptions, startDate, endDate } = filters;
-  //     const accountOfficer = menuOptions["Account Officer"] || [];
-  //     const status = menuOptions["Status"] || [];
-  //     const property = menuOptions["Property"] || [];
-  //     const branches = menuOptions["Branch"] || [];
-
-  //     const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
-  //     if (accountOfficer.length > 0)
-  //       queryParams.account_officer_id = accountOfficer.join(",");
-  //     if (status.length > 0) queryParams.status = status.join(",");
-  //     if (branches.length > 0) queryParams.branch_id = status.join(",");
-
-  //     if (property.length > 0) queryParams.property_ids = property.join(",");
-  //     if (startDate)
-  //       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
-  //     if (endDate)
-  //       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-  //     setConfig({ params: queryParams });
-  //   }, 300),
-  //   []
-  // );
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setAnnouncements((prevData) => ({
+        ...prevData,
+        current_page: 1,
+      }));
+      sessionStorage.setItem("tenant_page", "1");
+    }
+  }, [query]);
 
   const handleAppliedFilter = useCallback(
     (filters: FilterResult) => {
