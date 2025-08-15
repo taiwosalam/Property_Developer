@@ -520,19 +520,15 @@ button:disabled:not(.retain-opacity) {
 }
 
 /* Mobile scrollbar hiding */
-.scrollbar-hide-mobile {
+/* .scrollbar-hide-mobile {
   scrollbar-width: none;
-  /* Firefox */
   -ms-overflow-style: none;
-  /* IE/Edge */
 }
 
 .scrollbar-hide-mobile::-webkit-scrollbar {
   display: none;
-  /* Chrome, Safari, Opera */
 }
 
-/* Show scrollbar on larger screens */
 @media (min-width: 768px) {
   .scrollbar-hide-mobile {
     scrollbar-width: auto;
@@ -542,7 +538,7 @@ button:disabled:not(.retain-opacity) {
   .scrollbar-hide-mobile::-webkit-scrollbar {
     display: block;
   }
-}
+} */
 
 
 /* ------------------------ */

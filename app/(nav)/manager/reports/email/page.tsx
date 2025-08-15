@@ -326,7 +326,7 @@ const EmailReport = () => {
           setIsOpen: setModalOpen,
         }}
       >
-        <ModalContent>
+        <ModalContent> 
           {silentLoading ? (
             <EmailModalSkeleton />
           ) : (

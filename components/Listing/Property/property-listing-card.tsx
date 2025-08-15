@@ -122,7 +122,8 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
       </div>
       <SectionSeparator />
       {/* <div className="pb-6 overflow-x-auto custom-round-scrollbar"> */}
-      <div className="pb-6 overflow-x-auto scrollbar-hide-mobile">
+      {/* <div className="pb-6 overflow-x-auto scrollbar-hide-mobile"> */}
+      <div className="pb-6 overflow-x-auto hide-scrollbar">
         <div className="min-w-[800px] custom-flex-col gap-4">
           <div className="flex items-center gap-6 justify-between">
             <div className="flex flex-1">
